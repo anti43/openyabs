@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package mp3.classes.objects;
+package mp3.classes.objects.ungrouped;
 
 import mp3.classes.layer.QueryClass;
 

@@ -14,12 +14,10 @@
  *      You should have received a copy of the GNU General Public License
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mp3.classes.objects;
+package mp3.classes.objects.product;
 
+import mp3.classes.objects.*;
 import mp3.database.util.Query;
-import mp3.classes.interfaces.Structure;
-import mp3.classes.layer.Popup;
-import mp3.classes.layer.QueryClass;
 
 /**
  *
@@ -210,7 +208,7 @@ public class Product extends mp3.classes.layer.Things implements mp3.classes.int
         return supplier;
     }
 
-    public void setSupplier(Supplier supplier) {
+    public void setSupplier(mp3.classes.objects.product.Supplier supplier) {
 
         
         if(supplier!=null) {

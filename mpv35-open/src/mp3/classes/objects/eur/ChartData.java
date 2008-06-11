@@ -16,7 +16,7 @@
  *  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  *  
  */
-package mp3.classes.objects;
+package mp3.classes.objects.eur;
 
 import mp3.database.util.Query;
 import mp3.classes.layer.QueryClass;

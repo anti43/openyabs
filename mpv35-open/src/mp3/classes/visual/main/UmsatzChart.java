@@ -10,7 +10,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.util.Date;
 import mp3.classes.interfaces.Constants;
-import mp3.classes.objects.Data;
+import mp3.classes.objects.eur.Data;
 import mp3.classes.utils.CompCenter;
 import mp3.classes.utils.Formater;
 

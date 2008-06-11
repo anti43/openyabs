@@ -15,13 +15,14 @@
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mp3.classes.objects;
+package mp3.classes.objects.pdf;
+import mp3.classes.objects.ungrouped.MyData;
+import mp3.classes.objects.eur.Customer;
+import mp3.classes.objects.*;
 import com.lowagie.text.pdf.*;
 import com.lowagie.text.DocumentException;
 import java.io.*;
 import java.sql.*;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,6 +32,8 @@ import mp3.classes.layer.Popup;
 import mp3.classes.layer.QueryClass;
 import mp3.classes.utils.Formater;
 import mp3.classes.utils.Log;
+
+import mp3.classes.objects.bill.*;
 
 
 

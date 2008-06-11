@@ -48,13 +48,10 @@ import mp3.classes.visual.main.mainframe;
  */
 public class MpInstaller extends javax.swing.JFrame implements ProtectedStrings,Strings{
 
-    private Thread t;
-    private boolean isClosed = false;
-    private mpSplashScreen splash;
+
+
     private String url;
     private boolean update = false;
-    private Vector<RenderedImage> io;
-    private File img;
     private String workdir;
 
     /** Creates new form mpInstaller */
@@ -120,7 +117,7 @@ public class MpInstaller extends javax.swing.JFrame implements ProtectedStrings,
         jTextArea1.setColumns(20);
         jTextArea1.setLineWrap(true);
         jTextArea1.setRows(5);
-        jTextArea1.setText("Zunächst muss die Datenbank erstellt werden. Anschliessend können Sie das Programm starten.\n\nUm einen KDE Menüeintrag anzulegen, kopieren Sie das erstellte Desktopicon als Root nach \"/opt/kde3/share/applications/kde\".\n");
+        jTextArea1.setText("Zunächst muss die Datenbank erstellt werden. Anschliessend können Sie das Programm starten.\n\nLinux:\nUm einen KDE Menüeintrag anzulegen, kopieren Sie das erstellte Desktopicon als Root nach \"/opt/kde3/share/applications/kde\".\n");
         jTextArea1.setWrapStyleWord(true);
         jTextArea1.setFocusable(false);
         jTextArea1.setOpaque(false);
@@ -160,7 +157,7 @@ public class MpInstaller extends javax.swing.JFrame implements ProtectedStrings,
                         .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                             .add(jPanel2Layout.createSequentialGroup()
                                 .add(jLabel2)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 12, Short.MAX_VALUE))
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 25, Short.MAX_VALUE))
                             .add(jPanel2Layout.createSequentialGroup()
                                 .add(jButton2)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)))
@@ -184,7 +181,7 @@ public class MpInstaller extends javax.swing.JFrame implements ProtectedStrings,
         );
 
         jLabel1.setFont(new java.awt.Font("DejaVu Sans", 1, 18));
-        jLabel1.setText("MP Software Linux EUR Edition");
+        jLabel1.setText("MP Software (GPL)");
         jLabel1.setBorder(javax.swing.BorderFactory.createTitledBorder("MP Installation"));
 
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/mp.png"))); // NOI18N
@@ -200,7 +197,7 @@ public class MpInstaller extends javax.swing.JFrame implements ProtectedStrings,
                     .add(jPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(jPanel1Layout.createSequentialGroup()
                         .add(jLabel1)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 132, Short.MAX_VALUE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 247, Short.MAX_VALUE)
                         .add(jLabel3)))
                 .addContainerGap())
         );
@@ -238,6 +235,7 @@ public class MpInstaller extends javax.swing.JFrame implements ProtectedStrings,
         try {
 
             workdir = JarFinder.getPathOfJar(JAR_NAME);
+            System.out.println(workdir);
 
             File f = new File(USER_HOME + SEP + PROG_NAME);
             File fol = new File(USER_HOME + SEP + PROG_NAME + File.separator + LIB_DIR);
@@ -288,7 +286,7 @@ public class MpInstaller extends javax.swing.JFrame implements ProtectedStrings,
 
         
         if(System.getProperty("os.name").contains("indows")) {
-            DesktopIcon.createWindowsDesktopIcon();
+//            DesktopIcon.createWindowsDesktopIcon();
         } else {
         
             DesktopIcon.createLinuxDesktopIcon();

@@ -17,7 +17,7 @@
  *  
  */
 
-package mp3.classes.objects;
+package mp3.classes.objects.ungrouped;
 
 import mp3.classes.interfaces.Constants;
 import mp3.classes.interfaces.ProtectedStrings;

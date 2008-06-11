@@ -14,8 +14,9 @@
  *      You should have received a copy of the GNU General Public License
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mp3.classes.objects;
+package mp3.classes.objects.bill;
 
+import mp3.classes.objects.*;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -28,6 +29,9 @@ import mp3.classes.interfaces.Strings;
 import mp3.classes.utils.Log;
 import mp3.classes.layer.Popup;
 import mp3.classes.layer.PostenTableModel;
+import mp3.classes.objects.ungrouped.*;
+import mp3.classes.objects.eur.*;
+import mp3.classes.objects.bill.*;
 
 /**
  *

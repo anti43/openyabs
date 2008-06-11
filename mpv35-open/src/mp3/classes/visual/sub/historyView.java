@@ -8,7 +8,7 @@ package mp3.classes.visual.sub;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JTable;
-import mp3.classes.objects.HistoryHandler;
+import mp3.classes.objects.ungrouped.HistoryHandler;
 import javax.swing.table.DefaultTableModel;
 import mp3.classes.visual.main.mainframe;
 import mp3.classes.visual.main.mainframe;

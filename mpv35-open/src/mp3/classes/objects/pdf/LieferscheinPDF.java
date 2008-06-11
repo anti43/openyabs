@@ -15,7 +15,11 @@
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mp3.classes.objects;
+package mp3.classes.objects.pdf;
+import mp3.classes.objects.ungrouped.MyData;
+import mp3.classes.objects.eur.Customer;
+import mp3.classes.objects.bill.Bill;
+import mp3.classes.objects.*;
 import com.lowagie.text.pdf.*;
 import com.lowagie.text.DocumentException;
 import java.io.*;
@@ -23,6 +27,8 @@ import java.sql.*;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import mp3.classes.interfaces.Strings;
 import mp3.classes.layer.Popup;
@@ -39,7 +45,7 @@ import mp3.classes.utils.Log;
  *
  * @author anti43
  */
-public class OrderPDF {
+public class LieferscheinPDF {
 
 
     
@@ -53,7 +59,7 @@ public class OrderPDF {
     private String filename;
     private String separator;
     private MyData l;
-    private Order r;
+    private Bill r;
     private Customer k;
     private Object[][] products;
     private Double netto=0d;
@@ -65,7 +71,7 @@ public class OrderPDF {
      * 
      * @param b
      */
-    public OrderPDF(Order b) {
+    public LieferscheinPDF(Bill b) {
 
 
           l = MyData.instanceOf();
@@ -91,14 +97,16 @@ public class OrderPDF {
             separator =prop.getProperty("file.separator");
             //new out(separator);
             
-            PdfReader template= new PdfReader(l.getAngebottemp());
-            filename=l.getAngebotverz()+separator+r.getOrdernummer().replaceAll(" ", "_")+ "_" + k.getFirma().replaceAll(" ", "_") + "_" + k.getName().replaceAll(" ", "_")+".pdf";
+            PdfReader template= new PdfReader(l.getRechnungtemp());
+            filename=l.getRechnungverz()+separator+
+                   "Lieferschein-"+ r.getRechnungnummer().replaceAll(" ", "_")+ "_" + k.getFirma().replaceAll(" ", "_") + "_" + k.getName().replaceAll(" ", "_")+".pdf";
              
-//           r.getRechnungnummer().replaceAll(" ", "_")+ "_" + k.getFirma().replaceAll(" ", "_") + k.getName().replaceAll(" ", "_")+".pdf";
+           
 //            filename = filename.replaceAll(" ", "_");
              filename = filename.trim();
             
             File updatedPDF = new File(filename);
+          
             
             Log.Debug("Creating PDF: "+updatedPDF.getPath());
             PdfStamper pdfStamper = new PdfStamper(template, new FileOutputStream(updatedPDF.getAbsolutePath()));
@@ -126,7 +134,8 @@ public class OrderPDF {
         }
 
         catch (Exception e) {
-            Popup.error("Bitte geben Sie unter \nBearbeiten-> Einstellungen ein PDF-Template an.\n" + e.getMessage(), Popup.ERROR);
+            Log.Debug(e);
+            Popup.error(Strings.NO_PDF + e.getMessage(), Popup.ERROR);
         
         }
     }
@@ -140,9 +149,9 @@ public class OrderPDF {
 
                 acroFields.setField(fieldName, fieldName);
             } catch (IOException ex) {
-//                Logger.getLogger(OrderPDF.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(LieferscheinPDF.class.getName()).log(Level.SEVERE, null, ex);
             } catch (DocumentException ex) {
-//                Logger.getLogger(OrderPDF.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(LieferscheinPDF.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -156,59 +165,60 @@ public class OrderPDF {
             Process proc = Runtime.getRuntime().exec(l.getPdfviewer() +" "+filename);
         } catch (IOException ex) {
            
-            Popup.notice(Strings.NO_PDF);
+            Popup.notice("Es ist ein Fehler aufgetreten: " +"\n"+ ex);
           
         }
     }
 
     private void setAllFields() throws IOException, DocumentException {
       
+
         acroFields.setField("company", k.getFirma());
         acroFields.setField("name", k.getAnrede() + " " + k.getVorname() + " " + k.getName());
         acroFields.setField("street", k.getStr());
         acroFields.setField("city", k.getPLZ() +" "+ k.getOrt());
         
         acroFields.setField("date", r.getDatum());
-        acroFields.setField("validdate", r.getBisDatum());
-        
-        acroFields.setField("number", r.getOrdernummer());
+        acroFields.setField("number", r.getRechnungnummer());
         acroFields.setField("knumber", k.getKundennummer());
-
+         
+       
+       
         
        
-//    private String auftragid= "";
-//    private String anzahl = "";
-//    private String posten = "";
-//    private String preis = "";
-//    private String steuersatz = "";
+//id,Anzahl,Posten,Mehrwertsteuer,Nettopreis,Bruttopreis
         for(int i=0;i<products.length;i++){
             int t = i+1;
             try {
                   
                 if(products[i][2]!=null && String.valueOf(products[i][2]).length()>0) {
+                    
+                acroFields.setField("count" + t, t+".");  
                 acroFields.setField("quantity" + t, Formater.formatDecimal((Double)products[i][1]));
                 acroFields.setField("product" + t, String.valueOf(products[i][2]));
-                acroFields.setField("price" + t, Formater.formatMoney((Double)products[i][5] ));  
+//                acroFields.setField("price" + t, Formater.formatMoney((Double)products[i][5]));
+//                
+//                acroFields.setField("multipliedprice" + t, Formater.formatMoney((Double)products[i][5] *  (Double)products[i][1]));
+//               
                 
-                acroFields.setField("multipliedprice" + t, Formater.formatMoney((Double)products[i][5] *  (Double)products[i][1]));
-
-                netto = netto + ((Double) products[i][4] * (Double)products[i][1]);
-                brutto = brutto + ((Double) products[i][5] * (Double)products[i][1]);
+//
+//                netto = netto + ((Double) products[i][4] * (Double)products[i][1]);
+//                brutto = brutto + ((Double) products[i][5] * (Double)products[i][1]);
                   }
             } catch (Exception exception) {
-//                Log.Debug("Nicht genug Produktfelder im Dokument? Produkt: "+i+"\n"+exception.getMessage(),true);
-//                Popup.notice("Nicht genug Produktfelder im Dokument? Produkt: "+i+"\n"+exception.getMessage());
+              
+                Popup.notice(exception.getMessage());
             }
 
         
  
         }
         
-        Double tax = brutto -netto;
-           
-        acroFields.setField("taxrate",l.getGlobaltax());
-        acroFields.setField("tax", Formater.formatMoney(tax));
-        acroFields.setField("totalprice", Formater.formatMoney(brutto));
+//        Double tax = brutto -netto;
+//           
+//        acroFields.setField("taxrate",l.getGlobaltax());
+//        acroFields.setField("tax", Formater.formatMoney(tax));
+//        acroFields.setField("totalprice", Formater.formatMoney(brutto));
       
     }
 

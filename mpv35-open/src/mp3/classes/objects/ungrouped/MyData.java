@@ -14,8 +14,9 @@
  *      You should have received a copy of the GNU General Public License
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mp3.classes.objects;
+package mp3.classes.objects.ungrouped;
 
+import mp3.classes.objects.eur.SKRKonto;
 import java.awt.Dimension;
 import java.util.Date;
 import java.util.Locale;

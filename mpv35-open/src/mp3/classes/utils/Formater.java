@@ -34,7 +34,7 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import mp3.classes.objects.MyData;
+import mp3.classes.objects.ungrouped.MyData;
 
  
 /**

@@ -12,7 +12,7 @@ import mp3.installer.MpInstaller;
 import mp3.classes.layer.DefaultHelpModel;
 import mp3.classes.layer.visual.Help;
 import mp3.classes.layer.Popup;
-import mp3.classes.objects.MyData;
+import mp3.classes.objects.ungrouped.MyData;
 import mp3.classes.utils.CompCenter;
 
 /**

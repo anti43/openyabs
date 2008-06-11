@@ -7,8 +7,8 @@ package mp3.classes.visual.sub;
 
 import java.awt.Font;
 import mp3.classes.layer.QueryClass;
-import mp3.classes.objects.Bill;
-import mp3.classes.objects.Customer;
+import mp3.classes.objects.bill.Bill;
+import mp3.classes.objects.eur.Customer;
 import mp3.classes.utils.Formater;
 
 /**

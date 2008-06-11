@@ -14,7 +14,7 @@
  *      You should have received a copy of the GNU General Public License
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mp3.classes.objects;
+package mp3.classes.objects.bill;
 
 import java.text.DecimalFormat;
 import java.util.List;

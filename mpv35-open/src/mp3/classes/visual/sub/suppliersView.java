@@ -12,9 +12,9 @@ import mp3.classes.interfaces.Structure;
 
 import mp3.classes.layer.Popup;
 import mp3.classes.layer.QueryClass;
-import mp3.classes.objects.History;
-import mp3.classes.objects.Product;
-import mp3.classes.objects.Supplier;
+import mp3.classes.objects.ungrouped.History;
+import mp3.classes.objects.product.Product;
+import mp3.classes.objects.product.Supplier;
 import mp3.classes.visual.main.mainframe;
 
 /**

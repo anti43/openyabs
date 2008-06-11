@@ -19,9 +19,9 @@ import mp3.classes.interfaces.Structure;
 
 import mp3.classes.layer.Popup;
 import mp3.classes.layer.QueryClass;
-import mp3.classes.objects.Bill;
-import mp3.classes.objects.Customer;
-import mp3.classes.objects.History;
+import mp3.classes.objects.bill.Bill;
+import mp3.classes.objects.eur.Customer;
+import mp3.classes.objects.ungrouped.History;
 import mp3.classes.visual.main.mainframe;
 import mp3.classes.visual.main.serialLetter;
 

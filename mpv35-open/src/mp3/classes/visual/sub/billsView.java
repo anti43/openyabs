@@ -31,15 +31,15 @@ import mp3.classes.layer.visual.ProductPicker;
 import mp3.classes.layer.QueryClass;
 
 
-import mp3.classes.objects.Bill;
-import mp3.classes.objects.BillProduct;
-import mp3.classes.objects.Customer;
-import mp3.classes.objects.History;
-import mp3.classes.objects.Product;
+import mp3.classes.objects.bill.*;
+
+import mp3.classes.objects.eur.Customer;
+import mp3.classes.objects.ungrouped.History;
+import mp3.classes.objects.product.Product;
 import mp3.classes.visual.main.mainframe;
 import mp3.classes.interfaces.Structure.*;
-import mp3.classes.objects.BillPDF;
-import mp3.classes.objects.MyData;
+import mp3.classes.objects.pdf.BillPDF;
+import mp3.classes.objects.ungrouped.MyData;
 import mp3.classes.visual.main.arrear;
 
 /**

@@ -12,10 +12,7 @@ import java.awt.Toolkit;
 import java.net.URL;
 import java.net.URL;
 import javax.swing.ImageIcon;
-import javax.swing.JEditorPane;
 import javax.swing.JOptionPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableModel;
 import mp3.classes.interfaces.Structure;
@@ -25,10 +22,11 @@ import mp3.classes.layer.Popup;
 import mp3.classes.layer.visual.ProductPicker;
 import mp3.classes.layer.QueryClass;
 import mp3.classes.layer.visual.SupplierPicker;
-import mp3.classes.objects.Product;
+import mp3.classes.objects.product.Product;
 
-import mp3.classes.objects.Supplier;
+import mp3.classes.objects.product.*;
 import mp3.classes.visual.main.mainframe;
+import mp3.classes.objects.product.*;
 
 /**
  *

@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package mp3.classes.objects;
+package mp3.classes.objects.product;
 
 import java.util.ArrayList;
 import mp3.database.util.Query;

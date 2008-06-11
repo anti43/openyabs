@@ -20,10 +20,10 @@ import mp3.classes.utils.CompCenter;
 import mp3.classes.utils.Log;
 import mp3.classes.layer.Popup;
 import mp3.classes.layer.QueryClass;
-import mp3.classes.objects.ProductGroupCategory;
-import mp3.classes.objects.ProductGroupFamily;
-import mp3.classes.objects.ProductGroupGroup;
-import mp3.classes.objects.ProductGroupHandler;
+import mp3.classes.objects.product.ProductGroupCategory;
+import mp3.classes.objects.product.ProductGroupFamily;
+import mp3.classes.objects.product.ProductGroupGroup;
+import mp3.classes.objects.product.ProductGroupHandler;
 import mp3.classes.visual.main.mainframe;
 
 /**

@@ -12,7 +12,7 @@ import mp3.classes.utils.CompCenter;
 import java.awt.event.MouseEvent;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
-import mp3.classes.objects.Product;
+import mp3.classes.objects.product.Product;
 import mp3.classes.visual.sub.billsView;
 import mp3.classes.visual.sub.ordersView;
 

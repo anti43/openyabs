@@ -6,7 +6,7 @@
 
 package mp3.classes.visual.sub;
 
-import mp3.classes.objects.MyData;
+import mp3.classes.objects.ungrouped.MyData;
 import mp3.classes.visual.main.mainframe;
 
 

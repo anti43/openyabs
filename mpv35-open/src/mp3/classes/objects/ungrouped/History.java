@@ -15,7 +15,7 @@
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mp3.classes.objects;
+package mp3.classes.objects.ungrouped;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

@@ -15,7 +15,7 @@
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mp3.classes.objects;
+package mp3.classes.objects.eur;
 
 import java.util.ArrayList;
 import mp3.database.util.Query;

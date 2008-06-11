@@ -5,9 +5,9 @@
  */
 package mp3.classes.visual.main;
 
-import mp3.classes.objects.Ausgabe;
-import mp3.classes.objects.SKRKonto;
-import mp3.classes.objects.Einnahme;
+import mp3.classes.objects.eur.Ausgabe;
+import mp3.classes.objects.eur.SKRKonto;
+import mp3.classes.objects.eur.Einnahme;
 import javax.swing.JTextField;
 import mp3.classes.utils.*;
 import mp3.classes.*;

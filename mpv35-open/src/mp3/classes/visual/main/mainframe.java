@@ -27,10 +27,10 @@ import mp3.classes.interfaces.Strings;
 import mp3.classes.layer.Popup;
 import mp3.classes.layer.QueryClass;
 
-import mp3.classes.objects.Customer;
-import mp3.classes.objects.MyData;
-import mp3.classes.objects.Product;
-import mp3.classes.objects.Supplier;
+import mp3.classes.objects.eur.Customer;
+import mp3.classes.objects.ungrouped.MyData;
+import mp3.classes.objects.product.Product;
+import mp3.classes.objects.product.Supplier;
 import mp3.classes.utils.Browser;
 import mp3.classes.utils.CompCenter;
 import mp3.classes.utils.Log;

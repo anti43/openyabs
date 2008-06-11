@@ -22,10 +22,10 @@ import mp3.classes.visual.sub.*;
 import mp3.classes.visual.main.mainframe;
 import mp3.classes.interfaces.Structure.*;
 import mp3.classes.layer.QueryClass;
-import mp3.classes.objects.Ausgabe;
-import mp3.classes.objects.Bill;
-import mp3.classes.objects.Data;
-import mp3.classes.objects.Einnahme;
+import mp3.classes.objects.eur.Ausgabe;
+import mp3.classes.objects.bill.Bill;
+import mp3.classes.objects.eur.Data;
+import mp3.classes.objects.eur.Einnahme;
 import mp3.classes.utils.Formater;
 
 /**

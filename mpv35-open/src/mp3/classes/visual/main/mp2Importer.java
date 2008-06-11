@@ -15,10 +15,10 @@ import mp3.classes.layer.DefaultHelpModel;
 import mp3.classes.layer.visual.Help;
 import mp3.classes.layer.Popup;
 import mp3.classes.layer.QueryClass;
-import mp3.classes.objects.Bill;
-import mp3.classes.objects.BillProduct;
-import mp3.classes.objects.Customer;
-import mp3.classes.objects.Product;
+import mp3.classes.objects.bill.Bill;
+import mp3.classes.objects.bill.BillProduct;
+import mp3.classes.objects.eur.Customer;
+import mp3.classes.objects.product.Product;
 import mp3.classes.utils.Log;
 
 /**

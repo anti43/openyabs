@@ -24,7 +24,7 @@ import mp3.classes.interfaces.Constants;
 import mp3.classes.interfaces.ProtectedStrings;
 import mp3.classes.interfaces.Strings;
 import mp3.classes.interfaces.Structure;
-import mp3.classes.objects.Bill;
+import mp3.classes.objects.bill.Bill;
 import mp3.classes.utils.Formater;
 import mp3.classes.utils.Log;
 

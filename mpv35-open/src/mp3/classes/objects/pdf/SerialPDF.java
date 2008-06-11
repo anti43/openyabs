@@ -14,8 +14,9 @@
  *      You should have received a copy of the GNU General Public License
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mp3.classes.objects;
+package mp3.classes.objects.pdf;
 
+import mp3.classes.objects.*;
 import com.lowagie.text.DocumentException;
 
 import com.lowagie.text.pdf.AcroFields;
@@ -36,7 +37,9 @@ import java.util.logging.Logger;
 import mp3.classes.utils.Formater;
 import mp3.classes.utils.Log;
 import mp3.classes.utils.Printer;
-
+import mp3.classes.objects.ungrouped.*;
+import mp3.classes.objects.eur.*;
+import mp3.classes.objects.bill.*;
 /**
  *
  * @author anti43

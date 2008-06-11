@@ -14,7 +14,7 @@
  *      You should have received a copy of the GNU General Public License
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mp3.classes.objects;
+package mp3.classes.objects.bill;
 
 import mp3.database.util.Query;
 import mp3.classes.layer.Popup;
@@ -23,16 +23,16 @@ import mp3.classes.layer.Popup;
  *
  * @author anti43
  */
-public class BillProduct extends mp3.classes.layer.Things implements mp3.classes.interfaces.Structure {
+public class OrderProduct extends mp3.classes.layer.Things implements mp3.classes.interfaces.Structure {
 
-    private String rechnungid= "";
+    private String auftragid= "";
     private String anzahl = "";
     private String posten = "";
     private String preis = "";
     private String steuersatz = "";
 
-    public BillProduct(Query query) {
-        super(query.clone(TABLE_BILLS_DATA));
+    public OrderProduct(Query query) {
+        super(query.clone(TABLE_ORDERS_DATA));
 
     }
 
@@ -41,33 +41,38 @@ public class BillProduct extends mp3.classes.layer.Things implements mp3.classes
      * @param query
      * @param id
      */
-    public BillProduct(Query query, String id) {
-        super(query.clone(TABLE_BILLS_DATA));
+    public OrderProduct(Query query, String id) {
+        super(query.clone(TABLE_ORDERS_DATA));
         this.id = Integer.valueOf(id);
         this.explode(this.selectLast("*", "id", id, true));
     }
 
     private void explode(String[] select) {
+        try {
 
-        this.setRechnungid(select[1]);
-        this.setAnzahl(select[2]);
-        this.setPosten(select[3]);
-        this.setPreis(select[4]);
-        this.setSteuersatz(select[5]);
+            this.setauftragid(select[1]);
+            this.setAnzahl(select[2]);
+            this.setPosten(select[3]);
+            this.setPreis(select[4]);
+            this.setSteuersatz(select[5]);
+
+        } catch (Exception exception) {
+        }
+
     }
 
 
     private String collect() {
         String str = "";
-        str = str +  this.getRechnungid() + "(;;,;;)";
+        str = str +  this.getauftragid() + "(;;,;;)";
         str = str + "(;;2#4#1#1#8#0#;;)" + this.getAnzahl() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
         str = str + "(;;2#4#1#1#8#0#;;)" + this.getPosten() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
         str = str + "(;;2#4#1#1#8#0#;;)" + this.getPreis() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
         str = str + "(;;2#4#1#1#8#0#;;)" + this.getSteuersatz() + "(;;2#4#1#1#8#0#;;)";
         
-//        str = str + "'" + "null" + "'" + ",";
-//        str = str + "'" + "null" + "'" + ",";
-//        str = str + "'" + "null" + "'";
+//        str = str + "(;;2#4#1#1#8#0#;;)" + "null" + "(;;2#4#1#1#8#0#;;)" + ",";
+//        str = str + "(;;2#4#1#1#8#0#;;)" + "null" + "(;;2#4#1#1#8#0#;;)" + ",";
+//        str = str + "(;;2#4#1#1#8#0#;;)" + "null" + "(;;2#4#1#1#8#0#;;)";
         
         return str;
     }
@@ -75,10 +80,10 @@ public class BillProduct extends mp3.classes.layer.Things implements mp3.classes
     public void save() {
 
         if (id > 0) {
-            this.update(TABLE_BILLS_DATA_FIELDS, this.collect(), id.toString());
+            this.update(TABLE_ORDERS_DATA_FIELDS, this.collect(), id.toString());
             isSaved = true;
         } else if (id == 0) {
-            this.insert(TABLE_BILLS_DATA_FIELDS, this.collect());
+            this.insert(TABLE_ORDERS_DATA_FIELDS, this.collect());
         } else {
 
             mp3.classes.layer.Popup.warn(java.util.ResourceBundle.getBundle("languages/Bundle").getString("no_data_to_save"), Popup.WARN);
@@ -86,12 +91,12 @@ public class BillProduct extends mp3.classes.layer.Things implements mp3.classes
         }
     }
 
-    public String getRechnungid() {
-        return rechnungid;
+    public String getauftragid() {
+        return auftragid;
     }
 
-    public void setRechnungid(String rechnungid) {
-        this.rechnungid = rechnungid;
+    public void setauftragid(String auftragid) {
+        this.auftragid = auftragid;
     }
 
     public String getPosten() {

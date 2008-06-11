@@ -15,7 +15,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.SingleSelectionModel;
 import javax.swing.table.DefaultTableModel;
-import mp3.classes.objects.Customer;
+import mp3.classes.objects.eur.Customer;
 import mp3.classes.visual.sub.billsView;
 import mp3.classes.visual.sub.ordersView;
 

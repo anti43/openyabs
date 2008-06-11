@@ -32,15 +32,15 @@ import mp3.classes.layer.QueryClass;
 
 
 
-import mp3.classes.objects.Bill;
-import mp3.classes.objects.BillProduct;
-import mp3.classes.objects.Customer;
-import mp3.classes.objects.History;
-import mp3.classes.objects.MyData;
-import mp3.classes.objects.Order;
-import mp3.classes.objects.OrderPDF;
-import mp3.classes.objects.OrderProduct;
-import mp3.classes.objects.Product;
+import mp3.classes.objects.bill.Bill;
+import mp3.classes.objects.bill.BillProduct;
+import mp3.classes.objects.eur.Customer;
+import mp3.classes.objects.ungrouped.History;
+import mp3.classes.objects.ungrouped.MyData;
+import mp3.classes.objects.bill.Order;
+import mp3.classes.objects.pdf.OrderPDF;
+import mp3.classes.objects.bill.OrderProduct;
+import mp3.classes.objects.product.Product;
 import mp3.classes.visual.main.mainframe;
 
 /**

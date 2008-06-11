@@ -6,9 +6,9 @@
 
 package mp3.classes.visual.main;
 
-import mp3.classes.objects.Bill;
-import mp3.classes.objects.Customer;
-import mp3.classes.objects.OverdueODF;
+import mp3.classes.objects.bill.Bill;
+import mp3.classes.objects.eur.Customer;
+import mp3.classes.objects.pdf.OverdueODF;
 import mp3.classes.utils.CompCenter;
 
 /**

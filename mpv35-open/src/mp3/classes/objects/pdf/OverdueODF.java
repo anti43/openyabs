@@ -15,8 +15,11 @@
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mp3.classes.objects;
-
+package mp3.classes.objects.pdf;
+import mp3.classes.objects.ungrouped.MyData;
+import mp3.classes.objects.eur.Customer;
+import mp3.classes.objects.bill.*;
+import mp3.classes.objects.*;
 import com.lowagie.text.DocumentException;
 
 import com.lowagie.text.pdf.AcroFields;
@@ -161,8 +164,8 @@ public class OverdueODF {
 
             Process proc = Runtime.getRuntime().exec(l.getPdfviewer() +" "+filename);
         } catch (IOException ex) {
-           
-            Popup.notice("Kein PDF-Programm angegeben. Wählen Sie Ihren PDF Reader unter 'Programmeinstellungen'.");
+              Popup.notice("Es ist ein Fehler aufgetreten: " +"\n"+ ex);
+//            Popup.notice("Kein PDF-Programm angegeben. Wählen Sie Ihren PDF Reader unter 'Programmeinstellungen'.");
           
         }
     }
