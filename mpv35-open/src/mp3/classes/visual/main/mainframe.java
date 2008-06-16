@@ -22,6 +22,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
+import mp3.classes.interfaces.Constants;
 import mp3.database.util.Conn;
 import mp3.classes.interfaces.Strings;
 import mp3.classes.layer.Popup;
@@ -37,6 +38,7 @@ import mp3.classes.utils.Log;
 import mp3.classes.utils.SaveAs;
 import mp3.classes.utils.SplashScreen;
 import mp3.classes.utils.TableHtmlWriter;
+import mp3.classes.utils.Version;
 import mp3.classes.visual.sub.backupView;
 import mp3.classes.visual.sub.billsView;
 
@@ -135,7 +137,7 @@ public class mainframe extends javax.swing.JFrame {
             jTabbedPane1.setSelectedIndex(MyData.instanceOf().getLasttab());
         } catch (Exception exception) {
         }
-
+    
         try {
             this.setVisible(rootPaneCheckingEnabled);
 
@@ -147,6 +149,7 @@ public class mainframe extends javax.swing.JFrame {
         }
 
 
+            new Version().getVersion(Constants.VERSION_URL, nachricht);
     }
 
     public customersView getCustomersView() {

@@ -22,15 +22,12 @@
 package mp3.installer;
 
 import java.io.IOException;
-import java.util.Vector;
 import mp3.database.util.Conn;
 import de.copyleft.java.utils.cout;
 
-import de.copyleft.java.utils.mpSplashScreen;
 
 import java.awt.Cursor;
 
-import java.awt.image.RenderedImage;
 import java.io.File;
 import mp3.classes.interfaces.Constants;
 import mp3.classes.interfaces.ProtectedStrings;
@@ -157,7 +154,7 @@ public class MpInstaller extends javax.swing.JFrame implements ProtectedStrings,
                         .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                             .add(jPanel2Layout.createSequentialGroup()
                                 .add(jLabel2)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 25, Short.MAX_VALUE))
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 52, Short.MAX_VALUE))
                             .add(jPanel2Layout.createSequentialGroup()
                                 .add(jButton2)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)))
@@ -194,7 +191,7 @@ public class MpInstaller extends javax.swing.JFrame implements ProtectedStrings,
             .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(jPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .add(jPanel1Layout.createSequentialGroup()
                         .add(jLabel1)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 247, Short.MAX_VALUE)
@@ -235,7 +232,7 @@ public class MpInstaller extends javax.swing.JFrame implements ProtectedStrings,
         try {
 
             workdir = JarFinder.getPathOfJar(JAR_NAME);
-            System.out.println(workdir);
+            System.out.println("Workdir: "+workdir);
 
             File f = new File(USER_HOME + SEP + PROG_NAME);
             File fol = new File(USER_HOME + SEP + PROG_NAME + File.separator + LIB_DIR);
@@ -256,7 +253,7 @@ public class MpInstaller extends javax.swing.JFrame implements ProtectedStrings,
                         Log.Debug("Libraries kopieren..", true);
                         DirectoryHandler.copyDirectory(fil, fol);
                         Log.Debug("MPv3.5 Jar kopieren..", true);
-                        DirectoryHandler.copyDirectory(new File(workdir + File.separator + "mpv35.jar"), new File(f.getAbsolutePath() + File.separator + "mpv35.jar"));
+                        DirectoryHandler.copyDirectory(new File(workdir + File.separator + ProtectedStrings.JAR_NAME), new File(f.getAbsolutePath() + File.separator + ProtectedStrings.JAR_NAME));
                         Log.Debug("Verzeichnisse anlegen..", true);
 
                         if (fel.mkdirs() && ful.mkdirs() && fiil.mkdirs() && fool.mkdirs() && feel.mkdirs() && fuul.mkdirs()) {
@@ -286,7 +283,7 @@ public class MpInstaller extends javax.swing.JFrame implements ProtectedStrings,
 
         
         if(System.getProperty("os.name").contains("indows")) {
-//            DesktopIcon.createWindowsDesktopIcon();
+            DesktopIcon.createWindowsDesktopIcon();
         } else {
         
             DesktopIcon.createLinuxDesktopIcon();
@@ -311,8 +308,7 @@ public class MpInstaller extends javax.swing.JFrame implements ProtectedStrings,
                 this.copyFiles();
 
                 this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-                new Popup("Sie können das Programm nun starten:\n" +
-                         "(Desktopicon oder: java -jar " + USER_HOME + "/MPv35/mpv35.jar)", Popup.NOTICE);
+                new Popup("Sie können das Programm nun starten.", Popup.NOTICE);
 
                 System.exit(0);
             } else {

@@ -30,7 +30,8 @@ public interface Constants {
         /**
      * Version number
      */
-    public static String VERSION = "3.532";
+    public static String VERSION = "3.54";
+    public static String VERSION_URL = "http://mp-rechnungs-und-kundenverwaltung.googlecode.com/files/mp_3.5_version_info.txt";
      /**
      * Home directory of user
      */

@@ -26,8 +26,8 @@ import java.io.File;
  */
 public interface ProtectedStrings {
 
-    public String JAR_NAME = "mpv35.jar";
-    public String PROG_NAME = "MPv35";
+    public String JAR_NAME = "mpv35-open.jar";
+    public String PROG_NAME = "MP_Rechnungs-Kundenverwaltung_3.5";
     public String USER_HOME = System.getProperty("user.home");
     public String SEP = File.separator;
     public String JAVA_VERSION = "Java Version: " + System.getProperty("java.version");

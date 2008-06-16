@@ -409,21 +409,21 @@ public interface Structure {
     
             
             
-          "INSERT INTO daten (name, wert) VALUES ('Backup Verzeichnis', '" + System.getProperty("user.home") + File.separator + "MPv35" + File.separator + "backups"+"')",
+          "INSERT INTO daten (name, wert) VALUES ('Backup Verzeichnis', '" + System.getProperty("user.home") + File.separator + ProtectedStrings.PROG_NAME + File.separator + "backups"+"')",
           
-                  "INSERT INTO daten (name, wert) VALUES ('PDF Rechnungen Verzeichnis', '" + System.getProperty("user.home") + File.separator + "MPv35" + File.separator + "PDF" + File.separator+ "Rechnungen"+"')",
+                  "INSERT INTO daten (name, wert) VALUES ('PDF Rechnungen Verzeichnis', '" + System.getProperty("user.home") + File.separator + ProtectedStrings.PROG_NAME  + File.separator + "PDF" + File.separator+ "Rechnungen"+"')",
           
-                  "INSERT INTO daten (name, wert) VALUES ('PDF Angebote Verzeichnis', '" + System.getProperty("user.home") + File.separator + "MPv35" + File.separator + "PDF" + File.separator+"Angebote"+"')",
+                  "INSERT INTO daten (name, wert) VALUES ('PDF Angebote Verzeichnis', '" + System.getProperty("user.home") + File.separator + ProtectedStrings.PROG_NAME  + File.separator + "PDF" + File.separator+"Angebote"+"')",
           
-                  "INSERT INTO daten (name, wert) VALUES ('PDF Mahnung Verzeichnis', '" + System.getProperty("user.home") + File.separator + "MPv35" + File.separator + "PDF" + File.separator+"Mahnungen"+"')",
+                  "INSERT INTO daten (name, wert) VALUES ('PDF Mahnung Verzeichnis', '" + System.getProperty("user.home") + File.separator + ProtectedStrings.PROG_NAME  + File.separator + "PDF" + File.separator+"Mahnungen"+"')",
           
-                  "INSERT INTO daten (name, wert) VALUES ('Rechnung Template', '" + System.getProperty("user.home") + File.separator + "MPv35" + File.separator + "templates"+ File.separator + "rechnung-mwst.pdf')",
+                  "INSERT INTO daten (name, wert) VALUES ('Rechnung Template', '" + System.getProperty("user.home") + File.separator + ProtectedStrings.PROG_NAME + File.separator + "templates"+ File.separator + "rechnung-mwst.pdf')",
           
-                  "INSERT INTO daten (name, wert) VALUES ('Angebot Template', '" + System.getProperty("user.home") + File.separator + "MPv35" + File.separator + "templates"+ File.separator + "angebot.pdf')",
+                  "INSERT INTO daten (name, wert) VALUES ('Angebot Template', '" + System.getProperty("user.home") + File.separator + ProtectedStrings.PROG_NAME  + File.separator + "templates"+ File.separator + "angebot.pdf')",
           
-                  "INSERT INTO daten (name, wert) VALUES ('Mahnung Template', '" + System.getProperty("user.home") + File.separator + "MPv35" + File.separator + "templates"+ File.separator + "mahnung.pdf')",
+                  "INSERT INTO daten (name, wert) VALUES ('Mahnung Template', '" + System.getProperty("user.home") + File.separator + ProtectedStrings.PROG_NAME  + File.separator + "templates"+ File.separator + "mahnung.pdf')",
           
-                  "INSERT INTO daten (name, wert) VALUES ('Serienbrief Template', '" + System.getProperty("user.home") + File.separator + "MPv35" + File.separator + "templates"+ File.separator + "serienbrief.pdf')",
+                  "INSERT INTO daten (name, wert) VALUES ('Serienbrief Template', '" + System.getProperty("user.home") + File.separator + ProtectedStrings.PROG_NAME  + File.separator + "templates"+ File.separator + "serienbrief.pdf')",
           
                   "INSERT INTO daten (name, wert) VALUES ('Mehrwertsteuersatz', '19')",
                   

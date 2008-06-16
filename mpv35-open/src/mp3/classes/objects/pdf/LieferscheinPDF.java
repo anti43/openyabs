@@ -165,7 +165,7 @@ public class LieferscheinPDF {
             Process proc = Runtime.getRuntime().exec(l.getPdfviewer() +" "+filename);
         } catch (IOException ex) {
            
-            Popup.notice("Es ist ein Fehler aufgetreten: " +"\n"+ ex);
+              Log.Debug("Es ist ein Fehler aufgetreten: " + "\n" + ex);
           
         }
     }

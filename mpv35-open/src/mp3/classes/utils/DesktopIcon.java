@@ -45,13 +45,13 @@ public class DesktopIcon implements ProtectedStrings{
             out.write("Encoding=UTF-8");
             out.newLine();
 
-            out.write("Name=MPv3.5");
+            out.write("Name="+ProtectedStrings.PROG_NAME);
             out.newLine();
 
             out.write("GenericName=MP Rechnungs und Kundenverwaltung");
             out.newLine();
 
-            out.write("Exec=java -jar " + System.getProperty("user.home") + File.separator + "MPv35" + File.separator + "mpv35.jar");
+            out.write("Exec=java -jar " + System.getProperty("user.home") + File.separator + ProtectedStrings.PROG_NAME + File.separator + ProtectedStrings.JAR_NAME);
             out.newLine();
 
             out.write("Icon=" + fol + File.separator + "mpd.png");
@@ -91,15 +91,9 @@ public class DesktopIcon implements ProtectedStrings{
 
         try {
             out = new BufferedWriter(new FileWriter(USER_HOME + File.separator + DESKTOP + File.separator + ICON_NAME_WIN, false));
-//[InternetShortcut]
-//URL=http://delphi.about.com
-//IconIndex=0
-//IconFile=C:\MyFolder\MyDelphiProgram.exe
-
             out.write("[InternetShortcut]");
             out.newLine();
-
-            out.write("URL=file://"+System.getProperty("user.home") + File.separator + "MPv35" + File.separator + "mpv35.jar");
+            out.write("URL=file://"+System.getProperty("user.home") + File.separator + ProtectedStrings.PROG_NAME + File.separator + ProtectedStrings.JAR_NAME);
             out.newLine();
             out.close();
         } catch (IOException ex) {

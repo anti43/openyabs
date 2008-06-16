@@ -16,21 +16,21 @@
  */
 
 package mp3.classes.objects.pdf;
-import mp3.classes.objects.*;
 import com.lowagie.text.pdf.*;
 import com.lowagie.text.DocumentException;
 import java.io.*;
-import java.sql.*;
 import java.util.*;
 
 import mp3.classes.layer.Popup;
 import mp3.classes.layer.QueryClass;
+
+
+import mp3.classes.objects.eur.*;
+import mp3.classes.objects.bill.*;
+import mp3.classes.objects.ungrouped.*;
 import mp3.classes.utils.Formater;
 import mp3.classes.utils.Log;
 
-import mp3.classes.objects.ungrouped.*;
-import mp3.classes.objects.eur.*;
-import mp3.classes.objects.bill.*;
 
 
 
@@ -155,7 +155,7 @@ public class OrderPDF {
             Process proc = Runtime.getRuntime().exec(l.getPdfviewer() +" "+filename);
         } catch (IOException ex) {
            
-               Popup.notice("Es ist ein Fehler aufgetreten: " +"\n"+ ex);
+           Log.Debug("Es ist ein Fehler aufgetreten: " +"\n"+ ex);
           
         }
     }
