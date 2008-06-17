@@ -149,7 +149,9 @@ public class mainframe extends javax.swing.JFrame {
         }
 
 
-            new Version().getVersion(Constants.VERSION_URL, nachricht);
+        nachricht("Anmerkungen, Bugs und Feedback zu MP bitte an mp-rechnungs-und-kundenverwaltung@googlegroups.com senden. Vielen Dank!");
+          
+        
     }
 
     public customersView getCustomersView() {
