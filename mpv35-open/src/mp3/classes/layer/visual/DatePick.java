@@ -5,7 +5,7 @@
  */
 package mp3.classes.layer.visual;
 
-import mp3.classes.utils.CompCenter;
+import mp3.classes.utils.WindowTools;
 import com.michaelbaranov.microba.calendar.CalendarPane;
 import de.copyleft.java.utils.mpZent;
 import java.awt.BorderLayout;
@@ -49,7 +49,7 @@ public class DatePick extends javax.swing.JFrame {
 
             this.jPanel1.add(xc, BorderLayout.CENTER);
 
-            new CompCenter(this);
+            new WindowTools(this);
 
             this.setVisible(rootPaneCheckingEnabled);
         } catch (PropertyVetoException ex) {

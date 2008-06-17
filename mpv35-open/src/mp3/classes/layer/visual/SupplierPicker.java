@@ -8,7 +8,7 @@ package mp3.classes.layer.visual;
 
 import mp3.classes.layer.*;
 import mp3.classes.utils.Formater;
-import mp3.classes.utils.CompCenter;
+import mp3.classes.utils.WindowTools;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import javax.swing.ListSelectionModel;
@@ -33,7 +33,7 @@ public class SupplierPicker extends javax.swing.JFrame {
         
         this.supplier = new Supplier(QueryClass.instanceOf());
         
-        new CompCenter(this);
+        new WindowTools(this);
         
         String[][] list = supplier.select("id, lieferantennummer, firma ", "lieferantennummer", "", "lieferantennummer", true);
         String k = "id, " + "Nummer,Firma";
@@ -54,7 +54,7 @@ public class SupplierPicker extends javax.swing.JFrame {
         
         this.supplier = new Supplier(QueryClass.instanceOf());
         
-        new CompCenter(this);
+        new WindowTools(this);
         
         String[][] list = supplier.select("id, lieferantennummer, firma ", "lieferantennummer", "", "lieferantennummer", true);
         String k = "id, " + "Nummer,Firma";

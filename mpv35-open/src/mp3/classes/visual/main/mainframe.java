@@ -33,7 +33,7 @@ import mp3.classes.objects.ungrouped.MyData;
 import mp3.classes.objects.product.Product;
 import mp3.classes.objects.product.Supplier;
 import mp3.classes.utils.Browser;
-import mp3.classes.utils.CompCenter;
+import mp3.classes.utils.WindowTools;
 import mp3.classes.utils.Log;
 import mp3.classes.utils.SaveAs;
 import mp3.classes.utils.SplashScreen;
@@ -736,7 +736,7 @@ public class mainframe extends javax.swing.JFrame {
     
     private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
         liscense l = new liscense();
-        new CompCenter(l);
+        new WindowTools(l);
         l.setVisible(rootPaneCheckingEnabled);
     }//GEN-LAST:event_jMenuItem8ActionPerformed
 

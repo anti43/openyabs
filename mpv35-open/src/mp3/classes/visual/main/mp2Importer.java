@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
 import mp2.mainFrame;
 import mp2.rechnung;
-import mp3.classes.utils.CompCenter;
+import mp3.classes.utils.WindowTools;
 import mp3.classes.layer.DefaultHelpModel;
 import mp3.classes.layer.visual.Help;
 import mp3.classes.layer.Popup;
@@ -44,7 +44,7 @@ public class mp2Importer extends javax.swing.JFrame {
      */
     public mp2Importer(mainframe frame) {
         initComponents();
-        new CompCenter(this);
+        new WindowTools(this);
         this.mainframe = frame;
         this.setVisible(rootPaneCheckingEnabled);
     }

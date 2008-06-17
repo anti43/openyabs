@@ -16,7 +16,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
-import mp3.classes.utils.CompCenter;
+import mp3.classes.utils.WindowTools;
 import mp3.classes.utils.Log;
 import mp3.classes.layer.Popup;
 import mp3.classes.layer.QueryClass;
@@ -53,7 +53,7 @@ public class groupsView extends javax.swing.JFrame implements TreeSelectionListe
         initComponents();
         this.frame = frame;
         p = ProductGroupHandler.instanceOf();
-        new CompCenter(this);
+        new WindowTools(this);
         this.setVisible(rootPaneCheckingEnabled);
 
 
@@ -74,7 +74,7 @@ public class groupsView extends javax.swing.JFrame implements TreeSelectionListe
     private groupsView() {
         initComponents();
         p = ProductGroupHandler.instanceOf();
-        new CompCenter(this);
+        new WindowTools(this);
         this.setVisible(rootPaneCheckingEnabled);
 
 

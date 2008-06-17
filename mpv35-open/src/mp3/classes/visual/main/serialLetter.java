@@ -19,7 +19,7 @@ import mp3.classes.layer.Popup;
 import mp3.classes.layer.QueryClass;
 import mp3.classes.objects.eur.Customer;
 import mp3.classes.objects.pdf.*;
-import mp3.classes.utils.CompCenter;
+import mp3.classes.utils.WindowTools;
 import mp3.classes.utils.Formater;
 import mp3.classes.utils.Log;
 
@@ -42,7 +42,7 @@ public class serialLetter extends javax.swing.JFrame implements ProtectedStrings
 
         jTextField2.setText(Constants.HOME + ProtectedStrings.SEP + PROG_NAME + SEP + TEMPLATES_DIR + SEP + "serienbrief.pdf");
 
-        new CompCenter(this);
+        new WindowTools(this);
         this.setVisible(rootPaneCheckingEnabled);
     }
 

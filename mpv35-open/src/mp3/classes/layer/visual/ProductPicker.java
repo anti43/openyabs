@@ -8,7 +8,7 @@ package mp3.classes.layer.visual;
 
 import mp3.classes.layer.*;
 import mp3.classes.utils.Formater;
-import mp3.classes.utils.CompCenter;
+import mp3.classes.utils.WindowTools;
 import java.awt.event.MouseEvent;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
@@ -46,7 +46,7 @@ public static void update(){
         initComponents ();
         this.frame1=aThis;
         p = new Product(QueryClass.instanceOf());
-        new CompCenter(this);
+        new WindowTools(this);
  
         if(ProductPicker.getListe()==null){
             list = p.select("id,produktnummer,name,hersteller", "produktnummer", "", "produktnummer", true);
@@ -73,7 +73,7 @@ public static void update(){
         initComponents ();
         this.frame=frame;
         p = new Product(QueryClass.instanceOf());
-        new CompCenter(this);
+        new WindowTools(this);
  
         if(ProductPicker.getListe()==null){
             list = p.select("id,produktnummer,name,hersteller", "produktnummer", "", "produktnummer", true);

@@ -48,7 +48,7 @@ public class SplashScreen extends javax.swing.JFrame implements Runnable {
         
         this.setTitle("Loading...");
         
-        new CompCenter(this);
+        new WindowTools(this);
         this.setVisible(true);
 
         jProgressBar1.setIndeterminate(true);
@@ -64,7 +64,7 @@ public class SplashScreen extends javax.swing.JFrame implements Runnable {
         this.setAlwaysOnTop(true);
         initComponents();
         this.setTitle("Loading...");
-        new CompCenter(this);
+        new WindowTools(this);
         this.setVisible(true);
         
         jProgressBar1.setIndeterminate(true);

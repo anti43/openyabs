@@ -18,7 +18,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableModel;
 import mp3.classes.interfaces.Structure;
-import mp3.classes.utils.CompCenter;
+import mp3.classes.utils.WindowTools;
 import mp3.classes.layer.DefaultHelpModel;
 import mp3.classes.layer.visual.Help;
 import mp3.classes.utils.Log;
@@ -70,7 +70,7 @@ public class csvProductImporter extends javax.swing.JFrame {
     /** Creates new form productImporter */
     public csvProductImporter() {
         initComponents();
-        new CompCenter(this);
+        new WindowTools(this);
         this.supplier =new Supplier(QueryClass.instanceOf());
 
     }

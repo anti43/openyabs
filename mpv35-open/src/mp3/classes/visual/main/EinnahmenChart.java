@@ -17,7 +17,7 @@ import mp3.classes.interfaces.Structure;
 import mp3.classes.objects.bill.Bill;
 import mp3.classes.objects.eur.Data;
 import mp3.classes.utils.BarChart;
-import mp3.classes.utils.CompCenter;
+import mp3.classes.utils.WindowTools;
 import mp3.classes.utils.Formater;
 import mp3.classes.utils.Log;
 
@@ -80,7 +80,7 @@ public class EinnahmenChart extends javax.swing.JFrame implements Strings, Prote
         jPanel1.add(bar, BorderLayout.CENTER);
         jTextField1.setText(Formater.formatYear(new Date()));
 
-        new CompCenter(this);
+        new WindowTools(this);
 
         this.setVisible(rootPaneCheckingEnabled);
     }

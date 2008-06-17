@@ -9,7 +9,7 @@ package mp3.classes.layer.visual;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLDocument.HTMLReader;
 import mp3.classes.layer.*;
-import mp3.classes.utils.CompCenter;
+import mp3.classes.utils.WindowTools;
 import mp3.classes.utils.FileToString;
 
 /**
@@ -22,12 +22,12 @@ public class Help extends javax.swing.JFrame {
     /** Creates new form Help */
     public Help() {
         initComponents();
-        new CompCenter(this);
+        new WindowTools(this);
         this.setVisible(rootPaneCheckingEnabled);
     }
     public Help(DefaultHelpModel model) {
         initComponents();
-        new CompCenter(this);
+        new WindowTools(this);
        
         this.setModel(model);
         this.setVisible(rootPaneCheckingEnabled);
@@ -48,7 +48,7 @@ public class Help extends javax.swing.JFrame {
      */
     public Help(String helpfile, String theme) {
         initComponents();
-        new CompCenter(this);
+        new WindowTools(this);
       
         FileToString t = new FileToString("/helpfiles/" + helpfile);
         

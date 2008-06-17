@@ -9,7 +9,7 @@ package mp3.classes.visual.main;
 import mp3.classes.objects.bill.Bill;
 import mp3.classes.objects.eur.Customer;
 import mp3.classes.objects.pdf.OverdueODF;
-import mp3.classes.utils.CompCenter;
+import mp3.classes.utils.WindowTools;
 
 /**
  *
@@ -40,7 +40,7 @@ public class arrear extends javax.swing.JFrame {
         jLabel2.setText(bill.getRechnungnummer());
         jLabel6.setText(c.getFirma());
         
-        new CompCenter(this);
+        new WindowTools(this);
         this.setVisible(rootPaneCheckingEnabled);
     }
     

@@ -32,7 +32,7 @@ import java.io.File;
 import mp3.classes.interfaces.Constants;
 import mp3.classes.interfaces.ProtectedStrings;
 import mp3.classes.interfaces.Strings;
-import mp3.classes.utils.CompCenter;
+import mp3.classes.utils.WindowTools;
 import mp3.classes.layer.Popup;
 import mp3.classes.utils.DesktopIcon;
 import mp3.classes.utils.DirectoryHandler;
@@ -55,7 +55,7 @@ public class MpInstaller extends javax.swing.JFrame implements ProtectedStrings,
     public MpInstaller() {
         initComponents();
 
-        new CompCenter(this);
+        new WindowTools(this);
         this.setVisible(true);
         new cout(JAVA_VERSION);
 

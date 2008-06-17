@@ -48,7 +48,7 @@ public class konten extends javax.swing.JFrame {
 
         Formater.format(jTable1, 1, 100);
 
-        new CompCenter(this);
+        new WindowTools(this);
         this.setVisible(rootPaneCheckingEnabled);
     }
 
@@ -71,7 +71,7 @@ public class konten extends javax.swing.JFrame {
 
         Formater.format(jTable1, 1, 100);
 
-        new CompCenter(this);
+        new WindowTools(this);
         this.setVisible(rootPaneCheckingEnabled);
     }
     public konten(JTextField jText, Einnahme bill) {
@@ -89,7 +89,7 @@ public class konten extends javax.swing.JFrame {
 
         Formater.format(jTable1, 1, 100);
 
-        new CompCenter(this);
+        new WindowTools(this);
         
     }
 
@@ -106,7 +106,7 @@ public class konten extends javax.swing.JFrame {
 
         Formater.format(jTable1, 1, 50);
 
-        new CompCenter(this);
+        new WindowTools(this);
         this.setVisible(rootPaneCheckingEnabled);
     }
 
@@ -126,7 +126,7 @@ public class konten extends javax.swing.JFrame {
 
         Formater.format(jTable1, 1, 50);
 
-        new CompCenter(this);
+        new WindowTools(this);
         this.setVisible(rootPaneCheckingEnabled);
     }
 
@@ -146,7 +146,7 @@ public class konten extends javax.swing.JFrame {
 
         Formater.format(jTable1, 1,50);
 
-        new CompCenter(this);
+        new WindowTools(this);
         this.setVisible(rootPaneCheckingEnabled);
         
     }

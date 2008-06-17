@@ -9,7 +9,7 @@ import mp3.classes.layer.Popup;
 import mp3.classes.layer.QueryClass;
 import mp3.classes.objects.bill.Bill;
 import mp3.classes.objects.eur.Customer;
-import mp3.classes.utils.CompCenter;
+import mp3.classes.utils.WindowTools;
 
 /**
  *
@@ -33,7 +33,7 @@ public class fastChoice extends javax.swing.JFrame {
         this.frame = frame;
         this.mode = mode;
 
-        new CompCenter(this);
+        new WindowTools(this);
 
         switch (mode) {
             case 0:

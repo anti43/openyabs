@@ -13,7 +13,7 @@ import mp3.classes.layer.DefaultHelpModel;
 import mp3.classes.layer.visual.Help;
 import mp3.classes.layer.Popup;
 import mp3.classes.objects.ungrouped.MyData;
-import mp3.classes.utils.CompCenter;
+import mp3.classes.utils.WindowTools;
 
 /**
  *
@@ -32,7 +32,7 @@ public class settingsView extends javax.swing.JFrame {
      */
     public settingsView(mainframe mainframe) {
         initComponents();
-        new CompCenter(this);
+        new WindowTools(this);
         data = MyData.newInstanceOf();
         oldData = data;
         this.mainframe = mainframe;

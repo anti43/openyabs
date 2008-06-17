@@ -26,9 +26,9 @@ import java.awt.Toolkit;
  *
  * @author anti43
  */
-public class CompCenter {
+public class WindowTools {
 
-    public CompCenter(Component comp){
+    public WindowTools(Component comp){
     
         Dimension frameSize = new Dimension(comp.getSize());
 
