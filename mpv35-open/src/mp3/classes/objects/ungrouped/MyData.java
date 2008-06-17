@@ -54,9 +54,9 @@ public class MyData extends mp3.classes.layer.People implements mp3.classes.inte
     private SKRKonto ausgabeDefKonto;
     private Locale locale;
     private String[][] str;
-    
     private String state;
 //    private String[] options;
+
     public static MyData instanceOf() {
 
         if (dat == null) {
@@ -65,13 +65,13 @@ public class MyData extends mp3.classes.layer.People implements mp3.classes.inte
         }
         return dat;
     }
-    
+
     public static MyData newInstanceOf() {
 
         dat = null;
-            dat = new MyData();
-        
-        
+        dat = new MyData();
+
+
         return dat;
     }
     private String[][] string;
@@ -151,7 +151,7 @@ public class MyData extends mp3.classes.layer.People implements mp3.classes.inte
     }
 
     public void setState(int height, int width) {
-       this.setState(height +","+width);
+        this.setState(height + "," + width);
     }
 
     private void explode(String[][] str) {
@@ -171,16 +171,16 @@ public class MyData extends mp3.classes.layer.People implements mp3.classes.inte
             this.setLasttab(str[11][1]);
             this.setEkDefaultKonto(str[12][1]);
             this.setAgDefaultKonto(str[12 + 1][1]);
-            this.setLocale(new Locale("de",str[14][1]));
+            this.setLocale(new Locale("de", str[14][1]));
 
 
             try {
-               
+
                 this.setEinnahmeDefKonto(new SKRKonto(QueryClass.instanceOf(), getEkDefaultKonto(), true));
 
 
             } catch (Exception exception) {
-                
+
                 Popup.notice("Einnahmenkonto nicht vorhanden.\nBeachten Sie die genaue Schreibweise (z.B. '3 000' anstatt '3000')");
                 this.setEkDefaultKonto("0");
                 this.setEinnahmeDefKonto(new SKRKonto(QueryClass.instanceOf(), getEkDefaultKonto(), true));
@@ -196,13 +196,13 @@ public class MyData extends mp3.classes.layer.People implements mp3.classes.inte
                 this.setAusgabeDefKonto(new SKRKonto(QueryClass.instanceOf(), getAgDefaultKonto(), true));
             }
 
-            
+
 
         }
     }
 
     private void explode() {
-        boolean ok=false;
+        boolean ok = false;
 
         if (str != null) {
             this.setBackupverz(str[0][1]);
@@ -219,23 +219,10 @@ public class MyData extends mp3.classes.layer.People implements mp3.classes.inte
             this.setLasttab(str[11][1]);
             this.setEkDefaultKonto(str[12][1]);
             this.setAgDefaultKonto(str[12 + 1][1]);
-            
+            this.setLocale(new Locale("de", str[14][1]));
+
             try {
-                  this.setLocale(new Locale("de",str[14][1]));
 
-                  ok=true;
-            } catch (ArrayIndexOutOfBoundsException exception) {
-                ok=false;
-                Log.Debug(exception.getMessage());
-            
-                this.insert("name,wert", "(;;2#4#1#1#8#0#;;)Land (Waehrung) (DE,CH)(;;2#4#1#1#8#0#;;),(;;2#4#1#1#8#0#;;)DE(;;2#4#1#1#8#0#;;)");
-               
-                MyData.newInstanceOf();
-            }
-
-
-               try {
-               
                 this.setEinnahmeDefKonto(new SKRKonto(QueryClass.instanceOf(), getEkDefaultKonto(), true));
 
 
@@ -252,18 +239,8 @@ public class MyData extends mp3.classes.layer.People implements mp3.classes.inte
                 this.setAgDefaultKonto("1111");
                 this.setAusgabeDefKonto(new SKRKonto(QueryClass.instanceOf(), getAgDefaultKonto(), true));
             }
-            
-            if(ok){
-            try {
-                this.setState(str[15][1]);
 
-            } catch (IndexOutOfBoundsException exception) {
-                
-                this.insert("name,wert", "(;;2#4#1#1#8#0#;;)*Hauptfenster(;;2#4#1#1#8#0#;;),(;;2#4#1#1#8#0#;;) (;;2#4#1#1#8#0#;;)");
-                
-                MyData.newInstanceOf();
-            }
-            }
+            
         }
     }
 
@@ -477,11 +454,11 @@ public class MyData extends mp3.classes.layer.People implements mp3.classes.inte
     public void setState(String state) {
         this.state = state;
     }
-    
-    public Dimension getMainframeSize(){
-    
-        return new Dimension(Integer.valueOf(getState().split(",")[1]),Integer.valueOf(getState().split(",")[0]));
-              
-    
+
+    public Dimension getMainframeSize() {
+
+        return new Dimension(Integer.valueOf(getState().split(",")[1]), Integer.valueOf(getState().split(",")[0]));
+
+
     }
 }
