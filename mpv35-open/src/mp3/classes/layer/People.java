@@ -17,7 +17,6 @@
 package mp3.classes.layer;
 
 import javax.swing.JTable;
-import javax.swing.table.TableColumn;
 import mp3.classes.interfaces.Structure;
 import mp3.classes.interfaces.Queries;
 import mp3.database.util.Query;

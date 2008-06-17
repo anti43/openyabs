@@ -202,8 +202,7 @@ public class MyData extends mp3.classes.layer.People implements mp3.classes.inte
     }
 
     private void explode() {
-        boolean ok = false;
-
+    
         if (str != null) {
             this.setBackupverz(str[0][1]);
             this.setRechnungverz(str[1][1]);

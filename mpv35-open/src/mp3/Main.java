@@ -43,18 +43,17 @@ public class Main implements Strings{
      * @param args
      */
     public Main(String[] args){
-    
+    //LuF anpassen
        try {
             UIManager.setLookAndFeel(new TinyLookAndFeel());
         } catch (Exception exe) {
             exe.printStackTrace();
         }
-        
+        //Splashscreen initialisieren
         splash = new SplashScreen(TEST_CONF);
  
+        //settings Datei schreiben
         try {
-
-
             File df = new File(Constants.SETTINGS);
             if (df.exists()) {
             } else {
@@ -69,15 +68,13 @@ public class Main implements Strings{
                     System.exit(1);
                 }
             }
-
-            
             
             FileReaderWriter f = new FileReaderWriter(Constants.SETTINGS);
-
             String[] dat = f.read().split(COLON);
-
             String db = dat[0] + File.separator + Constants.DATABASENAME;
             File test = new File(db);
+            
+            //Datenbank suchen
             if (test.exists()) {
                 
                 try {
@@ -86,38 +83,27 @@ public class Main implements Strings{
                     } else {
 
                         Log.setLogLevel(Log.LOGLEVEL_LOW);
-
                     }
-
                 } catch (Exception exception) {
                       Log.setLogLevel(Log.LOGLEVEL_LOW);
                 }
-//                  Log.setLogLevel(Log.LOGLEVEL_HIGH);
                 
                 try {
                     splash.setComp(new mainframe(splash, this));
-
                 } catch (Exception exception) {
                     exception.printStackTrace();
                     System.exit(1);
                 }
-
-                
-                
+            //Falls Datenbank nicht vorhanden, Installer starten
             } else {
                 splash.setComp(new MpInstaller());
             }
         } catch (Exception exception) {
-
             Log.Debug(exception);
         }
-    
     }
 
     public static void main(String[] args) {
-
         new Main(args);
-
     }
-
 }

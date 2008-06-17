@@ -62,66 +62,7 @@ public class EURTableModel implements ProtectedStrings, Constants, Strings, Stru
     Double konto2120 = 0d; // Sonstige Sach-, Nutzungs- und LeistungsentnahmenDouble konto,
     Double konto2130 = 0d; // Private Kfz-NutzungDouble konto,
     Double konto2140 = 0d; // Vom Finanzamt erstattete und ggf. verrechnete Umsatzsteuer";
-
-
-//1	1110	Ausgabenkonten	Waren, Rohstoffe und Hilfsstoffe einschl. der Nebenkosten	Waren, Rohstoffe und Hilfsstoffe	NULL	NULL
-//2	1111	Ausgabenkonten	Waren, Rohstoffe und Hilfsstoffe einschl. der Nebenkosten	Allgemeines Ausgabenkonto	NULL	NULL
-//3	1112	Ausgabenkonten	Waren, Rohstoffe und Hilfsstoffe einschl. der Nebenkosten	Verbrauchsmaterial	NULL	NULL
-
-//4	1120	Ausgabenkonten	Bezogene Leistungen (z.B. Fremdleistungen)	Bezogene Leistungen für unmittelbaren Betriebszweck	NULL	NULL
-//5	1121	Ausgabenkonten	Bezogene Leistungen (z.B. Fremdleistungen)	Telekommunikation	NULL	NULL
-//6	1122	Ausgabenkonten	Bezogene Leistungen (z.B. Fremdleistungen)	Energie	NULL	NULL
-
-//7	1130	Ausgabenkonten	Ausgaben für eigenes Personal 	Gehälter, Löhne, Versicherungsbeiträge für Arbeitnehmer	NULL	NULL
-
-//8	1140	Ausgabenkonten	Aufwendungen für geringwertige Wirtschaftsgüter	Aufwendungen für geringwertige Wirtschaftsgüter (GWG)	NULL	NULL
-
-//9	1150	Ausgabenkonten	Miete / Pacht für Geschäftsräume und betrieblich genutzte Grundstücke	Miete / Pacht für Geschäftsräume	NULL	NULL
-
-//10	1160	Ausgabenkonten	Sonstige Aufwendungen für betrieblich genutzte Grundstücke	Aufwendungen für Grundstücke	NULL	NULL
-
-//11	1170	Ausgabenkonten	Abziehbare Aufwendungen für ein häusliches Arbeitszimmer	Aufwendungen für ein häusl. Arbeitszimmer	NULL	NULL
-
-//12	1180	Ausgabenkonten	Reisekosten,Aufwendungen für doppelte Haushaltsführung	Reisekosten	NULL	NULL
-//13	1181	Ausgabenkonten	Reisekosten,Aufwendungen für doppelte Haushaltsführung	Fahrtkosten öffentlich (Bahn, ÖPNV, Taxi)	NULL	NULL
-//14	1182	Ausgabenkonten	Reisekosten,Aufwendungen für doppelte Haushaltsführung	Hotelkosten	NULL	NULL
-//15	1183	Ausgabenkonten	Reisekosten,Aufwendungen für doppelte Haushaltsführung	Privat-PKW für betriebliche Fahrten	NULL	NULL
-
-//16	1190	Ausgabenkonten	Geschenke – abziehbar	Geschenke – abziehbar	NULL	NULL
-
-//17	1200	Ausgabenkonten	Geschenke – nicht abziehbar	Geschenke – nicht abziehbar	NULL	NULL
-
-//18	1210	Ausgabenkonten	Bewirtung – abziehbar	Bewirtung – abziehbar	NULL	NULL
-
-//19	1220	Ausgabenkonten	Bewirtung – nicht abziehbar	Bewirtung – nicht abziehbar	NULL	NULL
-
-//20	1230	Ausgabenkonten	Übrige Betriebsausgaben	Sonstige abziehbare Betriebsausgaben	NULL	NULL
-//21	1231	Ausgabenkonten	Übrige Betriebsausgaben	Sonstige nicht abziehbare Betriebsausgaben	NULL	NULL
-//22	1232	Ausgabenkonten	Übrige Betriebsausgaben	Instandhaltung und Reparaturen	NULL	NULL
-
-//23	1240	Ausgabenkonten	Fortbildung und Fachliteratur	Fortbildung, Fachliteratur	NULL	NULL
-
-//24	1250	Ausgabenkonten	Rechts- und Steuerberatung, Buchführung	Rechts- und Steuerberatung, Buchführung	NULL	NULL
-
-//25	1260	Ausgabenkonten	Porto, Telefon, Büromaterial	Bürobedarf, Porto	NULL	NULL
-
-//26	1270	Ausgabenkonten	An das Finanzamt gezahlte und ggf. verrechnete Umsatzsteuer	An das FA gezahlte Umsatzsteuer	NULL	NULL
-//*************************************************************************************//
-//27	2100	Einnahmenkonten	Betriebseinnahmen als umsatzsteuerlicher Kleinunternehmer	Allgemeines Einnahmenkonto	NULL	NULL
-
-//28	2110	Einnahmenkonten	Umsatzsteuerpflichtige Betriebseinnahmen	Erlöse 0% Umsatzsteuer	NULL	NULL
-//29	2111	Einnahmenkonten	Umsatzsteuerpflichtige Betriebseinnahmen	Erlöse 7% Umsatzsteuer	NULL	NULL
-//30	2112	Einnahmenkonten	Umsatzsteuerpflichtige Betriebseinnahmen	Erlöse 19% Umsatzsteuer	NULL	NULL
-//31	2113	Einnahmenkonten	Umsatzsteuerpflichtige Betriebseinnahmen	Sonstige Erträge	NULL	NULL
-//32	2114	Einnahmenkonten	Umsatzsteuerpflichtige Betriebseinnahmen	Sachbezüge (Waren)	NULL	NULL
-
-//33	2120	Einnahmenkonten	Sonstige Sach-, Nutzungs- und Leistungsentnahmen	Sachentnahmen	NULL	NULL
-//34	2121	Einnahmenkonten	Sonstige Sach-, Nutzungs- und Leistungsentnahmen	Nutzungs- und Leistungsentnahmen	NULL	NULL
-//35	2122	Einnahmenkonten	Sonstige Sach-, Nutzungs- und Leistungsentnahmen	Private Telefonnutzung	NULL	NULL
-
-//36	2130	Einnahmenkonten	Private Kfz-Nutzung	Private KFZ-Nutzung	NULL	NULL
-
-//37	2140	Einnahmenkonten	Vom Finanzamt erstattete und ggf. verrechnete Umsatzsteuer	Vom FA erstattete Umsatzsteuer	NULL	NULL
+  
     public EURTableModel(String year) {
 
         data = new Object[KONTEN_GRUPPEN.length][2];
@@ -282,22 +223,6 @@ public class EURTableModel implements ProtectedStrings, Constants, Strings, Stru
                     Log.Debug(ex);
                 }
 
-//27	2100	Einnahmenkonten	Betriebseinnahmen als umsatzsteuerlicher Kleinunternehmer	Allgemeines Einnahmenkonto	NULL	NULL
-
-//28	2110	Einnahmenkonten	Umsatzsteuerpflichtige Betriebseinnahmen	Erlöse 0% Umsatzsteuer	NULL	NULL
-//29	2111	Einnahmenkonten	Umsatzsteuerpflichtige Betriebseinnahmen	Erlöse 7% Umsatzsteuer	NULL	NULL
-//30	2112	Einnahmenkonten	Umsatzsteuerpflichtige Betriebseinnahmen	Erlöse 19% Umsatzsteuer	NULL	NULL
-//31	2113	Einnahmenkonten	Umsatzsteuerpflichtige Betriebseinnahmen	Sonstige Erträge	NULL	NULL
-//32	2114	Einnahmenkonten	Umsatzsteuerpflichtige Betriebseinnahmen	Sachbezüge (Waren)	NULL	NULL
-
-//33	2120	Einnahmenkonten	Sonstige Sach-, Nutzungs- und Leistungsentnahmen	Sachentnahmen	NULL	NULL
-//34	2121	Einnahmenkonten	Sonstige Sach-, Nutzungs- und Leistungsentnahmen	Nutzungs- und Leistungsentnahmen	NULL	NULL
-//35	2122	Einnahmenkonten	Sonstige Sach-, Nutzungs- und Leistungsentnahmen	Private Telefonnutzung	NULL	NULL
-
-//36	2130	Einnahmenkonten	Private Kfz-Nutzung	Private KFZ-Nutzung	NULL	NULL
-
-//37	2140	Einnahmenkonten	Vom Finanzamt erstattete und ggf. verrechnete Umsatzsteuer	Vom FA erstattete Umsatzsteuer	NULL	NULL
-
                 switch (x) {
 
 
@@ -329,8 +254,6 @@ public class EURTableModel implements ProtectedStrings, Constants, Strings, Stru
             }
         }
 
-       
-
 
         einnahmen = new Bill(q).getPaidEUR();
 
@@ -344,7 +267,6 @@ public class EURTableModel implements ProtectedStrings, Constants, Strings, Stru
                     if(einnahmen[h][1]!=null && Double.valueOf(einnahmen[h][1])>0){
                     net = (Double.valueOf(einnahmen[h][1]) / ((Double.valueOf(einnahmen[h][2]))));
                     vorsteuereinnahme = vorsteuereinnahme + (Double.valueOf(einnahmen[h][1]) - net);
-
                     gesamteinnahme = gesamteinnahme + Double.valueOf(einnahmen[h][1]);}
 
                 } catch (NumberFormatException ex) {
@@ -401,28 +323,7 @@ public class EURTableModel implements ProtectedStrings, Constants, Strings, Stru
         data[35][1] = Formater.formatMoney(gesamteinnahme - gesamtausgabe);
 
     }
-// "1110 Waren, Rohstoffe und Hilfsstoffe einschl. der Nebenkosten",
-// "1120 Bezogene Leistungen (z.B. Fremdleistungen) ",
-// "1130 Ausgaben für eigenes Personal  ",
-// "1140 Aufwendungen für geringwertige Wirtschaftsgüter ",
-// "1150 Miete / Pacht für Geschäftsräume und betrieblich genutzte Grundstücke ",
-// "1160 Sonstige Aufwendungen für betrieblich genutzte Grundstücke ",
-// "1170 Abziehbare Aufwendungen für ein häusliches Arbeitszimmer ",
-// "1180 Reisekosten,Aufwendungen für doppelte Haushaltsführung ",
-// "1190 Geschenke – abziehbar ",
-// "1200 Geschenke – nicht abziehbar ",
-// "1210 Bewirtung – abziehbar ",
-// "1220 Bewirtung – nicht abziehbar ",
-// "1230 Übrige Betriebsausgaben ",
-// "1240 Fortbildung und Fachliteratur ",
-// "1250 Rechts- und Steuerberatung, Buchführung ",
-// "1260 Porto, Telefon, Büromaterial ",
-// "1270 An das Finanzamt gezahlte und ggf. verrechnete Umsatzsteuer ",
-// "2100 Betriebseinnahmen als umsatzsteuerlicher Kleinunternehmer ",
-// "2110 Umsatzsteuerpflichtige Betriebseinnahmen ",
-// "2120 Sonstige Sach-, Nutzungs- und Leistungsentnahmen ",
-// "2130 Private Kfz-Nutzung ",
-// "2140 Vom Finanzamt erstattete und ggf. verrechnete Umsatzsteuer"
+
     public EURTableModel(String year, String month) {
 
        year = month+"."+year;
@@ -586,21 +487,6 @@ public class EURTableModel implements ProtectedStrings, Constants, Strings, Stru
                     Log.Debug(ex);
                 }
 
-//27	2100	Einnahmenkonten	Betriebseinnahmen als umsatzsteuerlicher Kleinunternehmer	Allgemeines Einnahmenkonto	NULL	NULL
-
-//28	2110	Einnahmenkonten	Umsatzsteuerpflichtige Betriebseinnahmen	Erlöse 0% Umsatzsteuer	NULL	NULL
-//29	2111	Einnahmenkonten	Umsatzsteuerpflichtige Betriebseinnahmen	Erlöse 7% Umsatzsteuer	NULL	NULL
-//30	2112	Einnahmenkonten	Umsatzsteuerpflichtige Betriebseinnahmen	Erlöse 19% Umsatzsteuer	NULL	NULL
-//31	2113	Einnahmenkonten	Umsatzsteuerpflichtige Betriebseinnahmen	Sonstige Erträge	NULL	NULL
-//32	2114	Einnahmenkonten	Umsatzsteuerpflichtige Betriebseinnahmen	Sachbezüge (Waren)	NULL	NULL
-
-//33	2120	Einnahmenkonten	Sonstige Sach-, Nutzungs- und Leistungsentnahmen	Sachentnahmen	NULL	NULL
-//34	2121	Einnahmenkonten	Sonstige Sach-, Nutzungs- und Leistungsentnahmen	Nutzungs- und Leistungsentnahmen	NULL	NULL
-//35	2122	Einnahmenkonten	Sonstige Sach-, Nutzungs- und Leistungsentnahmen	Private Telefonnutzung	NULL	NULL
-
-//36	2130	Einnahmenkonten	Private Kfz-Nutzung	Private KFZ-Nutzung	NULL	NULL
-
-//37	2140	Einnahmenkonten	Vom Finanzamt erstattete und ggf. verrechnete Umsatzsteuer	Vom FA erstattete Umsatzsteuer	NULL	NULL
 
                 switch (x) {
 
@@ -696,11 +582,8 @@ public class EURTableModel implements ProtectedStrings, Constants, Strings, Stru
         data[24][1] = Formater.formatMoney(konto2120);
         data[25][1] = Formater.formatMoney(konto2130);
         data[26][1] = Formater.formatMoney(konto2140);
-        
         data[28][1] = Formater.formatMoney(vorsteuereinnahme);
-        
         data[30][1] = Formater.formatMoney(gesamteinnahme);
-        
         data[33][1] = Formater.formatMoney(gesamteinnahme);
         data[34][1] = Formater.formatMoney(gesamtausgabe);
         data[35][1] = Formater.formatMoney(gesamteinnahme - gesamtausgabe);
@@ -708,9 +591,7 @@ public class EURTableModel implements ProtectedStrings, Constants, Strings, Stru
     }
 
     public DefaultTableModel getModel() {
-
         return new DefaultTableModel(data, head);
-
     }
 }
 
