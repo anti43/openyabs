@@ -225,7 +225,7 @@ public class TableHtmlWriter {
         String rgb = Integer.toHexString(borderc.getRGB());
         rgb = rgb.substring(2, rgb.length());
 
-        out.write(" <meta http-equiv='Content-Type' content='text/html;charset=UTF-8'> <HTML>");
+        out.write(" <meta http-equiv='Content-Type' content='text/html;'> <HTML>");
         
         
         out.write("<head><STYLE TYPE='text/css'><!--TD{font-family: Arial; font-size: 10pt;}" +
