@@ -151,7 +151,7 @@ public class mainframe extends javax.swing.JFrame {
 
         nachricht("Anmerkungen, Bugs und Feedback zu MP bitte an mp-rechnungs-und-kundenverwaltung@googlegroups.com senden. Vielen Dank!");
           
-        
+
     }
 
     public customersView getCustomersView() {

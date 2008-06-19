@@ -148,7 +148,7 @@ public abstract class Formater {
      */
     public static Date getDate(String string) {
         DateFormat df;
-        df = DateFormat.getDateInstance(DateFormat.MEDIUM);
+        df = new SimpleDateFormat( "dd.MM.yyyy" );
         Date date;
         try {
 
@@ -237,7 +237,7 @@ public abstract class Formater {
     public static boolean check(String string, int mode) {
 
         DateFormat df;
-        df = DateFormat.getDateInstance(DateFormat.MEDIUM);
+        df = new SimpleDateFormat( "dd.MM.yyyy" );
         Date date;
         Double number;
         Integer integer;

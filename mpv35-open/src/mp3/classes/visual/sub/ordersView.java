@@ -8,6 +8,7 @@ package mp3.classes.visual.sub;
 import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.CellEditor;
 import javax.swing.JOptionPane;
@@ -55,7 +56,7 @@ public class ordersView extends javax.swing.JPanel implements Runnable {
     private mainframe mainframe;
     private DefaultTableModel jtable1Model =new DefaultTableModel();
     private TableCellEditor editor;
-    private DateFormat df;
+    private SimpleDateFormat df;
     private String jtable3Header;
     private String[][] jtable3Data;
     private Thread t;
@@ -88,7 +89,7 @@ public class ordersView extends javax.swing.JPanel implements Runnable {
         Formater.format(jTable2, 2, 120);
         Formater.format(jTable2, 3, 120);
 
-        df = DateFormat.getDateInstance(DateFormat.MEDIUM);
+        df = new SimpleDateFormat( "dd.MM.yyyy" );
 
         jTextField7.setText(df.format(new Date()));
         jTextField10.setText(df.format(new Date()));
@@ -1303,7 +1304,7 @@ public class ordersView extends javax.swing.JPanel implements Runnable {
 
         renewTableModel();
               
-        df = DateFormat.getDateInstance(DateFormat.MEDIUM);
+        df = new SimpleDateFormat( "dd.MM.yyyy" );
         jTextField7.setText(df.format(new Date()));
                 
         getCurrent().stripFirst(getJTable1());

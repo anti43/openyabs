@@ -121,6 +121,7 @@ public class MpInstaller extends javax.swing.JFrame implements ProtectedStrings,
         jTextArea1.setVerifyInputWhenFocusTarget(false);
         jScrollPane1.setViewportView(jTextArea1);
 
+        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 12));
         jLabel2.setText("Willkommen zur Installation der MP Rechnungs -und Kundenverwaltung!");
 
         jButton1.setText("Weiter");
@@ -153,16 +154,18 @@ public class MpInstaller extends javax.swing.JFrame implements ProtectedStrings,
                     .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 435, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(jCheckBox1)
                     .add(jPanel2Layout.createSequentialGroup()
-                        .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                        .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(jPanel2Layout.createSequentialGroup()
                                 .add(jLabel2)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 44, Short.MAX_VALUE))
-                            .add(jPanel2Layout.createSequentialGroup()
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(jLabel3)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel2Layout.createSequentialGroup()
                                 .add(jButton2)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)))
-                        .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                            .add(jButton1)
-                            .add(jLabel3))))
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(jButton1)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)))
+                        .add(67, 67, 67)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -171,12 +174,12 @@ public class MpInstaller extends javax.swing.JFrame implements ProtectedStrings,
                 .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(jPanel2Layout.createSequentialGroup()
                         .addContainerGap()
-                        .add(jLabel2))
+                        .add(jLabel2)
+                        .add(16, 16, 16)
+                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 112, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jCheckBox1))
                     .add(jLabel3))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 112, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jCheckBox1)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 49, Short.MAX_VALUE)
                 .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jButton1)
@@ -190,8 +193,8 @@ public class MpInstaller extends javax.swing.JFrame implements ProtectedStrings,
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(jPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .add(jPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 517, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)

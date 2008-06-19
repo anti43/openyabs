@@ -8,6 +8,7 @@ package mp3.classes.visual.sub;
 import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.CellEditor;
 import javax.swing.JOptionPane;
@@ -52,11 +53,10 @@ public class billsView extends javax.swing.JPanel implements Runnable {
     private String[][] liste;
     private Customer customer;
     private mainframe mainframe;
-    private DefaultTableModel jtable1Model;
+   
     private TableCellEditor editor;
-    private DateFormat df;
-    private String jtable3Header;
-    private String[][] jtable3Data;
+    private SimpleDateFormat df;
+ 
     private Thread t;
     private boolean nettoprices = true;
     private Customer oldcustomer;
@@ -88,7 +88,9 @@ public class billsView extends javax.swing.JPanel implements Runnable {
         Formater.format(jTable2, 2, 120);
         Formater.format(jTable2, 3, 120);
 
-        df = DateFormat.getDateInstance(DateFormat.MEDIUM);
+        df = new SimpleDateFormat( "dd.MM.yyyy" );
+        
+//        df = new SimpleDateFormat( "dd.MM.yyyy" );
 
         jTextField7.setText(df.format(new Date()));
 
@@ -1128,6 +1130,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
                 new History(QueryClass.instanceOf(), Structure.BILL, "Rechnung Nummer: " + bill.getRechnungnummer() + " angelegt.");
                 this.setBill(new Bill(QueryClass.instanceOf(), bill.getId()));
 
+                save();
             }
 
         } else {
@@ -1382,7 +1385,8 @@ public class billsView extends javax.swing.JPanel implements Runnable {
         jlabelstorno.setText("");
         jLabelbezahlt.setText("");
 
-        df = DateFormat.getDateInstance(DateFormat.MEDIUM);
+//        df = new SimpleDateFormat( "dd.MM.yyyy" );
+        df = new SimpleDateFormat( "dd.MM.yyyy" );
         jTextField7.setText(df.format(new Date()));
 
         getCurrent().stripFirst(getJTable1());
