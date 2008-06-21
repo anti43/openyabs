@@ -59,7 +59,7 @@ public class CustomerPicker extends javax.swing.JFrame {
         cust=frame.getCustomer();
         new WindowTools(this);
         
-        String[][] list = cust.select("id, kundennummer, firma ", "kundennummer", "", "kundennummer", true);
+        String[][] list = cust.select("id, kundennummer, firma ", null, "", "kundennummer", true);
         String k = "id, " + "Nummer,Firma";
 
         this.jTable1.setModel(new DefaultTableModel(list, k.split(",")));

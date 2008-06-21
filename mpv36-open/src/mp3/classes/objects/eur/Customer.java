@@ -71,6 +71,11 @@ public class Customer extends mp3.classes.layer.People implements mp3.classes.in
         this.query=query;
     }
 
+//    public String[][] getAll() {
+//       return getAll(true);
+//    }
+
+
     @SuppressWarnings("unchecked")
     public ArrayList getAllCustomers() {
         ArrayList arr = new ArrayList();
@@ -336,11 +341,12 @@ public class Customer extends mp3.classes.layer.People implements mp3.classes.in
         return str;  
     }
     
-    public String[][] getAll(){
+    public String[][] getAll(boolean withDeleted){
     
         Query q = query.clone(TABLE_CUSTOMERS);
 
-        String[][] str = q.select(ALL, null);
+        
+        String[][] str = q.select(ALL, null, withDeleted);
    
         return str;  
     }

@@ -126,8 +126,8 @@ public abstract class People implements Queries, Structure {
 
     /**
      * Example: "*", "Name", "anti43", "Name", true
-     * will return everyone who`s name is lika "anti43" sortet by name.
-     * eg. anti43, anti43w, andre
+     * will return everyone who`s name is like "anti43" sortet by name.
+     * eg. anti43, anti43web
      * 
      * @param what
      * @param from

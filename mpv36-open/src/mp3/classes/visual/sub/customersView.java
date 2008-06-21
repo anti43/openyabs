@@ -46,7 +46,7 @@ public class customersView extends javax.swing.JPanel {
 
         current = new Customer(QueryClass.instanceOf());
 
-        liste = current.getAll();
+        liste = current.getAll(false);
         String k = "id, " + Structure.TABLE_CUSTOMER_FIELDS;
 
         this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
@@ -60,7 +60,7 @@ public class customersView extends javax.swing.JPanel {
 
         this.current = current;
 
-        liste = current.getAll();
+        liste = current.getAll(false);
 
         this.jTable2.setModel(new DefaultTableModel(liste, Structure.TABLE_CUSTOMER_FIELDS.split(",")));
         current.stripFirst(jTable2);
@@ -142,10 +142,10 @@ public class customersView extends javax.swing.JPanel {
         jToolBar1 = new javax.swing.JToolBar();
         jButton4 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
+        jButton9 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
         jButton7 = new javax.swing.JButton();
         jButton8 = new javax.swing.JButton();
-        jButton9 = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JToolBar.Separator();
         jButton10 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
@@ -158,6 +158,7 @@ public class customersView extends javax.swing.JPanel {
         }
 
         ;
+        jButton11 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(204, 204, 255));
 
@@ -195,7 +196,7 @@ public class customersView extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 301, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 332, Short.MAX_VALUE)
                 .addComponent(jButton6)
                 .addGap(18, 18, 18)
                 .addComponent(jButton1)
@@ -255,7 +256,7 @@ public class customersView extends javax.swing.JPanel {
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 303, Short.MAX_VALUE)
+            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)
         );
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Suche"));
@@ -298,7 +299,7 @@ public class customersView extends javax.swing.JPanel {
                     .addComponent(jTextField3)
                     .addComponent(jTextField2)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(26, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -578,11 +579,11 @@ public class customersView extends javax.swing.JPanel {
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel6Layout.createSequentialGroup()
                                 .addComponent(jLabel17)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 91, Short.MAX_VALUE))
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 60, Short.MAX_VALUE))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 74, Short.MAX_VALUE)))
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 396, Short.MAX_VALUE)))
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 389, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -610,6 +611,17 @@ public class customersView extends javax.swing.JPanel {
             }
         });
         jToolBar1.add(jButton3);
+
+        jButton9.setText("Löschen");
+        jButton9.setFocusable(false);
+        jButton9.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton9.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton9.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton9MouseClicked(evt);
+            }
+        });
+        jToolBar1.add(jButton9);
 
         jButton5.setText("KdN vorschlagen");
         jButton5.setFocusable(false);
@@ -643,17 +655,6 @@ public class customersView extends javax.swing.JPanel {
             }
         });
         jToolBar1.add(jButton8);
-
-        jButton9.setText("Löschen");
-        jButton9.setFocusable(false);
-        jButton9.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton9.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton9.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton9MouseClicked(evt);
-            }
-        });
-        jToolBar1.add(jButton9);
         jToolBar1.add(jSeparator1);
 
         jButton10.setText("Serienbrief");
@@ -720,15 +721,30 @@ public class customersView extends javax.swing.JPanel {
         });
         jScrollPane4.setViewportView(jTable2);
 
+        jButton11.setText("Zeige alle");
+        jButton11.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton11ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap(630, Short.MAX_VALUE)
+                .addComponent(jButton11)
+                .addContainerGap())
             .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 717, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 469, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 427, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton11)
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("Liste", jPanel3);
@@ -950,7 +966,7 @@ public class customersView extends javax.swing.JPanel {
             new History(QueryClass.instanceOf(), Structure.CUSTOMER, "Kunde Nummer: " + current.getKundennummer() + " angelegt.");
 
 
-            liste = current.getAll();
+            liste = current.getAll(false);
             String k = "id, " + Structure.TABLE_CUSTOMER_FIELDS;
 
             this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
@@ -984,7 +1000,7 @@ public class customersView extends javax.swing.JPanel {
     private void jButton6ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
 
 
-        liste = current.getAll();
+        liste = current.getAll(false);
         String k = "id, " + Structure.TABLE_CUSTOMER_FIELDS;
 
         this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
@@ -1056,7 +1072,7 @@ public class customersView extends javax.swing.JPanel {
                 new History(QueryClass.instanceOf(), Structure.CUSTOMER, "Kunde Nummer: " + current.getKundennummer() + " editiert.");
 
 
-                liste = current.getAll();
+                liste = current.getAll(false);
                 String k = "id, " + Structure.TABLE_CUSTOMER_FIELDS;
 
                 this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
@@ -1195,7 +1211,7 @@ public class customersView extends javax.swing.JPanel {
 
             this.jTextArea1.setText("");
 
-            liste = current.getAll();
+            liste = current.getAll(false);
             String k = "id," + Structure.TABLE_CUSTOMER_FIELDS;
 
             this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
@@ -1209,9 +1225,19 @@ public class customersView extends javax.swing.JPanel {
          if(current.isValid())serialLetter.instanceOf().addCustomer(current);
     }//GEN-LAST:event_jButton10ActionPerformed
 
+private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
+
+      liste = current.getAll(true);
+                String k = "id, " + Structure.TABLE_CUSTOMER_FIELDS;
+
+                this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
+                current.stripFirst(jTable2);
+}//GEN-LAST:event_jButton11ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton jButton1;
     public javax.swing.JButton jButton10;
+    public javax.swing.JButton jButton11;
     public javax.swing.JButton jButton2;
     public javax.swing.JButton jButton3;
     public javax.swing.JButton jButton4;
@@ -1325,7 +1351,7 @@ class PopupActionListener2 implements ActionListener {
         this.list = liste;
 
         if (mode == 0) {
-            this.liste = liste.getAll();
+            this.liste = liste.getAll(false);
         } else if (mode == 1) {
             this.liste = liste.select("id, kundennummer, firma ", "kundennummer", view.jTextField1.getText(), "kundennummer", true);
         } else if (mode == 2) {
@@ -1379,7 +1405,7 @@ class PopupActionListener2 implements ActionListener {
 
 
                 if (mode == 0) {
-                    this.liste = list.getAll();
+                    this.liste = list.getAll(false);
                 } else if (mode == 1) {
                     this.liste = list.select("id, kundennummer, firma ", "kundennummer", view.jTextField1.getText(), "kundennummer", true);
                 } else if (mode == 2) {

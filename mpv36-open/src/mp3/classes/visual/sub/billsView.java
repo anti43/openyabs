@@ -83,7 +83,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
         current.stripFirst(jTable1);
 
         updateListTable();
-
+        billsOfTheMonth();
         Formater.format(jTable2, 1, 120);
         Formater.format(jTable2, 2, 120);
         Formater.format(jTable2, 3, 120);
@@ -102,6 +102,9 @@ public class billsView extends javax.swing.JPanel implements Runnable {
         t.start();
 
         jTextField6.setEnabled(false);   
+
+        billsOfTheMonth();
+        
         resizeFields();
 
 
@@ -192,6 +195,17 @@ public class billsView extends javax.swing.JPanel implements Runnable {
         Object[] o = new Object[]{null, null, null, null, null};
         DefaultTableModel m = (DefaultTableModel) getJTable1().getModel();
         m.addRow(o);
+    }
+
+    private void billsOfTheMonth() {
+        df = new SimpleDateFormat( "MM.yyyy" );
+        jTextField2.setText(df.format(new Date()));
+        
+        String[][] list = getCurrent().select("id, rechnungnummer, datum ", "datum", jTextField2.getText(), "datum", true);
+        String k = "id, " + "Nummer,Datum";
+
+        this.jTable3.setModel(new DefaultTableModel(list, k.split(",")));
+        getCurrent().stripFirst(jTable3);
     }
 
     private boolean hasCurrent() {
@@ -331,7 +345,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
 //        mainframe.nachricht("Aktuell: Kunde Nummer " + c.getKundennummer());
 
         if (getCustomer().isDeleted()) {
-            isdeleted.setText("Kunde N/A");
+            isdeleted.setText("Inaktiv");
             jTextField5.setBackground(Color.RED);
         } else {
 
@@ -476,7 +490,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 327, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 358, Short.MAX_VALUE)
                 .addComponent(jButton6)
                 .addGap(18, 18, 18)
                 .addComponent(jButton1)
@@ -537,7 +551,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 350, Short.MAX_VALUE)
+            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 355, Short.MAX_VALUE)
         );
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Suche"));
@@ -580,7 +594,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
                     .addComponent(jTextField3)
                     .addComponent(jTextField2)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(26, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -726,7 +740,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
                                 .addComponent(jCheckBox1)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jCheckBox2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 62, Short.MAX_VALUE)
                                 .addComponent(jLabel12))
                             .addComponent(jLabel11))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -764,7 +778,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
                     .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton10))
                 .addGap(12, 12, 12)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel12)
@@ -951,7 +965,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 522, Short.MAX_VALUE)
+            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 532, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Liste", jPanel3);
@@ -1138,6 +1152,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
             new Popup("Sie müssen einen (validen) Kunden auswählen.", Popup.ERROR);
         }
         updateListTable();
+        billsOfTheMonth();
         resizeFields();
         
         jCheckBox2.setSelected(true);

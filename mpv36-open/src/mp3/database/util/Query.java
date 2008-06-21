@@ -1350,7 +1350,7 @@ public abstract class Query implements Structure {
         }
 
         if (where == null) {
-            wher = " ";
+            wher = " WHERE deleted = 0 ";
         } else {
             wher = " WHERE " + where[0] + " " + k + " " + where[2] + l + where[1] + l + where[2] + " ";
 

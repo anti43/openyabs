@@ -290,7 +290,6 @@ public interface Structure {
                 "Mobil varchar(250) default NULL," +
                 "Mail varchar(350) default NULL, Webseite varchar(350) default NULL,Notizen varchar(10000)," +
                 "deleted INTEGER DEFAULT 0, "+
-               
                 "reserve1 varchar(500) default NULL,reserve2 varchar(500) default NULL," +
                 "PRIMARY KEY  (id))",
                 
@@ -327,6 +326,7 @@ public interface Structure {
                 "Rechnungnummer varchar(250) default NULL,KundenId INTEGER NOT NULL," +
                 "Datum varchar(200) default NULL," + "storno INTEGER DEFAULT 0," + "bezahlt INTEGER DEFAULT 0," +
                 "gesamtpreis varchar(20),"+ "gesamttax varchar(20),"+ 
+                "deleted INTEGER DEFAULT 0,"+
                 "reserve1 varchar(500) default NULL,reserve2 varchar(500) default NULL," +
                 "PRIMARY KEY  (id))",
                 
@@ -341,12 +341,14 @@ public interface Structure {
         "CREATE TABLE auftraege (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
                 "Auftragnummer varchar(250) default NULL,KundenId INTEGER NOT NULL," +
                 "Datum varchar(200) default NULL," +"auftrag INTEGER DEFAULT 0,"+"bis varchar(200) default NULL," +
-                "rechnung  INTEGER DEFAULT 0," +"deleted INTEGER DEFAULT 0,"+
+                "rechnung  INTEGER DEFAULT 0," +
+                "deleted INTEGER DEFAULT 0,"+
                 "reserve1 varchar(500) default NULL,reserve2 varchar(500) default NULL," +
                 "PRIMARY KEY  (id))",
         
         "CREATE TABLE daten (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
                 "name varchar(250), wert varchar(250)," +
+                "deleted INTEGER DEFAULT 0,"+
                 "reserve1 varchar(500) default NULL,reserve2 varchar(500) default NULL,PRIMARY KEY  (id))",
             
         "CREATE TABLE produkte (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
@@ -394,16 +396,19 @@ public interface Structure {
                 "nummer varchar(500) default NULL,klasse varchar(1000) default NULL,"+
                 "gruppe varchar(1000) default NULL,"+
                 "art varchar(1000) default NULL,"+
+                 "deleted INTEGER DEFAULT 0,"+
                 "reserve1 varchar(500) default NULL,reserve2 varchar(500) default NULL,PRIMARY KEY  (id))",
                    
          "CREATE TABLE ausgaben (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
                 "kontenid INTEGER DEFAULT NULL, beschreibung varchar(500) default NULL,"+
                 "preis varchar(500) default NULL,"+"tax varchar(500) default NULL,"+"datum varchar(500) default NULL,"+
+                 "deleted INTEGER DEFAULT 0,"+
                 "reserve1 varchar(500) default NULL,reserve2 varchar(500) default NULL,PRIMARY KEY  (id))",
                    
          "CREATE TABLE einnahmen (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
                 "kontenid INTEGER DEFAULT NULL, beschreibung varchar(500) default NULL,"+
                 "preis varchar(500) default NULL,"+"tax varchar(500) default NULL,"+"datum varchar(500) default NULL,"+
+                 "deleted INTEGER DEFAULT 0,"+
                 "reserve1 varchar(500) default NULL,reserve2 varchar(500) default NULL,PRIMARY KEY  (id))",
 
     
