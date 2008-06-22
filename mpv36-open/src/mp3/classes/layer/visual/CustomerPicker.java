@@ -17,7 +17,7 @@ import javax.swing.SingleSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import mp3.classes.objects.eur.Customer;
 import mp3.classes.visual.sub.billsView;
-import mp3.classes.visual.sub.ordersView;
+import mp3.classes.visual.sub.offersView;
 
 
 /**
@@ -26,13 +26,13 @@ import mp3.classes.visual.sub.ordersView;
  */
 public class CustomerPicker extends javax.swing.JFrame {
     private billsView frame;
-    private ordersView frame1;
+    private offersView frame1;
     private boolean order=false;
     private Customer cust;
 
  
 
-    public CustomerPicker(ordersView aThis) {
+    public CustomerPicker(offersView aThis) {
         initComponents ();
         this.frame1=aThis;
          cust=frame1.getCustomer();

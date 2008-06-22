@@ -52,7 +52,7 @@ public class OrderPDF {
     private String filename;
     private String separator;
     private MyData l;
-    private Order r;
+    private Offer r;
     private Customer k;
     private Object[][] products;
     private Double netto=0d;
@@ -64,7 +64,7 @@ public class OrderPDF {
      * 
      * @param b
      */
-    public OrderPDF(Order b) {
+    public OrderPDF(Offer b) {
 
 
           l = MyData.instanceOf();

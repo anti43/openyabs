@@ -38,9 +38,9 @@ import mp3.classes.objects.bill.BillProduct;
 import mp3.classes.objects.eur.Customer;
 import mp3.classes.objects.ungrouped.History;
 import mp3.classes.objects.ungrouped.MyData;
-import mp3.classes.objects.bill.Order;
+import mp3.classes.objects.bill.Offer;
 import mp3.classes.objects.pdf.OrderPDF;
-import mp3.classes.objects.bill.OrderProduct;
+import mp3.classes.objects.bill.OfferProduct;
 import mp3.classes.objects.product.Product;
 import mp3.classes.visual.main.mainframe;
 
@@ -48,13 +48,13 @@ import mp3.classes.visual.main.mainframe;
  *
  * @author  anti43
  */
-public class ordersView extends javax.swing.JPanel implements Runnable {
+public class offersView extends javax.swing.JPanel implements Runnable {
 
-    private Order current;
+    private Offer current;
     private String[][] liste;
     private Customer customer;
     private mainframe mainframe;
-    private DefaultTableModel jtable1Model =new DefaultTableModel();
+    private DefaultTableModel jtable1Model = new DefaultTableModel();
     private TableCellEditor editor;
     private SimpleDateFormat df;
     private String jtable3Header;
@@ -63,33 +63,30 @@ public class ordersView extends javax.swing.JPanel implements Runnable {
     private boolean nettoprices = true;
     private Customer oldcustomer;
     private double defTax = 19d;
-
-   
-
     private MyData l;
-             
 
-          @SuppressWarnings("unchecked")
-    public ordersView(mainframe aThis) {
+    @SuppressWarnings("unchecked")
+    public offersView(mainframe aThis) {
         l = MyData.instanceOf();
-        defTax = Double.valueOf( l.getGlobaltax());Log.Debug(defTax);
-     
+        defTax = Double.valueOf(l.getGlobaltax());
+        Log.Debug(defTax);
+
 
         initComponents();
 
 
-        current = new Order(QueryClass.instanceOf());
+        current = new Offer(QueryClass.instanceOf());
 
         current.stripFirst(jTable1);
 
 
         this.updateListTable();
-        
+
         Formater.format(jTable2, 1, 120);
         Formater.format(jTable2, 2, 120);
         Formater.format(jTable2, 3, 120);
 
-        df = new SimpleDateFormat( "dd.MM.yyyy" );
+        df = new SimpleDateFormat("dd.MM.yyyy");
 
         jTextField7.setText(df.format(new Date()));
         jTextField10.setText(df.format(new Date()));
@@ -104,6 +101,8 @@ public class ordersView extends javax.swing.JPanel implements Runnable {
 
         renewTableModel();
         resizeFields();
+
+        offersOfTheMonth();
 
 
     }
@@ -135,12 +134,18 @@ public class ordersView extends javax.swing.JPanel implements Runnable {
                 }
 
                 String str = "";
-                
-                if(name){str = str + product.getName() + " ";}
-                if(text){str = str + product.getText().substring(0, end);}
-                if(ean){str = str + " EAN: " + product.getEan();}
-                
-                m.setValueAt(str , z, 2);
+
+                if (name) {
+                    str = str + product.getName() + " ";
+                }
+                if (text) {
+                    str = str + product.getText().substring(0, end);
+                }
+                if (ean) {
+                    str = str + " EAN: " + product.getEan();
+                }
+
+                m.setValueAt(str, z, 2);
 
             } catch (Exception exception) {
                 Log.Debug(exception);
@@ -175,8 +180,6 @@ public class ordersView extends javax.swing.JPanel implements Runnable {
 
 
     }
-
-
 
     public JTextField getJTextField5() {
         return this.jTextField5;
@@ -213,19 +216,19 @@ public class ordersView extends javax.swing.JPanel implements Runnable {
 //        }
     }
 
-    
-     private void renewTableModel() {
-        PostenTableModel f = 
-                new PostenTableModel(new Object[][]{{null, 1, null, defTax, null, null}, 
-                {null, 1, null, defTax, null, null}, {null, 1, null, defTax, null, null}, 
-                {null, 1, null, defTax, null, null}, {null, 1, null, defTax, null, null}, 
-                {null, 1, null, defTax, null, null}, {null, 1, null, defTax, null, null}, 
-                {null, 1, null, defTax, null, null}, {null, 1, null, defTax, null, null}, 
-                {null, 1, null, defTax, null, null}}, 
+    private void renewTableModel() {
+        PostenTableModel f =
+                new PostenTableModel(new Object[][]{{null, 1, null, defTax, null, null},
+                    {null, 1, null, defTax, null, null}, {null, 1, null, defTax, null, null},
+                    {null, 1, null, defTax, null, null}, {null, 1, null, defTax, null, null},
+                    {null, 1, null, defTax, null, null}, {null, 1, null, defTax, null, null},
+                    {null, 1, null, defTax, null, null}, {null, 1, null, defTax, null, null},
+                    {null, 1, null, defTax, null, null}
+                },
                 new String[]{"id", "Anzahl", "Bezeichnung", "Mehrwertsteuer", "Nettopreis", "Bruttopreis"});
-        
+
         getJTable1().setModel(f);
-        
+
         Formater.stripFirst(jTable1);
     }
 
@@ -270,7 +273,7 @@ public class ordersView extends javax.swing.JPanel implements Runnable {
 //            String[] label = getCurrent().getLabelsOfAllWithDepencies();
             String k = "id,Nummer,Datum,Kunde,Firma,Auftrag";
 
-            Formater.formatTableArray(liste,new int[]{ 5});
+            Formater.formatTableArray(liste, new int[]{5});
             Formater.reverseArray(liste);
             this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
             getCurrent().stripFirst(jTable2);
@@ -285,7 +288,7 @@ public class ordersView extends javax.swing.JPanel implements Runnable {
 
     }
 
-    public void setOrder(Order current) {
+    public void setOrder(Offer current) {
 
         this.current = current;
         this.setCustomer(new Customer(QueryClass.instanceOf(), current.getKundenId()));
@@ -460,7 +463,7 @@ public class ordersView extends javax.swing.JPanel implements Runnable {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 329, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 360, Short.MAX_VALUE)
                 .addComponent(jButton6)
                 .addGap(18, 18, 18)
                 .addComponent(jButton1)
@@ -521,7 +524,7 @@ public class ordersView extends javax.swing.JPanel implements Runnable {
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 346, Short.MAX_VALUE)
+            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 350, Short.MAX_VALUE)
         );
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Suche"));
@@ -564,7 +567,7 @@ public class ordersView extends javax.swing.JPanel implements Runnable {
                     .addComponent(jTextField3)
                     .addComponent(jTextField2)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(26, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -727,7 +730,7 @@ public class ordersView extends javax.swing.JPanel implements Runnable {
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel6Layout.createSequentialGroup()
                                 .addComponent(jCheckBox1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 233, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 249, Short.MAX_VALUE)
                                 .addComponent(jLabel12))
                             .addComponent(jLabel11))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -944,7 +947,7 @@ public class ordersView extends javax.swing.JPanel implements Runnable {
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 518, Short.MAX_VALUE)
+            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 527, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Liste", jPanel3);
@@ -968,14 +971,14 @@ public class ordersView extends javax.swing.JPanel implements Runnable {
     }// </editor-fold>//GEN-END:initComponents
     private void jButton1MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
         jTabbedPane1.setSelectedIndex(0);
-        
-        
+
+
 
     }//GEN-LAST:event_jButton1MouseClicked
 
     private void jButton2MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
         jTabbedPane1.setSelectedIndex(1);
-   
+
     }//GEN-LAST:event_jButton2MouseClicked
 
     private void jTextField1ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
@@ -1041,7 +1044,7 @@ public class ordersView extends javax.swing.JPanel implements Runnable {
 
                 Integer auftragnummer = f.getNextIndex("auftragnummer");
 
-                Order order = new Order(QueryClass.instanceOf());
+                Offer order = new Offer(QueryClass.instanceOf());
 
                 order.setOrdernummer(auftragnummer.toString());
 
@@ -1062,7 +1065,7 @@ public class ordersView extends javax.swing.JPanel implements Runnable {
 
 
 
-                        OrderProduct b = new OrderProduct(QueryClass.instanceOf());
+                        OfferProduct b = new OfferProduct(QueryClass.instanceOf());
 
                         b.setauftragid(order.getId());
 
@@ -1093,7 +1096,7 @@ public class ordersView extends javax.swing.JPanel implements Runnable {
 
 
 
-                this.setOrder(new Order(QueryClass.instanceOf(), order.getId()));
+                this.setOrder(new Offer(QueryClass.instanceOf(), order.getId()));
 
             }
 
@@ -1104,7 +1107,8 @@ public class ordersView extends javax.swing.JPanel implements Runnable {
         updateListTable();
         resizeFields();
 
-       
+        offersOfTheMonth();
+
 
     }//GEN-LAST:event_jButton3MouseClicked
 
@@ -1131,20 +1135,18 @@ public class ordersView extends javax.swing.JPanel implements Runnable {
         if (evt.getClickCount() >= 2 && idOk && evt.getButton() == MouseEvent.BUTTON1) {
 
             try {
-                this.setOrder(new Order(QueryClass.instanceOf(), id.toString()));
+                this.setOrder(new Offer(QueryClass.instanceOf(), id.toString()));
                 jTabbedPane1.setSelectedIndex(0);
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
         } else if (idOk && (evt.getButton() == MouseEvent.BUTTON2 || evt.getButton() == MouseEvent.BUTTON3)) {
-
-
         }
 
 
         idOk = true;
-        
-        
+
+
     }//GEN-LAST:event_jTable2MouseClicked
 
     public void save() {
@@ -1174,7 +1176,7 @@ public class ordersView extends javax.swing.JPanel implements Runnable {
 
                     //Integer auftragnummer = f.getNextIndex("auftragnummer");
 
-                    Order order = getCurrent();
+                    Offer order = getCurrent();
 
 //                    bill.setauftragnummer(auftragnummer.toString());
 
@@ -1195,7 +1197,7 @@ public class ordersView extends javax.swing.JPanel implements Runnable {
 
 
 
-                            OrderProduct b = new OrderProduct(QueryClass.instanceOf(), m.getValueAt(i, 0).toString());
+                            OfferProduct b = new OfferProduct(QueryClass.instanceOf(), m.getValueAt(i, 0).toString());
 
                             b.destroy();
                         }
@@ -1209,7 +1211,7 @@ public class ordersView extends javax.swing.JPanel implements Runnable {
 
 
 
-                            OrderProduct b = new OrderProduct(QueryClass.instanceOf());
+                            OfferProduct b = new OfferProduct(QueryClass.instanceOf());
 
                             b.setauftragid(getCurrent().getId());
 
@@ -1235,7 +1237,7 @@ public class ordersView extends javax.swing.JPanel implements Runnable {
                     new History(QueryClass.instanceOf(), Structure.ORDER, "Angebot Nummer: " + order.getOrdernummer() + " editiert.");
 
 
-                    this.setOrder(new Order(QueryClass.instanceOf(), order.getId()));
+                    this.setOrder(new Offer(QueryClass.instanceOf(), order.getId()));
                 }
             } else {
 
@@ -1259,7 +1261,7 @@ public class ordersView extends javax.swing.JPanel implements Runnable {
 
     private void jButton4MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton4MouseClicked
         save();
-        
+
     }//GEN-LAST:event_jButton4MouseClicked
 
     private void jTable3MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable3MouseClicked
@@ -1277,7 +1279,7 @@ public class ordersView extends javax.swing.JPanel implements Runnable {
         if (evt.getClickCount() >= 2 && idOk) {
 
             try {
-                this.setOrder(new Order(QueryClass.instanceOf(), id.toString()));
+                this.setOrder(new Offer(QueryClass.instanceOf(), id.toString()));
 
             } catch (Exception exception) {
                 exception.printStackTrace();
@@ -1285,7 +1287,7 @@ public class ordersView extends javax.swing.JPanel implements Runnable {
         }
 
         idOk = true;
-        
+
     }//GEN-LAST:event_jTable3MouseClicked
 
     private void clear() {
@@ -1294,8 +1296,8 @@ public class ordersView extends javax.swing.JPanel implements Runnable {
 //        jTextField6.setText(current.getNextBillNumber().toString());
 
         this.customer = new Customer(QueryClass.instanceOf());
-        this.current = new Order(QueryClass.instanceOf());
-        
+        this.current = new Offer(QueryClass.instanceOf());
+
         jTextField4.setText("");
         jTextField5.setText("");
         jTextField6.setText("");
@@ -1303,17 +1305,17 @@ public class ordersView extends javax.swing.JPanel implements Runnable {
         jCheckBox2.setSelected(false);
 
         renewTableModel();
-              
-        df = new SimpleDateFormat( "dd.MM.yyyy" );
+
+        df = new SimpleDateFormat("dd.MM.yyyy");
         jTextField7.setText(df.format(new Date()));
-                
+
         getCurrent().stripFirst(getJTable1());
         resizeFields();
     }
 
     private void jButton7ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
 
-this.clear();
+        this.clear();
 
 //        TableModel m = getJTable1().getModel();
 ////        ListSelectionModel selectionModel = jTable1.getSelectionModel();
@@ -1410,7 +1412,7 @@ this.clear();
 
 
         new CustomerPicker(this);
-    
+
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void jButton10ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
@@ -1449,7 +1451,7 @@ this.clear();
 
 
 
-                OrderProduct b = new OrderProduct(QueryClass.instanceOf(), m.getValueAt(getJTable1().getSelectedRow(), 0).toString());
+                OfferProduct b = new OfferProduct(QueryClass.instanceOf(), m.getValueAt(getJTable1().getSelectedRow(), 0).toString());
 
                 b.destroy();
 
@@ -1488,12 +1490,24 @@ this.clear();
 //            selectionModel.setSelectionInterval(getLastRow(),
 //                    getLastRow());
 //        }
-        
+
     }//GEN-LAST:event_jButton5MouseClicked
 
     private void jCheckBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox2ActionPerformed
-        
+        jButton12ActionPerformed(evt);
+
     }//GEN-LAST:event_jCheckBox2ActionPerformed
+
+    private void offersOfTheMonth() {
+        df = new SimpleDateFormat("MM.yyyy");
+        jTextField2.setText(df.format(new Date()));
+
+        String[][] list = getCurrent().select("id, auftragnummer, datum ", "datum", jTextField2.getText(), "datum", true);
+        String k = "id, " + "Nummer,Datum";
+
+        this.jTable3.setModel(new DefaultTableModel(list, k.split(",")));
+        getCurrent().stripFirst(jTable3);
+    }
 
     private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
         if (current.hasId()) {
@@ -1505,9 +1519,7 @@ this.clear();
                 mainframe.nachricht("Angebot Nummer " + current.getOrdernummer() + " als 'Auftrag' markiert.");
 
 //        this.setOrder(current);
-            } else {
-
-//            this.setAuftrag(false);
+            } else {//            this.setAuftrag(false);
 //        this.current.setAuftrag(false);
 //        
 //        this.current.save();
@@ -1519,7 +1531,6 @@ this.clear();
     }//GEN-LAST:event_jButton12ActionPerformed
 
     private void jTextField10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField10ActionPerformed
-        
     }//GEN-LAST:event_jTextField10ActionPerformed
 
     private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
@@ -1527,7 +1538,6 @@ this.clear();
     }//GEN-LAST:event_jButton13ActionPerformed
 
     private void jButton13KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton13KeyPressed
-        
     }//GEN-LAST:event_jButton13KeyPressed
 
     private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
@@ -1536,6 +1546,7 @@ this.clear();
         jButton12ActionPerformed(evt);
 
 
+        df = new SimpleDateFormat("dd.MM.yyyy");
         Bill bill = new Bill(QueryClass.instanceOf());
         if (!current.hasRechnung()) {
             current.setAuftrag(true);
@@ -1722,11 +1733,11 @@ this.clear();
         }
     }
 
-    public Order getCurrent() {
+    public Offer getCurrent() {
         if (current != null) {
             return current;
         } else {
-            return new Order(QueryClass.instanceOf());
+            return new Offer(QueryClass.instanceOf());
         }
     }
 
@@ -1761,14 +1772,16 @@ this.clear();
         CellEditor cell;
 
         while (true) {
-            try{
+            try {
                 Thread.sleep(1000);
-                }catch (Exception e){}
+            } catch (Exception e) {
+            }
             while (mainframe.getShowingTab() == 2) {
-                try{
-                Thread.sleep(800);
-                }catch (Exception e){}
-                
+                try {
+                    Thread.sleep(800);
+                } catch (Exception e) {
+                }
+
                 TableModel m = getJTable1().getModel();
 
 //            Log.Debug(getJTable1().getModel().getColumnClass(1));
@@ -1860,14 +1873,14 @@ this.clear();
                         jTextField8.setText(Formater.formatDecimal(brutto));//!tax
                     }
 
-                   
+
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             }
         }
     }
-    }
+}
 
 
 

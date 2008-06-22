@@ -23,7 +23,7 @@ import mp3.classes.layer.Popup;
  *
  * @author anti43
  */
-public class OrderProduct extends mp3.classes.layer.Things implements mp3.classes.interfaces.Structure {
+public class OfferProduct extends mp3.classes.layer.Things implements mp3.classes.interfaces.Structure {
 
     private String auftragid= "";
     private String anzahl = "";
@@ -31,7 +31,7 @@ public class OrderProduct extends mp3.classes.layer.Things implements mp3.classe
     private String preis = "";
     private String steuersatz = "";
 
-    public OrderProduct(Query query) {
+    public OfferProduct(Query query) {
         super(query.clone(TABLE_ORDERS_DATA));
 
     }
@@ -41,7 +41,7 @@ public class OrderProduct extends mp3.classes.layer.Things implements mp3.classe
      * @param query
      * @param id
      */
-    public OrderProduct(Query query, String id) {
+    public OfferProduct(Query query, String id) {
         super(query.clone(TABLE_ORDERS_DATA));
         this.id = Integer.valueOf(id);
         this.explode(this.selectLast("*", "id", id, true));

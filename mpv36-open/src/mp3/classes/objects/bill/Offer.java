@@ -27,7 +27,7 @@ import mp3.classes.layer.PostenTableModel;
  *
  * @author anti43
  */
-public class Order extends mp3.classes.layer.Things implements mp3.classes.interfaces.Structure {
+public class Offer extends mp3.classes.layer.Things implements mp3.classes.interfaces.Structure {
 
     private String Ordernummer = "";
     private String KundenId = "";
@@ -38,12 +38,12 @@ public class Order extends mp3.classes.layer.Things implements mp3.classes.inter
     private String bisDatum ="";
     private boolean rechnung =false;
     
-    private OrderProduct[] bp;
+    private OfferProduct[] bp;
     private Query query;
     private String[][] products;
     private List labelsOfGetAllWithD;
 
-    public Order(Query query) {
+    public Offer(Query query) {
         super(query.clone(TABLE_ORDERS));
         this.query = query;
     }
@@ -53,7 +53,7 @@ public class Order extends mp3.classes.layer.Things implements mp3.classes.inter
      * @param query
      * @param id
      */
-    public Order(Query query, String id) {
+    public Offer(Query query, String id) {
         super(query.clone(TABLE_ORDERS));
         this.id = Integer.valueOf(id);
         this.explode(this.selectLast(ALL, ID, id, true));
@@ -61,7 +61,7 @@ public class Order extends mp3.classes.layer.Things implements mp3.classes.inter
         bp = getProducts(query);
     }
 
-    public Order expose() {
+    public Offer expose() {
 
         System.out.println(collect());
         return this;
@@ -275,14 +275,14 @@ public class Order extends mp3.classes.layer.Things implements mp3.classes.inter
         return Integer.valueOf(str[0]);
     }
 
-    private OrderProduct[] getProducts(Query query) {
+    private OfferProduct[] getProducts(Query query) {
 
         Query q = query.clone(TABLE_ORDERS_DATA);
 
         String[] wher = {"auftragid", this.getId(), ""};
 
         products = q.select(ALL, wher);
-        OrderProduct[] prof = null;
+        OfferProduct[] prof = null;
 //
 //        for (int t = 0; t < str.length; t++) {
 //

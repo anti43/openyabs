@@ -167,6 +167,7 @@ public class Bill extends mp3.classes.layer.Things implements mp3.classes.interf
             this.setGesamtpreis(select[6]);
             this.setGesamttax(select[7]);
         } catch (Exception exception) {
+             Log.Debug(exception.getMessage());
         }
 
 
@@ -195,7 +196,7 @@ public class Bill extends mp3.classes.layer.Things implements mp3.classes.interf
                     Log.Debug("Rechnung in Verzug!");
                 }
 
-            } catch (ParseException ex) {
+            } catch (Exception ex) {
                 Log.Debug(ex.getMessage());
             }
 

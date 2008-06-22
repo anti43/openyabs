@@ -91,17 +91,17 @@ public class SplashScreen extends javax.swing.JFrame implements Runnable {
         setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
         setResizable(false);
 
-        jPanel1.setBackground(new java.awt.Color(0, 51, 51));
+        jPanel1.setBackground(new java.awt.Color(255, 248, 220));
 
         jLabel1.setFont(new java.awt.Font("Arial", 0, 12));
-        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel1.setForeground(new java.awt.Color(0, 0, 0));
         jLabel1.setText("Lade MP...");
 
-        message.setForeground(new java.awt.Color(204, 204, 255));
+        message.setForeground(new java.awt.Color(0, 0, 0));
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/babytux.png"))); // NOI18N
 
-        jLabel3.setForeground(new java.awt.Color(204, 255, 204));
+        jLabel3.setForeground(new java.awt.Color(0, 0, 0));
         jLabel3.setText("GPL Software");
 
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);

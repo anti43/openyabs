@@ -14,7 +14,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import mp3.classes.objects.product.Product;
 import mp3.classes.visual.sub.billsView;
-import mp3.classes.visual.sub.ordersView;
+import mp3.classes.visual.sub.offersView;
 
 
 /**
@@ -34,7 +34,7 @@ public class ProductPicker extends javax.swing.JFrame {
     private Product p;
     private static String[][] liste;
     private String[][] list;
-    private ordersView frame1;
+    private offersView frame1;
     private boolean order=false;
 
 public static void update(){
@@ -42,7 +42,7 @@ public static void update(){
         ProductPicker.setListe( n.select("id,produktnummer,name,hersteller", "produktnummer", "", "produktnummer", true));
 }
 
-    public ProductPicker(ordersView aThis) {
+    public ProductPicker(offersView aThis) {
         initComponents ();
         this.frame1=aThis;
         p = new Product(QueryClass.instanceOf());

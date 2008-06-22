@@ -16,10 +16,13 @@
  */
 package mp3.classes.visual.main;
 
+import java.awt.event.WindowListener;
 import mp3.Main;
 import java.awt.BorderLayout;
 
 import java.awt.Color;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import mp3.classes.interfaces.Constants;
@@ -44,7 +47,7 @@ import mp3.classes.visual.sub.billsView;
 import mp3.classes.visual.sub.customersView;
 //import mp3.classes.visual.sub.*;
 import mp3.classes.visual.sub.historyView;
-import mp3.classes.visual.sub.ordersView;
+import mp3.classes.visual.sub.offersView;
 
 import mp3.classes.visual.sub.productsView;
 //import mp3.classes.visual.sub.*;
@@ -53,7 +56,6 @@ import mp3.classes.visual.sub.suppliersView;
 import mp3.classes.visual.main.EinnahmenChart;
 import mp3.classes.visual.main.UmsatzChart;
 import mp3.classes.visual.sub.eurView;
-
 
 /**
  *
@@ -65,7 +67,7 @@ public class mainframe extends javax.swing.JFrame {
     private billsView b;
     private productsView d;
     private suppliersView e;
-    private ordersView f;
+    private offersView f;
     private historyView g;
     private backupView h;
     private startView i;
@@ -81,16 +83,17 @@ public class mainframe extends javax.swing.JFrame {
         this.loader = mainclass;
         splash.setMessage("Initialisiere Oberfläche...");
         initComponents();
-        
+
         try {
             this.setSize(MyData.instanceOf().getMainframeSize());
 
         } catch (Exception exception) {
+            Log.Debug(exception.getMessage(),true);
             this.setExtendedState(mainframe.MAXIMIZED_BOTH);
         }
 
-        
-        
+
+
 
 
         splash.setMessage("Initialisiere Datenbank...");
@@ -115,7 +118,7 @@ public class mainframe extends javax.swing.JFrame {
         b = new billsView(this);
         d = new productsView(this);
         e = new suppliersView(this);
-        f = new ordersView(this);
+        f = new offersView(this);
         g = new historyView(this);
         h = new backupView(this);
         i = new startView(this);
@@ -136,9 +139,9 @@ public class mainframe extends javax.swing.JFrame {
             jTabbedPane1.setSelectedIndex(MyData.instanceOf().getLasttab());
         } catch (Exception exception) {
         }
-    
+
         try {
-            this.setTitle("MP "+Constants.VERSION);
+            this.setTitle("MP " + Constants.VERSION);
             this.setVisible(rootPaneCheckingEnabled);
 
         } catch (Exception exception) {
@@ -148,7 +151,16 @@ public class mainframe extends javax.swing.JFrame {
             System.gc();
         }
 
-        nachricht("Anmerkungen, Bugs und Feedback zu MP bitte an mp-rechnungs-und-kundenverwaltung@googlegroups.com senden. Vielen Dank!"); 
+
+        this.addWindowListener(new WindowAdapter() {
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+                close();
+            }
+        });
+
+        nachricht("Anmerkungen, Bugs und Feedback zu MP bitte an mp-rechnungs-und-kundenverwaltung@googlegroups.com senden. Vielen Dank!");
     }
 
     public customersView getCustomersView() {
@@ -170,7 +182,7 @@ public class mainframe extends javax.swing.JFrame {
         b = new billsView(this);
         d = new productsView(this);
         e = new suppliersView(this);
-        f = new ordersView(this);
+        f = new offersView(this);
         g = new historyView(this);
         h = new backupView(this);
         i = new startView(this);
@@ -196,6 +208,13 @@ public class mainframe extends javax.swing.JFrame {
         if (firststart) {
             new settingsView(this).setVisible(firststart);
         }
+         this.addWindowListener(new WindowAdapter() {
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+                close();
+            }
+        });
     }
 
     /**
@@ -221,7 +240,7 @@ public class mainframe extends javax.swing.JFrame {
      * 
      * @return
      */
-    public ordersView getOrdersView() {
+    public offersView getOrdersView() {
         return f;
     }
 
@@ -316,7 +335,7 @@ public class mainframe extends javax.swing.JFrame {
         jSeparator5 = new javax.swing.JSeparator();
         jMenuItem21 = new javax.swing.JMenuItem();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("MP");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setExtendedState(this.MAXIMIZED_BOTH);
@@ -426,6 +445,11 @@ public class mainframe extends javax.swing.JFrame {
         jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jButton1MouseClicked(evt);
+            }
+        });
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
             }
         });
 
@@ -698,12 +722,9 @@ public class mainframe extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     private void jTabbedPane1PropertyChange (java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jTabbedPane1PropertyChange
-       
     }//GEN-LAST:event_jTabbedPane1PropertyChange
 
     private void jTabbedPane1MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTabbedPane1MouseClicked
-   
-          
     }//GEN-LAST:event_jTabbedPane1MouseClicked
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
@@ -712,8 +733,6 @@ public class mainframe extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuItem3MouseClicked
-       
-        
     }//GEN-LAST:event_jMenuItem3MouseClicked
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
@@ -724,7 +743,6 @@ public class mainframe extends javax.swing.JFrame {
         new settingsView(this).setVisible(rootPaneCheckingEnabled);
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
-    
     private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
         liscense l = new liscense();
         new WindowTools(l);
@@ -771,16 +789,26 @@ public class mainframe extends javax.swing.JFrame {
 
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
 
-        MyData.instanceOf().setState(this.getHeight(),this.getWidth());
-        h.saving();
-
-        MyData.instanceOf().setLasttab(String.valueOf(jTabbedPane1.getSelectedIndex()));
-        MyData.instanceOf().save();
-
-        System.exit(0);
-        
-        
+        close();
     }//GEN-LAST:event_jButton1MouseClicked
+
+    private void close() {
+
+
+        try {
+            MyData.instanceOf().setState(this.getHeight(), this.getWidth());
+            h.saving();
+
+            MyData.instanceOf().setLasttab(String.valueOf(jTabbedPane1.getSelectedIndex()));
+            MyData.instanceOf().save();
+
+            System.exit(0);
+        } catch (Exception e) {
+            System.exit(0);
+        }
+
+
+    }
 
     private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
         new fastChoice(this, 0);
@@ -826,10 +854,10 @@ public class mainframe extends javax.swing.JFrame {
                 this.getC().save();
                 break;
         }
-        
-        
-        
-        
+
+
+
+
     }//GEN-LAST:event_jMenuItem12ActionPerformed
 
     private void jMenuItem13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem13ActionPerformed
@@ -838,15 +866,15 @@ public class mainframe extends javax.swing.JFrame {
 
     private void jMenuItem14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem14ActionPerformed
 
-        MyData.instanceOf().setState(this.getHeight(),this.getWidth());
-        
+        MyData.instanceOf().setState(this.getHeight(), this.getWidth());
+
         h.saving();
 
         MyData.instanceOf().setLasttab(String.valueOf(jTabbedPane1.getSelectedIndex()));
         MyData.instanceOf().save();
 
         System.exit(0);
-        
+
     }//GEN-LAST:event_jMenuItem14ActionPerformed
 
     private void jButton5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton5MouseClicked
@@ -868,7 +896,7 @@ public class mainframe extends javax.swing.JFrame {
         }
 
         new Browser(fils);
-     
+
     }//GEN-LAST:event_jMenuItem15ActionPerformed
 
     private void jMenuItem16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem16ActionPerformed
@@ -888,8 +916,8 @@ public class mainframe extends javax.swing.JFrame {
         }
 
         new Browser(fils);
-     
-        
+
+
     }//GEN-LAST:event_jMenuItem16ActionPerformed
 
     private void jMenuItem17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem17ActionPerformed
@@ -907,7 +935,7 @@ public class mainframe extends javax.swing.JFrame {
         }
 
         new Browser(fils);
-     
+
     }//GEN-LAST:event_jMenuItem17ActionPerformed
 
     private void jMenuItem18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem18ActionPerformed
@@ -932,6 +960,10 @@ public class mainframe extends javax.swing.JFrame {
 private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 // TODO add your handling code here:
 }//GEN-LAST:event_jButton2ActionPerformed
+
+private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+// TODO add your handling code here:
+}//GEN-LAST:event_jButton1ActionPerformed
 
     @Override
     public void finalize() {
@@ -1081,11 +1113,12 @@ private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     public javax.swing.JLabel getNachricht() {
         return nachricht;
     }
+
     @Override
-    public void dispose(){
-    
-        MyData.instanceOf().setState(this.getHeight(),this.getWidth());
-        
+    public void dispose() {
+
+        MyData.instanceOf().setState(this.getHeight(), this.getWidth());
+
         MyData.instanceOf().setLasttab(String.valueOf(jTabbedPane1.getSelectedIndex()));
         MyData.instanceOf().save();
 

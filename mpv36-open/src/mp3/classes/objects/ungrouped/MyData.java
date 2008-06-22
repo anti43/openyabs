@@ -173,6 +173,7 @@ public class MyData extends mp3.classes.layer.People implements mp3.classes.inte
             this.setAgDefaultKonto(str[12 + 1][1]);
             this.setLocale(new Locale("de", str[14][1]));
 
+            this.setState(str[15][1]);
 
             try {
 
@@ -219,7 +220,8 @@ public class MyData extends mp3.classes.layer.People implements mp3.classes.inte
             this.setEkDefaultKonto(str[12][1]);
             this.setAgDefaultKonto(str[12 + 1][1]);
             this.setLocale(new Locale("de", str[14][1]));
-
+            this.setState(str[15][1]);
+             
             try {
 
                 this.setEinnahmeDefKonto(new SKRKonto(QueryClass.instanceOf(), getEkDefaultKonto(), true));
@@ -258,21 +260,8 @@ public class MyData extends mp3.classes.layer.People implements mp3.classes.inte
         string[11][1] = getLasttab().toString();
         string[12][1] = getEkDefaultKonto();
         string[12 + 1][1] = getAgDefaultKonto();
-        try {
-            string[14][1] = getLocale().getCountry();
-
-        } catch (Exception exception) {
-        }
-
-        try {
-            string[15][1] = getState();
-
-        } catch (Exception exception) {
-        }
-
-
-
-
+        string[14][1] = getLocale().getCountry();
+        string[15][1] = getState();
     }
 
     public void save() {
@@ -456,6 +445,7 @@ public class MyData extends mp3.classes.layer.People implements mp3.classes.inte
 
     public Dimension getMainframeSize() {
 
+        
         return new Dimension(Integer.valueOf(getState().split(",")[1]), Integer.valueOf(getState().split(",")[0]));
 
 
