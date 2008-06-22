@@ -18,6 +18,8 @@
 package mp3.classes.layer;
 
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JProgressBar;
 import mp3.database.util.Conn;
 import mp3.classes.interfaces.Constants;
@@ -58,7 +60,7 @@ public class QueryClass extends mp3.database.util.Query implements mp3.classes.i
      * 
      * Singleton!
      */
-    private QueryClass() {
+    private QueryClass() throws Exception {
         super(Conn.getConnection(), TABLE_MYDATA);
 
     }
@@ -78,14 +80,18 @@ public class QueryClass extends mp3.database.util.Query implements mp3.classes.i
     
     
         if(qc ==null) {
-            qc = new QueryClass();
-            qc.setProgressBar(bar, mainf);
-            return qc;
+            try {
+                qc = new QueryClass();
+                qc.setProgressBar(bar, mainf);
+                return qc;
+            } catch (Exception ex) {
+               Popup.warn(ex.getMessage(), Popup.ERROR);
+            }
         }else {
             qc.setProgressBar(bar,mainf);
             return qc;
         }
-        
+        return null;
     }
     
 }

@@ -22,6 +22,8 @@
 package mp3.installer;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mp3.database.util.Conn;
 import de.copyleft.java.utils.cout;
 
@@ -337,7 +339,11 @@ public class MpInstaller extends javax.swing.JFrame implements ProtectedStrings,
 
         url = Constants.DATABASEPATH + File.separator + Constants.DATABASENAME;
         Conn c = null;
-        c = Conn.instanceOf(url, true);
+        try {
+            c = Conn.instanceOf(url, true);
+        } catch (Exception ex) {
+           Popup.warn(ex.getMessage(), Popup.ERROR);
+        }
 
         return Conn.isTablesCreated();
     }

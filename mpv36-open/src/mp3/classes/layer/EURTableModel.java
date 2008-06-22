@@ -18,6 +18,8 @@
  */
 package mp3.classes.layer;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
 import mp3.database.util.Query;
 import mp3.classes.interfaces.Constants;
@@ -74,11 +76,15 @@ public class EURTableModel implements ProtectedStrings, Constants, Strings, Stru
         }
 
 
-        Query q = QueryClass.instanceOf().clone(TABLE_DUES);
-
+        Query q = null;
         String[][] ausgaben = q.select("kontenid, preis, tax, datum", null);
         Integer x = 0;
         double net = 0d;
+        try {
+            q = QueryClass.instanceOf().clone(TABLE_DUES);
+        } catch (Exception ex) {
+           Popup.warn(ex.getMessage(), Popup.ERROR);
+        }
 
 
 
@@ -199,7 +205,11 @@ public class EURTableModel implements ProtectedStrings, Constants, Strings, Stru
         data[20][1] = Formater.formatMoney(gesamtausgabe);
 
 
-        q = QueryClass.instanceOf().clone(TABLE_INCOME);
+        try {
+            q = QueryClass.instanceOf().clone(TABLE_INCOME);
+        } catch (Exception exception) {
+            Popup.warn(exception.getMessage(), Popup.ERROR);
+        }
 
         String[][] einnahmen = q.select("kontenid, preis, tax, datum", null);
 
@@ -337,11 +347,16 @@ public class EURTableModel implements ProtectedStrings, Constants, Strings, Stru
         }
 
 
-        Query q = QueryClass.instanceOf().clone(TABLE_DUES);
+        Query q = null;
 
         String[][] ausgaben = q.select("kontenid, preis, tax, datum", null);
         Integer x = 0;
         double net = 0d;
+        try {
+            q = QueryClass.instanceOf().clone(TABLE_DUES);
+        } catch (Exception ex) {
+            Popup.warn(ex.getMessage(), Popup.ERROR);
+        }
 
 
 
@@ -463,8 +478,11 @@ public class EURTableModel implements ProtectedStrings, Constants, Strings, Stru
         data[20][1] = Formater.formatMoney(gesamtausgabe);
 
 
-        q = QueryClass.instanceOf().clone(TABLE_INCOME);
-
+        try {
+            q = QueryClass.instanceOf().clone(TABLE_INCOME);
+        } catch (Exception exception) {
+            Popup.warn(exception.getMessage(), Popup.ERROR);
+        }
         String[][] einnahmen = q.select("kontenid, preis, tax, datum", null);
 
         for (int h = 0; h < einnahmen.length; h++) {

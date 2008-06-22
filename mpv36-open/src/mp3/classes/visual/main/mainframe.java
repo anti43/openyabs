@@ -84,18 +84,6 @@ public class mainframe extends javax.swing.JFrame {
         splash.setMessage("Initialisiere Oberfläche...");
         initComponents();
 
-        try {
-            this.setSize(MyData.instanceOf().getMainframeSize());
-
-        } catch (Exception exception) {
-            Log.Debug(exception.getMessage(),true);
-            this.setExtendedState(mainframe.MAXIMIZED_BOTH);
-        }
-
-
-
-
-
         splash.setMessage("Initialisiere Datenbank...");
 
         try {
@@ -149,6 +137,14 @@ public class mainframe extends javax.swing.JFrame {
             loader = null;
             System.gc();
             System.gc();
+        }
+
+        try {
+            this.setSize(MyData.instanceOf().getMainframeSize());
+
+        } catch (Exception exception) {
+            Log.Debug(exception.getMessage(), true);
+            this.setExtendedState(mainframe.MAXIMIZED_BOTH);
         }
 
 
@@ -208,7 +204,7 @@ public class mainframe extends javax.swing.JFrame {
         if (firststart) {
             new settingsView(this).setVisible(firststart);
         }
-         this.addWindowListener(new WindowAdapter() {
+        this.addWindowListener(new WindowAdapter() {
 
             @Override
             public void windowClosing(WindowEvent e) {

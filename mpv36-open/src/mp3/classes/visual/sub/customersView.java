@@ -5,6 +5,8 @@
  */
 package mp3.classes.visual.sub;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mp3.classes.visual.sub.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -43,8 +45,12 @@ public class customersView extends javax.swing.JPanel {
      */
     public customersView(mainframe aThis) {
         initComponents();
+        try {
 
-        current = new Customer(QueryClass.instanceOf());
+            current = new Customer(QueryClass.instanceOf());
+        } catch (Exception ex) {
+            Popup.warn(ex.getMessage(), Popup.ERROR);
+        }
 
         liste = current.getAll(false);
         String k = "id, " + Structure.TABLE_CUSTOMER_FIELDS;
@@ -905,8 +911,12 @@ public class customersView extends javax.swing.JPanel {
             
                 jTextField5.setText("Privat: " + jTextField7.getText());
             }
-            
-            current = new Customer(QueryClass.instanceOf());
+            try {
+
+                current = new Customer(QueryClass.instanceOf());
+            } catch (Exception ex) {
+                Popup.warn(ex.getMessage(), Popup.ERROR);
+            }
 
             try {
 
@@ -961,9 +971,13 @@ public class customersView extends javax.swing.JPanel {
 //            mainframe.nachricht("Kunde Nummer " + current.getKundennummer() + " angelegt.");
 
             mainframe.nachricht("Kunde Nummer " + current.getKundennummer() + " gespeichert.");
+            try {
 
 
-            new History(QueryClass.instanceOf(), Structure.CUSTOMER, "Kunde Nummer: " + current.getKundennummer() + " angelegt.");
+                new History(QueryClass.instanceOf(), Structure.CUSTOMER, "Kunde Nummer: " + current.getKundennummer() + " angelegt.");
+            } catch (Exception ex) {
+                Popup.warn(ex.getMessage(), Popup.ERROR);
+            }
 
 
             liste = current.getAll(false);
@@ -976,6 +990,7 @@ public class customersView extends javax.swing.JPanel {
                 this.setCustomer(new Customer(QueryClass.instanceOf(), cur,true));
 
             } catch (Exception exception) {
+                Popup.warn(exception.getMessage(), Popup.ERROR);
             }
 
 
@@ -1049,34 +1064,38 @@ public class customersView extends javax.swing.JPanel {
 
         if (!current.getId().equals("0")) {
             if (jTextField7.getText().length() > 2) {
+                try {
 
-                current.setFirma(jTextField5.getText());
-                current.setAnrede(jTextField6.getText());
-                current.setName(jTextField7.getText());
-                current.setVorname(jTextField8.getText());
-                current.setStr(jTextField9.getText());
-                current.setPLZ(jTextField16.getText());
-                current.setOrt(jTextField10.getText());
-                current.setTel(jTextField11.getText());
-                current.setFax(jTextField12.getText());
-                current.setMobil(jTextField13.getText());
-                current.setMail(jTextField14.getText());
-                current.setWebseite(jTextField15.getText());
+                    current.setFirma(jTextField5.getText());
+                    current.setAnrede(jTextField6.getText());
+                    current.setName(jTextField7.getText());
+                    current.setVorname(jTextField8.getText());
+                    current.setStr(jTextField9.getText());
+                    current.setPLZ(jTextField16.getText());
+                    current.setOrt(jTextField10.getText());
+                    current.setTel(jTextField11.getText());
+                    current.setFax(jTextField12.getText());
+                    current.setMobil(jTextField13.getText());
+                    current.setMail(jTextField14.getText());
+                    current.setWebseite(jTextField15.getText());
 
-                current.setNotizen(jTextArea1.getText());
+                    current.setNotizen(jTextArea1.getText());
 
-                current.save();
+                    current.save();
 
-                mainframe.nachricht("Kunde Nummer " + current.getKundennummer() + " gespeichert.");
+                    mainframe.nachricht("Kunde Nummer " + current.getKundennummer() + " gespeichert.");
 
-                new History(QueryClass.instanceOf(), Structure.CUSTOMER, "Kunde Nummer: " + current.getKundennummer() + " editiert.");
+                    new History(QueryClass.instanceOf(), Structure.CUSTOMER, "Kunde Nummer: " + current.getKundennummer() + " editiert.");
 
 
-                liste = current.getAll(false);
-                String k = "id, " + Structure.TABLE_CUSTOMER_FIELDS;
+                    liste = current.getAll(false);
+                    String k = "id, " + Structure.TABLE_CUSTOMER_FIELDS;
 
-                this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
-                current.stripFirst(jTable2);
+                    this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
+                    current.stripFirst(jTable2);
+                } catch (Exception ex) {
+                    Popup.warn(ex.getMessage(), Popup.ERROR);
+                }
             } else {
 
                 new Popup("Sie müssen mindestens einen Namen angeben.", Popup.ERROR);
@@ -1168,11 +1187,15 @@ public class customersView extends javax.swing.JPanel {
 
 
         if (evt.getClickCount() >= 2 && idOk) {
+            try {
 
 
-            mainframe.getB().setBill(new Bill(QueryClass.instanceOf(), id.toString()).expose());
+                mainframe.getB().setBill(new Bill(QueryClass.instanceOf(), id.toString()).expose());
 
-            mainframe.getJTabbedPane1().setSelectedIndex(1);
+                mainframe.getJTabbedPane1().setSelectedIndex(1);
+            } catch (Exception ex) {
+                Popup.warn(ex.getMessage(), Popup.ERROR);
+            }
 
         }
 
@@ -1189,35 +1212,39 @@ public class customersView extends javax.swing.JPanel {
 
 
         if ((JOptionPane.showConfirmDialog(this, "Wirklich löschen?", "Sicher?", JOptionPane.YES_NO_OPTION)) == JOptionPane.YES_OPTION) {
-            current.deactivate(current.getId().toString());
+            try {
+                current.deactivate(current.getId().toString());
 
-            new History(QueryClass.instanceOf(), Structure.CUSTOMER, "Kunde Nummer: " + current.getKundennummer() + " gelöscht.");
+                new History(QueryClass.instanceOf(), Structure.CUSTOMER, "Kunde Nummer: " + current.getKundennummer() + " gelöscht.");
 
 
 
-            this.jTextField4.setText("");
-            this.jTextField5.setText("");
-            this.jTextField6.setText("");
-            this.jTextField7.setText("");
-            this.jTextField8.setText("");
-            this.jTextField9.setText("");
-            this.jTextField10.setText("");
-            this.jTextField11.setText("");
-            this.jTextField12.setText("");
-            this.jTextField13.setText("");
-            this.jTextField14.setText("");
-            this.jTextField15.setText("");
-            this.jTextField16.setText("");
+                this.jTextField4.setText("");
+                this.jTextField5.setText("");
+                this.jTextField6.setText("");
+                this.jTextField7.setText("");
+                this.jTextField8.setText("");
+                this.jTextField9.setText("");
+                this.jTextField10.setText("");
+                this.jTextField11.setText("");
+                this.jTextField12.setText("");
+                this.jTextField13.setText("");
+                this.jTextField14.setText("");
+                this.jTextField15.setText("");
+                this.jTextField16.setText("");
 
-            this.jTextArea1.setText("");
+                this.jTextArea1.setText("");
 
-            liste = current.getAll(false);
-            String k = "id," + Structure.TABLE_CUSTOMER_FIELDS;
+                liste = current.getAll(false);
+                String k = "id," + Structure.TABLE_CUSTOMER_FIELDS;
 
-            this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
-            current.stripFirst(jTable2);
+                this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
+                current.stripFirst(jTable2);
 
-            current = new Customer(QueryClass.instanceOf());
+                current = new Customer(QueryClass.instanceOf());
+            } catch (Exception ex) {
+                Popup.warn(ex.getMessage(), Popup.ERROR);
+            }
         }
     }//GEN-LAST:event_jButton9MouseClicked
 

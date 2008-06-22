@@ -33,25 +33,36 @@ import mp3.classes.visual.main.mainframe;
  *
  * @author anti43
  */
-public class Main implements Strings{
-    private static SplashScreen splash;
-    private static String VERSION= Constants.VERSION;
+public class Main implements Strings {
 
-  
+    private static SplashScreen splash;
+    private static String VERSION = Constants.VERSION;
+
     /**
      * 
      * @param args
      */
-    public Main(String[] args){
-    //LuF anpassen
-       try {
+    public Main(String[] args) {
+
+        try {
+            if (args.length > 0 && args[0].endsWith("verbose")) {
+                Log.setLogLevel(Log.LOGLEVEL_HIGH);
+            } else {
+
+                Log.setLogLevel(Log.LOGLEVEL_LOW);
+            }
+        } catch (Exception exception) {
+            Log.setLogLevel(Log.LOGLEVEL_LOW);
+        }
+        //LaF anpassen
+        try {
             UIManager.setLookAndFeel(new TinyLookAndFeel());
         } catch (Exception exe) {
             exe.printStackTrace();
         }
         //Splashscreen initialisieren
         splash = new SplashScreen(TEST_CONF);
- 
+
         //settings Datei schreiben
         try {
             File df = new File(Constants.SETTINGS);
@@ -68,26 +79,14 @@ public class Main implements Strings{
                     System.exit(1);
                 }
             }
-            
+
             FileReaderWriter f = new FileReaderWriter(Constants.SETTINGS);
             String[] dat = f.read().split(COLON);
             String db = dat[0] + File.separator + Constants.DATABASENAME;
             File test = new File(db);
-            
+
             //Datenbank suchen
             if (test.exists()) {
-                
-                try {
-                    if (args.length > 0 && args[0].endsWith("verbose")) {
-                        Log.setLogLevel(Log.LOGLEVEL_HIGH);
-                    } else {
-
-                        Log.setLogLevel(Log.LOGLEVEL_LOW);
-                    }
-                } catch (Exception exception) {
-                      Log.setLogLevel(Log.LOGLEVEL_LOW);
-                }
-                
                 try {
                     splash.setComp(new mainframe(splash, this));
                 } catch (Exception exception) {
@@ -104,6 +103,12 @@ public class Main implements Strings{
     }
 
     public static void main(String[] args) {
-        new Main(args);
+        
+        try {
+            new Main(args);
+        } catch (Exception e) {
+            Popup.warn(e.getMessage(), Popup.ERROR);
+            System.exit(1);
+        }
     }
 }

@@ -23,17 +23,18 @@ import mp3.classes.interfaces.Constants;
 import mp3.classes.interfaces.Strings;
 import mp3.classes.utils.FileReaderWriter;
 import mp3.classes.layer.Popup;
+import mp3.classes.utils.Log;
 import mp3.classes.utils.SplashScreen;
 
 /**
  *
  * @author anti43
  */
-public class Conn implements Strings{
+public class Conn implements Strings {
 
     private static Conn connector;
 
-    public static void reboot() {
+    public static void reboot() throws Exception {
 
         Conn.shutdown();
         connector = new Conn();
@@ -43,30 +44,29 @@ public class Conn implements Strings{
      * 
      * @return Database connector
      */
-    public static Conn instanceOf() {
+    public static Conn instanceOf() throws Exception {
         if (connector == null) {
             connector = new Conn();
         }
         return connector;
 
     }
-    
-      /**
+
+    /**
      * 
-       * @param url 
-       * @param create 
-       * @return Database connector
+     * @param url 
+     * @param create 
+     * @return Database connector
      */
-    public static Conn instanceOf(String url, boolean create) {
+    public static Conn instanceOf(String url, boolean create) throws Exception {
         if (connector == null) {
-            connector = new Conn(url,create);
+            connector = new Conn(url, create);
         }
         return connector;
 
     }
     private static Statement statement;
     private static java.sql.Connection conn;
-   
     /**
      * Verbindung zur Datenbank
      */
@@ -86,9 +86,9 @@ public class Conn implements Strings{
      * @param url
      * @param create 
      */
-    private Conn(String url, boolean create) {
-    
-     if(splash!=null) {
+    private Conn(String url, boolean create) throws Exception {
+
+        if (splash != null) {
             splash.setMessage(DB_INIT);
         }
 
@@ -97,43 +97,43 @@ public class Conn implements Strings{
 
         try {
             FileReaderWriter f = new FileReaderWriter(Constants.SETTINGS);
-            
+
             String[] dat = f.read().split(";");
-            
-             f.write(Constants.DATABASEPATH +";" + dat[1]);
+
+            f.write(Constants.DATABASEPATH + ";" + dat[1]);
 
         } catch (Exception exception) {
-            
+
             Popup.notice(SETTINGS_NOT_FOUND + exception.getMessage());
         }
 
-       
+
         tablesCreated = this.query(Structure.tables);
-        
+
         Conn.reboot();
     }
 
     /**
      * 
      */
-    private Conn() {
-    if(splash!=null) {
+    private Conn() throws Exception {
+        if (splash != null) {
             splash.setMessage(DB_INIT);
         }
         try {
             FileReaderWriter rw = new FileReaderWriter(Constants.SETTINGS);
-               String[] dat = rw.read().split(";");
-            
-            
-            
+            String[] dat = rw.read().split(";");
+
+
+
             URL = "jdbc:derby:" + dat[0] + File.separator + Constants.DATABASENAME;
 
         } catch (Exception exception) {
-             Popup.notice(SETTINGS_NOT_FOUND + exception.getMessage());
+            Popup.notice(SETTINGS_NOT_FOUND + exception.getMessage());
         }
 
 
-        
+
         this.connect();
 
     }
@@ -142,7 +142,7 @@ public class Conn implements Strings{
      * Verbindung zur Datenbank herstellen. 
      * @return Connection
      */
-    private Connection connect() {
+    private Connection connect() throws Exception {
 
 
 
@@ -150,8 +150,8 @@ public class Conn implements Strings{
         try {
             Class.forName(DRIVER).newInstance();
         } catch (Exception ex) {
-//            System.out.println(DB_ERROR);
-            
+            ex.printStackTrace();
+
             Popup.warn(ex.getMessage(), Popup.ERROR);
             Conn.shutdown();
         }
@@ -162,14 +162,17 @@ public class Conn implements Strings{
             // Benötige Ressourcen für eine SQL-Anweisung bereitstellen 
             statement = conn.createStatement();
         } catch (SQLException ex) {
-//            System.out.println("Database Error:" + ex.getMessage());
-//            ex.printStackTrace();
-            Popup.warn(ONE_INSTANCE, Popup.ERROR);
+            System.out.println("Database Error:" + ex.getMessage());
+            ex.printStackTrace();
+            Log.Debug(ex);
+//            Popup.warn(ex.getMessage(), Popup.ERROR);
             Conn.shutdown();
+            System.exit(1);
+
+            throw new Exception("Datenbank konnte nicht gestartet werden.");
+
         }
         return conn;
-    // this.createTable(tables);
-
     }
 
     /**
@@ -180,16 +183,16 @@ public class Conn implements Strings{
             if (conn != null && !conn.isClosed()) {
                 conn.close();
                 conn = null;
-            
+
             }
-            
-                
-                File f = new File(Constants.DATABASEPATH+File.separator+Constants.DATABASENAME +File.separator+"dbex.lck");
-                f.deleteOnExit();
-                File fi = new File(Constants.DATABASEPATH+File.separator+Constants.DATABASENAME +File.separator+"db.lck");
-                fi.deleteOnExit();
+
+
+            File f = new File(Constants.DATABASEPATH + File.separator + Constants.DATABASENAME + File.separator + "dbex.lck");
+            f.deleteOnExit();
+            File fi = new File(Constants.DATABASEPATH + File.separator + Constants.DATABASENAME + File.separator + "db.lck");
+            fi.deleteOnExit();
         } catch (SQLException ex) {
-            
+
             ex.printStackTrace();
             System.exit(1);
         }
@@ -288,8 +291,8 @@ public class Conn implements Strings{
 ////            Logger.getLogger(Conn.class.getName()).log(Level.SEVERE, null, ex);
 ////        }
 //    }
-    public static Connection getConnection() {
-         if (connector == null) {
+    public static Connection getConnection() throws Exception {
+        if (connector == null) {
             connector = new Conn();
         }
         return connector.connect();
