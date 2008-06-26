@@ -1,0 +1,6 @@
+Trying to add new property 'svn:ignore' with value 'dist
+build
+',
+but property already exists with value 'build
+dist
+'.
