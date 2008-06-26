@@ -55,12 +55,14 @@ public class Main implements Strings {
         } catch (Exception exception) {
             Log.setLogLevel(Log.LOGLEVEL_LOW);
         }
-        //LaF anpassen
-        try {
-            UIManager.setLookAndFeel(new TinyLookAndFeel());
-        } catch (Exception exe) {
-            exe.printStackTrace();
-        }
+     
+            //LaF anpassen
+            try {
+                UIManager.setLookAndFeel(new TinyLookAndFeel());
+            } catch (Exception exe) {
+                exe.printStackTrace();
+            }
+    
         //Splashscreen initialisieren
         splash = new SplashScreen(TEST_CONF);
 

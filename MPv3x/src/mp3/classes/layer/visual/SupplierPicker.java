@@ -14,7 +14,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import mp3.classes.objects.product.Supplier;
-import mp3.classes.visual.main.csvProductImporter;
+import mp3.classes.visual.main.util.csvProductImporter;
 import mp3.classes.visual.sub.productsView;
 
 /**

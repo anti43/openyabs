@@ -5,11 +5,10 @@
  */
 package mp3.classes.visual.sub;
 
-import mp3.classes.visual.sub.*;
 import java.awt.Cursor;
 import java.awt.Image;
 import java.awt.Toolkit;
-import java.net.URL;
+import java.awt.event.ActionEvent;
 import java.net.URL;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
@@ -22,9 +21,7 @@ import mp3.classes.layer.Popup;
 import mp3.classes.layer.visual.ProductPicker;
 import mp3.classes.layer.QueryClass;
 import mp3.classes.layer.visual.SupplierPicker;
-import mp3.classes.objects.product.Product;
 
-import mp3.classes.objects.product.*;
 import mp3.classes.visual.main.mainframe;
 import mp3.classes.objects.product.*;
 
@@ -41,6 +38,8 @@ public class productsView extends javax.swing.JPanel {
     private Supplier supplier;
     private String[][] liste;
     private boolean autoProductNumber = true;//settings?
+    private String currentProductGroup = "0";
+
     /** Creates new form customers
      * @param aThis 
      */
@@ -61,10 +60,22 @@ public class productsView extends javax.swing.JPanel {
         current.stripFirst(jTable2);
         Integer l = Integer.valueOf(liste.length);
         this.jLabel19.setText(l.toString());
-        
-        jTextField7.setInputVerifier(Formater.getDoubleInputVerfier(jTextField7));
-        jTextField8.setInputVerifier(Formater.getDoubleInputVerfier(jTextField8));
-        jTextField16.setInputVerifier(Formater.getDoubleInputVerfier(jTextField16));
+//        ActionEvent evt = null;
+//        jTextField7.setInputVerifier(Formater.getDoubleInputVerfier(jTextField7));
+//
+//        jTextField7ActionPerformed(evt);
+//        jTextField8.setInputVerifier(Formater.getDoubleInputVerfier(jTextField8));
+//        jTextField8ActionPerformed(evt);
+//        jTextField16.setInputVerifier(Formater.getDoubleInputVerfier(jTextField16));
+//        jTextField16ActionPerformed(evt);
+//        jTextField13.setInputVerifier(Formater.getDoubleInputVerfier(jTextField13));
+//        jTextField13ActionPerformed(evt);
+
+        String[][] list = current.select("id,produktnummer,name,hersteller", "produktnummer", jTextField1.getText(), "produktnummer", true);
+        k = "id, " + "Nummer,Name,Hersteller";
+
+        this.jTable3.setModel(new DefaultTableModel(list, k.split(",")));
+        current.stripFirst(jTable3);
     }
 
     public Product getProduct() {
@@ -94,8 +105,6 @@ public class productsView extends javax.swing.JPanel {
 
     private void clear() {
         for (int i = 0; i < this.getComponents().length; i++) {
-
-
         }
     }
 
@@ -119,6 +128,8 @@ public class productsView extends javax.swing.JPanel {
         this.jTextField11.setText(current.getUrl());
         if (!current.getWarengruppenId().equals("0")) {
             this.getJTextField12().setText(current.getProductgroupPath());
+        } else {
+            this.getJTextField12().setText("");
         }
         this.jTextField13.setText(current.getEan());
 
@@ -255,7 +266,7 @@ public class productsView extends javax.swing.JPanel {
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 98, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 136, Short.MAX_VALUE)
                 .addComponent(jButton11)
                 .addGap(18, 18, 18)
                 .addComponent(jButton2)
@@ -319,7 +330,7 @@ public class productsView extends javax.swing.JPanel {
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE)
+            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)
         );
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Suche"));
@@ -362,7 +373,7 @@ public class productsView extends javax.swing.JPanel {
                     .addComponent(jTextField3)
                     .addComponent(jTextField2)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -482,15 +493,26 @@ public class productsView extends javax.swing.JPanel {
                             .addComponent(jLabel6)
                             .addComponent(jLabel5)
                             .addComponent(jLabel11)
-                            .addComponent(jLabel16))
-                        .addGap(16, 16, 16)
+                            .addComponent(jLabel16)
+                            .addComponent(jLabel9)
+                            .addComponent(jLabel8)
+                            .addComponent(jLabel18))
+                        .addGap(10, 10, 10)
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel6Layout.createSequentialGroup()
-                                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jTextField10)
-                                    .addComponent(jTextField5, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE)
-                                    .addComponent(jTextField6)
-                                    .addComponent(jTextField4))
+                                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(jTextField10)
+                                        .addComponent(jTextField5, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE)
+                                        .addComponent(jTextField6)
+                                        .addComponent(jTextField4))
+                                    .addGroup(jPanel6Layout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                            .addComponent(jTextField9, javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jTextField7)
+                                            .addComponent(jTextField16)
+                                            .addComponent(jTextField8, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel12)
@@ -504,19 +526,9 @@ public class productsView extends javax.swing.JPanel {
                                         .addComponent(jTextField13, javax.swing.GroupLayout.DEFAULT_SIZE, 310, Short.MAX_VALUE)
                                         .addComponent(jTextField12, javax.swing.GroupLayout.DEFAULT_SIZE, 310, Short.MAX_VALUE))))))
                     .addComponent(jLabel10)
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jLabel15, javax.swing.GroupLayout.Alignment.LEADING, 0, 0, Short.MAX_VALUE)
-                            .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel18, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel17, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.LEADING))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jTextField9, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField7)
-                            .addComponent(jTextField16)
-                            .addComponent(jTextField8, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jLabel15, javax.swing.GroupLayout.Alignment.LEADING, 0, 0, Short.MAX_VALUE)
+                        .addComponent(jLabel17, javax.swing.GroupLayout.Alignment.LEADING)))
                 .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
@@ -542,21 +554,22 @@ public class productsView extends javax.swing.JPanel {
                             .addComponent(jLabel11)
                             .addComponent(jTextField10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
-                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel9)
-                            .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel8)
-                            .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel18)
-                            .addComponent(jTextField16, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel17)
-                            .addComponent(jTextField9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel9))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel8))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jTextField16, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel18))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextField9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -571,7 +584,7 @@ public class productsView extends javax.swing.JPanel {
                 .addGap(6, 6, 6)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel10)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 107, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextField13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -591,6 +604,11 @@ public class productsView extends javax.swing.JPanel {
                 jButton3MouseClicked(evt);
             }
         });
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
         jToolBar1.add(jButton3);
 
         jButton4.setText("Als neues Produkt anlegen");
@@ -600,6 +618,11 @@ public class productsView extends javax.swing.JPanel {
         jButton4.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jButton4MouseClicked(evt);
+            }
+        });
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
             }
         });
         jToolBar1.add(jButton4);
@@ -680,7 +703,7 @@ public class productsView extends javax.swing.JPanel {
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 494, Short.MAX_VALUE))
-            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 738, Short.MAX_VALUE)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 740, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -732,11 +755,11 @@ public class productsView extends javax.swing.JPanel {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 738, Short.MAX_VALUE)
+            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 740, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 469, Short.MAX_VALUE)
+            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 467, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Liste", jPanel3);
@@ -747,7 +770,7 @@ public class productsView extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jTabbedPane1)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 745, Short.MAX_VALUE)
                 .addGap(0, 0, 0))
         );
         layout.setVerticalGroup(
@@ -760,14 +783,14 @@ public class productsView extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
     private void jButton1MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
         jTabbedPane1.setSelectedIndex(0);
-        
-        
+
+
 
     }//GEN-LAST:event_jButton1MouseClicked
 
     private void jButton2MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
         jTabbedPane1.setSelectedIndex(1);
-   
+
     }//GEN-LAST:event_jButton2MouseClicked
 
     private void jTextField1ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
@@ -777,7 +800,7 @@ public class productsView extends javax.swing.JPanel {
 
         this.jTable3.setModel(new DefaultTableModel(list, k.split(",")));
         current.stripFirst(jTable3);
-      
+
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jTextField2ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
@@ -799,27 +822,21 @@ public class productsView extends javax.swing.JPanel {
     }//GEN-LAST:event_jTextField3ActionPerformed
 
     private void jTextField4ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
-    
     }//GEN-LAST:event_jTextField4ActionPerformed
 
     private void jTextField5ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField5ActionPerformed
-    
     }//GEN-LAST:event_jTextField5ActionPerformed
 
     private void jTextField6ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField6ActionPerformed
-    
     }//GEN-LAST:event_jTextField6ActionPerformed
 
     private void jTextField7ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField7ActionPerformed
-    
     }//GEN-LAST:event_jTextField7ActionPerformed
 
     private void jTextField8ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField8ActionPerformed
-    
     }//GEN-LAST:event_jTextField8ActionPerformed
 
     private void jTextField16ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField16ActionPerformed
-    
     }//GEN-LAST:event_jTextField16ActionPerformed
 
     private void jButton6ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
@@ -885,7 +902,6 @@ public class productsView extends javax.swing.JPanel {
 
         if (evt.getClickCount() >= 2 && idOk) {
             this.setProduct(new Product(QueryClass.instanceOf(), (String) jTable3.getValueAt(jTable3.getSelectedRow(), 0)));
-
         }
     }//GEN-LAST:event_jTable3MouseClicked
 
@@ -905,24 +921,22 @@ public class productsView extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton3MouseClicked
 
     private void jTextField12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField12ActionPerformed
-    
     }//GEN-LAST:event_jTextField12ActionPerformed
 
     private void jTextField13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField13ActionPerformed
-    
     }//GEN-LAST:event_jTextField13ActionPerformed
 
     private void jButton4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton4MouseClicked
 
-        Formater.cut(jTextField5,49);
-        
+        Formater.cut(jTextField5, 49);
+
         saveNew();
         liste = current.getAll();
         String k = "id, " + Structure.TABLE_PRODUCTS_LIST_COLUMNS;
 
         this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
         current.stripFirst(jTable2);
-        
+
         ProductPicker.update();
     }//GEN-LAST:event_jButton4MouseClicked
 
@@ -932,10 +946,9 @@ public class productsView extends javax.swing.JPanel {
         if (!current.getId().equals("0")) {
 
             if ((JOptionPane.showConfirmDialog(this, "Wirklich löschen?", "Sicher?", JOptionPane.YES_NO_OPTION)) == JOptionPane.YES_OPTION) {
-
-                getMainframe().nachricht("Produkt Nummer " + current.getNummer() + " gelöscht.");
                 current.destroy();
                 current = new Product(QueryClass.instanceOf());
+                getMainframe().nachricht("Produkt Nummer " + current.getNummer() + " gelöscht.");
             }
 
             liste = current.getAll();
@@ -948,7 +961,7 @@ public class productsView extends javax.swing.JPanel {
 
             getMainframe().nachricht("Kein Produkt gewählt.");
 
-        }   
+        }
     }//GEN-LAST:event_jButton8MouseClicked
 
     private void jButton5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton5MouseClicked
@@ -964,18 +977,18 @@ public class productsView extends javax.swing.JPanel {
 
         if (!current.getId().equals("0")) {
 
-            getMainframe().getB().addToBill(current,true,true,true);
+            getMainframe().getB().addToBill(current, true, true, true);
             getMainframe().getJTabbedPane1().setSelectedIndex(1);
-        }     
+        }
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
         if (!current.getId().equals("0")) {
 
-            getMainframe().getOrdersView().addToOrder(current,true,true,true);
+            getMainframe().getOrdersView().addToOrder(current, true, true, true);
             getMainframe().getJTabbedPane1().setSelectedIndex(2);
         }
-        
+
     }//GEN-LAST:event_jButton10ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
@@ -992,19 +1005,29 @@ public class productsView extends javax.swing.JPanel {
 
         Integer l = Integer.valueOf(liste.length);
         this.jLabel19.setText(l.toString());
-        
+
         ProductPicker.update();
-        
+
     }//GEN-LAST:event_jButton11MouseClicked
 
     private void jButton12MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton12MouseClicked
-   
+
         Formater.clearText(jPanel6);
         jEditorPane1.setText("");
-        
-        
+
+        this.current = new Product(QueryClass.instanceOf());
+
+        this.supplier = new Supplier(QueryClass.instanceOf());
+
     }//GEN-LAST:event_jButton12MouseClicked
 
+private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+// TODO add your handling code here:
+}//GEN-LAST:event_jButton4ActionPerformed
+
+private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+// TODO add your handling code here:
+}//GEN-LAST:event_jButton3ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton jButton1;
     public javax.swing.JButton jButton10;
@@ -1092,10 +1115,25 @@ public class productsView extends javax.swing.JPanel {
 
         }
 
-        if (jTextField13.getText().equals("") || Formater.check(jTextField13.getText(), Formater.INTEGER)) {
-
+        try {
+            Double.valueOf(jTextField13.getText());
+        } catch (NumberFormatException numberFormatException) {
             jTextField13.setText("0");
-
+        }
+        try {
+            Double.valueOf(jTextField8.getText());
+        } catch (NumberFormatException numberFormatException) {
+            jTextField8.setText("0");
+        }
+        try {
+            Double.valueOf(jTextField7.getText());
+        } catch (NumberFormatException numberFormatException) {
+            jTextField7.setText("0");
+        }
+        try {
+            Double.valueOf(jTextField16.getText());
+        } catch (NumberFormatException numberFormatException) {
+            jTextField16.setText("0");
         }
 
         current.setNummer(
@@ -1111,6 +1149,7 @@ public class productsView extends javax.swing.JPanel {
         current.setEan(jTextField13.getText());
         current.setText(jEditorPane1.getText());
 
+        current.setWarengruppenId(getCurrentProductGroup());
 
         current.save();
 
@@ -1149,12 +1188,27 @@ public class productsView extends javax.swing.JPanel {
 
             }
 
-            if (jTextField13.getText().equals("") || Formater.check(jTextField13.getText(), Formater.INTEGER)) {
 
+            try {
+                Double.valueOf(jTextField13.getText());
+            } catch (NumberFormatException numberFormatException) {
                 jTextField13.setText("0");
-
             }
-
+            try {
+                Double.valueOf(jTextField8.getText());
+            } catch (NumberFormatException numberFormatException) {
+                jTextField8.setText("0");
+            }
+            try {
+                Double.valueOf(jTextField7.getText());
+            } catch (NumberFormatException numberFormatException) {
+                jTextField7.setText("0");
+            }
+            try {
+                Double.valueOf(jTextField16.getText());
+            } catch (NumberFormatException numberFormatException) {
+                jTextField16.setText("0");
+            }
             current.setNummer(
                     jTextField4.getText());
             current.setName(jTextField5.getText());
@@ -1196,6 +1250,14 @@ public class productsView extends javax.swing.JPanel {
 
     public mainframe getMainframe() {
         return mainframe;
+    }
+
+    public String getCurrentProductGroup() {
+        return currentProductGroup;
+    }
+
+    public void setCurrentProductGroup(String currentProductGroup) {
+        this.currentProductGroup = currentProductGroup;
     }
 }
 
@@ -1242,5 +1304,5 @@ class Task extends SwingWorker<Void, Void> {
         thisa.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 
     }
-    }
+}
 

@@ -14,8 +14,6 @@
  *      You should have received a copy of the GNU General Public License
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-
 package mp3.classes.utils;
 
 import java.awt.Component;
@@ -28,12 +26,16 @@ import java.awt.Toolkit;
  */
 public class WindowTools {
 
-    public WindowTools(Component comp){
-    
+    public WindowTools() {
+    }
+
+    public WindowTools(Component comp) {
+
         Dimension frameSize = new Dimension(comp.getSize());
 
         // Größe des Bildschirms ermitteln
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
 
         // Position des JFrames errechnen
         int top = (screenSize.height - frameSize.height) / 2;
@@ -44,16 +46,41 @@ public class WindowTools {
 
         // Position zuordnen
         comp.setLocation(left, top);
-    
+
+
     }
 
-    private void setLocation(int left, int top) {
-        
-      
+    public void center(Component comp) {
+        Dimension frameSize = new Dimension(comp.getSize());
+
+        // Größe des Bildschirms ermitteln
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+
+        // Position des JFrames errechnen
+        int top = (screenSize.height - frameSize.height) / 2;
+        int left = (screenSize.width - frameSize.width) / 2;
+
+        // Größe zuordnen
+        comp.setSize(frameSize);
+
+        // Position zuordnen
+        comp.setLocation(left, top);
     }
 
-    private void setSize(Dimension frameSize) {
-  
-     
+    public boolean compNotMaximized(Component comp) {
+        Dimension frameSize = new Dimension(comp.getSize());
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+        if (frameSize.width < screenSize.width) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void topLeft(Component comp) {
+        comp.setLocation(0, 0);
+
     }
 }

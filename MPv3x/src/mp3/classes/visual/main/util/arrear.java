@@ -4,7 +4,7 @@
  * Created on 13. Februar 2008, 13:19
  */
 
-package mp3.classes.visual.main;
+package mp3.classes.visual.main.util;
 
 import mp3.classes.objects.bill.Bill;
 import mp3.classes.objects.eur.Customer;

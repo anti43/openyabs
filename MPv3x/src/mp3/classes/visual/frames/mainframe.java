@@ -16,7 +16,11 @@
  */
 package mp3.classes.visual.main;
 
-import java.awt.event.WindowListener;
+import mp3.classes.visual.main.util.csvProductImporter;
+import mp3.classes.visual.main.util.fastChoice;
+import mp3.classes.visual.main.util.serialLetter;
+import mp3.classes.visual.main.util.mp2Importer;
+import mp3.classes.visual.main.util.settingsView;
 import mp3.Main;
 import java.awt.BorderLayout;
 
@@ -41,6 +45,7 @@ import mp3.classes.utils.Log;
 import mp3.classes.utils.SaveAs;
 import mp3.classes.utils.SplashScreen;
 import mp3.classes.utils.TableHtmlWriter;
+import mp3.classes.visual.frames.license;
 import mp3.classes.visual.sub.backupView;
 import mp3.classes.visual.sub.billsView;
 
@@ -53,8 +58,8 @@ import mp3.classes.visual.sub.productsView;
 //import mp3.classes.visual.sub.*;
 import mp3.classes.visual.sub.startView;
 import mp3.classes.visual.sub.suppliersView;
-import mp3.classes.visual.main.EinnahmenChart;
-import mp3.classes.visual.main.UmsatzChart;
+import mp3.classes.visual.main.util.EinnahmenChart;
+import mp3.classes.visual.main.util.UmsatzChart;
 import mp3.classes.visual.sub.eurView;
 
 /**
@@ -73,6 +78,7 @@ public class mainframe extends javax.swing.JFrame {
     private startView i;
     private eurView j;
     private Main loader;
+    private WindowTools wt = new WindowTools();
 
     /** Creates new form mainframe
      * @param splash
@@ -130,7 +136,7 @@ public class mainframe extends javax.swing.JFrame {
 
         try {
             this.setTitle("MP " + Constants.VERSION);
-            this.setVisible(rootPaneCheckingEnabled);
+            
 
         } catch (Exception exception) {
             splash.dispose();
@@ -141,6 +147,11 @@ public class mainframe extends javax.swing.JFrame {
 
         try {
             this.setSize(MyData.instanceOf().getMainframeSize());
+            
+            if (wt.compNotMaximized(this)) {
+                wt.center(this);
+            }else
+                this.setExtendedState(mainframe.MAXIMIZED_BOTH);
 
         } catch (Exception exception) {
             Log.Debug(exception.getMessage(), true);
@@ -157,6 +168,7 @@ public class mainframe extends javax.swing.JFrame {
         });
 
         nachricht("Anmerkungen, Bugs und Feedback zu MP bitte an mp-rechnungs-und-kundenverwaltung@googlegroups.com senden. Vielen Dank!");
+        this.setVisible(rootPaneCheckingEnabled);
     }
 
     public customersView getCustomersView() {
@@ -299,7 +311,6 @@ public class mainframe extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
         jMenuBar2 = new javax.swing.JMenuBar();
         jMenu4 = new javax.swing.JMenu();
         jMenu9 = new javax.swing.JMenu();
@@ -474,39 +485,31 @@ public class mainframe extends javax.swing.JFrame {
             }
         });
 
-        jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/calc.png"))); // NOI18N
-        jButton5.setToolTipText("Hilfeforum");
-        jButton5.setBorderPainted(false);
-        jButton5.setContentAreaFilled(false);
-        jButton5.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton5MouseClicked(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
         jPanel10.setLayout(jPanel10Layout);
         jPanel10Layout.setHorizontalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel10Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         jPanel10Layout.setVerticalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel10Layout.createSequentialGroup()
-                .addGap(58, 58, 58)
+                .addContainerGap()
                 .addComponent(jButton3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 143, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 237, Short.MAX_VALUE)
                 .addComponent(jButton1)
                 .addContainerGap())
         );
@@ -873,10 +876,6 @@ public class mainframe extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jMenuItem14ActionPerformed
 
-    private void jButton5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton5MouseClicked
-        calculator.instanceOf().setVisible(rootPaneCheckingEnabled);
-    }//GEN-LAST:event_jButton5MouseClicked
-
     private void jMenuItem15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem15ActionPerformed
         String fils = "";
         try {
@@ -972,7 +971,6 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton5;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu10;
     private javax.swing.JMenu jMenu2;

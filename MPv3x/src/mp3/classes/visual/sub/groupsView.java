@@ -12,9 +12,7 @@ import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
-import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import mp3.classes.utils.WindowTools;
 import mp3.classes.utils.Log;
@@ -24,7 +22,7 @@ import mp3.classes.objects.product.ProductGroupCategory;
 import mp3.classes.objects.product.ProductGroupFamily;
 import mp3.classes.objects.product.ProductGroupGroup;
 import mp3.classes.objects.product.ProductGroupHandler;
-import mp3.classes.visual.main.mainframe;
+import mp3.classes.visual.main.*;
 
 /**
  *
@@ -70,6 +68,8 @@ public class groupsView extends javax.swing.JFrame implements TreeSelectionListe
         tree.addTreeSelectionListener(this);
 
     }
+
+  
 
     private groupsView() {
         initComponents();
@@ -199,6 +199,11 @@ public class groupsView extends javax.swing.JFrame implements TreeSelectionListe
                 jButton5MouseClicked(evt);
             }
         });
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
 
         jLabel4.setText("Warengruppe (Pfad)");
 
@@ -231,12 +236,12 @@ public class groupsView extends javax.swing.JFrame implements TreeSelectionListe
                     .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 365, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 177, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 195, Short.MAX_VALUE)
                         .addComponent(jButton1))
                     .addComponent(jTextField2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 365, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 173, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 191, Short.MAX_VALUE)
                         .addComponent(jButton2))
                     .addComponent(jTextField3, javax.swing.GroupLayout.DEFAULT_SIZE, 365, Short.MAX_VALUE)
                     .addComponent(jButton3)
@@ -286,7 +291,7 @@ public class groupsView extends javax.swing.JFrame implements TreeSelectionListe
                     .addComponent(jButton6)
                     .addComponent(jButton7))
                 .addContainerGap())
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 386, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 387, Short.MAX_VALUE)
         );
 
         pack();
@@ -300,8 +305,9 @@ public class groupsView extends javax.swing.JFrame implements TreeSelectionListe
 
         if (leaf) {
             frame.getProductsView().getProduct().setWarengruppenId(grp.getId());
+            frame.getProductsView().setCurrentProductGroup(grp.getId());
             frame.getProductsView().getJTextField12().setText( frame.getProductsView().getProduct().getProductgroupPath());
-             this.dispose();
+            this.dispose();
         } else {
             Popup.notice("Sie müssen eine Produktgruppe auswählen");
 
@@ -407,6 +413,10 @@ public class groupsView extends javax.swing.JFrame implements TreeSelectionListe
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
         this.dispose();
     }//GEN-LAST:event_jButton7ActionPerformed
+
+private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+// TODO add your handling code here:
+}//GEN-LAST:event_jButton5ActionPerformed
 
     /**
      * @param args the command line arguments

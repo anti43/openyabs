@@ -18,12 +18,9 @@
 package mp3.classes.layer;
 
 import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JProgressBar;
 import mp3.database.util.Conn;
 import mp3.classes.interfaces.Constants;
-import mp3.classes.visual.main.mainframe;
 
 
 /**
@@ -33,7 +30,7 @@ import mp3.classes.visual.main.mainframe;
 public class QueryClass extends mp3.database.util.Query implements mp3.classes.interfaces.Structure,Cloneable {
 
     private static QueryClass qc = null;
-    private static mainframe mainf;
+    private static mp3.classes.visual.main.mainframe mainf;
     private static JProgressBar bar;
     
     public static void kill() {
@@ -45,6 +42,8 @@ public class QueryClass extends mp3.database.util.Query implements mp3.classes.i
                 fi.deleteOnExit();
         
     }
+
+   
     
 //    /***
 //     * Open the configurationfile "settings.mp"
@@ -70,7 +69,7 @@ public class QueryClass extends mp3.database.util.Query implements mp3.classes.i
      * @param bar
      * @param main
      */
-    public static void setProgressBarOn (JProgressBar bar, mainframe main){
+    public static void setProgressBarOn (JProgressBar bar, mp3.classes.visual.main.mainframe main){
             QueryClass.mainf = main;
             QueryClass.bar=bar;
              
@@ -93,5 +92,7 @@ public class QueryClass extends mp3.database.util.Query implements mp3.classes.i
         }
         return null;
     }
+
+   
     
 }

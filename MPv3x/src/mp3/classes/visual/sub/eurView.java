@@ -134,14 +134,14 @@ public class eurView extends javax.swing.JPanel {
         jLabel1.setFont(new java.awt.Font("DejaVu Sans", 1, 14));
         jLabel1.setText("EUR");
 
-        jButton1.setText("Daten einlesen");
+        jButton1.setText("Aktuelle Daten einlesen");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
 
-        jLabel21.setText("Gelistete Daten könnten nicht aktuell sein. --> Aktuelle Daten einlesen:");
+        jLabel21.setText("Anzeigen mit Datenbank synchronisieren");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -150,7 +150,7 @@ public class eurView extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 196, Short.MAX_VALUE)
                 .addComponent(jLabel21)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton1)
@@ -204,7 +204,10 @@ public class eurView extends javax.swing.JPanel {
 
         data = new Ausgabe().getAll();
 
-        Formater.formatUneditableTable(eurapanel.getJTable1(), data, new String[]{"id", "Nummer", "Betrag", "Datum"});
+        Formater.formatUneditableTable(eurapanel.getJTable1(), data,  new String[]{"id", "Nummer", "Typ", "Betrag", "Datum"});
+         Formater.format(getEurapanel().getJTable1(), 1, 80);
+            Formater.format(getEurapanel().getJTable1(), 3, 100);
+            Formater.format(getEurapanel().getJTable1(), 4, 100);
 
         data = new Bill(QueryClass.instanceOf()).getUnpaid();
 

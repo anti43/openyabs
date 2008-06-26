@@ -36,7 +36,7 @@ import mp3.classes.utils.Log;
  *
  * @author anti43
  */
-public class OrderPDF {
+public class AngebotPDF {
 
     private AcroFields acroFields;
     private Set fieldNameKeys;
@@ -55,7 +55,7 @@ public class OrderPDF {
      * 
      * @param b
      */
-    public OrderPDF(Offer b) {
+    public AngebotPDF(Offer b) {
 
 
         l = MyData.instanceOf();
@@ -175,6 +175,9 @@ public class OrderPDF {
                     acroFields.setField("quantity" + t, Formater.formatDecimal((Double) products[i][1]));
                     acroFields.setField("product" + t, String.valueOf(products[i][2]));
                     acroFields.setField("price" + t, Formater.formatMoney((Double) products[i][5]));
+                    
+                    acroFields.setField("price_net" + t, Formater.formatMoney((Double) products[i][4]));
+                    acroFields.setField("price_tax" + t, Formater.formatMoney((Double) products[i][3]));
 
                     acroFields.setField("multipliedprice" + t, Formater.formatMoney((Double) products[i][5] * (Double) products[i][1]));
 

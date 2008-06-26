@@ -3,8 +3,9 @@
  *
  * Created on 27. Januar 2008, 21:56
  */
-package mp3.classes.visual.main;
+package mp3.classes.visual.main.util;
 
+import mp3.classes.visual.main.*;
 import java.awt.Cursor;
 import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
@@ -38,6 +39,8 @@ public class mp2Importer extends javax.swing.JFrame {
     private boolean kunda = false;
     private boolean recha = true;
     private Double betrag = 0d;
+
+  
 
     /** Creates new form productImporter
      * @param frame 

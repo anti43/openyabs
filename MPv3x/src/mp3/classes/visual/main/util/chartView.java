@@ -3,7 +3,7 @@
  *
  * Created on 7. Februar 2008, 11:58
  */
-package mp3.classes.visual.main;
+package mp3.classes.visual.main.util;
 
 
 /**

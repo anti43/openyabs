@@ -4,7 +4,7 @@
  * Created on 21. Februar 2008, 16:05
  */
 
-package mp3.classes.visual.main;
+package mp3.classes.visual.main.util;
 
 /**
  *

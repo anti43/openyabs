@@ -14,21 +14,19 @@
  *      You should have received a copy of the GNU General Public License
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package mp3.classes.objects.pdf;
+
 import mp3.classes.objects.ungrouped.MyData;
 import mp3.classes.objects.eur.Customer;
 import mp3.classes.objects.*;
 import com.lowagie.text.pdf.*;
 import com.lowagie.text.DocumentException;
 import java.io.*;
-import java.sql.*;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import mp3.Main;
-import mp3.classes.interfaces.Constants;
 import mp3.classes.interfaces.Strings;
 import mp3.classes.layer.Popup;
 import mp3.classes.layer.QueryClass;
@@ -37,36 +35,23 @@ import mp3.classes.utils.Log;
 
 import mp3.classes.objects.bill.*;
 
-
-
-
-
-
 /**
  *
  * @author anti43
  */
 public class BillPDF {
 
-
-    
     private AcroFields acroFields;
     private Set fieldNameKeys;
-
-    
     private String[] myData;
-
-    
     private String filename;
     private String separator;
     private MyData l;
     private Bill r;
     private Customer k;
     private Object[][] products;
-    private Double netto=0d;
-    private Double brutto=0d;
-//Insert the following into a servlet or adapt it to a standard java class
-    //get a handle to the file location
+    private Double netto = 0d;
+    private Double brutto = 0d;
 
     /**
      * 
@@ -75,41 +60,34 @@ public class BillPDF {
     public BillPDF(Bill b) {
 
 
-          l = MyData.instanceOf();
-          this.r =b;
-          
-          k = new Customer(QueryClass.instanceOf(), b.getKundenId());
-          
-          products = r.getProductlistAsArray();
-          
-//          Log.Debug(products);
-        
+        l = MyData.instanceOf();
+        this.r = b;
+
+        k = new Customer(QueryClass.instanceOf(), b.getKundenId());
+
+        products = r.getProductlistAsArray();
+
+
         this.start();
     }
-
-    
-    
 
     public void start() {
         try {
 
-            
+
             Properties prop = System.getProperties();
-            separator =prop.getProperty("file.separator");
-            //new out(separator);
-            
-            PdfReader template= new PdfReader(l.getRechnungtemp());
-            filename=l.getRechnungverz()+separator+
-                    r.getRechnungnummer().replaceAll(" ", "_")+ "_" + k.getFirma().replaceAll(" ", "_") + "_" + k.getName().replaceAll(" ", "_")+".pdf";
-             
-           
-//            filename = filename.replaceAll(" ", "_");
-             filename = filename.trim();
-            
+            separator = prop.getProperty("file.separator");
+
+            PdfReader template = new PdfReader(l.getRechnungtemp());
+            filename = l.getRechnungverz() + separator +
+                    r.getRechnungnummer().replaceAll(" ", "_") + "_" + k.getFirma().replaceAll(" ", "_") + "_" + k.getName().replaceAll(" ", "_") + ".pdf";
+
+            filename = filename.trim();
+
             File updatedPDF = new File(filename);
-          
-            
-            Log.Debug("Creating PDF: "+updatedPDF.getPath());
+
+
+            Log.Debug("Creating PDF: " + updatedPDF.getPath());
             PdfStamper pdfStamper = new PdfStamper(template, new FileOutputStream(updatedPDF.getAbsolutePath()));
             acroFields = pdfStamper.getAcroFields();
             HashMap PDFFields = acroFields.getFields();
@@ -128,16 +106,11 @@ public class BillPDF {
 
 
             pdfStamper.setFormFlattening(true);
-
             pdfStamper.close();
-            
             open();
-        }
-
-        catch (Exception e) {
+        } catch (Exception e) {
             Log.Debug(e);
             Popup.error(Strings.NO_PDF + e.getMessage(), Popup.ERROR);
-        
         }
     }
 
@@ -157,69 +130,69 @@ public class BillPDF {
         }
     }
 
-  
-
     private void open() {
-          try {
-              
-              if (Main.IS_WINDOWS) {
-                  Process proc = Runtime.getRuntime().exec(l.getPdfviewer() + "  \"" + filename + "\"");
-              } else {
-                  Process proc = Runtime.getRuntime().exec(l.getPdfviewer() + "  " + filename);
-              }
+        try {
+
+            if (Main.IS_WINDOWS) {
+                Process proc = Runtime.getRuntime().exec(l.getPdfviewer() + "  \"" + filename + "\"");
+            } else {
+                Process proc = Runtime.getRuntime().exec(l.getPdfviewer() + "  " + filename);
+            }
         } catch (IOException ex) {
-           
+
 //            Popup.notice("Es ist ein Fehler aufgetreten: " +"\n"+ ex);
-            Log.Debug("Es ist ein Fehler aufgetreten: " +"\n"+ ex);
-          
+            Log.Debug("Es ist ein Fehler aufgetreten: " + "\n" + ex);
+
         }
     }
 
     private void setAllFields() throws IOException, DocumentException {
-      
+
 
         acroFields.setField("company", k.getFirma());
         acroFields.setField("name", k.getAnrede() + " " + k.getVorname() + " " + k.getName());
         acroFields.setField("street", k.getStr());
-        acroFields.setField("city", k.getPLZ() +" "+ k.getOrt());
-        
+        acroFields.setField("city", k.getPLZ() + " " + k.getOrt());
+
         acroFields.setField("date", r.getDatum());
         acroFields.setField("number", r.getRechnungnummer());
         acroFields.setField("knumber", k.getKundennummer());
-         
-       
-       
-        
-       
-//id,Anzahl,Posten,Mehrwertsteuer,Nettopreis,Bruttopreis
-        for(int i=0;i<products.length;i++){
-            int t = i+1;
-            try {
-                  
-                if(products[i][2]!=null && String.valueOf(products[i][2]).length()>0) {
-                acroFields.setField("quantity" + t, Formater.formatDecimal((Double)products[i][1]));
-                acroFields.setField("product" + t, String.valueOf(products[i][2]));
-                acroFields.setField("price" + t, Formater.formatMoney((Double)products[i][5]));
-                
-                acroFields.setField("multipliedprice" + t, Formater.formatMoney((Double)products[i][5] *  (Double)products[i][1]));
 
-                netto = netto + ((Double) products[i][4] * (Double)products[i][1]);
-                brutto = brutto + ((Double) products[i][5] * (Double)products[i][1]);
-                acroFields.setField("count" + t, t+".");  
-                  }
+
+
+
+
+//id,Anzahl,Posten,Mehrwertsteuer,Nettopreis,Bruttopreis
+        for (int i = 0; i < products.length; i++) {
+            int t = i + 1;
+            try {
+
+                if (products[i][2] != null && String.valueOf(products[i][2]).length() > 0) {
+                    acroFields.setField("quantity" + t, Formater.formatDecimal((Double) products[i][1]));
+                    acroFields.setField("product" + t, String.valueOf(products[i][2]));
+                    acroFields.setField("price" + t, Formater.formatMoney((Double) products[i][5]));
+                    
+                    acroFields.setField("pricenet" + t, Formater.formatMoney((Double) products[i][4]));
+                    acroFields.setField("pricetax" + t, Formater.formatPercent(products[i][3]));
+
+                    acroFields.setField("multipliedprice" + t, Formater.formatMoney((Double) products[i][5] * (Double) products[i][1]));
+
+                    netto = netto + ((Double) products[i][4] * (Double) products[i][1]);
+                    brutto = brutto + ((Double) products[i][5] * (Double) products[i][1]);
+                    acroFields.setField("count" + t, t + ".");
+                }
             } catch (Exception exception) {
-              
+
                 Popup.notice(exception.getMessage());
             }
 
         }
-        
-        Double tax = brutto -netto;
-           
-        acroFields.setField("taxrate",l.getGlobaltax());
+
+        Double tax = brutto - netto;
+
+        acroFields.setField("taxrate", l.getGlobaltax());
         acroFields.setField("tax", Formater.formatMoney(tax));
         acroFields.setField("totalprice", Formater.formatMoney(brutto));
-      
-    }
 
+    }
 }

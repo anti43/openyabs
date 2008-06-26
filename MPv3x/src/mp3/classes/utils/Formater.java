@@ -102,6 +102,12 @@ public abstract class Formater {
         }
 
     }
+
+
+
+    public static String formatPercent(Object obj) {
+        return obj.toString() + "%";
+    }
     
     
     /**

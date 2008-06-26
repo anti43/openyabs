@@ -444,10 +444,6 @@ public class MyData extends mp3.classes.layer.People implements mp3.classes.inte
     }
 
     public Dimension getMainframeSize() {
-
-        
         return new Dimension(Integer.valueOf(getState().split(",")[1]), Integer.valueOf(getState().split(",")[0]));
-
-
     }
 }

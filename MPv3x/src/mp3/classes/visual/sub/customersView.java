@@ -5,9 +5,6 @@
  */
 package mp3.classes.visual.sub;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import mp3.classes.visual.sub.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -25,7 +22,7 @@ import mp3.classes.objects.bill.Bill;
 import mp3.classes.objects.eur.Customer;
 import mp3.classes.objects.ungrouped.History;
 import mp3.classes.visual.main.mainframe;
-import mp3.classes.visual.main.serialLetter;
+import mp3.classes.visual.main.util.serialLetter;
 
 /**
  *
@@ -43,7 +40,7 @@ public class customersView extends javax.swing.JPanel {
     /** Creates new form customers
      * @param aThis 
      */
-    public customersView(mainframe aThis) {
+    public customersView(mp3.classes.visual.main.mainframe aThis) {
         initComponents();
         try {
 
@@ -59,6 +56,15 @@ public class customersView extends javax.swing.JPanel {
         current.stripFirst(jTable2);
 
         this.mainframe = aThis;
+        
+        String[][] list = current.select("id, kundennummer, firma ", "firma", jTextField3.getText(), "firma", true);
+        k = "id, " + "Nummer,Firma";
+
+        this.jTable3.setModel(new DefaultTableModel(list, k.split(",")));
+        current.stripFirst(jTable3);
+        this.jtable3Header = k;
+        this.jtable3Data = current.select("id, kundennummer, firma ", "kundennummer", jTextField1.getText(), "kundennummer", true);
+        mode = 3;
     }
 
     public customersView(Customer current) {

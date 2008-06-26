@@ -3,7 +3,7 @@
  *
  * Created on 11. Februar 2008, 14:08
  */
-package mp3.classes.visual.main;
+package mp3.classes.visual.main.util;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;

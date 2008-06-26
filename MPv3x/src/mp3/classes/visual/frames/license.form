@@ -21,7 +21,10 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="jPanel1" alignment="0" max="32767" attributes="0"/>
+          <Group type="102" alignment="0" attributes="0">
+              <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
+          </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
@@ -46,10 +49,9 @@
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">
-                      <Component id="jScrollPane2" alignment="0" pref="583" max="32767" attributes="0"/>
+                      <Component id="jScrollPane1" alignment="0" pref="645" max="32767" attributes="0"/>
+                      <Component id="jScrollPane2" alignment="0" pref="645" max="32767" attributes="0"/>
                       <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Component id="jLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Component id="jScrollPane1" alignment="0" pref="583" max="32767" attributes="0"/>
                       <Component id="jLabel3" alignment="0" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -61,9 +63,7 @@
               <Group type="102" alignment="0" attributes="0">
                   <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jScrollPane1" min="-2" pref="198" max="-2" attributes="0"/>
+                  <Component id="jScrollPane1" min="-2" pref="218" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
@@ -76,12 +76,7 @@
       <SubComponents>
         <Component class="javax.swing.JLabel" name="jLabel1">
           <Properties>
-            <Property name="text" type="java.lang.String" value="MP Version 3.xx ist unter der GPL ver&#xf6;ffentlicht."/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JLabel" name="jLabel2">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Offizielle Lizenz (www.gnu.org):"/>
+            <Property name="text" type="java.lang.String" value="Wenn Sie dieses Programm verwenden, m&#xfc;ssen Sie folgende Lizenz akzeptieren:"/>
           </Properties>
         </Component>
         <Container class="javax.swing.JScrollPane" name="jScrollPane1">
@@ -102,7 +97,7 @@
         </Container>
         <Component class="javax.swing.JLabel" name="jLabel3">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Dieses Programm enth&#xe4;lt andere GPL oder anders lizensierte Programme/Bibliotheken:"/>
+            <Property name="text" type="java.lang.String" value="Dieses Programm enth&#xe4;lt folgende Programme/Bibliotheken:"/>
           </Properties>
         </Component>
         <Container class="javax.swing.JScrollPane" name="jScrollPane2">
@@ -121,7 +116,7 @@
                 <Property name="editable" type="boolean" value="false"/>
                 <Property name="lineWrap" type="boolean" value="true"/>
                 <Property name="rows" type="int" value="5"/>
-                <Property name="text" type="java.lang.String" value="Apache Derby&#xa;Copyright 2004-2007 The Apache Software Foundation&#xa;&#xa;Microba &#xa;Copyright (c) 2005-2006, Michael Baranov&#xa;All rights reserved.&#xa;&#xa;iText&#xa; * The Initial Developer of the Original Code is Bruno Lowagie. Portions created by&#xa; * the Initial Developer are Copyright (C) 1999, 2000, 2001, 2002 by Bruno Lowagie.&#xa; * All Rights Reserved.&#xa; * Co-Developer of the code is Paulo Soares. Portions created by the Co-Developer&#xa; * are Copyright (C) 2000, 2001, 2002 by Paulo Soares. All Rights Reserved.&#xa;&#xa;OstermillerUtils&#xa;Copyright (C) 2002-2004 Stephen Ostermiller&#xa;&#xa;Super Csv&#xa;Copyright 2007, Kasper B. Graversen&#xa;&#xa;TinyLaF&#xa;&#xa9; 2000 - 2007 Hans Bickel &#xa;&#xa;KDE Crystal Diamond Icons- by paolino"/>
+                <Property name="text" type="java.lang.String" value="Apache Derby&#xa;Copyright 2004-2007 The Apache Software Foundation&#xa;&#xa;Microba &#xa;Copyright (c) 2005-2006, Michael Baranov&#xa;All rights reserved.&#xa;&#xa;iText&#xa; * The Initial Developer of the Original Code is Bruno Lowagie. Portions created by&#xa; * the Initial Developer are Copyright (C) 1999, 2000, 2001, 2002 by Bruno Lowagie.&#xa; * All Rights Reserved.&#xa; * Co-Developer of the code is Paulo Soares. Portions created by the Co-Developer&#xa; * are Copyright (C) 2000, 2001, 2002 by Paulo Soares. All Rights Reserved.&#xa;&#xa;OstermillerUtils&#xa;Copyright (C) 2002-2004 Stephen Ostermiller&#xa;&#xa;Super Csv&#xa;Copyright 2007, Kasper B. Graversen&#xa;&#xa;TinyLaF&#xa;&#xa9; 2000 - 2007 Hans Bickel &#xa;&#xa;KDE Crystal Diamond Icons- by paolino&#xa;&#xa;Some Icons are from http://www.freeiconsdownload.com"/>
                 <Property name="wrapStyleWord" type="boolean" value="true"/>
               </Properties>
             </Component>

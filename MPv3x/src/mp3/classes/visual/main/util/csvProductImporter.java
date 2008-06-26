@@ -3,11 +3,10 @@
  *
  * Created on 27. Januar 2008, 21:56
  */
-package mp3.classes.visual.main;
+package mp3.classes.visual.main.util;
 
 import com.Ostermiller.util.CSVParser;
 import java.awt.Cursor;
-import java.awt.Toolkit;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -25,8 +24,8 @@ import mp3.classes.utils.Log;
 import mp3.classes.layer.Popup;
 import mp3.classes.layer.QueryClass;
 import mp3.classes.layer.visual.SupplierPicker;
-import mp3.classes.layer.KontenImporteur;
 
+import mp3.classes.layer.ProductImporteur;
 import mp3.classes.objects.ungrouped.History;
 import mp3.classes.objects.product.Product;
 import mp3.classes.objects.product.ProductGroupCategory;
@@ -46,14 +45,14 @@ import org.supercsv.prefs.CsvPreference;
  *
  * @author  anti43
  */
-public class csvKontenImporter extends javax.swing.JFrame {
+public class csvProductImporter extends javax.swing.JFrame {
 
-    private static csvKontenImporter frame;
+    private static csvProductImporter frame;
 
-    static void instanceOf() {
+    public static void instanceOf() {
 
         if (frame == null) {
-            frame = new csvKontenImporter();
+            frame = new csvProductImporter();
         }
 
         frame.setVisible(true);
@@ -62,18 +61,22 @@ public class csvKontenImporter extends javax.swing.JFrame {
     private ArrayList liste;
     private String[][] datstr;
     private String[] header;
-    public KontenImporteur[] data;
+    public ProductImporteur[] data;
     public Supplier supplier;
     private Task task;
 
     /** Creates new form productImporter */
-    public csvKontenImporter() {
+    public csvProductImporter() {
         initComponents();
         new WindowTools(this);
-        this.setVisible(rootPaneCheckingEnabled);
+        this.supplier =new Supplier(QueryClass.instanceOf());
 
     }
 
+    public void setSupplier(Supplier supplier) {
+        this.jTextField2.setText(supplier.getFirma());
+        this.supplier = supplier;
+    }
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -97,6 +100,9 @@ public class csvKontenImporter extends javax.swing.JFrame {
         jButton4 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jProgressBar1 = new javax.swing.JProgressBar();
+        jLabel3 = new javax.swing.JLabel();
+        jTextField2 = new javax.swing.JTextField();
+        jButton5 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -173,6 +179,22 @@ public class csvKontenImporter extends javax.swing.JFrame {
 
         jProgressBar1.setStringPainted(true);
 
+        jLabel3.setFont(new java.awt.Font("Dialog", 1, 11));
+        jLabel3.setText("Lieferant: ");
+
+        jTextField2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField2ActionPerformed(evt);
+            }
+        });
+
+        jButton5.setText("Wählen");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
         jButton6.setText("Hilfe");
         jButton6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -197,28 +219,39 @@ public class csvKontenImporter extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jCheckBox1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jCheckBox2)))
+                        .addComponent(jCheckBox2)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel3)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton4))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jButton3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton4))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(jTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 323, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton5))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 283, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(jCheckBox1)
-                    .addComponent(jCheckBox2))
+                    .addComponent(jCheckBox2)
+                    .addComponent(jLabel3)
+                    .addComponent(jButton5)
+                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -257,19 +290,29 @@ public class csvKontenImporter extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
         boolean succ = true;
-        KontenImporteur user = new KontenImporteur();
+        ProductImporteur user = new ProductImporteur();
         liste = new ArrayList();
-        header = new String[]{"Nummer", "Klasse", "Gruppe", "Art"
+        header = new String[]{"produktnummer", "name", "text", "vk", 
+        "ek","tax", "hersteller", "warengruppenkategorie", "warengruppenfamilie", 
+        "warengruppe", "url", "ean"
         };
 
         try {
 
             final CellProcessor[] processors = new CellProcessor[]{
                 new StrMinMax(0, 49),
+                new StrMinMax(0, 49),
                 new StrMinMax(0, 499),
-                new StrMinMax(0, 499),
-                new StrMinMax(0, 499),
-              
+                new StrMinMax(0, 99),
+                new StrMinMax(0, 99),
+                new StrMinMax(0, 99),
+                new StrMinMax(0, 99),
+                new StrMinMax(0, 99),
+                new StrMinMax(0, 99),
+                new StrMinMax(0, 99),
+                
+                new StrMinMax(0, 135),
+                new StrMinMax(0, 19)
             };
 
 
@@ -285,18 +328,20 @@ public class csvKontenImporter extends javax.swing.JFrame {
 //                final String[] header = inFile.getCSVHeader(true);
 
 
-                while ((user = inFile.read(KontenImporteur.class, header, processors)) != null) {
+                while ((user = inFile.read(ProductImporteur.class, header, processors)) != null) {
                     liste.add(user);
                 }
 
 
-            } catch (Exception ex) {
+            } catch (SuperCSVException ex) {
                 succ = false;
                 new Popup(ex.getMessage(), Popup.ERROR);
-                Log.Debug(ex);
-               
-         
-               
+                 ex.printStackTrace();
+            } catch (IOException ex) {
+                succ = false;
+                new Popup(ex.getMessage(), Popup.ERROR);
+                
+                ex.printStackTrace();
             } finally {
                 this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                 inFile.close();
@@ -306,12 +351,12 @@ public class csvKontenImporter extends javax.swing.JFrame {
         } catch (Exception ex) {
             succ = false;
             new Popup(ex.getMessage(), Popup.ERROR);
-             Log.Debug(ex);
+             ex.printStackTrace();
         }
 
         try {
-            user = new KontenImporteur();
-            data = KontenImporteur.listToImporteurArray(liste);
+            user = new ProductImporteur();
+            data = ProductImporteur.listToImporteurArray(liste, this.supplier.getId());
             datstr = user.getData(data);
             
            
@@ -322,7 +367,7 @@ public class csvKontenImporter extends javax.swing.JFrame {
         } catch (Exception ex) {
             succ = false;
             new Popup(ex.getMessage(), Popup.ERROR);
-             Log.Debug(ex);
+             ex.printStackTrace();
         }
 
 
@@ -363,13 +408,37 @@ public class csvKontenImporter extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jButton4ActionPerformed
 
+    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+    // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField2ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+
+        new SupplierPicker(this);
+    }//GEN-LAST:event_jButton5ActionPerformed
+
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
        
         new Help(new DefaultHelpModel("CSV Import", 
                 "<P><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3>Die zu "+
 "importierenden Daten m&uuml;ssen in dieser Form vorliegen:</FONT></FONT></P>"+
-"<P><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3>" +
-                "Nummer, Kontenklasse, Kontengruppe, Kontenart</FONT></FONT></P>"
+"<P><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3><B>&lt;produktnummer&gt;;"+
+"&lt;name&gt;;&lt;text&gt;;&lt;vk&gt;;&lt;ek&gt;;&lt;tax&gt;"+
+";&lt;hersteller&gt;;&lt;warengruppenkategorie&gt;;&lt;warengruppenfamilie&gt;;&lt;warengruppe&gt;;&lt;url&gt;;&lt;ean&gt;</B></FONT></FONT></P>"+
+"<P><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3>Zum Beispiel:</FONT></FONT></P>"+
+"<P><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3>1000143;&quot;NPPSU023&quot;;&quot;INTEL&nbsp;NPPSU023&nbsp;POWERSUPPLY&nbsp;UK&quot;;;07.01.08;19;&quot;INTEL&quot;;;;;&quot;http://www.google.de/logo.gif&quot;;675900307711"+
+"<BR>1000144;&quot;NPPSU023&quot;;&quot;INTEL&nbsp;NPPSU023&nbsp;POWERSUPPLY&nbsp;UK&quot;;;07.01.08;19;&quot;INTEL&quot;;;;;&quot;http://www.google.de/logo.gif&quot;;675900307711"+
+"<BR>1000145;&quot;NPPSU023&quot;;&quot;INTEL&nbsp;NPPSU023&nbsp;POWERSUPPLY&nbsp;UK&quot;;;07.01.08;19;&quot;INTEL&quot;;;;;&quot;http://www.google.de/logo.gif&quot;;675900307711</FONT></FONT></P>"+
+"<P><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3>Kontrollieren "+
+"Sie die Korrektheit ihrer Daten in der Vorschautabelle.<BR></FONT></FONT><BR><BR>"+
+"</P>"+
+"<P><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3>Das Importieren "+
+"kann abh&auml;ngig von der Dtenstruktur und der verwendeten Hardware "+
+"sehr lange dauern (</FONT></FONT><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3><B>~1.5"+
+"h f&uuml;r 32000</B></FONT></FONT><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3>"+
+"</FONT></FONT><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3><B>Produkte"+
+"</B></FONT></FONT><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3>(Dual-Core"+
+                "2 Ghz mit Sata2-Festplatte)).</FONT></FONT></P>"
                 
                 ));
     }//GEN-LAST:event_jButton6ActionPerformed
@@ -380,16 +449,19 @@ public class csvKontenImporter extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox jCheckBox2;
     public javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     public javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField2;
     // End of variables declaration//GEN-END:variables
 
     public javax.swing.JButton getJButton4() {
@@ -398,7 +470,7 @@ public class csvKontenImporter extends javax.swing.JFrame {
     
     class Task extends SwingWorker<Void, Void> {
 
-    private csvKontenImporter thisa;
+    private csvProductImporter thisa;
     private ProductGroupCategory newcat;
     private ProductGroupFamily newfam;
     private ProductGroupGroup newgrp;
@@ -408,7 +480,7 @@ public class csvKontenImporter extends javax.swing.JFrame {
      * Main task. Executed in background thread.
      */
 
-    public Task(csvKontenImporter thisa) {
+    public Task(csvProductImporter thisa) {
 
         this.thisa = thisa;
     }
@@ -436,23 +508,116 @@ public class csvKontenImporter extends javax.swing.JFrame {
 
                 for (int i = 0; i < thisa.data.length; i++) {
 
+                    Product pg = new Product(QueryClass.instanceOf());
+                    ProductGroupHandler handler = ProductGroupHandler.instanceOf();
+
+                    pg.setNummer(thisa.data[i].getProduktnummer());
+                    pg.setName(thisa.data[i].getName());
+                    pg.setDatum(datum);
+                    pg.setEK(thisa.data[i].getEk());
+                    pg.setVK(thisa.data[i].getVk());
+                    pg.setEan(thisa.data[i].getEan());
+                    pg.setHersteller(thisa.data[i].getHersteller());
+                    pg.setTAX(thisa.data[i].getTax());
+                    pg.setText(thisa.data[i].getText());
+                    pg.setUrl(thisa.data[i].getUrl());
+
+
+                    if (thisa.supplier != null) {
+                        pg.setLieferantenId(thisa.supplier.getId());
+                    } else {
+                        pg.setLieferantenId("0");
+                    }
+
+                    cat = thisa.data[i].getWarengruppenkategorie();
+                    fam = thisa.data[i].getWarengruppenfamilie();
+                    grp = thisa.data[i].getWarengruppe();
                     
-                    new mp3.classes.objects.eur.SKRKonto(thisa.data[i].getNummer(),thisa.data[i].getKlasse(),thisa.data[i].getGruppe(),thisa.data[i].getArt());
+//                     Log.Debug( pg.getName()+":Produkt \n" +cat,true);
+//                      Log.Debug(fam,true);
+//                       Log.Debug(grp,true);
+//                       
+//                       Log.Debug("---------------------------",true);
+                    
+
+                    if (cat.length() > 1 && fam.length() > 1 && grp.length() > 1) {
+
+                        int z = handler.exists(cat, handler.CATEGORY);
+                        if (z == 0) {
+
+                            newcat = new ProductGroupCategory(QueryClass.instanceOf());
+
+                            newcat.setName(cat);
+                            newcat.save();
+                            z = newcat.getID();
+                            news=true;
+                        }else{
+                           
+//                            newcat = handler.getCategory(z);
+                        }
+                        
+                        int f = handler.existFam(fam);
+                        if (f == 0) {
+//                            Log.Debug("creating fam: "+fam + " " + f,true);
+                            newfam = new ProductGroupFamily(QueryClass.instanceOf());
+                            newfam.setName(fam);
+                            newfam.setKategorieid(String.valueOf(z));
+                            newfam.save();
+                            f=newfam.getID();
+                            news=true;
+                         }else{
+//                          Log.Debug("existing fam: "+fam + " " + f,true);
+//                            newfam = handler.getFamily(f);
+                         }
+                        
+                        
+                        
+                        int l = handler.exists(grp, handler.GROUP);
+                        if (l == 0) {
+
+                            newgrp = new ProductGroupGroup(QueryClass.instanceOf());
+                            newgrp.setName(grp);
+                            newgrp.setFamilienid(String.valueOf(f));
+                            newgrp.save();
+                            news=true;
+                         }else{
+                            newgrp = handler.getGroup(l);
+                         }
+
+
+                       pg.setWarengruppenId(String.valueOf(l));
+                       
+                      
+                       if(news) {
+                            handler.getCats(true); //speed?
+                        } //speed?
+                       
+                       news=false;
+
+
+                    }else{
+                    
+                     pg.setWarengruppenId("1");
+                    
+                    }
 
                    
+
+                    pg.save();
+                    h++;
                     thisa.jProgressBar1.setValue(i);
 
-                    thisa.jLabel1.setText(h + " Konten importiert.");
-                   h++;
+                    thisa.jLabel1.setText(h + " Produkte angelegt");
+                    pg = null;
                 }
                 d=new Date();
-                Log.Debug("Einlesen beendet: " + d + " Konten: " + h,true);
+                Log.Debug("Einlesen beendet: " + d + " Produkte: " + h,true);
                 
-                 new History(QueryClass.instanceOf(), Structure.KONTEN ,h + " Konten importiert.");
+                 new History(QueryClass.instanceOf(), Structure.PRODUCT ,h + " Produkte importiert.");
             
                 
-                 thisa.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-                 thisa.getJButton4().setEnabled(false);
+                thisa.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                thisa.getJButton4().setEnabled(false);
                  thisa.jProgressBar1.setValue(0);
                  thisa.setVisible(false);
             }
@@ -468,7 +633,7 @@ public class csvKontenImporter extends javax.swing.JFrame {
      */
     @Override
     public void done() {
-        Toolkit.getDefaultToolkit().beep();
+//        Toolkit.getDefaultToolkit().beep();
         thisa.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 
     }

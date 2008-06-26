@@ -41,7 +41,7 @@ import mp3.classes.visual.main.mainframe;
 import mp3.classes.interfaces.Structure.*;
 import mp3.classes.objects.pdf.BillPDF;
 import mp3.classes.objects.ungrouped.MyData;
-import mp3.classes.visual.main.arrear;
+import mp3.classes.visual.main.util.arrear;
 
 /**
  *

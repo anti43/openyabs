@@ -38,14 +38,13 @@ import mp3.classes.utils.DesktopIcon;
 import mp3.classes.utils.DirectoryHandler;
 import mp3.classes.utils.JarFinder;
 import mp3.classes.utils.Log;
+import mp3.classes.visual.frames.license;
 import mp3.classes.visual.main.mainframe;
 
 /**
  * @author  anti43
  */
-public class MpInstaller extends javax.swing.JFrame implements ProtectedStrings,Strings{
-
-
+public class MpInstaller extends javax.swing.JFrame implements ProtectedStrings, Strings {
 
     private String url;
     private boolean update = false;
@@ -71,7 +70,6 @@ public class MpInstaller extends javax.swing.JFrame implements ProtectedStrings,
 
 
         } catch (IOException ex) {
-
         }
     }
 
@@ -92,6 +90,9 @@ public class MpInstaller extends javax.swing.JFrame implements ProtectedStrings,
         jButton2 = new javax.swing.JButton();
         jCheckBox1 = new javax.swing.JCheckBox();
         jLabel3 = new javax.swing.JLabel();
+        jButton3 = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jCheckBox2 = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Installation");
@@ -144,6 +145,17 @@ public class MpInstaller extends javax.swing.JFrame implements ProtectedStrings,
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/mp.png"))); // NOI18N
         jLabel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
+        jButton3.setText("Lizenz anzeigen");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("Sie müssen die Bedingungen der GPL akzeptieren, um dieses Programm verwenden zu dürfen.");
+
+        jCheckBox2.setText("Ich akzeptiere diese Bedingungen.");
+
         org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -154,18 +166,21 @@ public class MpInstaller extends javax.swing.JFrame implements ProtectedStrings,
                     .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 435, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(jCheckBox1)
                     .add(jPanel2Layout.createSequentialGroup()
-                        .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                        .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
                             .add(jPanel2Layout.createSequentialGroup()
                                 .add(jLabel2)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(jLabel3)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .add(jLabel3))
                             .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel2Layout.createSequentialGroup()
+                                .add(jButton3)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(jCheckBox2)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .add(jButton2)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(jButton1)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)))
-                        .add(67, 67, 67)))
+                                .add(jButton1)))
+                        .add(67, 67, 67))
+                    .add(jLabel1))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -180,10 +195,14 @@ public class MpInstaller extends javax.swing.JFrame implements ProtectedStrings,
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jCheckBox1))
                     .add(jLabel3))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 49, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 29, Short.MAX_VALUE)
+                .add(jLabel1)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jButton1)
-                    .add(jButton2))
+                    .add(jButton2)
+                    .add(jButton3)
+                    .add(jCheckBox2))
                 .addContainerGap())
         );
 
@@ -226,7 +245,7 @@ public class MpInstaller extends javax.swing.JFrame implements ProtectedStrings,
         try {
 
             workdir = JarFinder.getPathOfJar(JAR_NAME);
-            System.out.println("Workdir: "+workdir);
+            System.out.println("Workdir: " + workdir);
 
             File f = new File(USER_HOME + SEP + PROG_NAME);
             File fol = new File(USER_HOME + SEP + PROG_NAME + File.separator + LIB_DIR);
@@ -275,57 +294,68 @@ public class MpInstaller extends javax.swing.JFrame implements ProtectedStrings,
 
     public static void writeDesktopIcon() {
 
-        
-        if(System.getProperty("os.name").contains("indows")) {
+
+        if (System.getProperty("os.name").contains("indows")) {
             DesktopIcon.createWindowsDesktopIcon();
         } else {
-        
+
             DesktopIcon.createLinuxDesktopIcon();
-        
+
         }
     }
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         mainframe f;
-        // TODO add your handling code here:
-        try {
+        if (jCheckBox2.isSelected()) {
+            // TODO add your handling code here:
+            try {
 
-            this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+                this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 
 
-            if (makeDB(update)) {
-                if (jCheckBox1.isSelected()) {
-                    MpInstaller.writeDesktopIcon();
+                if (makeDB(update)) {
+                    if (jCheckBox1.isSelected()) {
+                        MpInstaller.writeDesktopIcon();
+                    }
+
+
+                    this.copyFiles();
+
+                    this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                    
+                    
+                    new Popup("Sie können das Programm nun starten.", Popup.NOTICE);
+                    System.exit(0);
+                } else {
+
+                    this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                 }
 
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                new Popup(PERMISSION_DENIED, Popup.ERROR);
 
-                this.copyFiles();
-
-                this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-                new Popup("Sie können das Programm nun starten.", Popup.NOTICE);
-
-                System.exit(0);
-            } else {
-
-                this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                //Logger.getLogger(mpInstaller.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
             }
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            new Popup(PERMISSION_DENIED, Popup.ERROR);
-
-        //Logger.getLogger(mpInstaller.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-
         }
     }//GEN-LAST:event_jButton1ActionPerformed
+
+private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+license l = new license();
+                new WindowTools(l);
+                l.setVisible(rootPaneCheckingEnabled);
+}//GEN-LAST:event_jButton3ActionPerformed
     /**
      * @param args the command line arguments
      */
     // Variables declaration - do not modify//GEN-BEGIN:variables
     javax.swing.JButton jButton1;
     javax.swing.JButton jButton2;
+    javax.swing.JButton jButton3;
     javax.swing.JCheckBox jCheckBox1;
+    javax.swing.JCheckBox jCheckBox2;
+    javax.swing.JLabel jLabel1;
     javax.swing.JLabel jLabel2;
     javax.swing.JLabel jLabel3;
     javax.swing.JPanel jPanel1;
@@ -340,7 +370,7 @@ public class MpInstaller extends javax.swing.JFrame implements ProtectedStrings,
         try {
             c = Conn.instanceOf(url, true);
         } catch (Exception ex) {
-           Popup.warn(ex.getMessage(), Popup.ERROR);
+            Popup.warn(ex.getMessage(), Popup.ERROR);
         }
 
         return Conn.isTablesCreated();

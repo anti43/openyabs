@@ -3,7 +3,7 @@
  *
  * Created on 25. Februar 2008, 23:52
  */
-package mp3.classes.visual.main;
+package mp3.classes.visual.main.util;
 
 import mp3.classes.utils.LineGraph;
 import java.awt.BorderLayout;

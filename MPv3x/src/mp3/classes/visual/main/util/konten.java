@@ -3,7 +3,7 @@
  *
  * Created on 18. Februar 2008, 12:49
  */
-package mp3.classes.visual.main;
+package mp3.classes.visual.main.util;
 
 import mp3.classes.objects.eur.Ausgabe;
 import mp3.classes.objects.eur.SKRKonto;

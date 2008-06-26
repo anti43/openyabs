@@ -3,7 +3,7 @@
  *
  * Created on 14. Februar 2008, 18:46
  */
-package mp3.classes.visual.main;
+package mp3.classes.visual.main.util;
 
 import java.awt.Cursor;
 import java.awt.Toolkit;

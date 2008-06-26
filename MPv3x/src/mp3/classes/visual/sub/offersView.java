@@ -39,7 +39,7 @@ import mp3.classes.objects.eur.Customer;
 import mp3.classes.objects.ungrouped.History;
 import mp3.classes.objects.ungrouped.MyData;
 import mp3.classes.objects.bill.Offer;
-import mp3.classes.objects.pdf.OrderPDF;
+import mp3.classes.objects.pdf.AngebotPDF;
 import mp3.classes.objects.bill.OfferProduct;
 import mp3.classes.objects.product.Product;
 import mp3.classes.visual.main.mainframe;
@@ -1640,7 +1640,7 @@ public class offersView extends javax.swing.JPanel implements Runnable {
     }//GEN-LAST:event_jButton14ActionPerformed
 
     private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
-        new OrderPDF(current);
+        new AngebotPDF(current);
     }//GEN-LAST:event_jButton15ActionPerformed
 
     private int getLastRow() {

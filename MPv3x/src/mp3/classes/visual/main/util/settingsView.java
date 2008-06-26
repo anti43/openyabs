@@ -3,7 +3,7 @@
  *
  * Created on 3. Februar 2008, 19:31
  */
-package mp3.classes.visual.main;
+package mp3.classes.visual.main.util;
 
 import javax.swing.JFileChooser;
 import javax.swing.table.TableCellEditor;
@@ -11,9 +11,9 @@ import javax.swing.table.TableModel;
 import mp3.installer.MpInstaller;
 import mp3.classes.layer.DefaultHelpModel;
 import mp3.classes.layer.visual.Help;
-import mp3.classes.layer.Popup;
 import mp3.classes.objects.ungrouped.MyData;
 import mp3.classes.utils.WindowTools;
+import mp3.classes.visual.main.mainframe;
 
 /**
  *
@@ -26,6 +26,8 @@ public class settingsView extends javax.swing.JFrame {
     private TableModel model;
     private mainframe mainframe;
     private TableCellEditor editor;
+
+ 
 
     /** Creates new form settingsView
      * @param mainframe 
