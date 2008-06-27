@@ -54,7 +54,7 @@ public class DesktopIcon implements ProtectedStrings{
             out.write("Exec=java -jar " + System.getProperty("user.home") + File.separator + ProtectedStrings.PROG_NAME + File.separator + ProtectedStrings.JAR_NAME);
             out.newLine();
 
-            out.write("Icon=" + fol + File.separator + "mpd.png");
+            out.write("Icon=" + System.getProperty("user.home") + File.separator + ProtectedStrings.PROG_NAME + File.separator +"lib" + File.separator + "mpd.png");
             out.newLine();
 
             out.write("Type=Application");
