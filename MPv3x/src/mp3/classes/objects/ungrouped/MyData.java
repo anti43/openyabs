@@ -56,7 +56,6 @@ public class MyData extends mp3.classes.layer.People implements mp3.classes.inte
     private String[][] str;
     private String state;
 //    private String[] options;
-
     public static MyData instanceOf() {
 
         if (dat == null) {
@@ -70,8 +69,6 @@ public class MyData extends mp3.classes.layer.People implements mp3.classes.inte
 
         dat = null;
         dat = new MyData();
-
-
         return dat;
     }
     private String[][] string;
@@ -86,20 +83,42 @@ public class MyData extends mp3.classes.layer.People implements mp3.classes.inte
         this.id = 1;
     }
 
-    public DefaultTableModel getDefaultTablemodel() {
+    private int getAppVersion() {
+        return Integer.valueOf(Constants.VERSION);
+    }
 
-        String[] head = new String[]{"Option", "Wert"};
+    private int getDBVersion() {
+        this.str = this.select("name, wert", null, null, false);
+        return str.length;
+    }
 
+    private void checkForUpgrade() {
 
-        return new DefaultTableModel(str, head);
+        int dbversion = getDBVersion();
 
+        switch (dbversion) {
+
+            case (14):
+                this.insert("name,wert", "(;;2#4#1#1#8#0#;;)Land (Waehrung) (DE,CH)(;;2#4#1#1#8#0#;;),(;;2#4#1#1#8#0#;;)DE(;;2#4#1#1#8#0#;;)");
+                this.insert("name,wert", "(;;2#4#1#1#8#0#;;)*Hauptfenster(;;2#4#1#1#8#0#;;),(;;2#4#1#1#8#0#;;) (;;2#4#1#1#8#0#;;)");
+                checkForUpgrade();
+                break;
+            case (16):
+//                   upgradeTo(16);
+//                   checkForUpgrade();
+                break;
+        }
 
     }
 
+    public DefaultTableModel getDefaultTablemodel() {
+
+        String[] head = new String[]{"Option", "Wert"};
+        return new DefaultTableModel(str, head);
+    }
+
     public String getDate() {
-
         return Formater.formatDate(new Date());
-
     }
 
     public String getVersion() {
@@ -203,7 +222,7 @@ public class MyData extends mp3.classes.layer.People implements mp3.classes.inte
     }
 
     private void explode() {
-    
+
         if (str != null) {
             this.setBackupverz(str[0][1]);
             this.setRechnungverz(str[1][1]);
@@ -221,7 +240,7 @@ public class MyData extends mp3.classes.layer.People implements mp3.classes.inte
             this.setAgDefaultKonto(str[12 + 1][1]);
             this.setLocale(new Locale("de", str[14][1]));
             this.setState(str[15][1]);
-             
+
             try {
 
                 this.setEinnahmeDefKonto(new SKRKonto(QueryClass.instanceOf(), getEkDefaultKonto(), true));
@@ -241,7 +260,7 @@ public class MyData extends mp3.classes.layer.People implements mp3.classes.inte
                 this.setAusgabeDefKonto(new SKRKonto(QueryClass.instanceOf(), getAgDefaultKonto(), true));
             }
 
-            
+
         }
     }
 
