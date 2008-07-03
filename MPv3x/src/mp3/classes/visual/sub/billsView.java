@@ -1102,7 +1102,8 @@ public class billsView extends javax.swing.JPanel implements Runnable {
                     }
                 }
                
-                bill.setGesamtpreis(betrag.toString());
+//                bill.setGesamtpreis(betrag.toString());
+                  bill.setGesamtpreis(jTextField8.getText().replaceAll(",", "."));
                 if(nettobetrag>0) {
                      bill.setGesamttax(String.valueOf(allovertax / nettobetrag));
                 }
@@ -1237,7 +1238,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
 
                     bill.setKundenId(getCustomer().getId());
                     
-                    bill.setGesamtpreis(jTextField8.getText());
+                    bill.setGesamtpreis(jTextField8.getText().replaceAll(",", "."));
                     
                                     
    // **********************EUR**********************************************************
@@ -1269,7 +1270,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
                     }
                 }
               Log.Debug("val = "+allovertax + " / " + taxcount);
-                bill.setGesamtpreis(betrag.toString());
+//                bill.setGesamtpreis(betrag.toString());
                 bill.setGesamttax(String.valueOf(allovertax/taxcount));
                 taxcount = 0;
   //***************************************************************************************

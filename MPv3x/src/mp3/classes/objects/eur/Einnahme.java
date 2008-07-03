@@ -18,8 +18,6 @@
 package mp3.classes.objects.eur;
 
 import mp3.classes.objects.*;
-import mp3.classes.objects.bill.Bill;
-import mp3.classes.layer.QueryClass;
 import mp3.classes.interfaces.Daemonable;
 import java.util.Date;
 import mp3.database.util.Query;

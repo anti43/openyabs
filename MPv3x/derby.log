@@ -1,6 +1,6 @@
 ----------------------------------------------------------------
-2008-06-26 21:23:50.703 GMT:
- Booting Derby version The Apache Software Foundation - Apache Derby - 10.3.1.4 - (561794): instance c013800d-011a-c6c2-c4b1-000000281670
-on database directory C:\Users\Andreas\.mp\mpv36Database  
+2008-07-03 15:23:35.121 GMT:
+ Booting Derby version The Apache Software Foundation - Apache Derby - 10.3.1.4 - (561794): instance c013800d-011a-e985-73e7-0000002af630
+on database directory /home/anti/.mp/mpv36Database  
 
 Database Class Loader started - derby.database.classpath=''

@@ -27,10 +27,8 @@ import mp3.database.util.Query;
 
 import mp3.classes.interfaces.Strings;
 import mp3.classes.utils.Log;
-import mp3.classes.layer.Popup;
 import mp3.classes.layer.PostenTableModel;
 import mp3.classes.objects.ungrouped.*;
-import mp3.classes.objects.eur.*;
 import mp3.classes.objects.bill.*;
 
 /**
