@@ -507,11 +507,11 @@ public interface Structure {
 "INSERT INTO konten (nummer, klasse,gruppe,art) VALUES ('2140', 'Einnahmenkonten', 'Vom Finanzamt erstattete und ggf. verrechnete Umsatzsteuer', 'Vom FA erstattete Umsatzsteuer')",
 
                   
-          "INSERT INTO warengruppenkategorien (kategorienummer,name) VALUES ('1','Default')",
+          "INSERT INTO warengruppenkategorien (kategorienummer,name) VALUES ('1','Kategorie')",
           
-          "INSERT INTO warengruppenfamilien (familienummer, kategorieid, name) VALUES ('1',1,'Default')",
+          "INSERT INTO warengruppenfamilien (familienummer, kategorieid, name) VALUES ('1',1,'Familie')",
           
-          "INSERT INTO warengruppengruppen (gruppenummer, familienid, name) VALUES ('1',1,'Default')"
+          "INSERT INTO warengruppengruppen (gruppenummer, familienid, name) VALUES ('1',1,'Gruppe')"
             
  };
 }

@@ -230,11 +230,11 @@ public class mainframe extends javax.swing.JFrame {
      * @return 0:kunden
      *          1:rechnungen
      *          2:angebote
-     *          3:produkte
-     *          4:lieferanten
-     *          5:verlauf  
-     *          6:sicherung
-     *          7:eur
+     *          3:eur
+     *          4:produkte
+     *          5:lieferanten
+     *          6:verlauf  
+     *          7:sicherung
      *          8:start 
      *          
      */
@@ -296,11 +296,11 @@ public class mainframe extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jPanel7 = new javax.swing.JPanel();
+        jPanel12 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         jPanel9 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
         jPanel8 = new javax.swing.JPanel();
-        jPanel12 = new javax.swing.JPanel();
         jPanel11 = new javax.swing.JPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
@@ -392,6 +392,9 @@ public class mainframe extends javax.swing.JFrame {
         jPanel7.setLayout(new java.awt.BorderLayout());
         jTabbedPane1.addTab("Angebote ", jPanel7);
 
+        jPanel12.setLayout(new java.awt.BorderLayout());
+        jTabbedPane1.addTab("Einnahmen/ Ausgaben", jPanel12);
+
         jPanel4.setLayout(new java.awt.BorderLayout());
         jTabbedPane1.addTab("Produkte      ", jPanel4);
 
@@ -403,9 +406,6 @@ public class mainframe extends javax.swing.JFrame {
 
         jPanel8.setLayout(new java.awt.BorderLayout());
         jTabbedPane1.addTab("Sicherung", jPanel8);
-
-        jPanel12.setLayout(new java.awt.BorderLayout());
-        jTabbedPane1.addTab("EUR/ Ausgabenbelege", jPanel12);
 
         jPanel11.setLayout(new java.awt.BorderLayout());
         jTabbedPane1.addTab("Start", jPanel11);
@@ -823,11 +823,12 @@ public class mainframe extends javax.swing.JFrame {
          * @return 0:kunden
          *          1:rechnungen
          *          2:angebote
-         *          3:produkte
-         *          4:lieferanten
-         *          5:verlauf  
-         *          6:sicherung
-         *          7:start 
+         *          3:eur
+         *          4:produkte
+         *          5:lieferanten
+         *          6:verlauf  
+         *          7:sicherung
+         *          8:start 
          *          
          */
         switch (this.getShowingTab()) {
@@ -845,11 +846,11 @@ public class mainframe extends javax.swing.JFrame {
             case 2:
                 this.getOrdersView().save();
                 break;
-            case 3:
+            case 4:
                 this.getProductsView().save();
 
                 break;
-            case 4:
+            case 5:
                 this.getC().save();
                 break;
         }

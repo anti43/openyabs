@@ -145,7 +145,7 @@ public class historyView extends javax.swing.JPanel implements Runnable {
     // End of variables declaration//GEN-END:variables
     public void run() {
         while (true) {
-            while (this.mainframe.getShowingTab() != 5) {
+//            while (this.mainframe.getShowingTab() != 6) {
                 try {
 
                     HistoryHandler.validate();
@@ -153,13 +153,13 @@ public class historyView extends javax.swing.JPanel implements Runnable {
 
                     jTable1.setModel(new DefaultTableModel(liste, header));
                     resizeTable();
-                    Thread.sleep(360000);
+                    Thread.sleep(60000);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(historyView.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
 
-            }
+//            }
 
 
         }

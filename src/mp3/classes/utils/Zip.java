@@ -48,7 +48,7 @@ public class Zip {
 			System.out.println("\n Total of  " + numOfFiles +" files are Zipped " );			
 			System.out.println("\n Total of  " + size  + " bytes are Zipped  ");		
 		}	catch (Exception e){							
-			e.printStackTrace();				
+			Log.Debug(e);				
 		}		
 	}		
 	
@@ -99,7 +99,7 @@ public class Zip {
 				//cpZipOutputStream.write(b, 0, (int)cpFile.length());
 				cpZipOutputStream.closeEntry() ;
 			} catch (Exception e) {								
-				e.printStackTrace();						
+				Log.Debug(e);							
 			}				
 		}		
 	}

@@ -31,14 +31,12 @@ import mp3.classes.utils.Formater;
 import mp3.classes.utils.UnZip;
 import mp3.classes.utils.Zip;
 import mp3.classes.visual.main.mainframe;
-import mp3.classes.visual.main.mainframe;
 
 /**
  *
  * @author  anti43
  */
-public class backupView extends javax.swing.JPanel implements Runnable {
-
+public class backupView extends javax.swing.JPanel{ 
     private String[][] liste;
     private String[] header;
     private mainframe mainframe;
@@ -377,27 +375,8 @@ public class backupView extends javax.swing.JPanel implements Runnable {
     public javax.swing.JTextField jTextField1;
     public javax.swing.JToolBar jToolBar1;
     // End of variables declaration//GEN-END:variables
-    public void run() {
-        while (true) {
-            while (this.mainframe.getShowingTab() != 5) {
-                try {
 
-                    HistoryHandler.validate();
-                    liste = HistoryHandler.getHistory();
-
-                    jTable1.setModel(new DefaultTableModel(liste, header));
-
-                    Thread.sleep(360000);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(backupView.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-
-            }
-
-
-        }
-    }
+    
 
     private void validateTable() {
 
