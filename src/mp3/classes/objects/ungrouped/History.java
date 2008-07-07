@@ -23,6 +23,7 @@ import java.util.Date;
 import mp3.database.util.Query;
 import mp3.classes.interfaces.Structure;
 import mp3.classes.layer.Popup;
+import mp3.classes.layer.QueryClass;
 
 /**
  *
@@ -34,11 +35,11 @@ public class History extends mp3.classes.layer.Things implements mp3.classes.int
     private String aktion="";
     private String text="";
     private String datum="";
-    private DateFormat df;
+    private DateFormat format  = new SimpleDateFormat("dd.MM.yyyy - HH:mm:ss");
           
     public History(Query query) {
         super(query.clone(TABLE_HISTORY));
-        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy - HH:mm:ss");
+        
         this.setDatum(format.format(new Date()));
     }
     /**
@@ -50,8 +51,7 @@ public class History extends mp3.classes.layer.Things implements mp3.classes.int
     public History(Query query, String aktion, String text) {
         super(query.clone(TABLE_HISTORY));
         
-        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy - HH:mm:ss");
-        
+                
         this.setAktion(aktion);
         this.setText(text);
         this.setDatum(format.format(new Date()));
@@ -70,6 +70,16 @@ public class History extends mp3.classes.layer.Things implements mp3.classes.int
         this.explode(this.selectLast("*", "id", id, true));
         
        
+    }
+
+    public History(String aktion, String text) {
+       super(QueryClass.instanceOf().clone(Structure.TABLE_HISTORY));
+
+        this.setAktion(aktion);
+        this.setText(text);
+        this.setDatum(format.format(new Date()));
+        
+        this.save();
     }
 
 

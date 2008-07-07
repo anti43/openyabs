@@ -18,12 +18,14 @@
 package mp3.classes.interfaces;
 
 import java.io.File;
+import mp3.database.util.Query;
 
 /**
  *
  * @author anti
  */
 public interface Structure {
+   
     
     
 
@@ -74,6 +76,8 @@ public interface Structure {
      * History
      */
     public final String TABLE_HISTORY = "historie";
+    
+    public final String DATABASE = "Datenbank";
     
      /**
      * User
