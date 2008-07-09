@@ -110,7 +110,7 @@ public class Conn implements Strings {
 
 
 //        tablesCreated = this.query(Structure.tables);
-        tablesCreated = this.query(Struktur.tables);
+        tablesCreated = this.query(Struktur.TABELLEN_STRUKTUR);
 
         Conn.reboot();
     }

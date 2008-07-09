@@ -285,7 +285,7 @@ public interface Struktur {
     /**
      * Installation data (tables)
      */
-    public final String[] tables = {
+    public final String[] TABELLEN_STRUKTUR = {
         
         "CREATE TABLE kunden (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
                 "Kundennummer VARCHAR(250),Firma VARCHAR(250) default NULL,Anrede VARCHAR(250) default NULL," +
