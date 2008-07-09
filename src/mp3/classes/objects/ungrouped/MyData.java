@@ -117,7 +117,7 @@ public class MyData extends mp3.classes.layer.People implements mp3.classes.inte
 //                this.insert("name,wert", "(;;2#4#1#1#8#0#;;)*Hauptfenster(;;2#4#1#1#8#0#;;),(;;2#4#1#1#8#0#;;) (;;2#4#1#1#8#0#;;)");
 //                new History(Structure.DATABASE, "Datenbankupdate " + 14 + " durchgefuehrt.");
 
-                checkForUpgrade();
+//                checkForUpgrade();
                 break;
         }
 

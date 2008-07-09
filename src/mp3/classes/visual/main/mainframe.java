@@ -101,6 +101,7 @@ public class mainframe extends javax.swing.JFrame {
             loader = null;
             System.gc();
             System.gc();
+            
         }
 
         QueryClass.setProgressBarOn(this.mainProgress, this);
