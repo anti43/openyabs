@@ -16,6 +16,8 @@
  */
 package mp3.classes.utils;
 
+import java.sql.SQLException;
+
 /**
  *
  * @author anti43
@@ -92,6 +94,10 @@ public class Log {
             logger.log(string.getMessage() + "\n" + string.getCause());
             string.printStackTrace();
         }
+    }
+
+    public static void Debug(Exception ex, boolean b) {
+        ex.printStackTrace();
     }
 
     public static void Debug(String string, boolean shure) {

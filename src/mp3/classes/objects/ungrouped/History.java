@@ -35,7 +35,8 @@ public class History extends mp3.classes.layer.Things implements mp3.classes.int
     private String aktion="";
     private String text="";
     private String datum="";
-    private DateFormat format  = new SimpleDateFormat("dd.MM.yyyy - HH:mm:ss");
+//   yyyy-mm-dd hh.mm.ss[.nnnnnn] - SQL DATE Timestamp
+    private DateFormat format  = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
           
     public History(Query query) {
         super(query.clone(TABLE_HISTORY));

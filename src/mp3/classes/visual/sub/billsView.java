@@ -200,7 +200,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
     }
 
     private void billsOfTheMonth() {
-        df = new SimpleDateFormat( "MM.yyyy" );
+        df = new SimpleDateFormat( "yyyy-MM-01" );
         jTextField2.setText(df.format(new Date()));
         
         String[][] list = getCurrent().select("id, rechnungnummer, datum ", "datum", jTextField2.getText(), "datum", true);

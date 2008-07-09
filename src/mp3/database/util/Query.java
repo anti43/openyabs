@@ -17,10 +17,14 @@
 package mp3.database.util;
 
 import java.awt.Cursor;
+import java.text.ParseException;
 import mp3.classes.interfaces.Structure;
 import java.sql.*;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,7 +37,6 @@ import mp3.classes.visual.main.mainframe;
  * @author anti
  */
 public abstract class Query implements Structure {
-
 
     private Connection conn = null;
     private Statement stm = null;
@@ -50,7 +53,8 @@ public abstract class Query implements Structure {
     private List labels;
     private int startcount = 0;
     private mainframe main;
-
+    //   yyyy-mm-dd hh.mm.ss[.nnnnnn] - SQL DATE Timestamp
+    private DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss");
 
     public Query(Connection conn, String table) {
         this.table = table;
@@ -87,7 +91,7 @@ public abstract class Query implements Structure {
 
         } catch (SQLException ex) {
             Log.Debug(message + ex.getMessage());
-            Log.Debug(ex);
+            Log.Debug(ex, true);
         } finally {
 
             // Alle Ressourcen wieder freigeben
@@ -96,7 +100,7 @@ public abstract class Query implements Structure {
                     resultSet.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex);
+                    Log.Debug(ex, true);
                 }
             }
             if (stm != null) {
@@ -104,7 +108,7 @@ public abstract class Query implements Structure {
                     stm.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex);
+                    Log.Debug(ex, true);
                 }
             }
         }
@@ -176,7 +180,7 @@ public abstract class Query implements Structure {
 
         } catch (SQLException ex) {
             Log.Debug(message + ex.getMessage());
-            Log.Debug(ex);
+            Log.Debug(ex, true);
         } finally {
 
             // Alle Ressourcen wieder freigeben
@@ -185,7 +189,7 @@ public abstract class Query implements Structure {
                     resultSet.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex);
+                    Log.Debug(ex, true);
                 }
             }
             if (stm != null) {
@@ -193,7 +197,7 @@ public abstract class Query implements Structure {
                     stm.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex);
+                    Log.Debug(ex, true);
                 }
             }
         }
@@ -271,7 +275,7 @@ public abstract class Query implements Structure {
 
             if (resultSet.last()) {
 
-               
+
                 integer = resultSet.getString(index);
 
                 try {
@@ -280,23 +284,23 @@ public abstract class Query implements Structure {
                     k = String.valueOf(i);
 
                 } catch (NumberFormatException numberFormatException) {
-             
-                  
+
+
                     try {
                         k = integer;
-                      
+
 
                         i = Integer.valueOf(integer.substring(integer.length() - 5, integer.length()).replaceAll("-", "#"));
                         i++;
-                   
+
                         k = integer.substring(0, integer.length() - 5);
 
                         k = k + i;
-                       
+
                         stop();
 
                     } catch (Exception numberFormatException1) {
-                   
+
 
                         try {
                             k = integer;
@@ -311,20 +315,20 @@ public abstract class Query implements Structure {
 
                         } catch (Exception numberFormatException12) {
 
-                          
+
 
                             try {
-                                    k = integer;
-                    
+                                k = integer;
 
-                        i = Integer.valueOf(integer.substring(integer.length() - 3, integer.length()).replaceAll("-", "#"));
-                        i++;
-                 
-                        k = integer.substring(0, integer.length() - 3);
 
-                        k = k + i;
-                    
-                        stop();
+                                i = Integer.valueOf(integer.substring(integer.length() - 3, integer.length()).replaceAll("-", "#"));
+                                i++;
+
+                                k = integer.substring(0, integer.length() - 3);
+
+                                k = k + i;
+
+                                stop();
 
 
                             } catch (Exception numberFormatException123) {
@@ -370,7 +374,7 @@ public abstract class Query implements Structure {
                                         resultSet = stm.executeQuery(query);
 
                                         resultSet.first();
-                                        
+
                                         oldi = resultSet.getInt(1);
                                         oldi++;
                                         stop();
@@ -384,7 +388,7 @@ public abstract class Query implements Structure {
             }
         } catch (SQLException ex) {
             Log.Debug(message + ex.getMessage());
-            Log.Debug(ex);
+            Log.Debug(ex, true);
             stop();
             return "1";
 
@@ -396,7 +400,7 @@ public abstract class Query implements Structure {
                     resultSet.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex);
+                    Log.Debug(ex, true);
                 }
             }
             if (stm != null) {
@@ -404,15 +408,16 @@ public abstract class Query implements Structure {
                     stm.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex);
+                    Log.Debug(ex, true);
                 }
             }
         }
 
         stop();
-        
-        if(k.equals("0"))k="1";
-        
+
+        if (k.equals("0")) {
+            k = "1";
+        }
         return k;
 
     }
@@ -486,7 +491,7 @@ public abstract class Query implements Structure {
 
         } catch (SQLException ex) {
             Log.Debug(message + ex.getMessage());
-            Log.Debug(ex);
+            Log.Debug(ex, true);
             stop();
             return 0;
 
@@ -498,7 +503,7 @@ public abstract class Query implements Structure {
                     resultSet.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex);
+                    Log.Debug(ex, true);
                 }
             }
             if (stm != null) {
@@ -506,7 +511,7 @@ public abstract class Query implements Structure {
                     stm.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex);
+                    Log.Debug(ex, true);
                 }
             }
         }
@@ -524,7 +529,6 @@ public abstract class Query implements Structure {
 
     }
 
-
     /**
      * 
      * @param what  : {set, value, "'"}
@@ -532,9 +536,9 @@ public abstract class Query implements Structure {
      * @return id of inserted row
      */
     public int insert(String[] what) {
-        
+
         what[1] = what[1].replaceAll("'", "`");
-        
+
         what[1] = what[1].replaceAll("\\(;;2#4#1#1#8#0#;;\\)", "'");
 
         what[1] = what[1].replaceAll("\\(;;\\,;;\\)", ",");
@@ -556,7 +560,7 @@ public abstract class Query implements Structure {
 
         } catch (SQLException ex) {
             Log.Debug(message + ex.getMessage());
-            Log.Debug(ex);
+            Log.Debug(ex, true);
             return 0;
         } finally {
 
@@ -566,7 +570,7 @@ public abstract class Query implements Structure {
                     resultSet.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex);
+                    Log.Debug(ex, true);
                 }
             }
             if (stm != null) {
@@ -574,7 +578,7 @@ public abstract class Query implements Structure {
                     stm.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex);
+                    Log.Debug(ex, true);
                 }
             }
         }
@@ -593,7 +597,7 @@ public abstract class Query implements Structure {
 
         start();
         what[1] = what[1].replaceAll("'", "`");
-      
+
         what[1] = what[1].replaceAll("\\(;;2#4#1#1#8#0#;;\\)", "'");
 
         Log.Debug(what);
@@ -625,7 +629,7 @@ public abstract class Query implements Structure {
 
         } catch (SQLException ex) {
             Log.Debug(message + ex.getMessage());
-            Log.Debug(ex);
+            Log.Debug(ex, true);
         } finally {
 
             // Alle Ressourcen wieder freigeben
@@ -634,7 +638,7 @@ public abstract class Query implements Structure {
                     resultSet.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex);
+                    Log.Debug(ex, true);
                 }
             }
             if (stm != null) {
@@ -642,7 +646,7 @@ public abstract class Query implements Structure {
                     stm.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex);
+                    Log.Debug(ex, true);
                 }
             }
         }
@@ -712,7 +716,7 @@ public abstract class Query implements Structure {
 
         } catch (SQLException ex) {
             Log.Debug(message + ex.getMessage());
-            Log.Debug(ex);
+            Log.Debug(ex, true);
 
         } finally {
 
@@ -722,7 +726,7 @@ public abstract class Query implements Structure {
                     resultSet.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex);
+                    Log.Debug(ex, true);
                 }
             }
             if (stm != null) {
@@ -730,7 +734,7 @@ public abstract class Query implements Structure {
                     stm.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex);
+                    Log.Debug(ex, true);
                 }
             }
         }
@@ -789,7 +793,7 @@ public abstract class Query implements Structure {
 
         } catch (SQLException ex) {
             Log.Debug(message + ex.getMessage());
-            Log.Debug(ex);
+            Log.Debug(ex, true);
 
         } finally {
 
@@ -799,7 +803,7 @@ public abstract class Query implements Structure {
                     resultSet.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex);
+                    Log.Debug(ex, true);
                 }
             }
             if (stm != null) {
@@ -807,7 +811,7 @@ public abstract class Query implements Structure {
                     stm.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex);
+                    Log.Debug(ex, true);
                 }
             }
         }
@@ -893,7 +897,7 @@ public abstract class Query implements Structure {
 //
 //        } catch (SQLException ex) {
 //            Log.Debug(message + ex.getMessage());
-//            Log.Debug(ex);
+//            Log.Debug(ex,true);
 //        } finally {
 //
 //             Alle Ressourcen wieder freigeben
@@ -902,7 +906,7 @@ public abstract class Query implements Structure {
 //                    resultSet.close();
 //                } catch (SQLException ex) {
 //                    Log.Debug(message + ex.getMessage());
-//                    Log.Debug(ex);
+//                    Log.Debug(ex,true);
 //                }
 //            }
 //            if (stm != null) {
@@ -910,7 +914,7 @@ public abstract class Query implements Structure {
 //                    stm.close();
 //                } catch (SQLException ex) {
 //                    Log.Debug(message + ex.getMessage());
-//                    Log.Debug(ex);
+//                    Log.Debug(ex,true);
 //                }
 //            }
 //        }
@@ -994,7 +998,7 @@ public abstract class Query implements Structure {
 
         } catch (SQLException ex) {
             Log.Debug(message + ex.getMessage());
-            Log.Debug(ex);
+            Log.Debug(ex, true);
         } finally {
 
             // Alle Ressourcen wieder freigeben
@@ -1003,7 +1007,7 @@ public abstract class Query implements Structure {
                     resultSet.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex);
+                    Log.Debug(ex, true);
                 }
             }
             if (stm != null) {
@@ -1011,7 +1015,7 @@ public abstract class Query implements Structure {
                     stm.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex);
+                    Log.Debug(ex, true);
                 }
             }
         }
@@ -1094,7 +1098,7 @@ public abstract class Query implements Structure {
 
         } catch (SQLException ex) {
             Log.Debug(message + ex.getMessage());
-            Log.Debug(ex);
+            Log.Debug(ex, true);
         } finally {
 
             // Alle Ressourcen wieder freigeben
@@ -1103,7 +1107,7 @@ public abstract class Query implements Structure {
                     resultSet.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex);
+                    Log.Debug(ex, true);
                 }
             }
             if (stm != null) {
@@ -1111,7 +1115,7 @@ public abstract class Query implements Structure {
                     stm.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex);
+                    Log.Debug(ex, true);
                 }
             }
         }
@@ -1181,7 +1185,7 @@ public abstract class Query implements Structure {
 
         } catch (SQLException ex) {
             Log.Debug(message + ex.getMessage());
-            Log.Debug(ex);
+            Log.Debug(ex, true);
         } finally {
 
             // Alle Ressourcen wieder freigeben
@@ -1190,7 +1194,7 @@ public abstract class Query implements Structure {
                     resultSet.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex);
+                    Log.Debug(ex, true);
                 }
             }
             if (stm != null) {
@@ -1198,7 +1202,7 @@ public abstract class Query implements Structure {
                     stm.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex);
+                    Log.Debug(ex, true);
                 }
             }
         }
@@ -1226,7 +1230,7 @@ public abstract class Query implements Structure {
 
         } catch (SQLException ex) {
             Log.Debug(message + ex.getMessage());
-            Log.Debug(ex);
+            Log.Debug(ex, true);
         } finally {
 
             // Alle Ressourcen wieder freigeben
@@ -1235,7 +1239,7 @@ public abstract class Query implements Structure {
                     resultSet.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex);
+                    Log.Debug(ex, true);
                 }
             }
             if (stm != null) {
@@ -1243,7 +1247,7 @@ public abstract class Query implements Structure {
                     stm.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex);
+                    Log.Debug(ex, true);
                 }
             }
         }
@@ -1308,7 +1312,7 @@ public abstract class Query implements Structure {
 
         } catch (SQLException ex) {
             Log.Debug(message + ex.getMessage());
-            Log.Debug(ex);
+            Log.Debug(ex, true);
         } finally {
 
             // Alle Ressourcen wieder freigeben
@@ -1317,7 +1321,7 @@ public abstract class Query implements Structure {
                     resultSet.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex);
+                    Log.Debug(ex, true);
                 }
             }
             if (stm != null) {
@@ -1325,7 +1329,7 @@ public abstract class Query implements Structure {
                     stm.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex);
+                    Log.Debug(ex, true);
                 }
             }
         }
@@ -1336,23 +1340,48 @@ public abstract class Query implements Structure {
     @SuppressWarnings("unchecked")
     public String[][] select(String what, String[] where, String order, boolean like) {
         start();
-        String l = "";
+        String l1 = "";
+        String l2 = "";
         String k = " = ";
         String j = "";
 
         String ord = " ORDER BY " + order;
         String wher = "";
 
+        Calendar cl = Calendar.getInstance();
+        java.util.Date cdate = null;
+
+
         if (like) {
-            l = "%";
-            k = " LIKE ";
-//            j = " OR WHERE " + where[0] + " " + k + " " + where[2] + l + where[1] + l + where[2];
+
+
+            if (where[0].endsWith("datum")) {
+
+                
+                k = " BETWEEN ";
+                try {
+                    cdate = format.parse(where[1] + " 00.00.00");
+                } catch (ParseException ex) {
+                    Logger.getLogger(Query.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                cl.setTime(cdate);
+                cl.add(Calendar.DATE, 31);
+                java.util.Date change_date = cl.getTime();
+                
+                where[1] = "'" + format.format(cdate) + "'" + " AND " +"'" +  format.format(change_date)+"'";
+                where[2] = " ";
+
+            } else {
+                l1 = "%";
+                l2 = "%";
+                k = " LIKE ";
+            }
         }
 
         if (where == null) {
             wher = " WHERE deleted = 0 ";
         } else {
-            wher = " WHERE " + where[0] + " " + k + " " + where[2] + l + where[1] + l + where[2] + " ";
+            wher = " WHERE " + where[0] + " " + k + " " + where[2] + l1 + where[1] + l2 + where[2] + " ";
 
         }
 
@@ -1402,7 +1431,8 @@ public abstract class Query implements Structure {
 
         } catch (SQLException ex) {
             Log.Debug(message + ex.getMessage());
-            Log.Debug(ex);
+            Log.Debug(ex, true);
+            Log.Debug(query, true);
         } finally {
 
             // Alle Ressourcen wieder freigeben
@@ -1411,7 +1441,7 @@ public abstract class Query implements Structure {
                     resultSet.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex);
+                    Log.Debug(ex, true);
                 }
             }
             if (stm != null) {
@@ -1419,7 +1449,7 @@ public abstract class Query implements Structure {
                     stm.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex);
+                    Log.Debug(ex, true);
                 }
             }
         }
@@ -1463,7 +1493,7 @@ public abstract class Query implements Structure {
             Log.Debug("Entries deleted: " + resultCount);
         } catch (SQLException ex) {
             Log.Debug(message + ex.getMessage());
-            Log.Debug(ex);
+            Log.Debug(ex, true);
             return 0;
         } finally {
 
@@ -1473,7 +1503,7 @@ public abstract class Query implements Structure {
                     resultSet.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex);
+                    Log.Debug(ex, true);
                 }
             }
             if (stm != null) {
@@ -1481,7 +1511,7 @@ public abstract class Query implements Structure {
                     stm.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex);
+                    Log.Debug(ex, true);
                 }
             }
         }
@@ -1515,7 +1545,7 @@ public abstract class Query implements Structure {
             Log.Debug("Entries deleted: " + resultCount);
         } catch (SQLException ex) {
             Log.Debug(message + ex.getMessage());
-            Log.Debug(ex);
+            Log.Debug(ex, true);
             return 0;
         } finally {
 
@@ -1525,7 +1555,7 @@ public abstract class Query implements Structure {
                     resultSet.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex);
+                    Log.Debug(ex, true);
                 }
             }
             if (stm != null) {
@@ -1533,7 +1563,7 @@ public abstract class Query implements Structure {
                     stm.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex);
+                    Log.Debug(ex, true);
                 }
             }
         }
@@ -1652,7 +1682,7 @@ public abstract class Query implements Structure {
 
         } catch (SQLException ex) {
             Log.Debug(message + ex.getMessage());
-            Log.Debug(ex);
+            Log.Debug(ex, true);
         } finally {
 
             // Alle Ressourcen wieder freigeben
@@ -1661,7 +1691,7 @@ public abstract class Query implements Structure {
                     resultSet.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex);
+                    Log.Debug(ex, true);
                 }
             }
             if (stm != null) {
@@ -1669,7 +1699,7 @@ public abstract class Query implements Structure {
                     stm.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex);
+                    Log.Debug(ex, true);
                 }
             }
         }

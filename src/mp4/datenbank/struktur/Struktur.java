@@ -330,7 +330,7 @@ public interface Struktur {
         "CREATE TABLE rechnungen (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
                 "Rechnungnummer VARCHAR(250) default NULL,KundenId INTEGER NOT NULL," +
                 "Datum DATE NOT NULL," + "storno INTEGER DEFAULT 0," + "bezahlt INTEGER DEFAULT 0," +
-                "gesamtpreis DOUBLE DEFAULT 0,"+ "gesamtsteuersatzid INTEGER NOT NULL,"+ 
+                "gesamtpreis DOUBLE DEFAULT 0,"+ "gesamttax INTEGER NOT NULL,"+ 
                 "AfDatum DATE NOT NULL," + 
                 "Betreff1 VARCHAR(200) default NULL,Betreff2 VARCHAR(200) default NULL," +
                 "Betreff3 VARCHAR(200) default NULL,Betreff4 VARCHAR(200) default NULL," +
@@ -370,17 +370,17 @@ public interface Struktur {
                 "deleted INTEGER DEFAULT 0,"+
                 "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
             
-        "CREATE TABLE produkte (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
+        "CREATE TABLE dienstleistungen (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
                 "produktnummer VARCHAR(500),name VARCHAR(50),beschreibung VARCHAR(500),einheit VARCHAR(50),preis DOUBLE DEFAULT 0,steuersatzid INTEGER NOT NULL," +
-                "hersteller VARCHAR(250),lieferantenid INTEGER NOT NULL,"+
+                
                 "warengruppenid INTEGER NOT NULL,"+"datum DATE NOT NULL,"+
                 
                 "deleted INTEGER DEFAULT 0,"+
                 "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",  
                 
-         "CREATE TABLE dienstleistungen (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
+         "CREATE TABLE produkte (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
                 "produktnummer VARCHAR(500),name VARCHAR(50),text VARCHAR(500),vk DOUBLE DEFAULT 0,ek DOUBLE DEFAULT 0,steuersatzid INTEGER NOT NULL," +
-                
+                "hersteller VARCHAR(250),lieferantenid INTEGER NOT NULL,"+
                 "warengruppenid INTEGER NOT NULL,"+"datum DATE NOT NULL,"+"url VARCHAR(250) default NULL,"+
                 "ean BIGINT DEFAULT NULL,"+
                 "deleted INTEGER DEFAULT 0,"+
@@ -430,14 +430,14 @@ public interface Struktur {
                    
          "CREATE TABLE ausgaben (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
                 "kontenid INTEGER DEFAULT NULL, beschreibung VARCHAR(500) default NULL,"+
-                "preis DOUBLE DEFAULT 0,"+"steuersatzid INTEGER NOT NULL,"+"datum DATE NOT NULL,"+
-                 "deleted INTEGER DEFAULT 0,"+
+                "preis DOUBLE DEFAULT 0,"+"tax INTEGER NOT NULL,"+"datum DATE NOT NULL,"+
+                "deleted INTEGER DEFAULT 0,"+
                 "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
                    
          "CREATE TABLE einnahmen (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
                 "kontenid INTEGER DEFAULT NULL, beschreibung VARCHAR(500) default NULL,"+
-                "preis DOUBLE DEFAULT 0,"+"steuersatzid INTEGER NOT NULL,"+"datum DATE NOT NULL,"+
-                 "deleted INTEGER DEFAULT 0,"+
+                "preis DOUBLE DEFAULT 0,"+"tax INTEGER NOT NULL,"+"datum DATE NOT NULL,"+
+                "deleted INTEGER DEFAULT 0,"+
                 "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
 
     

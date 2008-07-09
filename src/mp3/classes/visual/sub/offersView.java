@@ -1499,10 +1499,10 @@ public class offersView extends javax.swing.JPanel implements Runnable {
     }//GEN-LAST:event_jCheckBox2ActionPerformed
 
     private void offersOfTheMonth() {
-        df = new SimpleDateFormat("MM.yyyy");
+        df = new SimpleDateFormat("yyyy-MM-dd");
         jTextField2.setText(df.format(new Date()));
 
-        String[][] list = getCurrent().select("id, auftragnummer, datum ", "datum", jTextField2.getText(), "datum", true);
+        String[][] list = getCurrent().select("id, auftragnummer, datum ", "datum", df.format(new Date()), "datum", true);
         String k = "id, " + "Nummer,Datum";
 
         this.jTable3.setModel(new DefaultTableModel(list, k.split(",")));
