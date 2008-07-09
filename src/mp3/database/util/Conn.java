@@ -25,6 +25,7 @@ import mp3.classes.utils.FileReaderWriter;
 import mp3.classes.layer.Popup;
 import mp3.classes.utils.Log;
 import mp3.classes.utils.SplashScreen;
+import mp4.datenbank.struktur.Struktur;
 
 /**
  *
@@ -109,6 +110,7 @@ public class Conn implements Strings {
 
 
         tablesCreated = this.query(Structure.tables);
+//        tablesCreated = this.query(Struktur.tables);
 
         Conn.reboot();
     }
