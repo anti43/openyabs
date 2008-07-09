@@ -288,133 +288,157 @@ public interface Struktur {
     public final String[] tables = {
         
         "CREATE TABLE kunden (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
-                "Kundennummer varchar(250),Firma varchar(250) default NULL,Anrede varchar(250) default NULL," +
-                "Vorname varchar(250) default NULL, " +
-                "Name varchar(250) default NULL, Str varchar(250) default NULL, PLZ varchar(50) default NULL," +
-                "Ort varchar(300) default NULL, Tel varchar(250) default NULL,Fax varchar(250) default NULL," +
-                "Mobil varchar(250) default NULL," +
-                "Mail varchar(350) default NULL, Webseite varchar(350) default NULL,Notizen varchar(10000)," +
+                "Kundennummer VARCHAR(250),Firma VARCHAR(250) default NULL,Anrede VARCHAR(250) default NULL," +
+                "Vorname VARCHAR(250) default NULL, " +
+                "Name VARCHAR(250) default NULL, Str VARCHAR(250) default NULL, PLZ VARCHAR(50) default NULL," +
+                "Ort VARCHAR(300) default NULL, Tel VARCHAR(250) default NULL,Fax VARCHAR(250) default NULL," +
+                "Mobil VARCHAR(250) default NULL," +
+                "Mail VARCHAR(350) default NULL, Webseite VARCHAR(350) default NULL,Notizen VARCHAR(10000)," +
                 "deleted INTEGER DEFAULT 0, "+
-                "reserve1 varchar(500) default NULL,reserve2 varchar(500) default NULL," +
+                "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
                 "PRIMARY KEY  (id))",
                 
         "CREATE TABLE lieferanten (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
-                "lieferantennummer varchar(250),Firma varchar(250) default NULL," +
-                "Str varchar(250) default NULL, PLZ varchar(50) default NULL," +
-                "Ort varchar(300) default NULL, Tel varchar(250) default NULL,Fax varchar(250) default NULL," +
-                "Mobil varchar(250) default NULL," +
-                "Mail varchar(350) default NULL, Webseite varchar(350) default NULL,Notizen varchar(10000)," +
+                "lieferantennummer VARCHAR(250),Firma VARCHAR(250) default NULL," +
+                "Str VARCHAR(250) default NULL, PLZ VARCHAR(50) default NULL," +
+                "Ort VARCHAR(300) default NULL, Tel VARCHAR(250) default NULL,Fax VARCHAR(250) default NULL," +
+                "Mobil VARCHAR(250) default NULL," +
+                "Mail VARCHAR(350) default NULL, Webseite VARCHAR(350) default NULL,Notizen VARCHAR(10000)," +
                 "deleted INTEGER DEFAULT 0, "+
-                "reserve1 varchar(500) default NULL,reserve2 varchar(500) default NULL," +
+                "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
                 "PRIMARY KEY  (id))",
                 
          "CREATE TABLE hersteller (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
-                "herstellernummer varchar(250),Firma varchar(250) default NULL,Anrede varchar(250) default NULL," +
-                "Vorname varchar(250) default NULL, " +
-                "Name varchar(250) default NULL, Str varchar(250) default NULL, PLZ varchar(50) default NULL," +
-                "Ort varchar(300) default NULL, Tel varchar(250) default NULL,Fax varchar(250) default NULL," +
-                "Mobil varchar(250) default NULL," +
-                "Mail varchar(350) default NULL, Webseite varchar(350) default NULL,Notizen varchar(10000)," +
+                "herstellernummer VARCHAR(250),Firma VARCHAR(250) default NULL,Anrede VARCHAR(250) default NULL," +
+                "Vorname VARCHAR(250) default NULL, " +
+                "Name VARCHAR(250) default NULL, Str VARCHAR(250) default NULL, PLZ VARCHAR(50) default NULL," +
+                "Ort VARCHAR(300) default NULL, Tel VARCHAR(250) default NULL,Fax VARCHAR(250) default NULL," +
+                "Mobil VARCHAR(250) default NULL," +
+                "Mail VARCHAR(350) default NULL, Webseite VARCHAR(350) default NULL,Notizen VARCHAR(10000)," +
                 "deleted INTEGER DEFAULT 0, "+
-                "reserve1 varchar(500) default NULL,reserve2 varchar(500) default NULL," +
+                "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
                 "PRIMARY KEY  (id))",
         
         "CREATE TABLE rechnungsposten (ID BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
                 "rechnungid INTEGER NOT NULL," + "anzahl DOUBLE DEFAULT 0," +
-                "posten varchar(1000) default NULL,  preis DOUBLE DEFAULT 0, " +
+                "posten VARCHAR(1000) default NULL,  preis DOUBLE DEFAULT 0, " +
                 "steuersatz DOUBLE DEFAULT 0," +
                 "deleted INTEGER DEFAULT 0,"+
-                "reserve1 varchar(500) default NULL,reserve2 varchar(500) default NULL," +
+                "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
                 "PRIMARY KEY  (id))",
                 
         "CREATE TABLE rechnungen (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
-                "Rechnungnummer varchar(250) default NULL,KundenId INTEGER NOT NULL," +
+                "Rechnungnummer VARCHAR(250) default NULL,KundenId INTEGER NOT NULL," +
                 "Datum DATE NOT NULL," + "storno INTEGER DEFAULT 0," + "bezahlt INTEGER DEFAULT 0," +
-                "gesamtpreis DOUBLE DEFAULT 0,"+ "gesamttax DOUBLE DEFAULT 0,"+ 
+                "gesamtpreis DOUBLE DEFAULT 0,"+ "gesamtsteuersatzid INTEGER NOT NULL,"+ 
+                "AfDatum DATE NOT NULL," + 
+                "Betreff1 VARCHAR(200) default NULL,Betreff2 VARCHAR(200) default NULL," +
+                "Betreff3 VARCHAR(200) default NULL,Betreff4 VARCHAR(200) default NULL," +
+                "UZeichen VARCHAR(50) default NULL,IZeichen VARCHAR(50) default NULL," +
                 "deleted INTEGER DEFAULT 0,"+
-                "reserve1 varchar(500) default NULL,reserve2 varchar(500) default NULL," +
+                "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
                 "PRIMARY KEY  (id))",
                 
        "CREATE TABLE auftragsposten (ID BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
                 "auftragid INTEGER NOT NULL," + "anzahl DOUBLE DEFAULT 0," +
-                "posten varchar(1000) default NULL,  preis DOUBLE DEFAULT 0, " +
+                "posten VARCHAR(1000) default NULL,  preis DOUBLE DEFAULT 0, " +
                 "steuersatz DOUBLE DEFAULT 0," +
                 "deleted INTEGER DEFAULT 0,"+
-                "reserve1 varchar(500) default NULL,reserve2 varchar(500) default NULL," +
+                "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
                 "PRIMARY KEY  (id))",
                 
         "CREATE TABLE auftraege (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
-                "Auftragnummer varchar(250) default NULL,KundenId INTEGER NOT NULL," +
+                "Auftragnummer VARCHAR(250) default NULL,KundenId INTEGER NOT NULL," +
                 "Datum DATE NOT NULL," +"auftrag INTEGER DEFAULT 0,"+"validvon DATE NOT NULL," +"validbis DATE NOT NULL," +
                 "rechnung  INTEGER DEFAULT 0," +
                 "deleted INTEGER DEFAULT 0,"+
-                "reserve1 varchar(500) default NULL,reserve2 varchar(500) default NULL," +
+                "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
                 "PRIMARY KEY  (id))",
         
         "CREATE TABLE daten (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-                "name varchar(250), wert varchar(250)," +
+                "name VARCHAR(250), wert VARCHAR(250)," +
                 "deleted INTEGER DEFAULT 0,"+
-                "reserve1 varchar(500) default NULL,reserve2 varchar(500) default NULL,PRIMARY KEY  (id))",
+                "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
+                
+        "CREATE TABLE programmdaten (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
+                "name VARCHAR(250), wert VARCHAR(250)," +
+                "deleted INTEGER DEFAULT 0,"+
+                "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
+                
+        "CREATE TABLE steuersaetze (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
+                "name VARCHAR(250), steuersatz DOUBLE DEFAULT 0," +
+                "deleted INTEGER DEFAULT 0,"+
+                "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
             
         "CREATE TABLE produkte (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-                "produktnummer varchar(500),name varchar(50),text varchar(500),vk DOUBLE DEFAULT 0,ek DOUBLE DEFAULT 0,tax DOUBLE DEFAULT 0," +
-                "hersteller varchar(250),lieferantenid INTEGER NOT NULL,"+
-                "warengruppenid INTEGER NOT NULL,"+"datum DATE NOT NULL,"+"url varchar(250) default NULL,"+
+                "produktnummer VARCHAR(500),name VARCHAR(50),beschreibung VARCHAR(500),einheit VARCHAR(50),preis DOUBLE DEFAULT 0,steuersatzid INTEGER NOT NULL," +
+                "hersteller VARCHAR(250),lieferantenid INTEGER NOT NULL,"+
+                "warengruppenid INTEGER NOT NULL,"+"datum DATE NOT NULL,"+
+                
+                "deleted INTEGER DEFAULT 0,"+
+                "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",  
+                
+         "CREATE TABLE dienstleistungen (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
+                "produktnummer VARCHAR(500),name VARCHAR(50),text VARCHAR(500),vk DOUBLE DEFAULT 0,ek DOUBLE DEFAULT 0,steuersatzid INTEGER NOT NULL," +
+                
+                "warengruppenid INTEGER NOT NULL,"+"datum DATE NOT NULL,"+"url VARCHAR(250) default NULL,"+
                 "ean BIGINT DEFAULT NULL,"+
                 "deleted INTEGER DEFAULT 0,"+
-                "reserve1 varchar(500) default NULL,reserve2 varchar(500) default NULL,PRIMARY KEY  (id))",  
+                "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",  
  
          "CREATE TABLE warengruppenkategorien (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-                "kategorienummer varchar(120),name varchar(500),"+ 
+                "kategorienummer VARCHAR(120),name VARCHAR(500),"+ 
                  "deleted INTEGER DEFAULT 0,"+
-                "reserve1 varchar(500) default NULL,reserve2 varchar(500) default NULL,PRIMARY KEY  (id))",
+                "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
                 
-          "CREATE TABLE usertable (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-                "username varchar(250),password varchar(250),"+ 
+          "CREATE TABLE benutzer (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
+                "username VARCHAR(250),password VARCHAR(250),"+ 
+                "createdon DATE NOT NULL,"+
+                "createdby VARCHAR(50),"+ "iseditor INTEGER DEFAULT 0,"+ "isadmin INTEGER DEFAULT 0,"+
                 "deleted INTEGER DEFAULT 0,"+
-                "reserve1 varchar(500) default NULL,reserve2 varchar(500) default NULL,PRIMARY KEY  (id))",
+                "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
                 
          "CREATE TABLE warengruppenfamilien (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-                "familienummer varchar(120), kategorieid  INTEGER DEFAULT 0, name varchar(500),"+ 
+                "familienummer VARCHAR(120), kategorieid  INTEGER DEFAULT 0, name VARCHAR(500),"+ 
                  "deleted INTEGER DEFAULT 0,"+
-                "reserve1 varchar(500) default NULL,reserve2 varchar(500) default NULL,PRIMARY KEY  (id))",
+                "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
           
          "CREATE TABLE warengruppengruppen (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-                "gruppenummer varchar(120),familienid  INTEGER DEFAULT 0,name varchar(500),"+ 
+                "gruppenummer VARCHAR(120),familienid  INTEGER DEFAULT 0,name VARCHAR(500),"+ 
                  "deleted INTEGER DEFAULT 0,"+
-                "reserve1 varchar(500) default NULL,reserve2 varchar(500) default NULL,PRIMARY KEY  (id))",
+                "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
 
                 
          "CREATE TABLE dateien (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-                "productid INTEGER NOT NULL,url varchar(500),"+
+                "productid INTEGER NOT NULL,url VARCHAR(500),"+
                 "datum DATE NOT NULL,"+
                 "deleted INTEGER DEFAULT 0,"+
-                "reserve1 varchar(500) default NULL,reserve2 varchar(500) default NULL,PRIMARY KEY  (id))",
+                "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
                
          "CREATE TABLE historie (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-                "aktion varchar(500) default NULL,text varchar(250) default NULL,"+
+                "aktion VARCHAR(500) default NULL,text VARCHAR(250) default NULL,"+
                 "datum DATE NOT NULL,"+
                 "deleted INTEGER DEFAULT 0,"+
-                "reserve1 varchar(500) default NULL,reserve2 varchar(500) default NULL,PRIMARY KEY  (id))",
+                "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
 
          "CREATE TABLE konten (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-                "nummer varchar(500) default NULL,klasse varchar(1000) default NULL,"+
-                "gruppe varchar(1000) default NULL,"+
-                "art varchar(1000) default NULL,"+
+                "nummer VARCHAR(500) default NULL,klasse VARCHAR(1000) default NULL,"+
+                "gruppe VARCHAR(1000) default NULL,"+
+                "art VARCHAR(1000) default NULL,"+
                  "deleted INTEGER DEFAULT 0,"+
-                "reserve1 varchar(500) default NULL,reserve2 varchar(500) default NULL,PRIMARY KEY  (id))",
+                "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
                    
          "CREATE TABLE ausgaben (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-                "kontenid INTEGER DEFAULT NULL, beschreibung varchar(500) default NULL,"+
-                "preis DOUBLE DEFAULT 0,"+"tax DOUBLE DEFAULT 0,"+"datum DATE NOT NULL,"+
+                "kontenid INTEGER DEFAULT NULL, beschreibung VARCHAR(500) default NULL,"+
+                "preis DOUBLE DEFAULT 0,"+"steuersatzid INTEGER NOT NULL,"+"datum DATE NOT NULL,"+
                  "deleted INTEGER DEFAULT 0,"+
-                "reserve1 varchar(500) default NULL,reserve2 varchar(500) default NULL,PRIMARY KEY  (id))",
+                "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
                    
          "CREATE TABLE einnahmen (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-                "kontenid INTEGER DEFAULT NULL, beschreibung varchar(500) default NULL,"+
-                "preis DOUBLE DEFAULT 0,"+"tax DOUBLE DEFAULT 0,"+"datum DATE NOT NULL,"+
+                "kontenid INTEGER DEFAULT NULL, beschreibung VARCHAR(500) default NULL,"+
+                "preis DOUBLE DEFAULT 0,"+"steuersatzid INTEGER NOT NULL,"+"datum DATE NOT NULL,"+
                  "deleted INTEGER DEFAULT 0,"+
-                "reserve1 varchar(500) default NULL,reserve2 varchar(500) default NULL,PRIMARY KEY  (id))",
+                "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
 
     
             
