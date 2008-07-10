@@ -1,8 +1,20 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ *  This file is part of MP by anti43 /GPL.
+ *  
+ *      MP is free software: you can redistribute it and/or modify
+ *      it under the terms of the GNU General Public License as published by
+ *      the Free Software Foundation, either version 3 of the License, or
+ *      (at your option) any later version.
+ *  
+ *      MP is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU General Public License for more details.
+ *  
+ *      You should have received a copy of the GNU General Public License
+ *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mp4.utils;
+package mp4.utils.datum;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -15,7 +27,7 @@ import mp3.classes.utils.Log;
  *
  * @author anti
  */
-public class DatumUtils {
+public class DateConverter {
 
     private static Calendar cl = Calendar.getInstance();
     //   yyyy-mm-dd hh.mm.ss[.nnnnnn] - SQL DATE Timestamp
@@ -23,6 +35,14 @@ public class DatumUtils {
     public static DateFormat DEF_DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
     private static String NULL_DATE_STRING = "00.00.0000";
     private static Date NULL_DATE = null;
+
+    public static String getTodayDefDate() {
+        return DEF_DATE_FORMAT.format(new Date());
+    }
+
+    public static String getTodayDBDate() {
+        return DB_DATE_FORMAT.format(new Date());
+    }
 
     /**
      * 
@@ -66,8 +86,8 @@ public class DatumUtils {
             return cl.getTime().toString();
         } catch (ParseException ex) {
             Log.Debug(ex.getMessage());
+            return null;
         }
-        return NULL_DATE_STRING;
     }
 
     /**
@@ -87,8 +107,9 @@ public class DatumUtils {
             return cl.getTime().toString();
         } catch (ParseException ex) {
             Log.Debug(ex.getMessage());
+            return null;
         }
-        return NULL_DATE_STRING;
+
     }
 
     /**
@@ -102,9 +123,39 @@ public class DatumUtils {
             return DB_DATE_FORMAT.parse(DB_DATE_FORMAT.format(date));
         } catch (ParseException ex) {
             Log.Debug(ex.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * 
+     * @param date
+     * @return SQL conform date String
+     */
+    public static String getSQLDateString(Date date) {
+        try {
+
+            return DB_DATE_FORMAT.parse(DB_DATE_FORMAT.format(date)).toString();
+        } catch (ParseException ex) {
+            Log.Debug(ex.getMessage());
+            return null;
         }
 
-        return NULL_DATE;
+    }
+
+    /**
+     * 
+     * @param date
+     * @return Default date (dd.mm.yyyy)
+     */
+    public static String getDefDateString(Date date) {
+        try {
+
+            return DEF_DATE_FORMAT.parse(DEF_DATE_FORMAT.format(date)).toString();
+        } catch (ParseException ex) {
+            Log.Debug(ex.getMessage());
+            return null;
+        }
     }
 
     /**
@@ -118,24 +169,32 @@ public class DatumUtils {
             return DEF_DATE_FORMAT.parse(DEF_DATE_FORMAT.format(date));
         } catch (ParseException ex) {
             Log.Debug(ex.getMessage());
+            return null;
         }
 
-        return NULL_DATE;
     }
 
     /**
+     * Converts formated 
+     * Default date (dd.mm.yyyy)
+     * or
+     * yyyy-mm-dd hh.mm.ss[.nnnnnn] - SQL DATE Timestamp
+     * 
+     * to a Date object.
      * 
      * @param date
-     * @return Default date (dd.mm.yyyy)
+     * @return Parsed date
      */
     public static Date getDate(String date) {
         try {
-
             return DEF_DATE_FORMAT.parse(date);
         } catch (ParseException ex) {
-            Log.Debug(ex.getMessage());
+            try {
+                return DB_DATE_FORMAT.parse(date);
+            } catch (ParseException ex1) {
+                Log.Debug(ex.getMessage());
+                return null;
+            }
         }
-
-        return NULL_DATE;
     }
 }

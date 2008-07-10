@@ -373,15 +373,15 @@ public interface Struktur {
         "CREATE TABLE dienstleistungen (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
                 "produktnummer VARCHAR(500),name VARCHAR(50),beschreibung VARCHAR(500),einheit VARCHAR(50),preis DOUBLE DEFAULT 0,steuersatzid INTEGER NOT NULL," +
                 
-                "warengruppenid INTEGER NOT NULL,"+"datum DATE NOT NULL,"+
+                "warengruppenid INTEGER  DEFAULT 0,"+"datum DATE NOT NULL,"+
                 
                 "deleted INTEGER DEFAULT 0,"+
                 "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",  
                 
          "CREATE TABLE produkte (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
                 "produktnummer VARCHAR(500),name VARCHAR(50),text VARCHAR(500),vk DOUBLE DEFAULT 0,ek DOUBLE DEFAULT 0,steuersatzid INTEGER NOT NULL," +
-                "hersteller VARCHAR(250),lieferantenid INTEGER NOT NULL,"+
-                "warengruppenid INTEGER NOT NULL,"+"datum DATE NOT NULL,"+"url VARCHAR(250) default NULL,"+
+                "hersteller VARCHAR(250),lieferantenid INTEGER  DEFAULT 0,"+
+                "warengruppenid INTEGER DEFAULT 0,"+"datum DATE NOT NULL,"+"url VARCHAR(250) default NULL,"+
                 "ean BIGINT DEFAULT NULL,"+
                 "deleted INTEGER DEFAULT 0,"+
                 "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",  
@@ -410,7 +410,7 @@ public interface Struktur {
 
                 
          "CREATE TABLE dateien (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-                "productid INTEGER NOT NULL,url VARCHAR(500),"+
+                "productid INTEGER  DEFAULT 0,url VARCHAR(500),"+
                 "datum DATE NOT NULL,"+
                 "deleted INTEGER DEFAULT 0,"+
                 "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",

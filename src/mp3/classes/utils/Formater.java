@@ -117,14 +117,14 @@ public abstract class Formater {
      * @param datum
      * @return
      */
-    public static boolean getBetween(String von, String bis, String datum){
+    public static boolean isBetween(String start, String ende, String datum){
     
         SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy");
     
             try {
 
-                Date vond = df.parse(von);
-                Date bisd = df.parse(bis);
+                Date vond = df.parse(start);
+                Date bisd = df.parse(ende);
                 Date dat = df.parse(datum);
   
 
