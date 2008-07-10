@@ -16,6 +16,7 @@
  */
 package mp3.classes.objects.product;
 
+import mp3.classes.utils.Log;
 import mp3.database.util.Query;
 
 
@@ -26,7 +27,7 @@ import mp3.database.util.Query;
 public class ProductGroupFamily extends mp3.classes.layer.Things implements mp3.classes.interfaces.Structure {
 
     private String familiennummer = "0";
-    private String kategorieid = "0";
+    private Integer kategorieid = 0;
     private String name = "";
       
     private String[][] data;
@@ -60,10 +61,14 @@ public class ProductGroupFamily extends mp3.classes.layer.Things implements mp3.
   }
   
     private void explode(String[] data) {
-         this.id=Integer.valueOf(data[0]);
-        this.setFamiliennummer(data[1]);
-        this.setKategorieid(data[2]);
-        this.setName(data[3]);
+        try {
+            this.id = Integer.valueOf(data[0]);
+            this.setFamiliennummer(data[1]);
+            this.setKategorieid(Integer.valueOf(data[2]));
+            this.setName(data[3]);
+        } catch (NumberFormatException numberFormatException) {
+            Log.Debug(numberFormatException);
+        }
         
 //        Log.Debug("exp"+data[2]);
         
@@ -121,11 +126,11 @@ public class ProductGroupFamily extends mp3.classes.layer.Things implements mp3.
         this.familiennummer = familiennummer;
     }
 
-    public String getKategorieid() {
+    public Integer getKategorieid() {
         return kategorieid;
     }
 
-    public void setKategorieid(String kategorieid) {
+    public void setKategorieid(Integer kategorieid) {
         this.kategorieid = kategorieid;
     }
 

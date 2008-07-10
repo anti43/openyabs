@@ -18,6 +18,7 @@ package mp3.classes.objects.bill;
 
 import mp3.database.util.Query;
 import mp3.classes.layer.Popup;
+import mp3.classes.utils.Log;
 
 /**
  *
@@ -49,11 +50,15 @@ public class BillProduct extends mp3.classes.layer.Things implements mp3.classes
 
     private void explode(String[] select) {
 
-        this.setRechnungid(select[1]);
-        this.setAnzahl(select[2]);
-        this.setPosten(select[3]);
-        this.setPreis(select[4]);
-        this.setSteuersatz(select[5]);
+        try {
+            this.setRechnungid(Integer.valueOf(select[1]));
+            this.setAnzahl(select[2]);
+            this.setPosten(select[3]);
+            this.setPreis(select[4]);
+            this.setSteuersatz(select[5]);
+        } catch (NumberFormatException numberFormatException) {
+            Log.Debug(numberFormatException);
+        }
     }
 
 
@@ -90,8 +95,8 @@ public class BillProduct extends mp3.classes.layer.Things implements mp3.classes
         return rechnungid;
     }
 
-    public void setRechnungid(String rechnungid) {
-        this.rechnungid = rechnungid;
+    public void setRechnungid(Integer rechnungid) {
+        this.rechnungid = rechnungid.toString();
     }
 
     public String getPosten() {

@@ -1202,7 +1202,7 @@ System.out.println(jPanel5.getSize());
             try {
 
 
-                mainframe.getB().setBill(new Bill(QueryClass.instanceOf(), id.toString()).expose());
+                mainframe.getB().setBill(new Bill(QueryClass.instanceOf(), id).expose());
 
                 mainframe.getJTabbedPane1().setSelectedIndex(1);
             } catch (Exception ex) {

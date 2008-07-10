@@ -52,7 +52,7 @@ public class Ausgabe extends mp3.classes.layer.Things implements mp3.classes.int
      * @param tax
      * @param datum
      */
-    public Ausgabe(String kontoid, String beschreibung, String preis, String tax, Date datum) {
+    public Ausgabe(int kontoid, String beschreibung, String preis, String tax, Date datum) {
         super(QueryClass.instanceOf().clone(TABLE_DUES));
         
         this.setKontenid(kontoid);
@@ -79,13 +79,15 @@ public class Ausgabe extends mp3.classes.layer.Things implements mp3.classes.int
     private void explode(String[] select) {
         try {
             this.id = Integer.valueOf(select[0]);
-            this.setKontenid(select[1]);
+            this.setKontenid(Integer.valueOf(select[1]));
             this.setBeschreibung(select[2]);
             this.setPreis(select[3]);
             this.setTax(select[4]);
             this.setDatum(select[5]);
 
-        } catch (NumberFormatException numberFormatException) {
+        } catch (Exception numberFormatException) {
+            
+            Log.Debug(numberFormatException);
         }
 
         
@@ -153,8 +155,8 @@ public class Ausgabe extends mp3.classes.layer.Things implements mp3.classes.int
         return Kontenid;
     }
 
-    public void setKontenid(String Kontenid) {
-        this.Kontenid = Kontenid;
+    public void setKontenid(Integer Kontenid) {
+        this.Kontenid = Kontenid.toString();
     }
 
     public String getBeschreibung() {

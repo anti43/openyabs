@@ -61,10 +61,10 @@ public class Bill extends mp3.classes.layer.Things implements mp3.classes.interf
      * @param query
      * @param id
      */
-    public Bill(Query query, String id) {
+    public Bill(Query query, Integer id) {
         super(query.clone(TABLE_BILLS));
         this.id = Integer.valueOf(id);
-        this.explode(this.selectLast(ALL, ID, id, true));
+        this.explode(this.selectLast(ALL, ID, id.toString(), true));
         this.query = query;
         bp = getProducts(query);
     }
@@ -128,7 +128,7 @@ public class Bill extends mp3.classes.layer.Things implements mp3.classes.interf
         
         for(int g=0;g<prods.length;g++){
         
-            tzh[g][0] = MyData.instanceOf().getEinnahmeDefKonto().getId();
+            tzh[g][0] = MyData.instanceOf().getEinnahmeDefKonto().getId().toString();
             
             for(int l=0;l<prods[g].length;l++){
          
@@ -248,8 +248,8 @@ public class Bill extends mp3.classes.layer.Things implements mp3.classes.interf
         } 
     }
 
-    public String getid() {
-        return id.toString();
+    public int getid() {
+        return id;
     }
 
     public String getRechnungnummer() {
@@ -383,7 +383,7 @@ public class Bill extends mp3.classes.layer.Things implements mp3.classes.interf
 
         Query q = query.clone(TABLE_BILLS_DATA);
 
-        String[] wher = {"rechnungid", this.getId(), ""};
+        String[] wher = {"rechnungid", this.getId().toString(), ""};
 
         prods = q.select(ALL, wher);
         BillProduct[] prof = null;

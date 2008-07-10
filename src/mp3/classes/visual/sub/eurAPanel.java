@@ -9,7 +9,7 @@ import java.util.Date;
 import mp3.classes.layer.Popup;
 import mp3.classes.layer.QueryClass;
 import mp3.classes.layer.visual.DatePick;
-import mp3.classes.objects.eur.Ausgabe;
+
 
 
 import mp3.classes.objects.ungrouped.MyData;
@@ -18,6 +18,7 @@ import mp3.classes.utils.FetchDataTask;
 import mp3.classes.utils.Formater;
 import mp3.classes.utils.Log;
 import mp3.classes.visual.util.konten;
+import mp4.klassen.objekte.Ausgabe;
 
 /**
  *

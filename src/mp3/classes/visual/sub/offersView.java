@@ -1135,7 +1135,7 @@ public class offersView extends javax.swing.JPanel implements Runnable {
         if (evt.getClickCount() >= 2 && idOk && evt.getButton() == MouseEvent.BUTTON1) {
 
             try {
-                this.setOrder(new Offer(QueryClass.instanceOf(), id.toString()));
+                this.setOrder(new Offer(QueryClass.instanceOf(), id));
                 jTabbedPane1.setSelectedIndex(0);
             } catch (Exception exception) {
                 exception.printStackTrace();
@@ -1279,7 +1279,7 @@ public class offersView extends javax.swing.JPanel implements Runnable {
         if (evt.getClickCount() >= 2 && idOk) {
 
             try {
-                this.setOrder(new Offer(QueryClass.instanceOf(), id.toString()));
+                this.setOrder(new Offer(QueryClass.instanceOf(), id));
 
             } catch (Exception exception) {
                 exception.printStackTrace();

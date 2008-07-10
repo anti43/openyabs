@@ -18,6 +18,7 @@ package mp3.classes.objects.bill;
 
 import mp3.database.util.Query;
 import mp3.classes.layer.Popup;
+import mp3.classes.utils.Log;
 
 /**
  *
@@ -25,7 +26,7 @@ import mp3.classes.layer.Popup;
  */
 public class OfferProduct extends mp3.classes.layer.Things implements mp3.classes.interfaces.Structure {
 
-    private String auftragid= "";
+    private Integer auftragid = null;
     private String anzahl = "";
     private String posten = "";
     private String preis = "";
@@ -50,13 +51,14 @@ public class OfferProduct extends mp3.classes.layer.Things implements mp3.classe
     private void explode(String[] select) {
         try {
 
-            this.setauftragid(select[1]);
+            this.setauftragid(Integer.valueOf(select[1]));
             this.setAnzahl(select[2]);
             this.setPosten(select[3]);
             this.setPreis(select[4]);
             this.setSteuersatz(select[5]);
 
         } catch (Exception exception) {
+            Log.Debug(exception);
         }
 
     }
@@ -91,11 +93,11 @@ public class OfferProduct extends mp3.classes.layer.Things implements mp3.classe
         }
     }
 
-    public String getauftragid() {
+    public Integer getauftragid() {
         return auftragid;
     }
 
-    public void setauftragid(String auftragid) {
+    public void setauftragid(Integer auftragid) {
         this.auftragid = auftragid;
     }
 

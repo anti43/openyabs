@@ -5,9 +5,9 @@
  */
 package mp3.classes.visual.util;
 
-import mp3.classes.objects.eur.Ausgabe;
+
 import mp3.classes.objects.eur.SKRKonto;
-import mp3.classes.objects.eur.Einnahme;
+
 import javax.swing.JTextField;
 import mp3.classes.utils.*;
 import mp3.classes.*;
@@ -15,6 +15,7 @@ import mp3.classes.layer.*;
 import mp3.classes.layer.visual.Help;
 import mp3.classes.visual.sub.eurAPanel;
 import mp3.classes.visual.sub.eurEPanel;
+import mp4.klassen.objekte.*;
 
 
 /**
@@ -110,6 +111,7 @@ public class konten extends javax.swing.JFrame {
         this.setVisible(rootPaneCheckingEnabled);
     }
 
+ 
     public konten(JTextField jText, Ausgabe bill, eurAPanel aThis) {
           initComponents();
 

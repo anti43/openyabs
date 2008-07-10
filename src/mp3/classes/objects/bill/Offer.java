@@ -53,10 +53,10 @@ public class Offer extends mp3.classes.layer.Things implements mp3.classes.inter
      * @param query
      * @param id
      */
-    public Offer(Query query, String id) {
+    public Offer(Query query, Integer id) {
         super(query.clone(TABLE_ORDERS));
         this.id = Integer.valueOf(id);
-        this.explode(this.selectLast(ALL, ID, id, true));
+        this.explode(this.selectLast(ALL, ID, id.toString(), true));
         this.query = query;
         bp = getProducts(query);
     }

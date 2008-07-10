@@ -1198,7 +1198,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
         if (evt.getClickCount() >= 2 && idOk && evt.getButton() == MouseEvent.BUTTON1) {
 
             try {
-                this.setBill(new Bill(QueryClass.instanceOf(), id.toString()));
+                this.setBill(new Bill(QueryClass.instanceOf(), id));
                 jTabbedPane1.setSelectedIndex(0);
             } catch (Exception exception) {
                 exception.printStackTrace();
@@ -1385,7 +1385,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
         if (evt.getClickCount() >= 2 && idOk) {
 
             try {
-                this.setBill(new Bill(QueryClass.instanceOf(), id.toString()));
+                this.setBill(new Bill(QueryClass.instanceOf(), id));
 
             } catch (Exception exception) {
                 exception.printStackTrace();
