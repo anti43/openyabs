@@ -15,9 +15,9 @@
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mp3.classes.objects.eur;
+package mp4.klassen.objekte;
 
-import mp3.classes.objects.*;
+/*import mp3.classes.objects.*;*/
 import mp3.classes.interfaces.Daemonable;
 import java.util.Date;
 import mp3.database.util.Query;
@@ -26,6 +26,8 @@ import mp3.classes.layer.*;
 import mp3.classes.utils.Formater;
 import mp3.classes.objects.ungrouped.*;
 import mp3.classes.objects.bill.*;
+import mp3.classes.utils.Log;
+import mp4.utils.datum.DateConverter;
 /**
  *
  * @author anti43
@@ -33,11 +35,11 @@ import mp3.classes.objects.bill.*;
 public class Einnahme extends mp3.classes.layer.Things implements mp3.classes.interfaces.Structure, Daemonable{
 //  "kontenid INTEGER DEFAULT NULL, beschreibung varchar(500) default NULL,"+
 //  "preis varchar(50) default NULL,"+"tax varchar(50) default NULL,"+"datum varchar(50) default NULL,"+
-    private String Kontenid = "0";
+    private Integer Kontenid = 0;
     private String Beschreibung = "";
-    private String Preis = "0";
-    private String Tax = "0";
-    private String Datum = "00.00.0000";
+    private Double Preis = 0.0;
+    private Double Tax = 0.0;
+    private Date Datum = new Date();
 
     public Einnahme() {
        super(QueryClass.instanceOf().clone(TABLE_INCOME));
@@ -54,14 +56,14 @@ public class Einnahme extends mp3.classes.layer.Things implements mp3.classes.in
      * @param tax
      * @param datum
      */
-    public Einnahme(String kontoid, String beschreibung, String preis, String tax, Date datum) {
+    public Einnahme(int kontoid, String beschreibung, double preis, double tax, Date datum) {
         super(QueryClass.instanceOf().clone(TABLE_INCOME));
         
         this.setKontenid(kontoid);
         this.setBeschreibung(beschreibung);
         this.setPreis(preis);
         this.setTax(tax);
-        this.setDatum(Formater.formatDate(datum));
+        this.setDatum(datum);
         
         this.save();
     }
@@ -86,13 +88,14 @@ public class Einnahme extends mp3.classes.layer.Things implements mp3.classes.in
     private void explode(String[] select) {
         try {
             this.id = Integer.valueOf(select[0]);
-            this.setKontenid(select[1]);
+            this.setKontenid(Integer.valueOf(select[1]));
             this.setBeschreibung(select[2]);
-            this.setPreis(select[3]);
-            this.setTax(select[4]);
-            this.setDatum(select[5]);
+            this.setPreis(Double.valueOf(select[3]));
+            this.setTax(Double.valueOf(select[4]));
+            this.setDatum(DateConverter.getDate(select[5]));
 
-        } catch (NumberFormatException numberFormatException) {
+        } catch (Exception numberFormatException) {
+            Log.Debug(numberFormatException);
         }
 
         
@@ -102,8 +105,8 @@ public class Einnahme extends mp3.classes.layer.Things implements mp3.classes.in
         String str = "";
         str = str +this.getKontenid()  + "(;;,;;)";
         str = str + "(;;2#4#1#1#8#0#;;)"  + this.getBeschreibung()  + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
-        str = str + "(;;2#4#1#1#8#0#;;)"  + this.getPreis()  + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
-        str = str + "(;;2#4#1#1#8#0#;;)"  + this.getTax()  + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
+        str = str + this.getPreis()  + "(;;,;;)";
+        str = str + this.getTax()    + "(;;,;;)";
         str = str + "(;;2#4#1#1#8#0#;;)"  + this.getDatum() + "(;;2#4#1#1#8#0#;;)" ;
         return str;
     }
@@ -134,11 +137,11 @@ public class Einnahme extends mp3.classes.layer.Things implements mp3.classes.in
         return Formater.merge(inserType(prods),new Bill(q).inserType(bills));
     }
 
-    public String getKontenid() {
+    public Integer getKontenid() {
         return Kontenid;
     }
 
-    public void setKontenid(String Kontenid) {
+    public void setKontenid(int Kontenid) {
         this.Kontenid = Kontenid;
     }
 
@@ -151,27 +154,27 @@ public class Einnahme extends mp3.classes.layer.Things implements mp3.classes.in
     }
 
     public String getPreis() {
-        return Preis;
+        return Preis.toString();
     }
 
-    public void setPreis(String Preis) {
+    public void setPreis(double Preis) {
         this.Preis = Preis;
     }
 
     public String getTax() {
-        return Tax;
+        return Tax.toString();
     }
 
-    public void setTax(String Tax) {
+    public void setTax(double Tax) {
         this.Tax = Tax;
     }
 
-    public String getDatum() {
+    public Date getDatum() {
         return Datum;
     }
 
-    public void setDatum(Date Datum) {
-        this.Datum = Formater.formatDate(Datum);
+    public void setDatum(Date datum) {
+        this.Datum = datum;
     }
 
     private String[][] inserType(String[][] prods) {
@@ -197,14 +200,5 @@ public class Einnahme extends mp3.classes.layer.Things implements mp3.classes.in
       } 
       return pro;
     }
-     private void setDatum(String Datum) {
-        this.Datum = Datum;
-    }
-
-
-
-
-
-
 
 }

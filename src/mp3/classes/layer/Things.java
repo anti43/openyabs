@@ -60,8 +60,8 @@ public abstract class Things implements Queries, Structure {
 //
 //    }
 
-    public String getId() {
-        return id.toString();
+    public Integer getId() {
+        return id;
     }
     /**
      * Hides he first column of a table (usually "id")

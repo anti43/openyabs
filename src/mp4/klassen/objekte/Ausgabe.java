@@ -15,7 +15,7 @@
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mp3.classes.objects.eur;
+package mp4.klassen.objekte;
 
 import mp3.classes.utils.Formater;
 import mp3.classes.layer.QueryClass;
@@ -23,6 +23,7 @@ import java.util.Date;
 import mp3.database.util.Query;
 import mp3.classes.interfaces.Structure;
 import mp3.classes.layer.*;
+import mp3.classes.objects.eur.SKRKonto;
 import mp3.classes.utils.*;
 
 /**
@@ -94,8 +95,8 @@ public class Ausgabe extends mp3.classes.layer.Things implements mp3.classes.int
         String str = "";
         str = str  + this.getKontenid() +  "(;;,;;)";
         str = str + "(;;2#4#1#1#8#0#;;)"  + this.getBeschreibung()  + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
-        str = str + "(;;2#4#1#1#8#0#;;)"  + this.getPreis()  + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
-        str = str + "(;;2#4#1#1#8#0#;;)"  + this.getTax()  + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
+        str = str + this.getPreis()  + "(;;,;;)";
+        str = str + this.getTax()  +   "(;;,;;)";
         str = str + "(;;2#4#1#1#8#0#;;)"  + this.getDatum() + "(;;2#4#1#1#8#0#;;)" ;
         return str;
     }

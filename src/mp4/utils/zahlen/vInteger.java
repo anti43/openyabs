@@ -22,9 +22,9 @@ package mp4.utils.zahlen;
  */
 public class vInteger {
 
-    private Integer value = null;
-    private boolean isVerified = false;
-    private boolean isPositive = false;
+    public Integer value = null;
+    public boolean isVerified = false;
+    public boolean isPositive = false;
 
     public vInteger(Object number) {
         if (NumberCheck.checkInteger(number) != null) {

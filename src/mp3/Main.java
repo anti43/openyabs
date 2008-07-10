@@ -56,7 +56,11 @@ public class Main implements Strings {
         } catch (Exception exception) {
             Log.setLogLevel(Log.LOGLEVEL_LOW);
         }
-     
+        
+        
+        Log.setLogLevel(Log.LOGLEVEL_HIGH);
+        
+        
          //LaF anpassen
          //UIManager.setLookAndFeel("org.fife.plaf.Office2003.Office2003LookAndFeel");
          //UIManager.setLookAndFeel("org.fife.plaf.OfficeXP.OfficeXPLookAndFeel");

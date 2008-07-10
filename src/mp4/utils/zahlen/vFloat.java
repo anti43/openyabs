@@ -22,13 +22,17 @@ package mp4.utils.zahlen;
  */
 public class vFloat {
 
-    private Float value = null;
-    private boolean isVerified = false;
-    private boolean isPositive = false;
+    public Float value = null;
+    public String svalue = null;
+    public boolean isVerified = false;
+    public boolean isPositive = false;
+    public String ovalue = "";
 
     public vFloat(Object number) {
+        this.ovalue = number.toString();
         if (NumberCheck.checkFloat(number) != null) {
             this.value = NumberCheck.checkFloat(number);
+            this.svalue = this.value.toString();
             this.isVerified = true;
 
             if (this.value > 0) {

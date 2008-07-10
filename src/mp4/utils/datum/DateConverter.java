@@ -112,20 +112,20 @@ public class DateConverter {
 
     }
 
-    /**
-     * 
-     * @param date
-     * @return SQL conform date
-     */
-    public static Date getSQLDate(Date date) {
-        try {
-
-            return DB_DATE_FORMAT.parse(DB_DATE_FORMAT.format(date));
-        } catch (ParseException ex) {
-            Log.Debug(ex.getMessage());
-            return null;
-        }
-    }
+//    /**
+//     * 
+//     * @param date
+//     * @return SQL conform date
+//     */
+//    public static Date getSQLDate(Date date) {
+//        try {
+//
+//            return DB_DATE_FORMAT.parse(DB_DATE_FORMAT.format(date));
+//        } catch (ParseException ex) {
+//            Log.Debug(ex.getMessage());
+//            return null;
+//        }
+//    }
 
     /**
      * 
@@ -158,21 +158,21 @@ public class DateConverter {
         }
     }
 
-    /**
-     * 
-     * @param date
-     * @return Default date (dd.mm.yyyy)
-     */
-    public static Date getDefDate(Date date) {
-        try {
-
-            return DEF_DATE_FORMAT.parse(DEF_DATE_FORMAT.format(date));
-        } catch (ParseException ex) {
-            Log.Debug(ex.getMessage());
-            return null;
-        }
-
-    }
+//    /**
+//     * 
+//     * @param date
+//     * @return Default date (dd.mm.yyyy)
+//     */
+//    public static Date getDefDate(Date date) {
+//        try {
+//
+//            return DEF_DATE_FORMAT.parse(DEF_DATE_FORMAT.format(date));
+//        } catch (ParseException ex) {
+//            Log.Debug(ex.getMessage());
+//            return null;
+//        }
+//
+//    }
 
     /**
      * Converts formated 

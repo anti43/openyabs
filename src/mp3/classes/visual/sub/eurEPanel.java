@@ -11,13 +11,16 @@ import mp3.classes.layer.QueryClass;
 import mp3.classes.layer.visual.DatePick;
 import mp3.classes.objects.bill.Bill;
 import mp3.classes.objects.eur.Customer;
-import mp3.classes.objects.eur.Einnahme;
+import  mp4.klassen.objekte.Einnahme;
 import mp3.classes.objects.ungrouped.MyData;
 import mp3.classes.objects.eur.SKRKonto;
 import mp3.classes.utils.FetchDataTask;
 import mp3.classes.utils.Formater;
 import mp3.classes.utils.Log;
 import mp3.classes.visual.util.konten;
+import mp4.utils.datum.DateConverter;
+import mp4.utils.datum.vDate;
+import mp4.utils.zahlen.vFloat;
 
 /**
  *
@@ -33,27 +36,27 @@ public class eurEPanel extends javax.swing.JPanel {
     public eurEPanel() {
         initComponents();
         curEinnahme = new Einnahme();
-        
+
         curKonto = MyData.instanceOf().getEinnahmeDefKonto();
-        
+
         jTextField6.setText(Formater.formatDate(new Date()));
         jTextField3.setText(MyData.instanceOf().getGlobaltax());
         jTextField4.setText("0");
-        
+
         jTextField5.setText(MyData.instanceOf().getEinnahmeDefKonto().getArt());
-        
+
         jTextField3.setInputVerifier(Formater.getDoubleInputVerfier(jTextField3));
         jTextField4.setInputVerifier(Formater.getDoubleInputVerfier(jTextField4));
-        
+
         jTextField6.setInputVerifier(Formater.getDateInputVerfier(jTextField6));
-        
+
         updateTableData();
-       
+
     }
 
     public void setKonto(SKRKonto konto) {
-       this.curKonto =konto;
-       
+        this.curKonto = konto;
+
     }
 
     /** This method is called from within the constructor to
@@ -295,7 +298,7 @@ public class eurEPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
-        
+
         boolean idOk = true;
         Integer id = 0;
 
@@ -311,16 +314,14 @@ public class eurEPanel extends javax.swing.JPanel {
         if (idOk) {
 
             try {
-                
-                if(String.valueOf(jTable1.getValueAt(jTable1.getSelectedRow(), 2)).contains("echnun")) {
+
+                if (String.valueOf(jTable1.getValueAt(jTable1.getSelectedRow(), 2)).contains("echnun")) {
                     this.setBill(new Bill(QueryClass.instanceOf(), id.toString()));
-                }else
-                    if(String.valueOf(jTable1.getValueAt(jTable1.getSelectedRow(), 2)).contains("ngabe")) {
+                } else if (String.valueOf(jTable1.getValueAt(jTable1.getSelectedRow(), 2)).contains("ngabe")) {
                     this.setEinnahme(new Einnahme(QueryClass.instanceOf(), id.toString()));
                 }
-               
+
             } catch (Exception exception) {
-                
             }
         }
 
@@ -329,11 +330,11 @@ public class eurEPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jTable1MouseClicked
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        new konten(jTextField5, curEinnahme,this);
+        new konten(jTextField5, curEinnahme, this);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
-        
+
         new DatePick(jTextField6);
     }//GEN-LAST:event_jButton16ActionPerformed
 
@@ -342,8 +343,8 @@ public class eurEPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton16KeyPressed
 
     private void jButton3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
-        
-           if (jButton3.isEnabled()) {
+
+        if (jButton3.isEnabled()) {
             try {
 
                 Double.valueOf(jTextField4.getText().replaceAll(",", "."));
@@ -367,38 +368,36 @@ public class eurEPanel extends javax.swing.JPanel {
 
 
         }
-        
-        
+
+
     }//GEN-LAST:event_jButton3MouseClicked
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
 
-              try {
+        vFloat betrag = new vFloat(jTextField4.getText());
+        vFloat steuer = new vFloat(jTextField3.getText());
+        vDate  datum = new vDate(jTextField6.getText());
 
-            Double.valueOf(jTextField4.getText().replaceAll(",", "."));
-            Double.valueOf(jTextField3.getText().replaceAll(",", "."));
-            new Einnahme(curKonto.getId(), jEditorPane1.getText(), jTextField4.getText().replaceAll(",", "."), jTextField3.getText().replaceAll(",", "."), Formater.getDate(jTextField6.getText()));
+        if (betrag.isVerified && steuer.isVerified && steuer.isPositive && datum.isVerified) {
+            new Einnahme(curKonto.getId(), jEditorPane1.getText(), betrag.svalue, steuer.svalue, datum.date);System.out.print(datum.sqlDate);
             updateTableData();
-        } catch (NumberFormatException ex) {
-
-            Log.Debug(ex);
-            Popup.error(ex.getMessage(), "Überprüfen Sie die angebenen Beträge.");
+        } else {
+            Popup.error("Betrag: "+betrag.ovalue + "\n" + "Steuer: "+steuer.ovalue + "\n" +"Datum: "+datum.ovalue,"Überprüfen Sie Ihre Angaben.");
         }
-
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-         if(this.curEinnahme!=null) {
-                    
+        if (this.curEinnahme != null) {
+
             curEinnahme.destroy();
             updateTableData();
         }
-        
-        
+
+
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jTextField3MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextField3MouseEntered
-       jTextField3.setEnabled(true);
+        jTextField3.setEnabled(true);
     }//GEN-LAST:event_jTextField3MouseEntered
 
     private String[][] updateTableData() {
@@ -416,10 +415,10 @@ public class eurEPanel extends javax.swing.JPanel {
             Formater.format(jTable1, 3, 100);
             Formater.format(jTable1, 4, 100);
 
-            
+
         } catch (Exception ex) {
-             Log.Debug(ex.getMessage());
-        } 
+            Log.Debug(ex.getMessage());
+        }
         return data;
     }
 
@@ -448,8 +447,9 @@ public class eurEPanel extends javax.swing.JPanel {
     private javax.swing.JTextField jTextField6;
     private javax.swing.JToolBar jToolBar2;
     // End of variables declaration//GEN-END:variables
+
     private void setBill(Bill bill) {
-        
+
         this.curEinnahme = null;
         jTextField6.setText(bill.getDatum());
 
@@ -465,16 +465,16 @@ public class eurEPanel extends javax.swing.JPanel {
         jTextField4.setText(bill.getGesamtpreis());
         jTextField3.setText("");
         jTextField3.setEnabled(false);
-        
+
         jTextField5.setText("Rechnung");
-        
+
         jButton3.setEnabled(false);
     }
 
     private void setEinnahme(Einnahme einnahme) {
-        
+
         this.curEinnahme = einnahme;
-      
+
         jTextField6.setText(einnahme.getDatum());
 
         jEditorPane1.setContentType("text/html");
@@ -485,7 +485,7 @@ public class eurEPanel extends javax.swing.JPanel {
         jTextField4.setText(einnahme.getPreis());
         jTextField3.setText(einnahme.getTax());
         jTextField3.setEnabled(true);
-                
+
         try {
             jTextField5.setText(new SKRKonto(einnahme.getKontenid()).getArt());
         } catch (Exception exception) {
@@ -497,10 +497,10 @@ public class eurEPanel extends javax.swing.JPanel {
     public javax.swing.JTable getJTable1() {
         return jTable1;
     }
-    
-    public String[][] getData(){
-    
-       return updateTableData();
-    
+
+    public String[][] getData() {
+
+        return updateTableData();
+
     }
 }
