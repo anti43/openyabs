@@ -126,21 +126,13 @@ public class DateConverter {
 //            return null;
 //        }
 //    }
-
     /**
      * 
      * @param date
      * @return SQL conform date String
      */
     public static String getSQLDateString(Date date) {
-        try {
-
-            return DB_DATE_FORMAT.parse(DB_DATE_FORMAT.format(date)).toString();
-        } catch (ParseException ex) {
-            Log.Debug(ex.getMessage());
-            return null;
-        }
-
+        return DB_DATE_FORMAT.format(date);
     }
 
     /**
@@ -149,13 +141,7 @@ public class DateConverter {
      * @return Default date (dd.mm.yyyy)
      */
     public static String getDefDateString(Date date) {
-        try {
-
-            return DEF_DATE_FORMAT.parse(DEF_DATE_FORMAT.format(date)).toString();
-        } catch (ParseException ex) {
-            Log.Debug(ex.getMessage());
-            return null;
-        }
+        return DEF_DATE_FORMAT.format(date);
     }
 
 //    /**
@@ -173,7 +159,6 @@ public class DateConverter {
 //        }
 //
 //    }
-
     /**
      * Converts formated 
      * Default date (dd.mm.yyyy)

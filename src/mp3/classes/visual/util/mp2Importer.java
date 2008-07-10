@@ -16,8 +16,8 @@ import mp3.classes.layer.DefaultHelpModel;
 import mp3.classes.layer.visual.Help;
 import mp3.classes.layer.Popup;
 import mp3.classes.layer.QueryClass;
-import mp3.classes.objects.bill.Bill;
-import mp3.classes.objects.bill.BillProduct;
+import mp4.klassen.objekte.Rechnung;
+import mp4.klassen.objekte.RechnungPosten;
 import mp3.classes.objects.eur.Customer;
 import mp3.classes.objects.product.Product;
 import mp3.classes.utils.Log;
@@ -291,7 +291,7 @@ public class mp2Importer extends javax.swing.JFrame {
                         Log.Debug("MP3 Kunde Instanzieren : Nummer:" + k.Kundennummer);
                         Customer c = new Customer(QueryClass.instanceOf(), k.Kundennummer, true);
 //     Log.Debug(rechngs);
-                        Bill b = new Bill(QueryClass.instanceOf());
+                        Rechnung b = new Rechnung(QueryClass.instanceOf());
                         b.setRechnungnummer(rechngs[i][1]);
                         b.setKundenId(c.getId());
 
@@ -337,7 +337,7 @@ public class mp2Importer extends javax.swing.JFrame {
 
                 for (int z = 3; z < 23; z += 2) {
 
-                    BillProduct bp = new BillProduct(QueryClass.instanceOf());
+                    RechnungPosten bp = new RechnungPosten(QueryClass.instanceOf());
 
                     bp.setRechnungid(b.getId());
                     bp.setPosten(rechngs[i][z]);

@@ -14,7 +14,7 @@
  *      You should have received a copy of the GNU General Public License
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mp3.classes.objects.bill;
+package mp4.klassen.objekte;
 
 import mp3.database.util.Query;
 import mp3.classes.layer.Popup;
@@ -24,7 +24,7 @@ import mp3.classes.utils.Log;
  *
  * @author anti43
  */
-public class BillProduct extends mp3.classes.layer.Things implements mp3.classes.interfaces.Structure {
+public class RechnungPosten extends mp3.classes.layer.Things implements mp3.classes.interfaces.Structure {
 
     private String rechnungid= "";
     private String anzahl = "";
@@ -32,7 +32,7 @@ public class BillProduct extends mp3.classes.layer.Things implements mp3.classes
     private String preis = "";
     private String steuersatz = "";
 
-    public BillProduct(Query query) {
+    public RechnungPosten(Query query) {
         super(query.clone(TABLE_BILLS_DATA));
 
     }
@@ -42,7 +42,7 @@ public class BillProduct extends mp3.classes.layer.Things implements mp3.classes
      * @param query
      * @param id
      */
-    public BillProduct(Query query, String id) {
+    public RechnungPosten(Query query, String id) {
         super(query.clone(TABLE_BILLS_DATA));
         this.id = Integer.valueOf(id);
         this.explode(this.selectLast("*", "id", id, true));

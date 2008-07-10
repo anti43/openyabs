@@ -14,9 +14,9 @@
  *      You should have received a copy of the GNU General Public License
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mp3.classes.objects.bill;
+package mp4.klassen.objekte;
 
-import mp3.classes.objects.*;
+
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -29,29 +29,30 @@ import mp3.classes.interfaces.Strings;
 import mp3.classes.utils.Log;
 import mp3.classes.layer.PostenTableModel;
 import mp3.classes.objects.ungrouped.*;
-import mp3.classes.objects.bill.*;
+import mp4.utils.datum.DateConverter;
+
 
 /**
  *
  * @author anti43
  */
-public class Bill extends mp3.classes.layer.Things implements mp3.classes.interfaces.Structure {
+public class Rechnung extends mp3.classes.layer.Things implements mp3.classes.interfaces.Structure {
 
     private String Rechnungnummer = "";
     private Integer KundenId = 0;
     
-    private String Datum = "";
-    private String Gesamtpreis = "0";
-    private String Gesamttax ="0";
+    private Date Datum = new Date();
+    private Double Gesamtpreis = 0.0;
+    private Double Gesamttax = 0.0;
     private boolean storno = false;
     private boolean bezahlt = false;
     private boolean verzug = false;
-    private BillProduct[] bp;
+    private RechnungPosten[] bp;
     private Query query;
     private String[][] prods;
     private List labelsOfGetAllWithD;
 
-    public Bill(Query query) {
+    public Rechnung(Query query) {
         super(query.clone(TABLE_BILLS));
         this.query = query;
     }
@@ -61,7 +62,7 @@ public class Bill extends mp3.classes.layer.Things implements mp3.classes.interf
      * @param query
      * @param id
      */
-    public Bill(Query query, Integer id) {
+    public Rechnung(Query query, Integer id) {
         super(query.clone(TABLE_BILLS));
         this.id = Integer.valueOf(id);
         this.explode(this.selectLast(ALL, ID, id.toString(), true));
@@ -69,7 +70,7 @@ public class Bill extends mp3.classes.layer.Things implements mp3.classes.interf
         bp = getProducts(query);
     }
 
-    public Bill(Query query, String text, boolean b) {
+    public Rechnung(Query query, String text, boolean b) {
         super(query.clone(TABLE_BILLS));
 
         try {
@@ -85,7 +86,7 @@ public class Bill extends mp3.classes.layer.Things implements mp3.classes.interf
 
     }
 
-    public Bill expose() {
+    public Rechnung expose() {
 
         System.out.println(collect());
         return this;
@@ -154,7 +155,7 @@ public class Bill extends mp3.classes.layer.Things implements mp3.classes.interf
             this.setRechnungnummer(select[1]);
             this.setKundenId(Integer.valueOf(select[2]));
 
-            this.setDatum(select[3]);
+            this.setDatum(DateConverter.getDate(select[3]));
             if (select[4].equals("1")) {
                 setStorno(true);
             }
@@ -162,7 +163,7 @@ public class Bill extends mp3.classes.layer.Things implements mp3.classes.interf
                 setBezahlt(true);
             }
 
-            this.setGesamtpreis(select[6]);
+            this.setGesamtpreis(Double.valueOf(select[6]));
             this.setGesamttax(select[7]);
         } catch (Exception exception) {
              Log.Debug(exception.getMessage());
@@ -177,7 +178,7 @@ public class Bill extends mp3.classes.layer.Things implements mp3.classes.interf
                 SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy");
                 DecimalFormat dec = new DecimalFormat("00");
 
-                String[] str = getDatum().split("\\.");
+                String[] str = DateConverter.getDefDateString(getDatum()).split("\\.");
                 int inte = Integer.valueOf(str[1]) + 1;
                 if (inte == 13) {
                     inte = 1;
@@ -271,11 +272,11 @@ public class Bill extends mp3.classes.layer.Things implements mp3.classes.interf
     }
 
 
-    public String getDatum() {
+    public Date getDatum() {
         return Datum;
     }
 
-    public void setDatum(String Datum) {
+    public void setDatum(Date Datum) {
         this.Datum = Datum;
         this.isSaved = false;
     }
@@ -379,14 +380,14 @@ public class Bill extends mp3.classes.layer.Things implements mp3.classes.interf
         return Integer.valueOf(str[0]);
     }
 
-    private BillProduct[] getProducts(Query query) {
+    private RechnungPosten[] getProducts(Query query) {
 
         Query q = query.clone(TABLE_BILLS_DATA);
 
         String[] wher = {"rechnungid", this.getId().toString(), ""};
 
         prods = q.select(ALL, wher);
-        BillProduct[] prof = null;
+        RechnungPosten[] prof = null;
 //
 //        for (int t = 0; t < str.length; t++) {
 //
@@ -401,7 +402,7 @@ public class Bill extends mp3.classes.layer.Things implements mp3.classes.interf
         return query.getNextIndex("rechnungnummer");
     }
 
-    public BillProduct[] getBp() {
+    public RechnungPosten[] getBp() {
         return bp;
     }
 
@@ -578,11 +579,11 @@ public class Bill extends mp3.classes.layer.Things implements mp3.classes.interf
 
     }
 
-    public String getGesamtpreis() {
+    public Double getGesamtpreis() {
         return Gesamtpreis;
     }
 
-    public void setGesamtpreis(String Gesamtpreis) {
+    public void setGesamtpreis(Double Gesamtpreis) {
         this.Gesamtpreis = Gesamtpreis;
     }
     
@@ -610,11 +611,11 @@ public class Bill extends mp3.classes.layer.Things implements mp3.classes.interf
       return pro;
     }
 
-    public String getGesamttax() {
+    public Double getGesamttax() {
         return Gesamttax;
     }
 
-    public void setGesamttax(String Gesamttax) {
+    public void setGesamttax(Double Gesamttax) {
         this.Gesamttax = Gesamttax;
     }
 }

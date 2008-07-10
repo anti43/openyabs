@@ -17,7 +17,7 @@ import mp3.classes.visual.main.mainframe;
 import mp3.classes.interfaces.Structure.*;
 import mp3.classes.layer.QueryClass;
 import mp4.klassen.objekte.Ausgabe;
-import mp3.classes.objects.bill.Bill;
+import mp4.klassen.objekte.Rechnung;
 import mp3.classes.objects.eur.Data;
 import mp4.klassen.objekte.Einnahme;
 import mp3.classes.utils.Formater;
@@ -40,7 +40,7 @@ public class eurView extends javax.swing.JPanel {
 //    private Konten akonto;
 //    private Konten okonto;
     private Einnahme curEinnahme;
-    private Bill curEinnahmeBill;
+    private Rechnung curEinnahmeBill;
 
     private Ausgabe curAusgabe;
     private eurEPanel eurepanel;
@@ -203,7 +203,7 @@ public class eurView extends javax.swing.JPanel {
             Formater.format(getEurapanel().getJTable1(), 3, 100);
             Formater.format(getEurapanel().getJTable1(), 4, 100);
 
-        data = new Bill(QueryClass.instanceOf()).getUnpaid();
+        data = new Rechnung(QueryClass.instanceOf()).getUnpaid();
 
         Formater.formatUneditableTable(europanel.getJTable3(), data, new String[]{"id", "Nummer", "Betrag", "Datum"});
         

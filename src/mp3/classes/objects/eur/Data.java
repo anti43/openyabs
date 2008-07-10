@@ -18,7 +18,7 @@
  */
 package mp3.classes.objects.eur;
 
-import mp3.classes.objects.bill.Bill;
+import mp4.klassen.objekte.Rechnung;
 import mp3.database.util.Query;
 import mp3.classes.utils.Formater;
 import mp3.classes.utils.Log;
@@ -45,7 +45,7 @@ public class Data extends mp3.classes.layer.Things implements mp3.classes.interf
         einnahmen = q.select("preis, tax, datum", null);
 
 
-        rechnungen = new Bill(q).getPaidNaked();
+        rechnungen = new Rechnung(q).getPaidNaked();
 
         years = Formater.merge(ausgaben, einnahmen);
         years = Formater.merge(years, rechnungen);

@@ -14,7 +14,7 @@ import mp3.classes.interfaces.Constants;
 import mp3.classes.interfaces.ProtectedStrings;
 import mp3.classes.interfaces.Strings;
 import mp3.classes.interfaces.Structure;
-import mp3.classes.objects.bill.Bill;
+import mp4.klassen.objekte.Rechnung;
 import mp3.classes.objects.eur.Data;
 import mp3.classes.utils.BarChart;
 import mp3.classes.utils.WindowTools;

@@ -16,6 +16,7 @@
  */
 package mp3.classes.objects.pdf;
 
+import mp4.klassen.objekte.Rechnung;
 import mp3.classes.objects.ungrouped.MyData;
 import mp3.classes.objects.eur.Customer;
 import mp3.classes.objects.bill.*;
@@ -57,7 +58,7 @@ public class OverdueODF {
     private String filename;
     private String separator;
     private MyData l;
-    private Bill r;
+    private Rechnung r;
     private Customer k;
     private Object[][] products;
     private Double netto = 0d;
@@ -73,7 +74,7 @@ public class OverdueODF {
      * @param number
      * @param money 
      */
-    public OverdueODF(Bill b, String text, String number, Double money) {
+    public OverdueODF(Rechnung b, String text, String number, Double money) {
 
 
         l = MyData.instanceOf();

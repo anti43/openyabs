@@ -18,7 +18,7 @@ package mp3.classes.objects.pdf;
 
 import mp3.classes.objects.ungrouped.MyData;
 import mp3.classes.objects.eur.Customer;
-import mp3.classes.objects.bill.Bill;
+import mp4.klassen.objekte.Rechnung;
 import mp3.classes.objects.*;
 import com.lowagie.text.pdf.*;
 import com.lowagie.text.DocumentException;
@@ -49,7 +49,7 @@ public class LieferscheinPDF {
     private String filename;
     private String separator;
     private MyData l;
-    private Bill r;
+    private Rechnung r;
     private Customer k;
     private Object[][] products;
     private Double netto = 0d;
@@ -60,7 +60,7 @@ public class LieferscheinPDF {
      * 
      * @param b
      */
-    public LieferscheinPDF(Bill b) {
+    public LieferscheinPDF(Rechnung b) {
 
 
         l = MyData.instanceOf();

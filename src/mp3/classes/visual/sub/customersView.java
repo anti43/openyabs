@@ -18,7 +18,7 @@ import mp3.classes.interfaces.Structure;
 
 import mp3.classes.layer.Popup;
 import mp3.classes.layer.QueryClass;
-import mp3.classes.objects.bill.Bill;
+import mp4.klassen.objekte.Rechnung;
 import mp3.classes.objects.eur.Customer;
 import mp3.classes.objects.ungrouped.History;
 import mp3.classes.visual.main.mainframe;
@@ -1202,7 +1202,7 @@ System.out.println(jPanel5.getSize());
             try {
 
 
-                mainframe.getB().setBill(new Bill(QueryClass.instanceOf(), id).expose());
+                mainframe.getB().setBill(new Rechnung(QueryClass.instanceOf(), id).expose());
 
                 mainframe.getJTabbedPane1().setSelectedIndex(1);
             } catch (Exception ex) {

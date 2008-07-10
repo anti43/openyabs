@@ -32,8 +32,8 @@ import mp3.classes.layer.QueryClass;
 
 
 
-import mp3.classes.objects.bill.Bill;
-import mp3.classes.objects.bill.BillProduct;
+import mp4.klassen.objekte.Rechnung;
+import mp4.klassen.objekte.RechnungPosten;
 import mp3.classes.objects.eur.Customer;
 import mp3.classes.objects.ungrouped.History;
 import mp3.classes.objects.ungrouped.MyData;
@@ -1547,7 +1547,7 @@ public class offersView extends javax.swing.JPanel implements Runnable {
 
 
         df = new SimpleDateFormat("dd.MM.yyyy");
-        Bill bill = new Bill(QueryClass.instanceOf());
+        Rechnung bill = new Rechnung(QueryClass.instanceOf());
         if (!current.hasRechnung()) {
             current.setAuftrag(true);
 
@@ -1591,7 +1591,7 @@ public class offersView extends javax.swing.JPanel implements Runnable {
 
 
 
-                            BillProduct b = new BillProduct(QueryClass.instanceOf());
+                            RechnungPosten b = new RechnungPosten(QueryClass.instanceOf());
 
                             b.setRechnungid(bill.getId());
 
@@ -1628,7 +1628,7 @@ public class offersView extends javax.swing.JPanel implements Runnable {
             mainframe.getB().updateListTable();
             mainframe.getB().resizeFields();
 
-            mainframe.getB().setBill(new Bill(QueryClass.instanceOf(), bill.getId()));
+            mainframe.getB().setBill(new Rechnung(QueryClass.instanceOf(), bill.getId()));
             mainframe.getJTabbedPane1().setSelectedIndex(1);
 
 

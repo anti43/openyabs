@@ -7,7 +7,7 @@ package mp3.classes.visual.sub;
 
 import java.awt.Font;
 import mp3.classes.layer.QueryClass;
-import mp3.classes.objects.bill.Bill;
+import mp4.klassen.objekte.Rechnung;
 import mp3.classes.objects.eur.Customer;
 import mp3.classes.utils.Formater;
 
@@ -18,7 +18,7 @@ import mp3.classes.utils.Formater;
 public class eurOPanel extends javax.swing.JPanel {
 
     private String[][] data;
-    private Bill current;
+    private Rechnung current;
 
     /** Creates new form eurOPanel */
     public eurOPanel() {
@@ -222,7 +222,7 @@ public class eurOPanel extends javax.swing.JPanel {
 
         if (idOk) {
 
-            Bill b = new Bill(QueryClass.instanceOf(), id);
+            Rechnung b = new Rechnung(QueryClass.instanceOf(), id);
 
             setBill(b);
         }
@@ -243,7 +243,7 @@ public class eurOPanel extends javax.swing.JPanel {
     private javax.swing.JTextField jTextField14;
     private javax.swing.JToolBar jToolBar4;
     // End of variables declaration//GEN-END:variables
-    private void setBill(Bill b) {
+    private void setBill(Rechnung b) {
 
         this.current = b;
         Customer c = new Customer(QueryClass.instanceOf(), b.getKundenId());
@@ -259,7 +259,7 @@ public class eurOPanel extends javax.swing.JPanel {
     }
     // End of variables declaration24111980
     private void updateTable() {
-        data = new Bill(QueryClass.instanceOf()).getUnpaid();
+        data = new Rechnung(QueryClass.instanceOf()).getUnpaid();
         String header = "id,Nummer,Betrag,Datum";
         Formater.formatUneditableTable(getJTable3(),data, header.split(","));
     }

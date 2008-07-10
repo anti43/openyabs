@@ -5,6 +5,8 @@
  */
 package mp3.classes.visual.sub;
 
+import mp4.klassen.objekte.RechnungPosten;
+import mp4.klassen.objekte.Rechnung;
 import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.text.DateFormat;
@@ -49,7 +51,7 @@ import mp3.classes.visual.util.arrear;
  */
 public class billsView extends javax.swing.JPanel implements Runnable {
 
-    private Bill current;
+    private Rechnung current;
     private String[][] liste;
     private Customer customer;
     private mainframe mainframe;
@@ -80,7 +82,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
         initComponents();
         
 
-        current = new Bill(QueryClass.instanceOf());
+        current = new Rechnung(QueryClass.instanceOf());
 
         current.stripFirst(jTable1);
 
@@ -273,7 +275,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
         try {
             liste = current.getWithDepencies("rechnungen.id,rechnungnummer,datum,kundennummer,firma, bezahlt, storno");
 
-            Object[][] lister = Bill.formatTableArray(liste, new int[]{5, 6}, 7);
+            Object[][] lister = Rechnung.formatTableArray(liste, new int[]{5, 6}, 7);
 
             String k = "id,Nummer,Datum,Kunde,Firma, Bezahlt, Storniert, Verzug";
 
@@ -293,7 +295,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
 
     }
 
-    public void setBill(Bill current) {
+    public void setBill(Rechnung current) {
 
         this.current = current;
         this.setCustomer(new Customer(QueryClass.instanceOf(), current.getKundenId()));
@@ -1075,7 +1077,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
                     rechnungnummer = jTextField6.getText();
                 }
               
-                Bill bill = new Bill(QueryClass.instanceOf());
+                Rechnung bill = new Rechnung(QueryClass.instanceOf());
 
                 bill.setRechnungnummer(rechnungnummer);
 
@@ -1129,7 +1131,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
                     //anzahl,bezeichnung,mehrwertsteuer,nettopreis
                     if (m.getValueAt(i, 4) != null) {
 
-                        BillProduct b = new BillProduct(QueryClass.instanceOf());
+                        RechnungPosten b = new RechnungPosten(QueryClass.instanceOf());
 
                         b.setRechnungid(bill.getId());
                         b.setPosten((String) m.getValueAt(i, 2));
@@ -1156,7 +1158,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
                 mainframe.nachricht("Rechnung Nummer: " + bill.getRechnungnummer() + " angelegt.");
 
                 new History(QueryClass.instanceOf(), Structure.BILL, "Rechnung Nummer: " + bill.getRechnungnummer() + " angelegt.");
-                this.setBill(new Bill(QueryClass.instanceOf(), bill.getId()));
+                this.setBill(new Rechnung(QueryClass.instanceOf(), bill.getId()));
 
                 save();
             }
@@ -1198,7 +1200,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
         if (evt.getClickCount() >= 2 && idOk && evt.getButton() == MouseEvent.BUTTON1) {
 
             try {
-                this.setBill(new Bill(QueryClass.instanceOf(), id));
+                this.setBill(new Rechnung(QueryClass.instanceOf(), id));
                 jTabbedPane1.setSelectedIndex(0);
             } catch (Exception exception) {
                 exception.printStackTrace();
@@ -1237,7 +1239,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
 
                     //Integer rechnungnummer = f.getNextIndex("rechnungnummer");
 
-                    Bill bill = getCurrent();
+                    Rechnung bill = getCurrent();
 
 //                    bill.setRechnungnummer(rechnungnummer.toString());
 
@@ -1296,7 +1298,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
 
 
                             try {
-                                BillProduct b = new BillProduct(QueryClass.instanceOf(), m.getValueAt(i, 0).toString());
+                                RechnungPosten b = new RechnungPosten(QueryClass.instanceOf(), m.getValueAt(i, 0).toString());
 
                                 b.destroy();
 
@@ -1314,7 +1316,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
 
 
 
-                            BillProduct b = new BillProduct(QueryClass.instanceOf());
+                            RechnungPosten b = new RechnungPosten(QueryClass.instanceOf());
 
                             b.setRechnungid(getCurrent().getId());
 
@@ -1340,7 +1342,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
 
                     new History(QueryClass.instanceOf(), Structure.BILL, "Rechnung Nummer: " + bill.getRechnungnummer() + " editiert.");
 
-                    this.setBill(new Bill(QueryClass.instanceOf(), bill.getid()));
+                    this.setBill(new Rechnung(QueryClass.instanceOf(), bill.getid()));
 
                 }
             } else {
@@ -1385,7 +1387,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
         if (evt.getClickCount() >= 2 && idOk) {
 
             try {
-                this.setBill(new Bill(QueryClass.instanceOf(), id));
+                this.setBill(new Rechnung(QueryClass.instanceOf(), id));
 
             } catch (Exception exception) {
                 exception.printStackTrace();
@@ -1402,7 +1404,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
 //        jTextField6.setText(current.getNextBillNumber().toString());
 
         this.customer = new Customer(QueryClass.instanceOf());
-        this.current = new Bill(QueryClass.instanceOf());
+        this.current = new Rechnung(QueryClass.instanceOf());
 
         jTextField4.setText("");
         jTextField5.setText("");
@@ -1557,7 +1559,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
 
 
 
-                BillProduct b = new BillProduct(QueryClass.instanceOf(), m.getValueAt(getJTable1().getSelectedRow(), 0).toString());
+                RechnungPosten b = new RechnungPosten(QueryClass.instanceOf(), m.getValueAt(getJTable1().getSelectedRow(), 0).toString());
 
                 b.destroy();
 
@@ -1751,11 +1753,11 @@ private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         }
     }
 
-    public Bill getCurrent() {
+    public Rechnung getCurrent() {
         if (current != null) {
             return current;
         } else {
-            return new Bill(QueryClass.instanceOf());
+            return new Rechnung(QueryClass.instanceOf());
         }
     }
 

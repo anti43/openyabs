@@ -23,7 +23,7 @@ import mp3.classes.interfaces.Constants;
 import mp3.classes.interfaces.ProtectedStrings;
 import mp3.classes.interfaces.Strings;
 import mp3.classes.interfaces.Structure;
-import mp3.classes.objects.bill.Bill;
+import mp4.klassen.objekte.Rechnung;
 import mp3.classes.utils.Formater;
 import mp3.classes.utils.Log;
 import mp3.database.util.Query;
@@ -274,7 +274,7 @@ public class EURTableModel implements ProtectedStrings, Constants, Strings, Stru
        
 
 
-        einnahmen = new Bill(q).getPaidEUR();
+        einnahmen = new Rechnung(q).getPaidEUR();
 
         for (int h = 0; h < einnahmen.length; h++) {
              x = 0;
@@ -578,7 +578,7 @@ public class EURTableModel implements ProtectedStrings, Constants, Strings, Stru
        
 
 
-        einnahmen = new Bill(q).getPaidEUR();
+        einnahmen = new Rechnung(q).getPaidEUR();
 
         for (int h = 0; h < einnahmen.length; h++) {
              x = 0;
