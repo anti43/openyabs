@@ -26,11 +26,11 @@ import mp3.classes.utils.Log;
  */
 public class RechnungPosten extends mp3.classes.layer.Things implements mp3.classes.interfaces.Structure {
 
-    private String rechnungid= "";
-    private String anzahl = "";
+    private Integer rechnungid = null;
+    private Double anzahl = 0.0;
     private String posten = "";
-    private String preis = "";
-    private String steuersatz = "";
+    private Double preis = 0.0;
+    private Double steuersatz = 0.0;
 
     public RechnungPosten(Query query) {
         super(query.clone(TABLE_BILLS_DATA));
@@ -52,10 +52,10 @@ public class RechnungPosten extends mp3.classes.layer.Things implements mp3.clas
 
         try {
             this.setRechnungid(Integer.valueOf(select[1]));
-            this.setAnzahl(select[2]);
+            this.setAnzahl(Double.valueOf(select[2]));
             this.setPosten(select[3]);
-            this.setPreis(select[4]);
-            this.setSteuersatz(select[5]);
+            this.setPreis(Double.valueOf( select[4]));
+            this.setSteuersatz(Double.valueOf( select[5]));
         } catch (NumberFormatException numberFormatException) {
             Log.Debug(numberFormatException);
         }
@@ -65,10 +65,10 @@ public class RechnungPosten extends mp3.classes.layer.Things implements mp3.clas
     private String collect() {
         String str = "";
         str = str +  this.getRechnungid() + "(;;,;;)";
-        str = str + "(;;2#4#1#1#8#0#;;)" + this.getAnzahl() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
+        str = str +  this.getAnzahl()  + "(;;,;;)";
         str = str + "(;;2#4#1#1#8#0#;;)" + this.getPosten() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
-        str = str + "(;;2#4#1#1#8#0#;;)" + this.getPreis() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
-        str = str + "(;;2#4#1#1#8#0#;;)" + this.getSteuersatz() + "(;;2#4#1#1#8#0#;;)";
+        str = str +  this.getPreis() +   "(;;,;;)";
+        str = str +  this.getSteuersatz();
         
 //        str = str + "'" + "null" + "'" + ",";
 //        str = str + "'" + "null" + "'" + ",";
@@ -91,12 +91,12 @@ public class RechnungPosten extends mp3.classes.layer.Things implements mp3.clas
         }
     }
 
-    public String getRechnungid() {
+    public Integer getRechnungid() {
         return rechnungid;
     }
 
     public void setRechnungid(Integer rechnungid) {
-        this.rechnungid = rechnungid.toString();
+        this.rechnungid = rechnungid;
     }
 
     public String getPosten() {
@@ -107,27 +107,27 @@ public class RechnungPosten extends mp3.classes.layer.Things implements mp3.clas
         this.posten = posten;
     }
 
-    public String getPreis() {
+    public Double getPreis() {
         return preis;
     }
 
-    public void setPreis(String preis) {
+    public void setPreis(Double  preis) {
         this.preis = preis;
     }
 
-    public String getSteuersatz() {
+    public Double  getSteuersatz() {
         return steuersatz;
     }
 
-    public void setSteuersatz(String steuersatz) {
+    public void setSteuersatz(Double  steuersatz) {
         this.steuersatz = steuersatz;
     }
 
-    public String getAnzahl() {
+    public Double  getAnzahl() {
         return anzahl;
     }
 
-    public void setAnzahl(String anzahl) {
+    public void setAnzahl(Double  anzahl) {
         this.anzahl = anzahl;
     }
 

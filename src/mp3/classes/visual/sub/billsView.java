@@ -44,6 +44,8 @@ import mp3.classes.interfaces.Structure.*;
 import mp3.classes.objects.pdf.BillPDF;
 import mp3.classes.objects.ungrouped.MyData;
 import mp3.classes.visual.util.arrear;
+import mp4.utils.datum.DateConverter;
+
 
 /**
  *
@@ -303,7 +305,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
 
         this.jTextField6.setText(current.getRechnungnummer());
         jTextField6.setBackground(Color.WHITE);
-        this.jTextField7.setText(current.getDatum());
+        this.jTextField7.setText(DateConverter.getDefDateString(current.getDatum()));
 
         if (current.isBezahlt()) {
             this.jLabelbezahlt.setText("Bezahlt");
@@ -1081,7 +1083,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
 
                 bill.setRechnungnummer(rechnungnummer);
 
-                bill.setDatum(jTextField7.getText());
+                bill.setDatum(DateCongh));
                 bill.setKundenId(getCustomer().getId());
                 
                 

@@ -164,7 +164,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp3.classes.in
             }
 
             this.setGesamtpreis(Double.valueOf(select[6]));
-            this.setGesamttax(select[7]);
+            this.setGesamttax(Double.valueOf(select[7]));
         } catch (Exception exception) {
              Log.Debug(exception.getMessage());
         }
@@ -226,8 +226,8 @@ public class Rechnung extends mp3.classes.layer.Things implements mp3.classes.in
             str = str + "0" + "(;;,;;)";
         }
 
-        str = str + "(;;2#4#1#1#8#0#;;)" + this.getGesamtpreis() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
-        str = str + "(;;2#4#1#1#8#0#;;)" + this.getGesamttax() + "(;;2#4#1#1#8#0#;;)";
+        str = str +  this.getGesamtpreis()  + "(;;,;;)";
+        str = str +  this.getGesamttax();
 
        
         return str;

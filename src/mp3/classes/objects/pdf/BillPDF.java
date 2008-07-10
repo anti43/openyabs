@@ -33,7 +33,8 @@ import mp3.classes.layer.QueryClass;
 import mp3.classes.utils.Formater;
 import mp3.classes.utils.Log;
 
-import mp3.classes.objects.bill.*;
+import mp4.klassen.objekte.*;
+import mp4.utils.datum.DateConverter;
 
 /**
  *
@@ -47,7 +48,7 @@ public class BillPDF {
     private String filename;
     private String separator;
     private MyData l;
-    private Bill r;
+    private Rechnung r;
     private Customer k;
     private Object[][] products;
     private Double netto = 0d;
@@ -57,7 +58,7 @@ public class BillPDF {
      * 
      * @param b
      */
-    public BillPDF(Bill b) {
+    public BillPDF(Rechnung b) {
 
 
         l = MyData.instanceOf();
@@ -154,7 +155,7 @@ public class BillPDF {
         acroFields.setField("street", k.getStr());
         acroFields.setField("city", k.getPLZ() + " " + k.getOrt());
 
-        acroFields.setField("date", r.getDatum());
+        acroFields.setField("date", DateConverter.getDefDateString(r.getDatum()));
         acroFields.setField("number", r.getRechnungnummer());
         acroFields.setField("knumber", k.getKundennummer());
 

@@ -6,7 +6,7 @@
 
 package mp3.classes.visual.util;
 
-import mp3.classes.objects.bill.Bill;
+import mp4.klassen.objekte.*;
 import mp3.classes.objects.eur.Customer;
 import mp3.classes.objects.pdf.OverdueODF;
 import mp3.classes.utils.WindowTools;
@@ -16,14 +16,14 @@ import mp3.classes.utils.WindowTools;
  * @author  anti43
  */
 public class arrear extends javax.swing.JFrame {
-    private Bill bill;
+    private Rechnung bill;
     private Customer c;
     
     /** Creates new form overdue
      * @param bill
      * @param c 
      */
-    public arrear(Bill bill, Customer c) {
+    public arrear(Rechnung bill, Customer c) {
         initComponents();
         this.bill=bill;
         this.c=c;

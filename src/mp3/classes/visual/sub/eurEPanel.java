@@ -9,7 +9,7 @@ import java.util.Date;
 import mp3.classes.layer.Popup;
 import mp3.classes.layer.QueryClass;
 import mp3.classes.layer.visual.DatePick;
-import mp3.classes.objects.bill.Bill;
+import mp4.klassen.objekte.*;
 import mp3.classes.objects.eur.Customer;
 import mp4.klassen.objekte.Einnahme;
 import mp3.classes.objects.ungrouped.MyData;
@@ -316,7 +316,7 @@ public class eurEPanel extends javax.swing.JPanel {
             try {
 
                 if (String.valueOf(jTable1.getValueAt(jTable1.getSelectedRow(), 2)).contains("echnun")) {
-                    this.setBill(new Bill(QueryClass.instanceOf(), id));
+                    this.setBill(new Rechnung(QueryClass.instanceOf(), id));
                 } else if (String.valueOf(jTable1.getValueAt(jTable1.getSelectedRow(), 2)).contains("ngabe")) {
                     this.setEinnahme(new Einnahme(QueryClass.instanceOf(), id.toString()));
                 }
@@ -445,10 +445,10 @@ public class eurEPanel extends javax.swing.JPanel {
     private javax.swing.JToolBar jToolBar2;
     // End of variables declaration//GEN-END:variables
 
-    private void setBill(Bill bill) {
+    private void setBill(Rechnung bill) {
 
         this.curEinnahme = null;
-        jTextField6.setText(bill.getDatum());
+        jTextField6.setText(DateConverter.getDefDateString(bill.getDatum()));
 
         Customer c = new Customer(QueryClass.instanceOf(), bill.getKundenId());
 
@@ -459,7 +459,7 @@ public class eurEPanel extends javax.swing.JPanel {
         jEditorPane1.setText("<html><font face=arial size=12px><b>" + c.getFirma() + "</b><br><br>" + c.getAnrede() + " " + c.getVorname() + " " + c.getName() + "<br>" + c.getStr() + "<br>" + "<br>" + c.getPLZ() + " " + c.getOrt() + "<br>" + "<br>" +
                 "Rechnung Nr.: " + bill.getRechnungnummer() + "<br>");
 
-        jTextField4.setText(bill.getGesamtpreis());
+        jTextField4.setText(bill.getGesamtpreis().toString());
         jTextField3.setText("");
         jTextField3.setEnabled(false);
 
