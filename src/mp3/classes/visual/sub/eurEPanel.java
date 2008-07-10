@@ -11,7 +11,7 @@ import mp3.classes.layer.QueryClass;
 import mp3.classes.layer.visual.DatePick;
 import mp3.classes.objects.bill.Bill;
 import mp3.classes.objects.eur.Customer;
-import  mp4.klassen.objekte.Einnahme;
+import mp4.klassen.objekte.Einnahme;
 import mp3.classes.objects.ungrouped.MyData;
 import mp3.classes.objects.eur.SKRKonto;
 import mp3.classes.utils.FetchDataTask;
@@ -316,7 +316,7 @@ public class eurEPanel extends javax.swing.JPanel {
             try {
 
                 if (String.valueOf(jTable1.getValueAt(jTable1.getSelectedRow(), 2)).contains("echnun")) {
-                    this.setBill(new Bill(QueryClass.instanceOf(), id.toString()));
+                    this.setBill(new Bill(QueryClass.instanceOf(), id));
                 } else if (String.valueOf(jTable1.getValueAt(jTable1.getSelectedRow(), 2)).contains("ngabe")) {
                     this.setEinnahme(new Einnahme(QueryClass.instanceOf(), id.toString()));
                 }
@@ -345,44 +345,41 @@ public class eurEPanel extends javax.swing.JPanel {
     private void jButton3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
 
         if (jButton3.isEnabled()) {
-            try {
 
-                Double.valueOf(jTextField4.getText().replaceAll(",", "."));
-                Double.valueOf(jTextField3.getText().replaceAll(",", "."));
+            vFloat betrag = new vFloat(jTextField4.getText());
+            vFloat steuer = new vFloat(jTextField3.getText());
+            vDate datum = new vDate(jTextField6.getText());
+
+            if (betrag.isVerified && steuer.isVerified && steuer.isPositive && datum.isVerified) {
+
+
                 if (this.curEinnahme != null && curEinnahme.id > 0) {
-                    curEinnahme.setDatum(Formater.getDate(jTextField6.getText()));
+                    curEinnahme.setDatum(datum.date);
                     curEinnahme.setBeschreibung(jEditorPane1.getText());
-                    curEinnahme.setPreis(jTextField4.getText().replaceAll(",", "."));
-                    curEinnahme.setTax(jTextField3.getText().replaceAll(",", "."));
+                    curEinnahme.setPreis(betrag.value);
+                    curEinnahme.setTax(steuer.value);
 
                     curEinnahme.save();
                     updateTableData();
                 }
-            } catch (NumberFormatException ex) {
-
-
-                Log.Debug(ex);
-                Popup.error(ex.getMessage(), "Überprüfen Sie die angebenen Beträge.");
+            } else {
+                Popup.error("Betrag: " + betrag.ovalue + "\n" + "Steuer: " + steuer.ovalue + "\n" + "Datum: " + datum.ovalue, "Überprüfen Sie Ihre Angaben.");
             }
-
-
-
         }
-
-
     }//GEN-LAST:event_jButton3MouseClicked
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
 
         vFloat betrag = new vFloat(jTextField4.getText());
         vFloat steuer = new vFloat(jTextField3.getText());
-        vDate  datum = new vDate(jTextField6.getText());
+        vDate datum = new vDate(jTextField6.getText());
 
         if (betrag.isVerified && steuer.isVerified && steuer.isPositive && datum.isVerified) {
-            new Einnahme(curKonto.getId(), jEditorPane1.getText(), betrag.svalue, steuer.svalue, datum.date);System.out.print(datum.sqlDate);
+            new Einnahme(curKonto.getId(), jEditorPane1.getText(), betrag.value, steuer.value, datum.date);
+            System.out.print(datum.sqlDate);
             updateTableData();
         } else {
-            Popup.error("Betrag: "+betrag.ovalue + "\n" + "Steuer: "+steuer.ovalue + "\n" +"Datum: "+datum.ovalue,"Überprüfen Sie Ihre Angaben.");
+            Popup.error("Betrag: " + betrag.ovalue + "\n" + "Steuer: " + steuer.ovalue + "\n" + "Datum: " + datum.ovalue, "Überprüfen Sie Ihre Angaben.");
         }
     }//GEN-LAST:event_jButton4ActionPerformed
 
@@ -475,7 +472,7 @@ public class eurEPanel extends javax.swing.JPanel {
 
         this.curEinnahme = einnahme;
 
-        jTextField6.setText(einnahme.getDatum());
+        jTextField6.setText(DateConverter.getDefDateString(einnahme.getDatum()));
 
         jEditorPane1.setContentType("text/html");
 

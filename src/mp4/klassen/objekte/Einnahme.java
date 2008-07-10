@@ -68,10 +68,10 @@ public class Einnahme extends mp3.classes.layer.Things implements mp3.classes.in
         this.save();
     }
 
-     public Einnahme(String id) {
+     public Einnahme(Integer id) {
        super(QueryClass.instanceOf().clone(TABLE_INCOME));
         this.id = Integer.valueOf(id);
-        this.explode(this.selectLast("*", "id", id, true));
+        this.explode(this.selectLast("*", "id", id.toString(), true));
     }
     /**
      * 

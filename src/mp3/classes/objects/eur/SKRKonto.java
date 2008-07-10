@@ -75,16 +75,16 @@ public class SKRKonto extends mp3.classes.layer.Things implements mp3.classes.in
      * 
      * @param id 
      */
-    public SKRKonto(String id) {
+    public SKRKonto(Integer id) {
         super(QueryClass.instanceOf().clone(Structure.TABLE_KONTEN));
         this.id = Integer.valueOf(id);
-        this.explode(this.selectLast("*", "id", id, true));
+        this.explode(this.selectLast("*", "id", id.toString(), true));
     }
     
-     public SKRKonto(Query q, String id) {
+     public SKRKonto(Query q, Integer id) {
         super(q.clone(Structure.TABLE_KONTEN));
         this.id = Integer.valueOf(id);
-        this.explode(this.selectLast("*", "id", id, true));
+        this.explode(this.selectLast("*", "id", id.toString(), true));
     }
 
 
