@@ -526,7 +526,7 @@ public class csvProductImporter extends javax.swing.JFrame {
                     if (thisa.supplier != null) {
                         pg.setLieferantenId(thisa.supplier.getId());
                     } else {
-                        pg.setLieferantenId("0");
+                        pg.setLieferantenId(0);
                     }
 
                     cat = thisa.data[i].getWarengruppenkategorie();
@@ -561,7 +561,7 @@ public class csvProductImporter extends javax.swing.JFrame {
 //                            Log.Debug("creating fam: "+fam + " " + f,true);
                             newfam = new ProductGroupFamily(QueryClass.instanceOf());
                             newfam.setName(fam);
-                            newfam.setKategorieid(String.valueOf(z));
+                            newfam.setKategorieid(z);
                             newfam.save();
                             f=newfam.getID();
                             news=true;
@@ -577,7 +577,7 @@ public class csvProductImporter extends javax.swing.JFrame {
 
                             newgrp = new ProductGroupGroup(QueryClass.instanceOf());
                             newgrp.setName(grp);
-                            newgrp.setFamilienid(String.valueOf(f));
+                            newgrp.setFamilienid(f);
                             newgrp.save();
                             news=true;
                          }else{
@@ -585,7 +585,7 @@ public class csvProductImporter extends javax.swing.JFrame {
                          }
 
 
-                       pg.setWarengruppenId(String.valueOf(l));
+                       pg.setWarengruppenId(1);
                        
                       
                        if(news) {
@@ -597,7 +597,7 @@ public class csvProductImporter extends javax.swing.JFrame {
 
                     }else{
                     
-                     pg.setWarengruppenId("1");
+                     pg.setWarengruppenId(1);
                     
                     }
 

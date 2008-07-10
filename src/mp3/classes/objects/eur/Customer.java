@@ -56,10 +56,10 @@ public class Customer extends mp3.classes.layer.People implements mp3.classes.in
 
     }
 
-    public Customer(Query query, String id) {
+    public Customer(Query query, Integer id) {
         super(query.clone(TABLE_CUSTOMERS));
         this.id=Integer.valueOf(id);
-        this.explode(this.selectLast("*", "id", id, true , true, false));
+        this.explode(this.selectLast("*", "id", id.toString(), true , true, false));
         this.query=query;
     }
 
@@ -88,7 +88,7 @@ public class Customer extends mp3.classes.layer.People implements mp3.classes.in
        
         for (int i = 0; i < str.length; i++) {
             
-            arr.add(new Customer(QueryClass.instanceOf(), str[i][0]));
+            arr.add(new Customer(QueryClass.instanceOf(), Integer.valueOf(str[i][0])));
 
         }
 
@@ -323,7 +323,7 @@ public class Customer extends mp3.classes.layer.People implements mp3.classes.in
            
         Query q = query.clone(TABLE_BILLS);
 
-        String[] wher = {"kundenid", this.getId(), ""};
+        String[] wher = {"kundenid", this.getId().toString(), ""};
 
         String[][] str = q.select("id,rechnungnummer,datum", wher);
    

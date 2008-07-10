@@ -38,7 +38,7 @@ public class productsView extends javax.swing.JPanel {
     private Supplier supplier;
     private String[][] liste;
     private boolean autoProductNumber = true;//settings?
-    private String currentProductGroup = "0";
+    private Integer currentProductGroupId = 0;
 
     /** Creates new form customers
      * @param aThis 
@@ -882,7 +882,7 @@ public class productsView extends javax.swing.JPanel {
         if (evt.getClickCount() >= 2 && idOk) {
 
 
-            this.setProduct(new Product(QueryClass.instanceOf(), (String) jTable2.getValueAt(jTable2.getSelectedRow(), 0)));
+            this.setProduct(new Product(QueryClass.instanceOf(), (Integer) jTable2.getValueAt(jTable2.getSelectedRow(), 0)));
             jTabbedPane1.setSelectedIndex(0);
         }
 
@@ -900,7 +900,7 @@ public class productsView extends javax.swing.JPanel {
         }
 
         if (evt.getClickCount() >= 2 && idOk) {
-            this.setProduct(new Product(QueryClass.instanceOf(), (String) jTable3.getValueAt(jTable3.getSelectedRow(), 0)));
+            this.setProduct(new Product(QueryClass.instanceOf(), (Integer) jTable3.getValueAt(jTable3.getSelectedRow(), 0)));
         }
     }//GEN-LAST:event_jTable3MouseClicked
 
@@ -1251,12 +1251,12 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         return mainframe;
     }
 
-    public String getCurrentProductGroup() {
-        return currentProductGroup;
+    public Integer getCurrentProductGroup() {
+        return currentProductGroupId;
     }
 
-    public void setCurrentProductGroup(String currentProductGroup) {
-        this.currentProductGroup = currentProductGroup;
+    public void setCurrentProductGroup(Integer currentProductGroupId) {
+        this.currentProductGroupId = currentProductGroupId;
     }
 }
 

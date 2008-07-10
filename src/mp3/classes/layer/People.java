@@ -62,8 +62,8 @@ public abstract class People implements Queries, Structure {
 
     }
 
-    public String getId() {
-        return id.toString();
+    public Integer getId() {
+        return id;
     }
 
     /**

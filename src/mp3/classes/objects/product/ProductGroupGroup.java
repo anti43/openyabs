@@ -25,7 +25,7 @@ import mp3.database.util.Query;
 public class ProductGroupGroup extends mp3.classes.layer.Things implements mp3.classes.interfaces.Structure {
 
     private String gruppennummer = "0";
-    private String familienid = "0";
+    private Integer familienid = 0;
     private String name = "";
       
     private String[][] data;
@@ -57,7 +57,7 @@ public class ProductGroupGroup extends mp3.classes.layer.Things implements mp3.c
     private void explode(String[] data) {
          this.id=Integer.valueOf(data[0]);
         this.setGruppennummer(data[1]);
-        this.setFamilienid(data[2]);
+        this.setFamilienid(Integer.valueOf(data[2]));
         this.setName(data[3]);
         
     }
@@ -115,11 +115,11 @@ public class ProductGroupGroup extends mp3.classes.layer.Things implements mp3.c
         this.gruppennummer = gruppennummer;
     }
 
-    public String getFamilienid() {
+    public Integer getFamilienid() {
         return familienid;
     }
 
-    public void setFamilienid(String familienid) {
+    public void setFamilienid(Integer familienid) {
         this.familienid = familienid;
     }
 

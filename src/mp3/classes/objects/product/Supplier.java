@@ -52,12 +52,12 @@ public class Supplier extends mp3.classes.layer.People implements mp3.classes.in
 
     }
 
-    public Supplier(Query query, String id) {
+    public Supplier(Query query, Integer id) {
         super(query.clone(TABLE_SUPPLIER));
         this.query =query;
-        this.id=Integer.valueOf(id);
+        
 //        if(this.id!=0) {
-            this.explode(this.selectLast("*", "id", id, true, false, false));
+            this.explode(this.selectLast("*", "id", id.toString(), true, false, false));
 //        }
     }
 

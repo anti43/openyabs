@@ -1461,7 +1461,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
 
 
         try {
-            this.setCustomer(new Customer(QueryClass.instanceOf(), st[0]));
+            this.setCustomer(new Customer(QueryClass.instanceOf(), Integer.valueOf(st[0])));
 
 
         } catch (Exception exception) {
@@ -1472,7 +1472,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
 
             } catch (Exception exception1) {
                 //    exception1.printStackTrace();
-                mainframe.nachricht("Kein Datensatz gefunden k");
+                mainframe.nachricht("Kein Datensatz gefunden!");
             }
 
         }
@@ -1493,7 +1493,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
 
 
         try {
-            this.setCustomer(new Customer(QueryClass.instanceOf(), st[0]));
+            this.setCustomer(new Customer(QueryClass.instanceOf(), Integer.valueOf(st[0])));
 
         } catch (Exception exception) {
 

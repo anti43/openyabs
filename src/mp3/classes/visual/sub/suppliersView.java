@@ -877,7 +877,7 @@ public class suppliersView extends javax.swing.JPanel {
         if (evt.getClickCount() >= 2 && idOk && evt.getButton() == MouseEvent.BUTTON1) {
 
             try {
-                this.setSupplier(new Supplier(QueryClass.instanceOf(), id.toString()));
+                this.setSupplier(new Supplier(QueryClass.instanceOf(), id));
                 jTabbedPane1.setSelectedIndex(0);
             } catch (Exception exception) {
                 exception.printStackTrace();
@@ -956,7 +956,7 @@ public class suppliersView extends javax.swing.JPanel {
         if (evt.getClickCount() >= 2 && idOk && evt.getButton() == MouseEvent.BUTTON1) {
 
             try {
-                this.setSupplier(new Supplier(QueryClass.instanceOf(), id.toString()));
+                this.setSupplier(new Supplier(QueryClass.instanceOf(), id));
 
             } catch (Exception exception) {
                 exception.printStackTrace();
@@ -1018,7 +1018,7 @@ public class suppliersView extends javax.swing.JPanel {
         if (evt.getClickCount() >= 2 && idOk) {
 
 
-            mainframe.getProductsView().setProduct(new Product(QueryClass.instanceOf(), id.toString()));
+            mainframe.getProductsView().setProduct(new Product(QueryClass.instanceOf(), id));
 
             mainframe.setShowingTab(3);
 

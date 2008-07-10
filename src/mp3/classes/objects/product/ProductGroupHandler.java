@@ -183,7 +183,7 @@ public class ProductGroupHandler extends mp3.classes.layer.Things implements mp3
             }
 
             family.setFamiliennummer(tmp[i][1]);
-            family.setKategorieid(tmp[i][2]);
+            family.setKategorieid(Integer.valueOf(tmp[i][2]));
             family.setName(tmp[i][3]);
 //            Log.Debug(family.getName());
 
@@ -213,7 +213,7 @@ public class ProductGroupHandler extends mp3.classes.layer.Things implements mp3
             }
 
             group.setGruppennummer(tmp[i][1]);
-            group.setFamilienid(tmp[i][2]);
+            group.setFamilienid(Integer.valueOf(tmp[i][2]));
             group.setName(tmp[i][3]);
 //            Log.Debug(group.getName());
 
@@ -413,7 +413,7 @@ public class ProductGroupHandler extends mp3.classes.layer.Things implements mp3
             p.setGruppennummer(p.getNextIndex("gruppenummer").toString());
         }
 
-        p.setFamilienid(famid.toString());
+        p.setFamilienid(famid);
 
         p.save();
         return p.getID();
@@ -438,7 +438,7 @@ public class ProductGroupHandler extends mp3.classes.layer.Things implements mp3
             p.setFamiliennummer(p.getNextIndex("familiennummer").toString());
         }
 
-        p.setKategorieid(catid.toString());
+        p.setKategorieid(catid);
 
         p.save();
         return p.getID();

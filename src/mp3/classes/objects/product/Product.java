@@ -40,8 +40,8 @@ public class Product extends mp3.classes.layer.Things implements mp3.classes.int
     private String EK = "";
     private String TAX = "";
     private String Hersteller = "";
-    private String LieferantenId = "0";
-    private String WarengruppenId = "0";
+    private Integer LieferantenId = 0;
+    private Integer WarengruppenId = 0;
  
 //    private Manufacturer manufacturer;
     private Supplier supplier;
@@ -65,16 +65,16 @@ public class Product extends mp3.classes.layer.Things implements mp3.classes.int
      * @param query
      * @param id
      */
-    public Product(Query query, String id) {
+    public Product(Query query, Integer id) {
         super(query.clone(TABLE_PRODUCTS));
         this.id = Integer.valueOf(id);
-        this.explode(this.selectLast("*", "id", id, true));
+        this.explode(this.selectLast("*", "id", id.toString(), true));
 
 //        group = new ProductGroup(query, this.getWarengruppenId());
 //        manufacturer = new Manufacturer(query, this.getHerstellerId());
         
         
-          if(!this.getLieferantenId().equals("0")) {
+          if(!this.getLieferantenId().equals(0)) {
             this.supplier = new Supplier(query, this.getLieferantenId());
         }
           this.isvalid =true;
@@ -102,8 +102,8 @@ public class Product extends mp3.classes.layer.Things implements mp3.classes.int
         this.setEK(select[5]);
         this.setTAX(select[6]);
         this.setHersteller(select[7]);
-        this.setLieferantenId(select[8]);
-        this.setWarengruppenId(select[9]); 
+        this.setLieferantenId(Integer.valueOf(select[8]));
+        this.setWarengruppenId(Integer.valueOf(select[9])); 
         
         this.setDatum(select[10]);
         this.setUrl(select[11]);
@@ -160,7 +160,7 @@ public class Product extends mp3.classes.layer.Things implements mp3.classes.int
         }
     }
 
-    public String getWarengruppenId() {
+    public Integer getWarengruppenId() {
         return WarengruppenId;
     }
 
@@ -178,7 +178,7 @@ public class Product extends mp3.classes.layer.Things implements mp3.classes.int
     
     }
     
-    public void setWarengruppenId(String Warengruppenid) {
+    public void setWarengruppenId(Integer Warengruppenid) {
         this.WarengruppenId = Warengruppenid;
         this.isSaved = false;
     }
@@ -214,7 +214,7 @@ public class Product extends mp3.classes.layer.Things implements mp3.classes.int
         if(supplier!=null) {
             this.setLieferantenId(supplier.getId());
         }else {
-            this.setLieferantenId("0");
+            this.setLieferantenId(0);
         }
         this.supplier = supplier;
 
@@ -234,11 +234,11 @@ public class Product extends mp3.classes.layer.Things implements mp3.classes.int
         this.Hersteller = Hersteller;
     }
 
-    public String getLieferantenId() {
+    public Integer getLieferantenId() {
         return LieferantenId;
     }
 
-    public void setLieferantenId(String LieferantenId) {
+    public void setLieferantenId(Integer LieferantenId) {
         this.LieferantenId = LieferantenId;
     }
 

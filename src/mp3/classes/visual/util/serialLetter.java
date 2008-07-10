@@ -352,7 +352,7 @@ public class serialLetter extends javax.swing.JFrame implements ProtectedStrings
                         for (int i = 0; i < m.getRowCount(); i++) {
 
 
-                            new SerialPDF(new Customer(QueryClass.instanceOf(), (String) m.getValueAt(i, 0)), file.getAbsoluteFile(), thisa.jTextField1.getText(), thisa.jTextArea1.getText(), named).print();
+                            new SerialPDF(new Customer(QueryClass.instanceOf(), (Integer) m.getValueAt(i, 0)), file.getAbsoluteFile(), thisa.jTextField1.getText(), thisa.jTextArea1.getText(), named).print();
 
                             thisa.jProgressBar1.setValue(i);
                         }

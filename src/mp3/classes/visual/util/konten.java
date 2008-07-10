@@ -421,7 +421,7 @@ public class konten extends javax.swing.JFrame {
         if (evt.getClickCount() >= 1 && idOk) {
 
             try {
-                this.setKonten(new SKRKonto(QueryClass.instanceOf(), id.toString()));
+                this.setKonten(new SKRKonto(QueryClass.instanceOf(), id));
 
             } catch (Exception exception) {
                 Log.Debug(exception);
@@ -432,7 +432,7 @@ public class konten extends javax.swing.JFrame {
 
             try {
 
-                this.Konto = new SKRKonto(QueryClass.instanceOf(), id.toString());
+                this.Konto = new SKRKonto(QueryClass.instanceOf(), id);
                 this.field.setText(getKonto().getArt());
                 
                 if(this.einnahme!=null) {
@@ -499,7 +499,7 @@ public class konten extends javax.swing.JFrame {
         }
 
         try {
-            this.Konto = new SKRKonto(QueryClass.instanceOf(), id.toString());
+            this.Konto = new SKRKonto(QueryClass.instanceOf(), id);
             this.field.setText(getKonto().getArt());
             
                if(this.einnahme!=null) {

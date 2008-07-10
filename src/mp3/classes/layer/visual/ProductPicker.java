@@ -330,9 +330,9 @@ public static void update(){
 
             try {
                 if(!order) {
-                    frame.addToBill(new Product(QueryClass.instanceOf(), id.toString()),ean,name,text);
+                    frame.addToBill(new Product(QueryClass.instanceOf(), id),ean,name,text);
                 }else{
-                     frame1.addToOrder(new Product(QueryClass.instanceOf(), id.toString()),ean,name,text);
+                     frame1.addToOrder(new Product(QueryClass.instanceOf(), id),ean,name,text);
                 }
                 this.dispose();
             } catch (Exception exception) {

@@ -245,10 +245,10 @@ public class SupplierPicker extends javax.swing.JFrame {
             try {
                 
                 if(importer) {
-                    frame1.setSupplier(new Supplier(QueryClass.instanceOf(), id.toString()));
+                    frame1.setSupplier(new Supplier(QueryClass.instanceOf(), id));
                 } else {
                 
-                 frame.setSupplier(new Supplier(QueryClass.instanceOf(), id.toString()));
+                 frame.setSupplier(new Supplier(QueryClass.instanceOf(), id));
                 
                 }
                 this.dispose();

@@ -30,7 +30,7 @@ import mp3.classes.layer.PostenTableModel;
 public class Offer extends mp3.classes.layer.Things implements mp3.classes.interfaces.Structure {
 
     private String Ordernummer = "";
-    private String KundenId = "";
+    private Integer KundenId = 0;
     private String Deleted = "";
     private String Datum = "";
     
@@ -125,7 +125,7 @@ public class Offer extends mp3.classes.layer.Things implements mp3.classes.inter
     private void explode(String[] select) {
 //        Log.Debug("Bill.select[1]: " + select[1]);
         this.setOrdernummer(select[1]);
-        this.setKundenId(select[2]);
+        this.setKundenId(Integer.valueOf(select[2]));
         this.setDeleted(select[7]);
         this.setDatum(select[3]);
         if(select[4].equals("1")) {
@@ -197,11 +197,11 @@ public class Offer extends mp3.classes.layer.Things implements mp3.classes.inter
         this.isSaved = false;
     }
 
-    public String getKundenId() {
+    public Integer getKundenId() {
         return KundenId;
     }
 
-    public void setKundenId(String KundenId) {
+    public void setKundenId(Integer KundenId) {
         this.KundenId = KundenId;
         this.isSaved = false;
     }
@@ -279,7 +279,7 @@ public class Offer extends mp3.classes.layer.Things implements mp3.classes.inter
 
         Query q = query.clone(TABLE_ORDERS_DATA);
 
-        String[] wher = {"auftragid", this.getId(), ""};
+        String[] wher = {"auftragid", this.getId().toString(), ""};
 
         products = q.select(ALL, wher);
         OfferProduct[] prof = null;

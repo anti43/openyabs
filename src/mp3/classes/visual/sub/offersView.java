@@ -1355,7 +1355,7 @@ public class offersView extends javax.swing.JPanel implements Runnable {
 
 
         try {
-            this.setCustomer(new Customer(QueryClass.instanceOf(), st[0]));
+            this.setCustomer(new Customer(QueryClass.instanceOf(),Integer.valueOf( st[0])));
 
 
         } catch (Exception exception) {
@@ -1387,7 +1387,7 @@ public class offersView extends javax.swing.JPanel implements Runnable {
 
 
         try {
-            this.setCustomer(new Customer(QueryClass.instanceOf(), st[0]));
+            this.setCustomer(new Customer(QueryClass.instanceOf(), Integer.valueOf(st[0])));
 
         } catch (Exception exception) {
 

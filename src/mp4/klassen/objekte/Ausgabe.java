@@ -33,7 +33,7 @@ import mp3.classes.utils.*;
 public class Ausgabe extends mp3.classes.layer.Things implements mp3.classes.interfaces.Structure, mp3.classes.interfaces.Daemonable{
 //  "kontenid INTEGER DEFAULT NULL, beschreibung varchar(500) default NULL,"+
 //  "preis varchar(50) default NULL,"+"tax varchar(50) default NULL,"+"datum varchar(50) default NULL,"+
-    private String Kontenid = "0";
+    private Integer Kontenid = 0;
     private String Beschreibung = "";
     private String Preis = "0";
     private String Tax = "0";
@@ -137,7 +137,7 @@ public class Ausgabe extends mp3.classes.layer.Things implements mp3.classes.int
                   
                   
                   if(j==2) {
-                        pro[i][2] = new SKRKonto(prods[i][0]).getGruppe();
+                        pro[i][2] = new SKRKonto(Integer.valueOf(prods[i][0])).getGruppe();
 
                         m--;
                     }else {
@@ -151,12 +151,12 @@ public class Ausgabe extends mp3.classes.layer.Things implements mp3.classes.int
       } 
       return pro;
     }
-    public String getKontenid() {
+    public Integer getKontenid() {
         return Kontenid;
     }
 
     public void setKontenid(Integer Kontenid) {
-        this.Kontenid = Kontenid.toString();
+        this.Kontenid = Kontenid;
     }
 
     public String getBeschreibung() {

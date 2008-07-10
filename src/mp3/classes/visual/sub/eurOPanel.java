@@ -222,7 +222,7 @@ public class eurOPanel extends javax.swing.JPanel {
 
         if (idOk) {
 
-            Bill b = new Bill(QueryClass.instanceOf(), id.toString());
+            Bill b = new Bill(QueryClass.instanceOf(), id);
 
             setBill(b);
         }
