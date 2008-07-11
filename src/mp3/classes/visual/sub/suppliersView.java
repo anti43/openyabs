@@ -12,9 +12,9 @@ import mp3.classes.interfaces.Structure;
 
 import mp3.classes.layer.Popup;
 import mp3.classes.layer.QueryClass;
-import mp3.classes.objects.ungrouped.History;
-import mp3.classes.objects.product.Product;
-import mp3.classes.objects.product.Supplier;
+import mp4.klassen.objekte.History;
+import mp4.klassen.objekte.Product;
+import mp4.klassen.objekte.Lieferant;
 import mp3.classes.visual.main.mainframe;
 
 /**
@@ -23,7 +23,7 @@ import mp3.classes.visual.main.mainframe;
  */
 public class suppliersView extends javax.swing.JPanel {
 
-    public Supplier current;
+    public Lieferant current;
     private String[][] liste;
     private mainframe mainframe;
 
@@ -33,7 +33,7 @@ public class suppliersView extends javax.swing.JPanel {
     public suppliersView(mainframe aThis) {
         initComponents();
 
-        current = new Supplier(QueryClass.instanceOf());
+        current = new Lieferant(QueryClass.instanceOf());
 
         liste = current.getAll();
         String k = "id, " + Structure.TABLE_SUPPLIER_FIELDS;
@@ -50,7 +50,7 @@ public class suppliersView extends javax.swing.JPanel {
         current.stripFirst(jTable3);
     }
 
-    public suppliersView(Supplier current) {
+    public suppliersView(Lieferant current) {
         initComponents();
 
         this.current = current;
@@ -690,7 +690,7 @@ public class suppliersView extends javax.swing.JPanel {
      * 
      * @param current
      */
-    public void setSupplier(Supplier current) {
+    public void setSupplier(Lieferant current) {
         this.current = current;
 
         this.jTextField4.setText(current.getLieferantennummer());
@@ -798,7 +798,7 @@ public class suppliersView extends javax.swing.JPanel {
     private void jButton3MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
 
         if (jTextField5.getText().length() > 2) {
-            current = new Supplier(QueryClass.instanceOf());
+            current = new Lieferant(QueryClass.instanceOf());
             try {
                 if (current.getNextNumber("lieferantennummer") > Integer.valueOf(jTextField4.getText())) {
 
@@ -877,7 +877,7 @@ public class suppliersView extends javax.swing.JPanel {
         if (evt.getClickCount() >= 2 && idOk && evt.getButton() == MouseEvent.BUTTON1) {
 
             try {
-                this.setSupplier(new Supplier(QueryClass.instanceOf(), id));
+                this.setSupplier(new Lieferant(QueryClass.instanceOf(), id));
                 jTabbedPane1.setSelectedIndex(0);
             } catch (Exception exception) {
                 exception.printStackTrace();
@@ -897,7 +897,7 @@ public class suppliersView extends javax.swing.JPanel {
     public void save() {
 
         if (!current.getId().equals("0")) {
-            current = new Supplier(QueryClass.instanceOf());
+            current = new Lieferant(QueryClass.instanceOf());
 
 
             current.setFirma(jTextField5.getText());
@@ -956,7 +956,7 @@ public class suppliersView extends javax.swing.JPanel {
         if (evt.getClickCount() >= 2 && idOk && evt.getButton() == MouseEvent.BUTTON1) {
 
             try {
-                this.setSupplier(new Supplier(QueryClass.instanceOf(), id));
+                this.setSupplier(new Lieferant(QueryClass.instanceOf(), id));
 
             } catch (Exception exception) {
                 exception.printStackTrace();
@@ -1063,7 +1063,7 @@ public class suppliersView extends javax.swing.JPanel {
             this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
             current.stripFirst(jTable2);
 
-            current = new Supplier(QueryClass.instanceOf());
+            current = new Lieferant(QueryClass.instanceOf());
         }
     }//GEN-LAST:event_jButton9MouseClicked
 

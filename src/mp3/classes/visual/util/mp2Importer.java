@@ -18,8 +18,8 @@ import mp3.classes.layer.Popup;
 import mp3.classes.layer.QueryClass;
 import mp4.klassen.objekte.Rechnung;
 import mp4.klassen.objekte.RechnungPosten;
-import mp3.classes.objects.eur.Customer;
-import mp3.classes.objects.product.Product;
+import mp4.klassen.objekte.Customer;
+import mp4.klassen.objekte.Product;
 import mp3.classes.utils.Log;
 
 /**

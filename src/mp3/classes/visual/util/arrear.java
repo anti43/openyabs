@@ -7,8 +7,8 @@
 package mp3.classes.visual.util;
 
 import mp4.klassen.objekte.*;
-import mp3.classes.objects.eur.Customer;
-import mp3.classes.objects.pdf.OverdueODF;
+import mp4.klassen.objekte.Customer;
+import mp4.klassen.pdf.PDF_Mahnung;
 import mp3.classes.utils.WindowTools;
 
 /**
@@ -196,11 +196,11 @@ public class arrear extends javax.swing.JFrame {
         
         
         try {
-            new OverdueODF(bill, jTextArea1.getText(), jTextField1.getText(), Double.valueOf(jTextField2.getText()));
+            new PDF_Mahnung(bill, jTextArea1.getText(), jTextField1.getText(), Double.valueOf(jTextField2.getText()));
             this.dispose();
         } catch (NumberFormatException numberFormatException) {
           
-            new OverdueODF(bill, jTextArea1.getText(), jTextField1.getText(), Double.valueOf(0));
+            new PDF_Mahnung(bill, jTextArea1.getText(), jTextField1.getText(), Double.valueOf(0));
             this.dispose();
         }
 

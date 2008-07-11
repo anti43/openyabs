@@ -6,7 +6,7 @@
 package mp3.classes.visual.util;
 
 
-import mp3.classes.objects.eur.SKRKonto;
+import mp4.klassen.objekte.SKRKonto;
 
 import javax.swing.JTextField;
 import mp3.classes.utils.*;

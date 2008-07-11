@@ -26,13 +26,13 @@ import mp3.classes.layer.QueryClass;
 import mp3.classes.layer.visual.SupplierPicker;
 
 import mp3.classes.layer.ProductImporteur;
-import mp3.classes.objects.ungrouped.History;
-import mp3.classes.objects.product.Product;
-import mp3.classes.objects.product.ProductGroupCategory;
-import mp3.classes.objects.product.ProductGroupFamily;
-import mp3.classes.objects.product.ProductGroupGroup;
-import mp3.classes.objects.product.ProductGroupHandler;
-import mp3.classes.objects.product.Supplier;
+import mp4.klassen.objekte.History;
+import mp4.klassen.objekte.Product;
+import mp4.klassen.objekte.ProductGroupCategory;
+import mp4.klassen.objekte.ProductGroupFamily;
+import mp4.klassen.objekte.ProductGroupGroup;
+import mp4.klassen.objekte.ProductGroupHandler;
+import mp4.klassen.objekte.Lieferant;
 import org.supercsv.cellprocessor.constraint.StrMinMax;
 import org.supercsv.cellprocessor.ift.CellProcessor;
 import org.supercsv.exception.SuperCSVException;
@@ -62,18 +62,18 @@ public class csvProductImporter extends javax.swing.JFrame {
     private String[][] datstr;
     private String[] header;
     public ProductImporteur[] data;
-    public Supplier supplier;
+    public Lieferant supplier;
     private Task task;
 
     /** Creates new form productImporter */
     public csvProductImporter() {
         initComponents();
         new WindowTools(this);
-        this.supplier =new Supplier(QueryClass.instanceOf());
+        this.supplier =new Lieferant(QueryClass.instanceOf());
 
     }
 
-    public void setSupplier(Supplier supplier) {
+    public void setSupplier(Lieferant supplier) {
         this.jTextField2.setText(supplier.getFirma());
         this.supplier = supplier;
     }

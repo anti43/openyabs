@@ -5,6 +5,8 @@
  */
 package mp3.classes.visual.sub;
 
+import mp4.klassen.objekte.Product;
+import mp4.klassen.objekte.Lieferant;
 import java.awt.Cursor;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -35,7 +37,7 @@ public class productsView extends javax.swing.JPanel {
     private Product current;
 //    private ProductGroup group;
 //    private Manufacturer manufacturer;
-    private Supplier supplier;
+    private Lieferant supplier;
     private String[][] liste;
     private boolean autoProductNumber = true;//settings?
     private Integer currentProductGroupId = 0;
@@ -47,7 +49,7 @@ public class productsView extends javax.swing.JPanel {
         initComponents();
         this.current = new Product(QueryClass.instanceOf());
 
-        this.supplier = new Supplier(QueryClass.instanceOf());
+        this.supplier = new Lieferant(QueryClass.instanceOf());
 //        this.group = new ProductGroup(QueryClass.instanceOf());
 
         this.mainframe = aThis;
@@ -1016,7 +1018,7 @@ public class productsView extends javax.swing.JPanel {
 
         this.current = new Product(QueryClass.instanceOf());
 
-        this.supplier = new Supplier(QueryClass.instanceOf());
+        this.supplier = new Lieferant(QueryClass.instanceOf());
 
     }//GEN-LAST:event_jButton12MouseClicked
 
@@ -1230,7 +1232,7 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         return false;
     }
 
-    public void setSupplier(Supplier supplier) {
+    public void setSupplier(Lieferant supplier) {
         this.supplier = supplier;
 
         if (supplier != null && !supplier.getId().equals("0")) {

@@ -13,7 +13,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
-import mp3.classes.objects.product.Supplier;
+import mp4.klassen.objekte.Lieferant;
 import mp3.classes.visual.util.csvProductImporter;
 import mp3.classes.visual.sub.productsView;
 
@@ -24,14 +24,14 @@ import mp3.classes.visual.sub.productsView;
 public class SupplierPicker extends javax.swing.JFrame {
     private productsView frame;
     private csvProductImporter frame1;
-    private Supplier supplier;
+    private Lieferant supplier;
     private boolean importer=false;
 
     public SupplierPicker(csvProductImporter frame) {
         initComponents ();
         this.frame1=frame;
         
-        this.supplier = new Supplier(QueryClass.instanceOf());
+        this.supplier = new Lieferant(QueryClass.instanceOf());
         
         new WindowTools(this);
         
@@ -52,7 +52,7 @@ public class SupplierPicker extends javax.swing.JFrame {
         initComponents ();
         this.frame=frame;
         
-        this.supplier = new Supplier(QueryClass.instanceOf());
+        this.supplier = new Lieferant(QueryClass.instanceOf());
         
         new WindowTools(this);
         
@@ -245,10 +245,10 @@ public class SupplierPicker extends javax.swing.JFrame {
             try {
                 
                 if(importer) {
-                    frame1.setSupplier(new Supplier(QueryClass.instanceOf(), id));
+                    frame1.setSupplier(new Lieferant(QueryClass.instanceOf(), id));
                 } else {
                 
-                 frame.setSupplier(new Supplier(QueryClass.instanceOf(), id));
+                 frame.setSupplier(new Lieferant(QueryClass.instanceOf(), id));
                 
                 }
                 this.dispose();

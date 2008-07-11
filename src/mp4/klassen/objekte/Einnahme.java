@@ -14,7 +14,6 @@
  *      You should have received a copy of the GNU General Public License
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package mp4.klassen.objekte;
 
 /*import mp3.classes.objects.*;*/
@@ -24,17 +23,18 @@ import mp3.database.util.Query;
 import mp3.classes.interfaces.Structure;
 import mp3.classes.layer.*;
 import mp3.classes.utils.Formater;
-import mp3.classes.objects.ungrouped.*;
-import mp3.classes.objects.bill.*;
+
 import mp3.classes.utils.Log;
 import mp4.utils.datum.DateConverter;
+
 /**
  *
  * @author anti43
  */
-public class Einnahme extends mp3.classes.layer.Things implements mp3.classes.interfaces.Structure, Daemonable{
+public class Einnahme extends mp3.classes.layer.Things implements mp3.classes.interfaces.Structure, Daemonable {
 //  "kontenid INTEGER DEFAULT NULL, beschreibung varchar(500) default NULL,"+
 //  "preis varchar(50) default NULL,"+"tax varchar(50) default NULL,"+"datum varchar(50) default NULL,"+
+
     private Integer Kontenid = 0;
     private String Beschreibung = "";
     private Double Preis = 0.0;
@@ -42,12 +42,11 @@ public class Einnahme extends mp3.classes.layer.Things implements mp3.classes.in
     private Date Datum = new Date();
 
     public Einnahme() {
-       super(QueryClass.instanceOf().clone(TABLE_INCOME));
-       
-       this.setKontenid(MyData.instanceOf().getEinnahmeDefKonto().getId());
+        super(QueryClass.instanceOf().clone(TABLE_INCOME));
+
+        this.setKontenid(MyData.instanceOf().getEinnahmeDefKonto().getId());
     }
-          
-   
+
     /**
      * 
      * @param kontoid
@@ -58,21 +57,22 @@ public class Einnahme extends mp3.classes.layer.Things implements mp3.classes.in
      */
     public Einnahme(int kontoid, String beschreibung, double preis, double tax, Date datum) {
         super(QueryClass.instanceOf().clone(TABLE_INCOME));
-        
+
         this.setKontenid(kontoid);
         this.setBeschreibung(beschreibung);
         this.setPreis(preis);
         this.setTax(tax);
         this.setDatum(datum);
-        
+
         this.save();
     }
 
-     public Einnahme(Integer id) {
-       super(QueryClass.instanceOf().clone(TABLE_INCOME));
+    public Einnahme(Integer id) {
+        super(QueryClass.instanceOf().clone(TABLE_INCOME));
         this.id = Integer.valueOf(id);
         this.explode(this.selectLast("*", "id", id.toString(), true));
     }
+
     /**
      * 
      * @param query
@@ -83,7 +83,6 @@ public class Einnahme extends mp3.classes.layer.Things implements mp3.classes.in
         this.id = Integer.valueOf(id);
         this.explode(this.selectLast("*", "id", id, true));
     }
-
 
     private void explode(String[] select) {
         try {
@@ -98,19 +97,19 @@ public class Einnahme extends mp3.classes.layer.Things implements mp3.classes.in
             Log.Debug(numberFormatException);
         }
 
-        
+
     }
 
-        private String collect() {
+    private String collect() {
         String str = "";
-        str = str +this.getKontenid()  + "(;;,;;)";
-        str = str + "(;;2#4#1#1#8#0#;;)"  + this.getBeschreibung()  + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
-        str = str + this.getPreis()  + "(;;,;;)";
-        str = str + this.getTax()    + "(;;,;;)";
-        str = str + "(;;2#4#1#1#8#0#;;)"  + this.getDatum() + "(;;2#4#1#1#8#0#;;)" ;
+        str = str + this.getKontenid() + "(;;,;;)";
+        str = str + "(;;2#4#1#1#8#0#;;)" + this.getBeschreibung() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
+        str = str + this.getPreis() + "(;;,;;)";
+        str = str + this.getTax() + "(;;,;;)";
+        str = str + "(;;2#4#1#1#8#0#;;)" + this.getDatum() + "(;;2#4#1#1#8#0#;;)";
         return str;
     }
-    
+
     public void save() {
 
         if (id > 0) {
@@ -125,16 +124,20 @@ public class Einnahme extends mp3.classes.layer.Things implements mp3.classes.in
         }
     }
 
+    public String getFDatum() {
+        return DateConverter.getDefDateString(getDatum());
+    }
+
     public String[][] getAll() {
 
         Query q = QueryClass.instanceOf().clone(TABLE_INCOME);
 
         String[][] prods = q.select("id, id, preis, datum", null);//brutto
-        
-        String[][] bills = new Bill(q).getPaid();
-        
-  
-        return Formater.merge(inserType(prods),new Bill(q).inserType(bills));
+
+        String[][] bills = new Rechnung(q).getPaid();
+
+
+        return Formater.merge(inserType(prods), new Rechnung(q).inserType(bills));
     }
 
     public Integer getKontenid() {
@@ -179,26 +182,25 @@ public class Einnahme extends mp3.classes.layer.Things implements mp3.classes.in
 
     private String[][] inserType(String[][] prods) {
         String[][] pro = null;
-      if(prods.length>0){
-          pro =  new String[prods.length][prods[0].length +1];
-          
-          for (int i = 0; i < pro.length; i++) {
-           int m=0;
-              for (int j=0; j < pro[i].length; j++,m++) {
-                  
-                  
-                  if(j==2) {
+        if (prods.length > 0) {
+            pro = new String[prods.length][prods[0].length + 1];
+
+            for (int i = 0; i < pro.length; i++) {
+                int m = 0;
+                for (int j = 0; j < pro[i].length; j++, m++) {
+
+
+                    if (j == 2) {
                         pro[i][2] = "Eingabe";
                         m--;
-                    }else {
-                      
+                    } else {
+
                         pro[i][j] = prods[i][m];
                     }
 
-              }
-          }
-      } 
-      return pro;
+                }
+            }
+        }
+        return pro;
     }
-
 }

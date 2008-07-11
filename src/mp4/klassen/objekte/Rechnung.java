@@ -28,7 +28,7 @@ import mp3.database.util.Query;
 import mp3.classes.interfaces.Strings;
 import mp3.classes.utils.Log;
 import mp3.classes.layer.PostenTableModel;
-import mp3.classes.objects.ungrouped.*;
+
 import mp4.utils.datum.DateConverter;
 
 
@@ -90,6 +90,10 @@ public class Rechnung extends mp3.classes.layer.Things implements mp3.classes.in
 
         System.out.println(collect());
         return this;
+    }
+
+    public String getFDatum() {
+      return DateConverter.getDefDateString(getDatum());
     }
 
     public String[][] getUnpaid() {

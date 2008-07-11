@@ -18,7 +18,7 @@ import mp3.classes.interfaces.Structure.*;
 import mp3.classes.layer.QueryClass;
 import mp4.klassen.objekte.Ausgabe;
 import mp4.klassen.objekte.Rechnung;
-import mp3.classes.objects.eur.Data;
+import mp4.klassen.objekte.Data;
 import mp4.klassen.objekte.Einnahme;
 import mp3.classes.utils.Formater;
 

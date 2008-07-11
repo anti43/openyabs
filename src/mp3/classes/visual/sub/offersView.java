@@ -34,13 +34,13 @@ import mp3.classes.layer.QueryClass;
 
 import mp4.klassen.objekte.Rechnung;
 import mp4.klassen.objekte.RechnungPosten;
-import mp3.classes.objects.eur.Customer;
-import mp3.classes.objects.ungrouped.History;
-import mp3.classes.objects.ungrouped.MyData;
-import mp3.classes.objects.bill.Offer;
-import mp3.classes.objects.pdf.AngebotPDF;
-import mp3.classes.objects.bill.OfferProduct;
-import mp3.classes.objects.product.Product;
+import mp4.klassen.objekte.Customer;
+import mp4.klassen.objekte.History;
+import mp4.klassen.objekte.MyData;
+import mp4.klassen.objekte.Angebot;
+import mp4.klassen.pdf.PDF_Angebot;
+import mp4.klassen.objekte.AngebotPosten;
+import mp4.klassen.objekte.Product;
 import mp3.classes.visual.main.mainframe;
 
 /**
@@ -49,7 +49,7 @@ import mp3.classes.visual.main.mainframe;
  */
 public class offersView extends javax.swing.JPanel implements Runnable {
 
-    private Offer current;
+    private Angebot current;
     private String[][] liste;
     private Customer customer;
     private mainframe mainframe;
@@ -75,7 +75,7 @@ public class offersView extends javax.swing.JPanel implements Runnable {
         initComponents();
 
 
-        current = new Offer(QueryClass.instanceOf());
+        current = new Angebot(QueryClass.instanceOf());
 
         current.stripFirst(jTable1);
 
@@ -288,7 +288,7 @@ public class offersView extends javax.swing.JPanel implements Runnable {
 
     }
 
-    public void setOrder(Offer current) {
+    public void setOrder(Angebot current) {
 
         this.current = current;
         this.setCustomer(new Customer(QueryClass.instanceOf(), current.getKundenId()));
@@ -1044,7 +1044,7 @@ public class offersView extends javax.swing.JPanel implements Runnable {
 
                 Integer auftragnummer = f.getNextIndex("auftragnummer");
 
-                Offer order = new Offer(QueryClass.instanceOf());
+                Angebot order = new Angebot(QueryClass.instanceOf());
 
                 order.setOrdernummer(auftragnummer.toString());
 
@@ -1065,7 +1065,7 @@ public class offersView extends javax.swing.JPanel implements Runnable {
 
 
 
-                        OfferProduct b = new OfferProduct(QueryClass.instanceOf());
+                        AngebotPosten b = new AngebotPosten(QueryClass.instanceOf());
 
                         b.setauftragid(order.getId());
 
@@ -1096,7 +1096,7 @@ public class offersView extends javax.swing.JPanel implements Runnable {
 
 
 
-                this.setOrder(new Offer(QueryClass.instanceOf(), order.getId()));
+                this.setOrder(new Angebot(QueryClass.instanceOf(), order.getId()));
 
             }
 
@@ -1135,7 +1135,7 @@ public class offersView extends javax.swing.JPanel implements Runnable {
         if (evt.getClickCount() >= 2 && idOk && evt.getButton() == MouseEvent.BUTTON1) {
 
             try {
-                this.setOrder(new Offer(QueryClass.instanceOf(), id));
+                this.setOrder(new Angebot(QueryClass.instanceOf(), id));
                 jTabbedPane1.setSelectedIndex(0);
             } catch (Exception exception) {
                 exception.printStackTrace();
@@ -1176,7 +1176,7 @@ public class offersView extends javax.swing.JPanel implements Runnable {
 
                     //Integer auftragnummer = f.getNextIndex("auftragnummer");
 
-                    Offer order = getCurrent();
+                    Angebot order = getCurrent();
 
 //                    bill.setauftragnummer(auftragnummer.toString());
 
@@ -1197,7 +1197,7 @@ public class offersView extends javax.swing.JPanel implements Runnable {
 
 
 
-                            OfferProduct b = new OfferProduct(QueryClass.instanceOf(), m.getValueAt(i, 0).toString());
+                            AngebotPosten b = new AngebotPosten(QueryClass.instanceOf(), m.getValueAt(i, 0).toString());
 
                             b.destroy();
                         }
@@ -1211,7 +1211,7 @@ public class offersView extends javax.swing.JPanel implements Runnable {
 
 
 
-                            OfferProduct b = new OfferProduct(QueryClass.instanceOf());
+                            AngebotPosten b = new AngebotPosten(QueryClass.instanceOf());
 
                             b.setauftragid(getCurrent().getId());
 
@@ -1237,7 +1237,7 @@ public class offersView extends javax.swing.JPanel implements Runnable {
                     new History(QueryClass.instanceOf(), Structure.ORDER, "Angebot Nummer: " + order.getOrdernummer() + " editiert.");
 
 
-                    this.setOrder(new Offer(QueryClass.instanceOf(), order.getId()));
+                    this.setOrder(new Angebot(QueryClass.instanceOf(), order.getId()));
                 }
             } else {
 
@@ -1279,7 +1279,7 @@ public class offersView extends javax.swing.JPanel implements Runnable {
         if (evt.getClickCount() >= 2 && idOk) {
 
             try {
-                this.setOrder(new Offer(QueryClass.instanceOf(), id));
+                this.setOrder(new Angebot(QueryClass.instanceOf(), id));
 
             } catch (Exception exception) {
                 exception.printStackTrace();
@@ -1296,7 +1296,7 @@ public class offersView extends javax.swing.JPanel implements Runnable {
 //        jTextField6.setText(current.getNextBillNumber().toString());
 
         this.customer = new Customer(QueryClass.instanceOf());
-        this.current = new Offer(QueryClass.instanceOf());
+        this.current = new Angebot(QueryClass.instanceOf());
 
         jTextField4.setText("");
         jTextField5.setText("");
@@ -1451,7 +1451,7 @@ public class offersView extends javax.swing.JPanel implements Runnable {
 
 
 
-                OfferProduct b = new OfferProduct(QueryClass.instanceOf(), m.getValueAt(getJTable1().getSelectedRow(), 0).toString());
+                AngebotPosten b = new AngebotPosten(QueryClass.instanceOf(), m.getValueAt(getJTable1().getSelectedRow(), 0).toString());
 
                 b.destroy();
 
@@ -1640,7 +1640,7 @@ public class offersView extends javax.swing.JPanel implements Runnable {
     }//GEN-LAST:event_jButton14ActionPerformed
 
     private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
-        new AngebotPDF(current);
+        new PDF_Angebot(current);
     }//GEN-LAST:event_jButton15ActionPerformed
 
     private int getLastRow() {
@@ -1733,11 +1733,11 @@ public class offersView extends javax.swing.JPanel implements Runnable {
         }
     }
 
-    public Offer getCurrent() {
+    public Angebot getCurrent() {
         if (current != null) {
             return current;
         } else {
-            return new Offer(QueryClass.instanceOf());
+            return new Angebot(QueryClass.instanceOf());
         }
     }
 

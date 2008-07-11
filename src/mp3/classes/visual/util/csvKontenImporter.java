@@ -27,13 +27,13 @@ import mp3.classes.layer.QueryClass;
 import mp3.classes.layer.visual.SupplierPicker;
 import mp3.classes.layer.KontenImporteur;
 
-import mp3.classes.objects.ungrouped.History;
-import mp3.classes.objects.product.Product;
-import mp3.classes.objects.product.ProductGroupCategory;
-import mp3.classes.objects.product.ProductGroupFamily;
-import mp3.classes.objects.product.ProductGroupGroup;
-import mp3.classes.objects.product.ProductGroupHandler;
-import mp3.classes.objects.product.Supplier;
+import mp4.klassen.objekte.History;
+import mp4.klassen.objekte.Product;
+import mp4.klassen.objekte.ProductGroupCategory;
+import mp4.klassen.objekte.ProductGroupFamily;
+import mp4.klassen.objekte.ProductGroupGroup;
+import mp4.klassen.objekte.ProductGroupHandler;
+import mp4.klassen.objekte.Lieferant;
 import org.supercsv.cellprocessor.constraint.StrMinMax;
 import org.supercsv.cellprocessor.ift.CellProcessor;
 import org.supercsv.exception.SuperCSVException;
@@ -63,7 +63,7 @@ public class csvKontenImporter extends javax.swing.JFrame {
     private String[][] datstr;
     private String[] header;
     public KontenImporteur[] data;
-    public Supplier supplier;
+    public Lieferant supplier;
     private Task task;
 
     /** Creates new form productImporter */
@@ -437,7 +437,7 @@ public class csvKontenImporter extends javax.swing.JFrame {
                 for (int i = 0; i < thisa.data.length; i++) {
 
                     
-                    new mp3.classes.objects.eur.SKRKonto(thisa.data[i].getNummer(),thisa.data[i].getKlasse(),thisa.data[i].getGruppe(),thisa.data[i].getArt());
+                    new mp4.klassen.objekte.SKRKonto(thisa.data[i].getNummer(),thisa.data[i].getKlasse(),thisa.data[i].getGruppe(),thisa.data[i].getArt());
 
                    
                     thisa.jProgressBar1.setValue(i);

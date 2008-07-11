@@ -8,7 +8,7 @@ package mp3.classes.visual.sub;
 import java.awt.Font;
 import mp3.classes.layer.QueryClass;
 import mp4.klassen.objekte.Rechnung;
-import mp3.classes.objects.eur.Customer;
+import mp4.klassen.objekte.Customer;
 import mp3.classes.utils.Formater;
 
 /**

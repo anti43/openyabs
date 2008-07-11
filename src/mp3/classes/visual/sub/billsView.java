@@ -36,13 +36,13 @@ import mp3.classes.layer.QueryClass;
 
 import mp3.classes.objects.bill.*;
 
-import mp3.classes.objects.eur.Customer;
-import mp3.classes.objects.ungrouped.History;
-import mp3.classes.objects.product.Product;
+import mp4.klassen.objekte.Customer;
+import mp4.klassen.objekte.History;
+import mp4.klassen.objekte.Product;
 import mp3.classes.visual.main.mainframe;
 import mp3.classes.interfaces.Structure.*;
-import mp3.classes.objects.pdf.BillPDF;
-import mp3.classes.objects.ungrouped.MyData;
+import mp4.klassen.pdf.PDF_Rechnung;
+import mp4.klassen.objekte.MyData;
 import mp3.classes.visual.util.arrear;
 import mp4.utils.datum.DateConverter;
 
@@ -1607,7 +1607,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
         jButton4MouseClicked(evt);
 
         if (current != null && current.hasId()) {
-            new BillPDF(current);
+            new PDF_Rechnung(current);
 
             new History(QueryClass.instanceOf(), Structure.BILL, "Rechnung Nummer: " + current.getRechnungnummer() + " als PDF erzeugt.");
 

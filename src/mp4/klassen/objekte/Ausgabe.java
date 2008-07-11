@@ -14,36 +14,34 @@
  *      You should have received a copy of the GNU General Public License
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package mp4.klassen.objekte;
 
-import mp3.classes.utils.Formater;
-import mp3.classes.layer.QueryClass;
 import java.util.Date;
 import mp3.database.util.Query;
 import mp3.classes.interfaces.Structure;
 import mp3.classes.layer.*;
-import mp3.classes.objects.eur.SKRKonto;
+import mp4.klassen.objekte.SKRKonto;
 import mp3.classes.utils.*;
+import mp4.utils.datum.DateConverter;
 
 /**
  *
  * @author anti43
  */
-public class Ausgabe extends mp3.classes.layer.Things implements mp3.classes.interfaces.Structure, mp3.classes.interfaces.Daemonable{
+public class Ausgabe extends mp3.classes.layer.Things implements mp3.classes.interfaces.Structure, mp3.classes.interfaces.Daemonable {
 //  "kontenid INTEGER DEFAULT NULL, beschreibung varchar(500) default NULL,"+
 //  "preis varchar(50) default NULL,"+"tax varchar(50) default NULL,"+"datum varchar(50) default NULL,"+
+
     private Integer Kontenid = 0;
     private String Beschreibung = "";
-    private String Preis = "0";
-    private String Tax = "0";
-    private String Datum = "00.00.0000";
+    private Double Preis = 0d;
+    private Double Tax = 0d;
+    private Date Datum = new Date();
 
     public Ausgabe() {
-       super(QueryClass.instanceOf().clone(TABLE_DUES));
+        super(QueryClass.instanceOf().clone(TABLE_DUES));
     }
-          
-   
+
     /**
      * 
      * @param kontoid
@@ -52,15 +50,15 @@ public class Ausgabe extends mp3.classes.layer.Things implements mp3.classes.int
      * @param tax
      * @param datum
      */
-    public Ausgabe(int kontoid, String beschreibung, String preis, String tax, Date datum) {
+    public Ausgabe(int kontoid, String beschreibung, double preis, double tax, Date datum) {
         super(QueryClass.instanceOf().clone(TABLE_DUES));
-        
+
         this.setKontenid(kontoid);
         this.setBeschreibung(beschreibung);
         this.setPreis(preis);
         this.setTax(tax);
-        this.setDatum(Formater.formatDate(datum));
-        
+        this.setDatum(datum);
+
         this.save();
     }
 
@@ -75,34 +73,33 @@ public class Ausgabe extends mp3.classes.layer.Things implements mp3.classes.int
         this.explode(this.selectLast("*", "id", id, true));
     }
 
-
     private void explode(String[] select) {
         try {
             this.id = Integer.valueOf(select[0]);
             this.setKontenid(Integer.valueOf(select[1]));
             this.setBeschreibung(select[2]);
-            this.setPreis(select[3]);
-            this.setTax(select[4]);
-            this.setDatum(select[5]);
+            this.setPreis(Double.valueOf(select[3]));
+            this.setTax(Double.valueOf(select[4]));
+            this.setDatum(DateConverter.getDate(select[5]));
 
         } catch (Exception numberFormatException) {
-            
+
             Log.Debug(numberFormatException);
         }
 
-        
+
     }
 
-        private String collect() {
+    private String collect() {
         String str = "";
-        str = str  + this.getKontenid() +  "(;;,;;)";
-        str = str + "(;;2#4#1#1#8#0#;;)"  + this.getBeschreibung()  + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
-        str = str + this.getPreis()  + "(;;,;;)";
-        str = str + this.getTax()  +   "(;;,;;)";
-        str = str + "(;;2#4#1#1#8#0#;;)"  + this.getDatum() + "(;;2#4#1#1#8#0#;;)" ;
+        str = str + this.getKontenid() + "(;;,;;)";
+        str = str + "(;;2#4#1#1#8#0#;;)" + this.getBeschreibung() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
+        str = str + this.getPreis() + "(;;,;;)";
+        str = str + this.getTax() + "(;;,;;)";
+        str = str + "(;;2#4#1#1#8#0#;;)" + this.getDatum() + "(;;2#4#1#1#8#0#;;)";
         return str;
     }
-    
+
     public void save() {
 
         if (id > 0) {
@@ -126,31 +123,36 @@ public class Ausgabe extends mp3.classes.layer.Things implements mp3.classes.int
         return inserType(prods);
     }
 
+    public String getFDatum() {
+        return DateConverter.getDefDateString(getDatum());
+    }
+
     private String[][] inserType(String[][] prods) {
-      String[][] pro = null;
-      if(prods.length>0){
-          pro =  new String[prods.length][prods[0].length +1];
-          
-          for (int i = 0; i < pro.length; i++) {
-           int m=0;
-              for (int j=0; j < pro[i].length; j++,m++) {
-                  
-                  
-                  if(j==2) {
+        String[][] pro = null;
+        if (prods.length > 0) {
+            pro = new String[prods.length][prods[0].length + 1];
+
+            for (int i = 0; i < pro.length; i++) {
+                int m = 0;
+                for (int j = 0; j < pro[i].length; j++, m++) {
+
+
+                    if (j == 2) {
                         pro[i][2] = new SKRKonto(Integer.valueOf(prods[i][0])).getGruppe();
 
                         m--;
-                    }else {
-                      
-                                          
+                    } else {
+
+
                         pro[i][j] = prods[i][m];
                     }
 
-              }
-          }
-      } 
-      return pro;
+                }
+            }
+        }
+        return pro;
     }
+
     public Integer getKontenid() {
         return Kontenid;
     }
@@ -167,37 +169,28 @@ public class Ausgabe extends mp3.classes.layer.Things implements mp3.classes.int
         this.Beschreibung = beschreibung;
     }
 
-    public String getPreis() {
+    public Double getPreis() {
         return Preis;
     }
 
-    public void setPreis(String Preis) {
+    public void setPreis(Double Preis) {
         this.Preis = Preis;
     }
 
-    public String getTax() {
+    public Double getTax() {
         return Tax;
     }
 
-    public void setTax(String Tax) {
+    public void setTax(Double Tax) {
         this.Tax = Tax;
     }
 
-    public String getDatum() {
+    public Date getDatum() {
         return Datum;
     }
 
     public void setDatum(Date Datum) {
-        this.Datum = Formater.formatDate(Datum);
-    }
-     private void setDatum(String Datum) {
         this.Datum = Datum;
     }
-
-
-
-
-
-
 
 }
