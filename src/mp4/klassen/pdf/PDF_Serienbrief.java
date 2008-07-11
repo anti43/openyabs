@@ -16,7 +16,6 @@
  */
 package mp4.klassen.pdf;
 
-import mp4.klassen.objekte.MyData;
 import mp4.klassen.objekte.*;
 import com.lowagie.text.DocumentException;
 
@@ -36,7 +35,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-import mp3.classes.objects.ungrouped.*;
 import mp3.classes.utils.Formater;
 import mp3.classes.utils.Log;
 import mp3.classes.utils.Printer;

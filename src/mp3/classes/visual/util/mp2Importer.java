@@ -21,6 +21,7 @@ import mp4.klassen.objekte.RechnungPosten;
 import mp4.klassen.objekte.Customer;
 import mp4.klassen.objekte.Product;
 import mp3.classes.utils.Log;
+import mp4.utils.datum.DateConverter;
 
 /**
  *
@@ -39,8 +40,6 @@ public class mp2Importer extends javax.swing.JFrame {
     private boolean kunda = false;
     private boolean recha = true;
     private Double betrag = 0d;
-
-  
 
     /** Creates new form productImporter
      * @param frame 
@@ -237,7 +236,7 @@ public class mp2Importer extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1MouseClicked
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        int taxcount=0;
+        int taxcount = 0;
         if (jButton4.isEnabled()) {
 
             if (schliessen) {
@@ -295,7 +294,7 @@ public class mp2Importer extends javax.swing.JFrame {
                         b.setRechnungnummer(rechngs[i][1]);
                         b.setKundenId(c.getId());
 
-                        b.setDatum(rechngs[i][23]);
+                        b.setDatum(DateConverter.getDate(rechngs[i][23]));
 
                         b.setBezahlt(true);
 
@@ -315,7 +314,7 @@ public class mp2Importer extends javax.swing.JFrame {
 
 
                                 betrag = betrag + (Double.valueOf(rechngs[i][z + 1].toString().replaceAll(",", ".")) * (Double.valueOf((Double.valueOf(rechngs[i][25].toString().replaceAll(",", ".")) / 100) + 1)));
-                                
+
 
                                 taxcount = taxcount + 100;
 
@@ -327,59 +326,57 @@ public class mp2Importer extends javax.swing.JFrame {
                         }
 
 
-               
-                b.setGesamtpreis(betrag.toString());
-                b.setGesamttax(String.valueOf(allovertax / taxcount));
-                taxcount = 0;
+
+                        b.setGesamtpreis(betrag);
+                        b.setGesamttax(allovertax / taxcount);
+                        taxcount = 0;
 
 
-                b.save();
+                        b.save();
 
-                for (int z = 3; z < 23; z += 2) {
+                        for (int z = 3; z < 23; z += 2) {
 
-                    RechnungPosten bp = new RechnungPosten(QueryClass.instanceOf());
+                            RechnungPosten bp = new RechnungPosten(QueryClass.instanceOf());
 
-                    bp.setRechnungid(b.getId());
-                    bp.setPosten(rechngs[i][z]);
-
-
-
-                    bp.setAnzahl("1");
-                    bp.setSteuersatz(rechngs[i][25]);
-                    bp.setPreis(rechngs[i][z + 1]);
+                            bp.setRechnungid(b.getId());
+                            bp.setPosten(rechngs[i][z]);
 
 
 
-                    bp.save();
-                    this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                            bp.setAnzahl(1d);
+                            bp.setSteuersatz(Double.valueOf(rechngs[i][25]));
+                            bp.setPreis(Double.valueOf(rechngs[i][z + 1]));
+
+
+
+                            bp.save();
+                            this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                        }
+
+                    }
+
                 }
 
+                this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                Popup.notice("Import erfolgreich, \n" + kund.length + " Kunden und " + rechngs.length + " Rechnungen importiert.");
+                this.dispose();
+
+                schliessen = true;
             }
-
         }
-
-        this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-        Popup.notice("Import erfolgreich, \n" + kund.length + " Kunden und " + rechngs.length + " Rechnungen importiert.");
-        this.dispose();
-
-        schliessen = true;
-    }
-}
 
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-       
-        new Help(new DefaultHelpModel("MP Version 2.x Import", 
+
+        new Help(new DefaultHelpModel("MP Version 2.x Import",
                 "<P><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3 STYLE='font-size: 12pt'>" +
                 "MP Version 3.x sucht nach einer vorhandenen Datenbank-Installation von MP Version 2.x." +
                 "</FONT></FONT></P><P><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3 STYLE='font-size: 12pt'>" +
                 "Diese sollte sich im versteckten Verzeichnis <B>&lt;homeverzeichnis&gt;/.mp</B> befinden. </FONT>" +
                 "</FONT></P><P><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3 STYLE='font-size: 12pt'>" +
                 "Die gefundenen Daten werden im Vorschaufenster angezeigt und k&ouml;nnen nun &uuml;bernommen werden." +
-                "</FONT></FONT></P>"
-                
-                ));
+                "</FONT></FONT></P>"));
     }//GEN-LAST:event_jButton6ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -396,9 +393,7 @@ public class mp2Importer extends javax.swing.JFrame {
     private javax.swing.JTable jTable2;
     // End of variables declaration//GEN-END:variables
 
-    public javax.swing
-
-.JButton getJButton4() {
+    public javax.swing.JButton getJButton4() {
         return jButton4;
     }
 }

@@ -16,7 +16,6 @@
  */
 package mp4.klassen.pdf;
 
-import mp4.klassen.objekte.MyData;
 import mp4.klassen.objekte.*;
 import mp4.klassen.objekte.Customer;
 import mp4.klassen.objekte.Angebot;
@@ -29,7 +28,7 @@ import mp3.Main;
 import mp3.classes.layer.Popup;
 import mp3.classes.layer.QueryClass;
 
-import mp3.classes.objects.ungrouped.*;
+
 import mp3.classes.utils.Formater;
 import mp3.classes.utils.Log;
 
@@ -196,7 +195,7 @@ public class PDF_Angebot {
 
         Double tax = brutto - netto;
 
-        acroFields.setField("taxrate", l.getGlobaltax());
+        acroFields.setField("taxrate", l.getGlobaltax().toString());
         acroFields.setField("tax", Formater.formatMoney(tax));
         acroFields.setField("totalprice", Formater.formatMoney(brutto));
 

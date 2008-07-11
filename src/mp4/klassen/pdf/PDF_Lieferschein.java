@@ -16,17 +16,13 @@
  */
 package mp4.klassen.pdf;
 
-import mp4.klassen.objekte.*;
 import mp4.klassen.objekte.MyData;
 import mp4.klassen.objekte.Customer;
 import mp4.klassen.objekte.Rechnung;
-import mp3.classes.objects.*;
+
 import com.lowagie.text.pdf.*;
 import com.lowagie.text.DocumentException;
 import java.io.*;
-import java.sql.*;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;

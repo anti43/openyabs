@@ -40,7 +40,7 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jPanel6" min="-2" max="-2" attributes="0"/>
               </Group>
-              <Component id="jToolBar2" alignment="1" pref="767" max="32767" attributes="0"/>
+              <Component id="jToolBar2" alignment="1" pref="769" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">

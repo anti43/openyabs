@@ -488,7 +488,7 @@ public class csvProductImporter extends javax.swing.JFrame {
     public Void doInBackground() {
         int h = 0;
         SimpleDateFormat df = new SimpleDateFormat();
-        String datum = df.format(new Date());
+        Date datum = new Date();
         String cat;
         boolean news=false;
 
@@ -514,11 +514,11 @@ public class csvProductImporter extends javax.swing.JFrame {
                     pg.setNummer(thisa.data[i].getProduktnummer());
                     pg.setName(thisa.data[i].getName());
                     pg.setDatum(datum);
-                    pg.setEK(thisa.data[i].getEk());
-                    pg.setVK(thisa.data[i].getVk());
+                    pg.setEK(Double.valueOf(thisa.data[i].getEk()));
+                    pg.setVK(Double.valueOf(thisa.data[i].getVk()));
                     pg.setEan(thisa.data[i].getEan());
                     pg.setHersteller(thisa.data[i].getHersteller());
-                    pg.setTAX(thisa.data[i].getTax());
+                    pg.setTAX(Double.valueOf(thisa.data[i].getTax()));
                     pg.setText(thisa.data[i].getText());
                     pg.setUrl(thisa.data[i].getUrl());
 

@@ -19,7 +19,7 @@ import mp3.classes.interfaces.ProtectedStrings;
 import mp3.classes.layer.Popup;
 import mp3.classes.layer.QueryClass;
 import mp4.klassen.objekte.Customer;
-import mp3.classes.objects.pdf.*;
+
 import mp3.classes.utils.WindowTools;
 import mp3.classes.utils.Formater;
 import mp3.classes.utils.Log;

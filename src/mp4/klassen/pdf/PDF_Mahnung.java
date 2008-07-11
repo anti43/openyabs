@@ -16,12 +16,12 @@
  */
 package mp4.klassen.pdf;
 
-import mp4.klassen.objekte.*;
+
 import mp4.klassen.objekte.Rechnung;
 import mp4.klassen.objekte.MyData;
 import mp4.klassen.objekte.Customer;
 
-import mp3.classes.objects.*;
+
 import com.lowagie.text.DocumentException;
 
 import com.lowagie.text.pdf.AcroFields;

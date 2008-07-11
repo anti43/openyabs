@@ -16,9 +16,6 @@
  */
 package mp4.klassen.pdf;
 
-import mp4.klassen.objekte.MyData;
-import mp4.klassen.objekte.Customer;
-import mp3.classes.objects.*;
 import com.lowagie.text.pdf.*;
 import com.lowagie.text.DocumentException;
 import java.io.*;
@@ -191,7 +188,7 @@ public class PDF_Rechnung {
 
         Double tax = brutto - netto;
 
-        acroFields.setField("taxrate", l.getGlobaltax());
+        acroFields.setField("taxrate", l.getGlobaltax().toString());
         acroFields.setField("tax", Formater.formatMoney(tax));
         acroFields.setField("totalprice", Formater.formatMoney(brutto));
 

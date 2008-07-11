@@ -10,7 +10,7 @@ import mp4.klassen.objekte.SKRKonto;
 
 import javax.swing.JTextField;
 import mp3.classes.utils.*;
-import mp3.classes.*;
+
 import mp3.classes.layer.*;
 import mp3.classes.layer.visual.Help;
 import mp3.classes.visual.sub.eurAPanel;
