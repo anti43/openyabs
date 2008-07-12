@@ -8,9 +8,10 @@ package mp3.classes.visual.util;
 import mp3.classes.visual.main.*;
 import mp3.classes.layer.Popup;
 import mp3.classes.layer.QueryClass;
-import mp3.classes.objects.bill.Bill;
-import mp3.classes.objects.eur.Customer;
+
 import mp3.classes.utils.WindowTools;
+import mp4.klassen.objekte.Customer;
+import mp4.klassen.objekte.Rechnung;
 
 /**
  *
@@ -204,7 +205,7 @@ public class fastChoice extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
     private void send() {
         Customer kl;
-        Bill kr;
+        Rechnung kr;
         switch (mode) {
             case 0:
 
@@ -228,7 +229,7 @@ public class fastChoice extends javax.swing.JFrame {
 
                 frame.setShowingTab(1);
 
-                kr = new Bill(QueryClass.instanceOf(), jTextField1.getText(), true);
+                kr = new Rechnung(QueryClass.instanceOf(), jTextField1.getText(), true);
 
                 if (kr.hasId()) {
 

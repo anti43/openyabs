@@ -48,6 +48,11 @@ public class Customer extends mp3.classes.layer.People implements mp3.classes.in
     private Query query;
     private boolean deleted=false;
 
+    public Customer() {
+        super(QueryClass.instanceOf().clone(TABLE_CUSTOMERS));
+        this.query=QueryClass.instanceOf();
+    }
+
  
 
     public Customer(Query query) {

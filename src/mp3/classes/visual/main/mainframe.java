@@ -35,10 +35,7 @@ import mp3.classes.interfaces.Strings;
 import mp3.classes.layer.Popup;
 import mp3.classes.layer.QueryClass;
 
-import mp3.classes.objects.eur.Customer;
-import mp3.classes.objects.ungrouped.MyData;
-import mp3.classes.objects.product.Product;
-import mp3.classes.objects.product.Supplier;
+
 import mp3.classes.utils.Browser;
 import mp3.classes.utils.WindowTools;
 import mp3.classes.utils.Log;
@@ -61,6 +58,10 @@ import mp3.classes.visual.sub.suppliersView;
 import mp3.classes.visual.util.EinnahmenChart;
 import mp3.classes.visual.util.UmsatzChart;
 import mp3.classes.visual.sub.eurView;
+import mp4.klassen.objekte.Customer;
+import mp4.klassen.objekte.Lieferant;
+import mp4.klassen.objekte.MyData;
+import mp4.klassen.objekte.Product;
 
 /**
  *
@@ -799,7 +800,7 @@ public class mainframe extends javax.swing.JFrame {
             MyData.instanceOf().setState(this.getHeight(), this.getWidth());
             h.saving();
 
-            MyData.instanceOf().setLasttab(String.valueOf(jTabbedPane1.getSelectedIndex()));
+            MyData.instanceOf().setLasttab(jTabbedPane1.getSelectedIndex());
             MyData.instanceOf().save();
 
             System.exit(0);
@@ -871,7 +872,7 @@ public class mainframe extends javax.swing.JFrame {
 
         h.saving();
 
-        MyData.instanceOf().setLasttab(String.valueOf(jTabbedPane1.getSelectedIndex()));
+        MyData.instanceOf().setLasttab(jTabbedPane1.getSelectedIndex());
         MyData.instanceOf().save();
 
         System.exit(0);
@@ -882,7 +883,7 @@ public class mainframe extends javax.swing.JFrame {
         String fils = "";
         try {
 
-            Customer k = new Customer(QueryClass.instanceOf());
+            Customer k = new Customer();
 
             TableHtmlWriter writ = new TableHtmlWriter(k.getPrintModel(), new File("Kundenliste.html"), Strings.TABLE_CUSTOMER_PRINT_HEADER.split(","), "Kundenliste");
 
@@ -902,7 +903,7 @@ public class mainframe extends javax.swing.JFrame {
         String fils = "";
         try {
 
-            Supplier k = new Supplier(QueryClass.instanceOf());
+            Lieferant k = new Lieferant();
 
             TableHtmlWriter writ = new TableHtmlWriter(k.getPrintModel(), new File("Lieferantenliste.html"), Strings.TABLE_SUPPLIER_PRINT_HEADER.split(","), "Lieferantenliste");
 
@@ -921,7 +922,7 @@ public class mainframe extends javax.swing.JFrame {
         String fils = "";
         try {
 
-            Product k = new Product(QueryClass.instanceOf());
+            Product k = new Product();
 
             TableHtmlWriter writ = new TableHtmlWriter(k.getPrintModel(), new File("Produktliste.html"), Strings.TABLE_PRODUCTS_LIST_PRINT_HEADER.split(","), "Lieferantenliste");
 
@@ -1115,7 +1116,7 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
         MyData.instanceOf().setState(this.getHeight(), this.getWidth());
 
-        MyData.instanceOf().setLasttab(String.valueOf(jTabbedPane1.getSelectedIndex()));
+        MyData.instanceOf().setLasttab(jTabbedPane1.getSelectedIndex());
         MyData.instanceOf().save();
 
         Conn.shutdown();

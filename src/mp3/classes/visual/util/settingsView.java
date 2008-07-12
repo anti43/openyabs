@@ -11,9 +11,10 @@ import javax.swing.table.TableModel;
 import mp3.installer.MpInstaller;
 import mp3.classes.layer.DefaultHelpModel;
 import mp3.classes.layer.visual.Help;
-import mp3.classes.objects.ungrouped.MyData;
+
 import mp3.classes.utils.WindowTools;
 import mp3.classes.visual.main.mainframe;
+import mp4.klassen.objekte.MyData;
 
 /**
  *

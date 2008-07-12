@@ -17,7 +17,8 @@
 package mp4.klassen.objekte;
 
 import java.util.Date;
-import mp3.classes.objects.*;
+import mp3.classes.layer.QueryClass;
+
 import mp3.database.util.Query;
 import mp4.utils.datum.DateConverter;
 
@@ -49,15 +50,19 @@ public class Product extends mp3.classes.layer.Things implements mp3.classes.int
     private Lieferant supplier;
     private Query query;
     public boolean isvalid=false;
+
+    public Product() {
+        super( QueryClass.instanceOf().clone(TABLE_PRODUCTS));
+        supplier = new Lieferant();
+        this.query =   QueryClass.instanceOf();
+        
+      
+    }
 //    private ProductFile[] files;
 
     public Product(Query query) {
         super(query.clone(TABLE_PRODUCTS));
-
-       
-      
         supplier = new Lieferant(query);
-        
         this.query = query;
 
     }

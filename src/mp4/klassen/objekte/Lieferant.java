@@ -20,6 +20,7 @@ package mp4.klassen.objekte;
 import mp3.database.util.Query;
 import mp3.classes.interfaces.Structure;
 import mp3.classes.layer.Popup;
+import mp3.classes.layer.QueryClass;
 
 /**
  *
@@ -43,6 +44,13 @@ public class Lieferant extends mp3.classes.layer.People implements mp3.classes.i
     private String Webseite = "";
     private String Notizen = "";
     private Query query;
+
+    public Lieferant() {
+        super(QueryClass.instanceOf().clone(TABLE_SUPPLIER));
+        this.id = 0;
+        this.query =QueryClass.instanceOf();
+        
+    }
     
 
     public Lieferant(Query query) {
