@@ -393,9 +393,6 @@ public class billsView extends javax.swing.JPanel implements Runnable {
         jLabel14 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel2 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
@@ -446,6 +443,9 @@ public class billsView extends javax.swing.JPanel implements Runnable {
         jLabel16 = new javax.swing.JLabel();
         jTextField12 = new javax.swing.JTextField();
         jButton18 = new javax.swing.JButton();
+        jLabel17 = new javax.swing.JLabel();
+        jLabel18 = new javax.swing.JLabel();
+        jTextField13 = new javax.swing.JTextField();
         jToolBar1 = new javax.swing.JToolBar();
         jButton4 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
@@ -458,7 +458,9 @@ public class billsView extends javax.swing.JPanel implements Runnable {
         jButton13 = new javax.swing.JButton();
         jButton14 = new javax.swing.JButton();
         jButton15 = new javax.swing.JButton();
+        jSeparator3 = new javax.swing.JToolBar.Separator();
         jButton12 = new javax.swing.JButton();
+        jCheckBox4 = new javax.swing.JCheckBox();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable()
@@ -480,49 +482,18 @@ public class billsView extends javax.swing.JPanel implements Runnable {
         jLabel1.setFont(new java.awt.Font("DejaVu Sans", 1, 14));
         jLabel1.setText("Rechnungen");
 
-        jButton1.setText("Allgemein");
-        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton1MouseClicked(evt);
-            }
-        });
-
-        jButton2.setText("Liste");
-        jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton2MouseClicked(evt);
-            }
-        });
-
-        jButton6.setText("Aktualisieren");
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 464, Short.MAX_VALUE)
-                .addComponent(jButton6)
-                .addGap(18, 18, 18)
-                .addComponent(jButton1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton2)
-                .addContainerGap())
+                .addContainerGap(733, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                .addComponent(jButton2)
-                .addComponent(jButton1)
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE)
-                .addComponent(jButton6))
+            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE)
         );
 
         jTabbedPane1.setBackground(new java.awt.Color(255, 255, 255));
@@ -641,14 +612,16 @@ public class billsView extends javax.swing.JPanel implements Runnable {
 
         jLabel7.setText("Firma");
 
-        jTextField4.setEditable(false);
+        jTextField4.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        jTextField4.setEnabled(false);
         jTextField4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField4ActionPerformed(evt);
             }
         });
 
-        jTextField5.setEditable(false);
+        jTextField5.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        jTextField5.setEnabled(false);
         jTextField5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField5ActionPerformed(evt);
@@ -662,14 +635,16 @@ public class billsView extends javax.swing.JPanel implements Runnable {
 
         jLabel10.setText("Datum");
 
-        jTextField6.setEditable(false);
+        jTextField6.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        jTextField6.setEnabled(false);
         jTextField6.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jTextField6MouseClicked(evt);
             }
         });
 
-        jTextField7.setEditable(false);
+        jTextField7.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        jTextField7.setEnabled(false);
 
         jTable1.setAutoCreateRowSorter(true);
         jTable1.setModel( new DefaultTableModel()
@@ -723,7 +698,8 @@ public class billsView extends javax.swing.JPanel implements Runnable {
 
         jLabel15.setText("Ausführung");
 
-        jTextField11.setEditable(false);
+        jTextField11.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        jTextField11.setEnabled(false);
 
         jButton17.setText("Kalender");
         jButton17.addActionListener(new java.awt.event.ActionListener() {
@@ -739,7 +715,23 @@ public class billsView extends javax.swing.JPanel implements Runnable {
 
         jLabel16.setText("Betreff");
 
+        jTextField12.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        jTextField12.setEnabled(false);
+        jTextField12.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField12ActionPerformed(evt);
+            }
+        });
+
         jButton18.setText("Bearbeiten");
+
+        jLabel17.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel17.setText("Angebot");
+
+        jLabel18.setText("Datum");
+
+        jTextField13.setDisabledTextColor(new java.awt.Color(0, 51, 51));
+        jTextField13.setEnabled(false);
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -776,16 +768,21 @@ public class billsView extends javax.swing.JPanel implements Runnable {
                             .addComponent(jButton16, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel15)
-                            .addComponent(jLabel16))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField12, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField11, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jButton17, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton18, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jLabel17)
+                            .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel15)
+                                    .addComponent(jLabel16)
+                                    .addComponent(jLabel18))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jTextField13)
+                                    .addComponent(jTextField12, javax.swing.GroupLayout.DEFAULT_SIZE, 143, Short.MAX_VALUE)
+                                    .addComponent(jTextField11, javax.swing.GroupLayout.DEFAULT_SIZE, 143, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jButton17, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jButton18, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -812,12 +809,16 @@ public class billsView extends javax.swing.JPanel implements Runnable {
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
-                .addComponent(jLabel5)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel17))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton9))
+                    .addComponent(jButton9)
+                    .addComponent(jLabel18)
+                    .addComponent(jTextField13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
@@ -980,8 +981,9 @@ public class billsView extends javax.swing.JPanel implements Runnable {
             }
         });
         jToolBar1.add(jButton15);
+        jToolBar1.add(jSeparator3);
 
-        jButton12.setText("PDF erzeugen");
+        jButton12.setText("Drucken");
         jButton12.setFocusable(false);
         jButton12.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton12.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -991,6 +993,13 @@ public class billsView extends javax.swing.JPanel implements Runnable {
             }
         });
         jToolBar1.add(jButton12);
+
+        jCheckBox4.setText("mit Lieferschein");
+        jCheckBox4.setFocusable(false);
+        jCheckBox4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jCheckBox4.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        jCheckBox4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(jCheckBox4);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -1070,17 +1079,6 @@ public class billsView extends javax.swing.JPanel implements Runnable {
                 .addComponent(jTabbedPane1))
         );
     }// </editor-fold>//GEN-END:initComponents
-    private void jButton1MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
-        jTabbedPane1.setSelectedIndex(0);
-        
-        
-
-    }//GEN-LAST:event_jButton1MouseClicked
-
-    private void jButton2MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
-        jTabbedPane1.setSelectedIndex(1);
-   
-    }//GEN-LAST:event_jButton2MouseClicked
 
     private void jTextField1ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
 
@@ -1244,12 +1242,6 @@ public class billsView extends javax.swing.JPanel implements Runnable {
        
 
     }//GEN-LAST:event_jButton3MouseClicked
-
-    private void jButton6ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        this.defTax = Double.valueOf(l.getGlobaltax());
-
-        updateListTable();
-    }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jTable2MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable2MouseClicked
 
@@ -1724,6 +1716,10 @@ private void jButton17KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
 // TODO add your handling code here:
 }//GEN-LAST:event_jButton17KeyPressed
 
+private void jTextField12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField12ActionPerformed
+// TODO add your handling code here:
+}//GEN-LAST:event_jTextField12ActionPerformed
+
     private int getLastRow() {
         int potz = -1;
         int i;
@@ -1748,7 +1744,6 @@ private void jButton17KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
         return potz;
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    public javax.swing.JButton jButton1;
     public javax.swing.JButton jButton10;
     public javax.swing.JButton jButton11;
     public javax.swing.JButton jButton12;
@@ -1758,17 +1753,16 @@ private void jButton17KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
     public javax.swing.JButton jButton16;
     public javax.swing.JButton jButton17;
     public javax.swing.JButton jButton18;
-    public javax.swing.JButton jButton2;
     public javax.swing.JButton jButton3;
     public javax.swing.JButton jButton4;
     public javax.swing.JButton jButton5;
-    public javax.swing.JButton jButton6;
     public javax.swing.JButton jButton7;
     public javax.swing.JButton jButton8;
     public javax.swing.JButton jButton9;
     public javax.swing.JCheckBox jCheckBox1;
     public javax.swing.JCheckBox jCheckBox2;
     public javax.swing.JCheckBox jCheckBox3;
+    public javax.swing.JCheckBox jCheckBox4;
     public javax.swing.JLabel jLabel1;
     public javax.swing.JLabel jLabel10;
     public javax.swing.JLabel jLabel11;
@@ -1777,6 +1771,8 @@ private void jButton17KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
     public javax.swing.JLabel jLabel14;
     public javax.swing.JLabel jLabel15;
     public javax.swing.JLabel jLabel16;
+    public javax.swing.JLabel jLabel17;
+    public javax.swing.JLabel jLabel18;
     public javax.swing.JLabel jLabel2;
     public javax.swing.JLabel jLabel3;
     public javax.swing.JLabel jLabel4;
@@ -1796,6 +1792,7 @@ private void jButton17KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
     public javax.swing.JScrollPane jScrollPane5;
     public javax.swing.JToolBar.Separator jSeparator1;
     public javax.swing.JToolBar.Separator jSeparator2;
+    public javax.swing.JToolBar.Separator jSeparator3;
     public javax.swing.JTabbedPane jTabbedPane1;
     public javax.swing.JTable jTable1;
     public javax.swing.JTable jTable2;
@@ -1804,6 +1801,7 @@ private void jButton17KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
     public javax.swing.JTextField jTextField10;
     public javax.swing.JTextField jTextField11;
     public javax.swing.JTextField jTextField12;
+    public javax.swing.JTextField jTextField13;
     public javax.swing.JTextField jTextField2;
     public javax.swing.JTextField jTextField3;
     public javax.swing.JTextField jTextField4;
