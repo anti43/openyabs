@@ -13,7 +13,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import mp4.klassen.objekte.Product;
-import mp3.classes.visual.sub.billsView;
+import mp4.panels.billsView;
 import mp3.classes.visual.sub.offersView;
 
 

@@ -44,7 +44,7 @@ import mp3.classes.utils.SplashScreen;
 import mp3.classes.utils.TableHtmlWriter;
 import mp3.classes.visual.main.license;
 import mp3.classes.visual.sub.backupView;
-import mp3.classes.visual.sub.billsView;
+import mp4.panels.billsView;
 
 import mp3.classes.visual.sub.customersView;
 //import mp3.classes.visual.sub.*;
