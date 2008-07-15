@@ -254,7 +254,7 @@ public class eurOPanel extends javax.swing.JPanel {
                 c.getMail() + "\n Telefonnummer: " + c.getTel() + "\n\n" +
                 " Datum: " + current.getDatum() + "\n Rechnungnummer: " + current.getRechnungnummer());
 
-        jTextField14.setText(current.getGesamtpreis());
+        jTextField14.setText(current.getGesamtpreis().toString());
 
     }
     // End of variables declaration24111980

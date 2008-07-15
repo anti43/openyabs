@@ -40,7 +40,7 @@ public class eurEPanel extends javax.swing.JPanel {
         curKonto = MyData.instanceOf().getEinnahmeDefKonto();
 
         jTextField6.setText(Formater.formatDate(new Date()));
-        jTextField3.setText(MyData.instanceOf().getGlobaltax());
+        jTextField3.setText(MyData.instanceOf().getGlobaltax().toString());
         jTextField4.setText("0");
 
         jTextField5.setText(MyData.instanceOf().getEinnahmeDefKonto().getArt());

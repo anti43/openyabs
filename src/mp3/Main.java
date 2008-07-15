@@ -126,6 +126,7 @@ public class Main implements Strings {
             new Main(args);
         } catch (Exception e) {
             Popup.warn(e.getMessage(), Popup.ERROR);
+            e.printStackTrace();
             System.exit(1);
         }
     }

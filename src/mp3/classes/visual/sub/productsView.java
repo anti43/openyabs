@@ -25,7 +25,8 @@ import mp3.classes.layer.QueryClass;
 import mp3.classes.layer.visual.SupplierPicker;
 
 import mp3.classes.visual.main.mainframe;
-import mp3.classes.objects.product.*;
+//import mp3.classes.objects.product.*;
+import mp4.utils.datum.DateConverter;
 
 /**
  *
@@ -123,10 +124,10 @@ public class productsView extends javax.swing.JPanel {
         if (current.getSupplier() != null) {
             this.jTextField10.setText(current.getSupplier().getFirma());
         }
-        this.jTextField8.setText(current.getVK());
-        this.jTextField7.setText(current.getEK());
-        this.jTextField16.setText(current.getTAX());
-        this.jTextField9.setText(current.getDatum());
+        this.jTextField8.setText(current.getVK().toString());
+        this.jTextField7.setText(current.getEK().toString());
+        this.jTextField16.setText(current.getTAX().toString());
+        this.jTextField9.setText(current.getDatum().toString());
         this.jTextField11.setText(current.getUrl());
         if (!current.getWarengruppenId().equals("0")) {
             this.getJTextField12().setText(current.getProductgroupPath());
@@ -1142,10 +1143,10 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         current.setName(jTextField5.getText());
         current.setHersteller(jTextField6.getText());
         current.setSupplier(supplier);
-        current.setVK(jTextField8.getText());
-        current.setEK(jTextField7.getText());
-        current.setTAX(jTextField16.getText());
-        current.setDatum(jTextField9.getText());
+        current.setVK( Double.valueOf(jTextField8.getText()));
+        current.setEK(Double.valueOf(jTextField7.getText()));
+        current.setTAX(Double.valueOf(jTextField16.getText()));
+        current.setDatum(DateConverter.getDate(jTextField9.getText()));
         current.setUrl(jTextField11.getText());
         current.setEan(jTextField13.getText());
         current.setText(jEditorPane1.getText());
@@ -1215,10 +1216,10 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             current.setName(jTextField5.getText());
             current.setHersteller(jTextField6.getText());
             current.setSupplier(supplier);
-            current.setVK(jTextField8.getText());
-            current.setEK(jTextField7.getText());
-            current.setTAX(jTextField16.getText());
-            current.setDatum(jTextField9.getText());
+            current.setVK(Double.valueOf(jTextField8.getText()));
+            current.setEK(Double.valueOf(jTextField7.getText()));
+            current.setTAX(Double.valueOf(jTextField16.getText()));
+            current.setDatum(DateConverter.getDate(jTextField9.getText()));
             current.setUrl(jTextField11.getText());
             current.setEan(jTextField13.getText());
             current.setText(jEditorPane1.getText());

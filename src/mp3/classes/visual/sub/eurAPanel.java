@@ -12,13 +12,14 @@ import mp3.classes.layer.visual.DatePick;
 
 
 
-import mp3.classes.objects.ungrouped.MyData;
-import mp3.classes.objects.eur.SKRKonto;
+//import mp3.classes.objects.ungrouped.MyData;
+//import mp3.classes.objects.eur.SKRKonto;
 import mp3.classes.utils.FetchDataTask;
 import mp3.classes.utils.Formater;
 import mp3.classes.utils.Log;
 import mp3.classes.visual.util.konten;
 import mp4.klassen.objekte.Ausgabe;
+import mp4.klassen.objekte.MyData;
 import mp4.klassen.objekte.SKRKonto;
 
 /**
@@ -39,7 +40,7 @@ public class eurAPanel extends javax.swing.JPanel {
         curKonto = MyData.instanceOf().getAusgabeDefKonto();
 
         jTextField6.setText(Formater.formatDate(new Date()));
-        jTextField3.setText(MyData.instanceOf().getGlobaltax());
+        jTextField3.setText(MyData.instanceOf().getGlobaltax().toString());
         jTextField4.setText("0");
 
         jTextField5.setText(MyData.instanceOf().getAusgabeDefKonto().getArt());
@@ -337,8 +338,8 @@ public class eurAPanel extends javax.swing.JPanel {
             if (this.curAusgabe != null && curAusgabe.id > 0) {
                 curAusgabe.setDatum(Formater.getDate(jTextField6.getText()));
                 curAusgabe.setBeschreibung(jEditorPane1.getText());
-                curAusgabe.setPreis(jTextField4.getText().replaceAll(",", "."));
-                curAusgabe.setTax(jTextField3.getText().replaceAll(",", "."));
+                curAusgabe.setPreis(Double.valueOf(jTextField4.getText().replaceAll(",", ".")));
+                curAusgabe.setTax(Double.valueOf(jTextField3.getText().replaceAll(",", ".")));
 
                 curAusgabe.save();
 
@@ -435,15 +436,15 @@ public class eurAPanel extends javax.swing.JPanel {
 
         this.curAusgabe = Ausgabe;
 
-        jTextField6.setText(Ausgabe.getDatum());
+//        jTextField6.setText(Ausgabe.getDatum());
 
         jEditorPane1.setContentType("text/html");
 
 
         jEditorPane1.setText("<html><font face=Arial size=12px><b>" + Ausgabe.getBeschreibung() + "</b><<br>");
 
-        jTextField4.setText(Ausgabe.getPreis());
-        jTextField3.setText(Ausgabe.getTax());
+//        jTextField4.setText(Ausgabe.getPreis());
+//        jTextField3.setText(Ausgabe.getTax());
 
         try {
 

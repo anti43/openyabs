@@ -9,8 +9,8 @@ import mp3.classes.visual.main.*;
 import java.awt.Cursor;
 import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
-import mp2.mainFrame;
-import mp2.rechnung;
+import compat.mp2.mainFrame;
+import compat.mp2.rechnung;
 import mp3.classes.utils.WindowTools;
 import mp3.classes.layer.DefaultHelpModel;
 import mp3.classes.layer.visual.Help;
@@ -197,8 +197,8 @@ public class mp2Importer extends javax.swing.JFrame {
             this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
             mainf = new mainFrame();
 
-            mp2.kunde kunde = new mp2.kunde(mainf);
-            mp2.rechnung rechn = new mp2.rechnung(mainf);
+            compat.mp2.kunde kunde = new compat.mp2.kunde(mainf);
+            compat.mp2.rechnung rechn = new compat.mp2.rechnung(mainf);
 
 
             Log.Debug("Kundendaten einlesen..");
@@ -283,10 +283,10 @@ public class mp2Importer extends javax.swing.JFrame {
 //                            "posten8", "preis8", "posten9", "preis9", "posten10", 
 //                            "preis10", "datum", "gesamtpreis", "mwst"};
                         Log.Debug("MP2 Rechnung instanzieren : id:" + rechngs[i][0]);
-                        mp2.rechnung r = new rechnung(mainf, rechngs[i][0]);
+                        compat.mp2.rechnung r = new rechnung(mainf, rechngs[i][0]);
                         Log.Debug("MP2 Kunde Instanzieren : id:" + r.kundenID);
 
-                        mp2.kunde k = new mp2.kunde(mainf, r.kundenID);
+                        compat.mp2.kunde k = new compat.mp2.kunde(mainf, r.kundenID);
                         Log.Debug("MP3 Kunde Instanzieren : Nummer:" + k.Kundennummer);
                         Customer c = new Customer(QueryClass.instanceOf(), k.Kundennummer, true);
 //     Log.Debug(rechngs);

@@ -42,6 +42,7 @@ import mp4.klassen.pdf.PDF_Angebot;
 import mp4.klassen.objekte.AngebotPosten;
 import mp4.klassen.objekte.Product;
 import mp3.classes.visual.main.mainframe;
+import mp4.utils.datum.DateConverter;
 
 /**
  *
@@ -295,8 +296,8 @@ public class offersView extends javax.swing.JPanel implements Runnable {
 
 
         this.jTextField6.setText(current.getOrdernummer());
-        this.jTextField7.setText(current.getDatum());
-        this.jTextField10.setText(current.getBisDatum());
+        this.jTextField7.setText(current.getDatum().toString());
+        this.jTextField10.setText(current.getBisDatum().toString());
 
 
         this.getJTable1().setModel(current.getProductlistAsTableModel());
@@ -1048,8 +1049,8 @@ public class offersView extends javax.swing.JPanel implements Runnable {
 
                 order.setOrdernummer(auftragnummer.toString());
 
-                order.setDatum(jTextField7.getText());
-                order.setBisDatum(jTextField10.getText());
+                order.setDatum(DateConverter.getDate(jTextField7.getText()));
+                order.setBisDatum(DateConverter.getDate(jTextField10.getText()));
                 order.setKundenId(getCustomer().getId());
 
                 order.save();
@@ -1074,9 +1075,9 @@ public class offersView extends javax.swing.JPanel implements Runnable {
 
                         try {
 
-                            b.setAnzahl(m.getValueAt(i, 1).toString());
-                            b.setSteuersatz(m.getValueAt(i, 3).toString());
-                            b.setPreis(m.getValueAt(i, 4).toString());
+                            b.setAnzahl((Double) m.getValueAt(i, 1));
+                            b.setSteuersatz((Double) m.getValueAt(i, 3));
+                            b.setPreis((Double) m.getValueAt(i, 4));
 
                         } catch (Exception exception) {
 //                            b.setAnzahl("0");
@@ -1180,8 +1181,8 @@ public class offersView extends javax.swing.JPanel implements Runnable {
 
 //                    bill.setauftragnummer(auftragnummer.toString());
 
-                    order.setDatum(jTextField7.getText());
-                    order.setBisDatum(jTextField10.getText());
+                    order.setDatum(DateConverter.getDate(jTextField7.getText()));
+                    order.setBisDatum(DateConverter.getDate(jTextField10.getText()));
 
                     order.setKundenId(getCustomer().getId());
 
@@ -1219,9 +1220,9 @@ public class offersView extends javax.swing.JPanel implements Runnable {
                             b.setPosten((String) m.getValueAt(i, 2));
                             try {
 
-                                b.setAnzahl((m.getValueAt(i, 1)).toString());
-                                b.setSteuersatz((m.getValueAt(i, 3)).toString());
-                                b.setPreis((m.getValueAt(i, 4)).toString());
+                                b.setAnzahl((Double) (m.getValueAt(i, 1)));
+                                b.setSteuersatz((Double) (m.getValueAt(i, 3)));
+                                b.setPreis((Double) (m.getValueAt(i, 4)));
 
                             } catch (Exception exception) {
 //                                b.setAnzahl("0");
@@ -1575,7 +1576,7 @@ public class offersView extends javax.swing.JPanel implements Runnable {
 
                     bill.setRechnungnummer(rechnungnummer.toString());
 
-                    bill.setDatum(df.format(new Date()));
+                    bill.setDatum(new Date());
                     bill.setKundenId(getCustomer().getId());
 
                     bill.save();
@@ -1600,9 +1601,9 @@ public class offersView extends javax.swing.JPanel implements Runnable {
 
                             try {
 
-                                b.setAnzahl(m.getValueAt(i, 1).toString());
-                                b.setSteuersatz(m.getValueAt(i, 3).toString());
-                                b.setPreis(m.getValueAt(i, 4).toString());
+                                b.setAnzahl((Double) m.getValueAt(i, 1));
+                                b.setSteuersatz((Double) m.getValueAt(i, 3));
+                                b.setPreis((Double) m.getValueAt(i, 4));
 
                             } catch (Exception exception) {
 //                            b.setAnzahl("0");

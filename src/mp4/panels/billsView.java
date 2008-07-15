@@ -34,7 +34,7 @@ import mp3.classes.layer.visual.ProductPicker;
 import mp3.classes.layer.QueryClass;
 
 
-import mp3.classes.objects.bill.*;
+//import mp3.classes.objects.bill.*;
 
 import mp4.klassen.objekte.Customer;
 import mp4.klassen.objekte.History;
@@ -178,7 +178,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
             } catch (NumberFormatException numberFormatException) {
                 nachricht("Wert 'Preis' unzulässig: Produkt " + product.getNummer());
 //                
-                String p =product.getVK().replaceAll(",", ".");
+                String p =product.getVK().toString();
                 
                 m.setValueAt(new Double(p), z, 4);
             }
@@ -307,29 +307,29 @@ public class billsView extends javax.swing.JPanel implements Runnable {
         jTextField6.setBackground(Color.WHITE);
         this.jTextField7.setText(DateConverter.getDefDateString(current.getDatum()));
 
-        if (current.isBezahlt()) {
-            this.jLabelbezahlt.setText("Bezahlt");
-             jTextField6.setBackground(Color.GREEN);
-        } else {
-            
-            this.jLabelbezahlt.setText("Unbezahlt");
-            
-             jTextField6.setBackground(Color.WHITE);
-        }
-
-        if (current.isStorno()) {
-            this.jlabelstorno.setText("Storniert");
-        } else {
-            
-            if(current.isVerzug()) {
-                this.jlabelstorno.setText("Verzug!");
-                jTextField6.setBackground(Color.RED);
-            }
-            else {
-                this.jlabelstorno.setText("");
-                
-            }
-        }
+//        if (current.isBezahlt()) {
+//            this.jLabelbezahlt.setText("Bezahlt");
+//             jTextField6.setBackground(Color.GREEN);
+//        } else {
+//            
+//            this.jLabelbezahlt.setText("Unbezahlt");
+//            
+//             jTextField6.setBackground(Color.WHITE);
+//        }
+//
+//        if (current.isStorno()) {
+//            this.jlabelstorno.setText("Storniert");
+//        } else {
+//            
+//            if(current.isVerzug()) {
+//                this.jlabelstorno.setText("Verzug!");
+//                jTextField6.setBackground(Color.RED);
+//            }
+//            else {
+//                this.jlabelstorno.setText("");
+//                
+//            }
+//        }
 
         
         
@@ -350,15 +350,15 @@ public class billsView extends javax.swing.JPanel implements Runnable {
 
 //        mainframe.nachricht("Aktuell: Kunde Nummer " + c.getKundennummer());
 
-        if (getCustomer().isDeleted()) {
-            isdeleted.setText("Inaktiv");
-            jTextField5.setBackground(Color.RED);
-        } else {
-
-            isdeleted.setText("");
-            jTextField5.setBackground(Color.WHITE);
-
-        }
+//        if (getCustomer().isDeleted()) {
+//            isdeleted.setText("Inaktiv");
+//            jTextField5.setBackground(Color.RED);
+//        } else {
+//
+//            isdeleted.setText("");
+//            jTextField5.setBackground(Color.WHITE);
+//
+//        }
 
     }
 
@@ -1157,7 +1157,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
 
                 bill.setRechnungnummer(rechnungnummer);
 
-                bill.setDatum(DateCongh));
+//                bill.setDatum(DateCongh));
                 bill.setKundenId(getCustomer().getId());
                 
                 
@@ -1189,11 +1189,11 @@ public class billsView extends javax.swing.JPanel implements Runnable {
                 }
                
 //                bill.setGesamtpreis(betrag.toString());
-                  bill.setGesamtpreis(jTextField8.getText().replaceAll(",", "."));
+                  bill.setGesamtpreis(Double.valueOf(jTextField8.getText()));
                 if(nettobetrag>0) {
-                     bill.setGesamttax(String.valueOf(allovertax / nettobetrag));
+                     bill.setGesamttax((allovertax / nettobetrag));
                 }
-                else{bill.setGesamttax("0");
+                else{bill.setGesamttax(0d);
                 }
   //***************************************************************************************
                 
@@ -1214,9 +1214,9 @@ public class billsView extends javax.swing.JPanel implements Runnable {
 
                         try {
 
-                            b.setAnzahl(m.getValueAt(i, 1).toString());
-                            b.setSteuersatz(m.getValueAt(i, 3).toString());
-                            b.setPreis(m.getValueAt(i, 4).toString());
+                            b.setAnzahl(      (Double) m.getValueAt(i, 1));
+                            b.setSteuersatz((Double) m.getValueAt(i, 3));
+                            b.setPreis((Double) m.getValueAt(i, 4));
                       
                         } catch (Exception exception) {
 //                            b.setAnzahl("0");
@@ -1313,12 +1313,12 @@ public class billsView extends javax.swing.JPanel implements Runnable {
 
 //                    bill.setRechnungnummer(rechnungnummer.toString());
 
-                    bill.setDatum(jTextField7.getText());
+                    bill.setDatum(DateConverter.getDate(jTextField7.getText()));
 
 
                     bill.setKundenId(getCustomer().getId());
                     
-                    bill.setGesamtpreis(jTextField8.getText().replaceAll(",", "."));
+                    bill.setGesamtpreis(Double.valueOf(jTextField8.getText()));
                     
                                     
    // **********************EUR**********************************************************
@@ -1351,7 +1351,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
                 }
               Log.Debug("val = "+allovertax + " / " + taxcount);
 //                bill.setGesamtpreis(betrag.toString());
-                bill.setGesamttax(String.valueOf(allovertax/taxcount));
+                bill.setGesamttax((allovertax/taxcount));
                 taxcount = 0;
   //***************************************************************************************
 
@@ -1394,9 +1394,9 @@ public class billsView extends javax.swing.JPanel implements Runnable {
                             b.setPosten((String) m.getValueAt(i, 2));
                             try {
 
-                                b.setAnzahl((m.getValueAt(i, 1)).toString());
-                                b.setSteuersatz((m.getValueAt(i, 3)).toString());
-                                b.setPreis((m.getValueAt(i, 4)).toString());
+                                b.setAnzahl((Double) (m.getValueAt(i, 1)));
+                                b.setSteuersatz((Double) (m.getValueAt(i, 3)));
+                                b.setPreis((Double) (m.getValueAt(i, 4)));
 
                             } catch (Exception exception) {
 //                                b.setAnzahl("0");
@@ -1483,8 +1483,8 @@ public class billsView extends javax.swing.JPanel implements Runnable {
 
 
         renewTableModel();
-        jlabelstorno.setText("");
-        jLabelbezahlt.setText("");
+//        jlabelstorno.setText("");
+//        jLabelbezahlt.setText("");
 
 //        df = new SimpleDateFormat( "dd.MM.yyyy" );
         df = new SimpleDateFormat( "dd.MM.yyyy" );
@@ -1655,7 +1655,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
 
     private void jButton10KeyPressed (java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton10KeyPressed
 
-        jButton1MouseClicked(new MouseEvent(jTable1, WIDTH, WIDTH, WIDTH, WIDTH, WIDTH, WIDTH, nettoprices));
+//        jButton1MouseClicked(new MouseEvent(jTable1, WIDTH, WIDTH, WIDTH, WIDTH, WIDTH, WIDTH, nettoprices));
     }//GEN-LAST:event_jButton10KeyPressed
 
     private void jButton5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton5MouseClicked
@@ -1685,7 +1685,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
     private void jButton13MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton13MouseClicked
 
         this.current.setStorno(true);
-        this.jlabelstorno.setText("Storniert");
+//        this.jlabelstorno.setText("Storniert");
 
         this.jButton4MouseClicked(evt);
         
@@ -1694,7 +1694,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
     private void jButton14MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton14MouseClicked
 
         this.current.setBezahlt(true);
-        this.jLabelbezahlt.setText("Bezahlt");
+//        this.jLabelbezahlt.setText("Bezahlt");
 
         this.jButton4MouseClicked(evt);
     }//GEN-LAST:event_jButton14MouseClicked

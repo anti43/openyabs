@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
-import mp3.classes.objects.ungrouped.HistoryHandler;
+//import mp3.classes.objects.ungrouped.HistoryHandler;
 import javax.swing.table.DefaultTableModel;
 import mp3.classes.interfaces.Constants;
 import mp3.classes.interfaces.Structure;
@@ -24,13 +24,15 @@ import mp3.classes.utils.FileReaderWriter;
 import mp3.classes.utils.Log;
 import mp3.classes.layer.Popup;
 import mp3.classes.layer.QueryClass;
-import mp3.classes.objects.ungrouped.History;
-import mp3.classes.objects.ungrouped.MyData;
+//import mp3.classes.objects.ungrouped.History;
+//import mp3.classes.objects.ungrouped.MyData;
 import mp3.classes.utils.DirectoryHandler;
 import mp3.classes.utils.Formater;
 import mp3.classes.utils.UnZip;
 import mp3.classes.utils.Zip;
 import mp3.classes.visual.main.mainframe;
+import mp4.klassen.objekte.History;
+import mp4.klassen.objekte.MyData;
 
 /**
  *

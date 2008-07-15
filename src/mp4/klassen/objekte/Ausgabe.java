@@ -73,6 +73,11 @@ public class Ausgabe extends mp3.classes.layer.Things implements mp3.classes.int
         this.explode(this.selectLast("*", "id", id, true));
     }
 
+    public Ausgabe(Integer id, String text, String replaceAll, String replaceAll0, Date date) {
+          super(QueryClass.instanceOf().clone(Structure.TABLE_DUES));
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
     private void explode(String[] select) {
         try {
             this.id = Integer.valueOf(select[0]);

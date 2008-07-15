@@ -18,11 +18,15 @@ import mp3.classes.utils.WindowTools;
 import mp3.classes.utils.Log;
 import mp3.classes.layer.Popup;
 import mp3.classes.layer.QueryClass;
-import mp3.classes.objects.product.ProductGroupCategory;
-import mp3.classes.objects.product.ProductGroupFamily;
-import mp3.classes.objects.product.ProductGroupGroup;
-import mp3.classes.objects.product.ProductGroupHandler;
+//import mp3.classes.objects.product.ProductGroupCategory;
+//import mp3.classes.objects.product.ProductGroupFamily;
+//import mp3.classes.objects.product.ProductGroupGroup;
+//import mp3.classes.objects.product.ProductGroupHandler;
 import mp3.classes.visual.main.*;
+import mp4.klassen.objekte.ProductGroupCategory;
+import mp4.klassen.objekte.ProductGroupFamily;
+import mp4.klassen.objekte.ProductGroupGroup;
+import mp4.klassen.objekte.ProductGroupHandler;
 
 /**
  *

@@ -100,7 +100,7 @@ public class SplashScreen extends javax.swing.JFrame implements Runnable {
 
         message.setForeground(new java.awt.Color(0, 0, 0));
 
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/babytux.png"))); // NOI18N
+//        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/babytux.png"))); // NOI18N
 
         jLabel3.setForeground(new java.awt.Color(0, 0, 0));
         jLabel3.setText(Constants.TITLE);
