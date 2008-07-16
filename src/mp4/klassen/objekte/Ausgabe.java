@@ -18,7 +18,7 @@ package mp4.klassen.objekte;
 
 import java.util.Date;
 import mp3.database.util.Query;
-import mp3.classes.interfaces.Structure;
+
 import mp3.classes.layer.*;
 import mp4.klassen.objekte.SKRKonto;
 import mp3.classes.utils.*;
@@ -28,7 +28,7 @@ import mp4.utils.datum.DateConverter;
  *
  * @author anti43
  */
-public class Ausgabe extends mp3.classes.layer.Things implements mp3.classes.interfaces.Structure, mp3.classes.interfaces.Daemonable {
+public class Ausgabe extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen, mp3.classes.interfaces.Daemonable {
 //  "kontenid INTEGER DEFAULT NULL, beschreibung varchar(500) default NULL,"+
 //  "preis varchar(50) default NULL,"+"tax varchar(50) default NULL,"+"datum varchar(50) default NULL,"+
 
@@ -68,13 +68,13 @@ public class Ausgabe extends mp3.classes.layer.Things implements mp3.classes.int
      * @param id 
      */
     public Ausgabe(Query query, String id) {
-        super(query.clone(Structure.TABLE_DUES));
+        super(query.clone( TABLE_DUES));
         this.id = Integer.valueOf(id);
         this.explode(this.selectLast("*", "id", id, true));
     }
 
     public Ausgabe(Integer id, String text, String replaceAll, String replaceAll0, Date date) {
-          super(QueryClass.instanceOf().clone(Structure.TABLE_DUES));
+          super(QueryClass.instanceOf().clone( TABLE_DUES));
         throw new UnsupportedOperationException("Not yet implemented");
     }
 

@@ -24,7 +24,7 @@ import mp3.classes.utils.Log;
  *
  * @author anti43
  */
-public class AngebotPosten extends mp3.classes.layer.Things implements mp3.classes.interfaces.Structure {
+public class AngebotPosten extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen {
 
     private Integer auftragid = null;
     private Double anzahl = 0d;

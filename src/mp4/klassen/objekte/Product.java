@@ -26,7 +26,7 @@ import mp4.utils.datum.DateConverter;
  *
  * @author anti43
  */
-public class Product extends mp3.classes.layer.Things implements mp3.classes.interfaces.Structure {
+public class Product extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen {
 /**
  * "nummer" + "," +"name" + "," + "text" + "," +"vk" + "," +"ek" +
               "," +"tax"+ ","+ "herstellerid"+ ","+"lieferantenid"+ ","+"warengruppenid"

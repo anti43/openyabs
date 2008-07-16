@@ -11,15 +11,14 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 //import mp3.classes.objects.ungrouped.HistoryHandler;
 import javax.swing.table.DefaultTableModel;
 import mp3.classes.interfaces.Constants;
-import mp3.classes.interfaces.Structure;
+
+import mp3.classes.interfaces.Strings;
 import mp3.classes.utils.FileReaderWriter;
 import mp3.classes.utils.Log;
 import mp3.classes.layer.Popup;
@@ -247,7 +246,7 @@ public class backupView extends javax.swing.JPanel{
             Zip.zip(path, savefile);
             this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
             mainframe.nachricht("Sicherungsdatei '" + savefile + "' angelegt.");
-            new History(QueryClass.instanceOf(), Structure.BACKUP, "Sicherungsdatei " + savefile + " angelegt.");
+            new History(QueryClass.instanceOf(), Strings.BACKUP, "Sicherungsdatei " + savefile + " angelegt.");
         } catch (Exception ex) {
             Log.Debug(ex.getMessage(), true);
         }

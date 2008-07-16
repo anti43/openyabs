@@ -20,7 +20,7 @@ package mp4.klassen.objekte;
 import mp3.classes.interfaces.Daemonable;
 import java.util.Date;
 import mp3.database.util.Query;
-import mp3.classes.interfaces.Structure;
+
 import mp3.classes.layer.*;
 import mp3.classes.utils.Formater;
 
@@ -31,7 +31,7 @@ import mp4.utils.datum.DateConverter;
  *
  * @author anti43
  */
-public class Einnahme extends mp3.classes.layer.Things implements mp3.classes.interfaces.Structure, Daemonable {
+public class Einnahme extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen, Daemonable {
 //  "kontenid INTEGER DEFAULT NULL, beschreibung varchar(500) default NULL,"+
 //  "preis varchar(50) default NULL,"+"tax varchar(50) default NULL,"+"datum varchar(50) default NULL,"+
 
@@ -79,7 +79,7 @@ public class Einnahme extends mp3.classes.layer.Things implements mp3.classes.in
      * @param id 
      */
     public Einnahme(Query query, String id) {
-        super(query.clone(Structure.TABLE_INCOME));
+        super(query.clone(TABLE_INCOME));
         this.id = Integer.valueOf(id);
         this.explode(this.selectLast("*", "id", id, true));
     }

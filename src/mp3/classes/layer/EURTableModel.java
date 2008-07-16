@@ -22,7 +22,7 @@ import javax.swing.table.DefaultTableModel;
 import mp3.classes.interfaces.Constants;
 import mp3.classes.interfaces.ProtectedStrings;
 import mp3.classes.interfaces.Strings;
-import mp3.classes.interfaces.Structure;
+
 import mp4.klassen.objekte.Rechnung;
 import mp3.classes.utils.Formater;
 import mp3.classes.utils.Log;
@@ -33,7 +33,7 @@ import mp3.database.util.Query;
  *
  * @author anti43
  */
-public class EURTableModel implements ProtectedStrings, Constants, Strings, Structure {
+public class EURTableModel implements ProtectedStrings, Constants, Strings, mp4.datenbank.struktur.Tabellen {
 
     private Object[][] data;
     String[] head = new String[]{"Beschreibung", "Wert"};

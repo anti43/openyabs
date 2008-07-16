@@ -24,7 +24,7 @@ import mp3.classes.utils.Log;
  *
  * @author anti43
  */
-public class RechnungPosten extends mp3.classes.layer.Things implements mp3.classes.interfaces.Structure {
+public class RechnungPosten extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen {
 
     private Integer rechnungid = null;
     private Double anzahl = 0.0;

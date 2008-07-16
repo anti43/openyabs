@@ -22,7 +22,7 @@ import mp3.database.util.Query;
  /**
  * @author anti43         
  */
-public class ProductGroupGroup extends mp3.classes.layer.Things implements mp3.classes.interfaces.Structure {
+public class ProductGroupGroup extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen {
 
     private String gruppennummer = "0";
     private Integer familienid = 0;

@@ -18,7 +18,7 @@
 package mp3.classes.layer;
 
 import javax.swing.JTable;
-import mp3.classes.interfaces.Structure;
+
 import mp3.classes.interfaces.Queries;
 import mp3.database.util.Query;
 
@@ -26,7 +26,7 @@ import mp3.database.util.Query;
  *
  * @author anti
  */
-public abstract class Things implements Queries, Structure {
+public abstract class Things implements Queries, mp4.datenbank.struktur.Tabellen {
     public Integer id = 0;
     public boolean isSaved = false;
     private Query q;

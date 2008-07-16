@@ -23,7 +23,8 @@ import java.util.Locale;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import mp3.classes.interfaces.Constants;
-import mp3.classes.interfaces.Structure;
+
+import mp3.classes.interfaces.Strings;
 import mp3.classes.layer.Popup;
 import mp3.classes.layer.QueryClass;
 import mp3.classes.utils.FileReaderWriter;
@@ -35,7 +36,7 @@ import mp4.klassen.objekte.SKRKonto;
  *
  * @author anti
  */
-public class MyData extends mp3.classes.layer.People implements mp3.classes.interfaces.Structure {
+public class MyData extends mp3.classes.layer.People implements mp4.datenbank.struktur.Tabellen {
 
     private static MyData dat;
     private String backupverz = "";
@@ -108,7 +109,7 @@ public class MyData extends mp3.classes.layer.People implements mp3.classes.inte
 
                 this.insert("name,wert", "(;;2#4#1#1#8#0#;;)Land (Waehrung) (DE,CH)(;;2#4#1#1#8#0#;;),(;;2#4#1#1#8#0#;;)DE(;;2#4#1#1#8#0#;;)");
                 this.insert("name,wert", "(;;2#4#1#1#8#0#;;)*Hauptfenster(;;2#4#1#1#8#0#;;),(;;2#4#1#1#8#0#;;) (;;2#4#1#1#8#0#;;)");
-                new History(Structure.DATABASE, "Datenbankupdate " + 14 + " durchgefuehrt.");
+                new History(DATABASE, "Datenbankupdate " + 14 + " durchgefuehrt.");
 
                 checkForUpgrade();
                 break;

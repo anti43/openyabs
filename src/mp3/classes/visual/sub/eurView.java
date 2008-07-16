@@ -14,7 +14,7 @@ import java.util.Date;
 
 
 import mp3.classes.visual.main.mainframe;
-import mp3.classes.interfaces.Structure.*;
+
 import mp3.classes.layer.QueryClass;
 import mp4.klassen.objekte.Ausgabe;
 import mp4.klassen.objekte.Rechnung;

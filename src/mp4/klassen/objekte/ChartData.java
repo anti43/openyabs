@@ -25,7 +25,7 @@ import mp3.classes.layer.QueryClass;
  *
  * @author anti43
  */
-public class ChartData extends mp3.classes.layer.Things implements mp3.classes.interfaces.Structure {
+public class ChartData extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen {
 
 
     public ChartData(Query query) {

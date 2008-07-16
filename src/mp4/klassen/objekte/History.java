@@ -17,11 +17,11 @@
 
 package mp4.klassen.objekte;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+
 import java.util.Date;
+import mp3.classes.interfaces.Strings;
 import mp3.database.util.Query;
-import mp3.classes.interfaces.Structure;
+
 import mp3.classes.layer.Popup;
 import mp3.classes.layer.QueryClass;
 import mp4.utils.datum.DateConverter;
@@ -30,7 +30,7 @@ import mp4.utils.datum.DateConverter;
  *
  * @author anti43
  */
-public class History extends mp3.classes.layer.Things implements mp3.classes.interfaces.Structure{
+public class History extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen{
 
 
     private String aktion = "";
@@ -65,7 +65,7 @@ public class History extends mp3.classes.layer.Things implements mp3.classes.int
      * @param id 
      */
     public History(Query query, String id) {
-        super(query.clone(Structure.TABLE_HISTORY));
+        super(query.clone(TABLE_HISTORY));
         this.id = Integer.valueOf(id);
         this.explode(this.selectLast("*", "id", id, true));
         
@@ -73,7 +73,7 @@ public class History extends mp3.classes.layer.Things implements mp3.classes.int
     }
 
     public History(String aktion, String text) {
-       super(QueryClass.instanceOf().clone(Structure.TABLE_HISTORY));
+       super(QueryClass.instanceOf().clone(TABLE_HISTORY));
 
         this.setAktion(aktion);
         this.setText(text);
@@ -139,7 +139,7 @@ public class History extends mp3.classes.layer.Things implements mp3.classes.int
 
     public String[][] getHistory() {   
 
-        String[][] str = this.select("aktion,text,datum", null, NOTNULL, false);
+        String[][] str = this.select("aktion,text,datum", null, Strings.NOTNULL, false);
         
         int i = 0, j = str.length - 1;
 		while (i < j) {

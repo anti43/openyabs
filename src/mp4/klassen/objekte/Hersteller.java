@@ -24,7 +24,7 @@ import mp3.classes.layer.Popup;
  *
  * @author anti
  */
-public class Hersteller extends mp3.classes.layer.People implements mp3.classes.interfaces.Structure {
+public class Hersteller extends mp3.classes.layer.People implements mp4.datenbank.struktur.Tabellen {
 
    
     private String herstellernummer = "";

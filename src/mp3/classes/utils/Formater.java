@@ -359,7 +359,7 @@ public abstract class Formater {
 
         }
 
-        Log.Debug(str);
+        Log.PrintArray(str);
 
         return str;
     }

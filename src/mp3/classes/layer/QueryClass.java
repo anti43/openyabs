@@ -28,7 +28,7 @@ import mp3.classes.interfaces.Constants;
  *
  * @author anti
  */
-public class QueryClass extends mp3.database.util.Query implements mp3.classes.interfaces.Structure,Cloneable {
+public class QueryClass extends mp3.database.util.Query implements mp4.datenbank.struktur.Tabellen,Cloneable {
 
     private static QueryClass qc = null;
     private static mp3.classes.visual.main.mainframe mainf;

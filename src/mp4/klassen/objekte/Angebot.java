@@ -20,6 +20,7 @@ import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.List;
 
+import mp3.classes.interfaces.Strings;
 import mp3.database.util.Query;
 import mp3.classes.utils.Log;
 import mp3.classes.layer.PostenTableModel;
@@ -29,7 +30,7 @@ import mp4.utils.datum.DateConverter;
  *
  * @author anti43
  */
-public class Angebot extends mp3.classes.layer.Things implements mp3.classes.interfaces.Structure {
+public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen {
 
     private String Angebotnummer = "";
     private Integer KundenId = 0;
@@ -55,7 +56,7 @@ public class Angebot extends mp3.classes.layer.Things implements mp3.classes.int
     public Angebot(Query query, Integer id) {
         super(query.clone(TABLE_ORDERS));
         this.id = Integer.valueOf(id);
-        this.explode(this.selectLast(ALL, ID, id.toString(), true));
+        this.explode(this.selectLast(Strings.ALL, Strings.ID, id.toString(), true));
         this.query = query;
         bp = getProducts(query);
     }
@@ -281,7 +282,7 @@ public class Angebot extends mp3.classes.layer.Things implements mp3.classes.int
 
         String[] wher = {"auftragid", this.getId().toString(), ""};
 
-        products = q.select(ALL, wher);
+        products = q.select(Strings.ALL, wher);
         AngebotPosten[] prof = null;
 //
 //        for (int t = 0; t < str.length; t++) {
@@ -308,7 +309,7 @@ public class Angebot extends mp3.classes.layer.Things implements mp3.classes.int
 
         Query q = query.clone(TABLE_ORDERS);
 
-        String[][] prods = q.select(ALL, null, TABLE_CUSTOMERS, "kundenid");
+        String[][] prods = q.select(Strings.ALL, null, TABLE_CUSTOMERS, "kundenid");
 
         setLabelsOfAllWithDepencies(q);
         return prods;
@@ -357,7 +358,7 @@ public class Angebot extends mp3.classes.layer.Things implements mp3.classes.int
 
         Query q = query.clone(TABLE_ORDERS);
 
-        String[][] prods = q.select(ALL, null);
+        String[][] prods = q.select(Strings.ALL, null);
 
         return prods;
     }

@@ -8,8 +8,9 @@ package mp3.classes.visual.sub;
 import java.awt.event.MouseEvent;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import mp3.classes.interfaces.Structure;
 
+
+import mp3.classes.interfaces.Strings;
 import mp3.classes.layer.Popup;
 import mp3.classes.layer.QueryClass;
 import mp4.klassen.objekte.History;
@@ -21,7 +22,7 @@ import mp3.classes.visual.main.mainframe;
  *
  * @author  anti43
  */
-public class suppliersView extends javax.swing.JPanel {
+public class suppliersView extends javax.swing.JPanel implements mp4.datenbank.struktur.Tabellen {
 
     public Lieferant current;
     private String[][] liste;
@@ -36,7 +37,7 @@ public class suppliersView extends javax.swing.JPanel {
         current = new Lieferant(QueryClass.instanceOf());
 
         liste = current.getAll();
-        String k = "id, " + Structure.TABLE_SUPPLIER_FIELDS;
+        String k = "id, " +  TABLE_SUPPLIER_FIELDS;
 
         this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
         current.stripFirst(jTable2);
@@ -57,7 +58,7 @@ public class suppliersView extends javax.swing.JPanel {
 
         liste = current.getAll();
 
-        this.jTable2.setModel(new DefaultTableModel(liste, Structure.TABLE_SUPPLIER_FIELDS.split(",")));
+        this.jTable2.setModel(new DefaultTableModel(liste, TABLE_SUPPLIER_FIELDS.split(",")));
         current.stripFirst(jTable2);
     }
 
@@ -830,16 +831,16 @@ public class suppliersView extends javax.swing.JPanel {
             String[] head = {"Artikelnummer", "Produkte", "Hersteller"};
             this.jTable1.setModel(new DefaultTableModel(null, head));
             liste = current.getAll();
-            String k = "id," + Structure.TABLE_SUPPLIER_FIELDS;
+            String k = "id," +  TABLE_SUPPLIER_FIELDS;
 
             this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
             current.stripFirst(jTable2);
             mainframe.nachricht("Lieferant Nummer " + current.getLieferantennummer() + " angelegt.");
-            new History(QueryClass.instanceOf(), Structure.SUPPLIER, "Lieferant Nummer: " + current.getLieferantennummer() + " angelegt.");
+            new History(QueryClass.instanceOf(),  Strings.SUPPLIER, "Lieferant Nummer: " + current.getLieferantennummer() + " angelegt.");
 //            mainframe.nachricht("Kunde Nummer " + current.getKundennummer() + " gespeichert.");
 
             liste = current.getAll();
-            k = "id, " + Structure.TABLE_SUPPLIER_FIELDS;
+            k = "id, " +  TABLE_SUPPLIER_FIELDS;
             this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
             current.stripFirst(jTable2);
             
@@ -856,7 +857,7 @@ public class suppliersView extends javax.swing.JPanel {
     private void jButton6ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
 
         liste = current.getAll();
-        String k = "id, " + Structure.TABLE_SUPPLIER_FIELDS;
+        String k = "id, " +  TABLE_SUPPLIER_FIELDS;
 
         this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
         current.stripFirst(jTable2);
@@ -918,11 +919,11 @@ public class suppliersView extends javax.swing.JPanel {
 
             mainframe.nachricht("Lieferant Nummer " + current.getLieferantennummer() + " gespeichert.");
 
-            new History(QueryClass.instanceOf(), Structure.SUPPLIER, "Lieferant Nummer: " + current.getLieferantennummer() + " editiert.");
+            new History(QueryClass.instanceOf(),  Strings.SUPPLIER, "Lieferant Nummer: " + current.getLieferantennummer() + " editiert.");
 
 
             liste = current.getAll();
-            String k = "id, " + Structure.TABLE_SUPPLIER_FIELDS;
+            String k = "id, " +  TABLE_SUPPLIER_FIELDS;
 
             this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
             current.stripFirst(jTable2);
@@ -1038,7 +1039,7 @@ public class suppliersView extends javax.swing.JPanel {
 
         if ((JOptionPane.showConfirmDialog(this, "Wirklich löschen?", "Sicher?", JOptionPane.YES_NO_OPTION)) == JOptionPane.YES_OPTION) {
             current.deactivate(current.getId().toString());
-            new History(QueryClass.instanceOf(), Structure.SUPPLIER, "Lieferant Nummer: " + current.getLieferantennummer() + " gelöscht.");
+            new History(QueryClass.instanceOf(),  Strings.SUPPLIER, "Lieferant Nummer: " + current.getLieferantennummer() + " gelöscht.");
 
 
             this.jTextField4.setText("");
@@ -1058,7 +1059,7 @@ public class suppliersView extends javax.swing.JPanel {
             this.jTextArea1.setText("");
 
             liste = current.getAll();
-            String k = "id," + Structure.TABLE_SUPPLIER_FIELDS;
+            String k = "id," +  TABLE_SUPPLIER_FIELDS;
 
             this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
             current.stripFirst(jTable2);

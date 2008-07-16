@@ -16,7 +16,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableModel;
-import mp3.classes.interfaces.Structure;
+
 import mp3.classes.utils.Formater;
 import mp3.classes.utils.Log;
 import mp3.classes.layer.Popup;
@@ -32,7 +32,7 @@ import mp4.utils.datum.DateConverter;
  *
  * @author  anti43
  */
-public class productsView extends javax.swing.JPanel {
+public class productsView extends javax.swing.JPanel implements mp4.datenbank.struktur.Tabellen{
 
     private mainframe mainframe;
     private Product current;
@@ -57,7 +57,7 @@ public class productsView extends javax.swing.JPanel {
 
 
         liste = current.getAll();
-        String k = "id, " + Structure.TABLE_PRODUCTS_LIST_COLUMNS;
+        String k = "id, " + TABLE_PRODUCTS_LIST_COLUMNS;
 
         this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
         current.stripFirst(jTable2);
@@ -863,7 +863,7 @@ public class productsView extends javax.swing.JPanel {
         }
 
         liste = current.getAll();
-        String k = "id, " + Structure.TABLE_PRODUCTS_LIST_COLUMNS;
+        String k = "id, " + TABLE_PRODUCTS_LIST_COLUMNS;
 
         this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
         current.stripFirst(jTable2);
@@ -911,7 +911,7 @@ public class productsView extends javax.swing.JPanel {
         this.saveInner();
 
         liste = current.getAll();
-        String k = "id, " + Structure.TABLE_PRODUCTS_LIST_COLUMNS;
+        String k = "id, " + TABLE_PRODUCTS_LIST_COLUMNS;
 
         this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
         current.stripFirst(jTable2);
@@ -934,7 +934,7 @@ public class productsView extends javax.swing.JPanel {
 
         saveNew();
         liste = current.getAll();
-        String k = "id, " + Structure.TABLE_PRODUCTS_LIST_COLUMNS;
+        String k = "id, " + TABLE_PRODUCTS_LIST_COLUMNS;
 
         this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
         current.stripFirst(jTable2);
@@ -954,7 +954,7 @@ public class productsView extends javax.swing.JPanel {
             }
 
             liste = current.getAll();
-            String k = "id, " + Structure.TABLE_PRODUCTS_LIST_COLUMNS;
+            String k = "id, " + TABLE_PRODUCTS_LIST_COLUMNS;
 
             this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
             current.stripFirst(jTable2);
@@ -1000,7 +1000,7 @@ public class productsView extends javax.swing.JPanel {
     private void jButton11MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton11MouseClicked
 
         liste = current.getAll();
-        String k = "id, " + Structure.TABLE_PRODUCTS_LIST_COLUMNS;
+        String k = "id, " + TABLE_PRODUCTS_LIST_COLUMNS;
 
         this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
         current.stripFirst(jTable2);

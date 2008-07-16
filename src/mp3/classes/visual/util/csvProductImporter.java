@@ -16,7 +16,8 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableModel;
-import mp3.classes.interfaces.Structure;
+import mp3.classes.interfaces.Strings;
+
 import mp3.classes.utils.WindowTools;
 import mp3.classes.layer.DefaultHelpModel;
 import mp3.classes.layer.visual.Help;
@@ -613,7 +614,7 @@ public class csvProductImporter extends javax.swing.JFrame {
                 d=new Date();
                 Log.Debug("Einlesen beendet: " + d + " Produkte: " + h,true);
                 
-                 new History(QueryClass.instanceOf(), Structure.PRODUCT ,h + " Produkte importiert.");
+                 new History(QueryClass.instanceOf(), Strings.PRODUCT ,h + " Produkte importiert.");
             
                 
                 thisa.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));

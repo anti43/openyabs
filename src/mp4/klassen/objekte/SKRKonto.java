@@ -17,15 +17,16 @@
 
 package mp4.klassen.objekte;
 
+import mp3.classes.interfaces.Strings;
 import mp3.database.util.Query;
-import mp3.classes.interfaces.Structure;
+
 import mp3.classes.layer.*;
 
 /**
  *
  * @author anti43
  */
-public class SKRKonto extends mp3.classes.layer.Things implements mp3.classes.interfaces.Structure{
+public class SKRKonto extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen{
 
 
     private String Nummer = "0";
@@ -43,7 +44,7 @@ public class SKRKonto extends mp3.classes.layer.Things implements mp3.classes.in
     }
 
     public SKRKonto(QueryClass query, String string, boolean b) {
-        super(query.clone(Structure.TABLE_KONTEN));
+        super(query.clone(TABLE_KONTEN));
         
         this.explode(this.selectLast("*", "nummer", string, false));
     }
@@ -72,13 +73,13 @@ public class SKRKonto extends mp3.classes.layer.Things implements mp3.classes.in
      * @param id 
      */
     public SKRKonto(Integer id) {
-        super(QueryClass.instanceOf().clone(Structure.TABLE_KONTEN));
+        super(QueryClass.instanceOf().clone(TABLE_KONTEN));
         this.id = Integer.valueOf(id);
         this.explode(this.selectLast("*", "id", id.toString(), true));
     }
     
      public SKRKonto(Query q, Integer id) {
-        super(q.clone(Structure.TABLE_KONTEN));
+        super(q.clone(TABLE_KONTEN));
         this.id = Integer.valueOf(id);
         this.explode(this.selectLast("*", "id", id.toString(), true));
     }
@@ -121,7 +122,7 @@ public class SKRKonto extends mp3.classes.layer.Things implements mp3.classes.in
 
         Query q = QueryClass.instanceOf().clone(TABLE_KONTEN);
 
-        String[][] prods = q.select(ALL, null,"nummer",false);
+        String[][] prods = q.select(Strings.ALL, null,"nummer",false);
 
         return prods;
     }

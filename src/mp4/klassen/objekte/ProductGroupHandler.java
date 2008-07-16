@@ -7,7 +7,7 @@ package mp4.klassen.objekte;
 import java.util.ArrayList;
 import mp3.database.util.Query;
 
-import mp3.classes.interfaces.Structure;
+
 import mp3.classes.utils.Log;
 import mp3.classes.layer.QueryClass;
 
@@ -15,7 +15,7 @@ import mp3.classes.layer.QueryClass;
  *
  * @author anti43
  */
-public class ProductGroupHandler extends mp3.classes.layer.Things implements mp3.classes.interfaces.Structure {
+public class ProductGroupHandler extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen {
 
     private ProductGroupCategory[] categories;
     private ProductGroupFamily[] families;
@@ -62,9 +62,9 @@ public class ProductGroupHandler extends mp3.classes.layer.Things implements mp3
 
     public void deleteAll() {
         
-        super.freeQuery("DELETE from " + Structure.TABLE_PRODUCTS_GROUPS_CATEGORIES);
-        super.freeQuery("DELETE from " + Structure.TABLE_PRODUCTS_GROUPS_FAMILIES);
-        super.freeQuery("DELETE from " + Structure.TABLE_PRODUCTS_GROUPS_GROUPS);
+        super.freeQuery("DELETE from " + TABLE_PRODUCTS_GROUPS_CATEGORIES);
+        super.freeQuery("DELETE from " + TABLE_PRODUCTS_GROUPS_FAMILIES);
+        super.freeQuery("DELETE from " + TABLE_PRODUCTS_GROUPS_GROUPS);
     }
 
     public int existFam(String fam) {

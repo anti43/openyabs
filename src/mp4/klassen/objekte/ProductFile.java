@@ -18,7 +18,7 @@ package mp4.klassen.objekte;
 
 import java.util.Date;
 import mp3.database.util.Query;
-import mp3.classes.interfaces.Structure;
+
 import mp3.classes.layer.Popup;
 import mp4.utils.datum.DateConverter;
 
@@ -26,7 +26,7 @@ import mp4.utils.datum.DateConverter;
  *
  * @author anti43
  */
-public class ProductFile extends mp3.classes.layer.Things implements mp3.classes.interfaces.Structure {
+public class ProductFile extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen {
 
     private Integer Produktid = null;
     private String Url = "";
@@ -42,7 +42,7 @@ public class ProductFile extends mp3.classes.layer.Things implements mp3.classes
      * @param id 
      */
     public ProductFile(Query query, String id) {
-        super(query.clone(Structure.TABLE_PRODUCTS_FILES));
+        super(query.clone(TABLE_PRODUCTS_FILES));
         this.id = Integer.valueOf(id);
         this.explode(this.selectLast("*", "id", id, true));
     }

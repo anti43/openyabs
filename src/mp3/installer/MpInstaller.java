@@ -23,7 +23,7 @@ package mp3.installer;
 
 import java.io.IOException;
 import mp3.database.util.Conn;
-import de.copyleft.java.utils.cout;
+
 
 
 import java.awt.Cursor;
@@ -56,7 +56,7 @@ public class MpInstaller extends javax.swing.JFrame implements ProtectedStrings,
 
         new WindowTools(this);
         this.setVisible(true);
-        new cout(JAVA_VERSION);
+        Log.Debug(JAVA_VERSION);
 
     }
 

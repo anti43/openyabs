@@ -19,7 +19,7 @@ package mp4.klassen.objekte;
 
 import java.util.ArrayList;
 import mp3.database.util.Query;
-import mp3.classes.interfaces.Structure;
+
 import mp3.classes.layer.Popup;
 import mp3.classes.layer.QueryClass;
 import mp3.classes.utils.Log;
@@ -28,7 +28,7 @@ import mp3.classes.utils.Log;
  *
  * @author anti
  */
-public class Customer extends mp3.classes.layer.People implements mp3.classes.interfaces.Structure {
+public class Customer extends mp3.classes.layer.People implements mp4.datenbank.struktur.Tabellen {
 
    
     private String Kundennummer = "";
@@ -341,7 +341,7 @@ public class Customer extends mp3.classes.layer.People implements mp3.classes.in
     
         Query q = query.clone(TABLE_CUSTOMERS);
 
-        String[][] str = q.select(Structure.TABLE_CUSTOMER_PRINT_FIELDS, null);
+        String[][] str = q.select(TABLE_CUSTOMER_PRINT_FIELDS, null);
    
         return str;  
     }
@@ -351,7 +351,7 @@ public class Customer extends mp3.classes.layer.People implements mp3.classes.in
         Query q = query.clone(TABLE_CUSTOMERS);
 
         
-        String[][] str = q.select(ALL, null, withDeleted);
+        String[][] str = q.select("*", null, withDeleted);
    
         return str;  
     }

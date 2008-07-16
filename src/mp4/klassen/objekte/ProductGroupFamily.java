@@ -24,7 +24,7 @@ import mp3.database.util.Query;
  /**
  * @author anti43         
  */
-public class ProductGroupFamily extends mp3.classes.layer.Things implements mp3.classes.interfaces.Structure {
+public class ProductGroupFamily extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen {
 
     private String familiennummer = "0";
     private Integer kategorieID = 0;

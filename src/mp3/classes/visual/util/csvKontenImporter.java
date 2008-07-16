@@ -9,7 +9,6 @@ import com.Ostermiller.util.CSVParser;
 import java.awt.Cursor;
 import java.awt.Toolkit;
 import java.io.FileReader;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,26 +16,23 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableModel;
-import mp3.classes.interfaces.Structure;
+
+import mp3.classes.interfaces.Strings;
 import mp3.classes.utils.WindowTools;
 import mp3.classes.layer.DefaultHelpModel;
 import mp3.classes.layer.visual.Help;
 import mp3.classes.utils.Log;
 import mp3.classes.layer.Popup;
 import mp3.classes.layer.QueryClass;
-import mp3.classes.layer.visual.SupplierPicker;
 import mp3.classes.layer.KontenImporteur;
 
 import mp4.klassen.objekte.History;
-import mp4.klassen.objekte.Product;
 import mp4.klassen.objekte.ProductGroupCategory;
 import mp4.klassen.objekte.ProductGroupFamily;
 import mp4.klassen.objekte.ProductGroupGroup;
-import mp4.klassen.objekte.ProductGroupHandler;
 import mp4.klassen.objekte.Lieferant;
 import org.supercsv.cellprocessor.constraint.StrMinMax;
 import org.supercsv.cellprocessor.ift.CellProcessor;
-import org.supercsv.exception.SuperCSVException;
 import org.supercsv.io.CsvBeanReader;
 import org.supercsv.io.ICsvBeanReader;
 import org.supercsv.prefs.CsvPreference;
@@ -448,7 +444,7 @@ public class csvKontenImporter extends javax.swing.JFrame {
                 d=new Date();
                 Log.Debug("Einlesen beendet: " + d + " Konten: " + h,true);
                 
-                 new History(QueryClass.instanceOf(), Structure.KONTEN ,h + " Konten importiert.");
+                 new History(QueryClass.instanceOf(), Strings.KONTEN ,h + " Konten importiert.");
             
                 
                  thisa.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));

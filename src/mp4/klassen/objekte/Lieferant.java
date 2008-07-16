@@ -17,8 +17,9 @@
 
 package mp4.klassen.objekte;
 
+import mp3.classes.interfaces.Strings;
 import mp3.database.util.Query;
-import mp3.classes.interfaces.Structure;
+
 import mp3.classes.layer.Popup;
 import mp3.classes.layer.QueryClass;
 
@@ -26,7 +27,7 @@ import mp3.classes.layer.QueryClass;
  *
  * @author anti
  */
-public class Lieferant extends mp3.classes.layer.People implements mp3.classes.interfaces.Structure {
+public class Lieferant extends mp3.classes.layer.People implements mp4.datenbank.struktur.Tabellen {
 
   
     private String Lieferantennummer = "";
@@ -86,7 +87,7 @@ public class Lieferant extends mp3.classes.layer.People implements mp3.classes.i
     
         Query q = query.clone(TABLE_SUPPLIER);
 
-        String[][] str = q.select(ALL, null);
+        String[][] str = q.select(Strings.ALL, null);
    
         return str;  
     }
@@ -248,7 +249,7 @@ public class Lieferant extends mp3.classes.layer.People implements mp3.classes.i
     
         Query q = query.clone(TABLE_SUPPLIER);
 
-        String[][] str = q.select(Structure.TABLE_SUPPLIER_PRINT_FIELDS, null);
+        String[][] str = q.select(TABLE_SUPPLIER_PRINT_FIELDS, null);
    
         return str;  
     }

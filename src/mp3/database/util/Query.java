@@ -18,7 +18,7 @@ package mp3.database.util;
 
 import java.awt.Cursor;
 import java.text.ParseException;
-import mp3.classes.interfaces.Structure;
+
 import java.sql.*;
 
 import java.text.DateFormat;
@@ -36,7 +36,7 @@ import mp3.classes.visual.main.mainframe;
  *
  * @author anti
  */
-public abstract class Query implements Structure {
+public abstract class Query implements mp4.datenbank.struktur.Tabellen {
 
     private Connection conn = null;
     private Statement stm = null;

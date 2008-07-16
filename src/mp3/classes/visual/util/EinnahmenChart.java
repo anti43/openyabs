@@ -9,23 +9,19 @@ import mp3.classes.utils.LineGraph;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.util.Date;
-import mp3.database.util.Query;
 import mp3.classes.interfaces.Constants;
 import mp3.classes.interfaces.ProtectedStrings;
 import mp3.classes.interfaces.Strings;
-import mp3.classes.interfaces.Structure;
-import mp4.klassen.objekte.Rechnung;
+
 import mp4.klassen.objekte.Data;
-import mp3.classes.utils.BarChart;
 import mp3.classes.utils.WindowTools;
 import mp3.classes.utils.Formater;
-import mp3.classes.utils.Log;
 
 /**
  *
  * @author  anti43
  */
-public class EinnahmenChart extends javax.swing.JFrame implements Strings, ProtectedStrings, Constants, Structure {
+public class EinnahmenChart extends javax.swing.JFrame implements Strings, ProtectedStrings, Constants, mp4.datenbank.struktur.Tabellen {
 
     private String[] months;
 

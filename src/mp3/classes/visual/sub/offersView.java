@@ -17,8 +17,9 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
+import mp3.classes.interfaces.Strings;
 import mp3.database.util.Query;
-import mp3.classes.interfaces.Structure;
+
 
 
 import mp3.classes.layer.visual.CustomerPicker;
@@ -48,7 +49,7 @@ import mp4.utils.datum.DateConverter;
  *
  * @author  anti43
  */
-public class offersView extends javax.swing.JPanel implements Runnable {
+public class offersView extends javax.swing.JPanel implements Runnable,mp4.datenbank.struktur.Tabellen {
 
     private Angebot current;
     private String[][] liste;
@@ -1041,7 +1042,7 @@ public class offersView extends javax.swing.JPanel implements Runnable {
 
             if (valide) {
 
-                Query f = QueryClass.instanceOf().clone(Structure.TABLE_ORDERS);
+                Query f = QueryClass.instanceOf().clone( TABLE_ORDERS);
 
                 Integer auftragnummer = f.getNextIndex("auftragnummer");
 
@@ -1093,7 +1094,7 @@ public class offersView extends javax.swing.JPanel implements Runnable {
                 jTextField6.setText(order.getOrdernummer());
                 mainframe.nachricht("Angebot Nummer: " + order.getOrdernummer() + " angelegt.");
 
-                new History(QueryClass.instanceOf(), Structure.ORDER, "Angebot Nummer: " + order.getOrdernummer() + " angelegt.");
+                new History(QueryClass.instanceOf(),  Strings.ORDER, "Angebot Nummer: " + order.getOrdernummer() + " angelegt.");
 
 
 
@@ -1173,7 +1174,7 @@ public class offersView extends javax.swing.JPanel implements Runnable {
 
                 if (valide) {
 
-                    Query f = QueryClass.instanceOf().clone(Structure.TABLE_ORDERS);
+                    Query f = QueryClass.instanceOf().clone( TABLE_ORDERS);
 
                     //Integer auftragnummer = f.getNextIndex("auftragnummer");
 
@@ -1235,7 +1236,7 @@ public class offersView extends javax.swing.JPanel implements Runnable {
                     }
 
                     mainframe.getNachricht().setText("Angebot Nummer " + order.getOrdernummer() + " gespeichert.");
-                    new History(QueryClass.instanceOf(), Structure.ORDER, "Angebot Nummer: " + order.getOrdernummer() + " editiert.");
+                    new History(QueryClass.instanceOf(),  Strings.ORDER, "Angebot Nummer: " + order.getOrdernummer() + " editiert.");
 
 
                     this.setOrder(new Angebot(QueryClass.instanceOf(), order.getId()));
@@ -1347,7 +1348,7 @@ public class offersView extends javax.swing.JPanel implements Runnable {
     private void jTextField4ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
 
 
-        String[] st = getCustomer().selectLast(Structure.ALL, "kundennummer", jTextField4.getText(), false, false, false);
+        String[] st = getCustomer().selectLast( Strings.ALL, "kundennummer", jTextField4.getText(), false, false, false);
 
         this.clear();
         jTextField5.setText("");
@@ -1378,7 +1379,7 @@ public class offersView extends javax.swing.JPanel implements Runnable {
 
 
 
-        String[] st = getCustomer().selectLast(Structure.ALL, "firma", jTextField5.getText(), false, false, false);
+        String[] st = getCustomer().selectLast(Strings.ALL, "firma", jTextField5.getText(), false, false, false);
 
         this.clear();
         jTextField4.setText("");
@@ -1568,7 +1569,7 @@ public class offersView extends javax.swing.JPanel implements Runnable {
 
                 if (valide) {
 
-                    Query f = QueryClass.instanceOf().clone(Structure.TABLE_BILLS);
+                    Query f = QueryClass.instanceOf().clone( TABLE_BILLS);
 
                     Integer rechnungnummer = f.getNextIndex("rechnungnummer");
 

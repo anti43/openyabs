@@ -46,4 +46,31 @@ public interface Strings {
             "P-Nr" + "," + "Name" + "," + "Text" + "," + "VK" + "," + "EK" +
             "," + "Tax" + "," + "Hersteller" + "," + "Lieferant" + "," + "Warengruppennr" + "," + 
             "Datum" + "," + "EAN";
+    
+     /**
+      * 
+      * String utilitis
+      */
+     public final String ALL = "*";
+     public final String NULL = "";
+     public final String ID = "id";
+     public final String NOTNULL = "NOT null";
+     
+     public final String CUSTOMER = "Kunde";
+
+     
+     public final String SUPPLIER = "Lieferant";
+
+     
+     public final String PRODUCT = "Produkt";
+  
+     
+     public final String ORDER = "Angebot";
+
+     
+     public final String BILL = "Rechnung";
+     
+     public final String BACKUP = "Datensicherung";
+     
+     public final String KONTEN = "Konten";
 }

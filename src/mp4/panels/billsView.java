@@ -20,8 +20,9 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
+import mp3.classes.interfaces.Strings;
 import mp3.database.util.Query;
-import mp3.classes.interfaces.Structure;
+
 
 
 import mp3.classes.layer.visual.CustomerPicker;
@@ -40,7 +41,7 @@ import mp4.klassen.objekte.Customer;
 import mp4.klassen.objekte.History;
 import mp4.klassen.objekte.Product;
 import mp3.classes.visual.main.mainframe;
-import mp3.classes.interfaces.Structure.*;
+
 import mp4.klassen.pdf.PDF_Rechnung;
 import mp4.klassen.objekte.MyData;
 import mp3.classes.visual.util.arrear;
@@ -51,7 +52,7 @@ import mp4.utils.datum.DateConverter;
  *
  * @author  anti43
  */
-public class billsView extends javax.swing.JPanel implements Runnable {
+public class billsView extends javax.swing.JPanel implements Runnable ,mp4.datenbank.struktur.Tabellen{
 
     private Rechnung current;
     private String[][] liste;
@@ -1144,7 +1145,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
 
             if (valide) {
 
-                Query f = QueryClass.instanceOf().clone(Structure.TABLE_BILLS);
+                Query f = QueryClass.instanceOf().clone(TABLE_BILLS);
                
                 if(jTextField6.getText().length()<1 || jCheckBox2.isSelected()) {
                     rechnungnummer = f.getNextIndexString("rechnungnummer");
@@ -1233,7 +1234,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
                 jTextField6.setText(String.valueOf(f.getNextIndex("rechnungnummer")));
                 mainframe.nachricht("Rechnung Nummer: " + bill.getRechnungnummer() + " angelegt.");
 
-                new History(QueryClass.instanceOf(), Structure.BILL, "Rechnung Nummer: " + bill.getRechnungnummer() + " angelegt.");
+                new History(QueryClass.instanceOf(),  Strings.BILL, "Rechnung Nummer: " + bill.getRechnungnummer() + " angelegt.");
                 this.setBill(new Rechnung(QueryClass.instanceOf(), bill.getId()));
 
                 save();
@@ -1305,7 +1306,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
 
                 if (valide) {
 
-                    Query f = QueryClass.instanceOf().clone(Structure.TABLE_BILLS);
+                    Query f = QueryClass.instanceOf().clone( TABLE_BILLS);
 
                     //Integer rechnungnummer = f.getNextIndex("rechnungnummer");
 
@@ -1410,7 +1411,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
 
                     mainframe.getNachricht().setText("Rechnung Nummer " + bill.getRechnungnummer() + " gespeichert.");
 
-                    new History(QueryClass.instanceOf(), Structure.BILL, "Rechnung Nummer: " + bill.getRechnungnummer() + " editiert.");
+                    new History(QueryClass.instanceOf(), Strings.BILL, "Rechnung Nummer: " + bill.getRechnungnummer() + " editiert.");
 
                     this.setBill(new Rechnung(QueryClass.instanceOf(), bill.getid()));
 
@@ -1524,7 +1525,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
     private void jTextField4ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
 
 
-        String[] st = getCustomer().selectLast(Structure.ALL, "kundennummer", jTextField4.getText(), false, false, false);
+        String[] st = getCustomer().selectLast( Strings.ALL, "kundennummer", jTextField4.getText(), false, false, false);
 
         this.clear();
         jTextField5.setText("");
@@ -1555,7 +1556,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
 
 
 
-        String[] st = getCustomer().selectLast(Structure.ALL, "firma", jTextField5.getText(), false, false, false);
+        String[] st = getCustomer().selectLast( Strings.ALL, "firma", jTextField5.getText(), false, false, false);
 
         this.clear();
         jTextField4.setText("");
@@ -1677,7 +1678,7 @@ public class billsView extends javax.swing.JPanel implements Runnable {
         if (current != null && current.hasId()) {
             new PDF_Rechnung(current);
 
-            new History(QueryClass.instanceOf(), Structure.BILL, "Rechnung Nummer: " + current.getRechnungnummer() + " als PDF erzeugt.");
+            new History(QueryClass.instanceOf(),  Strings.BILL, "Rechnung Nummer: " + current.getRechnungnummer() + " als PDF erzeugt.");
 
         }
     }//GEN-LAST:event_jButton12MouseClicked

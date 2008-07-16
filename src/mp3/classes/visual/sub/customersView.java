@@ -14,8 +14,9 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableModel;
-import mp3.classes.interfaces.Structure;
 
+
+import mp3.classes.interfaces.Strings;
 import mp3.classes.layer.Popup;
 import mp3.classes.layer.QueryClass;
 import mp4.klassen.objekte.Rechnung;
@@ -29,7 +30,7 @@ import mp3.classes.visual.util.serialLetter;
  *
  * @author  anti43
  */
-public class customersView extends javax.swing.JPanel {
+public class customersView extends javax.swing.JPanel implements mp4.datenbank.struktur.Tabellen{
 
     public Customer current;
     private String[][] liste;
@@ -53,7 +54,7 @@ public class customersView extends javax.swing.JPanel {
         }
 
         liste = current.getAll(false);
-        String k = "id, " + Structure.TABLE_CUSTOMER_FIELDS;
+        String k = "id, " + TABLE_CUSTOMER_FIELDS;
 
         this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
         current.stripFirst(jTable2);
@@ -79,7 +80,7 @@ public class customersView extends javax.swing.JPanel {
 
         liste = current.getAll(false);
 
-        this.jTable2.setModel(new DefaultTableModel(liste, Structure.TABLE_CUSTOMER_FIELDS.split(",")));
+        this.jTable2.setModel(new DefaultTableModel(liste, TABLE_CUSTOMER_FIELDS.split(",")));
         current.stripFirst(jTable2);
     }
 
@@ -986,14 +987,14 @@ System.out.println(jPanel5.getSize());
             try {
 
 
-                new History(QueryClass.instanceOf(), Structure.CUSTOMER, "Kunde Nummer: " + current.getKundennummer() + " angelegt.");
+                new History(QueryClass.instanceOf(), Strings.CUSTOMER, "Kunde Nummer: " + current.getKundennummer() + " angelegt.");
             } catch (Exception ex) {
                 Popup.warn(ex.getMessage(), Popup.ERROR);
             }
 
 
             liste = current.getAll(false);
-            String k = "id, " + Structure.TABLE_CUSTOMER_FIELDS;
+            String k = "id, " + TABLE_CUSTOMER_FIELDS;
 
             this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
             current.stripFirst(jTable2);
@@ -1028,7 +1029,7 @@ System.out.println(jPanel5.getSize());
 
 
         liste = current.getAll(false);
-        String k = "id, " + Structure.TABLE_CUSTOMER_FIELDS;
+        String k = "id, " + TABLE_CUSTOMER_FIELDS;
 
         this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
         current.stripFirst(jTable2);
@@ -1037,7 +1038,7 @@ System.out.println(jPanel5.getSize());
     private void jTable2MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable2MouseClicked
         boolean idOk = true;
         Integer id = 0;
-        JPopupMenu popup = new PopupMenu2(this, jTable2, Structure.TABLE_CUSTOMER_FIELDS, 0);
+        JPopupMenu popup = new PopupMenu2(this, jTable2, TABLE_CUSTOMER_FIELDS, 0);
 
 
 
@@ -1097,11 +1098,11 @@ System.out.println(jPanel5.getSize());
 
                     mainframe.nachricht("Kunde Nummer " + current.getKundennummer() + " gespeichert.");
 
-                    new History(QueryClass.instanceOf(), Structure.CUSTOMER, "Kunde Nummer: " + current.getKundennummer() + " editiert.");
+                    new History(QueryClass.instanceOf(), Strings.CUSTOMER, "Kunde Nummer: " + current.getKundennummer() + " editiert.");
 
 
                     liste = current.getAll(false);
-                    String k = "id, " + Structure.TABLE_CUSTOMER_FIELDS;
+                    String k = "id, " + TABLE_CUSTOMER_FIELDS;
 
                     this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
                     current.stripFirst(jTable2);
@@ -1227,7 +1228,7 @@ System.out.println(jPanel5.getSize());
             try {
                 current.deactivate(current.getId().toString());
 
-                new History(QueryClass.instanceOf(), Structure.CUSTOMER, "Kunde Nummer: " + current.getKundennummer() + " gelöscht.");
+                new History(QueryClass.instanceOf(), Strings.CUSTOMER, "Kunde Nummer: " + current.getKundennummer() + " gelöscht.");
 
 
 
@@ -1248,7 +1249,7 @@ System.out.println(jPanel5.getSize());
                 this.jTextArea1.setText("");
 
                 liste = current.getAll(false);
-                String k = "id," + Structure.TABLE_CUSTOMER_FIELDS;
+                String k = "id," + TABLE_CUSTOMER_FIELDS;
 
                 this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
                 current.stripFirst(jTable2);
@@ -1267,7 +1268,7 @@ System.out.println(jPanel5.getSize());
 private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
 
       liste = current.getAll(true);
-                String k = "id, " + Structure.TABLE_CUSTOMER_FIELDS;
+                String k = "id, " + TABLE_CUSTOMER_FIELDS;
 
                 this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
                 current.stripFirst(jTable2);

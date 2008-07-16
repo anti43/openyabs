@@ -17,15 +17,16 @@
 package mp3.classes.layer;
 
 import javax.swing.JTable;
-import mp3.classes.interfaces.Structure;
+
 import mp3.classes.interfaces.Queries;
 import mp3.database.util.Query;
+
 
 /**
  *
  * @author anti
  */
-public abstract class People implements Queries, Structure {
+public abstract class People implements Queries, mp4.datenbank.struktur.Tabellen{
 
     public Integer id = 0;
     public boolean isSaved = false;

@@ -27,7 +27,7 @@ import mp3.classes.utils.Log;
  *
  * @author anti43
  */
-public class Data extends mp3.classes.layer.Things implements mp3.classes.interfaces.Structure {
+public class Data extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen {
 
     private String[][] years;
     private String[][] ausgaben;

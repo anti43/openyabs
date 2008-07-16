@@ -23,7 +23,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Component id="jPanel1" alignment="0" max="32767" attributes="0"/>
           <Group type="102" alignment="0" attributes="0">
-              <Component id="jTabbedPane1" pref="722" max="32767" attributes="0"/>
+              <Component id="jTabbedPane1" pref="728" max="32767" attributes="0"/>
               <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -148,7 +148,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jPanel6" max="32767" attributes="0"/>
                   </Group>
-                  <Component id="jToolBar1" alignment="0" pref="717" max="32767" attributes="0"/>
+                  <Component id="jToolBar1" alignment="0" pref="723" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
@@ -186,7 +186,7 @@
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jScrollPane5" alignment="0" pref="296" max="32767" attributes="0"/>
+                      <Component id="jScrollPane5" alignment="0" pref="301" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
               </Layout>
@@ -385,7 +385,7 @@
                                   <Component id="jLabel19" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                               </Group>
-                              <Component id="jScrollPane3" alignment="0" pref="246" max="32767" attributes="1"/>
+                              <Component id="jScrollPane3" alignment="0" pref="252" max="32767" attributes="1"/>
                           </Group>
                       </Group>
                   </Group>
@@ -449,14 +449,14 @@
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Group type="102" alignment="0" attributes="0">
                                           <Component id="jLabel17" min="-2" max="-2" attributes="0"/>
-                                          <EmptySpace pref="129" max="32767" attributes="0"/>
+                                          <EmptySpace pref="133" max="32767" attributes="0"/>
                                       </Group>
-                                      <Component id="jScrollPane2" pref="143" max="32767" attributes="0"/>
+                                      <Component id="jScrollPane2" pref="147" max="32767" attributes="0"/>
                                   </Group>
                               </Group>
                               <Group type="102" attributes="0">
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jScrollPane3" pref="389" max="32767" attributes="0"/>
+                                  <Component id="jScrollPane3" pref="393" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
@@ -717,12 +717,12 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jScrollPane4" alignment="0" pref="717" max="32767" attributes="0"/>
+                  <Component id="jScrollPane4" alignment="0" pref="723" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jScrollPane4" alignment="0" pref="467" max="32767" attributes="0"/>
+                  <Component id="jScrollPane4" alignment="0" pref="470" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
           </Layout>

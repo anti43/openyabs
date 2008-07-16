@@ -36,7 +36,7 @@ import mp4.utils.datum.DateConverter;
  *
  * @author anti43
  */
-public class Rechnung extends mp3.classes.layer.Things implements mp3.classes.interfaces.Structure {
+public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen {
 
     private String Rechnungnummer = "";
     private Integer KundenId = 0;
@@ -65,7 +65,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp3.classes.in
     public Rechnung(Query query, Integer id) {
         super(query.clone(TABLE_BILLS));
         this.id = Integer.valueOf(id);
-        this.explode(this.selectLast(ALL, ID, id.toString(), true));
+        this.explode(this.selectLast(Strings.ALL, Strings.ID, id.toString(), true));
         this.query = query;
         bp = getProducts(query);
     }
@@ -75,7 +75,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp3.classes.in
 
         try {
             this.id = Integer.valueOf(id);
-            this.explode(this.selectLast(ALL, "rechnungnummer", text, false));
+            this.explode(this.selectLast(Strings.ALL, "rechnungnummer", text, false));
             this.query = query;
             bp = getProducts(query);
 
@@ -390,7 +390,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp3.classes.in
 
         String[] wher = {"rechnungid", this.getId().toString(), ""};
 
-        prods = q.select(ALL, wher);
+        prods = q.select(Strings.ALL, wher);
         RechnungPosten[] prof = null;
 //
 //        for (int t = 0; t < str.length; t++) {
@@ -418,7 +418,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp3.classes.in
 
         Query q = query.clone(TABLE_BILLS);
 
-        prods = q.select(ALL, null, TABLE_CUSTOMERS, "kundenid");
+        prods = q.select(Strings.ALL, null, TABLE_CUSTOMERS, "kundenid");
 
         setLabelsOfAllWithDepencies(q);
         return prods;
@@ -468,7 +468,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp3.classes.in
 
         Query q = query.clone(TABLE_BILLS);
 
-        prods = q.select(ALL, null);
+        prods = q.select(Strings.ALL, null);
 
         return prods;
     }
