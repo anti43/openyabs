@@ -19,7 +19,7 @@ package mp4.klassen.objekte;
 import java.util.Date;
 import mp3.classes.layer.QueryClass;
 
-import mp3.database.util.Query;
+import handling.db.Query;
 import mp4.utils.datum.DateConverter;
 
 /**

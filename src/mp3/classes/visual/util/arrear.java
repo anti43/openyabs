@@ -8,7 +8,7 @@ package mp3.classes.visual.util;
 
 import mp4.klassen.objekte.*;
 import mp4.klassen.objekte.Customer;
-import mp4.klassen.pdf.PDF_Mahnung;
+import handling.pdf.PDF_Mahnung;
 import mp3.classes.utils.WindowTools;
 
 /**

@@ -21,7 +21,7 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import mp3.classes.interfaces.Strings;
-import mp3.database.util.Query;
+import handling.db.Query;
 
 
 
@@ -42,7 +42,7 @@ import mp4.klassen.objekte.History;
 import mp4.klassen.objekte.Product;
 import mp3.classes.visual.main.mainframe;
 
-import mp4.klassen.pdf.PDF_Rechnung;
+import handling.pdf.PDF_Rechnung;
 import mp4.klassen.objekte.MyData;
 import mp3.classes.visual.util.arrear;
 import mp4.utils.datum.DateConverter;

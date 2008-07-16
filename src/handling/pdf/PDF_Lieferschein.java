@@ -14,7 +14,7 @@
  *      You should have received a copy of the GNU General Public License
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mp4.klassen.pdf;
+package handling.pdf;
 
 import mp4.klassen.objekte.MyData;
 import mp4.klassen.objekte.Customer;

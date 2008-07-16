@@ -19,7 +19,7 @@ package mp4.klassen.objekte;
 /*import mp3.classes.objects.*;*/
 import mp3.classes.interfaces.Daemonable;
 import java.util.Date;
-import mp3.database.util.Query;
+import handling.db.Query;
 
 import mp3.classes.layer.*;
 import mp3.classes.utils.Formater;

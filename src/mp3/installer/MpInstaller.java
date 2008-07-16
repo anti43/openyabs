@@ -21,8 +21,9 @@
  */
 package mp3.installer;
 
+import handling.db.Conn;
 import java.io.IOException;
-import mp3.database.util.Conn;
+
 
 
 

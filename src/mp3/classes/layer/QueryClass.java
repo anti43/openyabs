@@ -20,7 +20,7 @@ package mp3.classes.layer;
 import java.io.File;
 import javax.swing.JProgressBar;
 import mp3.classes.visual.main.mainframe;
-import mp3.database.util.Conn;
+import handling.db.Conn;
 import mp3.classes.interfaces.Constants;
 
 
@@ -28,7 +28,7 @@ import mp3.classes.interfaces.Constants;
  *
  * @author anti
  */
-public class QueryClass extends mp3.database.util.Query implements mp4.datenbank.struktur.Tabellen,Cloneable {
+public class QueryClass extends handling.db.Query implements mp4.datenbank.struktur.Tabellen,Cloneable {
 
     private static QueryClass qc = null;
     private static mp3.classes.visual.main.mainframe mainf;

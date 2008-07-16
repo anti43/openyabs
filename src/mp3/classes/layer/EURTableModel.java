@@ -26,7 +26,7 @@ import mp3.classes.interfaces.Strings;
 import mp4.klassen.objekte.Rechnung;
 import mp3.classes.utils.Formater;
 import mp3.classes.utils.Log;
-import mp3.database.util.Query;
+import handling.db.Query;
 
 
 /**

@@ -16,6 +16,7 @@
  */
 package mp3.classes.visual.main;
 
+import handling.db.Conn;
 import mp3.classes.visual.util.csvProductImporter;
 import mp3.classes.visual.util.fastChoice;
 import mp3.classes.visual.util.serialLetter;
@@ -30,7 +31,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import mp3.classes.interfaces.Constants;
-import mp3.database.util.Conn;
+
 import mp3.classes.interfaces.Strings;
 import mp3.classes.layer.Popup;
 import mp3.classes.layer.QueryClass;

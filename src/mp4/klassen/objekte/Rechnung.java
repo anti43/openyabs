@@ -23,7 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import mp3.database.util.Query;
+import handling.db.Query;
 
 import mp3.classes.interfaces.Strings;
 import mp3.classes.utils.Log;

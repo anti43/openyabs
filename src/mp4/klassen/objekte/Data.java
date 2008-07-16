@@ -19,7 +19,7 @@
 package mp4.klassen.objekte;
 
 import mp4.klassen.objekte.Rechnung;
-import mp3.database.util.Query;
+import handling.db.Query;
 import mp3.classes.utils.Formater;
 import mp3.classes.utils.Log;
 
