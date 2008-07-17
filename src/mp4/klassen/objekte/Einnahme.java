@@ -25,6 +25,7 @@ import mp3.classes.layer.*;
 import mp3.classes.utils.Formater;
 
 import mp3.classes.utils.Log;
+import mp4.utils.betraege.FormatMoney;
 import mp4.utils.datum.DateConverter;
 
 /**
@@ -82,6 +83,14 @@ public class Einnahme extends mp3.classes.layer.Things implements mp4.datenbank.
         super(query.clone(TABLE_INCOME));
         this.id = Integer.valueOf(id);
         this.explode(this.selectLast("*", "id", id, true));
+    }
+
+    public String getFPreis() {
+       return FormatMoney.formatLokal(getPreis());
+    }
+
+    public String getFTax() {
+       return DateConverter.getDefDateString(getDatum());
     }
 
     private void explode(String[] select) {
@@ -156,8 +165,8 @@ public class Einnahme extends mp3.classes.layer.Things implements mp4.datenbank.
         this.Beschreibung = beschreibung;
     }
 
-    public String getPreis() {
-        return Preis.toString();
+    public Double getPreis() {
+        return Preis;
     }
 
     public void setPreis(double Preis) {

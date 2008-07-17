@@ -31,7 +31,7 @@ public class vInteger {
             this.value = NumberCheck.checkInteger(number);
             this.isVerified = true;
 
-            if (this.value > 0) {
+            if (this.value >= 0) {
                 this.isPositive = true;
             }
         }

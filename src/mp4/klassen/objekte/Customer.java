@@ -53,6 +53,7 @@ public class Customer extends mp3.classes.layer.People implements mp4.datenbank.
         this.query=QueryClass.instanceOf();
     }
 
+
  
 
     public Customer(Query query) {
@@ -61,11 +62,11 @@ public class Customer extends mp3.classes.layer.People implements mp4.datenbank.
 
     }
 
-    public Customer(Query query, Integer id) {
-        super(query.clone(TABLE_CUSTOMERS));
+    public Customer(Integer id) {
+        super(QueryClass.instanceOf().clone(TABLE_CUSTOMERS));
         this.id=Integer.valueOf(id);
         this.explode(this.selectLast("*", "id", id.toString(), true , true, false));
-        this.query=query;
+        this.query=QueryClass.instanceOf();
     }
 
     public Customer(QueryClass query, String kundennummer, boolean like) {
@@ -93,7 +94,7 @@ public class Customer extends mp3.classes.layer.People implements mp4.datenbank.
        
         for (int i = 0; i < str.length; i++) {
             
-            arr.add(new Customer(QueryClass.instanceOf(), Integer.valueOf(str[i][0])));
+            arr.add(new Customer(Integer.valueOf(str[i][0])));
 
         }
 

@@ -247,9 +247,9 @@ public class CustomerPicker extends javax.swing.JFrame {
 
             try {
                 if(!order) {
-                    frame.setCustomer(new Customer(QueryClass.instanceOf(), id));
+                    frame.setCustomer(new Customer(id));
                 }else {
-                    frame1.setCustomer(new Customer(QueryClass.instanceOf(), id));
+                    frame1.setCustomer(new Customer(id));
                 }
                 this.dispose();
             } catch (Exception exception) {

@@ -79,7 +79,7 @@ public class PDF_Mahnung {
         l = MyData.instanceOf();
         this.r = b;
 
-        k = new Customer(QueryClass.instanceOf(), b.getKundenId());
+        k = new Customer(b.getKundenId());
 
         products = r.getProductlistAsArray();
 

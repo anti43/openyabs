@@ -35,7 +35,7 @@ public class vFloat {
             this.svalue = this.value.toString();
             this.isVerified = true;
 
-            if (this.value > 0) {
+            if (this.value >= 0) {
                 this.isPositive = true;
             }
         }

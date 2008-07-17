@@ -293,7 +293,7 @@ public class offersView extends javax.swing.JPanel implements Runnable,mp4.daten
     public void setOrder(Angebot current) {
 
         this.current = current;
-        this.setCustomer(new Customer(QueryClass.instanceOf(), current.getKundenId()));
+        this.setCustomer(new Customer(current.getKundenId()));
 
 
         this.jTextField6.setText(current.getOrdernummer());
@@ -1357,7 +1357,7 @@ public class offersView extends javax.swing.JPanel implements Runnable,mp4.daten
 
 
         try {
-            this.setCustomer(new Customer(QueryClass.instanceOf(),Integer.valueOf( st[0])));
+            this.setCustomer(new Customer(Integer.valueOf( st[0])));
 
 
         } catch (Exception exception) {
@@ -1389,7 +1389,7 @@ public class offersView extends javax.swing.JPanel implements Runnable,mp4.daten
 
 
         try {
-            this.setCustomer(new Customer(QueryClass.instanceOf(), Integer.valueOf(st[0])));
+            this.setCustomer(new Customer(Integer.valueOf(st[0])));
 
         } catch (Exception exception) {
 
@@ -1630,7 +1630,7 @@ public class offersView extends javax.swing.JPanel implements Runnable,mp4.daten
             mainframe.getB().updateListTable();
             mainframe.getB().resizeFields();
 
-            mainframe.getB().setBill(new Rechnung(QueryClass.instanceOf(), bill.getId()));
+            mainframe.getB().setBill(new Rechnung(bill.getId()));
             mainframe.getJTabbedPane1().setSelectedIndex(1);
 
 

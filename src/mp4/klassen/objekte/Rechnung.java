@@ -29,6 +29,8 @@ import mp3.classes.interfaces.Strings;
 import mp3.classes.utils.Log;
 import mp3.classes.layer.PostenTableModel;
 
+import mp3.classes.layer.QueryClass;
+import mp4.utils.betraege.FormatMoney;
 import mp4.utils.datum.DateConverter;
 
 
@@ -52,6 +54,8 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
     private String[][] prods;
     private List labelsOfGetAllWithD;
 
+  
+
     public Rechnung(Query query) {
         super(query.clone(TABLE_BILLS));
         this.query = query;
@@ -62,11 +66,11 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
      * @param query
      * @param id
      */
-    public Rechnung(Query query, Integer id) {
-        super(query.clone(TABLE_BILLS));
+    public Rechnung(Integer id) {
+        super(QueryClass.instanceOf().clone(TABLE_BILLS));
         this.id = Integer.valueOf(id);
         this.explode(this.selectLast(Strings.ALL, Strings.ID, id.toString(), true));
-        this.query = query;
+        this.query = QueryClass.instanceOf();
         bp = getProducts(query);
     }
 
@@ -94,6 +98,10 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
 
     public String getFDatum() {
       return DateConverter.getDefDateString(getDatum());
+    }
+
+    public String getFGesamtpreis() {
+       return FormatMoney.formatLokal(getGesamtpreis());
     }
 
     public String[][] getUnpaid() {

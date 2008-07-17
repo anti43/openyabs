@@ -301,7 +301,7 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
     public void setBill(Rechnung current) {
 
         this.current = current;
-        this.setCustomer(new Customer(QueryClass.instanceOf(), current.getKundenId()));
+        this.setCustomer(new Customer(current.getKundenId()));
 
 
         this.jTextField6.setText(current.getRechnungnummer());
@@ -1235,7 +1235,7 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
                 mainframe.nachricht("Rechnung Nummer: " + bill.getRechnungnummer() + " angelegt.");
 
                 new History(QueryClass.instanceOf(),  Strings.BILL, "Rechnung Nummer: " + bill.getRechnungnummer() + " angelegt.");
-                this.setBill(new Rechnung(QueryClass.instanceOf(), bill.getId()));
+                this.setBill(new Rechnung(bill.getId()));
 
                 save();
             }
@@ -1271,7 +1271,7 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
         if (evt.getClickCount() >= 2 && idOk && evt.getButton() == MouseEvent.BUTTON1) {
 
             try {
-                this.setBill(new Rechnung(QueryClass.instanceOf(), id));
+                this.setBill(new Rechnung(id));
                 jTabbedPane1.setSelectedIndex(0);
             } catch (Exception exception) {
                 exception.printStackTrace();
@@ -1413,7 +1413,7 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
 
                     new History(QueryClass.instanceOf(), Strings.BILL, "Rechnung Nummer: " + bill.getRechnungnummer() + " editiert.");
 
-                    this.setBill(new Rechnung(QueryClass.instanceOf(), bill.getid()));
+                    this.setBill(new Rechnung(bill.getid()));
 
                 }
             } else {
@@ -1458,7 +1458,7 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
         if (evt.getClickCount() >= 2 && idOk) {
 
             try {
-                this.setBill(new Rechnung(QueryClass.instanceOf(), id));
+                this.setBill(new Rechnung(id));
 
             } catch (Exception exception) {
                 exception.printStackTrace();
@@ -1534,7 +1534,7 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
 
 
         try {
-            this.setCustomer(new Customer(QueryClass.instanceOf(), Integer.valueOf(st[0])));
+            this.setCustomer(new Customer(Integer.valueOf(st[0])));
 
 
         } catch (Exception exception) {
@@ -1566,7 +1566,7 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
 
 
         try {
-            this.setCustomer(new Customer(QueryClass.instanceOf(), Integer.valueOf(st[0])));
+            this.setCustomer(new Customer(Integer.valueOf(st[0])));
 
         } catch (Exception exception) {
 

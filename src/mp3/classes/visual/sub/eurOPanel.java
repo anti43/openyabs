@@ -222,7 +222,7 @@ public class eurOPanel extends javax.swing.JPanel {
 
         if (idOk) {
 
-            Rechnung b = new Rechnung(QueryClass.instanceOf(), id);
+            Rechnung b = new Rechnung(id);
 
             setBill(b);
         }
@@ -246,7 +246,7 @@ public class eurOPanel extends javax.swing.JPanel {
     private void setBill(Rechnung b) {
 
         this.current = b;
-        Customer c = new Customer(QueryClass.instanceOf(), b.getKundenId());
+        Customer c = new Customer( b.getKundenId());
 
         jTextArea3.setFont(new Font(Font.SANS_SERIF,Font.PLAIN, 12));
         jTextArea3.setText(" Kundennummer: "+c.getKundennummer() + "\n\n " + c.getAnrede() + " " + c.getVorname() + " " + c.getName() + "\n " +

@@ -1053,7 +1053,7 @@ System.out.println(jPanel5.getSize());
         if (evt.getClickCount() >= 2 && idOk && evt.getButton() == MouseEvent.BUTTON1) {
 
             try {
-                this.setCustomer(new Customer(QueryClass.instanceOf(), id));
+                this.setCustomer(new Customer( id));
                 jTabbedPane1.setSelectedIndex(0);
             } catch (Exception exception) {
                 exception.printStackTrace();
@@ -1139,7 +1139,7 @@ System.out.println(jPanel5.getSize());
         if (evt.getClickCount() >= 2 && idOk && evt.getButton() == MouseEvent.BUTTON1) {
 
             try {
-                this.setCustomer(new Customer(QueryClass.instanceOf(), id));
+                this.setCustomer(new Customer(id));
 
             } catch (Exception exception) {
                 exception.printStackTrace();
@@ -1203,7 +1203,7 @@ System.out.println(jPanel5.getSize());
             try {
 
 
-                mainframe.getB().setBill(new Rechnung(QueryClass.instanceOf(), id).expose());
+                mainframe.getB().setBill(new Rechnung(id).expose());
 
                 mainframe.getJTabbedPane1().setSelectedIndex(1);
             } catch (Exception ex) {
@@ -1411,7 +1411,7 @@ class PopupActionListener2 implements ActionListener {
             }
 
             try {
-                view.setCustomer(new Customer(QueryClass.instanceOf(), id));
+                view.setCustomer(new Customer( id));
                 view.jTabbedPane1.setSelectedIndex(0);
             } catch (Exception exception) {
 
