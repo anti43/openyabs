@@ -30,7 +30,7 @@ import mp3.classes.utils.Log;
 import mp3.classes.layer.PostenTableModel;
 
 import mp3.classes.layer.QueryClass;
-import mp4.utils.betraege.FormatMoney;
+import mp4.utils.zahlen.FormatMoney;
 import mp4.utils.datum.DateConverter;
 
 
@@ -53,6 +53,11 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
     private Query query;
     private String[][] prods;
     private List labelsOfGetAllWithD;
+
+    public Rechnung() {
+        super(QueryClass.instanceOf().clone(TABLE_BILLS));
+        this.query = QueryClass.instanceOf();
+    }
 
   
 
@@ -629,5 +634,9 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
 
     public void setGesamttax(Double Gesamttax) {
         this.Gesamttax = Gesamttax;
+    }
+
+    public int delete(String id) {
+        return delete(Integer.valueOf(id));
     }
 }

@@ -38,7 +38,7 @@ import mp3.classes.layer.QueryClass;
 
 
 import mp3.classes.utils.Browser;
-import mp3.classes.utils.WindowTools;
+
 import mp3.classes.utils.Log;
 import mp3.classes.utils.SaveAs;
 import mp3.classes.utils.SplashScreen;
@@ -63,6 +63,7 @@ import mp4.klassen.objekte.Customer;
 import mp4.klassen.objekte.Lieferant;
 import mp4.klassen.objekte.MyData;
 import mp4.klassen.objekte.Product;
+import mp4.utils.windows.Position;
 
 /**
  *
@@ -80,7 +81,7 @@ public class mainframe extends javax.swing.JFrame {
     private startView i;
     private eurView j;
     private Main loader;
-    private WindowTools wt = new WindowTools();
+    private Position wt = new Position();
 
     /** Creates new form mainframe
      * @param splash
@@ -151,7 +152,7 @@ public class mainframe extends javax.swing.JFrame {
         try {
             this.setSize(MyData.instanceOf().getMainframeSize());
             
-            if (wt.compNotMaximized(this)) {
+            if (wt.isNotMaximized(this)) {
                 wt.center(this);
             }else
                 this.setExtendedState(mainframe.MAXIMIZED_BOTH);
@@ -685,7 +686,7 @@ public class mainframe extends javax.swing.JFrame {
 
     private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
         license l = new license();
-        new WindowTools(l);
+        wt.center(l);
         l.setVisible(rootPaneCheckingEnabled);
     }//GEN-LAST:event_jMenuItem8ActionPerformed
 
@@ -702,21 +703,15 @@ public class mainframe extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem6ActionPerformed
 
     private void close() {
-
-
         try {
             MyData.instanceOf().setState(this.getHeight(), this.getWidth());
             h.saving();
-
             MyData.instanceOf().setLasttab(jTabbedPane1.getSelectedIndex());
             MyData.instanceOf().save();
-
             System.exit(0);
         } catch (Exception e) {
             System.exit(0);
         }
-
-
     }
 
     private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
@@ -750,7 +745,7 @@ public class mainframe extends javax.swing.JFrame {
                 break;
             case 1:
 
-                this.getB().save();
+                this.getBillPanel().save();
 
                 break;
             case 2:
@@ -991,7 +986,7 @@ public class mainframe extends javax.swing.JFrame {
         return e;
     }
 
-    public billsView getB() {
+    public billsView getBillPanel() {
         return b;
     }
 

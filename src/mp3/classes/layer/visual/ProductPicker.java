@@ -8,13 +8,15 @@ package mp3.classes.layer.visual;
 
 import mp3.classes.layer.*;
 import mp3.classes.utils.Formater;
-import mp3.classes.utils.WindowTools;
+
 import java.awt.event.MouseEvent;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import mp4.klassen.objekte.Product;
 import mp4.panels.billsView;
 import mp3.classes.visual.sub.offersView;
+import mp4.utils.tabellen.SelectionCheck;
+import mp4.utils.windows.Position;
 
 
 /**
@@ -36,6 +38,7 @@ public class ProductPicker extends javax.swing.JFrame {
     private String[][] list;
     private offersView frame1;
     private boolean order=false;
+    private Position pos = new Position(); 
 
 public static void update(){
         Product n = new Product(QueryClass.instanceOf());
@@ -46,7 +49,7 @@ public static void update(){
         initComponents ();
         this.frame1=aThis;
         p = new Product(QueryClass.instanceOf());
-        new WindowTools(this);
+        
  
         if(ProductPicker.getListe()==null){
             list = p.select("id,produktnummer,name,hersteller", "produktnummer", "", "produktnummer", true);
@@ -73,7 +76,7 @@ public static void update(){
         initComponents ();
         this.frame=frame;
         p = new Product(QueryClass.instanceOf());
-        new WindowTools(this);
+        pos.center(this);
  
         if(ProductPicker.getListe()==null){
             list = p.select("id,produktnummer,name,hersteller", "produktnummer", "", "produktnummer", true);
@@ -315,24 +318,16 @@ public static void update(){
             text = false;
         }
         
-        boolean idOk = true;
-        Integer id = 0;
-     
-        try {
-            id = Integer.valueOf((String) jTable1.getValueAt(jTable1.getSelectedRow(), 0));
-        } catch (Exception numberFormatException) {
-            idOk = false;
-        }
+        SelectionCheck selection =new SelectionCheck(jTable1);
 
 
-
-        if (idOk) {
+        if (selection.checkID()) {
 
             try {
                 if(!order) {
-                    frame.addToBill(new Product(QueryClass.instanceOf(), id),ean,name,text);
+                    frame.addToBill(new Product(selection.getId()),ean,name,text);
                 }else{
-                     frame1.addToOrder(new Product(QueryClass.instanceOf(), id),ean,name,text);
+                     frame1.addToOrder(new Product(selection.getId()),ean,name,text);
                 }
                 this.dispose();
             } catch (Exception exception) {

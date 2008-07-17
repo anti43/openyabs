@@ -25,8 +25,9 @@ import mp3.classes.layer.*;
 import mp3.classes.utils.Formater;
 
 import mp3.classes.utils.Log;
-import mp4.utils.betraege.FormatMoney;
+import mp4.utils.zahlen.FormatMoney;
 import mp4.utils.datum.DateConverter;
+import mp4.utils.zahlen.FormatTax;
 
 /**
  *
@@ -89,8 +90,8 @@ public class Einnahme extends mp3.classes.layer.Things implements mp4.datenbank.
        return FormatMoney.formatLokal(getPreis());
     }
 
-    public String getFTax() {
-       return DateConverter.getDefDateString(getDatum());
+   public String getFTax() {
+       return FormatTax.formatLokal(getTax());
     }
 
     private void explode(String[] select) {
@@ -105,8 +106,6 @@ public class Einnahme extends mp3.classes.layer.Things implements mp4.datenbank.
         } catch (Exception numberFormatException) {
             Log.Debug(numberFormatException);
         }
-
-
     }
 
     private String collect() {
@@ -115,7 +114,7 @@ public class Einnahme extends mp3.classes.layer.Things implements mp4.datenbank.
         str = str + "(;;2#4#1#1#8#0#;;)" + this.getBeschreibung() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
         str = str + this.getPreis() + "(;;,;;)";
         str = str + this.getTax() + "(;;,;;)";
-        str = str + "(;;2#4#1#1#8#0#;;)" + this.getDatum() + "(;;2#4#1#1#8#0#;;)";
+        str = str + "(;;2#4#1#1#8#0#;;)" + DateConverter.getSQLDateString(this.getDatum()) + "(;;2#4#1#1#8#0#;;)";
         return str;
     }
 
@@ -145,7 +144,6 @@ public class Einnahme extends mp3.classes.layer.Things implements mp4.datenbank.
 
         String[][] bills = new Rechnung(q).getPaid();
 
-
         return Formater.merge(inserType(prods), new Rechnung(q).inserType(bills));
     }
 
@@ -173,8 +171,8 @@ public class Einnahme extends mp3.classes.layer.Things implements mp4.datenbank.
         this.Preis = Preis;
     }
 
-    public String getTax() {
-        return Tax.toString();
+    public Double getTax() {
+        return Tax;
     }
 
     public void setTax(double Tax) {
@@ -206,7 +204,6 @@ public class Einnahme extends mp3.classes.layer.Things implements mp4.datenbank.
 
                         pro[i][j] = prods[i][m];
                     }
-
                 }
             }
         }

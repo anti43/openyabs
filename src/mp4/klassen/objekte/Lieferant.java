@@ -52,7 +52,8 @@ public class Lieferant extends mp3.classes.layer.People implements mp4.datenbank
         this.query =QueryClass.instanceOf();
         
     }
-    
+
+
 
     public Lieferant(Query query) {
         super(query.clone(TABLE_SUPPLIER));
@@ -61,9 +62,9 @@ public class Lieferant extends mp3.classes.layer.People implements mp4.datenbank
 
     }
 
-    public Lieferant(Query query, Integer id) {
-        super(query.clone(TABLE_SUPPLIER));
-        this.query =query;
+    public Lieferant(Integer id) {
+        super(QueryClass.instanceOf().clone(TABLE_SUPPLIER));
+        this.query =QueryClass.instanceOf();
         
 //        if(this.id!=0) {
             this.explode(this.selectLast("*", "id", id.toString(), true, false, false));

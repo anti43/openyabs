@@ -11,7 +11,6 @@ import javax.swing.JTable;
 import mp4.klassen.objekte.HistoryHandler;
 import javax.swing.table.DefaultTableModel;
 import mp3.classes.visual.main.mainframe;
-import mp3.classes.visual.main.mainframe;
 
 /**
  *
@@ -27,15 +26,15 @@ public class historyView extends javax.swing.JPanel implements Runnable {
     /** Creates new form customers
      * @param aThis 
      */
-    public historyView(mainframe aThis) {
+    public historyView(mainframe frame) {
         initComponents();
 
-        mainframe = aThis;
+        mainframe = frame;
         liste = HistoryHandler.getHistory();
         header = new String[]{"Aktion", "Beschreibung", "Datum"};
 
         jTable1.setModel(new DefaultTableModel(liste, header));
-        
+
         resizeTable();
         t = new Thread(this);
         t.setPriority(Thread.MIN_PRIORITY);
@@ -82,7 +81,7 @@ public class historyView extends javax.swing.JPanel implements Runnable {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 365, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 256, Short.MAX_VALUE)
                 .addComponent(jButton6)
                 .addContainerGap())
         );
@@ -110,30 +109,28 @@ public class historyView extends javax.swing.JPanel implements Runnable {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 610, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 488, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 489, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 273, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
     /**
      * 
      * @param current
      */
     private void jButton6ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        
 
-                    HistoryHandler.validate();
-                    liste = HistoryHandler.getHistory();
+        HistoryHandler.validate();
+        liste = HistoryHandler.getHistory();
+        jTable1.setModel(new DefaultTableModel(liste, header));
+        resizeTable();
 
-                    jTable1.setModel(new DefaultTableModel(liste, header));
-                    
-                    resizeTable();
-                  
     }//GEN-LAST:event_jButton6ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -143,30 +140,23 @@ public class historyView extends javax.swing.JPanel implements Runnable {
     public javax.swing.JScrollPane jScrollPane1;
     public javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
+
     public void run() {
         while (true) {
-//            while (this.mainframe.getShowingTab() != 6) {
-                try {
-
-                    HistoryHandler.validate();
-                    liste = HistoryHandler.getHistory();
-
-                    jTable1.setModel(new DefaultTableModel(liste, header));
-                    resizeTable();
-                    Thread.sleep(60000);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(historyView.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-
-//            }
-
-
+            try {
+                HistoryHandler.validate();
+                liste = HistoryHandler.getHistory();
+                jTable1.setModel(new DefaultTableModel(liste, header));
+                resizeTable();
+                Thread.sleep(60000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(historyView.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
     private void resizeTable() {
-              getJTable1().getColumn(getJTable1().getColumnName(0)).setPreferredWidth(100);
-          getJTable1().getColumn(getJTable1().getColumnName(0)).setMaxWidth(100);
+        getJTable1().getColumn(getJTable1().getColumnName(0)).setPreferredWidth(100);
+        getJTable1().getColumn(getJTable1().getColumnName(0)).setMaxWidth(100);
     }
 }

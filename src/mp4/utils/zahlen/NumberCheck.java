@@ -41,4 +41,16 @@ public class NumberCheck {
             return null;
         }
     }
+
+    static Double checkDouble(Object number) {
+          try {
+            return Double.valueOf(number.toString());
+        } catch (NumberFormatException numberFormatException) {
+            try {
+                return Double .valueOf(number.toString().replaceAll(",", "."));
+            } catch (NumberFormatException numberFormatException1) {
+                return null;
+            }
+        }
+    }
 }

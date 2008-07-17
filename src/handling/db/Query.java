@@ -31,6 +31,7 @@ import java.util.logging.Logger;
 import javax.swing.JProgressBar;
 import mp3.classes.utils.Log;
 import mp3.classes.visual.main.mainframe;
+import mp4.utils.datum.DateConverter;
 
 /**
  *
@@ -1347,10 +1348,8 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
 
         String ord = " ORDER BY " + order;
         String wher = "";
-
-        Calendar cl = Calendar.getInstance();
-        java.util.Date cdate = null;
-
+        java.util.Date date;
+        
 
         if (like) {
 
@@ -1359,16 +1358,10 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
 
                 
                 k = " BETWEEN ";
-                try {
-                    cdate = format.parse(where[1] + " 00.00.00");
-                } catch (ParseException ex) {
-                    Logger.getLogger(Query.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                cl.setTime(cdate);
-                cl.add(Calendar.DATE, 31);
-                java.util.Date change_date = cl.getTime();
                 
-                where[1] = "'" + format.format(cdate) + "'" + " AND " +"'" +  format.format(change_date)+"'";
+                date = DateConverter.getDate(where[1]);
+                
+                where[1] = "'" + DateConverter.getSQLDateString(date) + "'" + " AND " +"'" +  DateConverter.getSQLDateString(DateConverter.addMonth(date))+"'";
                 where[2] = " ";
 
             } else {

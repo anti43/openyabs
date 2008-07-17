@@ -27,6 +27,7 @@ import mp4.klassen.objekte.Rechnung;
 import mp3.classes.utils.Formater;
 import mp3.classes.utils.Log;
 import handling.db.Query;
+import mp4.utils.datum.DateConverter;
 
 
 /**
@@ -64,6 +65,10 @@ public class EURTableModel implements ProtectedStrings, Constants, Strings, mp4.
     Double konto2130 = 0d; // Private Kfz-NutzungDouble konto,
     Double konto2140 = 0d; // Vom Finanzamt erstattete und ggf. verrechnete Umsatzsteuer";
 
+    public EURTableModel() {
+        new EURTableModel(DateConverter.getYear());
+    }
+   
     public EURTableModel(String year) {
 
         data = new Object[KONTEN_GRUPPEN.length][2];
@@ -74,14 +79,11 @@ public class EURTableModel implements ProtectedStrings, Constants, Strings, mp4.
 
         }
 
-
         Query q = QueryClass.instanceOf().clone(TABLE_DUES);
 
         String[][] ausgaben = q.select("kontenid, preis, tax, datum", null);
         Integer x = 0;
         double net = 0d;
-
-
 
         for (int h = 0; h < ausgaben.length; h++) {
              x = 0;
@@ -650,9 +652,7 @@ public class EURTableModel implements ProtectedStrings, Constants, Strings, mp4.
     }
 
     public DefaultTableModel getModel() {
-
         return new DefaultTableModel(data, head);
-
     }
 }
 

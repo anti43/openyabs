@@ -18,7 +18,7 @@ import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableModel;
 
 import mp3.classes.interfaces.Strings;
-import mp3.classes.utils.WindowTools;
+import mp4.utils.windows.Position;
 import mp3.classes.layer.DefaultHelpModel;
 import mp3.classes.layer.visual.Help;
 import mp3.classes.utils.Log;
@@ -65,7 +65,7 @@ public class csvKontenImporter extends javax.swing.JFrame {
     /** Creates new form productImporter */
     public csvKontenImporter() {
         initComponents();
-        new WindowTools(this);
+        new Position(this);
         this.setVisible(rootPaneCheckingEnabled);
 
     }

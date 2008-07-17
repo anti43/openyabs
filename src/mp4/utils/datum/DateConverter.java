@@ -31,13 +31,14 @@ public class DateConverter {
 
     private static Calendar cl = Calendar.getInstance();
     //   yyyy-mm-dd hh.mm.ss[.nnnnnn] - SQL DATE Timestamp
-    public static DateFormat DB_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss");
-    public static DateFormat DEF_DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
+    public static DateFormat DB_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    public static DateFormat DE_DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");//2008-07-17"
+    public static DateFormat ENG_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
     private static String NULL_DATE_STRING = "00.00.0000";
     private static Date NULL_DATE = null;
 
     public static String getTodayDefDate() {
-        return DEF_DATE_FORMAT.format(new Date());
+        return DE_DATE_FORMAT.format(new Date());
     }
 
     public static String getTodayDBDate() {
@@ -70,47 +71,47 @@ public class DateConverter {
         return cl.getTime();
     }
 
-    /**
-     * 
-     * @param date
-     * @return The next month
-     */
-    public static String addMonth(String date) {
-        try {
-
-            Date dat = DEF_DATE_FORMAT.parse(date);
-
-            cl.setTime(dat);
-            cl.add(Calendar.MONTH, 1);
-
-            return cl.getTime().toString();
-        } catch (ParseException ex) {
-            Log.Debug(ex.getMessage());
-            return null;
-        }
-    }
-
-    /**
-     * 
-     * @param date
-     * @return The next day
-     */
-    public static String addDay(String date) {
-
-        try {
-
-            Date dat = DEF_DATE_FORMAT.parse(date);
-
-            cl.setTime(dat);
-            cl.add(Calendar.DATE, 1);
-
-            return cl.getTime().toString();
-        } catch (ParseException ex) {
-            Log.Debug(ex.getMessage());
-            return null;
-        }
-
-    }
+//    /**
+//     * 
+//     * @param date
+//     * @return The next month
+//     */
+//    public static String addMonth(String date) {
+//        try {
+//
+//            Date dat = DEF_DATE_FORMAT.parse(date);
+//
+//            cl.setTime(dat);
+//            cl.add(Calendar.MONTH, 1);
+//
+//            return cl.getTime().toString();
+//        } catch (ParseException ex) {
+//            Log.Debug(ex.getMessage());
+//            return null;
+//        }
+//    }
+//
+//    /**
+//     * 
+//     * @param date
+//     * @return The next day
+//     */
+//    public static String addDay(String date) {
+//
+//        try {
+//
+//            Date dat = DEF_DATE_FORMAT.parse(date);
+//
+//            cl.setTime(dat);
+//            cl.add(Calendar.DATE, 1);
+//
+//            return cl.getTime().toString();
+//        } catch (ParseException ex) {
+//            Log.Debug(ex.getMessage());
+//            return null;
+//        }
+//
+//    }
 
 //    /**
 //     * 
@@ -141,7 +142,7 @@ public class DateConverter {
      * @return Default date (dd.mm.yyyy)
      */
     public static String getDefDateString(Date date) {
-        return DEF_DATE_FORMAT.format(date);
+        return DE_DATE_FORMAT.format(date);
     }
 
 //    /**
@@ -172,14 +173,30 @@ public class DateConverter {
      */
     public static Date getDate(String date) {
         try {
-            return DEF_DATE_FORMAT.parse(date);
+            return DE_DATE_FORMAT.parse(date);
         } catch (ParseException ex) {
             try {
                 return DB_DATE_FORMAT.parse(date);
             } catch (ParseException ex1) {
-                Log.Debug(ex.getMessage());
-                return null;
+                try {
+                    return ENG_DATE_FORMAT.parse(date);
+                } catch (ParseException ex2) {
+                    Log.Debug(ex2.getMessage(), true);
+                    return null;
+                }
             }
         }
+    }
+
+    public static String getYear() {
+        return String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
+    }
+
+    public static String getDayOfMonth() {
+        return String.valueOf(Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
+    }
+
+    public static String getMonth() {
+        return String.valueOf(Calendar.getInstance().get(Calendar.MONTH) + 1);
     }
 }

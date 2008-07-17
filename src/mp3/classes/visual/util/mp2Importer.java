@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
 import compat.mp2.mainFrame;
 import compat.mp2.rechnung;
-import mp3.classes.utils.WindowTools;
+import mp4.utils.windows.Position;
 import mp3.classes.layer.DefaultHelpModel;
 import mp3.classes.layer.visual.Help;
 import mp3.classes.layer.Popup;
@@ -46,7 +46,7 @@ public class mp2Importer extends javax.swing.JFrame {
      */
     public mp2Importer(mainframe frame) {
         initComponents();
-        new WindowTools(this);
+        new Position(this);
         this.mainframe = frame;
         this.setVisible(rootPaneCheckingEnabled);
     }

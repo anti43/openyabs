@@ -9,7 +9,7 @@ package mp3.classes.visual.util;
 import mp4.klassen.objekte.*;
 import mp4.klassen.objekte.Customer;
 import handling.pdf.PDF_Mahnung;
-import mp3.classes.utils.WindowTools;
+import mp4.utils.windows.Position;
 
 /**
  *
@@ -40,7 +40,7 @@ public class arrear extends javax.swing.JFrame {
         jLabel2.setText(bill.getRechnungnummer());
         jLabel6.setText(c.getFirma());
         
-        new WindowTools(this);
+        new Position(this);
         this.setVisible(rootPaneCheckingEnabled);
     }
     

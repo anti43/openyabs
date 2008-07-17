@@ -8,7 +8,7 @@ package mp3.classes.layer.visual;
 
 import mp3.classes.layer.*;
 import mp3.classes.utils.Formater;
-import mp3.classes.utils.WindowTools;
+import mp4.utils.windows.Position;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import javax.swing.DefaultListModel;
@@ -36,7 +36,7 @@ public class CustomerPicker extends javax.swing.JFrame {
         initComponents ();
         this.frame1=aThis;
          cust=frame1.getCustomer();
-        new WindowTools(this);
+        new Position(this);
         
         String[][] list = cust.select("id, kundennummer, firma ", "kundennummer", "", "kundennummer", true);
         String k = "id, " + "Nummer,Firma";
@@ -57,7 +57,7 @@ public class CustomerPicker extends javax.swing.JFrame {
         initComponents ();
         this.frame=frame;
         cust=frame.getCustomer();
-        new WindowTools(this);
+        new Position(this);
         
         String[][] list = cust.select("id, kundennummer, firma ", null, "", "kundennummer", true);
         String k = "id, " + "Nummer,Firma";

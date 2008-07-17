@@ -22,7 +22,9 @@ import handling.db.Query;
 import mp3.classes.layer.*;
 import mp4.klassen.objekte.SKRKonto;
 import mp3.classes.utils.*;
+import mp4.utils.zahlen.FormatMoney;
 import mp4.utils.datum.DateConverter;
+import mp4.utils.zahlen.FormatTax;
 
 /**
  *
@@ -41,6 +43,8 @@ public class Ausgabe extends mp3.classes.layer.Things implements mp4.datenbank.s
     public Ausgabe() {
         super(QueryClass.instanceOf().clone(TABLE_DUES));
     }
+
+ 
 
     /**
      * 
@@ -67,15 +71,23 @@ public class Ausgabe extends mp3.classes.layer.Things implements mp4.datenbank.s
      * @param query
      * @param id 
      */
-    public Ausgabe(Query query, String id) {
-        super(query.clone( TABLE_DUES));
+    public Ausgabe(Integer id) {
+        super(QueryClass.instanceOf().clone( TABLE_DUES));
         this.id = Integer.valueOf(id);
-        this.explode(this.selectLast("*", "id", id, true));
+        this.explode(this.selectLast("*", "id", id.toString(), true));
     }
 
     public Ausgabe(Integer id, String text, String replaceAll, String replaceAll0, Date date) {
           super(QueryClass.instanceOf().clone( TABLE_DUES));
         throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    public String getFPreis() {
+        return FormatMoney.formatLokal(getPreis());
+    }
+
+    public String getFTax() {
+       return FormatTax.formatLokal(getTax());
     }
 
     private void explode(String[] select) {
@@ -101,7 +113,7 @@ public class Ausgabe extends mp3.classes.layer.Things implements mp4.datenbank.s
         str = str + "(;;2#4#1#1#8#0#;;)" + this.getBeschreibung() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
         str = str + this.getPreis() + "(;;,;;)";
         str = str + this.getTax() + "(;;,;;)";
-        str = str + "(;;2#4#1#1#8#0#;;)" + this.getDatum() + "(;;2#4#1#1#8#0#;;)";
+        str = str + "(;;2#4#1#1#8#0#;;)" + DateConverter.getSQLDateString(this.getDatum()) + "(;;2#4#1#1#8#0#;;)";
         return str;
     }
 

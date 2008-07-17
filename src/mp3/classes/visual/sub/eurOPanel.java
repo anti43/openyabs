@@ -10,6 +10,7 @@ import mp3.classes.layer.QueryClass;
 import mp4.klassen.objekte.Rechnung;
 import mp4.klassen.objekte.Customer;
 import mp3.classes.utils.Formater;
+import mp4.utils.tabellen.SelectionCheck;
 
 /**
  *
@@ -27,7 +28,6 @@ public class eurOPanel extends javax.swing.JPanel {
     }
 
     private void clear() {
-
         jTextArea3.setText("");
         jTextField14.setText("");
     }
@@ -191,9 +191,7 @@ public class eurOPanel extends javax.swing.JPanel {
   
         if (current != null) {
             current.setStorno(true);
-            current.save();
-            
-            
+            current.save();  
         }
         updateTable();
         clear();
@@ -211,19 +209,10 @@ public class eurOPanel extends javax.swing.JPanel {
 
     private void jTable3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable3MouseClicked
 
-        boolean idOk = true;
-        Integer id = 0;
-
-        try {
-            id = Integer.valueOf((String) getJTable3().getValueAt(getJTable3().getSelectedRow(), 0));
-        } catch (Exception numberFormatException) {
-            idOk = false;
-        }
-
-        if (idOk) {
-
-            Rechnung b = new Rechnung(id);
-
+        SelectionCheck selection = new SelectionCheck(jTable3);
+        
+        if (selection.checkID()) {
+            Rechnung b = new Rechnung(selection.getId());
             setBill(b);
         }
     }//GEN-LAST:event_jTable3MouseClicked
@@ -257,7 +246,7 @@ public class eurOPanel extends javax.swing.JPanel {
         jTextField14.setText(current.getGesamtpreis().toString());
 
     }
-    // End of variables declaration24111980
+   
     private void updateTable() {
         data = new Rechnung(QueryClass.instanceOf()).getUnpaid();
         String header = "id,Nummer,Betrag,Datum";

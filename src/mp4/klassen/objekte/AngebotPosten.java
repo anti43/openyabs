@@ -18,6 +18,7 @@ package mp4.klassen.objekte;
 
 import handling.db.Query;
 import mp3.classes.layer.Popup;
+import mp3.classes.layer.QueryClass;
 import mp3.classes.utils.Log;
 
 /**
@@ -32,9 +33,14 @@ public class AngebotPosten extends mp3.classes.layer.Things implements mp4.daten
     private Double preis = 0d;
     private Double steuersatz = 0d;
 
+     public AngebotPosten(Integer id) {
+        super(QueryClass.instanceOf().clone(TABLE_ORDERS_DATA));
+        this.id = id;
+        this.explode(this.selectLast("*", "id", id.toString(), true));
+    }
+
     public AngebotPosten(Query query) {
         super(query.clone(TABLE_ORDERS_DATA));
-
     }
 
     /**

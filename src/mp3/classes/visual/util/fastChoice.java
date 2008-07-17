@@ -9,9 +9,9 @@ import mp3.classes.visual.main.*;
 import mp3.classes.layer.Popup;
 import mp3.classes.layer.QueryClass;
 
-import mp3.classes.utils.WindowTools;
 import mp4.klassen.objekte.Customer;
 import mp4.klassen.objekte.Rechnung;
+import mp4.utils.windows.Position;
 
 /**
  *
@@ -21,7 +21,7 @@ public class fastChoice extends javax.swing.JFrame {
 
     private mainframe frame;
     private int mode;
-
+    private Position pos = new Position(); 
     /** Creates new form fastChoice
      * @param frame
      * @param mode 
@@ -35,7 +35,7 @@ public class fastChoice extends javax.swing.JFrame {
         this.frame = frame;
         this.mode = mode;
 
-        new WindowTools(this);
+        pos.center(this);
 
         switch (mode) {
             case 0:
@@ -233,7 +233,7 @@ public class fastChoice extends javax.swing.JFrame {
 
                 if (kr.hasId()) {
 
-                    frame.getB().setBill(kr);
+                    frame.getBillPanel().setBill(kr);
                     this.dispose();
                 } else {
                     Popup.notice("Kein Datensatz gefunden");

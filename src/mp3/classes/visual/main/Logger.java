@@ -3,7 +3,7 @@
  *
  * Created on 18. Februar 2008, 22:14
  */
-package mp3.classes.utils;
+package mp3.classes.visual.main;
 
 import java.io.Writer;
 import javax.swing.text.BadLocationException;
@@ -49,7 +49,6 @@ public class Logger extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("MP Logger");
-        setAlwaysOnTop(true);
 
         jLabel1.setText("MP Logger:");
 

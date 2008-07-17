@@ -10,7 +10,6 @@ import mp4.klassen.objekte.Lieferant;
 import java.awt.Cursor;
 import java.awt.Image;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
 import java.net.URL;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
@@ -23,21 +22,18 @@ import mp3.classes.layer.Popup;
 import mp3.classes.layer.visual.ProductPicker;
 import mp3.classes.layer.QueryClass;
 import mp3.classes.layer.visual.SupplierPicker;
-
 import mp3.classes.visual.main.mainframe;
-//import mp3.classes.objects.product.*;
 import mp4.utils.datum.DateConverter;
+import mp4.utils.tabellen.SelectionCheck;
 
 /**
  *
  * @author  anti43
  */
-public class productsView extends javax.swing.JPanel implements mp4.datenbank.struktur.Tabellen{
+public class productsView extends javax.swing.JPanel implements mp4.datenbank.struktur.Tabellen {
 
     private mainframe mainframe;
     private Product current;
-//    private ProductGroup group;
-//    private Manufacturer manufacturer;
     private Lieferant supplier;
     private String[][] liste;
     private boolean autoProductNumber = true;//settings?
@@ -48,35 +44,17 @@ public class productsView extends javax.swing.JPanel implements mp4.datenbank.st
      */
     public productsView(mainframe aThis) {
         initComponents();
-        this.current = new Product(QueryClass.instanceOf());
-
-        this.supplier = new Lieferant(QueryClass.instanceOf());
-//        this.group = new ProductGroup(QueryClass.instanceOf());
-
+        this.current = new Product();
+        this.supplier = new Lieferant();
         this.mainframe = aThis;
-
-
         liste = current.getAll();
         String k = "id, " + TABLE_PRODUCTS_LIST_COLUMNS;
-
         this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
         current.stripFirst(jTable2);
         Integer l = Integer.valueOf(liste.length);
         this.jLabel19.setText(l.toString());
-//        ActionEvent evt = null;
-//        jTextField7.setInputVerifier(Formater.getDoubleInputVerfier(jTextField7));
-//
-//        jTextField7ActionPerformed(evt);
-//        jTextField8.setInputVerifier(Formater.getDoubleInputVerfier(jTextField8));
-//        jTextField8ActionPerformed(evt);
-//        jTextField16.setInputVerifier(Formater.getDoubleInputVerfier(jTextField16));
-//        jTextField16ActionPerformed(evt);
-//        jTextField13.setInputVerifier(Formater.getDoubleInputVerfier(jTextField13));
-//        jTextField13ActionPerformed(evt);
-
         String[][] list = current.select("id,produktnummer,name,hersteller", "produktnummer", jTextField1.getText(), "produktnummer", true);
         k = "id, " + "Nummer,Name,Hersteller";
-
         this.jTable3.setModel(new DefaultTableModel(list, k.split(",")));
         current.stripFirst(jTable3);
     }
@@ -89,17 +67,9 @@ public class productsView extends javax.swing.JPanel implements mp4.datenbank.st
      * 
      * @param p 
      */
-//    public productsView(Product current) {
-//        initComponents();
-//
-//
-//        this.current = current;
-//        explode();
-//    }
     public void setProduct(Product p) {
         this.current = p;
         explode();
-
     }
 
     Product getCurrent() {
@@ -113,11 +83,7 @@ public class productsView extends javax.swing.JPanel implements mp4.datenbank.st
 
     private void explode() {
 
-//        this.setManufacturer(current.getManufacturer());
         this.setSupplier(current.getSupplier());
-//        this.setGroup(current.getGroup());
-
-
         this.jTextField4.setText(current.getNummer());
         this.jTextField5.setText(current.getName());
         this.jTextField6.setText(current.getHersteller());
@@ -135,7 +101,6 @@ public class productsView extends javax.swing.JPanel implements mp4.datenbank.st
             this.getJTextField12().setText("");
         }
         this.jTextField13.setText(current.getEan());
-
         this.jEditorPane1.setText(current.getText());
 
         Task t = new Task(this);
@@ -785,24 +750,18 @@ public class productsView extends javax.swing.JPanel implements mp4.datenbank.st
     }// </editor-fold>//GEN-END:initComponents
     private void jButton1MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
         jTabbedPane1.setSelectedIndex(0);
-
-
-
     }//GEN-LAST:event_jButton1MouseClicked
 
     private void jButton2MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
         jTabbedPane1.setSelectedIndex(1);
-
     }//GEN-LAST:event_jButton2MouseClicked
 
     private void jTextField1ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
 
         String[][] list = current.select("id,produktnummer,name,hersteller", "produktnummer", jTextField1.getText(), "produktnummer", true);
         String k = "id, " + "Nummer,Name,Hersteller";
-
         this.jTable3.setModel(new DefaultTableModel(list, k.split(",")));
         current.stripFirst(jTable3);
-
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jTextField2ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
@@ -843,79 +802,54 @@ public class productsView extends javax.swing.JPanel implements mp4.datenbank.st
 
     private void jButton6ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
 
-        Integer id = 0;
+        
         jTabbedPane1.setSelectedIndex(1);
 
-        try {
-            id = Integer.valueOf((String) jTable2.getValueAt(jTable2.getSelectedRow(), 0));
-
-
+        SelectionCheck selection = new SelectionCheck(jTable2);
+        if (selection.checkID()) {
             if ((JOptionPane.showConfirmDialog(getMainframe(), "Wirklich löschen?", "Sicher?", JOptionPane.YES_NO_OPTION)) == JOptionPane.YES_OPTION) {
-
                 for (int i = 0; i < jTable2.getSelectedRowCount(); i++) {
                     int[] ik = jTable2.getSelectedRows();
-                    current.delete((String) jTable2.getValueAt(ik[i], 0));
-
+                    current.delete(selection.getId());
                 }
             }
-        } catch (Exception numberFormatException) {
+        } else {
             new Popup("Sie müssen mindestens einen Eintrag in der Liste wählen.", Popup.NOTICE);
         }
 
         liste = current.getAll();
         String k = "id, " + TABLE_PRODUCTS_LIST_COLUMNS;
-
         this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
         current.stripFirst(jTable2);
-
         this.clear();
-
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jTable2MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable2MouseClicked
-        boolean idOk = true;
-        Integer id = null;
+        jTabbedPane1.setSelectedIndex(1);
 
-        try {
-            id = Integer.valueOf((String) jTable2.getValueAt(jTable2.getSelectedRow(), 0));
-        } catch (Exception numberFormatException) {
-            idOk = false;
-        }
-
-        if (evt.getClickCount() >= 2 && idOk) {
-
-
-            this.setProduct(new Product(QueryClass.instanceOf(), (Integer) jTable2.getValueAt(jTable2.getSelectedRow(), 0)));
+        SelectionCheck selection = new SelectionCheck(jTable2);
+        
+        if (evt.getClickCount() >= 2 && selection.checkID()) {
+            this.setProduct(new Product(selection.getId()));
             jTabbedPane1.setSelectedIndex(0);
         }
-
     }//GEN-LAST:event_jTable2MouseClicked
 
     private void jTable3MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable3MouseClicked
 
-        boolean idOk = true;
-        Integer id = null;
+        SelectionCheck selection = new SelectionCheck(jTable3);
 
-        try {
-            id = Integer.valueOf((String) jTable3.getValueAt(jTable3.getSelectedRow(), 0));
-        } catch (Exception numberFormatException) {
-            idOk = false;
-        }
-
-        if (evt.getClickCount() >= 2 && idOk) {
-            this.setProduct(new Product(QueryClass.instanceOf(), (Integer) jTable3.getValueAt(jTable3.getSelectedRow(), 0)));
+        if (evt.getClickCount() >= 2 && selection.checkID()) {
+            this.setProduct(new Product(selection.getId()));
         }
     }//GEN-LAST:event_jTable3MouseClicked
 
     public void save() {
         this.saveInner();
-
         liste = current.getAll();
         String k = "id, " + TABLE_PRODUCTS_LIST_COLUMNS;
-
         this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
         current.stripFirst(jTable2);
-
     }
 
     private void jButton3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
@@ -944,12 +878,10 @@ public class productsView extends javax.swing.JPanel implements mp4.datenbank.st
 
     private void jButton8MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton8MouseClicked
 
-
-        if (!current.getId().equals("0")) {
-
+        if (current.getId() < 0) {
             if ((JOptionPane.showConfirmDialog(this, "Wirklich löschen?", "Sicher?", JOptionPane.YES_NO_OPTION)) == JOptionPane.YES_OPTION) {
                 current.destroy();
-                current = new Product(QueryClass.instanceOf());
+                current = new Product();
                 getMainframe().nachricht("Produkt Nummer " + current.getNummer() + " gelöscht.");
             }
 
@@ -960,9 +892,7 @@ public class productsView extends javax.swing.JPanel implements mp4.datenbank.st
             current.stripFirst(jTable2);
 
         } else {
-
             getMainframe().nachricht("Kein Produkt gewählt.");
-
         }
     }//GEN-LAST:event_jButton8MouseClicked
 
@@ -977,16 +907,14 @@ public class productsView extends javax.swing.JPanel implements mp4.datenbank.st
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
 
-        if (!current.getId().equals("0")) {
-
-            getMainframe().getB().addToBill(current, true, true, true);
+        if (current.getId() < 0) {
+            getMainframe().getBillPanel().addToBill(current, true, true, true);
             getMainframe().getJTabbedPane1().setSelectedIndex(1);
         }
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
-        if (!current.getId().equals("0")) {
-
+        if (current.getId() < 0) {
             getMainframe().getOrdersView().addToOrder(current, true, true, true);
             getMainframe().getJTabbedPane1().setSelectedIndex(2);
         }
@@ -1018,17 +946,15 @@ public class productsView extends javax.swing.JPanel implements mp4.datenbank.st
         jEditorPane1.setText("");
 
         this.current = new Product(QueryClass.instanceOf());
-
         this.supplier = new Lieferant(QueryClass.instanceOf());
-
     }//GEN-LAST:event_jButton12MouseClicked
 
 private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-// TODO add your handling code here:
+
 }//GEN-LAST:event_jButton4ActionPerformed
 
 private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-// TODO add your handling code here:
+
 }//GEN-LAST:event_jButton3ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton jButton1;
@@ -1091,7 +1017,7 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     public javax.swing.JTextField jTextField9;
     public javax.swing.JToolBar jToolBar1;
     // End of variables declaration//GEN-END:variables
-    private void saveNew() {
+private void saveNew() {
 
         current = new Product(QueryClass.instanceOf());
 
@@ -1143,30 +1069,21 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         current.setName(jTextField5.getText());
         current.setHersteller(jTextField6.getText());
         current.setSupplier(supplier);
-        current.setVK( Double.valueOf(jTextField8.getText()));
+        current.setVK(Double.valueOf(jTextField8.getText()));
         current.setEK(Double.valueOf(jTextField7.getText()));
         current.setTAX(Double.valueOf(jTextField16.getText()));
         current.setDatum(DateConverter.getDate(jTextField9.getText()));
         current.setUrl(jTextField11.getText());
         current.setEan(jTextField13.getText());
         current.setText(jEditorPane1.getText());
-
         current.setWarengruppenId(getCurrentProductGroup());
-
         current.save();
 
-
-
         getMainframe().nachricht("Produkt Nummer " + current.getNummer() + " gespeichert.");
-
-
-
-
     }
 
     private boolean saveInner() {
-
-        if (!current.getId().equals("0")) {
+        if (current.getId() < 0) {
 
             if (jTextField4.getText().equals("")) {
                 Integer tz = current.getNextIndex("produktnummer");
@@ -1186,10 +1103,7 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     jTextField4.setText(tz.toString());
                     Log.Debug("Setting 'Productnumber' to " + tz);
                 }
-
-
             }
-
 
             try {
                 Double.valueOf(jTextField13.getText());
@@ -1223,8 +1137,6 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             current.setUrl(jTextField11.getText());
             current.setEan(jTextField13.getText());
             current.setText(jEditorPane1.getText());
-
-
             current.save();
 
             getMainframe().nachricht("Produkt Nummer " + current.getNummer() + " gespeichert.");
@@ -1240,10 +1152,6 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             this.jTextField10.setText(supplier.getFirma());
             this.getProduct().setLieferantenId(supplier.getId());
         }
-
-//        if(!this.getProduct().getId().equals("0")) {
-//            this.save();
-//        }
     }
 
     public javax.swing.JTextField getJTextField12() {
@@ -1264,47 +1172,33 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 }
 
 class Task extends SwingWorker<Void, Void> {
-
     private productsView thisa;
 
-    /*
-     * Main task. Executed in background thread.
-     */
     public Task(productsView thisa) {
-
         this.thisa = thisa;
     }
 
     public Void doInBackground() {
 
         Image coverImg = null;
-
         thisa.getMainframe().getMainProgress().setIndeterminate(true);
 
         try {
-
             coverImg = Toolkit.getDefaultToolkit().createImage(new URL(thisa.getCurrent().getUrl()));
-
-
             Image smallCoverImg = coverImg.getScaledInstance(217, 151, java.awt.Image.SCALE_FAST);
             ImageIcon coverImgIcon = new ImageIcon(smallCoverImg);
             thisa.jLabel13.setIcon(coverImgIcon);
         } catch (Exception ex) {
-//            ex.printStackTrace();
+            Log.Debug(ex);
         }
-
         return null;
     }
 
-    /*
-     * Executed in event dispatching thread
-     */
     @Override
     public void done() {
         thisa.getMainframe().getMainProgress().setIndeterminate(false);
 //        Toolkit.getDefaultToolkit().beep();
         thisa.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-
     }
 }
 

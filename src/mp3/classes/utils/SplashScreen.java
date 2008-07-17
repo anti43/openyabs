@@ -18,6 +18,7 @@
  */
 package mp3.classes.utils;
 
+import mp4.utils.windows.Position;
 import java.awt.Component;
 
 /*
@@ -49,7 +50,7 @@ public class SplashScreen extends javax.swing.JFrame implements Runnable {
         
         this.setTitle("Loading...");
         
-        new WindowTools(this);
+        new Position(this);
         this.setVisible(true);
 
         jProgressBar1.setIndeterminate(true);
@@ -65,7 +66,7 @@ public class SplashScreen extends javax.swing.JFrame implements Runnable {
         this.setAlwaysOnTop(true);
         initComponents();
         this.setTitle("Loading...");
-        new WindowTools(this);
+        new Position(this);
         this.setVisible(true);
         
         jProgressBar1.setIndeterminate(true);

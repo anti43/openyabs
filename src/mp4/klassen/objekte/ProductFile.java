@@ -58,7 +58,7 @@ public class ProductFile extends mp3.classes.layer.Things implements mp4.datenba
         String str = "";
         str = str + this.getProduktid() + "(;;,;;)";
         str = str + "(;;2#4#1#1#8#0#;;)" + this.getUrl() + "(;;2#4#1#1#8#0#;;)" +"(;;,;;)";
-        str = str + "(;;2#4#1#1#8#0#;;)" + this.getDatum()+ "(;;2#4#1#1#8#0#;;)" ;
+        str = str + "(;;2#4#1#1#8#0#;;)" + DateConverter.getSQLDateString(this.getDatum())+ "(;;2#4#1#1#8#0#;;)" ;
         return str;
     }
 

@@ -46,8 +46,8 @@ public abstract class Things implements Queries, mp4.datenbank.struktur.Tabellen
      * @param id
      * @return 1 if successfull
      */
-    public int delete(String id) {
-        String[] where = {"id", id, ""};
+    public int delete(Integer id) {
+        String[] where = {"id", id.toString(), ""};
         return q.delete(where);
     }
 
@@ -211,7 +211,7 @@ public abstract class Things implements Queries, mp4.datenbank.struktur.Tabellen
      * Deletes this item!!
      */
     public void destroy() {
-        this.delete(this.id.toString());
+        this.delete(this.id);
         this.id = 0;
     }
 

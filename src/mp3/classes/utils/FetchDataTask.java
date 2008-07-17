@@ -19,7 +19,6 @@
 package mp3.classes.utils;
 
 import java.awt.Cursor;
-import java.awt.Toolkit;
 import javax.swing.JComponent;
 import javax.swing.JProgressBar;
 import javax.swing.SwingWorker;
@@ -52,37 +51,21 @@ public class FetchDataTask extends SwingWorker<String[][], Void> {
         this.comp = comp;
         this.bar = bar;
         this.daemon = d;
-
-
-
     }
 
     public String[][] doInBackground() {
         int h = 0;
-
-
         comp.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-
         try {
             bar.setIndeterminate(true);
-
         } catch (Exception exception) {
         }
-
-
-
         result = daemon.getAll();
-
         comp.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-
-
         try {
             bar.setIndeterminate(false);
-
         } catch (Exception exception) {
         }
-
-
         return result;
     }
 
@@ -93,13 +76,9 @@ public class FetchDataTask extends SwingWorker<String[][], Void> {
     public void done() {
 //        Toolkit.getDefaultToolkit().beep();
         comp.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-        
         try {
             bar.setIndeterminate(false);
-
         } catch (Exception exception) {
         }
-
-
-    }
+      }
     }

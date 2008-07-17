@@ -21,7 +21,7 @@ import mp3.classes.layer.Popup;
 import mp3.classes.layer.QueryClass;
 import mp4.klassen.objekte.Customer;
 
-import mp3.classes.utils.WindowTools;
+import mp4.utils.windows.Position;
 import mp3.classes.utils.Formater;
 import mp3.classes.utils.Log;
 
@@ -44,7 +44,7 @@ public class serialLetter extends javax.swing.JFrame implements ProtectedStrings
 
         jTextField2.setText(Constants.HOME + ProtectedStrings.SEP + PROG_NAME + SEP + TEMPLATES_DIR + SEP + "serienbrief.pdf");
 
-        new WindowTools(this);
+        new Position(this);
         this.setVisible(rootPaneCheckingEnabled);
     }
 

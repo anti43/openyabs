@@ -33,7 +33,7 @@ import java.io.File;
 import mp3.classes.interfaces.Constants;
 import mp3.classes.interfaces.ProtectedStrings;
 import mp3.classes.interfaces.Strings;
-import mp3.classes.utils.WindowTools;
+import mp4.utils.windows.Position;
 import mp3.classes.layer.Popup;
 import mp3.classes.utils.DesktopIcon;
 import mp3.classes.utils.DirectoryHandler;
@@ -55,7 +55,7 @@ public class MpInstaller extends javax.swing.JFrame implements ProtectedStrings,
     public MpInstaller() {
         initComponents();
 
-        new WindowTools(this);
+        new Position(this);
         this.setVisible(true);
         Log.Debug(JAVA_VERSION);
 
@@ -344,7 +344,7 @@ public class MpInstaller extends javax.swing.JFrame implements ProtectedStrings,
 
 private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
 license l = new license();
-                new WindowTools(l);
+                new Position(l);
                 l.setVisible(rootPaneCheckingEnabled);
 }//GEN-LAST:event_jButton3ActionPerformed
     /**

@@ -5,7 +5,7 @@
  */
 package mp3.classes.layer.visual;
 
-import mp3.classes.utils.WindowTools;
+import mp4.utils.windows.Position;
 import com.michaelbaranov.microba.calendar.CalendarPane;
 import java.awt.BorderLayout;
 import java.awt.event.KeyEvent;
@@ -47,7 +47,7 @@ public class DatePick extends javax.swing.JFrame {
 
             this.jPanel1.add(xc, BorderLayout.CENTER);
 
-            new WindowTools(this);
+            new Position(this);
 
             this.setVisible(rootPaneCheckingEnabled);
         } catch (PropertyVetoException ex) {

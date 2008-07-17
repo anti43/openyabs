@@ -45,18 +45,18 @@ public class Main implements Strings {
      * @param args
      */
     public Main(String[] args) {
-
-        try {
-            if (args.length > 0 && args[0].endsWith("verbose")) {
-                Log.setLogLevel(Log.LOGLEVEL_HIGH);
-            } else {
-
-                Log.setLogLevel(Log.LOGLEVEL_LOW);
-            }
-        } catch (Exception exception) {
-            Log.setLogLevel(Log.LOGLEVEL_LOW);
-        }
-        
+//
+//        try {
+//            if (args.length > 0 && args[0].endsWith("verbose")) {
+//                Log.setLogLevel(Log.LOGLEVEL_HIGH);
+//            } else {
+//
+//                Log.setLogLevel(Log.LOGLEVEL_LOW);
+//            }
+//        } catch (Exception exception) {
+//            Log.setLogLevel(Log.LOGLEVEL_LOW);
+//        }
+//        
         
         Log.setLogLevel(Log.LOGLEVEL_HIGH);
         

@@ -58,6 +58,8 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
         
       
     }
+
+
 //    private ProductFile[] files;
 
     public Product(Query query) {
@@ -72,8 +74,8 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
      * @param query
      * @param id
      */
-    public Product(Query query, Integer id) {
-        super(query.clone(TABLE_PRODUCTS));
+    public Product(Integer id) {
+        super(QueryClass.instanceOf().clone(TABLE_PRODUCTS));
         this.id = Integer.valueOf(id);
         this.explode(this.selectLast("*", "id", id.toString(), true));
 
@@ -82,10 +84,10 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
         
         
           if(!this.getLieferantenId().equals(0)) {
-            this.supplier = new Lieferant(query, this.getLieferantenId());
+            this.supplier = new Lieferant(this.getLieferantenId());
         }
           this.isvalid =true;
-          this.query = query;
+          this.query = QueryClass.instanceOf();
 //        files = getFiles(query);
     }
 
@@ -136,7 +138,7 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
         str = str +  "(;;2#4#1#1#8#0#;;)" + this.getHersteller() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
         str = str + this.getLieferantenId() + "(;;,;;)";
         str = str + this.getWarengruppenId()+ "(;;,;;)";        
-        str = str +  "(;;2#4#1#1#8#0#;;)" + this.getDatum() +  "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
+        str = str +  "(;;2#4#1#1#8#0#;;)" + DateConverter.getSQLDateString(this.getDatum()) +  "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
         str = str +  "(;;2#4#1#1#8#0#;;)" + this.getUrl() +  "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
         
         str = str + this.getEan();
@@ -324,5 +326,9 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
                 "LEFT OUTER JOIN  warengruppengruppen ON produkte.warengruppenid = warengruppengruppen.id");
    
         return str;  
+    }
+
+    public int delete(String id) {
+       return delete(Integer.valueOf(id));
     }
 }

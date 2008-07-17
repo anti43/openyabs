@@ -95,7 +95,7 @@ public class History extends mp3.classes.layer.Things implements mp4.datenbank.s
         String str = "";
         str = str + "(;;2#4#1#1#8#0#;;)" +this.getAktion() + "(;;2#4#1#1#8#0#;;)"  + "(;;,;;)";
         str = str + "(;;2#4#1#1#8#0#;;)"  + this.getText()  + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
-        str = str + "(;;2#4#1#1#8#0#;;)"  + this.getDatum() + "(;;2#4#1#1#8#0#;;)" ;
+        str = str + "(;;2#4#1#1#8#0#;;)"  + DateConverter.getSQLDateString(this.getDatum()) + "(;;2#4#1#1#8#0#;;)" ;
         return str;
     }
     

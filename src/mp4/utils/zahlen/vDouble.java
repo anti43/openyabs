@@ -14,49 +14,30 @@
  *      You should have received a copy of the GNU General Public License
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-package mp3.classes.interfaces;
-
+package mp4.utils.zahlen;
 
 /**
  *
  * @author anti
  */
-public interface Queries {
+public class vDouble {
 
-    
-    /**
-     * 
-     * @param set
-     * @param value
-     * @return 
-     */
-    public abstract int insert(String set,String value);
+    public Double value = null;
+    public String svalue = null;
+    public boolean isVerified = false;
+    public boolean isPositive = false;
+    public String ovalue = "";
 
-    /**
-     * 
-     * @param set 
-     * @param value 
-     * @param id
-     * @return 
-     */
-    public abstract int update (String set, String value, String id);
+    public vDouble(Object number) {
+        this.ovalue = number.toString();
+        if (NumberCheck.checkDouble(number) != null) {
+            this.value = NumberCheck.checkDouble(number);
+            this.svalue = this.value.toString();
+            this.isVerified = true;
 
-    /**
-     * 
-     * @param what 
-     * @param from 
-     * @param id
-     * @param where 
-     * @return
-     */
-    public abstract String[][] select(String what, String from, String where,boolean id);
-
-    /**
-     * 
-     * @param id
-     * @return 
-     */
-    public abstract int delete (Integer id);
-
+            if (this.value >= 0) {
+                this.isPositive = true;
+            }
+        }
+    }
 }

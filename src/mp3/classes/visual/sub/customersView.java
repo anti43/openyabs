@@ -1179,7 +1179,7 @@ System.out.println(jPanel5.getSize());
 
 
         mainframe.getJTabbedPane1().setSelectedIndex(1);
-        mainframe.getB().setCustomer(current);
+        mainframe.getBillPanel().setCustomer(current);
     }//GEN-LAST:event_jButton8MouseClicked
 
     private void jTable1MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
@@ -1203,7 +1203,7 @@ System.out.println(jPanel5.getSize());
             try {
 
 
-                mainframe.getB().setBill(new Rechnung(id).expose());
+                mainframe.getBillPanel().setBill(new Rechnung(id).expose());
 
                 mainframe.getJTabbedPane1().setSelectedIndex(1);
             } catch (Exception ex) {

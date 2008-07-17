@@ -32,26 +32,16 @@ public class eurView extends javax.swing.JPanel {
     private SimpleDateFormat df;
     private String formatteddate;
     private String[] datesdate;
-    private Data l;
     private String year;
-    private String month;
-    private Date opdate;
-//    private Konten ekonto;
-//    private Konten akonto;
-//    private Konten okonto;
-    private Einnahme curEinnahme;
-    private Rechnung curEinnahmeBill;
-
-    private Ausgabe curAusgabe;
     private eurEPanel eurepanel;
     private eurAPanel eurapanel;
     private eurOPanel europanel;
-     private eurEURPanel eureurpanel;
-    /** Creates new form customers
-     * @param aThis 
-     */
+    private eurEURPanel eureurpanel;
+    private Data data;
+    private String month;
+
     @SuppressWarnings("unchecked")
-    public eurView(mainframe aThis) {
+    public eurView(mainframe frame) {
 
 
         initComponents();
@@ -60,10 +50,10 @@ public class eurView extends javax.swing.JPanel {
         eurapanel = new eurAPanel();
         europanel = new eurOPanel();
         eureurpanel = new eurEURPanel();
-        this.epanel.add(eurepanel,BorderLayout.CENTER);
-        this.apanel.add(eurapanel,BorderLayout.CENTER);
-        this.opanel.add(europanel,BorderLayout.CENTER);
-        this.gpanel.add(eureurpanel,BorderLayout.CENTER);
+        this.epanel.add(eurepanel, BorderLayout.CENTER);
+        this.apanel.add(eurapanel, BorderLayout.CENTER);
+        this.opanel.add(europanel, BorderLayout.CENTER);
+        this.gpanel.add(eureurpanel, BorderLayout.CENTER);
 
         date = new Date();
 
@@ -71,21 +61,13 @@ public class eurView extends javax.swing.JPanel {
         SimpleDateFormat df3 = new SimpleDateFormat("dd.MM.yyyy");
 
         formatteddate = df.format(date);
-
         datesdate = formatteddate.split(";");
-
-
-        l = new Data(QueryClass.instanceOf());
-
+        data = new Data(QueryClass.instanceOf());
         year = datesdate[2];
         month = datesdate[1];
 //        jComboBox1.setSelectedIndex(Integer.valueOf(datesdate[1]) - 1);
 //        jTextField1.setText(year);
-
         jButton1ActionPerformed(new ActionEvent(ui, WIDTH, year));
-        
-       
-
     }
 
     /** This method is called from within the constructor to
@@ -192,30 +174,26 @@ public class eurView extends javax.swing.JPanel {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
-        String[][] data = new Einnahme().getAll();
+        String[][] daten = new Einnahme().getAll();
+        Formater.formatUneditableTable(getEurepanel().getJTable1(), daten, new String[]{"id", "Nummer", "Typ", "Betrag", "Datum"});
+        daten = new Ausgabe().getAll();
 
-        Formater.formatUneditableTable(getEurepanel().getJTable1(), data, new String[]{"id", "Nummer", "Typ", "Betrag", "Datum"});
+        Formater.formatUneditableTable(eurapanel.getJTable1(), daten, new String[]{"id", "Nummer", "Typ", "Betrag", "Datum"});
+        Formater.format(getEurapanel().getJTable1(), 1, 80);
+        Formater.format(getEurapanel().getJTable1(), 3, 100);
+        Formater.format(getEurapanel().getJTable1(), 4, 100);
 
-        data = new Ausgabe().getAll();
+        daten = new Rechnung(QueryClass.instanceOf()).getUnpaid();
 
-        Formater.formatUneditableTable(eurapanel.getJTable1(), data,  new String[]{"id", "Nummer", "Typ", "Betrag", "Datum"});
-         Formater.format(getEurapanel().getJTable1(), 1, 80);
-            Formater.format(getEurapanel().getJTable1(), 3, 100);
-            Formater.format(getEurapanel().getJTable1(), 4, 100);
+        Formater.formatUneditableTable(europanel.getJTable3(), daten, new String[]{"id", "Nummer", "Betrag", "Datum"});
+        Formater.format(getEurepanel().getJTable1(), 1, 80);
+        Formater.format(getEurepanel().getJTable1(), 3, 100);
+        Formater.format(getEurepanel().getJTable1(), 4, 100);
 
-        data = new Rechnung(QueryClass.instanceOf()).getUnpaid();
 
-        Formater.formatUneditableTable(europanel.getJTable3(), data, new String[]{"id", "Nummer", "Betrag", "Datum"});
-        
-            Formater.format(getEurepanel().getJTable1(), 1, 80);
-            Formater.format(getEurepanel().getJTable1(), 3, 100);
-            Formater.format(getEurepanel().getJTable1(), 4, 100);
-  
-        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void formFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_formFocusGained
-      
     }//GEN-LAST:event_formFocusGained
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -240,10 +218,6 @@ public class eurView extends javax.swing.JPanel {
     public eurAPanel getEurapanel() {
         return eurapanel;
     }
-  
-
- 
-
 }    
 
 

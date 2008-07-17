@@ -19,6 +19,7 @@ import mp3.classes.visual.util.konten;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.datum.vDate;
 import mp4.utils.tabellen.SelectionCheck;
+import mp4.utils.zahlen.vDouble;
 import mp4.utils.zahlen.vFloat;
 
 /**
@@ -327,12 +328,11 @@ public class eurEPanel extends javax.swing.JPanel {
 
         if (jButton3.isEnabled()) {
 
-            vFloat betrag = new vFloat(jTextField4.getText());
-            vFloat steuer = new vFloat(jTextField3.getText());
+            vDouble  betrag = new vDouble (jTextField4.getText());
+            vDouble  steuer = new vDouble (jTextField3.getText());
             vDate datum = new vDate(jTextField6.getText());
 
-            if (betrag.isVerified && steuer.isVerified && steuer.isPositive && datum.isVerified) {
-
+            if (betrag.isVerified&&betrag.isPositive && steuer.isVerified && steuer.isPositive && datum.isVerified) {
 
                 if (this.curEinnahme != null && curEinnahme.id > 0) {
                     curEinnahme.setDatum(datum.date);

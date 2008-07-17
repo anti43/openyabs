@@ -12,7 +12,7 @@ import mp3.installer.MpInstaller;
 import mp3.classes.layer.DefaultHelpModel;
 import mp3.classes.layer.visual.Help;
 
-import mp3.classes.utils.WindowTools;
+import mp4.utils.windows.Position;
 import mp3.classes.visual.main.mainframe;
 import mp4.klassen.objekte.MyData;
 
@@ -35,7 +35,7 @@ public class settingsView extends javax.swing.JFrame {
      */
     public settingsView(mainframe mainframe) {
         initComponents();
-        new WindowTools(this);
+        new Position(this);
         data = MyData.newInstanceOf();
         oldData = data;
         this.mainframe = mainframe;

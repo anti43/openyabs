@@ -14,14 +14,11 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeSelectionModel;
-import mp3.classes.utils.WindowTools;
+import mp4.utils.windows.Position;
 import mp3.classes.utils.Log;
 import mp3.classes.layer.Popup;
 import mp3.classes.layer.QueryClass;
-//import mp3.classes.objects.product.ProductGroupCategory;
-//import mp3.classes.objects.product.ProductGroupFamily;
-//import mp3.classes.objects.product.ProductGroupGroup;
-//import mp3.classes.objects.product.ProductGroupHandler;
+
 import mp3.classes.visual.main.*;
 import mp4.klassen.objekte.ProductGroupCategory;
 import mp4.klassen.objekte.ProductGroupFamily;
@@ -55,39 +52,26 @@ public class groupsView extends javax.swing.JFrame implements TreeSelectionListe
         initComponents();
         this.frame = frame;
         p = ProductGroupHandler.instanceOf();
-        new WindowTools(this);
-        this.setVisible(rootPaneCheckingEnabled);
-
+        new Position(this);
 
         root = new DefaultMutableTreeNode("Produkte");
-
-
         setTreeData(false);
         tree = this.jTree1;
-
-
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-
-        //Listen for when the selection changes.
         tree.addTreeSelectionListener(this);
 
+        this.setVisible(rootPaneCheckingEnabled);
     }
-
-  
 
     private groupsView() {
         initComponents();
         p = ProductGroupHandler.instanceOf();
-        new WindowTools(this);
-        this.setVisible(rootPaneCheckingEnabled);
-
+        new Position(this);
 
         root = new DefaultMutableTreeNode("Produkte");
-
-
         setTreeData(false);
 
-
+        this.setVisible(rootPaneCheckingEnabled);
     }
 
     /** Required by TreeSelectionListener interface.
@@ -104,10 +88,7 @@ public class groupsView extends javax.swing.JFrame implements TreeSelectionListe
         }
 
         jTextField4.setText(e.getNewLeadSelectionPath().toString());
-
         Object nodeInfo = node.getUserObject();
-
-
 
         if (nodeInfo.getClass().isInstance(new ProductGroupGroup(QueryClass.instanceOf()))) {
             grp = (ProductGroupGroup) nodeInfo;
@@ -301,8 +282,6 @@ public class groupsView extends javax.swing.JFrame implements TreeSelectionListe
         pack();
     }// </editor-fold>//GEN-END:initComponents
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-   
-        
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jButton5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton5MouseClicked
@@ -310,11 +289,10 @@ public class groupsView extends javax.swing.JFrame implements TreeSelectionListe
         if (leaf) {
             frame.getProductsView().getProduct().setWarengruppenId(grp.getId());
             frame.getProductsView().setCurrentProductGroup(grp.getId());
-            frame.getProductsView().getJTextField12().setText( frame.getProductsView().getProduct().getProductgroupPath());
+            frame.getProductsView().getJTextField12().setText(frame.getProductsView().getProduct().getProductgroupPath());
             this.dispose();
         } else {
             Popup.notice("Sie müssen eine Produktgruppe auswählen");
-
         }
     }//GEN-LAST:event_jButton5MouseClicked
 
@@ -358,18 +336,12 @@ public class groupsView extends javax.swing.JFrame implements TreeSelectionListe
             setTreeData(true);
         }
 
-        
+
     }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void treeNew() {
-
-
-    }
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         if (category) {
             if (!jTextField2.getText().equals("")) {
-
                 ProductGroupFamily fg = new ProductGroupFamily(QueryClass.instanceOf());
                 fg.setName(jTextField2.getText());
                 fg.setKategorieid(cat.getId());
@@ -381,10 +353,7 @@ public class groupsView extends javax.swing.JFrame implements TreeSelectionListe
                 gj.save();
                 setTreeData(true);
             }
-
         } else {
-
-
             Popup.notice("Sie müssen eine Kategorie wählen");
         }
     }//GEN-LAST:event_jButton2ActionPerformed
@@ -392,8 +361,6 @@ public class groupsView extends javax.swing.JFrame implements TreeSelectionListe
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         if (family) {
             if (!jTextField3.getText().equals("")) {
-
-
                 ProductGroupGroup gj = new ProductGroupGroup(QueryClass.instanceOf());
                 gj.setName(jTextField3.getText());
                 gj.setFamilienid(fag.getId());
@@ -402,14 +369,12 @@ public class groupsView extends javax.swing.JFrame implements TreeSelectionListe
             }
 
         } else {
-
-
             Popup.notice("Sie müssen eine Produktfamilie wählen");
         }
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-       
+
         this.p.deleteAll();
         this.setTreeData(true);
     }//GEN-LAST:event_jButton6ActionPerformed
@@ -419,10 +384,7 @@ public class groupsView extends javax.swing.JFrame implements TreeSelectionListe
     }//GEN-LAST:event_jButton7ActionPerformed
 
 private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-// TODO add your handling code here:
 }//GEN-LAST:event_jButton5ActionPerformed
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
@@ -441,6 +403,7 @@ private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField4;
     // End of variables declaration//GEN-END:variables
+
     public void setTreeData(boolean refresh) {
         this.jTree1 = null;
         jPanel1.removeAll();
@@ -470,84 +433,71 @@ private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
                     subsubchild = new DefaultMutableTreeNode(
                             grps.get(h));
-
                     subchild.add(subsubchild);
                 }
                 child.add(subchild);
             }
-
             root.add(child);
         }
-
-
-
-
 
         this.jTree1 = new JTree(root);
         jScrollPane1 = new javax.swing.JScrollPane();
         jScrollPane1.setViewportView(jTree1);
         jScrollPane1.validate();
-        
-        
-        
+
         tree = this.jTree1;
         TreeModel model = tree.getModel();
-//         expandJTreeNode(tree, model, model.getRoot(), 0, -1);
-
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-
-        //Listen for when the selection changes.
         tree.addTreeSelectionListener(this);
         tree.setExpandsSelectedPaths(true);
-        
-        this.jPanel1.add(jScrollPane1,BorderLayout.CENTER);
+
+        this.jPanel1.add(jScrollPane1, BorderLayout.CENTER);
         this.validate();
     }
+
     /**
- * Expands a given node in a JTree.
- *
- * @param tree      The JTree to expand.
- * @param model     The TreeModel for tree.     
- * @param node      The node within tree to expand.     
- * @param row       The displayed row in tree that represents
- *                  node.     
- * @param depth     The depth to which the tree should be expanded. 
- *                  Zero will just expand node, a negative
- *                  value will fully expand the tree, and a positive
- *                  value will recursively expand the tree to that
+     * Expands a given node in a JTree.
+     *
+     * @param tree      The JTree to expand.
+     * @param model     The TreeModel for tree.     
+     * @param node      The node within tree to expand.     
+     * @param row       The displayed row in tree that represents
+     *                  node.     
+     * @param depth     The depth to which the tree should be expanded. 
+     *                  Zero will just expand node, a negative
+     *                  value will fully expand the tree, and a positive
+     *                  value will recursively expand the tree to that
      *                  depth relative to node.
      * @return 
- */
-public int expandJTreeNode (javax.swing.JTree tree,
-                                   javax.swing.tree.TreeModel model,
-                                   Object node, int row, int depth)
-{
-    if (node != null  &&  !model.isLeaf(node)) {
-        tree.expandRow(row);
-        if (depth != 0)
-        {
-            for (int index = 0;
-                 row + 1 < tree.getRowCount()  &&  
-                            index < model.getChildCount(node);
-                 index++)
-            {
-                row++;
-                Object chil1 = model.getChild(node, index);
-                if (chil1 == null) {
+     */
+    public int expandJTreeNode(javax.swing.JTree tree,
+            javax.swing.tree.TreeModel model,
+            Object node, int row, int depth) {
+        if (node != null && !model.isLeaf(node)) {
+            tree.expandRow(row);
+            if (depth != 0) {
+                for (int index = 0;
+                        row + 1 < tree.getRowCount() &&
+                        index < model.getChildCount(node);
+                        index++) {
+                    row++;
+                    Object chil1 = model.getChild(node, index);
+                    if (chil1 == null) {
                         break;
                     }
-                javax.swing.tree.TreePath path;
-                while ((path = tree.getPathForRow(row)) != null  &&
-                        path.getLastPathComponent() != chil1) {
+                    javax.swing.tree.TreePath path;
+                    while ((path = tree.getPathForRow(row)) != null &&
+                            path.getLastPathComponent() != chil1) {
                         row++;
                     }
-                if (path == null) {
+                    if (path == null) {
                         break;
                     }
-                row = expandJTreeNode(tree, model, chil1, row, depth - 1);
+                    row = expandJTreeNode(tree, model, chil1, row, depth - 1);
+                }
             }
         }
-    }
-    return row;
-} // expandJTreeNode()
+        return row;
+    } // expandJTreeNode()
+
 }

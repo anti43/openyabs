@@ -24,6 +24,7 @@ import mp3.classes.interfaces.Strings;
 import handling.db.Query;
 import mp3.classes.utils.Log;
 import mp3.classes.layer.PostenTableModel;
+import mp3.classes.layer.QueryClass;
 import mp4.utils.datum.DateConverter;
 
 /**
@@ -43,6 +44,12 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.s
     private String[][] products;
     private List labelsOfGetAllWithD;
 
+    public Angebot() {
+        super(QueryClass.instanceOf().clone(TABLE_ORDERS));
+        this.query = QueryClass.instanceOf();
+    }
+
+
     public Angebot(Query query) {
         super(query.clone(TABLE_ORDERS));
         this.query = query;
@@ -53,11 +60,11 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.s
      * @param query
      * @param id
      */
-    public Angebot(Query query, Integer id) {
-        super(query.clone(TABLE_ORDERS));
+    public Angebot(Integer id) {
+        super(QueryClass.instanceOf().clone(TABLE_ORDERS));
         this.id = Integer.valueOf(id);
         this.explode(this.selectLast(Strings.ALL, Strings.ID, id.toString(), true));
-        this.query = query;
+        this.query = QueryClass.instanceOf();
         bp = getProducts(query);
     }
 
@@ -158,13 +165,13 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.s
         str = str + "(;;2#4#1#1#8#0#;;)" + this.getOrdernummer() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
         str = str + this.getKundenId() + "(;;,;;)";
 //        str = str + this.getDeleted();
-        str = str + "(;;2#4#1#1#8#0#;;)" + this.getDatum() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
+        str = str + "(;;2#4#1#1#8#0#;;)" + DateConverter.getSQLDateString(this.getDatum()) + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
         if (this.isAuftrag()) {
             str = str + "1" + "(;;,;;)";
         } else {
             str = str + "0" + "(;;,;;)";
         }
-        str = str + "(;;2#4#1#1#8#0#;;)" + this.getBisDatum() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
+        str = str + "(;;2#4#1#1#8#0#;;)" + DateConverter.getSQLDateString(this.getBisDatum()) + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
         if (this.hasRechnung()) {
             str = str + "1";
         } else {
@@ -385,5 +392,9 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.s
 
     public boolean hasRechnung() {
         return rechnung;
+    }
+
+    public int delete(String id) {
+        return delete(Integer.valueOf(id));
     }
 }

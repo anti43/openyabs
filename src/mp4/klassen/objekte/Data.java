@@ -242,4 +242,8 @@ public class Data extends mp3.classes.layer.Things implements mp4.datenbank.stru
 
         return month;
     }
+
+    public int delete(String id) {
+        return delete(Integer.valueOf(id));
+    }
 }

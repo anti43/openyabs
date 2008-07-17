@@ -8,7 +8,7 @@ package mp3.classes.layer.visual;
 
 import mp3.classes.layer.*;
 import mp3.classes.utils.Formater;
-import mp3.classes.utils.WindowTools;
+import mp4.utils.windows.Position;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import javax.swing.ListSelectionModel;
@@ -16,6 +16,7 @@ import javax.swing.table.DefaultTableModel;
 import mp4.klassen.objekte.Lieferant;
 import mp3.classes.visual.util.csvProductImporter;
 import mp3.classes.visual.sub.productsView;
+import mp4.utils.tabellen.SelectionCheck;
 
 /**
  *
@@ -33,7 +34,7 @@ public class SupplierPicker extends javax.swing.JFrame {
         
         this.supplier = new Lieferant(QueryClass.instanceOf());
         
-        new WindowTools(this);
+        new Position(this);
         
         String[][] list = supplier.select("id, lieferantennummer, firma ", "lieferantennummer", "", "lieferantennummer", true);
         String k = "id, " + "Nummer,Firma";
@@ -54,7 +55,7 @@ public class SupplierPicker extends javax.swing.JFrame {
         
         this.supplier = new Lieferant(QueryClass.instanceOf());
         
-        new WindowTools(this);
+        new Position(this);
         
         String[][] list = supplier.select("id, lieferantennummer, firma ", "lieferantennummer", "", "lieferantennummer", true);
         String k = "id, " + "Nummer,Firma";
@@ -229,26 +230,18 @@ public class SupplierPicker extends javax.swing.JFrame {
     private void jTable1MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
        
         
-        boolean idOk = true;
-        Integer id = 0;
-     
-        try {
-            id = Integer.valueOf((String) jTable1.getValueAt(jTable1.getSelectedRow(), 0));
-        } catch (Exception numberFormatException) {
-            idOk = false;
-        }
-
-
-
-        if (idOk) {
-
+        
+         
+        SelectionCheck selection = new SelectionCheck(jTable1);
+        
+        if (selection.checkID()) {
             try {
                 
                 if(importer) {
-                    frame1.setSupplier(new Lieferant(QueryClass.instanceOf(), id));
+                    frame1.setSupplier(new Lieferant(selection.getId()));
                 } else {
                 
-                 frame.setSupplier(new Lieferant(QueryClass.instanceOf(), id));
+                 frame.setSupplier(new Lieferant(selection.getId()));
                 
                 }
                 this.dispose();

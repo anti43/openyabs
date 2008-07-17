@@ -9,7 +9,6 @@ import java.awt.event.MouseEvent;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-
 import mp3.classes.interfaces.Strings;
 import mp3.classes.layer.Popup;
 import mp3.classes.layer.QueryClass;
@@ -17,6 +16,7 @@ import mp4.klassen.objekte.History;
 import mp4.klassen.objekte.Product;
 import mp4.klassen.objekte.Lieferant;
 import mp3.classes.visual.main.mainframe;
+import mp4.utils.tabellen.SelectionCheck;
 
 /**
  *
@@ -35,13 +35,10 @@ public class suppliersView extends javax.swing.JPanel implements mp4.datenbank.s
         initComponents();
 
         current = new Lieferant(QueryClass.instanceOf());
-
         liste = current.getAll();
         String k = "id, " +  TABLE_SUPPLIER_FIELDS;
-
         this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
         current.stripFirst(jTable2);
-
         this.mainframe = aThis;
         
         String[][] list = current.select("id, lieferantennummer, firma,ort ", "firma", jTextField1.getText(), "firma", true);
@@ -53,11 +50,8 @@ public class suppliersView extends javax.swing.JPanel implements mp4.datenbank.s
 
     public suppliersView(Lieferant current) {
         initComponents();
-
         this.current = current;
-
         liste = current.getAll();
-
         this.jTable2.setModel(new DefaultTableModel(liste, TABLE_SUPPLIER_FIELDS.split(",")));
         current.stripFirst(jTable2);
     }
@@ -693,7 +687,6 @@ public class suppliersView extends javax.swing.JPanel implements mp4.datenbank.s
      */
     public void setSupplier(Lieferant current) {
         this.current = current;
-
         this.jTextField4.setText(current.getLieferantennummer());
         this.jTextField5.setText(current.getFirma());
 //        this.jTextField6.setText(current.getAnrede());
@@ -713,36 +706,26 @@ public class suppliersView extends javax.swing.JPanel implements mp4.datenbank.s
         String[] head = {"id", "Artikelnummer", "Produkte", "Hersteller"};
         this.jTable1.setModel(new DefaultTableModel(current.getProducts(), head));
         current.stripFirst(jTable1);
-
-//3t2D535A73MUq
-
     }
 
     private void jButton1MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
         jTabbedPane1.setSelectedIndex(0);
-        
-        
-
     }//GEN-LAST:event_jButton1MouseClicked
 
     private void jButton2MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
         jTabbedPane1.setSelectedIndex(1);
-   
     }//GEN-LAST:event_jButton2MouseClicked
 
     private void jTextField1ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-
 
         String[][] list = current.select("id, lieferantennummer, firma,ort ", "lieferantennummer", jTextField1.getText(), "lieferantennummer", true);
         String k = "id, " + "Nummer,Firma,Ort";
 
         this.jTable3.setModel(new DefaultTableModel(list, k.split(",")));
         current.stripFirst(jTable3);
-
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jTextField2ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
-
 
         String[][] list = current.select("id, lieferantennummer, firma,ort ", "firma", jTextField1.getText(), "firma", true);
         String k = "id, " + "Nummer,Firma,Ort";
@@ -802,13 +785,12 @@ public class suppliersView extends javax.swing.JPanel implements mp4.datenbank.s
             current = new Lieferant(QueryClass.instanceOf());
             try {
                 if (current.getNextNumber("lieferantennummer") > Integer.valueOf(jTextField4.getText())) {
-
                     current.setLieferantennummer(current.getNextNumber("lieferantennummer").toString());
                 } else {
                     current.setLieferantennummer(jTextField4.getText());
                 }
             } catch (NumberFormatException numberFormatException) {
-                //current.setKundennummer(jTextField4.getText());
+              
                 current.setLieferantennummer(current.getNextNumber("lieferantennummer").toString());
             }
             current.setFirma(jTextField5.getText());
@@ -823,9 +805,7 @@ public class suppliersView extends javax.swing.JPanel implements mp4.datenbank.s
             current.setMobil(jTextField13.getText());
             current.setMail(jTextField14.getText());
             current.setWebseite(jTextField15.getText());
-
             current.setNotizen(jTextArea1.getText());
-
             current.save();
 
             String[] head = {"Artikelnummer", "Produkte", "Hersteller"};
@@ -864,46 +844,24 @@ public class suppliersView extends javax.swing.JPanel implements mp4.datenbank.s
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jTable2MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable2MouseClicked
-        boolean idOk = true;
-        Integer id = 0;
+      
+        SelectionCheck selection = new SelectionCheck(jTable2);
 
-        try {
-            id = Integer.valueOf((String) jTable2.getValueAt(jTable2.getSelectedRow(), 0));
-        } catch (Exception numberFormatException) {
-            idOk = false;
-        }
-
-
-
-        if (evt.getClickCount() >= 2 && idOk && evt.getButton() == MouseEvent.BUTTON1) {
-
+        if (evt.getClickCount() >= 2 && selection.checkID() && evt.getButton() == MouseEvent.BUTTON1) {
             try {
-                this.setSupplier(new Lieferant(QueryClass.instanceOf(), id));
+                this.setSupplier(new Lieferant(selection.getId()));
                 jTabbedPane1.setSelectedIndex(0);
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
-        } else if (idOk && (evt.getButton() == MouseEvent.BUTTON2 || evt.getButton() == MouseEvent.BUTTON3)) {
-        // show the popup and return
-
-        }
-
-
-        idOk = true;
-        
-        
-        
+        } 
     }//GEN-LAST:event_jTable2MouseClicked
 
     public void save() {
 
         if (!current.getId().equals("0")) {
             current = new Lieferant(QueryClass.instanceOf());
-
-
             current.setFirma(jTextField5.getText());
-
-
             current.setStr(jTextField9.getText());
             current.setPLZ(jTextField16.getText());
             current.setOrt(jTextField10.getText());
@@ -912,15 +870,11 @@ public class suppliersView extends javax.swing.JPanel implements mp4.datenbank.s
             current.setMobil(jTextField13.getText());
             current.setMail(jTextField14.getText());
             current.setWebseite(jTextField15.getText());
-
             current.setNotizen(jTextArea1.getText());
-
             current.save();
 
             mainframe.nachricht("Lieferant Nummer " + current.getLieferantennummer() + " gespeichert.");
-
             new History(QueryClass.instanceOf(),  Strings.SUPPLIER, "Lieferant Nummer: " + current.getLieferantennummer() + " editiert.");
-
 
             liste = current.getAll();
             String k = "id, " +  TABLE_SUPPLIER_FIELDS;
@@ -928,48 +882,25 @@ public class suppliersView extends javax.swing.JPanel implements mp4.datenbank.s
             this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
             current.stripFirst(jTable2);
         } else {
-
             new Popup("Sie müssen den Datensatz erst anlegen.", Popup.ERROR);
         }
-
-
     }
 
     private void jButton4MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton4MouseClicked
-
         save();
     }//GEN-LAST:event_jButton4MouseClicked
 
     private void jTable3MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable3MouseClicked
-        boolean idOk = true;
-        Integer id = 0;
+        
+        SelectionCheck selection = new SelectionCheck(jTable3);
 
-
-
-        try {
-            id = Integer.valueOf((String) jTable3.getValueAt(jTable3.getSelectedRow(), 0));
-        } catch (Exception numberFormatException) {
-            idOk = false;
-        }
-
-
-
-        if (evt.getClickCount() >= 2 && idOk && evt.getButton() == MouseEvent.BUTTON1) {
-
+        if (evt.getClickCount() >= 2 && selection.checkID() && evt.getButton() == MouseEvent.BUTTON1) {
             try {
-                this.setSupplier(new Lieferant(QueryClass.instanceOf(), id));
-
+                this.setSupplier(new Lieferant(selection.getId()));
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
-        } else if (idOk && (evt.getButton() == MouseEvent.BUTTON2 || evt.getButton() == MouseEvent.BUTTON3)) {
-        // show the popup and return
-
-        }
-
-
-        idOk = true;
-        
+        } 
     }//GEN-LAST:event_jTable3MouseClicked
 
     private void jButton7ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
@@ -994,40 +925,18 @@ public class suppliersView extends javax.swing.JPanel implements mp4.datenbank.s
 
     private void jButton8MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton8MouseClicked
 
-
         mainframe.getJTabbedPane1().setSelectedIndex(3);
         mainframe.getProductsView().setSupplier(current);
     }//GEN-LAST:event_jButton8MouseClicked
 
     private void jTable1MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
 
+        SelectionCheck selection = new SelectionCheck(jTable1);
 
-//
-//        mainframe.getB().setCustomer(current);
-
-        boolean idOk = true;
-        Integer id = null;
-
-        try {
-            id = Integer.valueOf((String) jTable1.getValueAt(jTable1.getSelectedRow(), 0));
-        } catch (Exception numberFormatException) {
-            idOk = false;
-        }
-
-
-
-        if (evt.getClickCount() >= 2 && idOk) {
-
-
-            mainframe.getProductsView().setProduct(new Product(QueryClass.instanceOf(), id));
-
+        if (evt.getClickCount() >= 2 && selection.checkID()) {
+            mainframe.getProductsView().setProduct(new Product(selection.getId()));
             mainframe.setShowingTab(3);
-
         }
-
-
-        idOk = true;
- 
     }//GEN-LAST:event_jTable1MouseClicked
 
     private void jTable2MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable2MouseEntered
@@ -1036,17 +945,12 @@ public class suppliersView extends javax.swing.JPanel implements mp4.datenbank.s
 
     private void jButton9MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton9MouseClicked
 
-
         if ((JOptionPane.showConfirmDialog(this, "Wirklich löschen?", "Sicher?", JOptionPane.YES_NO_OPTION)) == JOptionPane.YES_OPTION) {
             current.deactivate(current.getId().toString());
             new History(QueryClass.instanceOf(),  Strings.SUPPLIER, "Lieferant Nummer: " + current.getLieferantennummer() + " gelöscht.");
 
-
             this.jTextField4.setText("");
             this.jTextField5.setText("");
-//        this.jTextField6.setText("");
-//        this.jTextField7.setText("");
-//        this.jTextField8.setText("");
             this.jTextField9.setText("");
             this.jTextField10.setText("");
             this.jTextField11.setText("");
@@ -1055,7 +959,6 @@ public class suppliersView extends javax.swing.JPanel implements mp4.datenbank.s
             this.jTextField14.setText("");
             this.jTextField15.setText("");
             this.jTextField16.setText("");
-
             this.jTextArea1.setText("");
 
             liste = current.getAll();
@@ -1063,13 +966,12 @@ public class suppliersView extends javax.swing.JPanel implements mp4.datenbank.s
 
             this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
             current.stripFirst(jTable2);
-
             current = new Lieferant(QueryClass.instanceOf());
         }
     }//GEN-LAST:event_jButton9MouseClicked
 
 private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-// TODO add your handling code here:
+
 }//GEN-LAST:event_jButton3ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

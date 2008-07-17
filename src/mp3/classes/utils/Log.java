@@ -16,6 +16,8 @@
  */
 package mp3.classes.utils;
 
+import mp3.classes.visual.main.Logger;
+
 /**
  *
  * @author anti43

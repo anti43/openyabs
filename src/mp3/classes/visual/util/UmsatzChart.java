@@ -11,7 +11,7 @@ import java.awt.Color;
 import java.util.Date;
 import mp3.classes.interfaces.Constants;
 import mp4.klassen.objekte.Data;
-import mp3.classes.utils.WindowTools;
+import mp4.utils.windows.Position;
 import mp3.classes.utils.Formater;
 
 /**
@@ -63,7 +63,7 @@ public class UmsatzChart extends javax.swing.JFrame {
         jPanel1.add(bar,BorderLayout.CENTER);
         jTextField1.setText(Formater.formatYear(new Date()));
 
-        new WindowTools(this);
+        new Position(this);
 
         this.setVisible(rootPaneCheckingEnabled);
     }

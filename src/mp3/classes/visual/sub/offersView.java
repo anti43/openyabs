@@ -44,12 +44,13 @@ import mp4.klassen.objekte.AngebotPosten;
 import mp4.klassen.objekte.Product;
 import mp3.classes.visual.main.mainframe;
 import mp4.utils.datum.DateConverter;
+import mp4.utils.tabellen.SelectionCheck;
 
 /**
  *
  * @author  anti43
  */
-public class offersView extends javax.swing.JPanel implements Runnable,mp4.datenbank.struktur.Tabellen {
+public class offersView extends javax.swing.JPanel implements Runnable, mp4.datenbank.struktur.Tabellen {
 
     private Angebot current;
     private String[][] liste;
@@ -66,36 +67,26 @@ public class offersView extends javax.swing.JPanel implements Runnable,mp4.daten
     private double defTax = 19d;
     private MyData l;
 
- 
     @SuppressWarnings("unchecked")
     public offersView(mainframe aThis) {
         l = MyData.instanceOf();
-        defTax = Double.valueOf(l.getGlobaltax());
-        Log.Debug(defTax);
-
+        defTax = l.getGlobaltax();
 
         initComponents();
 
-
-        current = new Angebot(QueryClass.instanceOf());
-
+        current = new Angebot();
         current.stripFirst(jTable1);
-
-
         this.updateListTable();
 
         Formater.format(jTable2, 1, 120);
         Formater.format(jTable2, 2, 120);
         Formater.format(jTable2, 3, 120);
 
-        df = new SimpleDateFormat("dd.MM.yyyy");
+        jTextField7.setText(DateConverter.getTodayDefDate());
+        jTextField10.setText(DateConverter.getTodayDefDate());
 
-        jTextField7.setText(df.format(new Date()));
-        jTextField10.setText(df.format(new Date()));
-
-        this.customer = new Customer(QueryClass.instanceOf());
+        this.customer = new Customer();
         this.mainframe = aThis;
-
 
         t = new Thread(this);
         t.setPriority(Thread.MIN_PRIORITY);
@@ -103,32 +94,22 @@ public class offersView extends javax.swing.JPanel implements Runnable,mp4.daten
 
         renewTableModel();
         resizeFields();
-
         offersOfTheMonth();
-
-
     }
 
     public void addToOrder(Product product, boolean ean, boolean name, boolean text) {
 
-
-
         TableModel m = getJTable1().getModel();
-
         addRow();
 
         int z = getJTable1().getSelectedRow();
-
         if (z == -1) {
-
             z = this.getLastRow();
         }
         int end = 0;
 
         try {
-
             try {
-
                 if (product.getText().length() > 60) {
                     end = 60;
                 } else {
@@ -144,16 +125,13 @@ public class offersView extends javax.swing.JPanel implements Runnable,mp4.daten
                     str = str + product.getText().substring(0, end);
                 }
                 if (ean) {
-                    str = str + " EAN: " + product.getEan();
+                    str = str + product.getEan();
                 }
 
                 m.setValueAt(str, z, 2);
-
             } catch (Exception exception) {
                 Log.Debug(exception);
             }
-
-
 
 //            m.setValueAt(product.getHersteller() + " " + product.getName() + " " + product.getEan(), z, 2);//settings?
             m.setValueAt(new Double(1), z, 1);
@@ -172,15 +150,9 @@ public class offersView extends javax.swing.JPanel implements Runnable,mp4.daten
                 nachricht("Wert 'Preis' unzulässig: Produkt " + product.getNummer());
                 m.setValueAt(new Double(0), z, 4);
             }
-
-
-
         } catch (Exception exception) {
             exception.printStackTrace();
         }
-
-
-
     }
 
     public JTextField getJTextField5() {
@@ -230,45 +202,34 @@ public class offersView extends javax.swing.JPanel implements Runnable,mp4.daten
                 new String[]{"id", "Anzahl", "Bezeichnung", "Mehrwertsteuer", "Nettopreis", "Bruttopreis"});
 
         getJTable1().setModel(f);
-
         Formater.stripFirst(jTable1);
     }
 
     private void resizeFields() {
-
         try {
             getJTable1().getColumn(getJTable1().getColumnName(2)).setPreferredWidth(350);
             getJTable1().getColumn(getJTable1().getColumnName(1)).setPreferredWidth(30);
             getJTable1().getColumn(getJTable1().getColumnName(3)).setPreferredWidth(30);
-
             getJTable1().getColumn(getJTable1().getColumnName(1)).setMinWidth(30);
             getJTable1().getColumn(getJTable1().getColumnName(3)).setMinWidth(30);
-
         } catch (Exception exception) {
         }
-
     }
 
     private void setAuftrag(boolean b) {
 
         current.setAuftrag(b);
 
-
         if (current.isAuftrag()) {
             this.jCheckBox2.setSelected(true);
             this.jTextField6.setBackground(Color.GREEN);
-
         } else {
-
-
             this.jCheckBox2.setSelected(false);
             this.jTextField6.setBackground(Color.LIGHT_GRAY);
-
         }
     }
 
     private void updateListTable() {
-
 
         try {
             liste = getCurrent().getWithDepencies("auftraege.id,auftragnummer,datum,kundennummer,firma,auftrag");
@@ -285,7 +246,7 @@ public class offersView extends javax.swing.JPanel implements Runnable,mp4.daten
             Formater.format(jTable2, 3, 120);
 
         } catch (Exception exception) {
-            exception.printStackTrace();
+            Log.Debug(exception);
         }
 
     }
@@ -295,25 +256,21 @@ public class offersView extends javax.swing.JPanel implements Runnable,mp4.daten
         this.current = current;
         this.setCustomer(new Customer(current.getKundenId()));
 
-
         this.jTextField6.setText(current.getOrdernummer());
-        this.jTextField7.setText(current.getDatum().toString());
-        this.jTextField10.setText(current.getBisDatum().toString());
-
+        this.jTextField7.setText(DateConverter.getDefDateString(current.getDatum()));
+        this.jTextField10.setText(DateConverter.getDefDateString(current.getBisDatum()));
 
         this.getJTable1().setModel(current.getProductlistAsTableModel());
         current.stripFirst(getJTable1());
         resizeFields();
 
         this.setAuftrag(current.isAuftrag());
-
     }
 
     public void setCustomer(Customer c) {
 
         oldcustomer = this.customer;
         this.customer = c;
-
         getJTextField4().setText(c.getKundennummer());
         jTextField5.setText(c.getFirma());
 
@@ -323,12 +280,9 @@ public class offersView extends javax.swing.JPanel implements Runnable,mp4.daten
             isdeleted.setText("Gelöscht.");
             jTextField5.setBackground(Color.RED);
         } else {
-
             isdeleted.setText("");
             jTextField5.setBackground(Color.WHITE);
-
         }
-
     }
 
     private boolean hasCustomer() {
@@ -341,7 +295,6 @@ public class offersView extends javax.swing.JPanel implements Runnable,mp4.daten
 //            }
 
             if (getCustomer().getId() != null && !customer.getId().equals("0") && !customer.isDeleted()) {
-
                 return true;
             } else {
                 return false;
@@ -973,14 +926,10 @@ public class offersView extends javax.swing.JPanel implements Runnable,mp4.daten
     }// </editor-fold>//GEN-END:initComponents
     private void jButton1MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
         jTabbedPane1.setSelectedIndex(0);
-
-
-
     }//GEN-LAST:event_jButton1MouseClicked
 
     private void jButton2MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
         jTabbedPane1.setSelectedIndex(1);
-
     }//GEN-LAST:event_jButton2MouseClicked
 
     private void jTextField1ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
@@ -998,7 +947,6 @@ public class offersView extends javax.swing.JPanel implements Runnable,mp4.daten
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jTextField2ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
-
 
         String[][] list = getCurrent().select("id, auftragnummer, datum ", "datum", jTextField2.getText(), "datum", true);
         String k = "id, " + "Nummer,Datum";
@@ -1023,145 +971,85 @@ public class offersView extends javax.swing.JPanel implements Runnable,mp4.daten
 
     private void jButton3MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
 
-//        prepareTable();
         editor = getJTable1().getCellEditor();
-
         if (hasCustomer() && validDate()) {
             TableModel m = getJTable1().getModel();
             ListSelectionModel selectionModel = getJTable1().getSelectionModel();
             boolean valide = true;
-
-
             if (editor != null) {
                 editor.stopCellEditing();
             }
-
-
-
-
-
             if (valide) {
 
-                Query f = QueryClass.instanceOf().clone( TABLE_ORDERS);
-
+                Query f = QueryClass.instanceOf().clone(TABLE_ORDERS);
                 Integer auftragnummer = f.getNextIndex("auftragnummer");
-
                 Angebot order = new Angebot(QueryClass.instanceOf());
-
                 order.setOrdernummer(auftragnummer.toString());
-
                 order.setDatum(DateConverter.getDate(jTextField7.getText()));
                 order.setBisDatum(DateConverter.getDate(jTextField10.getText()));
                 order.setKundenId(getCustomer().getId());
-
                 order.save();
-
-
                 this.clear();
-
 
                 for (int i = 0; i < m.getRowCount(); i++) {
 
                     //anzahl,bezeichnung,mehrwertsteuer,nettopreis
                     if (m.getValueAt(i, 4) != null) {
-
-
-
                         AngebotPosten b = new AngebotPosten(QueryClass.instanceOf());
-
                         b.setauftragid(order.getId());
-
-//                        b.setAnzahl((String) m.getValueAt(i, 1));
                         b.setPosten((String) m.getValueAt(i, 2));
 
                         try {
-
                             b.setAnzahl((Double) m.getValueAt(i, 1));
                             b.setSteuersatz((Double) m.getValueAt(i, 3));
                             b.setPreis((Double) m.getValueAt(i, 4));
 
                         } catch (Exception exception) {
-//                            b.setAnzahl("0");
-//                            b.setSteuersatz("0");
-//                            b.setPreis("0");
+                            Log.Debug(exception);
                         }
-
                         b.save();
-
                     }
                 }
 
                 jTextField6.setText(order.getOrdernummer());
                 mainframe.nachricht("Angebot Nummer: " + order.getOrdernummer() + " angelegt.");
-
-                new History(QueryClass.instanceOf(),  Strings.ORDER, "Angebot Nummer: " + order.getOrdernummer() + " angelegt.");
-
-
-
-                this.setOrder(new Angebot(QueryClass.instanceOf(), order.getId()));
-
+                new History(QueryClass.instanceOf(), Strings.ORDER, "Angebot Nummer: " + order.getOrdernummer() + " angelegt.");
+                this.setOrder(new Angebot(order.getId()));
             }
-
         } else {
-
             new Popup("Sie müssen einen (validen) Kunden auswählen.", Popup.ERROR);
         }
         updateListTable();
         resizeFields();
-
         offersOfTheMonth();
-
-
     }//GEN-LAST:event_jButton3MouseClicked
 
     private void jButton6ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-
         this.defTax = Double.valueOf(MyData.instanceOf().getGlobaltax());
         updateListTable();
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jTable2MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable2MouseClicked
 
-        boolean idOk = true;
-        Integer id = 0;
+        SelectionCheck selection = new SelectionCheck(jTable2);
 
+        if (selection.checkID()) {
+            if (evt.getClickCount() >= 2 && evt.getButton() == MouseEvent.BUTTON1) {
 
-        try {
-            id = Integer.valueOf((String) jTable2.getValueAt(jTable2.getSelectedRow(), 0));
-        } catch (Exception numberFormatException) {
-            idOk = false;
-        }
-
-
-
-        if (evt.getClickCount() >= 2 && idOk && evt.getButton() == MouseEvent.BUTTON1) {
-
-            try {
-                this.setOrder(new Angebot(QueryClass.instanceOf(), id));
-                jTabbedPane1.setSelectedIndex(0);
-            } catch (Exception exception) {
-                exception.printStackTrace();
+                try {
+                    this.setOrder(new Angebot(selection.getId()));
+                    jTabbedPane1.setSelectedIndex(0);
+                } catch (Exception exception) {
+                    Log.Debug(exception);
+                }
             }
-        } else if (idOk && (evt.getButton() == MouseEvent.BUTTON2 || evt.getButton() == MouseEvent.BUTTON3)) {
         }
-
-
-        idOk = true;
-
-
     }//GEN-LAST:event_jTable2MouseClicked
 
     public void save() {
-        //saving
-
-
-
-//        prepareTable();
 
         if (hasCustomer() && validDate()) {
-
             if (hasCurrent()) {
-
                 TableModel m = getJTable1().getModel();
                 ListSelectionModel selectionModel = getJTable1().getSelectionModel();
                 boolean valide = true;
@@ -1170,132 +1058,70 @@ public class offersView extends javax.swing.JPanel implements Runnable,mp4.daten
                 if (editor != null) {
                     editor.stopCellEditing();
                 }
-
-
                 if (valide) {
-
-                    Query f = QueryClass.instanceOf().clone( TABLE_ORDERS);
-
-                    //Integer auftragnummer = f.getNextIndex("auftragnummer");
-
+                    Query f = QueryClass.instanceOf().clone(TABLE_ORDERS);
                     Angebot order = getCurrent();
-
-//                    bill.setauftragnummer(auftragnummer.toString());
-
                     order.setDatum(DateConverter.getDate(jTextField7.getText()));
                     order.setBisDatum(DateConverter.getDate(jTextField10.getText()));
-
                     order.setKundenId(getCustomer().getId());
-
                     order.save();
-                    //  this.clear();
-
-
 
                     for (int i = 0; i < m.getRowCount(); i++) {
-
-                        //delete first
                         if (m.getValueAt(i, 0) != null) {
-
-
-
                             AngebotPosten b = new AngebotPosten(QueryClass.instanceOf(), m.getValueAt(i, 0).toString());
-
                             b.destroy();
                         }
                     }
 
-
                     for (int i = 0; i < m.getRowCount(); i++) {
-
                         //anzahl,bezeichnung,mehrwertsteuer,nettopreis
                         if (m.getValueAt(i, 4) != null) {
-
-
-
                             AngebotPosten b = new AngebotPosten(QueryClass.instanceOf());
-
                             b.setauftragid(getCurrent().getId());
-
-//                            b.setAnzahl((String) m.getValueAt(i, 1));
                             b.setPosten((String) m.getValueAt(i, 2));
                             try {
-
                                 b.setAnzahl((Double) (m.getValueAt(i, 1)));
                                 b.setSteuersatz((Double) (m.getValueAt(i, 3)));
                                 b.setPreis((Double) (m.getValueAt(i, 4)));
-
                             } catch (Exception exception) {
-//                                b.setAnzahl("0");
-//                                b.setSteuersatz("0");
-//                                b.setPreis("0");
+                                Log.Debug(exception);
                             }
                             b.save();
-
                         }
                     }
 
                     mainframe.getNachricht().setText("Angebot Nummer " + order.getOrdernummer() + " gespeichert.");
-                    new History(QueryClass.instanceOf(),  Strings.ORDER, "Angebot Nummer: " + order.getOrdernummer() + " editiert.");
-
-
-                    this.setOrder(new Angebot(QueryClass.instanceOf(), order.getId()));
+                    new History(QueryClass.instanceOf(), Strings.ORDER, "Angebot Nummer: " + order.getOrdernummer() + " editiert.");
+                    this.setOrder(new Angebot(order.getId()));
                 }
             } else {
-
                 jButton3MouseClicked(new MouseEvent(jTable1, WIDTH, WIDTH, WIDTH, WIDTH, WIDTH, WIDTH, nettoprices));
-
             }
-
-
-
-
-
         } else {
-
             new Popup("Sie müssen einen Kunden auswählen.", Popup.ERROR);
         }
-
         resizeFields();
-
-
     }
 
     private void jButton4MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton4MouseClicked
         save();
-
     }//GEN-LAST:event_jButton4MouseClicked
 
     private void jTable3MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable3MouseClicked
 
-        boolean idOk = true;
-        Integer id = 0;
+        SelectionCheck selection = new SelectionCheck(jTable1);
 
-        try {
-            id = Integer.valueOf((String) jTable3.getValueAt(jTable3.getSelectedRow(), 0));
-        } catch (Exception numberFormatException) {
-            idOk = false;
-        }
-
-
-        if (evt.getClickCount() >= 2 && idOk) {
+        if (selection.checkID() && evt.getClickCount() >= 2) {
 
             try {
-                this.setOrder(new Angebot(QueryClass.instanceOf(), id));
-
+                this.setOrder(new Angebot(selection.getId()));
             } catch (Exception exception) {
-                exception.printStackTrace();
+                Log.Debug(exception);
             }
         }
-
-        idOk = true;
-
     }//GEN-LAST:event_jTable3MouseClicked
 
     private void clear() {
-
-
-//        jTextField6.setText(current.getNextBillNumber().toString());
 
         this.customer = new Customer(QueryClass.instanceOf());
         this.current = new Angebot(QueryClass.instanceOf());
@@ -1316,68 +1142,31 @@ public class offersView extends javax.swing.JPanel implements Runnable,mp4.daten
     }
 
     private void jButton7ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-
         this.clear();
-
-//        TableModel m = getJTable1().getModel();
-////        ListSelectionModel selectionModel = jTable1.getSelectionModel();
-//
-//
-//        for (int i = 0; i < getJTable1().getRowCount(); i++) {
-//            if (m.getValueAt(i, 0) != null) {
-//
-//
-//
-//                OrderProduct b = new OrderProduct(QueryClass.instanceOf(), m.getValueAt(i, 0).toString());
-//
-//                b.destroy();
-//
-//
-//
-//            }
-//        }
-//
-//
-////        getJTable1().setModel(null);
-//        getJTable1().setModel(renewTableModel());
-//        getCurrent().stripFirst(getJTable1());
-//
-//        resizeFields();
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jTextField4ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
 
-
-        String[] st = getCustomer().selectLast( Strings.ALL, "kundennummer", jTextField4.getText(), false, false, false);
+        String[] st = getCustomer().selectLast(Strings.ALL, "kundennummer", jTextField4.getText(), false, false, false);
 
         this.clear();
         jTextField5.setText("");
         jTextField6.setText("");
         jTextField7.setText(df.format(new Date()));
 
-
         try {
-            this.setCustomer(new Customer(Integer.valueOf( st[0])));
-
-
+            this.setCustomer(new Customer(Integer.valueOf(st[0])));
         } catch (Exception exception) {
-
             try {
-
                 this.setCustomer(new Customer(QueryClass.instanceOf(), jTextField4.getText(), true));
 
             } catch (Exception exception1) {
-                //    exception1.printStackTrace();
                 mainframe.nachricht("Kein Datensatz gefunden k");
             }
-
         }
-
     }//GEN-LAST:event_jTextField4ActionPerformed
 
     private void jTextField5ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField5ActionPerformed
-
-
 
         String[] st = getCustomer().selectLast(Strings.ALL, "firma", jTextField5.getText(), false, false, false);
 
@@ -1387,52 +1176,34 @@ public class offersView extends javax.swing.JPanel implements Runnable,mp4.daten
         jTextField7.setText(df.format(new Date()));
         String[][] sta;
 
-
         try {
             this.setCustomer(new Customer(Integer.valueOf(st[0])));
-
         } catch (Exception exception) {
-
             try {
-
                 this.setCustomer(new Customer(QueryClass.instanceOf(), jTextField4.getText(), true));
-
             } catch (Exception exception1) {
-                //    exception1.printStackTrace();
                 mainframe.nachricht("Kein Datensatz gefunden k");
             }
         }
-
     }//GEN-LAST:event_jTextField5ActionPerformed
 
     private void jButton8MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton8MouseClicked
-
         addRow();
     }//GEN-LAST:event_jButton8MouseClicked
 
     private void jButton9ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
-
-
         new CustomerPicker(this);
-
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void jButton10ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
-
-
         new DatePick(jTextField7);
     }//GEN-LAST:event_jButton10ActionPerformed
 
     private void jCheckBox1ItemStateChanged (java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBox1ItemStateChanged
-
         if (jCheckBox1.isSelected()) {
-
             nettoprices = true;
-
         } else {
-
             nettoprices = false;
-
         }
     }//GEN-LAST:event_jCheckBox1ItemStateChanged
 
@@ -1443,68 +1214,42 @@ public class offersView extends javax.swing.JPanel implements Runnable,mp4.daten
 
     private void jButton11MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton11MouseClicked
 
-
-
         TableModel m = getJTable1().getModel();
-//        ListSelectionModel selectionModel = jTable1.getSelectionModel();
-
         try {
             if (m.getValueAt(getJTable1().getSelectedRow(), 0) != null) {
-
-
-
-                AngebotPosten b = new AngebotPosten(QueryClass.instanceOf(), m.getValueAt(getJTable1().getSelectedRow(), 0).toString());
-
+                AngebotPosten b = new AngebotPosten((Integer) m.getValueAt(getJTable1().getSelectedRow(), 0));
                 b.destroy();
-
 
                 for (int i = 0; i < getJTable1().getColumnCount(); i++) {
                     m.setValueAt(null, getJTable1().getSelectedRow(), i);
                 }
             } else {
-
-
                 for (int i = 0; i < getJTable1().getColumnCount(); i++) {
                     m.setValueAt(null, getJTable1().getSelectedRow(), i);
                 }
-
             }
-
         } catch (Exception e) {
-//            e.printStackTrace();
+            Log.Debug(e);
         }
-
-
     }//GEN-LAST:event_jButton11MouseClicked
 
     private void jButton10KeyPressed (java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton10KeyPressed
-
         jButton1MouseClicked(new MouseEvent(jTable1, WIDTH, WIDTH, WIDTH, WIDTH, WIDTH, WIDTH, nettoprices));
     }//GEN-LAST:event_jButton10KeyPressed
 
     private void jButton5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton5MouseClicked
         new ProductPicker(this);
-//        TableModel m;
-//
-//        if (getJTable1().getSelectedRow() == -1) {
-//            m = getJTable1().getModel();
-//            ListSelectionModel selectionModel = getJTable1().getSelectionModel();
-//            selectionModel.setSelectionInterval(getLastRow(),
-//                    getLastRow());
-//        }
-
     }//GEN-LAST:event_jButton5MouseClicked
 
     private void jCheckBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox2ActionPerformed
         jButton12ActionPerformed(evt);
-
     }//GEN-LAST:event_jCheckBox2ActionPerformed
 
     private void offersOfTheMonth() {
-        df = new SimpleDateFormat("yyyy-MM-dd");
-        jTextField2.setText(df.format(new Date()));
 
-        String[][] list = getCurrent().select("id, auftragnummer, datum ", "datum", df.format(new Date()), "datum", true);
+        jTextField2.setText(DateConverter.getTodayDefDate());
+
+        String[][] list = getCurrent().select("id, auftragnummer, datum ", "datum", DateConverter.getTodayDefDate(), "datum", true);
         String k = "id, " + "Nummer,Datum";
 
         this.jTable3.setModel(new DefaultTableModel(list, k.split(",")));
@@ -1516,18 +1261,8 @@ public class offersView extends javax.swing.JPanel implements Runnable,mp4.daten
             if (!current.isAuftrag()) {
                 this.current.setAuftrag(true);
                 this.setAuftrag(true);
-
                 this.current.save();
                 mainframe.nachricht("Angebot Nummer " + current.getOrdernummer() + " als 'Auftrag' markiert.");
-
-//        this.setOrder(current);
-            } else {//            this.setAuftrag(false);
-//        this.current.setAuftrag(false);
-//        
-//        this.current.save();
-//        mainframe.nachricht("Angebot Nummer " + current.getOrdernummer() + " als 'kein Auftrag' markiert.");
-//
-////        this.setOrder(current);
             }
         }
     }//GEN-LAST:event_jButton12ActionPerformed
@@ -1547,95 +1282,55 @@ public class offersView extends javax.swing.JPanel implements Runnable,mp4.daten
         jButton4MouseClicked(new MouseEvent(jTable1, WIDTH, WIDTH, WIDTH, WIDTH, WIDTH, WIDTH, nettoprices));
         jButton12ActionPerformed(evt);
 
-
         df = new SimpleDateFormat("dd.MM.yyyy");
-        Rechnung bill = new Rechnung(QueryClass.instanceOf());
+        Rechnung bill = new Rechnung();
         if (!current.hasRechnung()) {
             current.setAuftrag(true);
-
-
             editor = getJTable1().getCellEditor();
 
             if (hasCustomer() && validDate()) {
                 TableModel m = getJTable1().getModel();
-//            ListSelectionModel selectionModel = getJTable1().getSelectionModel();
                 boolean valide = true;
-
-
                 if (editor != null) {
                     editor.stopCellEditing();
                 }
-
-
                 if (valide) {
-
-                    Query f = QueryClass.instanceOf().clone( TABLE_BILLS);
-
+                    Query f = QueryClass.instanceOf().clone(TABLE_BILLS);
                     Integer rechnungnummer = f.getNextIndex("rechnungnummer");
 
-
-
                     bill.setRechnungnummer(rechnungnummer.toString());
-
                     bill.setDatum(new Date());
                     bill.setKundenId(getCustomer().getId());
-
                     bill.save();
-
-
-//                this.clear();
-
 
                     for (int i = 0; i < m.getRowCount(); i++) {
 
                         //anzahl,bezeichnung,mehrwertsteuer,nettopreis
                         if (m.getValueAt(i, 4) != null) {
-
-
-
                             RechnungPosten b = new RechnungPosten(QueryClass.instanceOf());
-
                             b.setRechnungid(bill.getId());
-
-//                        b.setAnzahl((String) m.getValueAt(i, 1));
                             b.setPosten((String) m.getValueAt(i, 2));
 
                             try {
-
                                 b.setAnzahl((Double) m.getValueAt(i, 1));
                                 b.setSteuersatz((Double) m.getValueAt(i, 3));
                                 b.setPreis((Double) m.getValueAt(i, 4));
-
                             } catch (Exception exception) {
-//                            b.setAnzahl("0");
-//                            b.setSteuersatz("0");
-//                            b.setPreis("0");
+                                Log.Debug(exception);
                             }
-
                             b.save();
-
                         }
                     }
-
                     current.setRechnung(true);
                     mainframe.nachricht("Rechnung Nummer: " + bill.getRechnungnummer() + " angelegt.");
-
-
                 }
-
             } else {
-
                 new Popup("Sie müssen einen (validen) Kunden auswählen.", Popup.ERROR);
             }
-            mainframe.getB().updateListTable();
-            mainframe.getB().resizeFields();
-
-            mainframe.getB().setBill(new Rechnung(bill.getId()));
+            mainframe.getBillPanel().updateListTable();
+            mainframe.getBillPanel().resizeFields();
+            mainframe.getBillPanel().setBill(new Rechnung(bill.getId()));
             mainframe.getJTabbedPane1().setSelectedIndex(1);
-
-
-
-
         } else {
             Popup.notice("Zu diesem Auftrag existiert bereits eine Rechnung");
         }
@@ -1725,12 +1420,12 @@ public class offersView extends javax.swing.JPanel implements Runnable,mp4.daten
     public javax.swing.JTextField jTextField9;
     public javax.swing.JToolBar jToolBar1;
     // End of variables declaration//GEN-END:variables
+
     private boolean validDate() {
-        if (Formater.check(jTextField7.getText(), Formater.DATE)) {
+        if (DateConverter.getDate(jTextField7.getText()) != null) {
             return true;
         } else {
-
-            new Popup("Sie müssen ein Datum angeben (tt/mm/yyyy)", Popup.ERROR);
+            new Popup("Sie müssen ein Datum angeben (tt.mm.yyyy)", Popup.ERROR);
             return false;
         }
     }
@@ -1755,19 +1450,6 @@ public class offersView extends javax.swing.JPanel implements Runnable,mp4.daten
         return jTable1;
     }
 
-    /**
-     * "id", "Anzahl", "Bezeichnung", "Mehrwertsteuer", "Nettopreis", "Bruttopreis"
-     */
-//        Class[] types = new Class [] {
-//                java.lang.Integer.class,  java.lang.Double.class, 
-//                java.lang.String.class, java.lang.Double.class, 
-//                java.lang.Double.class,java.lang.Double.class
-//            };
-//
-//        @Override
-//            public Class getColumnClass(int columnIndex) {
-//                return types [columnIndex];
-//            }
     public void run() {
 
         TableColumn column;
@@ -1786,98 +1468,62 @@ public class offersView extends javax.swing.JPanel implements Runnable,mp4.daten
 
                 TableModel m = getJTable1().getModel();
 
-//            Log.Debug(getJTable1().getModel().getColumnClass(1));
-//            Log.Debug(getJTable1().getModel().getColumnClass(2));
-//            Log.Debug(getJTable1().getModel().getColumnClass(3));
-
                 Double tax = 0d;
                 Double itax = 0d;
-
                 Double netto = 0d;
                 Double brutto = 0d;
                 Double curnetto = 0d;
                 Double curbrutto = 0d;
                 Double curnettoe = 0d;
                 Double curbruttoe = 0d;
-
                 //anzahl,bezeichnung,mehrwertsteuer,nettopreis
-
-
-
                 try {
-
-
                     if (!jTable1.isEditing()) {
-
                         for (int k = 0; k < m.getRowCount(); k++) {
                             //anzahl,bezeichnung,mehrwertsteuer,nettopreis
-
                             if ((m.getValueAt(k, 2)) != null) {
                                 if ((m.getValueAt(k, 2)).toString().equals("null")) {
                                     m.setValueAt("", k, 2);
                                 }
                             }
-
                             if ((m.getValueAt(k, 1)) == null) {
-
                                 m.setValueAt(new Double(1), k, 1);
-
                             }
-
                             if ((m.getValueAt(k, 3)) == null) {
-
                                 m.setValueAt(new Double(defTax), k, 3);
-
                             }
-
-
                             try {
                                 if (m.getValueAt(k, 4) != null && nettoprices) {
-
                                     tax = Double.valueOf((m.getValueAt(k, 3)).toString());
-
                                     itax = (tax / 100) + 1;
-
                                     curnetto = Double.valueOf((m.getValueAt(k, 1)).toString().replaceFirst(",", ".")) *
                                             Double.valueOf((m.getValueAt(k, 4)).toString().replaceFirst(",", "."));
                                     curnettoe = Double.valueOf((m.getValueAt(k, 4)).toString().replaceFirst(",", "."));
-
                                     netto = netto + curnetto;
                                     curbruttoe = curnettoe * itax;
-
                                     curbrutto = curnetto * itax;
                                     brutto = brutto + curbrutto;
-
                                     m.setValueAt(curbruttoe, k, 5);
 
                                 } else if (m.getValueAt(k, 5) != null && !nettoprices) {
-
                                     tax = Double.valueOf((m.getValueAt(k, 3)).toString().replaceFirst(",", "."));
-
                                     itax = (tax / 100) + 1;
-
                                     curbrutto = Double.valueOf((m.getValueAt(k, 5)).toString().replaceFirst(",", "."));
-
                                     curnetto = curbrutto / itax;
-
                                     netto = netto + Double.valueOf((m.getValueAt(k, 1)).toString().replaceFirst(",", ".")) * curnetto;
-
                                     brutto = brutto + Double.valueOf((m.getValueAt(k, 1)).toString().replaceFirst(",", ".")) * curbrutto;
-
                                     m.setValueAt(curnetto, k, 4);
-
                                 }
                             } catch (Exception e) {
+                                Log.Debug(e);
                             }
                         }
-
                         jTextField9.setText(Formater.formatDecimal(brutto - netto));//!tax
                         jTextField8.setText(Formater.formatDecimal(brutto));//!tax
                     }
-
-
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    Log.Debug(ex);
+                    Log.Debug(ex);
                 }
             }
         }

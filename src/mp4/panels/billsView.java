@@ -205,10 +205,10 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
     }
 
     private void billsOfTheMonth() {
-        df = new SimpleDateFormat( "yyyy-MM-01" );
-        jTextField2.setText(df.format(new Date()));
         
-        String[][] list = getCurrent().select("id, rechnungnummer, datum ", "datum", jTextField2.getText(), "datum", true);
+        jTextField2.setText(DateConverter.getTodayDefDate());
+        
+        String[][] list = getCurrent().select("id, rechnungnummer, datum ", "datum", DateConverter.getTodayDefDate(), "datum", true);
         String k = "id, " + "Nummer,Datum";
 
         this.jTable3.setModel(new DefaultTableModel(list, k.split(",")));

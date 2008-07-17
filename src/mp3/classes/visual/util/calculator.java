@@ -10,7 +10,7 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
-import mp3.classes.utils.WindowTools;
+import mp4.utils.windows.Position;
 import mp3.classes.utils.Log;
 
 /**
@@ -42,7 +42,7 @@ public class calculator extends javax.swing.JFrame implements ClipboardOwner {
     private calculator() {
         initComponents();
 
-        new WindowTools(this);
+        new Position(this);
 
         this.setVisible(rootPaneCheckingEnabled);
     }

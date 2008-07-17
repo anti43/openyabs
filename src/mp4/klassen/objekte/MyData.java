@@ -24,13 +24,11 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import mp3.classes.interfaces.Constants;
 
-import mp3.classes.interfaces.Strings;
 import mp3.classes.layer.Popup;
 import mp3.classes.layer.QueryClass;
 import mp3.classes.utils.FileReaderWriter;
 import mp3.classes.utils.Formater;
 import mp3.classes.utils.Log;
-import mp4.klassen.objekte.SKRKonto;
 
 /**
  *

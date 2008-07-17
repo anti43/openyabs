@@ -17,7 +17,7 @@ along with MP.  If not, see <http://www.gnu.org/licenses/>.
 
  * 
  */
-package mp4.utils.betraege;
+package mp4.utils.zahlen;
 
 import java.text.NumberFormat;
 import mp4.klassen.objekte.MyData;

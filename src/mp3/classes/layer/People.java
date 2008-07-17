@@ -37,8 +37,14 @@ public abstract class People implements Queries, mp4.datenbank.struktur.Tabellen
         q = query;
     }
 
-    public int delete(String id) {
-        String[] where = {"id", id, ""};
+   
+        /**
+     * Deletes the item with the given id
+     * @param id
+     * @return 1 if successfull
+     */
+    public int delete(Integer id) {
+        String[] where = {"id", id.toString(), ""};
         return q.delete(where);
     }
 
@@ -177,7 +183,7 @@ public abstract class People implements Queries, mp4.datenbank.struktur.Tabellen
     }
 
     public void destroy() {
-        this.delete(this.id.toString());
+        this.delete(this.id);
         this.id = 0;
     }
 

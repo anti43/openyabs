@@ -14,7 +14,7 @@
  *      You should have received a copy of the GNU General Public License
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mp3.classes.utils;
+package mp4.utils.windows;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -24,51 +24,27 @@ import java.awt.Toolkit;
  *
  * @author anti43
  */
-public class WindowTools {
+public class Position {
 
-    public WindowTools() {
+    public Position() {
     }
 
-    public WindowTools(Component comp) {
-
-        Dimension frameSize = new Dimension(comp.getSize());
-
-        // Größe des Bildschirms ermitteln
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-
-
-        // Position des JFrames errechnen
-        int top = (screenSize.height - frameSize.height) / 2;
-        int left = (screenSize.width - frameSize.width) / 2;
-
-        // Größe zuordnen
-        comp.setSize(frameSize);
-
-        // Position zuordnen
-        comp.setLocation(left, top);
-
-
+    public Position(Component comp) {
+        center(comp);
     }
 
     public void center(Component comp) {
         Dimension frameSize = new Dimension(comp.getSize());
-
-        // Größe des Bildschirms ermitteln
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
-
-        // Position des JFrames errechnen
         int top = (screenSize.height - frameSize.height) / 2;
         int left = (screenSize.width - frameSize.width) / 2;
 
-        // Größe zuordnen
         comp.setSize(frameSize);
-
-        // Position zuordnen
         comp.setLocation(left, top);
     }
 
-    public boolean compNotMaximized(Component comp) {
+    public boolean isNotMaximized(Component comp) {
         Dimension frameSize = new Dimension(comp.getSize());
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
@@ -81,6 +57,5 @@ public class WindowTools {
 
     public void topLeft(Component comp) {
         comp.setLocation(0, 0);
-
     }
 }

@@ -16,6 +16,7 @@ import mp3.classes.layer.visual.Help;
 import mp3.classes.visual.sub.eurAPanel;
 import mp3.classes.visual.sub.eurEPanel;
 import mp4.klassen.objekte.*;
+import mp4.utils.windows.Position;
 
 
 /**
@@ -32,6 +33,7 @@ public class konten extends javax.swing.JFrame {
     private Ausgabe ausgabe;
     private eurEPanel ep=null;
     private eurAPanel ap;
+    private Position pos = new Position();
 
     /** Creates new form konten
      * @param jText 
@@ -49,7 +51,7 @@ public class konten extends javax.swing.JFrame {
 
         Formater.format(jTable1, 1, 100);
 
-        new WindowTools(this);
+        pos.center(this);
         this.setVisible(rootPaneCheckingEnabled);
     }
 
@@ -72,7 +74,7 @@ public class konten extends javax.swing.JFrame {
 
         Formater.format(jTable1, 1, 100);
 
-        new WindowTools(this);
+         pos.center(this);
         this.setVisible(rootPaneCheckingEnabled);
     }
     public konten(JTextField jText, Einnahme bill) {
@@ -90,7 +92,7 @@ public class konten extends javax.swing.JFrame {
 
         Formater.format(jTable1, 1, 100);
 
-        new WindowTools(this);
+         pos.center(this);
         
     }
 
@@ -107,7 +109,7 @@ public class konten extends javax.swing.JFrame {
 
         Formater.format(jTable1, 1, 50);
 
-        new WindowTools(this);
+         pos.center(this);
         this.setVisible(rootPaneCheckingEnabled);
     }
 
@@ -128,7 +130,7 @@ public class konten extends javax.swing.JFrame {
 
         Formater.format(jTable1, 1, 50);
 
-        new WindowTools(this);
+         pos.center(this);
         this.setVisible(rootPaneCheckingEnabled);
     }
 
@@ -148,7 +150,7 @@ public class konten extends javax.swing.JFrame {
 
         Formater.format(jTable1, 1,50);
 
-        new WindowTools(this);
+         pos.center(this);
         this.setVisible(rootPaneCheckingEnabled);
         
     }

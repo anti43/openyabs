@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import mp3.classes.layer.EURTableModel;
 import mp3.classes.layer.Popup;
 import mp3.classes.utils.Browser;
@@ -19,23 +20,23 @@ import mp3.classes.utils.Formater;
 import mp3.classes.utils.Log;
 import mp3.classes.utils.SaveAs;
 import mp3.classes.utils.TableHtmlWriter;
+import mp4.utils.datum.DateConverter;
 
 /**
  *
  * @author  anti43
  */
 public class eurEURPanel extends javax.swing.JPanel {
+
     private String year;
     private String month;
 
-  
     public eurEURPanel() {
         initComponents();
 
-        jTextField1.setText(Formater.formatYear(new Date()));
-        
-//        jTable1.setModel(new EURTableModel(jTable1, "", ""));
-// 
+        jTextField1.setText(DateConverter.getYear());
+
+        jTable1.setModel(new EURTableModel().getModel());
     }
 
     /** This method is called from within the constructor to
@@ -183,88 +184,75 @@ public class eurEURPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        SimpleDateFormat d4;
-        Date yx;
-        EURTableModel tok;
-         try {
-            
-            SimpleDateFormat d2;
-            Date t;
+        SimpleDateFormat dateform;
+        Date date;
+        EURTableModel model;
+        try {
+            SimpleDateFormat dateform2;
+            Date date2;
 
-            SimpleDateFormat d = new SimpleDateFormat("MMMM", Locale.GERMAN);
-            SimpleDateFormat d3 = new SimpleDateFormat("yyyy", Locale.GERMAN);
+            SimpleDateFormat dateformat3 = new SimpleDateFormat("MMMM", Locale.GERMAN);
+            SimpleDateFormat dateformat4 = new SimpleDateFormat("yyyy", Locale.GERMAN);
 
-            t = d.parse(jComboBox1.getSelectedItem().toString());
-            yx = d3.parse(jTextField1.getText());
-            
-            d2 = new SimpleDateFormat("MM");
-            d4 = new SimpleDateFormat("yyyy");
-            
-           
-            year =  d4.format(yx);
-            month = d2.format(t);
-            Log.Debug(month+"."+year);
-            
-            tok = new EURTableModel(year, month);
-            
-            jTable1.setModel(tok.getModel());
+            date2 = dateformat3.parse(jComboBox1.getSelectedItem().toString());
+            date = dateformat4.parse(jTextField1.getText());
+
+            dateform2 = new SimpleDateFormat("MM");
+            dateform = new SimpleDateFormat("yyyy");
+
+            year = dateform.format(date);
+            month = dateform2.format(date2);
+
+            model = new EURTableModel(year, month);
+
+            jTable1.setModel(model.getModel());
             Formater.format(jTable1, 0, 380);
-            
+
             jTable1.doLayout();
-            
-            
         } catch (ParseException ex) {
             try {
                 SimpleDateFormat d3 = new SimpleDateFormat("yyyy", Locale.GERMAN);
-                yx = d3.parse(jTextField1.getText());
+                date = d3.parse(jTextField1.getText());
 
-                d4 = new SimpleDateFormat("yyyy");
+                dateform = new SimpleDateFormat("yyyy");
 
 
-                year = d4.format(yx);
-                tok = new EURTableModel(year);
+                year = dateform.format(date);
+                model = new EURTableModel(year);
 
-                jTable1.setModel(tok.getModel());
+                jTable1.setModel(model.getModel());
                 Formater.format(jTable1, 0, 380);
 
                 jTable1.doLayout();
             } catch (ParseException ex1) {
-               Popup.notice("Sie müssen ein Jahr angeben.");
+                Popup.notice("Sie müssen ein Jahr angeben.");
             }
-            
+
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        String fils = "";
         SaveAs sav;
-        
-        if(year != null){
-        
-            if(month==null) {
+
+        if (year != null) {
+            if (month == null) {
                 month = "1-12";
             }
-            
-        try {
 
-            TableHtmlWriter writ = new TableHtmlWriter((DefaultTableModel)jTable1.getModel(), new File(month +"_"+year +"EUR.html"), "Beschreibung,Daten".split(","), "Einnahmen / Ausgaben " + month+"/"+year);
-            sav = new SaveAs(writ.createHtml(1, Color.LIGHT_GRAY));
-            if(sav.getName()!=null && sav.getName().lastIndexOf(".")>0) {
+            try {
+                TableHtmlWriter writ = new TableHtmlWriter((DefaultTableModel) jTable1.getModel(), new File(month + "_" + year + "EUR.html"), "Beschreibung,Daten".split(","), "Einnahmen / Ausgaben " + month + "/" + year);
+                sav = new SaveAs(writ.createHtml(1, Color.LIGHT_GRAY));
+                if (sav.getName() != null && sav.getName().lastIndexOf(".") > 0) {
                     new Browser(sav.getName());
                 }
-            
-        } catch (Exception ex) {
-            
-            Log.Debug(ex);
-        } 
-        
-  
-        
+            } catch (Exception ex) {
+                Log.Debug(ex);
+            }
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-       jButton1ActionPerformed(evt);
+        jButton1ActionPerformed(evt);
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

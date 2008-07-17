@@ -14,7 +14,7 @@ import mp3.classes.interfaces.ProtectedStrings;
 import mp3.classes.interfaces.Strings;
 
 import mp4.klassen.objekte.Data;
-import mp3.classes.utils.WindowTools;
+import mp4.utils.windows.Position;
 import mp3.classes.utils.Formater;
 
 /**
@@ -76,7 +76,7 @@ public class EinnahmenChart extends javax.swing.JFrame implements Strings, Prote
         jPanel1.add(bar, BorderLayout.CENTER);
         jTextField1.setText(Formater.formatYear(new Date()));
 
-        new WindowTools(this);
+        new Position(this);
 
         this.setVisible(rootPaneCheckingEnabled);
     }
