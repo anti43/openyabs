@@ -80,6 +80,7 @@ public class MyData extends mp3.classes.layer.People implements mp4.datenbank.st
         orig_valuearray = valurarray;
         this.explode(valurarray);
         this.id = 1;
+        Locale.setDefault(getLocale());
     }
 
     private int getAppVersion() {

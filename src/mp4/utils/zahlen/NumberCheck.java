@@ -16,9 +16,6 @@
  */
 package mp4.utils.zahlen;
 
-import java.text.NumberFormat;
-import mp4.klassen.objekte.MyData;
-
 /**
  *
  * @author anti
@@ -33,7 +30,7 @@ public class NumberCheck {
                 return Float.valueOf(number.toString().replaceAll(",", "."));
             } catch (NumberFormatException numberFormatException1) {
                 try {
-                    return Float.valueOf(number.toString().replaceAll(NumberFormat.getCurrencyInstance(MyData.instanceOf().getLocale()).getCurrency().getSymbol(), "").trim());
+                    return Float.valueOf(removeCurrencySymbols(number));
                 } catch (NumberFormatException numberFormatException12) {
                     return null;
                 }
@@ -49,7 +46,7 @@ public class NumberCheck {
         }
     }
 
-    static Double checkDouble(Object number) {
+    public static Double checkDouble(Object number) {
         try {
             return Double.valueOf(number.toString());
         } catch (NumberFormatException numberFormatException) {
@@ -57,13 +54,15 @@ public class NumberCheck {
                 return Double.valueOf(number.toString().replaceAll(",", "."));
             } catch (NumberFormatException numberFormatException1) {
                 try {
-                   
-                    return Double.valueOf(number.toString().replaceAll(NumberFormat.getCurrencyInstance(MyData.instanceOf().getLocale()).getCurrency().getSymbol(), "").trim());
-
+                    return Double.valueOf(removeCurrencySymbols(number));
                 } catch (NumberFormatException numberFormatException12) {
                     return null;
                 }
             }
         }
+    }
+
+    public static String removeCurrencySymbols(Object number) {
+        return number.toString().replaceAll("€", "").replaceAll("SFr", "").replaceAll(",", ".").trim();
     }
 }
