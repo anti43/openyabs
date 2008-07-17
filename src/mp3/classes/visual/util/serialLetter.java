@@ -5,7 +5,8 @@
  */
 package mp3.classes.visual.util;
 
-import mp4.klassen.pdf.PDF_Serienbrief;
+
+import handling.pdf.PDF_Serienbrief;
 import java.awt.Cursor;
 import java.awt.Toolkit;
 import java.io.File;
