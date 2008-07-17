@@ -57,9 +57,8 @@ public class MyData extends mp3.classes.layer.People implements mp4.datenbank.st
     private String[][] valurarray;
     private String state;
     private String[][] orig_valuearray;
-//    private String[] options;
-    public static MyData instanceOf() {
 
+    public static MyData instanceOf() {
         if (dat == null) {
             dat = new MyData();
             return dat;
@@ -68,7 +67,6 @@ public class MyData extends mp3.classes.layer.People implements mp4.datenbank.st
     }
 
     public static MyData newInstanceOf() {
-
         dat = null;
         dat = new MyData();
         return dat;
@@ -76,12 +74,8 @@ public class MyData extends mp3.classes.layer.People implements mp4.datenbank.st
 
     private MyData() {
         super(QueryClass.instanceOf().clone(TABLE_MYDATA));
-
         this.checkForUpgrade();
-
-
         this.id = 1;
-
         this.valurarray = this.select("name, wert", null, null, false);
         orig_valuearray = valurarray;
         this.explode(valurarray);

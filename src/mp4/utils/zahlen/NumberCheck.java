@@ -16,6 +16,9 @@
  */
 package mp4.utils.zahlen;
 
+import java.text.NumberFormat;
+import mp4.klassen.objekte.MyData;
+
 /**
  *
  * @author anti
@@ -29,7 +32,11 @@ public class NumberCheck {
             try {
                 return Float.valueOf(number.toString().replaceAll(",", "."));
             } catch (NumberFormatException numberFormatException1) {
-                return null;
+                try {
+                    return Float.valueOf(number.toString().replaceAll(NumberFormat.getCurrencyInstance(MyData.instanceOf().getLocale()).getCurrency().getSymbol(), "").trim());
+                } catch (NumberFormatException numberFormatException12) {
+                    return null;
+                }
             }
         }
     }
@@ -43,13 +50,19 @@ public class NumberCheck {
     }
 
     static Double checkDouble(Object number) {
-          try {
+        try {
             return Double.valueOf(number.toString());
         } catch (NumberFormatException numberFormatException) {
             try {
-                return Double .valueOf(number.toString().replaceAll(",", "."));
+                return Double.valueOf(number.toString().replaceAll(",", "."));
             } catch (NumberFormatException numberFormatException1) {
-                return null;
+                try {
+                   
+                    return Double.valueOf(number.toString().replaceAll(NumberFormat.getCurrencyInstance(MyData.instanceOf().getLocale()).getCurrency().getSymbol(), "").trim());
+
+                } catch (NumberFormatException numberFormatException12) {
+                    return null;
+                }
             }
         }
     }
