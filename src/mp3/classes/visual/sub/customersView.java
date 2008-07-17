@@ -24,13 +24,13 @@ import mp4.klassen.objekte.Customer;
 import mp4.klassen.objekte.History;
 import mp3.classes.visual.main.mainframe;
 import mp3.classes.visual.util.serialLetter;
-
-
+import mp4.utils.tabellen.SelectionCheck;
+import mp3.classes.utils.Log;
 /**
  *
  * @author  anti43
  */
-public class customersView extends javax.swing.JPanel implements mp4.datenbank.struktur.Tabellen{
+public class customersView extends javax.swing.JPanel implements mp4.datenbank.struktur.Tabellen {
 
     public Customer current;
     private String[][] liste;
@@ -38,8 +38,6 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
     private String[][] jtable3Data;
     private int mode;
     private mainframe mainframe;
-
-   
 
     /** Creates new form customers
      * @param aThis 
@@ -60,7 +58,7 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
         current.stripFirst(jTable2);
 
         this.mainframe = aThis;
-        
+
         String[][] list = current.select("id, kundennummer, firma ", "firma", jTextField3.getText(), "firma", true);
         k = "id, " + "Nummer,Firma";
 
@@ -69,8 +67,8 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
         this.jtable3Header = k;
         this.jtable3Data = current.select("id, kundennummer, firma ", "kundennummer", jTextField1.getText(), "kundennummer", true);
         mode = 3;
-        
-        
+
+
     }
 
     public customersView(Customer current) {
@@ -785,6 +783,7 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
                 .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 495, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
     /**
      * 
      * @param current
@@ -818,18 +817,18 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
 
     private void jButton1MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
         jTabbedPane1.setSelectedIndex(0);
-        
-        
+
+
 
     }//GEN-LAST:event_jButton1MouseClicked
 
     private void jButton2MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
         jTabbedPane1.setSelectedIndex(1);
-   
+
     }//GEN-LAST:event_jButton2MouseClicked
 
     private void jTextField1ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-System.out.println(jPanel5.getSize());
+        System.out.println(jPanel5.getSize());
 
         String[][] list = current.select("id, kundennummer, firma ", "kundennummer", jTextField1.getText(), "kundennummer", true);
         String k = "id, " + "Nummer,Firma";
@@ -867,61 +866,49 @@ System.out.println(jPanel5.getSize());
     }//GEN-LAST:event_jTextField3ActionPerformed
 
     private void jTextField4ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
-    
     }//GEN-LAST:event_jTextField4ActionPerformed
 
     private void jTextField5ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField5ActionPerformed
-    
     }//GEN-LAST:event_jTextField5ActionPerformed
 
     private void jTextField6ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField6ActionPerformed
-    
     }//GEN-LAST:event_jTextField6ActionPerformed
 
     private void jTextField7ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField7ActionPerformed
-    
     }//GEN-LAST:event_jTextField7ActionPerformed
 
     private void jTextField8ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField8ActionPerformed
-    
     }//GEN-LAST:event_jTextField8ActionPerformed
 
     private void jTextField9ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField9ActionPerformed
-    
     }//GEN-LAST:event_jTextField9ActionPerformed
 
     private void jTextField10ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField10ActionPerformed
-    
     }//GEN-LAST:event_jTextField10ActionPerformed
 
     private void jTextField11ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField11ActionPerformed
-    
     }//GEN-LAST:event_jTextField11ActionPerformed
 
     private void jTextField12ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField12ActionPerformed
-    
     }//GEN-LAST:event_jTextField12ActionPerformed
 
     private void jTextField13ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField13ActionPerformed
-    
     }//GEN-LAST:event_jTextField13ActionPerformed
 
     private void jTextField14ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField14ActionPerformed
-    
     }//GEN-LAST:event_jTextField14ActionPerformed
 
     private void jTextField15ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField15ActionPerformed
-    
     }//GEN-LAST:event_jTextField15ActionPerformed
 
     private void jButton3MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
 
 
 
-        if (jTextField7.getText().length() > 1 || jTextField5.getText().length()>1) {
-            
-            if( jTextField5.getText().length()==0){
-            
+        if (jTextField7.getText().length() > 1 || jTextField5.getText().length() > 1) {
+
+            if (jTextField5.getText().length() == 0) {
+
                 jTextField5.setText("Privat: " + jTextField7.getText());
             }
             try {
@@ -1000,7 +987,7 @@ System.out.println(jPanel5.getSize());
             current.stripFirst(jTable2);
 
             try {
-                this.setCustomer(new Customer(QueryClass.instanceOf(), cur,true));
+                this.setCustomer(new Customer(QueryClass.instanceOf(), cur, true));
 
             } catch (Exception exception) {
                 Popup.warn(exception.getMessage(), Popup.ERROR);
@@ -1012,17 +999,16 @@ System.out.println(jPanel5.getSize());
 
             new Popup("Sie müssen mindestens einen Namen angeben.", Popup.ERROR);
         }
-        
+
     }//GEN-LAST:event_jButton3MouseClicked
 
     private void jTextField16ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField16ActionPerformed
-    
     }//GEN-LAST:event_jTextField16ActionPerformed
 
     private void jButton5ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
 
         jTextField4.setText(current.getNextNumber("kundennummer").toString());
-        
+
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton6ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
@@ -1053,7 +1039,7 @@ System.out.println(jPanel5.getSize());
         if (evt.getClickCount() >= 2 && idOk && evt.getButton() == MouseEvent.BUTTON1) {
 
             try {
-                this.setCustomer(new Customer( id));
+                this.setCustomer(new Customer(id));
                 jTabbedPane1.setSelectedIndex(0);
             } catch (Exception exception) {
                 exception.printStackTrace();
@@ -1066,9 +1052,9 @@ System.out.println(jPanel5.getSize());
 
 
         idOk = true;
-        
-        
-        
+
+
+
     }//GEN-LAST:event_jTable2MouseClicked
 
     public void save() {
@@ -1122,37 +1108,19 @@ System.out.println(jPanel5.getSize());
     }//GEN-LAST:event_jButton4MouseClicked
 
     private void jTable3MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable3MouseClicked
-        boolean idOk = true;
-        Integer id = 0;
+
         JPopupMenu popup = new PopupMenu2(this, jTable3, jtable3Header, mode);
+        SelectionCheck selection = new SelectionCheck(jTable3);
 
-
-
-        try {
-            id = Integer.valueOf((String) jTable3.getValueAt(jTable3.getSelectedRow(), 0));
-        } catch (Exception numberFormatException) {
-            idOk = false;
-        }
-
-
-
-        if (evt.getClickCount() >= 2 && idOk && evt.getButton() == MouseEvent.BUTTON1) {
-
+        if (evt.getClickCount() >= 2 && selection.checkID() && evt.getButton() == MouseEvent.BUTTON1) {
             try {
-                this.setCustomer(new Customer(id));
-
+                this.setCustomer(new Customer(selection.getId()));
             } catch (Exception exception) {
-                exception.printStackTrace();
+                Log.Debug(exception);
             }
-        } else if (idOk && (evt.getButton() == MouseEvent.BUTTON2 || evt.getButton() == MouseEvent.BUTTON3)) {
-            // show the popup and return
+        } else if (selection.checkID() && (evt.getButton() == MouseEvent.BUTTON2 || evt.getButton() == MouseEvent.BUTTON3)) {
             popup.show(evt.getComponent(), evt.getX(), evt.getY());
-
         }
-
-
-        idOk = true;
-        
     }//GEN-LAST:event_jTable3MouseClicked
 
     private void jButton7ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
@@ -1170,13 +1138,11 @@ System.out.println(jPanel5.getSize());
         this.jTextField14.setText("");
         this.jTextField15.setText("");
         this.jTextField16.setText("");
-
         this.jTextArea1.setText("");
-        
+
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jButton8MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton8MouseClicked
-
 
         mainframe.getJTabbedPane1().setSelectedIndex(1);
         mainframe.getBillPanel().setCustomer(current);
@@ -1184,41 +1150,19 @@ System.out.println(jPanel5.getSize());
 
     private void jTable1MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
 
+        SelectionCheck selection = new SelectionCheck(jTable3);
 
-//
-//        mainframe.getB().setCustomer(current);
-
-        boolean idOk = true;
-        Integer id = null;
-
-        try {
-            id = Integer.valueOf((String) jTable1.getValueAt(jTable1.getSelectedRow(), 0));
-        } catch (Exception numberFormatException) {
-            idOk = false;
-        }
-
-
-
-        if (evt.getClickCount() >= 2 && idOk) {
+        if (evt.getClickCount() >= 2 && selection.checkID()) {
             try {
-
-
-                mainframe.getBillPanel().setBill(new Rechnung(id).expose());
-
+                mainframe.getBillPanel().setBill(new Rechnung(selection.getId()).expose());
                 mainframe.getJTabbedPane1().setSelectedIndex(1);
             } catch (Exception ex) {
                 Popup.warn(ex.getMessage(), Popup.ERROR);
             }
-
         }
-
-
-        idOk = true;
- 
     }//GEN-LAST:event_jTable1MouseClicked
 
     private void jTable2MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable2MouseEntered
-        
     }//GEN-LAST:event_jTable2MouseEntered
 
     private void jButton9MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton9MouseClicked
@@ -1229,9 +1173,6 @@ System.out.println(jPanel5.getSize());
                 current.deactivate(current.getId().toString());
 
                 new History(QueryClass.instanceOf(), Strings.CUSTOMER, "Kunde Nummer: " + current.getKundennummer() + " gelöscht.");
-
-
-
                 this.jTextField4.setText("");
                 this.jTextField5.setText("");
                 this.jTextField6.setText("");
@@ -1245,7 +1186,6 @@ System.out.println(jPanel5.getSize());
                 this.jTextField14.setText("");
                 this.jTextField15.setText("");
                 this.jTextField16.setText("");
-
                 this.jTextArea1.setText("");
 
                 liste = current.getAll(false);
@@ -1262,18 +1202,19 @@ System.out.println(jPanel5.getSize());
     }//GEN-LAST:event_jButton9MouseClicked
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
-         if(current.isValid())serialLetter.instanceOf().addCustomer(current);
+        if (current.isValid()) {
+            serialLetter.instanceOf().addCustomer(current);
+        }
     }//GEN-LAST:event_jButton10ActionPerformed
 
 private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
 
-      liste = current.getAll(true);
-                String k = "id, " + TABLE_CUSTOMER_FIELDS;
+    liste = current.getAll(true);
+    String k = "id, " + TABLE_CUSTOMER_FIELDS;
 
-                this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
-                current.stripFirst(jTable2);
+    this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
+    current.stripFirst(jTable2);
 }//GEN-LAST:event_jButton11ActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton jButton1;
     public javax.swing.JButton jButton10;
@@ -1340,6 +1281,7 @@ private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     public javax.swing.JToolBar jToolBar1;
     // End of variables declaration//GEN-END:variables
 }
+
 class PopupMenu2 extends JPopupMenu {
 
     /**
@@ -1411,10 +1353,9 @@ class PopupActionListener2 implements ActionListener {
             }
 
             try {
-                view.setCustomer(new Customer( id));
+                view.setCustomer(new Customer(id));
                 view.jTabbedPane1.setSelectedIndex(0);
             } catch (Exception exception) {
-
             }
         }
 
@@ -1458,7 +1399,6 @@ class PopupActionListener2 implements ActionListener {
                 jTable.setModel(new DefaultTableModel(liste, k.split(",")));
                 view.current.stripFirst(jTable);
             } catch (Exception exception) {
-
             }
         }
 

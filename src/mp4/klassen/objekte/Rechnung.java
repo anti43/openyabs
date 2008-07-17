@@ -32,6 +32,7 @@ import mp3.classes.layer.PostenTableModel;
 import mp3.classes.layer.QueryClass;
 import mp4.utils.zahlen.FormatMoney;
 import mp4.utils.datum.DateConverter;
+import mp4.utils.zahlen.FormatNumber;
 
 
 /**
@@ -87,18 +88,9 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
             this.explode(this.selectLast(Strings.ALL, "rechnungnummer", text, false));
             this.query = query;
             bp = getProducts(query);
-
         } catch (Exception exception) {
+            Log.Debug(exception);
         }
-
-
-
-    }
-
-    public Rechnung expose() {
-
-        System.out.println(collect());
-        return this;
     }
 
     public String getFDatum() {
@@ -106,7 +98,11 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
     }
 
     public String getFGesamtpreis() {
-       return FormatMoney.formatLokal(getGesamtpreis());
+       return FormatNumber.formatDezimal(getGesamtpreis());
+    }
+
+    public Rechnung expose() {
+        return this;
     }
 
     public String[][] getUnpaid() {
@@ -229,7 +225,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         str = str + "(;;2#4#1#1#8#0#;;)" + this.getRechnungnummer() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
         str = str + this.getKundenId() + "(;;,;;)";
 
-        str = str + "(;;2#4#1#1#8#0#;;)" + this.getDatum() + "(;;2#4#1#1#8#0#;;)"+ "(;;,;;)";
+        str = str + "(;;2#4#1#1#8#0#;;)" + DateConverter.getSQLDateString(this.getDatum()) + "(;;2#4#1#1#8#0#;;)"+ "(;;,;;)";
 
         if (isStorno()) {
             str = str + "1" + "(;;,;;)";

@@ -27,12 +27,15 @@ public class vFloat {
     public boolean isVerified = false;
     public boolean isPositive = false;
     public String ovalue = "";
+    public String decValue;
 
     public vFloat(Object number) {
-        this.ovalue = number.toString();
-        if (NumberCheck.checkFloat(number) != null) {
+      
+        if (number != null && NumberCheck.checkFloat(number) != null) {
+            this.ovalue = number.toString();
             this.value = NumberCheck.checkFloat(number);
             this.svalue = this.value.toString();
+            this.decValue = FormatNumber.formatDezimal(value);
             this.isVerified = true;
 
             if (this.value >= 0) {

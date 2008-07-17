@@ -19,6 +19,7 @@ import mp3.classes.visual.util.konten;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.datum.vDate;
 import mp4.utils.tabellen.SelectionCheck;
+import mp4.utils.zahlen.FormatNumber;
 import mp4.utils.zahlen.vDouble;
 import mp4.utils.zahlen.vFloat;
 
@@ -43,8 +44,8 @@ public class eurEPanel extends javax.swing.JPanel {
         jTextField4.setText("0");
         jTextField5.setText(MyData.instanceOf().getEinnahmeDefKonto().getArt());
 
-        jTextField3.setInputVerifier(Formater.getDoubleInputVerfier(jTextField3));
-        jTextField4.setInputVerifier(Formater.getDoubleInputVerfier(jTextField4));
+//        jTextField3.setInputVerifier(Formater.getDoubleInputVerfier(jTextField3));
+//        jTextField4.setInputVerifier(Formater.getDoubleInputVerfier(jTextField4));
         jTextField6.setInputVerifier(Formater.getDateInputVerfier(jTextField6));
 
         updateTableData();
@@ -129,7 +130,7 @@ public class eurEPanel extends javax.swing.JPanel {
 
         jLabel2.setText("Beschreibung");
 
-        jLabel4.setText("MwSt");
+        jLabel4.setText("MwSt(%)");
 
         jLabel5.setText("Gesamtbetrag (Brutto)");
 
@@ -140,6 +141,8 @@ public class eurEPanel extends javax.swing.JPanel {
         });
 
         jLabel6.setText("Konto");
+
+        jTextField5.setEditable(false);
 
         jLabel7.setText("Datum");
 
@@ -171,7 +174,7 @@ public class eurEPanel extends javax.swing.JPanel {
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 412, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2)
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addComponent(jLabel7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -268,7 +271,7 @@ public class eurEPanel extends javax.swing.JPanel {
                 .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addComponent(jToolBar2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 759, Short.MAX_VALUE)
+            .addComponent(jToolBar2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 761, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -294,9 +297,9 @@ public class eurEPanel extends javax.swing.JPanel {
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
 
-   
+
         SelectionCheck selection = new SelectionCheck(jTable1);
-        
+
         if (selection.checkID()) {
 
             try {
@@ -318,7 +321,7 @@ public class eurEPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
-       new DatePick(jTextField6);
+        new DatePick(jTextField6);
     }//GEN-LAST:event_jButton16ActionPerformed
 
     private void jButton16KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton16KeyPressed
@@ -328,18 +331,17 @@ public class eurEPanel extends javax.swing.JPanel {
 
         if (jButton3.isEnabled()) {
 
-            vDouble  betrag = new vDouble (jTextField4.getText());
-            vDouble  steuer = new vDouble (jTextField3.getText());
+            vDouble betrag = new vDouble(FormatNumber.parseDezimal(jTextField4.getText()));
+            vDouble steuer = new vDouble(FormatNumber.parseDezimal(jTextField3.getText()));
             vDate datum = new vDate(jTextField6.getText());
 
-            if (betrag.isVerified&&betrag.isPositive && steuer.isVerified && steuer.isPositive && datum.isVerified) {
+            if (betrag.isVerified && betrag.isPositive && steuer.isVerified && steuer.isPositive && datum.isVerified) {
 
                 if (this.curEinnahme != null && curEinnahme.id > 0) {
                     curEinnahme.setDatum(datum.date);
                     curEinnahme.setBeschreibung(jEditorPane1.getText());
                     curEinnahme.setPreis(betrag.value);
                     curEinnahme.setTax(steuer.value);
-
                     curEinnahme.save();
                     updateTableData();
                 }
@@ -351,8 +353,8 @@ public class eurEPanel extends javax.swing.JPanel {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
 
-        vFloat betrag = new vFloat(jTextField4.getText());
-        vFloat steuer = new vFloat(jTextField3.getText());
+        vDouble betrag = new vDouble(FormatNumber.parseDezimal(jTextField4.getText()));
+        vDouble steuer = new vDouble(FormatNumber.parseDezimal(jTextField3.getText()));
         vDate datum = new vDate(jTextField6.getText());
 
         if (betrag.isVerified && steuer.isVerified && steuer.isPositive && datum.isVerified) {

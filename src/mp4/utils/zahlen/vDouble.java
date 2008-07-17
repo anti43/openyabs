@@ -29,8 +29,9 @@ public class vDouble {
     public String ovalue = "";
 
     public vDouble(Object number) {
-        this.ovalue = number.toString();
-        if (NumberCheck.checkDouble(number) != null) {
+        
+        if (number != null && NumberCheck.checkDouble(number) != null) {
+            this.ovalue = number.toString();
             this.value = NumberCheck.checkDouble(number);
             this.svalue = this.value.toString();
             this.isVerified = true;

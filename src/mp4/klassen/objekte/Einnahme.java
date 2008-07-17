@@ -88,11 +88,11 @@ public class Einnahme extends mp3.classes.layer.Things implements mp4.datenbank.
     }
 
     public String getFPreis() {
-       return FormatMoney.formatLokal(getPreis());
+       return FormatNumber.formatDezimal(getPreis());
     }
 
    public String getFTax() {
-       return FormatTax.formatLokal(getTax());
+       return FormatTax.formatDezimal(getTax());
     }
 
     private void explode(String[] select) {

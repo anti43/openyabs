@@ -25,9 +25,11 @@ public class vInteger {
     public Integer value = null;
     public boolean isVerified = false;
     public boolean isPositive = false;
+    private String ovalue = "";
 
     public vInteger(Object number) {
-        if (NumberCheck.checkInteger(number) != null) {
+        if (number != null && NumberCheck.checkInteger(number) != null) {
+            this.ovalue = number.toString();
             this.value = NumberCheck.checkInteger(number);
             this.isVerified = true;
 
