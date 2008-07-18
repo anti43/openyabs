@@ -21,8 +21,6 @@ import javax.swing.JTable;
 
 import mp3.classes.interfaces.Queries;
 import handling.db.Query;
-import java.io.Serializable;
-import mp3.classes.interfaces.Constants;
 import mp4.datenbank.struktur.Tabellen;
 
 /**
@@ -39,23 +37,39 @@ public abstract class Things implements Queries, mp4.datenbank.struktur.Tabellen
      * @param query
      */
     public Things (Query query) {
-
         q = query;
     }
 
-    public Things(){
-        q= QueryClass.instanceOf().clone(Tabellen.TABLE_INCOME);
-    }
     /**
-     * Deletes the item with the given id
+     * Needed for cloning subclasses
+     */
+    public Things(){}
+    public void setQueryHandler(Query query){q= query;}
+    public Query getQueryHandler(){return q;}
+    
+    /**
+     * Disables the item with the given id
      * @param id
      * @return 1 if successfull
      */
     public int delete(Integer id) {
         String[] where = {"id", id.toString(), ""};
-        return q.delete(where);
+        String[] what =  {"deleted", "1"};
+//        return q.delete(where);
+        return q.update(what, where);
     }
 
+    /**
+     * Enables a disabled item
+     * @param id
+     * @return 1 if successfull
+     */
+    public int unDelete(Integer id) {
+        String[] where = {"id", id.toString(), ""};
+        String[] what =  {"deleted", "0"};
+//        return q.delete(where);
+        return q.update(what, where);
+    }
 //    @Override
 //    public void finalize() {
 //
@@ -68,18 +82,15 @@ public abstract class Things implements Queries, mp4.datenbank.struktur.Tabellen
     /**
      * Hides he first column of a table (usually "id")
      * @param table
+     * @deprecated Use TableFormat.stripFirst() instead
      */
+    @Deprecated
     public void stripFirst (JTable table) {
-       
         try {
             table.getColumn(table.getColumnName(0)).setMinWidth(0);
             table.getColumn(table.getColumnName(0)).setMaxWidth(0);
-
         } catch (Exception exception) {
-        }
-
-        
-
+       }
     }
     /**
      * 
@@ -168,7 +179,7 @@ public abstract class Things implements Queries, mp4.datenbank.struktur.Tabellen
 
         /**
      * Example: "*", "Name", "anti43", "Name", true
-     * will return everyone who`s name is lika "anti43" sortet by name.
+     * will return everyone who`s name is like "anti43" sortet by name.
      * eg. anti43, anti43w, andre
      * 
      * @param what

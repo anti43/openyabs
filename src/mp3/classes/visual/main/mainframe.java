@@ -172,7 +172,7 @@ public class mainframe extends javax.swing.JFrame {
             }
         });
 
-        undoCache.setMenu(jMenu11);       
+        undoCache.setMenu(jMenu11,this);       
         
         nachricht("Anmerkungen, Bugs und Feedback zu MP bitte an mp-rechnungs-und-kundenverwaltung@googlegroups.com senden. Vielen Dank!");
         this.setVisible(rootPaneCheckingEnabled);
@@ -182,6 +182,10 @@ public class mainframe extends javax.swing.JFrame {
 
 
         return c;
+    }
+
+    public eurView getEURPanel() {
+        return j;
     }
 
 //    /** Creates new form mainframe

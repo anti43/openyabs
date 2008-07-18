@@ -48,6 +48,8 @@ public class ObjectCopy {
     /**
      * Returns a copy of the object, or null if the object cannot
      * be serialized.
+     * @param orig
+     * @return clone
      */
     public static Object copy(Object orig) {
         

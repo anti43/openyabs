@@ -16,11 +16,9 @@
  */
 package mp4.cache;
 
-import java.awt.event.ActionEvent;
-import java.util.ArrayList;
+import mp3.classes.visual.main.*;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import mp3.classes.layer.Popup;
 import mp3.classes.utils.Log;
 import mp4.klassen.objekte.*;
 
@@ -32,12 +30,18 @@ public class undoCache {
 
     private static undoCache dat;
     private static JMenu menu;
+    private static mainframe mainframe;
+    
     public static final int CREATE = 1;
     public static final int DELETE = 2;
     public static final int EDIT = 3;
     public static final int R_STORNO = 4;
-    private int index = 1;
 
+
+    private int index = 1;
+    
+    
+    
     public static undoCache instanceOf() {
         if (dat == null) {
             dat = new undoCache();
@@ -47,9 +51,12 @@ public class undoCache {
         return dat;
     }
 
-    public static void setMenu(JMenu jmenu) {
+    public static void setMenu(JMenu jmenu,mainframe parent) {
         menu = jmenu;
+        mainframe = parent;
     }
+    
+    
 
     public undoCache() {
     }
@@ -59,14 +66,22 @@ public class undoCache {
         index++;
     }
 
-    public void removeItem(int itemIndex) {
-        menu.remove(itemIndex - 1);
-        menu.validate();
-    }
+//    public void removeItem(int itemIndex) {
+//
+//        Component[] mi = menu.getComponents();
+//
+//        for (int i = 0; i < mi.length; i++) {
+//            menuItem item = (menuItem) menu.getComponent(i);
+//            if(item.getItemIndex().intValue() == itemIndex) {
+//                menu.remove(i);
+//            }    
+//        }
+//        menu.validate();
+//    }
 
     private void addToMenu(int itemIndex, int action, Object item) {
         String text = getActionText(item, action);
-        menu.add(new menuItem(itemIndex, action, text, item, this));
+        menu.add(new menuItem(itemIndex, action, text, item, this, menu));
         menu.validate();
     }
 
@@ -100,7 +115,7 @@ public class undoCache {
                     it.destroy();
                     break;
                 case 2:
-                    it.save();
+                    it.unDelete(it.getId());
                     break;
                 case 3:
                     it.save();
@@ -117,17 +132,20 @@ public class undoCache {
             switch (aktion) {
 
                 case 1:
-                    it.destroy();
+                    it.disable();
                     break;
                 case 2:
 
-                    it.save();
+                   it.enable();
                     break;
                 case 3:
                     it.save();
                     break;
 
             }
+            
+            mainframe.getEURPanel().getEurepanel().updateTableData();
+            
         } else if (item.getClass().isInstance(new Ausgabe())) {
 
             Ausgabe it = (Ausgabe) item;
@@ -140,7 +158,7 @@ public class undoCache {
                     break;
                 case 2:
 
-                    it.save();
+                    it.unDelete(it.getId());
                     break;
                 case 3:
                     it.save();
@@ -159,7 +177,7 @@ public class undoCache {
                     break;
                 case 2:
 
-                    it.save();
+//                    it.unDelete(it.getId());
                     break;
                 case 3:
                     it.save();
@@ -177,7 +195,7 @@ public class undoCache {
                     break;
                 case 2:
 
-                    it.save();
+//                    it.unDelete(it.getId());
                     break;
                 case 3:
                     it.save();
@@ -186,7 +204,7 @@ public class undoCache {
             }
         }
 
-        removeItem(index);
+//        removeItem(index);
     }
 
     private String getActionText(Object item, int action) {
@@ -198,7 +216,7 @@ public class undoCache {
                 text = " erstellt.";
                 break;
             case 2:
-                text = " geloescht.";
+                text = " gelöscht.";
                 break;
             case 3:
                 text = " bearbeitet.";
@@ -221,7 +239,7 @@ public class undoCache {
         } else if (item.getClass().isInstance(new Einnahme())) {
 
             Einnahme it = (Einnahme) item;
-            text = "Einnahme (Betrag)" + it.getFPreis() + text;
+            text = "Einnahme (Betrag) " + it.getFPreis() + text;
 
         } else if (item.getClass().isInstance(new Ausgabe())) {
 
@@ -250,13 +268,15 @@ public class undoCache {
         private int aktion = 0;
         private Object item;
         private undoCache chandler;
+        private JMenu menu;
 
-        public menuItem(int itemIndex, int aktion, String text, Object item, undoCache cachehandler) {
+        public menuItem(int itemIndex, int aktion, String text, Object item, undoCache cachehandler, JMenu menu) {
             super(text);
             this.index = itemIndex;
             this.aktion = aktion;
             this.item = item;
             this.chandler = cachehandler;
+            this.menu = menu;
 
             this.addActionListener(new java.awt.event.ActionListener() {
 
@@ -270,9 +290,10 @@ public class undoCache {
         private void doAction() {
             try {
                 chandler.doAction(index, aktion, item);
+                menu.remove(this);
+                menu.validate();
             } catch (Exception e) {
                 Log.Debug(e);
-                Popup.notice("Objekt existiert nicht.");
             }
         }
 
@@ -280,7 +301,7 @@ public class undoCache {
             return index;
         }
 
-        public int getItemIndex() {
+        public Integer getItemIndex() {
             return index;
         }
 

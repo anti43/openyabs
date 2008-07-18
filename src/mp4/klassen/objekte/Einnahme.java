@@ -35,20 +35,41 @@ import mp4.utils.zahlen.FormatTax;
  * @author anti43
  */
 public class Einnahme extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen, Daemonable, Serializable {
-//  "kontenid INTEGER DEFAULT NULL, beschreibung varchar(500) default NULL,"+
-//  "preis varchar(50) default NULL,"+"tax varchar(50) default NULL,"+"datum varchar(50) default NULL,"+
+    private static final long serialVersionUID = 1L;
 
     private Integer Kontenid = 0;
     private String Beschreibung = "";
     private Double Preis = 0.0;
     private Double Tax = 0.0;
     private Date Datum = new Date();
-   public Integer id = 0;
+    public Integer id = 0;
+
+    /**
+     * 
+     * @return id
+     */
     public Integer getId() {
         return id;
     }
-    public void destroy() {
+
+    /**
+     * Disables this object permanently from database (if permitted)
+     */
+    public void disable() {
+        if (super.getQueryHandler() == null) {
+            super.setQueryHandler(QueryClass.instanceOf().clone(TABLE_INCOME));
+        }
         this.delete(this.id);
+        this.id = 0;
+    }
+    /**
+     * Enables this object permanently from database (if permitted)
+     */
+    public void enable() {
+        if (super.getQueryHandler() == null) {
+            super.setQueryHandler(QueryClass.instanceOf().clone(TABLE_INCOME));
+        }
+        this.unDelete(this.id);
         this.id = 0;
     }
     public Einnahme() {
@@ -56,7 +77,6 @@ public class Einnahme extends mp3.classes.layer.Things implements mp4.datenbank.
         this.setKontenid(MyData.instanceOf().getEinnahmeDefKonto().getId());
     }
 
-    
     /**
      * 
      * @param kontoid
@@ -77,6 +97,10 @@ public class Einnahme extends mp3.classes.layer.Things implements mp4.datenbank.
         this.save();
     }
 
+    /**
+     * 
+     * @param id
+     */
     public Einnahme(Integer id) {
         super(QueryClass.instanceOf().clone(TABLE_INCOME));
         this.id = Integer.valueOf(id);
@@ -94,12 +118,16 @@ public class Einnahme extends mp3.classes.layer.Things implements mp4.datenbank.
         this.explode(this.selectLast("*", "id", id, true));
     }
 
+    /**
+     * 
+     * @return
+     */
     public String getFPreis() {
-       return FormatNumber.formatDezimal(getPreis());
+        return FormatNumber.formatDezimal(getPreis());
     }
 
-   public String getFTax() {
-       return FormatTax.formatDezimal(getTax());
+    public String getFTax() {
+        return FormatTax.formatDezimal(getTax());
     }
 
     private void explode(String[] select) {
@@ -128,16 +156,16 @@ public class Einnahme extends mp3.classes.layer.Things implements mp4.datenbank.
 
     public void save() {
 
+        if (super.getQueryHandler() == null) {
+            super.setQueryHandler(QueryClass.instanceOf().clone(TABLE_INCOME));
+        }
+
         if (id > 0) {
             this.update(TABLE_INCOME_FIELDS, this.collect(), id.toString());
             isSaved = true;
         } else if (id == 0) {
-            this.insert(TABLE_INCOME_FIELDS, this.collect());
-        } else {
-
-            mp3.classes.layer.Popup.warn(java.util.ResourceBundle.getBundle("languages/Bundle").getString("no_data_to_save"), Popup.WARN);
-
-        }
+           this.id = this.insert(TABLE_INCOME_FIELDS, this.collect());
+        } 
     }
 
     public String getFDatum() {
@@ -148,7 +176,7 @@ public class Einnahme extends mp3.classes.layer.Things implements mp4.datenbank.
 
         Query q = QueryClass.instanceOf().clone(TABLE_INCOME);
 
-        String[][] prods = q.select("id, id, preis, datum", null);//brutto
+        String[][] prods = q.select("id, id, preis, datum", null,false);//brutto
 
         String[][] bills = new Rechnung(q).getPaid();
 
@@ -217,4 +245,6 @@ public class Einnahme extends mp3.classes.layer.Things implements mp4.datenbank.
         }
         return pro;
     }
+    
+    
 }

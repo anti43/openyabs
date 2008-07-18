@@ -240,6 +240,11 @@ public class eurEPanel extends javax.swing.JPanel {
                 jButton3MouseClicked(evt);
             }
         });
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
         jToolBar2.add(jButton3);
 
         jButton4.setText("Als neue Einnahme");
@@ -340,6 +345,9 @@ public class eurEPanel extends javax.swing.JPanel {
             if (betrag.isVerified && betrag.isPositive && steuer.isVerified && steuer.isPositive && datum.isVerified) {
 
                 if (this.curEinnahme != null && curEinnahme.id > 0) {
+                    
+                    undoCache.instanceOf().addItem(ObjectCopy.copy(this.curEinnahme), undoCache.EDIT);
+                    
                     curEinnahme.setDatum(datum.date);
                     curEinnahme.setBeschreibung(jEditorPane1.getText());
                     curEinnahme.setPreis(betrag.value);
@@ -365,7 +373,7 @@ public class eurEPanel extends javax.swing.JPanel {
         if (betrag.isVerified && steuer.isVerified && steuer.isPositive && datum.isVerified) {
             en = new Einnahme(curKonto.getId(), jEditorPane1.getText(), betrag.value, steuer.value, datum.date);
             updateTableData();
-            
+  
             undoCache.instanceOf().addItem(ObjectCopy.copy(en), undoCache.CREATE);
             
         } else {
@@ -378,7 +386,7 @@ public class eurEPanel extends javax.swing.JPanel {
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         if (this.curEinnahme != null) {
             undoCache.instanceOf().addItem(ObjectCopy.copy(this.curEinnahme), undoCache.DELETE);
-            curEinnahme.destroy();
+            curEinnahme.disable();
             updateTableData();
         }
     }//GEN-LAST:event_jButton5ActionPerformed
@@ -387,7 +395,11 @@ public class eurEPanel extends javax.swing.JPanel {
         jTextField3.setEnabled(true);
     }//GEN-LAST:event_jTextField3MouseEntered
 
-    private String[][] updateTableData() {
+private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+
+}//GEN-LAST:event_jButton3ActionPerformed
+
+    public String[][] updateTableData() {
         try {
             FetchDataTask task = new FetchDataTask(this, null, new Einnahme());
             task.execute();
