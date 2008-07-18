@@ -16,6 +16,8 @@ import mp3.classes.utils.FetchDataTask;
 import mp3.classes.utils.Formater;
 import mp3.classes.utils.Log;
 import mp3.classes.visual.util.konten;
+import mp4.cache.ObjectCopy;
+import mp4.cache.undoCache;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.datum.vDate;
 import mp4.utils.tabellen.SelectionCheck;
@@ -353,20 +355,29 @@ public class eurEPanel extends javax.swing.JPanel {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
 
+        
+        
         vDouble betrag = new vDouble(FormatNumber.parseDezimal(jTextField4.getText()));
         vDouble steuer = new vDouble(FormatNumber.parseDezimal(jTextField3.getText()));
         vDate datum = new vDate(jTextField6.getText());
+        Einnahme en;
 
         if (betrag.isVerified && steuer.isVerified && steuer.isPositive && datum.isVerified) {
-            new Einnahme(curKonto.getId(), jEditorPane1.getText(), betrag.value, steuer.value, datum.date);
+            en = new Einnahme(curKonto.getId(), jEditorPane1.getText(), betrag.value, steuer.value, datum.date);
             updateTableData();
+            
+            undoCache.instanceOf().addItem(ObjectCopy.copy(en), undoCache.CREATE);
+            
         } else {
             Popup.error("Betrag: " + betrag.ovalue + "\n" + "Steuer: " + steuer.ovalue + "\n" + "Datum: " + datum.ovalue, "Überprüfen Sie Ihre Angaben.");
         }
+        
+        
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         if (this.curEinnahme != null) {
+            undoCache.instanceOf().addItem(ObjectCopy.copy(this.curEinnahme), undoCache.DELETE);
             curEinnahme.destroy();
             updateTableData();
         }

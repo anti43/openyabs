@@ -31,7 +31,14 @@ public class ProductFile extends mp3.classes.layer.Things implements mp4.datenba
     private Integer Produktid = null;
     private String Url = "";
     private Date Datum = new Date();
-
+   public Integer id = 0;
+    public Integer getId() {
+        return id;
+    }
+    public void destroy() {
+        this.delete(this.id);
+        this.id = 0;
+    }
     public ProductFile(Query query) {
         super(query.clone(TABLE_PRODUCTS_FILES));
     }

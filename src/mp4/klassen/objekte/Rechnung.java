@@ -54,7 +54,14 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
     private Query query;
     private String[][] prods;
     private List labelsOfGetAllWithD;
-
+   public Integer id = 0;
+    public Integer getId() {
+        return id;
+    }
+    public void destroy() {
+        this.delete(this.id);
+        this.id = 0;
+    }
     public Rechnung() {
         super(QueryClass.instanceOf().clone(TABLE_BILLS));
         this.query = QueryClass.instanceOf();

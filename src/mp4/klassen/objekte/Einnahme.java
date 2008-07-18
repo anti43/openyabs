@@ -21,11 +21,11 @@ import mp3.classes.interfaces.Daemonable;
 import java.util.Date;
 import handling.db.Query;
 
+import java.io.Serializable;
 import mp3.classes.layer.*;
 import mp3.classes.utils.Formater;
 
 import mp3.classes.utils.Log;
-import mp4.utils.zahlen.FormatMoney;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.zahlen.FormatNumber;
 import mp4.utils.zahlen.FormatTax;
@@ -34,7 +34,7 @@ import mp4.utils.zahlen.FormatTax;
  *
  * @author anti43
  */
-public class Einnahme extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen, Daemonable {
+public class Einnahme extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen, Daemonable, Serializable {
 //  "kontenid INTEGER DEFAULT NULL, beschreibung varchar(500) default NULL,"+
 //  "preis varchar(50) default NULL,"+"tax varchar(50) default NULL,"+"datum varchar(50) default NULL,"+
 
@@ -43,13 +43,20 @@ public class Einnahme extends mp3.classes.layer.Things implements mp4.datenbank.
     private Double Preis = 0.0;
     private Double Tax = 0.0;
     private Date Datum = new Date();
-
+   public Integer id = 0;
+    public Integer getId() {
+        return id;
+    }
+    public void destroy() {
+        this.delete(this.id);
+        this.id = 0;
+    }
     public Einnahme() {
         super(QueryClass.instanceOf().clone(TABLE_INCOME));
-
         this.setKontenid(MyData.instanceOf().getEinnahmeDefKonto().getId());
     }
 
+    
     /**
      * 
      * @param kontoid

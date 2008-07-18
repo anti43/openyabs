@@ -50,7 +50,14 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
     private Lieferant supplier;
     private Query query;
     public boolean isvalid=false;
-
+   public Integer id = 0;
+    public Integer getId() {
+        return id;
+    }
+    public void destroy() {
+        this.delete(this.id);
+        this.id = 0;
+    }
     public Product() {
         super( QueryClass.instanceOf().clone(TABLE_PRODUCTS));
         supplier = new Lieferant();

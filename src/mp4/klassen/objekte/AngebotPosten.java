@@ -32,7 +32,14 @@ public class AngebotPosten extends mp3.classes.layer.Things implements mp4.daten
     private String posten = "";
     private Double preis = 0d;
     private Double steuersatz = 0d;
-
+   public Integer id = 0;
+    public Integer getId() {
+        return id;
+    }
+    public void destroy() {
+        this.delete(this.id);
+        this.id = 0;
+    }
      public AngebotPosten(Integer id) {
         super(QueryClass.instanceOf().clone(TABLE_ORDERS_DATA));
         this.id = id;

@@ -32,7 +32,14 @@ public class ProductGroupFamily extends mp3.classes.layer.Things implements mp4.
       
     private String[][] data;
     private Query query;
-
+   public Integer id = 0;
+    public Integer getId() {
+        return id;
+    }
+    public void destroy() {
+        this.delete(this.id);
+        this.id = 0;
+    }
     public ProductGroupFamily(Query query) {
         super(query.clone(TABLE_PRODUCTS_GROUPS_FAMILIES));
 

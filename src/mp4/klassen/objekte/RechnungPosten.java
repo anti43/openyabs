@@ -31,7 +31,14 @@ public class RechnungPosten extends mp3.classes.layer.Things implements mp4.date
     private String posten = "";
     private Double preis = 0.0;
     private Double steuersatz = 0.0;
-
+   public Integer id = 0;
+    public Integer getId() {
+        return id;
+    }
+    public void destroy() {
+        this.delete(this.id);
+        this.id = 0;
+    }
     public RechnungPosten(Query query) {
         super(query.clone(TABLE_BILLS_DATA));
 

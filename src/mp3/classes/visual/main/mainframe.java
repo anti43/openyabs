@@ -59,6 +59,7 @@ import mp3.classes.visual.sub.suppliersView;
 import mp3.classes.visual.util.EinnahmenChart;
 import mp3.classes.visual.util.UmsatzChart;
 import mp3.classes.visual.sub.eurView;
+import mp4.cache.undoCache;
 import mp4.klassen.objekte.Customer;
 import mp4.klassen.objekte.Lieferant;
 import mp4.klassen.objekte.MyData;
@@ -171,6 +172,8 @@ public class mainframe extends javax.swing.JFrame {
             }
         });
 
+        undoCache.setMenu(jMenu11);       
+        
         nachricht("Anmerkungen, Bugs und Feedback zu MP bitte an mp-rechnungs-und-kundenverwaltung@googlegroups.com senden. Vielen Dank!");
         this.setVisible(rootPaneCheckingEnabled);
     }
@@ -181,53 +184,53 @@ public class mainframe extends javax.swing.JFrame {
         return c;
     }
 
-    /** Creates new form mainframe
-     * @param firststart
-     * @param splash 
-     */
-    public mainframe(boolean firststart, SplashScreen splash) {
-        initComponents();
-        this.setExtendedState(mainframe.MAXIMIZED_BOTH);
-
-
-        c = new customersView(this);
-        b = new billsView(this);
-        d = new productsView(this);
-        e = new suppliersView(this);
-        f = new offersView(this);
-        g = new historyView(this);
-        h = new backupView(this);
-        i = new startView(this);
-        j = new eurView(this);
-        //c.setCustomer(new Customer(QueryClass.instanceOf(), "1"));
-
-
-
-        jPanel4.add(d, BorderLayout.CENTER);
-        jPanel3.add(b, BorderLayout.CENTER);
-        jPanel7.add(f, BorderLayout.CENTER);
-        jPanel2.add(c, BorderLayout.CENTER);
-        jPanel9.add(e, BorderLayout.CENTER);
-        jPanel6.add(g, BorderLayout.CENTER);
-        jPanel8.add(h, BorderLayout.CENTER);
-        jPanel11.add(i, BorderLayout.CENTER);
-        jPanel12.add(j, BorderLayout.CENTER);
-
-        QueryClass.setProgressBarOn(this.mainProgress, this);
-
-        this.setVisible(rootPaneCheckingEnabled);
-
-        if (firststart) {
-            new settingsView(this).setVisible(firststart);
-        }
-        this.addWindowListener(new WindowAdapter() {
-
-            @Override
-            public void windowClosing(WindowEvent e) {
-                close();
-            }
-        });
-    }
+//    /** Creates new form mainframe
+//     * @param firststart
+//     * @param splash 
+//     */
+//    public mainframe(boolean firststart, SplashScreen splash) {
+//        initComponents();
+//        this.setExtendedState(mainframe.MAXIMIZED_BOTH);
+//
+//
+//        c = new customersView(this);
+//        b = new billsView(this);
+//        d = new productsView(this);
+//        e = new suppliersView(this);
+//        f = new offersView(this);
+//        g = new historyView(this);
+//        h = new backupView(this);
+//        i = new startView(this);
+//        j = new eurView(this);
+//        //c.setCustomer(new Customer(QueryClass.instanceOf(), "1"));
+//
+//
+//
+//        jPanel4.add(d, BorderLayout.CENTER);
+//        jPanel3.add(b, BorderLayout.CENTER);
+//        jPanel7.add(f, BorderLayout.CENTER);
+//        jPanel2.add(c, BorderLayout.CENTER);
+//        jPanel9.add(e, BorderLayout.CENTER);
+//        jPanel6.add(g, BorderLayout.CENTER);
+//        jPanel8.add(h, BorderLayout.CENTER);
+//        jPanel11.add(i, BorderLayout.CENTER);
+//        jPanel12.add(j, BorderLayout.CENTER);
+//
+//        QueryClass.setProgressBarOn(this.mainProgress, this);
+//
+//        this.setVisible(rootPaneCheckingEnabled);
+//
+//        if (firststart) {
+//            new settingsView(this).setVisible(firststart);
+//        }
+//        this.addWindowListener(new WindowAdapter() {
+//
+//            @Override
+//            public void windowClosing(WindowEvent e) {
+//                close();
+//            }
+//        });
+//    }
 
     /**
      * 
@@ -329,6 +332,7 @@ public class mainframe extends javax.swing.JFrame {
         jMenuItem17 = new javax.swing.JMenuItem();
         jMenuItem18 = new javax.swing.JMenuItem();
         jMenu5 = new javax.swing.JMenu();
+        jMenu11 = new javax.swing.JMenu();
         jMenu6 = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
@@ -551,6 +555,9 @@ public class mainframe extends javax.swing.JFrame {
 
         jMenu5.setText("Bearbeiten");
 
+        jMenu11.setText("Undo");
+        jMenu5.add(jMenu11);
+
         jMenu6.setText("Importieren..");
 
         jMenuItem2.setText("Produkte (CSV)");
@@ -705,11 +712,11 @@ public class mainframe extends javax.swing.JFrame {
     private void close() {
         try {
             MyData.instanceOf().setState(this.getHeight(), this.getWidth());
-            h.saving();
+//            h.saving();
             MyData.instanceOf().setLasttab(jTabbedPane1.getSelectedIndex());
             MyData.instanceOf().save();
             System.exit(0);
-        } catch (Exception e) {
+        } catch (Exception exc) {
             System.exit(0);
         }
     }
@@ -868,6 +875,7 @@ public class mainframe extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu10;
+    private javax.swing.JMenu jMenu11;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;

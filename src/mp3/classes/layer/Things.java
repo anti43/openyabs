@@ -21,13 +21,16 @@ import javax.swing.JTable;
 
 import mp3.classes.interfaces.Queries;
 import handling.db.Query;
+import java.io.Serializable;
+import mp3.classes.interfaces.Constants;
+import mp4.datenbank.struktur.Tabellen;
 
 /**
  *
  * @author anti
  */
 public abstract class Things implements Queries, mp4.datenbank.struktur.Tabellen {
-    public Integer id = 0;
+//    public Integer id = 0;
     public boolean isSaved = false;
     private Query q;
 
@@ -40,7 +43,9 @@ public abstract class Things implements Queries, mp4.datenbank.struktur.Tabellen
         q = query;
     }
 
-    
+    public Things(){
+        q= QueryClass.instanceOf().clone(Tabellen.TABLE_INCOME);
+    }
     /**
      * Deletes the item with the given id
      * @param id
@@ -60,9 +65,6 @@ public abstract class Things implements Queries, mp4.datenbank.struktur.Tabellen
 //
 //    }
 
-    public Integer getId() {
-        return id;
-    }
     /**
      * Hides he first column of a table (usually "id")
      * @param table
@@ -210,10 +212,14 @@ public abstract class Things implements Queries, mp4.datenbank.struktur.Tabellen
     /**
      * Deletes this item!!
      */
-    public void destroy() {
-        this.delete(this.id);
-        this.id = 0;
-    }
+//    public Integer id = 0;
+//    public Integer getId() {
+//        return id;
+//    }
+//    public void destroy() {
+//        this.delete(this.id);
+//        this.id = 0;
+//    }
 
      public Integer getNextIndex(String of){
             return q.getNextIndex(of);

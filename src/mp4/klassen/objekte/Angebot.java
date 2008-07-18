@@ -43,7 +43,14 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.s
     private Query query;
     private String[][] products;
     private List labelsOfGetAllWithD;
-
+   public Integer id = 0;
+    public Integer getId() {
+        return id;
+    }
+    public void destroy() {
+        this.delete(this.id);
+        this.id = 0;
+    }
     public Angebot() {
         super(QueryClass.instanceOf().clone(TABLE_ORDERS));
         this.query = QueryClass.instanceOf();

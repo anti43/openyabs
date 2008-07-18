@@ -39,7 +39,14 @@ public class Ausgabe extends mp3.classes.layer.Things implements mp4.datenbank.s
     private Double Preis = 0d;
     private Double Tax = 0d;
     private Date Datum = new Date();
-
+   public Integer id = 0;
+    public Integer getId() {
+        return id;
+    }
+    public void destroy() {
+        this.delete(this.id);
+        this.id = 0;
+    }
     public Ausgabe() {
         super(QueryClass.instanceOf().clone(TABLE_DUES));
     }

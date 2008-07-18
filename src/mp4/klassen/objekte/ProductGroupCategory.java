@@ -29,7 +29,14 @@ public class ProductGroupCategory extends mp3.classes.layer.Things implements mp
       
     private String[][] data;
     private Query query;
-
+   public Integer id = 0;
+    public Integer getId() {
+        return id;
+    }
+    public void destroy() {
+        this.delete(this.id);
+        this.id = 0;
+    }
     public ProductGroupCategory(Query query) {
         super(query.clone(TABLE_PRODUCTS_GROUPS_CATEGORIES));
 
