@@ -158,6 +158,7 @@ public interface Installation {
         "CREATE TABLE historie (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
         "aktion VARCHAR(500) default NULL,text VARCHAR(250) default NULL," +
         "datum DATE NOT NULL," +
+        "benutzer VARCHAR(500) default NULL," +
         "deleted INTEGER DEFAULT 0," +
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
         

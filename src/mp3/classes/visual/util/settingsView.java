@@ -223,7 +223,7 @@ public class settingsView extends javax.swing.JFrame {
 
             data.setModel(jTable1.getModel());
             data.save();
-            mainframe.nachricht("Einstellungen gespeichert.");
+            mainframe.setMessage("Einstellungen gespeichert.");
             this.dispose();
 
        

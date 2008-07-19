@@ -27,7 +27,7 @@ import mp3.classes.layer.QueryClass;
 import mp3.classes.layer.visual.SupplierPicker;
 
 import mp3.classes.layer.ProductImporteur;
-import mp4.klassen.objekte.History;
+import mp4.klassen.objekte.HistoryItem;
 import mp4.klassen.objekte.Product;
 import mp4.klassen.objekte.ProductGroupCategory;
 import mp4.klassen.objekte.ProductGroupFamily;
@@ -614,7 +614,7 @@ public class csvProductImporter extends javax.swing.JFrame {
                 d=new Date();
                 Log.Debug("Einlesen beendet: " + d + " Produkte: " + h,true);
                 
-                 new History(QueryClass.instanceOf(), Strings.PRODUCT ,h + " Produkte importiert.");
+                 new HistoryItem(QueryClass.instanceOf(), Strings.PRODUCT ,h + " Produkte importiert.");
             
                 
                 thisa.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));

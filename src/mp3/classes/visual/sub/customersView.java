@@ -21,7 +21,7 @@ import mp3.classes.layer.Popup;
 import mp3.classes.layer.QueryClass;
 import mp4.klassen.objekte.Rechnung;
 import mp4.klassen.objekte.Customer;
-import mp4.klassen.objekte.History;
+import mp4.klassen.objekte.HistoryItem;
 import mp3.classes.visual.main.mainframe;
 import mp3.classes.visual.util.serialLetter;
 import mp4.utils.tabellen.SelectionCheck;
@@ -970,11 +970,11 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
 //
 //            mainframe.nachricht("Kunde Nummer " + current.getKundennummer() + " angelegt.");
 
-            mainframe.nachricht("Kunde Nummer " + current.getKundennummer() + " gespeichert.");
+            mainframe.setMessage("Kunde Nummer " + current.getKundennummer() + " gespeichert.");
             try {
 
 
-                new History(QueryClass.instanceOf(), Strings.CUSTOMER, "Kunde Nummer: " + current.getKundennummer() + " angelegt.");
+                new HistoryItem(QueryClass.instanceOf(), Strings.CUSTOMER, "Kunde Nummer: " + current.getKundennummer() + " angelegt.");
             } catch (Exception ex) {
                 Popup.warn(ex.getMessage(), Popup.ERROR);
             }
@@ -1082,9 +1082,9 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
 
                     current.save();
 
-                    mainframe.nachricht("Kunde Nummer " + current.getKundennummer() + " gespeichert.");
+                    mainframe.setMessage("Kunde Nummer " + current.getKundennummer() + " gespeichert.");
 
-                    new History(QueryClass.instanceOf(), Strings.CUSTOMER, "Kunde Nummer: " + current.getKundennummer() + " editiert.");
+                    new HistoryItem(QueryClass.instanceOf(), Strings.CUSTOMER, "Kunde Nummer: " + current.getKundennummer() + " editiert.");
 
 
                     liste = current.getAll(false);
@@ -1172,7 +1172,7 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
             try {
                 current.deactivate(current.getId().toString());
 
-                new History(QueryClass.instanceOf(), Strings.CUSTOMER, "Kunde Nummer: " + current.getKundennummer() + " gelöscht.");
+                new HistoryItem(QueryClass.instanceOf(), Strings.CUSTOMER, "Kunde Nummer: " + current.getKundennummer() + " gelöscht.");
                 this.jTextField4.setText("");
                 this.jTextField5.setText("");
                 this.jTextField6.setText("");

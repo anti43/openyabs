@@ -882,7 +882,7 @@ public class productsView extends javax.swing.JPanel implements mp4.datenbank.st
             if ((JOptionPane.showConfirmDialog(this, "Wirklich löschen?", "Sicher?", JOptionPane.YES_NO_OPTION)) == JOptionPane.YES_OPTION) {
                 current.destroy();
                 current = new Product();
-                getMainframe().nachricht("Produkt Nummer " + current.getNummer() + " gelöscht.");
+                getMainframe().setMessage("Produkt Nummer " + current.getNummer() + " gelöscht.");
             }
 
             liste = current.getAll();
@@ -892,7 +892,7 @@ public class productsView extends javax.swing.JPanel implements mp4.datenbank.st
             current.stripFirst(jTable2);
 
         } else {
-            getMainframe().nachricht("Kein Produkt gewählt.");
+            getMainframe().setMessage("Kein Produkt gewählt.");
         }
     }//GEN-LAST:event_jButton8MouseClicked
 
@@ -901,7 +901,7 @@ public class productsView extends javax.swing.JPanel implements mp4.datenbank.st
         if (this.saveInner()) {
             new SupplierPicker(this);
         } else {
-            getMainframe().nachricht("Sie müssen das Produkt erst anlegen.");
+            getMainframe().setMessage("Sie müssen das Produkt erst anlegen.");
         }
     }//GEN-LAST:event_jButton5MouseClicked
 
@@ -1079,7 +1079,7 @@ private void saveNew() {
         current.setWarengruppenId(getCurrentProductGroup());
         current.save();
 
-        getMainframe().nachricht("Produkt Nummer " + current.getNummer() + " gespeichert.");
+        getMainframe().setMessage("Produkt Nummer " + current.getNummer() + " gespeichert.");
     }
 
     private boolean saveInner() {
@@ -1139,7 +1139,7 @@ private void saveNew() {
             current.setText(jEditorPane1.getText());
             current.save();
 
-            getMainframe().nachricht("Produkt Nummer " + current.getNummer() + " gespeichert.");
+            getMainframe().setMessage("Produkt Nummer " + current.getNummer() + " gespeichert.");
             return true;
         }
         return false;

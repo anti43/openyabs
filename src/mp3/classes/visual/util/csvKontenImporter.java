@@ -26,7 +26,7 @@ import mp3.classes.layer.Popup;
 import mp3.classes.layer.QueryClass;
 import mp3.classes.layer.KontenImporteur;
 
-import mp4.klassen.objekte.History;
+import mp4.klassen.objekte.HistoryItem;
 import mp4.klassen.objekte.ProductGroupCategory;
 import mp4.klassen.objekte.ProductGroupFamily;
 import mp4.klassen.objekte.ProductGroupGroup;
@@ -444,7 +444,7 @@ public class csvKontenImporter extends javax.swing.JFrame {
                 d=new Date();
                 Log.Debug("Einlesen beendet: " + d + " Konten: " + h,true);
                 
-                 new History(QueryClass.instanceOf(), Strings.KONTEN ,h + " Konten importiert.");
+                 new HistoryItem(QueryClass.instanceOf(), Strings.KONTEN ,h + " Konten importiert.");
             
                 
                  thisa.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));

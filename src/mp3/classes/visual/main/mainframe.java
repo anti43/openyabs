@@ -30,6 +30,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
+import javax.swing.JLabel;
 import mp3.classes.interfaces.Constants;
 
 import mp3.classes.interfaces.Strings;
@@ -72,6 +73,8 @@ import mp4.utils.windows.Position;
  */
 public class mainframe extends javax.swing.JFrame {
 
+
+
     private customersView c;
     private billsView b;
     private productsView d;
@@ -83,6 +86,7 @@ public class mainframe extends javax.swing.JFrame {
     private eurView j;
     private Main loader;
     private Position wt = new Position();
+    public static JLabel nachricht = new JLabel();
 
     /** Creates new form mainframe
      * @param splash
@@ -174,7 +178,10 @@ public class mainframe extends javax.swing.JFrame {
 
         undoCache.setMenu(jMenu11,this);       
         
-        nachricht("Anmerkungen, Bugs und Feedback zu MP bitte an mp-rechnungs-und-kundenverwaltung@googlegroups.com senden. Vielen Dank!");
+        setMessage("Anmerkungen, Bugs und Feedback zu MP bitte an mp-rechnungs-und-kundenverwaltung@googlegroups.com senden. Vielen Dank!");
+        
+        nachricht = messagePanel;
+        
         this.setVisible(rootPaneCheckingEnabled);
     }
 
@@ -300,7 +307,7 @@ public class mainframe extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         mainProgress = new javax.swing.JProgressBar();
-        nachricht = new javax.swing.JLabel();
+        messagePanel = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jPanel5 = new javax.swing.JPanel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
@@ -367,14 +374,14 @@ public class mainframe extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addComponent(nachricht, javax.swing.GroupLayout.DEFAULT_SIZE, 719, Short.MAX_VALUE)
+                .addComponent(messagePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 719, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(mainProgress, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(mainProgress, javax.swing.GroupLayout.DEFAULT_SIZE, 16, Short.MAX_VALUE)
-            .addComponent(nachricht, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 16, Short.MAX_VALUE)
+            .addComponent(messagePanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 16, Short.MAX_VALUE)
         );
 
         jScrollPane1.setBorder(null);
@@ -928,7 +935,7 @@ public class mainframe extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator5;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JProgressBar mainProgress;
-    private javax.swing.JLabel nachricht;
+    private javax.swing.JLabel messagePanel;
     // End of variables declaration//GEN-END:variables
     public javax.swing.JMenu getJMenu1() {
         return jMenu1;
@@ -1002,17 +1009,26 @@ public class mainframe extends javax.swing.JFrame {
         return b;
     }
 
-    /**
+//    /**
+//     * 
+//     * @param message
+//     */
+//    public void nachricht(String message) {
+//
+//        nachricht.setText(message);
+//    }
+
+      /**
      * 
      * @param message
      */
-    public void nachricht(String message) {
-
-        nachricht.setText(message);
+    public void setMessage(String message) {
+        this.getNachricht().setText(message);
     }
-
+    
+    
     public javax.swing.JLabel getNachricht() {
-        return nachricht;
+        return messagePanel;
     }
 
     @Override

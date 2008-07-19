@@ -38,7 +38,7 @@ import mp3.classes.layer.QueryClass;
 //import mp3.classes.objects.bill.*;
 
 import mp4.klassen.objekte.Customer;
-import mp4.klassen.objekte.History;
+import mp4.klassen.objekte.HistoryItem;
 import mp4.klassen.objekte.Product;
 import mp3.classes.visual.main.mainframe;
 
@@ -1232,9 +1232,9 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
           
 
                 jTextField6.setText(String.valueOf(f.getNextIndex("rechnungnummer")));
-                mainframe.nachricht("Rechnung Nummer: " + bill.getRechnungnummer() + " angelegt.");
+                mainframe.setMessage("Rechnung Nummer: " + bill.getRechnungnummer() + " angelegt.");
 
-                new History(QueryClass.instanceOf(),  Strings.BILL, "Rechnung Nummer: " + bill.getRechnungnummer() + " angelegt.");
+                new HistoryItem(QueryClass.instanceOf(),  Strings.BILL, "Rechnung Nummer: " + bill.getRechnungnummer() + " angelegt.");
                 this.setBill(new Rechnung(bill.getId()));
 
                 save();
@@ -1411,7 +1411,7 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
 
                     mainframe.getNachricht().setText("Rechnung Nummer " + bill.getRechnungnummer() + " gespeichert.");
 
-                    new History(QueryClass.instanceOf(), Strings.BILL, "Rechnung Nummer: " + bill.getRechnungnummer() + " editiert.");
+                    new HistoryItem(QueryClass.instanceOf(), Strings.BILL, "Rechnung Nummer: " + bill.getRechnungnummer() + " editiert.");
 
                     this.setBill(new Rechnung(bill.getid()));
 
@@ -1545,7 +1545,7 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
 
             } catch (Exception exception1) {
                 //    exception1.printStackTrace();
-                mainframe.nachricht("Kein Datensatz gefunden!");
+                mainframe.setMessage("Kein Datensatz gefunden!");
             }
 
         }
@@ -1576,7 +1576,7 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
 
             } catch (Exception exception1) {
                 //    exception1.printStackTrace();
-                mainframe.nachricht("Kein Datensatz gefunden k");
+                mainframe.setMessage("Kein Datensatz gefunden.");
             }
         }
 
@@ -1678,7 +1678,7 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
         if (current != null && current.hasId()) {
             new PDF_Rechnung(current);
 
-            new History(QueryClass.instanceOf(),  Strings.BILL, "Rechnung Nummer: " + current.getRechnungnummer() + " als PDF erzeugt.");
+            new HistoryItem(QueryClass.instanceOf(),  Strings.BILL, "Rechnung Nummer: " + current.getRechnungnummer() + " als PDF erzeugt.");
 
         }
     }//GEN-LAST:event_jButton12MouseClicked

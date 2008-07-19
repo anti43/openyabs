@@ -30,7 +30,7 @@ import mp3.classes.utils.Formater;
 import mp3.classes.utils.UnZip;
 import mp3.classes.utils.Zip;
 import mp3.classes.visual.main.mainframe;
-import mp4.klassen.objekte.History;
+import mp4.klassen.objekte.HistoryItem;
 import mp4.klassen.objekte.MyData;
 
 /**
@@ -245,8 +245,8 @@ public class backupView extends javax.swing.JPanel{
             this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
             Zip.zip(path, savefile);
             this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-            mainframe.nachricht("Sicherungsdatei '" + savefile + "' angelegt.");
-            new History(QueryClass.instanceOf(), Strings.BACKUP, "Sicherungsdatei " + savefile + " angelegt.");
+            mainframe.setMessage("Sicherungsdatei '" + savefile + "' angelegt.");
+            new HistoryItem(QueryClass.instanceOf(), Strings.BACKUP, "Sicherungsdatei " + savefile + " angelegt.");
         } catch (Exception ex) {
             Log.Debug(ex.getMessage(), true);
         }
@@ -276,7 +276,7 @@ public class backupView extends javax.swing.JPanel{
 
         l = MyData.instanceOf();
 
-        mainframe.nachricht("Sicherungspfad '" + l.getBackupverz() + "' gespeichert");
+        mainframe.setMessage("Sicherungspfad '" + l.getBackupverz() + "' gespeichert");
         
     }//GEN-LAST:event_jButton3ActionPerformed
 
@@ -343,7 +343,7 @@ public class backupView extends javax.swing.JPanel{
 
                     UnZip.deflate(str[id][2], store);
 
-                    mainframe.nachricht("Sicherungsdatei '" + str[id][2] + "' wiederhergestellt.");
+                    mainframe.setMessage("Sicherungsdatei '" + str[id][2] + "' wiederhergestellt.");
 
                     new Popup("Starten Sie das Programm neu.", Popup.NOTICE);
                     

@@ -42,7 +42,7 @@ public class Einnahme extends mp3.classes.layer.Things implements mp4.datenbank.
     private Double Preis = 0.0;
     private Double Tax = 0.0;
     private Date Datum = new Date();
-    public Integer id = 0;
+    public  Integer id = 0;
 
     /**
      * 
@@ -53,24 +53,24 @@ public class Einnahme extends mp3.classes.layer.Things implements mp4.datenbank.
     }
 
     /**
-     * Disables this object permanently from database (if permitted)
+     * Disables this object 
      */
     public void disable() {
         if (super.getQueryHandler() == null) {
             super.setQueryHandler(QueryClass.instanceOf().clone(TABLE_INCOME));
         }
         this.delete(this.id);
-        this.id = 0;
+        
     }
     /**
-     * Enables this object permanently from database (if permitted)
+     * Enables this object
      */
     public void enable() {
         if (super.getQueryHandler() == null) {
             super.setQueryHandler(QueryClass.instanceOf().clone(TABLE_INCOME));
         }
         this.unDelete(this.id);
-        this.id = 0;
+        
     }
     public Einnahme() {
         super(QueryClass.instanceOf().clone(TABLE_INCOME));
@@ -165,6 +165,7 @@ public class Einnahme extends mp3.classes.layer.Things implements mp4.datenbank.
             isSaved = true;
         } else if (id == 0) {
            this.id = this.insert(TABLE_INCOME_FIELDS, this.collect());
+      
         } 
     }
 

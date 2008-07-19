@@ -73,4 +73,8 @@ public interface Strings {
      public final String BACKUP = "Datensicherung";
      
      public final String KONTEN = "Konten";
+     
+     public final String EINNAHME = "Einnahme";
+     
+     
 }

@@ -10,14 +10,14 @@ import mp3.classes.layer.QueryClass;
  */
 public class HistoryHandler {
     private static HistoryHandler handler;
-    private static History history;
+    private static HistoryItem history;
     
     /**
      * validates the history-data by reloading it.
      */
     public static void validate(){
     
-        history = new History(QueryClass.instanceOf());
+        history = new HistoryItem(QueryClass.instanceOf());
     }
     /**
      * HistoryHandler is a singleton

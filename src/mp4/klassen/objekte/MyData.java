@@ -29,6 +29,7 @@ import mp3.classes.layer.QueryClass;
 import mp3.classes.utils.FileReaderWriter;
 import mp3.classes.utils.Formater;
 import mp3.classes.utils.Log;
+import mp4.utils.zahlen.FormatNumber;
 
 /**
  *
@@ -58,6 +59,8 @@ public class MyData extends mp3.classes.layer.People implements mp4.datenbank.st
     private String state;
     private String[][] orig_valuearray;
 
+    private User user = new User();
+    
     public static MyData instanceOf() {
         if (dat == null) {
             dat = new MyData();
@@ -71,6 +74,7 @@ public class MyData extends mp3.classes.layer.People implements mp4.datenbank.st
         dat = new MyData();
         return dat;
     }
+    
 
     private MyData() {
         super(QueryClass.instanceOf().clone(TABLE_MYDATA));
@@ -81,6 +85,10 @@ public class MyData extends mp3.classes.layer.People implements mp4.datenbank.st
         this.explode(valurarray);
         this.id = 1;
         Locale.setDefault(getLocale());
+    }
+
+    public User getUser() {
+        return user;
     }
 
     private int getAppVersion() {
@@ -102,7 +110,7 @@ public class MyData extends mp3.classes.layer.People implements mp4.datenbank.st
 
                 this.insert("name,wert", "(;;2#4#1#1#8#0#;;)Land (Waehrung) (DE,CH)(;;2#4#1#1#8#0#;;),(;;2#4#1#1#8#0#;;)DE(;;2#4#1#1#8#0#;;)");
                 this.insert("name,wert", "(;;2#4#1#1#8#0#;;)*Hauptfenster(;;2#4#1#1#8#0#;;),(;;2#4#1#1#8#0#;;) (;;2#4#1#1#8#0#;;)");
-                new History(DATABASE, "Datenbankupdate " + 14 + " durchgefuehrt.");
+                new HistoryItem(DATABASE, "Datenbankupdate " + 14 + " durchgefuehrt.");
 
                 checkForUpgrade();
                 break;

@@ -14,8 +14,9 @@ import mp3.classes.utils.*;
 import mp3.classes.layer.*;
 import mp3.classes.layer.visual.Help;
 import mp3.classes.visual.sub.eurAPanel;
-import mp3.classes.visual.sub.eurEPanel;
+
 import mp4.klassen.objekte.*;
+import mp4.panels.eurEPanel;
 import mp4.utils.windows.Position;
 
 

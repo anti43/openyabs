@@ -12,7 +12,7 @@ import javax.swing.table.DefaultTableModel;
 import mp3.classes.interfaces.Strings;
 import mp3.classes.layer.Popup;
 import mp3.classes.layer.QueryClass;
-import mp4.klassen.objekte.History;
+import mp4.klassen.objekte.HistoryItem;
 import mp4.klassen.objekte.Product;
 import mp4.klassen.objekte.Lieferant;
 import mp3.classes.visual.main.mainframe;
@@ -815,8 +815,8 @@ public class suppliersView extends javax.swing.JPanel implements mp4.datenbank.s
 
             this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
             current.stripFirst(jTable2);
-            mainframe.nachricht("Lieferant Nummer " + current.getLieferantennummer() + " angelegt.");
-            new History(QueryClass.instanceOf(),  Strings.SUPPLIER, "Lieferant Nummer: " + current.getLieferantennummer() + " angelegt.");
+            mainframe.setMessage("Lieferant Nummer " + current.getLieferantennummer() + " angelegt.");
+            new HistoryItem(QueryClass.instanceOf(),  Strings.SUPPLIER, "Lieferant Nummer: " + current.getLieferantennummer() + " angelegt.");
 //            mainframe.nachricht("Kunde Nummer " + current.getKundennummer() + " gespeichert.");
 
             liste = current.getAll();
@@ -873,8 +873,8 @@ public class suppliersView extends javax.swing.JPanel implements mp4.datenbank.s
             current.setNotizen(jTextArea1.getText());
             current.save();
 
-            mainframe.nachricht("Lieferant Nummer " + current.getLieferantennummer() + " gespeichert.");
-            new History(QueryClass.instanceOf(),  Strings.SUPPLIER, "Lieferant Nummer: " + current.getLieferantennummer() + " editiert.");
+            mainframe.setMessage("Lieferant Nummer " + current.getLieferantennummer() + " gespeichert.");
+            new HistoryItem(QueryClass.instanceOf(),  Strings.SUPPLIER, "Lieferant Nummer: " + current.getLieferantennummer() + " editiert.");
 
             liste = current.getAll();
             String k = "id, " +  TABLE_SUPPLIER_FIELDS;
@@ -947,7 +947,7 @@ public class suppliersView extends javax.swing.JPanel implements mp4.datenbank.s
 
         if ((JOptionPane.showConfirmDialog(this, "Wirklich löschen?", "Sicher?", JOptionPane.YES_NO_OPTION)) == JOptionPane.YES_OPTION) {
             current.deactivate(current.getId().toString());
-            new History(QueryClass.instanceOf(),  Strings.SUPPLIER, "Lieferant Nummer: " + current.getLieferantennummer() + " gelöscht.");
+            new HistoryItem(QueryClass.instanceOf(),  Strings.SUPPLIER, "Lieferant Nummer: " + current.getLieferantennummer() + " gelöscht.");
 
             this.jTextField4.setText("");
             this.jTextField5.setText("");

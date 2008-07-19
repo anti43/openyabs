@@ -36,7 +36,7 @@ import mp3.classes.layer.QueryClass;
 import mp4.klassen.objekte.Rechnung;
 import mp4.klassen.objekte.RechnungPosten;
 import mp4.klassen.objekte.Customer;
-import mp4.klassen.objekte.History;
+import mp4.klassen.objekte.HistoryItem;
 import mp4.klassen.objekte.MyData;
 import mp4.klassen.objekte.Angebot;
 import handling.pdf.PDF_Angebot;
@@ -1012,8 +1012,8 @@ public class offersView extends javax.swing.JPanel implements Runnable, mp4.date
                 }
 
                 jTextField6.setText(order.getOrdernummer());
-                mainframe.nachricht("Angebot Nummer: " + order.getOrdernummer() + " angelegt.");
-                new History(QueryClass.instanceOf(), Strings.ORDER, "Angebot Nummer: " + order.getOrdernummer() + " angelegt.");
+                mainframe.setMessage("Angebot Nummer: " + order.getOrdernummer() + " angelegt.");
+                new HistoryItem(QueryClass.instanceOf(), Strings.ORDER, "Angebot Nummer: " + order.getOrdernummer() + " angelegt.");
                 this.setOrder(new Angebot(order.getId()));
             }
         } else {
@@ -1091,7 +1091,7 @@ public class offersView extends javax.swing.JPanel implements Runnable, mp4.date
                     }
 
                     mainframe.getNachricht().setText("Angebot Nummer " + order.getOrdernummer() + " gespeichert.");
-                    new History(QueryClass.instanceOf(), Strings.ORDER, "Angebot Nummer: " + order.getOrdernummer() + " editiert.");
+                    new HistoryItem(QueryClass.instanceOf(), Strings.ORDER, "Angebot Nummer: " + order.getOrdernummer() + " editiert.");
                     this.setOrder(new Angebot(order.getId()));
                 }
             } else {
@@ -1161,7 +1161,7 @@ public class offersView extends javax.swing.JPanel implements Runnable, mp4.date
                 this.setCustomer(new Customer(QueryClass.instanceOf(), jTextField4.getText(), true));
 
             } catch (Exception exception1) {
-                mainframe.nachricht("Kein Datensatz gefunden k");
+                mainframe.setMessage("Kein Datensatz gefunden k");
             }
         }
     }//GEN-LAST:event_jTextField4ActionPerformed
@@ -1182,7 +1182,7 @@ public class offersView extends javax.swing.JPanel implements Runnable, mp4.date
             try {
                 this.setCustomer(new Customer(QueryClass.instanceOf(), jTextField4.getText(), true));
             } catch (Exception exception1) {
-                mainframe.nachricht("Kein Datensatz gefunden k");
+                mainframe.setMessage("Kein Datensatz gefunden k");
             }
         }
     }//GEN-LAST:event_jTextField5ActionPerformed
@@ -1262,7 +1262,7 @@ public class offersView extends javax.swing.JPanel implements Runnable, mp4.date
                 this.current.setAuftrag(true);
                 this.setAuftrag(true);
                 this.current.save();
-                mainframe.nachricht("Angebot Nummer " + current.getOrdernummer() + " als 'Auftrag' markiert.");
+                mainframe.setMessage("Angebot Nummer " + current.getOrdernummer() + " als 'Auftrag' markiert.");
             }
         }
     }//GEN-LAST:event_jButton12ActionPerformed
@@ -1322,7 +1322,7 @@ public class offersView extends javax.swing.JPanel implements Runnable, mp4.date
                         }
                     }
                     current.setRechnung(true);
-                    mainframe.nachricht("Rechnung Nummer: " + bill.getRechnungnummer() + " angelegt.");
+                    mainframe.setMessage("Rechnung Nummer: " + bill.getRechnungnummer() + " angelegt.");
                 }
             } else {
                 new Popup("Sie müssen einen (validen) Kunden auswählen.", Popup.ERROR);

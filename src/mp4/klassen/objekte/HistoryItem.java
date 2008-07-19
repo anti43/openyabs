@@ -24,19 +24,26 @@ import handling.db.Query;
 
 import mp3.classes.layer.Popup;
 import mp3.classes.layer.QueryClass;
+import mp3.classes.visual.main.mainframe;
 import mp4.utils.datum.DateConverter;
+import mp4.utils.tabellen.DataOrder;
 
 /**
  *
  * @author anti43
  */
-public class History extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen{
+public class HistoryItem extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen{
 
+    
 
     private String aktion = "";
     private String text = "";
     private Date datum = new Date();
+    private User user = MyData.instanceOf().getUser();
            public Integer id = 0;
+    
+
+   
     public Integer getId() {
         return id;
     }
@@ -44,18 +51,37 @@ public class History extends mp3.classes.layer.Things implements mp4.datenbank.s
         this.delete(this.id);
         this.id = 0;
     }  
-    public History(Query query) {
+    public HistoryItem(Query query) {
         super(query.clone(TABLE_HISTORY));
         
         this.setDatum(new Date());
     }
+    
+    /**
+     * 
+     * @param aktion 
+     * @param text
+     * @param user
+     */
+    public HistoryItem(String aktion, String text, User user) {
+        super(QueryClass.instanceOf().clone(TABLE_HISTORY));
+      
+        this.setAktion(aktion);
+        this.setText(text);
+        this.setDatum(new Date());
+        this.setUser(user);
+        
+        this.save();
+    }
+    
+    
     /**
      * 
      * @param query
      * @param aktion
      * @param text
      */
-    public History(Query query, String aktion, String text) {
+    public HistoryItem(Query query, String aktion, String text) {
         super(query.clone(TABLE_HISTORY));
         
                 
@@ -71,7 +97,7 @@ public class History extends mp3.classes.layer.Things implements mp4.datenbank.s
      * @param query
      * @param id 
      */
-    public History(Query query, String id) {
+    public HistoryItem(Query query, String id) {
         super(query.clone(TABLE_HISTORY));
         this.id = Integer.valueOf(id);
         this.explode(this.selectLast("*", "id", id, true));
@@ -79,7 +105,7 @@ public class History extends mp3.classes.layer.Things implements mp4.datenbank.s
        
     }
 
-    public History(String aktion, String text) {
+    public HistoryItem(String aktion, String text) {
        super(QueryClass.instanceOf().clone(TABLE_HISTORY));
 
         this.setAktion(aktion);
@@ -87,6 +113,8 @@ public class History extends mp3.classes.layer.Things implements mp4.datenbank.s
         this.setDatum(new Date());
         
         this.save();
+        
+        mainframe.nachricht.setText(text);
     }
 
 
@@ -102,7 +130,8 @@ public class History extends mp3.classes.layer.Things implements mp4.datenbank.s
         String str = "";
         str = str + "(;;2#4#1#1#8#0#;;)" +this.getAktion() + "(;;2#4#1#1#8#0#;;)"  + "(;;,;;)";
         str = str + "(;;2#4#1#1#8#0#;;)"  + this.getText()  + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
-        str = str + "(;;2#4#1#1#8#0#;;)"  + DateConverter.getSQLDateString(this.getDatum()) + "(;;2#4#1#1#8#0#;;)" ;
+        str = str + "(;;2#4#1#1#8#0#;;)"  + DateConverter.getSQLDateString(this.getDatum()) + "(;;2#4#1#1#8#0#;;)"  + "(;;,;;)";
+        str = str + "(;;2#4#1#1#8#0#;;)"  + this.getUser()  + "(;;2#4#1#1#8#0#;;)";
         return str;
     }
     
@@ -113,11 +142,7 @@ public class History extends mp3.classes.layer.Things implements mp4.datenbank.s
             isSaved = true;
         } else if (id == 0) {
             this.insert(TABLE_HISTORY_FIELDS, this.collect());
-        } else {
-
-            mp3.classes.layer.Popup.warn(java.util.ResourceBundle.getBundle("languages/Bundle").getString("no_data_to_save"), Popup.WARN);
-
-        }
+        } 
     }
 
     public String getAktion() {
@@ -144,19 +169,20 @@ public class History extends mp3.classes.layer.Things implements mp4.datenbank.s
         this.datum = datum;
     }
 
+    private String getUser() {
+        return user.toString();
+    }
+    
+    private void setUser(User user) {
+       this.user = user;
+    }
+    
     public String[][] getHistory() {   
 
-        String[][] str = this.select("aktion,text,datum", null, Strings.NOTNULL, false);
-        
-        int i = 0, j = str.length - 1;
-		while (i < j) {
-			String[] h = str[i]; str[i] = str[j]; str[j] = h;
-			i++;
-			j--;
-		}
+        String[][] str = this.select("aktion,text,datum,benutzer", null, Strings.NOTNULL, false);
+     
+        str = DataOrder.reverseArray(str);
         
         return str;
     }
-
-
 }

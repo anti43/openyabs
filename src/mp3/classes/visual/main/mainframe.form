@@ -289,7 +289,7 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
-                  <Component id="nachricht" pref="719" max="32767" attributes="0"/>
+                  <Component id="messagePanel" pref="719" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="mainProgress" min="-2" pref="61" max="-2" attributes="0"/>
               </Group>
@@ -298,7 +298,7 @@
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Component id="mainProgress" alignment="0" pref="16" max="32767" attributes="0"/>
-              <Component id="nachricht" alignment="1" pref="16" max="32767" attributes="0"/>
+              <Component id="messagePanel" alignment="1" pref="16" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
       </Layout>
@@ -311,7 +311,7 @@
             <Property name="borderPainted" type="boolean" value="false"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JLabel" name="nachricht">
+        <Component class="javax.swing.JLabel" name="messagePanel">
         </Component>
       </SubComponents>
     </Container>

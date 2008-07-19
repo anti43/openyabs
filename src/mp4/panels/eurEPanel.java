@@ -3,8 +3,9 @@
  *
  * Created on 20. Februar 2008, 08:33
  */
-package mp3.classes.visual.sub;
+package mp4.panels;
 
+import mp3.classes.interfaces.Strings;
 import mp3.classes.layer.Popup;
 import mp3.classes.layer.visual.DatePick;
 import mp4.klassen.objekte.*;
@@ -23,7 +24,6 @@ import mp4.utils.datum.vDate;
 import mp4.utils.tabellen.SelectionCheck;
 import mp4.utils.zahlen.FormatNumber;
 import mp4.utils.zahlen.vDouble;
-import mp4.utils.zahlen.vFloat;
 
 /**
  *
@@ -42,7 +42,7 @@ public class eurEPanel extends javax.swing.JPanel {
         curKonto = MyData.instanceOf().getEinnahmeDefKonto();
 
         jTextField6.setText(DateConverter.getTodayDefDate());
-        jTextField3.setText(MyData.instanceOf().getGlobaltax().toString());
+        jTextField3.setText(FormatNumber.formatDezimal(MyData.instanceOf().getGlobaltax()));
         jTextField4.setText("0");
         jTextField5.setText(MyData.instanceOf().getEinnahmeDefKonto().getArt());
 
@@ -354,6 +354,8 @@ public class eurEPanel extends javax.swing.JPanel {
                     curEinnahme.setTax(steuer.value);
                     curEinnahme.save();
                     updateTableData();
+                    
+                    new HistoryItem(Strings.EINNAHME, "Einnahme Nummer: " + curEinnahme.getId() + " editiert.");
                 }
             } else {
                 Popup.error("Betrag: " + betrag.ovalue + "\n" + "Steuer: " + steuer.ovalue + "\n" + "Datum: " + datum.ovalue, "Überprüfen Sie Ihre Angaben.");
@@ -371,10 +373,11 @@ public class eurEPanel extends javax.swing.JPanel {
         Einnahme en;
 
         if (betrag.isVerified && steuer.isVerified && steuer.isPositive && datum.isVerified) {
-            en = new Einnahme(curKonto.getId(), jEditorPane1.getText(), betrag.value, steuer.value, datum.date);
+            this.setEinnahme(new Einnahme(curKonto.getId(), jEditorPane1.getText(), betrag.value, steuer.value, datum.date));
             updateTableData();
   
-            undoCache.instanceOf().addItem(ObjectCopy.copy(en), undoCache.CREATE);
+            undoCache.instanceOf().addItem(ObjectCopy.copy(curEinnahme), undoCache.CREATE);
+            new HistoryItem(Strings.EINNAHME, "Einnahme Nummer: " + curEinnahme.getId() + " angelegt.");
             
         } else {
             Popup.error("Betrag: " + betrag.ovalue + "\n" + "Steuer: " + steuer.ovalue + "\n" + "Datum: " + datum.ovalue, "Überprüfen Sie Ihre Angaben.");
@@ -386,6 +389,8 @@ public class eurEPanel extends javax.swing.JPanel {
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         if (this.curEinnahme != null) {
             undoCache.instanceOf().addItem(ObjectCopy.copy(this.curEinnahme), undoCache.DELETE);
+            
+            new HistoryItem(Strings.EINNAHME, "Einnahme Nummer: " + curEinnahme.getId() + " gelöscht.");
             curEinnahme.disable();
             updateTableData();
         }

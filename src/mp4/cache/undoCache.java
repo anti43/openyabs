@@ -85,7 +85,7 @@ public class undoCache {
         menu.validate();
     }
 
-    private void doAction(int index, int aktion, Object item) {
+    private void doAction(int index, int aktion, Object item, String text) {
         if (item.getClass().isInstance(new Rechnung())) {
 
             Rechnung it = (Rechnung) item;
@@ -145,6 +145,8 @@ public class undoCache {
             }
             
             mainframe.getEURPanel().getEurepanel().updateTableData();
+            new HistoryItem("Undo","Rückgängig: " + text);
+            
             
         } else if (item.getClass().isInstance(new Ausgabe())) {
 
@@ -219,7 +221,7 @@ public class undoCache {
                 text = " gelöscht.";
                 break;
             case 3:
-                text = " bearbeitet.";
+                text = " editiert.";
                 break;
         }
 
@@ -239,12 +241,12 @@ public class undoCache {
         } else if (item.getClass().isInstance(new Einnahme())) {
 
             Einnahme it = (Einnahme) item;
-            text = "Einnahme (Betrag) " + it.getFPreis() + text;
+            text = "Einnahme Nummer " + it.getId() + text;
 
         } else if (item.getClass().isInstance(new Ausgabe())) {
 
             Ausgabe it = (Ausgabe) item;
-            text = "Ausgabe (Betrag) " + it.getFPreis() + text;
+            text = "Ausgabe Nummer " + it.getId() + text;
 
         } else if (item.getClass().isInstance(new Customer())) {
 
@@ -289,7 +291,7 @@ public class undoCache {
 
         private void doAction() {
             try {
-                chandler.doAction(index, aktion, item);
+                chandler.doAction(index, aktion, item, this.getText());
                 menu.remove(this);
                 menu.validate();
             } catch (Exception e) {

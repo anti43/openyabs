@@ -451,20 +451,12 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
             rsmd = resultSet.getMetaData();
 
             while (resultSet.next()) {
-
-
                 integer = resultSet.getString(index);
-
                 try {
                     i = Integer.valueOf(integer);
-
-
-
-
                     if (i > oldi) {
                         oldi = i;
                     }
-
                 } catch (NumberFormatException numberFormatException) {
                     query = "SELECT ALL COUNT(1) FROM " + table;
                     message = "Database Error (getNextIndex:COUNT):";
@@ -482,7 +474,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
 
                     } else {
                         stop();
-                        return 0;
+                        return null;
                     }
 
                 }
@@ -494,7 +486,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
             Log.Debug(message + ex.getMessage());
             Log.Debug(ex, true);
             stop();
-            return 0;
+            return null;
 
         } finally {
 
@@ -526,7 +518,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
         } catch (NumberFormatException numberFormatException) {
         }
         stop();
-        return 0;
+        return null;
 
     }
 

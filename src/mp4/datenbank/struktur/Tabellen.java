@@ -211,7 +211,7 @@ public interface Tabellen {
      * Fields in history table
      */
      public  final String TABLE_HISTORY_FIELDS =
-               "aktion" + "," +"text"+ ","+ "datum";
+               "aktion" + "," +"text"+ ","+ "datum"+ ","+ "benutzer";
      
      /**
      * User table

@@ -17,23 +17,25 @@ import mp3.classes.visual.main.mainframe;
  * @author  anti43
  */
 public class historyView extends javax.swing.JPanel implements Runnable {
+    private static final long serialVersionUID = 7605611553087473038L;
 
     private String[][] liste;
     private String[] header;
     private mainframe mainframe;
     private Thread t;
 
-    /** Creates new form customers
-     * @param aThis 
+    /** 
+     * Creates new form customers
+     * @param frame 
      */
     public historyView(mainframe frame) {
         initComponents();
 
         mainframe = frame;
         liste = HistoryHandler.getHistory();
-        header = new String[]{"Aktion", "Beschreibung", "Datum"};
+        header = new String[]{"Aktion", "Beschreibung", "Datum", "Benutzer"};
 
-        jTable1.setModel(new DefaultTableModel(liste, header));
+        historytable.setModel(new DefaultTableModel(liste, header));
 
         resizeTable();
         t = new Thread(this);
@@ -41,8 +43,8 @@ public class historyView extends javax.swing.JPanel implements Runnable {
         t.start();
     }
 
-    private JTable getJTable1() {
-        return jTable1;
+    private JTable getHistoryTable() {
+        return historytable;
     }
 
     /** This method is called from within the constructor to
@@ -57,7 +59,7 @@ public class historyView extends javax.swing.JPanel implements Runnable {
         jLabel1 = new javax.swing.JLabel();
         jButton6 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        historytable = new javax.swing.JTable();
 
         setBackground(new java.awt.Color(204, 204, 255));
 
@@ -92,8 +94,8 @@ public class historyView extends javax.swing.JPanel implements Runnable {
                 .addComponent(jButton6))
         );
 
-        jTable1.setAutoCreateRowSorter(true);
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        historytable.setAutoCreateRowSorter(true);
+        historytable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {}
             },
@@ -101,8 +103,8 @@ public class historyView extends javax.swing.JPanel implements Runnable {
 
             }
         ));
-        jTable1.setDoubleBuffered(true);
-        jScrollPane1.setViewportView(jTable1);
+        historytable.setDoubleBuffered(true);
+        jScrollPane1.setViewportView(historytable);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -128,17 +130,17 @@ public class historyView extends javax.swing.JPanel implements Runnable {
 
         HistoryHandler.validate();
         liste = HistoryHandler.getHistory();
-        jTable1.setModel(new DefaultTableModel(liste, header));
+        historytable.setModel(new DefaultTableModel(liste, header));
         resizeTable();
 
     }//GEN-LAST:event_jButton6ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public javax.swing.JTable historytable;
     public javax.swing.JButton jButton6;
     public javax.swing.JLabel jLabel1;
     public javax.swing.JPanel jPanel1;
     public javax.swing.JScrollPane jScrollPane1;
-    public javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 
     public void run() {
@@ -146,7 +148,7 @@ public class historyView extends javax.swing.JPanel implements Runnable {
             try {
                 HistoryHandler.validate();
                 liste = HistoryHandler.getHistory();
-                jTable1.setModel(new DefaultTableModel(liste, header));
+                historytable.setModel(new DefaultTableModel(liste, header));
                 resizeTable();
                 Thread.sleep(60000);
             } catch (InterruptedException ex) {
@@ -156,7 +158,7 @@ public class historyView extends javax.swing.JPanel implements Runnable {
     }
 
     private void resizeTable() {
-        getJTable1().getColumn(getJTable1().getColumnName(0)).setPreferredWidth(100);
-        getJTable1().getColumn(getJTable1().getColumnName(0)).setMaxWidth(100);
+        getHistoryTable().getColumn(getHistoryTable().getColumnName(0)).setPreferredWidth(100);
+        getHistoryTable().getColumn(getHistoryTable().getColumnName(0)).setMaxWidth(100);
     }
 }
