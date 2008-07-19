@@ -3,11 +3,10 @@
  *
  * Created on 20. Februar 2008, 08:33
  */
-package mp3.classes.visual.sub;
+package mp4.panels;
 
-import java.util.Date;
+import mp3.classes.interfaces.Strings;
 import mp3.classes.layer.Popup;
-import mp3.classes.layer.QueryClass;
 import mp3.classes.layer.visual.DatePick;
 
 
@@ -18,14 +17,16 @@ import mp3.classes.utils.FetchDataTask;
 import mp3.classes.utils.Formater;
 import mp3.classes.utils.Log;
 import mp3.classes.visual.util.konten;
+import mp4.cache.ObjectCopy;
+import mp4.cache.undoCache;
 import mp4.klassen.objekte.Ausgabe;
+import mp4.klassen.objekte.HistoryItem;
 import mp4.klassen.objekte.MyData;
 import mp4.klassen.objekte.SKRKonto;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.datum.vDate;
 import mp4.utils.tabellen.SelectionCheck;
 import mp4.utils.zahlen.vDouble;
-import mp4.utils.zahlen.vFloat;
 
 /**
  *
@@ -47,8 +48,8 @@ public class eurAPanel extends javax.swing.JPanel {
         jTextField3.setText(MyData.instanceOf().getGlobaltax().toString());
         jTextField4.setText("0");
         jTextField5.setText(MyData.instanceOf().getAusgabeDefKonto().getArt());
-        jTextField3.setInputVerifier(Formater.getDoubleInputVerfier(jTextField3));
-        jTextField4.setInputVerifier(Formater.getDoubleInputVerfier(jTextField4));
+//        jTextField3.setInputVerifier(Formater.getDoubleInputVerfier(jTextField3));
+//        jTextField4.setInputVerifier(Formater.getDoubleInputVerfier(jTextField4));
         jTextField6.setInputVerifier(Formater.getDateInputVerfier(jTextField6));
 
         updateTableData();
@@ -268,7 +269,7 @@ public class eurAPanel extends javax.swing.JPanel {
                 .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addComponent(jToolBar2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 767, Short.MAX_VALUE)
+            .addComponent(jToolBar2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 769, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -296,6 +297,7 @@ public class eurAPanel extends javax.swing.JPanel {
         SelectionCheck selection = new SelectionCheck(jTable1);
 
         if (selection.checkID()) {
+            Log.Debug(selection.getId());
             this.setAusgabe(new Ausgabe(selection.getId()));
         }
     }//GEN-LAST:event_jTable1MouseClicked
@@ -314,6 +316,7 @@ public class eurAPanel extends javax.swing.JPanel {
 
     private void jButton3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
 
+
         if (jButton3.isEnabled()) {
 
             vDouble  betrag = new vDouble (jTextField4.getText());
@@ -330,10 +333,25 @@ public class eurAPanel extends javax.swing.JPanel {
                     curAusgabe.save();
 
                     updateTableData();
+                    
+                    undoCache.instanceOf().addItem(ObjectCopy.copy(curAusgabe), undoCache.CREATE);     
+                    new HistoryItem(Strings.EINNAHME, "Einnahme Nummer: " + curAusgabe.getId() + " angelegt.");
                 }
-            }else {
-                Popup.error("Betrag: " + betrag.ovalue + "\n" + "Steuer: " + steuer.ovalue + "\n" + "Datum: " + datum.ovalue, "Überprüfen Sie Ihre Angaben.");
+             
+
+        } else {
+            String text = "";
+            if (!betrag.isVerified) {
+                text += "Betrag: " + betrag.ovalue + "\n";
             }
+            if (!steuer.isVerified || !steuer.isPositive) {
+                text += "Steuer: " + steuer.ovalue + "\n";
+            }
+            if (!datum.isVerified) {
+                text += "Datum: " + datum.ovalue;
+            }
+            Popup.error(text, "Überprüfen Sie Ihre Angaben.");
+        }
         }
 
     }//GEN-LAST:event_jButton3MouseClicked
@@ -346,22 +364,40 @@ public class eurAPanel extends javax.swing.JPanel {
 
             if (betrag.isVerified && betrag.isPositive && steuer.isVerified && steuer.isPositive && datum.isVerified) {
 
-            new Ausgabe(curKonto.getId(), jEditorPane1.getText(), betrag.svalue, steuer.svalue, datum.date);
+            this.setAusgabe(new Ausgabe(curKonto.getId(), jEditorPane1.getText(), betrag.value, steuer.value, datum.date));
             updateTableData();
-            }else {
-                Popup.error("Betrag: " + betrag.ovalue + "\n" + "Steuer: " + steuer.ovalue + "\n" + "Datum: " + datum.ovalue, "Überprüfen Sie Ihre Angaben.");
+             
+            undoCache.instanceOf().addItem(ObjectCopy.copy(curAusgabe), undoCache.CREATE);
+            new HistoryItem(Strings.EINNAHME, "Einnahme Nummer: " + curAusgabe.getId() + " angelegt.");
+
+        } else {
+            String text = "";
+            if (!betrag.isVerified) {
+                text += "Betrag: " + betrag.ovalue + "\n";
             }
+            if (!steuer.isVerified || !steuer.isPositive) {
+                text += "Steuer: " + steuer.ovalue + "\n";
+            }
+            if (!datum.isVerified) {
+                text += "Datum: " + datum.ovalue;
+            }
+            Popup.error(text, "Überprüfen Sie Ihre Angaben.");
+        }
 
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         if (this.curAusgabe != null) {
-            curAusgabe.destroy();
+            
+            undoCache.instanceOf().addItem(ObjectCopy.copy(this.curAusgabe), undoCache.DELETE);
+            new HistoryItem(Strings.EINNAHME, "Einnahme Nummer: " + curAusgabe.getId() + " gelöscht.");
+            
+            curAusgabe.disable();
             updateTableData();
         }
     }//GEN-LAST:event_jButton5ActionPerformed
 
-    private String[][] updateTableData() {
+    public String[][] updateTableData() {
         try {
             FetchDataTask task = new FetchDataTask(this, null, new Ausgabe());
             task.execute();

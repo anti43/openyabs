@@ -5,6 +5,7 @@
  */
 package mp3.classes.visual.sub;
 
+import mp4.panels.eurAPanel;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.text.SimpleDateFormat;

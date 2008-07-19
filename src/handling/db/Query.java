@@ -1131,7 +1131,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
         }
         start();
         if (where != null) {
-            query = "SELECT " + what + " FROM " + table + " WHERE " + where[0] + " = " + where[2] + where[1] + where[2] + " " + str;
+            query = "SELECT " + what + " FROM " + table + " WHERE " + where[0] + " = " + where[2] + where[1] + where[2] + " " + " AND WHERE deleted = 0" + str;
         } else {
             query = "SELECT " + what + " FROM " + table + " WHERE deleted = 0" + str;
 

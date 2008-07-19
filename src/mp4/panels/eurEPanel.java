@@ -345,51 +345,72 @@ public class eurEPanel extends javax.swing.JPanel {
             if (betrag.isVerified && betrag.isPositive && steuer.isVerified && steuer.isPositive && datum.isVerified) {
 
                 if (this.curEinnahme != null && curEinnahme.id > 0) {
-                    
+
                     undoCache.instanceOf().addItem(ObjectCopy.copy(this.curEinnahme), undoCache.EDIT);
-                    
+
                     curEinnahme.setDatum(datum.date);
                     curEinnahme.setBeschreibung(jEditorPane1.getText());
                     curEinnahme.setPreis(betrag.value);
                     curEinnahme.setTax(steuer.value);
                     curEinnahme.save();
                     updateTableData();
-                    
+
                     new HistoryItem(Strings.EINNAHME, "Einnahme Nummer: " + curEinnahme.getId() + " editiert.");
                 }
             } else {
-                Popup.error("Betrag: " + betrag.ovalue + "\n" + "Steuer: " + steuer.ovalue + "\n" + "Datum: " + datum.ovalue, "Überprüfen Sie Ihre Angaben.");
+               
+                String text = "";
+            if (!betrag.isVerified) {
+                text += "Betrag: " + betrag.ovalue + "\n";
+            }
+            if (!steuer.isVerified || !steuer.isPositive) {
+                text += "Steuer: " + steuer.ovalue + "\n";
+            }
+            if (!datum.isVerified) {
+                text += "Datum: " + datum.ovalue;
+            }
+            Popup.error(text, "Überprüfen Sie Ihre Angaben.");
             }
         }
     }//GEN-LAST:event_jButton3MouseClicked
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
 
-        
-        
-        vDouble betrag = new vDouble(FormatNumber.parseDezimal(jTextField4.getText()));
-        vDouble steuer = new vDouble(FormatNumber.parseDezimal(jTextField3.getText()));
-        vDate datum = new vDate(jTextField6.getText());
-        Einnahme en;
-
-        if (betrag.isVerified && steuer.isVerified && steuer.isPositive && datum.isVerified) {
-            this.setEinnahme(new Einnahme(curKonto.getId(), jEditorPane1.getText(), betrag.value, steuer.value, datum.date));
-            updateTableData();
   
-            undoCache.instanceOf().addItem(ObjectCopy.copy(curEinnahme), undoCache.CREATE);
-            new HistoryItem(Strings.EINNAHME, "Einnahme Nummer: " + curEinnahme.getId() + " angelegt.");
             
-        } else {
-            Popup.error("Betrag: " + betrag.ovalue + "\n" + "Steuer: " + steuer.ovalue + "\n" + "Datum: " + datum.ovalue, "Überprüfen Sie Ihre Angaben.");
-        }
+            vDouble betrag = new vDouble(FormatNumber.parseDezimal(jTextField4.getText()));
+            vDouble steuer = new vDouble(FormatNumber.parseDezimal(jTextField3.getText()));
+            vDate datum = new vDate(jTextField6.getText());
+
+
+            if (betrag.isVerified && steuer.isVerified && steuer.isPositive && datum.isVerified) {
+                this.setEinnahme(new Einnahme(curKonto.getId(), jEditorPane1.getText(), betrag.value, steuer.value, datum.date));
+                updateTableData();
+
+                undoCache.instanceOf().addItem(ObjectCopy.copy(curEinnahme), undoCache.CREATE);
+                new HistoryItem(Strings.EINNAHME, "Einnahme Nummer: " + curEinnahme.getId() + " angelegt.");
+
+            } else {
+                String text = "";
+                if (!betrag.isVerified) {
+                    text += "Betrag: " + betrag.ovalue + "\n";
+                }
+                if (!steuer.isVerified || !steuer.isPositive) {
+                    text += "Steuer: " + steuer.ovalue + "\n";
+                }
+                if (!datum.isVerified) {
+                    text += "Datum: " + datum.ovalue;
+                }
+                Popup.error(text, "Überprüfen Sie Ihre Angaben.");
+            }
         
-        
+
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         if (this.curEinnahme != null) {
             undoCache.instanceOf().addItem(ObjectCopy.copy(this.curEinnahme), undoCache.DELETE);
-            
+
             new HistoryItem(Strings.EINNAHME, "Einnahme Nummer: " + curEinnahme.getId() + " gelöscht.");
             curEinnahme.disable();
             updateTableData();
@@ -401,7 +422,6 @@ public class eurEPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jTextField3MouseEntered
 
 private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-
 }//GEN-LAST:event_jButton3ActionPerformed
 
     public String[][] updateTableData() {

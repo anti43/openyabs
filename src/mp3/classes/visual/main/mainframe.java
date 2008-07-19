@@ -65,6 +65,7 @@ import mp4.klassen.objekte.Customer;
 import mp4.klassen.objekte.Lieferant;
 import mp4.klassen.objekte.MyData;
 import mp4.klassen.objekte.Product;
+import mp4.utils.text.FadeOnChangeLabel;
 import mp4.utils.windows.Position;
 
 /**
@@ -87,6 +88,7 @@ public class mainframe extends javax.swing.JFrame {
     private Main loader;
     private Position wt = new Position();
     public static JLabel nachricht = new JLabel();
+    private mainframe identifier;
 
     /** Creates new form mainframe
      * @param splash
@@ -95,6 +97,7 @@ public class mainframe extends javax.swing.JFrame {
     public mainframe(SplashScreen splash, Main mainclass) {
 
         this.loader = mainclass;
+        this.identifier = this;
         splash.setMessage("Initialisiere Oberfläche...");
         initComponents();
 
@@ -159,8 +162,9 @@ public class mainframe extends javax.swing.JFrame {
             
             if (wt.isNotMaximized(this)) {
                 wt.center(this);
-            }else
+            }else {
                 this.setExtendedState(mainframe.MAXIMIZED_BOTH);
+            }
 
         } catch (Exception exception) {
             Log.Debug(exception.getMessage(), true);
@@ -174,14 +178,16 @@ public class mainframe extends javax.swing.JFrame {
             public void windowClosing(WindowEvent e) {
                 close();
             }
+
         });
 
+   
         undoCache.setMenu(jMenu11,this);       
         
         setMessage("Anmerkungen, Bugs und Feedback zu MP bitte an mp-rechnungs-und-kundenverwaltung@googlegroups.com senden. Vielen Dank!");
         
         nachricht = messagePanel;
-        
+       
         this.setVisible(rootPaneCheckingEnabled);
     }
 
@@ -307,7 +313,7 @@ public class mainframe extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         mainProgress = new javax.swing.JProgressBar();
-        messagePanel = new javax.swing.JLabel();
+        messagePanel = new FadeOnChangeLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jPanel5 = new javax.swing.JPanel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
@@ -366,7 +372,7 @@ public class mainframe extends javax.swing.JFrame {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        mainProgress.setBackground(new java.awt.Color(255, 255, 255));
+        mainProgress.setForeground(new java.awt.Color(255, 0, 51));
         mainProgress.setBorderPainted(false);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -374,9 +380,9 @@ public class mainframe extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addComponent(messagePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 719, Short.MAX_VALUE)
+                .addComponent(messagePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 767, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(mainProgress, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(mainProgress, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

@@ -28,13 +28,15 @@ public class vInteger {
     private String ovalue = "";
 
     public vInteger(Object number) {
-        if (number != null && NumberCheck.checkInteger(number) != null) {
+        if (number != null) {
             this.ovalue = number.toString();
-            this.value = NumberCheck.checkInteger(number);
-            this.isVerified = true;
+            if (NumberCheck.checkInteger(number) != null) {
+                this.value = NumberCheck.checkInteger(number);
+                this.isVerified = true;
 
-            if (this.value >= 0) {
-                this.isPositive = true;
+                if (this.value >= 0) {
+                    this.isPositive = true;
+                }
             }
         }
     }

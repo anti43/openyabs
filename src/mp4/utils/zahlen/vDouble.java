@@ -29,15 +29,17 @@ public class vDouble {
     public String ovalue = "";
 
     public vDouble(Object number) {
-        
-        if (number != null && NumberCheck.checkDouble(number) != null) {
+        if (number != null) {
             this.ovalue = number.toString();
-            this.value = NumberCheck.checkDouble(number);
-            this.svalue = this.value.toString();
-            this.isVerified = true;
+            if (NumberCheck.checkDouble(number) != null) {
 
-            if (this.value >= 0) {
-                this.isPositive = true;
+                this.value = NumberCheck.checkDouble(number);
+                this.svalue = this.value.toString();
+                this.isVerified = true;
+
+                if (this.value >= 0) {
+                    this.isPositive = true;
+                }
             }
         }
     }

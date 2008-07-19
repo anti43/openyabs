@@ -19,18 +19,20 @@ package mp4.klassen.objekte;
 import java.util.Date;
 import handling.db.Query;
 
+import java.io.Serializable;
 import mp3.classes.layer.*;
-import mp4.klassen.objekte.SKRKonto;
 import mp3.classes.utils.*;
 import mp4.utils.zahlen.FormatMoney;
 import mp4.utils.datum.DateConverter;
+import mp4.utils.zahlen.FormatNumber;
 import mp4.utils.zahlen.FormatTax;
 
 /**
  *
  * @author anti43
  */
-public class Ausgabe extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen, mp3.classes.interfaces.Daemonable {
+public class Ausgabe extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen, mp3.classes.interfaces.Daemonable,Serializable {
+    private static final long serialVersionUID = -7686611027679884281L;
 //  "kontenid INTEGER DEFAULT NULL, beschreibung varchar(500) default NULL,"+
 //  "preis varchar(50) default NULL,"+"tax varchar(50) default NULL,"+"datum varchar(50) default NULL,"+
 
@@ -39,19 +41,18 @@ public class Ausgabe extends mp3.classes.layer.Things implements mp4.datenbank.s
     private Double Preis = 0d;
     private Double Tax = 0d;
     private Date Datum = new Date();
-   public Integer id = 0;
-    public Integer getId() {
+    public Integer id = 0;
+
+   
+   public Integer getId() {
         return id;
     }
-    public void destroy() {
-        this.delete(this.id);
-        this.id = 0;
-    }
+    
+    
     public Ausgabe() {
         super(QueryClass.instanceOf().clone(TABLE_DUES));
     }
 
- 
 
     /**
      * 
@@ -75,26 +76,44 @@ public class Ausgabe extends mp3.classes.layer.Things implements mp4.datenbank.s
 
     /**
      * 
-     * @param query
      * @param id 
      */
     public Ausgabe(Integer id) {
         super(QueryClass.instanceOf().clone( TABLE_DUES));
         this.id = Integer.valueOf(id);
         this.explode(this.selectLast("*", "id", id.toString(), true));
+        
     }
 
-    public Ausgabe(Integer id, String text, String replaceAll, String replaceAll0, Date date) {
-          super(QueryClass.instanceOf().clone( TABLE_DUES));
-        throw new UnsupportedOperationException("Not yet implemented");
+ 
+     /**
+     * Disables this object 
+     */
+    public void disable() {
+        if (super.getQueryHandler() == null) {
+            super.setQueryHandler(QueryClass.instanceOf().clone(TABLE_DUES));
+        }
+        this.delete(this.id);
+        
     }
-
-    public String getFPreis() {
-        return FormatMoney.formatLokal(getPreis());
+    /**
+     * Enables this object
+     */
+    public void enable() {
+        if (super.getQueryHandler() == null) {
+            super.setQueryHandler(QueryClass.instanceOf().clone(TABLE_DUES));
+        }
+        this.unDelete(this.id);
+        
+    }
+    
+    
+   public String getFPreis() {
+        return FormatNumber.formatDezimal(getPreis());
     }
 
     public String getFTax() {
-       return FormatTax.formatLokal(getTax());
+        return FormatTax.formatDezimal(getTax());
     }
 
     private void explode(String[] select) {
@@ -130,19 +149,15 @@ public class Ausgabe extends mp3.classes.layer.Things implements mp4.datenbank.s
             this.update(TABLE_OUTGOINGS_FIELDS, this.collect(), id.toString());
             isSaved = true;
         } else if (id == 0) {
-            this.insert(TABLE_OUTGOINGS_FIELDS, this.collect());
-        } else {
-
-            mp3.classes.layer.Popup.warn(java.util.ResourceBundle.getBundle("languages/Bundle").getString("no_data_to_save"), Popup.WARN);
-
-        }
+            this.id = this.insert(TABLE_OUTGOINGS_FIELDS, this.collect());
+        } 
     }
 
     public String[][] getAll() {
 
         Query q = QueryClass.instanceOf().clone(TABLE_DUES);
 
-        String[][] prods = q.select("kontenid,id,preis, datum", null);
+        String[][] prods = q.select("id,id,preis, datum", null, false);
 
         return inserType(prods);
     }

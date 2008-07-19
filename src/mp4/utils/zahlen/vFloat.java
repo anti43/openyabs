@@ -30,16 +30,17 @@ public class vFloat {
     public String decValue;
 
     public vFloat(Object number) {
-      
-        if (number != null && NumberCheck.checkFloat(number) != null) {
+        if (number != null) {
             this.ovalue = number.toString();
-            this.value = NumberCheck.checkFloat(number);
-            this.svalue = this.value.toString();
-            this.decValue = FormatNumber.formatDezimal(value);
-            this.isVerified = true;
+            if (NumberCheck.checkFloat(number) != null) {
+                this.value = NumberCheck.checkFloat(number);
+                this.svalue = this.value.toString();
+                this.decValue = FormatNumber.formatDezimal(value);
+                this.isVerified = true;
 
-            if (this.value >= 0) {
-                this.isPositive = true;
+                if (this.value >= 0) {
+                    this.isPositive = true;
+                }
             }
         }
     }

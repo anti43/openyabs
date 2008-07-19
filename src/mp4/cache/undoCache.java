@@ -156,17 +156,21 @@ public class undoCache {
             switch (aktion) {
 
                 case 1:
-                    it.destroy();
+                    it.disable();
                     break;
                 case 2:
 
-                    it.unDelete(it.getId());
+                    it.enable();
                     break;
                 case 3:
                     it.save();
                     break;
 
             }
+            
+            mainframe.getEURPanel().getEurapanel().updateTableData();
+            new HistoryItem("Undo","Rückgängig: " + text);
+            
         } else if (item.getClass().isInstance(new Customer())) {
 
             Customer it = (Customer) item;
