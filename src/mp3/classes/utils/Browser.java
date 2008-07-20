@@ -22,7 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import mp3.classes.interfaces.Strings;
 import mp3.classes.layer.Popup;
-import mp4.klassen.objekte.Einstellungen;
+import mp4.einstellungen.Einstellungen;
 
 
 /**

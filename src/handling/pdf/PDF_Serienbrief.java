@@ -16,6 +16,7 @@
  */
 package handling.pdf;
 
+import mp4.einstellungen.Einstellungen;
 import mp4.klassen.objekte.*;
 import com.lowagie.text.DocumentException;
 

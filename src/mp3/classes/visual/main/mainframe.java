@@ -16,7 +16,7 @@
  */
 package mp3.classes.visual.main;
 
-import handling.db.Conn;
+import mp4.datenbank.verbindung.Conn;
 import mp3.classes.visual.util.csvProductImporter;
 import mp3.classes.visual.util.fastChoice;
 import mp3.classes.visual.util.serialLetter;
@@ -63,7 +63,7 @@ import mp3.classes.visual.sub.eurView;
 import mp4.cache.undoCache;
 import mp4.klassen.objekte.Customer;
 import mp4.klassen.objekte.Lieferant;
-import mp4.klassen.objekte.Einstellungen;
+import mp4.einstellungen.Einstellungen;
 import mp4.klassen.objekte.Product;
 import mp4.utils.text.FadeOnChangeLabel;
 import mp4.utils.windows.Position;

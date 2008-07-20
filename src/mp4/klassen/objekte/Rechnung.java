@@ -17,13 +17,14 @@
 package mp4.klassen.objekte;
 
 
+import mp4.einstellungen.Einstellungen;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import handling.db.Query;
+import mp4.datenbank.verbindung.Query;
 
 import mp3.classes.interfaces.Strings;
 import mp3.classes.utils.Log;

@@ -19,7 +19,7 @@ package mp3.classes.layer;
 import javax.swing.JTable;
 
 import mp3.classes.interfaces.Queries;
-import handling.db.Query;
+import mp4.datenbank.verbindung.Query;
 
 
 /**

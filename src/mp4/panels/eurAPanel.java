@@ -21,7 +21,7 @@ import mp4.cache.ObjectCopy;
 import mp4.cache.undoCache;
 import mp4.klassen.objekte.Ausgabe;
 import mp4.klassen.objekte.HistoryItem;
-import mp4.klassen.objekte.Einstellungen;
+import mp4.einstellungen.Einstellungen;
 import mp4.klassen.objekte.SKRKonto;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.datum.vDate;

@@ -18,7 +18,7 @@
  */
 package mp4.klassen.objekte;
 
-import handling.db.Query;
+import mp4.datenbank.verbindung.Query;
 import mp3.classes.layer.QueryClass;
 
 /**

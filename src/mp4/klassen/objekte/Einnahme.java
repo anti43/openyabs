@@ -17,9 +17,10 @@
 package mp4.klassen.objekte;
 
 /*import mp3.classes.objects.*;*/
+import mp4.einstellungen.Einstellungen;
 import mp3.classes.interfaces.Daemonable;
 import java.util.Date;
-import handling.db.Query;
+import mp4.datenbank.verbindung.Query;
 
 import java.io.Serializable;
 import mp3.classes.layer.*;

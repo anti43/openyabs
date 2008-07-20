@@ -21,7 +21,7 @@ import java.util.Date;
 import java.util.List;
 
 import mp3.classes.interfaces.Strings;
-import handling.db.Query;
+import mp4.datenbank.verbindung.Query;
 import mp3.classes.utils.Log;
 import mp3.classes.layer.PostenTableModel;
 import mp3.classes.layer.QueryClass;

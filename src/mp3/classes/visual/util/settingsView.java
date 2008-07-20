@@ -14,7 +14,7 @@ import mp3.classes.layer.visual.Help;
 
 import mp4.utils.windows.Position;
 import mp3.classes.visual.main.mainframe;
-import mp4.klassen.objekte.Einstellungen;
+import mp4.einstellungen.Einstellungen;
 
 /**
  *

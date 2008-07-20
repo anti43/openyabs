@@ -21,7 +21,7 @@
  */
 package mp3.installer;
 
-import handling.db.Conn;
+import mp4.datenbank.verbindung.Conn;
 import java.io.IOException;
 
 

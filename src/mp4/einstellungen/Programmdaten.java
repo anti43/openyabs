@@ -14,7 +14,7 @@
  *      You should have received a copy of the GNU General Public License
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mp4.klassen.objekte;
+package mp4.einstellungen;
 
 import mp3.classes.layer.QueryClass;
 
@@ -22,12 +22,10 @@ import mp3.classes.layer.QueryClass;
  *
  * @author Andreas
  */
-public class Programmdaten extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen {
-
-    private int id = 0;
+public class Programmdaten implements mp4.datenbank.struktur.Tabellen {
     
     private boolean BILLPANEL_CHECKBOX_MITLIEFERSCHEIN = false;
-    
+    private DataHandler handler;
     private static Programmdaten dat;
 
     public static Programmdaten instanceOf() {
@@ -37,11 +35,10 @@ public class Programmdaten extends mp3.classes.layer.Things implements mp4.daten
         }
         return dat;
     }
+    
 
     public Programmdaten() {
-        super(QueryClass.instanceOf().clone(TABLE_PROG_DATA));
-
-        this.id = 1;
+       handler = new DataHandler(TABLE_PROG_DATA);
 
     }
 
@@ -51,29 +48,12 @@ public class Programmdaten extends mp3.classes.layer.Things implements mp4.daten
 
     }
 
-    public boolean isBILLPANEL_CHECKBOX_MITLIEFERSCHEIN() {  
-        
-        return getBoolean("BILLPANELCHECKBOXMITLIEFERSCHEIN");
+    public boolean isBILLPANEL_CHECKBOX_MITLIEFERSCHEIN() {       
+        return handler.getBoolean("BILLPANELCHECKBOXMITLIEFERSCHEIN");
     }
 
     public void setBILLPANEL_CHECKBOX_MITLIEFERSCHEIN(boolean BILLPANEL_CHECKBOX_MITLIEFERSCHEIN) {
-        this.BILLPANEL_CHECKBOX_MITLIEFERSCHEIN = BILLPANEL_CHECKBOX_MITLIEFERSCHEIN;
+        handler.setBoolean("BILLPANELCHECKBOXMITLIEFERSCHEIN",BILLPANEL_CHECKBOX_MITLIEFERSCHEIN);
     }
-
-    private boolean getBoolean(String string) {
-        String[][] values = this.select("wert", "name", string, false);
-        if(Integer.valueOf(values[0][0]).intValue() == 1 ) {
-            return true;
-        }else {
-            return false;
-        }
-    }
-
-    @Override
-    public void save() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
- 
 
 }

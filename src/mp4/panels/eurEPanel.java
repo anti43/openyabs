@@ -11,7 +11,7 @@ import mp3.classes.layer.visual.DatePick;
 import mp4.klassen.objekte.*;
 import mp4.klassen.objekte.Customer;
 import mp4.klassen.objekte.Einnahme;
-import mp4.klassen.objekte.Einstellungen;
+import mp4.einstellungen.Einstellungen;
 import mp4.klassen.objekte.SKRKonto;
 import mp3.classes.utils.FetchDataTask;
 import mp3.classes.utils.Formater;

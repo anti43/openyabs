@@ -18,7 +18,7 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import mp3.classes.interfaces.Strings;
-import handling.db.Query;
+import mp4.datenbank.verbindung.Query;
 
 
 
@@ -37,7 +37,7 @@ import mp4.klassen.objekte.Rechnung;
 import mp4.klassen.objekte.RechnungPosten;
 import mp4.klassen.objekte.Customer;
 import mp4.klassen.objekte.HistoryItem;
-import mp4.klassen.objekte.Einstellungen;
+import mp4.einstellungen.Einstellungen;
 import mp4.klassen.objekte.Angebot;
 import handling.pdf.PDF_Angebot;
 import mp4.klassen.objekte.AngebotPosten;

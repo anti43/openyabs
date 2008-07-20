@@ -17,7 +17,7 @@
 package mp4.klassen.objekte;
 
 import java.util.Date;
-import handling.db.Query;
+import mp4.datenbank.verbindung.Query;
 
 import mp3.classes.layer.Popup;
 import mp4.utils.datum.DateConverter;

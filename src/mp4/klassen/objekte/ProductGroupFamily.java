@@ -17,7 +17,7 @@
 package mp4.klassen.objekte;
 
 import mp3.classes.utils.Log;
-import handling.db.Query;
+import mp4.datenbank.verbindung.Query;
 
 
 

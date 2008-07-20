@@ -20,7 +20,7 @@ along with MP.  If not, see <http://www.gnu.org/licenses/>.
 package mp4.utils.zahlen;
 
 import java.text.NumberFormat;
-import mp4.klassen.objekte.Einstellungen;
+import mp4.einstellungen.Einstellungen;
 
 /**
  *

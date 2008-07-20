@@ -5,7 +5,7 @@
 package mp4.klassen.objekte;
 
 import java.util.ArrayList;
-import handling.db.Query;
+import mp4.datenbank.verbindung.Query;
 
 
 import mp3.classes.utils.Log;

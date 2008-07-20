@@ -14,9 +14,10 @@
  *      You should have received a copy of the GNU General Public License
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mp4.klassen.objekte;
+package mp4.einstellungen;
 
 
+import mp4.klassen.objekte.*;
 import java.awt.Dimension;
 import java.util.Date;
 import java.util.Locale;

@@ -18,7 +18,7 @@
 package mp4.klassen.objekte;
 
 import mp3.classes.interfaces.Strings;
-import handling.db.Query;
+import mp4.datenbank.verbindung.Query;
 
 import mp3.classes.layer.Popup;
 import mp3.classes.layer.QueryClass;

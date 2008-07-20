@@ -14,7 +14,7 @@
  *      You should have received a copy of the GNU General Public License
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-package handling.db;
+package mp4.datenbank.verbindung;
 
 import java.io.File;
 import java.sql.*;
