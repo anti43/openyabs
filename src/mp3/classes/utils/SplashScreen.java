@@ -48,7 +48,7 @@ public class SplashScreen extends javax.swing.JFrame implements Runnable {
         this.setAlwaysOnTop(true);
         initComponents();
         
-        this.setTitle("Loading...");
+        this.setTitle("Starte MP...");
         
         new Position(this);
         this.setVisible(true);
@@ -65,7 +65,7 @@ public class SplashScreen extends javax.swing.JFrame implements Runnable {
         this.setUndecorated(true);
         this.setAlwaysOnTop(true);
         initComponents();
-        this.setTitle("Loading...");
+        this.setTitle("Starte MP...");
         new Position(this);
         this.setVisible(true);
         
@@ -91,6 +91,7 @@ public class SplashScreen extends javax.swing.JFrame implements Runnable {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
+        setAlwaysOnTop(false);
         setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(255, 248, 220));
@@ -152,13 +153,9 @@ public class SplashScreen extends javax.swing.JFrame implements Runnable {
     public void run() {
         while(true){
             try {
-
-                if (getComp() != null && getComp().isVisible()) {
-                    
-                                        
+                if (getComp() != null && getComp().isVisible()) {                                                            
                     this.dispose();
                 }
-
                 Thread.sleep(100);
             } catch (InterruptedException ex) {
                 Logger.getLogger(SplashScreen.class.getName()).log(Level.SEVERE, null, ex);
