@@ -30,6 +30,7 @@ import mp3.classes.layer.QueryClass;
 import mp3.classes.utils.Formater;
 import mp3.classes.utils.Log;
 
+import mp4.einstellungen.Einstellungen;
 import mp4.klassen.objekte.*;
 import mp4.utils.datum.DateConverter;
 

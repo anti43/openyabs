@@ -28,8 +28,8 @@ public class DataHandler extends mp3.classes.layer.Things implements mp4.datenba
         super(QueryClass.instanceOf().clone(table));
     }
 
-    public boolean getBoolean(String string) {
-        String[][] values = this.select("wert", "name", string, false);
+    public boolean getBoolean(String ofKey) {
+        String[][] values = this.select("wert", "name", ofKey, false);
         if (Integer.valueOf(values[0][0]).intValue() == 1) {
             return true;
         } else {
@@ -42,7 +42,26 @@ public class DataHandler extends mp3.classes.layer.Things implements mp4.datenba
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    void setBoolean(String string, boolean BILLPANEL_CHECKBOX_MITLIEFERSCHEIN) {
-        throw new UnsupportedOperationException("Not yet implemented");
+    void setBoolean(String key, boolean value) {
+        if (value) {
+            if (this.update("wert", "(;;2#4#1#1#8#0#;;)" + "1" + "(;;2#4#1#1#8#0#;;)", "name", key) != 1) {
+                this.insert(key, "(;;2#4#1#1#8#0#;;)" + "1" + "(;;2#4#1#1#8#0#;;)");
+            }
+        } else {
+            if (this.update("wert", "(;;2#4#1#1#8#0#;;)" + "0" + "(;;2#4#1#1#8#0#;;)", "name", key) != 1) {
+                this.insert(key, "(;;2#4#1#1#8#0#;;)" + "0" + "(;;2#4#1#1#8#0#;;)");
+            }
+        }
+    }
+
+    public String getString(String ofKey) {
+        String[][] values = this.select("wert", "name", ofKey, false);
+        return values[0][0];
+    }
+
+    void setString(String key, String value) {
+        if (this.update("wert", "(;;2#4#1#1#8#0#;;)" + value + "(;;2#4#1#1#8#0#;;)", "name", key) != 1) {
+            this.insert(key, "(;;2#4#1#1#8#0#;;)" + value + "(;;2#4#1#1#8#0#;;)");
+        }
     }
 }

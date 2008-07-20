@@ -953,6 +953,9 @@
                     <Property name="horizontalTextPosition" type="int" value="4"/>
                     <Property name="verticalTextPosition" type="int" value="3"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="jCheckBox4ItemStateChanged"/>
+                  </Events>
                 </Component>
               </SubComponents>
             </Container>

@@ -18,7 +18,7 @@ package handling.pdf;
 
 
 import mp4.klassen.objekte.Rechnung;
-import mp4.klassen.objekte.Einstellungen;
+
 import mp4.klassen.objekte.Customer;
 
 
@@ -45,6 +45,7 @@ import mp3.classes.layer.Popup;
 import mp3.classes.layer.QueryClass;
 import mp3.classes.utils.Formater;
 import mp3.classes.utils.Log;
+import mp4.einstellungen.Einstellungen;
 
 /**
  *

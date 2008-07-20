@@ -25,6 +25,9 @@ import mp3.classes.layer.QueryClass;
 public class Programmdaten implements mp4.datenbank.struktur.Tabellen {
     
     private boolean BILLPANEL_CHECKBOX_MITLIEFERSCHEIN = false;
+    
+    
+    
     private DataHandler handler;
     private static Programmdaten dat;
 
@@ -42,11 +45,7 @@ public class Programmdaten implements mp4.datenbank.struktur.Tabellen {
 
     }
 
- 
-    public void save(String key, String value) {
-//         this.update("wert", "(;;2#4#1#1#8#0#;;)" + orig_valuearray[i][1] + "(;;2#4#1#1#8#0#;;)", String.valueOf(i + 1));
 
-    }
 
     public boolean isBILLPANEL_CHECKBOX_MITLIEFERSCHEIN() {       
         return handler.getBoolean("BILLPANELCHECKBOXMITLIEFERSCHEIN");

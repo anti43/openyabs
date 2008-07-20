@@ -14,7 +14,6 @@
  *      You should have received a copy of the GNU General Public License
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package mp3.classes.layer;
 
 import javax.swing.JTable;
@@ -36,17 +35,24 @@ public abstract class Things implements Queries, mp4.datenbank.struktur.Tabellen
      * 
      * @param query
      */
-    public Things (Query query) {
+    public Things(Query query) {
         q = query;
     }
 
     /**
      * Needed for cloning subclasses
      */
-    public Things(){}
-    public void setQueryHandler(Query query){q= query;}
-    public Query getQueryHandler(){return q;}
-    
+    public Things() {
+    }
+
+    public void setQueryHandler(Query query) {
+        q = query;
+    }
+
+    public Query getQueryHandler() {
+        return q;
+    }
+
     /**
      * Disables the item with the given id
      * @param id
@@ -54,7 +60,7 @@ public abstract class Things implements Queries, mp4.datenbank.struktur.Tabellen
      */
     public int delete(Integer id) {
         String[] where = {"id", id.toString(), ""};
-        String[] what =  {"deleted", "1"};
+        String[] what = {"deleted", "1"};
 //        return q.delete(where);
         return q.update(what, where);
     }
@@ -66,7 +72,7 @@ public abstract class Things implements Queries, mp4.datenbank.struktur.Tabellen
      */
     public int unDelete(Integer id) {
         String[] where = {"id", id.toString(), ""};
-        String[] what =  {"deleted", "0"};
+        String[] what = {"deleted", "0"};
 //        return q.delete(where);
         return q.update(what, where);
     }
@@ -78,20 +84,20 @@ public abstract class Things implements Queries, mp4.datenbank.struktur.Tabellen
 //        }
 //
 //    }
-
     /**
      * Hides he first column of a table (usually "id")
      * @param table
      * @deprecated Use TableFormat.stripFirst() instead
      */
     @Deprecated
-    public void stripFirst (JTable table) {
+    public void stripFirst(JTable table) {
         try {
             table.getColumn(table.getColumnName(0)).setMinWidth(0);
             table.getColumn(table.getColumnName(0)).setMaxWidth(0);
         } catch (Exception exception) {
-       }
+        }
     }
+
     /**
      * 
      * @param set
@@ -105,17 +111,47 @@ public abstract class Things implements Queries, mp4.datenbank.struktur.Tabellen
         return q.update(what, where);
     }
 
-       public String[] selectFirst(String what, String from, String where, boolean id) {
+    /**
+     * 
+     * @param set
+     * @param value
+     * @param from
+     * @param where
+     * @return
+     */
+    public int update(String set, String value, String from, String where) {
+        String[] wher = {from, where, "'"};
+        String[] what = {set, value, "'"};
+        return q.update(what, wher);
+    }
+
+    /**
+     * 
+     * @param what
+     * @param from
+     * @param where
+     * @param id
+     * @return
+     */
+    public String[] selectFirst(String what, String from, String where, boolean id) {
         String hk = "'";
         if (id) {
             hk = "";
         }
 
         String[] wher = {from, where, hk};
-      
+
         return q.selectFirst(what, wher);
     }
-    
+
+    /**
+     * 
+     * @param what
+     * @param from
+     * @param where
+     * @param id
+     * @return
+     */
     public String[] selectLast(String what, String from, String where, boolean id) {
         String hk = "'";
         if (id) {
@@ -123,11 +159,10 @@ public abstract class Things implements Queries, mp4.datenbank.struktur.Tabellen
         }
 
         String[] wher = {from, where, hk};
-      
-        return q.selectLast(what, wher,false,false);
+
+        return q.selectLast(what, wher, false, false);
     }
-    
-    
+
     /**
      * 
      * @param what
@@ -148,36 +183,45 @@ public abstract class Things implements Queries, mp4.datenbank.struktur.Tabellen
 
         return q.selectLast(what, wher, ghosts, like);
     }
-    
-     public String[][] select(String what, String from, String where, boolean id,boolean ghosts) {
+
+    /**
+     * 
+     * @param what
+     * @param from
+     * @param where
+     * @param id
+     * @param ghosts
+     * @return
+     */
+    public String[][] select(String what, String from, String where, boolean id, boolean ghosts) {
         String hk = "'";
-        String[] wher =null;
+        String[] wher = null;
         if (id) {
             hk = "";
         }
 
-        if((from != null) && (where != null)){
-            wher =new String[] {from, where, hk};
+        if ((from != null) && (where != null)) {
+            wher = new String[]{from, where, hk};
         }
-        
+
         return q.select(what, wher, ghosts);
     }
-    
+
     public String[][] select(String what, String from, String where, boolean id) {
         String hk = "'";
-        String[] wher =null;
+        String[] wher = null;
         if (id) {
             hk = "";
         }
 
-        if((from != null) && (where != null)){
-            wher =new String[] {from, where, hk};
+        if ((from != null) && (where != null)) {
+            wher = new String[]{from, where, hk};
         }
-        
+
         return q.select(what, wher);
     }
 
-        /**
+    /**
      * Example: "*", "Name", "anti43", "Name", true
      * will return everyone who`s name is like "anti43" sortet by name.
      * eg. anti43, anti43w, andre
@@ -189,25 +233,27 @@ public abstract class Things implements Queries, mp4.datenbank.struktur.Tabellen
      * @param like
      * @return A multidimensional string-array containing the data found
      */
-    public String[][] select (String what, String from, String where, String order, boolean like) {
+    public String[][] select(String what, String from, String where, String order, boolean like) {
         String hk = "'";
 
         String[] wher = {from, where, hk};
-        if(from == null) {
+        if (from == null) {
             wher = null;
         }
 
         return q.select(what, wher, order, like);
     }
+
     /**
      * 
      * 
      * @param query 
      */
     public void freeQuery(String query) {
-        
+
         q.freeQuery(query);
     }
+
     /**
      * 
      * 
@@ -231,13 +277,11 @@ public abstract class Things implements Queries, mp4.datenbank.struktur.Tabellen
 //        this.delete(this.id);
 //        this.id = 0;
 //    }
-
-     public Integer getNextIndex(String of){
-            return q.getNextIndex(of);
+    public Integer getNextIndex(String of) {
+        return q.getNextIndex(of);
     }
-    
-     
-           /**
+
+    /**
      * Example: "*", "Name", "anti43", "Name", true
      * will return everyone who`s name is lika "anti43" sortet by name.
      * eg. anti43, anti43w, andre
@@ -247,22 +291,22 @@ public abstract class Things implements Queries, mp4.datenbank.struktur.Tabellen
      * @param where
      * @param order
      * @param like
-            * @param integer 
-            * @return A multidimensional string-array containing the data found
+     * @param integer 
+     * @return A multidimensional string-array containing the data found
      */
-    public String[][] select (String what, String from, String where, String order, boolean like,boolean integer) {
+    public String[][] select(String what, String from, String where, String order, boolean like, boolean integer) {
         String hk = "'";
 
         String[] wher = {from, where, hk};
-        if(from == null) {
+        if (from == null) {
             wher = null;
         }
 
-        return q.select(what, wher, order, like,integer);
+        return q.select(what, wher, order, like, integer);
     }
-     
+
     /**
      * to be overwritten..
      */
-    public abstract void save ();
+    public abstract void save();
 }

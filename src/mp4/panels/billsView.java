@@ -46,6 +46,7 @@ import handling.pdf.PDF_Rechnung;
 import javax.swing.JToolBar;
 import mp4.einstellungen.Einstellungen;
 import mp3.classes.visual.util.arrear;
+import mp4.einstellungen.Programmdaten;
 import mp4.utils.datum.DateConverter;
 
 
@@ -1097,6 +1098,11 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
         jCheckBox4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jCheckBox4.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         jCheckBox4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jCheckBox4.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jCheckBox4ItemStateChanged(evt);
+            }
+        });
         jToolBar1.add(jCheckBox4);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -1810,6 +1816,11 @@ private void jButton17KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
 private void jTextField12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField12ActionPerformed
 // TODO add your handling code here:
 }//GEN-LAST:event_jTextField12ActionPerformed
+
+private void jCheckBox4ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBox4ItemStateChanged
+
+    Programmdaten.instanceOf().setBILLPANEL_CHECKBOX_MITLIEFERSCHEIN(jCheckBox4.isSelected());
+}//GEN-LAST:event_jCheckBox4ItemStateChanged
 
     private int getLastRow() {
         int potz = -1;
