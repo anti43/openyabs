@@ -35,9 +35,9 @@ import mp4.utils.zahlen.FormatNumber;
  *
  * @author anti
  */
-public class MyData extends mp3.classes.layer.People implements mp4.datenbank.struktur.Tabellen {
+public class Einstellungen extends mp3.classes.layer.People implements mp4.datenbank.struktur.Tabellen {
 
-    private static MyData dat;
+    private static Einstellungen dat;
     private String backupverz = "";
     private String rechnungverz = "";
     private String angebotverz = "";
@@ -61,22 +61,22 @@ public class MyData extends mp3.classes.layer.People implements mp4.datenbank.st
 
     private User user = new User();
     
-    public static MyData instanceOf() {
+    public static Einstellungen instanceOf() {
         if (dat == null) {
-            dat = new MyData();
+            dat = new Einstellungen();
             return dat;
         }
         return dat;
     }
 
-    public static MyData newInstanceOf() {
+    public static Einstellungen newInstanceOf() {
         dat = null;
-        dat = new MyData();
+        dat = new Einstellungen();
         return dat;
     }
     
 
-    private MyData() {
+    private Einstellungen() {
         super(QueryClass.instanceOf().clone(TABLE_MYDATA));
         this.checkForUpgrade();
         this.id = 1;
@@ -305,7 +305,7 @@ public class MyData extends mp3.classes.layer.People implements mp4.datenbank.st
 
         }
 
-        dat = new MyData();
+        dat = new Einstellungen();
 
     }
 

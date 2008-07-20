@@ -34,7 +34,7 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import mp4.klassen.objekte.MyData;
+import mp4.klassen.objekte.Einstellungen;
 
  
 /**
@@ -226,7 +226,7 @@ public abstract class Formater {
 
     public static String formatMoney(String price) {
 
-         NumberFormat formatter = NumberFormat.getCurrencyInstance(MyData.instanceOf().getLocale());      
+         NumberFormat formatter = NumberFormat.getCurrencyInstance(Einstellungen.instanceOf().getLocale());      
          
          return formatter.format(Double.valueOf(price));
 
@@ -234,7 +234,7 @@ public abstract class Formater {
     
     public static String formatMoney(Double price) {
 
-        NumberFormat n = NumberFormat.getCurrencyInstance(MyData.instanceOf().getLocale());
+        NumberFormat n = NumberFormat.getCurrencyInstance(Einstellungen.instanceOf().getLocale());
 
         return n.format(price);
 

@@ -74,7 +74,7 @@ public class Einnahme extends mp3.classes.layer.Things implements mp4.datenbank.
     }
     public Einnahme() {
         super(QueryClass.instanceOf().clone(TABLE_INCOME));
-        this.setKontenid(MyData.instanceOf().getEinnahmeDefKonto().getId());
+        this.setKontenid(Einstellungen.instanceOf().getEinnahmeDefKonto().getId());
     }
 
     /**

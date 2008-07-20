@@ -39,7 +39,7 @@ public class HistoryItem extends mp3.classes.layer.Things implements mp4.datenba
     private String aktion = "";
     private String text = "";
     private Date datum = new Date();
-    private User user = MyData.instanceOf().getUser();
+    private User user = Einstellungen.instanceOf().getUser();
            public Integer id = 0;
     
 

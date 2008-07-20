@@ -11,7 +11,7 @@ import mp3.classes.layer.visual.DatePick;
 import mp4.klassen.objekte.*;
 import mp4.klassen.objekte.Customer;
 import mp4.klassen.objekte.Einnahme;
-import mp4.klassen.objekte.MyData;
+import mp4.klassen.objekte.Einstellungen;
 import mp4.klassen.objekte.SKRKonto;
 import mp3.classes.utils.FetchDataTask;
 import mp3.classes.utils.Formater;
@@ -39,12 +39,12 @@ public class eurEPanel extends javax.swing.JPanel {
     public eurEPanel() {
         initComponents();
         curEinnahme = new Einnahme();
-        curKonto = MyData.instanceOf().getEinnahmeDefKonto();
+        curKonto = Einstellungen.instanceOf().getEinnahmeDefKonto();
 
         jTextField6.setText(DateConverter.getTodayDefDate());
-        jTextField3.setText(FormatNumber.formatDezimal(MyData.instanceOf().getGlobaltax()));
+        jTextField3.setText(FormatNumber.formatDezimal(Einstellungen.instanceOf().getGlobaltax()));
         jTextField4.setText("0");
-        jTextField5.setText(MyData.instanceOf().getEinnahmeDefKonto().getArt());
+        jTextField5.setText(Einstellungen.instanceOf().getEinnahmeDefKonto().getArt());
 
 //        jTextField3.setInputVerifier(Formater.getDoubleInputVerfier(jTextField3));
 //        jTextField4.setInputVerifier(Formater.getDoubleInputVerfier(jTextField4));

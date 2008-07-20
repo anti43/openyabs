@@ -22,7 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import mp3.classes.interfaces.Strings;
 import mp3.classes.layer.Popup;
-import mp4.klassen.objekte.MyData;
+import mp4.klassen.objekte.Einstellungen;
 
 
 /**
@@ -36,7 +36,7 @@ public class Browser {
         try {
 
 
-            Process proc = Runtime.getRuntime().exec(MyData.instanceOf().getBrowser() + " " + file.getAbsolutePath());
+            Process proc = Runtime.getRuntime().exec(Einstellungen.instanceOf().getBrowser() + " " + file.getAbsolutePath());
         } catch (IOException ex) {
 
             new Popup(Strings.NO_BROWSER);

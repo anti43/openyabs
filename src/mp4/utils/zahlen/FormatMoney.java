@@ -20,7 +20,7 @@ along with MP.  If not, see <http://www.gnu.org/licenses/>.
 package mp4.utils.zahlen;
 
 import java.text.NumberFormat;
-import mp4.klassen.objekte.MyData;
+import mp4.klassen.objekte.Einstellungen;
 
 /**
  *
@@ -29,7 +29,7 @@ import mp4.klassen.objekte.MyData;
 public class FormatMoney {
 
     public static String formatLokal(Double betrag) {
-        NumberFormat n = NumberFormat.getCurrencyInstance(MyData.instanceOf().getLocale());
+        NumberFormat n = NumberFormat.getCurrencyInstance(Einstellungen.instanceOf().getLocale());
         return n.format(betrag);
     }
 }

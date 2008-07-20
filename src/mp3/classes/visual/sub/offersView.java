@@ -37,7 +37,7 @@ import mp4.klassen.objekte.Rechnung;
 import mp4.klassen.objekte.RechnungPosten;
 import mp4.klassen.objekte.Customer;
 import mp4.klassen.objekte.HistoryItem;
-import mp4.klassen.objekte.MyData;
+import mp4.klassen.objekte.Einstellungen;
 import mp4.klassen.objekte.Angebot;
 import handling.pdf.PDF_Angebot;
 import mp4.klassen.objekte.AngebotPosten;
@@ -65,11 +65,11 @@ public class offersView extends javax.swing.JPanel implements Runnable, mp4.date
     private boolean nettoprices = true;
     private Customer oldcustomer;
     private double defTax = 19d;
-    private MyData l;
+    private Einstellungen l;
 
     @SuppressWarnings("unchecked")
     public offersView(mainframe aThis) {
-        l = MyData.instanceOf();
+        l = Einstellungen.instanceOf();
         defTax = l.getGlobaltax();
 
         initComponents();
@@ -1025,7 +1025,7 @@ public class offersView extends javax.swing.JPanel implements Runnable, mp4.date
     }//GEN-LAST:event_jButton3MouseClicked
 
     private void jButton6ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        this.defTax = Double.valueOf(MyData.instanceOf().getGlobaltax());
+        this.defTax = Double.valueOf(Einstellungen.instanceOf().getGlobaltax());
         updateListTable();
     }//GEN-LAST:event_jButton6ActionPerformed
 

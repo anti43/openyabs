@@ -67,6 +67,7 @@ public class Main implements Strings {
          //UIManager.setLookAndFeel("org.fife.plaf.VisualStudio2005.VisualStudio2005LookAndFeel");
             try {
                 UIManager.setLookAndFeel(new TinyLookAndFeel());
+//                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             } catch (Exception exe) {
                 exe.printStackTrace();
             }

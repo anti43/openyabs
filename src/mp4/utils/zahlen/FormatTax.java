@@ -20,7 +20,7 @@ along with MP.  If not, see <http://www.gnu.org/licenses/>.
 package mp4.utils.zahlen;
 
 import java.text.NumberFormat;
-import mp4.klassen.objekte.MyData;
+import mp4.klassen.objekte.Einstellungen;
 
 /**
  *
@@ -35,7 +35,7 @@ public class FormatTax {
     }
 
     public static String formatLokal(Double tax) {
-        NumberFormat n = NumberFormat.getNumberInstance(MyData.instanceOf().getLocale());
+        NumberFormat n = NumberFormat.getNumberInstance(Einstellungen.instanceOf().getLocale());
         return n.format(tax);
     }
 }

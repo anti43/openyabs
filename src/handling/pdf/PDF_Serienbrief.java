@@ -51,7 +51,7 @@ public class PDF_Serienbrief {
     private File template;
     private File updatedPDF;
     private String pretext;
-    private MyData l;
+    private Einstellungen l;
     private String separator;
     private boolean named = false;
 
@@ -66,7 +66,7 @@ public class PDF_Serienbrief {
     public PDF_Serienbrief(Customer c, File template, String pretext, String text, boolean named) {
         try {
 
-            l = MyData.instanceOf();
+            l = Einstellungen.instanceOf();
 
             k = c;
 

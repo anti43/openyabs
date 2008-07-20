@@ -9,7 +9,7 @@ package mp3.classes.visual.sub;
 import mp3.classes.interfaces.Constants;
 //import mp3.classes.objects.ungrouped.MyData;
 import mp3.classes.visual.main.mainframe;
-import mp4.klassen.objekte.MyData;
+import mp4.klassen.objekte.Einstellungen;
 
 
 /**
@@ -23,13 +23,13 @@ public class startView extends javax.swing.JPanel {
     public startView() {
         initComponents(); 
         
-        jLabel7.setText(MyData.instanceOf().getVersion());
+        jLabel7.setText(Einstellungen.instanceOf().getVersion());
     }
 
     public startView(mainframe aThis) {
          initComponents();
          jLabel8.setText(jLabel8.getText() + Constants.VERSION + " " + Constants.TITLE);
-         jLabel7.setText("Version: " + MyData.instanceOf().getVersion());
+         jLabel7.setText("Version: " + Einstellungen.instanceOf().getVersion());
          mainframe= aThis;
     }
     

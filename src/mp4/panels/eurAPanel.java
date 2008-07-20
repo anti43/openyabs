@@ -21,7 +21,7 @@ import mp4.cache.ObjectCopy;
 import mp4.cache.undoCache;
 import mp4.klassen.objekte.Ausgabe;
 import mp4.klassen.objekte.HistoryItem;
-import mp4.klassen.objekte.MyData;
+import mp4.klassen.objekte.Einstellungen;
 import mp4.klassen.objekte.SKRKonto;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.datum.vDate;
@@ -42,12 +42,12 @@ public class eurAPanel extends javax.swing.JPanel {
     public eurAPanel() {
         initComponents();
         curAusgabe = new Ausgabe();
-        curKonto = MyData.instanceOf().getAusgabeDefKonto();
+        curKonto = Einstellungen.instanceOf().getAusgabeDefKonto();
 
         jTextField6.setText(DateConverter.getTodayDefDate());
-        jTextField3.setText(MyData.instanceOf().getGlobaltax().toString());
+        jTextField3.setText(Einstellungen.instanceOf().getGlobaltax().toString());
         jTextField4.setText("0");
-        jTextField5.setText(MyData.instanceOf().getAusgabeDefKonto().getArt());
+        jTextField5.setText(Einstellungen.instanceOf().getAusgabeDefKonto().getArt());
 //        jTextField3.setInputVerifier(Formater.getDoubleInputVerfier(jTextField3));
 //        jTextField4.setInputVerifier(Formater.getDoubleInputVerfier(jTextField4));
         jTextField6.setInputVerifier(Formater.getDateInputVerfier(jTextField6));

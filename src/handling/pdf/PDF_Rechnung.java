@@ -44,7 +44,7 @@ public class PDF_Rechnung {
     private String[] myData;
     private String filename;
     private String separator;
-    private MyData l;
+    private Einstellungen l;
     private Rechnung r;
     private Customer k;
     private Object[][] products;
@@ -58,7 +58,7 @@ public class PDF_Rechnung {
     public PDF_Rechnung(Rechnung b) {
 
 
-        l = MyData.instanceOf();
+        l = Einstellungen.instanceOf();
         this.r = b;
 
         k = new Customer(b.getKundenId());

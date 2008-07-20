@@ -30,6 +30,8 @@ public interface Tabellen {
      * Eigene Daten
      */
     public  final String TABLE_MYDATA = "daten";
+    
+    public  final String TABLE_PROG_DATA = "programmdaten";
     /**
      * Kundendaten
      */

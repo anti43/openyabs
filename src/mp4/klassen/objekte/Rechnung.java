@@ -149,7 +149,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         
         for(int g=0;g<prods.length;g++){
         
-            tzh[g][0] = MyData.instanceOf().getEinnahmeDefKonto().getId().toString();
+            tzh[g][0] = Einstellungen.instanceOf().getEinnahmeDefKonto().getId().toString();
             
             for(int l=0;l<prods[g].length;l++){
          

@@ -14,7 +14,7 @@ import mp3.classes.layer.visual.Help;
 
 import mp4.utils.windows.Position;
 import mp3.classes.visual.main.mainframe;
-import mp4.klassen.objekte.MyData;
+import mp4.klassen.objekte.Einstellungen;
 
 /**
  *
@@ -22,8 +22,8 @@ import mp4.klassen.objekte.MyData;
  */
 public class settingsView extends javax.swing.JFrame {
 
-    private MyData data;
-    private MyData oldData;
+    private Einstellungen data;
+    private Einstellungen oldData;
     private TableModel model;
     private mainframe mainframe;
     private TableCellEditor editor;
@@ -36,7 +36,7 @@ public class settingsView extends javax.swing.JFrame {
     public settingsView(mainframe mainframe) {
         initComponents();
         new Position(this);
-        data = MyData.newInstanceOf();
+        data = Einstellungen.newInstanceOf();
         oldData = data;
         this.mainframe = mainframe;
         this.jTable1.setModel(data.getDefaultTablemodel());

@@ -18,7 +18,7 @@ package handling.pdf;
 
 
 import mp4.klassen.objekte.Rechnung;
-import mp4.klassen.objekte.MyData;
+import mp4.klassen.objekte.Einstellungen;
 import mp4.klassen.objekte.Customer;
 
 
@@ -56,7 +56,7 @@ public class PDF_Mahnung {
     private Set fieldNameKeys;
     private String filename;
     private String separator;
-    private MyData l;
+    private Einstellungen l;
     private Rechnung r;
     private Customer k;
     private Object[][] products;
@@ -76,7 +76,7 @@ public class PDF_Mahnung {
     public PDF_Mahnung(Rechnung b, String text, String number, Double money) {
 
 
-        l = MyData.instanceOf();
+        l = Einstellungen.instanceOf();
         this.r = b;
 
         k = new Customer(b.getKundenId());

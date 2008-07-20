@@ -16,7 +16,7 @@
  */
 package handling.pdf;
 
-import mp4.klassen.objekte.MyData;
+import mp4.klassen.objekte.Einstellungen;
 import mp4.klassen.objekte.Customer;
 import mp4.klassen.objekte.Rechnung;
 
@@ -45,7 +45,7 @@ public class PDF_Lieferschein {
     private String[] myData;
     private String filename;
     private String separator;
-    private MyData l;
+    private Einstellungen l;
     private Rechnung r;
     private Customer k;
     private Object[][] products;
@@ -60,7 +60,7 @@ public class PDF_Lieferschein {
     public PDF_Lieferschein(Rechnung b) {
 
 
-        l = MyData.instanceOf();
+        l = Einstellungen.instanceOf();
         this.r = b;
 
         k = new Customer(b.getKundenId());

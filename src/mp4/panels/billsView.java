@@ -43,7 +43,8 @@ import mp4.klassen.objekte.Product;
 import mp3.classes.visual.main.mainframe;
 
 import handling.pdf.PDF_Rechnung;
-import mp4.klassen.objekte.MyData;
+import javax.swing.JToolBar;
+import mp4.klassen.objekte.Einstellungen;
 import mp3.classes.visual.util.arrear;
 import mp4.utils.datum.DateConverter;
 
@@ -67,7 +68,7 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
     private Customer oldcustomer;
     private double defTax = 0d;
     
-    private MyData l;
+    private Einstellungen l;
     private boolean pdf = false;
     private int taxcount = 0;
 
@@ -78,7 +79,7 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
      */
     @SuppressWarnings("unchecked")
     public billsView(mainframe aThis) {
-        l = MyData.instanceOf();
+        l = Einstellungen.instanceOf();
         defTax = Double.valueOf(l.getGlobaltax());
  
 
@@ -652,7 +653,7 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
 
         jLabel13.setText("Mahnungen");
 
-        jToolBar2.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        jToolBar2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jToolBar2.setFloatable(false);
         jToolBar2.setRollover(true);
 
@@ -1043,6 +1044,7 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
                 .addComponent(jToolBar2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
+        jToolBar1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         jToolBar1.setFloatable(false);
         jToolBar1.setRollover(true);
 

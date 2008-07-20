@@ -43,7 +43,7 @@ public class PDF_Angebot {
     private String[] myData;
     private String filename;
     private String separator;
-    private MyData l;
+    private Einstellungen l;
     private Angebot r;
     private Customer k;
     private Object[][] products;
@@ -58,7 +58,7 @@ public class PDF_Angebot {
     public PDF_Angebot(Angebot b) {
 
 
-        l = MyData.instanceOf();
+        l = Einstellungen.instanceOf();
         this.r = b;
 
         k = new Customer(b.getKundenId());

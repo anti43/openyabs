@@ -31,7 +31,7 @@ import mp3.classes.utils.UnZip;
 import mp3.classes.utils.Zip;
 import mp3.classes.visual.main.mainframe;
 import mp4.klassen.objekte.HistoryItem;
-import mp4.klassen.objekte.MyData;
+import mp4.klassen.objekte.Einstellungen;
 
 /**
  *
@@ -45,7 +45,7 @@ public class backupView extends javax.swing.JPanel{
     private String savepath;
     private ArrayList lstFiles;
     private File src;
-    private MyData l;
+    private Einstellungen l;
     private String[][] str;
     private SimpleDateFormat df;
     private FileReaderWriter rw;
@@ -59,7 +59,7 @@ public class backupView extends javax.swing.JPanel{
         initComponents();
 
         mainframe = aThis;
-        l = MyData.instanceOf();
+        l = Einstellungen.instanceOf();
         header = new String[]{"id", "Datum", "Datei"};
         jTextField1.setText(l.getBackupverz());
         this.savepath = l.getBackupverz();
@@ -274,7 +274,7 @@ public class backupView extends javax.swing.JPanel{
         l.setBackupverz(jTextField1.getText());
         l.save();
 
-        l = MyData.instanceOf();
+        l = Einstellungen.instanceOf();
 
         mainframe.setMessage("Sicherungspfad '" + l.getBackupverz() + "' gespeichert");
         

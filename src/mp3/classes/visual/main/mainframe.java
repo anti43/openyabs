@@ -63,7 +63,7 @@ import mp3.classes.visual.sub.eurView;
 import mp4.cache.undoCache;
 import mp4.klassen.objekte.Customer;
 import mp4.klassen.objekte.Lieferant;
-import mp4.klassen.objekte.MyData;
+import mp4.klassen.objekte.Einstellungen;
 import mp4.klassen.objekte.Product;
 import mp4.utils.text.FadeOnChangeLabel;
 import mp4.utils.windows.Position;
@@ -142,7 +142,7 @@ public class mainframe extends javax.swing.JFrame {
         jPanel12.add(j, BorderLayout.CENTER);
 
         try {
-            jTabbedPane1.setSelectedIndex(MyData.instanceOf().getLasttab());
+            jTabbedPane1.setSelectedIndex(Einstellungen.instanceOf().getLasttab());
         } catch (Exception exception) {
         }
 
@@ -158,7 +158,7 @@ public class mainframe extends javax.swing.JFrame {
         }
 
         try {
-            this.setSize(MyData.instanceOf().getMainframeSize());
+            this.setSize(Einstellungen.instanceOf().getMainframeSize());
             
             if (wt.isNotMaximized(this)) {
                 wt.center(this);
@@ -718,7 +718,7 @@ public class mainframe extends javax.swing.JFrame {
         try {
 
 
-            Process proc = Runtime.getRuntime().exec(MyData.instanceOf().getBrowser() + " http://www.supernature-forum.de");
+            Process proc = Runtime.getRuntime().exec(Einstellungen.instanceOf().getBrowser() + " http://www.supernature-forum.de");
         } catch (IOException ex) {
 
             new Popup("Kein Browser angegeben. Wählen Sie Ihren Internetbrowser unter 'Programmeinstellungen'.");
@@ -728,10 +728,10 @@ public class mainframe extends javax.swing.JFrame {
 
     private void close() {
         try {
-            MyData.instanceOf().setState(this.getHeight(), this.getWidth());
+            Einstellungen.instanceOf().setState(this.getHeight(), this.getWidth());
 //            h.saving();
-            MyData.instanceOf().setLasttab(jTabbedPane1.getSelectedIndex());
-            MyData.instanceOf().save();
+            Einstellungen.instanceOf().setLasttab(jTabbedPane1.getSelectedIndex());
+            Einstellungen.instanceOf().save();
             System.exit(0);
         } catch (Exception exc) {
             System.exit(0);
@@ -795,12 +795,12 @@ public class mainframe extends javax.swing.JFrame {
 
     private void jMenuItem14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem14ActionPerformed
 
-        MyData.instanceOf().setState(this.getHeight(), this.getWidth());
+        Einstellungen.instanceOf().setState(this.getHeight(), this.getWidth());
 
         h.saving();
 
-        MyData.instanceOf().setLasttab(jTabbedPane1.getSelectedIndex());
-        MyData.instanceOf().save();
+        Einstellungen.instanceOf().setLasttab(jTabbedPane1.getSelectedIndex());
+        Einstellungen.instanceOf().save();
 
         System.exit(0);
 
@@ -1040,10 +1040,10 @@ public class mainframe extends javax.swing.JFrame {
     @Override
     public void dispose() {
 
-        MyData.instanceOf().setState(this.getHeight(), this.getWidth());
+        Einstellungen.instanceOf().setState(this.getHeight(), this.getWidth());
 
-        MyData.instanceOf().setLasttab(jTabbedPane1.getSelectedIndex());
-        MyData.instanceOf().save();
+        Einstellungen.instanceOf().setLasttab(jTabbedPane1.getSelectedIndex());
+        Einstellungen.instanceOf().save();
 
         Conn.shutdown();
 
