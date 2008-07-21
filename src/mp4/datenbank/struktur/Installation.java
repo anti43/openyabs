@@ -195,11 +195,11 @@ public interface Installation {
         "INSERT INTO daten (name, wert) VALUES ('Mehrwertsteuersatz', '19')",
         "INSERT INTO daten (name, wert) VALUES ('PDF Programm', '/opt/kde3/bin/kpdf')",
         "INSERT INTO daten (name, wert) VALUES ('Internetbrowser', '/usr/bin/firefox')",
-        "INSERT INTO daten (name, wert) VALUES ('*Starttab', '8')",
+        
         "INSERT INTO daten (name, wert) VALUES ('Default Konto Einnahme (auf dieses Konto werden auch Ihre Rechnungen verbucht!)', '2112')",
         "INSERT INTO daten (name, wert) VALUES ('Default Konto Ausgabe', '1111')",
         "INSERT INTO daten (name, wert) VALUES ('Land (Waehrung) (DE,CH)', 'DE')",
-        "INSERT INTO daten (name, wert) VALUES ('*Hauptfenster', ' ')",
+       
         "INSERT INTO konten (nummer, klasse,gruppe,art) VALUES ('1110', 'Ausgabenkonten', 'Waren, Rohstoffe und Hilfsstoffe einschl. der Nebenkosten', 'Waren, Rohstoffe und Hilfsstoffe')",
         "INSERT INTO konten (nummer, klasse,gruppe,art) VALUES ('1111', 'Ausgabenkonten', 'Waren, Rohstoffe und Hilfsstoffe einschl. der Nebenkosten', 'Allgemeines Ausgabenkonto')",
         "INSERT INTO konten (nummer, klasse,gruppe,art) VALUES ('1112', 'Ausgabenkonten', 'Waren, Rohstoffe und Hilfsstoffe einschl. der Nebenkosten', 'Verbrauchsmaterial')",

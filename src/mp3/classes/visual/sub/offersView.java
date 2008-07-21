@@ -1460,7 +1460,7 @@ public class offersView extends javax.swing.JPanel implements Runnable, mp4.date
                 Thread.sleep(1000);
             } catch (Exception e) {
             }
-            while (mainframe.getShowingTab() == 2) {
+            while (mainframe.getShowingTab() == 3) {
                 try {
                     Thread.sleep(800);
                 } catch (Exception e) {

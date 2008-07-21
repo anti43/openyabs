@@ -50,14 +50,14 @@ public class Einstellungen extends mp3.classes.layer.People implements mp4.daten
     private Double globaltax = 0d;
     private String pdfviewer = "";
     private String browser = "";
-    private Integer lasttab = 0;
+    
     private String ekDefaultKontoNummer = "";
     private String agDefaultKontoNummer = "";
     private SKRKonto einnahmeDefKonto;
     private SKRKonto ausgabeDefKonto;
     private Locale locale;
     private String[][] valurarray;
-    private String state;
+    
     private String[][] orig_valuearray;
 
     private User user = new User();
@@ -79,7 +79,6 @@ public class Einstellungen extends mp3.classes.layer.People implements mp4.daten
 
     private Einstellungen() {
         super(QueryClass.instanceOf().clone(TABLE_MYDATA));
-        this.checkForUpgrade();
         this.id = 1;
         this.valurarray = this.select("name, wert", null, null, false);
         orig_valuearray = valurarray;
@@ -96,36 +95,6 @@ public class Einstellungen extends mp3.classes.layer.People implements mp4.daten
         return Integer.valueOf(Constants.VERSION);
     }
 
-    private int getDBVersion() {
-        this.valurarray = this.select("name, wert", null, null, false);
-        return valurarray.length;
-    }
-
-    private void checkForUpgrade() {
-
-        int dbversion = getDBVersion();
-
-        switch (dbversion) {
-
-            case (14):
-
-                this.insert("name,wert", "(;;2#4#1#1#8#0#;;)Land (Waehrung) (DE,CH)(;;2#4#1#1#8#0#;;),(;;2#4#1#1#8#0#;;)DE(;;2#4#1#1#8#0#;;)");
-                this.insert("name,wert", "(;;2#4#1#1#8#0#;;)*Hauptfenster(;;2#4#1#1#8#0#;;),(;;2#4#1#1#8#0#;;) (;;2#4#1#1#8#0#;;)");
-                new HistoryItem(DATABASE, "Datenbankupdate " + 14 + " durchgefuehrt.");
-
-                checkForUpgrade();
-                break;
-            case (16):
-
-//                this.insert("name,wert", "(;;2#4#1#1#8#0#;;)Land (Waehrung) (DE,CH)(;;2#4#1#1#8#0#;;),(;;2#4#1#1#8#0#;;)DE(;;2#4#1#1#8#0#;;)");
-//                this.insert("name,wert", "(;;2#4#1#1#8#0#;;)*Hauptfenster(;;2#4#1#1#8#0#;;),(;;2#4#1#1#8#0#;;) (;;2#4#1#1#8#0#;;)");
-//                new History(Structure.DATABASE, "Datenbankupdate " + 14 + " durchgefuehrt.");
-
-//                checkForUpgrade();
-                break;
-        }
-
-    }
 
     public DefaultTableModel getDefaultTablemodel() {
 
@@ -185,12 +154,9 @@ public class Einstellungen extends mp3.classes.layer.People implements mp4.daten
 
     }
 
-    public void setState(int height, int width) {
-        this.setState(height + "," + width);
-    }
+
 
     private void explode(String[][] str) {
-
         if (str != null) {
             this.setBackupverz(str[0][1]);
             this.setRechnungverz(str[1][1]);
@@ -203,81 +169,28 @@ public class Einstellungen extends mp3.classes.layer.People implements mp4.daten
             this.setGlobaltax(Double.valueOf(str[8][1]));
             this.setPdfviewer(str[9][1]);
             this.setBrowser(str[10][1]);
-            this.setLasttab(Integer.valueOf(str[11][1]));
-            this.setEkDefaultKonto(str[12][1]);
-            this.setAgDefaultKonto(str[12 + 1][1]);
-            this.setLocale(new Locale("de", str[14][1]));
-            this.setState(str[15][1]);
-
+            this.setEkDefaultKonto(str[11][1]);
+            this.setAgDefaultKonto(str[12][1]);
+            this.setLocale(new Locale("de", str[12+1][1]));
+            
             try {
-
                 this.setEinnahmeDefKonto(new SKRKonto(QueryClass.instanceOf(), getEkDefaultKonto(), true));
-
-
             } catch (Exception exception) {
-
                 Popup.notice("Einnahmenkonto nicht vorhanden.\nBeachten Sie die genaue Schreibweise (z.B. '3 000' anstatt '3000')");
                 this.setEkDefaultKonto("2100");
                 this.setEinnahmeDefKonto(new SKRKonto(QueryClass.instanceOf(), getEkDefaultKonto(), true));
-
             }
 
             try {
                 this.setAusgabeDefKonto(new SKRKonto(QueryClass.instanceOf(), getAgDefaultKonto(), true));
-
             } catch (Exception exception) {
                 Popup.notice("Ausgabenkonto nicht vorhanden.\nBeachten Sie die genaue Schreibweise (z.B. '3 000' anstatt '3000')");
                 this.setAgDefaultKonto("1111");
                 this.setAusgabeDefKonto(new SKRKonto(QueryClass.instanceOf(), getAgDefaultKonto(), true));
             }
-
-
-
         }
     }
 
-//    private void explode() {
-//
-//        if (str != null) {
-//            this.setBackupverz(str[0][1]);
-//            this.setRechnungverz(str[1][1]);
-//            this.setAngebotverz(str[2][1]);
-//            this.setMahnungverz(str[3][1]);
-//            this.setRechnungtemp(str[4][1]);
-//            this.setAngebottemp(str[5][1]);
-//            this.setMahnungtemp(str[6][1]);
-//            this.setSerienbrieftemp(str[7][1]);
-//            this.setGlobaltax(str[8][1]);
-//            this.setPdfviewer(str[9][1]);
-//            this.setBrowser(str[10][1]);
-//            this.setLasttab(str[11][1]);
-//            this.setEkDefaultKonto(str[12][1]);
-//            this.setAgDefaultKonto(str[12 + 1][1]);
-//            this.setLocale(new Locale("de", str[14][1]));
-//            this.setState(str[15][1]);
-//
-//            try {
-//
-//                this.setEinnahmeDefKonto(new SKRKonto(QueryClass.instanceOf(), getEkDefaultKonto(), true));
-//
-//
-//            } catch (Exception exception) {
-//                this.setEkDefaultKonto("2100");
-//                this.setEinnahmeDefKonto(new SKRKonto(QueryClass.instanceOf(), getEkDefaultKonto(), true));
-//
-//            }
-//
-//            try {
-//                this.setAusgabeDefKonto(new SKRKonto(QueryClass.instanceOf(), getAgDefaultKonto(), true));
-//
-//            } catch (Exception exception) {
-//                this.setAgDefaultKonto("1111");
-//                this.setAusgabeDefKonto(new SKRKonto(QueryClass.instanceOf(), getAgDefaultKonto(), true));
-//            }
-//
-//
-//        }
-//    }
     private void collect() {
         orig_valuearray[0][1] = getBackupverz();
         orig_valuearray[1][1] = getRechnungverz();
@@ -290,11 +203,11 @@ public class Einstellungen extends mp3.classes.layer.People implements mp4.daten
         orig_valuearray[8][1] = getGlobaltax().toString();
         orig_valuearray[9][1] = getPdfviewer();
         orig_valuearray[10][1] = getBrowser();
-        orig_valuearray[11][1] = getLasttab().toString();
-        orig_valuearray[12][1] = getEkDefaultKonto();
-        orig_valuearray[12 + 1][1] = getAgDefaultKonto();
-        orig_valuearray[14][1] = getLocale().getCountry();
-        orig_valuearray[15][1] = getState();
+       
+        orig_valuearray[11][1] = getEkDefaultKonto();
+        orig_valuearray[12][1] = getAgDefaultKonto();
+        orig_valuearray[12+1][1] = getLocale().getCountry();
+       
     }
 
     public void save() {
@@ -408,13 +321,6 @@ public class Einstellungen extends mp3.classes.layer.People implements mp4.daten
         this.browser = browser;
     }
 
-    public Integer getLasttab() {
-        return lasttab;
-    }
-
-    public void setLasttab(Integer lasttab) {
-        this.lasttab = lasttab;
-    }
 
     private String getEkDefaultKonto() {
         return ekDefaultKontoNummer;
@@ -458,15 +364,7 @@ public class Einstellungen extends mp3.classes.layer.People implements mp4.daten
         this.locale = locale;
     }
 
-    public String getState() {
-        return state;
-    }
 
-    public void setState(String state) {
-        this.state = state;
-    }
 
-    public Dimension getMainframeSize() {
-        return new Dimension(Integer.valueOf(getState().split(",")[1]), Integer.valueOf(getState().split(",")[0]));
-    }
+   
 }

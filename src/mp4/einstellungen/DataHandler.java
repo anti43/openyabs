@@ -29,11 +29,16 @@ public class DataHandler extends mp3.classes.layer.Things implements mp4.datenba
     }
 
     public boolean getBoolean(String ofKey) {
-        String[][] values = this.select("wert", "name", ofKey, false);
-        if (Integer.valueOf(values[0][0]).intValue() == 1) {
-            return true;
-        } else {
-            return false;
+        String values = getString(ofKey);
+        try {
+            if (Integer.valueOf(values).intValue() == 1) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception numberFormatException) {
+            setString(ofKey, "0");
+            return getBoolean(ofKey);
         }
     }
 
@@ -42,26 +47,48 @@ public class DataHandler extends mp3.classes.layer.Things implements mp4.datenba
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    public Integer getInteger(String ofKey) {
+        String[][] values = new String[1][1];
+        try {
+            values = this.select("wert", "name", ofKey, false);
+        } catch (Exception e) {
+            setString(ofKey, "0");
+            getInteger(ofKey);
+        }
+
+        try {
+            return Integer.valueOf(values[0][0]);
+        } catch (NumberFormatException numberFormatException) {
+            return null;
+        }
+    }
+
     void setBoolean(String key, boolean value) {
         if (value) {
-            if (this.update("wert", "(;;2#4#1#1#8#0#;;)" + "1" + "(;;2#4#1#1#8#0#;;)", "name", key) != 1) {
-                this.insert(key, "(;;2#4#1#1#8#0#;;)" + "1" + "(;;2#4#1#1#8#0#;;)");
-            }
+            setString(key, "1");
         } else {
-            if (this.update("wert", "(;;2#4#1#1#8#0#;;)" + "0" + "(;;2#4#1#1#8#0#;;)", "name", key) != 1) {
-                this.insert(key, "(;;2#4#1#1#8#0#;;)" + "0" + "(;;2#4#1#1#8#0#;;)");
-            }
+            setString(key, "0");
         }
     }
 
     public String getString(String ofKey) {
-        String[][] values = this.select("wert", "name", ofKey, false);
+        String[][] values = new String[1][1];
+        try {
+            values = this.select("wert", "name", ofKey, false);
+        } catch (Exception e) {
+            setString(ofKey, "");
+            getString(ofKey);
+        }
         return values[0][0];
     }
 
-    void setString(String key, String value) {
+    public void setInteger(String ofKey, Integer MAINFRAME_TAB) {
+        setString(ofKey, MAINFRAME_TAB.toString());
+    }
+
+    public void setString(String key, String value) {
         if (this.update("wert", "(;;2#4#1#1#8#0#;;)" + value + "(;;2#4#1#1#8#0#;;)", "name", key) != 1) {
-            this.insert(key, "(;;2#4#1#1#8#0#;;)" + value + "(;;2#4#1#1#8#0#;;)");
+            this.insert("name, wert", "(;;2#4#1#1#8#0#;;)" + key + "(;;2#4#1#1#8#0#;;)" + ",(;;2#4#1#1#8#0#;;)" + value + "(;;2#4#1#1#8#0#;;)");
         }
     }
 }

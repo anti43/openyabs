@@ -64,6 +64,7 @@ import mp4.cache.undoCache;
 import mp4.klassen.objekte.Customer;
 import mp4.klassen.objekte.Lieferant;
 import mp4.einstellungen.Einstellungen;
+import mp4.einstellungen.Programmdaten;
 import mp4.klassen.objekte.Product;
 import mp4.utils.text.FadeOnChangeLabel;
 import mp4.utils.windows.Position;
@@ -73,8 +74,6 @@ import mp4.utils.windows.Position;
  * @author  anti43
  */
 public class mainframe extends javax.swing.JFrame {
-
-
 
     private customersView c;
     private billsView b;
@@ -112,7 +111,7 @@ public class mainframe extends javax.swing.JFrame {
             loader = null;
             System.gc();
             System.gc();
-            
+
         }
 
         QueryClass.setProgressBarOn(this.mainProgress, this);
@@ -142,13 +141,13 @@ public class mainframe extends javax.swing.JFrame {
         jPanel12.add(j, BorderLayout.CENTER);
 
         try {
-            jTabbedPane1.setSelectedIndex(Einstellungen.instanceOf().getLasttab());
+            jTabbedPane1.setSelectedIndex(Programmdaten.instanceOf().getMAINFRAME_TAB());
         } catch (Exception exception) {
         }
 
         try {
             this.setTitle("MP " + Constants.VERSION);
-            
+
 
         } catch (Exception exception) {
             splash.dispose();
@@ -158,11 +157,11 @@ public class mainframe extends javax.swing.JFrame {
         }
 
         try {
-            this.setSize(Einstellungen.instanceOf().getMainframeSize());
-            
+            this.setSize(Programmdaten.instanceOf().getMAINFRAME_WINDOW_STATE());
+
             if (wt.isNotMaximized(this)) {
                 wt.center(this);
-            }else {
+            } else {
                 this.setExtendedState(mainframe.MAXIMIZED_BOTH);
             }
 
@@ -178,16 +177,15 @@ public class mainframe extends javax.swing.JFrame {
             public void windowClosing(WindowEvent e) {
                 close();
             }
-
         });
 
-   
-        undoCache.setMenu(jMenu11,this);       
-        
+
+        undoCache.setMenu(jMenu11, this);
+
         setMessage("Anmerkungen, Bugs und Feedback zu MP bitte an mp-rechnungs-und-kundenverwaltung@googlegroups.com senden. Vielen Dank!");
-        
+
         nachricht = messagePanel;
-       
+
         this.setVisible(rootPaneCheckingEnabled);
     }
 
@@ -248,24 +246,22 @@ public class mainframe extends javax.swing.JFrame {
 //            }
 //        });
 //    }
-
     /**
      * 
-     * @return 0:kunden
-     *          1:rechnungen
-     *          2:angebote
-     *          3:eur
-     *          4:produkte
-     *          5:lieferanten
-     *          6:verlauf  
-     *          7:sicherung
-     *          8:start 
+     * @return  
+     *          0:start 
+     *          1:kunden
+     *          2:rechnungen
+     *          3:angebote
+     *          4:eur
+     *          5:produkte
+     *          6:lieferanten
+     *          7:verlauf  
+     *          8:sicherung
      *          
      */
     public int getShowingTab() {
-
         return getJTabbedPane1().getSelectedIndex();
-
     }
 
     /**
@@ -283,24 +279,18 @@ public class mainframe extends javax.swing.JFrame {
     /**
      * 
      * @param i
-     * 
-     * 0:kunden
-     *          1:rechnungen
-     *          2:angebote
-     *          3:produkte
-     *          4:lieferanten
-     *          5:verlauf  
-     *          6:sicherung
-     *          7:start 
-     *          
+     *          0:start 
+     *          1:kunden
+     *          2:rechnungen
+     *          3:angebote
+     *          4:eur
+     *          5:produkte
+     *          6:lieferanten
+     *          7:verlauf  
+     *          8:sicherung
      */
     public void setShowingTab(int i) {
-
-
-
         getJTabbedPane1().setSelectedIndex(i);
-
-
     }
 
     /** This method is called from within the constructor to
@@ -317,6 +307,7 @@ public class mainframe extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jPanel5 = new javax.swing.JPanel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
+        jPanel11 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jPanel7 = new javax.swing.JPanel();
@@ -325,7 +316,6 @@ public class mainframe extends javax.swing.JFrame {
         jPanel9 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
         jPanel8 = new javax.swing.JPanel();
-        jPanel11 = new javax.swing.JPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
@@ -405,6 +395,9 @@ public class mainframe extends javax.swing.JFrame {
             }
         });
 
+        jPanel11.setLayout(new java.awt.BorderLayout());
+        jTabbedPane1.addTab("Start", jPanel11);
+
         jPanel2.setLayout(new java.awt.BorderLayout());
         jTabbedPane1.addTab("Kunden        ", null, jPanel2, "Kunden bearbeiten");
 
@@ -428,9 +421,6 @@ public class mainframe extends javax.swing.JFrame {
 
         jPanel8.setLayout(new java.awt.BorderLayout());
         jTabbedPane1.addTab("Sicherung", jPanel8);
-
-        jPanel11.setLayout(new java.awt.BorderLayout());
-        jTabbedPane1.addTab("Start", jPanel11);
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -728,9 +718,10 @@ public class mainframe extends javax.swing.JFrame {
 
     private void close() {
         try {
-            Einstellungen.instanceOf().setState(this.getHeight(), this.getWidth());
-//            h.saving();
-            Einstellungen.instanceOf().setLasttab(jTabbedPane1.getSelectedIndex());
+
+            Programmdaten.instanceOf().setMAINFRAME_WINDOW_STATE(this.getSize());
+
+            Programmdaten.instanceOf().setMAINFRAME_TAB(jTabbedPane1.getSelectedIndex());
             Einstellungen.instanceOf().save();
             System.exit(0);
         } catch (Exception exc) {
@@ -749,37 +740,37 @@ public class mainframe extends javax.swing.JFrame {
     private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem12ActionPerformed
         /**
          * 
-         * @return 0:kunden
-         *          1:rechnungen
-         *          2:angebote
-         *          3:eur
-         *          4:produkte
-         *          5:lieferanten
-         *          6:verlauf  
-         *          7:sicherung
-         *          8:start 
+         * @return 0:start 
+     *          1:kunden
+     *          2:rechnungen
+     *          3:angebote
+     *          4:eur
+     *          5:produkte
+     *          6:lieferanten
+     *          7:verlauf  
+     *          8:sicherung
          *          
          */
         switch (this.getShowingTab()) {
 
-            case 0:
+            case 1:
 
                 this.getCustomersView().save();
 
                 break;
-            case 1:
+            case 2:
 
                 this.getBillPanel().save();
 
                 break;
-            case 2:
+            case 3:
                 this.getOrdersView().save();
                 break;
-            case 4:
+            case 5:
                 this.getProductsView().save();
 
                 break;
-            case 5:
+            case 6:
                 this.getC().save();
                 break;
         }
@@ -795,13 +786,12 @@ public class mainframe extends javax.swing.JFrame {
 
     private void jMenuItem14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem14ActionPerformed
 
-        Einstellungen.instanceOf().setState(this.getHeight(), this.getWidth());
 
-        h.saving();
+        Programmdaten.instanceOf().setMAINFRAME_WINDOW_STATE(this.getSize());
 
-        Einstellungen.instanceOf().setLasttab(jTabbedPane1.getSelectedIndex());
+        Programmdaten.instanceOf().setMAINFRAME_TAB(jTabbedPane1.getSelectedIndex());
         Einstellungen.instanceOf().save();
-
+        h.saving();
         System.exit(0);
 
     }//GEN-LAST:event_jMenuItem14ActionPerformed
@@ -1023,16 +1013,14 @@ public class mainframe extends javax.swing.JFrame {
 //
 //        nachricht.setText(message);
 //    }
-
-      /**
+    /**
      * 
      * @param message
      */
     public void setMessage(String message) {
         this.getNachricht().setText(message);
     }
-    
-    
+
     public javax.swing.JLabel getNachricht() {
         return messagePanel;
     }
@@ -1040,9 +1028,9 @@ public class mainframe extends javax.swing.JFrame {
     @Override
     public void dispose() {
 
-        Einstellungen.instanceOf().setState(this.getHeight(), this.getWidth());
+        Programmdaten.instanceOf().setMAINFRAME_WINDOW_STATE(this.getSize());
 
-        Einstellungen.instanceOf().setLasttab(jTabbedPane1.getSelectedIndex());
+        Programmdaten.instanceOf().setMAINFRAME_TAB(jTabbedPane1.getSelectedIndex());
         Einstellungen.instanceOf().save();
 
         Conn.shutdown();

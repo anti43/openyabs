@@ -16,7 +16,7 @@
  */
 package mp4.einstellungen;
 
-import mp3.classes.layer.QueryClass;
+import java.awt.Dimension;
 
 /**
  *
@@ -25,7 +25,8 @@ import mp3.classes.layer.QueryClass;
 public class Programmdaten implements mp4.datenbank.struktur.Tabellen {
     
     private boolean BILLPANEL_CHECKBOX_MITLIEFERSCHEIN = false;
-    
+    private Integer MAINFRAME_TAB = 8;
+    private Dimension  MAINFRAME_WINDOW_STATE;
     
     
     private DataHandler handler;
@@ -45,14 +46,30 @@ public class Programmdaten implements mp4.datenbank.struktur.Tabellen {
 
     }
 
-
-
-    public boolean isBILLPANEL_CHECKBOX_MITLIEFERSCHEIN() {       
+  
+    public boolean getBILLPANEL_CHECKBOX_MITLIEFERSCHEIN_state() {       
         return handler.getBoolean("BILLPANELCHECKBOXMITLIEFERSCHEIN");
     }
 
     public void setBILLPANEL_CHECKBOX_MITLIEFERSCHEIN(boolean BILLPANEL_CHECKBOX_MITLIEFERSCHEIN) {
         handler.setBoolean("BILLPANELCHECKBOXMITLIEFERSCHEIN",BILLPANEL_CHECKBOX_MITLIEFERSCHEIN);
     }
+
+    public Integer getMAINFRAME_TAB() {
+        return handler.getInteger("MAINFRAME_TAB");
+    }
+
+    public void setMAINFRAME_TAB(Integer MAINFRAME_TAB) {
+        handler.setInteger("MAINFRAME_TAB",MAINFRAME_TAB);
+    }
+
+    public Dimension getMAINFRAME_WINDOW_STATE() {
+        return new Dimension(Integer.valueOf(handler.getString("MAINFRAME_WINDOW_STATE").split(",")[1]), Integer.valueOf(handler.getString("MAINFRAME_WINDOW_STATE").split(",")[0]));
+    }
+
+    public void setMAINFRAME_WINDOW_STATE(Dimension MAINFRAME_WINDOW_STATE) {
+         handler.setString("MAINFRAME_WINDOW_STATE", (int)MAINFRAME_WINDOW_STATE.getHeight() + "," + (int)MAINFRAME_WINDOW_STATE.getWidth());
+    } 
+    
 
 }
