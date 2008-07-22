@@ -39,7 +39,7 @@ public class DataHandler extends mp3.classes.layer.Things implements mp4.datenba
                 return false;
             }
         } catch (Exception numberFormatException) {
-            setString(ofKey, "0");
+            setString(ofKey, "0", true);
             return getBoolean(ofKey);
         }
     }
@@ -54,8 +54,8 @@ public class DataHandler extends mp3.classes.layer.Things implements mp4.datenba
         try {
             values = this.select("wert", "name", ofKey, false);
         } catch (Exception e) {
-            setString(ofKey, "0");
-            getInteger(ofKey);
+            setString(ofKey, "0", true);
+            return getInteger(ofKey);
         }
 
         try {
@@ -68,18 +68,15 @@ public class DataHandler extends mp3.classes.layer.Things implements mp4.datenba
     void setBoolean(String key, boolean value) {
         if (value) {
             try {
-                this.update("wert", "(;;2#4#1#1#8#0#;;)" + "1" + "(;;2#4#1#1#8#0#;;)", "name", key);
+                setString(key, "1", false);
             } catch (Exception e) {
-                Log.Debug(e);Log.Debug(e);
-                this.insert(key, "(;;2#4#1#1#8#0#;;)" + "1" + "(;;2#4#1#1#8#0#;;)");
+                setString(key, "1", true);
             }
-            setString(key, "1");
         } else {
-
             try {
-                this.update("wert", "(;;2#4#1#1#8#0#;;)" + "0" + "(;;2#4#1#1#8#0#;;)", "name", key);
+                setString(key, "0", false);
             } catch (Exception e) {
-                this.insert(key, "(;;2#4#1#1#8#0#;;)" + "0" + "(;;2#4#1#1#8#0#;;)");
+                setString(key, "0", true);
             }
         }
     }
@@ -89,24 +86,45 @@ public class DataHandler extends mp3.classes.layer.Things implements mp4.datenba
         try {
             values = this.select("wert", "name", ofKey, false);
         } catch (Exception e) {
-            setString(ofKey, "");
+            setString(ofKey, "", true);
             getString(ofKey);
         }
-        if(values.length >= 1)return values[0][0];
-        else return null;
+        if (values.length >= 1) {
+            return values[0][0];
+        } else {
+            return null;
+        }
     }
 
     public void setInteger(String ofKey, Integer MAINFRAME_TAB) {
-        setString(ofKey, MAINFRAME_TAB.toString());
-    }
-
-    public void setString(String key, String value) {
-
         try {
-            this.update("wert", "(;;2#4#1#1#8#0#;;)" + value + "(;;2#4#1#1#8#0#;;)", "name", key);
+            setString(ofKey, MAINFRAME_TAB.toString(), false);
         } catch (Exception e) {
-            Log.Debug(e);
-            this.insert("name, wert", "(;;2#4#1#1#8#0#;;)" + key + "(;;2#4#1#1#8#0#;;)" + ",(;;2#4#1#1#8#0#;;)" + value + "(;;2#4#1#1#8#0#;;)");
+            setString(ofKey, MAINFRAME_TAB.toString(), true);
         }
     }
+
+    private void setString(String key, String value, boolean newKey) {
+
+        if (newKey) {
+            this.insert("name, wert", "(;;2#4#1#1#8#0#;;)" + key + "(;;2#4#1#1#8#0#;;)" + ",(;;2#4#1#1#8#0#;;)" + value + "(;;2#4#1#1#8#0#;;)");
+        } else {
+            try {
+                this.update("wert", "(;;2#4#1#1#8#0#;;)" + value + "(;;2#4#1#1#8#0#;;)", "name", key);
+            } catch (Exception e) {
+                Log.Debug(e);
+            }
+        }
+    }
+    
+     public void setString(String key, String value) {
+
+         try {
+             setString(key, value, false);
+         } catch (Exception e) {
+             setString(key, value, true);
+         }
+    }
 }
+
+
