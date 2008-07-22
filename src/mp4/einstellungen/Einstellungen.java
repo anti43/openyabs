@@ -18,7 +18,6 @@ package mp4.einstellungen;
 
 
 import mp4.klassen.objekte.*;
-import java.awt.Dimension;
 import java.util.Date;
 import java.util.Locale;
 import javax.swing.table.DefaultTableModel;
@@ -30,7 +29,6 @@ import mp3.classes.layer.QueryClass;
 import mp3.classes.utils.FileReaderWriter;
 import mp3.classes.utils.Formater;
 import mp3.classes.utils.Log;
-import mp4.utils.zahlen.FormatNumber;
 
 /**
  *

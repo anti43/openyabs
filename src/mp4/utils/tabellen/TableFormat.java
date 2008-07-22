@@ -28,7 +28,7 @@ public class TableFormat {
      * @param table
      * 
      */
-    public void stripFirst(JTable table) {
+    public static void stripFirst(JTable table) {
         try {
             table.getColumn(table.getColumnName(0)).setMinWidth(0);
             table.getColumn(table.getColumnName(0)).setMaxWidth(0);

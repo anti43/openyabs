@@ -62,22 +62,20 @@ public interface Installation {
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
         "PRIMARY KEY  (id))",
         
-        "CREATE TABLE rechnungsposten (ID BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-        "rechnungid INTEGER NOT NULL," + "anzahl DOUBLE DEFAULT 0," +
-        "posten VARCHAR(1000) default NULL,  preis DOUBLE DEFAULT 0, " +
-        "steuersatz DOUBLE DEFAULT 0," +
+        "CREATE TABLE rechnungen (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
+        "Rechnungnummer VARCHAR(250) default NULL, KundenId INTEGER REFERENCES kunden (id)," +
+        "Datum DATE NOT NULL," + "storno INTEGER DEFAULT 0," + "bezahlt INTEGER DEFAULT 0," +
+        "gesamtpreis DOUBLE DEFAULT 0," + "gesamttax INTEGER NOT NULL," +
+        "AfDatum DATE NOT NULL," +
+        "UZeichen VARCHAR(50) default NULL,IZeichen VARCHAR(50) default NULL," +
         "deleted INTEGER DEFAULT 0," +
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
         "PRIMARY KEY  (id))",
         
-        "CREATE TABLE rechnungen (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
-        "Rechnungnummer VARCHAR(250) default NULL,KundenId INTEGER NOT NULL," +
-        "Datum DATE NOT NULL," + "storno INTEGER DEFAULT 0," + "bezahlt INTEGER DEFAULT 0," +
-        "gesamtpreis DOUBLE DEFAULT 0," + "gesamttax INTEGER NOT NULL," +
-        "AfDatum DATE NOT NULL," +
-        "Betreff1 VARCHAR(200) default NULL,Betreff2 VARCHAR(200) default NULL," +
-        "Betreff3 VARCHAR(200) default NULL,Betreff4 VARCHAR(200) default NULL," +
-        "UZeichen VARCHAR(50) default NULL,IZeichen VARCHAR(50) default NULL," +
+         "CREATE TABLE rechnungsposten (ID BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
+        "rechnungid INTEGER REFERENCES rechnungen (id)," + "anzahl DOUBLE DEFAULT 0," +
+        "posten VARCHAR(1000) default NULL,  preis DOUBLE DEFAULT 0, " +
+        "steuersatz DOUBLE DEFAULT 0," +
         "deleted INTEGER DEFAULT 0," +
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
         "PRIMARY KEY  (id))",
@@ -91,7 +89,7 @@ public interface Installation {
         "PRIMARY KEY  (id))",
         
         "CREATE TABLE auftraege (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
-        "Auftragnummer VARCHAR(250) default NULL,KundenId INTEGER NOT NULL," +
+        "Auftragnummer VARCHAR(250) default NULL, KundenId INTEGER REFERENCES kunden(id)," +
         "Datum DATE NOT NULL," + "auftrag INTEGER DEFAULT 0," + "validvon DATE NOT NULL," + "validbis DATE NOT NULL," +
         "rechnung  INTEGER DEFAULT 0," +
         "deleted INTEGER DEFAULT 0," +
@@ -102,6 +100,13 @@ public interface Installation {
         "name VARCHAR(250), wert VARCHAR(250)," +
         "deleted INTEGER DEFAULT 0," +
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
+        
+        "CREATE TABLE rechnungbetreffz (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
+        "rechnungid INTEGER REFERENCES rechnungen (id)," + 
+        "name VARCHAR(100), text VARCHAR(500), isvorlage INTEGER DEFAULT 0" +
+        "deleted INTEGER DEFAULT 0," +
+        "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
+        
         
         "CREATE TABLE programmdaten (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
         "name VARCHAR(250), wert VARCHAR(250)," +
@@ -121,7 +126,7 @@ public interface Installation {
         
         "CREATE TABLE produkte (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
         "produktnummer VARCHAR(500),name VARCHAR(50),text VARCHAR(500),vk DOUBLE DEFAULT 0,ek DOUBLE DEFAULT 0,steuersatzid INTEGER NOT NULL," +
-        "hersteller VARCHAR(250),lieferantenid INTEGER  DEFAULT 0," +
+        "hersteller VARCHAR(250),lieferantenid INTEGER DEFAULT 0," +
         "warengruppenid INTEGER DEFAULT 0," + "datum DATE NOT NULL," + "url VARCHAR(250) default NULL," +
         "ean BIGINT DEFAULT NULL," +
         "deleted INTEGER DEFAULT 0," +
@@ -170,13 +175,13 @@ public interface Installation {
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
         
         "CREATE TABLE ausgaben (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-        "kontenid INTEGER DEFAULT NULL, beschreibung VARCHAR(500) default NULL," +
+        "kontenid INTEGER REFERENCES konten (id), beschreibung VARCHAR(500) default NULL," +
         "preis DOUBLE DEFAULT 0," + "tax INTEGER NOT NULL," + "datum DATE NOT NULL," +
         "deleted INTEGER DEFAULT 0," +
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
         
         "CREATE TABLE einnahmen (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-        "kontenid INTEGER DEFAULT NULL, beschreibung VARCHAR(500) default NULL," +
+        "kontenid INTEGER REFERENCES konten (id), beschreibung VARCHAR(500) default NULL," +
         "preis DOUBLE DEFAULT 0," + "tax INTEGER NOT NULL," + "datum DATE NOT NULL," +
         "deleted INTEGER DEFAULT 0," +
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",

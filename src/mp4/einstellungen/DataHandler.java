@@ -79,7 +79,8 @@ public class DataHandler extends mp3.classes.layer.Things implements mp4.datenba
             setString(ofKey, "");
             getString(ofKey);
         }
-        return values[0][0];
+        if(values.length >= 1)return values[0][0];
+        else return null;
     }
 
     public void setInteger(String ofKey, Integer MAINFRAME_TAB) {

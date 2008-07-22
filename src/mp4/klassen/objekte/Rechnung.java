@@ -55,7 +55,13 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
     private Query query;
     private String[][] prods;
     private List labelsOfGetAllWithD;
-   public Integer id = 0;
+    
+    private String[][] betreffzeilen;
+    
+   
+    public Integer id = 0;
+   
+   
     public Integer getId() {
         return id;
     }
@@ -86,6 +92,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         this.explode(this.selectLast(Strings.ALL, Strings.ID, id.toString(), true));
         this.query = QueryClass.instanceOf();
         bp = getProducts(query);
+        betreffzeilen = new RechnungBetreffzeile().getDataOf(id);
     }
 
     public Rechnung(Query query, String text, boolean b) {

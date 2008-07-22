@@ -99,6 +99,11 @@ public interface Tabellen {
      * Einnahmen
      */
     public  final String TABLE_INCOME = "einnahmen";
+ 
+    /**
+     * Betreffzeilen
+     */
+    public  final String TABLE_BILL_TEXTS = "rechnungbetreffz";
    
   
     public  final String TABLE_CUSTOMER_PRINT_FIELDS =
@@ -147,10 +152,11 @@ public interface Tabellen {
              "Steuersatz";
      /**
      * Fields in bills table
-     */
+     */ 
      public  final String TABLE_BILLS_FIELDS =
               "Rechnungnummer" + "," +"KundenId" + "," +
-              "Datum" + "," + "Storno" + "," + "bezahlt"+ "," + "gesamtpreis"+ "," + "gesamttax";
+              "Datum" + "," + "Storno" + "," + "bezahlt"+ "," + "gesamtpreis"+ "," + "gesamttax" + "," +
+              "AfDatum" + "UZeichen" + "," + "IZeichen";
         
           /**
      * Fields in orders data table
@@ -249,4 +255,10 @@ public interface Tabellen {
     public  final String TABLE_INCOME_FIELDS  = "kontenid" + "," +"beschreibung" + "," +
             "preis" + "," +"tax" + "," +"datum";
      
+    
+    /**
+     * Vorlagen
+     */
+    public  final String TABLE_BILL_TEXTS_FIELDS  = "rechnungid" + "," +"name" + "," +
+            "text";
 }
