@@ -26,9 +26,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JProgressBar;
+import javax.swing.JFrame;
+
 import mp3.classes.utils.Log;
-import mp3.classes.visual.main.mainframe;
 import mp4.utils.datum.DateConverter;
 
 /**
@@ -48,25 +48,23 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
     private String query;
     private ArrayList z;
     private String message;
-    private JProgressBar progressBar;
     private List labels;
     private int startcount = 0;
-    private mainframe main;
+    private static JFrame comp;
     //   yyyy-mm-dd hh.mm.ss[.nnnnnn] - SQL DATE Timestamp
     private DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss");
     private int substringcount = 0;
     private String originalvalue = "";
 
-    public Query(Connection conn, String table) {
+    public Query(String table) throws Exception {
         this.table = table;
-        this.conn = conn;
-
+        this.conn = Conn.getConnection();
     }
 
     /**
      * Free SQL Statement!
      * @param string
-     * @return
+     * @return 
      */
     @SuppressWarnings("unchecked")
     public boolean freeQuery(String string) {
@@ -211,42 +209,29 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
     }
 
     /**
-     * Sets the progressbar for this derby-queries
-     * @param bar
+     * For the wait-cursor
      * @param main 
      */
-    public void setProgressBar(JProgressBar bar, mainframe main) {
-
-        this.progressBar = bar;
-        this.main = main;
-
+    public static void setWaitCursorFor(JFrame main) {
+        comp = main;
     }
 
     private int getCurrentIndex() {
         return getNextIndexOfIntCol("id") - 1;
     }
 
-    @SuppressWarnings("deprecation")
     private void stop() {
-
-        if (progressBar != null) {
-            progressBar.setIndeterminate(false);
-        }
-        main.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+        comp.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
     }
 
     private void start() {
-        if (progressBar != null) {
-            progressBar.setIndeterminate(true);
-        }
-        main.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+        comp.setCursor(new Cursor(Cursor.WAIT_CURSOR));
     }
 
-    public String getNextStringNumber(String colName){
+    public String getNextStringNumber(String colName) {
         return originalvalue.substring(0, substringcount) + getNextIndexOfStringCol(colName);
     }
-    
-    
+
     /**
      * 
      * @param colName 
@@ -262,8 +247,8 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
         ResultSetMetaData rsmd;
         String index = "0";
         Integer i = 0;
-        
-      
+
+
         Log.Debug(query);
 
         try {
@@ -305,9 +290,9 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
             Log.Debug(message + ex.getMessage());
             Log.Debug(ex, true);
             stop();
-            
+
             return 1;
-            
+
         } finally {
             // Alle Ressourcen wieder freigeben
             if (resultSet != null) {
@@ -1609,12 +1594,12 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
     /**
      * 
      * @param newTable
-     * @return a clone of this QueryClass (with database connection)
+     * @return a clone of this ConnectionHandler (with database connection)
      */
     public Query clone(
             String newTable) {
         Query theClone = null;
-//        Log.Debug("cloning.");
+
         try {
 
             theClone = (Query) this.clone();
@@ -1623,8 +1608,6 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
             Logger.getLogger(Query.class.getName()).log(Level.SEVERE, null, ex);
         }
         return theClone;
-
-
     }
 
     /**
@@ -1636,7 +1619,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
      * @param integer
      * @return
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "unchecked"})
     public String[][] select(String what, String[] where, String order, boolean like, boolean integer) {
         start();
         String l = "";
@@ -1667,22 +1650,14 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
             if (where.length > 3) {
 
                 wher = wher + " AND " + where[3] + " " + k + " " + where[5] + l + where[4] + l + where[5] + " ";
-
-
             }
-
         }
-
-
 
         query = "SELECT " + what + " FROM " + table + wher + ord;
         Log.Debug(query);
-        message =
-                "Database Error (select) :";
-        stm =
-                null;
-        resultSet =
-                null;
+        message ="Database Error (select) :";
+        stm =null;
+        resultSet =null;
         ResultSetMetaData rsmd;
 
         try {
@@ -1755,7 +1730,6 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
     }
 
     public List getLabels() {
-
         return labels;
     }
 }

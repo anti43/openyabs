@@ -9,7 +9,7 @@ import mp4.datenbank.verbindung.Query;
 
 
 import mp3.classes.utils.Log;
-import mp3.classes.layer.QueryClass;
+import mp4.datenbank.verbindung.ConnectionHandler;
 
 /**
  *
@@ -31,7 +31,7 @@ public class ProductGroupHandler extends mp3.classes.layer.Things implements mp4
 
 //
 //    public ProductGroupHandler() {
-//        new ProductGroupHandler(QueryClass.instanceOf());
+//        new ProductGroupHandler(ConnectionHandler.instanceOf());
 //    }
     /**
      * 
@@ -42,7 +42,7 @@ public class ProductGroupHandler extends mp3.classes.layer.Things implements mp4
 
 
         if (g == null) {
-            g = new ProductGroupHandler(QueryClass.instanceOf());
+            g = new ProductGroupHandler(ConnectionHandler.instanceOf());
         }
 
         return g;

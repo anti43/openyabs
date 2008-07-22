@@ -30,9 +30,9 @@ import mp3.classes.layer.visual.DatePick;
 import mp3.classes.utils.Formater;
 import mp3.classes.utils.Log;
 import mp3.classes.layer.Popup;
-import mp3.classes.layer.PostenTableModel;
+import mp4.utils.tabellen.models.PostenTableModel;
 import mp3.classes.layer.visual.ProductPicker;
-import mp3.classes.layer.QueryClass;
+import mp4.datenbank.verbindung.ConnectionHandler;
 
 
 //import mp3.classes.objects.bill.*;
@@ -82,7 +82,7 @@ public class billsView extends javax.swing.JPanel implements Runnable, mp4.daten
         initComponents();
 
 
-        current = new Rechnung(QueryClass.instanceOf());
+        current = new Rechnung(ConnectionHandler.instanceOf());
 
         current.stripFirst(jTable1);
 
@@ -98,7 +98,7 @@ public class billsView extends javax.swing.JPanel implements Runnable, mp4.daten
 
         jTextField7.setText(df.format(new Date()));
 
-        this.customer = new Customer(QueryClass.instanceOf());
+        this.customer = new Customer(ConnectionHandler.instanceOf());
         this.mainframe = aThis;
         renewTableModel();
         t = new Thread(this);
@@ -1294,7 +1294,7 @@ public class billsView extends javax.swing.JPanel implements Runnable, mp4.daten
 
             if (valide) {
 
-                Query f = QueryClass.instanceOf().clone(TABLE_BILLS);
+                Query f = ConnectionHandler.instanceOf().clone(TABLE_BILLS);
 
                 if (jTextField6.getText().length() < 1 || jCheckBox2.isSelected()) {
                     rechnungnummer = f.getNextStringNumber("rechnungnummer");
@@ -1303,7 +1303,7 @@ public class billsView extends javax.swing.JPanel implements Runnable, mp4.daten
                     rechnungnummer = jTextField6.getText();
                 }
 
-                Rechnung bill = new Rechnung(QueryClass.instanceOf());
+                Rechnung bill = new Rechnung(ConnectionHandler.instanceOf());
 
                 bill.setRechnungnummer(rechnungnummer);
 
@@ -1357,7 +1357,7 @@ public class billsView extends javax.swing.JPanel implements Runnable, mp4.daten
                     //anzahl,bezeichnung,mehrwertsteuer,nettopreis
                     if (m.getValueAt(i, 4) != null) {
 
-                        RechnungPosten b = new RechnungPosten(QueryClass.instanceOf());
+                        RechnungPosten b = new RechnungPosten(ConnectionHandler.instanceOf());
 
                         b.setRechnungid(bill.getId());
                         b.setPosten((String) m.getValueAt(i, 2));
@@ -1383,7 +1383,7 @@ public class billsView extends javax.swing.JPanel implements Runnable, mp4.daten
                 jTextField6.setText(String.valueOf(f.getNextIndexOfIntCol("rechnungnummer")));
                 mainframe.setMessage("Rechnung Nummer: " + bill.getRechnungnummer() + " angelegt.");
 
-                new HistoryItem(QueryClass.instanceOf(), Strings.BILL, "Rechnung Nummer: " + bill.getRechnungnummer() + " angelegt.");
+                new HistoryItem(ConnectionHandler.instanceOf(), Strings.BILL, "Rechnung Nummer: " + bill.getRechnungnummer() + " angelegt.");
                 this.setBill(new Rechnung(bill.getId()));
 
                 save();
@@ -1445,7 +1445,7 @@ public class billsView extends javax.swing.JPanel implements Runnable, mp4.daten
                 ListSelectionModel selectionModel = getJTable1().getSelectionModel();
                 TableFormat.stopEditing(getJTable1());
 
-                Query f = QueryClass.instanceOf().clone(TABLE_BILLS);
+                Query f = ConnectionHandler.instanceOf().clone(TABLE_BILLS);
                 Rechnung bill = getCurrent();
                 bill.setDatum(DateConverter.getDate(jTextField7.getText()));
                 bill.setKundenId(getCustomer().getId());
@@ -1498,7 +1498,7 @@ public class billsView extends javax.swing.JPanel implements Runnable, mp4.daten
 
 
                         try {
-                            RechnungPosten b = new RechnungPosten(QueryClass.instanceOf(), m.getValueAt(i, 0).toString());
+                            RechnungPosten b = new RechnungPosten(ConnectionHandler.instanceOf(), m.getValueAt(i, 0).toString());
 
                             b.destroy();
 
@@ -1516,7 +1516,7 @@ public class billsView extends javax.swing.JPanel implements Runnable, mp4.daten
 
 
 
-                        RechnungPosten b = new RechnungPosten(QueryClass.instanceOf());
+                        RechnungPosten b = new RechnungPosten(ConnectionHandler.instanceOf());
 
                         b.setRechnungid(getCurrent().getId());
 
@@ -1540,7 +1540,7 @@ public class billsView extends javax.swing.JPanel implements Runnable, mp4.daten
 
                 mainframe.getNachricht().setText("Rechnung Nummer " + bill.getRechnungnummer() + " gespeichert.");
 
-                new HistoryItem(QueryClass.instanceOf(), Strings.BILL, "Rechnung Nummer: " + bill.getRechnungnummer() + " editiert.");
+                new HistoryItem(ConnectionHandler.instanceOf(), Strings.BILL, "Rechnung Nummer: " + bill.getRechnungnummer() + " editiert.");
 
                 this.setBill(new Rechnung(bill.getid()));
 
@@ -1603,8 +1603,8 @@ public class billsView extends javax.swing.JPanel implements Runnable, mp4.daten
 
 //        jTextField6.setText(current.getNextBillNumber().toString());
 
-        this.customer = new Customer(QueryClass.instanceOf());
-        this.current = new Rechnung(QueryClass.instanceOf());
+        this.customer = new Customer(ConnectionHandler.instanceOf());
+        this.current = new Rechnung(ConnectionHandler.instanceOf());
 
         jTextField4.setText("");
         jTextField5.setText("");
@@ -1635,7 +1635,7 @@ public class billsView extends javax.swing.JPanel implements Runnable, mp4.daten
 //
 //
 //
-//                BillProduct b = new BillProduct(QueryClass.instanceOf(), m.getValueAt(i, 0).toString());
+//                BillProduct b = new BillProduct(ConnectionHandler.instanceOf(), m.getValueAt(i, 0).toString());
 //
 //                b.destroy();
 //
@@ -1695,7 +1695,7 @@ public class billsView extends javax.swing.JPanel implements Runnable, mp4.daten
 
 
 
-                RechnungPosten b = new RechnungPosten(QueryClass.instanceOf(), m.getValueAt(getJTable1().getSelectedRow(), 0).toString());
+                RechnungPosten b = new RechnungPosten(ConnectionHandler.instanceOf(), m.getValueAt(getJTable1().getSelectedRow(), 0).toString());
 
                 b.destroy();
 
@@ -1742,7 +1742,7 @@ public class billsView extends javax.swing.JPanel implements Runnable, mp4.daten
         if (current != null && current.hasId()) {
             new PDF_Rechnung(current);
 
-            new HistoryItem(QueryClass.instanceOf(), Strings.BILL, "Rechnung Nummer: " + current.getRechnungnummer() + " als PDF erzeugt.");
+            new HistoryItem(ConnectionHandler.instanceOf(), Strings.BILL, "Rechnung Nummer: " + current.getRechnungnummer() + " als PDF erzeugt.");
 
         }
     }//GEN-LAST:event_jButton12MouseClicked
@@ -1929,7 +1929,7 @@ private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         if (current != null) {
             return current;
         } else {
-            return new Rechnung(QueryClass.instanceOf());
+            return new Rechnung(ConnectionHandler.instanceOf());
         }
     }
 

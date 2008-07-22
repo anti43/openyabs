@@ -6,6 +6,7 @@
 
 package mp3.classes.layer.visual;
 
+import mp4.datenbank.verbindung.ConnectionHandler;
 import mp3.classes.layer.*;
 import mp3.classes.utils.Formater;
 import mp4.utils.windows.Position;
@@ -32,7 +33,7 @@ public class SupplierPicker extends javax.swing.JFrame {
         initComponents ();
         this.frame1=frame;
         
-        this.supplier = new Lieferant(QueryClass.instanceOf());
+        this.supplier = new Lieferant(ConnectionHandler.instanceOf());
         
         new Position(this);
         
@@ -53,7 +54,7 @@ public class SupplierPicker extends javax.swing.JFrame {
         initComponents ();
         this.frame=frame;
         
-        this.supplier = new Lieferant(QueryClass.instanceOf());
+        this.supplier = new Lieferant(ConnectionHandler.instanceOf());
         
         new Position(this);
         

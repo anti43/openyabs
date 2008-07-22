@@ -17,7 +17,7 @@
 package mp4.klassen.objekte;
 
 import java.util.Date;
-import mp3.classes.layer.QueryClass;
+import mp4.datenbank.verbindung.ConnectionHandler;
 
 import mp4.datenbank.verbindung.Query;
 import mp4.utils.datum.DateConverter;
@@ -59,9 +59,9 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
         this.id = 0;
     }
     public Product() {
-        super( QueryClass.instanceOf().clone(TABLE_PRODUCTS));
+        super( ConnectionHandler.instanceOf().clone(TABLE_PRODUCTS));
         supplier = new Lieferant();
-        this.query =   QueryClass.instanceOf();
+        this.query =   ConnectionHandler.instanceOf();
         
       
     }
@@ -82,7 +82,7 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
      * @param id
      */
     public Product(Integer id) {
-        super(QueryClass.instanceOf().clone(TABLE_PRODUCTS));
+        super(ConnectionHandler.instanceOf().clone(TABLE_PRODUCTS));
         this.id = Integer.valueOf(id);
         this.explode(this.selectLast("*", "id", id.toString(), true));
 
@@ -94,7 +94,7 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
             this.supplier = new Lieferant(this.getLieferantenId());
         }
           this.isvalid =true;
-          this.query = QueryClass.instanceOf();
+          this.query = ConnectionHandler.instanceOf();
 //        files = getFiles(query);
     }
 

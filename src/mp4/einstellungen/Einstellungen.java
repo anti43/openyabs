@@ -25,7 +25,7 @@ import javax.swing.table.TableModel;
 import mp3.classes.interfaces.Constants;
 
 import mp3.classes.layer.Popup;
-import mp3.classes.layer.QueryClass;
+import mp4.datenbank.verbindung.ConnectionHandler;
 import mp3.classes.utils.FileReaderWriter;
 import mp3.classes.utils.Formater;
 import mp3.classes.utils.Log;
@@ -76,7 +76,7 @@ public class Einstellungen extends mp3.classes.layer.People implements mp4.daten
     
 
     private Einstellungen() {
-        super(QueryClass.instanceOf().clone(TABLE_MYDATA));
+        super(ConnectionHandler.instanceOf().clone(TABLE_MYDATA));
         this.id = 1;
         this.valurarray = this.select("name, wert", null, null, false);
         orig_valuearray = valurarray;
@@ -172,19 +172,19 @@ public class Einstellungen extends mp3.classes.layer.People implements mp4.daten
             this.setLocale(new Locale("de", str[12+1][1]));
             
             try {
-                this.setEinnahmeDefKonto(new SKRKonto(QueryClass.instanceOf(), getEkDefaultKonto(), true));
+                this.setEinnahmeDefKonto(new SKRKonto(ConnectionHandler.instanceOf(), getEkDefaultKonto(), true));
             } catch (Exception exception) {
                 Popup.notice("Einnahmenkonto nicht vorhanden.\nBeachten Sie die genaue Schreibweise (z.B. '3 000' anstatt '3000')");
                 this.setEkDefaultKonto("2100");
-                this.setEinnahmeDefKonto(new SKRKonto(QueryClass.instanceOf(), getEkDefaultKonto(), true));
+                this.setEinnahmeDefKonto(new SKRKonto(ConnectionHandler.instanceOf(), getEkDefaultKonto(), true));
             }
 
             try {
-                this.setAusgabeDefKonto(new SKRKonto(QueryClass.instanceOf(), getAgDefaultKonto(), true));
+                this.setAusgabeDefKonto(new SKRKonto(ConnectionHandler.instanceOf(), getAgDefaultKonto(), true));
             } catch (Exception exception) {
                 Popup.notice("Ausgabenkonto nicht vorhanden.\nBeachten Sie die genaue Schreibweise (z.B. '3 000' anstatt '3000')");
                 this.setAgDefaultKonto("1111");
-                this.setAusgabeDefKonto(new SKRKonto(QueryClass.instanceOf(), getAgDefaultKonto(), true));
+                this.setAusgabeDefKonto(new SKRKonto(ConnectionHandler.instanceOf(), getAgDefaultKonto(), true));
             }
         }
     }

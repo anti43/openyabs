@@ -38,10 +38,10 @@ public class Data extends mp3.classes.layer.Things implements mp4.datenbank.stru
         super(query.clone(TABLE_BILLS));
 
 
-        Query q = mp3.classes.layer.QueryClass.instanceOf().clone(TABLE_DUES);
+        Query q = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(TABLE_DUES);
         ausgaben = q.select("preis, tax, datum", null);
 
-        q = mp3.classes.layer.QueryClass.instanceOf().clone(TABLE_INCOME);
+        q = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(TABLE_INCOME);
         einnahmen = q.select("preis, tax, datum", null);
 
 

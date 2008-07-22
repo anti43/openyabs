@@ -15,7 +15,7 @@ import mp4.utils.windows.Position;
 import mp3.classes.layer.DefaultHelpModel;
 import mp3.classes.layer.visual.Help;
 import mp3.classes.layer.Popup;
-import mp3.classes.layer.QueryClass;
+import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.klassen.objekte.Rechnung;
 import mp4.klassen.objekte.RechnungPosten;
 import mp4.klassen.objekte.Customer;
@@ -250,7 +250,7 @@ public class mp2Importer extends javax.swing.JFrame {
                         //Kundennummer", "Firma", "Anrede", "Vorname", "Name", "Str", "PLZ", "Ort", 
                         //"Tel", "Mobil", "Mail", "Webseite", "Notizen", "nn", "deleted"
 
-                        Customer c = new Customer(QueryClass.instanceOf());
+                        Customer c = new Customer(ConnectionHandler.instanceOf());
 
                         c.setKundennummer(kund[i][1]);
                         c.setFirma(kund[i][2]);
@@ -288,9 +288,9 @@ public class mp2Importer extends javax.swing.JFrame {
 
                         compat.mp2.kunde k = new compat.mp2.kunde(mainf, r.kundenID);
                         Log.Debug("MP3 Kunde Instanzieren : Nummer:" + k.Kundennummer);
-                        Customer c = new Customer(QueryClass.instanceOf(), k.Kundennummer, true);
+                        Customer c = new Customer(ConnectionHandler.instanceOf(), k.Kundennummer, true);
 //     Log.Debug(rechngs);
-                        Rechnung b = new Rechnung(QueryClass.instanceOf());
+                        Rechnung b = new Rechnung(ConnectionHandler.instanceOf());
                         b.setRechnungnummer(rechngs[i][1]);
                         b.setKundenId(c.getId());
 
@@ -336,7 +336,7 @@ public class mp2Importer extends javax.swing.JFrame {
 
                         for (int z = 3; z < 23; z += 2) {
 
-                            RechnungPosten bp = new RechnungPosten(QueryClass.instanceOf());
+                            RechnungPosten bp = new RechnungPosten(ConnectionHandler.instanceOf());
 
                             bp.setRechnungid(b.getId());
                             bp.setPosten(rechngs[i][z]);

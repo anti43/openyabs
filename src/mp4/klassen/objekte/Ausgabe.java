@@ -16,6 +16,7 @@
  */
 package mp4.klassen.objekte;
 
+import mp4.datenbank.verbindung.ConnectionHandler;
 import java.util.Date;
 import mp4.datenbank.verbindung.Query;
 
@@ -50,7 +51,7 @@ public class Ausgabe extends mp3.classes.layer.Things implements mp4.datenbank.s
     
     
     public Ausgabe() {
-        super(QueryClass.instanceOf().clone(TABLE_DUES));
+        super(ConnectionHandler.instanceOf().clone(TABLE_DUES));
     }
 
 
@@ -63,7 +64,7 @@ public class Ausgabe extends mp3.classes.layer.Things implements mp4.datenbank.s
      * @param datum
      */
     public Ausgabe(int kontoid, String beschreibung, double preis, double tax, Date datum) {
-        super(QueryClass.instanceOf().clone(TABLE_DUES));
+        super(ConnectionHandler.instanceOf().clone(TABLE_DUES));
 
         this.setKontenid(kontoid);
         this.setBeschreibung(beschreibung);
@@ -79,7 +80,7 @@ public class Ausgabe extends mp3.classes.layer.Things implements mp4.datenbank.s
      * @param id 
      */
     public Ausgabe(Integer id) {
-        super(QueryClass.instanceOf().clone( TABLE_DUES));
+        super(ConnectionHandler.instanceOf().clone( TABLE_DUES));
         this.id = Integer.valueOf(id);
         this.explode(this.selectLast("*", "id", id.toString(), true));
         
@@ -91,7 +92,7 @@ public class Ausgabe extends mp3.classes.layer.Things implements mp4.datenbank.s
      */
     public void disable() {
         if (super.getQueryHandler() == null) {
-            super.setQueryHandler(QueryClass.instanceOf().clone(TABLE_DUES));
+            super.setQueryHandler(ConnectionHandler.instanceOf().clone(TABLE_DUES));
         }
         this.delete(this.id);
         
@@ -101,7 +102,7 @@ public class Ausgabe extends mp3.classes.layer.Things implements mp4.datenbank.s
      */
     public void enable() {
         if (super.getQueryHandler() == null) {
-            super.setQueryHandler(QueryClass.instanceOf().clone(TABLE_DUES));
+            super.setQueryHandler(ConnectionHandler.instanceOf().clone(TABLE_DUES));
         }
         this.unDelete(this.id);
         
@@ -155,7 +156,7 @@ public class Ausgabe extends mp3.classes.layer.Things implements mp4.datenbank.s
 
     public String[][] getAll() {
 
-        Query q = QueryClass.instanceOf().clone(TABLE_DUES);
+        Query q = ConnectionHandler.instanceOf().clone(TABLE_DUES);
 
         String[][] prods = q.select("id,id,preis, datum", null, false);
 

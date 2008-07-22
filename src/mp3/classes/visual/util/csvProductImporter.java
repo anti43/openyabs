@@ -23,7 +23,7 @@ import mp3.classes.layer.DefaultHelpModel;
 import mp3.classes.layer.visual.Help;
 import mp3.classes.utils.Log;
 import mp3.classes.layer.Popup;
-import mp3.classes.layer.QueryClass;
+import mp4.datenbank.verbindung.ConnectionHandler;
 import mp3.classes.layer.visual.SupplierPicker;
 
 import mp3.classes.layer.ProductImporteur;
@@ -70,7 +70,7 @@ public class csvProductImporter extends javax.swing.JFrame {
     public csvProductImporter() {
         initComponents();
         new Position(this);
-        this.supplier =new Lieferant(QueryClass.instanceOf());
+        this.supplier =new Lieferant(ConnectionHandler.instanceOf());
 
     }
 
@@ -509,7 +509,7 @@ public class csvProductImporter extends javax.swing.JFrame {
 
                 for (int i = 0; i < thisa.data.length; i++) {
 
-                    Product pg = new Product(QueryClass.instanceOf());
+                    Product pg = new Product(ConnectionHandler.instanceOf());
                     ProductGroupHandler handler = ProductGroupHandler.instanceOf();
 
                     pg.setNummer(thisa.data[i].getProduktnummer());
@@ -546,7 +546,7 @@ public class csvProductImporter extends javax.swing.JFrame {
                         int z = handler.exists(cat, handler.CATEGORY);
                         if (z == 0) {
 
-                            newcat = new ProductGroupCategory(QueryClass.instanceOf());
+                            newcat = new ProductGroupCategory(ConnectionHandler.instanceOf());
 
                             newcat.setName(cat);
                             newcat.save();
@@ -560,7 +560,7 @@ public class csvProductImporter extends javax.swing.JFrame {
                         int f = handler.existFam(fam);
                         if (f == 0) {
 //                            Log.Debug("creating fam: "+fam + " " + f,true);
-                            newfam = new ProductGroupFamily(QueryClass.instanceOf());
+                            newfam = new ProductGroupFamily(ConnectionHandler.instanceOf());
                             newfam.setName(fam);
                             newfam.setKategorieid(z);
                             newfam.save();
@@ -576,7 +576,7 @@ public class csvProductImporter extends javax.swing.JFrame {
                         int l = handler.exists(grp, handler.GROUP);
                         if (l == 0) {
 
-                            newgrp = new ProductGroupGroup(QueryClass.instanceOf());
+                            newgrp = new ProductGroupGroup(ConnectionHandler.instanceOf());
                             newgrp.setName(grp);
                             newgrp.setFamilienid(f);
                             newgrp.save();
@@ -614,7 +614,7 @@ public class csvProductImporter extends javax.swing.JFrame {
                 d=new Date();
                 Log.Debug("Einlesen beendet: " + d + " Produkte: " + h,true);
                 
-                 new HistoryItem(QueryClass.instanceOf(), Strings.PRODUCT ,h + " Produkte importiert.");
+                 new HistoryItem(ConnectionHandler.instanceOf(), Strings.PRODUCT ,h + " Produkte importiert.");
             
                 
                 thisa.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));

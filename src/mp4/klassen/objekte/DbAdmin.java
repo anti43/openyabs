@@ -22,7 +22,7 @@ package mp4.klassen.objekte;
 import mp3.classes.interfaces.Constants;
 import mp3.classes.interfaces.ProtectedStrings;
 import mp3.classes.interfaces.Strings;
-import mp3.classes.layer.QueryClass;
+import mp4.datenbank.verbindung.ConnectionHandler;
 import mp3.classes.layer.Things;
 
 /**
@@ -32,7 +32,7 @@ import mp3.classes.layer.Things;
 public class DbAdmin extends Things implements Strings, Constants, ProtectedStrings{
 
     public DbAdmin(){
-        super(QueryClass.instanceOf());
+        super(ConnectionHandler.instanceOf());
     
     }
     

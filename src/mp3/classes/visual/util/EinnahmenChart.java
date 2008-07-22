@@ -34,7 +34,7 @@ public class EinnahmenChart extends javax.swing.JFrame implements Strings, Prote
         Integer maxval = 0;
         Integer minval = 0;
 
-        Data d = new Data(mp3.classes.layer.QueryClass.instanceOf());
+        Data d = new Data(mp4.datenbank.verbindung.ConnectionHandler.instanceOf());
 
 
         for (int i = 1; i <= months.length; i++) {
@@ -165,7 +165,7 @@ public class EinnahmenChart extends javax.swing.JFrame implements Strings, Prote
         Integer maxval = 0;
         Integer minval = 0;
 
-        Data d = new Data(mp3.classes.layer.QueryClass.instanceOf());
+        Data d = new Data(mp4.datenbank.verbindung.ConnectionHandler.instanceOf());
 
 
         for (int i = 1; i <= months.length; i++) {

@@ -30,12 +30,13 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import mp3.classes.interfaces.Constants;
 
 import mp3.classes.interfaces.Strings;
 import mp3.classes.layer.Popup;
-import mp3.classes.layer.QueryClass;
+import mp4.datenbank.verbindung.ConnectionHandler;
 
 
 import mp3.classes.utils.Browser;
@@ -61,6 +62,7 @@ import mp3.classes.visual.util.EinnahmenChart;
 import mp3.classes.visual.util.UmsatzChart;
 import mp3.classes.visual.sub.eurView;
 import mp4.cache.undoCache;
+import mp4.datenbank.verbindung.Query;
 import mp4.klassen.objekte.Customer;
 import mp4.klassen.objekte.Lieferant;
 import mp4.einstellungen.Einstellungen;
@@ -103,7 +105,7 @@ public class mainframe extends javax.swing.JFrame {
         splash.setMessage("Initialisiere Datenbank...");
 
         try {
-            QueryClass.instanceOf();
+            ConnectionHandler.instanceOf();
 
         } catch (Exception exception) {
             this.dispose();
@@ -114,7 +116,7 @@ public class mainframe extends javax.swing.JFrame {
 
         }
 
-        QueryClass.setProgressBarOn(this.mainProgress, this);
+        Query.setWaitCursorFor(this);
 
 
         splash.setMessage("Initialisiere Komponenten...");
@@ -217,7 +219,7 @@ public class mainframe extends javax.swing.JFrame {
 //        h = new backupView(this);
 //        i = new startView(this);
 //        j = new eurView(this);
-//        //c.setCustomer(new Customer(QueryClass.instanceOf(), "1"));
+//        //c.setCustomer(new Customer(ConnectionHandler.instanceOf(), "1"));
 //
 //
 //
@@ -231,7 +233,7 @@ public class mainframe extends javax.swing.JFrame {
 //        jPanel11.add(i, BorderLayout.CENTER);
 //        jPanel12.add(j, BorderLayout.CENTER);
 //
-//        QueryClass.setProgressBarOn(this.mainProgress, this);
+//        ConnectionHandler.setProgressBarOn(this.mainProgress, this);
 //
 //        this.setVisible(rootPaneCheckingEnabled);
 //

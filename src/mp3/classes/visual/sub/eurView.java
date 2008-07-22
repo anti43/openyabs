@@ -16,7 +16,7 @@ import java.util.Date;
 
 import mp3.classes.visual.main.mainframe;
 
-import mp3.classes.layer.QueryClass;
+import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.klassen.objekte.Ausgabe;
 import mp4.klassen.objekte.Rechnung;
 import mp4.klassen.objekte.Data;
@@ -64,7 +64,7 @@ public class eurView extends javax.swing.JPanel {
 
         formatteddate = df.format(date);
         datesdate = formatteddate.split(";");
-        data = new Data(QueryClass.instanceOf());
+        data = new Data(ConnectionHandler.instanceOf());
         year = datesdate[2];
         month = datesdate[1];
 //        jComboBox1.setSelectedIndex(Integer.valueOf(datesdate[1]) - 1);
@@ -185,7 +185,7 @@ public class eurView extends javax.swing.JPanel {
         Formater.format(getEurapanel().getJTable1(), 3, 100);
         Formater.format(getEurapanel().getJTable1(), 4, 100);
 
-        daten = new Rechnung(QueryClass.instanceOf()).getUnpaid();
+        daten = new Rechnung(ConnectionHandler.instanceOf()).getUnpaid();
 
         Formater.formatUneditableTable(europanel.getJTable3(), daten, new String[]{"id", "Nummer", "Betrag", "Datum"});
         Formater.format(getEurepanel().getJTable1(), 1, 80);

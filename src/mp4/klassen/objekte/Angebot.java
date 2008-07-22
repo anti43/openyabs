@@ -23,8 +23,8 @@ import java.util.List;
 import mp3.classes.interfaces.Strings;
 import mp4.datenbank.verbindung.Query;
 import mp3.classes.utils.Log;
-import mp3.classes.layer.PostenTableModel;
-import mp3.classes.layer.QueryClass;
+import mp4.utils.tabellen.models.PostenTableModel;
+import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.utils.datum.DateConverter;
 
 /**
@@ -52,8 +52,8 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.s
         this.id = 0;
     }
     public Angebot() {
-        super(QueryClass.instanceOf().clone(TABLE_ORDERS));
-        this.query = QueryClass.instanceOf();
+        super(ConnectionHandler.instanceOf().clone(TABLE_ORDERS));
+        this.query = ConnectionHandler.instanceOf();
     }
 
 
@@ -68,10 +68,10 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.s
      * @param id
      */
     public Angebot(Integer id) {
-        super(QueryClass.instanceOf().clone(TABLE_ORDERS));
+        super(ConnectionHandler.instanceOf().clone(TABLE_ORDERS));
         this.id = Integer.valueOf(id);
         this.explode(this.selectLast(Strings.ALL, Strings.ID, id.toString(), true));
-        this.query = QueryClass.instanceOf();
+        this.query = ConnectionHandler.instanceOf();
         bp = getProducts(query);
     }
 

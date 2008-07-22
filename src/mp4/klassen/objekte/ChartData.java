@@ -19,7 +19,7 @@
 package mp4.klassen.objekte;
 
 import mp4.datenbank.verbindung.Query;
-import mp3.classes.layer.QueryClass;
+import mp4.datenbank.verbindung.ConnectionHandler;
 
 /**
  *
@@ -39,7 +39,7 @@ public class ChartData extends mp3.classes.layer.Things implements mp4.datenbank
 
     public Object[][] fetchUmsatzInYears(String year) {
 
-        Data l = new Data(QueryClass.instanceOf());
+        Data l = new Data(ConnectionHandler.instanceOf());
 
         Object[][] stri = new Object[12][2];
 

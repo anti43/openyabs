@@ -18,7 +18,7 @@ import javax.swing.table.DefaultTableModel;
 
 import mp3.classes.interfaces.Strings;
 import mp3.classes.layer.Popup;
-import mp3.classes.layer.QueryClass;
+import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.klassen.objekte.Rechnung;
 import mp4.klassen.objekte.Customer;
 import mp4.klassen.objekte.HistoryItem;
@@ -46,7 +46,7 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
         initComponents();
         try {
 
-            current = new Customer(QueryClass.instanceOf());
+            current = new Customer(ConnectionHandler.instanceOf());
         } catch (Exception ex) {
             Popup.warn(ex.getMessage(), Popup.ERROR);
         }
@@ -927,7 +927,7 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
             }
             try {
 
-                current = new Customer(QueryClass.instanceOf());
+                current = new Customer(ConnectionHandler.instanceOf());
             } catch (Exception ex) {
                 Popup.warn(ex.getMessage(), Popup.ERROR);
             }
@@ -988,7 +988,7 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
             try {
 
 
-                new HistoryItem(QueryClass.instanceOf(), Strings.CUSTOMER, "Kunde Nummer: " + current.getKundennummer() + " angelegt.");
+                new HistoryItem(ConnectionHandler.instanceOf(), Strings.CUSTOMER, "Kunde Nummer: " + current.getKundennummer() + " angelegt.");
             } catch (Exception ex) {
                 Popup.warn(ex.getMessage(), Popup.ERROR);
             }
@@ -1001,7 +1001,7 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
             current.stripFirst(jTable2);
 
             try {
-                this.setCustomer(new Customer(QueryClass.instanceOf(), cur, true));
+                this.setCustomer(new Customer(ConnectionHandler.instanceOf(), cur, true));
 
             } catch (Exception exception) {
                 Popup.warn(exception.getMessage(), Popup.ERROR);
@@ -1098,7 +1098,7 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
 
                     mainframe.setMessage("Kunde Nummer " + current.getKundennummer() + " gespeichert.");
 
-                    new HistoryItem(QueryClass.instanceOf(), Strings.CUSTOMER, "Kunde Nummer: " + current.getKundennummer() + " editiert.");
+                    new HistoryItem(ConnectionHandler.instanceOf(), Strings.CUSTOMER, "Kunde Nummer: " + current.getKundennummer() + " editiert.");
 
 
                     liste = current.getAll(false);
@@ -1186,7 +1186,7 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
             try {
                 current.deactivate(current.getId().toString());
 
-                new HistoryItem(QueryClass.instanceOf(), Strings.CUSTOMER, "Kunde Nummer: " + current.getKundennummer() + " gelöscht.");
+                new HistoryItem(ConnectionHandler.instanceOf(), Strings.CUSTOMER, "Kunde Nummer: " + current.getKundennummer() + " gelöscht.");
                 this.jTextField4.setText("");
                 this.jTextField5.setText("");
                 this.jTextField6.setText("");
@@ -1208,7 +1208,7 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
                 this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
                 current.stripFirst(jTable2);
 
-                current = new Customer(QueryClass.instanceOf());
+                current = new Customer(ConnectionHandler.instanceOf());
             } catch (Exception ex) {
                 Popup.warn(ex.getMessage(), Popup.ERROR);
             }
@@ -1308,7 +1308,7 @@ class PopupMenu2 extends JPopupMenu {
      * 
      */
     public PopupMenu2(customersView view, JTable jTable, String fields, int mode) {
-        ActionListener actionListener = new PopupActionListener2(view, jTable, fields, new Customer(QueryClass.instanceOf()), mode);
+        ActionListener actionListener = new PopupActionListener2(view, jTable, fields, new Customer(ConnectionHandler.instanceOf()), mode);
 
         JMenuItem item;
         this.add(item = new JMenuItem("ansehen"));

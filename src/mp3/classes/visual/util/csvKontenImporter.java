@@ -23,7 +23,7 @@ import mp3.classes.layer.DefaultHelpModel;
 import mp3.classes.layer.visual.Help;
 import mp3.classes.utils.Log;
 import mp3.classes.layer.Popup;
-import mp3.classes.layer.QueryClass;
+import mp4.datenbank.verbindung.ConnectionHandler;
 import mp3.classes.layer.KontenImporteur;
 
 import mp4.klassen.objekte.HistoryItem;
@@ -444,7 +444,7 @@ public class csvKontenImporter extends javax.swing.JFrame {
                 d=new Date();
                 Log.Debug("Einlesen beendet: " + d + " Konten: " + h,true);
                 
-                 new HistoryItem(QueryClass.instanceOf(), Strings.KONTEN ,h + " Konten importiert.");
+                 new HistoryItem(ConnectionHandler.instanceOf(), Strings.KONTEN ,h + " Konten importiert.");
             
                 
                  thisa.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));

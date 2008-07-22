@@ -44,6 +44,7 @@ public class Conn implements Strings {
     /**
      * 
      * @return Database connector
+     * @throws Exception 
      */
     public static Conn instanceOf() throws Exception {
         if (connector == null) {
@@ -58,6 +59,7 @@ public class Conn implements Strings {
      * @param url 
      * @param create 
      * @return Database connector
+     * @throws Exception 
      */
     public static Conn instanceOf(String url, boolean create) throws Exception {
         if (connector == null) {

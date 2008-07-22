@@ -16,7 +16,6 @@
  */
 package handling.pdf;
 
-import mp4.klassen.objekte.*;
 import mp4.klassen.objekte.Customer;
 import mp4.klassen.objekte.Angebot;
 import com.lowagie.text.pdf.*;
@@ -26,7 +25,7 @@ import java.util.*;
 
 import mp3.Main;
 import mp3.classes.layer.Popup;
-import mp3.classes.layer.QueryClass;
+
 
 
 import mp3.classes.utils.Formater;

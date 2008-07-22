@@ -27,9 +27,9 @@ import mp3.classes.layer.visual.DatePick;
 import mp3.classes.utils.Formater;
 import mp3.classes.utils.Log;
 import mp3.classes.layer.Popup;
-import mp3.classes.layer.PostenTableModel;
+import mp4.utils.tabellen.models.PostenTableModel;
 import mp3.classes.layer.visual.ProductPicker;
-import mp3.classes.layer.QueryClass;
+import mp4.datenbank.verbindung.ConnectionHandler;
 
 
 
@@ -981,9 +981,9 @@ public class offersView extends javax.swing.JPanel implements Runnable, mp4.date
             }
             if (valide) {
 
-                Query f = QueryClass.instanceOf().clone(TABLE_ORDERS);
+                Query f = ConnectionHandler.instanceOf().clone(TABLE_ORDERS);
                 Integer auftragnummer = f.getNextIndexOfIntCol("auftragnummer");
-                Angebot order = new Angebot(QueryClass.instanceOf());
+                Angebot order = new Angebot(ConnectionHandler.instanceOf());
                 order.setOrdernummer(auftragnummer.toString());
                 order.setDatum(DateConverter.getDate(jTextField7.getText()));
                 order.setBisDatum(DateConverter.getDate(jTextField10.getText()));
@@ -995,7 +995,7 @@ public class offersView extends javax.swing.JPanel implements Runnable, mp4.date
 
                     //anzahl,bezeichnung,mehrwertsteuer,nettopreis
                     if (m.getValueAt(i, 4) != null) {
-                        AngebotPosten b = new AngebotPosten(QueryClass.instanceOf());
+                        AngebotPosten b = new AngebotPosten(ConnectionHandler.instanceOf());
                         b.setauftragid(order.getId());
                         b.setPosten((String) m.getValueAt(i, 2));
 
@@ -1013,7 +1013,7 @@ public class offersView extends javax.swing.JPanel implements Runnable, mp4.date
 
                 jTextField6.setText(order.getOrdernummer());
                 mainframe.setMessage("Angebot Nummer: " + order.getOrdernummer() + " angelegt.");
-                new HistoryItem(QueryClass.instanceOf(), Strings.ORDER, "Angebot Nummer: " + order.getOrdernummer() + " angelegt.");
+                new HistoryItem(ConnectionHandler.instanceOf(), Strings.ORDER, "Angebot Nummer: " + order.getOrdernummer() + " angelegt.");
                 this.setOrder(new Angebot(order.getId()));
             }
         } else {
@@ -1059,7 +1059,7 @@ public class offersView extends javax.swing.JPanel implements Runnable, mp4.date
                     editor.stopCellEditing();
                 }
                 if (valide) {
-                    Query f = QueryClass.instanceOf().clone(TABLE_ORDERS);
+                    Query f = ConnectionHandler.instanceOf().clone(TABLE_ORDERS);
                     Angebot order = getCurrent();
                     order.setDatum(DateConverter.getDate(jTextField7.getText()));
                     order.setBisDatum(DateConverter.getDate(jTextField10.getText()));
@@ -1068,7 +1068,7 @@ public class offersView extends javax.swing.JPanel implements Runnable, mp4.date
 
                     for (int i = 0; i < m.getRowCount(); i++) {
                         if (m.getValueAt(i, 0) != null) {
-                            AngebotPosten b = new AngebotPosten(QueryClass.instanceOf(), m.getValueAt(i, 0).toString());
+                            AngebotPosten b = new AngebotPosten(ConnectionHandler.instanceOf(), m.getValueAt(i, 0).toString());
                             b.destroy();
                         }
                     }
@@ -1076,7 +1076,7 @@ public class offersView extends javax.swing.JPanel implements Runnable, mp4.date
                     for (int i = 0; i < m.getRowCount(); i++) {
                         //anzahl,bezeichnung,mehrwertsteuer,nettopreis
                         if (m.getValueAt(i, 4) != null) {
-                            AngebotPosten b = new AngebotPosten(QueryClass.instanceOf());
+                            AngebotPosten b = new AngebotPosten(ConnectionHandler.instanceOf());
                             b.setauftragid(getCurrent().getId());
                             b.setPosten((String) m.getValueAt(i, 2));
                             try {
@@ -1091,7 +1091,7 @@ public class offersView extends javax.swing.JPanel implements Runnable, mp4.date
                     }
 
                     mainframe.getNachricht().setText("Angebot Nummer " + order.getOrdernummer() + " gespeichert.");
-                    new HistoryItem(QueryClass.instanceOf(), Strings.ORDER, "Angebot Nummer: " + order.getOrdernummer() + " editiert.");
+                    new HistoryItem(ConnectionHandler.instanceOf(), Strings.ORDER, "Angebot Nummer: " + order.getOrdernummer() + " editiert.");
                     this.setOrder(new Angebot(order.getId()));
                 }
             } else {
@@ -1123,8 +1123,8 @@ public class offersView extends javax.swing.JPanel implements Runnable, mp4.date
 
     private void clear() {
 
-        this.customer = new Customer(QueryClass.instanceOf());
-        this.current = new Angebot(QueryClass.instanceOf());
+        this.customer = new Customer(ConnectionHandler.instanceOf());
+        this.current = new Angebot(ConnectionHandler.instanceOf());
 
         jTextField4.setText("");
         jTextField5.setText("");
@@ -1158,7 +1158,7 @@ public class offersView extends javax.swing.JPanel implements Runnable, mp4.date
             this.setCustomer(new Customer(Integer.valueOf(st[0])));
         } catch (Exception exception) {
             try {
-                this.setCustomer(new Customer(QueryClass.instanceOf(), jTextField4.getText(), true));
+                this.setCustomer(new Customer(ConnectionHandler.instanceOf(), jTextField4.getText(), true));
 
             } catch (Exception exception1) {
                 mainframe.setMessage("Kein Datensatz gefunden k");
@@ -1180,7 +1180,7 @@ public class offersView extends javax.swing.JPanel implements Runnable, mp4.date
             this.setCustomer(new Customer(Integer.valueOf(st[0])));
         } catch (Exception exception) {
             try {
-                this.setCustomer(new Customer(QueryClass.instanceOf(), jTextField4.getText(), true));
+                this.setCustomer(new Customer(ConnectionHandler.instanceOf(), jTextField4.getText(), true));
             } catch (Exception exception1) {
                 mainframe.setMessage("Kein Datensatz gefunden k");
             }
@@ -1295,7 +1295,7 @@ public class offersView extends javax.swing.JPanel implements Runnable, mp4.date
                     editor.stopCellEditing();
                 }
                 if (valide) {
-                    Query f = QueryClass.instanceOf().clone(TABLE_BILLS);
+                    Query f = ConnectionHandler.instanceOf().clone(TABLE_BILLS);
                     Integer rechnungnummer = f.getNextIndexOfIntCol("rechnungnummer");
 
                     bill.setRechnungnummer(rechnungnummer.toString());
@@ -1307,7 +1307,7 @@ public class offersView extends javax.swing.JPanel implements Runnable, mp4.date
 
                         //anzahl,bezeichnung,mehrwertsteuer,nettopreis
                         if (m.getValueAt(i, 4) != null) {
-                            RechnungPosten b = new RechnungPosten(QueryClass.instanceOf());
+                            RechnungPosten b = new RechnungPosten(ConnectionHandler.instanceOf());
                             b.setRechnungid(bill.getId());
                             b.setPosten((String) m.getValueAt(i, 2));
 
@@ -1434,7 +1434,7 @@ public class offersView extends javax.swing.JPanel implements Runnable, mp4.date
         if (current != null) {
             return current;
         } else {
-            return new Angebot(QueryClass.instanceOf());
+            return new Angebot(ConnectionHandler.instanceOf());
         }
     }
 

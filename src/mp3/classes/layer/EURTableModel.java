@@ -18,6 +18,7 @@
  */
 package mp3.classes.layer;
 
+import mp4.datenbank.verbindung.ConnectionHandler;
 import javax.swing.table.DefaultTableModel;
 import mp3.classes.interfaces.Constants;
 import mp3.classes.interfaces.ProtectedStrings;
@@ -79,7 +80,7 @@ public class EURTableModel implements ProtectedStrings, Constants, Strings, mp4.
 
         }
 
-        Query q = QueryClass.instanceOf().clone(TABLE_DUES);
+        Query q = ConnectionHandler.instanceOf().clone(TABLE_DUES);
 
         String[][] ausgaben = q.select("kontenid, preis, tax, datum", null);
         Integer x = 0;
@@ -202,7 +203,7 @@ public class EURTableModel implements ProtectedStrings, Constants, Strings, mp4.
         data[20][1] = Formater.formatMoney(gesamtausgabe);
 
 
-        q = QueryClass.instanceOf().clone(TABLE_INCOME);
+        q = ConnectionHandler.instanceOf().clone(TABLE_INCOME);
 
         String[][] einnahmen = q.select("kontenid, preis, tax, datum", null);
 
@@ -380,7 +381,7 @@ public class EURTableModel implements ProtectedStrings, Constants, Strings, mp4.
         }
 
 
-        Query q = QueryClass.instanceOf().clone(TABLE_DUES);
+        Query q = ConnectionHandler.instanceOf().clone(TABLE_DUES);
 
         String[][] ausgaben = q.select("kontenid, preis, tax, datum", null);
         Integer x = 0;
@@ -506,7 +507,7 @@ public class EURTableModel implements ProtectedStrings, Constants, Strings, mp4.
         data[20][1] = Formater.formatMoney(gesamtausgabe);
 
 
-        q = QueryClass.instanceOf().clone(TABLE_INCOME);
+        q = ConnectionHandler.instanceOf().clone(TABLE_INCOME);
 
         String[][] einnahmen = q.select("kontenid, preis, tax, datum", null);
 

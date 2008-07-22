@@ -72,7 +72,7 @@ public interface Installation {
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
         "PRIMARY KEY  (id))",
         
-         "CREATE TABLE rechnungsposten (ID BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
+        "CREATE TABLE rechnungsposten (ID BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
         "rechnungid INTEGER REFERENCES rechnungen (id)," + "anzahl DOUBLE DEFAULT 0," +
         "posten VARCHAR(1000) default NULL,  preis DOUBLE DEFAULT 0, " +
         "steuersatz DOUBLE DEFAULT 0," +
@@ -80,18 +80,19 @@ public interface Installation {
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
         "PRIMARY KEY  (id))",
         
-        "CREATE TABLE auftragsposten (ID BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-        "auftragid INTEGER NOT NULL," + "anzahl DOUBLE DEFAULT 0," +
-        "posten VARCHAR(1000) default NULL,  preis DOUBLE DEFAULT 0, " +
-        "steuersatz DOUBLE DEFAULT 0," +
-        "deleted INTEGER DEFAULT 0," +
-        "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
-        "PRIMARY KEY  (id))",
         
         "CREATE TABLE auftraege (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
         "Auftragnummer VARCHAR(250) default NULL, KundenId INTEGER REFERENCES kunden(id)," +
         "Datum DATE NOT NULL," + "auftrag INTEGER DEFAULT 0," + "validvon DATE NOT NULL," + "validbis DATE NOT NULL," +
         "rechnung  INTEGER DEFAULT 0," +
+        "deleted INTEGER DEFAULT 0," +
+        "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
+        "PRIMARY KEY  (id))",
+        
+        "CREATE TABLE auftragsposten (ID BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
+        "auftragid INTEGER REFERENCES auftraege  (id)," + "anzahl DOUBLE DEFAULT 0," +
+        "posten VARCHAR(1000) default NULL,  preis DOUBLE DEFAULT 0, " +
+        "steuersatz DOUBLE DEFAULT 0," +
         "deleted INTEGER DEFAULT 0," +
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
         "PRIMARY KEY  (id))",

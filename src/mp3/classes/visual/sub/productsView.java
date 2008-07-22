@@ -20,7 +20,7 @@ import mp3.classes.utils.Formater;
 import mp3.classes.utils.Log;
 import mp3.classes.layer.Popup;
 import mp3.classes.layer.visual.ProductPicker;
-import mp3.classes.layer.QueryClass;
+import mp4.datenbank.verbindung.ConnectionHandler;
 import mp3.classes.layer.visual.SupplierPicker;
 import mp3.classes.visual.main.mainframe;
 import mp4.utils.datum.DateConverter;
@@ -945,8 +945,8 @@ public class productsView extends javax.swing.JPanel implements mp4.datenbank.st
         Formater.clearText(jPanel6);
         jEditorPane1.setText("");
 
-        this.current = new Product(QueryClass.instanceOf());
-        this.supplier = new Lieferant(QueryClass.instanceOf());
+        this.current = new Product(ConnectionHandler.instanceOf());
+        this.supplier = new Lieferant(ConnectionHandler.instanceOf());
     }//GEN-LAST:event_jButton12MouseClicked
 
 private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
@@ -1019,7 +1019,7 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     // End of variables declaration//GEN-END:variables
 private void saveNew() {
 
-        current = new Product(QueryClass.instanceOf());
+        current = new Product(ConnectionHandler.instanceOf());
 
         if (jTextField4.getText().equals("") || autoProductNumber) {
             Integer tz = current.getNextIndex("produktnummer");

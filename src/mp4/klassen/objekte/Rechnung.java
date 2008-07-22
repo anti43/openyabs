@@ -28,9 +28,9 @@ import mp4.datenbank.verbindung.Query;
 
 import mp3.classes.interfaces.Strings;
 import mp3.classes.utils.Log;
-import mp3.classes.layer.PostenTableModel;
+import mp4.utils.tabellen.models.PostenTableModel;
 
-import mp3.classes.layer.QueryClass;
+import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.utils.zahlen.FormatMoney;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.zahlen.FormatNumber;
@@ -70,8 +70,8 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         this.id = 0;
     }
     public Rechnung() {
-        super(QueryClass.instanceOf().clone(TABLE_BILLS));
-        this.query = QueryClass.instanceOf();
+        super(ConnectionHandler.instanceOf().clone(TABLE_BILLS));
+        this.query = ConnectionHandler.instanceOf();
     }
 
   
@@ -87,10 +87,10 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
      * @param id
      */
     public Rechnung(Integer id) {
-        super(QueryClass.instanceOf().clone(TABLE_BILLS));
+        super(ConnectionHandler.instanceOf().clone(TABLE_BILLS));
         this.id = Integer.valueOf(id);
         this.explode(this.selectLast(Strings.ALL, Strings.ID, id.toString(), true));
-        this.query = QueryClass.instanceOf();
+        this.query = ConnectionHandler.instanceOf();
         bp = getProducts(query);
         betreffzeilen = new RechnungBetreffzeile().getDataOf(id);
     }

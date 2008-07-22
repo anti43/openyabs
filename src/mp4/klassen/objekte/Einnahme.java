@@ -17,6 +17,7 @@
 package mp4.klassen.objekte;
 
 /*import mp3.classes.objects.*;*/
+import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.einstellungen.Einstellungen;
 import mp3.classes.interfaces.Daemonable;
 import java.util.Date;
@@ -58,7 +59,7 @@ public class Einnahme extends mp3.classes.layer.Things implements mp4.datenbank.
      */
     public void disable() {
         if (super.getQueryHandler() == null) {
-            super.setQueryHandler(QueryClass.instanceOf().clone(TABLE_INCOME));
+            super.setQueryHandler(ConnectionHandler.instanceOf().clone(TABLE_INCOME));
         }
         this.delete(this.id);
         
@@ -68,13 +69,13 @@ public class Einnahme extends mp3.classes.layer.Things implements mp4.datenbank.
      */
     public void enable() {
         if (super.getQueryHandler() == null) {
-            super.setQueryHandler(QueryClass.instanceOf().clone(TABLE_INCOME));
+            super.setQueryHandler(ConnectionHandler.instanceOf().clone(TABLE_INCOME));
         }
         this.unDelete(this.id);
         
     }
     public Einnahme() {
-        super(QueryClass.instanceOf().clone(TABLE_INCOME));
+        super(ConnectionHandler.instanceOf().clone(TABLE_INCOME));
         this.setKontenid(Einstellungen.instanceOf().getEinnahmeDefKonto().getId());
     }
 
@@ -87,7 +88,7 @@ public class Einnahme extends mp3.classes.layer.Things implements mp4.datenbank.
      * @param datum
      */
     public Einnahme(int kontoid, String beschreibung, double preis, double tax, Date datum) {
-        super(QueryClass.instanceOf().clone(TABLE_INCOME));
+        super(ConnectionHandler.instanceOf().clone(TABLE_INCOME));
 
         this.setKontenid(kontoid);
         this.setBeschreibung(beschreibung);
@@ -103,7 +104,7 @@ public class Einnahme extends mp3.classes.layer.Things implements mp4.datenbank.
      * @param id
      */
     public Einnahme(Integer id) {
-        super(QueryClass.instanceOf().clone(TABLE_INCOME));
+        super(ConnectionHandler.instanceOf().clone(TABLE_INCOME));
         this.id = Integer.valueOf(id);
         this.explode(this.selectLast("*", "id", id.toString(), true));
     }
@@ -158,7 +159,7 @@ public class Einnahme extends mp3.classes.layer.Things implements mp4.datenbank.
     public void save() {
 
         if (super.getQueryHandler() == null) {
-            super.setQueryHandler(QueryClass.instanceOf().clone(TABLE_INCOME));
+            super.setQueryHandler(ConnectionHandler.instanceOf().clone(TABLE_INCOME));
         }
 
         if (id > 0) {
@@ -176,7 +177,7 @@ public class Einnahme extends mp3.classes.layer.Things implements mp4.datenbank.
 
     public String[][] getAll() {
 
-        Query q = QueryClass.instanceOf().clone(TABLE_INCOME);
+        Query q = ConnectionHandler.instanceOf().clone(TABLE_INCOME);
 
         String[][] prods = q.select("id, id, preis, datum", null,false);//brutto
 

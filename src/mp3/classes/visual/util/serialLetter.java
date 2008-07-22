@@ -18,7 +18,7 @@ import javax.swing.table.DefaultTableModel;
 import mp3.classes.interfaces.Constants;
 import mp3.classes.interfaces.ProtectedStrings;
 import mp3.classes.layer.Popup;
-import mp3.classes.layer.QueryClass;
+import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.klassen.objekte.Customer;
 
 import mp4.utils.windows.Position;
@@ -279,11 +279,8 @@ public class serialLetter extends javax.swing.JFrame implements ProtectedStrings
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
- 
         serialLetter.Task task = new Task(this);
-
-        task.execute();
-        
+        task.execute();       
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
@@ -374,7 +371,7 @@ public class serialLetter extends javax.swing.JFrame implements ProtectedStrings
 
             } else {
 
-                Customer c = new Customer(QueryClass.instanceOf());
+                Customer c = new Customer(ConnectionHandler.instanceOf());
 
                 ArrayList arr = c.getAllCustomers();
 

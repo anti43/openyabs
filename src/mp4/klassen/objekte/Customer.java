@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import mp4.datenbank.verbindung.Query;
 
 import mp3.classes.layer.Popup;
-import mp3.classes.layer.QueryClass;
+import mp4.datenbank.verbindung.ConnectionHandler;
 import mp3.classes.utils.Log;
 
 /**
@@ -49,8 +49,8 @@ public class Customer extends mp3.classes.layer.People implements mp4.datenbank.
     private boolean deleted=false;
 
     public Customer() {
-        super(QueryClass.instanceOf().clone(TABLE_CUSTOMERS));
-        this.query=QueryClass.instanceOf();
+        super(ConnectionHandler.instanceOf().clone(TABLE_CUSTOMERS));
+        this.query=ConnectionHandler.instanceOf();
     }
 
 
@@ -63,13 +63,13 @@ public class Customer extends mp3.classes.layer.People implements mp4.datenbank.
     }
 
     public Customer(Integer id) {
-        super(QueryClass.instanceOf().clone(TABLE_CUSTOMERS));
+        super(ConnectionHandler.instanceOf().clone(TABLE_CUSTOMERS));
         this.id=Integer.valueOf(id);
         this.explode(this.selectLast("*", "id", id.toString(), true , true, false));
-        this.query=QueryClass.instanceOf();
+        this.query=ConnectionHandler.instanceOf();
     }
 
-    public Customer(QueryClass query, String kundennummer, boolean like) {
+    public Customer(ConnectionHandler query, String kundennummer, boolean like) {
         super(query.clone(TABLE_CUSTOMERS));
 //        this.id=Integer.valueOf(id);
         this.explode(

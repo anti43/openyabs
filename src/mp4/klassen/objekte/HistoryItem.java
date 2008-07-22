@@ -24,7 +24,7 @@ import mp3.classes.interfaces.Strings;
 import mp4.datenbank.verbindung.Query;
 
 import mp3.classes.layer.Popup;
-import mp3.classes.layer.QueryClass;
+import mp4.datenbank.verbindung.ConnectionHandler;
 import mp3.classes.visual.main.mainframe;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.tabellen.DataOrder;
@@ -65,7 +65,7 @@ public class HistoryItem extends mp3.classes.layer.Things implements mp4.datenba
      * @param user
      */
     public HistoryItem(String aktion, String text, User user) {
-        super(QueryClass.instanceOf().clone(TABLE_HISTORY));
+        super(ConnectionHandler.instanceOf().clone(TABLE_HISTORY));
       
         this.setAktion(aktion);
         this.setText(text);
@@ -107,7 +107,7 @@ public class HistoryItem extends mp3.classes.layer.Things implements mp4.datenba
     }
 
     public HistoryItem(String aktion, String text) {
-       super(QueryClass.instanceOf().clone(TABLE_HISTORY));
+       super(ConnectionHandler.instanceOf().clone(TABLE_HISTORY));
 
         this.setAktion(aktion);
         this.setText(text);

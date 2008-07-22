@@ -6,6 +6,7 @@
 package mp3.classes.visual.util;
 
 
+import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.klassen.objekte.SKRKonto;
 
 import javax.swing.JTextField;
@@ -424,7 +425,7 @@ public class konten extends javax.swing.JFrame {
         if (evt.getClickCount() >= 1 && idOk) {
 
             try {
-                this.setKonten(new SKRKonto(QueryClass.instanceOf(), id));
+                this.setKonten(new SKRKonto(ConnectionHandler.instanceOf(), id));
 
             } catch (Exception exception) {
                 Log.Debug(exception);
@@ -435,7 +436,7 @@ public class konten extends javax.swing.JFrame {
 
             try {
 
-                this.Konto = new SKRKonto(QueryClass.instanceOf(), id);
+                this.Konto = new SKRKonto(ConnectionHandler.instanceOf(), id);
                 this.field.setText(getKonto().getArt());
                 
                 if(this.einnahme!=null) {
@@ -502,7 +503,7 @@ public class konten extends javax.swing.JFrame {
         }
 
         try {
-            this.Konto = new SKRKonto(QueryClass.instanceOf(), id);
+            this.Konto = new SKRKonto(ConnectionHandler.instanceOf(), id);
             this.field.setText(getKonto().getArt());
             
                if(this.einnahme!=null) {

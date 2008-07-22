@@ -6,7 +6,7 @@
 package mp3.classes.visual.sub;
 
 import java.awt.Font;
-import mp3.classes.layer.QueryClass;
+import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.klassen.objekte.Rechnung;
 import mp4.klassen.objekte.Customer;
 import mp3.classes.utils.Formater;
@@ -248,7 +248,7 @@ public class eurOPanel extends javax.swing.JPanel {
     }
    
     private void updateTable() {
-        data = new Rechnung(QueryClass.instanceOf()).getUnpaid();
+        data = new Rechnung(ConnectionHandler.instanceOf()).getUnpaid();
         String header = "id,Nummer,Betrag,Datum";
         Formater.formatUneditableTable(getJTable3(),data, header.split(","));
     }

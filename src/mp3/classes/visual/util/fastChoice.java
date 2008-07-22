@@ -7,7 +7,7 @@ package mp3.classes.visual.util;
 
 import mp3.classes.visual.main.*;
 import mp3.classes.layer.Popup;
-import mp3.classes.layer.QueryClass;
+import mp4.datenbank.verbindung.ConnectionHandler;
 
 import mp4.klassen.objekte.Customer;
 import mp4.klassen.objekte.Rechnung;
@@ -211,7 +211,7 @@ public class fastChoice extends javax.swing.JFrame {
 
                 frame.setShowingTab(0);
 
-                kl = new Customer(QueryClass.instanceOf(), jTextField1.getText(), true);
+                kl = new Customer(ConnectionHandler.instanceOf(), jTextField1.getText(), true);
 
                 if (kl.isValid()) {
 
@@ -229,7 +229,7 @@ public class fastChoice extends javax.swing.JFrame {
 
                 frame.setShowingTab(1);
 
-                kr = new Rechnung(QueryClass.instanceOf(), jTextField1.getText(), true);
+                kr = new Rechnung(ConnectionHandler.instanceOf(), jTextField1.getText(), true);
 
                 if (kr.hasId()) {
 

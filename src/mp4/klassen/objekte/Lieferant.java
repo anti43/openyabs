@@ -21,7 +21,7 @@ import mp3.classes.interfaces.Strings;
 import mp4.datenbank.verbindung.Query;
 
 import mp3.classes.layer.Popup;
-import mp3.classes.layer.QueryClass;
+import mp4.datenbank.verbindung.ConnectionHandler;
 
 /**
  *
@@ -47,9 +47,9 @@ public class Lieferant extends mp3.classes.layer.People implements mp4.datenbank
     private Query query;
 
     public Lieferant() {
-        super(QueryClass.instanceOf().clone(TABLE_SUPPLIER));
+        super(ConnectionHandler.instanceOf().clone(TABLE_SUPPLIER));
         this.id = 0;
-        this.query =QueryClass.instanceOf();
+        this.query =ConnectionHandler.instanceOf();
         
     }
 
@@ -63,8 +63,8 @@ public class Lieferant extends mp3.classes.layer.People implements mp4.datenbank
     }
 
     public Lieferant(Integer id) {
-        super(QueryClass.instanceOf().clone(TABLE_SUPPLIER));
-        this.query =QueryClass.instanceOf();
+        super(ConnectionHandler.instanceOf().clone(TABLE_SUPPLIER));
+        this.query =ConnectionHandler.instanceOf();
         
 //        if(this.id!=0) {
             this.explode(this.selectLast("*", "id", id.toString(), true, false, false));

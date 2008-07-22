@@ -17,7 +17,7 @@
 package mp4.klassen.objekte;
 
 
-import mp3.classes.layer.QueryClass;
+import mp4.datenbank.verbindung.ConnectionHandler;
 
 /**
  *
@@ -42,7 +42,7 @@ public class RechnungBetreffzeile extends mp3.classes.layer.Things implements mp
     }
 
     public RechnungBetreffzeile() {
-        super(QueryClass.instanceOf().clone(TABLE_BILL_TEXTS));
+        super(ConnectionHandler.instanceOf().clone(TABLE_BILL_TEXTS));
     }
 
     /**
@@ -51,7 +51,7 @@ public class RechnungBetreffzeile extends mp3.classes.layer.Things implements mp
      * @param id 
      */
     public RechnungBetreffzeile(Integer id) {
-        super(QueryClass.instanceOf().clone(TABLE_BILL_TEXTS));
+        super(ConnectionHandler.instanceOf().clone(TABLE_BILL_TEXTS));
         this.id = id;
         value = this.selectLast("*", "id", id.toString(), true);
         explode(value);

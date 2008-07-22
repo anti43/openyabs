@@ -17,7 +17,7 @@ import javax.swing.tree.TreeSelectionModel;
 import mp4.utils.windows.Position;
 import mp3.classes.utils.Log;
 import mp3.classes.layer.Popup;
-import mp3.classes.layer.QueryClass;
+import mp4.datenbank.verbindung.ConnectionHandler;
 
 import mp3.classes.visual.main.*;
 import mp4.klassen.objekte.ProductGroupCategory;
@@ -90,19 +90,19 @@ public class groupsView extends javax.swing.JFrame implements TreeSelectionListe
         jTextField4.setText(e.getNewLeadSelectionPath().toString());
         Object nodeInfo = node.getUserObject();
 
-        if (nodeInfo.getClass().isInstance(new ProductGroupGroup(QueryClass.instanceOf()))) {
+        if (nodeInfo.getClass().isInstance(new ProductGroupGroup(ConnectionHandler.instanceOf()))) {
             grp = (ProductGroupGroup) nodeInfo;
             leaf = true;
             family = false;
             category = false;
 
-        } else if (nodeInfo.getClass().isInstance(new ProductGroupFamily(QueryClass.instanceOf()))) {
+        } else if (nodeInfo.getClass().isInstance(new ProductGroupFamily(ConnectionHandler.instanceOf()))) {
             fag = (ProductGroupFamily) nodeInfo;
             leaf = false;
             family = true;
             category = false;
 
-        } else if (nodeInfo.getClass().isInstance(new ProductGroupCategory(QueryClass.instanceOf()))) {
+        } else if (nodeInfo.getClass().isInstance(new ProductGroupCategory(ConnectionHandler.instanceOf()))) {
             cat = (ProductGroupCategory) nodeInfo;
             leaf = false;
             family = false;
@@ -319,16 +319,16 @@ public class groupsView extends javax.swing.JFrame implements TreeSelectionListe
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
         if (!jTextField1.getText().equals("")) {
-            ProductGroupCategory gr = new ProductGroupCategory(QueryClass.instanceOf());
+            ProductGroupCategory gr = new ProductGroupCategory(ConnectionHandler.instanceOf());
             gr.setName(jTextField1.getText());
             gr.save();
 
-            ProductGroupFamily fg = new ProductGroupFamily(QueryClass.instanceOf());
+            ProductGroupFamily fg = new ProductGroupFamily(ConnectionHandler.instanceOf());
             fg.setName("Default");
             fg.setKategorieid(gr.getId());
             fg.save();
 
-            ProductGroupGroup gj = new ProductGroupGroup(QueryClass.instanceOf());
+            ProductGroupGroup gj = new ProductGroupGroup(ConnectionHandler.instanceOf());
             gj.setName("Default");
             gj.setFamilienid(fg.getId());
             gj.save();
@@ -342,12 +342,12 @@ public class groupsView extends javax.swing.JFrame implements TreeSelectionListe
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         if (category) {
             if (!jTextField2.getText().equals("")) {
-                ProductGroupFamily fg = new ProductGroupFamily(QueryClass.instanceOf());
+                ProductGroupFamily fg = new ProductGroupFamily(ConnectionHandler.instanceOf());
                 fg.setName(jTextField2.getText());
                 fg.setKategorieid(cat.getId());
                 fg.save();
 
-                ProductGroupGroup gj = new ProductGroupGroup(QueryClass.instanceOf());
+                ProductGroupGroup gj = new ProductGroupGroup(ConnectionHandler.instanceOf());
                 gj.setName("Default");
                 gj.setFamilienid(fg.getId());
                 gj.save();
@@ -361,7 +361,7 @@ public class groupsView extends javax.swing.JFrame implements TreeSelectionListe
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         if (family) {
             if (!jTextField3.getText().equals("")) {
-                ProductGroupGroup gj = new ProductGroupGroup(QueryClass.instanceOf());
+                ProductGroupGroup gj = new ProductGroupGroup(ConnectionHandler.instanceOf());
                 gj.setName(jTextField3.getText());
                 gj.setFamilienid(fag.getId());
                 gj.save();

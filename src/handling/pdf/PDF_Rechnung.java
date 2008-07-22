@@ -26,7 +26,7 @@ import java.util.logging.Logger;
 import mp3.Main;
 import mp3.classes.interfaces.Strings;
 import mp3.classes.layer.Popup;
-import mp3.classes.layer.QueryClass;
+import mp4.datenbank.verbindung.ConnectionHandler;
 import mp3.classes.utils.Formater;
 import mp3.classes.utils.Log;
 

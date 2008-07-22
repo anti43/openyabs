@@ -22,7 +22,7 @@ import mp3.classes.interfaces.Strings;
 import mp3.classes.utils.FileReaderWriter;
 import mp3.classes.utils.Log;
 import mp3.classes.layer.Popup;
-import mp3.classes.layer.QueryClass;
+import mp4.datenbank.verbindung.ConnectionHandler;
 //import mp3.classes.objects.ungrouped.History;
 //import mp3.classes.objects.ungrouped.MyData;
 import mp3.classes.utils.DirectoryHandler;
@@ -247,7 +247,7 @@ public class backupView extends javax.swing.JPanel{
             Zip.zip(path, savefile);
             this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
             mainframe.setMessage("Sicherungsdatei '" + savefile + "' angelegt.");
-            new HistoryItem(QueryClass.instanceOf(), Strings.BACKUP, "Sicherungsdatei " + savefile + " angelegt.");
+            new HistoryItem(ConnectionHandler.instanceOf(), Strings.BACKUP, "Sicherungsdatei " + savefile + " angelegt.");
         } catch (Exception ex) {
             Log.Debug(ex.getMessage(), true);
         }

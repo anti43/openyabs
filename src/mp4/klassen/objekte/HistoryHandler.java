@@ -2,7 +2,7 @@
 
 package mp4.klassen.objekte;
 
-import mp3.classes.layer.QueryClass;
+import mp4.datenbank.verbindung.ConnectionHandler;
 
 /**
  *
@@ -17,7 +17,7 @@ public class HistoryHandler {
      */
     public static void validate(){
     
-        history = new HistoryItem(QueryClass.instanceOf());
+        history = new HistoryItem(ConnectionHandler.instanceOf());
     }
     /**
      * HistoryHandler is a singleton

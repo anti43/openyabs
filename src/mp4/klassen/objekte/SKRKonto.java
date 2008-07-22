@@ -17,6 +17,7 @@
 
 package mp4.klassen.objekte;
 
+import mp4.datenbank.verbindung.ConnectionHandler;
 import mp3.classes.interfaces.Strings;
 import mp4.datenbank.verbindung.Query;
 
@@ -42,7 +43,7 @@ public class SKRKonto extends mp3.classes.layer.Things implements mp4.datenbank.
         this.id = 0;
     }
     public SKRKonto() {
-       super(QueryClass.instanceOf().clone(TABLE_KONTEN));
+       super(ConnectionHandler.instanceOf().clone(TABLE_KONTEN));
     }
           
     public SKRKonto(Query query) {
@@ -50,7 +51,7 @@ public class SKRKonto extends mp3.classes.layer.Things implements mp4.datenbank.
        
     }
 
-    public SKRKonto(QueryClass query, String string, boolean b) {
+    public SKRKonto(ConnectionHandler query, String string, boolean b) {
         super(query.clone(TABLE_KONTEN));
         
         this.explode(this.selectLast("*", "nummer", string, false));
@@ -64,7 +65,7 @@ public class SKRKonto extends mp3.classes.layer.Things implements mp4.datenbank.
      * @param Art
      */
     public SKRKonto(String Nummer, String Klasse, String Gruppe, String Art) {
-        super(QueryClass.instanceOf().clone(TABLE_KONTEN));
+        super(ConnectionHandler.instanceOf().clone(TABLE_KONTEN));
         
            
         this.setNummer(Nummer);
@@ -80,7 +81,7 @@ public class SKRKonto extends mp3.classes.layer.Things implements mp4.datenbank.
      * @param id 
      */
     public SKRKonto(Integer id) {
-        super(QueryClass.instanceOf().clone(TABLE_KONTEN));
+        super(ConnectionHandler.instanceOf().clone(TABLE_KONTEN));
         this.id = Integer.valueOf(id);
         this.explode(this.selectLast("*", "id", id.toString(), true));
     }
@@ -127,7 +128,7 @@ public class SKRKonto extends mp3.classes.layer.Things implements mp4.datenbank.
 
     public String[][] getAll() {
 
-        Query q = QueryClass.instanceOf().clone(TABLE_KONTEN);
+        Query q = ConnectionHandler.instanceOf().clone(TABLE_KONTEN);
 
         String[][] prods = q.select(Strings.ALL, null,"nummer",false);
 

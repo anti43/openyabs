@@ -18,7 +18,7 @@ package mp4.klassen.objekte;
 
 import mp4.datenbank.verbindung.Query;
 import mp3.classes.layer.Popup;
-import mp3.classes.layer.QueryClass;
+import mp4.datenbank.verbindung.ConnectionHandler;
 import mp3.classes.utils.Log;
 
 /**
@@ -41,7 +41,7 @@ public class AngebotPosten extends mp3.classes.layer.Things implements mp4.daten
         this.id = 0;
     }
      public AngebotPosten(Integer id) {
-        super(QueryClass.instanceOf().clone(TABLE_ORDERS_DATA));
+        super(ConnectionHandler.instanceOf().clone(TABLE_ORDERS_DATA));
         this.id = id;
         this.explode(this.selectLast("*", "id", id.toString(), true));
     }

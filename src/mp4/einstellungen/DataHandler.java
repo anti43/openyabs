@@ -16,7 +16,7 @@
  */
 package mp4.einstellungen;
 
-import mp3.classes.layer.QueryClass;
+import mp4.datenbank.verbindung.ConnectionHandler;
 import mp3.classes.utils.Log;
 
 /**
@@ -26,7 +26,7 @@ import mp3.classes.utils.Log;
 public class DataHandler extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen {
 
     public DataHandler(String table) {
-        super(QueryClass.instanceOf().clone(table));
+        super(ConnectionHandler.instanceOf().clone(table));
     }
 
     public boolean getBoolean(String ofKey) {
@@ -100,14 +100,14 @@ public class DataHandler extends mp3.classes.layer.Things implements mp4.datenba
     private boolean setString(String key, String value, boolean newKey) {
 
         if (newKey) {
-            Log.Debug("Creating new key: " + key, true);
+            Log.Debug("Creating new key: " + key);
             if (this.insert("name, wert", "(;;2#4#1#1#8#0#;;)" + key + "(;;2#4#1#1#8#0#;;)" + ",(;;2#4#1#1#8#0#;;)" + value + "(;;2#4#1#1#8#0#;;)") == 1) {
                 return true;
             } else {
                 return false;
             }
         } else {
-            Log.Debug("Updating key: " + key, true);
+            Log.Debug("Updating key: " + key);
             if (this.update("wert", "(;;2#4#1#1#8#0#;;)" + value + "(;;2#4#1#1#8#0#;;)", "name", key) == 1) {
                 return true;
             } else {

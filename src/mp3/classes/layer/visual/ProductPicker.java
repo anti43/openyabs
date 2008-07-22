@@ -6,6 +6,7 @@
 
 package mp3.classes.layer.visual;
 
+import mp4.datenbank.verbindung.ConnectionHandler;
 import mp3.classes.layer.*;
 import mp3.classes.utils.Formater;
 
@@ -41,14 +42,14 @@ public class ProductPicker extends javax.swing.JFrame {
     private Position pos = new Position(); 
 
 public static void update(){
-        Product n = new Product(QueryClass.instanceOf());
+        Product n = new Product(ConnectionHandler.instanceOf());
         ProductPicker.setListe( n.select("id,produktnummer,name,hersteller", "produktnummer", "", "produktnummer", true));
 }
 
     public ProductPicker(offersView aThis) {
         initComponents ();
         this.frame1=aThis;
-        p = new Product(QueryClass.instanceOf());
+        p = new Product(ConnectionHandler.instanceOf());
         
  
         if(ProductPicker.getListe()==null){
@@ -75,7 +76,7 @@ public static void update(){
     public ProductPicker (billsView frame) {
         initComponents ();
         this.frame=frame;
-        p = new Product(QueryClass.instanceOf());
+        p = new Product(ConnectionHandler.instanceOf());
         pos.center(this);
  
         if(ProductPicker.getListe()==null){

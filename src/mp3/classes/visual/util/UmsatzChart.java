@@ -28,7 +28,7 @@ public class UmsatzChart extends javax.swing.JFrame {
 
         Integer maxval =0;
         
-        Data d = new Data(mp3.classes.layer.QueryClass.instanceOf());
+        Data d = new Data(mp4.datenbank.verbindung.ConnectionHandler.instanceOf());
         
 
            for (int i = 1; i <= months.length; i++) {
@@ -151,7 +151,7 @@ public class UmsatzChart extends javax.swing.JFrame {
         if(Formater.check(jTextField1.getText(),Formater.YEAR)){
         
         
-        Data d = new Data(mp3.classes.layer.QueryClass.instanceOf());
+        Data d = new Data(mp4.datenbank.verbindung.ConnectionHandler.instanceOf());
         
 
            for (int i = 1; i <= months.length; i++) {

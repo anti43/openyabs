@@ -11,7 +11,7 @@ import javax.swing.table.DefaultTableModel;
 
 import mp3.classes.interfaces.Strings;
 import mp3.classes.layer.Popup;
-import mp3.classes.layer.QueryClass;
+import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.klassen.objekte.HistoryItem;
 import mp4.klassen.objekte.Product;
 import mp4.klassen.objekte.Lieferant;
@@ -34,7 +34,7 @@ public class suppliersView extends javax.swing.JPanel implements mp4.datenbank.s
     public suppliersView(mainframe aThis) {
         initComponents();
 
-        current = new Lieferant(QueryClass.instanceOf());
+        current = new Lieferant(ConnectionHandler.instanceOf());
         liste = current.getAll();
         String k = "id, " +  TABLE_SUPPLIER_FIELDS;
         this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
@@ -782,7 +782,7 @@ public class suppliersView extends javax.swing.JPanel implements mp4.datenbank.s
     private void jButton3MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
 
         if (jTextField5.getText().length() > 2) {
-            current = new Lieferant(QueryClass.instanceOf());
+            current = new Lieferant(ConnectionHandler.instanceOf());
             try {
                 if (current.getNextNumber("lieferantennummer") > Integer.valueOf(jTextField4.getText())) {
                     current.setLieferantennummer(current.getNextNumber("lieferantennummer").toString());
@@ -816,7 +816,7 @@ public class suppliersView extends javax.swing.JPanel implements mp4.datenbank.s
             this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
             current.stripFirst(jTable2);
             mainframe.setMessage("Lieferant Nummer " + current.getLieferantennummer() + " angelegt.");
-            new HistoryItem(QueryClass.instanceOf(),  Strings.SUPPLIER, "Lieferant Nummer: " + current.getLieferantennummer() + " angelegt.");
+            new HistoryItem(ConnectionHandler.instanceOf(),  Strings.SUPPLIER, "Lieferant Nummer: " + current.getLieferantennummer() + " angelegt.");
 //            mainframe.nachricht("Kunde Nummer " + current.getKundennummer() + " gespeichert.");
 
             liste = current.getAll();
@@ -860,7 +860,7 @@ public class suppliersView extends javax.swing.JPanel implements mp4.datenbank.s
     public void save() {
 
         if (!current.getId().equals("0")) {
-            current = new Lieferant(QueryClass.instanceOf());
+            current = new Lieferant(ConnectionHandler.instanceOf());
             current.setFirma(jTextField5.getText());
             current.setStr(jTextField9.getText());
             current.setPLZ(jTextField16.getText());
@@ -874,7 +874,7 @@ public class suppliersView extends javax.swing.JPanel implements mp4.datenbank.s
             current.save();
 
             mainframe.setMessage("Lieferant Nummer " + current.getLieferantennummer() + " gespeichert.");
-            new HistoryItem(QueryClass.instanceOf(),  Strings.SUPPLIER, "Lieferant Nummer: " + current.getLieferantennummer() + " editiert.");
+            new HistoryItem(ConnectionHandler.instanceOf(),  Strings.SUPPLIER, "Lieferant Nummer: " + current.getLieferantennummer() + " editiert.");
 
             liste = current.getAll();
             String k = "id, " +  TABLE_SUPPLIER_FIELDS;
@@ -947,7 +947,7 @@ public class suppliersView extends javax.swing.JPanel implements mp4.datenbank.s
 
         if ((JOptionPane.showConfirmDialog(this, "Wirklich löschen?", "Sicher?", JOptionPane.YES_NO_OPTION)) == JOptionPane.YES_OPTION) {
             current.deactivate(current.getId().toString());
-            new HistoryItem(QueryClass.instanceOf(),  Strings.SUPPLIER, "Lieferant Nummer: " + current.getLieferantennummer() + " gelöscht.");
+            new HistoryItem(ConnectionHandler.instanceOf(),  Strings.SUPPLIER, "Lieferant Nummer: " + current.getLieferantennummer() + " gelöscht.");
 
             this.jTextField4.setText("");
             this.jTextField5.setText("");
@@ -966,7 +966,7 @@ public class suppliersView extends javax.swing.JPanel implements mp4.datenbank.s
 
             this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
             current.stripFirst(jTable2);
-            current = new Lieferant(QueryClass.instanceOf());
+            current = new Lieferant(ConnectionHandler.instanceOf());
         }
     }//GEN-LAST:event_jButton9MouseClicked
 
