@@ -58,7 +58,7 @@ public class RechnungBetreffzeile extends mp3.classes.layer.Things implements mp
     }
 
     public String[][] getAllData() {
-        return this.select("*", null, null, false);
+        return this.select("id, name, text", null, null, false);
     }
     
     public String[][] getDataOf(Integer rechnungId) {

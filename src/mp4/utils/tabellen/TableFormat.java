@@ -17,12 +17,24 @@
 package mp4.utils.tabellen;
 
 import javax.swing.JTable;
+import javax.swing.table.TableCellEditor;
 
 /**
  *
  * @author Andreas
  */
 public class TableFormat {
+
+    /**
+     * Stops the tables' cell editor
+     * @param jTable1
+     */
+    public static void stopEditing(JTable jTable1) {
+        TableCellEditor editor = jTable1.getCellEditor();
+                if (editor != null) {
+                    editor.stopCellEditing();
+                }
+    }
   /**
      * Hides he first column of a table (usually "id")
      * @param table

@@ -50,31 +50,25 @@ import mp4.einstellungen.Programmdaten;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.tabellen.TableFormat;
 
-
 /**
  *
  * @author  anti43
  */
-public class billsView extends javax.swing.JPanel implements Runnable ,mp4.datenbank.struktur.Tabellen{
+public class billsView extends javax.swing.JPanel implements Runnable, mp4.datenbank.struktur.Tabellen {
 
     private Rechnung current;
     private String[][] liste;
     private Customer customer;
     private mainframe mainframe;
-   
     private TableCellEditor editor;
     private SimpleDateFormat df;
- 
     private Thread t;
     private boolean nettoprices = true;
     private Customer oldcustomer;
     private double defTax = 0d;
-    
     private Einstellungen l;
     private boolean pdf = false;
     private int taxcount = 0;
-
- 
 
     /** Creates new form customers
      * @param aThis 
@@ -83,10 +77,10 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
     public billsView(mainframe aThis) {
         l = Einstellungen.instanceOf();
         defTax = Double.valueOf(l.getGlobaltax());
- 
+
 
         initComponents();
-        
+
 
         current = new Rechnung(QueryClass.instanceOf());
 
@@ -98,8 +92,8 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
         Formater.format(jTable2, 2, 120);
         Formater.format(jTable2, 3, 120);
 
-        df = new SimpleDateFormat( "dd.MM.yyyy" );
-        
+        df = new SimpleDateFormat("dd.MM.yyyy");
+
 //        df = new SimpleDateFormat( "dd.MM.yyyy" );
 
         jTextField7.setText(df.format(new Date()));
@@ -111,12 +105,12 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
         t.setPriority(Thread.MIN_PRIORITY);
         t.start();
 
-        jTextField6.setEnabled(false);   
+        jTextField6.setEnabled(false);
 
         billsOfTheMonth();
-        
+
         resizeFields();
-        
+
         this.jCheckBox4.setSelected(Programmdaten.instanceOf().getBILLPANEL_CHECKBOX_MITLIEFERSCHEIN_state());
 
 
@@ -184,15 +178,15 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
             } catch (NumberFormatException numberFormatException) {
                 nachricht("Wert 'Preis' unzulässig: Produkt " + product.getNummer());
 //                
-                String p =product.getVK().toString();
-                
+                String p = product.getVK().toString();
+
                 m.setValueAt(new Double(p), z, 4);
             }
 
 
 
         } catch (Exception exception) {
-           Log.Debug(exception);
+            Log.Debug(exception);
         }
 
 
@@ -210,9 +204,9 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
     }
 
     private void billsOfTheMonth() {
-        
+
         jTextField2.setText(DateConverter.getTodayDefDate());
-        
+
         String[][] list = getCurrent().select("id, rechnungnummer, datum ", "datum", DateConverter.getTodayDefDate(), "datum", true);
         String k = "id, " + "Nummer,Datum";
 
@@ -246,20 +240,21 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
     }
 
     private void renewTableModel() {
-        PostenTableModel f = 
-                new PostenTableModel(new Object[][]{{null, 1, null, defTax, null, null}, 
-                {null, 1, null, defTax, null, null}, {null, 1, null, defTax, null, null}, 
-                {null, 1, null, defTax, null, null}, {null, 1, null, defTax, null, null}, 
-                {null, 1, null, defTax, null, null}, {null, 1, null, defTax, null, null}, 
-                {null, 1, null, defTax, null, null}, {null, 1, null, defTax, null, null}, 
-                {null, 1, null, defTax, null, null}}, 
+        PostenTableModel f =
+                new PostenTableModel(new Object[][]{{null, 1, null, defTax, null, null},
+                    {null, 1, null, defTax, null, null}, {null, 1, null, defTax, null, null},
+                    {null, 1, null, defTax, null, null}, {null, 1, null, defTax, null, null},
+                    {null, 1, null, defTax, null, null}, {null, 1, null, defTax, null, null},
+                    {null, 1, null, defTax, null, null}, {null, 1, null, defTax, null, null},
+                    {null, 1, null, defTax, null, null}
+                },
                 new String[]{"id", "Anzahl", "Bezeichnung", "MwSt", "Nettopreis", "Bruttopreis"});
-        
+
         getJTable1().setModel(f);
-        
+
         Formater.stripFirst(jTable1);
-        
-        
+
+
     }
 
     public void resizeFields() {
@@ -275,7 +270,7 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
             getJTable1().getColumn(getJTable1().getColumnName(1)).setMaxWidth(50);
             getJTable1().getColumn(getJTable1().getColumnName(3)).setMinWidth(30);
             getJTable1().getColumn(getJTable1().getColumnName(3)).setMaxWidth(50);
-            
+
             getJTable1().getColumn(getJTable1().getColumnName(4)).setMinWidth(30);
             getJTable1().getColumn(getJTable1().getColumnName(4)).setMaxWidth(80);
             getJTable1().getColumn(getJTable1().getColumnName(5)).setMinWidth(30);
@@ -308,7 +303,6 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
             Formater.format(jTable2, 3, 120);
 
         } catch (Exception exception) {
-           
         }
 
     }
@@ -347,9 +341,9 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
 //            }
 //        }
 
-        
-        
-        
+
+
+
         this.getJTable1().setModel(current.getProductlistAsTableModel());
         TableFormat.stripFirst(getJTable1());
         resizeFields();
@@ -782,15 +776,15 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel19, javax.swing.GroupLayout.DEFAULT_SIZE, 142, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
+                    .addGroup(jPanel9Layout.createSequentialGroup()
                         .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel7)
                             .addComponent(jLabel6))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
                         .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jTextField4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -801,21 +795,21 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(jLabel19))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel9Layout.createSequentialGroup()
-                        .addGap(9, 9, 9)
                         .addComponent(jButton9)
-                        .addContainerGap(35, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel9Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 3, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel6))
                         .addGap(6, 6, 6)
                         .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel7))
-                        .addContainerGap())))
+                            .addComponent(jLabel7))))
+                .addGap(29, 29, 29))
         );
 
         jPanel10.setBackground(new java.awt.Color(227, 219, 202));
@@ -866,6 +860,11 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
         jLabel16.setText("Betreff");
 
         jButton18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/small/edit.png"))); // NOI18N
+        jButton18.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton18ActionPerformed(evt);
+            }
+        });
 
         jButton17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/small/cal.png"))); // NOI18N
         jButton17.addActionListener(new java.awt.event.ActionListener() {
@@ -1038,9 +1037,9 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
+                    .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -1296,27 +1295,27 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
             if (valide) {
 
                 Query f = QueryClass.instanceOf().clone(TABLE_BILLS);
-               
-                if(jTextField6.getText().length()<1 || jCheckBox2.isSelected()) {
+
+                if (jTextField6.getText().length() < 1 || jCheckBox2.isSelected()) {
                     rechnungnummer = f.getNextStringNumber("rechnungnummer");
-                }else{
-      
+                } else {
+
                     rechnungnummer = jTextField6.getText();
                 }
-              
+
                 Rechnung bill = new Rechnung(QueryClass.instanceOf());
 
                 bill.setRechnungnummer(rechnungnummer);
 
 //                bill.setDatum(DateCongh));
                 bill.setKundenId(getCustomer().getId());
-                
-                
-   // **********************EUR**********************************************************
+
+
+                // **********************EUR**********************************************************
                 Double betrag = 0d;
                 Double allovertax = 0d;
                 Double nettobetrag = 0d;
-                
+
                 for (int i = 0; i < m.getRowCount(); i++) {
 
                     //anzahl,bezeichnung,mehrwertsteuer,nettopreis
@@ -1324,33 +1323,33 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
 
                         try {
 
-                           
-                            betrag = betrag + (Double.valueOf(m.getValueAt(i, 4).toString().replaceAll(",", ".")) * (Double.valueOf((Double.valueOf(m.getValueAt(i, 3).toString().replaceAll(",", "."))/100)+1)));
+
+                            betrag = betrag + (Double.valueOf(m.getValueAt(i, 4).toString().replaceAll(",", ".")) * (Double.valueOf((Double.valueOf(m.getValueAt(i, 3).toString().replaceAll(",", ".")) / 100) + 1)));
                             betrag = Formater.formatDecimalDouble(betrag);
-                            
-                            nettobetrag = nettobetrag + (Double.valueOf(m.getValueAt(i, 4).toString().replaceAll(",", "."))) ;
+
+                            nettobetrag = nettobetrag + (Double.valueOf(m.getValueAt(i, 4).toString().replaceAll(",", ".")));
                             betrag = Formater.formatDecimalDouble(betrag);
-                            
-                            allovertax = allovertax + ((Double.valueOf(m.getValueAt(i, 3).toString().replaceAll(",", ".")))+100);
-                         
+
+                            allovertax = allovertax + ((Double.valueOf(m.getValueAt(i, 3).toString().replaceAll(",", "."))) + 100);
+
                         } catch (Exception exception) {
-                            Log.Debug(exception); 
+                            Log.Debug(exception);
                         }
                     }
                 }
-               
+
 //                bill.setGesamtpreis(betrag.toString());
-                  bill.setGesamtpreis(Double.valueOf(jTextField8.getText()));
-                if(nettobetrag>0) {
-                     bill.setGesamttax((allovertax / nettobetrag));
+                bill.setGesamtpreis(Double.valueOf(jTextField8.getText()));
+                if (nettobetrag > 0) {
+                    bill.setGesamttax((allovertax / nettobetrag));
+                } else {
+                    bill.setGesamttax(0d);
                 }
-                else{bill.setGesamttax(0d);
-                }
-  //***************************************************************************************
-                
-                
+                //***************************************************************************************
+
+
                 bill.save();
-               
+
                 this.clear();
 
                 for (int i = 0; i < m.getRowCount(); i++) {
@@ -1365,10 +1364,10 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
 
                         try {
 
-                            b.setAnzahl(      (Double) m.getValueAt(i, 1));
+                            b.setAnzahl((Double) m.getValueAt(i, 1));
                             b.setSteuersatz((Double) m.getValueAt(i, 3));
                             b.setPreis((Double) m.getValueAt(i, 4));
-                      
+
                         } catch (Exception exception) {
 //                            b.setAnzahl("0");
 //                            b.setSteuersatz("0");
@@ -1379,12 +1378,12 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
 
                     }
                 }
-          
+
 
                 jTextField6.setText(String.valueOf(f.getNextIndexOfIntCol("rechnungnummer")));
                 mainframe.setMessage("Rechnung Nummer: " + bill.getRechnungnummer() + " angelegt.");
 
-                new HistoryItem(QueryClass.instanceOf(),  Strings.BILL, "Rechnung Nummer: " + bill.getRechnungnummer() + " angelegt.");
+                new HistoryItem(QueryClass.instanceOf(), Strings.BILL, "Rechnung Nummer: " + bill.getRechnungnummer() + " angelegt.");
                 this.setBill(new Rechnung(bill.getId()));
 
                 save();
@@ -1397,10 +1396,10 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
         updateListTable();
         billsOfTheMonth();
         resizeFields();
-        
+
         jCheckBox2.setSelected(true);
 
-       
+
 
     }//GEN-LAST:event_jButton3MouseClicked
 
@@ -1427,18 +1426,16 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
                 exception.printStackTrace();
             }
         } else if (idOk && (evt.getButton() == MouseEvent.BUTTON2 || evt.getButton() == MouseEvent.BUTTON3)) {
-
-
         }
 
 
         idOk = true;
-        
-        
+
+
     }//GEN-LAST:event_jTable2MouseClicked
 
     public void save() {
-      
+
 
         if (hasCustomer() && validDate()) {
 
@@ -1446,126 +1443,108 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
 
                 TableModel m = getJTable1().getModel();
                 ListSelectionModel selectionModel = getJTable1().getSelectionModel();
-                boolean valide = true;
+                TableFormat.stopEditing(getJTable1());
 
-                editor = getJTable1().getCellEditor();
-                if (editor != null) {
-                    editor.stopCellEditing();
-                }
+                Query f = QueryClass.instanceOf().clone(TABLE_BILLS);
+                Rechnung bill = getCurrent();
+                bill.setDatum(DateConverter.getDate(jTextField7.getText()));
+                bill.setKundenId(getCustomer().getId());
+                bill.setGesamtpreis(Double.valueOf(jTextField8.getText()));
 
-
-                if (valide) {
-
-                    Query f = QueryClass.instanceOf().clone( TABLE_BILLS);
-
-                    //Integer rechnungnummer = f.getNextIndex("rechnungnummer");
-
-                    Rechnung bill = getCurrent();
-
-//                    bill.setRechnungnummer(rechnungnummer.toString());
-
-                    bill.setDatum(DateConverter.getDate(jTextField7.getText()));
-
-
-                    bill.setKundenId(getCustomer().getId());
-                    
-                    bill.setGesamtpreis(Double.valueOf(jTextField8.getText()));
-                    
-                                    
-   // **********************EUR**********************************************************
+                // **********************EUR**********************************************************
                 Double betrag = 0d;
                 Double allovertax = 0d;
                 Double nettobetrag = 0d;
-                
+
                 for (int i = 0; i < m.getRowCount(); i++) {
 
                     //anzahl,bezeichnung,mehrwertsteuer,nettopreis
                     if (m.getValueAt(i, 4) != null) {
 
-                     try {
+                        try {
 
-                           
-                            betrag = betrag + (Double.valueOf(m.getValueAt(i, 4).toString().replaceAll(",", ".")) * (Double.valueOf((Double.valueOf(m.getValueAt(i, 3).toString().replaceAll(",", "."))/100)+1)));
+
+                            betrag = betrag + (Double.valueOf(m.getValueAt(i, 4).toString().replaceAll(",", ".")) * (Double.valueOf((Double.valueOf(m.getValueAt(i, 3).toString().replaceAll(",", ".")) / 100) + 1)));
                             betrag = Formater.formatDecimalDouble(betrag);
-                            
-                            nettobetrag = nettobetrag + (Double.valueOf(m.getValueAt(i, 4).toString().replaceAll(",", "."))) ;
+
+                            nettobetrag = nettobetrag + (Double.valueOf(m.getValueAt(i, 4).toString().replaceAll(",", ".")));
                             betrag = Formater.formatDecimalDouble(betrag);
-                            
-                            taxcount = taxcount +100;
-                            
-                            allovertax = allovertax + ((Double.valueOf(m.getValueAt(i, 3).toString().replaceAll(",", ".")))+100);
-                        Log.Debug(allovertax);
+
+                            taxcount = taxcount + 100;
+
+                            allovertax = allovertax + ((Double.valueOf(m.getValueAt(i, 3).toString().replaceAll(",", "."))) + 100);
+                            Log.Debug(allovertax);
                         } catch (Exception exception) {
-                            Log.Debug(exception); 
+                            Log.Debug(exception);
                         }
                     }
                 }
-              Log.Debug("val = "+allovertax + " / " + taxcount);
+                Log.Debug("val = " + allovertax + " / " + taxcount);
 //                bill.setGesamtpreis(betrag.toString());
-                bill.setGesamttax((allovertax/taxcount));
+                bill.setGesamttax((allovertax / taxcount));
                 taxcount = 0;
-  //***************************************************************************************
+                //***************************************************************************************
 
-                    bill.save();
-                    //  this.clear();
-
-
-
-                    for (int i = 0; i < m.getRowCount(); i++) {
-
-                        //delete first
-                        if (m.getValueAt(i, 0) != null) {
+                bill.save();
+                //  this.clear();
 
 
 
-                            try {
-                                RechnungPosten b = new RechnungPosten(QueryClass.instanceOf(), m.getValueAt(i, 0).toString());
+                for (int i = 0; i < m.getRowCount(); i++) {
 
-                                b.destroy();
+                    //delete first
+                    if (m.getValueAt(i, 0) != null) {
 
-                            } catch (Exception exception) {
-                            }
 
+
+                        try {
+                            RechnungPosten b = new RechnungPosten(QueryClass.instanceOf(), m.getValueAt(i, 0).toString());
+
+                            b.destroy();
+
+                        } catch (Exception exception) {
                         }
+
                     }
+                }
 
 
-                    for (int i = 0; i < m.getRowCount(); i++) {
+                for (int i = 0; i < m.getRowCount(); i++) {
 
-                        //anzahl,bezeichnung,mehrwertsteuer,nettopreis
-                        if (m.getValueAt(i, 4) != null) {
+                    //anzahl,bezeichnung,mehrwertsteuer,nettopreis
+                    if (m.getValueAt(i, 4) != null) {
 
 
 
-                            RechnungPosten b = new RechnungPosten(QueryClass.instanceOf());
+                        RechnungPosten b = new RechnungPosten(QueryClass.instanceOf());
 
-                            b.setRechnungid(getCurrent().getId());
+                        b.setRechnungid(getCurrent().getId());
 
 //                            b.setAnzahl((String) m.getValueAt(i, 1));
-                            b.setPosten((String) m.getValueAt(i, 2));
-                            try {
+                        b.setPosten((String) m.getValueAt(i, 2));
+                        try {
 
-                                b.setAnzahl((Double) (m.getValueAt(i, 1)));
-                                b.setSteuersatz((Double) (m.getValueAt(i, 3)));
-                                b.setPreis((Double) (m.getValueAt(i, 4)));
+                            b.setAnzahl((Double) (m.getValueAt(i, 1)));
+                            b.setSteuersatz((Double) (m.getValueAt(i, 3)));
+                            b.setPreis((Double) (m.getValueAt(i, 4)));
 
-                            } catch (Exception exception) {
+                        } catch (Exception exception) {
 //                                b.setAnzahl("0");
 //                                b.setSteuersatz("0");
 //                                b.setPreis("0");
                             }
-                            b.save();
+                        b.save();
 
-                        }
                     }
-
-                    mainframe.getNachricht().setText("Rechnung Nummer " + bill.getRechnungnummer() + " gespeichert.");
-
-                    new HistoryItem(QueryClass.instanceOf(), Strings.BILL, "Rechnung Nummer: " + bill.getRechnungnummer() + " editiert.");
-
-                    this.setBill(new Rechnung(bill.getid()));
-
                 }
+
+                mainframe.getNachricht().setText("Rechnung Nummer " + bill.getRechnungnummer() + " gespeichert.");
+
+                new HistoryItem(QueryClass.instanceOf(), Strings.BILL, "Rechnung Nummer: " + bill.getRechnungnummer() + " editiert.");
+
+                this.setBill(new Rechnung(bill.getid()));
+
+
             } else {
                 new Popup("Sie müssen die Rechnung erst anlegen.", Popup.ERROR);
 //                jButton3MouseClicked(new MouseEvent(jTable1, WIDTH, WIDTH, WIDTH, WIDTH, WIDTH, WIDTH, nettoprices));
@@ -1590,7 +1569,7 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
     private void jButton4MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton4MouseClicked
 
         save();
-        
+
     }//GEN-LAST:event_jButton4MouseClicked
 
     private void jTable3MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable3MouseClicked
@@ -1616,7 +1595,7 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
         }
 
         idOk = true;
-        
+
     }//GEN-LAST:event_jTable3MouseClicked
 
     private void clear() {
@@ -1638,7 +1617,7 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
 //        jLabelbezahlt.setText("");
 
 //        df = new SimpleDateFormat( "dd.MM.yyyy" );
-        df = new SimpleDateFormat( "dd.MM.yyyy" );
+        df = new SimpleDateFormat("dd.MM.yyyy");
         jTextField7.setText(df.format(new Date()));
 
         getCurrent().stripFirst(getJTable1());
@@ -1681,7 +1660,7 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
 
 
         new CustomerPicker(this);
-    
+
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void jButton10ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
@@ -1741,7 +1720,6 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
     }//GEN-LAST:event_jButton11MouseClicked
 
     private void jButton10KeyPressed (java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton10KeyPressed
-
 //        jButton1MouseClicked(new MouseEvent(jTable1, WIDTH, WIDTH, WIDTH, WIDTH, WIDTH, WIDTH, nettoprices));
     }//GEN-LAST:event_jButton10KeyPressed
 
@@ -1755,7 +1733,7 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
 //            selectionModel.setSelectionInterval(getLastRow(),
 //                    getLastRow());
 //        }
-        
+
     }//GEN-LAST:event_jButton5MouseClicked
 
     private void jButton12MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton12MouseClicked
@@ -1764,7 +1742,7 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
         if (current != null && current.hasId()) {
             new PDF_Rechnung(current);
 
-            new HistoryItem(QueryClass.instanceOf(),  Strings.BILL, "Rechnung Nummer: " + current.getRechnungnummer() + " als PDF erzeugt.");
+            new HistoryItem(QueryClass.instanceOf(), Strings.BILL, "Rechnung Nummer: " + current.getRechnungnummer() + " als PDF erzeugt.");
 
         }
     }//GEN-LAST:event_jButton12MouseClicked
@@ -1775,7 +1753,7 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
 //        this.jlabelstorno.setText("Storniert");
 
         this.jButton4MouseClicked(evt);
-        
+
     }//GEN-LAST:event_jButton13MouseClicked
 
     private void jButton14MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton14MouseClicked
@@ -1787,14 +1765,14 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
     }//GEN-LAST:event_jButton14MouseClicked
 
     private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
-        if(current.hasId()) {
+        if (current.hasId()) {
             new arrear(current, customer);
         }
     }//GEN-LAST:event_jButton15ActionPerformed
 
     private void jTextField6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextField6MouseClicked
-       jCheckBox2.setSelected(false);
-       jTextField6.setEnabled(true);        
+        jCheckBox2.setSelected(false);
+        jTextField6.setEnabled(true);
     }//GEN-LAST:event_jTextField6MouseClicked
 
 private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
@@ -1806,7 +1784,7 @@ private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 }//GEN-LAST:event_jButton4ActionPerformed
 
 private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton17ActionPerformed
-new DatePick(jTextField11);
+    new DatePick(jTextField11);
 }//GEN-LAST:event_jButton17ActionPerformed
 
 private void jButton17KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton17KeyPressed
@@ -1823,12 +1801,16 @@ private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 }//GEN-LAST:event_jButton16ActionPerformed
 
 private void jButton19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton19ActionPerformed
-new DatePick(jTextField12);
+    new DatePick(jTextField12);
 }//GEN-LAST:event_jButton19ActionPerformed
 
 private void jButton19KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton19KeyPressed
 // TODO add your handling code here:
 }//GEN-LAST:event_jButton19KeyPressed
+
+private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
+    new mp4.utils.windows.Position().center(new billsNotesEditor(current));
+}//GEN-LAST:event_jButton18ActionPerformed
 
     private int getLastRow() {
         int potz = -1;
@@ -1982,18 +1964,20 @@ private void jButton19KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
         CellEditor cell;
 
 
-        while (true) {  
-            
-            try{
+        while (true) {
+
+            try {
                 Thread.sleep(1000);
-                }catch (Exception e){}
+            } catch (Exception e) {
+            }
             while (mainframe.getShowingTab() == 2) {
 
-             
-                try{
-                Thread.sleep(800);
-                }catch (Exception e){}
-                
+
+                try {
+                    Thread.sleep(800);
+                } catch (Exception e) {
+                }
+
                 TableModel m = getJTable1().getModel();
 
 //            Log.Debug(getJTable1().getModel().getColumnClass(1));
@@ -2085,15 +2069,15 @@ private void jButton19KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                         jTextField8.setText(Formater.formatDecimal(brutto));//!tax
                     }
 
-                   
+
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
-               
+
             }
         }
     }
-    }
+}
 
 
 

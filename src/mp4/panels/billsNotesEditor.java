@@ -6,15 +6,32 @@
 
 package mp4.panels;
 
+
+import javax.swing.table.DefaultTableModel;
+import mp4.klassen.objekte.*;
+import mp4.utils.tabellen.TableFormat;
+
 /**
  *
  * @author  Administrator
  */
 public class billsNotesEditor extends javax.swing.JFrame {
+    private Rechnung rechnung;
 
     /** Creates new form billsNotesEditor */
     public billsNotesEditor() {
         initComponents();
+        jTable1.setModel(new DefaultTableModel(new RechnungBetreffzeile().getAllData(),new String[]{"id","Name","Text"}));
+        TableFormat.stripFirst(jTable1);
+        setVisible(rootPaneCheckingEnabled);
+    }
+
+    public billsNotesEditor(Rechnung current) {
+        initComponents();
+        jTable1.setModel(new DefaultTableModel(new RechnungBetreffzeile().getAllData(),new String[]{"id","Name","Text"}));
+        TableFormat.stripFirst(jTable1);
+        this.rechnung = current;
+        setVisible(rootPaneCheckingEnabled);
     }
 
     /** This method is called from within the constructor to
@@ -37,7 +54,8 @@ public class billsNotesEditor extends javax.swing.JFrame {
         jButton4 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Betreffzeilen");
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Betreffzeilen editieren"));
 
@@ -146,16 +164,7 @@ public class billsNotesEditor extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-    * @param args the command line arguments
-    */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new billsNotesEditor().setVisible(true);
-            }
-        });
-    }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
