@@ -982,7 +982,7 @@ public class offersView extends javax.swing.JPanel implements Runnable, mp4.date
             if (valide) {
 
                 Query f = QueryClass.instanceOf().clone(TABLE_ORDERS);
-                Integer auftragnummer = f.getNextIndex("auftragnummer");
+                Integer auftragnummer = f.getNextIndexOfIntCol("auftragnummer");
                 Angebot order = new Angebot(QueryClass.instanceOf());
                 order.setOrdernummer(auftragnummer.toString());
                 order.setDatum(DateConverter.getDate(jTextField7.getText()));
@@ -1296,7 +1296,7 @@ public class offersView extends javax.swing.JPanel implements Runnable, mp4.date
                 }
                 if (valide) {
                     Query f = QueryClass.instanceOf().clone(TABLE_BILLS);
-                    Integer rechnungnummer = f.getNextIndex("rechnungnummer");
+                    Integer rechnungnummer = f.getNextIndexOfIntCol("rechnungnummer");
 
                     bill.setRechnungnummer(rechnungnummer.toString());
                     bill.setDatum(new Date());

@@ -16,7 +16,9 @@
  */
 package mp4.einstellungen;
 
+import java.sql.SQLException;
 import mp3.classes.layer.QueryClass;
+import mp3.classes.utils.Log;
 
 /**
  *
@@ -65,9 +67,20 @@ public class DataHandler extends mp3.classes.layer.Things implements mp4.datenba
 
     void setBoolean(String key, boolean value) {
         if (value) {
+            try {
+                this.update("wert", "(;;2#4#1#1#8#0#;;)" + "1" + "(;;2#4#1#1#8#0#;;)", "name", key);
+            } catch (Exception e) {
+                Log.Debug(e);Log.Debug(e);
+                this.insert(key, "(;;2#4#1#1#8#0#;;)" + "1" + "(;;2#4#1#1#8#0#;;)");
+            }
             setString(key, "1");
         } else {
-            setString(key, "0");
+
+            try {
+                this.update("wert", "(;;2#4#1#1#8#0#;;)" + "0" + "(;;2#4#1#1#8#0#;;)", "name", key);
+            } catch (Exception e) {
+                this.insert(key, "(;;2#4#1#1#8#0#;;)" + "0" + "(;;2#4#1#1#8#0#;;)");
+            }
         }
     }
 
@@ -88,7 +101,11 @@ public class DataHandler extends mp3.classes.layer.Things implements mp4.datenba
     }
 
     public void setString(String key, String value) {
-        if (this.update("wert", "(;;2#4#1#1#8#0#;;)" + value + "(;;2#4#1#1#8#0#;;)", "name", key) != 1) {
+
+        try {
+            this.update("wert", "(;;2#4#1#1#8#0#;;)" + value + "(;;2#4#1#1#8#0#;;)", "name", key);
+        } catch (Exception e) {
+            Log.Debug(e);
             this.insert("name, wert", "(;;2#4#1#1#8#0#;;)" + key + "(;;2#4#1#1#8#0#;;)" + ",(;;2#4#1#1#8#0#;;)" + value + "(;;2#4#1#1#8#0#;;)");
         }
     }

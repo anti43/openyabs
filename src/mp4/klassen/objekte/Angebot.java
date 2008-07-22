@@ -309,7 +309,7 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.s
     }
 
     public Integer getNextBillNumber() {
-        return query.getNextIndex("auftragnummer");
+        return query.getNextIndexOfIntCol("auftragnummer");
     }
 
 //    public BillProduct[] getBp() {

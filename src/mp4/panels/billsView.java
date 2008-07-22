@@ -1298,7 +1298,7 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
                 Query f = QueryClass.instanceOf().clone(TABLE_BILLS);
                
                 if(jTextField6.getText().length()<1 || jCheckBox2.isSelected()) {
-                    rechnungnummer = f.getNextIndexString("rechnungnummer");
+                    rechnungnummer = f.getNextStringNumber("rechnungnummer");
                 }else{
       
                     rechnungnummer = jTextField6.getText();
@@ -1381,7 +1381,7 @@ public class billsView extends javax.swing.JPanel implements Runnable ,mp4.daten
                 }
           
 
-                jTextField6.setText(String.valueOf(f.getNextIndex("rechnungnummer")));
+                jTextField6.setText(String.valueOf(f.getNextIndexOfIntCol("rechnungnummer")));
                 mainframe.setMessage("Rechnung Nummer: " + bill.getRechnungnummer() + " angelegt.");
 
                 new HistoryItem(QueryClass.instanceOf(),  Strings.BILL, "Rechnung Nummer: " + bill.getRechnungnummer() + " angelegt.");

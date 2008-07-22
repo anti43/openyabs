@@ -427,7 +427,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
     }
 
     public Integer getNextBillNumber() {
-        return query.getNextIndex("rechnungnummer");
+        return query.getNextIndexOfIntCol("rechnungnummer");
     }
 
     public RechnungPosten[] getBp() {

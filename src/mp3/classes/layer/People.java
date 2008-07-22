@@ -188,7 +188,7 @@ public abstract class People implements Queries, mp4.datenbank.struktur.Tabellen
     }
 
     public Integer getNextNumber(String what) {
-        return q.getNextIndex(what);
+        return q.getNextIndexOfIntCol(what);
     }
 
     /**

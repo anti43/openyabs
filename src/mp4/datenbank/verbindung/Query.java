@@ -17,14 +17,12 @@
 package mp4.datenbank.verbindung;
 
 import java.awt.Cursor;
-import java.text.ParseException;
 
 import java.sql.*;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -56,6 +54,8 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
     private mainframe main;
     //   yyyy-mm-dd hh.mm.ss[.nnnnnn] - SQL DATE Timestamp
     private DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss");
+    private int substringcount = 0;
+    private String originalvalue = "";
 
     public Query(Connection conn, String table) {
         this.table = table;
@@ -71,7 +71,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
     @SuppressWarnings("unchecked")
     public boolean freeQuery(String string) {
 
-
+        start();
 
         query = string;
 
@@ -113,7 +113,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                 }
             }
         }
-
+        stop();
         return false;
     }
 
@@ -223,7 +223,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
     }
 
     private int getCurrentIndex() {
-        return getNextIndex("id") - 1;
+        return getNextIndexOfIntCol("id") - 1;
     }
 
     @SuppressWarnings("deprecation")
@@ -231,170 +231,84 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
 
         if (progressBar != null) {
             progressBar.setIndeterminate(false);
-
-            main.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
         }
-
+        main.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
     }
 
     private void start() {
         if (progressBar != null) {
             progressBar.setIndeterminate(true);
-
-            main.setCursor(new Cursor(Cursor.WAIT_CURSOR));
         }
-
+        main.setCursor(new Cursor(Cursor.WAIT_CURSOR));
     }
 
+    public String getNextStringNumber(String colName){
+        return originalvalue.substring(0, substringcount) + getNextIndexOfStringCol(colName);
+    }
+    
+    
     /**
      * 
-     * @param index
+     * @param colName 
      * @return the next 
      */
-    public String getNextIndexString(String index) {
+    public Integer getNextIndexOfStringCol(String colName) {
 
         start();
-        query = "SELECT " + index + " FROM " + table;
+        query = "SELECT " + colName + " FROM " + table;
         message = "Database Error (getNextIndex):";
         stm = null;
         resultSet = null;
         ResultSetMetaData rsmd;
-        String integer = "0";
+        String index = "0";
         Integer i = 0;
-        Integer oldi = 0;
+        
+      
         Log.Debug(query);
-        String k = "0";
+
         try {
             // Select-Anweisung ausführen
             stm = conn.createStatement(resultSet.TYPE_SCROLL_INSENSITIVE, resultSet.CONCUR_READ_ONLY);
             resultSet = stm.executeQuery(query);
-
-//            ArrayList spalten = new ArrayList();
-            //ArrayList zeilen = new ArrayList();
-
             rsmd = resultSet.getMetaData();
 
             if (resultSet.last()) {
+                index = resultSet.getString(colName);
+                originalvalue = index;
 
-
-                integer = resultSet.getString(index);
-
-                try {
-                    i = Integer.valueOf(integer);
-                    i++;
-                    k = String.valueOf(i);
-
-                } catch (NumberFormatException numberFormatException) {
-
-
+                while (i == null && index.length() > 0) {
                     try {
-                        k = integer;
+                        i = Integer.valueOf(index);
+                        substringcount++;
+                        index = index.substring(1, index.length());
 
-
-                        i = Integer.valueOf(integer.substring(integer.length() - 5, integer.length()).replaceAll("-", "#"));
-                        i++;
-
-                        k = integer.substring(0, integer.length() - 5);
-
-                        k = k + i;
-
-                        stop();
-
-                    } catch (Exception numberFormatException1) {
-
-
-                        try {
-                            k = integer;
-
-                            i = Integer.valueOf(integer.substring(integer.length() - 4, integer.length()).replaceAll("-", "#"));
-                            i++;
-
-                            k = integer.substring(0, integer.length() - 4);
-                            k = k + i;
-
-                            stop();
-
-                        } catch (Exception numberFormatException12) {
-
-
-
-                            try {
-                                k = integer;
-
-
-                                i = Integer.valueOf(integer.substring(integer.length() - 3, integer.length()).replaceAll("-", "#"));
-                                i++;
-
-                                k = integer.substring(0, integer.length() - 3);
-
-                                k = k + i;
-
-                                stop();
-
-
-                            } catch (Exception numberFormatException123) {
-
-                                try {
-                                    k = integer;
-
-                                    i = Integer.valueOf(integer.substring(integer.length() - 2, integer.length()).replaceAll("-", "#"));
-                                    i++;
-
-                                    k = integer.substring(0, integer.length() - 2);
-
-                                    k = k + i;
-
-                                    stop();
-
-                                } catch (Exception numberFormatException1234) {
-
-                                    try {
-                                        k = integer;
-
-                                        i = Integer.valueOf(integer.substring(integer.length() - 1, integer.length()).replaceAll("-", "#"));
-                                        i++;
-
-                                        k = integer.substring(0, integer.length() - 1);
-
-                                        k = k + i;
-
-                                        stop();
-
-                                    } catch (Exception numberFormatException12345) {
-
-
-                                        query = "SELECT ALL COUNT(1) FROM " + table;
-                                        message = "Database Error (getNextIndex:COUNT):";
-                                        stm = null;
-                                        resultSet = null;
-
-                                        Log.Debug(query);
-
-                                        // Select-Anweisung ausführen
-                                        stm = conn.createStatement(resultSet.TYPE_SCROLL_INSENSITIVE, resultSet.CONCUR_READ_ONLY);
-                                        resultSet = stm.executeQuery(query);
-
-                                        resultSet.first();
-
-                                        oldi = resultSet.getInt(1);
-                                        oldi++;
-                                        stop();
-                                        k = String.valueOf(oldi);
-                                    }
-                                }
-                            }
-                        }
+                    } catch (NumberFormatException numberFormatException) {
+                        i = null;
                     }
+                }
+
+                if (i == null) {
+
+                    query = "SELECT ALL COUNT(1) FROM " + table;
+                    message = "Database Error (getNextIndex:COUNT):";
+                    stm = null;
+                    resultSet = null;
+                    Log.Debug(query);
+                    // Select-Anweisung ausführen
+                    stm = conn.createStatement(resultSet.TYPE_SCROLL_INSENSITIVE, resultSet.CONCUR_READ_ONLY);
+                    resultSet = stm.executeQuery(query);
+                    resultSet.first();
+                    i = resultSet.getInt(1);
                 }
             }
         } catch (SQLException ex) {
             Log.Debug(message + ex.getMessage());
             Log.Debug(ex, true);
             stop();
-            return "1";
-
+            
+            return 1;
+            
         } finally {
-
             // Alle Ressourcen wieder freigeben
             if (resultSet != null) {
                 try {
@@ -413,29 +327,31 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                 }
             }
         }
-
         stop();
 
-        if (k.equals("0")) {
-            k = "1";
-        }
-        return k;
+        return i++;
 
     }
 
     /**
      * 
-     * @param index
+     * @param colName 
      * @return the next 
      */
-    public Integer getNextIndex(String index) {
+    public Integer getNextIndexOfIntCol(
+            String colName) {
 
         start();
-        query = "SELECT " + index + " FROM " + table;
-        message = "Database Error (getNextIndex):";
-        stm = null;
-        resultSet = null;
+        query =
+                "SELECT " + colName + " FROM " + table;
+        message =
+                "Database Error (getNextIndex):";
+        stm =
+                null;
+        resultSet =
+                null;
         ResultSetMetaData rsmd;
+
         String integer = "0";
         Integer i = 0;
         Integer oldi = 0;
@@ -443,31 +359,39 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
         try {
             // Select-Anweisung ausführen
             stm = conn.createStatement(resultSet.TYPE_SCROLL_INSENSITIVE, resultSet.CONCUR_READ_ONLY);
-            resultSet = stm.executeQuery(query);
+            resultSet =
+                    stm.executeQuery(query);
 
 //            ArrayList spalten = new ArrayList();
             //ArrayList zeilen = new ArrayList();
 
-            rsmd = resultSet.getMetaData();
+            rsmd =
+                    resultSet.getMetaData();
 
             while (resultSet.next()) {
-                integer = resultSet.getString(index);
+                integer = resultSet.getString(colName);
                 try {
                     i = Integer.valueOf(integer);
                     if (i > oldi) {
                         oldi = i;
                     }
+
                 } catch (NumberFormatException numberFormatException) {
                     query = "SELECT ALL COUNT(1) FROM " + table;
-                    message = "Database Error (getNextIndex:COUNT):";
-                    stm = null;
-                    resultSet = null;
+                    message =
+                            "Database Error (getNextIndex:COUNT):";
+                    stm =
+                            null;
+                    resultSet =
+                            null;
 
                     Log.Debug(query);
 
                     // Select-Anweisung ausführen
-                    stm = conn.createStatement(resultSet.TYPE_SCROLL_INSENSITIVE, resultSet.CONCUR_READ_ONLY);
-                    resultSet = stm.executeQuery(query);
+                    stm =
+                            conn.createStatement(resultSet.TYPE_SCROLL_INSENSITIVE, resultSet.CONCUR_READ_ONLY);
+                    resultSet =
+                            stm.executeQuery(query);
 
                     if (resultSet.next()) {
                         oldi = resultSet.getInt(1);
@@ -486,6 +410,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
             Log.Debug(message + ex.getMessage());
             Log.Debug(ex, true);
             stop();
+
             return null;
 
         } finally {
@@ -498,6 +423,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     Log.Debug(message + ex.getMessage());
                     Log.Debug(ex, true);
                 }
+
             }
             if (stm != null) {
                 try {
@@ -506,6 +432,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     Log.Debug(message + ex.getMessage());
                     Log.Debug(ex, true);
                 }
+
             }
         }
 
@@ -513,6 +440,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
             oldi++;
 
             stop();
+
             return oldi;
 
         } catch (NumberFormatException numberFormatException) {
@@ -537,19 +465,27 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
         what[1] = what[1].replaceAll("\\(;;\\,;;\\)", ",");
 
         start();
-        query = "INSERT INTO " + table + " (" + what[0] + " ) VALUES (" + what[1] + ") ";
+
+        query =
+                "INSERT INTO " + table + " (" + what[0] + " ) VALUES (" + what[1] + ") ";
         Log.Debug(query);
-        message = "Database Error:";
-        stm = null;
-        resultSet = null;
+        message =
+                "Database Error:";
+        stm =
+                null;
+        resultSet =
+                null;
         ResultSet res;
+
         int id = 0;
 
         try {
 
             stm = conn.createStatement(resultSet.TYPE_SCROLL_INSENSITIVE, resultSet.CONCUR_READ_ONLY);
-            resultCount = stm.executeUpdate(query);
-            id = getCurrentIndex();
+            resultCount =
+                    stm.executeUpdate(query);
+            id =
+                    getCurrentIndex();
 
         } catch (SQLException ex) {
             Log.Debug(message + ex.getMessage());
@@ -565,6 +501,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     Log.Debug(message + ex.getMessage());
                     Log.Debug(ex, true);
                 }
+
             }
             if (stm != null) {
                 try {
@@ -573,6 +510,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     Log.Debug(message + ex.getMessage());
                     Log.Debug(ex, true);
                 }
+
             }
         }
         stop();
@@ -599,7 +537,8 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
         String[] b = what[1].split("\\(;;\\,;;\\)");
         String c = "";
 
-        for (int i = 0; i < a.length; i++) {
+        for (int i = 0; i <
+                a.length; i++) {
 
             c = c + a[i] + " = " + b[i] + ", ";
 
@@ -608,16 +547,21 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
         c = c.substring(0, c.length() - 2);
 
 
-        query = "UPDATE " + table + " SET " + c + " WHERE " + where[0] + " = " + where[2] + where[1] + where[2];
-        message = "Database Error:";
-        stm = null;
-        resultSet = null;
+        query =
+                "UPDATE " + table + " SET " + c + " WHERE " + where[0] + " = " + where[2] + where[1] + where[2];
+        message =
+                "Database Error:";
+        stm =
+                null;
+        resultSet =
+                null;
         Log.Debug(query);
         try {
 
             // Select-Anweisung ausführenconn.createStatement(rs.TYPE_SCROLL_INSENSITIVE,rs.CONCUR_READ_ONLY);
             stm = conn.createStatement(resultSet.TYPE_SCROLL_INSENSITIVE, resultSet.CONCUR_READ_ONLY);
-            resultCount = stm.executeUpdate(query);
+            resultCount =
+                    stm.executeUpdate(query);
 
 
         } catch (SQLException ex) {
@@ -633,6 +577,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     Log.Debug(message + ex.getMessage());
                     Log.Debug(ex, true);
                 }
+
             }
             if (stm != null) {
                 try {
@@ -641,6 +586,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     Log.Debug(message + ex.getMessage());
                     Log.Debug(ex, true);
                 }
+
             }
         }
 
@@ -669,15 +615,21 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
 
         if (like) {
             l = "%";
-            k = " LIKE ";
+            k =
+                    " LIKE ";
         }
 
         start();
-        query = "SELECT " + what + " FROM " + table + " WHERE " + where[0] + k + where[2] + l + where[1] + l + where[2] + deleted;
-        message = "Database Error:";
-        stm = null;
-        resultSet = null;
+        query =
+                "SELECT " + what + " FROM " + table + " WHERE " + where[0] + k + where[2] + l + where[1] + l + where[2] + deleted;
+        message =
+                "Database Error:";
+        stm =
+                null;
+        resultSet =
+                null;
         ResultSetMetaData rsmd;
+
         String[] pax = null;
 
         Log.Debug(query);
@@ -685,27 +637,31 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
         try {
             // Select-Anweisung ausführen
             stm = conn.createStatement(resultSet.TYPE_SCROLL_INSENSITIVE, resultSet.CONCUR_READ_ONLY);
-            resultSet = stm.executeQuery(query);
+            resultSet =
+                    stm.executeQuery(query);
 
             ArrayList spalten = new ArrayList();
             //ArrayList zeilen = new ArrayList();
 
-            rsmd = resultSet.getMetaData();
+            rsmd =
+                    resultSet.getMetaData();
 
             if (resultSet.last()) {
 
-                for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+                for (int i = 1; i <=
+                        rsmd.getColumnCount(); i++) {
                     spalten.add(resultSet.getObject(i));
                 }
+
             }
 
             pax = new String[spalten.size()];
 
-            for (int i = 0; i < pax.length; i++) {
+            for (int i = 0; i <
+                    pax.length; i++) {
 
                 pax[i] = String.valueOf(spalten.get(i));
             }
-
 
         } catch (SQLException ex) {
             Log.Debug(message + ex.getMessage());
@@ -721,6 +677,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     Log.Debug(message + ex.getMessage());
                     Log.Debug(ex, true);
                 }
+
             }
             if (stm != null) {
                 try {
@@ -729,6 +686,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     Log.Debug(message + ex.getMessage());
                     Log.Debug(ex, true);
                 }
+
             }
         }
         stop();
@@ -752,37 +710,46 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
     public String[] selectFirst(String what, String[] where) {
 
         start();
-        query = "SELECT " + what + " FROM " + table + " WHERE " + where[0] + " = " + where[2] + where[1] + where[2] + " ";
-        message = "Database Error:";
-        stm = null;
-        resultSet = null;
+        query =
+                "SELECT " + what + " FROM " + table + " WHERE " + where[0] + " = " + where[2] + where[1] + where[2] + " ";
+        message =
+                "Database Error:";
+        stm =
+                null;
+        resultSet =
+                null;
         ResultSetMetaData rsmd;
+
         String[] pax = null;
 
         try {
             // Select-Anweisung ausführen
             stm = conn.createStatement(resultSet.TYPE_SCROLL_INSENSITIVE, resultSet.CONCUR_READ_ONLY);
-            resultSet = stm.executeQuery(query);
+            resultSet =
+                    stm.executeQuery(query);
 
             ArrayList spalten = new ArrayList();
             //ArrayList zeilen = new ArrayList();
 
-            rsmd = resultSet.getMetaData();
+            rsmd =
+                    resultSet.getMetaData();
 
             if (resultSet.first()) {
 
-                for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+                for (int i = 1; i <=
+                        rsmd.getColumnCount(); i++) {
                     spalten.add(resultSet.getObject(i));
                 }
+
             }
 
             pax = new String[spalten.size()];
 
-            for (int i = 0; i < pax.length; i++) {
+            for (int i = 0; i <
+                    pax.length; i++) {
 
                 pax[i] = String.valueOf(spalten.get(i));
             }
-
 
         } catch (SQLException ex) {
             Log.Debug(message + ex.getMessage());
@@ -798,6 +765,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     Log.Debug(message + ex.getMessage());
                     Log.Debug(ex, true);
                 }
+
             }
             if (stm != null) {
                 try {
@@ -806,6 +774,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     Log.Debug(message + ex.getMessage());
                     Log.Debug(ex, true);
                 }
+
             }
         }
         stop();
@@ -927,7 +896,8 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
     @SuppressWarnings("unchecked")
     public String[][] select(String what, String[] where, String leftJoinTable, String leftJoinKey, String order) {
         start();
-        labels = new ArrayList();
+        labels =
+                new ArrayList();
         //LEFT JOIN Orders ON Employees.Employee_ID=Orders.Employee_ID
 
         if (where != null) {
@@ -941,52 +911,62 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
         //+ " WHERE " + table + ".deleted = 0";
 
         }
+
         message = "Database Error (select) :";
-        stm = null;
-        resultSet = null;
+        stm =
+                null;
+        resultSet =
+                null;
         ResultSetMetaData rsmd;
+
         boolean labelsDone = false;
 
         try {
             // Select-Anweisung ausführen
             stm = conn.createStatement();
             Log.Debug(query);
-            resultSet = stm.executeQuery(query);
+            resultSet =
+                    stm.executeQuery(query);
 
             ArrayList spalten = new ArrayList();
             ArrayList zeilen = new ArrayList();
 
 
 
-            rsmd = resultSet.getMetaData();
+            rsmd =
+                    resultSet.getMetaData();
 
 
             while (resultSet.next()) {
                 spalten = new ArrayList();
-                for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+                for (int i = 1; i <=
+                        rsmd.getColumnCount(); i++) {
                     spalten.add(resultSet.getObject(i));
 
                     if (!labelsDone) {
                         getLabels().add(rsmd.getColumnName(i));
                     }
+
                 }
                 labelsDone = true;
                 zeilen.add(spalten);
 
             }
 
-
             p = new String[zeilen.size()][spalten.size()];
 
 
-            for (int h = 0; h < zeilen.size(); h++) {
+            for (int h = 0; h <
+                    zeilen.size(); h++) {
 
                 z = (ArrayList) zeilen.get(h);
 
-                for (int i = 0; i < spalten.size(); i++) {
+                for (int i = 0; i <
+                        spalten.size(); i++) {
 
                     p[h][i] = String.valueOf(z.get(i));
                 }
+
             }
 
         } catch (SQLException ex) {
@@ -1002,6 +982,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     Log.Debug(message + ex.getMessage());
                     Log.Debug(ex, true);
                 }
+
             }
             if (stm != null) {
                 try {
@@ -1010,6 +991,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     Log.Debug(message + ex.getMessage());
                     Log.Debug(ex, true);
                 }
+
             }
         }
         stop();
@@ -1027,7 +1009,8 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
     @SuppressWarnings("unchecked")
     public String[][] select(String what, String[] where, String leftJoinTable, String leftJoinKey) {
         start();
-        labels = new ArrayList();
+        labels =
+                new ArrayList();
         //LEFT JOIN Orders ON Employees.Employee_ID=Orders.Employee_ID
 
         if (where != null) {
@@ -1041,52 +1024,62 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
         //+ " WHERE " + table + ".deleted = 0";
 
         }
+
         message = "Database Error (select) :";
-        stm = null;
-        resultSet = null;
+        stm =
+                null;
+        resultSet =
+                null;
         ResultSetMetaData rsmd;
+
         boolean labelsDone = false;
 
         try {
             // Select-Anweisung ausführen
             stm = conn.createStatement();
             Log.Debug(query);
-            resultSet = stm.executeQuery(query);
+            resultSet =
+                    stm.executeQuery(query);
 
             ArrayList spalten = new ArrayList();
             ArrayList zeilen = new ArrayList();
 
 
 
-            rsmd = resultSet.getMetaData();
+            rsmd =
+                    resultSet.getMetaData();
 
 
             while (resultSet.next()) {
                 spalten = new ArrayList();
-                for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+                for (int i = 1; i <=
+                        rsmd.getColumnCount(); i++) {
                     spalten.add(resultSet.getObject(i));
 
                     if (!labelsDone) {
                         getLabels().add(rsmd.getColumnName(i));
                     }
+
                 }
                 labelsDone = true;
                 zeilen.add(spalten);
 
             }
 
-
             p = new String[zeilen.size()][spalten.size()];
 
 
-            for (int h = 0; h < zeilen.size(); h++) {
+            for (int h = 0; h <
+                    zeilen.size(); h++) {
 
                 z = (ArrayList) zeilen.get(h);
 
-                for (int i = 0; i < spalten.size(); i++) {
+                for (int i = 0; i <
+                        spalten.size(); i++) {
 
                     p[h][i] = String.valueOf(z.get(i));
                 }
+
             }
 
         } catch (SQLException ex) {
@@ -1102,6 +1095,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     Log.Debug(message + ex.getMessage());
                     Log.Debug(ex, true);
                 }
+
             }
             if (stm != null) {
                 try {
@@ -1110,6 +1104,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     Log.Debug(message + ex.getMessage());
                     Log.Debug(ex, true);
                 }
+
             }
         }
         stop();
@@ -1129,6 +1124,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
         if (ghosts) {
             str = " OR deleted = 1";
         }
+
         start();
         if (where != null) {
             query = "SELECT " + what + " FROM " + table + " WHERE " + where[0] + " = " + where[2] + where[1] + where[2] + " " + " AND WHERE deleted = 0" + str;
@@ -1136,25 +1132,31 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
             query = "SELECT " + what + " FROM " + table + " WHERE deleted = 0" + str;
 
         }
+
         message = "Database Error (select) :";
-        stm = null;
-        resultSet = null;
+        stm =
+                null;
+        resultSet =
+                null;
         ResultSetMetaData rsmd;
 
         try {
             // Select-Anweisung ausführen
             stm = conn.createStatement();
             Log.Debug(query);
-            resultSet = stm.executeQuery(query);
+            resultSet =
+                    stm.executeQuery(query);
 
             ArrayList spalten = new ArrayList();
             ArrayList zeilen = new ArrayList();
 
-            rsmd = resultSet.getMetaData();
+            rsmd =
+                    resultSet.getMetaData();
 
             while (resultSet.next()) {
                 spalten = new ArrayList();
-                for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+                for (int i = 1; i <=
+                        rsmd.getColumnCount(); i++) {
                     spalten.add(resultSet.getObject(i));
                 }
 
@@ -1162,18 +1164,20 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
 
             }
 
-
             p = new String[zeilen.size()][spalten.size()];
 
 
-            for (int h = 0; h < zeilen.size(); h++) {
+            for (int h = 0; h <
+                    zeilen.size(); h++) {
 
                 z = (ArrayList) zeilen.get(h);
 
-                for (int i = 0; i < spalten.size(); i++) {
+                for (int i = 0; i <
+                        spalten.size(); i++) {
 
                     p[h][i] = String.valueOf(z.get(i));
                 }
+
             }
 
         } catch (SQLException ex) {
@@ -1189,6 +1193,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     Log.Debug(message + ex.getMessage());
                     Log.Debug(ex, true);
                 }
+
             }
             if (stm != null) {
                 try {
@@ -1197,6 +1202,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     Log.Debug(message + ex.getMessage());
                     Log.Debug(ex, true);
                 }
+
             }
         }
         stop();
@@ -1207,19 +1213,24 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
         start();
 
 
-        query = "SELECT * INTO OUTFILE " + filename + " FROM " + table;
+        query =
+                "SELECT * INTO OUTFILE " + filename + " FROM " + table;
 
 
-        message = "Database Error (select) :";
-        stm = null;
-        resultSet = null;
+        message =
+                "Database Error (select) :";
+        stm =
+                null;
+        resultSet =
+                null;
         ResultSetMetaData rsmd;
 
         try {
             // Select-Anweisung ausführen
             stm = conn.createStatement();
             Log.Debug(query);
-            resultSet = stm.executeQuery(query);
+            resultSet =
+                    stm.executeQuery(query);
 
         } catch (SQLException ex) {
             Log.Debug(message + ex.getMessage());
@@ -1234,6 +1245,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     Log.Debug(message + ex.getMessage());
                     Log.Debug(ex, true);
                 }
+
             }
             if (stm != null) {
                 try {
@@ -1242,6 +1254,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     Log.Debug(message + ex.getMessage());
                     Log.Debug(ex, true);
                 }
+
             }
         }
         stop();
@@ -1263,25 +1276,31 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
             query = "SELECT " + what + " FROM " + table;
 
         }
+
         message = "Database Error (select) :";
-        stm = null;
-        resultSet = null;
+        stm =
+                null;
+        resultSet =
+                null;
         ResultSetMetaData rsmd;
 
         try {
             // Select-Anweisung ausführen
             stm = conn.createStatement();
             Log.Debug(query);
-            resultSet = stm.executeQuery(query);
+            resultSet =
+                    stm.executeQuery(query);
 
             ArrayList spalten = new ArrayList();
             ArrayList zeilen = new ArrayList();
 
-            rsmd = resultSet.getMetaData();
+            rsmd =
+                    resultSet.getMetaData();
 
             while (resultSet.next()) {
                 spalten = new ArrayList();
-                for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+                for (int i = 1; i <=
+                        rsmd.getColumnCount(); i++) {
                     spalten.add(resultSet.getObject(i));
                 }
 
@@ -1289,18 +1308,20 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
 
             }
 
-
             p = new String[zeilen.size()][spalten.size()];
 
 
-            for (int h = 0; h < zeilen.size(); h++) {
+            for (int h = 0; h <
+                    zeilen.size(); h++) {
 
                 z = (ArrayList) zeilen.get(h);
 
-                for (int i = 0; i < spalten.size(); i++) {
+                for (int i = 0; i <
+                        spalten.size(); i++) {
 
                     p[h][i] = String.valueOf(z.get(i));
                 }
+
             }
 
         } catch (SQLException ex) {
@@ -1316,6 +1337,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     Log.Debug(message + ex.getMessage());
                     Log.Debug(ex, true);
                 }
+
             }
             if (stm != null) {
                 try {
@@ -1324,6 +1346,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     Log.Debug(message + ex.getMessage());
                     Log.Debug(ex, true);
                 }
+
             }
         }
         stop();
@@ -1341,26 +1364,30 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
         String ord = " ORDER BY " + order;
         String wher = "";
         java.util.Date date;
-        
+
 
         if (like) {
 
 
             if (where[0].endsWith("datum")) {
 
-                
+
                 k = " BETWEEN ";
-                
-                date = DateConverter.getDate(where[1]);
-                
-                where[1] = "'" + DateConverter.getSQLDateString(date) + "'" + " AND " +"'" +  DateConverter.getSQLDateString(DateConverter.addMonth(date))+"'";
+
+                date =
+                        DateConverter.getDate(where[1]);
+
+                where[1] = "'" + DateConverter.getSQLDateString(date) + "'" + " AND " + "'" + DateConverter.getSQLDateString(DateConverter.addMonth(date)) + "'";
                 where[2] = " ";
 
             } else {
                 l1 = "%";
-                l2 = "%";
-                k = " LIKE ";
+                l2 =
+                        "%";
+                k =
+                        " LIKE ";
             }
+
         }
 
         if (where == null) {
@@ -1370,29 +1397,33 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
 
         }
 
-
-
         query = "SELECT " + what + " FROM " + table + wher + ord;
         Log.Debug(query);
-        message = "Database Error (select) :";
-        stm = null;
-        resultSet = null;
+        message =
+                "Database Error (select) :";
+        stm =
+                null;
+        resultSet =
+                null;
         ResultSetMetaData rsmd;
 
         try {
             // Select-Anweisung ausführen
             stm = conn.createStatement();
 
-            resultSet = stm.executeQuery(query);
+            resultSet =
+                    stm.executeQuery(query);
 
             ArrayList spalten = new ArrayList();
             ArrayList zeilen = new ArrayList();
 
-            rsmd = resultSet.getMetaData();
+            rsmd =
+                    resultSet.getMetaData();
 
             while (resultSet.next()) {
                 spalten = new ArrayList();
-                for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+                for (int i = 1; i <=
+                        rsmd.getColumnCount(); i++) {
                     spalten.add(resultSet.getObject(i));
                 }
 
@@ -1400,18 +1431,20 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
 
             }
 
-
             p = new String[zeilen.size()][spalten.size()];
 
 
-            for (int h = 0; h < zeilen.size(); h++) {
+            for (int h = 0; h <
+                    zeilen.size(); h++) {
 
                 z = (ArrayList) zeilen.get(h);
 
-                for (int i = 0; i < spalten.size(); i++) {
+                for (int i = 0; i <
+                        spalten.size(); i++) {
 
                     p[h][i] = String.valueOf(z.get(i));
                 }
+
             }
 
         } catch (SQLException ex) {
@@ -1428,6 +1461,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     Log.Debug(message + ex.getMessage());
                     Log.Debug(ex, true);
                 }
+
             }
             if (stm != null) {
                 try {
@@ -1436,6 +1470,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     Log.Debug(message + ex.getMessage());
                     Log.Debug(ex, true);
                 }
+
             }
         }
         stop();
@@ -1454,7 +1489,8 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
 
         if (where != null) {
 
-            for (int i = 0; i < where.length; i++) {
+            for (int i = 0; i <
+                    where.length; i++) {
 
                 str = str + where[i][0] + " = " + where[i][2] + where[i][1] + where[i][2];
             }
@@ -1466,14 +1502,18 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
 
             return 0;
         }
+
         message = "Database Error:";
-        stm = null;
-        resultSet = null;
+        stm =
+                null;
+        resultSet =
+                null;
         Log.Debug(query);
         try {
             // Select-Anweisung ausführen
             stm = conn.createStatement();
-            resultCount = stm.executeUpdate(query);
+            resultCount =
+                    stm.executeUpdate(query);
 
             Log.Debug("Entries deleted: " + resultCount);
         } catch (SQLException ex) {
@@ -1490,6 +1530,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     Log.Debug(message + ex.getMessage());
                     Log.Debug(ex, true);
                 }
+
             }
             if (stm != null) {
                 try {
@@ -1498,6 +1539,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     Log.Debug(message + ex.getMessage());
                     Log.Debug(ex, true);
                 }
+
             }
         }
         stop();
@@ -1518,14 +1560,18 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
 
             query = "DELETE FROM " + table;
         }
+
         message = "Database Error:";
-        stm = null;
-        resultSet = null;
+        stm =
+                null;
+        resultSet =
+                null;
         Log.Debug(query);
         try {
             // Select-Anweisung ausführen
             stm = conn.createStatement();
-            resultCount = stm.executeUpdate(query);
+            resultCount =
+                    stm.executeUpdate(query);
 
             Log.Debug("Entries deleted: " + resultCount);
         } catch (SQLException ex) {
@@ -1542,6 +1588,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     Log.Debug(message + ex.getMessage());
                     Log.Debug(ex, true);
                 }
+
             }
             if (stm != null) {
                 try {
@@ -1550,6 +1597,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     Log.Debug(message + ex.getMessage());
                     Log.Debug(ex, true);
                 }
+
             }
         }
         stop();
@@ -1563,7 +1611,8 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
      * @param newTable
      * @return a clone of this QueryClass (with database connection)
      */
-    public Query clone(String newTable) {
+    public Query clone(
+            String newTable) {
         Query theClone = null;
 //        Log.Debug("cloning.");
         try {
@@ -1602,9 +1651,11 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
             if (where[1].equals("")) {
                 where[1] = "0";
             }
+
             where[2] = "";
 //            l = "%";
-            k = " = ";
+            k =
+                    " = ";
 //            j = " OR WHERE " + where[0] + " " + k + " " + where[2] + l + where[1] + l + where[2];
         }
 
@@ -1619,31 +1670,38 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
 
 
             }
+
         }
 
 
 
         query = "SELECT " + what + " FROM " + table + wher + ord;
         Log.Debug(query);
-        message = "Database Error (select) :";
-        stm = null;
-        resultSet = null;
+        message =
+                "Database Error (select) :";
+        stm =
+                null;
+        resultSet =
+                null;
         ResultSetMetaData rsmd;
 
         try {
             // Select-Anweisung ausführen
             stm = conn.createStatement();
 
-            resultSet = stm.executeQuery(query);
+            resultSet =
+                    stm.executeQuery(query);
 
             ArrayList spalten = new ArrayList();
             ArrayList zeilen = new ArrayList();
 
-            rsmd = resultSet.getMetaData();
+            rsmd =
+                    resultSet.getMetaData();
 
             while (resultSet.next()) {
                 spalten = new ArrayList();
-                for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+                for (int i = 1; i <=
+                        rsmd.getColumnCount(); i++) {
                     spalten.add(resultSet.getObject(i));
                 }
 
@@ -1651,18 +1709,20 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
 
             }
 
-
             p = new String[zeilen.size()][spalten.size()];
 
 
-            for (int h = 0; h < zeilen.size(); h++) {
+            for (int h = 0; h <
+                    zeilen.size(); h++) {
 
                 z = (ArrayList) zeilen.get(h);
 
-                for (int i = 0; i < spalten.size(); i++) {
+                for (int i = 0; i <
+                        spalten.size(); i++) {
 
                     p[h][i] = String.valueOf(z.get(i));
                 }
+
             }
 
         } catch (SQLException ex) {
@@ -1678,6 +1738,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     Log.Debug(message + ex.getMessage());
                     Log.Debug(ex, true);
                 }
+
             }
             if (stm != null) {
                 try {
@@ -1686,6 +1747,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     Log.Debug(message + ex.getMessage());
                     Log.Debug(ex, true);
                 }
+
             }
         }
         stop();
