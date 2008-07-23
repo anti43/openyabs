@@ -260,5 +260,6 @@ public interface Tabellen {
      * Vorlagen
      */
     public  final String TABLE_BILL_TEXTS_FIELDS  = "rechnungid" + "," +"name" + "," +
-            "text";
+            "text"  + "," +
+            "isvorlage";
 }

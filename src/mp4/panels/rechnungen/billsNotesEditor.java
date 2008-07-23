@@ -3,12 +3,13 @@
  *
  * Created on July 21, 2008, 5:35 PM
  */
+package mp4.panels.rechnungen;
 
-package mp4.panels;
-
-
+import java.util.Formattable;
 import javax.swing.table.DefaultTableModel;
 import mp4.klassen.objekte.*;
+import mp4.utils.tabellen.DataModelUtils;
+import mp4.utils.tabellen.SelectionCheck;
 import mp4.utils.tabellen.TableFormat;
 
 /**
@@ -16,20 +17,30 @@ import mp4.utils.tabellen.TableFormat;
  * @author  Administrator
  */
 public class billsNotesEditor extends javax.swing.JFrame {
+
     private Rechnung rechnung;
 
     /** Creates new form billsNotesEditor */
     public billsNotesEditor() {
         initComponents();
-        jTable1.setModel(new DefaultTableModel(new RechnungBetreffzeile().getAllData(),new String[]{"id","Name","Text"}));
+        jTable2.setModel(new DefaultTableModel(new RechnungBetreffzeile().getAllData(), new String[]{"id", "Name", "Text"}));
+
+        DataModelUtils.addToTable(jTable1, new Object[][]{{null, null, null}, {null, null, null}, {null, null, null}, {null, null, null}});
+
         TableFormat.stripFirst(jTable1);
+        TableFormat.stripFirst(jTable2);
         setVisible(rootPaneCheckingEnabled);
     }
 
     public billsNotesEditor(Rechnung current) {
         initComponents();
-        jTable1.setModel(new DefaultTableModel(new RechnungBetreffzeile().getAllData(),new String[]{"id","Name","Text"}));
+        jTable2.setModel(new DefaultTableModel(new RechnungBetreffzeile().getVorlagen(), new String[]{"id", "Name", "Text"}));
+        jTable1.setModel(new DefaultTableModel(new RechnungBetreffzeile().getDataOf(current.getId()), new String[]{"id", "Name", "Text"}));
+
+         DataModelUtils.addToTable(jTable1, new Object[][]{{null, null, null}, {null, null, null}, {null, null, null}, {null, null, null}});
+
         TableFormat.stripFirst(jTable1);
+        TableFormat.stripFirst(jTable2);
         this.rechnung = current;
         setVisible(rootPaneCheckingEnabled);
     }
@@ -78,6 +89,7 @@ public class billsNotesEditor extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
+        jTable1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane1.setViewportView(jTable1);
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
@@ -94,22 +106,50 @@ public class billsNotesEditor extends javax.swing.JFrame {
             Class[] types = new Class [] {
                 java.lang.String.class
             };
+            boolean[] canEdit = new boolean [] {
+                false
+            };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
             }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
         });
+        jTable2.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane2.setViewportView(jTable2);
 
         jButton1.setText("Dazu");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setText("Entfernen");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jButton3.setText("Zu Vorlagen");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
-        jButton4.setText("Speichern");
+        jButton4.setText("Speichern und schliessen");
 
         jButton5.setText("Entfernen");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -126,10 +166,10 @@ public class billsNotesEditor extends javax.swing.JFrame {
                         .addComponent(jButton2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton3))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(jButton4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton5)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jButton5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 138, Short.MAX_VALUE)
+                        .addComponent(jButton4)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -139,14 +179,14 @@ public class billsNotesEditor extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
-                    .addComponent(jButton2)
-                    .addComponent(jButton3))
+                    .addComponent(jButton3)
+                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton4, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton5, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton4)
+                    .addComponent(jButton5))
                 .addContainerGap())
         );
 
@@ -164,8 +204,40 @@ public class billsNotesEditor extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
+    SelectionCheck selection = new SelectionCheck(jTable2);
 
+    if (selection.checkID()) {
+        RechnungBetreffzeile zeile = new RechnungBetreffzeile(selection.getId());
+        DataModelUtils.addToTable(jTable1, new String[]{zeile.getId().toString(), zeile.getName(), zeile.getText()});
+    }
+
+}//GEN-LAST:event_jButton1ActionPerformed
+
+private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    SelectionCheck selection = new SelectionCheck(jTable1);
+
+    if (selection.rowHasData()) {
+        Object[] data = selection.getRowData();
+        RechnungBetreffzeile zeile = new RechnungBetreffzeile();
+        zeile.setName((String) data[1]);
+        zeile.setText((String) data[2]);
+        zeile.isVorlage(true);
+        zeile.save();
+        DataModelUtils.addToTable(jTable1, new String[]{zeile.getId().toString(), zeile.getName(), zeile.getText()});
+    }
+}//GEN-LAST:event_jButton3ActionPerformed
+
+private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+
+    DataModelUtils.removeSelectedRowFromTable(jTable1);
+    TableFormat.stripFirst(jTable1);
+   
+}//GEN-LAST:event_jButton2ActionPerformed
+
+private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+}//GEN-LAST:event_jButton5ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
@@ -178,5 +250,4 @@ public class billsNotesEditor extends javax.swing.JFrame {
     private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
     // End of variables declaration//GEN-END:variables
-
 }

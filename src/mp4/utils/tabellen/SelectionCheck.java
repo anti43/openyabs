@@ -50,4 +50,20 @@ public class SelectionCheck {
             return -1;
         }
     }
+
+    public Object[] getRowData() {
+        Object[] data = new Object[table.getModel().getColumnCount()];
+        for (int idx = 0; idx < data.length; idx++) {
+            data[idx] = table.getModel().getValueAt(table.getSelectedRow(), idx);
+        }
+        return data;
+    }
+
+    public boolean rowHasData() {
+        for (int i = 0; i < table.getModel().getColumnCount(); i++) {
+           if(table.getModel().getValueAt(table.getSelectedRow(), i)!=null)return true;
+        }
+        
+        return false;
+    }
 }

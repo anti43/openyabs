@@ -103,7 +103,7 @@ public interface Installation {
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
         
         "CREATE TABLE rechnungbetreffz (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-        "rechnungid INTEGER REFERENCES rechnungen (id)," + 
+        "rechnungid INTEGER DEFAULT 0," + 
         "name VARCHAR(100), text VARCHAR(500), isvorlage INTEGER DEFAULT 0," +
         "deleted INTEGER DEFAULT 0," +
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",

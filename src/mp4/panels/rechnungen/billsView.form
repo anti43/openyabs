@@ -608,7 +608,6 @@
                                           <EmptySpace pref="24" max="-2" attributes="0"/>
                                       </Group>
                                       <Group type="102" alignment="1" attributes="0">
-                                          <EmptySpace pref="3" max="-2" attributes="0"/>
                                           <Group type="103" groupAlignment="3" attributes="0">
                                               <Component id="jTextField5" alignment="3" min="-2" max="-2" attributes="0"/>
                                               <Component id="jLabel6" alignment="3" min="-2" max="-2" attributes="0"/>

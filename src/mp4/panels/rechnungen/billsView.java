@@ -3,7 +3,7 @@
  *
  * Created on 28. Dezember 2007, 19:17
  */
-package mp4.panels;
+package mp4.panels.rechnungen;
 
 import mp4.klassen.objekte.RechnungPosten;
 import mp4.klassen.objekte.Rechnung;

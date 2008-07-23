@@ -16,7 +16,6 @@
  */
 package mp4.klassen.objekte;
 
-
 import mp4.datenbank.verbindung.ConnectionHandler;
 
 /**
@@ -60,9 +59,17 @@ public class RechnungBetreffzeile extends mp3.classes.layer.Things implements mp
     public String[][] getAllData() {
         return this.select("id, name, text", null, null, false);
     }
-    
+
     public String[][] getDataOf(Integer rechnungId) {
         return this.select("*", "rechnungid", rechnungId.toString(), true);
+    }
+
+    public String[][] getVorlagen() {
+          return this.select("id, name, text", "isvorlage", "1", true);
+    }
+
+    public void isVorlage(boolean vorlage) {
+        isVorlage = vorlage;
     }
 
     private String collect() {
@@ -72,30 +79,32 @@ public class RechnungBetreffzeile extends mp3.classes.layer.Things implements mp
         str = str + "(;;2#4#1#1#8#0#;;)" + this.getName() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
         str = str + "(;;2#4#1#1#8#0#;;)" + this.getText() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
 
+        if (isVorlage) {
+            str = str + "1";
+        } else {
+            str = str + "0";
+        }
         return str;
     }
+
     private void explode(String[] select) {
 
         this.setRechnungID(Integer.valueOf(select[1]));
         this.setName(select[2]);
         this.setText(select[3]);
+        
+        if(select[4].matches("1"))
+            isVorlage(true);
     }
+
     public void save() {
 
         if (getId() > 0) {
             this.update(TABLE_BILL_TEXTS_FIELDS, this.collect(), getId().toString());
             isSaved = true;
         } else if (getId() == 0) {
-            this.insert(TABLE_BILL_TEXTS_FIELDS, this.collect());
-        } 
-    }
-
-    public String[] getValue() {
-        return value;
-    }
-
-    public void setValue(String[] value) {
-        this.value = value;
+            id = this.insert(TABLE_BILL_TEXTS_FIELDS, this.collect());
+        }
     }
 
     public String getName() {
