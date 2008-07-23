@@ -132,18 +132,18 @@ public class mainframe extends javax.swing.JFrame {
         j = new eurView(this);
 
 
-        jPanel4.add(d, BorderLayout.CENTER);
-        jPanel3.add(b, BorderLayout.CENTER);
-        jPanel7.add(f, BorderLayout.CENTER);
-        jPanel2.add(c, BorderLayout.CENTER);
-        jPanel9.add(e, BorderLayout.CENTER);
-        jPanel6.add(g, BorderLayout.CENTER);
-        jPanel8.add(h, BorderLayout.CENTER);
+//        jPanel4.add(d, BorderLayout.CENTER);
+//        jPanel3.add(b, BorderLayout.CENTER);
+//        jPanel7.add(f, BorderLayout.CENTER);
+//        jPanel2.add(c, BorderLayout.CENTER);
+//        jPanel9.add(e, BorderLayout.CENTER);
+//        jPanel6.add(g, BorderLayout.CENTER);
+//        jPanel8.add(h, BorderLayout.CENTER);
         jPanel11.add(i, BorderLayout.CENTER);
-        jPanel12.add(j, BorderLayout.CENTER);
+//        jPanel12.add(j, BorderLayout.CENTER);
 
         try {
-            jTabbedPane1.setSelectedIndex(Programmdaten.instanceOf().getMAINFRAME_TAB());
+            mainTabPane.setSelectedIndex(Programmdaten.instanceOf().getMAINFRAME_TAB());
         } catch (Exception exception) {
         }
 
@@ -308,22 +308,25 @@ public class mainframe extends javax.swing.JFrame {
         messagePanel = new FadeOnChangeLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jPanel5 = new javax.swing.JPanel();
-        jTabbedPane1 = new javax.swing.JTabbedPane();
+        mainTabPane = new javax.swing.JTabbedPane();
         jPanel11 = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
-        jPanel3 = new javax.swing.JPanel();
-        jPanel7 = new javax.swing.JPanel();
-        jPanel12 = new javax.swing.JPanel();
-        jPanel4 = new javax.swing.JPanel();
-        jPanel9 = new javax.swing.JPanel();
-        jPanel6 = new javax.swing.JPanel();
-        jPanel8 = new javax.swing.JPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
         jMenu3 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jPanel10 = new javax.swing.JPanel();
+        jOutlookBar1 = new com.l2fprod.common.swing.JOutlookBar();
+        jPanel2 = new javax.swing.JPanel();
+        jButton4 = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
+        jPanel4 = new javax.swing.JPanel();
+        jButton9 = new javax.swing.JButton();
+        jButton10 = new javax.swing.JButton();
+        jPanel3 = new javax.swing.JPanel();
+        jButton5 = new javax.swing.JButton();
+        jButton6 = new javax.swing.JButton();
+        jButton7 = new javax.swing.JButton();
         jMenuBar2 = new javax.swing.JMenuBar();
         jMenu4 = new javax.swing.JMenu();
         jMenu9 = new javax.swing.JMenu();
@@ -372,7 +375,7 @@ public class mainframe extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addComponent(messagePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 767, Short.MAX_VALUE)
+                .addComponent(messagePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 612, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(mainProgress, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -385,57 +388,23 @@ public class mainframe extends javax.swing.JFrame {
         jScrollPane1.setBorder(null);
         jScrollPane1.setAutoscrolls(true);
 
-        jTabbedPane1.setTabPlacement(javax.swing.JTabbedPane.BOTTOM);
-        jTabbedPane1.addMouseListener(new java.awt.event.MouseAdapter() {
+        jPanel5.setLayout(new java.awt.BorderLayout());
+
+        mainTabPane.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTabbedPane1MouseClicked(evt);
+                mainTabPaneMouseClicked(evt);
             }
         });
-        jTabbedPane1.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+        mainTabPane.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                jTabbedPane1PropertyChange(evt);
+                mainTabPanePropertyChange(evt);
             }
         });
 
         jPanel11.setLayout(new java.awt.BorderLayout());
-        jTabbedPane1.addTab("Start", jPanel11);
+        mainTabPane.addTab("Start", jPanel11);
 
-        jPanel2.setLayout(new java.awt.BorderLayout());
-        jTabbedPane1.addTab("Kunden        ", null, jPanel2, "Kunden bearbeiten");
-
-        jPanel3.setLayout(new java.awt.BorderLayout());
-        jTabbedPane1.addTab("Rechnungen", jPanel3);
-
-        jPanel7.setLayout(new java.awt.BorderLayout());
-        jTabbedPane1.addTab("Angebote ", jPanel7);
-
-        jPanel12.setLayout(new java.awt.BorderLayout());
-        jTabbedPane1.addTab("Einnahmen/ Ausgaben", jPanel12);
-
-        jPanel4.setLayout(new java.awt.BorderLayout());
-        jTabbedPane1.addTab("Produkte      ", jPanel4);
-
-        jPanel9.setLayout(new java.awt.BorderLayout());
-        jTabbedPane1.addTab("Lieferanten    ", jPanel9);
-
-        jPanel6.setLayout(new java.awt.BorderLayout());
-        jTabbedPane1.addTab("Verlauf           ", jPanel6);
-
-        jPanel8.setLayout(new java.awt.BorderLayout());
-        jTabbedPane1.addTab("Sicherung", jPanel8);
-
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 703, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 397, Short.MAX_VALUE)
-        );
+        jPanel5.add(mainTabPane, java.awt.BorderLayout.CENTER);
 
         jScrollPane1.setViewportView(jPanel5);
 
@@ -460,17 +429,64 @@ public class mainframe extends javax.swing.JFrame {
 
         jPanel10.setBackground(new java.awt.Color(204, 204, 204));
         jPanel10.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel10.setLayout(new javax.swing.BoxLayout(jPanel10, javax.swing.BoxLayout.LINE_AXIS));
 
-        javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
-        jPanel10.setLayout(jPanel10Layout);
-        jPanel10Layout.setHorizontalGroup(
-            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 62, Short.MAX_VALUE)
-        );
-        jPanel10Layout.setVerticalGroup(
-            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 393, Short.MAX_VALUE)
-        );
+        jOutlookBar1.setBackground(new java.awt.Color(204, 204, 204));
+
+        jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2, javax.swing.BoxLayout.Y_AXIS));
+
+        jButton4.setText("Kunden");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+        jPanel2.add(jButton4);
+
+        jButton1.setText("Lieferanten");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jPanel2.add(jButton1);
+
+        jOutlookBar1.addTab("Kontakte", jPanel2);
+
+        jPanel4.setLayout(new javax.swing.BoxLayout(jPanel4, javax.swing.BoxLayout.Y_AXIS));
+
+        jButton9.setText("Produkte");
+        jButton9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton9ActionPerformed(evt);
+            }
+        });
+        jPanel4.add(jButton9);
+
+        jButton10.setText("Services");
+        jPanel4.add(jButton10);
+
+        jOutlookBar1.addTab("Produkte", jPanel4);
+
+        jPanel3.setLayout(new javax.swing.BoxLayout(jPanel3, javax.swing.BoxLayout.Y_AXIS));
+
+        jButton5.setText("Einnahmen");
+        jPanel3.add(jButton5);
+
+        jButton6.setText("Ausgaben");
+        jPanel3.add(jButton6);
+
+        jButton7.setText("Übersicht");
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
+        jPanel3.add(jButton7);
+
+        jOutlookBar1.addTab("Buchhaltung", jPanel3);
+
+        jPanel10.add(jOutlookBar1);
 
         jMenu4.setText("Datei");
 
@@ -664,7 +680,8 @@ public class mainframe extends javax.swing.JFrame {
                 .addGap(3, 3, 3)
                 .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 713, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 521, Short.MAX_VALUE)
+                .addContainerGap())
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
@@ -672,19 +689,19 @@ public class mainframe extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 397, Short.MAX_VALUE))
+                    .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, 435, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 435, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    private void jTabbedPane1PropertyChange (java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jTabbedPane1PropertyChange
-    }//GEN-LAST:event_jTabbedPane1PropertyChange
+    private void mainTabPanePropertyChange (java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_mainTabPanePropertyChange
+}//GEN-LAST:event_mainTabPanePropertyChange
 
-    private void jTabbedPane1MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTabbedPane1MouseClicked
-    }//GEN-LAST:event_jTabbedPane1MouseClicked
+    private void mainTabPaneMouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mainTabPaneMouseClicked
+}//GEN-LAST:event_mainTabPaneMouseClicked
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         csvProductImporter.instanceOf();
@@ -716,7 +733,7 @@ public class mainframe extends javax.swing.JFrame {
         } catch (IOException ex) {
 
             new Popup("Kein Browser angegeben. Wählen Sie Ihren Internetbrowser unter 'Programmeinstellungen'.");
-        // Logger.getLogger(mainFrame.class.getName()).log(Level.SEVERE, null, ex);
+            // Logger.getLogger(mainFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jMenuItem6ActionPerformed
 
@@ -725,11 +742,11 @@ public class mainframe extends javax.swing.JFrame {
 
             Programmdaten.instanceOf().setMAINFRAME_WINDOW_STATE(this.getSize());
 
-            Programmdaten.instanceOf().setMAINFRAME_TAB(jTabbedPane1.getSelectedIndex());
+            Programmdaten.instanceOf().setMAINFRAME_TAB(mainTabPane.getSelectedIndex());
             Einstellungen.instanceOf().save();
             System.exit(0);
         } catch (Exception exc) {
-            Log.Debug(exc,true);
+            Log.Debug(exc, true);
             System.exit(0);
         }
     }
@@ -746,14 +763,14 @@ public class mainframe extends javax.swing.JFrame {
         /**
          * 
          * @return 0:start 
-     *          1:kunden
-     *          2:rechnungen
-     *          3:angebote
-     *          4:eur
-     *          5:produkte
-     *          6:lieferanten
-     *          7:verlauf  
-     *          8:sicherung
+         *          1:kunden
+         *          2:rechnungen
+         *          3:angebote
+         *          4:eur
+         *          5:produkte
+         *          6:lieferanten
+         *          7:verlauf  
+         *          8:sicherung
          *          
          */
         switch (this.getShowingTab()) {
@@ -794,7 +811,7 @@ public class mainframe extends javax.swing.JFrame {
 
         Programmdaten.instanceOf().setMAINFRAME_WINDOW_STATE(this.getSize());
 
-        Programmdaten.instanceOf().setMAINFRAME_TAB(jTabbedPane1.getSelectedIndex());
+        Programmdaten.instanceOf().setMAINFRAME_TAB(mainTabPane.getSelectedIndex());
         Einstellungen.instanceOf().save();
         h.saving();
         System.exit(0);
@@ -877,14 +894,36 @@ public class mainframe extends javax.swing.JFrame {
         new EinnahmenChart();
     }//GEN-LAST:event_jMenuItem19ActionPerformed
 
+private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+
+    mainTabPane.add("Kunde xy",new customersView(this));
+}//GEN-LAST:event_jButton4ActionPerformed
+
+private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    mainTabPane.add("Lieferant xy",new suppliersView(this));
+}//GEN-LAST:event_jButton1ActionPerformed
+
+private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+    mainTabPane.add("EUR Übersicht",new eurView(this));
+}//GEN-LAST:event_jButton7ActionPerformed
+
+private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+    mainTabPane.add("Produkt xy",new productsView(this));
+}//GEN-LAST:event_jButton9ActionPerformed
+
     @Override
     public void finalize() {
         Conn.shutdown();
-
         System.gc();
-
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton10;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
+    private javax.swing.JButton jButton7;
+    private javax.swing.JButton jButton9;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu10;
     private javax.swing.JMenu jMenu11;
@@ -916,26 +955,22 @@ public class mainframe extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JMenuItem jMenuItem9;
+    private com.l2fprod.common.swing.JOutlookBar jOutlookBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
-    private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel6;
-    private javax.swing.JPanel jPanel7;
-    private javax.swing.JPanel jPanel8;
-    private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JSeparator jSeparator4;
     private javax.swing.JSeparator jSeparator5;
-    private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JProgressBar mainProgress;
+    private javax.swing.JTabbedPane mainTabPane;
     private javax.swing.JLabel messagePanel;
     // End of variables declaration//GEN-END:variables
     public javax.swing.JMenu getJMenu1() {
@@ -962,40 +997,39 @@ public class mainframe extends javax.swing.JFrame {
         return jPanel11;
     }
 
-    public javax.swing.JPanel getJPanel2() {
-        return jPanel2;
-    }
-
-    public javax.swing.JPanel getJPanel3() {
-        return jPanel3;
-    }
-
-    public javax.swing.JPanel getJPanel4() {
-        return jPanel4;
-    }
-
-    public javax.swing.JPanel getJPanel5() {
-        return jPanel5;
-    }
-
-    public javax.swing.JPanel getJPanel6() {
-        return jPanel6;
-    }
-
-    public javax.swing.JPanel getJPanel7() {
-        return jPanel7;
-    }
-
-    public javax.swing.JPanel getJPanel9() {
-        return jPanel9;
-    }
-
+//    public javax.swing.JPanel getJPanel2() {
+//        return jPanel2;
+//    }
+//
+//    public javax.swing.JPanel getJPanel3() {
+//        return jPanel3;
+//    }
+//
+//    public javax.swing.JPanel getJPanel4() {
+//        return jPanel4;
+//    }
+//
+//    public javax.swing.JPanel getJPanel5() {
+//        return jPanel5;
+//    }
+//
+//    public javax.swing.JPanel getJPanel6() {
+//        return jPanel6;
+//    }
+//
+//    public javax.swing.JPanel getJPanel7() {
+//        return jPanel7;
+//    }
+//
+//    public javax.swing.JPanel getJPanel9() {
+//        return jPanel9;
+//    }
     public javax.swing.JScrollPane getJScrollPane1() {
         return jScrollPane1;
     }
 
     public javax.swing.JTabbedPane getJTabbedPane1() {
-        return jTabbedPane1;
+        return mainTabPane;
     }
 
     public javax.swing.JProgressBar getMainProgress() {
@@ -1035,7 +1069,7 @@ public class mainframe extends javax.swing.JFrame {
 
         Programmdaten.instanceOf().setMAINFRAME_WINDOW_STATE(this.getSize());
 
-        Programmdaten.instanceOf().setMAINFRAME_TAB(jTabbedPane1.getSelectedIndex());
+        Programmdaten.instanceOf().setMAINFRAME_TAB(mainTabPane.getSelectedIndex());
         Einstellungen.instanceOf().save();
 
         Conn.shutdown();
