@@ -30,8 +30,8 @@ public interface Constants {
      /**
      * Version info
      */
-    public static String VERSION = "3.62";
-    public static String TITLE = "[Lurking Dust Bunnys Friend]";
+    public static String VERSION = "4.00";
+    public static String TITLE = "[Teatime]";
     public static String VERSION_URL = "Not Used";
 
     

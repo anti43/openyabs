@@ -58,7 +58,7 @@ public class TabCloseIcon implements Icon
 	 */
 	public TabCloseIcon()
 	{
-		this( new ImageIcon( TabCloseIcon.class.getResource("/bilder/small/ok.png")) );
+		this( new ImageIcon( TabCloseIcon.class.getResource("/bilder/small/but_closeWindow.gif")) );
 	}
 	
 	
