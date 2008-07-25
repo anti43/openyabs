@@ -99,4 +99,13 @@ public class DataModelUtils {
         }
         return array;
     }
+    
+    public  static void addRowToTable(JTable table) {
+        Object[] o = new Object[table.getModel().getColumnCount()];    
+        for (int idx = 0; idx < o.length; idx++) {
+            o[idx] = null;
+        }
+        DefaultTableModel m = (DefaultTableModel) table.getModel();
+        m.addRow(o);
+    }
 }
