@@ -177,11 +177,7 @@ public class billsView extends javax.swing.JPanel implements Runnable, panelInte
     }
 
     private boolean hasValidCurrentBill() {
-        if (getCurrent().hasId()) {
-            return true;
-        } else {
-            return false;
-        }
+         return getCurrent().hasId();
     }
 
     private void nachricht(String string) {
