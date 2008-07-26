@@ -60,6 +60,10 @@ public class RechnungPosten extends mp3.classes.layer.Things implements mp4.date
         this.explode(this.selectLast("*", "id", id, true));
     }
 
+    public void deleteExistingOf(Rechnung bill) {
+        this.freeQuery("delete from rechnungsposten where rechnungid = " + bill.getId());
+    }
+
     private void explode(String[] select) {
 
         try {
@@ -96,10 +100,6 @@ public class RechnungPosten extends mp3.classes.layer.Things implements mp4.date
             isSaved = true;
         } else if (id == 0) {
             this.insert(TABLE_BILLS_DATA_FIELDS, this.collect());
-        } else {
-
-            mp3.classes.layer.Popup.warn(java.util.ResourceBundle.getBundle("languages/Bundle").getString("no_data_to_save"), Popup.WARN);
-
         }
     }
 

@@ -18,6 +18,7 @@ package mp4.utils.tabellen;
 
 import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
+import mp3.classes.utils.Log;
 
 /**
  *
@@ -31,33 +32,41 @@ public class TableFormat {
      */
     public static void stopEditing(JTable jTable1) {
         TableCellEditor editor = jTable1.getCellEditor();
-                if (editor != null) {
-                    editor.stopCellEditing();
-                }
+        if (editor != null) {
+            editor.stopCellEditing();
+        }
     }
-  /**
+
+    /**
      * Hides he first column of a table (usually "id")
      * @param table
      * 
      */
     public static void stripFirst(JTable table) {
+        try {
             table.getColumn(table.getColumnName(0)).setMinWidth(0);
             table.getColumn(table.getColumnName(0)).setMaxWidth(0);
-       }
-    
+        } catch (Exception e) {
+            Log.Debug(e.getMessage());
+        }
+    }
+
     /**
      * Resizes a tables cols
      * @param table
      * @param desiredColSizes
      * @param fixed Should the cols be non-resizable
      */
-    public static void resizeCols(JTable table, Integer[] desiredColSizes, boolean fixed){
-        for (int i = 0; i < desiredColSizes.length; i++) {
-            table.getColumn(table.getColumnName(i)).setMinWidth(desiredColSizes[i]);
-            table.getColumn(table.getColumnName(i)).setPreferredWidth(desiredColSizes[i]);
-            if (fixed) {
-                table.getColumn(table.getColumnName(i)).setMaxWidth(desiredColSizes[i]);
+    public static void resizeCols(JTable table, Integer[] desiredColSizes, boolean fixed) {
+       
+            for (int i = 0; i < desiredColSizes.length; i++) {
+                if (desiredColSizes[i] != null) {
+                    table.getColumn(table.getColumnName(i)).setMinWidth(desiredColSizes[i]);
+                    table.getColumn(table.getColumnName(i)).setPreferredWidth(desiredColSizes[i]);
+                    if (fixed) {
+                        table.getColumn(table.getColumnName(i)).setMaxWidth(desiredColSizes[i]);
+                    }
+                }
             }
-        }
     }
 }

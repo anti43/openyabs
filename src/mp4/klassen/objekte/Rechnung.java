@@ -189,6 +189,10 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
+    private void clearPostenData() {
+        new RechnungPosten().deleteExistingOf(this);
+    }
+
   
     private void explode(String[] select) {
 
@@ -281,15 +285,21 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
 
         if (id > 0 && !isSaved) {
             this.update(TABLE_BILLS_FIELDS, this.collect(), id.toString());
+            if(postendata != null) {
+                clearPostenData();
+                explode(postendata);
+            }
             isSaved = true;
         } else if (id == 0 && !isSaved) {
             this.insert(TABLE_BILLS_FIELDS, this.collect());
-            this.id = this.getMyId();
+            this.id = this.getMyId(); 
+            if(postendata != null) {
+                explode(postendata);
+            }
             isSaved = true;
         }        
         
-        if(postendata != null)
-            explode(postendata);
+       
     }
 
     public int getid() {
@@ -416,6 +426,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
     }
 
     private void explode(PostenTableModel m) {
+        
          for (int i = 0; i < m.getRowCount(); i++) {
             if (m.getValueAt(i, 4) != null) {
                 RechnungPosten b = new RechnungPosten();

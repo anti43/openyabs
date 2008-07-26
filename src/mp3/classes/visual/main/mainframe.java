@@ -126,15 +126,15 @@ public class mainframe extends javax.swing.JFrame {
 
         splash.setMessage("Initialisiere Komponenten...");
 
-        c = new customersView(this);
-        b = new billsView(this);
-        d = new productsView(this);
-        e = new suppliersView(this);
-        f = new offersView(this);
-        g = new historyView(this);
-        h = new backupView(this);
+//        c = new customersView(this);
+//        b = new billsView(this);
+//        d = new productsView(this);
+//        e = new suppliersView(this);
+//        f = new offersView(this);
+//        g = new historyView(this);
+//        h = new backupView(this);
         i = new startView(this);
-        j = new eurView(this);
+//        j = new eurView(this);
 
 
 //        jPanel4.add(d, BorderLayout.CENTER);

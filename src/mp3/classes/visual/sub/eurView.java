@@ -69,7 +69,7 @@ public class eurView extends javax.swing.JPanel {
         month = datesdate[1];
 //        jComboBox1.setSelectedIndex(Integer.valueOf(datesdate[1]) - 1);
 //        jTextField1.setText(year);
-        jButton1ActionPerformed(new ActionEvent(ui, WIDTH, year));
+//        jButton1ActionPerformed(new ActionEvent(ui, WIDTH, year));
     }
 
     /** This method is called from within the constructor to

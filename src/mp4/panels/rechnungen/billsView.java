@@ -37,6 +37,7 @@ import mp4.klassen.objekte.Product;
 import mp3.classes.visual.main.mainframe;
 
 import handling.pdf.PDF_Rechnung;
+import javax.swing.JOptionPane;
 import mp4.einstellungen.Einstellungen;
 import mp3.classes.visual.util.arrear;
 import mp4.einstellungen.Programmdaten;
@@ -83,10 +84,11 @@ public class billsView extends javax.swing.JPanel implements Runnable, panelInte
         updateListTable();
         fetchBillsOfTheMonth();
 
-        TableFormat.stripFirst(jTable1);
+    
         renewTableModel();
         resizeFields();
-
+        TableFormat.stripFirst(jTable1);
+        
         jTextField7.setText(DateConverter.getDefDateString(new Date()));
         jTextField11.setText(DateConverter.getDefDateString(new Date()));
         this.jCheckBox4.setSelected(Programmdaten.instanceOf().getBILLPANEL_CHECKBOX_MITLIEFERSCHEIN_state());
@@ -98,7 +100,38 @@ public class billsView extends javax.swing.JPanel implements Runnable, panelInte
     }
 
     public void addProductToBillsTable(Product product) {
-       ((PostenTableModel)jTable1.getModel()).addProduct(jTable1, product);
+        ((PostenTableModel) jTable1.getModel()).addProduct(jTable1, product);
+    }
+
+    private void createNew() {
+        CalculatedTableValues calculated;
+        PostenTableModel m;
+
+        if (hasCustomer() && validDate()) {
+
+            SelectionCheck selection = new SelectionCheck(jTable1);
+            calculated = DataModelUtils.calculateTableCols(jTable1, 0, 3, 4);
+            m = (PostenTableModel) jTable1.getModel();
+
+            Rechnung bill = new Rechnung();
+            bill.setRechnungnummer(bill.getNextBillNumber());
+            bill.setDatum(DateConverter.getDate(jTextField7.getText()));
+            bill.setAusfuehrungsDatum(DateConverter.getDate(jTextField7.getText()));
+            bill.setKundenId(getCustomer().getId());
+            bill.setGesamtpreis(calculated.getBruttobetrag());
+            bill.add(m);
+            bill.save();
+
+            mainframe.setMessage("Rechnung Nummer: " + bill.getRechnungnummer() + " angelegt.");
+            new HistoryItem(Strings.BILL, "Rechnung Nummer: " + bill.getRechnungnummer() + " angelegt.");
+//                this.setBill(new Rechnung(bill.getId()));
+        } else {
+
+            new Popup("Sie müssen einen (validen) Kunden auswählen.", Popup.ERROR);
+        }
+
+        updateListTable();
+        resizeFields();
     }
 
     private void fetchBillsOfTheMonth() {
@@ -108,7 +141,7 @@ public class billsView extends javax.swing.JPanel implements Runnable, panelInte
     }
 
     private boolean hasValidCurrentBill() {
-         return getCurrent().hasId();
+        return getCurrent().hasId();
     }
 
     private void nachricht(String string) {
@@ -124,17 +157,17 @@ public class billsView extends javax.swing.JPanel implements Runnable, panelInte
         TableFormat.resizeCols(jTable1, new Integer[]{null, 40, null, 40, 50, 50}, true);
     }
 
-    public void updateListTable() {        
-            this.jTable2.setModel(new BillListTableModel());
-            TableFormat.stripFirst(jTable2);
-            TableFormat.resizeCols(jTable2, new Integer[]{null,120,120,120}, false);
+    public void updateListTable() {
+//        this.jTable2.setModel(new BillListTableModel());
+//        TableFormat.stripFirst(jTable2);
+//        TableFormat.resizeCols(jTable2, new Integer[]{null, 120, 120, 120}, false);
     }
 
     public void setBill(Rechnung current) {
 
         this.currentBill = current;
         this.setCustomer(new Customer(current.getKundenId()));
-        
+
         this.jTextField6.setText(current.getRechnungnummer());
         jTextField6.setBackground(Color.WHITE);
         this.jTextField7.setText(DateConverter.getDefDateString(current.getDatum()));
@@ -148,14 +181,13 @@ public class billsView extends javax.swing.JPanel implements Runnable, panelInte
         if (current.isStorno()) {
             this.jCheckBox3.setSelected(true);
         } else {
-            
-            if(current.isVerzug()) {
+
+            if (current.isVerzug()) {
                 this.jCheckBox3.setSelected(false);
                 this.jCheckBox2.setBackground(Color.RED);
-            }
-            else {
+            } else {
                 this.jCheckBox3.setSelected(false);
-                this.jCheckBox2.setBackground(new Color(212,208,200));
+                this.jCheckBox2.setBackground(new Color(212, 208, 200));
             }
         }
         this.getJTable1().setModel(current.getProductlistAsTableModel());
@@ -173,7 +205,7 @@ public class billsView extends javax.swing.JPanel implements Runnable, panelInte
 
         if (getCustomer().isDeleted()) {
             jLabel19.setForeground(Color.GRAY);
-        } 
+        }
     }
 
     private boolean hasCustomer() {
@@ -1059,204 +1091,66 @@ public class billsView extends javax.swing.JPanel implements Runnable, panelInte
     }//GEN-LAST:event_jTextField3ActionPerformed
 
     private void jButton3MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
+
+        createNew();
+
+    }//GEN-LAST:event_jButton3MouseClicked
+
+    private void jTable2MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable2MouseClicked
+
+        SelectionCheck selection = new SelectionCheck(jTable2);
+
+        if (evt.getClickCount() >= 2 && selection.checkID() && evt.getButton() == MouseEvent.BUTTON1) {
+            try {
+                this.setBill(new Rechnung(selection.getId()));
+                jTabbedPane1.setSelectedIndex(0);
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+        }
+    }//GEN-LAST:event_jTable2MouseClicked
+
+    public void save() {
+
         CalculatedTableValues calculated;
         PostenTableModel m;
 
-        if (hasCustomer() && validDate()) {
+        if (hasValidCurrentBill()) {
+            if (hasCustomer() && validDate()) {
 
-            SelectionCheck selection = new SelectionCheck(jTable1);
-            calculated = DataModelUtils.calculateTableCols(jTable1, 0, 3, 4);
-            m = (PostenTableModel) jTable1.getModel();
+
+                SelectionCheck selection = new SelectionCheck(jTable1);
+                calculated = DataModelUtils.calculateTableCols(jTable1, 0, 3, 4);
+                m = (PostenTableModel) jTable1.getModel();
 
                 Rechnung bill = new Rechnung();
                 bill.setRechnungnummer(bill.getNextBillNumber());
                 bill.setDatum(DateConverter.getDate(jTextField7.getText()));
                 bill.setAusfuehrungsDatum(DateConverter.getDate(jTextField7.getText()));
                 bill.setKundenId(getCustomer().getId());
-                bill.setGesamtpreis(calculated.getBruttobetrag());      
+                bill.setGesamtpreis(calculated.getBruttobetrag());
                 bill.add(m);
                 bill.save();
 
-                mainframe.setMessage("Rechnung Nummer: " + bill.getRechnungnummer() + " angelegt.");
-                new HistoryItem(Strings.BILL, "Rechnung Nummer: " + bill.getRechnungnummer() + " angelegt.");
+                mainframe.setMessage("Rechnung Nummer: " + bill.getRechnungnummer() + " gespeichert.");
+                new HistoryItem(Strings.BILL, "Rechnung Nummer: " + bill.getRechnungnummer() + " gespeichert.");
 //                this.setBill(new Rechnung(bill.getId()));
-        } else {
-
-            new Popup("Sie müssen einen (validen) Kunden auswählen.", Popup.ERROR);
-        }
-        
-        updateListTable();
-        resizeFields();
-
-    }//GEN-LAST:event_jButton3MouseClicked
-
-    private void jTable2MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable2MouseClicked
-
-        boolean idOk = true;
-        Integer id = 0;
-
-
-        try {
-            id = Integer.valueOf((String) jTable2.getValueAt(jTable2.getSelectedRow(), 0));
-        } catch (Exception numberFormatException) {
-            idOk = false;
-        }
-
-
-
-        if (evt.getClickCount() >= 2 && idOk && evt.getButton() == MouseEvent.BUTTON1) {
-
-            try {
-                this.setBill(new Rechnung(id));
-                jTabbedPane1.setSelectedIndex(0);
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
-        } else if (idOk && (evt.getButton() == MouseEvent.BUTTON2 || evt.getButton() == MouseEvent.BUTTON3)) {
-        }
-
-
-        idOk = true;
-
-
-    }//GEN-LAST:event_jTable2MouseClicked
-
-    public void save() {
-
-
-        if (hasCustomer() && validDate()) {
-
-            if (hasValidCurrentBill()) {
-
-                TableModel m = getJTable1().getModel();
-                ListSelectionModel selectionModel = getJTable1().getSelectionModel();
-                TableFormat.stopEditing(getJTable1());
-
-                Query f = ConnectionHandler.instanceOf().clone(TABLE_BILLS);
-                Rechnung bill = getCurrent();
-                bill.setDatum(DateConverter.getDate(jTextField7.getText()));
-                bill.setKundenId(getCustomer().getId());
-                bill.setGesamtpreis(Double.valueOf(jTextField8.getText()));
-
-                // **********************EUR**********************************************************
-                Double betrag = 0d;
-                Double allovertax = 0d;
-                Double nettobetrag = 0d;
-
-                for (int i = 0; i < m.getRowCount(); i++) {
-
-                    //anzahl,bezeichnung,mehrwertsteuer,nettopreis
-                    if (m.getValueAt(i, 4) != null) {
-
-                        try {
-
-
-                            betrag = betrag + (Double.valueOf(m.getValueAt(i, 4).toString().replaceAll(",", ".")) * (Double.valueOf((Double.valueOf(m.getValueAt(i, 3).toString().replaceAll(",", ".")) / 100) + 1)));
-                            betrag = Formater.formatDecimalDouble(betrag);
-
-                            nettobetrag = nettobetrag + (Double.valueOf(m.getValueAt(i, 4).toString().replaceAll(",", ".")));
-                            betrag = Formater.formatDecimalDouble(betrag);
-
-                            taxcount = taxcount + 100;
-
-                            allovertax = allovertax + ((Double.valueOf(m.getValueAt(i, 3).toString().replaceAll(",", "."))) + 100);
-                            Log.Debug(allovertax);
-                        } catch (Exception exception) {
-                            Log.Debug(exception);
-                        }
-                    }
-                }
-                Log.Debug("val = " + allovertax + " / " + taxcount);
-//                bill.setGesamtpreis(betrag.toString());
-                bill.setGesamttax((allovertax / taxcount));
-                taxcount = 0;
-                //***************************************************************************************
-
-                bill.save();
-                //  this.clear();
-
-
-
-                for (int i = 0; i < m.getRowCount(); i++) {
-
-                    //delete first
-                    if (m.getValueAt(i, 0) != null) {
-
-
-
-                        try {
-                            RechnungPosten b = new RechnungPosten(ConnectionHandler.instanceOf(), m.getValueAt(i, 0).toString());
-
-                            b.destroy();
-
-                        } catch (Exception exception) {
-                        }
-
-                    }
-                }
-
-
-                for (int i = 0; i < m.getRowCount(); i++) {
-
-                    //anzahl,bezeichnung,mehrwertsteuer,nettopreis
-                    if (m.getValueAt(i, 4) != null) {
-
-
-
-                        RechnungPosten b = new RechnungPosten(ConnectionHandler.instanceOf());
-
-                        b.setRechnungid(getCurrent().getId());
-
-//                            b.setAnzahl((String) m.getValueAt(i, 1));
-                        b.setPosten((String) m.getValueAt(i, 2));
-                        try {
-
-                            b.setAnzahl((Double) (m.getValueAt(i, 1)));
-                            b.setSteuersatz((Double) (m.getValueAt(i, 3)));
-                            b.setPreis((Double) (m.getValueAt(i, 4)));
-
-                        } catch (Exception exception) {
-//                                b.setAnzahl("0");
-//                                b.setSteuersatz("0");
-//                                b.setPreis("0");
-                            }
-                        b.save();
-
-                    }
-                }
-
-                mainframe.getNachricht().setText("Rechnung Nummer " + bill.getRechnungnummer() + " gespeichert.");
-
-                new HistoryItem(ConnectionHandler.instanceOf(), Strings.BILL, "Rechnung Nummer: " + bill.getRechnungnummer() + " editiert.");
-
-                this.setBill(new Rechnung(bill.getid()));
-
-
             } else {
-                new Popup("Sie müssen die Rechnung erst anlegen.", Popup.ERROR);
-//                jButton3MouseClicked(new MouseEvent(jTable1, WIDTH, WIDTH, WIDTH, WIDTH, WIDTH, WIDTH, nettoprices));
 
+                new Popup("Sie müssen einen (validen) Kunden auswählen.", Popup.ERROR);
             }
 
-
-
-
-
+            updateListTable();
+            resizeFields();
         } else {
-
-            new Popup("Sie müssen einen Kunden auswählen.", Popup.ERROR);
+             if(JOptionPane.showConfirmDialog(this, "Möchten Sie die Rechnung anlegen?","Rechnung exsitiert nicht.",JOptionPane.INFORMATION_MESSAGE) == JOptionPane.YES_OPTION){       
+                 createNew();
+             }    
         }
-
-        resizeFields();
-
-
-
     }
 
     private void jButton4MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton4MouseClicked
-
         save();
-
     }//GEN-LAST:event_jButton4MouseClicked
 
     private void jTable3MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable3MouseClicked
@@ -1485,8 +1379,6 @@ private void jButton19KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
 private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
     new mp4.utils.windows.Position().center(new billsNotesEditor(currentBill));
 }//GEN-LAST:event_jButton18ActionPerformed
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton jButton1;
     public javax.swing.JButton jButton10;
