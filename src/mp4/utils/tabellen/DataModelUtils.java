@@ -22,6 +22,8 @@ package mp4.utils.tabellen;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+import mp3.classes.utils.Log;
+import mp4.utils.zahlen.FormatNumber;
 
 /**
  *
@@ -69,18 +71,61 @@ public class DataModelUtils {
         table.setModel(new DefaultTableModel(data, columnNames));
     }
 
+    /**
+     * 
+     * @param table
+     * @param countcol
+     * @param nettocol
+     * @param taxcol
+     * @return
+     */
+    public static CalculatedTableValues calculateTableCols(JTable table, int countcol, int nettocol, int taxcol) {
+
+        TableModel m = table.getModel();
+        Double bruttobetrag = 0d;
+        Double nettobetrag = 0d;
+        Double allovertax = 0d;
+        boolean error = false;
+
+        for (int i = 0; i < m.getRowCount(); i++) {
+            if (m.getValueAt(i, nettocol) != null && m.getValueAt(i, countcol) != null && m.getValueAt(i, taxcol) != null) {
+                try {
+                    bruttobetrag = bruttobetrag + (FormatNumber.parseDezimal(m.getValueAt(i, nettocol).toString()) * (Double.valueOf((FormatNumber.parseDezimal(m.getValueAt(i, taxcol).toString()) / 100) + 1)));
+                    nettobetrag = nettobetrag + (FormatNumber.parseDezimal(m.getValueAt(i, nettocol).toString()));
+                    allovertax = allovertax + ((FormatNumber.parseDezimal(m.getValueAt(i, taxcol).toString())) + 100);
+                } catch (Exception exception) {
+                    Log.Debug(exception);
+                    error = true;
+                }
+            }
+        }
+
+        if (nettobetrag > 0) {
+            allovertax = (allovertax / nettobetrag);
+        } else {
+            allovertax = 0d;
+        }
+        
+        if (!error) {
+            return new CalculatedTableValues(bruttobetrag, nettobetrag, allovertax);
+        } else {
+            return null;
+        }
+    }
+
     public static void removeSelectedRowFromTable(JTable table) {
         TableModel model = table.getModel();
         Object[][] data = new Object[model.getRowCount()][model.getColumnCount()];
         Object[] columnNames = new Object[model.getColumnCount()];
 
         for (int idx = 0; idx < columnNames.length; idx++) {
-             columnNames[idx] = model.getColumnName(idx);
+            columnNames[idx] = model.getColumnName(idx);
         }
         for (int idx = 0; idx < model.getRowCount(); idx++) {
             for (int i = 0; i < model.getColumnCount(); i++) {
-                 if(idx != table.getSelectedRow())
-                     data[idx][i] = model.getValueAt(idx, i);
+                if (idx != table.getSelectedRow()) {
+                    data[idx][i] = model.getValueAt(idx, i);
+                }
             }
         }
 
@@ -89,7 +134,7 @@ public class DataModelUtils {
 
     public static String[][] reverseArray(String[][] array) {
         //Reverse order
-           int i = 0, j = array.length - 1;
+        int i = 0,  j = array.length - 1;
         while (i < j) {
             String[] h = array[i];
             array[i] = array[j];
@@ -99,9 +144,9 @@ public class DataModelUtils {
         }
         return array;
     }
-    
-    public  static void addRowToTable(JTable table) {
-        Object[] o = new Object[table.getModel().getColumnCount()];    
+
+    public static void addRowToTable(JTable table) {
+        Object[] o = new Object[table.getModel().getColumnCount()];
         for (int idx = 0; idx < o.length; idx++) {
             o[idx] = null;
         }

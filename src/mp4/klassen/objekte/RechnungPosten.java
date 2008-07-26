@@ -19,6 +19,7 @@ package mp4.klassen.objekte;
 import mp4.datenbank.verbindung.Query;
 import mp3.classes.layer.Popup;
 import mp3.classes.utils.Log;
+import mp4.datenbank.verbindung.ConnectionHandler;
 
 /**
  *
@@ -32,6 +33,10 @@ public class RechnungPosten extends mp3.classes.layer.Things implements mp4.date
     private Double preis = 0.0;
     private Double steuersatz = 0.0;
    public Integer id = 0;
+
+    public RechnungPosten() {
+         super(ConnectionHandler.instanceOf().clone(TABLE_BILLS_DATA));
+    }
     public Integer getId() {
         return id;
     }

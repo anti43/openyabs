@@ -10,12 +10,9 @@ import mp4.klassen.objekte.RechnungPosten;
 import mp4.klassen.objekte.Rechnung;
 import java.awt.Color;
 import java.awt.event.MouseEvent;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.CellEditor;
-import javax.swing.JOptionPane;
-import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
@@ -24,19 +21,15 @@ import javax.swing.table.TableModel;
 import mp3.classes.interfaces.Strings;
 import mp4.datenbank.verbindung.Query;
 
-
-
 import mp3.classes.layer.visual.CustomerPicker;
 import mp3.classes.layer.visual.DatePick;
 import mp3.classes.utils.Formater;
 import mp3.classes.utils.Log;
 import mp3.classes.layer.Popup;
+import mp4.utils.tabellen.CalculatedTableValues;
 import mp4.utils.tabellen.models.PostenTableModel;
 import mp3.classes.layer.visual.ProductPicker;
 import mp4.datenbank.verbindung.ConnectionHandler;
-
-
-//import mp3.classes.objects.bill.*;
 
 import mp4.klassen.objekte.Customer;
 import mp4.klassen.objekte.HistoryItem;
@@ -44,16 +37,16 @@ import mp4.klassen.objekte.Product;
 import mp3.classes.visual.main.mainframe;
 
 import handling.pdf.PDF_Rechnung;
-import javax.swing.JToolBar;
 import mp4.einstellungen.Einstellungen;
 import mp3.classes.visual.util.arrear;
 import mp4.einstellungen.Programmdaten;
 import mp4.panels.panelInterface;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.tabellen.DataModelUtils;
+import mp4.utils.tabellen.SelectionCheck;
 import mp4.utils.tabellen.TableFormat;
-import mp4.utils.text.TextFormat;
-import mp4.utils.zahlen.FormatNumber;
+import mp4.utils.tabellen.models.BillListTableModel;
+import mp4.utils.tabellen.models.BillSearchListTableModel;
 
 /**
  *
@@ -76,25 +69,21 @@ public class billsView extends javax.swing.JPanel implements Runnable, panelInte
     private int taxcount = 0;
 
     /** Creates new form customers
-     * @param aThis 
+     * @param frame 
      */
-    @SuppressWarnings("unchecked")
-    public billsView(mainframe aThis) {
+    public billsView(mainframe frame) {
         initComponents();
 
         settings = Einstellungen.instanceOf();
         defaultTaxRate = Double.valueOf(settings.getGlobaltax());
         currentBill = new Rechnung();
         this.customer = new Customer(ConnectionHandler.instanceOf());
-        this.mainframe = aThis;
+        this.mainframe = frame;
 
         updateListTable();
         fetchBillsOfTheMonth();
 
         TableFormat.stripFirst(jTable1);
-        Formater.format(jTable2, 1, 120);
-        Formater.format(jTable2, 2, 120);
-        Formater.format(jTable2, 3, 120);
         renewTableModel();
         resizeFields();
 
@@ -108,71 +97,13 @@ public class billsView extends javax.swing.JPanel implements Runnable, panelInte
         t.start();
     }
 
-    public void addProductToBillsTable(Product product, boolean ean, boolean name, boolean text) {
-
-        TableModel m = getJTable1().getModel();
-        DataModelUtils.addRowToTable(getJTable1());
-
-        int selectedRow = getJTable1().getSelectedRow();
-
-        if (selectedRow == -1) {
-            selectedRow = this.getLastRow();
-        }
-        int end = 0;
-
-        try {
-
-            try {
-
-                end = TextFormat.verifyTextMaxLength(product.getText(), 60);
-                String str = "";
-
-                if (name) {
-                    str = str + product.getName() + " ";
-                }
-                if (text) {
-                    str = str + product.getText().substring(0, end);
-                }
-                if (ean) {
-                    str = str + " EAN: " + product.getEan();
-                }
-
-                m.setValueAt(str, selectedRow, 2);
-
-            } catch (Exception exception) {
-                Log.Debug(exception);
-            }
-
-            m.setValueAt(new Double(1), selectedRow, 1);
-
-            try {
-                m.setValueAt(FormatNumber.formatDezimal(product.getTAX()), selectedRow, 3);
-            } catch (NumberFormatException numberFormatException) {
-                nachricht("Wert 'Steuer' unzulässig: Produkt " + product.getNummer());
-                m.setValueAt(FormatNumber.formatDezimal(settings.getGlobaltax()), selectedRow, 3);
-            }
-
-            try {
-                m.setValueAt(new Double(product.getVK()), selectedRow, 4);
-            } catch (NumberFormatException numberFormatException) {
-                nachricht("Wert 'Preis' unzulässig: Produkt " + product.getNummer());
-                m.setValueAt(FormatNumber.formatDezimal(product.getVK()), selectedRow, 4);
-            }
-        } catch (Exception exception) {
-            Log.Debug(exception);
-        }
+    public void addProductToBillsTable(Product product) {
+       ((PostenTableModel)jTable1.getModel()).addProduct(jTable1, product);
     }
 
-
-
     private void fetchBillsOfTheMonth() {
-
         jTextField2.setText(DateConverter.getTodayDefDate());
-
-        String[][] list = getCurrent().select("id, rechnungnummer, datum ", "datum", DateConverter.getTodayDefDate(), "datum", true);
-        String k = "id, " + "Nummer,Datum";
-
-        this.jTable3.setModel(new DefaultTableModel(list, k.split(",")));
+        this.jTable3.setModel(new BillSearchListTableModel());
         TableFormat.stripFirst(jTable3);
     }
 
@@ -183,132 +114,53 @@ public class billsView extends javax.swing.JPanel implements Runnable, panelInte
     private void nachricht(String string) {
         mainframe.getNachricht().setText(string);
     }
-//
-//    private void prepareTable() {
-//        TableModel m = jTable1.getModel();
-//        for (int k = 0; k < m.getRowCount(); k++) {
-//            //anzahl,bezeichnung,mehrwertsteuer,nettopreis
-//
-//            String z = (String) m.getValueAt(k, 4);
-//            if (z != null && z.contains(",")) {
-//                z = z.replaceAll(",", ".");
-//                m.setValueAt(z, k, 4);
-//            }
-//        }
-//    }
 
     private void renewTableModel() {
-        PostenTableModel f =
-                new PostenTableModel(new Object[][]{{null, 1, null, defaultTaxRate, null, null},
-                    {null, 1, null, defaultTaxRate, null, null}, {null, 1, null, defaultTaxRate, null, null},
-                    {null, 1, null, defaultTaxRate, null, null}, {null, 1, null, defaultTaxRate, null, null},
-                    {null, 1, null, defaultTaxRate, null, null}, {null, 1, null, defaultTaxRate, null, null},
-                    {null, 1, null, defaultTaxRate, null, null}, {null, 1, null, defaultTaxRate, null, null},
-                    {null, 1, null, defaultTaxRate, null, null}
-                },
-                new String[]{"id", "Anzahl", "Bezeichnung", "MwSt", "Nettopreis", "Bruttopreis"});
-
-        getJTable1().setModel(f);
-
-        Formater.stripFirst(jTable1);
-
-
+        getJTable1().setModel(new PostenTableModel());
+        TableFormat.stripFirst(jTable1);
     }
 
     public void resizeFields() {
-
-        try {
-//            getJTable1().getColumn(getJTable1().getColumnName(2)).setPreferredWidth(150);
-//            getJTable1().getColumn(getJTable1().getColumnName(1)).setPreferredWidth(40);
-//            getJTable1().getColumn(getJTable1().getColumnName(3)).setPreferredWidth(40);
-//            getJTable1().getColumn(getJTable1().getColumnName(4)).setPreferredWidth(40);
-//            getJTable1().getColumn(getJTable1().getColumnName(0)).setPreferredWidth(10);
-
-            getJTable1().getColumn(getJTable1().getColumnName(1)).setMinWidth(30);
-            getJTable1().getColumn(getJTable1().getColumnName(1)).setMaxWidth(50);
-            getJTable1().getColumn(getJTable1().getColumnName(3)).setMinWidth(30);
-            getJTable1().getColumn(getJTable1().getColumnName(3)).setMaxWidth(50);
-
-//            getJTable1().getColumn(getJTable1().getColumnName(2)).setMaxWidth(50);
-
-
-            getJTable1().getColumn(getJTable1().getColumnName(4)).setMinWidth(30);
-            getJTable1().getColumn(getJTable1().getColumnName(4)).setMaxWidth(80);
-            getJTable1().getColumn(getJTable1().getColumnName(5)).setMinWidth(30);
-            getJTable1().getColumn(getJTable1().getColumnName(5)).setMaxWidth(80);
-
-        } catch (Exception exception) {
-            Log.Debug(exception, true);
-        }
-
+        TableFormat.resizeCols(jTable1, new Integer[]{null, 40, null, 40, 50, 50}, true);
     }
 
-    public void updateListTable() {
-
-
-        try {
-            liste = currentBill.getWithDepencies("rechnungen.id,rechnungnummer,datum,kundennummer,firma, bezahlt, storno");
-
-            Object[][] lister = Rechnung.formatTableArray(liste, new int[]{5, 6}, 7);
-
-            String k = "id,Nummer,Datum,Kunde,Firma, Bezahlt, Storniert, Verzug";
-
-            Formater.reverseArray(liste);
-
-
-            this.jTable2.setModel(new DefaultTableModel(lister, k.split(",")));
-            getCurrent().stripFirst(jTable2);
-
-            Formater.format(jTable2, 1, 120);
-            Formater.format(jTable2, 2, 120);
-            Formater.format(jTable2, 3, 120);
-
-        } catch (Exception exception) {
-        }
-
+    public void updateListTable() {        
+            this.jTable2.setModel(new BillListTableModel());
+            TableFormat.stripFirst(jTable2);
+            TableFormat.resizeCols(jTable2, new Integer[]{null,120,120,120}, false);
     }
 
     public void setBill(Rechnung current) {
 
         this.currentBill = current;
         this.setCustomer(new Customer(current.getKundenId()));
-
-
+        
         this.jTextField6.setText(current.getRechnungnummer());
         jTextField6.setBackground(Color.WHITE);
         this.jTextField7.setText(DateConverter.getDefDateString(current.getDatum()));
 
-//        if (current.isBezahlt()) {
-//            this.jLabelbezahlt.setText("Bezahlt");
-//             jTextField6.setBackground(Color.GREEN);
-//        } else {
-//            
-//            this.jLabelbezahlt.setText("Unbezahlt");
-//            
-//             jTextField6.setBackground(Color.WHITE);
-//        }
-//
-//        if (current.isStorno()) {
-//            this.jlabelstorno.setText("Storniert");
-//        } else {
-//            
-//            if(current.isVerzug()) {
-//                this.jlabelstorno.setText("Verzug!");
-//                jTextField6.setBackground(Color.RED);
-//            }
-//            else {
-//                this.jlabelstorno.setText("");
-//                
-//            }
-//        }
+        if (current.isBezahlt()) {
+            this.jCheckBox2.setSelected(true);
+        } else {
+            this.jCheckBox2.setSelected(false);
+        }
 
-
-
-
+        if (current.isStorno()) {
+            this.jCheckBox3.setSelected(true);
+        } else {
+            
+            if(current.isVerzug()) {
+                this.jCheckBox3.setSelected(false);
+                this.jCheckBox2.setBackground(Color.RED);
+            }
+            else {
+                this.jCheckBox3.setSelected(false);
+                this.jCheckBox2.setBackground(new Color(212,208,200));
+            }
+        }
         this.getJTable1().setModel(current.getProductlistAsTableModel());
         TableFormat.stripFirst(getJTable1());
         resizeFields();
-
     }
 
     public void setCustomer(Customer c) {
@@ -319,31 +171,14 @@ public class billsView extends javax.swing.JPanel implements Runnable, panelInte
         getJTextField4().setText(c.getKundennummer());
         jTextField5.setText(c.getFirma());
 
-//        mainframe.nachricht("Aktuell: Kunde Nummer " + c.getKundennummer());
-
-//        if (getCustomer().isDeleted()) {
-//            isdeleted.setText("Inaktiv");
-//            jTextField5.setBackground(Color.RED);
-//        } else {
-//
-//            isdeleted.setText("");
-//            jTextField5.setBackground(Color.WHITE);
-//
-//        }
-
+        if (getCustomer().isDeleted()) {
+            jLabel19.setForeground(Color.GRAY);
+        } 
     }
 
     private boolean hasCustomer() {
-        int i = JOptionPane.OK_OPTION;
         if (getCustomer() != null) {
-
-//            if (oldcustomer != null && !oldcustomer.getid().equals("0") && !oldcustomer.getid().equals(getCustomer().getid())) {
-//
-//                i = JOptionPane.showConfirmDialog(null, "Wollen Sie wirklich der Rechnung einen neuen Kunden zuordnen?", "Konflikt", JOptionPane.WARNING_MESSAGE);
-//            }
-
             if (getCustomer().getId() != null && !customer.getId().equals("0") && !customer.isDeleted()) {
-
                 return true;
             } else {
                 return false;
@@ -577,7 +412,7 @@ public class billsView extends javax.swing.JPanel implements Runnable, panelInte
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 658, Short.MAX_VALUE)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 680, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -778,6 +613,9 @@ public class billsView extends javax.swing.JPanel implements Runnable, panelInte
         });
         jToolBar2.add(jButton5);
 
+        jPanel9.setBackground(new java.awt.Color(227, 219, 202));
+        jPanel9.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
         jTextField4.setEditable(false);
 
         jTextField5.setEditable(false);
@@ -805,20 +643,18 @@ public class billsView extends javax.swing.JPanel implements Runnable, panelInte
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel7)
+                    .addComponent(jLabel6)
+                    .addComponent(jLabel5))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel9Layout.createSequentialGroup()
-                        .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel19, javax.swing.GroupLayout.DEFAULT_SIZE, 142, Short.MAX_VALUE))
-                    .addGroup(jPanel9Layout.createSequentialGroup()
-                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel7)
-                            .addComponent(jLabel6))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
                         .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jTextField4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel19, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel9Layout.setVerticalGroup(
@@ -828,11 +664,11 @@ public class billsView extends javax.swing.JPanel implements Runnable, panelInte
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(jLabel19))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel9Layout.createSequentialGroup()
                         .addComponent(jButton9)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel9Layout.createSequentialGroup()
                         .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -841,7 +677,7 @@ public class billsView extends javax.swing.JPanel implements Runnable, panelInte
                         .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel7))))
-                .addGap(29, 29, 29))
+                .addGap(17, 17, 17))
         );
 
         jPanel10.setBackground(new java.awt.Color(227, 219, 202));
@@ -935,8 +771,8 @@ public class billsView extends javax.swing.JPanel implements Runnable, panelInte
                             .addComponent(jLabel16))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jComboBox1, 0, 101, Short.MAX_VALUE)
-                            .addComponent(jTextField11, javax.swing.GroupLayout.DEFAULT_SIZE, 101, Short.MAX_VALUE))
+                            .addComponent(jComboBox1, 0, 129, Short.MAX_VALUE)
+                            .addComponent(jTextField11, javax.swing.GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jButton17, 0, 0, Short.MAX_VALUE)
@@ -973,6 +809,9 @@ public class billsView extends javax.swing.JPanel implements Runnable, panelInte
                             .addComponent(jButton17))))
                 .addContainerGap())
         );
+
+        jPanel11.setBackground(new java.awt.Color(227, 219, 202));
+        jPanel11.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         jLabel18.setText("Nummer");
 
@@ -1018,13 +857,13 @@ public class billsView extends javax.swing.JPanel implements Runnable, panelInte
                                 .addComponent(jLabel20)
                                 .addGap(89, 89, 89))
                             .addGroup(jPanel11Layout.createSequentialGroup()
-                                .addComponent(jLabel18)
-                                .addGap(2, 2, 2)
-                                .addComponent(jTextField13, javax.swing.GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE))
-                            .addGroup(jPanel11Layout.createSequentialGroup()
-                                .addComponent(jLabel21)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jTextField12, javax.swing.GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE)))
+                                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel21)
+                                    .addComponent(jLabel18))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
+                                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(jTextField13)
+                                    .addComponent(jTextField12, javax.swing.GroupLayout.DEFAULT_SIZE, 122, Short.MAX_VALUE))))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jButton19, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1039,8 +878,8 @@ public class billsView extends javax.swing.JPanel implements Runnable, panelInte
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jLabel18)
-                    .addComponent(jTextField13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1))
+                    .addComponent(jButton1)
+                    .addComponent(jTextField13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel20)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1055,23 +894,21 @@ public class billsView extends javax.swing.JPanel implements Runnable, panelInte
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel10, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap())
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
-                    .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE))
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
+                    .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
@@ -1081,9 +918,9 @@ public class billsView extends javax.swing.JPanel implements Runnable, panelInte
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 472, Short.MAX_VALUE)
                     .addComponent(jPanel7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jToolBar2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE)
+                    .addComponent(jToolBar2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 472, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel6Layout.createSequentialGroup()
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel6Layout.createSequentialGroup()
@@ -1093,7 +930,7 @@ public class billsView extends javax.swing.JPanel implements Runnable, panelInte
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel13))
                             .addComponent(jCheckBox3, javax.swing.GroupLayout.Alignment.LEADING))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 81, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 103, Short.MAX_VALUE)
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel6Layout.createSequentialGroup()
                                 .addComponent(jCheckBox1)
@@ -1108,10 +945,10 @@ public class billsView extends javax.swing.JPanel implements Runnable, panelInte
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 99, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel6Layout.createSequentialGroup()
@@ -1180,7 +1017,7 @@ public class billsView extends javax.swing.JPanel implements Runnable, panelInte
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 657, Short.MAX_VALUE)
+            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 679, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1194,7 +1031,7 @@ public class billsView extends javax.swing.JPanel implements Runnable, panelInte
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 662, Short.MAX_VALUE)
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 684, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1206,165 +1043,50 @@ public class billsView extends javax.swing.JPanel implements Runnable, panelInte
     }// </editor-fold>//GEN-END:initComponents
 
     private void jTextField1ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-
-        String[][] list = getCurrent().select("id, rechnungnummer, datum ", "rechnungnummer", jTextField1.getText(), "rechnungnummer", true);
-        String k = "id, " + "Nummer,Datum";
-
-        this.jTable3.setModel(new DefaultTableModel(list, k.split(",")));
-        getCurrent().stripFirst(jTable3);
-//
-//        this.jtable3Header = k;
-//        this.jtable3Data = current.select("id, kundennummer, firma ", "kundennummer", jTextField1.getText(), "kundennummer", true);
-//        
-
+        this.jTable3.setModel(new BillSearchListTableModel("rechnungnummer", jTextField1.getText()));
+        TableFormat.stripFirst(jTable3);
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jTextField2ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
-
-
-        String[][] list = getCurrent().select("id, rechnungnummer, datum ", "datum", jTextField2.getText(), "datum", true);
-        String k = "id, " + "Nummer,Datum";
-
-        this.jTable3.setModel(new DefaultTableModel(list, k.split(",")));
-        getCurrent().stripFirst(jTable3);
+        this.jTable3.setModel(new BillSearchListTableModel("datum", jTextField2.getText()));
+        TableFormat.stripFirst(jTable3);
     }//GEN-LAST:event_jTextField2ActionPerformed
 
     private void jTextField3ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
 
-        String[] str = getCustomer().selectLast("id", "firma", jTextField3.getText(), false, false, true);
-
-        if (str != null) {
-
-            String[][] list = getCurrent().select("id, rechnungnummer, datum ", "kundenid", str[0], true);
-            String k = "id, " + "Nummer,Datum";
-
-            this.jTable3.setModel(new DefaultTableModel(list, k.split(",")));
-            getCurrent().stripFirst(jTable3);
-        }
+        this.jTable3.setModel(new BillSearchListTableModel("firma", jTextField3.getText()));
+        TableFormat.stripFirst(jTable3);
     }//GEN-LAST:event_jTextField3ActionPerformed
 
     private void jButton3MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
-
-        editor = getJTable1().getCellEditor();
-        String rechnungnummer = "0";
+        CalculatedTableValues calculated;
+        PostenTableModel m;
 
         if (hasCustomer() && validDate()) {
-            TableModel m = getJTable1().getModel();
-            ListSelectionModel selectionModel = getJTable1().getSelectionModel();
-            boolean valide = true;
 
-            if (editor != null) {
-                editor.stopCellEditing();
-            }
+            SelectionCheck selection = new SelectionCheck(jTable1);
+            calculated = DataModelUtils.calculateTableCols(jTable1, 0, 3, 4);
+            m = (PostenTableModel) jTable1.getModel();
 
-            if (valide) {
-
-                Query f = ConnectionHandler.instanceOf().clone(TABLE_BILLS);
-
-                if (jTextField6.getText().length() < 1 || jCheckBox2.isSelected()) {
-                    rechnungnummer = f.getNextStringNumber("rechnungnummer");
-                } else {
-
-                    rechnungnummer = jTextField6.getText();
-                }
-
-                Rechnung bill = new Rechnung(ConnectionHandler.instanceOf());
-
-                bill.setRechnungnummer(rechnungnummer);
-
-//                bill.setDatum(DateCongh));
+                Rechnung bill = new Rechnung();
+                bill.setRechnungnummer(bill.getNextBillNumber());
+                bill.setDatum(DateConverter.getDate(jTextField7.getText()));
+                bill.setAusfuehrungsDatum(DateConverter.getDate(jTextField7.getText()));
                 bill.setKundenId(getCustomer().getId());
-
-
-                // **********************EUR**********************************************************
-                Double betrag = 0d;
-                Double allovertax = 0d;
-                Double nettobetrag = 0d;
-
-                for (int i = 0; i < m.getRowCount(); i++) {
-
-                    //anzahl,bezeichnung,mehrwertsteuer,nettopreis
-                    if (m.getValueAt(i, 4) != null) {
-
-                        try {
-
-
-                            betrag = betrag + (Double.valueOf(m.getValueAt(i, 4).toString().replaceAll(",", ".")) * (Double.valueOf((Double.valueOf(m.getValueAt(i, 3).toString().replaceAll(",", ".")) / 100) + 1)));
-                            betrag = Formater.formatDecimalDouble(betrag);
-
-                            nettobetrag = nettobetrag + (Double.valueOf(m.getValueAt(i, 4).toString().replaceAll(",", ".")));
-                            betrag = Formater.formatDecimalDouble(betrag);
-
-                            allovertax = allovertax + ((Double.valueOf(m.getValueAt(i, 3).toString().replaceAll(",", "."))) + 100);
-
-                        } catch (Exception exception) {
-                            Log.Debug(exception);
-                        }
-                    }
-                }
-
-//                bill.setGesamtpreis(betrag.toString());
-                bill.setGesamtpreis(Double.valueOf(jTextField8.getText()));
-                if (nettobetrag > 0) {
-                    bill.setGesamttax((allovertax / nettobetrag));
-                } else {
-                    bill.setGesamttax(0d);
-                }
-                //***************************************************************************************
-
-
+                bill.setGesamtpreis(calculated.getBruttobetrag());      
+                bill.add(m);
                 bill.save();
 
-                this.clear();
-
-                for (int i = 0; i < m.getRowCount(); i++) {
-
-                    //anzahl,bezeichnung,mehrwertsteuer,nettopreis
-                    if (m.getValueAt(i, 4) != null) {
-
-                        RechnungPosten b = new RechnungPosten(ConnectionHandler.instanceOf());
-
-                        b.setRechnungid(bill.getId());
-                        b.setPosten((String) m.getValueAt(i, 2));
-
-                        try {
-
-                            b.setAnzahl((Double) m.getValueAt(i, 1));
-                            b.setSteuersatz((Double) m.getValueAt(i, 3));
-                            b.setPreis((Double) m.getValueAt(i, 4));
-
-                        } catch (Exception exception) {
-//                            b.setAnzahl("0");
-//                            b.setSteuersatz("0");
-//                            b.setPreis("0");
-                        }
-
-                        b.save();
-
-                    }
-                }
-
-
-                jTextField6.setText(String.valueOf(f.getNextIndexOfIntCol("rechnungnummer")));
                 mainframe.setMessage("Rechnung Nummer: " + bill.getRechnungnummer() + " angelegt.");
-
-                new HistoryItem(ConnectionHandler.instanceOf(), Strings.BILL, "Rechnung Nummer: " + bill.getRechnungnummer() + " angelegt.");
-                this.setBill(new Rechnung(bill.getId()));
-
-                save();
-            }
-
+                new HistoryItem(Strings.BILL, "Rechnung Nummer: " + bill.getRechnungnummer() + " angelegt.");
+//                this.setBill(new Rechnung(bill.getId()));
         } else {
 
             new Popup("Sie müssen einen (validen) Kunden auswählen.", Popup.ERROR);
         }
+        
         updateListTable();
-        fetchBillsOfTheMonth();
         resizeFields();
-
-        jCheckBox2.setSelected(true);
-
-
 
     }//GEN-LAST:event_jButton3MouseClicked
 
@@ -1565,27 +1287,14 @@ public class billsView extends javax.swing.JPanel implements Runnable, panelInte
 
     private void clear() {
 
-
-//        jTextField6.setText(current.getNextBillNumber().toString());
-
-        this.customer = new Customer(ConnectionHandler.instanceOf());
-        this.currentBill = new Rechnung(ConnectionHandler.instanceOf());
+        this.customer = new Customer();
+        this.currentBill = new Rechnung();
 
         jTextField4.setText("");
         jTextField5.setText("");
         jTextField6.setText("");
-        jTextField6.setBackground(Color.WHITE);
-
 
         renewTableModel();
-//        jlabelstorno.setText("");
-//        jLabelbezahlt.setText("");
-
-//        df = new SimpleDateFormat( "dd.MM.yyyy" );
-        df = new SimpleDateFormat("dd.MM.yyyy");
-        jTextField7.setText(df.format(new Date()));
-
-        getCurrent().stripFirst(getJTable1());
         resizeFields();
     }
 
@@ -1777,29 +1486,7 @@ private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     new mp4.utils.windows.Position().center(new billsNotesEditor(currentBill));
 }//GEN-LAST:event_jButton18ActionPerformed
 
-    private int getLastRow() {
-        int potz = -1;
-        int i;
 
-        for (i = 0; i < getJTable1().getRowCount(); i++) {
-            if (getJTable1().getValueAt(i, 2) == null || getJTable1().getValueAt(i, 2).equals("")) {
-                potz = i;
-                break;
-            }
-
-        }
-
-        if (potz == -1) {
-
-            Object[][] o = new Object[][]{null, null, null, null, null};
-            DefaultTableModel m = (DefaultTableModel) getJTable1().getModel();
-            m.addRow(o);
-
-            potz = i + 1;
-        }
-
-        return potz;
-    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton jButton1;
     public javax.swing.JButton jButton10;

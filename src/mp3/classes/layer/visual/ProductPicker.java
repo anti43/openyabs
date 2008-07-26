@@ -326,7 +326,7 @@ public static void update(){
 
             try {
                 if(!order) {
-                    frame.addProductToBillsTable(new Product(selection.getId()),ean,name,text);
+                    frame.addProductToBillsTable(new Product(selection.getId()));
                 }else{
                      frame1.addToOrder(new Product(selection.getId()),ean,name,text);
                 }

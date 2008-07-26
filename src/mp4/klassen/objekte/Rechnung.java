@@ -16,7 +16,6 @@
  */
 package mp4.klassen.objekte;
 
-
 import mp4.einstellungen.Einstellungen;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -31,10 +30,8 @@ import mp3.classes.utils.Log;
 import mp4.utils.tabellen.models.PostenTableModel;
 
 import mp4.datenbank.verbindung.ConnectionHandler;
-import mp4.utils.zahlen.FormatMoney;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.zahlen.FormatNumber;
-
 
 /**
  *
@@ -42,9 +39,15 @@ import mp4.utils.zahlen.FormatNumber;
  */
 public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen {
 
+    public static String[][] formatListTableArray(String[][] withDepencies, int[] i, int i0) {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+    String[][] inserType(String[][] bills) {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
     private String Rechnungnummer = "";
     private Integer KundenId = 0;
-    
     private Date Datum = new Date();
     private Double Gesamtpreis = 0.0;
     private Double Gesamttax = 0.0;
@@ -55,26 +58,27 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
     private Query query;
     private String[][] prods;
     private List labelsOfGetAllWithD;
-    
     private String[][] betreffzeilen;
-    
-   
     public Integer id = 0;
-   
-   
+    private PostenTableModel postendata = null;
+
+    public void add(PostenTableModel m) {
+        this.postendata = m;
+    }
+    
     public Integer getId() {
         return id;
     }
+
     public void destroy() {
         this.delete(this.id);
         this.id = 0;
     }
+
     public Rechnung() {
         super(ConnectionHandler.instanceOf().clone(TABLE_BILLS));
         this.query = ConnectionHandler.instanceOf();
     }
-
-  
 
     public Rechnung(Query query) {
         super(query.clone(TABLE_BILLS));
@@ -109,11 +113,11 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
     }
 
     public String getFDatum() {
-      return DateConverter.getDefDateString(getDatum());
+        return DateConverter.getDefDateString(getDatum());
     }
 
     public String getFGesamtpreis() {
-       return FormatNumber.formatDezimal(getGesamtpreis());
+        return FormatNumber.formatDezimal(getGesamtpreis());
     }
 
     public Rechnung expose() {
@@ -123,7 +127,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
     public String[][] getUnpaid() {
         Query q = query.clone(TABLE_BILLS);
 
-        prods = q.select("id, rechnungnummer, gesamtpreis, datum", new String[]{"bezahlt", "0", "","storno", "0", ""}, "datum", false, true);
+        prods = q.select("id, rechnungnummer, gesamtpreis, datum", new String[]{"bezahlt", "0", "", "storno", "0", ""}, "datum", false, true);
 
         return prods;
     }
@@ -131,39 +135,40 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
     public String[][] getPaid() {
         Query q = query.clone(TABLE_BILLS);
 
-        prods = q.select("id, rechnungnummer, gesamtpreis, datum", new String[]{"bezahlt", "1", "","storno", "0", ""}, "datum", false, true);
+        prods = q.select("id, rechnungnummer, gesamtpreis, datum", new String[]{"bezahlt", "1", "", "storno", "0", ""}, "datum", false, true);
 
         return prods;
     }
-         
+    
     public String[][] getPaidNaked() {
 //        kontenid, preis, tax, datum
         Query q = query.clone(TABLE_BILLS);
 
-        prods = q.select("gesamtpreis, gesamttax, datum", new String[]{"bezahlt", "1", "","storno", "0", ""}, "datum", false, true);
+        prods = q.select("gesamtpreis, gesamttax, datum", new String[]{"bezahlt", "1", "", "storno", "0", ""}, "datum", false, true);
 
 
         
         return prods;
     }
+
     public String[][] getPaidEUR() {
 //        kontenid, preis, tax, datum
         Query q = query.clone(TABLE_BILLS);
 
-        prods = q.select("gesamtpreis, gesamttax, datum", new String[]{"bezahlt", "1", "","storno", "0", ""}, "datum", false, true);
+        prods = q.select("gesamtpreis, gesamttax, datum", new String[]{"bezahlt", "1", "", "storno", "0", ""}, "datum", false, true);
 
         String[][] tzh = new String[prods.length][4];
         
         
-        for(int g=0;g<prods.length;g++){
-        
+        for (int g = 0; g < prods.length; g++) {
+            
             tzh[g][0] = Einstellungen.instanceOf().getEinnahmeDefKonto().getId().toString();
             
-            for(int l=0;l<prods[g].length;l++){
-         
-                tzh[g][l+1] = prods[g][l];
-                }
-               }
+            for (int l = 0; l < prods[g].length; l++) {
+                
+                tzh[g][l + 1] = prods[g][l];
+            }
+        }
         
         return tzh;
     }
@@ -176,6 +181,15 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         }
     }
 
+    public void setAusfuehrungsDatum(Date date) {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    public void setRechnungnummer(Integer nextBillNumber) {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+  
     private void explode(String[] select) {
 
 
@@ -194,7 +208,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
             this.setGesamtpreis(Double.valueOf(select[6]));
             this.setGesamttax(Double.valueOf(select[7]));
         } catch (Exception exception) {
-             Log.Debug(exception.getMessage());
+            Log.Debug(exception.getMessage());
         }
 
 
@@ -214,7 +228,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
                 String u = dec.format(inte);
 
                 String stri = new String(str[0] + "." + u + "." + str[2]);
-               
+                
 
                 Date dates = df.parse(stri);
 
@@ -240,7 +254,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         str = str + "(;;2#4#1#1#8#0#;;)" + this.getRechnungnummer() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
         str = str + this.getKundenId() + "(;;,;;)";
 
-        str = str + "(;;2#4#1#1#8#0#;;)" + DateConverter.getSQLDateString(this.getDatum()) + "(;;2#4#1#1#8#0#;;)"+ "(;;,;;)";
+        str = str + "(;;2#4#1#1#8#0#;;)" + DateConverter.getSQLDateString(this.getDatum()) + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
 
         if (isStorno()) {
             str = str + "1" + "(;;,;;)";
@@ -254,10 +268,10 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
             str = str + "0" + "(;;,;;)";
         }
 
-        str = str +  this.getGesamtpreis()  + "(;;,;;)";
-        str = str +  this.getGesamttax();
+        str = str + this.getGesamtpreis() + "(;;,;;)";
+        str = str + this.getGesamttax();
 
-       
+        
         return str;
 
     }
@@ -270,11 +284,12 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
             isSaved = true;
         } else if (id == 0 && !isSaved) {
             this.insert(TABLE_BILLS_FIELDS, this.collect());
-
             this.id = this.getMyId();
-
             isSaved = true;
-        } 
+        }        
+        
+        if(postendata != null)
+            explode(postendata);
     }
 
     public int getid() {
@@ -298,7 +313,6 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         this.KundenId = KundenId;
         this.isSaved = false;
     }
-
 
     public Date getDatum() {
         return Datum;
@@ -401,10 +415,26 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
 
     }
 
+    private void explode(PostenTableModel m) {
+         for (int i = 0; i < m.getRowCount(); i++) {
+            if (m.getValueAt(i, 4) != null) {
+                RechnungPosten b = new RechnungPosten();
+                b.setRechnungid(this.getId());
+                b.setPosten((String) m.getValueAt(i, 2));
+                try {
+                    b.setAnzahl((Double) m.getValueAt(i, 1));
+                    b.setSteuersatz((Double) m.getValueAt(i, 3));
+                    b.setPreis((Double) m.getValueAt(i, 4));
+                } catch (Exception exception) {
+                    Log.Debug(exception);
+                }
+                b.save();
+            }
+        }
+    }
+
     private Integer getMyId() {
-
         String[] str = this.selectLast("id", "rechnungnummer", this.getRechnungnummer(), false);
-
         return Integer.valueOf(str[0]);
     }
 
@@ -427,32 +457,31 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
     }
 
     public Integer getNextBillNumber() {
-        return query.getNextIndexOfIntCol("rechnungnummer");
+        return query.getNextIndexOfStringCol("rechnungnummer");
     }
 
     public RechnungPosten[] getBp() {
         return bp;
     }
 
-    /**
-     * 
-     * @return
-     */
-    public String[][] getAllWithDepencies() {
-
-        Query q = query.clone(TABLE_BILLS);
-
-        prods = q.select(Strings.ALL, null, TABLE_CUSTOMERS, "kundenid");
-
-        setLabelsOfAllWithDepencies(q);
-        return prods;
-
-    }
-
+//    /**
+//     * 
+//     * @return
+//     */
+//    public String[][] getAllWithDepencies() {
+//
+//        Query q = query.clone(TABLE_BILLS);
+//
+//        prods = q.select(Strings.ALL, null, TABLE_CUSTOMERS, "kundenid");
+//
+//        setLabelsOfAllWithDepencies(q);
+//        return prods;
+//
+//    }
+//
     /**
      * 
      * @param table1fields
-     * @param table2fields
      * @return
      */
     public String[][] getWithDepencies(String table1fields) {
@@ -469,24 +498,24 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         labelsOfGetAllWithD = q.getLabels();
 
     }
-
-    /**
-     * 
-     * @return 
-     */
-    public String[] getLabelsOfAllWithDepencies() {
-
-        String[] stray = new String[labelsOfGetAllWithD.size()];
-
-        for (int i = 0; i < labelsOfGetAllWithD.size(); i++) {
-
-            stray[i] = (String) labelsOfGetAllWithD.get(i);
-
-        }
-
-        return stray;
-
-    }
+//
+//    /**
+//     * 
+//     * @return 
+//     */
+//    public String[] getLabelsOfAllWithDepencies() {
+//
+//        String[] stray = new String[labelsOfGetAllWithD.size()];
+//
+//        for (int i = 0; i < labelsOfGetAllWithD.size(); i++) {
+//
+//            stray[i] = (String) labelsOfGetAllWithD.get(i);
+//
+//        }
+//
+//        return stray;
+//
+//    }
 
     public String[][] getAll() {
 
@@ -521,91 +550,6 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         this.verzug = verzug;
     }
 
-    /**
-     * 
-     * @param tableo 
-     * @param columns 
-     * @param verzug
-     * @return
-     */
-    public static String[][] formatTableArray(String[][] tableo, int[] columns, int verzug) {
-
-        String[][] table = new String[tableo.length][tableo[0].length + 1];
-
-        for (int h = 0; h < tableo.length; h++) {
-
-            for (int j = 0; j < tableo[h].length; j++) {
-
-                table[h][j] = tableo[h][j];
-            }
-
-
-            try {
-
-                Date date = new Date();
-
-                SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy");
-                DecimalFormat dec = new DecimalFormat("00");
-
-                String[] str = table[h][2].split("\\.");
-                int inte = Integer.valueOf(str[1]) + 1;
-                if (inte == 13) {
-                    inte = 1;
-                }
-                String u = dec.format(inte);
-
-                String stri = new String(str[0] + "." + u + "." + str[2]);
-               
-
-                Date dates = df.parse(stri);
-
-                if (date.after(dates) && table[h][5].equals("0") && table[h][6].equals("0")) {
-                    table[h][tableo[h].length] = "Ja";
-
-                } else {
-
-                    table[h][tableo[h].length] = "Nein";
-                }
-
-            } catch (ParseException ex) {
-                Log.Debug(ex.getMessage());
-            }
-
-
-
-
-
-        }
-
-
-        for (int i = 0; i < table.length; i++) {
-
-            for (int z = 0; z < table[i].length; z++) {
-
-
-                for (int h = 0; h < columns.length; h++) {
-
-                    if (z == columns[h]) {
-
-                        if (table[i][z].equals("0")) {
-                            table[i][z] = Strings.NO;
-                        } else {
-                            table[i][z] = Strings.YES;
-                        }
-                    }
-
-
-                }
-
-
-            }
-
-        }
-
-
-        return table;
-
-    }
 
     public Double getGesamtpreis() {
         return Gesamtpreis;
@@ -615,29 +559,29 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         this.Gesamtpreis = Gesamtpreis;
     }
     
-      public String[][] inserType(String[][] prods) {
-        String[][] pro = null;
-      if(prods.length>0){
-          pro =  new String[prods.length][prods[0].length +1];
-         
-          for (int i = 0; i < pro.length; i++) {
-           int m=0;
-              for (int j=0; j < pro[i].length; j++,m++) {
-                  
-                  
-                  if(j==2) {
-                        pro[i][2] = "Rechnung";
-                        m--;
-                    }else {
-                      
-                        pro[i][j] = prods[i][m];
-                    }
-
-              }
-          }
-      } 
-      return pro;
-    }
+//    public String[][] inserType(String[][] prods) {
+//        String[][] pro = null;
+//        if (prods.length > 0) {
+//            pro = new String[prods.length][prods[0].length + 1];
+//            
+//            for (int i = 0; i < pro.length; i++) {
+//                int m = 0;
+//                for (int j = 0; j < pro[i].length; j++, m++) {
+//                    
+//                    
+//                    if (j == 2) {
+//                        pro[i][2] = "Rechnung";
+//                        m--;
+//                    } else {
+//                        
+//                        pro[i][j] = prods[i][m];
+//                    }
+//
+//                }
+//            }
+//        }        
+//        return pro;
+//    }
 
     public Double getGesamttax() {
         return Gesamttax;

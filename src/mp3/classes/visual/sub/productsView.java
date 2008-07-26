@@ -908,8 +908,8 @@ public class productsView extends javax.swing.JPanel implements mp4.datenbank.st
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
 
         if (current.getId() < 0) {
-            getMainframe().getBillPanel().addProductToBillsTable(current, true, true, true);
-            getMainframe().getJTabbedPane1().setSelectedIndex(1);
+//            getMainframe().getBillPanel().addProductToBillsTable(current, true, true, true);
+//            getMainframe().getJTabbedPane1().setSelectedIndex(1);
         }
     }//GEN-LAST:event_jButton9ActionPerformed
 

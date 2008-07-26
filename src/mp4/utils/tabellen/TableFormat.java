@@ -41,10 +41,23 @@ public class TableFormat {
      * 
      */
     public static void stripFirst(JTable table) {
-        try {
             table.getColumn(table.getColumnName(0)).setMinWidth(0);
             table.getColumn(table.getColumnName(0)).setMaxWidth(0);
-        } catch (Exception exception) {
+       }
+    
+    /**
+     * Resizes a tables cols
+     * @param table
+     * @param desiredColSizes
+     * @param fixed Should the cols be non-resizable
+     */
+    public static void resizeCols(JTable table, Integer[] desiredColSizes, boolean fixed){
+        for (int i = 0; i < desiredColSizes.length; i++) {
+            table.getColumn(table.getColumnName(i)).setMinWidth(desiredColSizes[i]);
+            table.getColumn(table.getColumnName(i)).setPreferredWidth(desiredColSizes[i]);
+            if (fixed) {
+                table.getColumn(table.getColumnName(i)).setMaxWidth(desiredColSizes[i]);
+            }
         }
     }
 }
