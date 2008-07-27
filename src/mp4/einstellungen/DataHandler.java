@@ -43,10 +43,7 @@ public class DataHandler extends mp3.classes.layer.Things implements mp4.datenba
         }
     }
 
-    @Override
-    public void save() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+
 
     public Integer getInteger(String ofKey) {
         String values = "";

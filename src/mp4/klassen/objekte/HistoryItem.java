@@ -181,7 +181,7 @@ public class HistoryItem extends mp3.classes.layer.Things implements mp4.datenba
 
         String[][] str = this.select("aktion,text,datum,benutzer", null, Strings.NOTNULL, false);
      
-        str = mp4.utils.tabellen.DataModelUtils.reverseArray(str);
+        str = (String[][]) mp4.utils.tabellen.DataModelUtils.reverseArray(str);
         
         return str;
     }

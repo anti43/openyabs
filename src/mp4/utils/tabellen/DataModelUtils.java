@@ -105,12 +105,32 @@ public class DataModelUtils {
         } else {
             allovertax = 0d;
         }
-        
+
         if (!error) {
             return new CalculatedTableValues(bruttobetrag, nettobetrag, allovertax);
         } else {
             return null;
         }
+    }
+
+    public static Object[][] changeToClassValue(String[][] prods, Class aClass, int[] cols) {
+
+        Object[][] data = new Object[prods.length][prods[0].length];
+
+        for (int idx = 0; idx < prods.length; idx++) {
+            for (int k = 0; k < cols.length; k++) {
+                
+                if (aClass.getName().matches("java.lang.Boolean")) {
+                    if (prods[idx][cols[k]].equals("1")) {
+                        data[idx][cols[k]] = true;
+                    } else {
+                        data[idx][cols[k]] = false;
+                    }
+                }
+            }
+        }
+
+        return data;
     }
 
     public static void removeSelectedRowFromTable(JTable table) {
@@ -132,11 +152,11 @@ public class DataModelUtils {
         table.setModel(new DefaultTableModel(data, columnNames));
     }
 
-    public static String[][] reverseArray(String[][] array) {
+    public static Object[][] reverseArray(Object[][] array) {
         //Reverse order
-        int i = 0,  j = array.length - 1;
+        int i = 0,   j = array.length - 1;
         while (i < j) {
-            String[] h = array[i];
+            Object[] h = array[i];
             array[i] = array[j];
             array[j] = h;
             i++;

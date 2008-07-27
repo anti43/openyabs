@@ -48,7 +48,6 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
     private String query;
     private ArrayList z;
     private String message;
-    private List labels;
     private int startcount = 0;
     private static JFrame comp;
     //   yyyy-mm-dd hh.mm.ss[.nnnnnn] - SQL DATE Timestamp
@@ -120,10 +119,10 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
      * @param string (Query)
      * @return Your Data
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "unchecked"})
     public String[][] selectFreeQuery(String string) {
         start();
-        labels = new ArrayList();
+
         //LEFT JOIN Orders ON Employees.Employee_ID=Orders.Employee_ID
 
         query = string;
@@ -154,11 +153,8 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                 for (int i = 1; i <= rsmd.getColumnCount(); i++) {
                     spalten.add(resultSet.getObject(i));
 
-                    if (!labelsDone) {
-                        getLabels().add(rsmd.getColumnName(i));
-                    }
                 }
-                labelsDone = true;
+
                 zeilen.add(spalten);
 
             }
@@ -245,8 +241,8 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
         stm = null;
         resultSet = null;
         ResultSetMetaData rsmd;
-        String index = "0";
-        Integer i = 0;
+        String index = null;
+        Integer i = null;
 
 
         Log.Debug(query);
@@ -291,7 +287,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
             Log.Debug(ex, true);
             stop();
 
-            return 1;
+            return null;
 
         } finally {
             // Alle Ressourcen wieder freigeben
@@ -313,8 +309,9 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
             }
         }
         stop();
+        i++;
 
-        return i++;
+        return i;
 
     }
 
@@ -881,8 +878,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
     @SuppressWarnings("unchecked")
     public String[][] select(String what, String[] where, String leftJoinTable, String leftJoinKey, String order) {
         start();
-        labels =
-                new ArrayList();
+
         //LEFT JOIN Orders ON Employees.Employee_ID=Orders.Employee_ID
 
         if (where != null) {
@@ -927,15 +923,8 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                 for (int i = 1; i <=
                         rsmd.getColumnCount(); i++) {
                     spalten.add(resultSet.getObject(i));
-
-                    if (!labelsDone) {
-                        getLabels().add(rsmd.getColumnName(i));
-                    }
-
                 }
-                labelsDone = true;
                 zeilen.add(spalten);
-
             }
 
             p = new String[zeilen.size()][spalten.size()];
@@ -991,11 +980,10 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
      * @param leftJoinKey 
      * @return results as multidimensional string array
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "unchecked"})
     public String[][] select(String what, String[] where, String leftJoinTable, String leftJoinKey) {
         start();
-        labels =
-                new ArrayList();
+
         //LEFT JOIN Orders ON Employees.Employee_ID=Orders.Employee_ID
 
         if (where != null) {
@@ -1040,13 +1028,8 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                 for (int i = 1; i <=
                         rsmd.getColumnCount(); i++) {
                     spalten.add(resultSet.getObject(i));
-
-                    if (!labelsDone) {
-                        getLabels().add(rsmd.getColumnName(i));
-                    }
-
                 }
-                labelsDone = true;
+
                 zeilen.add(spalten);
 
             }
@@ -1354,7 +1337,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
         if (like) {
 
 
-            if (where[0].endsWith("datum")) {
+            if (where != null && where[0].endsWith("datum")) {
 
 
                 k = " BETWEEN ";
@@ -1655,9 +1638,9 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
 
         query = "SELECT " + what + " FROM " + table + wher + ord;
         Log.Debug(query);
-        message ="Database Error (select) :";
-        stm =null;
-        resultSet =null;
+        message = "Database Error (select) :";
+        stm = null;
+        resultSet = null;
         ResultSetMetaData rsmd;
 
         try {
@@ -1727,9 +1710,5 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
         }
         stop();
         return p;
-    }
-
-    public List getLabels() {
-        return labels;
     }
 }

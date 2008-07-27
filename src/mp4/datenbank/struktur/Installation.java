@@ -63,7 +63,7 @@ public interface Installation {
         "PRIMARY KEY  (id))",
         
         "CREATE TABLE rechnungen (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
-        "Rechnungnummer VARCHAR(250) default NULL, KundenId INTEGER REFERENCES kunden (id)," +
+        "Rechnungnummer VARCHAR(250) UNIQUE NOT NULL, KundenId INTEGER REFERENCES kunden (id)," +
         "Datum DATE NOT NULL," + "storno INTEGER DEFAULT 0," + "bezahlt INTEGER DEFAULT 0," +
         "gesamtpreis DOUBLE DEFAULT 0," + "gesamttax INTEGER NOT NULL," +
         "AfDatum DATE NOT NULL," +

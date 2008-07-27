@@ -156,7 +156,7 @@ public interface Tabellen {
      public  final String TABLE_BILLS_FIELDS =
               "Rechnungnummer" + "," +"KundenId" + "," +
               "Datum" + "," + "Storno" + "," + "bezahlt"+ "," + "gesamtpreis"+ "," + "gesamttax" + "," +
-              "AfDatum" + "UZeichen" + "," + "IZeichen";
+              "AfDatum" +  "," + "UZeichen" + "," + "IZeichen";
         
           /**
      * Fields in orders data table

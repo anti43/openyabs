@@ -33,9 +33,7 @@ public class ChartData extends mp3.classes.layer.Things implements mp4.datenbank
     }
 
 
-    @Override
-    public void save() {
-    }
+ 
 
     public Object[][] fetchUmsatzInYears(String year) {
 

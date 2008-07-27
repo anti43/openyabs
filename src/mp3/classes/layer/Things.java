@@ -305,8 +305,5 @@ public abstract class Things implements Queries, mp4.datenbank.struktur.Tabellen
         return q.select(what, wher, order, like, integer);
     }
 
-    /**
-     * to be overwritten..
-     */
-    public abstract void save();
+
 }

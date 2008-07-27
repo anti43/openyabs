@@ -81,14 +81,18 @@ public class billsView extends javax.swing.JPanel implements Runnable, panelInte
         this.customer = new Customer(ConnectionHandler.instanceOf());
         this.mainframe = frame;
 
-        updateListTable();
-        fetchBillsOfTheMonth();
+        try {
+            updateListTable();
+            fetchBillsOfTheMonth();
+        } catch (Exception e) {
+            Log.Debug(e.getMessage());
+        }
 
-    
+
         renewTableModel();
         resizeFields();
         TableFormat.stripFirst(jTable1);
-        
+
         jTextField7.setText(DateConverter.getDefDateString(new Date()));
         jTextField11.setText(DateConverter.getDefDateString(new Date()));
         this.jCheckBox4.setSelected(Programmdaten.instanceOf().getBILLPANEL_CHECKBOX_MITLIEFERSCHEIN_state());
@@ -120,18 +124,24 @@ public class billsView extends javax.swing.JPanel implements Runnable, panelInte
             bill.setKundenId(getCustomer().getId());
             bill.setGesamtpreis(calculated.getBruttobetrag());
             bill.add(m);
-            bill.save();
+            if (bill.save()) {
 
-            mainframe.setMessage("Rechnung Nummer: " + bill.getRechnungnummer() + " angelegt.");
-            new HistoryItem(Strings.BILL, "Rechnung Nummer: " + bill.getRechnungnummer() + " angelegt.");
+                mainframe.setMessage("Rechnung Nummer: " + bill.getRechnungnummer() + " angelegt.");
+                new HistoryItem(Strings.BILL, "Rechnung Nummer: " + bill.getRechnungnummer() + " angelegt.");
 //                this.setBill(new Rechnung(bill.getId()));
+
+                updateListTable();
+                resizeFields();
+            } else {
+
+                new Popup("Es ist ein Fehler aufgetreten.", Popup.ERROR);
+            }
         } else {
 
-            new Popup("Sie müssen einen (validen) Kunden auswählen.", Popup.ERROR);
+            new Popup("Sie müssen einen (validen) Kunden auswählen.", Popup.NOTICE);
         }
 
-        updateListTable();
-        resizeFields();
+
     }
 
     private void fetchBillsOfTheMonth() {
@@ -154,13 +164,13 @@ public class billsView extends javax.swing.JPanel implements Runnable, panelInte
     }
 
     public void resizeFields() {
-        TableFormat.resizeCols(jTable1, new Integer[]{null, 40, null, 40, 50, 50}, true);
+        TableFormat.resizeCols(jTable1, new Integer[]{null, 40, null, 50, 60, 60}, true);
     }
 
     public void updateListTable() {
-//        this.jTable2.setModel(new BillListTableModel());
-//        TableFormat.stripFirst(jTable2);
-//        TableFormat.resizeCols(jTable2, new Integer[]{null, 120, 120, 120}, false);
+        this.jTable2.setModel(new BillListTableModel());
+        TableFormat.stripFirst(jTable2);
+        TableFormat.resizeCols(jTable2, new Integer[]{null, 120, 120, 120}, false);
     }
 
     public void setBill(Rechnung current) {
@@ -210,7 +220,7 @@ public class billsView extends javax.swing.JPanel implements Runnable, panelInte
 
     private boolean hasCustomer() {
         if (getCustomer() != null) {
-            if (getCustomer().getId() != null && !customer.getId().equals("0") && !customer.isDeleted()) {
+            if (getCustomer().getId() != null && customer.getId() > 0 && !customer.isDeleted()) {
                 return true;
             } else {
                 return false;
@@ -930,7 +940,7 @@ public class billsView extends javax.swing.JPanel implements Runnable, panelInte
                 .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -978,9 +988,9 @@ public class billsView extends javax.swing.JPanel implements Runnable, panelInte
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 99, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel6Layout.createSequentialGroup()
@@ -1143,9 +1153,9 @@ public class billsView extends javax.swing.JPanel implements Runnable, panelInte
             updateListTable();
             resizeFields();
         } else {
-             if(JOptionPane.showConfirmDialog(this, "Möchten Sie die Rechnung anlegen?","Rechnung exsitiert nicht.",JOptionPane.INFORMATION_MESSAGE) == JOptionPane.YES_OPTION){       
-                 createNew();
-             }    
+            if (JOptionPane.showConfirmDialog(this, "Möchten Sie die Rechnung anlegen?", "Rechnung exsitiert nicht.", JOptionPane.INFORMATION_MESSAGE) == JOptionPane.YES_OPTION) {
+                createNew();
+            }
         }
     }
 
@@ -1465,7 +1475,7 @@ private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
             return true;
         } else {
 
-            new Popup("Sie müssen ein Datum angeben (tt/mm/yyyy)", Popup.ERROR);
+            new Popup("Sie müssen ein Datum angeben.", Popup.ERROR);
             return false;
         }
     }

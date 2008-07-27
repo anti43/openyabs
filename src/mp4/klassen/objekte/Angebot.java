@@ -346,7 +346,7 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.s
 
     public void setLabelsOfAllWithDepencies(Query q) {
 
-        labelsOfGetAllWithD = q.getLabels();
+//        labelsOfGetAllWithD = q.getLabels();
 
     }
 

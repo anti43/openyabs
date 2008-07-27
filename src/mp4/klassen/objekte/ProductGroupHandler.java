@@ -128,10 +128,7 @@ public class ProductGroupHandler extends mp3.classes.layer.Things implements mp4
         return new Integer(0);
     }
 
-    @Override
-    public void save() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+ 
 
     private void fillCategories() {
         String[][] tmp = this.select("*", null, null, false, true);

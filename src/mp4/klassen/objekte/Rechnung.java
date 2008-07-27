@@ -31,6 +31,7 @@ import mp4.utils.tabellen.models.PostenTableModel;
 
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.utils.datum.DateConverter;
+import mp4.utils.tabellen.DataModelUtils;
 import mp4.utils.zahlen.FormatNumber;
 
 /**
@@ -42,13 +43,16 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
     public static String[][] formatListTableArray(String[][] withDepencies, int[] i, int i0) {
         throw new UnsupportedOperationException("Not yet implemented");
     }
+
     String[][] inserType(String[][] bills) {
         throw new UnsupportedOperationException("Not yet implemented");
     }
-
     private String Rechnungnummer = "";
+    private String UnserZeichen = "";
+    private String IhrZeichen = "";
     private Integer KundenId = 0;
     private Date Datum = new Date();
+    private Date AusfuehrungsDatum = new Date();
     private Double Gesamtpreis = 0.0;
     private Double Gesamttax = 0.0;
     private boolean storno = false;
@@ -65,7 +69,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
     public void add(PostenTableModel m) {
         this.postendata = m;
     }
-    
+
     public Integer getId() {
         return id;
     }
@@ -94,7 +98,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         super(ConnectionHandler.instanceOf().clone(TABLE_BILLS));
         this.id = Integer.valueOf(id);
         this.explode(this.selectLast(Strings.ALL, Strings.ID, id.toString(), true));
-        this.query = ConnectionHandler.instanceOf();
+        this.query = ConnectionHandler.instanceOf().clone(TABLE_BILLS);
         bp = getProducts(query);
         betreffzeilen = new RechnungBetreffzeile().getDataOf(id);
     }
@@ -105,7 +109,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         try {
             this.id = Integer.valueOf(id);
             this.explode(this.selectLast(Strings.ALL, "rechnungnummer", text, false));
-            this.query = query;
+            this.query = ConnectionHandler.instanceOf().clone(TABLE_BILLS);
             bp = getProducts(query);
         } catch (Exception exception) {
             Log.Debug(exception);
@@ -139,7 +143,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
 
         return prods;
     }
-    
+
     public String[][] getPaidNaked() {
 //        kontenid, preis, tax, datum
         Query q = query.clone(TABLE_BILLS);
@@ -147,7 +151,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         prods = q.select("gesamtpreis, gesamttax, datum", new String[]{"bezahlt", "1", "", "storno", "0", ""}, "datum", false, true);
 
 
-        
+
         return prods;
     }
 
@@ -158,18 +162,18 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         prods = q.select("gesamtpreis, gesamttax, datum", new String[]{"bezahlt", "1", "", "storno", "0", ""}, "datum", false, true);
 
         String[][] tzh = new String[prods.length][4];
-        
-        
+
+
         for (int g = 0; g < prods.length; g++) {
-            
+
             tzh[g][0] = Einstellungen.instanceOf().getEinnahmeDefKonto().getId().toString();
-            
+
             for (int l = 0; l < prods[g].length; l++) {
-                
+
                 tzh[g][l + 1] = prods[g][l];
             }
         }
-        
+
         return tzh;
     }
 
@@ -182,18 +186,17 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
     }
 
     public void setAusfuehrungsDatum(Date date) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        this.AusfuehrungsDatum = date;
     }
 
-    public void setRechnungnummer(Integer nextBillNumber) {
-        throw new UnsupportedOperationException("Not yet implemented");
+    public void setRechnungnummer(Integer nummer) {
+        setRechnungnummer(nummer.toString());
     }
 
     private void clearPostenData() {
         new RechnungPosten().deleteExistingOf(this);
     }
 
-  
     private void explode(String[] select) {
 
 
@@ -232,7 +235,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
                 String u = dec.format(inte);
 
                 String stri = new String(str[0] + "." + u + "." + str[2]);
-                
+
 
                 Date dates = df.parse(stri);
 
@@ -273,33 +276,42 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         }
 
         str = str + this.getGesamtpreis() + "(;;,;;)";
-        str = str + this.getGesamttax();
+        str = str + this.getGesamttax() + "(;;,;;)";
 
-        
+        str = str + "(;;2#4#1#1#8#0#;;)" + DateConverter.getSQLDateString(this.getAusfuehrungsDatum()) + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
+
+        str = str + "(;;2#4#1#1#8#0#;;)" + this.getUnserZeichen() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
+        str = str + "(;;2#4#1#1#8#0#;;)" + this.getIhrZeichen() + "(;;2#4#1#1#8#0#;;)";
+
         return str;
 
     }
 
-    public void save() {
+    public boolean save() {
+        int result = -1;
 
 
         if (id > 0 && !isSaved) {
-            this.update(TABLE_BILLS_FIELDS, this.collect(), id.toString());
-            if(postendata != null) {
+            result = this.update(TABLE_BILLS_FIELDS, this.collect(), id.toString());
+            if (postendata != null) {
                 clearPostenData();
                 explode(postendata);
             }
             isSaved = true;
         } else if (id == 0 && !isSaved) {
-            this.insert(TABLE_BILLS_FIELDS, this.collect());
-            this.id = this.getMyId(); 
-            if(postendata != null) {
+            result = this.insert(TABLE_BILLS_FIELDS, this.collect());
+            this.id = this.getMyId();
+            if (postendata != null) {
                 explode(postendata);
             }
             isSaved = true;
-        }        
-        
-       
+        }
+
+        if (result > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public int getid() {
@@ -426,8 +438,8 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
     }
 
     private void explode(PostenTableModel m) {
-        
-         for (int i = 0; i < m.getRowCount(); i++) {
+
+        for (int i = 0; i < m.getRowCount(); i++) {
             if (m.getValueAt(i, 4) != null) {
                 RechnungPosten b = new RechnungPosten();
                 b.setRechnungid(this.getId());
@@ -468,7 +480,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
     }
 
     public Integer getNextBillNumber() {
-        return query.getNextIndexOfStringCol("rechnungnummer");
+        return ConnectionHandler.instanceOf().clone(TABLE_BILLS).getNextIndexOfStringCol("rechnungnummer");
     }
 
     public RechnungPosten[] getBp() {
@@ -495,20 +507,18 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
      * @param table1fields
      * @return
      */
-    public String[][] getWithDepencies(String table1fields) {
+    public Object[][] getWithDependencies(String table1fields) {
         Query q = query.clone(TABLE_BILLS);
 
         prods = q.select(table1fields, null, TABLE_CUSTOMERS, "kundenid", "datum");
 
-        setLabelsOfAllWithDepencies(q);
-        return prods;
+        if (prods == null || prods.length < 1) {
+            prods = new String[][]{{null, null, null, null, null, "0", "0"}};
+        }
+
+        return DataModelUtils.changeToClassValue(prods, Boolean.class, new int[]{5, 6});
     }
 
-    public void setLabelsOfAllWithDepencies(Query q) {
-
-        labelsOfGetAllWithD = q.getLabels();
-
-    }
 //
 //    /**
 //     * 
@@ -527,7 +537,6 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
 //        return stray;
 //
 //    }
-
     public String[][] getAll() {
 
         Query q = query.clone(TABLE_BILLS);
@@ -561,7 +570,6 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         this.verzug = verzug;
     }
 
-
     public Double getGesamtpreis() {
         return Gesamtpreis;
     }
@@ -569,7 +577,6 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
     public void setGesamtpreis(Double Gesamtpreis) {
         this.Gesamtpreis = Gesamtpreis;
     }
-    
 //    public String[][] inserType(String[][] prods) {
 //        String[][] pro = null;
 //        if (prods.length > 0) {
@@ -593,7 +600,6 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
 //        }        
 //        return pro;
 //    }
-
     public Double getGesamttax() {
         return Gesamttax;
     }
@@ -604,5 +610,25 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
 
     public int delete(String id) {
         return delete(Integer.valueOf(id));
+    }
+
+    public Date getAusfuehrungsDatum() {
+        return AusfuehrungsDatum;
+    }
+
+    public String getUnserZeichen() {
+        return UnserZeichen;
+    }
+
+    public void setUnserZeichen(String UnserZeichen) {
+        this.UnserZeichen = UnserZeichen;
+    }
+
+    public String getIhrZeichen() {
+        return IhrZeichen;
+    }
+
+    public void setIhrZeichen(String IhrZeichen) {
+        this.IhrZeichen = IhrZeichen;
     }
 }

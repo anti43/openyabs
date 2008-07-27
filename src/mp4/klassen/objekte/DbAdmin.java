@@ -42,11 +42,6 @@ public class DbAdmin extends Things implements Strings, Constants, ProtectedStri
     
     }
     
-    
-    @Override
-    public void save() {
-        
-        
-    }
+
 
 }
