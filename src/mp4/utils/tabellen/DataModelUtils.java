@@ -137,6 +137,20 @@ public class DataModelUtils {
         return data;
     }
 
+    public static Object[][] tableModelToArray(JTable table) {
+
+        TableModel model = table.getModel();
+        Object[][] data = new Object[model.getRowCount()][model.getColumnCount()];
+
+        for (int idx = 0; idx < model.getRowCount(); idx++) {
+            for (int i = 0; i < model.getColumnCount(); i++) {
+                data[idx][i] = model.getValueAt(idx, i);
+            }
+        }
+
+        return data;
+    }
+
     public static void removeSelectedRowFromTable(JTable table) {
         TableModel model = table.getModel();
         Object[][] data = new Object[model.getRowCount()][model.getColumnCount()];
@@ -158,7 +172,7 @@ public class DataModelUtils {
 
     public static Object[][] reverseArray(Object[][] array) {
         //Reverse order
-        int i = 0,     j = array.length - 1;
+           int i = 0, j = array.length - 1;
         while (i < j) {
             Object[] h = array[i];
             array[i] = array[j];

@@ -14,13 +14,11 @@ import javax.swing.text.BadLocationException;
  */
 public class Logger extends javax.swing.JFrame {
 
-    
-
     /** Creates new form Logger */
     public Logger() {
         initComponents();
         this.setExtendedState(ICONIFIED);
-        
+
     }
 
     public void log() {
@@ -28,11 +26,15 @@ public class Logger extends javax.swing.JFrame {
     }
 
     public void log(Object object) {
-        jTextArea1.append("\n"+object.toString());
+        if (object != null) {
+            jTextArea1.append("\n" + object.toString());
+        } else {
+            jTextArea1.append("\nNULL");
+        }
     }
 
     public void log(String string) {
-        jTextArea1.append("\n"+string);
+        jTextArea1.append("\n" + string);
     }
 
     /** This method is called from within the constructor to
@@ -79,6 +81,7 @@ public class Logger extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
     /**
      * @param args the command line arguments
      */
@@ -100,7 +103,6 @@ public class Logger extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
-  
     // End of variables declaration
     static class DocumentWriter
             extends Writer {
@@ -125,7 +127,6 @@ public class Logger extends javax.swing.JFrame {
             try {
                 doc.insertString(doc.getLength(), String.valueOf(cbuf, off, len), null);
             } catch (BadLocationException ex) {
-
             }
         }
     }

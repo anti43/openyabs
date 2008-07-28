@@ -16,6 +16,7 @@
  */
 package mp4.klassen.objekte;
 
+import mp3.classes.layer.Things;
 import mp4.datenbank.verbindung.ConnectionHandler;
 
 /**
@@ -24,39 +25,35 @@ import mp4.datenbank.verbindung.ConnectionHandler;
  */
 public class RechnungBetreffzeile extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen {
 
-  
-
     private Integer id = 0;
     private String[] value;
     private String name;
     private String text;
     private boolean isVorlage = false;
-    private int rechnungID = 0;
+    private RechnungBetreffZZR handler;
+
+    public RechnungBetreffzeile(String name, String text) {
+        super(ConnectionHandler.instanceOf().clone(TABLE_BILL_TEXTS));
+        this.name = name;
+        this.text = text;
+        this.save();
+    }
 
     public Integer getId() {
         return id;
     }
 
     public void destroy() {
-        this.delete(this.getId());
+        ConnectionHandler.instanceOf().clone(TABLE_BILL_TEXTS_TO_BILLS).delete(new String[]{"id", this.getId().toString()});
         this.id = 0;
     }
-    
-     
-    public RechnungBetreffzeile[] getBetreffzOf(Integer id) {
 
-        String[][] values = this.select("*", "id", id.toString(), true);
-        
-        throw new UnsupportedOperationException();
-    }
-  
     public RechnungBetreffzeile() {
         super(ConnectionHandler.instanceOf().clone(TABLE_BILL_TEXTS));
     }
 
     /**
      * 
-     * @param query
      * @param id 
      */
     public RechnungBetreffzeile(Integer id) {
@@ -64,6 +61,7 @@ public class RechnungBetreffzeile extends mp3.classes.layer.Things implements mp
         this.id = id;
         value = this.selectLast("*", "id", id.toString(), true);
         explode(value);
+
     }
 
     public String[][] getAllData() {
@@ -75,17 +73,19 @@ public class RechnungBetreffzeile extends mp3.classes.layer.Things implements mp
     }
 
     public String[][] getVorlagen() {
-          return this.select("id, name, text", "isvorlage", "1", true);
+        return this.select("id, name, text", "isvorlage", "1", true);
     }
 
     public void isVorlage(boolean vorlage) {
         isVorlage = vorlage;
     }
 
+    void setHandler(RechnungBetreffZZR handler) {
+        this.handler = handler;
+    }
+
     private String collect() {
         String str = "";
-
-        str = str + this.getRechnungID() + "(;;,;;)";
         str = str + "(;;2#4#1#1#8#0#;;)" + this.getName() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
         str = str + "(;;2#4#1#1#8#0#;;)" + this.getText() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
 
@@ -99,12 +99,12 @@ public class RechnungBetreffzeile extends mp3.classes.layer.Things implements mp
 
     private void explode(String[] select) {
 
-        this.setRechnungID(Integer.valueOf(select[1]));
-        this.setName(select[2]);
-        this.setText(select[3]);
-        
-        if(select[4].matches("1"))
+        this.setName(select[1]);
+        this.setText(select[2]);
+
+        if (select[3].matches("1")) {
             isVorlage(true);
+        }
     }
 
     public void save() {
@@ -131,13 +131,5 @@ public class RechnungBetreffzeile extends mp3.classes.layer.Things implements mp
 
     public void setText(String text) {
         this.text = text;
-    }
-
-    public int getRechnungID() {
-        return rechnungID;
-    }
-
-    public void setRechnungID(int rechnungID) {
-        this.rechnungID = rechnungID;
     }
 }

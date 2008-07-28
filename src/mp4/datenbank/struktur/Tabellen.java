@@ -104,7 +104,8 @@ public interface Tabellen {
      * Betreffzeilen
      */
     public  final String TABLE_BILL_TEXTS = "rechnungbetreffz";
-   
+    
+    public  final String TABLE_BILL_TEXTS_TO_BILLS = "betreffz_zu_rechnung";
   
     public  final String TABLE_CUSTOMER_PRINT_FIELDS =
             "Kundennummer" + "," + "Firma" + "," + "Anrede" + "," + "Vorname" +
@@ -156,7 +157,7 @@ public interface Tabellen {
      public  final String TABLE_BILLS_FIELDS =
               "Rechnungnummer" + "," +"KundenId" + "," +
               "Datum" + "," + "Storno" + "," + "bezahlt"+ "," + "gesamtpreis"+ "," + "gesamttax" + "," +
-              "AfDatum" +  "," + "UZeichen" + "," + "IZeichen";
+              "AfDatum";
         
           /**
      * Fields in orders data table
@@ -259,7 +260,13 @@ public interface Tabellen {
     /**
      * Vorlagen
      */
-    public  final String TABLE_BILL_TEXTS_FIELDS  = "rechnungid" + "," +"name" + "," +
+    public  final String TABLE_BILL_TEXTS_FIELDS  = "name" + "," +
             "text"  + "," +
             "isvorlage";
+    /**
+     * Vorlagen
+     */
+    public  final String TABLE_BILL_TEXTS_TO_BILLS_FIELDS  = "rechnungid" + "," +
+            "betreffzid";
+    
 }

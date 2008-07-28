@@ -102,7 +102,6 @@ public interface Installation {
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
         
         "CREATE TABLE rechnungbetreffz (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-        "rechnungid INTEGER DEFAULT 0," + 
         "name VARCHAR(100), text VARCHAR(500), isvorlage INTEGER DEFAULT 0," +
         "deleted INTEGER DEFAULT 0," +
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
@@ -186,9 +185,12 @@ public interface Installation {
         "deleted INTEGER DEFAULT 0," +
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
         
+        "CREATE TABLE  betreffz_zu_rechnung   (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
+        "rechnungid INTEGER REFERENCES rechnungen (id)," +
+        "betreffzid INTEGER REFERENCES rechnungbetreffz (id)," +
+        "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
         
-        
-        
+     
         "INSERT INTO daten (name, wert) VALUES ('Backup Verzeichnis', '" + System.getProperty("user.home") + File.separator + ProtectedStrings.PROG_NAME + File.separator + "backups" + "')",
         "INSERT INTO daten (name, wert) VALUES ('PDF Rechnungen Verzeichnis', '" + System.getProperty("user.home") + File.separator + ProtectedStrings.PROG_NAME + File.separator + "PDF" + File.separator + "Rechnungen" + "')",
         "INSERT INTO daten (name, wert) VALUES ('PDF Angebote Verzeichnis', '" + System.getProperty("user.home") + File.separator + ProtectedStrings.PROG_NAME + File.separator + "PDF" + File.separator + "Angebote" + "')",

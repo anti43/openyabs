@@ -18,10 +18,8 @@ package mp4.klassen.objekte;
 
 import mp4.einstellungen.Einstellungen;
 import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 import mp4.datenbank.verbindung.Query;
 
@@ -57,7 +55,18 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
     private String[][] prods;
     public Integer id = 0;
     private PostenTableModel postendata = null;
-    private String[][] betreffzeilen;
+    private RechnungBetreffzeile[] betreffzeilen;
+    private RechnungBetreffZZR zeilenHandler;
+
+    public Rechnung(String text) {
+        super(ConnectionHandler.instanceOf().clone(TABLE_BILLS));
+        this.query = ConnectionHandler.instanceOf();
+        
+        this.explode(this.selectLast(Strings.ALL, "rechnungnummer", text, true));
+        zeilenHandler = new RechnungBetreffZZR(id);
+        bp = getProducts(query);
+    }
+  
 
     public void add(PostenTableModel m) {
         this.postendata = m;
@@ -75,16 +84,17 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
     public Rechnung() {
         super(ConnectionHandler.instanceOf().clone(TABLE_BILLS));
         this.query = ConnectionHandler.instanceOf();
+        zeilenHandler = new RechnungBetreffZZR();
     }
 
     public Rechnung(Query query) {
         super(query.clone(TABLE_BILLS));
         this.query = query;
+        zeilenHandler = new RechnungBetreffZZR();
     }
 
     /**
      * 
-     * @param query
      * @param id
      */
     public Rechnung(Integer id) {
@@ -92,22 +102,11 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         this.id = Integer.valueOf(id);
         this.explode(this.selectLast(Strings.ALL, Strings.ID, id.toString(), true));
         this.query = ConnectionHandler.instanceOf().clone(TABLE_BILLS);
+        zeilenHandler = new RechnungBetreffZZR(id);
         bp = getProducts(query);
-//        betreffzeilen = RechnungBetreffzeile.getBetreffzOf(id);
+        
     }
 
-    public Rechnung(Query query, String text, boolean b) {
-        super(query.clone(TABLE_BILLS));
-
-        try {
-            this.id = Integer.valueOf(id);
-            this.explode(this.selectLast(Strings.ALL, "rechnungnummer", text, false));
-            this.query = ConnectionHandler.instanceOf().clone(TABLE_BILLS);
-            bp = getProducts(query);
-        } catch (Exception exception) {
-            Log.Debug(exception);
-        }
-    }
 
     public String getFDatum() {
         return DateConverter.getDefDateString(getDatum());
@@ -190,13 +189,12 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         new RechnungPosten().deleteExistingOf(this);
     }
 
+
     private void explode(String[] select) {
-
-
-        try {
+        try { 
+            this.id = Integer.valueOf(select[0]);
             this.setRechnungnummer(select[1]);
             this.setKundenId(Integer.valueOf(select[2]));
-
             this.setDatum(DateConverter.getDate(select[3]));
             if (select[4].equals("1")) {
                 setStorno(true);
@@ -204,13 +202,11 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
             if (select[5].equals("1")) {
                 setBezahlt(true);
             }
-
             this.setGesamtpreis(Double.valueOf(select[6]));
             this.setGesamttax(Double.valueOf(select[7]));
         } catch (Exception exception) {
             Log.Debug(exception.getMessage());
         }
-
 
         if (!isBezahlt()) {
             try {
@@ -226,24 +222,17 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
                     inte = 1;
                 }
                 String u = dec.format(inte);
-
                 String stri = new String(str[0] + "." + u + "." + str[2]);
-
-
                 Date dates = df.parse(stri);
 
                 if (date.after(dates)) {
                     this.setVerzug(true);
                     Log.Debug("Rechnung in Verzug!");
                 }
-
             } catch (Exception ex) {
                 Log.Debug(ex.getMessage());
             }
-
         }
-
-
     }
 
     private String collect() {
@@ -271,10 +260,8 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         str = str + this.getGesamtpreis() + "(;;,;;)";
         str = str + this.getGesamttax() + "(;;,;;)";
 
-        str = str + "(;;2#4#1#1#8#0#;;)" + DateConverter.getSQLDateString(this.getAusfuehrungsDatum()) + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
+        str = str + "(;;2#4#1#1#8#0#;;)" + DateConverter.getSQLDateString(this.getAusfuehrungsDatum()) + "(;;2#4#1#1#8#0#;;)";
 
-        str = str + "(;;2#4#1#1#8#0#;;)" + this.getUnserZeichen() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
-        str = str + "(;;2#4#1#1#8#0#;;)" + this.getIhrZeichen() + "(;;2#4#1#1#8#0#;;)";
 
         return str;
 
@@ -290,6 +277,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
                 clearPostenData();
                 explode(postendata);
             }
+            zeilenHandler.save();
             isSaved = true;
         } else if (id == 0 && !isSaved) {
             result = this.insert(TABLE_BILLS_FIELDS, this.collect());
@@ -297,6 +285,8 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
             if (postendata != null) {
                 explode(postendata);
             }
+            zeilenHandler.setRechnungId(id);
+            zeilenHandler.save();
             isSaved = true;
         }
 
@@ -623,5 +613,9 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
 
     public void setIhrZeichen(String IhrZeichen) {
         this.IhrZeichen = IhrZeichen;
+    }
+
+    public RechnungBetreffZZR getZeilenHandler() {
+        return zeilenHandler;
     }
 }

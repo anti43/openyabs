@@ -229,7 +229,7 @@ public class fastChoice extends javax.swing.JFrame {
 
                 frame.setShowingTab(1);
 
-                kr = new Rechnung(ConnectionHandler.instanceOf(), jTextField1.getText(), true);
+                kr = new Rechnung(jTextField1.getText());
 
                 if (kr.hasId()) {
 

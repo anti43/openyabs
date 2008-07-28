@@ -37,6 +37,7 @@ import mp4.klassen.objekte.Product;
 import mp3.classes.visual.main.mainframe;
 
 import handling.pdf.PDF_Rechnung;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFormattedTextField;
 import javax.swing.JOptionPane;
 import mp4.einstellungen.Einstellungen;
@@ -51,6 +52,7 @@ import mp4.utils.tabellen.TableCellEditorForDezimal;
 import mp4.utils.tabellen.TableFormat;
 import mp4.utils.tabellen.models.BillListTableModel;
 import mp4.utils.tabellen.models.BillSearchListTableModel;
+import mp4.utils.tabellen.models.MPJComboBoxModel;
 import mp4.utils.zahlen.FormatNumber;
 
 /**
@@ -139,7 +141,8 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
 
                 mainframe.setMessage("Rechnung Nummer: " + bill.getRechnungnummer() + " angelegt.");
                 new HistoryItem(Strings.BILL, "Rechnung Nummer: " + bill.getRechnungnummer() + " angelegt.");
-//                this.setBill(new Rechnung(bill.getId()));
+                currentBill = bill;
+//                this.setBill(new Rechnung());
 
                 updateListTable();
                 resizeFields();
@@ -215,6 +218,9 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
                 this.jCheckBox2.setBackground(new Color(212, 208, 200));
             }
         }
+        
+        jComboBox1.setModel(new MPJComboBoxModel(current.getZeilenHandler().getListData()));
+        
         this.getJTable1().setModel(current.getProductlistAsTableModel());
         TableFormat.stripFirst(getJTable1());
         resizeFields();
@@ -1338,7 +1344,7 @@ private void jButton19KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
 }//GEN-LAST:event_jButton19KeyPressed
 
 private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
-    new mp4.utils.windows.Position().center(new billsNotesEditor(currentBill));
+    new billsNotesEditor(currentBill, this);
 }//GEN-LAST:event_jButton18ActionPerformed
 
 private void jCheckBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox2ActionPerformed
@@ -1459,7 +1465,7 @@ private void jCheckBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 
 
     public void updateTables() {
-        throw new UnsupportedOperationException("Not supported yet.");
+//        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public void close() {

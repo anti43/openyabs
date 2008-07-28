@@ -20,6 +20,9 @@ along with MP.  If not, see <http://www.gnu.org/licenses/>.
 package mp4.utils.tabellen;
 
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import mp3.classes.utils.Log;
 
 /**
  *
@@ -29,6 +32,7 @@ public class SelectionCheck {
 
     private Integer id = null;
     private JTable table;
+    private int removed  = 0;
 
     public SelectionCheck(JTable table) {
         this.table = table;
@@ -56,14 +60,37 @@ public class SelectionCheck {
         for (int idx = 0; idx < data.length; idx++) {
             data[idx] = table.getModel().getValueAt(table.getSelectedRow(), idx);
         }
+        Log.PrintArray(data);
         return data;
     }
 
-    public boolean rowHasData() {
-        for (int i = 0; i < table.getModel().getColumnCount(); i++) {
-           if(table.getModel().getValueAt(table.getSelectedRow(), i)!=null)return true;
+    public void removeRow() {
+        TableModel model = table.getModel();
+        Object[][] data = new Object[model.getRowCount()][model.getColumnCount()];
+        Object[] columnNames = new Object[model.getColumnCount()];
+
+        for (int idx = 0; idx < columnNames.length; idx++) {
+            columnNames[idx] = model.getColumnName(idx);
         }
-        
+        for (int idx = 0; idx < model.getRowCount(); idx++) {
+            for (int i = 0; i < model.getColumnCount(); i++) {
+                if (idx != table.getSelectedRow()) {
+                    data[idx][i] = model.getValueAt(idx, i);
+                }
+            }
+        }
+
+        table.setModel(new DefaultTableModel(data, columnNames));
+    }
+
+    public boolean rowHasData(int testcol) {
+        if(table.getModel().getRowCount()>0){
+        for (int i = 0; i < table.getModel().getColumnCount(); i++) {
+            if (table.getModel().getValueAt(table.getSelectedRow(), testcol) != null) {
+                return true;
+            }
+        }
+        }
         return false;
     }
 }
