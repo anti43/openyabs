@@ -113,13 +113,12 @@ public class DataModelUtils {
         }
     }
 
-    public static Object[][] changeToClassValue(String[][] prods, Class aClass, int[] cols) {
+    public static Object[][] changeToClassValue(Object[][] prods, Class aClass, int[] cols) {
 
         Object[][] data = new Object[prods.length][prods[0].length];
 
         for (int idx = 0; idx < prods.length; idx++) {
             for (int k = 0; k < cols.length; k++) {
-                
                 if (aClass.getName().matches("java.lang.Boolean")) {
                     if (prods[idx][cols[k]].equals("1")) {
                         data[idx][cols[k]] = true;
@@ -128,8 +127,13 @@ public class DataModelUtils {
                     }
                 }
             }
-        }
 
+            for (int h = 0; h < prods[0].length; h++) {
+                if (data[idx][h] == null) {
+                    data[idx][h] = prods[idx][h];
+                }
+            }
+        }
         return data;
     }
 
@@ -154,7 +158,7 @@ public class DataModelUtils {
 
     public static Object[][] reverseArray(Object[][] array) {
         //Reverse order
-        int i = 0,   j = array.length - 1;
+        int i = 0,     j = array.length - 1;
         while (i < j) {
             Object[] h = array[i];
             array[i] = array[j];

@@ -74,22 +74,22 @@ public class Log {
         }
     }
 
-    public static void Debug(Object string) {
+    public static void Debug(Object obj) {
         if (loglevel != LOGLEVEL_LOW) {
             logger.setVisible(true);
         }
         if (loglevel != LOGLEVEL_LOW) {
-            logger.log(string);
+            logger.log(obj);
         }
     }
 
-    public static void Debug(Exception string) {
+    public static void Debug(Exception ex) {
         if (loglevel != LOGLEVEL_LOW) {
             logger.setVisible(true);
         }
         if (loglevel != LOGLEVEL_LOW) {
-            logger.log(string.getMessage() + "\n" + string.getCause());
-            string.printStackTrace();
+            logger.log(ex.getMessage() + "\n" + ex.getCause());
+            ex.printStackTrace();
         }
     }
 

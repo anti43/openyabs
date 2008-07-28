@@ -17,7 +17,6 @@
 
 package mp4.utils.tabellen.models;
 
-import mp3.classes.utils.Log;
 import mp4.klassen.objekte.Rechnung;
 import mp4.utils.tabellen.DataModelUtils;
 
@@ -36,8 +35,8 @@ public class BillListTableModel extends MPTableModel {
                     java.lang.String.class, java.lang.String.class, java.lang.String.class,
                     java.lang.Boolean.class,java.lang.Boolean.class
                 }, new boolean[]{false,false,false,false,false,false,false},
-                DataModelUtils.reverseArray(
-                new Rechnung().getWithDependencies("rechnungen.id,rechnungnummer,datum,kundennummer,firma, bezahlt, storno")),
+                
+                new Rechnung().getWithDependencies("rechnungen.id,rechnungnummer,datum,kundennummer,firma, bezahlt, storno"),
                 new Object[]{"id","Nummer","Datum","Kunde","Firma", "Bezahlt", "Storniert"});
     
     }

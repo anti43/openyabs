@@ -40,13 +40,6 @@ import mp4.utils.zahlen.FormatNumber;
  */
 public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen {
 
-    public static String[][] formatListTableArray(String[][] withDepencies, int[] i, int i0) {
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
-
-    String[][] inserType(String[][] bills) {
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
     private String Rechnungnummer = "";
     private String UnserZeichen = "";
     private String IhrZeichen = "";
@@ -59,12 +52,12 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
     private boolean bezahlt = false;
     private boolean verzug = false;
     private RechnungPosten[] bp;
+    
     private Query query;
     private String[][] prods;
-    private List labelsOfGetAllWithD;
-    private String[][] betreffzeilen;
     public Integer id = 0;
     private PostenTableModel postendata = null;
+    private String[][] betreffzeilen;
 
     public void add(PostenTableModel m) {
         this.postendata = m;
@@ -100,7 +93,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         this.explode(this.selectLast(Strings.ALL, Strings.ID, id.toString(), true));
         this.query = ConnectionHandler.instanceOf().clone(TABLE_BILLS);
         bp = getProducts(query);
-        betreffzeilen = new RechnungBetreffzeile().getDataOf(id);
+//        betreffzeilen = RechnungBetreffzeile.getBetreffzOf(id);
     }
 
     public Rechnung(Query query, String text, boolean b) {

@@ -24,6 +24,8 @@ import mp4.datenbank.verbindung.ConnectionHandler;
  */
 public class RechnungBetreffzeile extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen {
 
+  
+
     private Integer id = 0;
     private String[] value;
     private String name;
@@ -39,7 +41,15 @@ public class RechnungBetreffzeile extends mp3.classes.layer.Things implements mp
         this.delete(this.getId());
         this.id = 0;
     }
+    
+     
+    public RechnungBetreffzeile[] getBetreffzOf(Integer id) {
 
+        String[][] values = this.select("*", "id", id.toString(), true);
+        
+        throw new UnsupportedOperationException();
+    }
+  
     public RechnungBetreffzeile() {
         super(ConnectionHandler.instanceOf().clone(TABLE_BILL_TEXTS));
     }

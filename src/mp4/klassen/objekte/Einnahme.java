@@ -183,7 +183,7 @@ public class Einnahme extends mp3.classes.layer.Things implements mp4.datenbank.
 
         String[][] bills = new Rechnung(q).getPaid();
 
-        return Formater.merge(inserType(prods), new Rechnung(q).inserType(bills));
+        return Formater.merge(prods, bills);
     }
 
     public Integer getKontenid() {

@@ -4,9 +4,11 @@
  */
 package mp4.utils.zahlen;
 
+import java.text.NumberFormat;
 import java.text.ParseException;
 import mp3.classes.layer.Popup;
 import mp3.classes.utils.Log;
+import mp4.einstellungen.Einstellungen;
 
 
 /**
@@ -37,5 +39,10 @@ public class FormatNumber {
         java.text.DecimalFormat n = new java.text.DecimalFormat("#,##0.00;(#,##0.00)");
         n.setMaximumFractionDigits(2);
         return n.format(number);
+    }
+    
+    public static String formatLokalCurrency(Double betrag) {
+        NumberFormat n = NumberFormat.getCurrencyInstance(Einstellungen.instanceOf().getLocale());
+        return n.format(betrag);
     }
 }

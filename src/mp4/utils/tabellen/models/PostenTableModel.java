@@ -28,18 +28,20 @@ public class PostenTableModel extends MPTableModel {
                     true, true, true, true, true, true
                 },
                 new Object[][]{
-                    {null, 1, null, Einstellungen.instanceOf().getGlobaltax(), null, null},
-                    {null, 1, null, Einstellungen.instanceOf().getGlobaltax(), null, null},
-                    {null, 1, null, Einstellungen.instanceOf().getGlobaltax(), null, null},
-                    {null, 1, null, Einstellungen.instanceOf().getGlobaltax(), null, null},
-                    {null, 1, null, Einstellungen.instanceOf().getGlobaltax(), null, null},
-                    {null, 1, null, Einstellungen.instanceOf().getGlobaltax(), null, null},
-                    {null, 1, null, Einstellungen.instanceOf().getGlobaltax(), null, null},
-                    {null, 1, null, Einstellungen.instanceOf().getGlobaltax(), null, null},
-                    {null, 1, null, Einstellungen.instanceOf().getGlobaltax(), null, null},
-                    {null, 1, null, Einstellungen.instanceOf().getGlobaltax(), null, null}
+                    {null, 1.0, null, Einstellungen.instanceOf().getGlobaltax(), null, null},
+                    {null, 1.0, null, Einstellungen.instanceOf().getGlobaltax(), null, null},
+                    {null, 1.0, null, Einstellungen.instanceOf().getGlobaltax(), null, null},
+                    {null, 1.0, null, Einstellungen.instanceOf().getGlobaltax(), null, null},
+                    {null, 1.0, null, Einstellungen.instanceOf().getGlobaltax(), null, null},
+                    {null, 1.0, null, Einstellungen.instanceOf().getGlobaltax(), null, null},
+                    {null, 1.0, null, Einstellungen.instanceOf().getGlobaltax(), null, null},
+                    {null, 1.0, null, Einstellungen.instanceOf().getGlobaltax(), null, null},
+                    {null, 1.0, null, Einstellungen.instanceOf().getGlobaltax(), null, null},
+                    {null, 1.0, null, Einstellungen.instanceOf().getGlobaltax(), null, null}
                 },
                 new Object[]{"id", "Anzahl", "Bezeichnung", "Steuersatz", "Nettopreis", "Bruttopreis"});
+        
+        
 
     }
 

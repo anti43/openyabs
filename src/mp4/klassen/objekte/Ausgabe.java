@@ -21,9 +21,8 @@ import java.util.Date;
 import mp4.datenbank.verbindung.Query;
 
 import java.io.Serializable;
-import mp3.classes.layer.*;
 import mp3.classes.utils.*;
-import mp4.utils.zahlen.FormatMoney;
+
 import mp4.utils.datum.DateConverter;
 import mp4.utils.zahlen.FormatNumber;
 import mp4.utils.zahlen.FormatTax;

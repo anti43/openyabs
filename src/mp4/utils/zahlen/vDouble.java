@@ -16,11 +16,13 @@
  */
 package mp4.utils.zahlen;
 
+import java.math.BigDecimal;
+
 /**
  *
  * @author anti
  */
-public class vDouble {
+public class vDouble{
 
     public Double value = null;
     public String svalue = null;

@@ -67,7 +67,6 @@ public interface Installation {
         "Datum DATE NOT NULL," + "storno INTEGER DEFAULT 0," + "bezahlt INTEGER DEFAULT 0," +
         "gesamtpreis DOUBLE DEFAULT 0," + "gesamttax INTEGER NOT NULL," +
         "AfDatum DATE NOT NULL," +
-        "UZeichen VARCHAR(50) default NULL,IZeichen VARCHAR(50) default NULL," +
         "deleted INTEGER DEFAULT 0," +
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
         "PRIMARY KEY  (id))",

@@ -281,6 +281,8 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     resultSet.first();
                     i = resultSet.getInt(1);
                 }
+            } else {
+                i = 0;
             }
         } catch (SQLException ex) {
             Log.Debug(message + ex.getMessage());
