@@ -22,7 +22,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author Andreas
  */
-class MPTableModel extends DefaultTableModel {
+public class MPTableModel extends DefaultTableModel {
 
     private Class[] types;
     private boolean[] canEdits;

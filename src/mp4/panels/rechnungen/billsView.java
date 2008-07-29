@@ -5,6 +5,7 @@
  */
 package mp4.panels.rechnungen;
 
+import java.awt.event.ActionEvent;
 import javax.swing.Icon;
 import mp4.klassen.objekte.RechnungPosten;
 import mp4.klassen.objekte.Rechnung;
@@ -37,7 +38,9 @@ import mp4.klassen.objekte.Product;
 import mp3.classes.visual.main.mainframe;
 
 import handling.pdf.PDF_Rechnung;
+import java.awt.event.ActionListener;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JOptionPane;
 import mp4.einstellungen.Einstellungen;
@@ -52,7 +55,8 @@ import mp4.utils.tabellen.TableCellEditorForDezimal;
 import mp4.utils.tabellen.TableFormat;
 import mp4.utils.tabellen.models.BillListTableModel;
 import mp4.utils.tabellen.models.BillSearchListTableModel;
-import mp4.utils.tabellen.models.MPJComboBoxModel;
+
+import mp4.utils.tabellen.models.MPJComboboxModelItem;
 import mp4.utils.zahlen.FormatNumber;
 
 /**
@@ -67,8 +71,6 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
     private mainframe mainframe;
     private TableCellEditor editor;
     private SimpleDateFormat df;
-   
-    
     private Customer oldcustomer;
     private double defaultTaxRate = 0d;
     private Einstellungen settings;
@@ -219,7 +221,17 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
             }
         }
         
-        jComboBox1.setModel(new MPJComboBoxModel(current.getZeilenHandler().getListData()));
+        jComboBox1 = new JComboBox(current.getZeilenHandler().getListModel());
+        jComboBox1.setRenderer(new MPJComboboxModelItem().getCheckComboRenderer());
+        jComboBox1.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                JComboBox cb = (JComboBox) e.getSource();
+                MPJComboboxModelItem store = (MPJComboboxModelItem ) cb.getSelectedItem();
+                MPJComboboxModelItem.CheckComboRenderer ccr = (MPJComboboxModelItem.CheckComboRenderer ) cb.getRenderer();
+                ccr.checkBox.setSelected((store.state = !store.state));
+            }
+        });
         
         this.getJTable1().setModel(current.getProductlistAsTableModel());
         TableFormat.stripFirst(getJTable1());
@@ -231,8 +243,9 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
         oldcustomer = this.customer;
         this.customer = c;
 
-        getJTextField4().setText(c.getKundennummer());
-        jTextField5.setText(c.getFirma());
+        jLabel19.setText(c.getKundennummer());
+        jTextField5.setText(c.getName());
+        jTextField4.setText(c.getFirma());
 
         if (getCustomer().isDeleted()) {
             jLabel19.setForeground(Color.GRAY);
@@ -695,7 +708,7 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
             }
         });
 
-        jLabel19.setText("<Nummer>");
+        jLabel19.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 11));
         jLabel5.setText("Kunde");
@@ -708,21 +721,21 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
         jPanel9.setLayout(jPanel9Layout);
         jPanel9Layout.setHorizontalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel9Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel7)
                     .addComponent(jLabel6)
                     .addComponent(jLabel5))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel9Layout.createSequentialGroup()
                         .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jTextField4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jLabel19, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jLabel19, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel9Layout.setVerticalGroup(
@@ -731,7 +744,7 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
                 .addContainerGap()
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(jLabel19))
+                    .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel9Layout.createSequentialGroup()
@@ -973,7 +986,7 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
-                    .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -1350,7 +1363,6 @@ private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 private void jCheckBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox2ActionPerformed
 // TODO add your handling code here:
 }//GEN-LAST:event_jCheckBox2ActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton jButton1;
     public javax.swing.JButton jButton10;
@@ -1460,9 +1472,6 @@ private void jCheckBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     public javax.swing.JTable getJTable1() {
         return jTable1;
     }
-
-
-
 
     public void updateTables() {
 //        throw new UnsupportedOperationException("Not supported yet.");

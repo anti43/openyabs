@@ -36,6 +36,7 @@ public class SelectionCheck {
 
     public SelectionCheck(JTable table) {
         this.table = table;
+        if(table.getCellEditor()!=null) table.getCellEditor().stopCellEditing();
     }
 
     public boolean checkID() {

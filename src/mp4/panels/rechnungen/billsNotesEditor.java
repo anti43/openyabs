@@ -5,13 +5,14 @@
  */
 package mp4.panels.rechnungen;
 
-import java.util.Formattable;
 import javax.swing.table.DefaultTableModel;
 import mp4.klassen.objekte.*;
 import mp4.panels.panelInterface;
 import mp4.utils.tabellen.DataModelUtils;
 import mp4.utils.tabellen.SelectionCheck;
 import mp4.utils.tabellen.TableFormat;
+import mp4.utils.tabellen.models.BillNotesTableModel;
+import mp4.utils.tabellen.models.MPTableModel;
 
 /**
  *
@@ -25,22 +26,21 @@ public class billsNotesEditor extends javax.swing.JFrame {
     /** Creates new form billsNotesEditor */
     public billsNotesEditor() {
         initComponents();
-        jTable2.setModel(new DefaultTableModel(new RechnungBetreffzeile().getAllData(), new String[]{"id", "Name", "Text"}));
+        jTable2.setModel(new BillNotesTableModel(new RechnungBetreffzeile().getAllData()));
 
         DataModelUtils.addToTable(jTable1, new Object[][]{{null, null, null}, {null, null, null}, {null, null, null}, {null, null, null}});
 
-        TableFormat.stripFirst(jTable1);
-        TableFormat.stripFirst(jTable2);
+        resizeTables();
         setVisible(rootPaneCheckingEnabled);
     }
 
     public billsNotesEditor(Rechnung current, panelInterface panel) {
         initComponents();
-        jTable2.setModel(new DefaultTableModel(new RechnungBetreffzeile().getVorlagen(), new String[]{"id", "Name", "Text"}));
+        jTable2.setModel(new BillNotesTableModel(new RechnungBetreffzeile().getVorlagen()));
         jTable1.setModel(new DefaultTableModel(current.getZeilenHandler().getListData(), new String[]{"id", "Name", "Text"}));
 
-        TableFormat.stripFirst(jTable1);
-        TableFormat.stripFirst(jTable2);
+        
+        resizeTables();
         this.rechnung = current;
         this.panel = panel;
         new mp4.utils.windows.Position().center(this);
@@ -173,8 +173,8 @@ public class billsNotesEditor extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 374, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 374, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 445, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 445, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jButton1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -185,7 +185,7 @@ public class billsNotesEditor extends javax.swing.JFrame {
                         .addComponent(jButton6))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jButton5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 138, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 209, Short.MAX_VALUE)
                         .addComponent(jButton4)))
                 .addContainerGap())
         );
@@ -200,7 +200,7 @@ public class billsNotesEditor extends javax.swing.JFrame {
                     .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton6))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton4)
@@ -230,7 +230,7 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         RechnungBetreffzeile zeile = new RechnungBetreffzeile(selection.getId());
         DataModelUtils.addToTable(jTable1, new String[]{zeile.getId().toString(), zeile.getName(), zeile.getText()});
     }
-    TableFormat.stripFirst(jTable1);
+    resizeTables();
 }//GEN-LAST:event_jButton1ActionPerformed
 
 private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
@@ -245,13 +245,13 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         zeile.save();
         DataModelUtils.addToTable(jTable2, new String[]{zeile.getId().toString(), zeile.getName(), zeile.getText()});
     }
-    TableFormat.stripFirst(jTable2);
+    resizeTables();
 }//GEN-LAST:event_jButton3ActionPerformed
 
 private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
     DataModelUtils.removeSelectedRowFromTable(jTable1);
-    TableFormat.stripFirst(jTable1);
+    resizeTables();
 
 }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -266,12 +266,12 @@ private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         zeile.save();
         selection.removeRow();
     }
-    TableFormat.stripFirst(jTable2);
+    resizeTables();
 }                                        
 
 private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
     DataModelUtils.addToTable(jTable1, new Object[][]{{0, null, null}});
-    TableFormat.stripFirst(jTable1);
+    resizeTables();
 }//GEN-LAST:event_jButton6ActionPerformed
 
 private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
@@ -313,4 +313,13 @@ private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
     // End of variables declaration//GEN-END:variables
+
+    private void resizeTables() {
+        TableFormat.stripFirst(jTable1);
+        TableFormat.stripFirst(jTable2);
+        TableFormat.resizeCols(jTable1, new Integer[]{null,100}, true);
+        TableFormat.resizeCols(jTable2, new Integer[]{null,100}, true);
+        
+        TableFormat.makeUneditable(jTable2);
+    }
 }

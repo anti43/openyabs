@@ -19,12 +19,22 @@ package mp4.utils.tabellen;
 import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
 import mp3.classes.utils.Log;
+import mp4.utils.tabellen.models.MPTableModel;
 
 /**
  *
  * @author Andreas
  */
 public class TableFormat {
+
+    public static void makeUneditable(JTable table) {
+      
+        try {
+            ((MPTableModel) table.getModel()).setCanEdits(new boolean[]{false, false, false, false, false, false, false, false, false, false, false, false, false});
+        } catch (Exception e) {
+            Log.Debug("Can not change this table to uneditable.", true);
+        }
+    }
 
     /**
      * Stops the tables' cell editor

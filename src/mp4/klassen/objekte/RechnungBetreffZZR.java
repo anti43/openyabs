@@ -17,8 +17,11 @@
 package mp4.klassen.objekte;
 
 import java.util.ArrayList;
+import javax.swing.ComboBoxModel;
 import mp3.classes.layer.Things;
 import mp4.datenbank.verbindung.ConnectionHandler;
+import mp4.utils.tabellen.models.MPJComboboxModelItem;
+
 
 /**
  *
@@ -40,6 +43,18 @@ public class RechnungBetreffZZR extends Things {
 
     public RechnungBetreffZZR() {
         super(ConnectionHandler.instanceOf().clone(TABLE_BILL_TEXTS_TO_BILLS));
+    }
+
+    public Object[] getListModel() {
+        
+        MPJComboboxModelItem[] models = new MPJComboboxModelItem[liste.size()];
+        RechnungBetreffzeile zeile;
+
+        for (int i = 0; i < liste.size(); i++) {
+            zeile = (RechnungBetreffzeile) liste.get(i);
+            models[i] = new MPJComboboxModelItem(zeile.getId(),zeile.getName(),zeile.getText());
+        }
+        return models;
     }
 
     @SuppressWarnings({"unchecked", "unchecked"})
@@ -84,13 +99,14 @@ public class RechnungBetreffZZR extends Things {
 
     public Object[][] getListData() {
 
-        Object[][] data = new Object[liste.size()][2];
+        Object[][] data = new Object[liste.size()][3];
         RechnungBetreffzeile zeile;
 
         for (int i = 0; i < liste.size(); i++) {
             zeile = (RechnungBetreffzeile) liste.get(i);
             data[i][0] = zeile.getId();
             data[i][1] = zeile.getName();
+            data[i][2] = zeile.getText();
         }
 
         return data;

@@ -14,49 +14,31 @@
  *      You should have received a copy of the GNU General Public License
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package mp4.utils.tabellen.models;
 
-import javax.swing.DefaultComboBoxModel;
+import mp4.klassen.objekte.Rechnung;
+import mp4.utils.tabellen.DataModelUtils;
 
 /**
  *
  * @author Andreas
  */
-public class MPJComboBoxModel extends DefaultComboBoxModel {
-
-    private MPJComboboxModelItem item;
-
-    /**
-     * 
-     * @param data {integer id, string text}
-     */
-    public MPJComboBoxModel(Object[][] data) {
-
-        for (int i = 0; i < data.length; i++) {
-            item = new MPJComboboxModelItem();
-            item.id = (Integer) data[i][0];
-            item.text = (String) data[i][1];
-
-            super.addElement(item);
-        }
-
-    }
-
+public class BillNotesTableModel extends MPTableModel {
+    private static final long serialVersionUID = 5414150884755558696L;
+    
     /**
      * 
      */
-    public class MPJComboboxModelItem {
-
-        private Integer id = 0;
-        private String text;
-
-        @Override
-        public String toString() {
-            return text;
-        }
-
-        public Integer getId() {
-            return id;
-        }
+    public BillNotesTableModel(Object[][] data){
+      super(new Class[]{java.lang.String.class, java.lang.String.class,
+                    java.lang.String.class
+                }, new boolean[]{false,false,false},
+                
+                new Rechnung().getWithDependencies("rechnungen.id,rechnungnummer,datum,kundennummer,firma, bezahlt, storno"),
+                new Object[]{"id","Name","Text"});
+    
     }
+
 }
+ 
