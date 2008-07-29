@@ -1071,7 +1071,7 @@ private void saveNew() {
         current.setSupplier(supplier);
         current.setVK(Double.valueOf(jTextField8.getText()));
         current.setEK(Double.valueOf(jTextField7.getText()));
-        current.setTAX(Double.valueOf(jTextField16.getText()));
+//        current.setTAX(Double.valueOf(jTextField16.getText()));
         current.setDatum(DateConverter.getDate(jTextField9.getText()));
         current.setUrl(jTextField11.getText());
         current.setEan(jTextField13.getText());
@@ -1132,7 +1132,7 @@ private void saveNew() {
             current.setSupplier(supplier);
             current.setVK(Double.valueOf(jTextField8.getText()));
             current.setEK(Double.valueOf(jTextField7.getText()));
-            current.setTAX(Double.valueOf(jTextField16.getText()));
+//            current.setTAX(Double.valueOf(jTextField16.getText()));
             current.setDatum(DateConverter.getDate(jTextField9.getText()));
             current.setUrl(jTextField11.getText());
             current.setEan(jTextField13.getText());

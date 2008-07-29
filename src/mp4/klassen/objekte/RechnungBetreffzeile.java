@@ -62,6 +62,7 @@ public class RechnungBetreffzeile extends mp3.classes.layer.Things implements mp
         value = this.selectLast("*", "id", id.toString(), true);
         explode(value);
 
+        
     }
 
     public String[][] getAllData() {

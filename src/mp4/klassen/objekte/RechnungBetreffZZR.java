@@ -17,11 +17,9 @@
 package mp4.klassen.objekte;
 
 import java.util.ArrayList;
-import javax.swing.ComboBoxModel;
 import mp3.classes.layer.Things;
 import mp4.datenbank.verbindung.ConnectionHandler;
-import mp4.utils.tabellen.models.MPJComboboxModelItem;
-
+import mp4.utils.combobox.CheckComboItem;
 
 /**
  *
@@ -45,14 +43,31 @@ public class RechnungBetreffZZR extends Things {
         super(ConnectionHandler.instanceOf().clone(TABLE_BILL_TEXTS_TO_BILLS));
     }
 
+    public Object[] getListVorlagen() {
+
+        String[][] data = new RechnungBetreffzeile().getVorlagen();
+        CheckComboItem[] models = new CheckComboItem[data.length];
+        RechnungBetreffzeile zeile;
+
+        for (int i = 0; i < data.length; i++) {
+            zeile = new RechnungBetreffzeile(Integer.valueOf(data[i][0]));
+            if (zeile != null) {
+                models[i] = new CheckComboItem(zeile.getId(), zeile.getName(), true);
+            }
+        }
+        return models;
+    }
+
     public Object[] getListModel() {
-        
-        MPJComboboxModelItem[] models = new MPJComboboxModelItem[liste.size()];
+
+        CheckComboItem[] models = new CheckComboItem[liste.size()];
         RechnungBetreffzeile zeile;
 
         for (int i = 0; i < liste.size(); i++) {
             zeile = (RechnungBetreffzeile) liste.get(i);
-            models[i] = new MPJComboboxModelItem(zeile.getId(),zeile.getName(),zeile.getText());
+            if (zeile != null) {
+                models[i] = new CheckComboItem(zeile.getId(), zeile.getName(), true);
+            }
         }
         return models;
     }
@@ -77,6 +92,7 @@ public class RechnungBetreffZZR extends Things {
 
     public void removeAll() {
         liste.clear();
+        liste.trimToSize();
     }
 
     public Integer getRechnungId() {
@@ -89,10 +105,9 @@ public class RechnungBetreffZZR extends Things {
 
     public void save() {
         RechnungBetreffzeile zeile;
-
+        this.freeQuery("DELETE FROM " + TABLE_BILL_TEXTS_TO_BILLS + " WHERE rechnungid = " + rechnungid);
         for (int i = 0; i < liste.size(); i++) {
             zeile = (RechnungBetreffzeile) liste.get(i);
-            this.freeQuery("DELETE FROM " + TABLE_BILL_TEXTS_TO_BILLS + " WHERE rechnungid = " + rechnungid);
             this.insert(TABLE_BILL_TEXTS_TO_BILLS_FIELDS, rechnungid + "," + zeile.getId());
         }
     }

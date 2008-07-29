@@ -23,6 +23,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import mp3.classes.utils.Log;
+import mp4.utils.tabellen.models.MPTableModel;
 import mp4.utils.zahlen.FormatNumber;
 
 /**
@@ -33,9 +34,11 @@ public class DataModelUtils {
 
     public static void addToTable(JTable table, Object[] row) {
 
-        TableModel model = table.getModel();
+        MPTableModel model = (MPTableModel) table.getModel();
         Object[][] data = new Object[model.getRowCount() + 1][row.length];
         Object[] columnNames = new Object[model.getColumnCount()];
+        
+        
 
         for (int idx = 0; idx < columnNames.length; idx++) {
             columnNames[idx] = model.getColumnName(idx);
@@ -48,7 +51,7 @@ public class DataModelUtils {
         }
 
         data[model.getRowCount()] = row;
-        table.setModel(new DefaultTableModel(data, columnNames));
+        table.setModel(new MPTableModel(model.getTypes(), model.getCanEdits(), data, columnNames));
     }
 
     public static void addToTable(JTable table, Object[][] rows) {

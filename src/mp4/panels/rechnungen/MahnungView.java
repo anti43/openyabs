@@ -4,29 +4,37 @@
  * Created on 13. Februar 2008, 13:19
  */
 
-package mp3.classes.visual.util;
+package mp4.panels.rechnungen;
 
 import mp4.klassen.objekte.*;
 import mp4.klassen.objekte.Customer;
 import handling.pdf.PDF_Mahnung;
+import mp4.utils.datum.DateConverter;
 import mp4.utils.windows.Position;
+import mp4.utils.zahlen.FormatNumber;
 
 /**
  *
  * @author  anti43
  */
-public class arrear extends javax.swing.JFrame {
+public class MahnungView extends javax.swing.JFrame {
     private Rechnung bill;
     private Customer c;
+    private billsView view;
     
     /** Creates new form overdue
      * @param bill
-     * @param c 
+     * @param customer
+     * @param view 
      */
-    public arrear(Rechnung bill, Customer c) {
+    public MahnungView(Rechnung bill, Customer customer, billsView view) {
         initComponents();
+        
         this.bill=bill;
-        this.c=c;
+        this.bill.setMahnungen(this.bill.getMahnungen()+1);
+        this.c=customer;
+
+        this.view = view;
         
         this.jTextArea1.setText("Sehr geehrter Herr Kunde,\nin Bezug auf unsere Rechnung Nr. "+ 
                 bill.getRechnungnummer()+" vom "+bill.getDatum()+" mussten wir heute feststellen, dass " +
@@ -38,7 +46,7 @@ public class arrear extends javax.swing.JFrame {
                 "weil z.B. der Verwendungszweck nicht korrekt angegeben wurde.\n\nMit freundlichen Grüßen\n\n");
         
         jLabel2.setText(bill.getRechnungnummer());
-        jLabel6.setText(c.getFirma());
+        jLabel6.setText(customer.getFirma());
         
         new Position(this);
         this.setVisible(rootPaneCheckingEnabled);
@@ -58,8 +66,6 @@ public class arrear extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
@@ -85,10 +91,6 @@ public class arrear extends javax.swing.JFrame {
 
         jLabel3.setText("Mahntext:");
 
-        jLabel4.setText("Mahnung Nummer:");
-
-        jTextField1.setText("1");
-
         jButton1.setText("Erstellen");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -107,6 +109,9 @@ public class arrear extends javax.swing.JFrame {
 
         jLabel7.setText("Mahngebühr:");
 
+        jTextField2.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jTextField2.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jTextField2.setText("0,0");
         jTextField2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField2ActionPerformed(evt);
@@ -117,32 +122,30 @@ public class arrear extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 535, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel7)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 175, Short.MAX_VALUE)
+                                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 247, Short.MAX_VALUE)
                                 .addComponent(jButton2))
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel1)
-                                    .addComponent(jLabel4)
                                     .addComponent(jLabel5))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1)))
+                        .addComponent(jButton1))
+                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -156,14 +159,10 @@ public class arrear extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 221, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
@@ -196,11 +195,13 @@ public class arrear extends javax.swing.JFrame {
         
         
         try {
-            new PDF_Mahnung(bill, jTextArea1.getText(), jTextField1.getText(), Double.valueOf(jTextField2.getText()));
+//            new PDF_Mahnung(bill, jTextArea1.getText(), bill.getMahnungen().toString(), FormatNumber.parseDezimal(jTextField2.getText()));
+            view.addProductToBillsTable(new Product("Mahnung vom " + DateConverter.getTodayDefDate(), 
+                    FormatNumber.parseDezimal(jTextField2.getText())));
             this.dispose();
         } catch (NumberFormatException numberFormatException) {
           
-            new PDF_Mahnung(bill, jTextArea1.getText(), jTextField1.getText(), Double.valueOf(0));
+            new PDF_Mahnung(bill, jTextArea1.getText(), bill.getMahnungen().toString(), FormatNumber.parseDezimal("0"));
             this.dispose();
         }
 
@@ -219,14 +220,12 @@ public class arrear extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     // End of variables declaration//GEN-END:variables
     

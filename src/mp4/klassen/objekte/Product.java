@@ -27,13 +27,14 @@ import mp4.utils.datum.DateConverter;
  * @author anti43
  */
 public class Product extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen {
-/**
- * "nummer" + "," +"name" + "," + "text" + "," +"vk" + "," +"ek" +
-              "," +"tax"+ ","+ "herstellerid"+ ","+"lieferantenid"+ ","+"warengruppenid"
-              
-              + ","+"datum"+ ","+"url";
- */
-    private String Ean = "";
+
+    /**
+     * "nummer" + "," +"name" + "," + "text" + "," +"vk" + "," +"ek" +
+    "," +"tax"+ ","+ "herstellerid"+ ","+"lieferantenid"+ ","+"warengruppenid"
+    
+    + ","+"datum"+ ","+"url";
+     */
+    private String Ean = "00000000";
     private String Nummer = "";
     private String Name = "";
     private Date Datum = new Date();
@@ -41,34 +42,42 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
     private String Text = "";
     private Double VK = 0d;
     private Double EK = 0d;
-    private Double TAX = 0d;
+    private Integer SteuersatzId = 1;
     private String Hersteller = "";
     private Integer LieferantenId = 0;
-    private Integer WarengruppenId = 0;
- 
-//    private Manufacturer manufacturer;
+    private Integer WarengruppenId = 0;//    private Manufacturer manufacturer;
     private Lieferant supplier;
     private Query query;
-    public boolean isvalid=false;
-   public Integer id = 0;
+    public boolean isvalid = false;
+    public Integer id = 0;
+
     public Integer getId() {
         return id;
     }
+
     public void destroy() {
         this.delete(this.id);
         this.id = 0;
     }
+
     public Product() {
-        super( ConnectionHandler.instanceOf().clone(TABLE_PRODUCTS));
+        super(ConnectionHandler.instanceOf().clone(TABLE_PRODUCTS));
         supplier = new Lieferant();
-        this.query =   ConnectionHandler.instanceOf();
-        
-      
+        this.query = ConnectionHandler.instanceOf();
+
+
     }
 
+    public Product(String text, Double parseDezimal) {
+        super(ConnectionHandler.instanceOf().clone(TABLE_PRODUCTS));
+        this.setName(text);
+        this.setVK(parseDezimal);
+
+        this.save();
+
+    }
 
 //    private ProductFile[] files;
-
     public Product(Query query) {
         super(query.clone(TABLE_PRODUCTS));
         supplier = new Lieferant(query);
@@ -88,16 +97,15 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
 
 //        group = new ProductGroup(query, this.getWarengruppenId());
 //        manufacturer = new Manufacturer(query, this.getHerstellerId());
-        
-        
-          if(!this.getLieferantenId().equals(0)) {
+
+
+        if (!this.getLieferantenId().equals(0)) {
             this.supplier = new Lieferant(this.getLieferantenId());
         }
-          this.isvalid =true;
-          this.query = ConnectionHandler.instanceOf();
+        this.isvalid = true;
+        this.query = ConnectionHandler.instanceOf();
 //        files = getFiles(query);
     }
-
 
     private void explode(String[] select) {
 
@@ -107,18 +115,18 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
         this.setText(select[3]);
         this.setVK(Double.valueOf(select[4]));
         this.setEK(Double.valueOf(select[5]));
-        this.setTAX(Double.valueOf(select[6]));
+        this.setSteuersatzId(Integer.valueOf(select[6]));
         this.setHersteller(select[7]);
         this.setLieferantenId(Integer.valueOf(select[8]));
-        this.setWarengruppenId(Integer.valueOf(select[9])); 
-        
+        this.setWarengruppenId(Integer.valueOf(select[9]));
+
         this.setDatum(DateConverter.getDate(select[10]));
         this.setUrl(select[11]);
         this.setEan(select[12]);
     }
 
-    public String[][] getAll(){
-    
+    public String[][] getAll() {
+
         Query q = query.clone(TABLE_PRODUCTS);
 
         String[][] str = q.selectFreeQuery("SELECT produkte.id, produkte.Produktnummer AS Nummer,produkte.Name,produkte.text," +
@@ -127,29 +135,29 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
                 "LEFT OUTER JOIN  steuersaetze ON produkte.steuersatzid = steuersaetze.id " +
                 "LEFT OUTER JOIN  lieferanten ON produkte.lieferantenid = lieferanten.id " +
                 "LEFT OUTER JOIN  warengruppengruppen ON produkte.warengruppenid = warengruppengruppen.id");
-   
-        return str;  
+
+        return str;
     }
 
     private String collect() {
         String str = "";
-        
-        str = str + "(;;2#4#1#1#8#0#;;)" + this.getNummer() + "(;;2#4#1#1#8#0#;;)" +  "(;;,;;)";
-        str = str +  "(;;2#4#1#1#8#0#;;)" + this.getName() + "(;;2#4#1#1#8#0#;;)" +  "(;;,;;)";
 
-        
-        str = str +  "(;;2#4#1#1#8#0#;;)" + this.getText() +  "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
-        str = str +  this.getVK() +  "(;;,;;)";
-        str = str +  this.getEK() +  "(;;,;;)";
-        str = str +   this.getTAX() + "(;;,;;)";
-        str = str +  "(;;2#4#1#1#8#0#;;)" + this.getHersteller() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
+        str = str + "(;;2#4#1#1#8#0#;;)" + this.getNummer() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
+        str = str + "(;;2#4#1#1#8#0#;;)" + this.getName() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
+
+
+        str = str + "(;;2#4#1#1#8#0#;;)" + this.getText() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
+        str = str + this.getVK() + "(;;,;;)";
+        str = str + this.getEK() + "(;;,;;)";
+        str = str + this.getSteuersatzId() + "(;;,;;)";
+        str = str + "(;;2#4#1#1#8#0#;;)" + this.getHersteller() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
         str = str + this.getLieferantenId() + "(;;,;;)";
-        str = str + this.getWarengruppenId()+ "(;;,;;)";        
-        str = str +  "(;;2#4#1#1#8#0#;;)" + DateConverter.getSQLDateString(this.getDatum()) +  "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
-        str = str +  "(;;2#4#1#1#8#0#;;)" + this.getUrl() +  "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
-        
-        str = str + this.getEan();
-        
+        str = str + this.getWarengruppenId() + "(;;,;;)";
+        str = str + "(;;2#4#1#1#8#0#;;)" + DateConverter.getSQLDateString(this.getDatum()) + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
+        str = str + "(;;2#4#1#1#8#0#;;)" + this.getUrl() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
+
+        str = str + "(;;2#4#1#1#8#0#;;)" + this.getEan() + "(;;2#4#1#1#8#0#;;)";
+
         return str;
     }
 
@@ -157,13 +165,9 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
 
         if (id > 0) {
             this.update(TABLE_PRODUCTS_FIELDS, this.collect(), id.toString());
-
             isSaved = true;
         } else if (id == 0) {
-           this.id = this.insert(TABLE_PRODUCTS_FIELDS, this.collect());
-            
-
-        } else {
+            this.id = this.insert(TABLE_PRODUCTS_FIELDS, this.collect());
         }
     }
 
@@ -171,20 +175,20 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
         return WarengruppenId;
     }
 
-    public String getProductgroupPath(){
-    
+    public String getProductgroupPath() {
+
         try {
             return ProductGroupHandler.instanceOf().getHierarchyPath(Integer.valueOf(this.getWarengruppenId()));
 
 
         } catch (NumberFormatException numberFormatException) {
-            
+
             return "";
         }
 
-    
+
     }
-    
+
     public void setWarengruppenId(Integer Warengruppenid) {
         this.WarengruppenId = Warengruppenid;
         this.isSaved = false;
@@ -204,23 +208,16 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
 //        }
 //        return prof;
 //    }
-
-  
-
-  
-
-
-
     public Lieferant getSupplier() {
         return supplier;
     }
 
     public void setSupplier(mp4.klassen.objekte.Lieferant supplier) {
 
-        
-        if(supplier!=null) {
+
+        if (supplier != null) {
             this.setLieferantenId(supplier.getId());
-        }else {
+        } else {
             this.setLieferantenId(0);
         }
         this.supplier = supplier;
@@ -232,7 +229,6 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
 //    public ProductFile[] getFiles() {
 //        return files;
 //    }
-
     public String getHersteller() {
         return Hersteller;
     }
@@ -293,37 +289,40 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
         return VK;
     }
 
-    public void setVK(Double  VK) {
+    public void setVK(Double VK) {
         this.VK = VK;
     }
 
-    public Double  getEK() {
+    public Double getEK() {
         return EK;
     }
 
-    public void setEK(Double  EK) {
+    public void setEK(Double EK) {
         this.EK = EK;
     }
 
-    public Double  getTAX() {
-        return TAX;
-    }
-
-    public void setTAX(Double  TAX) {
-        this.TAX = TAX;
+    public Double getTAX() {
+        return Double.valueOf(ConnectionHandler.instanceOf().clone(TABLE_TAXES).select("wert", new String[]{"id", this.getSteuersatzId().toString(), ""})[0][0]);
     }
 
     public String getEan() {
-        return Ean;
+        try {
+            if (Long.valueOf(Ean) > 0) {
+                return Ean;
+            } else {
+                return "";
+            }
+        } catch (NumberFormatException numberFormatException) {
+            return Ean;
+        }
     }
 
     public void setEan(String Ean) {
         this.Ean = Ean;
     }
 
+    public String[][] getPrintModel() {
 
-    public String[][] getPrintModel(){
-    
         Query q = query.clone(TABLE_PRODUCTS);
 
         String[][] str = q.selectFreeQuery("SELECT produkte.Produktnummer AS Nummer,produkte.Name,produkte.Text," +
@@ -331,11 +330,19 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
                 "Warengruppenid,produkte.Datum,produkte.EAN FROM produkte " +
                 "LEFT OUTER JOIN  lieferanten ON produkte.lieferantenid = lieferanten.id " +
                 "LEFT OUTER JOIN  warengruppengruppen ON produkte.warengruppenid = warengruppengruppen.id");
-   
-        return str;  
+
+        return str;
     }
 
     public int delete(String id) {
-       return delete(Integer.valueOf(id));
+        return delete(Integer.valueOf(id));
+    }
+
+    public Integer getSteuersatzId() {
+        return SteuersatzId;
+    }
+
+    public void setSteuersatzId(Integer SteuersatzId) {
+        this.SteuersatzId = SteuersatzId;
     }
 }

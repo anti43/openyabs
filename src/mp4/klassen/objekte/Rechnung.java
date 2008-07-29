@@ -42,6 +42,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
     private String UnserZeichen = "";
     private String IhrZeichen = "";
     private Integer KundenId = 0;
+    private Integer Mahnungen = 0;
     private Date Datum = new Date();
     private Date AusfuehrungsDatum = new Date();
     private Double Gesamtpreis = 0.0;
@@ -57,6 +58,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
     private PostenTableModel postendata = null;
     private RechnungBetreffzeile[] betreffzeilen;
     private RechnungBetreffZZR zeilenHandler;
+  
 
     public Rechnung(String text) {
         super(ConnectionHandler.instanceOf().clone(TABLE_BILLS));
@@ -70,6 +72,10 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
 
     public void add(PostenTableModel m) {
         this.postendata = m;
+    }
+
+    public void add(RechnungPosten rechnungPosten) {
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     public Integer getId() {
@@ -181,6 +187,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         this.AusfuehrungsDatum = date;
     }
 
+
     public void setRechnungnummer(Integer nummer) {
         setRechnungnummer(nummer.toString());
     }
@@ -203,7 +210,10 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
                 setBezahlt(true);
             }
             this.setGesamtpreis(Double.valueOf(select[6]));
-            this.setGesamttax(Double.valueOf(select[7]));
+            this.setGesamttax(Double.valueOf(select[7]));            
+            this.setAusfuehrungsDatum(DateConverter.getDate(select[8]));
+            this.setMahnungen(Integer.valueOf(select[9]));
+            
         } catch (Exception exception) {
             Log.Debug(exception.getMessage());
         }
@@ -260,8 +270,9 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         str = str + this.getGesamtpreis() + "(;;,;;)";
         str = str + this.getGesamttax() + "(;;,;;)";
 
-        str = str + "(;;2#4#1#1#8#0#;;)" + DateConverter.getSQLDateString(this.getAusfuehrungsDatum()) + "(;;2#4#1#1#8#0#;;)";
+        str = str + "(;;2#4#1#1#8#0#;;)" + DateConverter.getSQLDateString(this.getAusfuehrungsDatum()) + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
 
+        str = str + this.getMahnungen();
 
         return str;
 
@@ -618,4 +629,14 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
     public RechnungBetreffZZR getZeilenHandler() {
         return zeilenHandler;
     }
+
+    public Integer getMahnungen() {
+        return Mahnungen;
+    }
+
+    public void setMahnungen(Integer Mahnungen) {
+        this.Mahnungen = Mahnungen;
+    }
+
+ 
 }

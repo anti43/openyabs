@@ -519,7 +519,7 @@ public class csvProductImporter extends javax.swing.JFrame {
                     pg.setVK(Double.valueOf(thisa.data[i].getVk()));
                     pg.setEan(thisa.data[i].getEan());
                     pg.setHersteller(thisa.data[i].getHersteller());
-                    pg.setTAX(Double.valueOf(thisa.data[i].getTax()));
+//                    pg.setTAX(Double.valueOf(thisa.data[i].getTax()));
                     pg.setText(thisa.data[i].getText());
                     pg.setUrl(thisa.data[i].getUrl());
 

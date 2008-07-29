@@ -13,14 +13,10 @@ import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import javax.swing.CellEditor;
-import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import mp3.classes.interfaces.Strings;
-import mp4.datenbank.verbindung.Query;
 
 import mp3.classes.layer.visual.CustomerPicker;
 import mp3.classes.layer.visual.DatePick;
@@ -44,9 +40,11 @@ import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JOptionPane;
 import mp4.einstellungen.Einstellungen;
-import mp3.classes.visual.util.arrear;
+
 import mp4.einstellungen.Programmdaten;
 import mp4.panels.panelInterface;
+import mp4.utils.combobox.CheckComboListener;
+import mp4.utils.combobox.CheckComboRenderer;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.tabellen.DataModelUtils;
 import mp4.utils.tabellen.SelectionCheck;
@@ -55,9 +53,6 @@ import mp4.utils.tabellen.TableCellEditorForDezimal;
 import mp4.utils.tabellen.TableFormat;
 import mp4.utils.tabellen.models.BillListTableModel;
 import mp4.utils.tabellen.models.BillSearchListTableModel;
-
-import mp4.utils.tabellen.models.MPJComboboxModelItem;
-import mp4.utils.zahlen.FormatNumber;
 
 /**
  *
@@ -96,9 +91,7 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
         } catch (Exception e) {
             e.printStackTrace();
             Log.Debug(e.getMessage());
-            
         }
-
 
         renewTableModel();
         resizeFields();
@@ -113,6 +106,10 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
         calculator.setBruttoTextField(jTextField8);
         calculator.setTaxTextField(jTextField9);
         calculator.setStopped(false);
+        
+        jComboBox1.setModel(new DefaultComboBoxModel(currentBill.getZeilenHandler().getListVorlagen()));
+        jComboBox1.addActionListener(new CheckComboListener());
+        jComboBox1.setRenderer(new CheckComboRenderer());
 
     }
 
@@ -133,7 +130,11 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
             Rechnung bill = new Rechnung();
             bill.setRechnungnummer(bill.getNextBillNumber());
             bill.setDatum(DateConverter.getDate(jTextField7.getText()));
-            bill.setAusfuehrungsDatum(DateConverter.getDate(jTextField7.getText()));
+            if (DateConverter.getDate(jTextField11.getText()) != null) {
+                bill.setAusfuehrungsDatum(DateConverter.getDate(jTextField11.getText()));
+            } else {
+                bill.setAusfuehrungsDatum(bill.getDatum());
+            }
             bill.setKundenId(getCustomer().getId());
             bill.setGesamtpreis(calculated.getBruttobetrag());
             bill.setBezahlt(jCheckBox2.isSelected());
@@ -201,6 +202,7 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
         this.jTextField6.setText(current.getRechnungnummer());
         jTextField6.setBackground(Color.WHITE);
         this.jTextField7.setText(DateConverter.getDefDateString(current.getDatum()));
+        this.jTextField10.setText(current.getMahnungen().toString());
 
         if (current.isBezahlt()) {
             this.jCheckBox2.setSelected(true);
@@ -220,19 +222,11 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
                 this.jCheckBox2.setBackground(new Color(212, 208, 200));
             }
         }
-        
-        jComboBox1 = new JComboBox(current.getZeilenHandler().getListModel());
-        jComboBox1.setRenderer(new MPJComboboxModelItem().getCheckComboRenderer());
-        jComboBox1.addActionListener(new ActionListener() {
 
-            public void actionPerformed(ActionEvent e) {
-                JComboBox cb = (JComboBox) e.getSource();
-                MPJComboboxModelItem store = (MPJComboboxModelItem ) cb.getSelectedItem();
-                MPJComboboxModelItem.CheckComboRenderer ccr = (MPJComboboxModelItem.CheckComboRenderer ) cb.getRenderer();
-                ccr.checkBox.setSelected((store.state = !store.state));
-            }
-        });
-        
+        jComboBox1.setModel(new DefaultComboBoxModel(current.getZeilenHandler().getListModel()));
+        jComboBox1.addActionListener(new CheckComboListener());
+        jComboBox1.setRenderer(new CheckComboRenderer());
+
         this.getJTable1().setModel(current.getProductlistAsTableModel());
         TableFormat.stripFirst(getJTable1());
         resizeFields();
@@ -636,6 +630,7 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
 
         jCheckBox3.setText("Storniert");
 
+        jTextField10.setEditable(false);
         jTextField10.setText("0");
 
         jLabel13.setText("Mahnungen");
@@ -692,6 +687,11 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
                 jButton5MouseClicked(evt);
             }
         });
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
         jToolBar2.add(jButton5);
 
         jPanel9.setBackground(new java.awt.Color(227, 219, 202));
@@ -708,7 +708,7 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
             }
         });
 
-        jLabel19.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel19.setFont(new java.awt.Font("Tahoma", 1, 11));
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 11));
         jLabel5.setText("Kunde");
@@ -800,6 +800,10 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
         });
 
         jLabel9.setText("Nummer");
+
+        jComboBox1.setMaximumRowCount(10);
+        jComboBox1.setFocusCycleRoot(true);
+        jComboBox1.setFocusTraversalPolicyProvider(true);
 
         jTextField11.setEditable(false);
         jTextField11.setDisabledTextColor(new java.awt.Color(0, 0, 0));
@@ -1314,7 +1318,7 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
 
     private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
         if (currentBill.hasId()) {
-            new arrear(currentBill, customer);
+            new MahnungView(currentBill, customer, this);
         }
     }//GEN-LAST:event_jButton15ActionPerformed
 
@@ -1363,6 +1367,11 @@ private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 private void jCheckBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox2ActionPerformed
 // TODO add your handling code here:
 }//GEN-LAST:event_jCheckBox2ActionPerformed
+
+private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+// TODO add your handling code here:
+}//GEN-LAST:event_jButton5ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton jButton1;
     public javax.swing.JButton jButton10;

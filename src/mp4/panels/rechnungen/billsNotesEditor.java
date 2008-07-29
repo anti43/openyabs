@@ -23,23 +23,12 @@ public class billsNotesEditor extends javax.swing.JFrame {
     private Rechnung rechnung;
     private panelInterface panel;
 
-    /** Creates new form billsNotesEditor */
-    public billsNotesEditor() {
-        initComponents();
-        jTable2.setModel(new BillNotesTableModel(new RechnungBetreffzeile().getAllData()));
-
-        DataModelUtils.addToTable(jTable1, new Object[][]{{null, null, null}, {null, null, null}, {null, null, null}, {null, null, null}});
-
-        resizeTables();
-        setVisible(rootPaneCheckingEnabled);
-    }
 
     public billsNotesEditor(Rechnung current, panelInterface panel) {
         initComponents();
-        jTable2.setModel(new BillNotesTableModel(new RechnungBetreffzeile().getVorlagen()));
-        jTable1.setModel(new DefaultTableModel(current.getZeilenHandler().getListData(), new String[]{"id", "Name", "Text"}));
+        jTable2.setModel(new BillNotesTableModel());
+        jTable1.setModel(new BillNotesTableModel(current.getZeilenHandler().getListData(), new String[]{"id", "Name", "Text"}));
 
-        
         resizeTables();
         this.rechnung = current;
         this.panel = panel;
@@ -283,7 +272,7 @@ private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
     for (int i = 0; i < obj.length; i++) {
         
-        if (obj[i][0] != null) {
+        if (obj[i][0] != null && obj[i][1] != null && obj[i][2] != null) {
             if (obj[i][0].equals(0)) {
                 this.rechnung.getZeilenHandler().add(new RechnungBetreffzeile((String) obj[i][1], (String) obj[i][2]));
             } else {

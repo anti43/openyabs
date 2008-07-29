@@ -2,22 +2,21 @@
  * 
 This file is part of MP by anti43 /GPL.
 
-  MP is free software: you can redistribute it and/or modify
-   it under the terms of the GNU General public  License as published by
-   the Free Software Foundation, either version 3 of the License, or
-   (at your option) any later version.
+MP is free software: you can redistribute it and/or modify
+it under the terms of the GNU General public  License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-   MP is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General public  License for more details.
+MP is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General public  License for more details.
 
-   You should have received a copy of the GNU General public  License
-   along with MP.  If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU General public  License
+along with MP.  If not, see <http://www.gnu.org/licenses/>.
 
  * 
  */
-
 package mp4.datenbank.struktur;
 
 /**
@@ -29,244 +28,214 @@ public interface Tabellen {
     /**
      * Eigene Daten
      */
-    public  final String TABLE_MYDATA = "daten";
-    
-    public  final String TABLE_PROG_DATA = "programmdaten";
+    public final String TABLE_MYDATA = "daten";
+    public final String TABLE_PROG_DATA = "programmdaten";
     /**
      * Kundendaten
      */
-    public  final String TABLE_CUSTOMERS = "kunden";
+    public final String TABLE_CUSTOMERS = "kunden";
     /**
      * Kundendaten
      */
-    public  final String TABLE_MANUFACTURER = "hersteller";
+    public final String TABLE_MANUFACTURER = "hersteller";
     /**
      * Kundendaten
      */
-    public  final String TABLE_SUPPLIER = "lieferanten";
+    public final String TABLE_SUPPLIER = "lieferanten";
     /**
      * Produktdaten
      */
-    public  final String TABLE_PRODUCTS = "produkte";
+    public final String TABLE_PRODUCTS = "produkte";
     /**
      * Rechnungsdaten
      */
-    public  final String TABLE_BILLS = "rechnungen";
+    public final String TABLE_BILLS = "rechnungen";
     /**
      * Rechnungsposten
      */
-    public  final String TABLE_BILLS_DATA = "rechnungsposten";
+    public final String TABLE_BILLS_DATA = "rechnungsposten";
     /**
      * Auftragsdaten
      */
-    public  final String TABLE_ORDERS = "auftraege";
+    public final String TABLE_ORDERS = "auftraege";
     /**
      * Auftragsposten
      */
-    public  final String TABLE_ORDERS_DATA = "auftragsposten";
+    public final String TABLE_ORDERS_DATA = "auftragsposten";
     /**
      * Files (pictures) of products
      */
-    public  final String TABLE_PRODUCTS_FILES = "dateien";
+    public final String TABLE_PRODUCTS_FILES = "dateien";
     /**
      * History
      */
-    public  final String TABLE_HISTORY = "historie";
-    
-    public  final String DATABASE = "Datenbank";
-    
-     /**
+    public final String TABLE_HISTORY = "historie";
+    public final String DATABASE = "Datenbank";
+    /**
      * User
      */
-    public  final String TABLE_USER = "usertable";
+    public final String TABLE_USER = "usertable";
     /**
      * Productgroups
      */
-    public  final String TABLE_PRODUCTS_GROUPS_CATEGORIES = "warengruppenkategorien"; 
-    public  final String TABLE_PRODUCTS_GROUPS_FAMILIES = "warengruppenfamilien";
-    public  final String TABLE_PRODUCTS_GROUPS_GROUPS = "warengruppengruppen";
-    
-     /**
+    public final String TABLE_PRODUCTS_GROUPS_CATEGORIES = "warengruppenkategorien";
+    public final String TABLE_PRODUCTS_GROUPS_FAMILIES = "warengruppenfamilien";
+    public final String TABLE_PRODUCTS_GROUPS_GROUPS = "warengruppengruppen";
+    /**
      * Kontenrahmen
      */
-    public  final String TABLE_KONTEN = "konten";
-     /**
+    public final String TABLE_KONTEN = "konten";
+    /**
      * Ausgaben
      */
-    public  final String TABLE_DUES = "ausgaben";
-    
+    public final String TABLE_DUES = "ausgaben";
     /**
      * Einnahmen
      */
-    public  final String TABLE_INCOME = "einnahmen";
- 
+    public final String TABLE_INCOME = "einnahmen";
     /**
      * Betreffzeilen
      */
-    public  final String TABLE_BILL_TEXTS = "rechnungbetreffz";
-    
-    public  final String TABLE_BILL_TEXTS_TO_BILLS = "betreffz_zu_rechnung";
-  
-    public  final String TABLE_CUSTOMER_PRINT_FIELDS =
+    public final String TABLE_BILL_TEXTS = "rechnungbetreffz";
+    public final String TABLE_BILL_TEXTS_TO_BILLS = "betreffz_zu_rechnung";
+    public final String TABLE_TAXES = "steuersaetze";
+    public final String TABLE_CUSTOMER_PRINT_FIELDS =
             "Kundennummer" + "," + "Firma" + "," + "Anrede" + "," + "Vorname" +
             "," + "Name" + "," + "Str" + "," + "PLZ" + "," + "Ort" + "," +
-            "Tel" +"," + "Fax" + "," + "Mobil" + "," + "Mail" + "," + "Webseite";
-     
-     
-
-     /**
+            "Tel" + "," + "Fax" + "," + "Mobil" + "," + "Mail" + "," + "Webseite";
+    /**
      * Fields in customer table
      */
-    public  final String TABLE_CUSTOMER_FIELDS =
+    public final String TABLE_CUSTOMER_FIELDS =
             "Kundennummer" + "," + "Firma" + "," + "Anrede" + "," + "Vorname" +
             "," + "Name" + "," + "Str" + "," + "PLZ" + "," + "Ort" + "," +
-            "Tel" +"," + "Fax" + "," + "Mobil" + "," + "Mail" + "," + "Webseite" + "," + "Notizen";
+            "Tel" + "," + "Fax" + "," + "Mobil" + "," + "Mail" + "," + "Webseite" + "," + "Notizen";
     /**
      * Fields in supplier table
      */
-    public  final String TABLE_SUPPLIER_FIELDS =
+    public final String TABLE_SUPPLIER_FIELDS =
             "Lieferantennummer" + "," + "Firma" + "," + "Str" + "," + "PLZ" + "," + "Ort" + "," +
-            "Tel" +"," + "Fax" +  "," + "Mobil" + "," + "Mail" + "," + "Webseite" + "," + "Notizen";
-      /**
+            "Tel" + "," + "Fax" + "," + "Mobil" + "," + "Mail" + "," + "Webseite" + "," + "Notizen";
+    /**
      * Fields in supplier table
      */
-    public  final String TABLE_SUPPLIER_PRINT_FIELDS =
+    public final String TABLE_SUPPLIER_PRINT_FIELDS =
             "Lieferantennummer" + "," + "Firma" + "," + "Str" + "," + "PLZ" + "," + "Ort" + "," +
-            "Tel" +"," + "Fax" +  "," + "Mobil" + "," + "Mail" + "," + "Webseite";
- 
-    
-     /**
+            "Tel" + "," + "Fax" + "," + "Mobil" + "," + "Mail" + "," + "Webseite";
+    /**
      * Fields in manufacturer table
      */
-    public  final String TABLE_MANUFACTURER_FIELDS =
+    public final String TABLE_MANUFACTURER_FIELDS =
             "Herstellernummer" + "," + "Firma" + "," + "Anrede" + "," + "Vorname" +
             "," + "Name" + "," + "Str" + "," + "PLZ" + "," + "Ort" + "," +
-            "Tel" +"," + "Fax" +  "," + "Mobil" + "," + "Mail" + "," + "Webseite" + "," + "Notizen";
-    
-     /**
+            "Tel" + "," + "Fax" + "," + "Mobil" + "," + "Mail" + "," + "Webseite" + "," + "Notizen";
+    /**
      * Fields in bills data table
      */
-     public  final String TABLE_BILLS_DATA_FIELDS =
-             "Rechnungid" + "," + "Anzahl" + ","+
-             
-             "Posten" + "," +"Preis" + "," +
-             "Steuersatz";
-     /**
+    public final String TABLE_BILLS_DATA_FIELDS =
+            "Rechnungid" + "," + "Anzahl" + "," +
+            "Posten" + "," + "Preis" + "," +
+            "Steuersatz";
+    /**
      * Fields in bills table
-     */ 
-     public  final String TABLE_BILLS_FIELDS =
-              "Rechnungnummer" + "," +"KundenId" + "," +
-              "Datum" + "," + "Storno" + "," + "bezahlt"+ "," + "gesamtpreis"+ "," + "gesamttax" + "," +
-              "AfDatum";
-        
-          /**
+     */
+    public final String TABLE_BILLS_FIELDS =
+            "Rechnungnummer" + "," + "KundenId" + "," +
+            "Datum" + "," + "Storno" + "," + "bezahlt" + "," + "gesamtpreis" + "," + "gesamttax" + "," +
+            "AfDatum" + "," +
+            "mahnungen";
+    /**
      * Fields in orders data table
      */
-     public  final String TABLE_ORDERS_DATA_FIELDS =
-             "Auftragid" + "," + "Anzahl" + ","+
-             
-             "Posten" + "," +"Preis" + "," +
-             "Steuersatz";
-     /**
+    public final String TABLE_ORDERS_DATA_FIELDS =
+            "Auftragid" + "," + "Anzahl" + "," +
+            "Posten" + "," + "Preis" + "," +
+            "Steuersatz";
+    /**
      * Fields in orders table
      */
-     public  final String TABLE_ORDERS_FIELDS =
-              "Auftragnummer" + "," +"KundenId" + "," +
-              "Datum"+ "," +"auftrag"+ "," +"bis"+ "," +"rechnung";
-     
-      /**
+    public final String TABLE_ORDERS_FIELDS =
+            "Auftragnummer" + "," + "KundenId" + "," +
+            "Datum" + "," + "auftrag" + "," + "bis" + "," + "rechnung";
+    /**
      * Fields in mydata table
      */
-     public  final String TABLE_MYDATA_FIELDS =
-              "name" + "," +"wert" ;
-     /**
+    public final String TABLE_MYDATA_FIELDS =
+            "name" + "," + "wert";
+    /**
      * Fields in products table
      */
-     public  final String TABLE_PRODUCTS_FIELDS =
-              "Produktnummer" + "," +"Name" + "," + "Text" + "," +"VK" + "," +"EK" +
-              "," +"Tax"+ ","+ "hersteller"+ ","+"lieferantenid"+ ","+"warengruppenid"
-              
-              + ","+"Datum"+ ","+"Url" + "," + "EAN";
-       
-//     /**
+    public final String TABLE_PRODUCTS_FIELDS =
+            "Produktnummer" + "," + "Name" + "," + "Text" + "," + "VK" + "," + "EK" +
+            "," + "steuersatzid" + "," + "hersteller" + "," + "lieferantenid" + "," + "warengruppenid" + "," + "Datum" + "," + "Url" + "," + "EAN";//     /**
 //     * Fields in products groups table
 //     */
 //     public  final String TABLE_PRODUCTS_GROUPS_FIELDS =
 //               "Warengruppennummer" + "," +"Name";
-     
     /**
      * Fields in products groups categories table
      */
-     public  final String TABLE_PRODUCTS_GROUPS_CATEGORIES_FIELDS =
-               "kategorienummer"+","+"name";
-         /**
+    public final String TABLE_PRODUCTS_GROUPS_CATEGORIES_FIELDS =
+            "kategorienummer" + "," + "name";
+    /**
      * Fields in products groups family table
      */
-     public  final String TABLE_PRODUCTS_GROUPS_FAMILY_FIELDS =
-               "familienummer"+","+"kategorieid"+","+"name";
-         /**
+    public final String TABLE_PRODUCTS_GROUPS_FAMILY_FIELDS =
+            "familienummer" + "," + "kategorieid" + "," + "name";
+    /**
      * Fields in products groups group table
      */
-     public  final String TABLE_PRODUCTS_GROUPS_GROUP_FIELDS =
-               "gruppenummer"+","+"familienid"+","+"name";
-     
-     /**
+    public final String TABLE_PRODUCTS_GROUPS_GROUP_FIELDS =
+            "gruppenummer" + "," + "familienid" + "," + "name";
+    /**
      * Fields in products files table
      */
-     public  final String TABLE_PRODUCTS_FILES_FIELDS =
-               "productid" + "," +"url"+ ","+ "datum";
-     
+    public final String TABLE_PRODUCTS_FILES_FIELDS =
+            "productid" + "," + "url" + "," + "datum";
     /**
      * Fields in history table
      */
-     public  final String TABLE_HISTORY_FIELDS =
-               "aktion" + "," +"text"+ ","+ "datum"+ ","+ "benutzer";
-     
-     /**
+    public final String TABLE_HISTORY_FIELDS =
+            "aktion" + "," + "text" + "," + "datum" + "," + "benutzer";
+    /**
      * User table
      */
-     public  final String TABLE_USER_FIELDS=
-               "username" + "," +"password";
-     
-     /**
+    public final String TABLE_USER_FIELDS =
+            "username" + "," + "password";
+    /**
      * Columns for productslist table
      */
-     public  final String TABLE_PRODUCTS_LIST_COLUMNS =
-              "Produktnummer" + "," +"Name" + "," + "Text" + "," +"VK" + "," +"EK" +
-              "," +"Tax"+ ","+ "Herstellernummer"+ ","+"Lieferantennummer"+ ","+"Warengruppennummer"
-              
-              + ","+"Datum"+ ","+"Url" + "," + "EAN";
-     
-  /**
+    public final String TABLE_PRODUCTS_LIST_COLUMNS =
+            "Produktnummer" + "," + "Name" + "," + "Text" + "," + "VK" + "," + "EK" +
+            "," + "Tax" + "," + "Herstellernummer" + "," + "Lieferantennummer" + "," + "Warengruppennummer" + "," + "Datum" + "," + "Url" + "," + "EAN";
+    /**
      * Kontenrahmen
      */
-    public  final String TABLE_KONTEN_FIELDS = "nummer" + "," +"klasse" + "," +"gruppe" + "," +"art";
-    
-    
-    
-     /**
+    public final String TABLE_KONTEN_FIELDS = "nummer" + "," + "klasse" + "," + "gruppe" + "," + "art";
+    /**
      * Ausgaben
      */
-    public  final String TABLE_OUTGOINGS_FIELDS = "kontenid" + "," +"beschreibung" + "," +
-            "preis" + "," +"tax" + "," +"datum";
-    
+    public final String TABLE_OUTGOINGS_FIELDS = "kontenid" + "," + "beschreibung" + "," +
+            "preis" + "," + "tax" + "," + "datum";
     /**
      * Einnahmen
      */
-    public  final String TABLE_INCOME_FIELDS  = "kontenid" + "," +"beschreibung" + "," +
-            "preis" + "," +"tax" + "," +"datum";
-     
-    
+    public final String TABLE_INCOME_FIELDS = "kontenid" + "," + "beschreibung" + "," +
+            "preis" + "," + "tax" + "," + "datum";
     /**
      * Vorlagen
      */
-    public  final String TABLE_BILL_TEXTS_FIELDS  = "name" + "," +
-            "text"  + "," +
+    public final String TABLE_BILL_TEXTS_FIELDS = "name" + "," +
+            "text" + "," +
             "isvorlage";
     /**
      * Vorlagen
      */
-    public  final String TABLE_BILL_TEXTS_TO_BILLS_FIELDS  = "rechnungid" + "," +
+    public final String TABLE_BILL_TEXTS_TO_BILLS_FIELDS = "rechnungid" + "," +
             "betreffzid";
-    
+    /**
+     * Steuersaetze
+     */
+    public final String TABLE_TAXES_FIELDS = "name" + "," +
+            "wert";
 }

@@ -14,31 +14,45 @@
  *      You should have received a copy of the GNU General Public License
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package mp4.utils.tabellen.models;
 
-import mp4.klassen.objekte.Rechnung;
-import mp4.utils.tabellen.DataModelUtils;
+import mp4.klassen.objekte.RechnungBetreffzeile;
 
 /**
  *
  * @author Andreas
  */
 public class BillNotesTableModel extends MPTableModel {
+
     private static final long serialVersionUID = 5414150884755558696L;
-    
+
     /**
      * 
      */
-    public BillNotesTableModel(Object[][] data){
-      super(new Class[]{java.lang.String.class, java.lang.String.class,
+    public BillNotesTableModel() {
+        super(new Class[]{java.lang.String.class, java.lang.String.class,
                     java.lang.String.class
-                }, new boolean[]{false,false,false},
-                
-                new Rechnung().getWithDependencies("rechnungen.id,rechnungnummer,datum,kundennummer,firma, bezahlt, storno"),
-                new Object[]{"id","Name","Text"});
-    
+                }, new boolean[]{false, false, false},
+                new RechnungBetreffzeile().getVorlagen(),
+                new Object[]{"id", "Name", "Text"});
+
     }
 
+    public BillNotesTableModel(Object[][] data) {
+        super(new Class[]{java.lang.String.class, java.lang.String.class,
+                    java.lang.String.class
+                }, new boolean[]{false, false, false},
+                data,
+                new Object[]{"id", "Name", "Text"});
+
+    }
+
+    public BillNotesTableModel(Object[][] listData, String[] string) {
+         super(new Class[]{java.lang.String.class, java.lang.String.class,
+                    java.lang.String.class
+                }, new boolean[]{false, true, true},
+                listData,
+                string);
+    }
 }
  

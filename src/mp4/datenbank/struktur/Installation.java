@@ -66,7 +66,7 @@ public interface Installation {
         "Rechnungnummer VARCHAR(250) UNIQUE NOT NULL, KundenId INTEGER REFERENCES kunden (id)," +
         "Datum DATE NOT NULL," + "storno INTEGER DEFAULT 0," + "bezahlt INTEGER DEFAULT 0," +
         "gesamtpreis DOUBLE DEFAULT 0," + "gesamttax INTEGER NOT NULL," +
-        "AfDatum DATE NOT NULL," +
+        "AfDatum DATE NOT NULL," + "mahnungen INTEGER DEFAULT 0," +
         "deleted INTEGER DEFAULT 0," +
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
         "PRIMARY KEY  (id))",
@@ -113,21 +113,22 @@ public interface Installation {
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
         
         "CREATE TABLE steuersaetze (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-        "name VARCHAR(250), steuersatz DOUBLE DEFAULT 0," +
+        "name VARCHAR(250), wert DOUBLE DEFAULT 0," +
         "deleted INTEGER DEFAULT 0," +
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
         
         "CREATE TABLE dienstleistungen (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-        "produktnummer VARCHAR(500),name VARCHAR(50),beschreibung VARCHAR(500),einheit VARCHAR(50),preis DOUBLE DEFAULT 0,steuersatzid INTEGER NOT NULL," +
+        "produktnummer VARCHAR(500),name VARCHAR(50),beschreibung VARCHAR(500),einheit VARCHAR(50)," +
+        "preis DOUBLE DEFAULT 0, steuersatzid INTEGER REFERENCES steuersaetze (id)," +
         "warengruppenid INTEGER  DEFAULT 0," + "datum DATE NOT NULL," +
         "deleted INTEGER DEFAULT 0," +       
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
         
         "CREATE TABLE produkte (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-        "produktnummer VARCHAR(500),name VARCHAR(50),text VARCHAR(500),vk DOUBLE DEFAULT 0,ek DOUBLE DEFAULT 0,steuersatzid INTEGER NOT NULL," +
+        "produktnummer VARCHAR(500),name VARCHAR(50),text VARCHAR(500),vk DOUBLE DEFAULT 0,ek DOUBLE DEFAULT 0, steuersatzid INTEGER REFERENCES steuersaetze (id)," +
         "hersteller VARCHAR(250),lieferantenid INTEGER DEFAULT 0," +
         "warengruppenid INTEGER DEFAULT 0," + "datum DATE NOT NULL," + "url VARCHAR(250) default NULL," +
-        "ean BIGINT DEFAULT NULL," +
+        "ean VARCHAR(25)," +
         "deleted INTEGER DEFAULT 0," +
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
         
@@ -190,7 +191,15 @@ public interface Installation {
         "betreffzid INTEGER REFERENCES rechnungbetreffz (id)," +
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
         
-     
+        "INSERT INTO steuersaetze (name, wert) VALUES ('Default', 0.0)",
+        
+         
+        "INSERT INTO rechnungbetreffz (name, text, isvorlage) VALUES ('Unser Angebot..', 'Unser Angebot vom {Angebot_Datum}', 1)",
+        "INSERT INTO rechnungbetreffz (name, text, isvorlage) VALUES ('Ihr Auftrag..', 'Ihr Auftrag vom {Auftrag_Datum}', 1)",
+        "INSERT INTO rechnungbetreffz (name, text, isvorlage) VALUES ('Bearbeiter..', 'Bearbeiter: {Benutzer}', 1)",
+         
+         
+         
         "INSERT INTO daten (name, wert) VALUES ('Backup Verzeichnis', '" + System.getProperty("user.home") + File.separator + ProtectedStrings.PROG_NAME + File.separator + "backups" + "')",
         "INSERT INTO daten (name, wert) VALUES ('PDF Rechnungen Verzeichnis', '" + System.getProperty("user.home") + File.separator + ProtectedStrings.PROG_NAME + File.separator + "PDF" + File.separator + "Rechnungen" + "')",
         "INSERT INTO daten (name, wert) VALUES ('PDF Angebote Verzeichnis', '" + System.getProperty("user.home") + File.separator + ProtectedStrings.PROG_NAME + File.separator + "PDF" + File.separator + "Angebote" + "')",
