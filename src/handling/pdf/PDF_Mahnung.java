@@ -66,6 +66,7 @@ public class PDF_Mahnung {
     private String text = "";
     private String number = "";
     private Double money = 0d;
+    private File updatedPDF;
 
     /**
      * 
@@ -91,6 +92,60 @@ public class PDF_Mahnung {
         this.start();
     }
 
+    public PDF_Mahnung(Rechnung bill, String text, String number, Double money, boolean temp) {
+       
+           l = Einstellungen.instanceOf();
+        this.r = bill;
+
+        k = new Customer(bill.getKundenId());
+
+        products = r.getProductlistAsArray();
+
+        this.text = text;
+        this.number = number;
+        this.money = money;
+        
+        try {
+
+
+            separator = File.separator;
+            //new out(separator);
+
+            PdfReader template = new PdfReader(l.getMahnungtemp());
+            filename = r.getRechnungnummer().replaceAll(" ", "_") + "_" + number + "_" + k.getFirma().replaceAll(" ", "_") + k.getName().replaceAll(" ", "_");
+
+//            filename = filename.replaceAll(" ", "_");
+            filename = filename.trim();
+
+            updatedPDF = File.createTempFile(filename, ".pdf");
+            
+
+
+            Log.Debug("Creating PDF: " + updatedPDF.getPath());
+            PdfStamper pdfStamper = new PdfStamper(template, new FileOutputStream(updatedPDF.getAbsolutePath()));
+            acroFields = pdfStamper.getAcroFields();
+            HashMap PDFFields = acroFields.getFields();
+
+            fieldNameKeys = PDFFields.keySet();
+
+            setAllFields();
+
+            pdfStamper.setFormFlattening(true);
+
+            pdfStamper.close();
+
+            open();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Popup.error(Strings.NO_PDF + e.getMessage(), Popup.ERROR);
+
+        }
+    }
+
+    public File getFile() {
+        return updatedPDF;
+    }
+
     public void start() {
         try {
 
@@ -104,7 +159,7 @@ public class PDF_Mahnung {
 //            filename = filename.replaceAll(" ", "_");
             filename = filename.trim();
 
-            File updatedPDF = new File(filename);
+            updatedPDF = new File(filename);
 
 
             Log.Debug("Creating PDF: " + updatedPDF.getPath());

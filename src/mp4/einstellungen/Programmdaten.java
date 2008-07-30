@@ -27,6 +27,7 @@ public class Programmdaten implements mp4.datenbank.struktur.Tabellen {
     private boolean BILLPANEL_CHECKBOX_MITLIEFERSCHEIN = false;
     private Integer MAINFRAME_TAB = 8;
     private Dimension  MAINFRAME_WINDOW_STATE;
+    private String MAHNUNG_TEXT_DEFAULT;
     
     
     private DataHandler handler;
@@ -51,6 +52,7 @@ public class Programmdaten implements mp4.datenbank.struktur.Tabellen {
         return handler.getBoolean("BILLPANELCHECKBOXMITLIEFERSCHEIN");
     }
 
+
     public void setBILLPANEL_CHECKBOX_MITLIEFERSCHEIN(boolean BILLPANEL_CHECKBOX_MITLIEFERSCHEIN) {
         handler.setBoolean("BILLPANELCHECKBOXMITLIEFERSCHEIN",BILLPANEL_CHECKBOX_MITLIEFERSCHEIN);
     }
@@ -69,7 +71,15 @@ public class Programmdaten implements mp4.datenbank.struktur.Tabellen {
 
     public void setMAINFRAME_WINDOW_STATE(Dimension MAINFRAME_WINDOW_STATE) {
          handler.setString("MAINFRAME_WINDOW_STATE", (int)MAINFRAME_WINDOW_STATE.getHeight() + "," + (int)MAINFRAME_WINDOW_STATE.getWidth());
-    } 
+    }
+
+    public String getMAHNUNG_TEXT_DEFAULT() {
+        return handler.getString("MAHNUNG_TEXT_DEFAULT");
+    }
+
+    public void setMAHNUNG_TEXT_DEFAULT(String MAHNUNG_TEXT_DEFAULT) {
+       handler.setString("MAHNUNG_TEXT_DEFAULT", MAHNUNG_TEXT_DEFAULT);
+    }
     
 
 }

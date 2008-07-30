@@ -108,7 +108,7 @@ public interface Installation {
         
         
         "CREATE TABLE programmdaten (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-        "name VARCHAR(250), wert VARCHAR(250)," +
+        "name VARCHAR(250), wert VARCHAR(2500)," +
         "deleted INTEGER DEFAULT 0," +
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
         
@@ -191,9 +191,23 @@ public interface Installation {
         "betreffzid INTEGER REFERENCES rechnungbetreffz (id)," +
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
         
+        
+        
         "INSERT INTO steuersaetze (name, wert) VALUES ('Default', 0.0)",
         
-         
+        
+        
+        "INSERT INTO programmdaten(name, wert) VALUES ('MAHNUNG_TEXT_DEFAULT',  'Sehr geehrter {KUNDE_ANREDE} {KUNDE_VORNAME} {KUNDE_NAME},\nin Bezug auf unsere Rechnung Nr. "+ 
+        "{RECHNUNG_NUMMER} vom {RECHNUNG_DATUM} mussten wir heute feststellen, dass " +
+                "Ihre Zahlung bei uns leider noch nicht eingegangen ist.\n\n" +
+                "Bitte überweisen Sie umgehend den fälligen Rechnungsbetrag " +
+                "zuzüglich der Mahngebühr auf unser Konto.\n\n"+
+                "Sollten Sie die Zahlung bereits vorgenommen haben, dann setzen Sie sich bitte mit uns " +
+                "in Verbindung. Möglicherweise konnten wir Ihre Zahlung nicht zuordnen, " +
+                "weil z.B. der Verwendungszweck nicht korrekt angegeben wurde.\n\nMit freundlichen Grüßen\n\n')",
+        
+                
+                
         "INSERT INTO rechnungbetreffz (name, text, isvorlage) VALUES ('Unser Angebot..', 'Unser Angebot vom {Angebot_Datum}', 1)",
         "INSERT INTO rechnungbetreffz (name, text, isvorlage) VALUES ('Ihr Auftrag..', 'Ihr Auftrag vom {Auftrag_Datum}', 1)",
         "INSERT INTO rechnungbetreffz (name, text, isvorlage) VALUES ('Bearbeiter..', 'Bearbeiter: {Benutzer}', 1)",
