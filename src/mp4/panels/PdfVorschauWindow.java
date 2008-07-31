@@ -14,8 +14,9 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.print.PrintException;
 import mp3.classes.utils.Log;
-import mp4.klassen.objekte.DruckJob;
+import mp4.utils.export.druck.DruckJob;
 import mp4.utils.windows.Position;
 
 /**
@@ -123,7 +124,11 @@ private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 }//GEN-LAST:event_jButton2ActionPerformed
 
 private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-    new DruckJob(DruckJob.PDF).print(file);
+    try {
+        new DruckJob(DruckJob.PDF).print(file);
+    } catch (FileNotFoundException fileNotFoundException) {
+    } catch (PrintException printException) {
+    }
 }//GEN-LAST:event_jButton1ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
