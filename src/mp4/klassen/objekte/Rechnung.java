@@ -50,10 +50,8 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
     private boolean storno = false;
     private boolean bezahlt = false;
     private boolean verzug = false;
-    private RechnungPosten[] bp;
-    
-    private Query query;
-    private String[][] prods;
+    private RechnungPosten[] bp;    
+    private Query query;   
     public Integer id = 0;
     private PostenTableModel postendata = null;
     private RechnungBetreffzeile[] betreffzeilen;
@@ -128,50 +126,29 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
 
     public String[][] getUnpaid() {
         Query q = query.clone(TABLE_BILLS);
-
-        prods = q.select("id, rechnungnummer, gesamtpreis, datum", new String[]{"bezahlt", "0", "", "storno", "0", ""}, "datum", false, true);
-
+        String[][] prods = q.select("id, rechnungnummer, gesamtpreis, datum", new String[]{"bezahlt", "0", "", "storno", "0", ""}, "datum", false, true);
         return prods;
     }
 
     public String[][] getPaid() {
         Query q = query.clone(TABLE_BILLS);
-
-        prods = q.select("id, rechnungnummer, gesamtpreis, datum", new String[]{"bezahlt", "1", "", "storno", "0", ""}, "datum", false, true);
-
+        String[][] prods = q.select("id, rechnungnummer, gesamtpreis, datum", new String[]{"bezahlt", "1", "", "storno", "0", ""}, "datum", false, true);
         return prods;
     }
 
-    public String[][] getPaidNaked() {
-//        kontenid, preis, tax, datum
-        Query q = query.clone(TABLE_BILLS);
-
-        prods = q.select("gesamtpreis, gesamttax, datum", new String[]{"bezahlt", "1", "", "storno", "0", ""}, "datum", false, true);
-
-
-
-        return prods;
-    }
 
     public String[][] getPaidEUR() {
 //        kontenid, preis, tax, datum
         Query q = query.clone(TABLE_BILLS);
-
-        prods = q.select("gesamtpreis, gesamttax, datum", new String[]{"bezahlt", "1", "", "storno", "0", ""}, "datum", false, true);
-
+        String[][] prods = q.select("gesamtpreis, gesamttax, datum", new String[]{"bezahlt", "1", "", "storno", "0", ""}, "datum", false, true);
         String[][] tzh = new String[prods.length][4];
 
-
         for (int g = 0; g < prods.length; g++) {
-
             tzh[g][0] = Einstellungen.instanceOf().getEinnahmeDefKonto().getId().toString();
-
             for (int l = 0; l < prods[g].length; l++) {
-
                 tzh[g][l + 1] = prods[g][l];
             }
         }
-
         return tzh;
     }
 
@@ -346,11 +323,10 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
     public Object[][] getProductlistAsArray() {
 
         DecimalFormat n = new DecimalFormat("0.00");
-
-        String lab = "id,Anzahl,Posten,Mehrwertsteuer,Nettopreis,Bruttopreis";
+        Query q = query.clone(TABLE_BILLS_DATA);
+        String[] wher = {"rechnungid", this.getId().toString(), ""};
+        String[][] prods = q.select(Strings.ALL, wher);
         Object[][] nstr = new Object[prods.length][6];
-//Class[] types = new Class[]{java.lang.Integer.class, java.lang.Double.class, java.lang.String.class,
-//        java.lang.Double.class, java.lang.Double.class, java.lang.Double.class};
 
         try {
 
@@ -359,42 +335,34 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
                 nstr[i][0] = Integer.valueOf(prods[i][0]);
                 nstr[i][1] = Double.valueOf(prods[i][2]);
                 nstr[i][2] = String.valueOf(prods[i][3]);
-
                 nstr[i][3] = Double.valueOf(prods[i][5]);
-
                 try {
                     nstr[i][4] = Double.valueOf(prods[i][4]);
 
                     nstr[i][5] = Double.valueOf(
                             (Double.valueOf(prods[i][4]) *
                             (((Double.valueOf(prods[i][5])) / 100) + 1)));
-
                 } catch (NumberFormatException numberFormatException) {
                     nstr[i][4] = Double.valueOf("0");
                     nstr[i][5] = Double.valueOf("0");
-
-//                    Popup.error(numberFormatException.getMessage(), Popup.ERROR);
                 }
             }
-
-
         } catch (Exception exception) {
             Log.Debug(exception);
-//               Popup.error(exception.getMessage(), Popup.ERROR);
         }
-
         return nstr;
-
     }
 
     public PostenTableModel getProductlistAsTableModel() {
 
         DecimalFormat n = new DecimalFormat("0.00");
-
         String lab = "id,Anzahl,Posten,Mehrwertsteuer,Nettopreis,Bruttopreis";
+          Query q = query.clone(TABLE_BILLS_DATA);
+
+        String[] wher = {"rechnungid", this.getId().toString(), ""};
+
+        String[][] prods = q.select(Strings.ALL, wher);
         Object[][] nstr = new Object[prods.length][6];
-//Class[] types = new Class[]{java.lang.Integer.class, java.lang.Double.class, java.lang.String.class,
-//        java.lang.Double.class, java.lang.Double.class, java.lang.Double.class};
 
         try {
 
@@ -461,7 +429,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
 
         String[] wher = {"rechnungid", this.getId().toString(), ""};
 
-        prods = q.select(Strings.ALL, wher);
+        String[][] prods = q.select(Strings.ALL, wher);
         RechnungPosten[] prof = null;
 //
 //        for (int t = 0; t < str.length; t++) {
@@ -481,21 +449,6 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         return bp;
     }
 
-//    /**
-//     * 
-//     * @return
-//     */
-//    public String[][] getAllWithDepencies() {
-//
-//        Query q = query.clone(TABLE_BILLS);
-//
-//        prods = q.select(Strings.ALL, null, TABLE_CUSTOMERS, "kundenid");
-//
-//        setLabelsOfAllWithDepencies(q);
-//        return prods;
-//
-//    }
-//
     /**
      * 
      * @param table1fields
@@ -504,7 +457,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
     public Object[][] getWithDependencies(String table1fields) {
         Query q = query.clone(TABLE_BILLS);
 
-        prods = q.select(table1fields, null, TABLE_CUSTOMERS, "kundenid", "datum");
+        String[][] prods = q.select(table1fields, null, TABLE_CUSTOMERS, "kundenid", "datum");
 
         if (prods == null || prods.length < 1) {
             prods = new String[][]{{null, null, null, null, null, "0", "0"}};
@@ -513,30 +466,9 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         return DataModelUtils.changeToClassValue(prods, Boolean.class, new int[]{5, 6});
     }
 
-//
-//    /**
-//     * 
-//     * @return 
-//     */
-//    public String[] getLabelsOfAllWithDepencies() {
-//
-//        String[] stray = new String[labelsOfGetAllWithD.size()];
-//
-//        for (int i = 0; i < labelsOfGetAllWithD.size(); i++) {
-//
-//            stray[i] = (String) labelsOfGetAllWithD.get(i);
-//
-//        }
-//
-//        return stray;
-//
-//    }
     public String[][] getAll() {
-
         Query q = query.clone(TABLE_BILLS);
-
-        prods = q.select(Strings.ALL, null);
-
+        String[][] prods = q.select(Strings.ALL, null);
         return prods;
     }
 

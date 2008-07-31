@@ -14,13 +14,9 @@
  *      You should have received a copy of the GNU General Public License
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-
 package mp3.classes.layer;
 
 import javax.swing.JOptionPane;
-
-
 
 /**
  *
@@ -28,65 +24,78 @@ import javax.swing.JOptionPane;
  */
 public class Popup {
 
-
     public static String WARN = "Achtung!";
-    public static String ERROR ="Fehler";
-    public static String NOTICE ="Hinweis";
+    public static String ERROR = "Fehler";
+    public static String NOTICE = "Hinweis";
+
+    public static boolean dialog(String text) {
+        if (JOptionPane.showConfirmDialog(null, text, "Sind Sie sicher?",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE , new javax.swing.ImageIcon(new Popup().getClass().getResource("/bilder/medium/messagebox_warning.png"))) == JOptionPane.YES_OPTION) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     /**
      * A popup..
      * @param text
      * @param label
      */
-    public static void warn (String text,String label){
-    
+    public static void warn(String text, String label) {
+
         //new PopupView(text, label).setVisible(true);
-        
-        JOptionPane.showMessageDialog(null, text,label,JOptionPane.WARNING_MESSAGE);
+
+        JOptionPane.showMessageDialog(null, text, label, JOptionPane.WARNING_MESSAGE);
     }
-    
-        /**
-     * A popup..
-     * @param text
-     * @param label
-     */
-    public static void error (String text,String label){
-    
-        //new PopupView(text, label).setVisible(true);
-        
-        JOptionPane.showMessageDialog(null, text,label,JOptionPane.ERROR_MESSAGE);
-    }
+
     /**
      * A popup..
      * @param text
      * @param label
      */
-    public static void notice (String text,String label){
-    
+    public static void error(String text, String label) {
+
         //new PopupView(text, label).setVisible(true);
-        
-        JOptionPane.showMessageDialog(null, text,label,JOptionPane.INFORMATION_MESSAGE);
+
+        JOptionPane.showMessageDialog(null, text, label, JOptionPane.ERROR_MESSAGE);
     }
-    
-        /**
+
+    /**
+     * A popup..
+     * @param text
+     * @param label
+     */
+    public static void notice(String text, String label) {
+
+        //new PopupView(text, label).setVisible(true);
+
+        JOptionPane.showMessageDialog(null, text, label, JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    /**
      * A popup..
      * @param text
      */
-    public static void notice (String text){
-    
+    public static void notice(String text) {
+
         //new PopupView(text, label).setVisible(true);
-        
-        JOptionPane.showMessageDialog(null, text,Popup.NOTICE,JOptionPane.INFORMATION_MESSAGE);
+
+        JOptionPane.showMessageDialog(null, text, Popup.NOTICE, JOptionPane.INFORMATION_MESSAGE);
     }
 
     public Popup(String string) {
-        JOptionPane.showMessageDialog(null, string,Popup.NOTICE,JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(null, string, Popup.NOTICE, JOptionPane.INFORMATION_MESSAGE);
     }
+
     /**
      *  A popup..
      * @param text
      * @param label
      */
-    public Popup (String text,String label) {
-         JOptionPane.showMessageDialog(null, text,label,JOptionPane.INFORMATION_MESSAGE);
+    public Popup(String text, String label) {
+        JOptionPane.showMessageDialog(null, text, label, JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private Popup() {
     }
 }

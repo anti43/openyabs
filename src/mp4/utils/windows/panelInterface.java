@@ -17,7 +17,7 @@ along with MP.  If not, see <http://www.gnu.org/licenses/>.
 
  * 
  */
-package mp4.panels;
+package mp4.utils.windows;
 
 import javax.swing.Icon;
 

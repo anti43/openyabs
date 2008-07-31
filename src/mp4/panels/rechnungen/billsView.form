@@ -536,6 +536,9 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Storniert"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jCheckBox3ActionPerformed"/>
+                  </Events>
                 </Component>
                 <Component class="javax.swing.JTextField" name="jTextField10">
                   <Properties>
@@ -629,7 +632,7 @@
                           <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="jPanel11" pref="110" max="32767" attributes="1"/>
-                                  <Component id="jPanel9" min="-2" pref="110" max="-2" attributes="1"/>
+                                  <Component id="jPanel9" min="-2" max="-2" attributes="1"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jPanel10" min="-2" pref="86" max="-2" attributes="0"/>

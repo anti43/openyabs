@@ -39,10 +39,11 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JOptionPane;
+import javax.swing.JTabbedPane;
 import mp4.einstellungen.Einstellungen;
 
 import mp4.einstellungen.Programmdaten;
-import mp4.panels.panelInterface;
+import mp4.utils.windows.panelInterface;
 import mp4.utils.combobox.CheckComboListener;
 import mp4.utils.combobox.CheckComboRenderer;
 import mp4.utils.datum.DateConverter;
@@ -72,6 +73,7 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
     private boolean pdf = false;
     private int taxcount = 0;
     private TableCalculator calculator;
+    private boolean edited = false;
 
     /** Creates new form customers
      * @param frame 
@@ -106,7 +108,7 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
         calculator.setBruttoTextField(jTextField8);
         calculator.setTaxTextField(jTextField9);
         calculator.setStopped(false);
-        
+
         jComboBox1.setModel(new DefaultComboBoxModel(currentBill.getZeilenHandler().getListVorlagen()));
         jComboBox1.addActionListener(new CheckComboListener());
         jComboBox1.setRenderer(new CheckComboRenderer());
@@ -142,9 +144,10 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
             bill.add(m);
             if (bill.save()) {
 
+                this.setEdited(false);
                 mainframe.setMessage("Rechnung Nummer: " + bill.getRechnungnummer() + " angelegt.");
                 new HistoryItem(Strings.BILL, "Rechnung Nummer: " + bill.getRechnungnummer() + " angelegt.");
-                currentBill = bill;
+                setBill(bill);
 //                this.setBill(new Rechnung());
 
                 updateListTable();
@@ -173,6 +176,10 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
 
     private void nachricht(String string) {
         mainframe.getNachricht().setText(string);
+    }
+
+    public void setEdited(boolean bool) {
+        this.edited = bool;
     }
 
     private void renewTableModel() {
@@ -629,6 +636,11 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
         });
 
         jCheckBox3.setText("Storniert");
+        jCheckBox3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBox3ActionPerformed(evt);
+            }
+        });
 
         jTextField10.setEditable(false);
         jTextField10.setText("0");
@@ -990,7 +1002,7 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
-                    .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -1185,11 +1197,16 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
                 bill.setStorno(jCheckBox3.isSelected());
                 bill.setGesamtpreis(calculated.getBruttobetrag());
                 bill.add(m);
-                bill.save();
+                if (bill.save()) {
 
-                mainframe.setMessage("Rechnung Nummer: " + bill.getRechnungnummer() + " gespeichert.");
-                new HistoryItem(Strings.BILL, "Rechnung Nummer: " + bill.getRechnungnummer() + " gespeichert.");
-//                this.setBill(new Rechnung(bill.getId()));
+                    this.setEdited(false);
+                    mainframe.setMessage("Rechnung Nummer: " + bill.getRechnungnummer() + " gespeichert.");
+                    new HistoryItem(Strings.BILL, "Rechnung Nummer: " + bill.getRechnungnummer() + " gespeichert.");
+                this.setBill(bill);
+
+                } else {
+                    new Popup("Es ist ein Fehler aufgetreten.", Popup.ERROR);
+                }
             } else {
 
                 new Popup("Sie müssen einen (validen) Kunden auswählen.", Popup.ERROR);
@@ -1238,22 +1255,26 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
     private void jButton7ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
 
         this.clear();
+        setEdited(true);
 
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jButton8MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton8MouseClicked
 
         DataModelUtils.addRowToTable(getJTable1());
+        setEdited(true);
     }//GEN-LAST:event_jButton8MouseClicked
 
     private void jButton9ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
 
         new CustomerPicker(this);
+        setEdited(true);
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void jButton10ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
 
         new DatePick(jTextField7);
+        setEdited(true);
     }//GEN-LAST:event_jButton10ActionPerformed
 
     private void jCheckBox1ItemStateChanged (java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBox1ItemStateChanged
@@ -1272,6 +1293,7 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
 
     private void jButton11MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton11MouseClicked
 
+        setEdited(true);
         TableModel m = getJTable1().getModel();
 
         if (m.getValueAt(getJTable1().getSelectedRow(), 0) != null) {
@@ -1285,6 +1307,7 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
                 m.setValueAt(null, getJTable1().getSelectedRow(), i);
             }
         }
+
     }//GEN-LAST:event_jButton11MouseClicked
 
     private void jButton10KeyPressed (java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton10KeyPressed
@@ -1293,6 +1316,7 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
 
     private void jButton5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton5MouseClicked
         new ProductPicker(this);
+        setEdited(true);
     }//GEN-LAST:event_jButton5MouseClicked
 
     private void jButton12MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton12MouseClicked
@@ -1308,18 +1332,21 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
 
         this.currentBill.setStorno(true);
         this.jButton4MouseClicked(evt);
+        setEdited(true);
     }//GEN-LAST:event_jButton13MouseClicked
 
     private void jButton14MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton14MouseClicked
 
         this.currentBill.setBezahlt(true);
         this.jButton4MouseClicked(evt);
+        setEdited(true);
     }//GEN-LAST:event_jButton14MouseClicked
 
     private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
         if (currentBill.hasId()) {
             new MahnungView(currentBill, customer, this);
         }
+        setEdited(true);
     }//GEN-LAST:event_jButton15ActionPerformed
 
     private void jTextField6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextField6MouseClicked
@@ -1337,6 +1364,7 @@ private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
 private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton17ActionPerformed
     new DatePick(jTextField11);
+    setEdited(true);
 }//GEN-LAST:event_jButton17ActionPerformed
 
 private void jButton17KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton17KeyPressed
@@ -1362,16 +1390,20 @@ private void jButton19KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
 
 private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
     new billsNotesEditor(currentBill, this);
+    setEdited(true);
 }//GEN-LAST:event_jButton18ActionPerformed
 
 private void jCheckBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox2ActionPerformed
-// TODO add your handling code here:
+    setEdited(true);
 }//GEN-LAST:event_jCheckBox2ActionPerformed
 
 private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
 // TODO add your handling code here:
 }//GEN-LAST:event_jButton5ActionPerformed
 
+private void jCheckBox3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox3ActionPerformed
+    setEdited(true);
+}//GEN-LAST:event_jCheckBox3ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton jButton1;
     public javax.swing.JButton jButton10;
@@ -1487,7 +1519,13 @@ private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     }
 
     public void close() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (isEdited()) {
+            if (Popup.dialog("Aenderungen verwerfen?")) {
+                ((JTabbedPane) this.getParent()).remove(this);
+            }
+        } else {
+            ((JTabbedPane) this.getParent()).remove(this);
+        }
     }
 
     public void undo() {
@@ -1503,7 +1541,7 @@ private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     }
 
     public boolean isEdited() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return edited;
     }
 }
 

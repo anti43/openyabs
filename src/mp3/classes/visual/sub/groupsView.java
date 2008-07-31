@@ -287,9 +287,9 @@ public class groupsView extends javax.swing.JFrame implements TreeSelectionListe
     private void jButton5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton5MouseClicked
 
         if (leaf) {
-            frame.getProductsView().getProduct().setWarengruppenId(grp.getId());
-            frame.getProductsView().setCurrentProductGroup(grp.getId());
-            frame.getProductsView().getJTextField12().setText(frame.getProductsView().getProduct().getProductgroupPath());
+//            frame.getProductsView().getProduct().setWarengruppenId(grp.getId());
+//            frame.getProductsView().setCurrentProductGroup(grp.getId());
+//            frame.getProductsView().getJTextField12().setText(frame.getProductsView().getProduct().getProductgroupPath());
             this.dispose();
         } else {
             Popup.notice("Sie müssen eine Produktgruppe auswählen");

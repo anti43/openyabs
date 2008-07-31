@@ -1327,9 +1327,9 @@ public class offersView extends javax.swing.JPanel implements Runnable, mp4.date
             } else {
                 new Popup("Sie müssen einen (validen) Kunden auswählen.", Popup.ERROR);
             }
-            mainframe.getBillPanel().updateListTable();
-            mainframe.getBillPanel().resizeFields();
-            mainframe.getBillPanel().setBill(new Rechnung(bill.getId()));
+//            mainframe.getBillPanel().updateListTable();
+//            mainframe.getBillPanel().resizeFields();
+//            mainframe.getBillPanel().setBill(new Rechnung(bill.getId()));
             mainframe.getJTabbedPane1().setSelectedIndex(1);
         } else {
             Popup.notice("Zu diesem Auftrag existiert bereits eine Rechnung");

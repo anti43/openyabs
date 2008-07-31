@@ -1159,7 +1159,7 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
     private void jButton8MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton8MouseClicked
 
         mainframe.getJTabbedPane1().setSelectedIndex(1);
-        mainframe.getBillPanel().setCustomer(current);
+//        mainframe.getBillPanel().setCustomer(current);
     }//GEN-LAST:event_jButton8MouseClicked
 
     private void jTable1MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
@@ -1168,7 +1168,7 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
 
         if (evt.getClickCount() >= 2 && selection.checkID()) {
             try {
-                mainframe.getBillPanel().setBill(new Rechnung(selection.getId()).expose());
+//                mainframe.getBillPanel().setBill(new Rechnung(selection.getId()).expose());
                 mainframe.getJTabbedPane1().setSelectedIndex(1);
             } catch (Exception ex) {
                 Popup.warn(ex.getMessage(), Popup.ERROR);

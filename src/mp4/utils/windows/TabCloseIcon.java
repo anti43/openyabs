@@ -78,7 +78,8 @@ public class TabCloseIcon implements Icon
 					if ( !e.isConsumed()  &&   mPosition.contains( e.getX(), e.getY() ) )
 					{
 						final int index = mTabbedPane.getSelectedIndex();
-						mTabbedPane.remove( index );
+//						mTabbedPane.remove( index );                                           
+                                                ((panelInterface) mTabbedPane.getComponentAt(index)).close();
 						e.consume();
 					}
 				}

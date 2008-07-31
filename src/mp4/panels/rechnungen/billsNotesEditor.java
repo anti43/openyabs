@@ -7,7 +7,7 @@ package mp4.panels.rechnungen;
 
 import javax.swing.table.DefaultTableModel;
 import mp4.klassen.objekte.*;
-import mp4.panels.panelInterface;
+import mp4.utils.windows.panelInterface;
 import mp4.utils.tabellen.DataModelUtils;
 import mp4.utils.tabellen.SelectionCheck;
 import mp4.utils.tabellen.TableFormat;

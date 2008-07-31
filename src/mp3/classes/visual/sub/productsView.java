@@ -915,7 +915,7 @@ public class productsView extends javax.swing.JPanel implements mp4.datenbank.st
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
         if (current.getId() < 0) {
-            getMainframe().getOrdersView().addToOrder(current, true, true, true);
+//            getMainframe().getOrdersView().addToOrder(current, true, true, true);
             getMainframe().getJTabbedPane1().setSelectedIndex(2);
         }
 

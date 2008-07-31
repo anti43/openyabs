@@ -215,7 +215,7 @@ public class fastChoice extends javax.swing.JFrame {
 
                 if (kl.isValid()) {
 
-                    frame.getCustomersView().setCustomer(kl);
+//                    frame.getCustomersView().setCustomer(kl);
                     this.dispose();
                 } else {
                     Popup.notice("Kein Datensatz gefunden");
@@ -233,7 +233,7 @@ public class fastChoice extends javax.swing.JFrame {
 
                 if (kr.hasId()) {
 
-                    frame.getBillPanel().setBill(kr);
+//                    frame.getBillPanel().setBill(kr);
                     this.dispose();
                 } else {
                     Popup.notice("Kein Datensatz gefunden");

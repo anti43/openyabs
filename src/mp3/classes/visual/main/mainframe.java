@@ -60,9 +60,8 @@ import mp3.classes.visual.sub.productsView;
 //import mp3.classes.visual.sub.*;
 import mp3.classes.visual.sub.startView;
 import mp3.classes.visual.sub.suppliersView;
-import mp3.classes.visual.util.EinnahmenChart;
-import mp3.classes.visual.util.UmsatzChart;
-import mp3.classes.visual.sub.eurView;
+
+
 import mp4.cache.undoCache;
 import mp4.datenbank.verbindung.Query;
 import mp4.klassen.objekte.Customer;
@@ -82,15 +81,7 @@ import mp4.utils.windows.TabCloseIcon;
  */
 public class mainframe extends javax.swing.JFrame {
 
-    private customersView c;
-    private billsView b;
-    private productsView d;
-    private suppliersView e;
-    private offersView f;
-    private historyView g;
-    private backupView h;
     private startView i;
-    private eurView j;
     private Main loader;
     private Position wt = new Position();
     public static JLabel nachricht = new JLabel();
@@ -106,77 +97,43 @@ public class mainframe extends javax.swing.JFrame {
         this.identifier = this;
         splash.setMessage("Initialisiere Oberfläche...");
         initComponents();
-
         splash.setMessage("Initialisiere Datenbank...");
 
         try {
             ConnectionHandler.instanceOf();
-
         } catch (Exception exception) {
             this.dispose();
             splash.dispose();
             loader = null;
             System.gc();
             System.gc();
-
         }
 
         Query.setWaitCursorFor(this);
-
-
         splash.setMessage("Initialisiere Komponenten...");
 
-//        c = new customersView(this);
-//        b = new billsView(this);
-//        d = new productsView(this);
-//        e = new suppliersView(this);
-//        f = new offersView(this);
-//        g = new historyView(this);
-//        h = new backupView(this);
+
         i = new startView(this);
-//        j = new eurView(this);
-
-
-//        jPanel4.add(d, BorderLayout.CENTER);
-//        jPanel3.add(b, BorderLayout.CENTER);
-//        jPanel7.add(f, BorderLayout.CENTER);
-//        jPanel2.add(c, BorderLayout.CENTER);
-//        jPanel9.add(e, BorderLayout.CENTER);
-//        jPanel6.add(g, BorderLayout.CENTER);
-//        jPanel8.add(h, BorderLayout.CENTER);
         jPanel11.add(i, BorderLayout.CENTER);
-//        jPanel12.add(j, BorderLayout.CENTER);
 
         try {
             mainTabPane.setSelectedIndex(Programmdaten.instanceOf().getMAINFRAME_TAB());
         } catch (Exception exception) {
+            Log.Debug(exception);
         }
-
-        try {
-            this.setTitle("MP " + Constants.VERSION);
-
-
-        } catch (Exception exception) {
-            splash.dispose();
-            loader = null;
-            System.gc();
-            System.gc();
-        }
+        this.setTitle("MP " + Constants.VERSION);
 
         try {
             this.setSize(Programmdaten.instanceOf().getMAINFRAME_WINDOW_STATE());
-
             if (wt.isNotMaximized(this)) {
                 wt.center(this);
             } else {
                 this.setExtendedState(mainframe.MAXIMIZED_BOTH);
             }
-
         } catch (Exception exception) {
             Log.Debug(exception.getMessage(), true);
             this.setExtendedState(mainframe.MAXIMIZED_BOTH);
         }
-
 
         this.addWindowListener(new WindowAdapter() {
 
@@ -186,73 +143,12 @@ public class mainframe extends javax.swing.JFrame {
             }
         });
 
-
         undoCache.setMenu(jMenu11, this);
-
         setMessage("Anmerkungen, Bugs und Feedback zu MP bitte an mp-rechnungs-und-kundenverwaltung@googlegroups.com senden. Vielen Dank!");
-
         nachricht = messagePanel;
-
         this.setVisible(rootPaneCheckingEnabled);
     }
 
-    public customersView getCustomersView() {
-
-
-        return c;
-    }
-
-    public eurView getEURPanel() {
-        return j;
-    }
-
-//    /** Creates new form mainframe
-//     * @param firststart
-//     * @param splash 
-//     */
-//    public mainframe(boolean firststart, SplashScreen splash) {
-//        initComponents();
-//        this.setExtendedState(mainframe.MAXIMIZED_BOTH);
-//
-//
-//        c = new customersView(this);
-//        b = new billsView(this);
-//        d = new productsView(this);
-//        e = new suppliersView(this);
-//        f = new offersView(this);
-//        g = new historyView(this);
-//        h = new backupView(this);
-//        i = new startView(this);
-//        j = new eurView(this);
-//        //c.setCustomer(new Customer(ConnectionHandler.instanceOf(), "1"));
-//
-//
-//
-//        jPanel4.add(d, BorderLayout.CENTER);
-//        jPanel3.add(b, BorderLayout.CENTER);
-//        jPanel7.add(f, BorderLayout.CENTER);
-//        jPanel2.add(c, BorderLayout.CENTER);
-//        jPanel9.add(e, BorderLayout.CENTER);
-//        jPanel6.add(g, BorderLayout.CENTER);
-//        jPanel8.add(h, BorderLayout.CENTER);
-//        jPanel11.add(i, BorderLayout.CENTER);
-//        jPanel12.add(j, BorderLayout.CENTER);
-//
-//        ConnectionHandler.setProgressBarOn(this.mainProgress, this);
-//
-//        this.setVisible(rootPaneCheckingEnabled);
-//
-//        if (firststart) {
-//            new settingsView(this).setVisible(firststart);
-//        }
-//        this.addWindowListener(new WindowAdapter() {
-//
-//            @Override
-//            public void windowClosing(WindowEvent e) {
-//                close();
-//            }
-//        });
-//    }
     /**
      * 
      * @return  
@@ -269,18 +165,6 @@ public class mainframe extends javax.swing.JFrame {
      */
     public int getShowingTab() {
         return getJTabbedPane1().getSelectedIndex();
-    }
-
-    /**
-     * 
-     * @return
-     */
-    public offersView getOrdersView() {
-        return f;
-    }
-
-    public productsView getProductsView() {
-        return d;
     }
 
     /**
@@ -879,7 +763,6 @@ public class mainframe extends javax.swing.JFrame {
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         csvProductImporter.instanceOf();
-//        xx
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuItem3MouseClicked
@@ -901,21 +784,15 @@ public class mainframe extends javax.swing.JFrame {
 
     private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
         try {
-
-
             Process proc = Runtime.getRuntime().exec(Einstellungen.instanceOf().getBrowser() + " http://www.supernature-forum.de");
         } catch (IOException ex) {
-
             new Popup("Kein Browser angegeben. Wählen Sie Ihren Internetbrowser unter 'Programmeinstellungen'.");
-        // Logger.getLogger(mainFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jMenuItem6ActionPerformed
 
     private void close() {
         try {
-
             Programmdaten.instanceOf().setMAINFRAME_WINDOW_STATE(this.getSize());
-
             Programmdaten.instanceOf().setMAINFRAME_TAB(mainTabPane.getSelectedIndex());
             Einstellungen.instanceOf().save();
             System.exit(0);
@@ -934,46 +811,7 @@ public class mainframe extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem11ActionPerformed
 
     private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem12ActionPerformed
-        /**
-         * 
-         * @return 0:start 
-         *          1:kunden
-         *          2:rechnungen
-         *          3:angebote
-         *          4:eur
-         *          5:produkte
-         *          6:lieferanten
-         *          7:verlauf  
-         *          8:sicherung
-         *          
-         */
-        switch (this.getShowingTab()) {
-
-            case 1:
-
-                this.getCustomersView().save();
-
-                break;
-            case 2:
-
-                this.getBillPanel().save();
-
-                break;
-            case 3:
-                this.getOrdersView().save();
-                break;
-            case 5:
-                this.getProductsView().save();
-
-                break;
-            case 6:
-                this.getC().save();
-                break;
-        }
-
-
-
-
+   
     }//GEN-LAST:event_jMenuItem12ActionPerformed
 
     private void jMenuItem13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem13ActionPerformed
@@ -982,71 +820,50 @@ public class mainframe extends javax.swing.JFrame {
 
     private void jMenuItem14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem14ActionPerformed
 
-
         Programmdaten.instanceOf().setMAINFRAME_WINDOW_STATE(this.getSize());
-
         Programmdaten.instanceOf().setMAINFRAME_TAB(mainTabPane.getSelectedIndex());
         Einstellungen.instanceOf().save();
-        h.saving();
         System.exit(0);
-
     }//GEN-LAST:event_jMenuItem14ActionPerformed
 
     private void jMenuItem15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem15ActionPerformed
         String fils = "";
         try {
-
             Customer k = new Customer();
-
             TableHtmlWriter writ = new TableHtmlWriter(k.getPrintModel(), new File("Kundenliste.html"), Strings.TABLE_CUSTOMER_PRINT_HEADER.split(","), "Kundenliste");
-
             fils = new SaveAs(writ.createHtml(1, Color.LIGHT_GRAY)).getName();
         } catch (Exception ex) {
             Popup.notice(ex.getMessage());
             Log.Debug(ex);
         }
-
         new Browser(fils);
-
     }//GEN-LAST:event_jMenuItem15ActionPerformed
 
     private void jMenuItem16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem16ActionPerformed
 
-
         String fils = "";
         try {
-
             Lieferant k = new Lieferant();
-
             TableHtmlWriter writ = new TableHtmlWriter(k.getPrintModel(), new File("Lieferantenliste.html"), Strings.TABLE_SUPPLIER_PRINT_HEADER.split(","), "Lieferantenliste");
-
             fils = new SaveAs(writ.createHtml(1, Color.LIGHT_GRAY)).getName();
         } catch (Exception ex) {
             Popup.notice(ex.getMessage());
             Log.Debug(ex);
         }
-
         new Browser(fils);
-
-
     }//GEN-LAST:event_jMenuItem16ActionPerformed
 
     private void jMenuItem17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem17ActionPerformed
         String fils = "";
         try {
-
             Product k = new Product();
-
             TableHtmlWriter writ = new TableHtmlWriter(k.getPrintModel(), new File("Produktliste.html"), Strings.TABLE_PRODUCTS_LIST_PRINT_HEADER.split(","), "Lieferantenliste");
-
             fils = new SaveAs(writ.createHtml(1, Color.LIGHT_GRAY)).getName();
         } catch (Exception ex) {
             Popup.notice(ex.getMessage());
             Log.Debug(ex);
         }
-
         new Browser(fils);
-
     }//GEN-LAST:event_jMenuItem17ActionPerformed
 
     private void jMenuItem18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem18ActionPerformed
@@ -1057,20 +874,19 @@ public class mainframe extends javax.swing.JFrame {
 
         Log.setLogLevel(Log.LOGLEVEL_HIGH);
         Log.getLogger().setVisible(true);
-
     }//GEN-LAST:event_jMenuItem21ActionPerformed
 
     private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
-        new UmsatzChart();
+    
     }//GEN-LAST:event_jMenuItem9ActionPerformed
 
     private void jMenuItem19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem19ActionPerformed
-        new EinnahmenChart();
+
     }//GEN-LAST:event_jMenuItem19ActionPerformed
 
 private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
 
-      customersView panel = new customersView(this);
+    customersView panel = new customersView(this);
 
     mainTabPane.add("Kunde", panel);
     mainTabPane.setSelectedComponent(panel);
@@ -1233,33 +1049,6 @@ private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         return jPanel11;
     }
 
-//    public javax.swing.JPanel getJPanel2() {
-//        return jPanel2;
-//    }
-//
-//    public javax.swing.JPanel getJPanel3() {
-//        return jPanel3;
-//    }
-//
-//    public javax.swing.JPanel getJPanel4() {
-//        return jPanel4;
-//    }
-//
-//    public javax.swing.JPanel getJPanel5() {
-//        return jPanel5;
-//    }
-//
-//    public javax.swing.JPanel getJPanel6() {
-//        return jPanel6;
-//    }
-//
-//    public javax.swing.JPanel getJPanel7() {
-//        return jPanel7;
-//    }
-//
-//    public javax.swing.JPanel getJPanel9() {
-//        return jPanel9;
-//    }
     public javax.swing.JScrollPane getJScrollPane1() {
         return jScrollPane1;
     }
@@ -1272,22 +1061,6 @@ private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         return mainProgress;
     }
 
-    public suppliersView getC() {
-        return e;
-    }
-
-    public billsView getBillPanel() {
-        return b;
-    }
-
-//    /**
-//     * 
-//     * @param message
-//     */
-//    public void nachricht(String message) {
-//
-//        nachricht.setText(message);
-//    }
     /**
      * 
      * @param message
@@ -1302,15 +1075,10 @@ private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
     @Override
     public void dispose() {
-
         Programmdaten.instanceOf().setMAINFRAME_WINDOW_STATE(this.getSize());
-
         Programmdaten.instanceOf().setMAINFRAME_TAB(mainTabPane.getSelectedIndex());
         Einstellungen.instanceOf().save();
-
         Conn.shutdown();
-
         super.dispose();
-
     }
 }

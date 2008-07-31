@@ -143,8 +143,7 @@ public class undoCache {
                     break;
 
             }
-            
-            mainframe.getEURPanel().getEurepanel().updateTableData();
+
             new HistoryItem("Undo","Rückgängig: " + text);
             
             
@@ -168,7 +167,6 @@ public class undoCache {
 
             }
             
-            mainframe.getEURPanel().getEurapanel().updateTableData();
             new HistoryItem("Undo","Rückgängig: " + text);
             
         } else if (item.getClass().isInstance(new Customer())) {
