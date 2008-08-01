@@ -21,7 +21,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import mp3.classes.utils.Log;
 
 /**
  *
@@ -31,11 +30,23 @@ public class DateConverter {
 
     private static Calendar cl = Calendar.getInstance();
     //   yyyy-mm-dd hh.mm.ss[.nnnnnn] - SQL DATE Timestamp
-    public static DateFormat DB_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    public static DateFormat DE_DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");//2008-07-17"
-    public static DateFormat ENG_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
-    private static String NULL_DATE_STRING = "00.00.0000";
-    private static Date NULL_DATE = null;
+    public static final DateFormat DB_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    
+    public static final DateFormat DE_DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
+    public static final DateFormat DE_DATE_FORMAT_SHORTYEAR = new SimpleDateFormat("dd.MM.yy");
+    public static final DateFormat DE_DATE_FORMAT_SHORTMONTH = new SimpleDateFormat("dd.M.yyyy");
+    public static final DateFormat DE_DATE_FORMAT_NODAY_SHORTMONTH_SHORTYEAR = new SimpleDateFormat("M.yy");
+    public static final DateFormat DE_DATE_FORMAT_NODAY_SHORTMONTH_YEAR = new SimpleDateFormat("M.yyyy");
+    public static final DateFormat DE_DATE_FORMAT_SHORTMONTH_SHORTYEAR = new SimpleDateFormat("dd.M.yy");
+    public static final DateFormat DE_DATE_FORMAT_NODAY_MONTH_YEAR = new SimpleDateFormat("MM.yyyy");
+    public static final DateFormat DE_DATE_FORMAT_YEAR = new SimpleDateFormat("yyyy");
+    
+    public static final DateFormat ENG_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+    
+    public static final DateFormat[] DE_DATES = new DateFormat[]{DB_DATE_FORMAT , ENG_DATE_FORMAT,
+        DE_DATE_FORMAT, DE_DATE_FORMAT_SHORTYEAR, DE_DATE_FORMAT_SHORTMONTH, DE_DATE_FORMAT_NODAY_SHORTMONTH_SHORTYEAR,
+        DE_DATE_FORMAT_SHORTMONTH_SHORTYEAR, DE_DATE_FORMAT_NODAY_MONTH_YEAR, DE_DATE_FORMAT_YEAR, DE_DATE_FORMAT_NODAY_SHORTMONTH_YEAR
+    };
 
     public static String getTodayDefDate() {
         return DE_DATE_FORMAT.format(new Date());
@@ -71,62 +82,6 @@ public class DateConverter {
         return cl.getTime();
     }
 
-//    /**
-//     * 
-//     * @param date
-//     * @return The next month
-//     */
-//    public static String addMonth(String date) {
-//        try {
-//
-//            Date dat = DEF_DATE_FORMAT.parse(date);
-//
-//            cl.setTime(dat);
-//            cl.add(Calendar.MONTH, 1);
-//
-//            return cl.getTime().toString();
-//        } catch (ParseException ex) {
-//            Log.Debug(ex.getMessage());
-//            return null;
-//        }
-//    }
-//
-//    /**
-//     * 
-//     * @param date
-//     * @return The next day
-//     */
-//    public static String addDay(String date) {
-//
-//        try {
-//
-//            Date dat = DEF_DATE_FORMAT.parse(date);
-//
-//            cl.setTime(dat);
-//            cl.add(Calendar.DATE, 1);
-//
-//            return cl.getTime().toString();
-//        } catch (ParseException ex) {
-//            Log.Debug(ex.getMessage());
-//            return null;
-//        }
-//
-//    }
-
-//    /**
-//     * 
-//     * @param date
-//     * @return SQL conform date
-//     */
-//    public static Date getSQLDate(Date date) {
-//        try {
-//
-//            return DB_DATE_FORMAT.parse(DB_DATE_FORMAT.format(date));
-//        } catch (ParseException ex) {
-//            Log.Debug(ex.getMessage());
-//            return null;
-//        }
-//    }
     /**
      * 
      * @param date
@@ -145,24 +100,9 @@ public class DateConverter {
         return DE_DATE_FORMAT.format(date);
     }
 
-//    /**
-//     * 
-//     * @param date
-//     * @return Default date (dd.mm.yyyy)
-//     */
-//    public static Date getDefDate(Date date) {
-//        try {
-//
-//            return DEF_DATE_FORMAT.parse(DEF_DATE_FORMAT.format(date));
-//        } catch (ParseException ex) {
-//            Log.Debug(ex.getMessage());
-//            return null;
-//        }
-//
-//    }
     /**
      * Converts formated 
-     * Default date (dd.mm.yyyy)
+     * Default date (dd.mm.yyyy) or variants
      * or
      * yyyy-mm-dd hh.mm.ss[.nnnnnn] - SQL DATE Timestamp
      * 
@@ -172,20 +112,19 @@ public class DateConverter {
      * @return Parsed date
      */
     public static Date getDate(String date) {
-        try {
-            return DE_DATE_FORMAT.parse(date);
-        } catch (ParseException ex) {
+        Date DATE = null;
+        for (int i = 0; i < DE_DATES.length; i++) {
             try {
-                return DB_DATE_FORMAT.parse(date);
-            } catch (ParseException ex1) {
-                try {
-                    return ENG_DATE_FORMAT.parse(date);
-                } catch (ParseException ex2) {
-                    Log.Debug(ex2.getMessage(), true);
-                    return null;
-                }
+                DATE = DE_DATES[i].parse(date);
+                return DATE;
+            } catch (ParseException ex) {
             }
         }
+        return DATE;
+    }
+
+    public static String getTodayDefMonth() {
+        return DE_DATE_FORMAT_NODAY_MONTH_YEAR.format(new Date());
     }
 
     public static String getYear() {

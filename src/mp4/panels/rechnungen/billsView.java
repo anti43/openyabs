@@ -165,7 +165,7 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
     }
 
     private void fetchBillsOfTheMonth() {
-        jTextField2.setText(DateConverter.getTodayDefDate());
+        jTextField2.setText(DateConverter.getTodayDefMonth());
         this.jTable3.setModel(new BillSearchListTableModel());
         TableFormat.stripFirst(jTable3);
     }
@@ -209,6 +209,8 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
         this.jTextField6.setText(current.getRechnungnummer());
         jTextField6.setBackground(Color.WHITE);
         this.jTextField7.setText(DateConverter.getDefDateString(current.getDatum()));
+        this.jTextField11.setText(DateConverter.getDefDateString(current.getAusfuehrungsDatum()));
+        
         this.jTextField10.setText(current.getMahnungen().toString());
 
         if (current.isBezahlt()) {
@@ -230,9 +232,7 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
             }
         }
 
-        jComboBox1.setModel(new DefaultComboBoxModel(current.getZeilenHandler().getListModel()));
-        jComboBox1.addActionListener(new CheckComboListener());
-        jComboBox1.setRenderer(new CheckComboRenderer());
+        setBetreffZeilen(current);
 
         this.getJTable1().setModel(current.getProductlistAsTableModel());
         TableFormat.stripFirst(getJTable1());
@@ -509,14 +509,14 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
         jTable3.setAutoCreateRowSorter(true);
         jTable3.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null}
+                {null, null, null}
             },
             new String [] {
-                "Nummer", "Datum"
+                "id", "Nummer", "Datum"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false
+                false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -1001,8 +1001,8 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
-                    .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
+                    .addComponent(jPanel11, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -1139,6 +1139,13 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void setBetreffZeilen(Rechnung current){
+        
+        jComboBox1.setModel(new DefaultComboBoxModel(current.getZeilenHandler().getListModel()));
+        jComboBox1.addActionListener(new CheckComboListener());
+        jComboBox1.setRenderer(new CheckComboRenderer());
+    }
+    
     private void jTextField1ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
         this.jTable3.setModel(new BillSearchListTableModel("rechnungnummer", jTextField1.getText()));
         TableFormat.stripFirst(jTable3);
@@ -1189,7 +1196,7 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
                 m = (PostenTableModel) jTable1.getModel();
 
                 Rechnung bill = currentBill;
-                bill.setRechnungnummer(bill.getNextBillNumber());
+               
                 bill.setDatum(DateConverter.getDate(jTextField7.getText()));
                 bill.setAusfuehrungsDatum(DateConverter.getDate(jTextField7.getText()));
                 bill.setKundenId(getCustomer().getId());
@@ -1515,7 +1522,10 @@ private void jCheckBox3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     }
 
     public void updateTables() {
-//        throw new UnsupportedOperationException("Not supported yet.");
+
+      setBetreffZeilen(getCurrent());
+      this.updateListTable();  
+        
     }
 
     public void close() {

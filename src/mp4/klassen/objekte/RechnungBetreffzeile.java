@@ -81,6 +81,10 @@ public class RechnungBetreffzeile extends mp3.classes.layer.Things implements mp
         isVorlage = vorlage;
     }
 
+    public String[][] getVorlagenIds() {
+       return this.select("id", "isvorlage", "1", true);
+    }
+
     void setHandler(RechnungBetreffZZR handler) {
         this.handler = handler;
     }

@@ -116,11 +116,6 @@ public class mainframe extends javax.swing.JFrame {
         i = new startView(this);
         jPanel11.add(i, BorderLayout.CENTER);
 
-        try {
-            mainTabPane.setSelectedIndex(Programmdaten.instanceOf().getMAINFRAME_TAB());
-        } catch (Exception exception) {
-            Log.Debug(exception);
-        }
         this.setTitle("MP " + Constants.VERSION);
 
         try {

@@ -114,6 +114,108 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
         return false;
     }
 
+    public String[][] select(String what, String[] where, String leftJoinTable, String leftJoinKey, String order, boolean like) {
+        start();
+
+        String l1 = "";
+        String l2 = "";
+        String k = " = ";
+        String j = "";
+
+        String wher = "";
+        java.util.Date date;
+
+        if (like) {
+            if (where != null && where[0].endsWith("datum")) {
+                k = " BETWEEN ";
+                date = DateConverter.getDate(where[1]);
+                where[1] = "'" + DateConverter.getSQLDateString(date) + "'" + " AND " + "'" + DateConverter.getSQLDateString(DateConverter.addMonth(date)) + "'";
+                where[2] = " ";
+            } else {
+                l1 = "%";
+                l2 = "%";
+                k = " LIKE ";
+            }
+        }
+
+        if (where != null) {
+            query = "SELECT " + what + " FROM " + table +
+                    " LEFT OUTER JOIN " + leftJoinTable + " ON " + table + "." + leftJoinKey + " = " + leftJoinTable + ".id" +
+                    " WHERE " + where[0] + " " + k + " " + where[2] + l1 + where[1] + l2 + where[2] + " AND " + table + ".deleted = 0 ORDER BY " + order;
+        } else {
+            query = "SELECT " + what + " FROM " + table +
+                    " LEFT OUTER JOIN  " + leftJoinTable + " ON " +
+                    table + "." + leftJoinKey + " = " + leftJoinTable + ".id " +
+                    " WHERE deleted = 0  ORDER BY " + order;
+
+//        //+ " WHERE " + table + ".deleted = 0"; if (where == null) {
+//            wher = " WHERE deleted = 0 ";
+//        } else {
+//            wher = " WHERE " + where[0] + " " + k + " " + where[2] + l1 + where[1] + l2 + where[2] + " ";
+//        }
+        }
+
+
+        message = "Database Error (select) :";
+        stm = null;
+        resultSet = null;
+        ResultSetMetaData rsmd;
+
+        try {
+            // Select-Anweisung ausführen
+            stm = conn.createStatement();
+            Log.Debug(query);
+            resultSet = stm.executeQuery(query);
+            ArrayList spalten = new ArrayList();
+            ArrayList zeilen = new ArrayList();
+            rsmd = resultSet.getMetaData();
+
+            while (resultSet.next()) {
+                spalten = new ArrayList();
+                for (int i = 1; i <=
+                        rsmd.getColumnCount(); i++) {
+                    spalten.add(resultSet.getObject(i));
+                }
+                zeilen.add(spalten);
+            }
+
+            p = new String[zeilen.size()][spalten.size()];
+
+            for (int h = 0; h <
+                    zeilen.size(); h++) {
+                z = (ArrayList) zeilen.get(h);
+                for (int i = 0; i <
+                        spalten.size(); i++) {
+                    p[h][i] = String.valueOf(z.get(i));
+                }
+            }
+        } catch (SQLException ex) {
+            Log.Debug(message + ex.getMessage());
+            Log.Debug(ex, true);
+        } finally {
+            // Alle Ressourcen wieder freigeben
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException ex) {
+                    Log.Debug(message + ex.getMessage());
+                    Log.Debug(ex, true);
+                }
+            }
+            if (stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException ex) {
+                    Log.Debug(message + ex.getMessage());
+                    Log.Debug(ex, true);
+                }
+            }
+        }
+        stop();
+        return p;
+
+    }
+
     /**
      * Free SQL Select Statement!
      * @param string (Query)
@@ -236,7 +338,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
     public Integer getNextIndexOfStringCol(String colName) {
 
         start();
-        query = "SELECT " + colName + " FROM " + table;
+        query = "SELECT " + colName + " FROM " + table + " ORDER BY ID ASC";
         message = "Database Error (getNextIndex):";
         stm = null;
         resultSet = null;
@@ -256,10 +358,11 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
             if (resultSet.last()) {
                 index = resultSet.getString(colName);
                 originalvalue = index;
-
+               
                 while (i == null && index.length() > 0) {
                     try {
                         i = Integer.valueOf(index);
+                        
                         substringcount++;
                         index = index.substring(1, index.length());
 
@@ -267,7 +370,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                         i = null;
                     }
                 }
-
+               
                 if (i == null) {
 
                     query = "SELECT ALL COUNT(1) FROM " + table;
@@ -311,7 +414,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
             }
         }
         stop();
-        i++;
+        i += 1;
 
         return i;
 
@@ -1323,6 +1426,13 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
         return p;
     }
 
+    /**
+     * 
+     * @param what
+     * @param where : {value, comparison, "'"}
+     * @param like - datum will be returned between given and given + 1 month
+     * @return results as multidimensional string array
+     */
     @SuppressWarnings("unchecked")
     public String[][] select(String what, String[] where, String order, boolean like) {
         start();
@@ -1337,34 +1447,22 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
 
 
         if (like) {
-
-
             if (where != null && where[0].endsWith("datum")) {
-
-
                 k = " BETWEEN ";
-
-                date =
-                        DateConverter.getDate(where[1]);
-
+                date = DateConverter.getDate(where[1]);
                 where[1] = "'" + DateConverter.getSQLDateString(date) + "'" + " AND " + "'" + DateConverter.getSQLDateString(DateConverter.addMonth(date)) + "'";
                 where[2] = " ";
-
             } else {
                 l1 = "%";
-                l2 =
-                        "%";
-                k =
-                        " LIKE ";
+                l2 = "%";
+                k = " LIKE ";
             }
-
         }
 
         if (where == null) {
             wher = " WHERE deleted = 0 ";
         } else {
             wher = " WHERE " + where[0] + " " + k + " " + where[2] + l1 + where[1] + l2 + where[2] + " ";
-
         }
 
         query = "SELECT " + what + " FROM " + table + wher + ord;
@@ -1443,6 +1541,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
 
             }
         }
+
         stop();
         return p;
     }

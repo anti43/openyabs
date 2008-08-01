@@ -31,12 +31,18 @@ public class RechnungBetreffZZR extends Things {
     private String[][] values;
     private Integer rechnungid = 0;
     private ArrayList liste = new ArrayList();
+    private ArrayList vorlagenliste = new ArrayList();
+    private ArrayList originalListe;
+    private int vls = 0;
 
     public RechnungBetreffZZR(Integer rechnungid) {
         super(ConnectionHandler.instanceOf().clone(TABLE_BILL_TEXTS_TO_BILLS));
         this.rechnungid = rechnungid;
         values = this.select("betreffzid", "rechnungid", rechnungid.toString(), true);
-        explode(values);
+        
+        explode(values); 
+        originalListe = (ArrayList) liste.clone();
+
     }
 
     public RechnungBetreffZZR() {
@@ -60,6 +66,8 @@ public class RechnungBetreffZZR extends Things {
 
     public Object[] getListModel() {
 
+        insertVorlagen();
+        
         CheckComboItem[] models = new CheckComboItem[liste.size()];
         RechnungBetreffzeile zeile;
 
@@ -105,19 +113,20 @@ public class RechnungBetreffZZR extends Things {
 
     public void save() {
         RechnungBetreffzeile zeile;
+        
         this.freeQuery("DELETE FROM " + TABLE_BILL_TEXTS_TO_BILLS + " WHERE rechnungid = " + rechnungid);
-        for (int i = 0; i < liste.size(); i++) {
+        for (int i = 0; i < liste.size()-vls; i++) {
             zeile = (RechnungBetreffzeile) liste.get(i);
             this.insert(TABLE_BILL_TEXTS_TO_BILLS_FIELDS, rechnungid + "," + zeile.getId());
         }
     }
 
-    public Object[][] getListData() {
+    public Object[][] getOriginalListData() {
 
-        Object[][] data = new Object[liste.size()][3];
+        Object[][] data = new Object[originalListe.size()][3];
         RechnungBetreffzeile zeile;
 
-        for (int i = 0; i < liste.size(); i++) {
+        for (int i = 0; i < originalListe.size(); i++) {
             zeile = (RechnungBetreffzeile) liste.get(i);
             data[i][0] = zeile.getId();
             data[i][1] = zeile.getName();
@@ -125,5 +134,11 @@ public class RechnungBetreffZZR extends Things {
         }
 
         return data;
+    }
+
+    private void insertVorlagen() {
+       String[][] vl = new RechnungBetreffzeile().getVorlagenIds();
+       vls = vl.length;
+       explode(vl);
     }
 }

@@ -28,6 +28,7 @@ import mp3.classes.utils.Log;
 import mp4.utils.tabellen.models.PostenTableModel;
 
 import mp4.datenbank.verbindung.ConnectionHandler;
+import mp4.datenbank.verbindung.PrepareData;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.tabellen.DataModelUtils;
 import mp4.utils.zahlen.FormatNumber;
@@ -50,23 +51,21 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
     private boolean storno = false;
     private boolean bezahlt = false;
     private boolean verzug = false;
-    private RechnungPosten[] bp;    
-    private Query query;   
+//    private RechnungPosten[] bp;
+    private Query query;
     public Integer id = 0;
     private PostenTableModel postendata = null;
     private RechnungBetreffzeile[] betreffzeilen;
     private RechnungBetreffZZR zeilenHandler;
-  
 
     public Rechnung(String text) {
         super(ConnectionHandler.instanceOf().clone(TABLE_BILLS));
         this.query = ConnectionHandler.instanceOf();
-        
+
         this.explode(this.selectLast(Strings.ALL, "rechnungnummer", text, true));
         zeilenHandler = new RechnungBetreffZZR(id);
-        bp = getProducts(query);
+//        bp = getProducts(query);
     }
-  
 
     public void add(PostenTableModel m) {
         this.postendata = m;
@@ -107,10 +106,9 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         this.explode(this.selectLast(Strings.ALL, Strings.ID, id.toString(), true));
         this.query = ConnectionHandler.instanceOf().clone(TABLE_BILLS);
         zeilenHandler = new RechnungBetreffZZR(id);
-        bp = getProducts(query);
-        
-    }
+//        bp = getProducts(query);
 
+    }
 
     public String getFDatum() {
         return DateConverter.getDefDateString(getDatum());
@@ -135,7 +133,6 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         String[][] prods = q.select("id, rechnungnummer, gesamtpreis, datum", new String[]{"bezahlt", "1", "", "storno", "0", ""}, "datum", false, true);
         return prods;
     }
-
 
     public String[][] getPaidEUR() {
 //        kontenid, preis, tax, datum
@@ -164,7 +161,6 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         this.AusfuehrungsDatum = date;
     }
 
-
     public void setRechnungnummer(Integer nummer) {
         setRechnungnummer(nummer.toString());
     }
@@ -173,48 +169,28 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         new RechnungPosten().deleteExistingOf(this);
     }
 
-
     private void explode(String[] select) {
-        try { 
+        try {
             this.id = Integer.valueOf(select[0]);
             this.setRechnungnummer(select[1]);
             this.setKundenId(Integer.valueOf(select[2]));
             this.setDatum(DateConverter.getDate(select[3]));
-            if (select[4].equals("1")) {
-                setStorno(true);
-            }
-            if (select[5].equals("1")) {
-                setBezahlt(true);
-            }
+            this.setStorno(select[4]);
+            this.setBezahlt(select[5]);
             this.setGesamtpreis(Double.valueOf(select[6]));
-            this.setGesamttax(Double.valueOf(select[7]));            
+            this.setGesamttax(Double.valueOf(select[7]));
             this.setAusfuehrungsDatum(DateConverter.getDate(select[8]));
             this.setMahnungen(Integer.valueOf(select[9]));
-            
+
         } catch (Exception exception) {
             Log.Debug(exception.getMessage());
         }
 
         if (!isBezahlt()) {
             try {
-
-                Date date = new Date();
-
-                SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy");
-                DecimalFormat dec = new DecimalFormat("00");
-
-                String[] str = DateConverter.getDefDateString(getDatum()).split("\\.");
-                int inte = Integer.valueOf(str[1]) + 1;
-                if (inte == 13) {
-                    inte = 1;
-                }
-                String u = dec.format(inte);
-                String stri = new String(str[0] + "." + u + "." + str[2]);
-                Date dates = df.parse(stri);
-
-                if (date.after(dates)) {
+                Date date = DateConverter.addMonth(getDatum());
+                if (new Date().after(date)) {
                     this.setVerzug(true);
-                    Log.Debug("Rechnung in Verzug!");
                 }
             } catch (Exception ex) {
                 Log.Debug(ex.getMessage());
@@ -223,36 +199,16 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
     }
 
     private String collect() {
-
-
-
-        String str = "";
-        str = str + "(;;2#4#1#1#8#0#;;)" + this.getRechnungnummer() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
-        str = str + this.getKundenId() + "(;;,;;)";
-
-        str = str + "(;;2#4#1#1#8#0#;;)" + DateConverter.getSQLDateString(this.getDatum()) + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
-
-        if (isStorno()) {
-            str = str + "1" + "(;;,;;)";
-        } else {
-            str = str + "0" + "(;;,;;)";
-
-        }
-        if (isBezahlt()) {
-            str = str + "1" + "(;;,;;)";
-        } else {
-            str = str + "0" + "(;;,;;)";
-        }
-
-        str = str + this.getGesamtpreis() + "(;;,;;)";
-        str = str + this.getGesamttax() + "(;;,;;)";
-
-        str = str + "(;;2#4#1#1#8#0#;;)" + DateConverter.getSQLDateString(this.getAusfuehrungsDatum()) + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
-
-        str = str + this.getMahnungen();
-
-        return str;
-
+        String str = PrepareData.prepareString(this.getRechnungnummer());
+        str = str + PrepareData.prepareNumber(this.getKundenId());
+        str = str + PrepareData.prepareString(DateConverter.getSQLDateString(this.getDatum()));
+        str = str + PrepareData.prepareBoolean(isStorno());
+        str = str + PrepareData.prepareBoolean(isBezahlt());
+        str = str + PrepareData.prepareNumber(this.getGesamtpreis());
+        str = str + PrepareData.prepareNumber(this.getGesamttax());
+        str = str + PrepareData.prepareString(DateConverter.getSQLDateString(this.getAusfuehrungsDatum()));
+        str = str + PrepareData.prepareNumber(this.getMahnungen());
+        return PrepareData.finalize(str);
     }
 
     public boolean save() {
@@ -338,7 +294,6 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
                 nstr[i][3] = Double.valueOf(prods[i][5]);
                 try {
                     nstr[i][4] = Double.valueOf(prods[i][4]);
-
                     nstr[i][5] = Double.valueOf(
                             (Double.valueOf(prods[i][4]) *
                             (((Double.valueOf(prods[i][5])) / 100) + 1)));
@@ -357,50 +312,34 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
 
         DecimalFormat n = new DecimalFormat("0.00");
         String lab = "id,Anzahl,Posten,Mehrwertsteuer,Nettopreis,Bruttopreis";
-          Query q = query.clone(TABLE_BILLS_DATA);
-
+        Query q = query.clone(TABLE_BILLS_DATA);
         String[] wher = {"rechnungid", this.getId().toString(), ""};
-
         String[][] prods = q.select(Strings.ALL, wher);
         Object[][] nstr = new Object[prods.length][6];
 
         try {
-
             for (int i = 0; i < nstr.length; i++) {
-
                 nstr[i][0] = Integer.valueOf(prods[i][0]);
                 nstr[i][1] = Double.valueOf(prods[i][2]);
                 nstr[i][2] = String.valueOf(prods[i][3]);
-
                 nstr[i][3] = Double.valueOf(prods[i][5]);
-
                 try {
                     nstr[i][4] = Double.valueOf(prods[i][4]);
-
                     nstr[i][5] = Double.valueOf(
                             (Double.valueOf(prods[i][4]) *
                             (((Double.valueOf(prods[i][5])) / 100) + 1)));
-
                 } catch (NumberFormatException numberFormatException) {
                     nstr[i][4] = Double.valueOf("0");
                     nstr[i][5] = Double.valueOf("0");
-
-//                    Popup.error(numberFormatException.getMessage(), Popup.ERROR);
                 }
             }
-
-
         } catch (Exception exception) {
             Log.Debug(exception);
-//               Popup.error(exception.getMessage(), Popup.ERROR);
         }
-
         return new PostenTableModel(nstr, lab.split(","));
-
     }
 
     private void explode(PostenTableModel m) {
-
         for (int i = 0; i < m.getRowCount(); i++) {
             if (m.getValueAt(i, 4) != null) {
                 RechnungPosten b = new RechnungPosten();
@@ -424,30 +363,24 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
     }
 
     private RechnungPosten[] getProducts(Query query) {
-
         Query q = query.clone(TABLE_BILLS_DATA);
-
         String[] wher = {"rechnungid", this.getId().toString(), ""};
-
-        String[][] prods = q.select(Strings.ALL, wher);
-        RechnungPosten[] prof = null;
-//
-//        for (int t = 0; t < str.length; t++) {
-//
-//            prof[t] = new BillProducts(query, str[0][t]);
-//        }
+        String[][] str = q.select(Strings.ALL, wher);
+        RechnungPosten[] prof = new RechnungPosten[str.length];
+        
+        for (int t = 0; t < str.length; t++) {
+            prof[t] = new RechnungPosten(query, str[0][t]);
+        }
         return prof;
-
-
     }
 
     public Integer getNextBillNumber() {
         return ConnectionHandler.instanceOf().clone(TABLE_BILLS).getNextIndexOfStringCol("rechnungnummer");
     }
 
-    public RechnungPosten[] getBp() {
-        return bp;
-    }
+//    public RechnungPosten[] getBp() {
+//        return bp;
+//    }
 
     /**
      * 
@@ -456,13 +389,10 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
      */
     public Object[][] getWithDependencies(String table1fields) {
         Query q = query.clone(TABLE_BILLS);
-
         String[][] prods = q.select(table1fields, null, TABLE_CUSTOMERS, "kundenid", "datum");
-
         if (prods == null || prods.length < 1) {
             prods = new String[][]{{null, null, null, null, null, "0", "0"}};
         }
-
         return DataModelUtils.changeToClassValue(prods, Boolean.class, new int[]{5, 6});
     }
 
@@ -570,5 +500,19 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         this.Mahnungen = Mahnungen;
     }
 
- 
+    private void setBezahlt(String string) {
+         if (string.equals("1")) {
+            setBezahlt(true);
+        } else {
+            setBezahlt(false);
+        }
+    }
+
+    private void setStorno(String string) {
+        if (string.equals("1")) {
+            setStorno(true);
+        } else {
+            setStorno(false);
+        }
+    }
 }

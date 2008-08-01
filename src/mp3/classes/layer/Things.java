@@ -224,7 +224,7 @@ public abstract class Things implements Queries, mp4.datenbank.struktur.Tabellen
     /**
      * Example: "*", "Name", "anti43", "Name", true
      * will return everyone who`s name is like "anti43" sortet by name.
-     * eg. anti43, anti43w, andre
+     * eg. anti43, anti43w
      * 
      * @param what
      * @param from
@@ -305,5 +305,26 @@ public abstract class Things implements Queries, mp4.datenbank.struktur.Tabellen
         return q.select(what, wher, order, like, integer);
     }
 
+    /**
+     * Example: "*", "Name", "anti43", "Name", true
+     * will return everyone who`s name is like "anti43" sortet by name.
+     * eg. anti43, anti43w
+     * 
+     * @param what
+     * @param from
+     * @param where
+     * @param order
+     * @param like
+     * @return A multidimensional string-array containing the data found
+     */
+    public String[][] select(String what, String from, String where, String order, boolean like, String additionalTable, String addTableKey) {
+        String hk = "'";
 
+        String[] wher = {from, where, hk};
+        if (from == null) {
+            wher = null;
+        }
+
+        return q.select(what, wher, additionalTable, addTableKey, order , like);
+    }
 }

@@ -379,51 +379,51 @@ public abstract class Formater {
         return str;
     }
 
-    public static String[][] merge(String[][] prods, String[][] bills) {
-        if (prods == null) {
-            prods = new String[0][0];
+    public static String[][] merge(String[][] array1, String[][] array2) {
+        if (array1 == null) {
+            array1 = new String[0][0];
         }
-        if (bills == null) {
-            bills = new String[0][0];
+        if (array2 == null) {
+            array2 = new String[0][0];
         }
 
         int z = 0;
-        if (prods != null && prods.length > 0) {
-            z = prods[0].length;
-        } else if (bills != null && bills.length > 0) {
-            z = bills[0].length;
+        if (array1 != null && array1.length > 0) {
+            z = array1[0].length;
+        } else if (array2 != null && array2.length > 0) {
+            z = array2[0].length;
         } else {
 
             z = 0;
         }
 
 
-        String[][] st = new String[prods.length + bills.length][z];
+        String[][] mergedArray = new String[array1.length + array2.length][z];
         int i = 0;
 
-        for (i = 0; i < prods.length; i++) {
+        for (i = 0; i < array1.length; i++) {
 
-            for (int k = 0; k < prods[i].length; k++) {
+            for (int k = 0; k < array1[i].length; k++) {
 
-                st[i][k] = prods[i][k];
-
-
-            }
-
-        }
-
-        for (int l = 0; l < bills.length; l++) {
-
-            for (int k = 0; k < bills[l].length; k++) {
-
-                st[i + l][k] = bills[l][k];
+                mergedArray[i][k] = array1[i][k];
 
 
             }
 
         }
 
-        return st;
+        for (int l = 0; l < array2.length; l++) {
+
+            for (int k = 0; k < array2[l].length; k++) {
+
+                mergedArray[i + l][k] = array2[l][k];
+
+
+            }
+
+        }
+
+        return mergedArray;
 
     }
 
