@@ -124,7 +124,7 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
         PostenTableModel m;
 
         if (hasCustomer() && validDate()) {
-
+            
             SelectionCheck selection = new SelectionCheck(jTable1);
             calculated = DataModelUtils.calculateTableCols(jTable1, 0, 3, 4);
             m = (PostenTableModel) jTable1.getModel();
@@ -142,6 +142,11 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
             bill.setBezahlt(jCheckBox2.isSelected());
             bill.setStorno(jCheckBox3.isSelected());
             bill.add(m);
+            
+            if(getCurrent().getZeilenHandler().getList().size()>0){
+                bill.getZeilenHandler().add(getCurrent().getZeilenHandler().getList());
+            }
+            
             if (bill.save()) {
 
                 this.setEdited(false);
@@ -1141,7 +1146,7 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
 
     private void setBetreffZeilen(Rechnung current){
         
-        jComboBox1.setModel(new DefaultComboBoxModel(current.getZeilenHandler().getListModel()));
+        jComboBox1.setModel(new DefaultComboBoxModel(current.getZeilenHandler().getDisplayListData()));
         jComboBox1.addActionListener(new CheckComboListener());
         jComboBox1.setRenderer(new CheckComboRenderer());
     }

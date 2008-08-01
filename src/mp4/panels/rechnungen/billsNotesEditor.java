@@ -245,6 +245,7 @@ private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 }                                        
 
 private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+    SelectionCheck selection = new SelectionCheck(jTable1);
     DataModelUtils.addToTable(jTable1, new Object[][]{{0, null, null}});
     resizeTables();
 }//GEN-LAST:event_jButton6ActionPerformed

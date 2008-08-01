@@ -31,22 +31,25 @@ public class RechnungBetreffZZR extends Things {
     private String[][] values;
     private Integer rechnungid = 0;
     private ArrayList liste = new ArrayList();
-    private ArrayList vorlagenliste = new ArrayList();
-    private ArrayList originalListe;
     private int vls = 0;
 
     public RechnungBetreffZZR(Integer rechnungid) {
         super(ConnectionHandler.instanceOf().clone(TABLE_BILL_TEXTS_TO_BILLS));
         this.rechnungid = rechnungid;
         values = this.select("betreffzid", "rechnungid", rechnungid.toString(), true);
-        
-        explode(values); 
-        originalListe = (ArrayList) liste.clone();
-
+        explode(values);
     }
 
     public RechnungBetreffZZR() {
         super(ConnectionHandler.instanceOf().clone(TABLE_BILL_TEXTS_TO_BILLS));
+    }
+
+    public void add(ArrayList list) {
+       liste = explode(liste, list);
+    }
+
+    public ArrayList getList() {
+       return liste;
     }
 
     public Object[] getListVorlagen() {
@@ -64,15 +67,16 @@ public class RechnungBetreffZZR extends Things {
         return models;
     }
 
-    public Object[] getListModel() {
+    public Object[] getDisplayListData() {
 
-        insertVorlagen();
-        
-        CheckComboItem[] models = new CheckComboItem[liste.size()];
+        ArrayList list = explode(new ArrayList(), liste);
+        list = explode(list, new RechnungBetreffzeile().getVorlagenIds());
+
+        CheckComboItem[] models = new CheckComboItem[list.size()];
         RechnungBetreffzeile zeile;
 
-        for (int i = 0; i < liste.size(); i++) {
-            zeile = (RechnungBetreffzeile) liste.get(i);
+        for (int i = 0; i < list.size(); i++) {
+            zeile = (RechnungBetreffzeile) list.get(i);
             if (zeile != null) {
                 models[i] = new CheckComboItem(zeile.getId(), zeile.getName(), true);
             }
@@ -113,9 +117,9 @@ public class RechnungBetreffZZR extends Things {
 
     public void save() {
         RechnungBetreffzeile zeile;
-        
+
         this.freeQuery("DELETE FROM " + TABLE_BILL_TEXTS_TO_BILLS + " WHERE rechnungid = " + rechnungid);
-        for (int i = 0; i < liste.size()-vls; i++) {
+        for (int i = 0; i < liste.size() - vls; i++) {
             zeile = (RechnungBetreffzeile) liste.get(i);
             this.insert(TABLE_BILL_TEXTS_TO_BILLS_FIELDS, rechnungid + "," + zeile.getId());
         }
@@ -123,22 +127,35 @@ public class RechnungBetreffZZR extends Things {
 
     public Object[][] getOriginalListData() {
 
-        Object[][] data = new Object[originalListe.size()][3];
+        Object[][] data = new Object[liste.size()][3];
         RechnungBetreffzeile zeile;
 
-        for (int i = 0; i < originalListe.size(); i++) {
+        for (int i = 0; i < liste.size(); i++) {
             zeile = (RechnungBetreffzeile) liste.get(i);
             data[i][0] = zeile.getId();
             data[i][1] = zeile.getName();
             data[i][2] = zeile.getText();
         }
-
         return data;
     }
 
-    private void insertVorlagen() {
-       String[][] vl = new RechnungBetreffzeile().getVorlagenIds();
-       vls = vl.length;
-       explode(vl);
+    @SuppressWarnings("unchecked")
+    private ArrayList explode(ArrayList arrayList, String[][] data) {
+        if (data != null && data.length > 0) {
+            for (int i = 0; i < data.length; i++) {
+                for (int j = 0; j < data[i].length; j++) {
+                    arrayList.add(new RechnungBetreffzeile(Integer.valueOf(data[i][0])));
+                }
+            }
+        }
+        return arrayList;
+    }
+
+    @SuppressWarnings("unchecked")
+    private ArrayList explode(ArrayList arrayList, ArrayList liste) {
+        for (int i = 0; i < liste.size(); i++) {
+            arrayList.add(liste.get(i));
+        }
+        return arrayList;
     }
 }
