@@ -28,6 +28,7 @@ public class Programmdaten implements mp4.datenbank.struktur.Tabellen {
     private Integer MAINFRAME_TAB = 8;
     private Dimension  MAINFRAME_WINDOW_STATE;
     private String MAHNUNG_TEXT_DEFAULT;
+    private String RECHNUNG_NUMMER_FORMAT;
     
     
     private DataHandler handler;
@@ -81,5 +82,20 @@ public class Programmdaten implements mp4.datenbank.struktur.Tabellen {
        handler.setString("MAHNUNG_TEXT_DEFAULT", MAHNUNG_TEXT_DEFAULT);
     }
     
+    public String getRECHNUNG_NUMMER_FORMAT() {
+        return handler.getString("RECHNUNG_NUMMER_FORMAT");
+    }
+    
+    public void setRECHNUNG_NUMMER_FORMAT(String RECHNUNG_NUMMER_FORMAT) {
+        handler.setString("RECHNUNG_NUMMER_FORMAT", RECHNUNG_NUMMER_FORMAT);
+    }
+    
+    public String getANGEBOT_NUMMER_FORMAT() {
+        return handler.getString("ANGEBOT_NUMMER_FORMAT");
+    }
+    
+    public void setANGEBOT_NUMMER_FORMAT(String ANGEBOT_NUMMER_FORMAT) {
+        handler.setString("ANGEBOT_NUMMER_FORMAT", ANGEBOT_NUMMER_FORMAT);
+    }
 
 }

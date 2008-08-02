@@ -17,17 +17,31 @@
 
 package mp4.klassen.objekte;
 
+import mp4.einstellungen.Programmdaten;
+
 /**
  *
  * @author Andreas
  */
-public class BillNumberFormat {
+public class NumberFormatHandler {
     public final String MONTH = "\\{MONAT\\}";
     public final String YEAR = "\\{JAHR\\}";
     public final String DAY = "\\{TAG\\}";
     public final String COUNT = "\\{NUMMER\\}";
     public final String SEPARATOR = "\\{TR\\}";
     public int DIGITS = 5;
+    private String format;
     
+    public NumberFormatHandler(int mode){
+    
+        switch (mode){
+        
+            case 0:
+               format =  Programmdaten.instanceOf().getRECHNUNG_NUMMER_FORMAT();
+        
+        }
+       
+    
+    }
 
 }

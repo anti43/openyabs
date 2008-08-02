@@ -81,6 +81,11 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.s
         this.id = Integer.valueOf(id);
         this.explode(this.selectLast(Strings.ALL, Strings.ID, id.toString(), true));
         this.query = ConnectionHandler.instanceOf();
+        
+        Query q = query.clone(TABLE_OFFERS_DATA);
+        String[] wher = {"angebotid", this.getId().toString(), ""};
+
+        products = q.select(Strings.ALL, wher);
     }
 
     public Angebot expose() {
@@ -250,19 +255,19 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.s
         return Integer.valueOf(str[0]);
     }
 
-    private AngebotPosten[] getProducts(Query query) {
-
-        Query q = query.clone(TABLE_OFFERS_DATA);
-        String[] wher = {"auftragid", this.getId().toString(), ""};
-
-        products = q.select(Strings.ALL, wher);
-        AngebotPosten[] prof = null;
-
-        for (int t = 0; t < products.length; t++) {
-            prof[t] = new AngebotPosten(query, products[0][t]);
-        }
-        return prof;
-    }
+//    private AngebotPosten[] getProducts(Query query) {
+//
+//        Query q = query.clone(TABLE_OFFERS_DATA);
+//        String[] wher = {"auftragid", this.getId().toString(), ""};
+//
+//        products = q.select(Strings.ALL, wher);
+//        AngebotPosten[] prof = null;
+//
+//        for (int t = 0; t < products.length; t++) {
+//            prof[t] = new AngebotPosten(query, products[0][t]);
+//        }
+//        return prof;
+//    }
 
     public String getNextOfferNumber() {
         throw new UnsupportedOperationException("format?");//format?
