@@ -143,7 +143,7 @@ public class DatePick extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     private void jButton1ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+        
 
         SimpleDateFormat format = new SimpleDateFormat( "dd.MM.yyyy" );
         
@@ -169,7 +169,7 @@ public class DatePick extends javax.swing.JFrame {
         
     }
     private void jButton1KeyPressed (java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton1KeyPressed
-        // TODO add your handling code here:
+        
 
         SimpleDateFormat format = new SimpleDateFormat( "dd.MM.yyyy" );
         
@@ -184,13 +184,13 @@ public class DatePick extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1KeyPressed
 
     private void jPanel1KeyPressed (java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jPanel1KeyPressed
-        // TODO add your handling code here:
+        
         this.dispose();
     }//GEN-LAST:event_jPanel1KeyPressed
 
     @SuppressWarnings("deprecation")
     private void jButton1MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
-        // TODO add your handling code here:
+        
         jButton1KeyPressed(new KeyEvent(xc, WIDTH, WIDTH, WIDTH, WIDTH,'l'));
     }//GEN-LAST:event_jButton1MouseClicked
 

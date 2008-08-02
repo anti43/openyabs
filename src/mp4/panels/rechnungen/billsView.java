@@ -124,7 +124,7 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
         PostenTableModel m;
 
         if (hasCustomer() && validDate()) {
-            
+
             SelectionCheck selection = new SelectionCheck(jTable1);
             calculated = DataModelUtils.calculateTableCols(jTable1, 0, 3, 4);
             m = (PostenTableModel) jTable1.getModel();
@@ -142,11 +142,11 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
             bill.setBezahlt(jCheckBox2.isSelected());
             bill.setStorno(jCheckBox3.isSelected());
             bill.add(m);
-            
-            if(getCurrent().getZeilenHandler().getList().size()>0){
+
+            if (getCurrent().getZeilenHandler().getList().size() > 0) {
                 bill.getZeilenHandler().add(getCurrent().getZeilenHandler().getList());
             }
-            
+
             if (bill.save()) {
 
                 this.setEdited(false);
@@ -158,15 +158,12 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
                 updateListTable();
                 resizeFields();
             } else {
-
-                new Popup("Es ist ein Fehler aufgetreten.", Popup.ERROR);
+                new Popup(Popup.GENERAL_ERROR);
             }
         } else {
 
             new Popup("Sie müssen einen (validen) Kunden auswählen.", Popup.NOTICE);
         }
-
-
     }
 
     private void fetchBillsOfTheMonth() {
@@ -211,11 +208,16 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
         this.currentBill = current;
         this.setCustomer(new Customer(current.getKundenId()));
 
+        if (current.getAngebot() != null) {
+            jTextField13.setText(DateConverter.getDefDateString(current.getAngebot().getDatum()));
+        } else {
+            jTextField13.setText(null);
+        }
         this.jTextField6.setText(current.getRechnungnummer());
         jTextField6.setBackground(Color.WHITE);
         this.jTextField7.setText(DateConverter.getDefDateString(current.getDatum()));
         this.jTextField11.setText(DateConverter.getDefDateString(current.getAusfuehrungsDatum()));
-        
+
         this.jTextField10.setText(current.getMahnungen().toString());
 
         if (current.isBezahlt()) {
@@ -236,6 +238,7 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
                 this.jCheckBox2.setBackground(new Color(212, 208, 200));
             }
         }
+
 
         setBetreffZeilen(current);
 
@@ -1144,13 +1147,13 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void setBetreffZeilen(Rechnung current){
-        
+    private void setBetreffZeilen(Rechnung current) {
+
         jComboBox1.setModel(new DefaultComboBoxModel(current.getZeilenHandler().getDisplayListData()));
         jComboBox1.addActionListener(new CheckComboListener());
         jComboBox1.setRenderer(new CheckComboRenderer());
     }
-    
+
     private void jTextField1ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
         this.jTable3.setModel(new BillSearchListTableModel("rechnungnummer", jTextField1.getText()));
         TableFormat.stripFirst(jTable3);
@@ -1201,7 +1204,7 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
                 m = (PostenTableModel) jTable1.getModel();
 
                 Rechnung bill = currentBill;
-               
+
                 bill.setDatum(DateConverter.getDate(jTextField7.getText()));
                 bill.setAusfuehrungsDatum(DateConverter.getDate(jTextField7.getText()));
                 bill.setKundenId(getCustomer().getId());
@@ -1209,15 +1212,21 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
                 bill.setStorno(jCheckBox3.isSelected());
                 bill.setGesamtpreis(calculated.getBruttobetrag());
                 bill.add(m);
+
+                if (bill.getAngebot() != null && jTextField13.getText() !=  null && DateConverter.getDate(jTextField13.getText()) != null ) {
+                    bill.getAngebot().setAuftragdatum(DateConverter.getDate(jTextField13.getText()));
+                    bill.getAngebot().save();
+                }
+
                 if (bill.save()) {
 
                     this.setEdited(false);
                     mainframe.setMessage("Rechnung Nummer: " + bill.getRechnungnummer() + " gespeichert.");
                     new HistoryItem(Strings.BILL, "Rechnung Nummer: " + bill.getRechnungnummer() + " gespeichert.");
-                this.setBill(bill);
+                    this.setBill(bill);
 
                 } else {
-                    new Popup("Es ist ein Fehler aufgetreten.", Popup.ERROR);
+                    new Popup(Popup.GENERAL_ERROR);
                 }
             } else {
 
@@ -1227,7 +1236,7 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
             updateListTable();
             resizeFields();
         } else {
-            if (JOptionPane.showConfirmDialog(this, "Möchten Sie die Rechnung anlegen?", "Rechnung exsitiert nicht.", JOptionPane.INFORMATION_MESSAGE) == JOptionPane.YES_OPTION) {
+            if (Popup.Y_N_dialog("Möchten Sie die Rechnung anlegen?")) {
                 createNew();
             }
         }
@@ -1367,11 +1376,9 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
     }//GEN-LAST:event_jTextField6MouseClicked
 
 private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-// TODO add your handling code here:
 }//GEN-LAST:event_jButton8ActionPerformed
 
 private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-// TODO add your handling code here:
 }//GEN-LAST:event_jButton4ActionPerformed
 
 private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton17ActionPerformed
@@ -1380,7 +1387,6 @@ private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 }//GEN-LAST:event_jButton17ActionPerformed
 
 private void jButton17KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton17KeyPressed
-// TODO add your handling code here:
 }//GEN-LAST:event_jButton17KeyPressed
 
 private void jCheckBox4ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBox4ItemStateChanged
@@ -1389,7 +1395,6 @@ private void jCheckBox4ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIR
 }//GEN-LAST:event_jCheckBox4ItemStateChanged
 
 private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
-// TODO add your handling code here:
 }//GEN-LAST:event_jButton16ActionPerformed
 
 private void jButton19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton19ActionPerformed
@@ -1397,7 +1402,6 @@ private void jButton19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 }//GEN-LAST:event_jButton19ActionPerformed
 
 private void jButton19KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton19KeyPressed
-// TODO add your handling code here:
 }//GEN-LAST:event_jButton19KeyPressed
 
 private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
@@ -1410,7 +1414,6 @@ private void jCheckBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 }//GEN-LAST:event_jCheckBox2ActionPerformed
 
 private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-// TODO add your handling code here:
 }//GEN-LAST:event_jButton5ActionPerformed
 
 private void jCheckBox3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox3ActionPerformed
@@ -1528,14 +1531,14 @@ private void jCheckBox3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 
     public void updateTables() {
 
-      setBetreffZeilen(getCurrent());
-      this.updateListTable();  
-        
+        setBetreffZeilen(getCurrent());
+        updateListTable();
+
     }
 
     public void close() {
         if (isEdited()) {
-            if (Popup.dialog("Aenderungen verwerfen?")) {
+            if (Popup.Y_N_dialog("Änderungen verwerfen?")) {
                 ((JTabbedPane) this.getParent()).remove(this);
             }
         } else {

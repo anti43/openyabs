@@ -238,7 +238,7 @@ public class undoCache {
         } else if (item.getClass().isInstance(new Angebot())) {
 
             Angebot it = (Angebot) item;
-            text = "Angebot Nummer " + it.getOrdernummer() + text;
+            text = "Angebot Nummer " + it.getAngebotnummer() + text;
 
         } else if (item.getClass().isInstance(new Einnahme())) {
 

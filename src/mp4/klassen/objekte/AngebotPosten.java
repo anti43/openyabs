@@ -41,13 +41,13 @@ public class AngebotPosten extends mp3.classes.layer.Things implements mp4.daten
         this.id = 0;
     }
      public AngebotPosten(Integer id) {
-        super(ConnectionHandler.instanceOf().clone(TABLE_ORDERS_DATA));
+        super(ConnectionHandler.instanceOf().clone(TABLE_OFFERS_DATA));
         this.id = id;
         this.explode(this.selectLast("*", "id", id.toString(), true));
     }
 
     public AngebotPosten(Query query) {
-        super(query.clone(TABLE_ORDERS_DATA));
+        super(query.clone(TABLE_OFFERS_DATA));
     }
 
     /**
@@ -56,7 +56,7 @@ public class AngebotPosten extends mp3.classes.layer.Things implements mp4.daten
      * @param id
      */
     public AngebotPosten(Query query, String id) {
-        super(query.clone(TABLE_ORDERS_DATA));
+        super(query.clone(TABLE_OFFERS_DATA));
         this.id = Integer.valueOf(id);
         this.explode(this.selectLast("*", "id", id, true));
     }

@@ -27,8 +27,14 @@ public class Popup {
     public static String WARN = "Achtung!";
     public static String ERROR = "Fehler";
     public static String NOTICE = "Hinweis";
+    public static String GENERAL_ERROR = "Es ist ein Fehler aufgetreten.";
 
-    public static boolean dialog(String text) {
+    /**
+     * 
+     * @param text
+     * @return
+     */
+    public static boolean Y_N_dialog(String text) {
         if (JOptionPane.showConfirmDialog(null, text, "Sind Sie sicher?",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE , new javax.swing.ImageIcon(new Popup().getClass().getResource("/bilder/medium/messagebox_warning.png"))) == JOptionPane.YES_OPTION) {
             return true;
         } else {

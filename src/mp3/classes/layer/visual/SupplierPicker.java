@@ -209,7 +209,7 @@ public class SupplierPicker extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jTextField1ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        // TODO add your handling code here:
+        
         
         String[][] list = supplier.select("id, lieferantennummer, firma ", "lieferantennummer", jTextField1.getText(), "lieferantennummer", true);
         String k = "id, " + "Nummer,Firma";
@@ -254,18 +254,18 @@ public class SupplierPicker extends javax.swing.JFrame {
     }//GEN-LAST:event_jTable1MouseClicked
 
     private void jButton1ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+        
         
         jTable1MouseClicked(new MouseEvent(frame, WIDTH, WIDTH, WIDTH, WIDTH, WIDTH, WIDTH, rootPaneCheckingEnabled));
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
+        
         this.dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jTable1KeyPressed (java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTable1KeyPressed
-        // TODO add your handling code here:
+        
         
         if(evt.getKeyCode() == KeyEvent.VK_ENTER    ) {
             jTable1MouseClicked(new MouseEvent(frame, WIDTH, WIDTH, WIDTH, WIDTH, WIDTH, WIDTH, rootPaneCheckingEnabled));

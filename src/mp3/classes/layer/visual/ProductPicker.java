@@ -277,7 +277,7 @@ public static void update(){
     }// </editor-fold>//GEN-END:initComponents
 
     private void jTextField1ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        // TODO add your handling code here:
+        
         
         String[][] list = p.select("id,produktnummer,name,hersteller", "produktnummer", jTextField1.getText(), "produktnummer", true);
         String k = "id, " + "Nummer,Name,Hersteller";
@@ -339,19 +339,19 @@ public static void update(){
     }//GEN-LAST:event_jTable1MouseClicked
 
     private void jButton1ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+        
         
         jTable1MouseClicked(new MouseEvent(frame, WIDTH, WIDTH, WIDTH, WIDTH, WIDTH, WIDTH, rootPaneCheckingEnabled));
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
+        
         this.dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     @SuppressWarnings("static-access")
     private void jTable1KeyPressed (java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTable1KeyPressed
-        // TODO add your handling code here:
+        
         
         if(evt.getKeyCode() == evt.VK_ENTER    ) {
             jTable1MouseClicked(new MouseEvent(frame, WIDTH, WIDTH, WIDTH, WIDTH, WIDTH, WIDTH, rootPaneCheckingEnabled));

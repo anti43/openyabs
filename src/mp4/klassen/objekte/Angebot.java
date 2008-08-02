@@ -21,10 +21,12 @@ import java.util.Date;
 import java.util.List;
 
 import mp3.classes.interfaces.Strings;
+import mp3.classes.layer.Popup;
 import mp4.datenbank.verbindung.Query;
 import mp3.classes.utils.Log;
 import mp4.utils.tabellen.models.PostenTableModel;
 import mp4.datenbank.verbindung.ConnectionHandler;
+import mp4.datenbank.verbindung.PrepareData;
 import mp4.utils.datum.DateConverter;
 
 /**
@@ -35,54 +37,55 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.s
 
     private String Angebotnummer = "";
     private Integer KundenId = 0;
-    private boolean rechnung = false;
-    private boolean auftrag = false;
+    private Integer RechnungId = 0;
+    private boolean hasRechnung = false;
+    private boolean isAuftrag = false;
+    private Date anfrageVom = new Date();
     private Date Datum = new Date();
-    private Date bisDatum = new Date();
-    private AngebotPosten[] bp;
+    private Date validVon = new Date();
+    private Date validBis = new Date();
+    private Date auftragdatum = null;
     private Query query;
     private String[][] products;
-    private List labelsOfGetAllWithD;
-   public Integer id = 0;
+    public Integer id = 0;
+
     public Integer getId() {
         return id;
     }
+
     public void destroy() {
         this.delete(this.id);
         this.id = 0;
     }
+
     public Angebot() {
-        super(ConnectionHandler.instanceOf().clone(TABLE_ORDERS));
+        super(ConnectionHandler.instanceOf().clone(TABLE_OFFERS));
         this.query = ConnectionHandler.instanceOf();
     }
 
-
     public Angebot(Query query) {
-        super(query.clone(TABLE_ORDERS));
+        super(query.clone(TABLE_OFFERS));
         this.query = query;
     }
 
     /**
      * 
-     * @param query
      * @param id
      */
     public Angebot(Integer id) {
-        super(ConnectionHandler.instanceOf().clone(TABLE_ORDERS));
+        super(ConnectionHandler.instanceOf().clone(TABLE_OFFERS));
         this.id = Integer.valueOf(id);
         this.explode(this.selectLast(Strings.ALL, Strings.ID, id.toString(), true));
         this.query = ConnectionHandler.instanceOf();
-        bp = getProducts(query);
     }
 
     public Angebot expose() {
-
         System.out.println(collect());
         return this;
     }
 
     public String getBisFDatum() {
-          return DateConverter.getDefDateString(getBisDatum());
+        return DateConverter.getDefDateString(getBisDatum());
     }
 
     public String getFDatum() {
@@ -96,9 +99,6 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.s
             return false;
         }
     }
-//  public String getFDatum() {
-//      return DateConverter.getDefDateString(getDatum());
-//    }
 
     /**
      * 
@@ -106,107 +106,74 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.s
      */
     public Object[][] getProductlistAsArray() {
 
-        DecimalFormat n = new DecimalFormat("0.00");
-
-        String lab = "id,Anzahl,Posten,Mehrwertsteuer,Nettopreis,Bruttopreis";
         Object[][] nstr = new Object[products.length][6];
-//Class[] types = new Class[]{java.lang.Integer.class, java.lang.Double.class, java.lang.String.class,
-//        java.lang.Double.class, java.lang.Double.class, java.lang.Double.class};
-//Log.Debug(prods);
-        try {
 
+        try {
             for (int i = 0; i < nstr.length; i++) {
                 try {
                     nstr[i][0] = Integer.valueOf(products[i][0]);
                     nstr[i][1] = Double.valueOf(products[i][2]);
                     nstr[i][2] = String.valueOf(products[i][3]);
-
                     nstr[i][3] = Double.valueOf(products[i][5]);
-
-
                     nstr[i][4] = Double.valueOf(products[i][4]);
-
                     nstr[i][5] = Double.valueOf(
                             (Double.valueOf(products[i][4]) *
                             (((Double.valueOf(products[i][5])) / 100) + 1)));
-
                 } catch (NumberFormatException numberFormatException) {
                     nstr[i][4] = Double.valueOf("0");
                     nstr[i][5] = Double.valueOf("0");
-
-//                    Popup.error(numberFormatException.getMessage(), Popup.ERROR);
                 }
             }
-
-
         } catch (Exception exception) {
             Log.Debug(exception);
-//               Popup.error(exception.getMessage(), Popup.ERROR);
         }
-
         return nstr;
+    }
 
+    public int search(Integer rechnungid) {
+        String[] in = this.selectLast("id, rechnungid", "rechnungid", rechnungid.toString(), true);
+        if (in != null && in.length > 0) {
+            return Integer.valueOf(in[0]);
+        } else {
+            return 0;
+        }
     }
 
     private void explode(String[] select) {
 
-        this.setOrdernummer(select[1]);
+        this.id = Integer.valueOf(select[0]);
+        this.setAngebotnummer(select[1]);
         this.setKundenId(Integer.valueOf(select[2]));
-
         this.setDatum(DateConverter.getDate(select[3]));
-        if (select[4].equals("1")) {
-            this.setAuftrag(true);
-        }
-        this.setBisDatum(DateConverter.getDate(select[5]));
-        if (select[6].equals("1")) {
-            this.setRechnung(true);
-        }
+        this.setAuftrag(select[4]);
+        this.setAnfrageVom(DateConverter.getDate(select[5]));
+        this.setValidVon(DateConverter.getDate(select[6]));
+        this.setBisDatum(DateConverter.getDate(select[7]));
+        this.setRechnungId(Integer.valueOf(select[8]));
 
     }
 
     private String collect() {
-
-
-
-        String str = "";
-        str = str + "(;;2#4#1#1#8#0#;;)" + this.getOrdernummer() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
-        str = str + this.getKundenId() + "(;;,;;)";
-//        str = str + this.getDeleted();
-        str = str + "(;;2#4#1#1#8#0#;;)" + DateConverter.getSQLDateString(this.getDatum()) + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
-        if (this.isAuftrag()) {
-            str = str + "1" + "(;;,;;)";
-        } else {
-            str = str + "0" + "(;;,;;)";
-        }
-        str = str + "(;;2#4#1#1#8#0#;;)" + DateConverter.getSQLDateString(this.getBisDatum()) + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
-        if (this.hasRechnung()) {
-            str = str + "1";
-        } else {
-            str = str + "0";
-        }
-
-        return str;
-
-
+        String str = PrepareData.prepareString(this.getAngebotnummer());
+        str = str + PrepareData.prepareNumber(this.getKundenId());
+        str = str + PrepareData.prepareString(DateConverter.getSQLDateString(this.getDatum()));
+        str = str + PrepareData.prepareString(DateConverter.getSQLDateString(this.getAuftragdatum()));
+        str = str + PrepareData.prepareString(DateConverter.getSQLDateString(this.getAnfrageVom()));
+        str = str + PrepareData.prepareString(DateConverter.getSQLDateString(this.getValidVon()));
+        str = str + PrepareData.prepareString(DateConverter.getSQLDateString(this.getBisDatum()));
+        str = str + PrepareData.prepareNumber(this.getRechnungId());
+        return PrepareData.finalize(str);
     }
 
     public void save() {
-
-
         if (id > 0 && !isSaved) {
             Log.Debug(this.collect());
-            this.update(TABLE_ORDERS_FIELDS, this.collect(), id.toString());
-
+            this.update(TABLE_OFFERS_FIELDS, this.collect(), id.toString());
             isSaved = true;
         } else if (id == 0 && !isSaved) {
-            this.insert(TABLE_ORDERS_FIELDS, this.collect());
-
+            this.insert(TABLE_OFFERS_FIELDS, this.collect());
             this.id = this.getMyId();
-
             isSaved = true;
-        } else {
-
-//            mp3.layer.Popup.warn("no_data_to_save", Popup.WARN);
         }
     }
 
@@ -214,11 +181,11 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.s
         return id.toString();
     }
 
-    public String getOrdernummer() {
+    public String getAngebotnummer() {
         return Angebotnummer;
     }
 
-    public void setOrdernummer(String Ordernummer) {
+    public void setAngebotnummer(String Ordernummer) {
         this.Angebotnummer = Ordernummer;
         this.isSaved = false;
     }
@@ -243,91 +210,63 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.s
 
     public PostenTableModel getProductlistAsTableModel() {
 
-        DecimalFormat n = new DecimalFormat("0.00");
-
         String lab = "id,Anzahl,Posten,Mehrwertsteuer,Nettopreis,Bruttopreis";
         Object[][] nstr = new Object[products.length][6];
 
         try {
-
             for (int i = 0; i < nstr.length; i++) {
-
                 nstr[i][0] = Integer.valueOf(products[i][0]);
                 nstr[i][1] = Double.valueOf(products[i][2]);
                 nstr[i][2] = String.valueOf(products[i][3]);
-
                 nstr[i][3] = Double.valueOf(products[i][5]);
-
                 try {
                     nstr[i][4] = Double.valueOf(products[i][4]);
-
                     nstr[i][5] = Double.valueOf(
                             (Double.valueOf(products[i][4]) *
                             (((Double.valueOf(products[i][5])) / 100) + 1)));
-
                 } catch (NumberFormatException numberFormatException) {
                     nstr[i][4] = Double.valueOf("0");
                     nstr[i][5] = Double.valueOf("0");
-
-//                    Popup.error(numberFormatException.getMessage(), Popup.ERROR);
+                    Popup.notice(Popup.GENERAL_ERROR);
                 }
             }
-
-
         } catch (Exception exception) {
             Log.Debug(exception);
-//               Popup.error(exception.getMessage(), Popup.ERROR);
         }
-
         return new PostenTableModel(nstr, lab.split(","));
-
     }
 
     private Integer getMyId() {
-
-        String[] str = this.selectLast("id", "Auftragnummer", this.getOrdernummer(), false);
-
+        String[] str = this.selectLast("id", "Auftragnummer", this.getAngebotnummer(), false);
         return Integer.valueOf(str[0]);
     }
 
     private AngebotPosten[] getProducts(Query query) {
 
-        Query q = query.clone(TABLE_ORDERS_DATA);
-
+        Query q = query.clone(TABLE_OFFERS_DATA);
         String[] wher = {"auftragid", this.getId().toString(), ""};
 
         products = q.select(Strings.ALL, wher);
         AngebotPosten[] prof = null;
-//
-//        for (int t = 0; t < str.length; t++) {
-//
-//            prof[t] = new BillProducts(query, str[0][t]);
-//        }
+
+        for (int t = 0; t < products.length; t++) {
+            prof[t] = new AngebotPosten(query, products[0][t]);
+        }
         return prof;
-
-
     }
 
     public Integer getNextBillNumber() {
         return query.getNextIndexOfIntCol("auftragnummer");
     }
 
-//    public BillProduct[] getBp() {
-//        return bp;
-//    }
     /**
      * 
      * @return
      */
     public String[][] getAllWithDepencies() {
-
-        Query q = query.clone(TABLE_ORDERS);
-
+        Query q = query.clone(TABLE_OFFERS);
         String[][] prods = q.select(Strings.ALL, null, TABLE_CUSTOMERS, "kundenid");
-
-        setLabelsOfAllWithDepencies(q);
         return prods;
-
     }
 
     /**
@@ -336,72 +275,89 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.s
      * @return 
      */
     public String[][] getWithDepencies(String table1fields) {
-        Query q = query.clone(TABLE_ORDERS);
-
+        Query q = query.clone(TABLE_OFFERS);
         String[][] prods = q.select(table1fields, null, TABLE_CUSTOMERS, "kundenid");
-
-        setLabelsOfAllWithDepencies(q);
         return prods;
     }
 
-    public void setLabelsOfAllWithDepencies(Query q) {
-
-//        labelsOfGetAllWithD = q.getLabels();
-
-    }
-
-    /**
-     * 
-     * @return 
-     */
-    public String[] getLabelsOfAllWithDepencies() {
-
-        String[] stray = new String[labelsOfGetAllWithD.size()];
-
-        for (int i = 0; i < labelsOfGetAllWithD.size(); i++) {
-
-            stray[i] = (String) labelsOfGetAllWithD.get(i);
-
-        }
-
-        return stray;
-
-    }
-
     public String[][] getAll() {
-
-        Query q = query.clone(TABLE_ORDERS);
-
+        Query q = query.clone(TABLE_OFFERS);
         String[][] prods = q.select(Strings.ALL, null);
-
         return prods;
     }
 
     public boolean isAuftrag() {
-        return auftrag;
+        return isAuftrag;
     }
 
     public void setAuftrag(boolean auftrag) {
-        this.auftrag = auftrag;
+        this.isAuftrag = auftrag;
     }
 
     public Date getBisDatum() {
-        return bisDatum;
+        return validBis;
     }
 
     public void setBisDatum(Date bisDatum) {
-        this.bisDatum = bisDatum;
+        this.validBis = bisDatum;
     }
 
     public void setRechnung(boolean rechnung) {
-        this.rechnung = rechnung;
+        this.hasRechnung = rechnung;
     }
 
     public boolean hasRechnung() {
-        return rechnung;
+        if (getRechnungId() > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public int delete(String id) {
         return delete(Integer.valueOf(id));
     }
+
+    public Date getAnfrageVom() {
+        return anfrageVom;
+    }
+
+    public void setAnfrageVom(Date anfrageVom) {
+        this.anfrageVom = anfrageVom;
+    }
+
+    public Date getValidVon() {
+        return validVon;
+    }
+
+    public void setValidVon(Date validVon) {
+        this.validVon = validVon;
+    }
+
+    public Integer getRechnungId() {
+        return RechnungId;
+    }
+
+    public void setRechnungId(Integer RechnungId) {
+        this.RechnungId = RechnungId;
+    }
+
+    private void setAuftrag(String datum) {
+        if(DateConverter.getDate(datum)!=null){
+            this.setAuftrag(true);
+            this.setAuftragdatum(DateConverter.getDate(datum)); 
+        } else {
+            this.setAuftrag(false);
+        }
+    }
+
+    public Date getAuftragdatum() {
+        return auftragdatum;
+    }
+
+    public void setAuftragdatum(Date auftragdatum) {
+        this.auftragdatum = auftragdatum;
+    }
+    
 }
+

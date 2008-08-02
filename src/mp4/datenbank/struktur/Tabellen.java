@@ -57,11 +57,11 @@ public interface Tabellen {
     /**
      * Auftragsdaten
      */
-    public final String TABLE_ORDERS = "auftraege";
+    public final String TABLE_OFFERS = "angebote";
     /**
      * Auftragsposten
      */
-    public final String TABLE_ORDERS_DATA = "auftragsposten";
+    public final String TABLE_OFFERS_DATA = "angebotposten";
     /**
      * Files (pictures) of products
      */
@@ -154,9 +154,9 @@ public interface Tabellen {
     /**
      * Fields in orders table
      */
-    public final String TABLE_ORDERS_FIELDS =
-            "Auftragnummer" + "," + "KundenId" + "," +
-            "Datum" + "," + "auftrag" + "," + "bis" + "," + "rechnung";
+    public final String TABLE_OFFERS_FIELDS =
+            "Angebotnummer" + "," + "KundenId" + "," +
+            "Datum" + "," + "auftrag" + "," + "anfragevom" + "," + "validvon"  + "," +  "validbis"  + "," +  "rechnungid";
     /**
      * Fields in mydata table
      */

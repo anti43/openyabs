@@ -256,7 +256,7 @@ public class offersView extends javax.swing.JPanel implements Runnable, mp4.date
         this.current = current;
         this.setCustomer(new Customer(current.getKundenId()));
 
-        this.jTextField6.setText(current.getOrdernummer());
+        this.jTextField6.setText(current.getAngebotnummer());
         this.jTextField7.setText(DateConverter.getDefDateString(current.getDatum()));
         this.jTextField10.setText(DateConverter.getDefDateString(current.getBisDatum()));
 
@@ -981,10 +981,10 @@ public class offersView extends javax.swing.JPanel implements Runnable, mp4.date
             }
             if (valide) {
 
-                Query f = ConnectionHandler.instanceOf().clone(TABLE_ORDERS);
+                Query f = ConnectionHandler.instanceOf().clone(TABLE_OFFERS);
                 Integer auftragnummer = f.getNextIndexOfIntCol("auftragnummer");
                 Angebot order = new Angebot(ConnectionHandler.instanceOf());
-                order.setOrdernummer(auftragnummer.toString());
+                order.setAngebotnummer(auftragnummer.toString());
                 order.setDatum(DateConverter.getDate(jTextField7.getText()));
                 order.setBisDatum(DateConverter.getDate(jTextField10.getText()));
                 order.setKundenId(getCustomer().getId());
@@ -1011,9 +1011,9 @@ public class offersView extends javax.swing.JPanel implements Runnable, mp4.date
                     }
                 }
 
-                jTextField6.setText(order.getOrdernummer());
-                mainframe.setMessage("Angebot Nummer: " + order.getOrdernummer() + " angelegt.");
-                new HistoryItem(ConnectionHandler.instanceOf(), Strings.ORDER, "Angebot Nummer: " + order.getOrdernummer() + " angelegt.");
+                jTextField6.setText(order.getAngebotnummer());
+                mainframe.setMessage("Angebot Nummer: " + order.getAngebotnummer() + " angelegt.");
+                new HistoryItem(ConnectionHandler.instanceOf(), Strings.ORDER, "Angebot Nummer: " + order.getAngebotnummer() + " angelegt.");
                 this.setOrder(new Angebot(order.getId()));
             }
         } else {
@@ -1059,7 +1059,7 @@ public class offersView extends javax.swing.JPanel implements Runnable, mp4.date
                     editor.stopCellEditing();
                 }
                 if (valide) {
-                    Query f = ConnectionHandler.instanceOf().clone(TABLE_ORDERS);
+                    Query f = ConnectionHandler.instanceOf().clone(TABLE_OFFERS);
                     Angebot order = getCurrent();
                     order.setDatum(DateConverter.getDate(jTextField7.getText()));
                     order.setBisDatum(DateConverter.getDate(jTextField10.getText()));
@@ -1090,8 +1090,8 @@ public class offersView extends javax.swing.JPanel implements Runnable, mp4.date
                         }
                     }
 
-                    mainframe.getNachricht().setText("Angebot Nummer " + order.getOrdernummer() + " gespeichert.");
-                    new HistoryItem(ConnectionHandler.instanceOf(), Strings.ORDER, "Angebot Nummer: " + order.getOrdernummer() + " editiert.");
+                    mainframe.getNachricht().setText("Angebot Nummer " + order.getAngebotnummer() + " gespeichert.");
+                    new HistoryItem(ConnectionHandler.instanceOf(), Strings.ORDER, "Angebot Nummer: " + order.getAngebotnummer() + " editiert.");
                     this.setOrder(new Angebot(order.getId()));
                 }
             } else {
@@ -1262,7 +1262,7 @@ public class offersView extends javax.swing.JPanel implements Runnable, mp4.date
                 this.current.setAuftrag(true);
                 this.setAuftrag(true);
                 this.current.save();
-                mainframe.setMessage("Angebot Nummer " + current.getOrdernummer() + " als 'Auftrag' markiert.");
+                mainframe.setMessage("Angebot Nummer " + current.getAngebotnummer() + " als 'Auftrag' markiert.");
             }
         }
     }//GEN-LAST:event_jButton12ActionPerformed

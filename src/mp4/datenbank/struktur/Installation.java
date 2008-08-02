@@ -80,16 +80,16 @@ public interface Installation {
         "PRIMARY KEY  (id))",
         
         
-        "CREATE TABLE auftraege (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
-        "Auftragnummer VARCHAR(250) default NULL, KundenId INTEGER REFERENCES kunden(id)," +
-        "Datum DATE NOT NULL," + "auftrag INTEGER DEFAULT 0," + "validvon DATE NOT NULL," + "validbis DATE NOT NULL," +
-        "rechnung  INTEGER DEFAULT 0," +
+        "CREATE TABLE angebote (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
+        "angebotnummer VARCHAR(250) default NULL, KundenId INTEGER REFERENCES kunden(id)," +
+        "Datum DATE NOT NULL," + "auftragdatum DATE DEFAULT NULL," + "anfragevom DATE NOT NULL," + "validvon DATE NOT NULL," + "validbis DATE NOT NULL," +
+        "rechnungid INTEGER DEFAULT 0," +
         "deleted INTEGER DEFAULT 0," +
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
         "PRIMARY KEY  (id))",
         
-        "CREATE TABLE auftragsposten (ID BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-        "auftragid INTEGER REFERENCES auftraege  (id)," + "anzahl DOUBLE DEFAULT 0," +
+        "CREATE TABLE angebotposten (ID BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
+        "angebotid INTEGER REFERENCES angebote  (id)," + "anzahl DOUBLE DEFAULT 0," +
         "posten VARCHAR(1000) default NULL,  preis DOUBLE DEFAULT 0, " +
         "steuersatz DOUBLE DEFAULT 0," +
         "deleted INTEGER DEFAULT 0," +
@@ -105,8 +105,7 @@ public interface Installation {
         "name VARCHAR(100), text VARCHAR(500), isvorlage INTEGER DEFAULT 0," +
         "deleted INTEGER DEFAULT 0," +
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
-        
-        
+
         "CREATE TABLE programmdaten (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
         "name VARCHAR(250), wert VARCHAR(2500)," +
         "deleted INTEGER DEFAULT 0," +

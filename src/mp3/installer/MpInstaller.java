@@ -308,7 +308,7 @@ public class MpInstaller extends javax.swing.JFrame implements ProtectedStrings,
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         mainframe f;
         if (jCheckBox2.isSelected()) {
-            // TODO add your handling code here:
+            
             try {
 
                 this.setCursor(new Cursor(Cursor.WAIT_CURSOR));

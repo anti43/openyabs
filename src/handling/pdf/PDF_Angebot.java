@@ -79,7 +79,7 @@ public class PDF_Angebot {
             //new out(separator);
 
             PdfReader template = new PdfReader(l.getAngebottemp());
-            filename = l.getAngebotverz() + separator + r.getOrdernummer().replaceAll(" ", "_") + "_" + k.getFirma().replaceAll(" ", "_") + "_" + k.getName().replaceAll(" ", "_") + ".pdf";
+            filename = l.getAngebotverz() + separator + r.getAngebotnummer().replaceAll(" ", "_") + "_" + k.getFirma().replaceAll(" ", "_") + "_" + k.getName().replaceAll(" ", "_") + ".pdf";
 
 //           r.getRechnungnummer().replaceAll(" ", "_")+ "_" + k.getFirma().replaceAll(" ", "_") + k.getName().replaceAll(" ", "_")+".pdf";
 //            filename = filename.replaceAll(" ", "_");
@@ -157,7 +157,7 @@ public class PDF_Angebot {
         acroFields.setField("date", r.getFDatum());
         acroFields.setField("validdate", r.getBisFDatum());
 
-        acroFields.setField("number", r.getOrdernummer());
+        acroFields.setField("number", r.getAngebotnummer());
         acroFields.setField("knumber", k.getKundennummer());
 
 

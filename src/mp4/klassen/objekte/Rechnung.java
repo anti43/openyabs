@@ -57,6 +57,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
     private PostenTableModel postendata = null;
     private RechnungBetreffzeile[] betreffzeilen;
     private RechnungBetreffZZR zeilenHandler;
+    private Angebot Angebot;
 
     public Rechnung(String text) {
         super(ConnectionHandler.instanceOf().clone(TABLE_BILLS));
@@ -106,8 +107,11 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         this.explode(this.selectLast(Strings.ALL, Strings.ID, id.toString(), true));
         this.query = ConnectionHandler.instanceOf().clone(TABLE_BILLS);
         zeilenHandler = new RechnungBetreffZZR(id);
-//        bp = getProducts(query);
 
+        int aid = new Angebot().search(this.getId());
+        if (aid != 0) {
+            this.Angebot = new Angebot(aid);
+        }
     }
 
     public String getFDatum() {
@@ -367,7 +371,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         String[] wher = {"rechnungid", this.getId().toString(), ""};
         String[][] str = q.select(Strings.ALL, wher);
         RechnungPosten[] prof = new RechnungPosten[str.length];
-        
+
         for (int t = 0; t < str.length; t++) {
             prof[t] = new RechnungPosten(query, str[0][t]);
         }
@@ -381,7 +385,6 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
 //    public RechnungPosten[] getBp() {
 //        return bp;
 //    }
-
     /**
      * 
      * @param table1fields
@@ -501,7 +504,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
     }
 
     private void setBezahlt(String string) {
-         if (string.equals("1")) {
+        if (string.equals("1")) {
             setBezahlt(true);
         } else {
             setBezahlt(false);
@@ -514,5 +517,9 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         } else {
             setStorno(false);
         }
+    }
+
+    public Angebot getAngebot() {
+        return Angebot;
     }
 }
