@@ -15,7 +15,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import mp4.klassen.objekte.Product;
 import mp4.panels.rechnungen.billsView;
-import mp3.classes.visual.sub.offersView;
+import mp4.panels.rechnungen.offersView;
 import mp4.utils.tabellen.SelectionCheck;
 import mp4.utils.windows.Position;
 

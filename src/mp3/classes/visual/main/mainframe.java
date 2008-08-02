@@ -55,7 +55,7 @@ import mp3.classes.visual.sub.customersView;
 import mp3.classes.visual.sub.eurEURPanel;
 import mp3.classes.visual.sub.eurOPanel;
 import mp3.classes.visual.sub.historyView;
-import mp3.classes.visual.sub.offersView;
+import mp4.panels.rechnungen.offersView;
 
 import mp3.classes.visual.sub.productsView;
 //import mp3.classes.visual.sub.*;

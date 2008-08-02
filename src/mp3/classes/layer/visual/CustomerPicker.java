@@ -17,7 +17,7 @@ import javax.swing.SingleSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import mp4.klassen.objekte.Customer;
 import mp4.panels.rechnungen.billsView;
-import mp3.classes.visual.sub.offersView;
+import mp4.panels.rechnungen.offersView;
 
 
 /**
