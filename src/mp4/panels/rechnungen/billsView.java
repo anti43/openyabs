@@ -311,6 +311,7 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
         jSeparator1 = new javax.swing.JToolBar.Separator();
         jButton12 = new javax.swing.JButton();
         jCheckBox4 = new javax.swing.JCheckBox();
+        jCheckBox5 = new javax.swing.JCheckBox();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel2 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
@@ -508,6 +509,11 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
             }
         });
         jToolBar1.add(jCheckBox4);
+
+        jCheckBox5.setText("mit Angebot");
+        jCheckBox5.setFocusable(false);
+        jCheckBox5.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        jToolBar1.add(jCheckBox5);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -1051,11 +1057,11 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel13))
                             .addComponent(jCheckBox3, javax.swing.GroupLayout.Alignment.LEADING))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 103, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 85, Short.MAX_VALUE)
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel6Layout.createSequentialGroup()
                                 .addComponent(jCheckBox1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGap(18, 18, 18)
                                 .addComponent(jLabel12))
                             .addComponent(jLabel11))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1067,9 +1073,9 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel6Layout.createSequentialGroup()
@@ -1082,8 +1088,8 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel12)
-                            .addComponent(jCheckBox1)
-                            .addComponent(jTextField9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jTextField9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jCheckBox1))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel11)
@@ -1222,7 +1228,7 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
                 Rechnung bill = currentBill;
 
                 bill.setDatum(DateConverter.getDate(jTextField7.getText()));
-                bill.setAusfuehrungsDatum(DateConverter.getDate(jTextField7.getText()));
+                bill.setAusfuehrungsDatum(DateConverter.getDate(jTextField11.getText()));
                 bill.setKundenId(getCustomer().getId());
                 bill.setBezahlt(jCheckBox2.isSelected());
                 bill.setStorno(jCheckBox3.isSelected());
@@ -1465,6 +1471,7 @@ private void jCheckBox3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     public javax.swing.JCheckBox jCheckBox2;
     public javax.swing.JCheckBox jCheckBox3;
     public javax.swing.JCheckBox jCheckBox4;
+    public javax.swing.JCheckBox jCheckBox5;
     public javax.swing.JComboBox jComboBox1;
     public javax.swing.JLabel jLabel10;
     public javax.swing.JLabel jLabel11;

@@ -173,7 +173,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
             angebot.setDatum(this.getDatum());
             angebot.setValidVon(this.getDatum());
             angebot.setBisDatum(DateConverter.addMonth(this.getDatum()));
-            angebot.setAngebotnummer("Zu Rechnung: " + this.getRechnungnummer());
+            angebot.setAngebotnummer(angebot.getNextOfferNumber());
             angebot.save();
             this.Angebot = angebot;
         }
@@ -242,21 +242,12 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
 
     public boolean save() {
         int result = -1;
-
-
         if (id > 0 && !isSaved) {
             result = this.update(TABLE_BILLS_FIELDS, this.collect(), id.toString());
             if (postendata != null) {
-
                 clearPostenData();
-
-
-
-
-                explode(
-                        postendata);
+                explode( postendata);
             }
-
             zeilenHandler.save();
             isSaved = true;
         } else if (id == 0 && !isSaved) {
@@ -270,16 +261,6 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
             zeilenHandler.save();
             isSaved = true;
         }
-
-
-
-
-
-
-
-
-
-
         if (result > 0) {
             return true;
         } else {
@@ -443,8 +424,9 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         return prof;
     }
 
-    public Integer getNextBillNumber() {
-        return ConnectionHandler.instanceOf().clone(TABLE_BILLS).getNextIndexOfStringCol("rechnungnummer");
+    public String getNextBillNumber() {
+        throw new UnsupportedOperationException("format?");
+//        return ConnectionHandler.instanceOf().clone(TABLE_BILLS).getNextIndexOfStringCol("rechnungnummer").toString();
     }
 
 //    public RechnungPosten[] getBp() {

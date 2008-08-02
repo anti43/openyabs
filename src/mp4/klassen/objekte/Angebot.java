@@ -49,6 +49,10 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.s
     private String[][] products;
     public Integer id = 0;
 
+    public void add(PostenTableModel m) {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
     public Integer getId() {
         return id;
     }
@@ -165,15 +169,20 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.s
         return PrepareData.finalize(str);
     }
 
-    public void save() {
+    public boolean save() {
+        int result = -1;
         if (id > 0 && !isSaved) {
-            Log.Debug(this.collect());
-            this.update(TABLE_OFFERS_FIELDS, this.collect(), id.toString());
+            result =this.update(TABLE_OFFERS_FIELDS, this.collect(), id.toString());
             isSaved = true;
         } else if (id == 0 && !isSaved) {
-            this.insert(TABLE_OFFERS_FIELDS, this.collect());
+            result = this.insert(TABLE_OFFERS_FIELDS, this.collect());
             this.id = this.getMyId();
             isSaved = true;
+        }
+          if (result > 0) {
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -255,8 +264,9 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.s
         return prof;
     }
 
-    public Integer getNextBillNumber() {
-        return query.getNextIndexOfIntCol("angebotnummer");
+    public String getNextOfferNumber() {
+        throw new UnsupportedOperationException("format?");//format?
+//        return query.getNextIndexOfIntCol("angebotnummer");
     }
 
     /**
