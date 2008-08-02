@@ -95,10 +95,10 @@ public class AngebotPosten extends mp3.classes.layer.Things implements mp4.daten
     public void save() {
 
         if (id > 0) {
-            this.update(TABLE_ORDERS_DATA_FIELDS, this.collect(), id.toString());
+            this.update(TABLE_OFFERS_DATA_FIELDS, this.collect(), id.toString());
             isSaved = true;
         } else if (id == 0) {
-            this.insert(TABLE_ORDERS_DATA_FIELDS, this.collect());
+            this.insert(TABLE_OFFERS_DATA_FIELDS, this.collect());
         } else {
 
             mp3.classes.layer.Popup.warn(java.util.ResourceBundle.getBundle("languages/Bundle").getString("no_data_to_save"), Popup.WARN);

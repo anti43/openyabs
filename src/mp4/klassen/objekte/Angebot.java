@@ -237,7 +237,7 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.s
     }
 
     private Integer getMyId() {
-        String[] str = this.selectLast("id", "Auftragnummer", this.getAngebotnummer(), false);
+        String[] str = this.selectLast("id", "Angebotnummer", this.getAngebotnummer(), false);
         return Integer.valueOf(str[0]);
     }
 
@@ -256,7 +256,7 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.s
     }
 
     public Integer getNextBillNumber() {
-        return query.getNextIndexOfIntCol("auftragnummer");
+        return query.getNextIndexOfIntCol("angebotnummer");
     }
 
     /**

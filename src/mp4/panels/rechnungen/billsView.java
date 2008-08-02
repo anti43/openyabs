@@ -43,6 +43,7 @@ import javax.swing.JTabbedPane;
 import mp4.einstellungen.Einstellungen;
 
 import mp4.einstellungen.Programmdaten;
+import mp4.klassen.objekte.Angebot;
 import mp4.utils.windows.panelInterface;
 import mp4.utils.combobox.CheckComboListener;
 import mp4.utils.combobox.CheckComboRenderer;
@@ -143,6 +144,17 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
             bill.setStorno(jCheckBox3.isSelected());
             bill.add(m);
 
+            if (jTextField12.getText() != null && DateConverter.getDate(jTextField12.getText()) != null) {
+                if (bill.getAngebot() != null) {
+                    bill.getAngebot().setAuftragdatum(DateConverter.getDate(jTextField12.getText()));
+                    bill.getAngebot().save();
+                } else {
+                    bill.setAngebot(new Angebot());
+                    bill.getAngebot().setAuftragdatum(DateConverter.getDate(jTextField12.getText()));
+                    bill.getAngebot().save();
+                }
+            }
+
             if (getCurrent().getZeilenHandler().getList().size() > 0) {
                 bill.getZeilenHandler().add(getCurrent().getZeilenHandler().getList());
             }
@@ -239,6 +251,10 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
             }
         }
 
+        if (current.getAngebot() != null && current.getAngebot().hasId()) {
+            jTextField12.setText(DateConverter.getDefDateString(current.getAngebot().getAuftragdatum()));
+            jTextField13.setText(current.getAngebot().getAngebotnummer());
+        }
 
         setBetreffZeilen(current);
 
@@ -1213,9 +1229,15 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
                 bill.setGesamtpreis(calculated.getBruttobetrag());
                 bill.add(m);
 
-                if (bill.getAngebot() != null && jTextField13.getText() !=  null && DateConverter.getDate(jTextField13.getText()) != null ) {
-                    bill.getAngebot().setAuftragdatum(DateConverter.getDate(jTextField13.getText()));
-                    bill.getAngebot().save();
+                if (jTextField12.getText() != null && DateConverter.getDate(jTextField12.getText()) != null) {
+                    if (bill.getAngebot() != null) {
+                        bill.getAngebot().setAuftragdatum(DateConverter.getDate(jTextField12.getText()));
+                        bill.getAngebot().save();
+                    } else {
+                        bill.setAngebot(new Angebot());
+                        bill.getAngebot().setAuftragdatum(DateConverter.getDate(jTextField12.getText()));
+                        bill.getAngebot().save();
+                    }
                 }
 
                 if (bill.save()) {

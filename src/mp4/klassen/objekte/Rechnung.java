@@ -57,7 +57,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
     private PostenTableModel postendata = null;
     private RechnungBetreffzeile[] betreffzeilen;
     private RechnungBetreffZZR zeilenHandler;
-    private Angebot Angebot;
+    private Angebot Angebot = null;
 
     public Rechnung(String text) {
         super(ConnectionHandler.instanceOf().clone(TABLE_BILLS));
@@ -161,11 +161,31 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         }
     }
 
+    public void setAngebot(Angebot angebot) {
+        if (angebot.hasId()) {
+            angebot.setRechnungId(this.getId());
+            angebot.save();
+            this.Angebot = angebot;
+        } else {
+            angebot.setRechnungId(this.getId());
+            angebot.setKundenId(this.getKundenId());
+            angebot.setAuftragdatum(this.getDatum());
+            angebot.setDatum(this.getDatum());
+            angebot.setValidVon(this.getDatum());
+            angebot.setBisDatum(DateConverter.addMonth(this.getDatum()));
+            angebot.setAngebotnummer("Zu Rechnung: " + this.getRechnungnummer());
+            angebot.save();
+            this.Angebot = angebot;
+        }
+    }
+
     public void setAusfuehrungsDatum(Date date) {
+
         this.AusfuehrungsDatum = date;
     }
 
     public void setRechnungnummer(Integer nummer) {
+
         setRechnungnummer(nummer.toString());
     }
 
@@ -175,6 +195,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
 
     private void explode(String[] select) {
         try {
+
             this.id = Integer.valueOf(select[0]);
             this.setRechnungnummer(select[1]);
             this.setKundenId(Integer.valueOf(select[2]));
@@ -185,11 +206,9 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
             this.setGesamttax(Double.valueOf(select[7]));
             this.setAusfuehrungsDatum(DateConverter.getDate(select[8]));
             this.setMahnungen(Integer.valueOf(select[9]));
-
         } catch (Exception exception) {
             Log.Debug(exception.getMessage());
         }
-
         if (!isBezahlt()) {
             try {
                 Date date = DateConverter.addMonth(getDatum());
@@ -206,13 +225,19 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         String str = PrepareData.prepareString(this.getRechnungnummer());
         str = str + PrepareData.prepareNumber(this.getKundenId());
         str = str + PrepareData.prepareString(DateConverter.getSQLDateString(this.getDatum()));
-        str = str + PrepareData.prepareBoolean(isStorno());
+        str =
+                str + PrepareData.prepareBoolean(isStorno());
         str = str + PrepareData.prepareBoolean(isBezahlt());
-        str = str + PrepareData.prepareNumber(this.getGesamtpreis());
+        str = str +
+                PrepareData.prepareNumber(
+                this.getGesamtpreis());
         str = str + PrepareData.prepareNumber(this.getGesamttax());
-        str = str + PrepareData.prepareString(DateConverter.getSQLDateString(this.getAusfuehrungsDatum()));
+        str = str + PrepareData.prepareString(DateConverter.getSQLDateString(
+                this.getAusfuehrungsDatum()));
         str = str + PrepareData.prepareNumber(this.getMahnungen());
         return PrepareData.finalize(str);
+
+
     }
 
     public boolean save() {
@@ -222,21 +247,38 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         if (id > 0 && !isSaved) {
             result = this.update(TABLE_BILLS_FIELDS, this.collect(), id.toString());
             if (postendata != null) {
+
                 clearPostenData();
-                explode(postendata);
+
+
+
+
+                explode(
+                        postendata);
             }
+
             zeilenHandler.save();
             isSaved = true;
         } else if (id == 0 && !isSaved) {
             result = this.insert(TABLE_BILLS_FIELDS, this.collect());
             this.id = this.getMyId();
-            if (postendata != null) {
+            if (postendata !=
+                    null) {
                 explode(postendata);
             }
             zeilenHandler.setRechnungId(id);
             zeilenHandler.save();
             isSaved = true;
         }
+
+
+
+
+
+
+
+
+
 
         if (result > 0) {
             return true;
@@ -256,6 +298,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
     public void setRechnungnummer(String Rechnungnummer) {
         this.Rechnungnummer = Rechnungnummer;
         this.isSaved = false;
+
     }
 
     public Integer getKundenId() {
@@ -268,10 +311,13 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
     }
 
     public Date getDatum() {
+
+
         return Datum;
     }
 
-    public void setDatum(Date Datum) {
+    public void setDatum(
+            Date Datum) {
         this.Datum = Datum;
         this.isSaved = false;
     }
@@ -293,7 +339,11 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
             for (int i = 0; i < nstr.length; i++) {
 
                 nstr[i][0] = Integer.valueOf(prods[i][0]);
+
                 nstr[i][1] = Double.valueOf(prods[i][2]);
+
+
+
                 nstr[i][2] = String.valueOf(prods[i][3]);
                 nstr[i][3] = Double.valueOf(prods[i][5]);
                 try {
@@ -302,14 +352,18 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
                             (Double.valueOf(prods[i][4]) *
                             (((Double.valueOf(prods[i][5])) / 100) + 1)));
                 } catch (NumberFormatException numberFormatException) {
-                    nstr[i][4] = Double.valueOf("0");
+
+                    nstr[i][    4] = Double.valueOf("0");
                     nstr[i][5] = Double.valueOf("0");
+
+
                 }
             }
         } catch (Exception exception) {
             Log.Debug(exception);
         }
         return nstr;
+
     }
 
     public PostenTableModel getProductlistAsTableModel() {
@@ -324,7 +378,11 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         try {
             for (int i = 0; i < nstr.length; i++) {
                 nstr[i][0] = Integer.valueOf(prods[i][0]);
+
                 nstr[i][1] = Double.valueOf(prods[i][2]);
+
+
+
                 nstr[i][2] = String.valueOf(prods[i][3]);
                 nstr[i][3] = Double.valueOf(prods[i][5]);
                 try {
@@ -336,11 +394,15 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
                     nstr[i][4] = Double.valueOf("0");
                     nstr[i][5] = Double.valueOf("0");
                 }
+
             }
         } catch (Exception exception) {
+
             Log.Debug(exception);
         }
-        return new PostenTableModel(nstr, lab.split(","));
+        return new PostenTableModel(nstr,
+                lab.split(
+                ","));
     }
 
     private void explode(PostenTableModel m) {
@@ -348,11 +410,14 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
             if (m.getValueAt(i, 4) != null) {
                 RechnungPosten b = new RechnungPosten();
                 b.setRechnungid(this.getId());
-                b.setPosten((String) m.getValueAt(i, 2));
+
+                b.setPosten((String) m.getValueAt(i,
+                        2));
                 try {
                     b.setAnzahl((Double) m.getValueAt(i, 1));
                     b.setSteuersatz((Double) m.getValueAt(i, 3));
-                    b.setPreis((Double) m.getValueAt(i, 4));
+                    b.setPreis(
+                            (Double) m.getValueAt(i, 4));
                 } catch (Exception exception) {
                     Log.Debug(exception);
                 }

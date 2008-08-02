@@ -147,8 +147,8 @@ public interface Tabellen {
     /**
      * Fields in orders data table
      */
-    public final String TABLE_ORDERS_DATA_FIELDS =
-            "Auftragid" + "," + "Anzahl" + "," +
+    public final String TABLE_OFFERS_DATA_FIELDS =
+            "Angebotid" + "," + "Anzahl" + "," +
             "Posten" + "," + "Preis" + "," +
             "Steuersatz";
     /**
@@ -156,7 +156,7 @@ public interface Tabellen {
      */
     public final String TABLE_OFFERS_FIELDS =
             "Angebotnummer" + "," + "KundenId" + "," +
-            "Datum" + "," + "auftrag" + "," + "anfragevom" + "," + "validvon"  + "," +  "validbis"  + "," +  "rechnungid";
+            "Datum" + "," + "auftragdatum" + "," + "anfragevom" + "," + "validvon"  + "," +  "validbis"  + "," +  "rechnungid";
     /**
      * Fields in mydata table
      */
