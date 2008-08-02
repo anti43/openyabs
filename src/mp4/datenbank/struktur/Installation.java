@@ -37,6 +37,7 @@ public interface Installation {
         "Ort VARCHAR(300) default NULL, Tel VARCHAR(250) default NULL,Fax VARCHAR(250) default NULL," +
         "Mobil VARCHAR(250) default NULL," +
         "Mail VARCHAR(350) default NULL, Webseite VARCHAR(350) default NULL,Notizen VARCHAR(10000)," +
+        "Steuernummer VARCHAR(350) default NULL,"+
         "deleted INTEGER DEFAULT 0, " +
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
         "PRIMARY KEY  (id))",

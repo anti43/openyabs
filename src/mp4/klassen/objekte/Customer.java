@@ -45,6 +45,7 @@ public class Customer extends mp3.classes.layer.People implements mp4.datenbank.
     private String Mail = "";
     private String Webseite = "";
     private String Notizen = "";
+    private String Kundensteuernummer = "";
     private Query query;
     private boolean deleted=false;
 
@@ -259,8 +260,8 @@ public class Customer extends mp3.classes.layer.People implements mp4.datenbank.
         str = str +  "(;;2#4#1#1#8#0#;;)" + this.getMobil() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
         str = str +  "(;;2#4#1#1#8#0#;;)" + this.getMail() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
         str = str +  "(;;2#4#1#1#8#0#;;)" + this.getWebseite() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
-        str = str +  "(;;2#4#1#1#8#0#;;)" + this.getNotizen() + "(;;2#4#1#1#8#0#;;)";
-
+        str = str +  "(;;2#4#1#1#8#0#;;)" + this.getNotizen() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
+        str = str +  "(;;2#4#1#1#8#0#;;)" + this.getKundensteuernummer() + "(;;2#4#1#1#8#0#;;)";
 
 
         return str;
@@ -289,7 +290,8 @@ public class Customer extends mp3.classes.layer.People implements mp4.datenbank.
             this.setMail(str[12]);
             this.setWebseite(str[12 + 1]);
             this.setNotizen(str[12 + 2]);
-            if(str[12+3].equals("1")) {
+            this.setKundensteuernummer(str[12+3]);
+            if(str[12+4].equals("1")) {
                 this.setDeleted(true);
             }
 
@@ -387,5 +389,13 @@ public class Customer extends mp3.classes.layer.People implements mp4.datenbank.
         
          return str;  
     
+    }
+
+    public String getKundensteuernummer() {
+        return Kundensteuernummer;
+    }
+
+    public void setKundensteuernummer(String Kundensteuernummer) {
+        this.Kundensteuernummer = Kundensteuernummer;
     }
 }

@@ -109,7 +109,7 @@ public interface Tabellen {
     public final String TABLE_CUSTOMER_FIELDS =
             "Kundennummer" + "," + "Firma" + "," + "Anrede" + "," + "Vorname" +
             "," + "Name" + "," + "Str" + "," + "PLZ" + "," + "Ort" + "," +
-            "Tel" + "," + "Fax" + "," + "Mobil" + "," + "Mail" + "," + "Webseite" + "," + "Notizen";
+            "Tel" + "," + "Fax" + "," + "Mobil" + "," + "Mail" + "," + "Webseite" + "," + "Notizen"+ "," + "Steuernummer";
     /**
      * Fields in supplier table
      */
