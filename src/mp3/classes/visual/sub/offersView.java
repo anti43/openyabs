@@ -232,7 +232,7 @@ public class offersView extends javax.swing.JPanel implements Runnable, mp4.date
     private void updateListTable() {
 
         try {
-            liste = getCurrent().getWithDepencies("auftraege.id,auftragnummer,datum,kundennummer,firma,auftrag");
+            liste = getCurrent().getWithDepencies("angebote.id,angebotnummer,datum,kundennummer,firma,auftragdatum");
 //            String[] label = getCurrent().getLabelsOfAllWithDepencies();
             String k = "id,Nummer,Datum,Kunde,Firma,Auftrag";
 
@@ -1249,7 +1249,7 @@ public class offersView extends javax.swing.JPanel implements Runnable, mp4.date
 
         jTextField2.setText(DateConverter.getTodayDefDate());
 
-        String[][] list = getCurrent().select("id, auftragnummer, datum ", "datum", DateConverter.getTodayDefDate(), "datum", true);
+        String[][] list = getCurrent().select("id, angebotnummer, datum ", "datum", DateConverter.getTodayDefDate(), "datum", true);
         String k = "id, " + "Nummer,Datum";
 
         this.jTable3.setModel(new DefaultTableModel(list, k.split(",")));
