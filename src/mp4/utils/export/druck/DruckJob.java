@@ -30,11 +30,14 @@ public class DruckJob {
     private PrintService[] prservices;
     int idxPrintService = -1;
     private HashPrintRequestAttributeSet aset;
-    private DocFlavor flavor = DocFlavor.INPUT_STREAM.PDF;
+    private DocFlavor flavor;
+  
 
-    public DruckJob(String PDF) {
+    public DruckJob(DocFlavor flavor) {
         aset = new HashPrintRequestAttributeSet();
         aset.add(MediaSizeName.ISO_A4);
+        
+        this.flavor = flavor;
 
         prservDflt = PrintServiceLookup.lookupDefaultPrintService();
         prservices = PrintServiceLookup.lookupPrintServices(flavor, aset);
