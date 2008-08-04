@@ -216,6 +216,11 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
 
     }
 
+ 
+    public int selectCountBetween(java.util.Date date1, java.util.Date date2) {
+        return selectCount("datum", "BETWEEN '" + DateConverter.getSQLDateString(date1) + "' AND '" + DateConverter.getSQLDateString(date2) + "'");
+    }
+
     /**
      * Free SQL Select Statement!
      * @param string (Query)
@@ -358,11 +363,11 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
             if (resultSet.last()) {
                 index = resultSet.getString(colName);
                 originalvalue = index;
-               
+
                 while (i == null && index.length() > 0) {
                     try {
                         i = Integer.valueOf(index);
-                        
+
                         substringcount++;
                         index = index.substring(1, index.length());
 
@@ -370,7 +375,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                         i = null;
                     }
                 }
-               
+
                 if (i == null) {
 
                     query = "SELECT ALL COUNT(1) FROM " + table;
@@ -1811,5 +1816,56 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
         }
         stop();
         return p;
+    }
+
+    public int selectCount(String from, String where) {
+        String wher = "";
+       
+        if(where != null){
+        wher = " WHERE " + from +" " + where;
+        }
+        
+        query = "SELECT COUNT(1) FROM " + table + " " + wher;
+        message = "Database Error (SelectCount:COUNT):";
+        stm = null;
+        resultSet = null;
+
+        Log.Debug(query);
+        try {
+            // Select-Anweisung ausführen
+            stm =conn.createStatement(resultSet.TYPE_SCROLL_INSENSITIVE, resultSet.CONCUR_READ_ONLY);
+            resultSet =stm.executeQuery(query);
+
+            if (resultSet.first()) {
+                Log.Debug("Count " + resultSet.getInt(1));
+                return resultSet.getInt(1);
+            } else {
+                stop();
+                return 0;
+            }
+        } catch (SQLException ex) {
+            Log.Debug(message + ex.getMessage());
+            Log.Debug(ex, true);
+            stop();
+            return 0;
+        } finally {
+            // Alle Ressourcen wieder freigeben
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException ex) {
+                    Log.Debug(message + ex.getMessage());
+                    Log.Debug(ex, true);
+                }
+            }
+            if (stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException ex) {
+                    Log.Debug(message + ex.getMessage());
+                    Log.Debug(ex, true);
+                }
+            }
+        }
     }
 }

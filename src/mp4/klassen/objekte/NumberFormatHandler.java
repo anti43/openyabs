@@ -17,7 +17,11 @@
 
 package mp4.klassen.objekte;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Date;
 import mp4.einstellungen.Programmdaten;
+import mp4.utils.datum.DateConverter;
 
 /**
  *
@@ -25,23 +29,68 @@ import mp4.einstellungen.Programmdaten;
  */
 public class NumberFormatHandler {
     public final String MONTH = "\\{MONAT\\}";
+    public final String MONTH_NAME = "\\{MONAT_NAME\\}";
     public final String YEAR = "\\{JAHR\\}";
     public final String DAY = "\\{TAG\\}";
-    public final String COUNT = "\\{NUMMER\\}";
-    public final String SEPARATOR = "\\{TR\\}";
-    public int DIGITS = 5;
+    public final String COUNT = "00000";
+    public final String SEP= "&!";
+
+    private NumberFormat formatter;;
+
     private String format;
+    private Object type;
+    private Integer mode = 0;
+    private Date date;
+    /*
+     * 
+     * Beispiel:
+     * {JAHR}-{MONAT_NAME}-{TAG}&!00000&!3
+     * 
+     * Ergebnis:
+     * 
+     * 2008-Januar-000231
+     * 
+     */
+    public NumberFormatHandler(Object type, Date date){
     
-    public NumberFormatHandler(int mode){
-    
-        switch (mode){
+        this.type = type;
+        this.date = date;
         
-            case 0:
-               format =  Programmdaten.instanceOf().getRECHNUNG_NUMMER_FORMAT();
-        
-        }
+        if (type.getClass().isInstance(new mp4.klassen.objekte.Rechnung())) {
+                    processRechnungType();
+            } else if (type.getClass().isInstance(new mp4.klassen.objekte.Angebot())) {
+                    processAngebotType();
+            } 
+    }
+
+    private NumberFormat parseFormat(String format) {
+       format = format.replaceAll(YEAR, DateConverter.getYear(date));
+       format = format.replaceAll(MONTH, DateConverter.getMonth(date));
+       format = format.replaceAll(MONTH_NAME, DateConverter.getMonthName(date));
+       format = format.replaceAll(DAY, DateConverter.getDayOfMonth(date));
+
+       String[] string = format.split(SEP);
+       mode = Integer.valueOf(string[2]);
        
-    
+       return new DecimalFormat("'" + string[0]+ "'" + string[1]);
+    }
+
+    private void processAngebotType() {
+        format = Programmdaten.instanceOf().getANGEBOT_NUMMER_FORMAT();  
+        formatter = parseFormat(format);  
+    }
+
+    private void processRechnungType() {
+        format = Programmdaten.instanceOf().getRECHNUNG_NUMMER_FORMAT();  
+        formatter = parseFormat(format);  
+    }
+
+    public NumberFormat getFormatter() {
+        return formatter;
+    }
+
+    public Integer getMode() {
+        return mode;
     }
 
 }

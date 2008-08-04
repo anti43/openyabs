@@ -131,8 +131,9 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
             m = (PostenTableModel) jTable1.getModel();
 
             Rechnung bill = new Rechnung();
-            bill.setRechnungnummer(bill.getNextBillNumber());
+            
             bill.setDatum(DateConverter.getDate(jTextField7.getText()));
+            bill.setRechnungnummer(bill.getNextBillNumber());
             if (DateConverter.getDate(jTextField11.getText()) != null) {
                 bill.setAusfuehrungsDatum(DateConverter.getDate(jTextField11.getText()));
             } else {

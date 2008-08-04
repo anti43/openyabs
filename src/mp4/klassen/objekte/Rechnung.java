@@ -51,21 +51,17 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
     private boolean storno = false;
     private boolean bezahlt = false;
     private boolean verzug = false;
-//    private RechnungPosten[] bp;
     private Query query;
     public Integer id = 0;
     private PostenTableModel postendata = null;
-    private RechnungBetreffzeile[] betreffzeilen;
     private RechnungBetreffZZR zeilenHandler;
     private Angebot Angebot = null;
 
     public Rechnung(String text) {
         super(ConnectionHandler.instanceOf().clone(TABLE_BILLS));
         this.query = ConnectionHandler.instanceOf();
-
         this.explode(this.selectLast(Strings.ALL, "rechnungnummer", text, true));
         zeilenHandler = new RechnungBetreffZZR(id);
-//        bp = getProducts(query);
     }
 
     public void add(PostenTableModel m) {
@@ -173,7 +169,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
             angebot.setDatum(this.getDatum());
             angebot.setValidVon(this.getDatum());
             angebot.setBisDatum(DateConverter.addMonth(this.getDatum()));
-            angebot.setAngebotnummer(angebot.getNextOfferNumber());
+            angebot.setAngebotnummer(angebot.getNextNumber());
             angebot.save();
             this.Angebot = angebot;
         }
@@ -246,7 +242,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
             result = this.update(TABLE_BILLS_FIELDS, this.collect(), id.toString());
             if (postendata != null) {
                 clearPostenData();
-                explode( postendata);
+                explode(postendata);
             }
             zeilenHandler.save();
             isSaved = true;
@@ -425,8 +421,34 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
     }
 
     public String getNextBillNumber() {
-        throw new UnsupportedOperationException("format?");
-//        return ConnectionHandler.instanceOf().clone(TABLE_BILLS).getNextIndexOfStringCol("rechnungnummer").toString();
+        NumberFormatHandler nfh = new NumberFormatHandler(this, getDatum());
+        Integer count = 0;
+
+        switch (nfh.getMode()) {
+
+            case 1:
+                count = ConnectionHandler.instanceOf().clone(TABLE_BILLS).selectCountBetween(DateConverter.getDate(DateConverter.getYear(this.getDatum())),
+                        DateConverter.addYear(DateConverter.getDate(DateConverter.getYear(this.getDatum()))));
+                break;
+
+            case 2:
+                count = ConnectionHandler.instanceOf().clone(TABLE_BILLS).selectCountBetween(DateConverter.getDate(DateConverter.getMonth(this.getDatum())),
+                        DateConverter.addMonth(DateConverter.getDate(DateConverter.getMonth(this.getDatum()))));
+                break;
+
+            case 3:
+                count = ConnectionHandler.instanceOf().clone(TABLE_BILLS).selectCountBetween(DateConverter.getDate(DateConverter.getDay(this.getDatum())),
+                        DateConverter.addDay(DateConverter.getDate(DateConverter.getDay(this.getDatum()))));
+                break;
+
+            case 0:
+                return ConnectionHandler.instanceOf().clone(TABLE_BILLS).getNextStringNumber("rechnungnummer");
+                
+                
+            default:  String.valueOf(ConnectionHandler.instanceOf().clone(TABLE_BILLS).selectCount("", null));
+        }
+
+       return nfh.getFormatter().format(count+1);
     }
 
 //    public RechnungPosten[] getBp() {

@@ -21,6 +21,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -28,11 +30,16 @@ import java.util.Date;
  */
 public class DateConverter {
 
+    public static final String[] monthName = {"Januar", "Februar",
+        "Maerz", "April", "Mai", "Juni", "Juli",
+        "August", "September", "Oktober", "November",
+        "Dezember"
+    };
     private static Calendar cl = Calendar.getInstance();
     //   yyyy-mm-dd hh.mm.ss[.nnnnnn] - SQL DATE Timestamp
     public static final DateFormat DB_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    
     public static final DateFormat DE_DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
+    public static final DateFormat DE_DATE_FORMAT_DAY = new SimpleDateFormat("dd");
     public static final DateFormat DE_DATE_FORMAT_SHORTYEAR = new SimpleDateFormat("dd.MM.yy");
     public static final DateFormat DE_DATE_FORMAT_SHORTMONTH = new SimpleDateFormat("dd.M.yyyy");
     public static final DateFormat DE_DATE_FORMAT_NODAY_SHORTMONTH_SHORTYEAR = new SimpleDateFormat("M.yy");
@@ -40,10 +47,8 @@ public class DateConverter {
     public static final DateFormat DE_DATE_FORMAT_SHORTMONTH_SHORTYEAR = new SimpleDateFormat("dd.M.yy");
     public static final DateFormat DE_DATE_FORMAT_NODAY_MONTH_YEAR = new SimpleDateFormat("MM.yyyy");
     public static final DateFormat DE_DATE_FORMAT_YEAR = new SimpleDateFormat("yyyy");
-    
     public static final DateFormat ENG_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
-    
-    public static final DateFormat[] DE_DATES = new DateFormat[]{DB_DATE_FORMAT , ENG_DATE_FORMAT,
+    public static final DateFormat[] DE_DATES = new DateFormat[]{DB_DATE_FORMAT, ENG_DATE_FORMAT,
         DE_DATE_FORMAT, DE_DATE_FORMAT_SHORTYEAR, DE_DATE_FORMAT_SHORTMONTH, DE_DATE_FORMAT_NODAY_SHORTMONTH_SHORTYEAR,
         DE_DATE_FORMAT_SHORTMONTH_SHORTYEAR, DE_DATE_FORMAT_NODAY_MONTH_YEAR, DE_DATE_FORMAT_YEAR, DE_DATE_FORMAT_NODAY_SHORTMONTH_YEAR
     };
@@ -54,6 +59,14 @@ public class DateConverter {
 
     public static String getTodayDBDate() {
         return DB_DATE_FORMAT.format(new Date());
+    }
+
+    public static Date addYear(Date date) {
+
+        cl.setTime(date);
+        cl.add(Calendar.YEAR, 1);
+
+        return cl.getTime();
     }
 
     /**
@@ -100,6 +113,30 @@ public class DateConverter {
         return DE_DATE_FORMAT.format(date);
     }
 
+    public static String getYear(Date datum) {
+        return DE_DATE_FORMAT_YEAR.format(datum);
+    }
+
+    public static String getMonth(Date datum) {
+        return DE_DATE_FORMAT_NODAY_MONTH_YEAR.format(datum);
+    }
+
+    public static String getDay(Date datum) {
+        return DE_DATE_FORMAT_DAY.format(datum);
+    }
+
+    public static String getMonthName(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        return monthName[cal.get(Calendar.MONTH)];
+    }
+
+    public static String getDayOfMonth(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        return String.valueOf(cal.get(Calendar.MONTH));
+    }
+
     /**
      * Converts formated 
      * Default date (dd.mm.yyyy) or variants
@@ -135,7 +172,24 @@ public class DateConverter {
         return String.valueOf(Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
     }
 
+    public static String getDayMonthAndYear() {
+        return DateConverter.getDefDateString(new Date());
+    }
+
     public static String getMonth() {
         return String.valueOf(Calendar.getInstance().get(Calendar.MONTH) + 1);
+    }
+
+    public static String getMonthName() {
+        Calendar cal = Calendar.getInstance();
+        return monthName[cal.get(Calendar.MONTH)];
+    }
+
+    public static Date getMonthAndYear() {
+        try {
+            return DateConverter.DE_DATE_FORMAT_NODAY_MONTH_YEAR.parse(DateConverter.getMonth() + "." + DateConverter.getYear());
+        } catch (ParseException ex) {
+            return null;
+        }
     }
 }
