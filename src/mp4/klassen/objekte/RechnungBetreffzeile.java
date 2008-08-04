@@ -16,6 +16,7 @@
  */
 package mp4.klassen.objekte;
 
+import java.util.Date;
 import mp3.classes.layer.Things;
 import mp4.datenbank.verbindung.ConnectionHandler;
 
@@ -137,4 +138,6 @@ public class RechnungBetreffzeile extends mp3.classes.layer.Things implements mp
     public void setText(String text) {
         this.text = text;
     }
+
+   
 }

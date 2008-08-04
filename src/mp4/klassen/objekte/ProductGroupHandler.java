@@ -5,6 +5,7 @@
 package mp4.klassen.objekte;
 
 import java.util.ArrayList;
+import java.util.Date;
 import mp4.datenbank.verbindung.Query;
 
 
@@ -474,4 +475,5 @@ public class ProductGroupHandler extends mp3.classes.layer.Things implements mp4
     public ProductGroupGroup[] getGroups() {
         return groups;
     }
+
 }

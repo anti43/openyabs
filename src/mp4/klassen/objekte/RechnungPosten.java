@@ -16,6 +16,7 @@
  */
 package mp4.klassen.objekte;
 
+import java.util.Date;
 import mp4.datenbank.verbindung.Query;
 import mp3.classes.layer.Popup;
 import mp3.classes.utils.Log;
@@ -142,5 +143,7 @@ public class RechnungPosten extends mp3.classes.layer.Things implements mp4.date
     public void setAnzahl(Double  anzahl) {
         this.anzahl = anzahl;
     }
+
+   
 
 }

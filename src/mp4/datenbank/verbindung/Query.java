@@ -114,6 +114,12 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
         return false;
     }
 
+ 
+
+    public String getTable() {
+       return table;
+    }
+
     public String[][] select(String what, String[] where, String leftJoinTable, String leftJoinKey, String order, boolean like) {
         start();
 
@@ -369,7 +375,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                         i = Integer.valueOf(index);
 
                         substringcount++;
-                        index = index.substring(1, index.length());
+                        index = index.substring(substringcount, index.length());
 
                     } catch (NumberFormatException numberFormatException) {
                         i = null;

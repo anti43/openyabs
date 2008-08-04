@@ -16,6 +16,7 @@
  */
 package mp4.klassen.objekte;
 
+import java.util.Date;
 import mp4.datenbank.verbindung.Query;
 
 
@@ -119,5 +120,6 @@ public class ProductGroupCategory extends mp3.classes.layer.Things implements mp
   return this.name;
   
   }
-  
+
+   
 }

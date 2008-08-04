@@ -133,7 +133,8 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
             Rechnung bill = new Rechnung();
             
             bill.setDatum(DateConverter.getDate(jTextField7.getText()));
-            bill.setRechnungnummer(bill.getNextBillNumber());
+           
+            bill.setRechnungnummer(bill.getNfh().getNextNumber());
             if (DateConverter.getDate(jTextField11.getText()) != null) {
                 bill.setAusfuehrungsDatum(DateConverter.getDate(jTextField11.getText()));
             } else {
@@ -1424,7 +1425,11 @@ private void jCheckBox4ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIR
 }//GEN-LAST:event_jCheckBox4ItemStateChanged
 
 private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
-}//GEN-LAST:event_jButton16ActionPerformed
+//GEN-LAST:event_jButton16ActionPerformed
+    new NumberFormatEditor();
+
+
+}                                         
 
 private void jButton19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton19ActionPerformed
     new DatePick(jTextField12);

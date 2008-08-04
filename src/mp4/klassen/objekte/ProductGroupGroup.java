@@ -16,6 +16,7 @@
  */
 package mp4.klassen.objekte;
 
+import java.util.Date;
 import mp4.datenbank.verbindung.Query;
 
 

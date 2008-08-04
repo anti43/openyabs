@@ -47,6 +47,7 @@ public class DateConverter {
     public static final DateFormat DE_DATE_FORMAT_SHORTMONTH_SHORTYEAR = new SimpleDateFormat("dd.M.yy");
     public static final DateFormat DE_DATE_FORMAT_NODAY_MONTH_YEAR = new SimpleDateFormat("MM.yyyy");
     public static final DateFormat DE_DATE_FORMAT_YEAR = new SimpleDateFormat("yyyy");
+    public static final DateFormat DE_DATE_FORMAT_MONTH = new SimpleDateFormat("MM");
     public static final DateFormat ENG_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
     public static final DateFormat[] DE_DATES = new DateFormat[]{DB_DATE_FORMAT, ENG_DATE_FORMAT,
         DE_DATE_FORMAT, DE_DATE_FORMAT_SHORTYEAR, DE_DATE_FORMAT_SHORTMONTH, DE_DATE_FORMAT_NODAY_SHORTMONTH_SHORTYEAR,
@@ -118,7 +119,7 @@ public class DateConverter {
     }
 
     public static String getMonth(Date datum) {
-        return DE_DATE_FORMAT_NODAY_MONTH_YEAR.format(datum);
+        return DE_DATE_FORMAT_MONTH.format(datum);
     }
 
     public static String getDay(Date datum) {
@@ -134,7 +135,7 @@ public class DateConverter {
     public static String getDayOfMonth(Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
-        return String.valueOf(cal.get(Calendar.MONTH));
+        return String.valueOf(cal.get(Calendar.DAY_OF_MONTH));
     }
 
     /**

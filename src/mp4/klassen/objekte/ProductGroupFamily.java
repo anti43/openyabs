@@ -16,6 +16,7 @@
  */
 package mp4.klassen.objekte;
 
+import java.util.Date;
 import mp3.classes.utils.Log;
 import mp4.datenbank.verbindung.Query;
 
@@ -149,5 +150,7 @@ public class ProductGroupFamily extends mp3.classes.layer.Things implements mp4.
     
        return Integer.valueOf(this.getKategorieid());
     }
+
+  
   
 }

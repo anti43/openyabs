@@ -16,11 +16,13 @@
  */
 package mp3.classes.layer;
 
+import java.util.Date;
 import javax.swing.JTable;
 
 import mp3.classes.interfaces.Queries;
 import mp4.datenbank.verbindung.Query;
-import mp4.datenbank.struktur.Tabellen;
+import mp4.klassen.objekte.*;
+import mp4.utils.datum.DateConverter;
 
 /**
  *
@@ -30,6 +32,7 @@ public abstract class Things implements Queries, mp4.datenbank.struktur.Tabellen
 //    public Integer id = 0;
     public boolean isSaved = false;
     private Query q;
+    public NumberFormatHandler nfh;
 
     /**
      * 
@@ -268,6 +271,8 @@ public abstract class Things implements Queries, mp4.datenbank.struktur.Tabellen
 
     /**
      * Deletes this item!!
+     * @param of
+     * @return 
      */
 //    public Integer id = 0;
 //    public Integer getId() {
@@ -315,6 +320,8 @@ public abstract class Things implements Queries, mp4.datenbank.struktur.Tabellen
      * @param where
      * @param order
      * @param like
+     * @param additionalTable 
+     * @param addTableKey 
      * @return A multidimensional string-array containing the data found
      */
     public String[][] select(String what, String from, String where, String order, boolean like, String additionalTable, String addTableKey) {
@@ -325,6 +332,8 @@ public abstract class Things implements Queries, mp4.datenbank.struktur.Tabellen
             wher = null;
         }
 
-        return q.select(what, wher, additionalTable, addTableKey, order , like);
+        return q.select(what, wher, additionalTable, addTableKey, order, like);
     }
+
+
 }

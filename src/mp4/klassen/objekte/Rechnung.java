@@ -21,6 +21,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import mp3.classes.interfaces.Countable;
 import mp4.datenbank.verbindung.Query;
 
 import mp3.classes.interfaces.Strings;
@@ -37,7 +38,7 @@ import mp4.utils.zahlen.FormatNumber;
  *
  * @author anti43
  */
-public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen {
+public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen, Countable {
 
     private String Rechnungnummer = "";
     private String UnserZeichen = "";
@@ -62,6 +63,8 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         this.query = ConnectionHandler.instanceOf();
         this.explode(this.selectLast(Strings.ALL, "rechnungnummer", text, true));
         zeilenHandler = new RechnungBetreffZZR(id);
+        nfh = new NumberFormatHandler(this, getDatum());
+        
     }
 
     public void add(PostenTableModel m) {
@@ -70,6 +73,10 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
 
     public void add(RechnungPosten rechnungPosten) {
         throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    public String getCountColumn() {
+        return "rechnungnummer";
     }
 
     public Integer getId() {
@@ -85,12 +92,16 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         super(ConnectionHandler.instanceOf().clone(TABLE_BILLS));
         this.query = ConnectionHandler.instanceOf();
         zeilenHandler = new RechnungBetreffZZR();
+        nfh = new NumberFormatHandler(this, getDatum());
+        
     }
 
     public Rechnung(Query query) {
         super(query.clone(TABLE_BILLS));
         this.query = query;
         zeilenHandler = new RechnungBetreffZZR();
+        nfh = new NumberFormatHandler(this, getDatum());
+        
     }
 
     /**
@@ -108,6 +119,8 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         if (aid != 0) {
             this.Angebot = new Angebot(aid);
         }
+        nfh = new NumberFormatHandler(this, getDatum());
+        
     }
 
     public String getFDatum() {
@@ -343,6 +356,9 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
 
     }
 
+    
+ 
+
     public PostenTableModel getProductlistAsTableModel() {
 
         DecimalFormat n = new DecimalFormat("0.00");
@@ -419,38 +435,6 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         }
         return prof;
     }
-
-    public String getNextBillNumber() {
-        NumberFormatHandler nfh = new NumberFormatHandler(this, getDatum());
-        Integer count = 0;
-
-        switch (nfh.getMode()) {
-
-            case 1:
-                count = ConnectionHandler.instanceOf().clone(TABLE_BILLS).selectCountBetween(DateConverter.getDate(DateConverter.getYear(this.getDatum())),
-                        DateConverter.addYear(DateConverter.getDate(DateConverter.getYear(this.getDatum()))));
-                break;
-
-            case 2:
-                count = ConnectionHandler.instanceOf().clone(TABLE_BILLS).selectCountBetween(DateConverter.getDate(DateConverter.getMonth(this.getDatum())),
-                        DateConverter.addMonth(DateConverter.getDate(DateConverter.getMonth(this.getDatum()))));
-                break;
-
-            case 3:
-                count = ConnectionHandler.instanceOf().clone(TABLE_BILLS).selectCountBetween(DateConverter.getDate(DateConverter.getDay(this.getDatum())),
-                        DateConverter.addDay(DateConverter.getDate(DateConverter.getDay(this.getDatum()))));
-                break;
-
-            case 0:
-                return ConnectionHandler.instanceOf().clone(TABLE_BILLS).getNextStringNumber("rechnungnummer");
-                
-                
-            default:  String.valueOf(ConnectionHandler.instanceOf().clone(TABLE_BILLS).selectCount("", null));
-        }
-
-       return nfh.getFormatter().format(count+1);
-    }
-
 //    public RechnungPosten[] getBp() {
 //        return bp;
 //    }
@@ -590,5 +574,17 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
 
     public Angebot getAngebot() {
         return Angebot;
+    }
+
+    public NumberFormatHandler getNfh() {
+        return nfh;
+    }
+
+    public void setNumberFormatHandler(NumberFormatHandler nfh) {
+        this.nfh = nfh;
+    }
+
+    public String getTable() {
+        return TABLE_BILLS;
     }
 }
