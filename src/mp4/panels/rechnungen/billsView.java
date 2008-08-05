@@ -1426,7 +1426,7 @@ private void jCheckBox4ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIR
 
 private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
 //GEN-LAST:event_jButton16ActionPerformed
-    new NumberFormatEditor();
+    new NumberFormatEditor(this.getCurrent());
 
 
 }                                         

@@ -28,6 +28,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 
+import mp3.classes.layer.Popup;
 import mp3.classes.utils.Log;
 import mp4.utils.datum.DateConverter;
 
@@ -89,7 +90,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
 
         } catch (SQLException ex) {
             Log.Debug(message + ex.getMessage());
-            Log.Debug(ex, true);
+           Popup.notice(message + ex.getMessage());
         } finally {
 
             // Alle Ressourcen wieder freigeben
@@ -98,7 +99,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     resultSet.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex, true);
+                    Popup.notice(message + ex.getMessage());
                 }
             }
             if (stm != null) {
@@ -106,7 +107,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     stm.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex, true);
+                   Popup.notice(message + ex.getMessage());
                 }
             }
         }
@@ -197,7 +198,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
             }
         } catch (SQLException ex) {
             Log.Debug(message + ex.getMessage());
-            Log.Debug(ex, true);
+           Popup.notice(message + ex.getMessage());
         } finally {
             // Alle Ressourcen wieder freigeben
             if (resultSet != null) {
@@ -205,7 +206,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     resultSet.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex, true);
+                   Popup.notice(message + ex.getMessage());
                 }
             }
             if (stm != null) {
@@ -213,7 +214,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     stm.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex, true);
+                   Popup.notice(message + ex.getMessage());
                 }
             }
         }
@@ -288,7 +289,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
 
         } catch (SQLException ex) {
             Log.Debug(message + ex.getMessage());
-            Log.Debug(ex, true);
+           Popup.notice(message + ex.getMessage());
         } finally {
 
             // Alle Ressourcen wieder freigeben
@@ -297,7 +298,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     resultSet.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex, true);
+                   Popup.notice(message + ex.getMessage());
                 }
             }
             if (stm != null) {
@@ -305,7 +306,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     stm.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex, true);
+                   Popup.notice(message + ex.getMessage());
                 }
             }
         }
@@ -338,9 +339,13 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
     }
 
     public String getNextStringNumber(String colName) {
-        return originalvalue.substring(0, substringcount) + getNextIndexOfStringCol(colName);
+        Integer s = getNextIndexOfStringCol(colName);
+        return originalvalue.substring(0, substringcount) + s;
     }
-
+     public int getNextNumber(String colName) {
+        Integer s = getNextIndexOfStringCol(colName);
+        return s;
+    }
     /**
      * 
      * @param colName 
@@ -369,15 +374,14 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
             if (resultSet.last()) {
                 index = resultSet.getString(colName);
                 originalvalue = index;
-
+                
                 while (i == null && index.length() > 0) {
                     try {
                         i = Integer.valueOf(index);
 
-                        substringcount++;
-                        index = index.substring(substringcount, index.length());
-
                     } catch (NumberFormatException numberFormatException) {
+                        substringcount++;
+                        index = index.substring(1, index.length());
                         i = null;
                     }
                 }
@@ -400,7 +404,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
             }
         } catch (SQLException ex) {
             Log.Debug(message + ex.getMessage());
-            Log.Debug(ex, true);
+            Popup.notice(message + ex.getMessage());
             stop();
 
             return null;
@@ -412,7 +416,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     resultSet.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex, true);
+                   Popup.notice(message + ex.getMessage());
                 }
             }
             if (stm != null) {
@@ -420,13 +424,14 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     stm.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex, true);
+                   Popup.notice(message + ex.getMessage());
                 }
             }
         }
         stop();
+        
+        i = (i < 0) ? -i : i;
         i += 1;
-
         return i;
 
     }
@@ -506,7 +511,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
 
         } catch (SQLException ex) {
             Log.Debug(message + ex.getMessage());
-            Log.Debug(ex, true);
+           Popup.notice(message + ex.getMessage());
             stop();
 
             return null;
@@ -519,7 +524,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     resultSet.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex, true);
+                   Popup.notice(message + ex.getMessage());
                 }
 
             }
@@ -528,7 +533,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     stm.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex, true);
+                   Popup.notice(message + ex.getMessage());
                 }
 
             }
@@ -587,7 +592,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
 
         } catch (SQLException ex) {
             Log.Debug(message + ex.getMessage());
-            Log.Debug(ex, true);
+//           Popup.notice(message + ex.getMessage());
             return 0;
         } finally {
 
@@ -597,7 +602,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     resultSet.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex, true);
+                   Popup.notice(message + ex.getMessage());
                 }
 
             }
@@ -606,7 +611,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     stm.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex, true);
+                   Popup.notice(message + ex.getMessage());
                 }
 
             }
@@ -664,7 +669,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
 
         } catch (SQLException ex) {
             Log.Debug(message + ex.getMessage());
-            Log.Debug(ex, true);
+           Popup.notice(message + ex.getMessage());
         } finally {
 
             // Alle Ressourcen wieder freigeben
@@ -673,7 +678,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     resultSet.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex, true);
+                   Popup.notice(message + ex.getMessage());
                 }
 
             }
@@ -682,7 +687,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     stm.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex, true);
+//                   Popup.notice(message + ex.getMessage());
                 }
 
             }
@@ -763,7 +768,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
 
         } catch (SQLException ex) {
             Log.Debug(message + ex.getMessage());
-            Log.Debug(ex, true);
+           Popup.notice(message + ex.getMessage());
 
         } finally {
 
@@ -773,7 +778,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     resultSet.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex, true);
+                   Popup.notice(message + ex.getMessage());
                 }
 
             }
@@ -782,7 +787,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     stm.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex, true);
+                   Popup.notice(message + ex.getMessage());
                 }
 
             }
@@ -851,7 +856,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
 
         } catch (SQLException ex) {
             Log.Debug(message + ex.getMessage());
-            Log.Debug(ex, true);
+           Popup.notice(message + ex.getMessage());
 
         } finally {
 
@@ -861,7 +866,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     resultSet.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex, true);
+                   Popup.notice(message + ex.getMessage());
                 }
 
             }
@@ -870,7 +875,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     stm.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex, true);
+                   Popup.notice(message + ex.getMessage());
                 }
 
             }
@@ -1061,7 +1066,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
 
         } catch (SQLException ex) {
             Log.Debug(message + ex.getMessage());
-            Log.Debug(ex, true);
+           Popup.notice(message + ex.getMessage());
         } finally {
 
             // Alle Ressourcen wieder freigeben
@@ -1070,7 +1075,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     resultSet.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex, true);
+                   Popup.notice(message + ex.getMessage());
                 }
 
             }
@@ -1079,7 +1084,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     stm.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex, true);
+                   Popup.notice(message + ex.getMessage());
                 }
 
             }
@@ -1168,7 +1173,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
 
         } catch (SQLException ex) {
             Log.Debug(message + ex.getMessage());
-            Log.Debug(ex, true);
+           Popup.notice(message + ex.getMessage());
         } finally {
 
             // Alle Ressourcen wieder freigeben
@@ -1177,7 +1182,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     resultSet.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex, true);
+                   Popup.notice(message + ex.getMessage());
                 }
 
             }
@@ -1186,7 +1191,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     stm.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex, true);
+                   Popup.notice(message + ex.getMessage());
                 }
 
             }
@@ -1266,7 +1271,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
 
         } catch (SQLException ex) {
             Log.Debug(message + ex.getMessage());
-            Log.Debug(ex, true);
+           Popup.notice(message + ex.getMessage());
         } finally {
 
             // Alle Ressourcen wieder freigeben
@@ -1275,7 +1280,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     resultSet.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex, true);
+                   Popup.notice(message + ex.getMessage());
                 }
 
             }
@@ -1284,7 +1289,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     stm.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex, true);
+                   Popup.notice(message + ex.getMessage());
                 }
 
             }
@@ -1318,7 +1323,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
 
         } catch (SQLException ex) {
             Log.Debug(message + ex.getMessage());
-            Log.Debug(ex, true);
+           Popup.notice(message + ex.getMessage());
         } finally {
 
             // Alle Ressourcen wieder freigeben
@@ -1327,7 +1332,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     resultSet.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex, true);
+                   Popup.notice(message + ex.getMessage());
                 }
 
             }
@@ -1336,7 +1341,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     stm.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex, true);
+                   Popup.notice(message + ex.getMessage());
                 }
 
             }
@@ -1410,7 +1415,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
 
         } catch (SQLException ex) {
             Log.Debug(message + ex.getMessage());
-            Log.Debug(ex, true);
+           Popup.notice(message + ex.getMessage());
         } finally {
 
             // Alle Ressourcen wieder freigeben
@@ -1419,7 +1424,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     resultSet.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex, true);
+                   Popup.notice(message + ex.getMessage());
                 }
 
             }
@@ -1428,7 +1433,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     stm.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex, true);
+                   Popup.notice(message + ex.getMessage());
                 }
 
             }
@@ -1528,7 +1533,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
 
         } catch (SQLException ex) {
             Log.Debug(message + ex.getMessage());
-            Log.Debug(ex, true);
+           Popup.notice(message + ex.getMessage());
             Log.Debug(query, true);
         } finally {
 
@@ -1538,7 +1543,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     resultSet.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex, true);
+                   Popup.notice(message + ex.getMessage());
                 }
 
             }
@@ -1547,7 +1552,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     stm.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex, true);
+                   Popup.notice(message + ex.getMessage());
                 }
 
             }
@@ -1598,7 +1603,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
             Log.Debug("Entries deleted: " + resultCount);
         } catch (SQLException ex) {
             Log.Debug(message + ex.getMessage());
-            Log.Debug(ex, true);
+           Popup.notice(message + ex.getMessage());
             return 0;
         } finally {
 
@@ -1608,7 +1613,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     resultSet.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex, true);
+                   Popup.notice(message + ex.getMessage());
                 }
 
             }
@@ -1617,7 +1622,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     stm.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex, true);
+                   Popup.notice(message + ex.getMessage());
                 }
 
             }
@@ -1656,7 +1661,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
             Log.Debug("Entries deleted: " + resultCount);
         } catch (SQLException ex) {
             Log.Debug(message + ex.getMessage());
-            Log.Debug(ex, true);
+           Popup.notice(message + ex.getMessage());
             return 0;
         } finally {
 
@@ -1666,7 +1671,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     resultSet.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex, true);
+                   Popup.notice(message + ex.getMessage());
                 }
 
             }
@@ -1675,7 +1680,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     stm.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex, true);
+                   Popup.notice(message + ex.getMessage());
                 }
 
             }
@@ -1797,7 +1802,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
 
         } catch (SQLException ex) {
             Log.Debug(message + ex.getMessage());
-            Log.Debug(ex, true);
+           Popup.notice(message + ex.getMessage());
         } finally {
 
             // Alle Ressourcen wieder freigeben
@@ -1806,7 +1811,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     resultSet.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex, true);
+                   Popup.notice(message + ex.getMessage());
                 }
 
             }
@@ -1815,7 +1820,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     stm.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex, true);
+                   Popup.notice(message + ex.getMessage());
                 }
 
             }
@@ -1851,7 +1856,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
             }
         } catch (SQLException ex) {
             Log.Debug(message + ex.getMessage());
-            Log.Debug(ex, true);
+           Popup.notice(message + ex.getMessage());
             stop();
             return 0;
         } finally {
@@ -1861,7 +1866,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     resultSet.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex, true);
+                   Popup.notice(message + ex.getMessage());
                 }
             }
             if (stm != null) {
@@ -1869,7 +1874,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     stm.close();
                 } catch (SQLException ex) {
                     Log.Debug(message + ex.getMessage());
-                    Log.Debug(ex, true);
+                   Popup.notice(message + ex.getMessage());
                 }
             }
         }

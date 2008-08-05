@@ -41,7 +41,7 @@ public class NumberFormatHandler {
     private Countable type;
     private Integer mode = 0;
     private Date date;
-    private boolean test = true;
+   
     /*
      * 
      * Beispiel:
@@ -69,12 +69,8 @@ public class NumberFormatHandler {
         }
     }
 
-    public void test(String format) {
-        formatter = parseFormat(format);
-        test = true;
-    }
 
-    private NumberFormat parseFormat(String format) {
+    public NumberFormat parseFormat(String format) {
         format = format.replaceAll(YEAR, DateConverter.getYear(date));
         format = format.replaceAll(MONTH, DateConverter.getMonth(date));
         format = format.replaceAll(MONTH_NAME, DateConverter.getMonthName(date));
@@ -83,31 +79,31 @@ public class NumberFormatHandler {
         String[] string = format.split(SEP);
         mode = Integer.valueOf(string[2]);
 
-        if (mode != 0) {
+//        if (mode != 0) {
             return new DecimalFormat("'" + string[0] + "'" + string[1]);
-        } else {
-            return new DecimalFormat(string[1]);
-        }
+//        } else {
+//            return new DecimalFormat(string[1]);
+//        }
     }
 
     public void format() {
-        if (!test) {
+       
             if (type.getClass().isInstance(new mp4.klassen.objekte.Rechnung())) {
                 processRechnungType();
             } else if (type.getClass().isInstance(new mp4.klassen.objekte.Angebot())) {
                 processAngebotType();
             }
-        }
+        
     }
 
     private void processAngebotType() {
         format = Programmdaten.instanceOf().getANGEBOT_NUMMER_FORMAT();
-        formatter = parseFormat(format);
+        setFormatter(parseFormat(format));
     }
 
     private void processRechnungType() {
         format = Programmdaten.instanceOf().getRECHNUNG_NUMMER_FORMAT();
-        formatter = parseFormat(format);
+        setFormatter(parseFormat(format));
     }
 
     public NumberFormat getFormatter() {
@@ -120,7 +116,7 @@ public class NumberFormatHandler {
 
     public String getNextNumber() {
 
-//       if(!test) format();
+       if(formatter == null) format();
         Integer count = 0;
 
         switch (this.getMode()) {
@@ -141,7 +137,7 @@ public class NumberFormatHandler {
                 break;
 
             case 0:
-                count = Integer.valueOf(mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(type.getTable()).getNextStringNumber(type.getCountColumn()));
+                count = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(type.getTable()).getNextNumber(type.getCountColumn())-1;
                 break;
 
             default:
@@ -150,5 +146,9 @@ public class NumberFormatHandler {
 
         
         return this.getFormatter().format(count + 1);
+    }
+
+    public void setFormatter(NumberFormat formatter) {
+        this.formatter = formatter;
     }
 }

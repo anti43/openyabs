@@ -1,9 +1,12 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 
 package mp3.classes.layer;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import mp3.classes.utils.FileReaderWriter;
 
 /**
  *
@@ -16,8 +19,15 @@ public class DefaultHelpModel {
     public DefaultHelpModel(String thema, String text){
         this.thema =thema;
         this.text=text;
-        
+    }
     
+   public DefaultHelpModel(String thema, File file){
+        this.thema = thema;
+        try {
+            this.text = new FileReaderWriter(file.getCanonicalPath()).read();
+        } catch (IOException ex) {
+            Logger.getLogger(DefaultHelpModel.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public String getThema() {
