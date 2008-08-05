@@ -299,6 +299,8 @@ jPanel10.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 jOutlookBar1.setBackground(new java.awt.Color(204, 204, 204));
 jOutlookBar1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
+jPanel2.setBackground(new java.awt.Color(153, 153, 153));
+
 jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/3232/agt_family.png"))); // NOI18N
 jButton4.setText("Kunden");
 jButton4.setToolTipText("Kunden");
@@ -346,7 +348,7 @@ jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 .addComponent(jButton1, 0, 0, Short.MAX_VALUE)
 .addGap(11, 11, 11))
 .addGroup(jPanel2Layout.createSequentialGroup()
-.addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE)
+.addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
 .addGap(11, 11, 11))))
 );
 jPanel2Layout.setVerticalGroup(
@@ -362,6 +364,8 @@ jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 );
 
 jOutlookBar1.addTab("Kontakte", jPanel2);
+
+jPanel4.setBackground(new java.awt.Color(153, 153, 153));
 
 jButton9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/3232/blockdevice.png"))); // NOI18N
 jButton9.setText("Produkte");
@@ -385,8 +389,8 @@ jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 .addGroup(jPanel4Layout.createSequentialGroup()
 .addContainerGap()
 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-.addComponent(jButton10, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 77, Short.MAX_VALUE)
-.addComponent(jButton9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+.addComponent(jButton10, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 86, Short.MAX_VALUE)
+.addComponent(jButton9, javax.swing.GroupLayout.DEFAULT_SIZE, 86, Short.MAX_VALUE))
 .addContainerGap())
 );
 jPanel4Layout.setVerticalGroup(
@@ -396,10 +400,12 @@ jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 .addComponent(jButton10)
 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
 .addComponent(jButton9)
-.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+.addContainerGap(231, Short.MAX_VALUE))
 );
 
 jOutlookBar1.addTab("Produkte", jPanel4);
+
+jPanel3.setBackground(new java.awt.Color(153, 153, 153));
 
 jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/small/next.png"))); // NOI18N
 jButton5.setText("Einnahmen");
@@ -483,10 +489,12 @@ jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 .addComponent(jButton7)
 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 .addComponent(jButton8)
-.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+.addContainerGap(41, Short.MAX_VALUE))
 );
 
 jOutlookBar1.addTab("Buchhaltung", jPanel3);
+
+jPanel6.setBackground(new java.awt.Color(153, 153, 153));
 
 jButton12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/3232/kghostview.png"))); // NOI18N
 jButton12.setText("Verlauf");
@@ -563,8 +571,7 @@ jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 .addGap(21, 21, 21)
 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
 .addComponent(jButton3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-.addComponent(jButton17, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-.addContainerGap(22, Short.MAX_VALUE))
+.addComponent(jButton17, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
 );
 jPanel10Layout.setVerticalGroup(
 jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
