@@ -2,6 +2,21 @@
 
 <Form version="1.3" maxVersion="1.5" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <NonVisualComponents>
+    <Container class="javax.swing.JPanel" name="jPanel7">
+
+      <Layout>
+        <DimensionLayout dim="0">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <EmptySpace min="0" pref="100" max="32767" attributes="0"/>
+          </Group>
+        </DimensionLayout>
+        <DimensionLayout dim="1">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <EmptySpace min="0" pref="100" max="32767" attributes="0"/>
+          </Group>
+        </DimensionLayout>
+      </Layout>
+    </Container>
     <Menu class="javax.swing.JMenuBar" name="jMenuBar2">
       <SubComponents>
         <Menu class="javax.swing.JMenu" name="jMenu4">
@@ -233,6 +248,9 @@
       <Connection code="this.MAXIMIZED_BOTH" type="code"/>
     </Property>
     <Property name="locationByPlatform" type="boolean" value="true"/>
+    <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+      <Dimension value="[800, 600]"/>
+    </Property>
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="menuBar" type="java.lang.String" value="jMenuBar2"/>
@@ -254,10 +272,9 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
-              <Component id="jPanel10" min="-2" pref="119" max="-2" attributes="0"/>
+              <Component id="jPanel10" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jScrollPane1" pref="553" max="32767" attributes="1"/>
-              <EmptySpace max="-2" attributes="0"/>
+              <Component id="jScrollPane1" pref="543" max="32767" attributes="1"/>
           </Group>
           <Component id="jPanel1" alignment="0" max="32767" attributes="0"/>
       </Group>
@@ -267,7 +284,7 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="jScrollPane1" pref="541" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" pref="601" max="32767" attributes="0"/>
                   <Component id="jPanel10" alignment="1" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -289,29 +306,16 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="1" attributes="0">
-                  <Component id="messagePanel" pref="670" max="32767" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="mainProgress" min="-2" pref="13" max="-2" attributes="0"/>
-              </Group>
+              <Component id="messagePanel" alignment="0" pref="662" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="mainProgress" alignment="0" pref="16" max="32767" attributes="0"/>
-              <Component id="messagePanel" alignment="1" pref="16" max="32767" attributes="0"/>
+              <Component id="messagePanel" alignment="0" pref="16" max="32767" attributes="1"/>
           </Group>
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Component class="javax.swing.JProgressBar" name="mainProgress">
-          <Properties>
-            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="33" green="0" red="ff" type="rgb"/>
-            </Property>
-            <Property name="borderPainted" type="boolean" value="false"/>
-          </Properties>
-        </Component>
         <Component class="javax.swing.JLabel" name="messagePanel">
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new FadeOnChangeLabel()"/>
@@ -329,76 +333,18 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
       <SubComponents>
-        <Container class="javax.swing.JPanel" name="jPanel5">
+        <Container class="javax.swing.JTabbedPane" name="mainTabPane">
           <Properties>
+            <Property name="tabLayoutPolicy" type="int" value="1"/>
             <Property name="autoscrolls" type="boolean" value="true"/>
+            <Property name="doubleBuffered" type="boolean" value="true"/>
+            <Property name="focusCycleRoot" type="boolean" value="true"/>
+            <Property name="focusTraversalPolicyProvider" type="boolean" value="true"/>
+            <Property name="opaque" type="boolean" value="true"/>
           </Properties>
 
-          <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
-          <SubComponents>
-            <Container class="javax.swing.JTabbedPane" name="mainTabPane">
-              <Events>
-                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="mainTabPaneMouseClicked"/>
-                <EventHandler event="propertyChange" listener="java.beans.PropertyChangeListener" parameters="java.beans.PropertyChangeEvent" handler="mainTabPanePropertyChange"/>
-              </Events>
-              <Constraints>
-                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
-                  <BorderConstraints direction="Center"/>
-                </Constraint>
-              </Constraints>
-
-              <Layout class="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout"/>
-              <SubComponents>
-                <Container class="javax.swing.JPanel" name="jPanel11">
-                  <Constraints>
-                    <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-                      <JTabbedPaneConstraints tabName="Start">
-                        <Property name="tabTitle" type="java.lang.String" value="Start"/>
-                      </JTabbedPaneConstraints>
-                    </Constraint>
-                  </Constraints>
-
-                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
-                </Container>
-              </SubComponents>
-            </Container>
-          </SubComponents>
+          <Layout class="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout"/>
         </Container>
-      </SubComponents>
-    </Container>
-    <Container class="javax.swing.JMenuBar" name="jMenuBar1">
-
-      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
-        <Property name="useNullLayout" type="boolean" value="true"/>
-      </Layout>
-      <SubComponents>
-        <Menu class="javax.swing.JMenu" name="jMenu1">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="File"/>
-          </Properties>
-        </Menu>
-        <Menu class="javax.swing.JMenu" name="jMenu2">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Bearbeiten"/>
-          </Properties>
-          <SubComponents>
-            <Menu class="javax.swing.JMenu" name="jMenu3">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Importieren.."/>
-              </Properties>
-              <SubComponents>
-                <MenuItem class="javax.swing.JMenuItem" name="jMenuItem1">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Produkte"/>
-                  </Properties>
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem1ActionPerformed"/>
-                  </Events>
-                </MenuItem>
-              </SubComponents>
-            </Menu>
-          </SubComponents>
-        </Menu>
       </SubComponents>
     </Container>
     <Container class="javax.swing.JPanel" name="jPanel10">
@@ -416,15 +362,27 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
+              <Component id="jOutlookBar1" min="-2" pref="110" max="-2" attributes="1"/>
               <Group type="102" alignment="0" attributes="0">
-                  <Component id="jOutlookBar1" min="-2" pref="110" max="-2" attributes="0"/>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                      <Component id="jButton3" alignment="0" max="32767" attributes="1"/>
+                      <Component id="jButton17" alignment="0" max="32767" attributes="1"/>
+                  </Group>
+                  <EmptySpace pref="22" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="jOutlookBar1" alignment="0" pref="537" max="32767" attributes="0"/>
+              <Group type="102" attributes="0">
+                  <Component id="jOutlookBar1" min="-2" pref="463" max="-2" attributes="0"/>
+                  <EmptySpace pref="23" max="32767" attributes="0"/>
+                  <Component id="jButton17" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                  <Component id="jButton3" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+              </Group>
           </Group>
         </DimensionLayout>
       </Layout>
@@ -458,16 +416,18 @@
                       <Group type="102" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jButton1" alignment="0" min="0" pref="0" max="32767" attributes="1"/>
-                              <Component id="jButton4" alignment="0" min="-2" pref="85" max="-2" attributes="1"/>
-                          </Group>
-                          <EmptySpace min="11" pref="11" max="-2" attributes="0"/>
-                      </Group>
-                      <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
-                              <Component id="jButton2" pref="87" max="32767" attributes="1"/>
-                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="jButton4" min="-2" pref="85" max="-2" attributes="1"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                              </Group>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="jButton1" min="0" pref="0" max="32767" attributes="1"/>
+                                  <EmptySpace min="-2" pref="11" max="-2" attributes="0"/>
+                              </Group>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="jButton2" pref="84" max="32767" attributes="1"/>
+                                  <EmptySpace min="-2" pref="11" max="-2" attributes="0"/>
+                              </Group>
                           </Group>
                       </Group>
                   </Group>
@@ -476,17 +436,12 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jButton4" min="-2" pref="77" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="jButton4" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="jButton1" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="276" max="-2" attributes="0"/>
-                      </Group>
-                      <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="-2" pref="193" max="-2" attributes="0"/>
-                              <Component id="jButton2" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace pref="193" max="32767" attributes="0"/>
-                          </Group>
+                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                          <Component id="jButton2" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="244" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -495,9 +450,10 @@
                 <Component class="javax.swing.JButton" name="jButton4">
                   <Properties>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/bilder/medium/kontact_contacts.png"/>
+                      <Image iconType="3" name="/bilder/3232/agt_family.png"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Kunden"/>
+                    <Property name="toolTipText" type="java.lang.String" value="Kunden"/>
                     <Property name="horizontalTextPosition" type="int" value="0"/>
                     <Property name="verticalTextPosition" type="int" value="3"/>
                   </Properties>
@@ -508,9 +464,10 @@
                 <Component class="javax.swing.JButton" name="jButton1">
                   <Properties>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/bilder/medium/kuzer.png"/>
+                      <Image iconType="3" name="/bilder/3232/edit_user.png"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Lieferanten"/>
+                    <Property name="toolTipText" type="java.lang.String" value="Lieferanten"/>
                     <Property name="horizontalTextPosition" type="int" value="0"/>
                     <Property name="verticalTextPosition" type="int" value="3"/>
                   </Properties>
@@ -524,6 +481,7 @@
                       <Image iconType="3" name="/bilder/medium/adept_update.png"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Angebote"/>
+                    <Property name="toolTipText" type="java.lang.String" value="Angebote"/>
                     <Property name="horizontalTextPosition" type="int" value="0"/>
                     <Property name="verticalTextPosition" type="int" value="3"/>
                   </Properties>
@@ -545,11 +503,11 @@
               <Layout>
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="1" attributes="0">
+                      <Group type="102" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="1" attributes="0">
-                              <Component id="jButton9" alignment="0" pref="86" max="32767" attributes="1"/>
-                              <Component id="jButton10" alignment="0" pref="86" max="32767" attributes="1"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="jButton10" alignment="1" pref="77" max="32767" attributes="1"/>
+                              <Component id="jButton9" alignment="0" max="32767" attributes="1"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
@@ -559,10 +517,10 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jButton10" min="-2" pref="75" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="jButton10" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="jButton9" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="278" max="32767" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -571,7 +529,7 @@
                 <Component class="javax.swing.JButton" name="jButton9">
                   <Properties>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/bilder/medium/blockdevice.png"/>
+                      <Image iconType="3" name="/bilder/3232/blockdevice.png"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Produkte"/>
                     <Property name="horizontalTextPosition" type="int" value="0"/>
@@ -584,7 +542,7 @@
                 <Component class="javax.swing.JButton" name="jButton10">
                   <Properties>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/bilder/medium/kwikdisk.png"/>
+                      <Image iconType="3" name="/bilder/3232/share.png"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Services"/>
                     <Property name="horizontalTextPosition" type="int" value="0"/>
@@ -605,7 +563,7 @@
               <Layout>
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
+                      <Group type="102" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="1" max="-2" attributes="0">
                               <Component id="jButton8" alignment="0" max="32767" attributes="1"/>
@@ -631,7 +589,7 @@
                           <Component id="jButton7" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jButton8" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="115" max="32767" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -643,6 +601,7 @@
                       <Image iconType="3" name="/bilder/small/next.png"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Einnahmen"/>
+                    <Property name="toolTipText" type="java.lang.String" value="Einnahmen"/>
                     <Property name="horizontalTextPosition" type="int" value="0"/>
                     <Property name="verticalTextPosition" type="int" value="3"/>
                   </Properties>
@@ -656,6 +615,7 @@
                       <Image iconType="3" name="/bilder/small/previous.png"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Ausgaben"/>
+                    <Property name="toolTipText" type="java.lang.String" value="Ausgaben"/>
                     <Property name="horizontalTextPosition" type="int" value="0"/>
                     <Property name="verticalTextPosition" type="int" value="3"/>
                   </Properties>
@@ -669,6 +629,7 @@
                       <Image iconType="3" name="/bilder/medium/adept_update.png"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Offen"/>
+                    <Property name="toolTipText" type="java.lang.String" value="Offen"/>
                     <Property name="horizontalTextPosition" type="int" value="0"/>
                     <Property name="verticalTextPosition" type="int" value="3"/>
                   </Properties>
@@ -682,6 +643,7 @@
                       <Image iconType="3" name="/bilder/small/business.png"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Rechnungen"/>
+                    <Property name="toolTipText" type="java.lang.String" value="Rechnungen"/>
                     <Property name="horizontalTextPosition" type="int" value="0"/>
                     <Property name="verticalTextPosition" type="int" value="3"/>
                   </Properties>
@@ -692,9 +654,10 @@
                 <Component class="javax.swing.JButton" name="jButton8">
                   <Properties>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/bilder/small/kspread.png"/>
+                      <Image iconType="3" name="/bilder/3232/kspread.png"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="&#xdc;bersicht"/>
+                    <Property name="toolTipText" type="java.lang.String" value="&#xdc;bersicht"/>
                     <Property name="horizontalTextPosition" type="int" value="0"/>
                     <Property name="verticalTextPosition" type="int" value="3"/>
                   </Properties>
@@ -716,27 +679,33 @@
               <Layout>
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace min="-2" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                              <Component id="jButton14" alignment="0" min="0" pref="0" max="32767" attributes="1"/>
-                              <Component id="jButton13" alignment="0" max="32767" attributes="1"/>
-                              <Component id="jButton12" alignment="0" max="32767" attributes="1"/>
+                      <Group type="102" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="jButton14" alignment="0" pref="86" max="32767" attributes="1"/>
+                              <Component id="jButton15" alignment="0" pref="86" max="32767" attributes="1"/>
+                              <Component id="jButton13" alignment="0" pref="86" max="32767" attributes="1"/>
+                              <Component id="jButton12" alignment="0" pref="86" max="32767" attributes="1"/>
+                              <Component id="jButton16" alignment="0" pref="86" max="32767" attributes="1"/>
                           </Group>
-                          <EmptySpace min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                           <Component id="jButton12" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="jButton13" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="jButton14" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="187" max="32767" attributes="0"/>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Component id="jButton15" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Component id="jButton16" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace pref="21" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -745,9 +714,10 @@
                 <Component class="javax.swing.JButton" name="jButton12">
                   <Properties>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/bilder/medium/preferences_system_time.png"/>
+                      <Image iconType="3" name="/bilder/3232/kghostview.png"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Verlauf"/>
+                    <Property name="toolTipText" type="java.lang.String" value="Verlauf"/>
                     <Property name="horizontalTextPosition" type="int" value="0"/>
                     <Property name="verticalTextPosition" type="int" value="3"/>
                   </Properties>
@@ -755,9 +725,10 @@
                 <Component class="javax.swing.JButton" name="jButton13">
                   <Properties>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/bilder/medium/file-manager.png"/>
+                      <Image iconType="3" name="/bilder/3232/file-manager.png"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Sicherung"/>
+                    <Property name="toolTipText" type="java.lang.String" value="Sicherung"/>
                     <Property name="horizontalTextPosition" type="int" value="0"/>
                     <Property name="verticalTextPosition" type="int" value="3"/>
                   </Properties>
@@ -765,9 +736,32 @@
                 <Component class="javax.swing.JButton" name="jButton14">
                   <Properties>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/bilder/medium/preferences_plugin.png"/>
+                      <Image iconType="3" name="/bilder/3232/configure.png"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Einstellungen"/>
+                    <Property name="toolTipText" type="java.lang.String" value="Einstellungen"/>
+                    <Property name="horizontalTextPosition" type="int" value="0"/>
+                    <Property name="verticalTextPosition" type="int" value="3"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JButton" name="jButton15">
+                  <Properties>
+                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                      <Image iconType="3" name="/bilder/3232/log.png"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="Auswertungen"/>
+                    <Property name="toolTipText" type="java.lang.String" value="Auswertungen"/>
+                    <Property name="horizontalTextPosition" type="int" value="0"/>
+                    <Property name="verticalTextPosition" type="int" value="3"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JButton" name="jButton16">
+                  <Properties>
+                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                      <Image iconType="3" name="/bilder/3232/calc.png"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="Rechner"/>
+                    <Property name="toolTipText" type="java.lang.String" value="Auswertungen"/>
                     <Property name="horizontalTextPosition" type="int" value="0"/>
                     <Property name="verticalTextPosition" type="int" value="3"/>
                   </Properties>
@@ -776,6 +770,20 @@
             </Container>
           </SubComponents>
         </Container>
+        <Component class="javax.swing.JButton" name="jButton3">
+          <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/bilder/3232/endturn.png"/>
+            </Property>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JButton" name="jButton17">
+          <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/bilder/3232/lock.png"/>
+            </Property>
+          </Properties>
+        </Component>
       </SubComponents>
     </Container>
   </SubComponents>

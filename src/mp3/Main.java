@@ -16,6 +16,7 @@
  */
 package mp3;
 
+import com.l2fprod.common.swing.plaf.LookAndFeelAddons;
 import de.muntjak.tinylookandfeel.TinyLookAndFeel;
 import java.io.File;
 
@@ -67,6 +68,7 @@ public class Main implements Strings {
          //UIManager.setLookAndFeel("org.fife.plaf.VisualStudio2005.VisualStudio2005LookAndFeel");
             try {
                 UIManager.setLookAndFeel(new TinyLookAndFeel());
+                LookAndFeelAddons.setAddon(LookAndFeelAddons.getBestMatchAddonClassName());
 //                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             } catch (Exception exe) {
                 exe.printStackTrace();
