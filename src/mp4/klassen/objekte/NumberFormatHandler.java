@@ -41,7 +41,7 @@ public class NumberFormatHandler {
     private Countable type;
     private Integer mode = 0;
     private Date date;
-   
+
     /*
      * 
      * Beispiel:
@@ -52,7 +52,6 @@ public class NumberFormatHandler {
      * 2008-Januar-000231
      * 
      */
-
     public NumberFormatHandler(Countable type, Date date) {
 
         this.type = type;
@@ -69,7 +68,6 @@ public class NumberFormatHandler {
         }
     }
 
-
     public NumberFormat parseFormat(String format) {
         format = format.replaceAll(YEAR, DateConverter.getYear(date));
         format = format.replaceAll(MONTH, DateConverter.getMonth(date));
@@ -77,23 +75,37 @@ public class NumberFormatHandler {
         format = format.replaceAll(DAY, DateConverter.getDayOfMonth(date));
 
         String[] string = format.split(SEP);
-        mode = Integer.valueOf(string[2]);
 
-//        if (mode != 0) {
-            return new DecimalFormat("'" + string[0] + "'" + string[1]);
-//        } else {
-//            return new DecimalFormat(string[1]);
-//        }
+        if (string.length == 1) {
+            mode = 0;
+            return new DecimalFormat(string[1]);
+        } else if (string.length == 2) {
+            try {
+                mode = Integer.valueOf(string[1]);
+                return new DecimalFormat(string[0]);
+            } catch (Exception ex) {
+                mode = 0;
+                return new DecimalFormat("'" + string[0] + "'" + string[1]);
+            }
+        } else {
+            try {
+                mode = Integer.valueOf(string[2]);
+                return new DecimalFormat("'" + string[0] + "'" + string[1]);
+            } catch (NumberFormatException numberFormatException) {
+                mode = 0;
+                return new DecimalFormat("'" + string[0] + "'" + string[1]);
+            }
+        }
     }
 
     public void format() {
-       
-            if (type.getClass().isInstance(new mp4.klassen.objekte.Rechnung())) {
-                processRechnungType();
-            } else if (type.getClass().isInstance(new mp4.klassen.objekte.Angebot())) {
-                processAngebotType();
-            }
-        
+
+        if (type.getClass().isInstance(new mp4.klassen.objekte.Rechnung())) {
+            processRechnungType();
+        } else if (type.getClass().isInstance(new mp4.klassen.objekte.Angebot())) {
+            processAngebotType();
+        }
+
     }
 
     private void processAngebotType() {
@@ -116,7 +128,9 @@ public class NumberFormatHandler {
 
     public String getNextNumber() {
 
-       if(formatter == null) format();
+        if (formatter == null) {
+            format();
+        }
         Integer count = 0;
 
         switch (this.getMode()) {
@@ -137,14 +151,14 @@ public class NumberFormatHandler {
                 break;
 
             case 0:
-                count = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(type.getTable()).getNextNumber(type.getCountColumn())-1;
+                count = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(type.getTable()).getNextNumber(type.getCountColumn()) - 1;
                 break;
 
             default:
                 String.valueOf(mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(type.getTable()).selectCount("", null) + 1);
         }
 
-        
+
         return this.getFormatter().format(count + 1);
     }
 

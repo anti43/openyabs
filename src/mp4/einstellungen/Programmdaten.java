@@ -53,9 +53,16 @@ public class Programmdaten implements mp4.datenbank.struktur.Tabellen {
         return handler.getBoolean("BILLPANELCHECKBOXMITLIEFERSCHEIN");
     }
 
+    public String getPATH_TO_HELPFILES() {
+         return handler.getString("PATH_TO_HELPFILES");
+    }
 
-    public void setBILLPANEL_CHECKBOX_MITLIEFERSCHEIN(boolean BILLPANEL_CHECKBOX_MITLIEFERSCHEIN) {
+  public void setBILLPANEL_CHECKBOX_MITLIEFERSCHEIN(boolean BILLPANEL_CHECKBOX_MITLIEFERSCHEIN) {
         handler.setBoolean("BILLPANELCHECKBOXMITLIEFERSCHEIN",BILLPANEL_CHECKBOX_MITLIEFERSCHEIN);
+    }
+  
+    public void setPATH_TO_HELPFILES(String PATH_TO_HELPFILES) {
+        handler.setString("PATH_TO_HELPFILES",PATH_TO_HELPFILES);
     }
 
     public Integer getMAINFRAME_TAB() {

@@ -220,7 +220,7 @@ private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
 private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
 
-    new Help("konten1", "theme");
+    new Help("nummernformat1.mph");
     
 }//GEN-LAST:event_jButton4ActionPerformed
 

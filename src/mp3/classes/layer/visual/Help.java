@@ -6,11 +6,13 @@
 
 package mp3.classes.layer.visual;
 
+import java.io.File;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLDocument.HTMLReader;
 import mp3.classes.layer.*;
 import mp4.utils.windows.Position;
 import mp3.classes.utils.FileToString;
+import mp4.einstellungen.Programmdaten;
 
 /**
  *
@@ -32,6 +34,22 @@ public class Help extends javax.swing.JFrame {
         this.setModel(model);
         this.setVisible(rootPaneCheckingEnabled);
     }
+
+    public Help(String helpfile) {
+        initComponents();
+        new Position(this);
+      
+        FileToString t = new FileToString(new File(Programmdaten.instanceOf().getPATH_TO_HELPFILES() + helpfile));
+        String htitle = "";
+        
+        if(t.getContent().contains("<title>"))
+                htitle = t.getContent().substring(t.getContent().indexOf("<title>")+"<title>".length(), t.getContent().indexOf("</title>"));
+        
+        this.setModel(new DefaultHelpModel( htitle, t.getContent()));
+        this.setVisible(rootPaneCheckingEnabled);
+    }
+    
+    
     public void setModel(DefaultHelpModel model){
         this.jLabel1.setText(model.getThema());
         this.jEditorPane1.setContentType("text/html");
