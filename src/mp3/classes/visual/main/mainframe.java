@@ -51,7 +51,7 @@ import mp3.classes.visual.main.license;
 import mp3.classes.visual.sub.backupView;
 import mp4.panels.rechnungen.billsView;
 
-import mp3.classes.visual.sub.customersView;
+import mp4.panels.kontakte.customersView;
 //import mp3.classes.visual.sub.*;
 import mp3.classes.visual.sub.eurEURPanel;
 import mp3.classes.visual.sub.eurOPanel;
