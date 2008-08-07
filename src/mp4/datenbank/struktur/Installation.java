@@ -18,6 +18,8 @@ package mp4.datenbank.struktur;
 
 import mp3.classes.interfaces.*;
 import java.io.File;
+import java.util.Date;
+import mp4.utils.datum.DateConverter;
 
 /**
  *
@@ -139,7 +141,7 @@ public interface Installation {
         
         "CREATE TABLE benutzer (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
         "username VARCHAR(250),password VARCHAR(250)," +
-        "createdon DATE NOT NULL," +
+        "createdon DATE default NULL," +
         "createdby VARCHAR(50)," + "iseditor INTEGER DEFAULT 0," + "isadmin INTEGER DEFAULT 0," +
         "deleted INTEGER DEFAULT 0," +
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
@@ -195,7 +197,7 @@ public interface Installation {
         
         "INSERT INTO steuersaetze (name, wert) VALUES ('Default', 0.0)",
         
-        
+//        MAINFRAME_WINDOW_STATE
         
         "INSERT INTO programmdaten(name, wert) VALUES ('MAHNUNG_TEXT_DEFAULT',  'Sehr geehrter {KUNDE_ANREDE} {KUNDE_VORNAME} {KUNDE_NAME},\nin Bezug auf unsere Rechnung Nr. "+ 
         "{RECHNUNG_NUMMER} vom {RECHNUNG_DATUM} mussten wir heute feststellen, dass " +
@@ -207,14 +209,14 @@ public interface Installation {
                 "weil z.B. der Verwendungszweck nicht korrekt angegeben wurde.\n\nMit freundlichen Grüßen\n\n')",
         "INSERT INTO programmdaten(name, wert) VALUES ('RECHNUNG_NUMMER_FORMAT',  '{JAHR}-{MONAT_NAME}-&!00000&!2')",
         "INSERT INTO programmdaten(name, wert) VALUES ('ANGEBOT_NUMMER_FORMAT',  '{JAHR}-{MONAT_NAME}-&!00000&!2')",
-        "INSERT INTO programmdaten(name, wert) VALUES ('PATH_TO_HELPFILES',  '"+ System.getProperty("user.home") + "\\\')",
-               
+       
+        "INSERT INTO programmdaten(name, wert) VALUES ('MAINFRAME_WINDOW_STATE',  '790,1000')",    
+        
+        "INSERT INTO benutzer(username, password, createdon, createdby, iseditor, isadmin) VALUES ('admin',  '2CB336AE1494258BCD5DFD35C698EDB1','"+DateConverter.getSQLDateString(new Date())+"', 'Niemand' , 1, 1)",       
             
         "INSERT INTO rechnungbetreffz (name, text, isvorlage) VALUES ('Unser Angebot..', 'Unser Angebot vom {Angebot_Datum}', 1)",
         "INSERT INTO rechnungbetreffz (name, text, isvorlage) VALUES ('Ihr Auftrag..', 'Ihr Auftrag vom {Auftrag_Datum}', 1)",
-        "INSERT INTO rechnungbetreffz (name, text, isvorlage) VALUES ('Bearbeiter..', 'Bearbeiter: {Benutzer}', 1)",
-         
-         
+        "INSERT INTO rechnungbetreffz (name, text, isvorlage) VALUES ('Bearbeiter..', 'Bearbeiter: {Benutzer}', 1)",      
          
         "INSERT INTO daten (name, wert) VALUES ('Backup Verzeichnis', '" + System.getProperty("user.home") + File.separator + ProtectedStrings.PROG_NAME + File.separator + "backups" + "')",
         "INSERT INTO daten (name, wert) VALUES ('PDF Rechnungen Verzeichnis', '" + System.getProperty("user.home") + File.separator + ProtectedStrings.PROG_NAME + File.separator + "PDF" + File.separator + "Rechnungen" + "')",

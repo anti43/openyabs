@@ -102,6 +102,9 @@
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="verticalTextPosition" type="int" value="3"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton20ActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="jButton4">
               <Properties>
@@ -555,7 +558,7 @@
                           <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="1" attributes="0">
                                   <Component id="jPanel11" max="32767" attributes="1"/>
-                                  <Component id="jPanel9" alignment="1" pref="110" max="32767" attributes="1"/>
+                                  <Component id="jPanel9" alignment="1" max="32767" attributes="1"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jPanel10" min="-2" pref="86" max="-2" attributes="0"/>

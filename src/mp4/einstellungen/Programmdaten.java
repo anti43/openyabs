@@ -23,14 +23,7 @@ import java.awt.Dimension;
  * @author Andreas
  */
 public class Programmdaten implements mp4.datenbank.struktur.Tabellen {
-    
-    private boolean BILLPANEL_CHECKBOX_MITLIEFERSCHEIN = false;
-    private Integer MAINFRAME_TAB = 8;
-    private Dimension  MAINFRAME_WINDOW_STATE;
-    private String MAHNUNG_TEXT_DEFAULT;
-    private String RECHNUNG_NUMMER_FORMAT;
-    
-    
+
     private DataHandler handler;
     private static Programmdaten dat;
 
@@ -41,28 +34,26 @@ public class Programmdaten implements mp4.datenbank.struktur.Tabellen {
         }
         return dat;
     }
-    
 
     public Programmdaten() {
-       handler = new DataHandler(TABLE_PROG_DATA);
+        handler = new DataHandler(TABLE_PROG_DATA);
 
     }
 
-  
-    public boolean getBILLPANEL_CHECKBOX_MITLIEFERSCHEIN_state() {       
+    public boolean getUSE_AUTHENTIFICATION() {
+        return handler.getBoolean("USE_AUTHENTIFICATION");
+    }
+
+    public void setUSE_AUTHENTIFICATION(boolean USE_AUTHENTIFICATION) {
+        handler.setBoolean("USE_AUTHENTIFICATION", USE_AUTHENTIFICATION);
+    }
+
+    public boolean getBILLPANEL_CHECKBOX_MITLIEFERSCHEIN_state() {
         return handler.getBoolean("BILLPANELCHECKBOXMITLIEFERSCHEIN");
     }
 
-    public String getPATH_TO_HELPFILES() {
-         return handler.getString("PATH_TO_HELPFILES");
-    }
-
-  public void setBILLPANEL_CHECKBOX_MITLIEFERSCHEIN(boolean BILLPANEL_CHECKBOX_MITLIEFERSCHEIN) {
-        handler.setBoolean("BILLPANELCHECKBOXMITLIEFERSCHEIN",BILLPANEL_CHECKBOX_MITLIEFERSCHEIN);
-    }
-  
-    public void setPATH_TO_HELPFILES(String PATH_TO_HELPFILES) {
-        handler.setString("PATH_TO_HELPFILES",PATH_TO_HELPFILES);
+    public void setBILLPANEL_CHECKBOX_MITLIEFERSCHEIN(boolean BILLPANEL_CHECKBOX_MITLIEFERSCHEIN) {
+        handler.setBoolean("BILLPANELCHECKBOXMITLIEFERSCHEIN", BILLPANEL_CHECKBOX_MITLIEFERSCHEIN);
     }
 
     public Integer getMAINFRAME_TAB() {
@@ -70,7 +61,7 @@ public class Programmdaten implements mp4.datenbank.struktur.Tabellen {
     }
 
     public void setMAINFRAME_TAB(Integer MAINFRAME_TAB) {
-        handler.setInteger("MAINFRAME_TAB",MAINFRAME_TAB);
+        handler.setInteger("MAINFRAME_TAB", MAINFRAME_TAB);
     }
 
     public Dimension getMAINFRAME_WINDOW_STATE() {
@@ -78,7 +69,7 @@ public class Programmdaten implements mp4.datenbank.struktur.Tabellen {
     }
 
     public void setMAINFRAME_WINDOW_STATE(Dimension MAINFRAME_WINDOW_STATE) {
-         handler.setString("MAINFRAME_WINDOW_STATE", (int)MAINFRAME_WINDOW_STATE.getHeight() + "," + (int)MAINFRAME_WINDOW_STATE.getWidth());
+        handler.setString("MAINFRAME_WINDOW_STATE", (int) MAINFRAME_WINDOW_STATE.getHeight() + "," + (int) MAINFRAME_WINDOW_STATE.getWidth());
     }
 
     public String getMAHNUNG_TEXT_DEFAULT() {
@@ -86,23 +77,22 @@ public class Programmdaten implements mp4.datenbank.struktur.Tabellen {
     }
 
     public void setMAHNUNG_TEXT_DEFAULT(String MAHNUNG_TEXT_DEFAULT) {
-       handler.setString("MAHNUNG_TEXT_DEFAULT", MAHNUNG_TEXT_DEFAULT);
+        handler.setString("MAHNUNG_TEXT_DEFAULT", MAHNUNG_TEXT_DEFAULT);
     }
-    
+
     public String getRECHNUNG_NUMMER_FORMAT() {
         return handler.getString("RECHNUNG_NUMMER_FORMAT");
     }
-    
+
     public void setRECHNUNG_NUMMER_FORMAT(String RECHNUNG_NUMMER_FORMAT) {
         handler.setString("RECHNUNG_NUMMER_FORMAT", RECHNUNG_NUMMER_FORMAT);
     }
-    
+
     public String getANGEBOT_NUMMER_FORMAT() {
         return handler.getString("ANGEBOT_NUMMER_FORMAT");
     }
-    
+
     public void setANGEBOT_NUMMER_FORMAT(String ANGEBOT_NUMMER_FORMAT) {
         handler.setString("ANGEBOT_NUMMER_FORMAT", ANGEBOT_NUMMER_FORMAT);
     }
-
 }

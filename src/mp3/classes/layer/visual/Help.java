@@ -3,7 +3,6 @@
  *
  * Created on 31. Januar 2008, 18:56
  */
-
 package mp3.classes.layer.visual;
 
 import java.io.File;
@@ -19,18 +18,20 @@ import mp4.einstellungen.Programmdaten;
  * @author  anti43
  */
 public class Help extends javax.swing.JFrame {
+
     private DefaultHelpModel model;
-    
+
     /** Creates new form Help */
     public Help() {
         initComponents();
         new Position(this);
         this.setVisible(rootPaneCheckingEnabled);
     }
+
     public Help(DefaultHelpModel model) {
         initComponents();
         new Position(this);
-       
+
         this.setModel(model);
         this.setVisible(rootPaneCheckingEnabled);
     }
@@ -38,27 +39,32 @@ public class Help extends javax.swing.JFrame {
     public Help(String helpfile) {
         initComponents();
         new Position(this);
-      
-        FileToString t = new FileToString(new File(Programmdaten.instanceOf().getPATH_TO_HELPFILES() + helpfile));
+
+        File file = new File(helpfile);
+
+        if (file.exists()) {
+            FileToString  t = new FileToString(file);
+
         String htitle = "";
-        
-        if(t.getContent().contains("<title>"))
-                htitle = t.getContent().substring(t.getContent().indexOf("<title>")+"<title>".length(), t.getContent().indexOf("</title>"));
-        
-        this.setModel(new DefaultHelpModel( htitle, t.getContent()));
+
+        if (t.getContent().contains("<title>")) {
+            htitle = t.getContent().substring(t.getContent().indexOf("<title>") + "<title>".length(), t.getContent().indexOf("</title>"));
+        }
+
+        this.setModel(new DefaultHelpModel(htitle, t.getContent()));
         this.setVisible(rootPaneCheckingEnabled);
+        }
     }
-    
-    
-    public void setModel(DefaultHelpModel model){
+
+    public void setModel(DefaultHelpModel model) {
         this.jLabel1.setText(model.getThema());
         this.jEditorPane1.setContentType("text/html");
         this.jEditorPane1.setText(model.getText());
-        this.model=model;
-    
-    
+        this.model = model;
+
+
     }
-    
+
     /**
      * 
      * @param helpfile
@@ -67,15 +73,17 @@ public class Help extends javax.swing.JFrame {
     public Help(String helpfile, String theme) {
         initComponents();
         new Position(this);
-      
+
         FileToString t = new FileToString("/helpfiles/" + helpfile);
-        
+
         this.setModel(new DefaultHelpModel(theme, t.getContent()));
         this.setVisible(rootPaneCheckingEnabled);
     }
-    public DefaultHelpModel getModel(){
+
+    public DefaultHelpModel getModel() {
         return model;
     }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -131,14 +139,10 @@ public class Help extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    
-   
-    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JEditorPane jEditorPane1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
-    
 }

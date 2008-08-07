@@ -15,7 +15,7 @@ import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.klassen.objekte.HistoryItem;
 import mp4.klassen.objekte.Product;
 import mp4.klassen.objekte.Lieferant;
-import mp3.classes.visual.main.mainframe;
+import mp4.frames.mainframe;
 import mp4.utils.tabellen.SelectionCheck;
 
 /**
@@ -925,8 +925,6 @@ public class suppliersView extends javax.swing.JPanel implements mp4.datenbank.s
 
     private void jButton8MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton8MouseClicked
 
-        mainframe.getJTabbedPane1().setSelectedIndex(3);
-//        mainframe.getProductsView().setSupplier(current);
     }//GEN-LAST:event_jButton8MouseClicked
 
     private void jTable1MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
@@ -935,7 +933,7 @@ public class suppliersView extends javax.swing.JPanel implements mp4.datenbank.s
 
         if (evt.getClickCount() >= 2 && selection.checkID()) {
 //            mainframe.getProductsView().setProduct(new Product(selection.getId()));
-            mainframe.setShowingTab(3);
+           
         }
     }//GEN-LAST:event_jTable1MouseClicked
 

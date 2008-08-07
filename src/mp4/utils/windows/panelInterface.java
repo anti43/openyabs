@@ -59,13 +59,15 @@ public interface panelInterface {
 
     /**
      *
-     * To change the tab icon
+     * To change the tab text
+     * @param text 
      */
-    public abstract void changeTabIcon(Icon icon);
+    public abstract void changeTabText(String text);
 
     /**
      *
      * To check whether any changes have been done to the Tabs initial data
+     * @return 
      */
     public abstract boolean isEdited();
 }

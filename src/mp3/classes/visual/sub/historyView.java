@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 import javax.swing.JTable;
 import mp4.klassen.objekte.HistoryHandler;
 import javax.swing.table.DefaultTableModel;
-import mp3.classes.visual.main.mainframe;
+import mp4.frames.mainframe;
 
 /**
  *

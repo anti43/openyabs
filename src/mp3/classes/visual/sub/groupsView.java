@@ -5,6 +5,7 @@
  */
 package mp3.classes.visual.sub;
 
+import mp4.frames.mainframe;
 import java.awt.BorderLayout;
 import java.util.ArrayList;
 import javax.swing.JScrollPane;

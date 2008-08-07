@@ -74,7 +74,7 @@ public interface Tabellen {
     /**
      * User
      */
-    public final String TABLE_USER = "usertable";
+    public final String TABLE_USER = "benutzer";
     /**
      * Productgroups
      */
@@ -201,7 +201,8 @@ public interface Tabellen {
      * User table
      */
     public final String TABLE_USER_FIELDS =
-            "username" + "," + "password";
+                 "username" + "," + "password" + "," + "createdon" + "," + 
+                 "createdby" + "," + "iseditor" + "," + "isadmin";
     /**
      * Columns for productslist table
      */

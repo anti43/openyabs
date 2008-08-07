@@ -33,4 +33,16 @@ public class PrepareData {
             return datastring;
         }
     }
+
+    public static Double parseNumber(String number) {
+        return Double.valueOf(number);
+    }
+
+    public static boolean parseBoolean(String bool) {
+        if (bool.matches("1")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

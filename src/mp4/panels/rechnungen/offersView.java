@@ -31,7 +31,7 @@ import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.klassen.objekte.Customer;
 import mp4.klassen.objekte.HistoryItem;
 import mp4.klassen.objekte.Product;
-import mp3.classes.visual.main.mainframe;
+import mp4.frames.mainframe;
 
 import handling.pdf.PDF_Rechnung;
 import javax.swing.JFormattedTextField;
@@ -187,6 +187,8 @@ public class offersView extends javax.swing.JPanel implements panelInterface, mp
 
     public void setAngebot(Angebot current) {
 
+        this.changeTabText("Angebot: " + current.getAngebotnummer());
+        
         this.currentOffer = current;
         this.setCustomer(new Customer(current.getKundenId()));
 
@@ -348,6 +350,11 @@ jButton20.setToolTipText("Tab schliessen");
 jButton20.setFocusable(false);
 jButton20.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 jButton20.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+jButton20.addActionListener(new java.awt.event.ActionListener() {
+public void actionPerformed(java.awt.event.ActionEvent evt) {
+jButton20ActionPerformed(evt);
+}
+});
 jToolBar1.add(jButton20);
 
 jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/medium/filesave.png"))); // NOI18N
@@ -913,7 +920,7 @@ jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 .addGroup(jPanel7Layout.createSequentialGroup()
 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
 .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-.addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE))
+.addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
 .addContainerGap())
@@ -1268,6 +1275,11 @@ private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 private void jButton15KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton15KeyPressed
 // TODO add your handling code here:
 }//GEN-LAST:event_jButton15KeyPressed
+
+private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton20ActionPerformed
+this.close();
+}//GEN-LAST:event_jButton20ActionPerformed
+
 // Variables declaration - do not modify//GEN-BEGIN:variables
 public javax.swing.JButton jButton10;
 public javax.swing.JButton jButton11;
@@ -1394,8 +1406,8 @@ public javax.swing.JToolBar jToolBar2;
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void changeTabIcon(Icon icon) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void changeTabText(String text) {
+        ((JTabbedPane) this.getParent()).setTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex(),text);
     }
 
     public boolean isEdited() {

@@ -31,7 +31,7 @@ import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.klassen.objekte.Customer;
 import mp4.klassen.objekte.HistoryItem;
 import mp4.klassen.objekte.Product;
-import mp3.classes.visual.main.mainframe;
+import mp4.frames.mainframe;
 
 import handling.pdf.PDF_Rechnung;
 import java.awt.event.ActionListener;
@@ -219,6 +219,8 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
 
     public void setBill(Rechnung current) {
 
+        this.changeTabText("Rechnung: " + current.getRechnungnummer());
+        
         this.currentBill = current;
         this.setCustomer(new Customer(current.getKundenId()));
 
@@ -1319,6 +1321,7 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 
         new CustomerPicker(this);
         setEdited(true);
+        
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void jButton10ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
@@ -1588,8 +1591,8 @@ public javax.swing.JToolBar jToolBar2;
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void changeTabIcon(Icon icon) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void changeTabText(String text) {
+       ((JTabbedPane) this.getParent()).setTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex(),text);
     }
 
     public boolean isEdited() {

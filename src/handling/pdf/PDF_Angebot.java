@@ -23,7 +23,6 @@ import com.lowagie.text.DocumentException;
 import java.io.*;
 import java.util.*;
 
-import mp3.Main;
 import mp3.classes.layer.Popup;
 
 
@@ -31,6 +30,7 @@ import mp3.classes.layer.Popup;
 import mp3.classes.utils.Formater;
 import mp3.classes.utils.Log;
 import mp4.einstellungen.Einstellungen;
+import mp4.main.Main;
 
 /**
  *

@@ -22,7 +22,7 @@ import mp3.classes.layer.Popup;
 import mp3.classes.layer.visual.ProductPicker;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp3.classes.layer.visual.SupplierPicker;
-import mp3.classes.visual.main.mainframe;
+import mp4.frames.mainframe;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.tabellen.SelectionCheck;
 
@@ -909,14 +909,14 @@ public class productsView extends javax.swing.JPanel implements mp4.datenbank.st
 
         if (current.getId() < 0) {
 //            getMainframe().getBillPanel().addProductToBillsTable(current, true, true, true);
-//            getMainframe().getJTabbedPane1().setSelectedIndex(1);
+//            getMainframe().getTabPane().setSelectedIndex(1);
         }
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
         if (current.getId() < 0) {
 //            getMainframe().getOrdersView().addToOrder(current, true, true, true);
-            getMainframe().getJTabbedPane1().setSelectedIndex(2);
+            getMainframe().getTabPane().setSelectedIndex(2);
         }
 
     }//GEN-LAST:event_jButton10ActionPerformed

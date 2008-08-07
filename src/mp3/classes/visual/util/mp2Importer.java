@@ -5,6 +5,7 @@
  */
 package mp3.classes.visual.util;
 
+import mp4.frames.mainframe;
 import mp3.classes.visual.main.*;
 import java.awt.Cursor;
 import java.util.ArrayList;

@@ -23,12 +23,7 @@ package mp3.installer;
 
 import mp4.datenbank.verbindung.Conn;
 import java.io.IOException;
-
-
-
-
 import java.awt.Cursor;
-
 import java.io.File;
 import mp3.classes.interfaces.Constants;
 import mp3.classes.interfaces.ProtectedStrings;
@@ -40,7 +35,8 @@ import mp3.classes.utils.DirectoryHandler;
 import mp3.classes.utils.JarFinder;
 import mp3.classes.utils.Log;
 import mp3.classes.visual.main.license;
-import mp3.classes.visual.main.mainframe;
+import mp4.frames.mainframe;
+import mp4.main.Main;
 
 /**
  * @author  anti43
@@ -48,28 +44,20 @@ import mp3.classes.visual.main.mainframe;
 public class MpInstaller extends javax.swing.JFrame implements ProtectedStrings, Strings {
 
     private String url;
-    private boolean update = false;
     private String workdir;
 
     /** Creates new form mpInstaller */
     public MpInstaller() {
         initComponents();
-
         new Position(this);
         this.setVisible(true);
         Log.Debug(JAVA_VERSION);
-
     }
 
     private void deleteFiles() {
         try {
-
-
             File fil = new File(workdir);
             DirectoryHandler.deleteTree(fil);
-
-
-
         } catch (IOException ex) {
         }
     }
@@ -241,10 +229,8 @@ public class MpInstaller extends javax.swing.JFrame implements ProtectedStrings,
         this.dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    private void copyFiles() {
-
+    public void copyFiles() {
         try {
-
             workdir = JarFinder.getPathOfJar(JAR_NAME);
             System.out.println("Workdir: " + workdir);
 
@@ -282,70 +268,56 @@ public class MpInstaller extends javax.swing.JFrame implements ProtectedStrings,
                         Log.Debug("Es ist ein Fehler aufgetreten: " + ex.getMessage(), true);
                     }
                 } else {
-
                     Log.Debug("Es ist ein Fehler aufgetreten,\nüberprüfen Sie Ihre Berechtigungen!", true);
                 }
             }
         } catch (Exception ex) {
             Log.Debug("Es ist ein Fehler aufgetreten,\nüberprüfen Sie Ihre Berechtigungen!\n" + ex.getMessage(), true);
         }
-
-
     }
 
     public static void writeDesktopIcon() {
-
-
-        if (System.getProperty("os.name").contains("indows")) {
+        if (Main.IS_WINDOWS) {
             DesktopIcon.createWindowsDesktopIcon();
         } else {
-
             DesktopIcon.createLinuxDesktopIcon();
-
         }
     }
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         mainframe f;
         if (jCheckBox2.isSelected()) {
-            
-            try {
 
+            try {
                 this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 
-
-                if (makeDB(update)) {
+                if (makeDB()) {
                     if (jCheckBox1.isSelected()) {
                         MpInstaller.writeDesktopIcon();
                     }
 
-
-                    this.copyFiles();
-
+                    if (!Main.FORCE_NO_FILE_COPY) {
+                        this.copyFiles();
+                    }
                     this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-                    
-                    
+
                     new Popup("Sie können das Programm nun starten.", Popup.NOTICE);
                     System.exit(0);
                 } else {
-
                     this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                 }
-
             } catch (Exception ex) {
                 ex.printStackTrace();
                 new Popup(PERMISSION_DENIED, Popup.ERROR);
-
-                //Logger.getLogger(mpInstaller.class.getName()).log(Level.SEVERE, null, ex);
             } finally {
             }
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
 private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-license l = new license();
-                new Position(l);
-                l.setVisible(rootPaneCheckingEnabled);
+    license l = new license();
+    new Position(l);
+    l.setVisible(rootPaneCheckingEnabled);
 }//GEN-LAST:event_jButton3ActionPerformed
     /**
      * @param args the command line arguments
@@ -364,8 +336,7 @@ license l = new license();
     javax.swing.JScrollPane jScrollPane1;
     javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
-    private boolean makeDB(boolean update) {
-
+    public boolean makeDB() {
         url = Constants.DATABASEPATH + File.separator + Constants.DATABASENAME;
         Conn c = null;
         try {
@@ -373,7 +344,6 @@ license l = new license();
         } catch (Exception ex) {
             Popup.warn(ex.getMessage(), Popup.ERROR);
         }
-
         return Conn.isTablesCreated();
     }
 }
