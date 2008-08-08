@@ -18,6 +18,7 @@
 package mp4.klassen.objekte;
 
 
+import mp4.benutzerverwaltung.User;
 import mp4.einstellungen.Einstellungen;
 import java.util.Date;
 import mp3.classes.interfaces.Strings;

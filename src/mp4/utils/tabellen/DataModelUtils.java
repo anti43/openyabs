@@ -23,6 +23,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import mp3.classes.utils.Log;
+import mp4.utils.datum.DateConverter;
 import mp4.utils.tabellen.models.MPTableModel;
 import mp4.utils.zahlen.FormatNumber;
 
@@ -37,8 +38,8 @@ public class DataModelUtils {
         MPTableModel model = (MPTableModel) table.getModel();
         Object[][] data = new Object[model.getRowCount() + 1][row.length];
         Object[] columnNames = new Object[model.getColumnCount()];
-        
-        
+
+
 
         for (int idx = 0; idx < columnNames.length; idx++) {
             columnNames[idx] = model.getColumnName(idx);
@@ -118,26 +119,34 @@ public class DataModelUtils {
 
     public static Object[][] changeToClassValue(Object[][] prods, Class aClass, int[] cols) {
 
-        Object[][] data = new Object[prods.length][prods[0].length];
+        try {
+            Object[][] data = new Object[prods.length][prods[0].length];
 
-        for (int idx = 0; idx < prods.length; idx++) {
-            for (int k = 0; k < cols.length; k++) {
-                if (aClass.getName().matches("java.lang.Boolean")) {
-                    if (prods[idx][cols[k]].equals("1")) {
-                        data[idx][cols[k]] = true;
-                    } else {
-                        data[idx][cols[k]] = false;
+            for (int idx = 0; idx < prods.length; idx++) {
+                for (int k = 0; k < cols.length; k++) {
+                    if (aClass.getName().matches("java.lang.Boolean")) {
+                        if (prods[idx][cols[k]].equals("1")) {
+                            data[idx][cols[k]] = true;
+                        } else {
+                            data[idx][cols[k]] = false;
+                        }
+                    } else if (aClass.getName().matches("java.util.Date")) {
+                        data[idx][cols[k]] =
+                                DateConverter.getDate(String.valueOf(data[idx][cols[k]]));
+                    }
+                }
+
+                for (int h = 0; h < prods[0].length; h++) {
+                    if (data[idx][h] == null) {
+                        data[idx][h] = prods[idx][h];
                     }
                 }
             }
-
-            for (int h = 0; h < prods[0].length; h++) {
-                if (data[idx][h] == null) {
-                    data[idx][h] = prods[idx][h];
-                }
-            }
+            return data;
+        } catch (Exception e) {
+            Log.Debug(e);
+            return new Object[0][0];
         }
-        return data;
     }
 
     public static Object[][] tableModelToArray(JTable table) {
@@ -175,7 +184,7 @@ public class DataModelUtils {
 
     public static Object[][] reverseArray(Object[][] array) {
         //Reverse order
-           int i = 0, j = array.length - 1;
+        int i = 0, j = array.length - 1;
         while (i < j) {
             Object[] h = array[i];
             array[i] = array[j];

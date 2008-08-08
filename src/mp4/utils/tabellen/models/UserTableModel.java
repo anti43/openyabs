@@ -17,7 +17,9 @@
 
 package mp4.utils.tabellen.models;
 
-import mp4.klassen.objekte.User;
+import mp4.benutzerverwaltung.User;
+
+
 
 /**
  *

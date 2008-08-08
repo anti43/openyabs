@@ -9,9 +9,11 @@ package mp4.panels.rechnungen;
 import mp4.klassen.objekte.*;
 import mp4.klassen.objekte.Customer;
 import handling.pdf.PDF_Mahnung;
+import mp4.benutzerverwaltung.User;
 import mp4.einstellungen.Einstellungen;
 import mp4.einstellungen.Programmdaten;
 import mp4.einstellungen.VariablenZuText;
+import mp4.frames.mainframe;
 import mp4.panels.PdfVorschauWindow;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.windows.Position;
@@ -216,21 +218,21 @@ public class MahnungView extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         
         
-        
-        try {
-            
-//            new PDF_Mahnung(bill, VariablenZuText.parseText(jTextArea1.getText(), new Object[]{bill, customer}), bill.getMahnungen().toString(), FormatNumber.parseDezimal(jTextField2.getText()));
-       
-            view.addProductToBillsTable(new Product("Mahnung vom " + DateConverter.getTodayDefDate(), 
-                    FormatNumber.parseDezimal(jTextField2.getText())));
-            Programmdaten.instanceOf().setMAHNUNG_TEXT_DEFAULT(jTextArea1.getText());
-            this.dispose();
-        } catch (NumberFormatException numberFormatException) {
-          
-            new PDF_Mahnung(bill, jTextArea1.getText(), bill.getMahnungen().toString(), FormatNumber.parseDezimal("0"));
-            this.dispose();
-        }
+       if(mainframe.getUser().doAction(User.EDITOR)) {
+            try {
 
+//            new PDF_Mahnung(bill, VariablenZuText.parseText(jTextArea1.getText(), new Object[]{bill, customer}), bill.getMahnungen().toString(), FormatNumber.parseDezimal(jTextField2.getText()));
+                
+                view.addProductToBillsTable(new Product("Mahnung vom " + DateConverter.getTodayDefDate(),
+                        FormatNumber.parseDezimal(jTextField2.getText())));
+                Programmdaten.instanceOf().setMAHNUNG_TEXT_DEFAULT(jTextArea1.getText());
+                this.dispose();
+            } catch (NumberFormatException numberFormatException) {
+                
+                new PDF_Mahnung(bill, jTextArea1.getText(), bill.getMahnungen().toString(), FormatNumber.parseDezimal("0"));
+                this.dispose();
+            }
+        }
        
     }//GEN-LAST:event_jButton1ActionPerformed
 

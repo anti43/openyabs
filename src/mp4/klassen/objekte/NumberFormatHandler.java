@@ -41,7 +41,7 @@ public class NumberFormatHandler {
     private Countable type;
     private Integer mode = 0;
     private Date date;
-    private static String rechnungstartwert = null;
+    private static String startwert = null;
 
     /*
      * 
@@ -109,8 +109,8 @@ public class NumberFormatHandler {
 
     }
 
-    public void setRechnungStartWert(String text) {
-        NumberFormatHandler.rechnungstartwert = text;
+    public void setRechnungStartWert(String wert) {
+        NumberFormatHandler.startwert = wert;
     }
     
 
@@ -134,7 +134,7 @@ public class NumberFormatHandler {
 
     public String getNextNumber() {
 
-        if (NumberFormatHandler.rechnungstartwert == null) {
+        if (NumberFormatHandler.startwert == null) {
             if (formatter == null) {
                 format();
             }
@@ -167,8 +167,8 @@ public class NumberFormatHandler {
             
             return this.getFormatter().format(count + 1);
         } else {
-            String tmp = rechnungstartwert;
-            rechnungstartwert = null;
+            String tmp = startwert;
+            startwert = null;
             return tmp;
         }
     }

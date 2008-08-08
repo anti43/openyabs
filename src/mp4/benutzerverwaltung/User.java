@@ -14,7 +14,7 @@
  *      You should have received a copy of the GNU General Public License
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mp4.klassen.objekte;
+package mp4.benutzerverwaltung;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
@@ -35,9 +35,12 @@ public class User extends Things {
     private String passwordHash;
     private Date createdOn;
     private boolean isAdmin = false;
+    private boolean useAuth = false;
     private boolean isEditor = false;
     private md5hash md;
     private Integer id = 0;
+    public final static int EDITOR = 0;
+    public final static int ADMIN = 1;
 
     public User() {
         super(ConnectionHandler.instanceOf().clone(TABLE_USER));
@@ -200,5 +203,28 @@ public class User extends Things {
 
     public String getPasswordHash() {
         return passwordHash;
+    }
+
+    public boolean doAction(int level) {
+        if (!useAuth) {
+            return true;
+        }
+        switch (level) {
+            case User.EDITOR:
+                if (this.isEditor) {
+                    return true;
+                }
+            case User.ADMIN:
+                if (this.isAdmin) {
+                    return true;
+                }
+            default:
+                Popup.notice("Sie haben keine Berechtigung,\ndiese Aktion auszufuehren.");
+                return false;
+        }
+    }
+
+    public void setUseAuth(boolean useAuth) {
+        this.useAuth = useAuth;
     }
 }

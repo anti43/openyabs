@@ -6,6 +6,8 @@
 package mp4.panels.rechnungen;
 
 import javax.swing.table.DefaultTableModel;
+import mp4.benutzerverwaltung.User;
+import mp4.frames.mainframe;
 import mp4.klassen.objekte.*;
 import mp4.utils.windows.panelInterface;
 import mp4.utils.tabellen.DataModelUtils;
@@ -220,39 +222,45 @@ private void add(){
     resizeTables();
 }
 private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-    SelectionCheck selection = new SelectionCheck(jTable1);
+   if(mainframe.getUser().doAction(User.EDITOR)) {
+        SelectionCheck selection = new SelectionCheck(jTable1);
 
-    if (selection.rowHasData(2)) {
-        Object[] data = selection.getRowData();
-        RechnungBetreffzeile zeile = new RechnungBetreffzeile();
-        zeile.setName((String) data[1]);
-        zeile.setText((String) data[2]);
-        zeile.isVorlage(true);
-        zeile.save();
-        DataModelUtils.addToTable(jTable2, new String[]{zeile.getId().toString(), zeile.getName(), zeile.getText()});
+        if (selection.rowHasData(2)) {
+            Object[] data = selection.getRowData();
+            RechnungBetreffzeile zeile = new RechnungBetreffzeile();
+            zeile.setName((String) data[1]);
+            zeile.setText((String) data[2]);
+            zeile.isVorlage(true);
+            zeile.save();
+            DataModelUtils.addToTable(jTable2, new String[]{zeile.getId().toString(), zeile.getName(), zeile.getText()});
+        }
+        resizeTables();
     }
-    resizeTables();
 }//GEN-LAST:event_jButton3ActionPerformed
 
 private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
-    DataModelUtils.removeSelectedRowFromTable(jTable1);
-    resizeTables();
+   if(mainframe.getUser().doAction(User.EDITOR)) {
+        DataModelUtils.removeSelectedRowFromTable(jTable1);
+        resizeTables();
+    }
 
 }//GEN-LAST:event_jButton2ActionPerformed
 
 private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
 //GEN-LAST:event_jButton5ActionPerformed
-    SelectionCheck selection = new SelectionCheck(jTable2);
+  if(mainframe.getUser().doAction(User.EDITOR)) {
+        SelectionCheck selection = new SelectionCheck(jTable2);
 
-    if (selection.rowHasData(2)) {
-        Object[] data = selection.getRowData();
-        RechnungBetreffzeile zeile = new RechnungBetreffzeile(Integer.valueOf((String)data[0]));
-        zeile.isVorlage(false);
-        zeile.save();
-        selection.removeRow();
+        if (selection.rowHasData(2)) {
+            Object[] data = selection.getRowData();
+            RechnungBetreffzeile zeile = new RechnungBetreffzeile(Integer.valueOf((String) data[0]));
+            zeile.isVorlage(false);
+            zeile.save();
+            selection.removeRow();
+        }
+        resizeTables();
     }
-    resizeTables();
 }                                        
 
 private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
@@ -263,30 +271,32 @@ private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
 private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
 
-    SelectionCheck selection = new SelectionCheck(jTable1);
-    Object[][] obj = DataModelUtils.tableModelToArray(jTable1);
-    this.rechnung.getZeilenHandler().removeAll();
-    RechnungBetreffzeile z;
+ if(mainframe.getUser().doAction(User.EDITOR)) {
+        SelectionCheck selection = new SelectionCheck(jTable1);
+        Object[][] obj = DataModelUtils.tableModelToArray(jTable1);
+        this.rechnung.getZeilenHandler().removeAll();
+        RechnungBetreffzeile z;
 
-    this.rechnung.getZeilenHandler().removeAll();
-    
-    for (int i = 0; i < obj.length; i++) {
+        this.rechnung.getZeilenHandler().removeAll();
         
-        if (obj[i][0] != null && obj[i][1] != null && obj[i][2] != null) {
-            if (obj[i][0].equals(0)) {
-                this.rechnung.getZeilenHandler().add(new RechnungBetreffzeile((String) obj[i][1], (String) obj[i][2]));
-            } else {
-                z = new RechnungBetreffzeile(Integer.valueOf(String.valueOf(obj[i][0])));
-                z.setName((String) obj[i][1]);
-                z.setText((String) obj[i][2]);
-                z.save();
-                this.rechnung.getZeilenHandler().add(z);
+        for (int i = 0; i < obj.length; i++) {
+            
+            if (obj[i][0] != null && obj[i][1] != null && obj[i][2] != null) {
+                if (obj[i][0].equals(0)) {
+                    this.rechnung.getZeilenHandler().add(new RechnungBetreffzeile((String) obj[i][1], (String) obj[i][2]));
+                } else {
+                    z = new RechnungBetreffzeile(Integer.valueOf(String.valueOf(obj[i][0])));
+                    z.setName((String) obj[i][1]);
+                    z.setText((String) obj[i][2]);
+                    z.save();
+                    this.rechnung.getZeilenHandler().add(z);
+                }
             }
         }
-    }
 
-    panel.updateTables();
-    this.dispose();
+        panel.updateTables();
+        this.dispose();
+    }
     
 }//GEN-LAST:event_jButton4ActionPerformed
 

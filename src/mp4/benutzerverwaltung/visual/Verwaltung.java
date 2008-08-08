@@ -7,7 +7,7 @@ package mp4.benutzerverwaltung.visual;
 
 import mp3.classes.layer.Popup;
 import mp4.frames.mainframe;
-import mp4.klassen.objekte.User;
+import mp4.benutzerverwaltung.User;
 import mp4.utils.tabellen.SelectionCheck;
 import mp4.utils.tabellen.models.UserTableModel;
 import mp4.utils.windows.Position;
@@ -17,6 +17,7 @@ import mp4.utils.windows.Position;
  * @author  anti
  */
 public class Verwaltung extends javax.swing.JFrame {
+
     private mainframe frame;
 
     /** Creates new form Anmeldung */
@@ -232,8 +233,12 @@ private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
     SelectionCheck selection = new SelectionCheck(jTable1);
 
-    if (selection.checkID() && selection.getId() != 1) {
-        new User().deactivate(selection.getId());
+    if (selection.checkID()) {
+        if (selection.getId() != 1) {
+            new User().deactivate(selection.getId());
+        } else {
+            Popup.notice("Benutzer 'admin' kann nicht entfernt werden!");
+        }
     }
     jTable1.setModel(new UserTableModel());
 }//GEN-LAST:event_jButton3ActionPerformed
@@ -250,8 +255,8 @@ private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
         usern = new User(selection.getId());
         this.jTextField1.setText(usern.getName());
         jPasswordField1.setText("**********");
-        jCheckBox1.setEnabled(usern.isIsAdmin());
-        jCheckBox2.setEnabled(usern.isIsEditor());
+        jCheckBox1.setSelected(usern.isIsAdmin());
+        jCheckBox2.setSelected(usern.isIsEditor());
     }
 }//GEN-LAST:event_jTable1MouseClicked
 
@@ -266,13 +271,13 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         jPasswordField2.setSelectionStart(0);
 
         if (jPasswordField1.getSelectedText().equals(jPasswordField2.getSelectedText())) {
-            new User(jTextField1.getText(), jPasswordField1.getPassword().toString(), jCheckBox2.isEnabled(), jCheckBox1.isEnabled(), frame.getUser());
+            new User(jTextField1.getText(), jPasswordField1.getSelectedText().toString(), jCheckBox2.isSelected(), jCheckBox1.isSelected(), frame.getUser());
             jTable1.setModel(new UserTableModel());
             Popup.notice("Benutzer angelegt.");
         } else {//GEN-LAST:event_jButton1ActionPerformed
             Popup.notice("Passwörter stimmen nicht überein!");
         }
-}
+    }
 // Variables declaration - do not modify//GEN-BEGIN:variables
 private javax.swing.JButton jButton1;
 private javax.swing.JButton jButton3;

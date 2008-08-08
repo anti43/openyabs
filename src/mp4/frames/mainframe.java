@@ -16,6 +16,8 @@
  */
 package mp4.frames;
 
+import java.awt.event.ComponentEvent;
+import mp4.benutzerverwaltung.visual.login;
 import mp3.classes.visual.main.*;
 import java.awt.Component;
 import mp4.datenbank.verbindung.Conn;
@@ -28,6 +30,7 @@ import mp4.main.Main;
 import java.awt.BorderLayout;
 
 import java.awt.Color;
+import java.awt.event.ComponentListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -74,7 +77,7 @@ import mp4.einstellungen.Einstellungen;
 import mp4.einstellungen.Programmdaten;
 import mp4.klassen.objekte.HistoryItem;
 import mp4.klassen.objekte.Product;
-import mp4.klassen.objekte.User;
+import mp4.benutzerverwaltung.User;
 import mp4.panels.eurAPanel;
 import mp4.panels.eurEPanel;
 import mp4.utils.text.FadeOnChangeLabel;
@@ -92,7 +95,7 @@ public class mainframe extends javax.swing.JFrame {
     private Position wt = new Position();
     public static JLabel nachricht = new JLabel();
     private mainframe identifier;
-    private User currentUser = new User();
+    private static User currentUser = new User();
 
     /** Creates new form mainframe
      * @param splash
@@ -119,7 +122,6 @@ public class mainframe extends javax.swing.JFrame {
         Query.setWaitCursorFor(this);
         splash.setMessage("Initialisiere Komponenten...");
 
-//
         i = new startView(this);
         mainTabPane.add(i, BorderLayout.CENTER);
 
@@ -138,12 +140,19 @@ public class mainframe extends javax.swing.JFrame {
         }
 
         this.addWindowListener(new WindowAdapter() {
-
             @Override
             public void windowClosing(WindowEvent e) {
                 close();
             }
         });
+//        
+//        this.addComponentListener(new ComponentListener() {  
+//            public void componentResized(ComponentEvent e) {resize();}
+//            public void componentMoved(ComponentEvent e) {}
+//            public void componentShown(ComponentEvent e) {}
+//            public void componentHidden(ComponentEvent e) {}
+//        });
+
 
         undoCache.setMenu(jMenu11, this);
         setMessage("Anmerkungen, Bugs und Feedback zu MP bitte an mp-rechnungs-und-kundenverwaltung@googlegroups.com senden. Vielen Dank!");
@@ -153,6 +162,10 @@ public class mainframe extends javax.swing.JFrame {
             this.setEnabled(false);
             new login(this);
         }
+    }
+
+    private void resize() {
+       wt.center(this);
     }
 
     /**
@@ -196,6 +209,7 @@ public class mainframe extends javax.swing.JFrame {
 
         if (usern.checkUser(user, password)) {
             setEnabled(true);
+            usern.setUseAuth(true);
             this.setUser(usern);
             return true;
         } else {
@@ -204,7 +218,7 @@ public class mainframe extends javax.swing.JFrame {
         }
     }
 
-    public User getUser() {
+    public static User getUser() {
         return currentUser;
     }
 
@@ -1095,11 +1109,11 @@ private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 
     boolean useauth = Programmdaten.instanceOf().getUSE_AUTHENTIFICATION();
     if (!useauth || getUser().isIsAdmin()) {
-        
+
         new Verwaltung(this);
     } else {
         Popup.notice("Die Benutzerverwaltung kann nur von einem Administrator geöffnet werden!");
-    }  
+    }
 }//GEN-LAST:event_jMenuItem5ActionPerformed
 
     @Override

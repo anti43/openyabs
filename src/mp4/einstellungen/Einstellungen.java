@@ -17,6 +17,7 @@
 package mp4.einstellungen;
 
 
+import mp4.benutzerverwaltung.User;
 import mp4.klassen.objekte.*;
 import java.util.Date;
 import java.util.Locale;

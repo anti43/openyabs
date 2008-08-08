@@ -12,6 +12,8 @@ import mp4.einstellungen.Programmdaten;
 import mp4.klassen.objekte.NumberFormatHandler;
 import mp3.classes.interfaces.Countable;
 import mp3.classes.layer.visual.Help;
+import mp4.benutzerverwaltung.User;
+import mp4.frames.mainframe;
 import mp4.utils.windows.Position;
 
 /**
@@ -211,23 +213,23 @@ private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 
 private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
-    NumberFormatHandler nfh = new NumberFormatHandler(mode, new Date());
+ if(mainframe.getUser().doAction(User.ADMIN)) {
+        NumberFormatHandler nfh = new NumberFormatHandler(mode, new Date());
 
-    String fstring = jTextField1.getText() + "&!" + jComboBox1.getSelectedIndex();
-    nfh.setFormatter(nfh.parseFormat(jTextField1.getText() + "&!" + jComboBox1.getSelectedIndex()));
-   
-    String formatString = "&!&!00000";
+        String fstring = jTextField1.getText() + "&!" + jComboBox1.getSelectedIndex();
+        nfh.setFormatter(nfh.parseFormat(jTextField1.getText() + "&!" + jComboBox1.getSelectedIndex()));
+        
+        String formatString = "&!&!00000";
 
-
-    try {
-       nfh.getNextNumber();
-       nfh.save(fstring);
-       this.dispose();
-    } catch (Exception e) {
-        Log.Debug(e, rootPaneCheckingEnabled);
-        Popup.notice("Format nicht möglich.");
-    } 
-    
+        try {
+            nfh.getNextNumber();
+            nfh.save(fstring);
+            this.dispose();
+        } catch (Exception e) {
+            Log.Debug(e, rootPaneCheckingEnabled);
+            Popup.notice("Format nicht möglich.");
+        }
+    }
 
 }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -239,22 +241,24 @@ private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
 private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
 
-    NumberFormatHandler nfh = new NumberFormatHandler(mode, new Date());
+    if(mainframe.getUser().doAction(User.ADMIN)) {
+        NumberFormatHandler nfh = new NumberFormatHandler(mode, new Date());
 
-    String fstring = jTextField1.getText() + "&!" + jComboBox1.getSelectedIndex();
-    nfh.setFormatter(nfh.parseFormat(jTextField1.getText() + "&!" + jComboBox1.getSelectedIndex()));
-   
-    String formatString = "&!&!00000";
+        String fstring = jTextField1.getText() + "&!" + jComboBox1.getSelectedIndex();
+        nfh.setFormatter(nfh.parseFormat(jTextField1.getText() + "&!" + jComboBox1.getSelectedIndex()));
+        
+        String formatString = "&!&!00000";
 
-    if (Popup.Y_N_dialog("Wollen Sie wirklich " + jTextField2.getText() + " als Startwert festlegen?")) {
-        try {
-            nfh.getNextNumber();
-            nfh.save(fstring);
-            nfh.setRechnungStartWert(jTextField2.getText());
-            this.dispose();
-        } catch (Exception e) {
-            Log.Debug(e, rootPaneCheckingEnabled);
-            Popup.notice("Format nicht möglich.");
+        if (Popup.Y_N_dialog("Wollen Sie wirklich " + jTextField2.getText() + " als Startwert festlegen?")) {
+            try {
+                nfh.getNextNumber();
+                nfh.save(fstring);
+                nfh.setRechnungStartWert(jTextField2.getText());
+                this.dispose();
+            } catch (Exception e) {
+                Log.Debug(e, rootPaneCheckingEnabled);
+                Popup.notice("Format nicht möglich.");
+            }
         }
     }
 }//GEN-LAST:event_jButton5ActionPerformed
