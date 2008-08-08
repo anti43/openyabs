@@ -20,6 +20,7 @@ import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.List;
 
+import mp3.classes.interfaces.Countable;
 import mp3.classes.interfaces.Strings;
 import mp3.classes.layer.Popup;
 import mp4.datenbank.verbindung.Query;
@@ -33,7 +34,7 @@ import mp4.utils.datum.DateConverter;
  *
  * @author anti43
  */
-public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen {
+public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen, Countable{
 
     private String Angebotnummer = "";
     private Integer KundenId = 0;
@@ -48,9 +49,10 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.s
     private Query query;
     private String[][] products;
     public Integer id = 0;
+    private PostenTableModel postendata;
 
     public void add(PostenTableModel m) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        this.postendata = m;
     }
 
     public Integer getId() {
@@ -65,11 +67,16 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.s
     public Angebot() {
         super(ConnectionHandler.instanceOf().clone(TABLE_OFFERS));
         this.query = ConnectionHandler.instanceOf();
+        products = new String[0][0];
+        nfh = new NumberFormatHandler(this, getDatum());
+         
     }
 
     public Angebot(Query query) {
         super(query.clone(TABLE_OFFERS));
         this.query = query;
+        products = new String[0][0];
+        nfh = new NumberFormatHandler(this, getDatum());
     }
 
     /**
@@ -81,10 +88,10 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.s
         this.id = Integer.valueOf(id);
         this.explode(this.selectLast(Strings.ALL, Strings.ID, id.toString(), true));
         this.query = ConnectionHandler.instanceOf();
-        
+
         Query q = query.clone(TABLE_OFFERS_DATA);
         String[] wher = {"angebotid", this.getId().toString(), ""};
-
+        nfh = new NumberFormatHandler(this, getDatum());
         products = q.select(Strings.ALL, wher);
     }
 
@@ -99,6 +106,10 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.s
 
     public String getFDatum() {
         return DateConverter.getDefDateString(getDatum());
+    }
+
+    public NumberFormatHandler getNfh() {
+        return nfh;
     }
 
     public boolean hasId() {
@@ -148,6 +159,31 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.s
         }
     }
 
+    private void explode(PostenTableModel m) {
+        for (int i = 0; i < m.getRowCount(); i++) {
+            if (m.getValueAt(i, 4) != null) {
+                AngebotPosten b = new AngebotPosten();
+                b.setAngebotId(this.getId());
+
+                b.setPosten((String) m.getValueAt(i,
+                        2));
+                try {
+                    b.setAnzahl((Double) m.getValueAt(i, 1));
+                    b.setSteuersatz((Double) m.getValueAt(i, 3));
+                    b.setPreis(
+                            (Double) m.getValueAt(i, 4));
+                } catch (Exception exception) {
+                    Log.Debug(exception);
+                }
+                b.save();
+            }
+        }
+    }
+
+    private void clearPostenData() {
+        new AngebotPosten().deleteExistingOf(this);
+    }
+
     private void explode(String[] select) {
 
         this.id = Integer.valueOf(select[0]);
@@ -166,7 +202,11 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.s
         String str = PrepareData.prepareString(this.getAngebotnummer());
         str = str + PrepareData.prepareNumber(this.getKundenId());
         str = str + PrepareData.prepareString(DateConverter.getSQLDateString(this.getDatum()));
-        str = str + PrepareData.prepareString(DateConverter.getSQLDateString(this.getAuftragdatum()));
+        if (this.getAuftragdatum() != null) {
+            str = str + PrepareData.prepareString(DateConverter.getSQLDateString(this.getAuftragdatum()));
+        } else {
+            str = str + PrepareData.prepareNumber(null);
+        }
         str = str + PrepareData.prepareString(DateConverter.getSQLDateString(this.getAnfrageVom()));
         str = str + PrepareData.prepareString(DateConverter.getSQLDateString(this.getValidVon()));
         str = str + PrepareData.prepareString(DateConverter.getSQLDateString(this.getBisDatum()));
@@ -177,14 +217,24 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.s
     public boolean save() {
         int result = -1;
         if (id > 0 && !isSaved) {
-            result =this.update(TABLE_OFFERS_FIELDS, this.collect(), id.toString());
+            result = this.update(TABLE_OFFERS_FIELDS, this.collect(), id.toString());
+            if (postendata != null) {
+                clearPostenData();
+                explode(postendata);
+            }
+
             isSaved = true;
         } else if (id == 0 && !isSaved) {
             result = this.insert(TABLE_OFFERS_FIELDS, this.collect());
             this.id = this.getMyId();
+            if (postendata !=
+                    null) {
+                explode(postendata);
+            }
+
             isSaved = true;
         }
-          if (result > 0) {
+        if (result > 0) {
             return true;
         } else {
             return false;
@@ -268,7 +318,6 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.s
 //        }
 //        return prof;
 //    }
-
     public String getNextNumber() {
         throw new UnsupportedOperationException("format?");//format?
 //        return query.getNextIndexOfIntCol("angebotnummer");
@@ -358,9 +407,9 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.s
     }
 
     private void setAuftrag(String datum) {
-        if(DateConverter.getDate(datum)!=null){
+        if (DateConverter.getDate(datum) != null) {
             this.setAuftrag(true);
-            this.setAuftragdatum(DateConverter.getDate(datum)); 
+            this.setAuftragdatum(DateConverter.getDate(datum));
         } else {
             this.setAuftrag(false);
         }
@@ -373,6 +422,13 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.s
     public void setAuftragdatum(Date auftragdatum) {
         this.auftragdatum = auftragdatum;
     }
-    
+
+    public String getTable() {
+          return TABLE_OFFERS;
+    }
+
+    public String getCountColumn() {
+         return "angebotnummer";
+    }
 }
 

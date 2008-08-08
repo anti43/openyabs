@@ -1162,7 +1162,6 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
     }// </editor-fold>//GEN-END:initComponents
 
     private void setBetreffZeilen(Rechnung current) {
-
         jComboBox1.setModel(new DefaultComboBoxModel(current.getZeilenHandler().getDisplayListData()));
         jComboBox1.addActionListener(new CheckComboListener());
         jComboBox1.setRenderer(new CheckComboRenderer());
@@ -1409,7 +1408,7 @@ private void jCheckBox4ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIR
 
 private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
 //GEN-LAST:event_jButton16ActionPerformed
-    new NumberFormatEditor(this.getCurrent());
+    new RNumberFormatEditor(this.getCurrent());
 
 
 }                                         

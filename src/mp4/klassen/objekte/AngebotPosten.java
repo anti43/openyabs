@@ -33,7 +33,11 @@ public class AngebotPosten extends mp3.classes.layer.Things implements mp4.daten
     private String posten = "";
     private Double preis = 0d;
     private Double steuersatz = 0d;
-   public Integer id = 0;
+    public Integer id = 0;
+
+    public AngebotPosten() {
+        super(ConnectionHandler.instanceOf().clone(TABLE_OFFERS_DATA));
+    }
     public Integer getId() {
         return id;
     }
@@ -62,10 +66,12 @@ public class AngebotPosten extends mp3.classes.layer.Things implements mp4.daten
         this.explode(this.selectLast("*", "id", id, true));
     }
 
+ 
+
     private void explode(String[] select) {
         try {
 
-            this.setauftragid(Integer.valueOf(select[1]));
+            this.setAngebotId(Integer.valueOf(select[1]));
             this.setAnzahl(Double.valueOf(select[2]));
             this.setPosten(select[3]);
             this.setPreis(Double.valueOf(select[4]));
@@ -77,6 +83,9 @@ public class AngebotPosten extends mp3.classes.layer.Things implements mp4.daten
 
     }
 
+    public void deleteExistingOf(Angebot angebot) {
+        this.freeQuery("delete from angebotposten where angebotid = " + angebot.getId());
+    }
 
     private String collect() {
         String str = "";
@@ -111,7 +120,7 @@ public class AngebotPosten extends mp3.classes.layer.Things implements mp4.daten
         return auftragid;
     }
 
-    public void setauftragid(Integer auftragid) {
+    public void setAngebotId(Integer auftragid) {
         this.auftragid = auftragid;
     }
 

@@ -109,7 +109,7 @@ public class NumberFormatHandler {
 
     }
 
-    public void setRechnungStartWert(String wert) {
+    public void setStartWert(String wert) {
         NumberFormatHandler.startwert = wert;
     }
     

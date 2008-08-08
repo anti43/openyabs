@@ -36,6 +36,7 @@ import mp4.frames.mainframe;
 import handling.pdf.PDF_Rechnung;
 import javax.swing.JFormattedTextField;
 import javax.swing.JTabbedPane;
+import mp3.classes.interfaces.Countable;
 import mp4.benutzerverwaltung.User;
 import mp4.einstellungen.Einstellungen;
 
@@ -96,6 +97,7 @@ public class offersView extends javax.swing.JPanel implements panelInterface, mp
 
         jTextField7.setText(DateConverter.getDefDateString(new Date()));
         jTextField11.setText(DateConverter.getDefDateString(new Date()));
+        jTextField13.setText(DateConverter.getDefDateString(new Date()));
 
         jTextField6.setEnabled(false);
 
@@ -107,7 +109,7 @@ public class offersView extends javax.swing.JPanel implements panelInterface, mp
     }
 
     public void addToOrder(Product product) {
-         ((PostenTableModel) jTable1.getModel()).addProduct(jTable1, product);
+        ((PostenTableModel) jTable1.getModel()).addProduct(jTable1, product);
     }
 
     private void createNew() {
@@ -121,12 +123,14 @@ public class offersView extends javax.swing.JPanel implements panelInterface, mp
             m = (PostenTableModel) jTable1.getModel();
 
             Angebot offer = new Angebot();
-            
+
             offer.setDatum(DateConverter.getDate(jTextField7.getText()));
             offer.setBisDatum(DateConverter.getDate(jTextField11.getText()));
             offer.setValidVon(DateConverter.getDate(jTextField13.getText()));
             offer.setKundenId(getCustomer().getId());
 
+            offer.setAngebotnummer(offer.getNfh().getNextNumber());
+            
             offer.add(m);
 
             if (jTextField12.getText() != null && DateConverter.getDate(jTextField12.getText()) != null) {
@@ -189,7 +193,7 @@ public class offersView extends javax.swing.JPanel implements panelInterface, mp
     public void setAngebot(Angebot current) {
 
         this.changeTabText("Angebot: " + current.getAngebotnummer());
-        
+
         this.currentOffer = current;
         this.setCustomer(new Customer(current.getKundenId()));
 
@@ -198,7 +202,9 @@ public class offersView extends javax.swing.JPanel implements panelInterface, mp
         jTextField6.setBackground(Color.WHITE);
         jTextField7.setText(DateConverter.getDefDateString(current.getDatum()));
         jTextField11.setText(DateConverter.getDefDateString(current.getBisDatum()));
-        jTextField12.setText(DateConverter.getDefDateString(current.getAuftragdatum()));
+        if (current.getAuftragdatum() != null) {
+            jTextField12.setText(DateConverter.getDefDateString(current.getAuftragdatum()));
+        }
         jTextField13.setText(DateConverter.getDefDateString(current.getValidVon()));
 
         this.getJTable1().setModel(current.getProductlistAsTableModel());
@@ -1045,7 +1051,9 @@ public class offersView extends javax.swing.JPanel implements panelInterface, mp
     }//GEN-LAST:event_jTextField3ActionPerformed
 
     private void jButton3MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
-        if(mainframe.getUser().doAction(User.EDITOR))createNew();
+        if (mainframe.getUser().doAction(User.EDITOR)) {
+            createNew();
+        }
     }//GEN-LAST:event_jButton3MouseClicked
 
     private void jTable2MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable2MouseClicked
@@ -1111,7 +1119,9 @@ public class offersView extends javax.swing.JPanel implements panelInterface, mp
     }
 
     private void jButton4MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton4MouseClicked
-        if(mainframe.getUser().doAction(User.EDITOR))save();
+        if (mainframe.getUser().doAction(User.EDITOR)) {
+            save();
+        }
     }//GEN-LAST:event_jButton4MouseClicked
 
     private void jTable3MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable3MouseClicked
@@ -1227,7 +1237,8 @@ private void jButton17KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
 }//GEN-LAST:event_jButton17KeyPressed
 
 private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
-}//GEN-LAST:event_jButton16ActionPerformed
+    new ANumberFormatEditor(this.getCurrent());//GEN-LAST:event_jButton16ActionPerformed
+    }
 
 private void jButton19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton19ActionPerformed
     new DatePick(jTextField12);
@@ -1248,7 +1259,7 @@ private void jButton14KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
 }//GEN-LAST:event_jButton14KeyPressed
 
 private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
-// TODO add your handling code here:
+    new DatePick(jTextField13);
 }//GEN-LAST:event_jButton15ActionPerformed
 
 private void jButton15KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton15KeyPressed
@@ -1256,9 +1267,10 @@ private void jButton15KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
 }//GEN-LAST:event_jButton15KeyPressed
 
 private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton20ActionPerformed
-if(mainframe.getUser().doAction(User.EDITOR))this.close();
+    if (mainframe.getUser().doAction(User.EDITOR)) {
+        this.close();
+    }
 }//GEN-LAST:event_jButton20ActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton jButton10;
     public javax.swing.JButton jButton11;
@@ -1386,7 +1398,7 @@ if(mainframe.getUser().doAction(User.EDITOR))this.close();
     }
 
     public void changeTabText(String text) {
-        ((JTabbedPane) this.getParent()).setTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex(),text);
+        ((JTabbedPane) this.getParent()).setTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex(), text);
     }
 
     public boolean isEdited() {
