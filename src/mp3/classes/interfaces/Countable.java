@@ -28,4 +28,5 @@ public interface Countable {
     public Date getDatum();   
     public String getTable();
     public String getCountColumn();
+
 }

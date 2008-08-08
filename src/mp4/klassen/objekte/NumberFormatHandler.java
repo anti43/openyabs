@@ -28,6 +28,7 @@ import mp4.utils.datum.DateConverter;
  * @author Andreas
  */
 public class NumberFormatHandler {
+   
 
     public final String MONTH = "\\{MONAT\\}";
     public final String MONTH_NAME = "\\{MONAT_NAME\\}";
@@ -36,11 +37,11 @@ public class NumberFormatHandler {
     public final String COUNT = "00000";
     public final String SEP = "&!";
     private NumberFormat formatter;
-    ;
     private String format;
     private Countable type;
     private Integer mode = 0;
     private Date date;
+    private static String rechnungstartwert = null;
 
     /*
      * 
@@ -108,6 +109,11 @@ public class NumberFormatHandler {
 
     }
 
+    public void setRechnungStartWert(String text) {
+        NumberFormatHandler.rechnungstartwert = text;
+    }
+    
+
     private void processAngebotType() {
         format = Programmdaten.instanceOf().getANGEBOT_NUMMER_FORMAT();
         setFormatter(parseFormat(format));
@@ -128,38 +134,43 @@ public class NumberFormatHandler {
 
     public String getNextNumber() {
 
-        if (formatter == null) {
-            format();
+        if (NumberFormatHandler.rechnungstartwert == null) {
+            if (formatter == null) {
+                format();
+            }
+            Integer count = 0;
+
+            switch (this.getMode()) {
+
+                case 1:
+                    count = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(type.getTable()).selectCountBetween(DateConverter.getDate(DateConverter.getYear(type.getDatum())),
+                            DateConverter.addYear(DateConverter.getDate(DateConverter.getYear(type.getDatum()))));
+                    break;
+
+                case 2:
+                    count = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(type.getTable()).selectCountBetween(DateConverter.getDate(DateConverter.getMonth(type.getDatum())),
+                            DateConverter.addMonth(DateConverter.getDate(DateConverter.getMonth(type.getDatum()))));
+                    break;
+
+                case 3:
+                    count = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(type.getTable()).selectCountBetween(DateConverter.getDate(DateConverter.getDay(type.getDatum())),
+                            DateConverter.addDay(DateConverter.getDate(DateConverter.getDay(type.getDatum()))));
+                    break;
+
+                case 0:
+                    count = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(type.getTable()).getNextNumber(type.getCountColumn()) - 1;
+                    break;
+
+                default:
+                    String.valueOf(mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(type.getTable()).selectCount("", null) + 1);
+            }
+            
+            return this.getFormatter().format(count + 1);
+        } else {
+            String tmp = rechnungstartwert;
+            rechnungstartwert = null;
+            return tmp;
         }
-        Integer count = 0;
-
-        switch (this.getMode()) {
-
-            case 1:
-                count = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(type.getTable()).selectCountBetween(DateConverter.getDate(DateConverter.getYear(type.getDatum())),
-                        DateConverter.addYear(DateConverter.getDate(DateConverter.getYear(type.getDatum()))));
-                break;
-
-            case 2:
-                count = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(type.getTable()).selectCountBetween(DateConverter.getDate(DateConverter.getMonth(type.getDatum())),
-                        DateConverter.addMonth(DateConverter.getDate(DateConverter.getMonth(type.getDatum()))));
-                break;
-
-            case 3:
-                count = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(type.getTable()).selectCountBetween(DateConverter.getDate(DateConverter.getDay(type.getDatum())),
-                        DateConverter.addDay(DateConverter.getDate(DateConverter.getDay(type.getDatum()))));
-                break;
-
-            case 0:
-                count = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(type.getTable()).getNextNumber(type.getCountColumn()) - 1;
-                break;
-
-            default:
-                String.valueOf(mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(type.getTable()).selectCount("", null) + 1);
-        }
-
-
-        return this.getFormatter().format(count + 1);
     }
 
     public void setFormatter(NumberFormat formatter) {

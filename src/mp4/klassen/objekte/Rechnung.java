@@ -587,4 +587,5 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
     public String getTable() {
         return TABLE_BILLS;
     }
+
 }
