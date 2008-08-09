@@ -1083,7 +1083,7 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
 
             if (jTextField5.getText().length() == 0) {
 
-                jTextField5.setText("Privat: " + jTextField7.getText());
+                jTextField5.setText(jTextField7.getText());
             }
             try {
 
