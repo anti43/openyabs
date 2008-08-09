@@ -20,19 +20,18 @@ along with MP.  If not, see <http://www.gnu.org/licenses/>.
 package mp4.utils.tabellen;
 
 import java.awt.Color;
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JFormattedTextField;
 import javax.swing.SwingConstants;
-import javax.swing.border.Border;
 
 /**
  *
  * @author Administrator
  */
 public class TableCellEditorForDezimal extends DefaultCellEditor {
+    private static final long serialVersionUID = 1L;
 
     private NumberFormat format = new java.text.DecimalFormat("#,##0.00;(#,##0.00)");
 

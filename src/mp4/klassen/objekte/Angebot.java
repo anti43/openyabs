@@ -32,7 +32,7 @@ import mp4.utils.datum.DateConverter;
  *
  * @author anti43
  */
-public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen, Countable{
+public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen, Countable {
 
     private String Angebotnummer = "";
     private Integer KundenId = 0;
@@ -65,15 +65,15 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.s
     public Angebot() {
         super(ConnectionHandler.instanceOf().clone(TABLE_OFFERS));
         this.query = ConnectionHandler.instanceOf();
-        products = new String[0][0];
+
         nfh = new NumberFormatHandler(this, getDatum());
-         
+
     }
 
     public Angebot(Query query) {
         super(query.clone(TABLE_OFFERS));
         this.query = query;
-        products = new String[0][0];
+
         nfh = new NumberFormatHandler(this, getDatum());
     }
 
@@ -86,10 +86,10 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.s
         this.id = Integer.valueOf(id);
         this.explode(this.selectLast(Strings.ALL, Strings.ID, id.toString(), true));
         this.query = ConnectionHandler.instanceOf();
+        nfh = new NumberFormatHandler(this, getDatum());
 
         Query q = query.clone(TABLE_OFFERS_DATA);
         String[] wher = {"angebotid", this.getId().toString(), ""};
-        nfh = new NumberFormatHandler(this, getDatum());
         products = q.select(Strings.ALL, wher);
     }
 
@@ -148,8 +148,8 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.s
         return nstr;
     }
 
-    public int search(Integer rechnungid) {
-        String[] in = this.selectLast("id, rechnungid", "rechnungid", rechnungid.toString(), true);
+    public int search(Integer angebotid) {
+        String[] in = this.selectLast("id, angebotid", "angebotid", angebotid.toString(), true);
         if (in != null && in.length > 0) {
             return Integer.valueOf(in[0]);
         } else {
@@ -162,14 +162,11 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.s
             if (m.getValueAt(i, 4) != null) {
                 AngebotPosten b = new AngebotPosten();
                 b.setAngebotId(this.getId());
-
-                b.setPosten((String) m.getValueAt(i,
-                        2));
+                b.setPosten((String) m.getValueAt(i, 2));
                 try {
                     b.setAnzahl((Double) m.getValueAt(i, 1));
                     b.setSteuersatz((Double) m.getValueAt(i, 3));
-                    b.setPreis(
-                            (Double) m.getValueAt(i, 4));
+                    b.setPreis((Double) m.getValueAt(i, 4));
                 } catch (Exception exception) {
                     Log.Debug(exception);
                 }
@@ -225,7 +222,7 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.s
         } else if (id == 0 && !isSaved) {
             result = this.insert(TABLE_OFFERS_FIELDS, this.collect());
             this.id = this.getMyId();
-            if (postendata !=null) {
+            if (postendata != null) {
                 explode(postendata);
             }
 
@@ -271,30 +268,34 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.s
 
     public PostenTableModel getProductlistAsTableModel() {
 
-        String lab = "id,Anzahl,Posten,Mehrwertsteuer,Nettopreis,Bruttopreis";
-        Object[][] nstr = new Object[products.length][6];
+        if (products != null) {
+            
+            Object[][] nstr = new Object[products.length][6];
 
-        try {
-            for (int i = 0; i < nstr.length; i++) {
-                nstr[i][0] = Integer.valueOf(products[i][0]);
-                nstr[i][1] = Double.valueOf(products[i][2]);
-                nstr[i][2] = String.valueOf(products[i][3]);
-                nstr[i][3] = Double.valueOf(products[i][5]);
-                try {
-                    nstr[i][4] = Double.valueOf(products[i][4]);
-                    nstr[i][5] = Double.valueOf(
-                            (Double.valueOf(products[i][4]) *
-                            (((Double.valueOf(products[i][5])) / 100) + 1)));
-                } catch (NumberFormatException numberFormatException) {
-                    nstr[i][4] = Double.valueOf("0");
-                    nstr[i][5] = Double.valueOf("0");
-                    Popup.notice(Popup.GENERAL_ERROR);
+            try {
+                for (int i = 0; i < nstr.length; i++) {
+                    nstr[i][0] = Integer.valueOf(products[i][0]);
+                    nstr[i][1] = Double.valueOf(products[i][2]);
+                    nstr[i][2] = String.valueOf(products[i][3]);
+                    nstr[i][3] = Double.valueOf(products[i][5]);
+                    try {
+                        nstr[i][4] = Double.valueOf(products[i][4]);
+                        nstr[i][5] = Double.valueOf(
+                                (Double.valueOf(products[i][4]) *
+                                (((Double.valueOf(products[i][5])) / 100) + 1)));
+                    } catch (NumberFormatException numberFormatException) {
+                        nstr[i][4] = Double.valueOf("0");
+                        nstr[i][5] = Double.valueOf("0");
+                        Popup.notice(Popup.GENERAL_ERROR);
+                    }
                 }
+            } catch (Exception exception) {
+                Log.Debug(exception);
             }
-        } catch (Exception exception) {
-            Log.Debug(exception);
+            return new PostenTableModel(nstr);
+        } else {
+            return postendata;
         }
-        return new PostenTableModel(nstr, lab.split(","));
     }
 
     private Integer getMyId() {
@@ -421,11 +422,11 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.s
     }
 
     public String getTable() {
-          return TABLE_OFFERS;
+        return TABLE_OFFERS;
     }
 
     public String getCountColumn() {
-         return "angebotnummer";
+        return "angebotnummer";
     }
 }
 

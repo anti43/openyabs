@@ -362,7 +362,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
     public PostenTableModel getProductlistAsTableModel() {
 
         DecimalFormat n = new DecimalFormat("0.00");
-        String lab = "id,Anzahl,Posten,Mehrwertsteuer,Nettopreis,Bruttopreis";
+  
         Query q = query.clone(TABLE_BILLS_DATA);
         String[] wher = {"rechnungid", this.getId().toString(), ""};
         String[][] prods = q.select(Strings.ALL, wher);
@@ -393,9 +393,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
 
             Log.Debug(exception);
         }
-        return new PostenTableModel(nstr,
-                lab.split(
-                ","));
+        return new PostenTableModel(nstr);
     }
 
     private void explode(PostenTableModel m) {

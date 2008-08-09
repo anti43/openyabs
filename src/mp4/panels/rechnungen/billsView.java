@@ -97,7 +97,7 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
             Log.Debug(e.getMessage());
         }
 
-        renewTableModel();
+        renewTableModel(true);
         resizeFields();
         TableFormat.stripFirst(jTable1);
 
@@ -199,8 +199,8 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
         this.edited = bool;
     }
 
-    private void renewTableModel() {
-        getJTable1().setModel(new PostenTableModel());
+    private void renewTableModel(boolean empty) {
+        if(empty)getJTable1().setModel(new PostenTableModel());
         jTable1.getColumnModel().getColumn(1).setCellEditor(new TableCellEditorForDezimal(new JFormattedTextField()));
         jTable1.getColumnModel().getColumn(3).setCellEditor(new TableCellEditorForDezimal(new JFormattedTextField()));
         jTable1.getColumnModel().getColumn(4).setCellEditor(new TableCellEditorForDezimal(new JFormattedTextField()));
@@ -264,7 +264,7 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
         setBetreffZeilen(current);
 
         this.getJTable1().setModel(current.getProductlistAsTableModel());
-        TableFormat.stripFirst(getJTable1());
+        renewTableModel(false);
         resizeFields();
     }
 
@@ -1288,7 +1288,7 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
         jTextField5.setText("");
         jTextField6.setText("");
 
-        renewTableModel();
+        renewTableModel(true);
         resizeFields();
     }
 

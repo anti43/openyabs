@@ -45,12 +45,12 @@ public class PostenTableModel extends MPTableModel {
 
     }
 
-    public PostenTableModel(Object[][] data, Object[] columnNames) {
+    public PostenTableModel(Object[][] data) {
         super(new Class[]{java.lang.Integer.class, java.lang.Double.class,
                     java.lang.String.class, java.lang.Double.class, java.lang.Double.class,
                     java.lang.Double.class
                 }, new boolean[]{true, true, true, true, true, true},
-                data, columnNames);
+                data, new Object[]{"id", "Anzahl", "Bezeichnung", "Steuersatz", "Nettopreis", "Bruttopreis"});
     }
 
     public void addProduct(JTable table, Product product) {
