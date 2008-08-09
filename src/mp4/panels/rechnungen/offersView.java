@@ -6,9 +6,9 @@
 package mp4.panels.rechnungen;
 
 import handling.pdf.PDF_Angebot;
-import javax.swing.Icon;
+
 import mp4.klassen.objekte.RechnungPosten;
-import mp4.klassen.objekte.Rechnung;
+
 import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.text.SimpleDateFormat;
@@ -33,10 +33,10 @@ import mp4.klassen.objekte.HistoryItem;
 import mp4.klassen.objekte.Product;
 import mp4.frames.mainframe;
 
-import handling.pdf.PDF_Rechnung;
+
 import javax.swing.JFormattedTextField;
 import javax.swing.JTabbedPane;
-import mp3.classes.interfaces.Countable;
+
 import mp4.benutzerverwaltung.User;
 import mp4.einstellungen.Einstellungen;
 
@@ -48,8 +48,9 @@ import mp4.utils.tabellen.SelectionCheck;
 import mp4.utils.tabellen.TableCalculator;
 import mp4.utils.tabellen.TableCellEditorForDezimal;
 import mp4.utils.tabellen.TableFormat;
-import mp4.utils.tabellen.models.BillListTableModel;
-import mp4.utils.tabellen.models.BillSearchListTableModel;
+
+import mp4.utils.tabellen.models.OfferListTableModel;
+import mp4.utils.tabellen.models.OfferSearchListTableModel;
 
 /**
  *
@@ -155,7 +156,7 @@ public class offersView extends javax.swing.JPanel implements panelInterface, mp
 
     private void fetchBillsOfTheMonth() {
         jTextField2.setText(DateConverter.getTodayDefMonth());
-        this.jTable3.setModel(new BillSearchListTableModel());
+         this.jTable3.setModel(new OfferSearchListTableModel("datum", jTextField2.getText()));
         TableFormat.stripFirst(jTable3);
     }
 
@@ -185,9 +186,9 @@ public class offersView extends javax.swing.JPanel implements panelInterface, mp
     }
 
     public void updateListTable() {
-        this.jTable2.setModel(new BillListTableModel());
+        this.jTable2.setModel(new OfferListTableModel());
         TableFormat.stripFirst(jTable2);
-        TableFormat.resizeCols(jTable2, new Integer[]{null, 120, 100, null, null, 50, 50}, true);
+        TableFormat.resizeCols(jTable2, new Integer[]{null, 120, 100, null, null, 120}, true);
     }
 
     public void setAngebot(Angebot current) {
@@ -1035,18 +1036,18 @@ public class offersView extends javax.swing.JPanel implements panelInterface, mp
     }// </editor-fold>//GEN-END:initComponents
 
     private void jTextField1ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        this.jTable3.setModel(new BillSearchListTableModel("rechnungnummer", jTextField1.getText()));
+        this.jTable3.setModel(new OfferSearchListTableModel("angebotnummer", jTextField1.getText()));
         TableFormat.stripFirst(jTable3);
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jTextField2ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
-        this.jTable3.setModel(new BillSearchListTableModel("datum", jTextField2.getText()));
+        this.jTable3.setModel(new OfferSearchListTableModel("datum", jTextField2.getText()));
         TableFormat.stripFirst(jTable3);
     }//GEN-LAST:event_jTextField2ActionPerformed
 
     private void jTextField3ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
 
-        this.jTable3.setModel(new BillSearchListTableModel("firma", jTextField3.getText()));
+        this.jTable3.setModel(new OfferSearchListTableModel("firma", jTextField3.getText()));
         TableFormat.stripFirst(jTable3);
     }//GEN-LAST:event_jTextField3ActionPerformed
 

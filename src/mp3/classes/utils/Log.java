@@ -102,7 +102,7 @@ public class Log {
         }
     }
 
-    public static void Debug(String string, boolean konsole) {
+    public static void Debug(Object string, boolean konsole) {
         if (konsole) {
             logger.log(string);
             System.out.println(string);

@@ -16,9 +16,7 @@
  */
 package mp4.klassen.objekte;
 
-import java.text.DecimalFormat;
 import java.util.Date;
-import java.util.List;
 
 import mp3.classes.interfaces.Countable;
 import mp3.classes.interfaces.Strings;
@@ -227,8 +225,7 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.s
         } else if (id == 0 && !isSaved) {
             result = this.insert(TABLE_OFFERS_FIELDS, this.collect());
             this.id = this.getMyId();
-            if (postendata !=
-                    null) {
+            if (postendata !=null) {
                 explode(postendata);
             }
 
@@ -329,7 +326,7 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.s
      */
     public String[][] getAllWithDepencies() {
         Query q = query.clone(TABLE_OFFERS);
-        String[][] prods = q.select(Strings.ALL, null, TABLE_CUSTOMERS, "kundenid");
+        String[][] prods = q.select("angebote.id,angebotnummer,datum,name,firma, auftragdatum", null, TABLE_CUSTOMERS, "kundenid");
         return prods;
     }
 

@@ -162,7 +162,7 @@ public class NumberFormatHandler {
                     break;
 
                 default:
-                    String.valueOf(mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(type.getTable()).selectCount("", null) + 1);
+                    return String.valueOf(mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(type.getTable()).selectCount("", null) + 1);
             }
             
             return this.getFormatter().format(count + 1);
