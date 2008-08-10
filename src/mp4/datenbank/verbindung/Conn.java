@@ -99,11 +99,11 @@ public class Conn implements Strings {
         this.connect();
 
         try {
-            FileReaderWriter f = new FileReaderWriter(Constants.SETTINGS);
+            FileReaderWriter f = new FileReaderWriter(Constants.SETTINGS_FILE);
 
             String[] dat = f.read().split(";");
 
-            f.write(Constants.DATABASEPATH + ";" + dat[1]);
+            f.write(Constants.MPPATH + ";" + dat[1]);
 
         } catch (Exception exception) {
 
@@ -125,7 +125,7 @@ public class Conn implements Strings {
             splash.setMessage(DB_INIT);
         }
         try {
-            FileReaderWriter rw = new FileReaderWriter(Constants.SETTINGS);
+            FileReaderWriter rw = new FileReaderWriter(Constants.SETTINGS_FILE);
             String[] dat = rw.read().split(";");
 
 
@@ -191,9 +191,9 @@ public class Conn implements Strings {
             }
 
 
-            File f = new File(Constants.DATABASEPATH + File.separator + Constants.DATABASENAME + File.separator + "dbex.lck");
+            File f = new File(Constants.MPPATH + File.separator + Constants.DATABASENAME + File.separator + "dbex.lck");
             f.deleteOnExit();
-            File fi = new File(Constants.DATABASEPATH + File.separator + Constants.DATABASENAME + File.separator + "db.lck");
+            File fi = new File(Constants.MPPATH + File.separator + Constants.DATABASENAME + File.separator + "db.lck");
             fi.deleteOnExit();
         } catch (SQLException ex) {
 

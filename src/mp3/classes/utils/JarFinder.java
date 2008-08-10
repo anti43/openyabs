@@ -30,7 +30,7 @@ public class JarFinder {
         //System.setProperties("java.class.path");
         StringTokenizer st = new StringTokenizer(System.getProperty("java.class.path"), System.getProperty("path.separator"));
         String jarfile = "";
-//        System.out.println(System.getProperty("java.class.path"));
+        System.out.println(System.getProperty("java.class.path"));
         while (st.hasMoreTokens()) {
             
             String token = st.nextToken();

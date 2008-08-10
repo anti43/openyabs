@@ -43,17 +43,17 @@ public interface Constants {
      /**
      * Name of databasedir 
      */
-    public static final String DATABASENAME = "mpv36Database";
+    public static final String DATABASENAME = "mpv40Database";
    
      /**
      * Full path to database dir 
      */
-    public static final String DATABASEPATH = Constants.HOME + File.separator +".mp" ;
+    public static final String MPPATH = Constants.HOME + File.separator +".mp" ;
     
     /**
      * Full path to settings file 
      */
-    public static String SETTINGS  = Constants.HOME + File.separator +".mp" + File.separator + "settings36.mp";
+    public static String SETTINGS_FILE  = Constants.HOME + File.separator +".mp" + File.separator + "settings40.mp";
 
     
     public String[] MONTHS= new String[]{"Jan","Feb","Mar","Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov","Dez"};

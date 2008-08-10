@@ -31,9 +31,9 @@ public class ConnectionHandler extends mp4.datenbank.verbindung.Query implements
     public static void unlockDbOnExit() {
         qc = null;
 
-        File f = new File(Constants.DATABASEPATH + File.separator + Constants.DATABASENAME + File.separator + "dbex.lck");
+        File f = new File(Constants.MPPATH + File.separator + Constants.DATABASENAME + File.separator + "dbex.lck");
         f.deleteOnExit();
-        File fi = new File(Constants.DATABASEPATH + File.separator + Constants.DATABASENAME + File.separator + "db.lck");
+        File fi = new File(Constants.MPPATH + File.separator + Constants.DATABASENAME + File.separator + "db.lck");
         fi.deleteOnExit();
 
     }

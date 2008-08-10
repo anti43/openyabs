@@ -42,13 +42,25 @@ public class Main implements Strings {
     private static SplashScreen splash;
     private static String VERSION = Constants.VERSION;
     public static boolean IS_WINDOWS = false;
-    public static boolean FORCE_COPY_FILES = false;
-    public static boolean FORCE_CREATE_DATABASE = false;
+    public static boolean FORCE_NO_DATABASE = false;
     public static boolean FORCE_NO_FILE_COPY = false;
+    public static boolean FORCE_CREATE_DATABASE = false;
+    public static boolean FORCE_FILE_COPY = false;
+    
+    
     private static final String argVERBOSE = "-verbose";
     private static final String argNOCOPYFILES = "-nocopy";
-    private static final String argCOPYFILES = "-copy";
-    private static final String argCREATEDB = "-createdb";
+    private static final String argNOCREATEDB = "-nodb";
+    private static final String argFORCECOPYFILES = "-forcecopy";
+    private static final String argFORCECREATEDB = "-forcedb";
+    private static final String argCHANGE_TEMPLATE_DIR = "-templatedir=";
+    private static final String argCHANGE_BACKUP_DIR = "-backupdir=";
+    private static final String argCHANGE_PDF_DIR = "-pdfdir=";
+    
+    
+    public static String PDFDIR = null;
+    public static String TEMPLATEDIR = null;
+    public static String BACKUP_DIR = null;
 
     private static void getOS() {
         if (System.getProperty("os.name").contains("Windows")) {
@@ -63,14 +75,35 @@ public class Main implements Strings {
         if (args != null && args.length > 0) {
             for (int i = 0; i < args.length; i++) {
                 arg = args[i];
-                if (arg.contentEquals(argCOPYFILES)) {
-                    FORCE_COPY_FILES = true;
-                } else if (arg.contentEquals(argNOCOPYFILES)) {
-                    FORCE_NO_FILE_COPY = true;
-                } else if (arg.contentEquals(argCREATEDB)) {
+                if (arg.contentEquals(argFORCECOPYFILES)) {
+                    FORCE_FILE_COPY = true;
+                } else if (arg.contentEquals(argFORCECREATEDB)) {
                     FORCE_CREATE_DATABASE = true;
+                }
+                if (arg.contentEquals(argNOCOPYFILES)) {
+                    FORCE_NO_FILE_COPY = true;
+                } else if (arg.contentEquals(argNOCREATEDB)) {
+                    FORCE_NO_DATABASE = true;
                 } else if (arg.contentEquals(argVERBOSE)) {
                     Log.setLogLevel(Log.LOGLEVEL_HIGH);
+                } else if (arg.contentEquals(argCHANGE_TEMPLATE_DIR)) {
+                    try {
+                        TEMPLATEDIR = arg.split("=")[1];
+                    } catch (Exception e) {
+                        TEMPLATEDIR = null;
+                    }
+                } else if (arg.contentEquals(argCHANGE_BACKUP_DIR)) {
+                    try {
+                        BACKUP_DIR = arg.split("=")[1];
+                    } catch (Exception e) {
+                        BACKUP_DIR = null;
+                    }
+                } else if (arg.contentEquals(argCHANGE_PDF_DIR)) {
+                    try {
+                        PDFDIR = arg.split("=")[1];
+                    } catch (Exception e) {
+                        PDFDIR = null;
+                    }
                 }
             }
         }
@@ -101,8 +134,12 @@ public class Main implements Strings {
     }
 
     private void doArgCommands() {
-        if (FORCE_COPY_FILES) {
-            new MpInstaller().copyFiles();
+        if (FORCE_FILE_COPY) {
+            try {
+                new MpInstaller().copyFiles();
+            } catch (Exception ex) {
+                Popup.error(ex.getMessage(), "Es ist ein Fehler aufgetreten:");
+            }
         }
         if (FORCE_CREATE_DATABASE) {
             new MpInstaller().makeDB();
@@ -110,7 +147,7 @@ public class Main implements Strings {
     }
 
     private boolean findDatabase() {
-        FileReaderWriter f = new FileReaderWriter(Constants.SETTINGS);
+        FileReaderWriter f = new FileReaderWriter(Constants.SETTINGS_FILE);
         String[] dat = f.read().split(COLON);
         String db = dat[0] + File.separator + Constants.DATABASENAME;
         File test = new File(db);
@@ -119,12 +156,12 @@ public class Main implements Strings {
 
     private boolean findSettings() {
         //Settings Datei suchen und schreiben
-        File df = new File(Constants.SETTINGS);
+        File df = new File(Constants.SETTINGS_FILE);
         if (df.exists()) {
         } else {
             if (df.mkdirs()) {
-                FileReaderWriter f = new FileReaderWriter(Constants.SETTINGS);
-                f.write(Constants.DATABASEPATH + COLON + VERSION);
+                FileReaderWriter f = new FileReaderWriter(Constants.SETTINGS_FILE);
+                f.write(Constants.MPPATH + COLON + VERSION);
             } else {
                 Popup.notice(PERMISSION_DENIED);
                 System.err.println(PERMISSION_DENIED);

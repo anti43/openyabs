@@ -108,7 +108,7 @@ public class Einstellungen extends mp3.classes.layer.People implements mp4.daten
     public String getVersion() {
 
         try {
-            FileReaderWriter f = new FileReaderWriter(Constants.SETTINGS);
+            FileReaderWriter f = new FileReaderWriter(Constants.SETTINGS_FILE);
             String[] dats = f.read().split(";");
 
             return dats[1];
@@ -124,7 +124,7 @@ public class Einstellungen extends mp3.classes.layer.People implements mp4.daten
     public String getDbPath() {
 
         try {
-            FileReaderWriter f = new FileReaderWriter(Constants.SETTINGS);
+            FileReaderWriter f = new FileReaderWriter(Constants.SETTINGS_FILE);
             String[] dats = f.read().split(";");
 
             return dats[0];

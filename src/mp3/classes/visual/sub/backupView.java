@@ -71,7 +71,7 @@ public class backupView extends javax.swing.JPanel{
 
         this.validateTable();
         
-           rw = new FileReaderWriter(Constants.SETTINGS);
+           rw = new FileReaderWriter(Constants.SETTINGS_FILE);
             
            dat = rw.read().split(";");
 
