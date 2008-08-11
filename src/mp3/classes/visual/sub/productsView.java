@@ -5,6 +5,7 @@
  */
 package mp3.classes.visual.sub;
 
+import mp3.classes.layer.People;
 import mp4.klassen.objekte.Product;
 import mp4.klassen.objekte.Lieferant;
 import java.awt.Cursor;
@@ -16,6 +17,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableModel;
 
+import mp3.classes.interfaces.panelInterface;
 import mp3.classes.utils.Formater;
 import mp3.classes.utils.Log;
 import mp3.classes.layer.Popup;
@@ -26,11 +28,12 @@ import mp4.frames.mainframe;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.tabellen.SelectionCheck;
 
+
 /**
  *
  * @author  anti43
  */
-public class productsView extends javax.swing.JPanel implements mp4.datenbank.struktur.Tabellen {
+public class productsView extends javax.swing.JPanel implements mp4.datenbank.struktur.Tabellen,panelInterface {
 
     private mainframe mainframe;
     private Product current;
@@ -1169,8 +1172,43 @@ private void saveNew() {
     public void setCurrentProductGroup(Integer currentProductGroupId) {
         this.currentProductGroupId = currentProductGroupId;
     }
-}
 
+    public void updateTables() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void close() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void undo() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void redo() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void changeTabText(String text) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public boolean isEdited() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setContact(People contact) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public People getContact() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void switchTab(int i) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+}
 class Task extends SwingWorker<Void, Void> {
     private productsView thisa;
 

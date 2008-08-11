@@ -18,6 +18,8 @@ import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableModel;
 import mp3.classes.interfaces.Strings;
 
+import mp3.classes.interfaces.panelInterface;
+import mp3.classes.layer.People;
 import mp4.utils.windows.Position;
 import mp3.classes.layer.DefaultHelpModel;
 import mp3.classes.layer.visual.Help;
@@ -46,7 +48,7 @@ import org.supercsv.prefs.CsvPreference;
  *
  * @author  anti43
  */
-public class csvProductImporter extends javax.swing.JFrame {
+public class csvProductImporter extends javax.swing.JFrame implements panelInterface {
 
     private static csvProductImporter frame;
 
@@ -638,6 +640,46 @@ public class csvProductImporter extends javax.swing.JFrame {
         thisa.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 
     }
+    }
+
+    public void updateTables() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void save() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void close() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void undo() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void redo() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void changeTabText(String text) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public boolean isEdited() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setContact(People contact) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public People getContact() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void switchTab(int i) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }

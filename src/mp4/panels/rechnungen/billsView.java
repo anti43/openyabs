@@ -45,7 +45,8 @@ import mp4.einstellungen.Einstellungen;
 import mp4.einstellungen.Programmdaten;
 import mp4.klassen.objekte.Angebot;
 import mp4.benutzerverwaltung.User;
-import mp4.utils.windows.panelInterface;
+import mp3.classes.interfaces.panelInterface;
+import mp3.classes.layer.People;
 import mp4.utils.combobox.CheckComboListener;
 import mp4.utils.combobox.CheckComboRenderer;
 import mp4.utils.datum.DateConverter;
@@ -54,6 +55,7 @@ import mp4.utils.tabellen.SelectionCheck;
 import mp4.utils.tabellen.TableCalculator;
 import mp4.utils.tabellen.TableCellEditorForDezimal;
 import mp4.utils.tabellen.TableFormat;
+import mp4.utils.tabellen.TablePopupMenu;
 import mp4.utils.tabellen.models.BillListTableModel;
 import mp4.utils.tabellen.models.BillSearchListTableModel;
 
@@ -76,6 +78,8 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
     private int taxcount = 0;
     private TableCalculator calculator;
     private boolean edited = false;
+
+    public billsView() {}
 
     /** Creates new form customers
      * @param frame 
@@ -223,7 +227,7 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
         this.changeTabText("Rechnung: " + current.getRechnungnummer());
         
         this.currentBill = current;
-        this.setCustomer(new Customer(current.getKundenId()));
+        this.setContact(new Customer(current.getKundenId()));
 
         if (current.getAngebot() != null) {
             jTextField13.setText(DateConverter.getDefDateString(current.getAngebot().getDatum()));
@@ -268,14 +272,14 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
         resizeFields();
     }
 
-    public void setCustomer(Customer c) {
+    public void setContact(People c) {
 
         oldcustomer = this.customer;
-        this.customer = c;
+        this.customer = (Customer) c;
 
-        jLabel19.setText(c.getKundennummer());
-        jTextField5.setText(c.getName());
-        jTextField4.setText(c.getFirma());
+        jLabel19.setText(customer .getKundennummer());
+        jTextField5.setText(customer .getName());
+        jTextField4.setText(customer .getFirma());
 
         if (getCustomer().isDeleted()) {
             jLabel19.setForeground(Color.GRAY);
@@ -1577,6 +1581,15 @@ private void jCheckBox3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 
     public boolean isEdited() {
         return edited;
+    }
+
+    public People getContact() {
+        return customer;
+    }
+
+
+    public void switchTab(int i) {
+        jTabbedPane1.setSelectedIndex(i);
     }
 }
 

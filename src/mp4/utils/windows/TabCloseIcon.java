@@ -25,6 +25,7 @@ package mp4.utils.windows;
  */
 
 
+import mp3.classes.interfaces.panelInterface;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;

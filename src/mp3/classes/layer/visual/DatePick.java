@@ -73,13 +73,11 @@ public class DatePick extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Datum wählen");
-        setAlwaysOnTop(true);
         setBackground(new java.awt.Color(255, 255, 255));
-        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         setLocationByPlatform(true);
-        setUndecorated(true);
 
-        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel2.setBackground(new java.awt.Color(227, 219, 202));
         jPanel2.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
 
         jButton1.setText("Ok");

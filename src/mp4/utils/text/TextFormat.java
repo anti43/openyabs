@@ -29,13 +29,13 @@ public class TextFormat {
 
     public static String maxLineLength(String text, int linelength) {
 
-        if (text.length() > linelength) {
+        if (text != null && text.length() > linelength) {
             int k = text.length() / linelength;
             Integer position = 0;
             for (int j = 0; j < k; j++) {
                 try {
                     text = text.substring(0, position + linelength) + "\n" + text.substring(position + linelength, text.length());
-                    Log.Debug(position, true);
+                    
                 } catch (Exception e) {
                     Log.Debug(e.getMessage(), true);
                 }

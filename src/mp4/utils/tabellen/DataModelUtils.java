@@ -144,7 +144,7 @@ public class DataModelUtils {
             }
             return data;
         } catch (Exception e) {
-            Log.Debug(e);
+//            Log.Debug(e);
             return new Object[0][0];
         }
     }

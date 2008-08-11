@@ -5,6 +5,7 @@
  */
 package mp4.panels.kontakte;
 
+import java.awt.PopupMenu;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -29,7 +30,10 @@ import mp3.classes.utils.Log;
 import mp4.benutzerverwaltung.User;
 import mp4.utils.tabellen.models.CustomerBAListTableModel;
 import mp4.utils.windows.TabCloseIcon;
-import mp4.utils.windows.panelInterface;
+import mp3.classes.interfaces.panelInterface;
+import mp3.classes.layer.People;
+import mp4.klassen.objekte.Angebot;
+import mp4.klassen.objekte.Rechnung;
 
 /**
  *
@@ -627,10 +631,9 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
         jPanel10Layout.setVerticalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel10Layout.createSequentialGroup()
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel17)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jLabel17)
+                .addGap(22, 22, 22))
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE)
         );
 
         jPanel14.setLayout(new javax.swing.BoxLayout(jPanel14, javax.swing.BoxLayout.LINE_AXIS));
@@ -684,7 +687,7 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
                 .addContainerGap()
                 .addComponent(jLabel19)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 61, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 52, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -739,7 +742,7 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
                 .addContainerGap()
                 .addComponent(jLabel21)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 61, Short.MAX_VALUE)
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 52, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -749,16 +752,16 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel14, javax.swing.GroupLayout.DEFAULT_SIZE, 461, Short.MAX_VALUE)
-                    .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel10, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel14, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 461, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel6Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+                    .addGroup(jPanel6Layout.createSequentialGroup()
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jPanel7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jPanel8, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -779,9 +782,9 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel14, javax.swing.GroupLayout.DEFAULT_SIZE, 107, Short.MAX_VALUE))
+                .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(3, 3, 3)
+                .addComponent(jPanel14, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -976,7 +979,7 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTabbedPane1))
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 466, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -984,8 +987,8 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
      * 
      * @param current
      */
-    public void setCustomer(Customer current) {
-        this.current = current;
+    public void setContact(People c) {
+        this.current = (Customer) c;
         this.changeTabText("Kunde: " + current.getName());
         this.jTextField4.setText(current.getKundennummer());
         this.jTextField5.setText(current.getFirma());
@@ -1161,7 +1164,7 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
             current.stripFirst(jTable2);
 
             try {
-                this.setCustomer(new Customer(ConnectionHandler.instanceOf(), cur, true));
+                this.setContact(new Customer(ConnectionHandler.instanceOf(), cur, true));
 
             } catch (Exception exception) {
                 Popup.warn(exception.getMessage(), Popup.ERROR);
@@ -1182,37 +1185,20 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
     private void jTable2MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable2MouseClicked
         boolean idOk = true;
         Integer id = 0;
-        JPopupMenu popup = new PopupMenu2(this, jTable2, TABLE_CUSTOMER_FIELDS, 0);
-
-
-
         try {
             id = Integer.valueOf((String) jTable2.getValueAt(jTable2.getSelectedRow(), 0));
         } catch (Exception numberFormatException) {
             idOk = false;
         }
 
-
-
         if (evt.getClickCount() >= 2 && idOk && evt.getButton() == MouseEvent.BUTTON1) {
-
             try {
-                this.setCustomer(new Customer(id));
+                this.setContact(new Customer(id));
                 jTabbedPane1.setSelectedIndex(0);
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
-        } else if (idOk && (evt.getButton() == MouseEvent.BUTTON2 || evt.getButton() == MouseEvent.BUTTON3)) {
-            // show the popup and return
-            popup.show(evt.getComponent(), evt.getX(), evt.getY());
-
-        }
-
-
-        idOk = true;
-
-
-
+        } 
     }//GEN-LAST:event_jTable2MouseClicked
 
     public void save() {
@@ -1263,18 +1249,16 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
 
     private void jTable3MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable3MouseClicked
 
-        JPopupMenu popup = new PopupMenu2(this, jTable3, jtable3Header, mode);
+      
         SelectionCheck selection = new SelectionCheck(jTable3);
 
         if (evt.getClickCount() >= 2 && selection.checkID() && evt.getButton() == MouseEvent.BUTTON1) {
             try {
-                this.setCustomer(new Customer(selection.getId()));
+                this.setContact(new Customer(selection.getId()));
             } catch (Exception exception) {
                 Log.Debug(exception);
             }
-        } else if (selection.checkID() && (evt.getButton() == MouseEvent.BUTTON2 || evt.getButton() == MouseEvent.BUTTON3)) {
-            popup.show(evt.getComponent(), evt.getX(), evt.getY());
-        }
+        } 
     }//GEN-LAST:event_jTable3MouseClicked
 
     private void jButton7ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
@@ -1307,7 +1291,7 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
             if (current.isValid()) {
                 mp4.panels.rechnungen.billsView panel = new mp4.panels.rechnungen.billsView(mainframe);
 
-                panel.setCustomer(current);
+                panel.setContact(current);
                 
                 mainframe.getTabPane().add("Rechnung", panel);
                 mainframe.getTabPane().setSelectedComponent(panel);
@@ -1319,13 +1303,14 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
 
     private void jTable1MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
 
-        SelectionCheck selection = new SelectionCheck(jTable3);
+        SelectionCheck selection = new SelectionCheck(jTable1);
 
         if (evt.getClickCount() >= 2 && selection.checkID()) {
             try {
-//                mainframe.getBillPanel().setBill(new Rechnung(selection.getId()).expose());
-                mainframe.getTabPane().setSelectedIndex(1);
+                mainframe.addBillPanel(new Rechnung(selection.getId()));
+              
             } catch (Exception ex) {
+                Log.Debug(ex);
                 Popup.warn(ex.getMessage(), Popup.ERROR);
             }
         }
@@ -1368,7 +1353,19 @@ private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 }//GEN-LAST:event_jButton20ActionPerformed
 
 private void jTable4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable4MouseClicked
-// TODO add your handling code here:
+
+      SelectionCheck selection = new SelectionCheck(jTable4);
+
+        if (evt.getClickCount() >= 2 && selection.checkID()) {
+            try {
+                mainframe.addAngebotPanel(new Angebot(selection.getId()));
+              
+            } catch (Exception ex) {
+                Log.Debug(ex);
+                Popup.warn(ex.getMessage(), Popup.ERROR);
+            }
+        }
+    
 }//GEN-LAST:event_jTable4MouseClicked
 
 private void jTextField17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField17ActionPerformed
@@ -1530,127 +1527,13 @@ undo();
         this.jTable3.setModel(new DefaultTableModel(list, k.split(",")));
         current.stripFirst(jTable3);
     }
-}
 
-class PopupMenu2 extends JPopupMenu {
+    public People getContact() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-    /**
-     * 
-     */
-    public PopupMenu2(customersView view, JTable jTable, String fields, int mode) {
-        ActionListener actionListener = new PopupActionListener2(view, jTable, fields, new Customer(ConnectionHandler.instanceOf()), mode);
-
-        JMenuItem item;
-        this.add(item = new JMenuItem("ansehen"));
-        item.addActionListener(actionListener);
-        item.setHorizontalTextPosition(JMenuItem.RIGHT);
-
-        this.add(item = new JMenuItem("bearbeiten"));
-        item.addActionListener(actionListener);
-        item.setHorizontalTextPosition(JMenuItem.RIGHT);
-
-        this.add(item = new JMenuItem("löschen"));
-        item.addActionListener(actionListener);
-        item.setHorizontalTextPosition(JMenuItem.RIGHT);
-
-        this.add(item = new JMenuItem("aktualisieren"));
-        item.addActionListener(actionListener);
-        item.setHorizontalTextPosition(JMenuItem.RIGHT);
-
-        this.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
-
-
+    public void switchTab(int i) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
 
-class PopupActionListener2 implements ActionListener {
-
-    private customersView view;
-    private Integer id;
-    private boolean idOk;
-    private JTable jTable;
-    private String fields;
-    private String[][] liste;
-    private int mode;
-    private Customer list;
-
-    PopupActionListener2(customersView view, JTable jTable, String fields, Customer liste, int mode) {
-        this.view = view;
-        this.jTable = jTable;
-        this.fields = fields;
-        this.mode = mode;
-        this.list = liste;
-
-        if (mode == 0) {
-            this.liste = liste.getAll(false);
-        } else if (mode == 1) {
-            this.liste = liste.select("id, kundennummer, firma ", "kundennummer", view.jTextField1.getText(), "kundennummer", true);
-        } else if (mode == 2) {
-            this.liste = liste.select("id, kundennummer, name ", "name", view.jTextField2.getText(), "name", true);
-        } else if (mode == 3) {
-            this.liste = liste.select("id, kundennummer, firma ", "firma", view.jTextField3.getText(), "firma", true);
-        }
-
-    }
-
-    public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand().equals("ansehen") || e.getActionCommand().equals("bearbeiten")) {
-
-            try {
-                id = Integer.valueOf((String) jTable.getValueAt(jTable.getSelectedRow(), 0));
-            } catch (Exception numberFormatException) {
-                idOk = false;
-            }
-
-            try {
-                view.setCustomer(new Customer(id));
-                view.jTabbedPane1.setSelectedIndex(0);
-            } catch (Exception exception) {
-            }
-        }
-
-        if (e.getActionCommand().equals("aktualisieren")) {
-
-
-            String k = fields;
-
-            jTable.setModel(new DefaultTableModel(liste, k.split(",")));
-            view.current.stripFirst(jTable);
-        }
-
-
-        if (e.getActionCommand().equals("löschen")) {
-
-            try {
-                id = Integer.valueOf((String) jTable.getValueAt(jTable.getSelectedRow(), 0));
-            } catch (Exception numberFormatException) {
-                idOk = false;
-            }
-
-            try {
-
-                if ((JOptionPane.showConfirmDialog(view, "Wirklich löschen?", "Sicher?", JOptionPane.YES_NO_OPTION)) == JOptionPane.YES_OPTION) {
-                    view.current.deactivate(id.toString());
-                }
-
-
-                if (mode == 0) {
-                    this.liste = list.getAll(false);
-                } else if (mode == 1) {
-                    this.liste = list.select("id, kundennummer, firma ", "kundennummer", view.jTextField1.getText(), "kundennummer", true);
-                } else if (mode == 2) {
-                    this.liste = list.select("id, kundennummer, name ", "name", view.jTextField2.getText(), "name", true);
-                } else if (mode == 3) {
-                    this.liste = list.select("id, kundennummer, firma ", "firma", view.jTextField3.getText(), "firma", true);
-                }
-
-                String k = "id," + fields;
-
-                jTable.setModel(new DefaultTableModel(liste, k.split(",")));
-                view.current.stripFirst(jTable);
-            } catch (Exception exception) {
-            }
-        }
-
-    }
-}

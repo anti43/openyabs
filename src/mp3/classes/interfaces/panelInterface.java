@@ -17,9 +17,10 @@ along with MP.  If not, see <http://www.gnu.org/licenses/>.
 
  * 
  */
-package mp4.utils.windows;
+package mp3.classes.interfaces;
 
-import javax.swing.Icon;
+import mp3.classes.layer.People;
+import mp4.klassen.objekte.Customer;
 
 /**
  *
@@ -70,4 +71,26 @@ public interface panelInterface {
      * @return 
      */
     public abstract boolean isEdited();
+
+    /**
+     *
+     * To change the panels' contact
+     * @param text 
+     */
+    public abstract void setContact(People contact);
+
+    /**
+     *
+     * To get the data (people)
+     * @param text 
+     */
+    public abstract People getContact();
+
+
+    /**
+     *
+     * To change the tab
+     * @param text 
+     */
+    public abstract void switchTab(int i);
 }

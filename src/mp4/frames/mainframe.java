@@ -26,6 +26,7 @@ import mp3.classes.visual.util.fastChoice;
 import mp3.classes.visual.util.serialLetter;
 import mp3.classes.visual.util.mp2Importer;
 import mp3.classes.visual.util.settingsView;
+import mp4.klassen.objekte.Rechnung;
 import mp4.main.Main;
 import java.awt.BorderLayout;
 
@@ -78,6 +79,7 @@ import mp4.einstellungen.Programmdaten;
 import mp4.klassen.objekte.HistoryItem;
 import mp4.klassen.objekte.Product;
 import mp4.benutzerverwaltung.User;
+import mp4.klassen.objekte.Angebot;
 import mp4.panels.eurAPanel;
 import mp4.panels.eurEPanel;
 import mp4.utils.text.FadeOnChangeLabel;
@@ -140,6 +142,7 @@ public class mainframe extends javax.swing.JFrame {
         }
 
         this.addWindowListener(new WindowAdapter() {
+
             @Override
             public void windowClosing(WindowEvent e) {
                 close();
@@ -164,8 +167,33 @@ public class mainframe extends javax.swing.JFrame {
         }
     }
 
+    public void addAngebotPanel(Angebot offer) {
+
+        offersView panel = new offersView(this);
+
+        mainTabPane.add("Angebot", panel);
+        mainTabPane.setSelectedComponent(panel);
+        mainTabPane.setIconAt(mainTabPane.getSelectedIndex(), new TabCloseIcon());
+
+        if (offer != null) {
+            panel.setAngebot(offer);
+        }
+        mainTabPane.validate();
+    }
+
+    public void addBillPanel(Rechnung bill) {
+        billsView panel = new billsView(this);
+        mainTabPane.add("Rechnung", panel);
+        mainTabPane.setSelectedComponent(panel);
+        mainTabPane.setIconAt(mainTabPane.getSelectedIndex(), new TabCloseIcon());
+        if (bill != null) {
+            panel.setBill(bill);
+        }
+        mainTabPane.validate();
+    }
+
     private void resize() {
-       wt.center(this);
+        wt.center(this);
     }
 
     /**
@@ -1028,12 +1056,7 @@ private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 }//GEN-LAST:event_jButton9ActionPerformed
 
 private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
-    billsView panel = new billsView(this);
-
-    mainTabPane.add("Rechnung", panel);
-    mainTabPane.setSelectedComponent(panel);
-    mainTabPane.setIconAt(mainTabPane.getSelectedIndex(), new TabCloseIcon());
-    mainTabPane.validate();
+    addBillPanel(null);
 }//GEN-LAST:event_jButton11ActionPerformed
 
 private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
@@ -1064,12 +1087,7 @@ private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 }//GEN-LAST:event_jButton6ActionPerformed
 
 private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-    offersView panel = new offersView(this);
-
-    mainTabPane.add("Angebot", panel);
-    mainTabPane.setSelectedComponent(panel);
-    mainTabPane.setIconAt(mainTabPane.getSelectedIndex(), new TabCloseIcon());
-    mainTabPane.validate();
+    addAngebotPanel(null);
 }//GEN-LAST:event_jButton2ActionPerformed
 
 private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton17ActionPerformed

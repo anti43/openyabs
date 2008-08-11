@@ -42,7 +42,7 @@ public class CustomerBAListTableModel extends MPTableModel {
     
     public CustomerBAListTableModel(Customer current, boolean ANGEBOT){
         super(new Class[]{java.lang.String.class, java.lang.String.class,
-                    java.lang.String.class, java.lang.Boolean.class
+                    java.lang.String.class, java.lang.String.class
                 }, new boolean[]{false,false,false,false},
                 DataModelUtils.changeToClassValue(new Angebot().select("id, angebotnummer, datum, auftragdatum ", "kundenid", current.getid(), "datum, auftragdatum DESC ", false, true),java.util.Date.class, new int[]{3}),
                 new Object[]{"id", "Nummer","Datum","Auftrag"});

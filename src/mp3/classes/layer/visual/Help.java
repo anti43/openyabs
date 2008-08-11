@@ -100,6 +100,7 @@ public class Help extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("MP Hilfe");
 
+        jPanel1.setBackground(new java.awt.Color(227, 219, 202));
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Hilfe: "));
 
         jLabel1.setText("Thema");
