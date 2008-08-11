@@ -37,7 +37,6 @@ jScrollPane2 = new javax.swing.JScrollPane();
 jTextArea2 = new javax.swing.JTextArea();
 
 setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-setTitle("MP Lizenzhinweis");
 
 jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("MP Lizenz"));
 
