@@ -16,7 +16,7 @@
  */
 package mp3.classes.utils;
 
-import mp3.classes.visual.main.Logger;
+import mp4.frames.Logger;
 
 /**
  *

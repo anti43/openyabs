@@ -20,6 +20,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Date;
 import mp3.classes.interfaces.Countable;
+import mp3.classes.utils.Log;
 import mp4.einstellungen.Programmdaten;
 import mp4.utils.datum.DateConverter;
 
@@ -28,7 +29,6 @@ import mp4.utils.datum.DateConverter;
  * @author Andreas
  */
 public class NumberFormatHandler {
-   
 
     public final String MONTH = "\\{MONAT\\}";
     public final String MONTH_NAME = "\\{MONAT_NAME\\}";
@@ -112,7 +112,6 @@ public class NumberFormatHandler {
     public void setStartWert(String wert) {
         NumberFormatHandler.startwert = wert;
     }
-    
 
     private void processAngebotType() {
         format = Programmdaten.instanceOf().getANGEBOT_NUMMER_FORMAT();
@@ -140,6 +139,9 @@ public class NumberFormatHandler {
             }
             Integer count = 0;
 
+            Log.Debug("Number Parser mode: " + this.getMode());
+            Log.Debug("Number Parser format: " + this.getFormatter());
+
             switch (this.getMode()) {
 
                 case 1:
@@ -158,13 +160,13 @@ public class NumberFormatHandler {
                     break;
 
                 case 0:
-                    count = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(type.getTable()).getNextNumber(type.getCountColumn()) - 1;
+                    count = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(type.getTable()).getCount();
                     break;
 
                 default:
                     return String.valueOf(mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(type.getTable()).selectCount("", null) + 1);
             }
-            
+
             return this.getFormatter().format(count + 1);
         } else {
             String tmp = startwert;

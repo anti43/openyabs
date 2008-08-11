@@ -75,9 +75,9 @@ public interface Installation {
         "PRIMARY KEY  (id))",
         
         "CREATE TABLE rechnungsposten (ID BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-        "rechnungid INTEGER REFERENCES rechnungen (id)," + "anzahl DOUBLE DEFAULT 0," +
-        "posten VARCHAR(1000) default NULL,  preis DOUBLE DEFAULT 0, " +
-        "steuersatz DOUBLE DEFAULT 0," +
+        "rechnungid INTEGER REFERENCES rechnungen (id)," + "anzahl DOUBLE DEFAULT 0 NOT NULL," +
+        "posten VARCHAR(1000) default NULL,  preis DOUBLE DEFAULT 0 NOT NULL, " +
+        "steuersatz DOUBLE DEFAULT 0 NOT NULL," +
         "deleted INTEGER DEFAULT 0," +
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
         "PRIMARY KEY  (id))",
@@ -92,9 +92,9 @@ public interface Installation {
         "PRIMARY KEY  (id))",
         
         "CREATE TABLE angebotposten (ID BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-        "angebotid INTEGER REFERENCES angebote  (id)," + "anzahl DOUBLE DEFAULT 0," +
-        "posten VARCHAR(1000) default NULL,  preis DOUBLE DEFAULT 0, " +
-        "steuersatz DOUBLE DEFAULT 0," +
+        "angebotid INTEGER REFERENCES angebote  (id)," + "anzahl DOUBLE DEFAULT 0 NOT NULL," +
+        "posten VARCHAR(1000) default NULL,  preis DOUBLE DEFAULT 0 NOT NULL, " +
+        "steuersatz DOUBLE DEFAULT 0 NOT NULL," +
         "deleted INTEGER DEFAULT 0," +
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
         "PRIMARY KEY  (id))",

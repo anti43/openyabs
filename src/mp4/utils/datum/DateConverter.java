@@ -119,11 +119,11 @@ public class DateConverter {
     }
 
     public static String getMonth(Date datum) {
-        return DE_DATE_FORMAT_MONTH.format(datum);
+        return DE_DATE_FORMAT_NODAY_MONTH_YEAR.format(datum);
     }
 
     public static String getDay(Date datum) {
-        return DE_DATE_FORMAT_DAY.format(datum);
+        return DE_DATE_FORMAT.format(datum);
     }
 
     public static String getMonthName(Date date) {

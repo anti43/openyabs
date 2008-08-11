@@ -16,10 +16,7 @@
  */
 package mp4.frames;
 
-import java.awt.event.ComponentEvent;
 import mp4.benutzerverwaltung.visual.login;
-import mp3.classes.visual.main.*;
-import java.awt.Component;
 import mp4.datenbank.verbindung.Conn;
 import mp3.classes.visual.util.csvProductImporter;
 import mp3.classes.visual.util.fastChoice;
@@ -31,12 +28,10 @@ import mp4.main.Main;
 import java.awt.BorderLayout;
 
 import java.awt.Color;
-import java.awt.event.ComponentListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import mp3.classes.interfaces.Constants;
@@ -52,15 +47,13 @@ import mp3.classes.utils.Log;
 import mp3.classes.utils.SaveAs;
 import mp3.classes.utils.SplashScreen;
 import mp3.classes.utils.TableHtmlWriter;
-import mp3.classes.visual.main.license;
-import mp3.classes.visual.sub.backupView;
+import mp4.frames.license;
 import mp4.panels.rechnungen.billsView;
 
 import mp4.panels.kontakte.customersView;
 //import mp3.classes.visual.sub.*;
 import mp3.classes.visual.sub.eurEURPanel;
 import mp3.classes.visual.sub.eurOPanel;
-import mp3.classes.visual.sub.historyView;
 import mp4.panels.rechnungen.offersView;
 
 import mp3.classes.visual.sub.productsView;
@@ -125,7 +118,7 @@ public class mainframe extends javax.swing.JFrame {
         splash.setMessage("Initialisiere Komponenten...");
 
         i = new startView(this);
-        mainTabPane.add(i, BorderLayout.CENTER);
+        mainTabPane.add("Start", i);
 
         this.setTitle("MP " + Constants.VERSION);
 
@@ -1109,12 +1102,12 @@ private void jMenuItem1ActionPerformed1(java.awt.event.ActionEvent evt) {//GEN-F
         Programmdaten.instanceOf().setUSE_AUTHENTIFICATION(!useauth);
         if (!useauth) {
             this.setMessage("Benutzerauthentifizierung eingeschaltet");
-            new HistoryItem("Benutzerauthentifizierung", "Eingeschaltet", this.getUser());
+            new HistoryItem("Benutzerauthentifizierung", "Eingeschaltet", mainframe.getUser());
             this.setEnabled(false);
             new login(this);
         } else {
             this.setMessage("Benutzerauthentifizierung ausgeschaltet");
-            new HistoryItem("Benutzerauthentifizierung", "Ausgeschaltet", this.getUser());
+            new HistoryItem("Benutzerauthentifizierung", "Ausgeschaltet", mainframe.getUser());
         }
     } else {
         Popup.notice("Die Benutzerauthentifizierung kann nur von einem Administrator ausgeschaltet werden!");

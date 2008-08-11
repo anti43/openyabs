@@ -398,19 +398,30 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
 
     private void explode(PostenTableModel m) {
         for (int i = 0; i < m.getRowCount(); i++) {
-            if (m.getValueAt(i, 4) != null) {
+            if (m.getValueAt(i, 4) != null || m.getValueAt(i, 2) != null) {
                 RechnungPosten b = new RechnungPosten();
                 b.setRechnungid(this.getId());
-
-                b.setPosten((String) m.getValueAt(i,
-                        2));
+                b.setPosten((String) m.getValueAt(i,2));
+              
                 try {
-                    b.setAnzahl((Double) m.getValueAt(i, 1));
-                    b.setSteuersatz((Double) m.getValueAt(i, 3));
-                    b.setPreis(
-                            (Double) m.getValueAt(i, 4));
-                } catch (Exception exception) {
-                    Log.Debug(exception);
+                    
+                    b.setAnzahl(Double.valueOf((Double) m.getValueAt(i, 1)));
+                } catch (Exception e) {
+                     b.setAnzahl(0d);
+                }
+
+                try {
+                    
+                    b.setSteuersatz(Double.valueOf((Double) m.getValueAt(i, 3)));
+                } catch (Exception e) {
+                    b.setSteuersatz(0d);
+                }
+
+                try {
+                    
+                    b.setPreis(Double.valueOf((Double) m.getValueAt(i, 4)));
+                } catch (Exception e) {
+                    b.setPreis(0d);
                 }
                 b.save();
             }

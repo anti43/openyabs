@@ -17,7 +17,7 @@
 package mp4.cache;
 
 import mp4.frames.mainframe;
-import mp3.classes.visual.main.*;
+
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import mp3.classes.utils.Log;

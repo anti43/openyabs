@@ -20,7 +20,7 @@ import mp3.classes.utils.Log;
 import mp3.classes.layer.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
 
-import mp3.classes.visual.main.*;
+
 import mp4.klassen.objekte.ProductGroupCategory;
 import mp4.klassen.objekte.ProductGroupFamily;
 import mp4.klassen.objekte.ProductGroupGroup;

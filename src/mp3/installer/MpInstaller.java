@@ -37,7 +37,7 @@ import mp3.classes.utils.DesktopIcon;
 import mp3.classes.utils.DirectoryHandler;
 import mp3.classes.utils.JarFinder;
 import mp3.classes.utils.Log;
-import mp3.classes.visual.main.license;
+import mp4.frames.license;
 import mp4.main.Main;
 
 /**
