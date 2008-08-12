@@ -139,6 +139,13 @@ public class mainframe extends javax.swing.JFrame {
         this.addWindowListener(new WindowAdapter() {
 
             @Override
+            public void windowStateChanged(WindowEvent e) {
+                if (identifier.getState() != mainframe.MAXIMIZED_BOTH) {
+                    wt.center(identifier);
+                }
+            }
+
+            @Override
             public void windowClosing(WindowEvent e) {
                 close();
             }
@@ -330,8 +337,6 @@ jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
 setTitle("MP");
 setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-setExtendedState(this.MAXIMIZED_BOTH);
-setLocationByPlatform(true);
 setMinimumSize(new java.awt.Dimension(800, 600));
 
 jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());

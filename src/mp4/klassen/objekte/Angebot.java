@@ -47,7 +47,7 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.s
     private Query query;
     private String[][] products;
     public Integer id = 0;
-    private PostenTableModel postendata;
+    private PostenTableModel postendata = new PostenTableModel(new Object[0][0]);
 
     public void add(PostenTableModel m) {
         this.postendata = m;

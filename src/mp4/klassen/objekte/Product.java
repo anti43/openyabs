@@ -18,6 +18,8 @@ package mp4.klassen.objekte;
 
 import java.util.ArrayList;
 import java.util.Date;
+
+import mp3.classes.utils.Log;
 import mp4.datenbank.verbindung.ConnectionHandler;
 
 import mp4.datenbank.verbindung.Query;
@@ -39,8 +41,8 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
     private Double EK = 0d;
     
     private Integer SteuersatzId = 1;
-    private Integer HerstellerId = 0;
-    private Integer LieferantenId = 0;
+    private Integer HerstellerId = 1;
+    private Integer LieferantenId = 1;
     private Integer WarengruppenId = 0;
     
     private Query query;
@@ -50,7 +52,7 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
     private Hersteller hersteller;
     private Lieferant lieferant;
     
-    private ArrayList images = new ArrayList();
+    private ProductImage image = new ProductImage();
 
     public Integer getId() {
         return id;
@@ -107,6 +109,10 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
 
     }
 
+    public ProductImage getImage() {
+        return this.image;
+    }
+
       public boolean isValid() {
         if(this.id > 0) {
             return true;
@@ -144,7 +150,7 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
         Query q = query.clone(TABLE_PRODUCTS);
 
         String[][] str = q.selectFreeQuery("SELECT produkte.id, produkte.Produktnummer AS Nummer,produkte.Name,produkte.text," +
-                "produkte.VK,produkte.EK,steuersaetze.wert,hersteller.name AS Hersteller,Lieferanten.firma AS Lieferant," +
+                "produkte.VK,produkte.EK,steuersaetze.wert,hersteller.firma AS Hersteller,Lieferanten.firma AS Lieferant," +
                 "Warengruppenid,produkte.Datum,produkte.Url,produkte.EAN FROM produkte " +
                 "LEFT OUTER JOIN  steuersaetze ON produkte.steuersatzid = steuersaetze.id " +
                 "LEFT OUTER JOIN  lieferanten ON produkte.lieferantenid = lieferanten.id " +
@@ -187,17 +193,7 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
     }
 
     public String getProductgroupPath() {
-
-        try {
-            return ProductGroupHandler.instanceOf().getHierarchyPath(Integer.valueOf(this.getWarengruppenId()));
-
-
-        } catch (NumberFormatException numberFormatException) {
-
-            return "";
-        }
-
-
+        return ProductGroupHandler.instanceOf().getHierarchyPath(this.getWarengruppenId());
     }
 
     public void setWarengruppenId(Integer Warengruppenid) {

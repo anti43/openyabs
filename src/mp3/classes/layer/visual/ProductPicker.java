@@ -43,7 +43,7 @@ public class ProductPicker extends javax.swing.JFrame {
 
 public static void update(){
         Product n = new Product(ConnectionHandler.instanceOf());
-        ProductPicker.setListe( n.select("id,produktnummer,name,hersteller", "produktnummer", "", "produktnummer", true));
+        ProductPicker.setListe( n.select("id,produktnummer,name", "produktnummer", "", "produktnummer", true));
 }
 
     public ProductPicker(offersView aThis) {
@@ -53,14 +53,14 @@ public static void update(){
         
  
         if(ProductPicker.getListe()==null){
-            list = p.select("id,produktnummer,name,hersteller", "produktnummer", "", "produktnummer", true);
+            list = p.select("id,produktnummer,name", "produktnummer", "", "produktnummer", true);
             ProductPicker.setListe(list);
         } else {
         
             list=ProductPicker.getListe();
         }
         
-        String k = "id, " + "Nummer,Name,Hersteller";
+        String k = "id, " + "Nummer,Name";
 
         this.jTable1.setModel(new DefaultTableModel(list, k.split(",")));
         Formater.stripFirst(jTable1);
@@ -80,14 +80,14 @@ public static void update(){
         pos.center(this);
  
         if(ProductPicker.getListe()==null){
-            list = p.select("id,produktnummer,name,hersteller", "produktnummer", "", "produktnummer", true);
+            list = p.select("id,produktnummer,name", "produktnummer", "", "produktnummer", true);
             ProductPicker.setListe(list);
         } else {
         
             list=ProductPicker.getListe();
         }
         
-        String k = "id, " + "Nummer,Name,Hersteller";
+        String k = "id, " + "Nummer,Name";
 
         this.jTable1.setModel(new DefaultTableModel(list, k.split(",")));
         Formater.stripFirst(jTable1);
@@ -279,8 +279,8 @@ public static void update(){
     private void jTextField1ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
         
         
-        String[][] list = p.select("id,produktnummer,name,hersteller", "produktnummer", jTextField1.getText(), "produktnummer", true);
-        String k = "id, " + "Nummer,Name,Hersteller";
+        String[][] list = p.select("id,produktnummer,name", "produktnummer", jTextField1.getText(), "produktnummer", true);
+        String k = "id, " + "Nummer,Name";
 
         this.jTable1.setModel(new DefaultTableModel(list, k.split(",")));
         Formater.stripFirst(jTable1);
@@ -289,11 +289,11 @@ public static void update(){
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jTextField2ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
-        String[][] list = p.select("id,produktnummer,name,hersteller", "hersteller", jTextField2.getText(), "produktnummer", true);
-        String k = "id, " + "Nummer,Name,Hersteller";
-
-        this.jTable1.setModel(new DefaultTableModel(list, k.split(",")));
-        Formater.stripFirst(jTable1);
+//        String[][] list = p.select("id,produktnummer,name", "hersteller", jTextField2.getText(), "produktnummer", true);
+//        String k = "id, " + "Nummer,Name";
+//
+//        this.jTable1.setModel(new DefaultTableModel(list, k.split(",")));
+//        Formater.stripFirst(jTable1);
 
     }//GEN-LAST:event_jTextField2ActionPerformed
 

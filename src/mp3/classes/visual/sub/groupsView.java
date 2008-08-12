@@ -9,6 +9,7 @@ import mp4.frames.mainframe;
 import java.awt.BorderLayout;
 import java.util.ArrayList;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -20,6 +21,8 @@ import mp3.classes.utils.Log;
 import mp3.classes.layer.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
 
+import mp4.klassen.objekte.Product;
+import mp4.panels.productsView;
 
 import mp4.klassen.objekte.ProductGroupCategory;
 import mp4.klassen.objekte.ProductGroupFamily;
@@ -45,13 +48,19 @@ public class groupsView extends javax.swing.JFrame implements TreeSelectionListe
     private boolean category = false;
     private mainframe frame;
     private JScrollPane jScrollPane1;
+    private Product produkt;
+    private JTextField field;
 
     /** Creates new form groupsView
-     * @param frame 
+     * @param frame
+     * @param product
+     * @param field 
      */
-    public groupsView(mainframe frame) {
+    public groupsView(mainframe frame, Product product, JTextField field) {
         initComponents();
         this.frame = frame;
+        this.produkt = product;
+        this.field = field;
         p = ProductGroupHandler.instanceOf();
         new Position(this);
 
@@ -61,6 +70,9 @@ public class groupsView extends javax.swing.JFrame implements TreeSelectionListe
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         tree.addTreeSelectionListener(this);
 
+        this.setTreeData(true);
+       
+        
         this.setVisible(rootPaneCheckingEnabled);
     }
 
@@ -71,7 +83,10 @@ public class groupsView extends javax.swing.JFrame implements TreeSelectionListe
 
         root = new DefaultMutableTreeNode("Produkte");
         setTreeData(false);
-
+        tree = this.jTree1;
+        tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+        tree.addTreeSelectionListener(this);
+        
         this.setVisible(rootPaneCheckingEnabled);
     }
 
@@ -288,9 +303,14 @@ public class groupsView extends javax.swing.JFrame implements TreeSelectionListe
     private void jButton5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton5MouseClicked
 
         if (leaf) {
-//            frame.getProductsView().getProduct().setWarengruppenId(grp.getId());
-//            frame.getProductsView().setCurrentProductGroup(grp.getId());
-//            frame.getProductsView().getJTextField12().setText(frame.getProductsView().getProduct().getProductgroupPath());
+            try {
+                produkt.setWarengruppenId(grp.getId());
+                field.setText(produkt.getProductgroupPath());       
+                Log.Debug("pp"+produkt.getProductgroupPath());
+            } catch (Exception e) {
+                Log.Debug(e);
+            }
+            
             this.dispose();
         } else {
             Popup.notice("Sie müssen eine Produktgruppe auswählen");

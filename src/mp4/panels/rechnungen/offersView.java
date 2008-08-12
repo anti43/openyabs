@@ -200,7 +200,9 @@ public class offersView extends javax.swing.JPanel implements panelInterface, mp
         this.changeTabText("Angebot: " + current.getAngebotnummer());
 
         this.currentOffer = current;
-        this.setContact(new Customer(current.getKundenId()));
+        if(current.getKundenId()!=0) {
+            this.setContact(new Customer(current.getKundenId()));
+        }
 
         jTextField7.setText(DateConverter.getDefDateString(current.getDatum()));
         jTextField6.setText(current.getAngebotnummer());

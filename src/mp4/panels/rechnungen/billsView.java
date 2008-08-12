@@ -227,7 +227,7 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
         this.changeTabText("Rechnung: " + current.getRechnungnummer());
         
         this.currentBill = current;
-        this.setContact(new Customer(current.getKundenId()));
+        if(current.getKundenId()!=0)this.setContact(new Customer(current.getKundenId()));
 
         if (current.getAngebot() != null) {
             jTextField13.setText(DateConverter.getDefDateString(current.getAngebot().getDatum()));

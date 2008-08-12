@@ -202,8 +202,8 @@ public interface Installation {
         
         
         "INSERT INTO steuersaetze (name, wert) VALUES ('Default', 0.0)",
-        "INSERT INTO hersteller (herstellernummer, name) VALUES ('1000', 'Default')",
-        "INSERT INTO lieferanten (lieferantennummer, name) VALUES ('1000', 'Default')",
+        "INSERT INTO hersteller (herstellernummer, name, firma) VALUES ('1000', 'Default', 'Default')",
+        "INSERT INTO lieferanten (lieferantennummer, name, firma) VALUES ('1000', 'Default', 'Default')",
 
         "INSERT INTO programmdaten(name, wert) VALUES ('MAHNUNG_TEXT_DEFAULT',  'Sehr geehrter {KUNDE_ANREDE} {KUNDE_VORNAME} {KUNDE_NAME},\nin Bezug auf unsere Rechnung Nr. "+ 
         "{RECHNUNG_NUMMER} vom {RECHNUNG_DATUM} mussten wir heute feststellen, dass " +
@@ -277,6 +277,7 @@ public interface Installation {
         "INSERT INTO konten (nummer, klasse,gruppe,art) VALUES ('2122', 'Einnahmenkonten', 'Sonstige Sach-, Nutzungs- und Leistungsentnahmen', 'Private Telefonnutzung')",
         "INSERT INTO konten (nummer, klasse,gruppe,art) VALUES ('2130', 'Einnahmenkonten', 'Private Kfz-Nutzung', 'Private KFZ-Nutzung')",
         "INSERT INTO konten (nummer, klasse,gruppe,art) VALUES ('2140', 'Einnahmenkonten', 'Vom Finanzamt erstattete und ggf. verrechnete Umsatzsteuer', 'Vom FA erstattete Umsatzsteuer')",
+    
         "INSERT INTO warengruppenkategorien (kategorienummer,name) VALUES ('1','Kategorie')",
         "INSERT INTO warengruppenfamilien (familienummer, kategorieid, name) VALUES ('1',1,'Familie')",
         "INSERT INTO warengruppengruppen (gruppenummer, familienid, name) VALUES ('1',1,'Gruppe')"

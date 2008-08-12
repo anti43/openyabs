@@ -210,7 +210,7 @@ public interface Tabellen {
      */
     public final String TABLE_PRODUCTS_LIST_COLUMNS =
             "Produktnummer" + "," + "Name" + "," + "Text" + "," + "VK" + "," + "EK" +
-            "," + "Tax" + "," + "Herstellernummer" + "," + "Lieferantennummer" + "," + "Warengruppennummer" + "," + "Datum" + "," + "Url" + "," + "EAN";
+            "," + "Tax" + "," + "Hersteller" + "," + "Lieferant" + "," + "Warengruppennummer" + "," + "Datum" + "," + "Url" + "," + "EAN";
     /**
      * Kontenrahmen
      */

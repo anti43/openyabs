@@ -16,6 +16,7 @@
  */
 package mp3.classes.utils;
 
+import java.awt.Color;
 import mp3.classes.utils.*;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -34,7 +35,11 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.EtchedBorder;
+import javax.swing.plaf.basic.BasicBorders.FieldBorder;
 import mp4.einstellungen.Einstellungen;
+import mp4.utils.datum.DateConverter;
 
  
 /**
@@ -560,18 +565,18 @@ class DateInputVerifier extends javax.swing.InputVerifier {
         javax.swing.JTextField jTF = (javax.swing.JTextField) input;
         String sInput = jTF.getText();
         //DateChecker ist eine Klasse, welche Daten auf Korrektheit prüft
-        return Formater.check(sInput, Formater.DATE);
+        return (DateConverter.getDate(sInput)!=null);
     }
 
     @Override
     public boolean shouldYieldFocus(javax.swing.JComponent input) {
         if (!verify(input)) {
             //Textfeld Vordergrund rot färben
-            input.setBackground(java.awt.Color.RED);
+            input.setBorder(new EtchedBorder(Color.WHITE,Color.BLUE ));
             return false;
         }
         else {
-            input.setBackground(java.awt.Color.WHITE);
+            input.setBorder(new EtchedBorder( Color.WHITE,Color.GRAY));
             return true;
         }
     }
@@ -594,12 +599,12 @@ class DoubleInputVerifier extends javax.swing.InputVerifier {
     public boolean shouldYieldFocus(javax.swing.JComponent input) {
         if (!verify(input)) {
             //Textfeld Vordergrund rot färben
-            input.setBackground(java.awt.Color.RED);
+            input.setBorder(new EtchedBorder( Color.WHITE,Color.BLUE));
             ((JTextField) input).setText("0"); 
             return false;
         }
         else {
-            input.setBackground(java.awt.Color.WHITE);
+            input.setBorder(new EtchedBorder( Color.WHITE,Color.GRAY));
             return true;
         }
     }

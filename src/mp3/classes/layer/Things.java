@@ -283,7 +283,7 @@ public abstract class Things implements Queries, mp4.datenbank.struktur.Tabellen
 //        this.id = 0;
 //    }
     public Integer getNextIndex(String of) {
-        return q.getNextIndexOfIntCol(of);
+        return q.getNextIndexOfStringCol(of);
     }
 
     /**

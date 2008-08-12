@@ -21,8 +21,6 @@
  */
 package mp3.installer;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mp4.datenbank.verbindung.Conn;
 import java.io.IOException;
 import java.awt.Cursor;

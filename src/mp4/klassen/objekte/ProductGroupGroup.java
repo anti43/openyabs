@@ -19,8 +19,7 @@ package mp4.klassen.objekte;
 import java.util.Date;
 import mp4.datenbank.verbindung.Query;
 
-
- /**
+/**
  * @author anti43         
  */
 public class ProductGroupGroup extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen {
@@ -28,55 +27,56 @@ public class ProductGroupGroup extends mp3.classes.layer.Things implements mp4.d
     private String gruppennummer = "0";
     private Integer familienid = 0;
     private String name = "";
-      
     private String[][] data;
     private Query query;
-   public Integer id = 0;
+    public Integer id = 0;
+
     public Integer getId() {
         return id;
     }
+
     public void destroy() {
         this.delete(this.id);
         this.id = 0;
     }
+
     public ProductGroupGroup(Query query) {
         super(query.clone(TABLE_PRODUCTS_GROUPS_GROUPS));
 
     }
-    
-    public ProductGroupGroup(Query query, String id) {
+
+    public ProductGroupGroup(Query query, Integer id) {
         super(query.clone(TABLE_PRODUCTS_GROUPS_GROUP_FIELDS));
-        
-        this.id=Integer.valueOf(id);
-        this.explode(this.selectLast("*", "id", id, true , true, false));
-        this.query=query;
+
+        this.id = id;
+        this.explode(this.selectLast("*", "id", id.toString(), true, true, false));
+        this.query = query;
     }
 
     public int getID() {
         return id;
     }
+
     @Override
-  public String toString(){
-  return this.name;
-  
-  }
-  
+    public String toString() {
+        return this.name;
+
+    }
 
     private void explode(String[] data) {
-         this.id=Integer.valueOf(data[0]);
+        this.id = Integer.valueOf(data[0]);
         this.setGruppennummer(data[1]);
         this.setFamilienid(Integer.valueOf(data[2]));
         this.setName(data[3]);
-        
-    }
 
+    }
 
     private String collect() {
         String str = "";
-        str= str + "(;;2#4#1#1#8#0#;;)"+getGruppennummer()+"(;;2#4#1#1#8#0#;;)"+"(;;,;;)";
-        str =str + getFamilienid() + "(;;,;;)";
-        str = str + "(;;2#4#1#1#8#0#;;)"+getName()+"(;;2#4#1#1#8#0#;;)";
-    
+        str = str + "(;;2#4#1#1#8#0#;;)" + getGruppennummer() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
+        str = str + getFamilienid() + "(;;,;;)";
+        str = str + "(;;2#4#1#1#8#0#;;)" + getName() + "(;;2#4#1#1#8#0#;;)";
+
         return str;
     }
 
@@ -86,18 +86,13 @@ public class ProductGroupGroup extends mp3.classes.layer.Things implements mp4.d
             this.update(TABLE_PRODUCTS_GROUPS_GROUP_FIELDS, this.collect(), id.toString());
             isSaved = true;
         } else if (id == 0) {
-            
-             if(this.getGruppennummer().equals("0")){
-            
+            if (this.getGruppennummer().equals("0")) {
                 this.setGruppennummer(this.getNextIndex("gruppenummer").toString());
             }
             id = this.insert(TABLE_PRODUCTS_GROUPS_GROUP_FIELDS, this.collect());
         } else {
-
         }
     }
-
-  
 
     public String getName() {
         return name;
@@ -131,15 +126,11 @@ public class ProductGroupGroup extends mp3.classes.layer.Things implements mp4.d
         this.familienid = familienid;
     }
 
-   
-   public void setId(Integer id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public Integer getFamilyID(){
-    
-        return Integer.valueOf(familienid);
+    public Integer getFamilyID() {
+        return familienid;
     }
-
-  
 }

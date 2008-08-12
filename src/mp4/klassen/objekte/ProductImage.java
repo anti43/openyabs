@@ -122,9 +122,12 @@ public class ProductImage extends mp3.classes.layer.Things implements mp4.datenb
         this.isSaved = false;
     }
     
-    public ImageIcon getImage(){
+    public ImageIcon getImageIcon(){
         try {
-            return new ImageIcon(getUrl().toURL());
+            if(getUrl()!=null) {
+                return new ImageIcon(getUrl().toURL());
+            }
+            
         } catch (MalformedURLException ex) {
             Popup.error(ex.getMessage(), "Das Bild konnte nicht geladen werden.");
         }
