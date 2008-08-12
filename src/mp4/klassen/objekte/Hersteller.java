@@ -17,8 +17,8 @@
 
 package mp4.klassen.objekte;
 
+import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.datenbank.verbindung.Query;
-import mp3.classes.layer.Popup;
 
 /**
  *
@@ -36,20 +36,21 @@ public class Hersteller extends mp3.classes.layer.People implements mp4.datenban
     private String PLZ = "";
     private String Ort = "";
     private String Tel = "";
+    private String Fax = "";
     private String Mobil = "";
     private String Mail = "";
     private String Webseite = "";
     private String Notizen = "";
 
 
-    public Hersteller(Query query) {
-        super(query.clone(TABLE_MANUFACTURER));
+    public Hersteller() {
+        super(ConnectionHandler.instanceOf().clone(TABLE_MANUFACTURER));
     }
 
-    public Hersteller(Query query, String id) {
-        super(query.clone(TABLE_MANUFACTURER));
-        this.id=Integer.valueOf(id);
-        this.explode(this.selectLast("*", "id", id, true,false,false));
+    public Hersteller(Integer id) {
+        super(ConnectionHandler.instanceOf().clone(TABLE_MANUFACTURER));
+        this.id = id;
+        this.explode(this.selectLast("*", "id", id.toString(), true,false,false));
     }
     public String getid() {
         return id.toString();
@@ -173,53 +174,66 @@ public class Hersteller extends mp3.classes.layer.People implements mp4.datenban
 
     private String collect() {
         String str = "";
-        str = str + this.getHerstellernummer() + "(;;,;;)";
-        str = str + this.getFirma() + "(;;,;;)";
-        str = str + this.getAnrede() + "(;;,;;)";
-        str = str + this.getVorname() + "(;;,;;)";
-        str = str + this.getName() + "(;;,;;)";
-        str = str + this.getStr() + "(;;,;;)";
-        str = str + this.getPLZ() + "(;;,;;)";
-        str = str + this.getOrt() + "(;;,;;)";
-        str = str + this.getTel() + "(;;,;;)";
-        str = str + this.getMobil() + "(;;,;;)";
-        str = str + this.getMail() + "(;;,;;)";
-        str = str + this.getWebseite() + "(;;,;;)";
-        str = str + this.getNotizen();
+        str = str + "(;;2#4#1#1#8#0#;;)" + this.getHerstellernummer() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
+        str = str +  "(;;2#4#1#1#8#0#;;)" + this.getFirma() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
+        str = str +  "(;;2#4#1#1#8#0#;;)" + this.getAnrede() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
+        str = str +  "(;;2#4#1#1#8#0#;;)" + this.getVorname() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
+        str = str +  "(;;2#4#1#1#8#0#;;)" + this.getName() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
+        str = str +  "(;;2#4#1#1#8#0#;;)" + this.getStr() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
+        str = str +  "(;;2#4#1#1#8#0#;;)" + this.getPLZ() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
+        str = str +  "(;;2#4#1#1#8#0#;;)" + this.getOrt() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
+        str = str +  "(;;2#4#1#1#8#0#;;)" + this.getTel() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
+        str = str +  "(;;2#4#1#1#8#0#;;)" + this.getFax() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
+        str = str +  "(;;2#4#1#1#8#0#;;)" + this.getMobil() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
+        str = str +  "(;;2#4#1#1#8#0#;;)" + this.getMail() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
+        str = str +  "(;;2#4#1#1#8#0#;;)" + this.getWebseite() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
+        str = str +  "(;;2#4#1#1#8#0#;;)" + this.getNotizen() + "(;;2#4#1#1#8#0#;;)";
 
         return str;
     }
 
     private void explode(String[] str) {
-
-        this.setHerstellernummer(str[1]);
-        this.setFirma(str[2]);
-        this.setAnrede(str[3]);
-        this.setVorname(str[4]);
-        this.setName(str[5]);
-        this.setStr(str[6]);
-        this.setPLZ(str[7]);
-        this.setOrt(str[8]);
-        this.setTel(str[9]);
-        this.setMobil(str[10]);
-        this.setMail(str[11]);
-        this.setWebseite(str[12]);
-        this.setNotizen(str[12+1]);
+            this.setHerstellernummer(str[1]);
+            this.setFirma(str[2]);
+            this.setAnrede(str[3]);
+            this.setVorname(str[4]);
+            this.setName(str[5]);
+            this.setStr(str[6]);
+            this.setPLZ(str[7]);
+            this.setOrt(str[8]);
+            this.setTel(str[9]);
+            this.setFax(str[10]);
+            this.setMobil(str[11]);
+            this.setMail(str[12]);
+            this.setWebseite(str[12+1]);
+            this.setNotizen(str[12+2]);
+          
     }
-
 
     public void save() {
 
-        
         if (id > 0) {
             this.update(TABLE_MANUFACTURER_FIELDS, this.collect(), id.toString());
             isSaved = true;
         } else if (id == 0) {
-            this.insert(TABLE_MANUFACTURER_FIELDS, this.collect());
-        }else{
-        
-            mp3.classes.layer.Popup.warn(java.util.ResourceBundle.getBundle("languages/Bundle").getString("no_data_to_save"),Popup.WARN);
-        
+            this.id = this.insert(TABLE_MANUFACTURER_FIELDS, this.collect());
+        }
+    }
+
+    public String getFax() {
+        return Fax;
+    }
+
+    public void setFax(String Fax) {
+        this.Fax = Fax;
+    }
+    
+        public boolean isValid() {
+        if(this.id > 0) {
+            return true;
+        }
+        else {
+            return false;
         }
     }
 }

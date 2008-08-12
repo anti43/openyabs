@@ -56,10 +56,10 @@ import mp3.classes.visual.sub.eurEURPanel;
 import mp3.classes.visual.sub.eurOPanel;
 import mp4.panels.rechnungen.offersView;
 
-import mp3.classes.visual.sub.productsView;
+
 //import mp3.classes.visual.sub.*;
 import mp3.classes.visual.sub.startView;
-import mp3.classes.visual.sub.suppliersView;
+
 
 
 import mp4.benutzerverwaltung.visual.Verwaltung;
@@ -75,6 +75,8 @@ import mp4.benutzerverwaltung.User;
 import mp4.klassen.objekte.Angebot;
 import mp4.panels.eurAPanel;
 import mp4.panels.eurEPanel;
+import mp4.panels.kontakte.suppliersView;
+import mp4.panels.productsView;
 import mp4.utils.text.FadeOnChangeLabel;
 import mp4.utils.windows.Position;
 import mp4.utils.windows.TabCloseIcon;

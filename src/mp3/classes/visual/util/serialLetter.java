@@ -21,6 +21,7 @@ import mp3.classes.layer.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.klassen.objekte.Customer;
 
+import mp4.klassen.objekte.Lieferant;
 import mp4.utils.windows.Position;
 import mp3.classes.utils.Formater;
 import mp3.classes.utils.Log;
@@ -55,6 +56,10 @@ public class serialLetter extends javax.swing.JFrame implements ProtectedStrings
         }
         f.setVisible(true);
         return f;
+    }
+
+    public void addLieferant(Lieferant current) {
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     /** This method is called from within the constructor to

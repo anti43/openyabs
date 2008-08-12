@@ -32,9 +32,9 @@ public class Lieferant extends mp3.classes.layer.People implements mp4.datenbank
   
     private String Lieferantennummer = "";
     private String Firma = "";
-//    private String Anrede = "";
-//    private String Vorname = "";
-//    private String Name = "";
+    private String Anrede = "";
+    private String Vorname = "";
+    private String Name = "";
     private String Str = "";
     private String PLZ = "";
     private String Ort = "";
@@ -65,10 +65,8 @@ public class Lieferant extends mp3.classes.layer.People implements mp4.datenbank
     public Lieferant(Integer id) {
         super(ConnectionHandler.instanceOf().clone(TABLE_SUPPLIER));
         this.query =ConnectionHandler.instanceOf();
-        
-//        if(this.id!=0) {
-            this.explode(this.selectLast("*", "id", id.toString(), true, false, false));
-//        }
+        this.id = id;
+        this.explode(this.selectLast("*", "id", id.toString(), true, false, false));
     }
 
 
@@ -96,6 +94,10 @@ public class Lieferant extends mp3.classes.layer.People implements mp4.datenbank
 
     public String getLieferantennummer() {
         return Lieferantennummer;
+    }
+
+    public String getid() {
+        return this.id.toString();
     }
 
     public void setLieferantennummer(String Lieferantennummer) {
@@ -189,7 +191,9 @@ public class Lieferant extends mp3.classes.layer.People implements mp4.datenbank
         String str = "";
         str = str + "(;;2#4#1#1#8#0#;;)" + this.getLieferantennummer() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
         str = str +  "(;;2#4#1#1#8#0#;;)" + this.getFirma() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
-       
+        str = str +  "(;;2#4#1#1#8#0#;;)" + this.getAnrede() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
+        str = str +  "(;;2#4#1#1#8#0#;;)" + this.getVorname() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
+        str = str +  "(;;2#4#1#1#8#0#;;)" + this.getName() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
         str = str +  "(;;2#4#1#1#8#0#;;)" + this.getStr() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
         str = str +  "(;;2#4#1#1#8#0#;;)" + this.getPLZ() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
         str = str +  "(;;2#4#1#1#8#0#;;)" + this.getOrt() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
@@ -206,23 +210,20 @@ public class Lieferant extends mp3.classes.layer.People implements mp4.datenbank
     private void explode(String[] str) {
             this.setLieferantennummer(str[1]);
             this.setFirma(str[2]);
-            
-            this.setStr(str[3]);
-            this.setPLZ(str[4]);
-            this.setOrt(str[5]);
-            this.setTel(str[6]);
-            this.setFax(str[7]);
-            this.setMobil(str[8]);
-            this.setMail(str[9]);
-            this.setWebseite(str[10]);
-            this.setNotizen(str[11]);
+            this.setAnrede(str[3]);
+            this.setVorname(str[4]);
+            this.setName(str[5]);
+            this.setStr(str[6]);
+            this.setPLZ(str[7]);
+            this.setOrt(str[8]);
+            this.setTel(str[9]);
+            this.setFax(str[10]);
+            this.setMobil(str[11]);
+            this.setMail(str[12]);
+            this.setWebseite(str[12+1]);
+            this.setNotizen(str[12+2]);
           
     }
-
-//    public void destroy() {
-//        this.delete(this.id.toString());
-//        this.id=0;
-//    }
 
     public void save() {
 
@@ -230,11 +231,7 @@ public class Lieferant extends mp3.classes.layer.People implements mp4.datenbank
             this.update(TABLE_SUPPLIER_FIELDS, this.collect(), id.toString());
             isSaved = true;
         } else if (id == 0) {
-            this.insert(TABLE_SUPPLIER_FIELDS, this.collect());
-        }else{
-        
-            mp3.classes.layer.Popup.warn(java.util.ResourceBundle.getBundle("languages/Bundle").getString("no_data_to_save"),Popup.WARN);
-        
+            this.id = this.insert(TABLE_SUPPLIER_FIELDS, this.collect());
         }
     }
 
@@ -253,5 +250,38 @@ public class Lieferant extends mp3.classes.layer.People implements mp4.datenbank
         String[][] str = q.select(TABLE_SUPPLIER_PRINT_FIELDS, null);
    
         return str;  
+    }
+
+    public String getAnrede() {
+        return Anrede;
+    }
+
+    public void setAnrede(String Anrede) {
+        this.Anrede = Anrede;
+    }
+
+    public String getVorname() {
+        return Vorname;
+    }
+
+    public void setVorname(String Vorname) {
+        this.Vorname = Vorname;
+    }
+
+    public String getName() {
+        return Name;
+    }
+
+    public void setName(String Name) {
+        this.Name = Name;
+    }
+    
+   public boolean isValid() {
+        if(this.id > 0) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 }

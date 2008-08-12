@@ -191,6 +191,9 @@ public abstract class People implements Queries, mp4.datenbank.struktur.Tabellen
         return q.getNextIndexOfIntCol(what);
     }
 
+    public String getNextStringNumber(String what) {
+        return q.getNextStringNumber(what);
+    }
     /**
      * Hides he first column of a table (usually "id")
      * @param table

@@ -16,22 +16,31 @@
  */
 package mp4.klassen.objekte;
 
+import java.awt.Image;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Date;
+import javax.swing.ImageIcon;
 import mp4.datenbank.verbindung.Query;
 
 import mp3.classes.layer.Popup;
+import mp3.classes.utils.Log;
+import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.utils.datum.DateConverter;
 
 /**
  *
  * @author anti43
  */
-public class ProductFile extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen {
+public class ProductImage extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen {
 
     private Integer Produktid = null;
-    private String Url = "";
+    private URI Url = null;
     private Date Datum = new Date();
-   public Integer id = 0;
+    
+    public Integer id = 0;
+    
     public Integer getId() {
         return id;
     }
@@ -39,8 +48,8 @@ public class ProductFile extends mp3.classes.layer.Things implements mp4.datenba
         this.delete(this.id);
         this.id = 0;
     }
-    public ProductFile(Query query) {
-        super(query.clone(TABLE_PRODUCTS_FILES));
+    public ProductImage() {
+        super(ConnectionHandler.instanceOf().clone(TABLE_PRODUCTS_FILES));
     }
 
     /**
@@ -48,17 +57,20 @@ public class ProductFile extends mp3.classes.layer.Things implements mp4.datenba
      * @param query
      * @param id 
      */
-    public ProductFile(Query query, String id) {
-        super(query.clone(TABLE_PRODUCTS_FILES));
-        this.id = Integer.valueOf(id);
-        this.explode(this.selectLast("*", "id", id, true));
+    public ProductImage(Integer id) {
+        super(ConnectionHandler.instanceOf().clone(TABLE_PRODUCTS_FILES));
+        this.id = id;
+        this.explode(this.selectLast("*", "id", id.toString(), true));
     }
 
     private void explode(String[] select) {
-
-        this.setProduktid(Integer.valueOf(select[1]));
-        this.setUrl(select[2]);
-        this.setDatum(DateConverter.getDate(select[3]));
+        try {
+            this.setProduktid(Integer.valueOf(select[1]));
+            this.setUrl(new URI(select[2]));
+            this.setDatum(DateConverter.getDate(select[3]));
+        } catch (URISyntaxException ex) {
+            Log.Debug(ex);
+        }
     }
 
     private String collect() {
@@ -92,11 +104,11 @@ public class ProductFile extends mp3.classes.layer.Things implements mp4.datenba
         this.isSaved = false;
     }
 
-    public String getUrl() {
+    public URI getUrl() {
         return Url;
     }
 
-    public void setUrl(String Url) {
+    public void setUrl(URI Url) {
         this.Url = Url;
         this.isSaved = false;
     }
@@ -109,4 +121,14 @@ public class ProductFile extends mp3.classes.layer.Things implements mp4.datenba
         this.Datum = Datum;
         this.isSaved = false;
     }
+    
+    public ImageIcon getImage(){
+        try {
+            return new ImageIcon(getUrl().toURL());
+        } catch (MalformedURLException ex) {
+            Popup.error(ex.getMessage(), "Das Bild konnte nicht geladen werden.");
+        }
+        return new javax.swing.ImageIcon(this.getClass().getResource("/bilder/medium/messagebox_warning.png"));
+    }
+
 }

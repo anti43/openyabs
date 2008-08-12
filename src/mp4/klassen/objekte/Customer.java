@@ -306,16 +306,8 @@ public class Customer extends mp3.classes.layer.People implements mp4.datenbank.
             this.update(TABLE_CUSTOMER_FIELDS, this.collect(), id.toString());
             isSaved = true;
         } else if (id == 0) {
-            this.insert(TABLE_CUSTOMER_FIELDS, this.collect());
-            
-            
-
-            
-        } else {
-
-            mp3.classes.layer.Popup.warn(java.util.ResourceBundle.getBundle("languages/Bundle").getString("no_data_to_save"), Popup.WARN);
-
-        }
+            this.id = this.insert(TABLE_CUSTOMER_FIELDS, this.collect());  
+        } 
     }
 
     public String getFax() {

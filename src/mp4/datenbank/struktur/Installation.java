@@ -33,9 +33,11 @@ public interface Installation {
      */
     public final String[] SQL_COMMAND = {
         "CREATE TABLE kunden (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
-        "Kundennummer VARCHAR(250),Firma VARCHAR(250) default NULL,Anrede VARCHAR(250) default NULL," +
+        "Kundennummer VARCHAR(250),Firma VARCHAR(250) default NULL," +
+        "Anrede VARCHAR(250) default NULL," +
         "Vorname VARCHAR(250) default NULL, " +
-        "Name VARCHAR(250) default NULL, Str VARCHAR(250) default NULL, PLZ VARCHAR(50) default NULL," +
+        "Name VARCHAR(250) default NULL, " +
+        "Str VARCHAR(250) default NULL, PLZ VARCHAR(50) default NULL," +
         "Ort VARCHAR(300) default NULL, Tel VARCHAR(250) default NULL,Fax VARCHAR(250) default NULL," +
         "Mobil VARCHAR(250) default NULL," +
         "Mail VARCHAR(350) default NULL, Webseite VARCHAR(350) default NULL,Notizen VARCHAR(10000)," +
@@ -46,6 +48,9 @@ public interface Installation {
         
         "CREATE TABLE lieferanten (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
         "lieferantennummer VARCHAR(250),Firma VARCHAR(250) default NULL," +
+        "Anrede VARCHAR(250) default NULL," +
+        "Vorname VARCHAR(250) default NULL, " +
+        "Name VARCHAR(250) default NULL, " +
         "Str VARCHAR(250) default NULL, PLZ VARCHAR(50) default NULL," +
         "Ort VARCHAR(300) default NULL, Tel VARCHAR(250) default NULL,Fax VARCHAR(250) default NULL," +
         "Mobil VARCHAR(250) default NULL," +
@@ -128,9 +133,10 @@ public interface Installation {
         
         "CREATE TABLE produkte (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
         "produktnummer VARCHAR(500),name VARCHAR(50),text VARCHAR(500),vk DOUBLE DEFAULT 0,ek DOUBLE DEFAULT 0, steuersatzid INTEGER REFERENCES steuersaetze (id)," +
-        "hersteller VARCHAR(250),lieferantenid INTEGER DEFAULT 0," +
+        "herstellerid INTEGER REFERENCES hersteller(id), lieferantenid INTEGER REFERENCES lieferanten (id)," +
         "warengruppenid INTEGER DEFAULT 0," + "datum DATE NOT NULL," + "url VARCHAR(250) default NULL," +
         "ean VARCHAR(25)," +
+        "bilder VARCHAR(1250),"  +      
         "deleted INTEGER DEFAULT 0," +
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
         
@@ -196,9 +202,9 @@ public interface Installation {
         
         
         "INSERT INTO steuersaetze (name, wert) VALUES ('Default', 0.0)",
-        
-//        MAINFRAME_WINDOW_STATE
-        
+        "INSERT INTO hersteller (herstellernummer, name) VALUES ('1000', 'Default')",
+        "INSERT INTO lieferanten (lieferantennummer, name) VALUES ('1000', 'Default')",
+
         "INSERT INTO programmdaten(name, wert) VALUES ('MAHNUNG_TEXT_DEFAULT',  'Sehr geehrter {KUNDE_ANREDE} {KUNDE_VORNAME} {KUNDE_NAME},\nin Bezug auf unsere Rechnung Nr. "+ 
         "{RECHNUNG_NUMMER} vom {RECHNUNG_DATUM} mussten wir heute feststellen, dass " +
                 "Ihre Zahlung bei uns leider noch nicht eingegangen ist.\n\n" +

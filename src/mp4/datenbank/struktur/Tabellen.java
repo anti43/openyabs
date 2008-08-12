@@ -114,13 +114,15 @@ public interface Tabellen {
      * Fields in supplier table
      */
     public final String TABLE_SUPPLIER_FIELDS =
-            "Lieferantennummer" + "," + "Firma" + "," + "Str" + "," + "PLZ" + "," + "Ort" + "," +
+            "Lieferantennummer" + "," + "Firma" + "," + "Anrede" + "," + "Vorname" +
+            "," + "Name" + "," + "Str" + "," + "PLZ" + "," + "Ort" + "," +
             "Tel" + "," + "Fax" + "," + "Mobil" + "," + "Mail" + "," + "Webseite" + "," + "Notizen";
     /**
      * Fields in supplier table
      */
     public final String TABLE_SUPPLIER_PRINT_FIELDS =
-            "Lieferantennummer" + "," + "Firma" + "," + "Str" + "," + "PLZ" + "," + "Ort" + "," +
+            "Lieferantennummer" + "," + "Firma" + "," + "Anrede" + "," + "Vorname" +
+            "," + "Name" + "," + "Str" + "," + "PLZ" + "," + "Ort" + "," +
             "Tel" + "," + "Fax" + "," + "Mobil" + "," + "Mail" + "," + "Webseite";
     /**
      * Fields in manufacturer table
@@ -167,7 +169,7 @@ public interface Tabellen {
      */
     public final String TABLE_PRODUCTS_FIELDS =
             "Produktnummer" + "," + "Name" + "," + "Text" + "," + "VK" + "," + "EK" +
-            "," + "steuersatzid" + "," + "hersteller" + "," + "lieferantenid" + "," + "warengruppenid" + "," + "Datum" + "," + "Url" + "," + "EAN";//     /**
+            "," + "steuersatzid" + "," + "herstellerid" + "," + "lieferantenid" + "," + "warengruppenid" + "," + "Datum" + "," + "Url" + "," + "EAN";//     /**
 //     * Fields in products groups table
 //     */
 //     public  final String TABLE_PRODUCTS_GROUPS_FIELDS =

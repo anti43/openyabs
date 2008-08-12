@@ -1,64 +1,57 @@
 /*
- * customers.java
+ * Lieferants.java
  *
  * Created on 28. Dezember 2007, 19:17
  */
 package mp4.panels.kontakte;
 
-import java.awt.PopupMenu;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
 import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableModel;
 
 
 import mp3.classes.interfaces.Strings;
 import mp3.classes.layer.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
-import mp4.klassen.objekte.Customer;
 import mp4.klassen.objekte.HistoryItem;
 import mp4.frames.mainframe;
 import mp3.classes.visual.util.serialLetter;
 import mp4.utils.tabellen.SelectionCheck;
 import mp3.classes.utils.Log;
 import mp4.benutzerverwaltung.User;
-import mp4.utils.tabellen.models.CustomerBAListTableModel;
+
 import mp4.utils.windows.TabCloseIcon;
 import mp3.classes.interfaces.panelInterface;
 import mp3.classes.layer.People;
-import mp4.klassen.objekte.Angebot;
+import mp4.klassen.objekte.Lieferant;
 import mp4.klassen.objekte.Rechnung;
 import mp4.utils.tabellen.TableFormat;
+import mp4.utils.tabellen.models.LProduktListTableModel;
 
 /**
  *
  * @author  anti43
  */
-public class customersView extends javax.swing.JPanel implements mp4.datenbank.struktur.Tabellen, panelInterface {
+public class suppliersView extends javax.swing.JPanel implements mp4.datenbank.struktur.Tabellen, panelInterface {
 
-    public Customer current;
+    public Lieferant current;
     private String[][] liste;   
     private mainframe mainframe;
     private boolean edited = false;
 
-    /** Creates new form customers
+    /** Creates new form Lieferants
      * @param aThis 
      */
-    public customersView(mainframe frame) {
+    public suppliersView(mainframe frame) {
 
         initComponents();
-        current = new Customer();
+        current = new Lieferant();
         this.mainframe = frame;
         updateListTable();
     }
 
-    public customersView(Customer current, mainframe frame) {
+    public suppliersView(Lieferant current, mainframe frame) {
         initComponents();
         this.current = current;
         this.mainframe = frame;
@@ -144,18 +137,6 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
 
         ;
         jLabel19 = new javax.swing.JLabel();
-        jPanel12 = new javax.swing.JPanel();
-        jScrollPane6 = new javax.swing.JScrollPane();
-        jTable4 = new javax.swing.JTable()
-
-        {
-            public boolean isCellEditable(int x, int y) {
-                return false;
-            }
-        }
-
-        ;
-        jLabel21 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable()
@@ -166,7 +147,6 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
         }
 
         ;
-        jButton11 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jToolBar2 = new javax.swing.JToolBar();
         jButton6 = new javax.swing.JButton();
@@ -621,20 +601,12 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
         jTable1.setAutoCreateRowSorter(true);
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null}
+                {}
             },
             new String [] {
-                "Rechnungen", "Datum"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false
-            };
 
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
             }
-        });
+        ));
         jTable1.setFocusable(false);
         jTable1.setRequestFocusEnabled(false);
         jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -644,7 +616,7 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
         });
         jScrollPane3.setViewportView(jTable1);
 
-        jLabel19.setText("Rechnungen:");
+        jLabel19.setText("Produkte:");
 
         javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
         jPanel11.setLayout(jPanel11Layout);
@@ -653,7 +625,7 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
             .addGroup(jPanel11Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 201, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 437, Short.MAX_VALUE)
                     .addComponent(jLabel19))
                 .addContainerGap())
         );
@@ -668,61 +640,6 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
         );
 
         jPanel14.add(jPanel11);
-
-        jPanel12.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-
-        jScrollPane6.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-
-        jTable4.setAutoCreateRowSorter(true);
-        jTable4.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null}
-            },
-            new String [] {
-                "Angebot", "Datum"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        jTable4.setFocusable(false);
-        jTable4.setRequestFocusEnabled(false);
-        jTable4.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTable4MouseClicked(evt);
-            }
-        });
-        jScrollPane6.setViewportView(jTable4);
-
-        jLabel21.setText("Angebote:");
-
-        javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
-        jPanel12.setLayout(jPanel12Layout);
-        jPanel12Layout.setHorizontalGroup(
-            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel12Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 211, Short.MAX_VALUE)
-                    .addComponent(jLabel21))
-                .addContainerGap())
-        );
-        jPanel12Layout.setVerticalGroup(
-            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel12Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel21)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 52, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        jPanel14.add(jPanel12);
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -811,30 +728,15 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
         });
         jScrollPane4.setViewportView(jTable2);
 
-        jButton11.setText("Zeige alle");
-        jButton11.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton11ActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(565, Short.MAX_VALUE)
-                .addComponent(jButton11)
-                .addContainerGap())
             .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 654, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 401, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton11)
-                .addContainerGap())
+            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 441, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Liste", jPanel3);
@@ -964,9 +866,9 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
      * @param current
      */
     public void setContact(People c) {
-        this.current = (Customer) c;
-        this.changeTabText("Kunde: " + current.getName());
-        this.jTextField4.setText(current.getKundennummer());
+        this.current = (Lieferant) c;
+        this.changeTabText("Lieferant: " + current.getName());
+        this.jTextField4.setText(current.getLieferantennummer());
         this.jTextField5.setText(current.getFirma());
         this.jTextField6.setText(current.getAnrede());
         this.jTextField7.setText(current.getName());
@@ -980,16 +882,16 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
         this.jTextField15.setText(current.getWebseite());
         this.jTextField16.setText(current.getPLZ());
         this.jTextArea1.setText(current.getNotizen());
-        this.jTable1.setModel(new CustomerBAListTableModel(current));
+        
+        this.jTable1.setModel(new LProduktListTableModel(current));
         TableFormat.stripFirst(jTable1);
-        this.jTable4.setModel(new CustomerBAListTableModel(current, true));
-        TableFormat.stripFirst(jTable4);
+
     }
 
     private void jTextField1ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
         System.out.println(jPanel5.getSize());
 
-        String[][] list = current.select("id, kundennummer, firma ", "kundennummer", jTextField1.getText(), "kundennummer", true);
+        String[][] list = current.select("id, Lieferantennummer, firma ", "Lieferantennummer", jTextField1.getText(), "Lieferantennummer", true);
         String k = "id, " + "Nummer,Firma";
 
         this.jTable3.setModel(new DefaultTableModel(list, k.split(",")));
@@ -999,7 +901,7 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
 
     private void jTextField2ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
 
-        String[][] list = current.select("id, kundennummer, name ", "name", jTextField2.getText(), "name", true);
+        String[][] list = current.select("id, Lieferantennummer, name ", "name", jTextField2.getText(), "name", true);
         String k = "id, " + "Nummer,Name";
 
         this.jTable3.setModel(new DefaultTableModel(list, k.split(",")));
@@ -1009,7 +911,7 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
 
     private void jTextField3ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
 
-        String[][] list = current.select("id, kundennummer, firma ", "firma", jTextField3.getText(), "firma", true);
+        String[][] list = current.select("id, Lieferantennummer, firma ", "firma", jTextField3.getText(), "firma", true);
         String k = "id, " + "Nummer,Firma";
 
         this.jTable3.setModel(new DefaultTableModel(list, k.split(",")));
@@ -1058,24 +960,24 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
                 jTextField5.setText(jTextField7.getText());
             }
 
-            current = new Customer();
+            current = new Lieferant();
 
             if (jTextField4.getText() == null || jTextField4.getText().length() == 0) {
-                current.setKundennummer(current.getNextStringNumber("kundennummer"));
+                current.setLieferantennummer(current.getNextStringNumber("Lieferantennummer"));
             } else {
 
-                i = current.select("id", "kundennummer", jTextField4.getText(), false);
+                i = current.select("id", "Lieferantennummer", jTextField4.getText(), false);
 
                 if (i == null || i.length == 0) {
-                    current.setKundennummer(jTextField4.getText());
+                    current.setLieferantennummer(jTextField4.getText());
                 } else {
-                    String s = current.getNextStringNumber("kundennummer");
-                    current.setKundennummer(s);
-                    Popup.notice("Angegebene Kundennummer existiert bereits,\n" + s + " wurde verwendet.");
+                    String s = current.getNextStringNumber("Lieferantennummer");
+                    current.setLieferantennummer(s);
+                    Popup.notice("Angegebene Lieferantennummer existiert bereits,\n" + s + " wurde verwendet.");
                 }
             }
 
-            String cur = current.getKundennummer();
+            String cur = current.getLieferantennummer();
             current.setFirma(jTextField5.getText());
             current.setAnrede(jTextField6.getText());
             current.setName(jTextField7.getText());
@@ -1091,9 +993,9 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
             current.setNotizen(jTextArea1.getText());
             current.save();
 
-            mainframe.setMessage("Kunde Nummer " + current.getKundennummer() + " gespeichert.");
+            mainframe.setMessage("Lieferant Nummer " + current.getLieferantennummer() + " gespeichert.");
             try {
-                new HistoryItem(ConnectionHandler.instanceOf(), Strings.CUSTOMER, "Kunde Nummer: " + current.getKundennummer() + " angelegt.");
+                new HistoryItem(ConnectionHandler.instanceOf(), Strings.SUPPLIER, "Lieferant Nummer: " + current.getLieferantennummer() + " angelegt.");
             } catch (Exception ex) {
                 Popup.warn(ex.getMessage(), Popup.ERROR);
             }
@@ -1118,7 +1020,7 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
 
         if (evt.getClickCount() >= 2 && selection.checkID() && evt.getButton() == MouseEvent.BUTTON1) {
             try {
-                this.setContact(new Customer(selection.getId()));
+                this.setContact(new Lieferant(selection.getId()));
                 jTabbedPane1.setSelectedIndex(0);
             } catch (Exception exception) {
                 exception.printStackTrace();
@@ -1128,7 +1030,7 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
 
     public void save() {
 
-        if (current.isValid()) {
+         if (current.isValid()) {
             if (jTextField7.getText().length() > 0) {
                 try {
                     current.setFirma(jTextField5.getText());
@@ -1145,8 +1047,9 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
                     current.setWebseite(jTextField15.getText());
                     current.setNotizen(jTextArea1.getText());
                     current.save();
-                    mainframe.setMessage("Kunde Nummer " + current.getKundennummer() + " gespeichert.");
-                    new HistoryItem(ConnectionHandler.instanceOf(), Strings.CUSTOMER, "Kunde Nummer: " + current.getKundennummer() + " editiert.");
+                    mainframe.setMessage("Lieferant Nummer " + current.getLieferantennummer() + " gespeichert.");
+                    new HistoryItem(ConnectionHandler.instanceOf(), Strings.SUPPLIER, "Lieferant Nummer: " + current.getLieferantennummer() + " editiert.");
+
                     updateListTable();
                 } catch (Exception ex) {
                     Popup.warn(ex.getMessage(), Popup.ERROR);
@@ -1161,7 +1064,7 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
         SelectionCheck selection = new SelectionCheck(jTable3);
         if (evt.getClickCount() >= 2 && selection.checkID() && evt.getButton() == MouseEvent.BUTTON1) {
             try {
-                this.setContact(new Customer(selection.getId()));
+                this.setContact(new Lieferant(selection.getId()));
             } catch (Exception exception) {
                 Log.Debug(exception);
             }
@@ -1226,17 +1129,9 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
         if (current.isValid()) {
-            serialLetter.instanceOf().addCustomer(current);
+            serialLetter.instanceOf().addLieferant(current);
         }
     }//GEN-LAST:event_jButton10ActionPerformed
-
-private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
-
-    liste = current.getAll(true);
-    String k = "id, " + TABLE_CUSTOMER_FIELDS;
-    this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
-    TableFormat.stripFirst(jTable2);
-}//GEN-LAST:event_jButton11ActionPerformed
 
 private void jButton13MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton13MouseClicked
     if (mainframe.getUser().doAction(User.EDITOR)) {
@@ -1259,20 +1154,6 @@ private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         this.close();
     }
 }//GEN-LAST:event_jButton20ActionPerformed
-
-private void jTable4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable4MouseClicked
-
-    SelectionCheck selection = new SelectionCheck(jTable4);
-    if (evt.getClickCount() >= 2 && selection.checkID()) {
-        try {
-            mainframe.addAngebotPanel(new Angebot(selection.getId()));
-        } catch (Exception ex) {
-            Log.Debug(ex);
-            Popup.warn(ex.getMessage(), Popup.ERROR);
-        }
-    }
-
-}//GEN-LAST:event_jTable4MouseClicked
 
 private void jTextField17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField17ActionPerformed
     jTextField17.setEnabled(true);
@@ -1301,15 +1182,11 @@ private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             try {
                 current.deactivate(current.getId().toString());
 
-                new HistoryItem(ConnectionHandler.instanceOf(), Strings.CUSTOMER, "Kunde Nummer: " + current.getKundennummer() + " gelöscht.");
+                new HistoryItem(ConnectionHandler.instanceOf(), Strings.SUPPLIER , "Lieferant Nummer: " + current.getLieferantennummer() + " gelöscht.");
 
-                this.liste = current.getAll(false);
-                String k = "id," + TABLE_CUSTOMER_FIELDS;
+                updateListTable();
 
-                this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
-                TableFormat.stripFirst(jTable2);
-
-                current = new Customer(ConnectionHandler.instanceOf());
+                current = new Lieferant(ConnectionHandler.instanceOf());
             } catch (Exception ex) {
                 Popup.warn(ex.getMessage(), Popup.ERROR);
             }
@@ -1318,7 +1195,6 @@ private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton jButton10;
-    public javax.swing.JButton jButton11;
     public javax.swing.JButton jButton13;
     public javax.swing.JButton jButton14;
     public javax.swing.JButton jButton18;
@@ -1339,7 +1215,6 @@ private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     public javax.swing.JLabel jLabel19;
     public javax.swing.JLabel jLabel2;
     public javax.swing.JLabel jLabel20;
-    public javax.swing.JLabel jLabel21;
     public javax.swing.JLabel jLabel3;
     public javax.swing.JLabel jLabel4;
     public javax.swing.JLabel jLabel5;
@@ -1350,7 +1225,6 @@ private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     public javax.swing.JPanel jPanel1;
     public javax.swing.JPanel jPanel10;
     public javax.swing.JPanel jPanel11;
-    public javax.swing.JPanel jPanel12;
     public javax.swing.JPanel jPanel14;
     public javax.swing.JPanel jPanel2;
     public javax.swing.JPanel jPanel3;
@@ -1364,14 +1238,12 @@ private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     public javax.swing.JScrollPane jScrollPane3;
     public javax.swing.JScrollPane jScrollPane4;
     public javax.swing.JScrollPane jScrollPane5;
-    public javax.swing.JScrollPane jScrollPane6;
     public javax.swing.JToolBar.Separator jSeparator2;
     public javax.swing.JToolBar.Separator jSeparator3;
     public javax.swing.JTabbedPane jTabbedPane1;
     public javax.swing.JTable jTable1;
     public javax.swing.JTable jTable2;
     public javax.swing.JTable jTable3;
-    public javax.swing.JTable jTable4;
     public javax.swing.JTextArea jTextArea1;
     public javax.swing.JTextField jTextField1;
     public javax.swing.JTextField jTextField10;
@@ -1427,7 +1299,7 @@ private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     }
 
     private void updateListTable() {
-        String[][] list = current.select("id, kundennummer, firma ", "firma", jTextField3.getText(), "firma", true);
+        String[][] list = current.select("id, Lieferantennummer, firma ", "firma", jTextField3.getText(), "firma", true);
         String k = "id, " + "Nummer,Firma";
 
         this.jTable3.setModel(new DefaultTableModel(list, k.split(",")));
