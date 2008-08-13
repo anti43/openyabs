@@ -95,4 +95,12 @@ public class Programmdaten implements mp4.datenbank.struktur.Tabellen {
     public void setANGEBOT_NUMMER_FORMAT(String ANGEBOT_NUMMER_FORMAT) {
         handler.setString("ANGEBOT_NUMMER_FORMAT", ANGEBOT_NUMMER_FORMAT);
     }
+    
+    public String getIMAGE_CACHE_FOLDER() {
+        return handler.getString("IMAGE_CACHE_FOLDER");
+    }
+
+    public void setIMAGE_CACHE_FOLDER(String IMAGE_CACHE_FOLDER) {
+        handler.setString("IMAGE_CACHE_FOLDER", IMAGE_CACHE_FOLDER);
+    }
 }

@@ -21,6 +21,8 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import mp4.datenbank.verbindung.Query;
 
@@ -36,7 +38,7 @@ import mp4.utils.datum.DateConverter;
 public class ProductImage extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen {
 
     private Integer Produktid = null;
-    private URI Url = null;
+    private String Path = null;
     private Date Datum = new Date();
     
     public Integer id = 0;
@@ -63,12 +65,29 @@ public class ProductImage extends mp3.classes.layer.Things implements mp4.datenb
         this.explode(this.selectLast("*", "id", id.toString(), true));
     }
 
+    public ProductImage searchImage(Integer id) {
+        ProductImage image = null;
+        String[] data = this.selectLast("*", "productid", id.toString(), true);   
+        if(data!=null && data.length > 0){ 
+           image = new ProductImage();
+           image.setProduktid(Integer.valueOf(data[1]));
+            try {
+                image.setUrl(data[1]);
+            } catch (Exception ex) {
+                image.setUrl(null);
+                Log.Debug(ex);
+            }
+           image.setDatum(DateConverter.getDate(data[1]));
+        }
+        return image;
+    }
+
     private void explode(String[] select) {
         try {
             this.setProduktid(Integer.valueOf(select[1]));
-            this.setUrl(new URI(select[2]));
+            this.setUrl(select[2]);
             this.setDatum(DateConverter.getDate(select[3]));
-        } catch (URISyntaxException ex) {
+        } catch (Exception ex) {
             Log.Debug(ex);
         }
     }
@@ -76,7 +95,7 @@ public class ProductImage extends mp3.classes.layer.Things implements mp4.datenb
     private String collect() {
         String str = "";
         str = str + this.getProduktid() + "(;;,;;)";
-        str = str + "(;;2#4#1#1#8#0#;;)" + this.getUrl() + "(;;2#4#1#1#8#0#;;)" +"(;;,;;)";
+        str = str + "(;;2#4#1#1#8#0#;;)" + this.getPath() + "(;;2#4#1#1#8#0#;;)" +"(;;,;;)";
         str = str + "(;;2#4#1#1#8#0#;;)" + DateConverter.getSQLDateString(this.getDatum())+ "(;;2#4#1#1#8#0#;;)" ;
         return str;
     }
@@ -104,12 +123,12 @@ public class ProductImage extends mp3.classes.layer.Things implements mp4.datenb
         this.isSaved = false;
     }
 
-    public URI getUrl() {
-        return Url;
+    public String getPath() {
+        return Path;
     }
 
-    public void setUrl(URI Url) {
-        this.Url = Url;
+    public void setUrl(String Url) {
+        this.Path = Url;
         this.isSaved = false;
     }
 
@@ -124,11 +143,11 @@ public class ProductImage extends mp3.classes.layer.Things implements mp4.datenb
     
     public ImageIcon getImageIcon(){
         try {
-            if(getUrl()!=null) {
-                return new ImageIcon(getUrl().toURL());
+            if(getPath()!=null) {
+                return new ImageIcon(getPath());
             }
             
-        } catch (MalformedURLException ex) {
+        } catch (Exception ex) {
             Popup.error(ex.getMessage(), "Das Bild konnte nicht geladen werden.");
         }
         return new javax.swing.ImageIcon(this.getClass().getResource("/bilder/medium/messagebox_warning.png"));

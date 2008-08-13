@@ -25,7 +25,7 @@ import mp3.classes.layer.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
 //import mp3.classes.objects.ungrouped.History;
 //import mp3.classes.objects.ungrouped.MyData;
-import mp3.classes.utils.DirectoryHandler;
+import mp4.utils.files.FileDirectoryHandler;
 import mp3.classes.utils.Formater;
 import mp3.classes.utils.UnZip;
 import mp3.classes.utils.Zip;
@@ -337,7 +337,7 @@ public class backupView extends javax.swing.JPanel{
                     store = path.getCanonicalPath() + File.separator + Constants.DATABASENAME;
                     Log.Debug("Zurückspielen einer Sicherungsdatei:\nZiel: " + store, true);
 
-                    DirectoryHandler.deleteTree(olddb);
+                    FileDirectoryHandler.deleteTree(olddb);
 //                int z =path.getCanonicalPath().lastIndexOf(File.separator);
 //                store =store.substring(0, z);
                     Log.Debug("Rücksichern nach: " + store, true);

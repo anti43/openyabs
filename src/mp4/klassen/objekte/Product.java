@@ -16,6 +16,8 @@
  */
 package mp4.klassen.objekte;
 
+import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -53,6 +55,7 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
     private Lieferant lieferant;
     
     private ProductImage image = new ProductImage();
+    private URL ProductImageURL = null;
 
     public Integer getId() {
         return id;
@@ -103,14 +106,29 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
        if (!this.getHerstellerId().equals(0)) {
             this.hersteller = new Hersteller(this.getHerstellerId());
         }
-        
+
         this.isvalid = true;
         this.query = ConnectionHandler.instanceOf();
+        
+        fetchImage();
 
     }
 
+    public void setTaxID(int taxID) {
+       this.setSteuersatzId(taxID);
+    }
+
+    private ProductImage fetchImage() {
+       this.image = new ProductImage().searchImage(this.getId());
+       return image;
+    }
+
     public ProductImage getImage() {
-        return this.image;
+       return image;
+    }
+    
+    public String getImagePath() {
+        return this.image.getPath();
     }
 
       public boolean isValid() {

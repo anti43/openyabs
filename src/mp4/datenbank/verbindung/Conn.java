@@ -26,7 +26,6 @@ import mp3.classes.utils.Log;
 import mp3.classes.utils.SplashScreen;
 import mp4.datenbank.struktur.Installation;
 
-
 /**
  *
  * @author anti43
@@ -112,6 +111,7 @@ public class Conn implements Strings {
 
 
 //        tablesCreated = this.query(Structure.tables);
+
         tablesCreated = this.query(Installation.SQL_COMMAND);
 
         Conn.reboot();
@@ -311,7 +311,7 @@ public class Conn implements Strings {
 
             statement = conn.createStatement();
             for (int i = 0; i < querys.length; i++) {
-
+                Log.Debug(querys[i]);
                 statement.execute(querys[i]);
 
             }

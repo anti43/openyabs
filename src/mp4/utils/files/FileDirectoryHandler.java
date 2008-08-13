@@ -2,20 +2,25 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package mp3.classes.utils;
+package mp4.utils.files;
 
 /**
  *
  * @author Galileo Computing
  */
+import java.net.URISyntaxException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import mp3.classes.utils.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
 
-public class DirectoryHandler {
+public class FileDirectoryHandler {
 
     public static void deleteTree(File path) throws IOException {
         for (File file : path.listFiles()) {
@@ -29,25 +34,30 @@ public class DirectoryHandler {
         path.delete();
     }
 
-   
-      public static void copyDirectory(File sourceLocation , File targetLocation)
-    throws IOException {
-        
+    /**
+     * 
+     * @param sourceLocation
+     * @param targetLocation
+     * @throws java.io.IOException
+     */
+    public static void copyDirectory(File sourceLocation, File targetLocation)
+            throws IOException {
+
         if (sourceLocation.isDirectory()) {
             if (!targetLocation.exists()) {
                 targetLocation.mkdir();
             }
-            
+
             String[] children = sourceLocation.list();
-            for (int i=0; i<children.length; i++) {
+            for (int i = 0; i < children.length; i++) {
                 copyDirectory(new File(sourceLocation, children[i]),
                         new File(targetLocation, children[i]));
             }
         } else {
-            
+
             InputStream in = new FileInputStream(sourceLocation);
             OutputStream out = new FileOutputStream(targetLocation);
-            
+
             // Copy the bits from instream to outstream
             byte[] buf = new byte[1024];
             int len;
@@ -57,9 +67,28 @@ public class DirectoryHandler {
             in.close();
             out.close();
         }
+      
     }
 
+    public static String copyFile(File sourceFile, File targetDirectory, String targetFilename)
+            throws IOException {
+
+            InputStream in = new FileInputStream(sourceFile);
+            OutputStream out = new FileOutputStream(targetDirectory + File.separator + targetFilename);
+
+            // Copy the bits from instream to outstream
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = in.read(buf)) > 0) {
+                out.write(buf, 0, len);
+            }
+            in.close();
+            out.close();
+       
+            return targetDirectory + File.separator + targetFilename;
+   
     }
+}
     
 
 

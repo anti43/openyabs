@@ -21,6 +21,7 @@
  */
 package mp3.installer;
 
+
 import mp4.datenbank.verbindung.Conn;
 import java.io.IOException;
 import java.awt.Cursor;
@@ -32,7 +33,7 @@ import mp3.classes.interfaces.Strings;
 import mp4.utils.windows.Position;
 import mp3.classes.layer.Popup;
 import mp3.classes.utils.DesktopIcon;
-import mp3.classes.utils.DirectoryHandler;
+import mp4.utils.files.FileDirectoryHandler;
 import mp3.classes.utils.JarFinder;
 import mp3.classes.utils.Log;
 import mp4.frames.license;
@@ -42,40 +43,112 @@ import mp4.main.Main;
  * @author  anti43
  */
 public class MpInstaller extends javax.swing.JFrame implements ProtectedStrings, Strings {
+    private static MpInstaller instance;
+
+    /**
+     * 
+     * @return
+     */
+    public static MpInstaller instanceOf() {
+        if(instance == null) {
+            return new MpInstaller(true);
+        }
+        else {
+            return instance;
+        }
+    }
 
     private String url;
     private String workdir;
     private File pdf_root_dir;
     private File backup_dir;
     private File public_dir;
-    private  JFileChooser fc;
+    private JFileChooser fc;
+    private File lib_dir;
+    private File install_lib_dir;
+    private File install_templates_dir;
+    private File pdf_offer_dir;
+    private File pdf_bill_dir;
+    private File pdf_mahnung_dir;
+    private File templates_dir;
+    private File cache_dir;
 
-    /** Creates new form mpInstaller */
+    /** Creates new form mpInstaller
+     */
     public MpInstaller() {
+       
+        instance = this;
         initComponents();
+        
+        try {
+            buildPath();
+        } catch (IOException ex) {
+            Log.Debug(ex);
+        }
 
         fc = new JFileChooser();
         fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         fc.setSelectedFile(new File(USER_HOME));
-
-        try {
-            public_dir = new File(USER_HOME + SEP + PROG_NAME);
-            backuppathtf.setText(public_dir.getCanonicalPath() + File.separator + BACKUPS_SAVE_DIR);
-            pdfpathtf.setText(public_dir.getCanonicalPath() + File.separator + PDF);
-        } catch (IOException iOException) {
-            backuppathtf.setText(USER_HOME);
-            pdfpathtf.setText(USER_HOME);
-        }
 
         new Position(this);
         this.setVisible(true);
         Log.Debug(JAVA_VERSION);
     }
 
+    public MpInstaller(boolean silent) {
+        try {
+            buildPath();
+        } catch (IOException ex) {
+            Log.Debug(ex);
+        }
+    }
+
+
+    private void buildPath() throws IOException {
+        try {
+            public_dir = new File(USER_HOME + SEP + PROG_NAME);
+            backuppathtf.setText(getPublic_dir().getCanonicalPath() + File.separator + BACKUPS_SAVE_DIR);
+            pdfpathtf.setText(getPublic_dir().getCanonicalPath() + File.separator + PDF);
+        } catch (IOException iOException) {
+            backuppathtf.setText(USER_HOME);
+            pdfpathtf.setText(USER_HOME);
+        }
+
+
+        lib_dir = new File(getPublic_dir().getCanonicalPath() + File.separator + LIB_DIR);
+        install_lib_dir = new File(workdir + SEP + LIB_DIR);
+        install_templates_dir = new File(workdir + SEP + TEMPLATES_DIR);
+        cache_dir = new File(workdir + SEP + CACHE_DIR);
+
+        if (Main.BACKUP_DIR == null) {
+            backup_dir = new File(this.backuppathtf.getText());
+        } else {
+            backup_dir = new File(Main.PDFDIR);
+        }
+
+
+        if (Main.TEMPLATEDIR == null) {
+            templates_dir = new File(getPublic_dir().getCanonicalPath() + File.separator + TEMPLATES_DIR);
+        } else {
+            templates_dir = new File(Main.PDFDIR);
+        }
+
+
+        if (Main.PDFDIR == null) {
+            pdf_root_dir = new File(this.pdfpathtf.getText());
+        } else {
+            pdf_root_dir = new File(Main.PDFDIR);
+        }
+
+        pdf_offer_dir = new File(getPdf_root_dir().getCanonicalPath() + File.separator + OFFER_SAVE_DIR);
+        pdf_bill_dir = new File(getPdf_root_dir().getCanonicalPath() + File.separator + BILL_SAVE_DIR);
+        pdf_mahnung_dir = new File(getPdf_root_dir().getCanonicalPath() + File.separator + ARREAR_SAVE_DIR);
+    }
+
     private void deleteFiles() {
         try {
             File fil = new File(workdir);
-            DirectoryHandler.deleteTree(fil);
+            FileDirectoryHandler.deleteTree(fil);
         } catch (IOException ex) {
         }
     }
@@ -304,54 +377,23 @@ pack();
         workdir = JarFinder.getPathOfJar(JAR_NAME);
         System.out.println("Workdir: " + workdir);
 
-        File lib_dir = new File(public_dir.getCanonicalPath() + File.separator + LIB_DIR);
-
-        File install_lib_dir = new File(workdir + SEP + LIB_DIR);
-        File install_templates_dir = new File(workdir + SEP + TEMPLATES_DIR);
-
-
-        if (Main.BACKUP_DIR == null) {
-            backup_dir = new File(this.backuppathtf.getText());
-        } else {
-            backup_dir = new File(Main.PDFDIR);
-        }
-
-        File templates_dir = null;
-        if (Main.TEMPLATEDIR == null) {
-            templates_dir = new File(public_dir.getCanonicalPath() + File.separator + TEMPLATES_DIR);
-        } else {
-            templates_dir = new File(Main.PDFDIR);
-        }
-
-
-        if (Main.PDFDIR == null) {
-            pdf_root_dir = new File(this.pdfpathtf.getText());
-        } else {
-            pdf_root_dir = new File(Main.PDFDIR);
-        }
-
-        File pdf_offer_dir = new File(pdf_root_dir.getCanonicalPath() + File.separator + OFFER_SAVE_DIR);
-        File pdf_bill_dir = new File(pdf_root_dir.getCanonicalPath() + File.separator + BILL_SAVE_DIR);
-        File pdf_mahnung_dir = new File(pdf_root_dir.getCanonicalPath() + File.separator + ARREAR_SAVE_DIR);
-
-
-        if (!public_dir.exists() && install_lib_dir.exists()) {
-            if (public_dir.mkdirs()) {
+        if (!public_dir.exists() && getInstall_lib_dir().exists()) {
+            if (getPublic_dir().mkdirs()) {
                 try {
                     if (!Main.FORCE_NO_FILE_COPY) {
                         Log.Debug("Libraries kopieren..", true);
-                        DirectoryHandler.copyDirectory(install_lib_dir, lib_dir);
+                        FileDirectoryHandler.copyDirectory(getInstall_lib_dir(), getLib_dir());
                         Log.Debug("MP Jar kopieren..", true);
-                        DirectoryHandler.copyDirectory(new File(workdir + File.separator + ProtectedStrings.JAR_NAME), new File(public_dir.getAbsolutePath() + File.separator + ProtectedStrings.JAR_NAME));
+                        FileDirectoryHandler.copyDirectory(new File(workdir + File.separator + ProtectedStrings.JAR_NAME), new File(getPublic_dir().getAbsolutePath() + File.separator + ProtectedStrings.JAR_NAME));
                     }
 
                     Log.Debug("Verzeichnisse anlegen..", true);
-                    if (templates_dir.mkdirs() && backup_dir.mkdirs() && pdf_root_dir.mkdirs() && pdf_bill_dir.mkdirs() && pdf_offer_dir.mkdirs() && pdf_mahnung_dir.mkdirs()) {
+                    if (getTemplates_dir().mkdirs() && getBackup_dir().mkdirs() && getPdf_root_dir().mkdirs() && getPdf_bill_dir().mkdirs() && getPdf_offer_dir().mkdirs() && getPdf_mahnung_dir().mkdirs()) {
                         Log.Debug("Erfolgreich!", true);
                     }
 
                     Log.Debug("Templates kopieren..", true);
-                    DirectoryHandler.copyDirectory(install_templates_dir, templates_dir);
+                    FileDirectoryHandler.copyDirectory(getInstall_templates_dir(), getTemplates_dir());
                     Log.Debug("Installation abgeschlossen.", true);
 
                 } catch (IOException ex) {
@@ -463,5 +505,49 @@ javax.swing.JTextField pdfpathtf;
             return Conn.isTablesCreated();
         }
         return false;
+    }
+
+    public File getPdf_root_dir() {
+        return pdf_root_dir;
+    }
+
+    public File getBackup_dir() {
+        return backup_dir;
+    }
+
+    public File getPublic_dir() {
+        return public_dir;
+    }
+
+    public File getLib_dir() {
+        return lib_dir;
+    }
+
+    public File getInstall_lib_dir() {
+        return install_lib_dir;
+    }
+
+    public File getInstall_templates_dir() {
+        return install_templates_dir;
+    }
+
+    public File getPdf_offer_dir() {
+        return pdf_offer_dir;
+    }
+
+    public File getPdf_bill_dir() {
+        return pdf_bill_dir;
+    }
+
+    public File getPdf_mahnung_dir() {
+        return pdf_mahnung_dir;
+    }
+
+    public File getTemplates_dir() {
+        return templates_dir;
+    }
+
+    public File getCache_dir() {
+        return cache_dir;
     }
 }

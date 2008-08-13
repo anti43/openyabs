@@ -135,8 +135,7 @@ public interface Installation {
         "produktnummer VARCHAR(500),name VARCHAR(50),text VARCHAR(500),vk DOUBLE DEFAULT 0,ek DOUBLE DEFAULT 0, steuersatzid INTEGER REFERENCES steuersaetze (id)," +
         "herstellerid INTEGER REFERENCES hersteller(id), lieferantenid INTEGER REFERENCES lieferanten (id)," +
         "warengruppenid INTEGER DEFAULT 0," + "datum DATE NOT NULL," + "url VARCHAR(250) default NULL," +
-        "ean VARCHAR(25)," +
-        "bilder VARCHAR(1250),"  +      
+        "ean VARCHAR(25)," + 
         "deleted INTEGER DEFAULT 0," +
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
         
@@ -199,12 +198,14 @@ public interface Installation {
         "betreffzid INTEGER REFERENCES rechnungbetreffz (id)," +
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
         
-        
+//        ******************************************************************************************************************************
         
         "INSERT INTO steuersaetze (name, wert) VALUES ('Default', 0.0)",
         "INSERT INTO hersteller (herstellernummer, name, firma) VALUES ('1000', 'Default', 'Default')",
         "INSERT INTO lieferanten (lieferantennummer, name, firma) VALUES ('1000', 'Default', 'Default')",
 
+//        *****************************************Programmdatenb*************************************************************************************        
+        
         "INSERT INTO programmdaten(name, wert) VALUES ('MAHNUNG_TEXT_DEFAULT',  'Sehr geehrter {KUNDE_ANREDE} {KUNDE_VORNAME} {KUNDE_NAME},\nin Bezug auf unsere Rechnung Nr. "+ 
         "{RECHNUNG_NUMMER} vom {RECHNUNG_DATUM} mussten wir heute feststellen, dass " +
                 "Ihre Zahlung bei uns leider noch nicht eingegangen ist.\n\n" +
@@ -214,9 +215,12 @@ public interface Installation {
                 "in Verbindung. Möglicherweise konnten wir Ihre Zahlung nicht zuordnen, " +
                 "weil z.B. der Verwendungszweck nicht korrekt angegeben wurde.\n\nMit freundlichen Grüßen\n\n')",
         "INSERT INTO programmdaten(name, wert) VALUES ('RECHNUNG_NUMMER_FORMAT',  '{JAHR}-{MONAT_NAME}-&!00000&!2')",
-        "INSERT INTO programmdaten(name, wert) VALUES ('ANGEBOT_NUMMER_FORMAT',  '{JAHR}-{MONAT_NAME}-&!00000&!2')",
-       
+        "INSERT INTO programmdaten(name, wert) VALUES ('ANGEBOT_NUMMER_FORMAT',  '{JAHR}-{MONAT_NAME}-&!00000&!2')", 
         "INSERT INTO programmdaten(name, wert) VALUES ('MAINFRAME_WINDOW_STATE',  '790,1000')",    
+        "INSERT INTO programmdaten(name, wert) VALUES ('MAINFRAME_WINDOW_STATE',  '790,1000')",  
+        
+//        ******************************************************************************************************************************        
+        
         
         "INSERT INTO benutzer(username, password, createdon, createdby, iseditor, isadmin) VALUES ('admin',  '2CB336AE1494258BCD5DFD35C698EDB1','"+DateConverter.getSQLDateString(new Date())+"', 'Niemand' , 1, 1)",       
             

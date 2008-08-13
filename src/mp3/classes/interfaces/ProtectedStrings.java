@@ -35,6 +35,7 @@ public interface ProtectedStrings {
     public String LIB_DIR = "lib";
     public String PDF = "PDF";
     public String OFFER_SAVE_DIR = "Angebote";
+    public String CACHE_DIR = "Cache";
     public String BILL_SAVE_DIR = "Rechnungen";
     public String ARREAR_SAVE_DIR = "Mahnungen";
     public String BACKUPS_SAVE_DIR =  "backups";
