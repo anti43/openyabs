@@ -513,7 +513,11 @@
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JTextField" name="jTextField4">
+                      <Properties>
+                        <Property name="editable" type="boolean" value="false"/>
+                      </Properties>
                       <Events>
+                        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jTextField4MouseClicked"/>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextField4ActionPerformed"/>
                       </Events>
                     </Component>
@@ -912,12 +916,12 @@
                             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                               <Color blue="dc" green="e6" red="e6" type="rgb"/>
                             </Property>
+                            <Property name="horizontalAlignment" type="int" value="0"/>
                             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                               <Border info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
                                 <EtchetBorder/>
                               </Border>
                             </Property>
-                            <Property name="opaque" type="boolean" value="true"/>
                           </Properties>
                         </Component>
                       </SubComponents>
