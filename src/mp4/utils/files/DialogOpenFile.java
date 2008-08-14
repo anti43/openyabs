@@ -29,6 +29,7 @@ import mp3.classes.utils.Log;
 public class DialogOpenFile extends JFileChooser {
 
     private static final long serialVersionUID = 1L;
+    private File file = null ;
 
     public DialogOpenFile(int mode) {
         super();
@@ -36,10 +37,15 @@ public class DialogOpenFile extends JFileChooser {
         this.setSelectedFile(new File(""));
     }
 
-    public boolean getFile(JTextField field) {
+    public File getFile() {
+        return file;
+    }
+
+    public boolean getFilePath(JTextField field) {
         if (this.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
             try {
                 field.setText(this.getSelectedFile().getCanonicalPath());
+                this.file = this.getSelectedFile();
                 return true;
             } catch (IOException ex) {
                 Log.Debug(ex);

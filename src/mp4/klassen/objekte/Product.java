@@ -127,8 +127,8 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
        return image;
     }
     
-    public String getImagePath() {
-        return this.image.getPath();
+    public URI getImagePath() {
+        return this.image.getURI();
     }
 
       public boolean isValid() {

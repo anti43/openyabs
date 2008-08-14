@@ -16,15 +16,12 @@
  */
 package mp4.klassen.objekte;
 
-import java.awt.Image;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
-import mp4.datenbank.verbindung.Query;
 
 import mp3.classes.layer.Popup;
 import mp3.classes.utils.Log;
@@ -72,7 +69,7 @@ public class ProductImage extends mp3.classes.layer.Things implements mp4.datenb
            image = new ProductImage();
            image.setProduktid(Integer.valueOf(data[1]));
             try {
-                image.setUrl(data[1]);
+                image.setUrl(new URI(data[1]));
             } catch (Exception ex) {
                 image.setUrl(null);
                 Log.Debug(ex);
@@ -82,10 +79,20 @@ public class ProductImage extends mp3.classes.layer.Things implements mp4.datenb
         return image;
     }
 
+    public URI getURI() {
+        try {
+            return new URI(Path);
+        } catch (URISyntaxException ex) {
+            Log.Debug(ex);
+            return null;
+        }
+    }
+
+  
     private void explode(String[] select) {
         try {
             this.setProduktid(Integer.valueOf(select[1]));
-            this.setUrl(select[2]);
+            this.setUrl(new URI(select[2]));
             this.setDatum(DateConverter.getDate(select[3]));
         } catch (Exception ex) {
             Log.Debug(ex);
@@ -106,12 +113,8 @@ public class ProductImage extends mp3.classes.layer.Things implements mp4.datenb
             this.update(TABLE_PRODUCTS_FILES_FIELDS, this.collect(), id.toString());
             isSaved = true;
         } else if (id == 0) {
-            this.insert(TABLE_PRODUCTS_FILES_FIELDS, this.collect());
-        } else {
-
-            mp3.classes.layer.Popup.warn(java.util.ResourceBundle.getBundle("languages/Bundle").getString("no_data_to_save"), Popup.WARN);
-
-        }
+            this.id = this.insert(TABLE_PRODUCTS_FILES_FIELDS, this.collect());
+        } 
     }
 
     public Integer getProduktid() {
@@ -127,8 +130,8 @@ public class ProductImage extends mp3.classes.layer.Things implements mp4.datenb
         return Path;
     }
 
-    public void setUrl(String Url) {
-        this.Path = Url;
+    public void setUrl(URI ImageURI) {
+        this.Path = ImageURI.toString();
         this.isSaved = false;
     }
 

@@ -5,9 +5,6 @@
  */
 package mp4.panels;
 
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mp3.classes.visual.sub.*;
 import mp3.classes.layer.People;
 import mp4.klassen.objekte.Product;
@@ -18,6 +15,7 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.File;
 import java.net.URI;
+import java.net.URL;
 import java.util.Date;
 import javax.swing.*;
 import javax.swing.SwingWorker;
@@ -60,7 +58,7 @@ public class productsView extends javax.swing.JPanel implements mp4.datenbank.st
     private boolean autoProductNumber = true;//settings?
     private Integer currentProductGroupId = 0;
     private boolean edited = false;
-    private String currentImageURI;
+    private URI currentImageURI;
     private int taxID = 0;
 
     /** Creates new form customers
@@ -99,13 +97,11 @@ public class productsView extends javax.swing.JPanel implements mp4.datenbank.st
         return current;
     }
 
-    void setCurrentImage(String coverImg) {
-        try {
-            this.currentImageURI = new String(coverImg.replace(" ", "%20"));
-        } catch (Exception ex) {
-            Log.Debug(ex);
-        }
+    void setCurrentImage(File file) {
+        this.currentImageURI = file.toURI();
     }
+
+
 
     private void clear() {
         for (int i = 0; i < this.getComponents().length; i++) {
@@ -114,15 +110,16 @@ public class productsView extends javax.swing.JPanel implements mp4.datenbank.st
 
     private void copyImage() {
         ProductImage image;
+        File f = new File(currentImageURI);
         try {
-            currentImageURI = FileDirectoryHandler.copyFile(new File(currentImageURI),
-                    new File(Programmdaten.instanceOf().getIMAGE_CACHE_FOLDER()), new RandomText().getString());
+            currentImageURI = FileDirectoryHandler.copyFile(f,
+                    new File(Programmdaten.instanceOf().getIMAGE_CACHE_FOLDER()), new RandomText().getString() + f.getName() );
             image = new ProductImage();
             image.setDatum(new Date());
             image.setProduktid(current.getId());
             image.setUrl(currentImageURI);
         } catch (Exception ex) {
-            Log.Debug(ex.getMessage());
+            Log.Debug("CopyImage:"+ex.getMessage());
         }
     }
 
@@ -1227,8 +1224,8 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         dialog = new DialogOpenFile(DialogOpenFile.FILES_ONLY);
     }
 
-    if (dialog.getFile(jTextField11)) {
-        new GetAnyImage(this, jTextField11.getText()).execute();
+    if (dialog.getFilePath(jTextField11)) {
+        new GetAnyImage(this,dialog.getFile()).execute();
     }
     setEdited(true);
 }//GEN-LAST:event_jButton1ActionPerformed
@@ -1554,11 +1551,11 @@ class GetProductImage extends SwingWorker<Void, Void> {
 class GetAnyImage extends SwingWorker<Void, Void> {
 
     private productsView view;
-    private String path;
+    private File file;
 
-    public GetAnyImage(productsView view, String path) {
+    public GetAnyImage(productsView view, File file) {
         this.view = view;
-        this.path = path;
+        this.file =file;
     }
 
     public Void doInBackground() {
@@ -1567,12 +1564,12 @@ class GetAnyImage extends SwingWorker<Void, Void> {
 
         view.imgLabel.setCursor(new Cursor(Cursor.WAIT_CURSOR));
         try {
-            coverImg = Toolkit.getDefaultToolkit().createImage(path);
+            coverImg = Toolkit.getDefaultToolkit().createImage(file.getCanonicalPath());
 //            Image smallCoverImg = coverImg.getScaledInstance(view.jLabel13.getWidth()-3, view.jLabel13.getHeight()-3, java.awt.Image.SCALE_FAST);
             ImageIcon coverImgIcon = new ImageIcon(coverImg);
             view.imgLabel.setSize(new Dimension(coverImgIcon.getIconWidth(), coverImgIcon.getIconHeight()));
             view.imgLabel.setIcon(coverImgIcon);
-            view.setCurrentImage(path);
+            view.setCurrentImage(file);
         } catch (Exception ex) {
             view.imgLabel.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
             Log.Debug(ex);

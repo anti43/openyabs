@@ -70,7 +70,7 @@ public class FileDirectoryHandler {
       
     }
 
-    public static String copyFile(File sourceFile, File targetDirectory, String targetFilename)
+    public static URI copyFile(File sourceFile, File targetDirectory, String targetFilename)
             throws IOException {
 
             InputStream in = new FileInputStream(sourceFile);
@@ -85,7 +85,8 @@ public class FileDirectoryHandler {
             in.close();
             out.close();
        
-            return targetDirectory + File.separator + targetFilename;
+            return new File(targetDirectory + File.separator + targetFilename).toURI();
+            
    
     }
 }

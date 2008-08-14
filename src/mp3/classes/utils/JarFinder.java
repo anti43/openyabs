@@ -16,7 +16,6 @@
  *  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  *  
  */
-
 package mp3.classes.utils;
 
 import java.util.StringTokenizer;
@@ -26,13 +25,14 @@ import java.util.StringTokenizer;
  * @author anti43
  */
 public class JarFinder {
-   public static String getPathOfJar(String nameOfJar) throws Exception {
+
+    public static String getPathOfJar(String nameOfJar) throws Exception {
         //System.setProperties("java.class.path");
         StringTokenizer st = new StringTokenizer(System.getProperty("java.class.path"), System.getProperty("path.separator"));
         String jarfile = "";
         System.out.println(System.getProperty("java.class.path"));
         while (st.hasMoreTokens()) {
-            
+
             String token = st.nextToken();
             if (token.indexOf(nameOfJar) > -1) {
                 jarfile = token;
@@ -40,10 +40,11 @@ public class JarFinder {
             }
         }
         if (jarfile.equals("")) {
-            throw new Exception("Jar not found in classpath");
+            System.err.println("Jar not found in classpath");
+        } else {
+            String path = jarfile.substring(0, jarfile.indexOf(nameOfJar));
+            return path;
         }
-        String path = jarfile.substring(0, jarfile.indexOf(nameOfJar));
-        return path;
+        return null;
     }
-
 }

@@ -21,7 +21,8 @@
  */
 package mp3.installer;
 
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mp4.datenbank.verbindung.Conn;
 import java.io.IOException;
 import java.awt.Cursor;
@@ -43,6 +44,7 @@ import mp4.main.Main;
  * @author  anti43
  */
 public class MpInstaller extends javax.swing.JFrame implements ProtectedStrings, Strings {
+
     private static MpInstaller instance;
 
     /**
@@ -50,14 +52,12 @@ public class MpInstaller extends javax.swing.JFrame implements ProtectedStrings,
      * @return
      */
     public static MpInstaller instanceOf() {
-        if(instance == null) {
+        if (instance == null) {
             return new MpInstaller(true);
-        }
-        else {
+        } else {
             return instance;
         }
     }
-
     private String url;
     private String workdir;
     private File pdf_root_dir;
@@ -72,16 +72,28 @@ public class MpInstaller extends javax.swing.JFrame implements ProtectedStrings,
     private File pdf_mahnung_dir;
     private File templates_dir;
     private File cache_dir;
-
+//    
+//    private String pdf_root_dirPATH;
+//    private String backup_dirPATH;
+//    private String public_dirPATH;
+//    private String lib_dirPATH;
+//    private String install_lib_dirPATH;
+//    private String install_templates_dirPATH;
+//    private String pdf_offer_dirPATH;
+//    private String pdf_bill_dirPATH;
+//    private String pdf_mahnung_dirPATH;
+//    private String templates_dirPATH;
+//    private String cache_dirPATH;
     /** Creates new form mpInstaller
      */
     public MpInstaller() {
-       
+
         instance = this;
         initComponents();
         
         try {
             buildPath();
+            
         } catch (IOException ex) {
             Log.Debug(ex);
         }
@@ -98,18 +110,25 @@ public class MpInstaller extends javax.swing.JFrame implements ProtectedStrings,
     public MpInstaller(boolean silent) {
         try {
             buildPath();
+            createDirs();
         } catch (IOException ex) {
             Log.Debug(ex);
         }
     }
 
-
     private void buildPath() throws IOException {
+        try {
+            workdir = JarFinder.getPathOfJar(JAR_NAME);
+        } catch (Exception ex) {
+            Log.Debug(ex);
+        }
+        System.out.println("Workdir: " + workdir);
+        
         try {
             public_dir = new File(USER_HOME + SEP + PROG_NAME);
             backuppathtf.setText(getPublic_dir().getCanonicalPath() + File.separator + BACKUPS_SAVE_DIR);
             pdfpathtf.setText(getPublic_dir().getCanonicalPath() + File.separator + PDF);
-        } catch (IOException iOException) {
+        } catch (Exception iOException) {
             backuppathtf.setText(USER_HOME);
             pdfpathtf.setText(USER_HOME);
         }
@@ -118,7 +137,7 @@ public class MpInstaller extends javax.swing.JFrame implements ProtectedStrings,
         lib_dir = new File(getPublic_dir().getCanonicalPath() + File.separator + LIB_DIR);
         install_lib_dir = new File(workdir + SEP + LIB_DIR);
         install_templates_dir = new File(workdir + SEP + TEMPLATES_DIR);
-        cache_dir = new File(workdir + SEP + CACHE_DIR);
+        cache_dir = new File(DBROOTDIR + SEP + CACHE_DIR);
 
         if (Main.BACKUP_DIR == null) {
             backup_dir = new File(this.backuppathtf.getText());
@@ -143,6 +162,13 @@ public class MpInstaller extends javax.swing.JFrame implements ProtectedStrings,
         pdf_offer_dir = new File(getPdf_root_dir().getCanonicalPath() + File.separator + OFFER_SAVE_DIR);
         pdf_bill_dir = new File(getPdf_root_dir().getCanonicalPath() + File.separator + BILL_SAVE_DIR);
         pdf_mahnung_dir = new File(getPdf_root_dir().getCanonicalPath() + File.separator + ARREAR_SAVE_DIR);
+    }
+
+    private void createDirs() {
+        Log.Debug("Verzeichnisse anlegen..", true);
+        if (getTemplates_dir().mkdirs() && getBackup_dir().mkdirs() && getPdf_root_dir().mkdirs() && getPdf_bill_dir().mkdirs() && getPdf_offer_dir().mkdirs() && getPdf_mahnung_dir().mkdirs() && getCache_dir().mkdirs()) {
+            Log.Debug("Erfolgreich!", true);
+        }
     }
 
     private void deleteFiles() {
@@ -374,22 +400,15 @@ pack();
 
     public void copyFiles() throws Exception {
 
-        workdir = JarFinder.getPathOfJar(JAR_NAME);
-        System.out.println("Workdir: " + workdir);
-
         if (!public_dir.exists() && getInstall_lib_dir().exists()) {
             if (getPublic_dir().mkdirs()) {
                 try {
+
                     if (!Main.FORCE_NO_FILE_COPY) {
                         Log.Debug("Libraries kopieren..", true);
                         FileDirectoryHandler.copyDirectory(getInstall_lib_dir(), getLib_dir());
                         Log.Debug("MP Jar kopieren..", true);
                         FileDirectoryHandler.copyDirectory(new File(workdir + File.separator + ProtectedStrings.JAR_NAME), new File(getPublic_dir().getAbsolutePath() + File.separator + ProtectedStrings.JAR_NAME));
-                    }
-
-                    Log.Debug("Verzeichnisse anlegen..", true);
-                    if (getTemplates_dir().mkdirs() && getBackup_dir().mkdirs() && getPdf_root_dir().mkdirs() && getPdf_bill_dir().mkdirs() && getPdf_offer_dir().mkdirs() && getPdf_mahnung_dir().mkdirs()) {
-                        Log.Debug("Erfolgreich!", true);
                     }
 
                     Log.Debug("Templates kopieren..", true);
@@ -417,6 +436,9 @@ pack();
     }
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+      
+        createDirs();
+        
         if (jCheckBox2.isSelected()) {
             try {
                 this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
@@ -549,5 +571,49 @@ javax.swing.JTextField pdfpathtf;
 
     public File getCache_dir() {
         return cache_dir;
+    }
+
+    public String getPathpdf_root_dir() {
+        return pdf_root_dir.getPath();
+    }
+
+    public String getPathbackup_dir() {
+        return backup_dir.getPath();
+    }
+
+    public String getPathpublic_dir() {
+        return public_dir.getPath();
+    }
+
+    public String getPathlib_dir() {
+        return lib_dir.getPath();
+    }
+
+    public String getPathinstall_lib_dir() {
+        return install_lib_dir.getPath();
+    }
+
+    public String getPathinstall_templates_dir() {
+        return install_templates_dir.getPath();
+    }
+
+    public String getPathpdf_offer_dir() {
+        return pdf_offer_dir.getPath();
+    }
+
+    public String getPathpdf_bill_dir() {
+        return pdf_bill_dir.getPath();
+    }
+
+    public String getPathpdf_mahnung_dir() {
+        return pdf_mahnung_dir.getPath();
+    }
+
+    public String getPathtemplates_dir() {
+        return templates_dir.getPath();
+    }
+
+    public String getPathcache_dir() {
+        return cache_dir.getPath();
     }
 }

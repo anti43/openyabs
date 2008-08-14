@@ -42,6 +42,7 @@ public interface ProtectedStrings {
     public String ICON_NAME_LIN = "mp.desktop";
     public String ICON_NAME_WIN = "Rechnungs-Kundenverwaltung.url";
     public String DESKTOP = "Desktop";
+    public String DBROOTDIR = System.getProperty("user.home") + File.separator + ".mp";
     
     public String[] KONTEN_GRUPPEN = new String[]{
             "1110 Waren, Rohstoffe und Hilfsstoffe einschl. der Nebenkosten",
