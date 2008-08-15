@@ -40,6 +40,22 @@ public class Programmdaten implements mp4.datenbank.struktur.Tabellen {
 
     }
 
+    public Integer getPRODUCTPANEL_CHECKBOX_SCALEIMAGE_SIZE() {
+         return handler.getInteger("PRODUCTPANEL_CHECKBOX_SCALEIMAGE_SIZE");
+    }
+
+    public boolean getPRODUCTPANEL_CHECKBOX_SCALEIMAGE_state() {
+        return handler.getBoolean("PRODUCTPANEL_CHECKBOX_SCALEIMAGE");
+    }
+    
+    public void setPRODUCTPANEL_CHECKBOX_SCALEIMAGE(boolean PRODUCTPANEL_CHECKBOX_SCALEIMAGE) {
+        handler.setBoolean("PRODUCTPANEL_CHECKBOX_SCALEIMAGE", PRODUCTPANEL_CHECKBOX_SCALEIMAGE);
+    }
+
+    public void setPRODUCTPANEL_CHECKBOX_SCALEIMAGE_SIZE(Integer PRODUCTPANEL_CHECKBOX_SCALEIMAGE_SIZE) {
+        handler.setInteger("PRODUCTPANEL_CHECKBOX_SCALEIMAGE_SIZE", PRODUCTPANEL_CHECKBOX_SCALEIMAGE_SIZE);
+    }
+
     public boolean getUSE_AUTHENTIFICATION() {
         return handler.getBoolean("USE_AUTHENTIFICATION");
     }

@@ -59,7 +59,8 @@ public class productsView extends javax.swing.JPanel implements mp4.datenbank.st
     private Integer currentProductGroupId = 0;
     private boolean edited = false;
     private URI currentImageURI;
-    private int taxID = 0;
+    private int taxID = 1;
+    private DialogOpenFile dialog = null;
 
     /** Creates new form customers
      * @param frame 
@@ -87,6 +88,9 @@ public class productsView extends javax.swing.JPanel implements mp4.datenbank.st
 
         jTextField19.setInputVerifier(Formater.getDateInputVerfier(jTextField19));
         jTextField9.setInputVerifier(Formater.getDateInputVerfier(jTextField9));
+        
+        jCheckBox1.setSelected(Programmdaten.instanceOf().getPRODUCTPANEL_CHECKBOX_SCALEIMAGE_state());
+        jTextField23.setText(Programmdaten.instanceOf().getPRODUCTPANEL_CHECKBOX_SCALEIMAGE_SIZE().toString());
     }
 
     public Product getProduct() {
@@ -108,17 +112,19 @@ public class productsView extends javax.swing.JPanel implements mp4.datenbank.st
         }
     }
 
-    private void copyImage() {
-        ProductImage image;
+    private void copyImage(Product product) {
+        ProductImage image = new ProductImage();
         File f = new File(currentImageURI);
         try {
             currentImageURI = FileDirectoryHandler.copyFile(f,
                     new File(Programmdaten.instanceOf().getIMAGE_CACHE_FOLDER()), new RandomText().getString() + f.getName() );
-            image = new ProductImage();
+            Log.Debug("Image:"+currentImageURI);
             image.setDatum(new Date());
-            image.setProduktid(current.getId());
+            image.setProduktid(product.getId());
             image.setUrl(currentImageURI);
+            image.save();
         } catch (Exception ex) {
+            ex.printStackTrace();
             Log.Debug("CopyImage:"+ex.getMessage());
         }
     }
@@ -251,6 +257,8 @@ imgLabel = new javax.swing.JLabel();
 jLabel14 = new javax.swing.JLabel();
 jTextField11 = new javax.swing.JTextField();
 jButton1 = new javax.swing.JButton();
+jCheckBox1 = new javax.swing.JCheckBox();
+jTextField23 = new javax.swing.JTextField();
 jPanel11 = new javax.swing.JPanel();
 jLabel1 = new javax.swing.JLabel();
 jLabel12 = new javax.swing.JLabel();
@@ -384,7 +392,7 @@ javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
 jPanel1.setLayout(jPanel1Layout);
 jPanel1Layout.setHorizontalGroup(
 jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-.addComponent(jToolBar2, javax.swing.GroupLayout.DEFAULT_SIZE, 643, Short.MAX_VALUE)
+.addComponent(jToolBar2, javax.swing.GroupLayout.DEFAULT_SIZE, 690, Short.MAX_VALUE)
 );
 jPanel1Layout.setVerticalGroup(
 jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -770,12 +778,12 @@ jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 .addGap(4, 4, 4)
 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
-.addComponent(jTextField12, javax.swing.GroupLayout.DEFAULT_SIZE, 94, Short.MAX_VALUE)
+.addComponent(jTextField12, javax.swing.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE)
 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 .addComponent(jButton21, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
-.addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE)
-.addComponent(jTextField22, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE)
-.addComponent(jTextField13, javax.swing.GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE))
+.addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 176, Short.MAX_VALUE)
+.addComponent(jTextField22, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 176, Short.MAX_VALUE)
+.addComponent(jTextField13, javax.swing.GroupLayout.DEFAULT_SIZE, 176, Short.MAX_VALUE))
 .addContainerGap())
 );
 jPanel9Layout.setVerticalGroup(
@@ -813,12 +821,20 @@ jScrollPane2.setViewportView(imgLabel);
 
 jLabel14.setText("Bild");
 
+jTextField11.setMaximumSize(new java.awt.Dimension(35, 2147483647));
+
 jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/small/search.png"))); // NOI18N
 jButton1.addActionListener(new java.awt.event.ActionListener() {
 public void actionPerformed(java.awt.event.ActionEvent evt) {
 jButton1ActionPerformed(evt);
 }
 });
+
+jCheckBox1.setBackground(new java.awt.Color(227, 219, 202));
+jCheckBox1.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+jCheckBox1.setText("Beim Drucken skalieren auf (Breite):");
+
+jTextField23.setText("450");
 
 javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
 jPanel10.setLayout(jPanel10Layout);
@@ -827,26 +843,34 @@ jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
 .addContainerGap()
 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-.addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE)
+.addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE)
 .addGroup(jPanel10Layout.createSequentialGroup()
 .addComponent(jLabel14)
 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-.addComponent(jTextField11, javax.swing.GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
+.addComponent(jTextField11, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE)
 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-.addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
+.addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+.addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel10Layout.createSequentialGroup()
+.addComponent(jCheckBox1)
+.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+.addComponent(jTextField23, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)))
 .addContainerGap())
 );
 jPanel10Layout.setVerticalGroup(
 jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
 .addContainerGap()
-.addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
-.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+.addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE)
+.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-.addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+.addComponent(jCheckBox1)
+.addComponent(jTextField23, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+.addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+.addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
 .addComponent(jLabel14)
 .addComponent(jTextField11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-.addComponent(jButton1))
+.addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING))
 .addContainerGap())
 );
 
@@ -1026,7 +1050,7 @@ jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
 .addContainerGap()
 .addComponent(jButton6))
-.addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 642, Short.MAX_VALUE)
+.addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 689, Short.MAX_VALUE)
 );
 jPanel3Layout.setVerticalGroup(
 jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1043,7 +1067,7 @@ this.setLayout(layout);
 layout.setHorizontalGroup(
 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 .addComponent(jPanel1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-.addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 647, Short.MAX_VALUE)
+.addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 694, Short.MAX_VALUE)
 );
 layout.setVerticalGroup(
 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1194,7 +1218,14 @@ private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 }//GEN-LAST:event_jButton20ActionPerformed
 
 private void jButton18MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton18MouseClicked
-}//GEN-LAST:event_jButton18MouseClicked
+  try {//GEN-LAST:event_jButton18MouseClicked
+            Programmdaten.instanceOf().setPRODUCTPANEL_CHECKBOX_SCALEIMAGE(jCheckBox1.isSelected());
+            Programmdaten.instanceOf().setPRODUCTPANEL_CHECKBOX_SCALEIMAGE_SIZE(Integer.valueOf(jTextField23.getText()));
+        } catch (NumberFormatException numberFormatException) {
+            Log.Debug(numberFormatException);
+        }
+
+}                                      
 
 private void jTextField14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField14ActionPerformed
 // TODO add your handling code here:
@@ -1218,7 +1249,7 @@ private void jTextField22ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
 }//GEN-LAST:event_jTextField22ActionPerformed
 
 private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-    DialogOpenFile dialog = null;
+//    DialogOpenFile dialog = null;
 
     if (dialog == null) {
         dialog = new DialogOpenFile(DialogOpenFile.FILES_ONLY);
@@ -1248,6 +1279,7 @@ public javax.swing.JButton jButton4;
 public javax.swing.JButton jButton5;
 public javax.swing.JButton jButton6;
 public javax.swing.JButton jButton9;
+public javax.swing.JCheckBox jCheckBox1;
 public javax.swing.JEditorPane jEditorPane1;
 public javax.swing.JLabel jLabel1;
 public javax.swing.JLabel jLabel10;
@@ -1308,6 +1340,7 @@ public javax.swing.JTextField jTextField2;
 public javax.swing.JTextField jTextField20;
 public javax.swing.JTextField jTextField21;
 public javax.swing.JTextField jTextField22;
+public javax.swing.JTextField jTextField23;
 public javax.swing.JTextField jTextField3;
 public javax.swing.JTextField jTextField4;
 public javax.swing.JTextField jTextField5;
@@ -1367,15 +1400,17 @@ public javax.swing.JToolBar jToolBar2;
         product.setText(jEditorPane1.getText());
         product.setWarengruppenId(getCurrentProductGroup());
         product.save();
+        
+        if (currentImageURI!= null)copyImage(product);
+        
         setProduct(product);
-        copyImage();
 
         getMainframe().setMessage("Produkt Nummer " + product.getNummer() + " gespeichert.");
     }
 
     public void save() {
-        ProductImage image;
-        if (current.getId() <= 0) {
+        
+        if (current.getId() > 0) {
 
             if (jTextField4.getText().equals("")) {
                 Integer tz = current.getNextIndex("produktnummer");
@@ -1430,8 +1465,8 @@ public javax.swing.JToolBar jToolBar2;
             current.setText(jEditorPane1.getText());
             current.save();
 
-            if (currentImageURI != current.getImagePath()) {
-             copyImage();
+            if (currentImageURI!= null && currentImageURI != current.getImagePath()) {
+             copyImage(current);
             }
             getMainframe().setMessage("Produkt Nummer " + current.getNummer() + " gespeichert.");
         }
@@ -1467,6 +1502,14 @@ public javax.swing.JToolBar jToolBar2;
     }
 
     public void close() {
+        
+        try {
+            Programmdaten.instanceOf().setPRODUCTPANEL_CHECKBOX_SCALEIMAGE(jCheckBox1.isSelected());
+            Programmdaten.instanceOf().setPRODUCTPANEL_CHECKBOX_SCALEIMAGE_SIZE(Integer.valueOf(jTextField23.getText()));
+        } catch (NumberFormatException numberFormatException) {
+            Log.Debug(numberFormatException);
+        }
+        
         if (isEdited()) {
             if (Popup.Y_N_dialog("Änderungen verwerfen?")) {
                 ((JTabbedPane) this.getParent()).remove(this);
@@ -1526,13 +1569,15 @@ class GetProductImage extends SwingWorker<Void, Void> {
     public Void doInBackground() {
 
 //        Image coverImg = null;
-
+   view.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         try {
 //            coverImg = Toolkit.getDefaultToolkit().createImage(view.getCurrent().getPath());
 //            Image smallCoverImg = coverImg.getScaledInstance(217, 151, java.awt.Image.SCALE_FAST);
 //            ImageIcon coverImgIcon = new ImageIcon(smallCoverImg);
             if (view.getCurrent().getImage() != null) {
+                view.jTextField11.setText(view.getCurrent().getImage().getPath());
                 view.imgLabel.setIcon(view.getCurrent().getImage().getImageIcon());
+                view.validate();
             }
         } catch (Exception ex) {
             Log.Debug(ex);
@@ -1542,8 +1587,6 @@ class GetProductImage extends SwingWorker<Void, Void> {
 
     @Override
     public void done() {
-        view.getMainframe().getMainProgress().setIndeterminate(false);
-//        Toolkit.getDefaultToolkit().beep();
         view.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
     }
 }

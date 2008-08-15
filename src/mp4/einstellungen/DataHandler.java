@@ -58,7 +58,7 @@ public class DataHandler extends mp3.classes.layer.Things implements mp4.datenba
         try {
             return Integer.valueOf(values);
         } catch (NumberFormatException numberFormatException) {
-            return null;
+            return 0;
         }
     }
 

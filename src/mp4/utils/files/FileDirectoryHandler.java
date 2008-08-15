@@ -74,6 +74,7 @@ public class FileDirectoryHandler {
             throws IOException {
 
             InputStream in = new FileInputStream(sourceFile);
+            File outp = new File(targetDirectory + File.separator + targetFilename);
             OutputStream out = new FileOutputStream(targetDirectory + File.separator + targetFilename);
 
             // Copy the bits from instream to outstream
@@ -85,7 +86,7 @@ public class FileDirectoryHandler {
             in.close();
             out.close();
        
-            return new File(targetDirectory + File.separator + targetFilename).toURI();
+            return outp.toURI();
             
    
     }

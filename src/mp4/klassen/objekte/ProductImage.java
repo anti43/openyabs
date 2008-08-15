@@ -16,6 +16,8 @@
  */
 package mp4.klassen.objekte;
 
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Date;
@@ -59,22 +61,22 @@ public class ProductImage extends mp3.classes.layer.Things implements mp4.datenb
     public ProductImage(Integer id) {
         super(ConnectionHandler.instanceOf().clone(TABLE_PRODUCTS_FILES));
         this.id = id;
-        this.explode(this.selectLast("*", "id", id.toString(), true));
+        this.explode(this.selectLast("productid,url,datum", "id", id.toString(), true));
     }
 
     public ProductImage searchImage(Integer id) {
         ProductImage image = null;
-        String[] data = this.selectLast("*", "productid", id.toString(), true);   
+        String[] data = this.selectLast("productid,url,datum", "productid", id.toString(), true);   
         if(data!=null && data.length > 0){ 
            image = new ProductImage();
-           image.setProduktid(Integer.valueOf(data[1]));
+           image.setProduktid(Integer.valueOf(data[0]));
             try {
                 image.setUrl(new URI(data[1]));
             } catch (Exception ex) {
                 image.setUrl(null);
                 Log.Debug(ex);
             }
-           image.setDatum(DateConverter.getDate(data[1]));
+           image.setDatum(DateConverter.getDate(data[2]));
         }
         return image;
     }
@@ -91,9 +93,9 @@ public class ProductImage extends mp3.classes.layer.Things implements mp4.datenb
   
     private void explode(String[] select) {
         try {
-            this.setProduktid(Integer.valueOf(select[1]));
-            this.setUrl(new URI(select[2]));
-            this.setDatum(DateConverter.getDate(select[3]));
+            this.setProduktid(Integer.valueOf(select[0]));
+            this.setUrl(new URI(select[1]));
+            this.setDatum(DateConverter.getDate(select[2]));
         } catch (Exception ex) {
             Log.Debug(ex);
         }
@@ -127,7 +129,7 @@ public class ProductImage extends mp3.classes.layer.Things implements mp4.datenb
     }
 
     public String getPath() {
-        return Path;
+        return getURI().getPath();
     }
 
     public void setUrl(URI ImageURI) {
@@ -145,11 +147,12 @@ public class ProductImage extends mp3.classes.layer.Things implements mp4.datenb
     }
     
     public ImageIcon getImageIcon(){
+        Image coverImg;
         try {
             if(getPath()!=null) {
-                return new ImageIcon(getPath());
-            }
-            
+                        coverImg = Toolkit.getDefaultToolkit().createImage(getURI().getPath());
+            return new ImageIcon(coverImg);
+            }    
         } catch (Exception ex) {
             Popup.error(ex.getMessage(), "Das Bild konnte nicht geladen werden.");
         }

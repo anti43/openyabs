@@ -165,9 +165,22 @@ public class MpInstaller extends javax.swing.JFrame implements ProtectedStrings,
     }
 
     private void createDirs() {
-        Log.Debug("Verzeichnisse anlegen..", true);
-        if (getTemplates_dir().mkdirs() && getBackup_dir().mkdirs() && getPdf_root_dir().mkdirs() && getPdf_bill_dir().mkdirs() && getPdf_offer_dir().mkdirs() && getPdf_mahnung_dir().mkdirs() && getCache_dir().mkdirs()) {
-            Log.Debug("Erfolgreich!", true);
+        try {
+            Log.Debug("Verzeichnisse anlegen..", true);
+            if (
+                    getPublic_dir().mkdirs() &
+                    getTemplates_dir().mkdirs() &
+                    getBackup_dir().mkdirs() &
+                    getPdf_root_dir().mkdirs() &
+                    getPdf_bill_dir().mkdirs() &
+                    getPdf_offer_dir().mkdirs() &
+                    getPdf_mahnung_dir().mkdirs() &
+                    getCache_dir().mkdirs()) {
+                
+                Log.Debug("Erfolgreich!", true);
+            }
+        } catch (Exception e) {
+             Log.Debug("Fehler!: " + e.getMessage(), true);
         }
     }
 

@@ -201,8 +201,10 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
         if (id > 0) {
             this.update(TABLE_PRODUCTS_FIELDS, this.collect(), id.toString());
             isSaved = true;
+            fetchImage();
         } else if (id == 0) {
             this.id = this.insert(TABLE_PRODUCTS_FIELDS, this.collect());
+            fetchImage();
         }
     }
 
