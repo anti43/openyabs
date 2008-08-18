@@ -27,6 +27,7 @@ import java.util.*;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import mp3.classes.interfaces.Waitable;
 import mp3.classes.layer.Popup;
 
 
@@ -46,7 +47,7 @@ import mp4.utils.zahlen.FormatTax;
  *
  * @author anti43
  */
-public class PDF_Produkt {
+public class PDF_Produkt implements Waitable {
 
     private AcroFields acroFields;
     private Set fieldNameKeys;
@@ -61,6 +62,8 @@ public class PDF_Produkt {
     private Double brutto = 0d;
     private Image image;
     private PdfStamper pdfStamper;
+    private boolean scale  = false;
+    private int width, height;
 
     public PDF_Produkt(Product produkt, java.awt.Image image) {
 
@@ -70,9 +73,9 @@ public class PDF_Produkt {
         this.produkt = produkt;
         this.lieferant = new Lieferant(produkt.getLieferantenId());
         this.hersteller = new Hersteller(produkt.getHerstellerId());
-        this.image = parseImage(image);
-
-        this.start();
+        if (image != null) {
+            this.image = parseImage(image);//        this.start();
+        }
     }
 
     public File getFile() {
@@ -82,31 +85,41 @@ public class PDF_Produkt {
     public void start() {
         try {
 
-            PdfReader template = new PdfReader(settings.getProdukttemp());
-            filename = settings.getProduktverz() + separator + produkt.getProduktNummer().replaceAll(" ", "_") + ".pdf";
-            filename = filename.trim();
-            File updatedPDF = new File(filename);
+            try {
+                PdfReader template = new PdfReader(settings.getProdukttemp());
+                filename = settings.getProduktverz() + separator + produkt.getProduktNummer().replaceAll(" ", "_") + ".pdf";
+                filename = filename.trim();
 
-            Log.Debug("Creating PDF: " + updatedPDF.getPath());
 
-            pdfStamper = new PdfStamper(template, new FileOutputStream(updatedPDF.getAbsolutePath()));
-            acroFields = pdfStamper.getAcroFields();
-            HashMap PDFFields = acroFields.getFields();
-            fieldNameKeys = PDFFields.keySet();
+                File updatedPDF = File.createTempFile("temppdf", ".pdf");
+                filename = updatedPDF.getCanonicalPath();
 
-            Log.Debug("Write text..");
-            setAllFields();
+//                if(updatedPDF.exists())updatedPDF.delete();
 
-            Log.Debug("Write Image..");
-            setImage();
+                Log.Debug("Creating PDF: " + updatedPDF.getPath());
 
-            Log.Debug("Finishing..");
-            pdfStamper.setFormFlattening(true);
-            pdfStamper.close();
+                pdfStamper = new PdfStamper(template, new FileOutputStream(updatedPDF.getAbsolutePath()));
+                acroFields = pdfStamper.getAcroFields();
+                HashMap PDFFields = acroFields.getFields();
+                fieldNameKeys = PDFFields.keySet();
 
-            Log.Debug("Try to launch PDF Viewer: " + settings.getPdfviewer());
-            open();
+                Log.Debug("Write text..");
+                setAllFields();
+
+                setImage();
+            } catch (Exception e) {
+                Log.Debug(e);
+            } finally {
+
+                Log.Debug("Finishing..");
+                pdfStamper.setFormFlattening(true);
+                pdfStamper.close();
+            }
+//            Log.Debug("Try to launch PDF Viewer: " + settings.getPdfviewer());
+//            open();
+
         } catch (Exception e) {
+
             Popup.error("Bitte geben Sie unter \nBearbeiten-> Einstellungen ein PDF-Template an.\n" + e.getMessage(), Popup.ERROR);
 
         }
@@ -117,7 +130,7 @@ public class PDF_Produkt {
         for (Iterator fieldNames = fieldNameKeys.iterator(); fieldNames.hasNext();) {
 //            try {
             String fieldName = (String) fieldNames.next();
-            Log.Debug("\nField: " + fieldName, true);
+            Log.Debug("Field: " + fieldName);
 //                acroFields.setField(fieldName, fieldName);
 //            } catch (IOException ex) {
 //                Log.Debug(ex);
@@ -183,12 +196,30 @@ public class PDF_Produkt {
     }
 
     private void setImage() throws DocumentException {
-        float[] photograph = acroFields.getFieldPositions("image");
-        Rectangle rect = new Rectangle(photograph[1], photograph[2], photograph[3], photograph[4]);
-        Image img = image;
-        img.scaleToFit(rect.width(), rect.height());
-        img.setAbsolutePosition(photograph[1] + (rect.width() - img.scaledWidth()) / 2, photograph[2] + (rect.height() - img.scaledHeight()) / 2);
-        PdfContentByte cb = pdfStamper.getOverContent((int) photograph[0]);
-        cb.addImage(img);
+        if (image != null) {
+            Log.Debug("Write Image..");
+            float[] photograph = acroFields.getFieldPositions("abbildung");
+            Rectangle rect = new Rectangle(photograph[1], photograph[2], photograph[3], photograph[4]);
+            Image img = image;
+            if (scale) {
+                img.scaleToFit(width, height);
+            } else {
+//                img.scaleToFit(rect.width(), rect.height());
+            }
+            img.setAbsolutePosition(photograph[1] + (rect.width() - img.scaledWidth()) / 2, photograph[2] + (rect.height() - img.scaledHeight()) / 2);
+            PdfContentByte cb = pdfStamper.getOverContent((int) photograph[0]);
+            cb.addImage(img);
+        }
+    }
+
+    public void waitFor() {
+        start();
+    }
+
+
+    public void setScale(int width, int height) {
+        this.scale = true;
+        this.width = width;
+        this.height = height;
     }
 }

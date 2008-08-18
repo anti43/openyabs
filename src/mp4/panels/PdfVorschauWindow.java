@@ -8,26 +8,27 @@ package mp4.panels;
 import com.sun.pdfview.PDFFile;
 import com.sun.pdfview.PDFPage;
 import com.sun.pdfview.PagePanel;
+import handling.pdf.PDF_Produkt;
 import java.awt.BorderLayout;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.print.PrintException;
+import mp3.classes.interfaces.Waiter;
 import mp3.classes.utils.Log;
-import mp4.utils.export.druck.DruckJob;
 import mp4.utils.windows.Position;
 
 /**
  *
  * @author  anti43
  */
-public class PdfVorschauWindow extends javax.swing.JFrame {
+public class PdfVorschauWindow extends javax.swing.JFrame implements Waiter{
 
     private File file;
+    
 
-    /** Creates new form PdfVorschauWindow */
+    /** Creates new form PdfVorschauWindow
+     * @param pdfFile 
+     */
     public PdfVorschauWindow(File pdfFile) {
 
         this.file = pdfFile;
@@ -58,6 +59,10 @@ public class PdfVorschauWindow extends javax.swing.JFrame {
         } catch (Exception ex) {
             Log.Debug(ex);
         }
+    }
+
+    public PdfVorschauWindow() {
+     
     }
 
     /** This method is called from within the constructor to
@@ -120,6 +125,8 @@ public class PdfVorschauWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
 private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+  
+    file.delete();
     this.dispose();
 }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -135,4 +142,37 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private javax.swing.JButton jButton2;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
+
+public void set(Object object){
+
+        file = ((PDF_Produkt) object).getFile();
+           
+        try {
+            initComponents();
+            PagePanel panel = new PagePanel();
+            this.jPanel1.add(panel, BorderLayout.CENTER);
+
+            RandomAccessFile raf = new RandomAccessFile(file, "r");
+            
+            FileChannel channel = raf.getChannel();
+            ByteBuffer buf = channel.map(FileChannel.MapMode.READ_ONLY,
+                    0, channel.size());
+            PDFFile pdffile = new PDFFile(buf);
+            
+            this.pack();
+            new Position(this);
+            setVisible(true);
+            
+            // show the first page
+            PDFPage page = pdffile.getPage(0);
+            panel.showPage(page);
+            panel.useZoomTool(true);
+            
+           
+        } catch (Exception ex) {
+            Log.Debug(ex);
+        }
+}
+
+
 }

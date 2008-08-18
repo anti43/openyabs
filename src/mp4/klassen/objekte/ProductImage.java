@@ -18,9 +18,11 @@ package mp4.klassen.objekte;
 
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.image.ImageObserver;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Date;
+import java.util.Observer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -39,23 +41,23 @@ public class ProductImage extends mp3.classes.layer.Things implements mp4.datenb
     private Integer Produktid = null;
     private String Path = null;
     private Date Datum = new Date();
-    
     public Integer id = 0;
-    
+
     public Integer getId() {
         return id;
     }
+
     public void destroy() {
         this.delete(this.id);
         this.id = 0;
     }
+
     public ProductImage() {
         super(ConnectionHandler.instanceOf().clone(TABLE_PRODUCTS_FILES));
     }
 
     /**
      * 
-     * @param query
      * @param id 
      */
     public ProductImage(Integer id) {
@@ -64,19 +66,28 @@ public class ProductImage extends mp3.classes.layer.Things implements mp4.datenb
         this.explode(this.selectLast("productid,url,datum", "id", id.toString(), true));
     }
 
+    public boolean hasImage() {
+        if (getPath() != null) {
+            if (getImage() != null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public ProductImage searchImage(Integer id) {
         ProductImage image = null;
-        String[] data = this.selectLast("productid,url,datum", "productid", id.toString(), true);   
-        if(data!=null && data.length > 0){ 
-           image = new ProductImage();
-           image.setProduktid(Integer.valueOf(data[0]));
+        String[] data = this.selectLast("productid,url,datum", "productid", id.toString(), true);
+        if (data != null && data.length > 0) {
+            image = new ProductImage();
+            image.setProduktid(Integer.valueOf(data[0]));
             try {
                 image.setUrl(new URI(data[1]));
             } catch (Exception ex) {
                 image.setUrl(null);
                 Log.Debug(ex);
             }
-           image.setDatum(DateConverter.getDate(data[2]));
+            image.setDatum(DateConverter.getDate(data[2]));
         }
         return image;
     }
@@ -85,12 +96,10 @@ public class ProductImage extends mp3.classes.layer.Things implements mp4.datenb
         try {
             return new URI(Path);
         } catch (URISyntaxException ex) {
-            Log.Debug(ex);
             return null;
         }
     }
 
-  
     private void explode(String[] select) {
         try {
             this.setProduktid(Integer.valueOf(select[0]));
@@ -104,8 +113,8 @@ public class ProductImage extends mp3.classes.layer.Things implements mp4.datenb
     private String collect() {
         String str = "";
         str = str + this.getProduktid() + "(;;,;;)";
-        str = str + "(;;2#4#1#1#8#0#;;)" + this.getPath() + "(;;2#4#1#1#8#0#;;)" +"(;;,;;)";
-        str = str + "(;;2#4#1#1#8#0#;;)" + DateConverter.getSQLDateString(this.getDatum())+ "(;;2#4#1#1#8#0#;;)" ;
+        str = str + "(;;2#4#1#1#8#0#;;)" + this.getPath() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
+        str = str + "(;;2#4#1#1#8#0#;;)" + DateConverter.getSQLDateString(this.getDatum()) + "(;;2#4#1#1#8#0#;;)";
         return str;
     }
 
@@ -116,7 +125,7 @@ public class ProductImage extends mp3.classes.layer.Things implements mp4.datenb
             isSaved = true;
         } else if (id == 0) {
             this.id = this.insert(TABLE_PRODUCTS_FILES_FIELDS, this.collect());
-        } 
+        }
     }
 
     public Integer getProduktid() {
@@ -145,32 +154,30 @@ public class ProductImage extends mp3.classes.layer.Things implements mp4.datenb
         this.Datum = Datum;
         this.isSaved = false;
     }
-    
-    public Image getImage(){
-        Image coverImg;
+
+    public Image getImage() {
+        Image coverImg = Toolkit.getDefaultToolkit().getImage("/bilder/medium/messagebox_warning.png");
         try {
-            if(getPath()!=null) {
-                        coverImg = Toolkit.getDefaultToolkit().createImage(getURI().getPath());
-            return coverImg;
-            }    
+            if (getPath() != null) {
+                coverImg = Toolkit.getDefaultToolkit().createImage(getURI().getPath());
+                return coverImg;
+            }
         } catch (Exception ex) {
             Popup.error(ex.getMessage(), "Das Bild konnte nicht geladen werden.");
         }
-      return Toolkit.getDefaultToolkit().getImage("/bilder/medium/messagebox_warning.png");
+        return coverImg;
     }
-    
-    
-    public ImageIcon getImageIcon(){
+
+    public ImageIcon getImageIcon() {
         Image coverImg;
         try {
-            if(getPath()!=null) {
-                        coverImg = Toolkit.getDefaultToolkit().createImage(getURI().getPath());
-            return new ImageIcon(coverImg);
-            }    
+            if (getPath() != null) {
+                coverImg = Toolkit.getDefaultToolkit().createImage(getURI().getPath());
+                return new ImageIcon(coverImg);
+            }
         } catch (Exception ex) {
             Popup.error(ex.getMessage(), "Das Bild konnte nicht geladen werden.");
         }
         return new javax.swing.ImageIcon(this.getClass().getResource("/bilder/medium/messagebox_warning.png"));
     }
-
 }

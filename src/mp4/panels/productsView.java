@@ -6,6 +6,9 @@
 package mp4.panels;
 
 import handling.pdf.PDF_Produkt;
+import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mp3.classes.visual.sub.*;
 import mp3.classes.layer.People;
 import mp4.klassen.objekte.Product;
@@ -37,13 +40,14 @@ import mp4.klassen.objekte.ProductImage;
 import mp4.klassen.objekte.Rechnung;
 import mp4.panels.rechnungen.billsView;
 import mp4.panels.rechnungen.offersView;
+import mp4.utils.bilder.ImageFormat;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.files.DialogOpenFile;
 import mp4.utils.files.FileDirectoryHandler;
 import mp4.utils.tabellen.SelectionCheck;
 import mp4.utils.tabellen.TableFormat;
+import mp4.utils.tasks.Job;
 import mp4.utils.text.RandomText;
-
 
 /**
  *
@@ -89,7 +93,7 @@ public class productsView extends javax.swing.JPanel implements mp4.datenbank.st
 
         jTextField19.setInputVerifier(Formater.getDateInputVerfier(jTextField19));
         jTextField9.setInputVerifier(Formater.getDateInputVerfier(jTextField9));
-        
+
         jCheckBox1.setSelected(Programmdaten.instanceOf().getPRODUCTPANEL_CHECKBOX_SCALEIMAGE_state());
         jTextField23.setText(Programmdaten.instanceOf().getPRODUCTPANEL_CHECKBOX_SCALEIMAGE_SIZE().toString());
     }
@@ -106,8 +110,6 @@ public class productsView extends javax.swing.JPanel implements mp4.datenbank.st
         this.currentImageURI = file.toURI();
     }
 
-
-
     private void clear() {
         for (int i = 0; i < this.getComponents().length; i++) {
         }
@@ -118,15 +120,15 @@ public class productsView extends javax.swing.JPanel implements mp4.datenbank.st
         File f = new File(currentImageURI);
         try {
             currentImageURI = FileDirectoryHandler.copyFile(f,
-                    new File(Programmdaten.instanceOf().getIMAGE_CACHE_FOLDER()), new RandomText().getString() + f.getName() );
-            Log.Debug("Image:"+currentImageURI);
+                    new File(Programmdaten.instanceOf().getIMAGE_CACHE_FOLDER()), new RandomText().getString() + f.getName());
+            Log.Debug("Image:" + currentImageURI);
             image.setDatum(new Date());
             image.setProduktid(product.getId());
             image.setUrl(currentImageURI);
             image.save();
         } catch (Exception ex) {
             ex.printStackTrace();
-            Log.Debug("CopyImage:"+ex.getMessage());
+            Log.Debug("CopyImage:" + ex.getMessage());
         }
     }
 
@@ -145,6 +147,16 @@ public class productsView extends javax.swing.JPanel implements mp4.datenbank.st
 
         } else {
             getMainframe().setMessage("Kein Produkt gewählt.");
+        }
+    }
+
+    private void setPanelValues() {
+
+        try {
+            Programmdaten.instanceOf().setPRODUCTPANEL_CHECKBOX_SCALEIMAGE(jCheckBox1.isSelected());
+            Programmdaten.instanceOf().setPRODUCTPANEL_CHECKBOX_SCALEIMAGE_SIZE(Integer.valueOf(jTextField23.getText()));
+        } catch (NumberFormatException numberFormatException) {
+            Log.Debug(numberFormatException);
         }
     }
 
@@ -1218,15 +1230,26 @@ private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 
 private void jButton18MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton18MouseClicked
   try {//GEN-LAST:event_jButton18MouseClicked
-            Programmdaten.instanceOf().setPRODUCTPANEL_CHECKBOX_SCALEIMAGE(jCheckBox1.isSelected());
-            Programmdaten.instanceOf().setPRODUCTPANEL_CHECKBOX_SCALEIMAGE_SIZE(Integer.valueOf(jTextField23.getText()));
-        } catch (NumberFormatException numberFormatException) {
-            Log.Debug(numberFormatException);
+        } catch (Exception numberFormatException) {
         }
-  
 
-  new PdfVorschauWindow(new PDF_Produkt(current, current.getImage().getImage()).getFile());
-}                                      
+        if (current.isValid()) {
+            setPanelValues();
+
+
+            ProductImage img = current.getImage();
+            Image image = img.getImage();
+
+            if (img != null && img.hasImage() && jCheckBox1.isSelected()) {
+                
+                image = ImageFormat.ResizeImage(img.getImage(), Integer.valueOf(jTextField23.getText()));
+            } 
+
+            Job job = new Job(new PDF_Produkt(current, image), new PdfVorschauWindow());
+            job.execute();
+
+        }
+    }
 
 private void jTextField14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField14ActionPerformed
 // TODO add your handling code here:
@@ -1257,7 +1280,7 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     }
 
     if (dialog.getFilePath(jTextField11)) {
-        new GetAnyImage(this,dialog.getFile()).execute();
+        new GetAnyImage(this, dialog.getFile()).execute();
     }
     setEdited(true);
 }//GEN-LAST:event_jButton1ActionPerformed
@@ -1401,16 +1424,17 @@ private void jTextField4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST
         product.setText(jEditorPane1.getText());
         product.setWarengruppenId(getCurrentProductGroup());
         product.save();
-        
-        if (currentImageURI!= null)copyImage(product);
-        
+
+        if (currentImageURI != null) {
+            copyImage(product);
+        }
         setProduct(product);
 
         getMainframe().setMessage("Produkt Nummer " + product.getProduktNummer() + " gespeichert.");
     }
 
     public void save() {
-        
+
         if (current.getId() > 0) {
 
             if (jTextField4.getText().equals("")) {
@@ -1466,8 +1490,8 @@ private void jTextField4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST
             current.setText(jEditorPane1.getText());
             current.save();
 
-            if (currentImageURI!= null && currentImageURI != current.getImagePath()) {
-             copyImage(current);
+            if (currentImageURI != null && current.getImagePath() != null && currentImageURI != current.getImagePath()) {
+                copyImage(current);
             }
             getMainframe().setMessage("Produkt Nummer " + current.getProduktNummer() + " gespeichert.");
         }
@@ -1503,14 +1527,8 @@ private void jTextField4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST
     }
 
     public void close() {
-        
-        try {
-            Programmdaten.instanceOf().setPRODUCTPANEL_CHECKBOX_SCALEIMAGE(jCheckBox1.isSelected());
-            Programmdaten.instanceOf().setPRODUCTPANEL_CHECKBOX_SCALEIMAGE_SIZE(Integer.valueOf(jTextField23.getText()));
-        } catch (NumberFormatException numberFormatException) {
-            Log.Debug(numberFormatException);
-        }
-        
+        setPanelValues();
+
         if (isEdited()) {
             if (Popup.Y_N_dialog("Änderungen verwerfen?")) {
                 ((JTabbedPane) this.getParent()).remove(this);
@@ -1559,6 +1577,7 @@ private void jTextField4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST
         TableFormat.stripFirst(jTable2);
     }
 }
+
 class GetProductImage extends SwingWorker<Void, Void> {
 
     private productsView view;
@@ -1570,7 +1589,7 @@ class GetProductImage extends SwingWorker<Void, Void> {
     public Void doInBackground() {
 
 //        Image coverImg = null;
-   view.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        view.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         try {
 //            coverImg = Toolkit.getDefaultToolkit().createImage(view.getCurrent().getPath());
 //            Image smallCoverImg = coverImg.getScaledInstance(217, 151, java.awt.Image.SCALE_FAST);
@@ -1599,7 +1618,7 @@ class GetAnyImage extends SwingWorker<Void, Void> {
 
     public GetAnyImage(productsView view, File file) {
         this.view = view;
-        this.file =file;
+        this.file = file;
     }
 
     public Void doInBackground() {

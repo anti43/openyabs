@@ -41,19 +41,15 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
     private String Text = "";
     private Double VK = 0d;
     private Double EK = 0d;
-    
     private Integer SteuersatzId = 1;
     private Integer HerstellerId = 1;
     private Integer LieferantenId = 1;
     private Integer WarengruppenId = 0;
-    
     private Query query;
     public boolean isvalid = false;
     public Integer id = 0;
-    
     private Hersteller hersteller;
     private Lieferant lieferant;
-    
     private ProductImage image = new ProductImage();
     private URL ProductImageURL = null;
 
@@ -102,46 +98,48 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
         if (!this.getLieferantenId().equals(0)) {
             this.lieferant = new Lieferant(this.getLieferantenId());
         }
-        
-       if (!this.getHerstellerId().equals(0)) {
+
+        if (!this.getHerstellerId().equals(0)) {
             this.hersteller = new Hersteller(this.getHerstellerId());
         }
 
         this.isvalid = true;
         this.query = ConnectionHandler.instanceOf();
-        
+
         fetchImage();
 
     }
 
     public void setTaxID(int taxID) {
-       this.setSteuersatzId(taxID);
+        this.setSteuersatzId(taxID);
     }
 
     private ProductImage fetchImage() {
-       this.image = new ProductImage().searchImage(this.getId());
-       return image;
+        this.image = new ProductImage().searchImage(this.getId());
+        return image;
     }
 
     public ProductImage getImage() {
-       return image;
-    }
-    
-    public URI getImagePath() {
-        return this.image.getURI();
+        return image;
     }
 
-      public boolean isValid() {
-        if(this.id > 0) {
-            return true;
+    public URI getImagePath() {
+        if (image != null) {
+            return this.image.getURI();
         }
-        else {
+        return null;
+    }
+
+    public boolean isValid() {
+        if (this.id > 0) {
+            return true;
+        } else {
             return false;
         }
     }
 
     public void setHersteller(Hersteller hersteller) {
-       this.hersteller = hersteller;
+        this.hersteller = hersteller;
     }
 
     private void explode(String[] select) {
@@ -152,7 +150,7 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
         this.setText(select[3]);
         this.setVK(Double.valueOf(select[4]));
         this.setEK(Double.valueOf(select[5]));
-        
+
         this.setSteuersatzId(Integer.valueOf(select[6]));
         this.setHerstellerId(Integer.valueOf(select[7]));
         this.setLieferantenId(Integer.valueOf(select[8]));
@@ -370,12 +368,10 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
     }
 
     private void setHerstellerId(Integer valueOf) {
-       this.HerstellerId = valueOf;
+        this.HerstellerId = valueOf;
     }
-    
-    
+
     public Hersteller getHersteller() {
         return hersteller;
     }
-
 }
