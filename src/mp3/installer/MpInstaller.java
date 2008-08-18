@@ -67,12 +67,15 @@ public class MpInstaller extends javax.swing.JFrame implements ProtectedStrings,
     private File lib_dir;
     private File install_lib_dir;
     private File install_templates_dir;
+    
     private File pdf_offer_dir;
     private File pdf_bill_dir;
     private File pdf_mahnung_dir;
+    private File pdf_produkt_dir;
+    
     private File templates_dir;
     private File cache_dir;
-//    
+
 //    private String pdf_root_dirPATH;
 //    private String backup_dirPATH;
 //    private String public_dirPATH;
@@ -115,6 +118,7 @@ public class MpInstaller extends javax.swing.JFrame implements ProtectedStrings,
             Log.Debug(ex);
         }
     }
+
 
     private void buildPath() throws IOException {
         try {
@@ -162,6 +166,7 @@ public class MpInstaller extends javax.swing.JFrame implements ProtectedStrings,
         pdf_offer_dir = new File(getPdf_root_dir().getCanonicalPath() + File.separator + OFFER_SAVE_DIR);
         pdf_bill_dir = new File(getPdf_root_dir().getCanonicalPath() + File.separator + BILL_SAVE_DIR);
         pdf_mahnung_dir = new File(getPdf_root_dir().getCanonicalPath() + File.separator + ARREAR_SAVE_DIR);
+        pdf_produkt_dir = new File(getPdf_root_dir().getCanonicalPath() + File.separator + PRODUCT_SAVE_DIR);
     }
 
     private void createDirs() {
@@ -629,4 +634,9 @@ javax.swing.JTextField pdfpathtf;
     public String getPathcache_dir() {
         return cache_dir.getPath();
     }
+    
+    public String getPathpdf_produkt_dir() {
+       return pdf_produkt_dir.getPath();
+    }
+
 }

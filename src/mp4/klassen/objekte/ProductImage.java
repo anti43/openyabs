@@ -146,6 +146,20 @@ public class ProductImage extends mp3.classes.layer.Things implements mp4.datenb
         this.isSaved = false;
     }
     
+    public Image getImage(){
+        Image coverImg;
+        try {
+            if(getPath()!=null) {
+                        coverImg = Toolkit.getDefaultToolkit().createImage(getURI().getPath());
+            return coverImg;
+            }    
+        } catch (Exception ex) {
+            Popup.error(ex.getMessage(), "Das Bild konnte nicht geladen werden.");
+        }
+      return Toolkit.getDefaultToolkit().getImage("/bilder/medium/messagebox_warning.png");
+    }
+    
+    
     public ImageIcon getImageIcon(){
         Image coverImg;
         try {

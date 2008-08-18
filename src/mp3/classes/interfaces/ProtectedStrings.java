@@ -38,6 +38,7 @@ public interface ProtectedStrings {
     public String CACHE_DIR = "Cache";
     public String BILL_SAVE_DIR = "Rechnungen";
     public String ARREAR_SAVE_DIR = "Mahnungen";
+    public String PRODUCT_SAVE_DIR = "Produkte";
     public String BACKUPS_SAVE_DIR =  "backups";
     public String ICON_NAME_LIN = "mp.desktop";
     public String ICON_NAME_WIN = "Rechnungs-Kundenverwaltung.url";

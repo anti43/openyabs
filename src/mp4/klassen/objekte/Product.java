@@ -180,7 +180,7 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
 
     private String collect() {
         String str = "";
-        str = str + "(;;2#4#1#1#8#0#;;)" + this.getNummer() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
+        str = str + "(;;2#4#1#1#8#0#;;)" + this.getProduktNummer() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
         str = str + "(;;2#4#1#1#8#0#;;)" + this.getName() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
         str = str + "(;;2#4#1#1#8#0#;;)" + this.getText() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
         str = str + this.getVK() + "(;;,;;)";
@@ -268,7 +268,7 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
         this.LieferantenId = LieferantenId;
     }
 
-    public String getNummer() {
+    public String getProduktNummer() {
         return Nummer;
     }
 
@@ -324,7 +324,7 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
         this.EK = EK;
     }
 
-    public Double getTAX() {
+    public Double getTaxValue() {
         return Double.valueOf(ConnectionHandler.instanceOf().clone(TABLE_TAXES).select("wert", new String[]{"id", this.getSteuersatzId().toString(), ""})[0][0]);
     }
 

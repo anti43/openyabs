@@ -38,13 +38,18 @@ import mp3.classes.utils.Log;
 public class Einstellungen extends mp3.classes.layer.People implements mp4.datenbank.struktur.Tabellen {
 
     private static Einstellungen dat;
+    
     private String backupverz = "";
     private String rechnungverz = "";
     private String angebotverz = "";
     private String mahnungverz = "";
+    private String produktverz = "";
+    
     private String rechnungtemp = "";
     private String angebottemp = "";
     private String mahnungtemp = "";
+    private String produkttemp = "";
+    
     private String serienbrieftemp = "";
     private Double globaltax = 0d;
     private String pdfviewer = "";
@@ -54,9 +59,9 @@ public class Einstellungen extends mp3.classes.layer.People implements mp4.daten
     private String agDefaultKontoNummer = "";
     private SKRKonto einnahmeDefKonto;
     private SKRKonto ausgabeDefKonto;
+    
     private Locale locale;
     private String[][] valurarray;
-    
     private String[][] orig_valuearray;
 
     private User user = new User();
@@ -161,16 +166,18 @@ public class Einstellungen extends mp3.classes.layer.People implements mp4.daten
             this.setRechnungverz(str[1][1]);
             this.setAngebotverz(str[2][1]);
             this.setMahnungverz(str[3][1]);
-            this.setRechnungtemp(str[4][1]);
-            this.setAngebottemp(str[5][1]);
-            this.setMahnungtemp(str[6][1]);
-            this.setSerienbrieftemp(str[7][1]);
-            this.setGlobaltax(Double.valueOf(str[8][1]));
-            this.setPdfviewer(str[9][1]);
-            this.setBrowser(str[10][1]);
-            this.setEkDefaultKonto(str[11][1]);
-            this.setAgDefaultKonto(str[12][1]);
-            this.setLocale(new Locale("de", str[12+1][1]));
+            this.setProduktverz(str[4][1]);
+            this.setRechnungtemp(str[5][1]);
+            this.setAngebottemp(str[6][1]);
+            this.setMahnungtemp(str[7][1]);
+            this.setSerienbrieftemp(str[8][1]);
+            this.setProdukttemp(str[9][1]);
+            this.setGlobaltax(Double.valueOf(str[10][1]));
+            this.setPdfviewer(str[11][1]);
+            this.setBrowser(str[12][1]);
+            this.setEkDefaultKonto(str[12+1][1]);
+            this.setAgDefaultKonto(str[14][1]);
+            this.setLocale(new Locale("de", str[15][1]));
             
             try {
                 this.setEinnahmeDefKonto(new SKRKonto(ConnectionHandler.instanceOf(), getEkDefaultKonto(), true));
@@ -195,31 +202,30 @@ public class Einstellungen extends mp3.classes.layer.People implements mp4.daten
         orig_valuearray[1][1] = getRechnungverz();
         orig_valuearray[2][1] = getAngebotverz();
         orig_valuearray[3][1] = getMahnungverz();
-        orig_valuearray[4][1] = getRechnungtemp();
-        orig_valuearray[5][1] = getAngebottemp();
-        orig_valuearray[6][1] = getMahnungtemp();
-        orig_valuearray[7][1] = getSerienbrieftemp();
-        orig_valuearray[8][1] = getGlobaltax().toString();
-        orig_valuearray[9][1] = getPdfviewer();
-        orig_valuearray[10][1] = getBrowser();
+        orig_valuearray[4][1] = getProduktverz();
+        
+        orig_valuearray[5][1] = getRechnungtemp();
+        orig_valuearray[6][1] = getAngebottemp();
+        orig_valuearray[7][1] = getMahnungtemp();
+        orig_valuearray[8][1] = getSerienbrieftemp();
+        orig_valuearray[9][1] = getProdukttemp();
+        
+        orig_valuearray[10][1] = getGlobaltax().toString();
+        orig_valuearray[11][1] = getPdfviewer();
+        orig_valuearray[12][1] = getBrowser();
        
-        orig_valuearray[11][1] = getEkDefaultKonto();
-        orig_valuearray[12][1] = getAgDefaultKonto();
-        orig_valuearray[12+1][1] = getLocale().getCountry();
+        orig_valuearray[12+1][1] = getEkDefaultKonto();
+        orig_valuearray[14][1] = getAgDefaultKonto();
+        orig_valuearray[15][1] = getLocale().getCountry();
        
     }
 
     public void save() {
-
         collect();
         for (int i = 0; i < orig_valuearray.length; i++) {
-
             this.update("wert", "(;;2#4#1#1#8#0#;;)" + orig_valuearray[i][1] + "(;;2#4#1#1#8#0#;;)", String.valueOf(i + 1));
-
         }
-
         dat = new Einstellungen();
-
     }
 
     public String getBackupverz() {
@@ -361,6 +367,22 @@ public class Einstellungen extends mp3.classes.layer.People implements mp4.daten
 
     public void setLocale(Locale locale) {
         this.locale = locale;
+    }
+
+    public String getProduktverz() {
+        return produktverz;
+    }
+
+    public void setProduktverz(String produktverz) {
+        this.produktverz = produktverz;
+    }
+
+    public String getProdukttemp() {
+        return produkttemp;
+    }
+
+    public void setProdukttemp(String produkttemp) {
+        this.produkttemp = produkttemp;
     }
 
 

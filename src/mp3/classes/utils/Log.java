@@ -118,8 +118,6 @@ public class Log {
     }
 
     public static Logger getLogger() {
-
-
         return logger;
     }
 
@@ -143,11 +141,8 @@ public class Log {
     private Log() {
     }
 
-    public int getLoglevel() {
+    public static int getLoglevel() {
         return loglevel;
     }
 
-    public void setLoglevel(int loglevel) {
-        Log.loglevel = loglevel;
-    }
 }

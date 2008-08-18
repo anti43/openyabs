@@ -233,10 +233,15 @@ public interface Installation {
         "INSERT INTO daten (name, wert) VALUES ('PDF Rechnungen Verzeichnis', '" +  MpInstaller.instanceOf().getPathpdf_bill_dir()+ "')",
         "INSERT INTO daten (name, wert) VALUES ('PDF Angebote Verzeichnis', '" + MpInstaller.instanceOf().getPathpdf_offer_dir() + "')",
         "INSERT INTO daten (name, wert) VALUES ('PDF Mahnung Verzeichnis', '" + MpInstaller.instanceOf().getPathpdf_mahnung_dir()+ "')",
+        "INSERT INTO daten (name, wert) VALUES ('PDF Produkt Verzeichnis', '" + MpInstaller.instanceOf().getPathpdf_produkt_dir()+ "')",
+       
         "INSERT INTO daten (name, wert) VALUES ('Rechnung Template', '" + MpInstaller.instanceOf().getPathtemplates_dir() + File.separator + "rechnung.pdf')",
         "INSERT INTO daten (name, wert) VALUES ('Angebot Template', '" + MpInstaller.instanceOf().getPathtemplates_dir() + File.separator + "angebot.pdf')",
         "INSERT INTO daten (name, wert) VALUES ('Mahnung Template', '" + MpInstaller.instanceOf().getPathtemplates_dir() + File.separator + "mahnung.pdf')",
         "INSERT INTO daten (name, wert) VALUES ('Serienbrief Template', '" + MpInstaller.instanceOf().getPathtemplates_dir() + File.separator + "serienbrief.pdf')",
+        "INSERT INTO daten (name, wert) VALUES ('Produkt Template', '" + MpInstaller.instanceOf().getPathtemplates_dir() + File.separator + "produkt.pdf')",
+     
+        
         "INSERT INTO daten (name, wert) VALUES ('Mehrwertsteuersatz', '19')",
         "INSERT INTO daten (name, wert) VALUES ('PDF Programm', '/opt/kde3/bin/kpdf')",
         "INSERT INTO daten (name, wert) VALUES ('Internetbrowser', '/usr/bin/firefox')",

@@ -75,15 +75,15 @@ public class PostenTableModel extends MPTableModel {
             }
             m.setValueAt(new Double(1), selectedRow, 1);
             try {
-                m.setValueAt(product.getTAX(), selectedRow, 3);
+                m.setValueAt(product.getTaxValue(), selectedRow, 3);
             } catch (NumberFormatException numberFormatException) {
-                Popup.notice("Wert 'Steuer' unzulässig: Produkt " + product.getNummer());
+                Popup.notice("Wert 'Steuer' unzulässig: Produkt " + product.getProduktNummer());
                 m.setValueAt(Einstellungen.instanceOf().getGlobaltax(), selectedRow, 3);
             }
             try {
                 m.setValueAt(new Double(product.getVK()), selectedRow, 4);
             } catch (NumberFormatException numberFormatException) {
-                Popup.notice("Wert 'Preis' unzulässig: Produkt " + product.getNummer());
+                Popup.notice("Wert 'Preis' unzulässig: Produkt " + product.getProduktNummer());
                 m.setValueAt(product.getVK(), selectedRow, 4);
             }
         } catch (Exception exception) {
