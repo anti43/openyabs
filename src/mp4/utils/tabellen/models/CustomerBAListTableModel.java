@@ -36,7 +36,7 @@ public class CustomerBAListTableModel extends MPTableModel {
         super(new Class[]{java.lang.String.class, java.lang.String.class,
                     java.lang.String.class, java.lang.Boolean.class
                 }, new boolean[]{false,false,false,false},
-                DataModelUtils.changeToClassValue(new Rechnung().select("id, rechnungnummer, datum, bezahlt ", "kundenid", current.getid(), "datum, bezahlt DESC ", false, true),java.lang.Boolean.class, new int[]{3}),
+                DataModelUtils.changeToClassValue(new Rechnung().select("id, rechnungnummer, datum, bezahlt ", "kundenid", current.getid(), "datum, bezahlt DESC ", false, true, false),java.lang.Boolean.class, new int[]{3}),
                 new Object[]{"id", "Nummer","Datum","Bezahlt"});
     }
     
@@ -44,7 +44,7 @@ public class CustomerBAListTableModel extends MPTableModel {
         super(new Class[]{java.lang.String.class, java.lang.String.class,
                     java.lang.String.class, java.lang.String.class
                 }, new boolean[]{false,false,false,false},
-                DataModelUtils.changeToClassValue(new Angebot().select("id, angebotnummer, datum, auftragdatum ", "kundenid", current.getid(), "datum, auftragdatum DESC ", false, true),java.util.Date.class, new int[]{3}),
+                DataModelUtils.changeToClassValue(new Angebot().select("id, angebotnummer, datum, auftragdatum ", "kundenid", current.getid(), "datum, auftragdatum DESC ", false, true, false),java.util.Date.class, new int[]{3}),
                 new Object[]{"id", "Nummer","Datum","Auftrag"});
     }
 

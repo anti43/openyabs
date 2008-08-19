@@ -30,13 +30,14 @@ public class LProduktListTableModel extends MPTableModel {
     
     /**
      * 
+     * @param current 
      */
     public LProduktListTableModel(Lieferant current){
         super(new Class[]{java.lang.String.class, java.lang.String.class,
                     java.lang.String.class, java.lang.String.class,
                     java.lang.String.class
                 }, new boolean[]{false,false,false,false,false},
-                new Product().select("id, produktnummer, name, datum, vk ", "lieferantenid", current.getid(), "produktnummer DESC ", false, true),
+                new Product().select("id, produktnummer, name, datum, vk ", "lieferantenid", current.getid(), "produktnummer DESC ", false, true, false),
                 new Object[]{"id", "Nummer","Name","Datum", "VK"});
     }
     public LProduktListTableModel(Hersteller current){
@@ -44,7 +45,7 @@ public class LProduktListTableModel extends MPTableModel {
                     java.lang.String.class, java.lang.String.class,
                     java.lang.String.class
                 }, new boolean[]{false,false,false,false,false},
-                new Product().select("id, produktnummer, name, datum, vk ", "herstellerid", current.getid(), "produktnummer DESC ", false, true),
+                new Product().select("id, produktnummer, name, datum, vk ", "herstellerid", current.getid(), "produktnummer DESC ", false, true, false),
                 new Object[]{"id", "Nummer","Name","Datum", "VK"});
     }
 }

@@ -137,20 +137,20 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
 
     public String[][] getUnpaid() {
         Query q = query.clone(TABLE_BILLS);
-        String[][] prods = q.select("id, rechnungnummer, gesamtpreis, datum", new String[]{"bezahlt", "0", "", "storno", "0", ""}, "datum", false, true);
+        String[][] prods = q.select("id, rechnungnummer, gesamtpreis, datum", new String[]{"bezahlt", "0", "", "storno", "0", ""}, "datum", false, true, false);
         return prods;
     }
 
     public String[][] getPaid() {
         Query q = query.clone(TABLE_BILLS);
-        String[][] prods = q.select("id, rechnungnummer, gesamtpreis, datum", new String[]{"bezahlt", "1", "", "storno", "0", ""}, "datum", false, true);
+        String[][] prods = q.select("id, rechnungnummer, gesamtpreis, datum", new String[]{"bezahlt", "1", "", "storno", "0", ""}, "datum", false, true, false);
         return prods;
     }
 
     public String[][] getPaidEUR() {
 //        kontenid, preis, tax, datum
         Query q = query.clone(TABLE_BILLS);
-        String[][] prods = q.select("gesamtpreis, gesamttax, datum", new String[]{"bezahlt", "1", "", "storno", "0", ""}, "datum", false, true);
+        String[][] prods = q.select("gesamtpreis, gesamttax, datum", new String[]{"bezahlt", "1", "", "storno", "0", ""}, "datum", false, true, false);
         String[][] tzh = new String[prods.length][4];
 
         for (int g = 0; g < prods.length; g++) {

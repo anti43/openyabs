@@ -180,7 +180,7 @@ public class productsView extends javax.swing.JPanel implements mp4.datenbank.st
         if (!current.getWarengruppenId().equals("0")) {
             this.getJTextField12().setText(current.getProductgroupPath());
         } else {
-            this.getJTextField12().setText("");
+            this.getJTextField12().setText("Keine Warengruppe");
         }
         this.jTextField22.setText(current.getEan());
         this.jEditorPane1.setText(current.getText());
@@ -1099,20 +1099,20 @@ public class productsView extends javax.swing.JPanel implements mp4.datenbank.st
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jTextField2ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
-//        String[][] list = current.select("id,produktnummer,name", "hersteller", jTextField2.getText(), "hersteller", true);
-//        String k = "id, " + "Nummer,Name";
-//
-//        this.jTable3.setModel(new DefaultTableModel(list, k.split(",")));
-//        TableFormat.stripFirst(jTable3);
+
+        String k = "id, " + "Nummer,Name";
+        String[][] list = current.select("id,produktnummer,name", "herstellerid", new Hersteller().selectLast("id", "firma", jTextField2.getText(), false, false, true)[0], "herstellerid", false, true, false);
+        if (list != null && list.length > 0) {
+            this.jTable3.setModel(new DefaultTableModel(list, k.split(",")));
+            TableFormat.stripFirst(jTable3);
+        } else {
+            this.jTable3.setModel(new DefaultTableModel(new Object[][]{{null, "Kein", "Treffer"}}, k.split(",")));
+            TableFormat.stripFirst(jTable3);
+        }
+
     }//GEN-LAST:event_jTextField2ActionPerformed
 
     private void jTextField3ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
-
-        String[][] list = current.select("id,ean,name", "ean", jTextField3.getText(), "ean", true, true);
-        String k = "id, " + "EAN,Name";
-
-        this.jTable3.setModel(new DefaultTableModel(list, k.split(",")));
-        TableFormat.stripFirst(jTable3);
     }//GEN-LAST:event_jTextField3ActionPerformed
 
     private void jTextField4ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
@@ -1239,12 +1239,14 @@ private void jButton18MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
 
 
             ProductImage img = current.getImage();
-            Image image = img.getImage();
+            Image image = null;
 
-            if (img != null && img.hasImage() && jCheckBox1.isSelected()) {
-                
-                image = ImageFormat.ResizeImage(img.getImage(), Integer.valueOf(jTextField23.getText()));
-            } 
+            if (img != null && img.hasImage()) {
+                image = img.getImage();
+                if (jCheckBox1.isSelected()) {
+                    image = ImageFormat.ResizeImage(img.getImage(), Integer.valueOf(jTextField23.getText()));
+                }
+            }
 
             Job job = new Job(new PDF_Produkt(current, image), new PdfVorschauWindow(), mainframe.getMainProgress());
             job.execute();
@@ -1253,7 +1255,11 @@ private void jButton18MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
     }
 
 private void jTextField14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField14ActionPerformed
-// TODO add your handling code here:
+    String[][] list = current.select("id,ean,name", "ean", jTextField3.getText(), "ean", true, false, false);
+    String k = "id, " + "EAN,Name";
+
+    this.jTable3.setModel(new DefaultTableModel(list, k.split(",")));
+    TableFormat.stripFirst(jTable3);
 }//GEN-LAST:event_jTextField14ActionPerformed
 
 private void jButton17MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton17MouseClicked
@@ -1410,11 +1416,11 @@ private void jTextField4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST
         product.setUrl(jTextField13.getText());
         product.setEan(jTextField22.getText());
         product.setText(jEditorPane1.getText());
-        product.setWarengruppenId(getCurrentProductGroup());
+        product.setWarengruppenId(current.getWarengruppenId());
         product.save();
         if (currentImageURI != null) {
             copyImage(product);
-        } 
+        }
         getMainframe().setMessage("Produkt Nummer " + product.getProduktNummer() + " gespeichert.");
         setProduct(new Product(product.getId()));
     }
@@ -1462,7 +1468,7 @@ private void jTextField4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST
             current.setEan(jTextField22.getText());
             current.setText(jEditorPane1.getText());
             current.save();
-            if (current.getImagePath() ==null || (currentImageURI != null && currentImageURI != current.getImagePath())) {
+            if ((current.getImagePath() == null && currentImageURI != null) || (currentImageURI != null && currentImageURI != current.getImagePath())) {
                 copyImage(current);
             }
             getMainframe().setMessage("Produkt Nummer " + current.getProduktNummer() + " gespeichert.");

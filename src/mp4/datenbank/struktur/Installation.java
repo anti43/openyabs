@@ -218,6 +218,7 @@ public interface Installation {
         "INSERT INTO programmdaten(name, wert) VALUES ('RECHNUNG_NUMMER_FORMAT',  '{JAHR}-{MONAT_NAME}-&!00000&!2')",
         "INSERT INTO programmdaten(name, wert) VALUES ('ANGEBOT_NUMMER_FORMAT',  '{JAHR}-{MONAT_NAME}-&!00000&!2')", 
         "INSERT INTO programmdaten(name, wert) VALUES ('MAINFRAME_WINDOW_STATE',  '790,1000')",    
+        "INSERT INTO programmdaten(name, wert) VALUES ('WARENGRUPPEN_SEPARATOR',  '->')",   
         "INSERT INTO programmdaten(name, wert) VALUES ('IMAGE_CACHE_FOLDER', '" + MpInstaller.instanceOf().getCache_dir() +"')",  
         
 //        ******************************************************************************************************************************        
@@ -249,7 +250,12 @@ public interface Installation {
         "INSERT INTO daten (name, wert) VALUES ('Default Konto Einnahme (auf dieses Konto werden auch Ihre Rechnungen verbucht!)', '2112')",
         "INSERT INTO daten (name, wert) VALUES ('Default Konto Ausgabe', '1111')",
         "INSERT INTO daten (name, wert) VALUES ('Land (Waehrung) (DE,CH)', 'DE')",
+     
+        
+//        ******************************************************************************************************************************        
        
+        
+        
         "INSERT INTO konten (nummer, klasse,gruppe,art) VALUES ('1110', 'Ausgabenkonten', 'Waren, Rohstoffe und Hilfsstoffe einschl. der Nebenkosten', 'Waren, Rohstoffe und Hilfsstoffe')",
         "INSERT INTO konten (nummer, klasse,gruppe,art) VALUES ('1111', 'Ausgabenkonten', 'Waren, Rohstoffe und Hilfsstoffe einschl. der Nebenkosten', 'Allgemeines Ausgabenkonto')",
         "INSERT INTO konten (nummer, klasse,gruppe,art) VALUES ('1112', 'Ausgabenkonten', 'Waren, Rohstoffe und Hilfsstoffe einschl. der Nebenkosten', 'Verbrauchsmaterial')",
@@ -287,9 +293,19 @@ public interface Installation {
         "INSERT INTO konten (nummer, klasse,gruppe,art) VALUES ('2122', 'Einnahmenkonten', 'Sonstige Sach-, Nutzungs- und Leistungsentnahmen', 'Private Telefonnutzung')",
         "INSERT INTO konten (nummer, klasse,gruppe,art) VALUES ('2130', 'Einnahmenkonten', 'Private Kfz-Nutzung', 'Private KFZ-Nutzung')",
         "INSERT INTO konten (nummer, klasse,gruppe,art) VALUES ('2140', 'Einnahmenkonten', 'Vom Finanzamt erstattete und ggf. verrechnete Umsatzsteuer', 'Vom FA erstattete Umsatzsteuer')",
-    
-        "INSERT INTO warengruppenkategorien (kategorienummer,name) VALUES ('1','Kategorie')",
-        "INSERT INTO warengruppenfamilien (familienummer, kategorieid, name) VALUES ('1',1,'Familie')",
-        "INSERT INTO warengruppengruppen (gruppenummer, familienid, name) VALUES ('1',1,'Gruppe')"
+
+        
+        
+        //        ******************************************************************************************************************************        
+      
+        
+        
+        "INSERT INTO warengruppenkategorien (kategorienummer,name) VALUES ('1','Produkte')",
+        "INSERT INTO warengruppenfamilien (familienummer, kategorieid, name) VALUES ('1',1,'ProduktFamilie1')",
+        "INSERT INTO warengruppengruppen (gruppenummer, familienid, name) VALUES ('1',1,'ProduktGruppe1')",
+                
+        "INSERT INTO warengruppenkategorien (kategorienummer,name) VALUES ('2','Dienstleistungen')",
+        "INSERT INTO warengruppenfamilien (familienummer, kategorieid, name) VALUES ('2',2,'ProduktFamilie2')",
+        "INSERT INTO warengruppengruppen (gruppenummer, familienid, name) VALUES ('2',2,'ProduktGruppe2')"
     };
 }

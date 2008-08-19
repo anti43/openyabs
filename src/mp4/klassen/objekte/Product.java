@@ -175,7 +175,8 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
                 "LEFT OUTER JOIN  steuersaetze ON produkte.steuersatzid = steuersaetze.id " +
                 "LEFT OUTER JOIN  lieferanten ON produkte.lieferantenid = lieferanten.id " +
                 "LEFT OUTER JOIN  hersteller ON produkte.herstellerid = hersteller.id " +
-                "LEFT OUTER JOIN  warengruppengruppen ON produkte.warengruppenid = warengruppengruppen.id");
+                "LEFT OUTER JOIN  warengruppengruppen ON produkte.warengruppenid = warengruppengruppen.id " +
+                "WHERE produkte.deleted = 0");
 
         return str;
     }

@@ -299,7 +299,7 @@ public abstract class Things implements Queries, mp4.datenbank.struktur.Tabellen
      * @param integer 
      * @return A multidimensional string-array containing the data found
      */
-    public String[][] select(String what, String from, String where, String order, boolean like, boolean integer) {
+    public String[][] select(String what, String from, String where, String order, boolean like, boolean integer, boolean ghosts) {
         String hk = "'";
 
         String[] wher = {from, where, hk};
@@ -307,7 +307,7 @@ public abstract class Things implements Queries, mp4.datenbank.struktur.Tabellen
             wher = null;
         }
 
-        return q.select(what, wher, order, like, integer);
+        return q.select(what, wher, order, like, integer, ghosts);
     }
 
     /**

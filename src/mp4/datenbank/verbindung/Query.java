@@ -1765,10 +1765,11 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
      * @param order
      * @param like
      * @param integer
+     * @param ghosts 
      * @return
      */
     @SuppressWarnings({"unchecked", "unchecked"})
-    public String[][] select(String what, String[] where, String order, boolean like, boolean integer) {
+    public String[][] select(String what, String[] where, String order, boolean like, boolean integer, boolean ghosts) {
         start();
         String l = "";
         String k = " = ";
@@ -1777,6 +1778,11 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
         String ord = " ORDER BY " + order;
         String wher = "";
 
+        wher = " AND deleted = 0 ";
+        if(ghosts) {
+            wher = wher + " AND deleted = 1 ";
+        }
+        
         if (integer) {
 
             if (where[1].equals("")) {
@@ -1785,19 +1791,29 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
 
             where[2] = "";
 //            l = "%";
-            k =
-                    " = ";
+            k = " = ";
 //            j = " OR WHERE " + where[0] + " " + k + " " + where[2] + l + where[1] + l + where[2];
+        }
+        
+       java.util.Date date;
+        if (like) {
+            if (where != null && where[0].contains("datum")) {
+                k = " BETWEEN ";
+                date = DateConverter.getDate(where[1]);
+                where[1] = "'" + DateConverter.getSQLDateString(date) + "'" + " AND " + "'" + DateConverter.getSQLDateString(DateConverter.addMonth(date)) + "'";
+                where[2] = " ";
+            } else {
+                l = "%";
+                k = " LIKE ";
+            }
         }
 
         if (where == null) {
-            wher = " WHERE deleted = 0 ";
+            
         } else {
-            wher = " WHERE " + where[0] + " " + k + " " + where[2] + l + where[1] + l + where[2] + " ";
-
+            wher = " WHERE " + where[0] + " " + k + " " + where[2] + l + where[1] + l + where[2] + " " + wher;
             if (where.length > 3) {
-
-                wher = wher + " AND " + where[3] + " " + k + " " + where[5] + l + where[4] + l + where[5] + " ";
+                wher = wher + " AND " + where[3] + " " + k + " " + where[5] + l + where[4] + l + where[5] + " " + wher;
             }
         }
 

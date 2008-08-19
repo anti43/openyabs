@@ -41,13 +41,21 @@ public class Programmdaten implements mp4.datenbank.struktur.Tabellen {
     }
 
     public Integer getPRODUCTPANEL_CHECKBOX_SCALEIMAGE_SIZE() {
-         return handler.getInteger("PRODUCTPANEL_CHECKBOX_SCALEIMAGE_SIZE");
+        return handler.getInteger("PRODUCTPANEL_CHECKBOX_SCALEIMAGE_SIZE");
     }
 
     public boolean getPRODUCTPANEL_CHECKBOX_SCALEIMAGE_state() {
         return handler.getBoolean("PRODUCTPANEL_CHECKBOX_SCALEIMAGE");
     }
-    
+
+    public String getWARENGRUPPEN_SEPARATOR() {
+        return handler.getString("WARENGRUPPEN_SEPARATOR");
+    }
+
+    public void setWARENGRUPPEN_SEPARATOR(String WARENGRUPPEN_SEPARATOR) {
+        handler.setString("WARENGRUPPEN_SEPARATOR", WARENGRUPPEN_SEPARATOR);
+    }
+
     public void setPRODUCTPANEL_CHECKBOX_SCALEIMAGE(boolean PRODUCTPANEL_CHECKBOX_SCALEIMAGE) {
         handler.setBoolean("PRODUCTPANEL_CHECKBOX_SCALEIMAGE", PRODUCTPANEL_CHECKBOX_SCALEIMAGE);
     }
@@ -111,7 +119,7 @@ public class Programmdaten implements mp4.datenbank.struktur.Tabellen {
     public void setANGEBOT_NUMMER_FORMAT(String ANGEBOT_NUMMER_FORMAT) {
         handler.setString("ANGEBOT_NUMMER_FORMAT", ANGEBOT_NUMMER_FORMAT);
     }
-    
+
     public String getIMAGE_CACHE_FOLDER() {
         return handler.getString("IMAGE_CACHE_FOLDER");
     }

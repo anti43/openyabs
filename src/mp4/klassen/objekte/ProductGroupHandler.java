@@ -11,6 +11,7 @@ import mp4.datenbank.verbindung.Query;
 
 import mp3.classes.utils.Log;
 import mp4.datenbank.verbindung.ConnectionHandler;
+import mp4.einstellungen.Programmdaten;
 
 /**
  *
@@ -125,7 +126,7 @@ public class ProductGroupHandler extends mp3.classes.layer.Things implements mp4
  
 
     private void fillCategories() {
-        String[][] tmp = this.select("*", null, null, false, true);
+        String[][] tmp = this.select("*", null, null, false, false);
         //Log.Debug("fillcats: " + tmp.length);
         categories =
                 new ProductGroupCategory[tmp.length];
@@ -156,7 +157,7 @@ public class ProductGroupHandler extends mp3.classes.layer.Things implements mp4
         ProductGroupFamily pgf = new ProductGroupFamily(query);
 
 
-        String[][] tmp = pgf.select("*", null, null, false, true);
+        String[][] tmp = pgf.select("*", null, null, false, false);
         families =
                 new ProductGroupFamily[tmp.length];
 
@@ -187,7 +188,7 @@ public class ProductGroupHandler extends mp3.classes.layer.Things implements mp4
         ProductGroupGroup pgf = new ProductGroupGroup(query);
 
 
-        String[][] tmp = pgf.select("*", null, null, false, true);
+        String[][] tmp = pgf.select("*", null, null, false, false);
         groups =
                 new ProductGroupGroup[tmp.length];
 
@@ -345,10 +346,10 @@ public class ProductGroupHandler extends mp3.classes.layer.Things implements mp4
         for (int j = 0; j <
                 getGroups().length; j++) {
             if (getGroups()[j].getId().toString().equals(group.toString())) {
-                str = " -> " + getGroups()[j].getName();
+                str = Programmdaten.instanceOf().getWARENGRUPPEN_SEPARATOR() + getGroups()[j].getName();
 
                 ProductGroupFamily pgf = getFamily(getGroups()[j].getFamilyID());
-                str = " -> " + pgf.getName() + str;
+                str = Programmdaten.instanceOf().getWARENGRUPPEN_SEPARATOR() + pgf.getName() + str;
 
                 ProductGroupCategory pgc = getCategory(pgf.getKategorieID());
                 str = pgc.getName() + str;
