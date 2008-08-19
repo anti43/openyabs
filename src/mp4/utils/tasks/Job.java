@@ -16,9 +16,11 @@
  */
 package mp4.utils.tasks;
 
+import javax.swing.JProgressBar;
 import javax.swing.SwingWorker;
 import mp3.classes.interfaces.Waitable;
 import mp3.classes.interfaces.Waiter;
+import mp3.classes.utils.Log;
 
 /**
  *
@@ -28,19 +30,32 @@ public class Job extends SwingWorker<Object, Object> {
 
     private Waitable object;
     private Waiter recipient;
+    private JProgressBar bar;
 
-    public Job(Waitable object, Waiter rec) {
+    public Job(Waitable object, Waiter rec, JProgressBar bar) {
         this.object = object;
         this.recipient = rec;
+        this.bar = bar;
     }
 
     public Object doInBackground() {
-        object.waitFor();
+        if (bar != null) {
+            bar.setIndeterminate(true);
+        }
+        try {
+            object.waitFor();
+        } catch (Exception e) {
+            Log.Debug(e);
+        } finally {
+            if (bar != null) {
+                bar.setIndeterminate(false);
+            }
+        }
         return object;
     }
 
     @Override
     public void done() {
-       recipient.set(object);
+        recipient.set(object);
     }
 }

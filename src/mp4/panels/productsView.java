@@ -972,7 +972,7 @@ public class productsView extends javax.swing.JPanel implements mp4.datenbank.st
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -982,6 +982,7 @@ public class productsView extends javax.swing.JPanel implements mp4.datenbank.st
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGap(0, 0, 0)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1245,7 +1246,7 @@ private void jButton18MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
                 image = ImageFormat.ResizeImage(img.getImage(), Integer.valueOf(jTextField23.getText()));
             } 
 
-            Job job = new Job(new PDF_Produkt(current, image), new PdfVorschauWindow());
+            Job job = new Job(new PDF_Produkt(current, image), new PdfVorschauWindow(), mainframe.getMainProgress());
             job.execute();
 
         }
@@ -1375,20 +1376,14 @@ private void jTextField4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST
     public javax.swing.JToolBar jToolBar2;
     // End of variables declaration//GEN-END:variables
     private void createNew() {
-
-
-
         Product product = new Product(ConnectionHandler.instanceOf());
-
         if (!jTextField4.isEditable() || jTextField4.getText().equals("")) {
             Integer tz = product.getNextIndex("produktnummer");
             jTextField4.setText(tz.toString());
         }
-
         if (jTextField5.getText().equals("")) {
             jTextField5.setText(jTextField4.getText());
         }
-
         try {
             Double.valueOf(jTextField20.getText());
         } catch (NumberFormatException numberFormatException) {
@@ -1404,64 +1399,42 @@ private void jTextField4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST
         } catch (NumberFormatException numberFormatException) {
             jTextField7.setText("0");
         }
-//        try {
-//            Double.valueOf(jTextField16.getText());
-//        } catch (NumberFormatException numberFormatException) {
-//            jTextField16.setText("0");
-//        }
-
-        product.setNummer(
-                jTextField4.getText());
+        product.setNummer(jTextField4.getText());
         product.setName(jTextField5.getText());
         product.setHersteller(hersteller);
         product.setSupplier(lieferant);
         product.setVK(Double.valueOf(jTextField8.getText()));
         product.setEK(Double.valueOf(jTextField7.getText()));
-//        current.setTAX(Double.valueOf(jTextField16.getText()));
+        product.setTaxID(taxID);
         product.setDatum(DateConverter.getDate(jTextField9.getText()));
         product.setUrl(jTextField13.getText());
         product.setEan(jTextField22.getText());
         product.setText(jEditorPane1.getText());
         product.setWarengruppenId(getCurrentProductGroup());
         product.save();
-
         if (currentImageURI != null) {
             copyImage(product);
-        }
-        setProduct(product);
-
+        } 
         getMainframe().setMessage("Produkt Nummer " + product.getProduktNummer() + " gespeichert.");
+        setProduct(new Product(product.getId()));
     }
 
     public void save() {
-
         if (current.getId() > 0) {
-
             if (jTextField4.getText().equals("")) {
                 Integer tz = current.getNextIndex("produktnummer");
                 jTextField4.setText(tz.toString());
                 Log.Debug("Setting 'Productnumber' to " + tz);
-
             } else {
-
                 try {
                     Integer i = Integer.valueOf(jTextField4.getText());
-
                     jTextField4.setText(i.toString());
-
                 } catch (NumberFormatException numberFormatException) {
-
                     Integer tz = current.getNextIndex("produktnummer");
                     jTextField4.setText(tz.toString());
                     Log.Debug("Setting 'Productnumber' to " + tz);
                 }
             }
-
-//            try {
-//                Double.valueOf(jTextField22.getText());
-//            } catch (NumberFormatException numberFormatException) {
-//                jTextField22.setText("0");
-//            }
             try {
                 Double.valueOf(jTextField8.getText());
             } catch (NumberFormatException numberFormatException) {
@@ -1489,19 +1462,16 @@ private void jTextField4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST
             current.setEan(jTextField22.getText());
             current.setText(jEditorPane1.getText());
             current.save();
-
             if (current.getImagePath() ==null || (currentImageURI != null && currentImageURI != current.getImagePath())) {
                 copyImage(current);
             }
             getMainframe().setMessage("Produkt Nummer " + current.getProduktNummer() + " gespeichert.");
-            
             setProduct(new Product(current.getId()));
         }
     }
 
     public void setSupplier(Lieferant supplier) {
         this.lieferant = supplier;
-
         if (supplier != null && !supplier.getId().equals("0")) {
             this.jTextField10.setText(supplier.getFirma());
             this.getProduct().setLieferantenId(supplier.getId());
@@ -1530,7 +1500,6 @@ private void jTextField4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST
 
     public void close() {
         setPanelValues();
-
         if (isEdited()) {
             if (Popup.Y_N_dialog("Änderungen verwerfen?")) {
                 ((JTabbedPane) this.getParent()).remove(this);
