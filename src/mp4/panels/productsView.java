@@ -121,10 +121,10 @@ public class productsView extends javax.swing.JPanel implements mp4.datenbank.st
         try {
             currentImageURI = FileDirectoryHandler.copyFile(f,
                     new File(Programmdaten.instanceOf().getIMAGE_CACHE_FOLDER()), new RandomText().getString() + f.getName());
-            Log.Debug("Image:" + currentImageURI);
+            Log.Debug("Image: " + currentImageURI);
             image.setDatum(new Date());
             image.setProduktid(product.getId());
-            image.setUrl(currentImageURI);
+            image.setPath(currentImageURI);
             image.save();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -176,13 +176,13 @@ public class productsView extends javax.swing.JPanel implements mp4.datenbank.st
         this.jTextField7.setText(current.getEK().toString());
         this.jTextField16.setText(current.getTaxValue().toString());
         this.jTextField9.setText(DateConverter.getDefDateString(current.getDatum()));
-        this.jTextField11.setText(current.getUrl());
+        this.jTextField13.setText(current.getUrl());
         if (!current.getWarengruppenId().equals("0")) {
             this.getJTextField12().setText(current.getProductgroupPath());
         } else {
             this.getJTextField12().setText("");
         }
-        this.jTextField13.setText(current.getEan());
+        this.jTextField22.setText(current.getEan());
         this.jEditorPane1.setText(current.getText());
 
         jTextField4.setEditable(false);
@@ -1419,8 +1419,8 @@ private void jTextField4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST
         product.setEK(Double.valueOf(jTextField7.getText()));
 //        current.setTAX(Double.valueOf(jTextField16.getText()));
         product.setDatum(DateConverter.getDate(jTextField9.getText()));
-        product.setUrl(jTextField11.getText());
-        product.setEan(jTextField13.getText());
+        product.setUrl(jTextField13.getText());
+        product.setEan(jTextField22.getText());
         product.setText(jEditorPane1.getText());
         product.setWarengruppenId(getCurrentProductGroup());
         product.save();
@@ -1457,11 +1457,11 @@ private void jTextField4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST
                 }
             }
 
-            try {
-                Double.valueOf(jTextField13.getText());
-            } catch (NumberFormatException numberFormatException) {
-                jTextField13.setText("0");
-            }
+//            try {
+//                Double.valueOf(jTextField22.getText());
+//            } catch (NumberFormatException numberFormatException) {
+//                jTextField22.setText("0");
+//            }
             try {
                 Double.valueOf(jTextField8.getText());
             } catch (NumberFormatException numberFormatException) {
@@ -1485,15 +1485,17 @@ private void jTextField4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST
             current.setEK(Double.valueOf(jTextField7.getText()));
             current.setTaxID(taxID);
             current.setDatum(DateConverter.getDate(jTextField9.getText()));
-            current.setUrl(jTextField11.getText());
-            current.setEan(jTextField13.getText());
+            current.setUrl(jTextField13.getText());
+            current.setEan(jTextField22.getText());
             current.setText(jEditorPane1.getText());
             current.save();
 
-            if (currentImageURI != null && current.getImagePath() != null && currentImageURI != current.getImagePath()) {
+            if (current.getImagePath() ==null || (currentImageURI != null && currentImageURI != current.getImagePath())) {
                 copyImage(current);
             }
             getMainframe().setMessage("Produkt Nummer " + current.getProduktNummer() + " gespeichert.");
+            
+            setProduct(new Product(current.getId()));
         }
     }
 
@@ -1588,13 +1590,9 @@ class GetProductImage extends SwingWorker<Void, Void> {
 
     public Void doInBackground() {
 
-//        Image coverImg = null;
         view.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         try {
-//            coverImg = Toolkit.getDefaultToolkit().createImage(view.getCurrent().getPath());
-//            Image smallCoverImg = coverImg.getScaledInstance(217, 151, java.awt.Image.SCALE_FAST);
-//            ImageIcon coverImgIcon = new ImageIcon(smallCoverImg);
-            if (view.getCurrent().getImage() != null) {
+            if (view.getCurrent().getImage() != null && view.getCurrent().getImage().getImage() != null) {
                 view.jTextField11.setText(view.getCurrent().getImage().getPath());
                 view.imgLabel.setIcon(view.getCurrent().getImage().getImageIcon());
                 view.validate();

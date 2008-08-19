@@ -62,8 +62,8 @@ public class PDF_Produkt implements Waitable {
     private Double brutto = 0d;
     private Image image;
     private PdfStamper pdfStamper;
-    private boolean scale  = false;
-    private int width, height;
+    private boolean scale = false;
+    private int width,  height;
 
     public PDF_Produkt(Product produkt, java.awt.Image image) {
 
@@ -83,46 +83,50 @@ public class PDF_Produkt implements Waitable {
     }
 
     public void start() {
+
         try {
-
-            try {
-                PdfReader template = new PdfReader(settings.getProdukttemp());
-                filename = settings.getProduktverz() + separator + produkt.getProduktNummer().replaceAll(" ", "_") + ".pdf";
-                filename = filename.trim();
+            PdfReader template = new PdfReader(settings.getProdukttemp());
+//                filename = settings.getProduktverz() + separator + produkt.getProduktNummer().replaceAll(" ", "_") + ".pdf";
+//                filename = filename.trim();
 
 
-                File updatedPDF = File.createTempFile("temppdf", ".pdf");
-                filename = updatedPDF.getCanonicalPath();
+            File updatedPDF = File.createTempFile("temppdf", ".pdf");
+            filename = updatedPDF.getCanonicalPath();
 
 //                if(updatedPDF.exists())updatedPDF.delete();
 
-                Log.Debug("Creating PDF: " + updatedPDF.getPath());
+            Log.Debug("Creating PDF: " + updatedPDF.getPath());
 
-                pdfStamper = new PdfStamper(template, new FileOutputStream(updatedPDF.getAbsolutePath()));
-                acroFields = pdfStamper.getAcroFields();
-                HashMap PDFFields = acroFields.getFields();
-                fieldNameKeys = PDFFields.keySet();
+            pdfStamper = new PdfStamper(template, new FileOutputStream(updatedPDF.getAbsolutePath()));
+            acroFields = pdfStamper.getAcroFields();
+            HashMap PDFFields = acroFields.getFields();
+            fieldNameKeys = PDFFields.keySet();
 
-                Log.Debug("Write text..");
-                setAllFields();
+            Log.Debug("Write text..");
+            setAllFields();
 
-                setImage();
-            } catch (Exception e) {
-                Log.Debug(e);
-            } finally {
-
-                Log.Debug("Finishing..");
-                pdfStamper.setFormFlattening(true);
-                pdfStamper.close();
-            }
-//            Log.Debug("Try to launch PDF Viewer: " + settings.getPdfviewer());
-//            open();
-
+            setImage();
         } catch (Exception e) {
 
             Popup.error("Bitte geben Sie unter \nBearbeiten-> Einstellungen ein PDF-Template an.\n" + e.getMessage(), Popup.ERROR);
 
+            Log.Debug(e);
+        } finally {
+
+            Log.Debug("Finishing..");
+            pdfStamper.setFormFlattening(true);
+            try {
+                pdfStamper.close();
+            } catch (DocumentException ex) {
+                Log.Debug(ex);
+            } catch (IOException ex) {
+                Log.Debug(ex);
+            }
         }
+//            Log.Debug("Try to launch PDF Viewer: " + settings.getPdfviewer());
+//            open();
+
+
     }
 
     public void printOutFieldNames() {
@@ -215,7 +219,6 @@ public class PDF_Produkt implements Waitable {
     public void waitFor() {
         start();
     }
-
 
     public void setScale(int width, int height) {
         this.scale = true;

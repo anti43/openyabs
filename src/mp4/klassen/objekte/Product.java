@@ -120,7 +120,11 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
     }
 
     public ProductImage getImage() {
-        return image;
+        if (image != null) {
+            return image;
+        } else {
+            return null;
+        }
     }
 
     public URI getImagePath() {

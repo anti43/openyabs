@@ -19,6 +19,7 @@ package mp4.klassen.objekte;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.image.ImageObserver;
+import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Date;
@@ -82,9 +83,9 @@ public class ProductImage extends mp3.classes.layer.Things implements mp4.datenb
             image = new ProductImage();
             image.setProduktid(Integer.valueOf(data[0]));
             try {
-                image.setUrl(new URI(data[1]));
+                image.setPath(new File(data[1]).toURI());//.getPath().replaceAll(" ", "%20")
             } catch (Exception ex) {
-                image.setUrl(null);
+                image.setPath(null);
                 Log.Debug(ex);
             }
             image.setDatum(DateConverter.getDate(data[2]));
@@ -94,16 +95,19 @@ public class ProductImage extends mp3.classes.layer.Things implements mp4.datenb
 
     public URI getURI() {
         try {
-            return new URI(Path);
-        } catch (URISyntaxException ex) {
-            return null;
+            if (Path != null) {
+                return new URI(Path.replaceAll(" ", "%20"));
+            }
+        } catch (Exception ex) {
+            Log.Debug(ex);
         }
+        return null;
     }
 
     private void explode(String[] select) {
         try {
             this.setProduktid(Integer.valueOf(select[0]));
-            this.setUrl(new URI(select[1]));
+            this.setPath(new File(select[1]).toURI());
             this.setDatum(DateConverter.getDate(select[2]));
         } catch (Exception ex) {
             Log.Debug(ex);
@@ -138,11 +142,17 @@ public class ProductImage extends mp3.classes.layer.Things implements mp4.datenb
     }
 
     public String getPath() {
-        return getURI().getPath();
+        if (getURI() != null) {
+            return getURI().getPath();
+        } else {
+            return null;
+        }
     }
 
-    public void setUrl(URI ImageURI) {
-        this.Path = ImageURI.toString();
+    public void setPath(URI ImageURI) {
+        if (ImageURI != null) {
+            this.Path = ImageURI.toString();
+        }
         this.isSaved = false;
     }
 
@@ -159,6 +169,7 @@ public class ProductImage extends mp3.classes.layer.Things implements mp4.datenb
         Image coverImg = Toolkit.getDefaultToolkit().getImage("/bilder/medium/messagebox_warning.png");
         try {
             if (getPath() != null) {
+                Log.Debug("Loading Image ..: " + getURI().getPath());
                 coverImg = Toolkit.getDefaultToolkit().createImage(getURI().getPath());
                 return coverImg;
             }
@@ -172,6 +183,7 @@ public class ProductImage extends mp3.classes.layer.Things implements mp4.datenb
         Image coverImg;
         try {
             if (getPath() != null) {
+                Log.Debug("Loading ImageIcon ..: " + getURI().getPath());
                 coverImg = Toolkit.getDefaultToolkit().createImage(getURI().getPath());
                 return new ImageIcon(coverImg);
             }
