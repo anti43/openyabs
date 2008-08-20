@@ -17,6 +17,11 @@ import mp4.einstellungen.Einstellungen;
  */
 public class FormatNumber {
 
+    public static NumberFormat getDefaultDecimalFormat(){
+    
+        return new java.text.DecimalFormat("#,##0.00;(#,##0.00)");
+    }
+    
     public static String formatDezimal(Double number) {
         java.text.DecimalFormat n = new java.text.DecimalFormat("#,##0.00;(#,##0.00)");
         n.setMaximumFractionDigits(2);
