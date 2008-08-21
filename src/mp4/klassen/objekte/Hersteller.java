@@ -50,7 +50,7 @@ public class Hersteller extends mp3.classes.layer.People implements mp4.datenban
     public Hersteller(Integer id) {
         super(ConnectionHandler.instanceOf().clone(TABLE_MANUFACTURER));
         this.id = id;
-        this.explode(this.selectLast("*", "id", id.toString(), true,false,false));
+        this.explode(this.selectLast("*", "id", id.toString(), true));
     }
     public String getid() {
         return id.toString();

@@ -47,6 +47,10 @@ public interface Tabellen {
      */
     public final String TABLE_PRODUCTS = "produkte";
     /**
+     * Produktdaten
+     */
+    public final String TABLE_SERVICES = "dienstleistungen";
+    /**
      * Rechnungsdaten
      */
     public final String TABLE_BILLS = "rechnungen";
@@ -169,11 +173,18 @@ public interface Tabellen {
      */
     public final String TABLE_PRODUCTS_FIELDS =
             "Produktnummer" + "," + "Name" + "," + "Text" + "," + "VK" + "," + "EK" +
-            "," + "steuersatzid" + "," + "herstellerid" + "," + "lieferantenid" + "," + "warengruppenid" + "," + "Datum" + "," + "Url" + "," + "EAN";//     /**
-//     * Fields in products groups table
-//     */
-//     public  final String TABLE_PRODUCTS_GROUPS_FIELDS =
-//               "Warengruppennummer" + "," +"Name";
+            "," + "steuersatzid" + "," + "herstellerid" + "," + "lieferantenid" + "," + 
+            "warengruppenid" + "," + "Datum" + "," + "Url" + "," + "EAN" +
+             "," + "bestellnr" + "," + "herstellernr" + "," + "lieferantennr" + "," + 
+            "bestelldatum" + "," + "bestellmenge" + "," + "lagermenge";
+     /**
+     * Fields in products table
+     */
+    public final String TABLE_SERVICES_FIELDS =
+        "produktnummer,name ,beschreibung,einheit," +
+        "preis , steuersatzid ," +
+        "warengruppenid," + "datum";
+        
     /**
      * Fields in products groups categories table
      */

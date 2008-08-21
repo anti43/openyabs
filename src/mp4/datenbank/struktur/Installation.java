@@ -16,7 +16,6 @@
  */
 package mp4.datenbank.struktur;
 
-import mp3.classes.interfaces.*;
 import java.io.File;
 import java.util.Date;
 import mp3.installer.MpInstaller;
@@ -135,8 +134,9 @@ public interface Installation {
         "CREATE TABLE produkte (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
         "produktnummer VARCHAR(500),name VARCHAR(50),text VARCHAR(500),vk DOUBLE DEFAULT 0,ek DOUBLE DEFAULT 0, steuersatzid INTEGER REFERENCES steuersaetze (id)," +
         "herstellerid INTEGER REFERENCES hersteller(id), lieferantenid INTEGER REFERENCES lieferanten (id)," +
-        "warengruppenid INTEGER DEFAULT 0," + "datum DATE NOT NULL," + "url VARCHAR(250) default NULL," +
-        "ean VARCHAR(25)," + 
+        "warengruppenid INTEGER DEFAULT 0,datum DATE NOT NULL,url VARCHAR(250) default NULL," +
+        "ean VARCHAR(25),bestellnr VARCHAR(50),herstellernr VARCHAR(50),lieferantennr VARCHAR(50)," + 
+        "bestelldatum VARCHAR(50),bestellmenge DOUBLE DEFAULT 0, lagermenge DOUBLE DEFAULT 0," +    
         "deleted INTEGER DEFAULT 0," +
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
         

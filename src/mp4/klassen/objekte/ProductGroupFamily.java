@@ -50,7 +50,7 @@ public class ProductGroupFamily extends mp3.classes.layer.Things implements mp4.
         super(query.clone(TABLE_PRODUCTS_GROUPS_FAMILIES));
         
         this.id=Integer.valueOf(id);
-        this.explode(this.selectLast("*", "id", id, true , true, false));
+        this.explode(this.selectLast("*", "id", id, true ));
         this.query=query;
     }
 

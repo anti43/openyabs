@@ -61,6 +61,45 @@ public class NumberCheck {
             }
         }
     }
+   public static Float checkFloatNN(Object number) {
+        try {
+            return Float.valueOf(number.toString());
+        } catch (NumberFormatException numberFormatException) {
+            try {
+                return Float.valueOf(number.toString().replaceAll(",", "."));
+            } catch (NumberFormatException numberFormatException1) {
+                try {
+                    return Float.valueOf(removeCurrencySymbols(number));
+                } catch (NumberFormatException numberFormatException12) {
+                    return 0f;
+                }
+            }
+        }
+    }
+
+    public static Integer checkIntegerNN(Object number) {
+        try {
+            return Integer.valueOf(number.toString());
+        } catch (NumberFormatException numberFormatException) {
+            return 0;
+        }
+    }
+
+    public static Double checkDoubleNN(Object number) {
+        try {
+            return Double.valueOf(number.toString());
+        } catch (NumberFormatException numberFormatException) {
+            try {
+                return Double.valueOf(number.toString().replaceAll(",", "."));
+            } catch (NumberFormatException numberFormatException1) {
+                try {
+                    return Double.valueOf(removeCurrencySymbols(number));
+                } catch (NumberFormatException numberFormatException12) {
+                    return 0d;
+                }
+            }
+        }
+    }
 
     public static String removeCurrencySymbols(Object number) {
         return number.toString().replaceAll("€", "").replaceAll("SFr", "").replaceAll(",", ".").trim();

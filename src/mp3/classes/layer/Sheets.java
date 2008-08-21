@@ -82,7 +82,7 @@ public abstract class Sheets implements Queries, mp4.datenbank.struktur.Tabellen
         return q.selectFirst(what, wher);
     }
     
-    public String[] selectLast(String what, String from, String where, boolean id,boolean like) {
+    public String[] selectLast(String what, String from, String where, boolean id) {
         String hk = "'";
         if (id) {
             hk = "";
@@ -90,7 +90,7 @@ public abstract class Sheets implements Queries, mp4.datenbank.struktur.Tabellen
 
         String[] wher = {from, where, hk};
       
-        return q.selectLast(what, wher,false,like);
+        return q.selectLast(what, wher);
     }
     
     public String[][] select(String what, String from, String where, boolean id) {

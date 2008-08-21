@@ -163,29 +163,10 @@ public abstract class Things implements Queries, mp4.datenbank.struktur.Tabellen
 
         String[] wher = {from, where, hk};
 
-        return q.selectLast(what, wher, false, false);
+        return q.selectLast(what, wher);
     }
 
-    /**
-     * 
-     * @param what
-     * @param from
-     * @param where
-     * @param id
-     * @param ghosts
-     * @param like
-     * @return
-     */
-    public String[] selectLast(String what, String from, String where, boolean id, boolean ghosts, boolean like) {
-        String hk = "'";
-        if (id) {
-            hk = "";
-        }
 
-        String[] wher = {from, where, hk};
-
-        return q.selectLast(what, wher, ghosts, like);
-    }
 
     /**
      * 

@@ -49,7 +49,7 @@ public class ProductGroupGroup extends mp3.classes.layer.Things implements mp4.d
         super(query.clone(TABLE_PRODUCTS_GROUPS_GROUP_FIELDS));
 
         this.id = id;
-        this.explode(this.selectLast("*", "id", id.toString(), true, true, false));
+        this.explode(this.selectLast("*", "id", id.toString(), true));
         this.query = query;
     }
 

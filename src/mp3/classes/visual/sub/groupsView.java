@@ -16,6 +16,7 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeSelectionModel;
+import mp4.klassen.objekte.Dienstleistung;
 import mp4.utils.windows.Position;
 import mp3.classes.utils.Log;
 import mp3.classes.layer.Popup;
@@ -52,6 +53,10 @@ public class groupsView extends javax.swing.JFrame implements TreeSelectionListe
     private JScrollPane jScrollPane1;
     private Product produkt;
     private JTextField field;
+
+    public groupsView(mainframe mainframe, Dienstleistung current, JTextField jTextField12) {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
 
     /** Creates new form groupsView
      * @param frame

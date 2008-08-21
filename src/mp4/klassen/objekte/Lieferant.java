@@ -66,7 +66,7 @@ public class Lieferant extends mp3.classes.layer.People implements mp4.datenbank
         super(ConnectionHandler.instanceOf().clone(TABLE_SUPPLIER));
         this.query =ConnectionHandler.instanceOf();
         this.id = id;
-        this.explode(this.selectLast("*", "id", id.toString(), true, false, false));
+        this.explode(this.selectLast("*", "id", id.toString(), true));
     }
 
 

@@ -53,8 +53,6 @@ public class Customer extends mp3.classes.layer.People implements mp4.datenbank.
         super(ConnectionHandler.instanceOf().clone(TABLE_CUSTOMERS));
         this.query=ConnectionHandler.instanceOf();
     }
-
-
  
 
     public Customer(Query query) {
@@ -66,15 +64,14 @@ public class Customer extends mp3.classes.layer.People implements mp4.datenbank.
     public Customer(Integer id) {
         super(ConnectionHandler.instanceOf().clone(TABLE_CUSTOMERS));
         this.id=Integer.valueOf(id);
-        this.explode(this.selectLast("*", "id", id.toString(), true , true, false));
+        this.explode(this.selectLast("*", "id", id.toString(), true ));
         this.query=ConnectionHandler.instanceOf();
     }
 
     public Customer(ConnectionHandler query, String kundennummer, boolean like) {
         super(query.clone(TABLE_CUSTOMERS));
 //        this.id=Integer.valueOf(id);
-        this.explode(
-                this.selectLast("*","kundennummer",kundennummer, false, false, false));
+        this.explode(this.selectLast("*","kundennummer",kundennummer, false));
         this.query=query;
     }
 
@@ -88,24 +85,14 @@ public class Customer extends mp3.classes.layer.People implements mp4.datenbank.
         ArrayList arr = new ArrayList();
         
         Query q = query.clone(TABLE_CUSTOMERS);
-
         String[][] str = q.select("id", null);
-   
-     
        
-        for (int i = 0; i < str.length; i++) {
-            
+        for (int i = 0; i < str.length; i++) {   
             arr.add(new Customer(Integer.valueOf(str[i][0])));
-
         }
-
-        
         
         return arr;
     }
-
-
-
 
 
     public String getid() {
@@ -126,7 +113,6 @@ public class Customer extends mp3.classes.layer.People implements mp4.datenbank.
             return false;
         }
     }
-
 
 
     public void setKundennummer(String Kundennummer) {
@@ -352,11 +338,7 @@ public class Customer extends mp3.classes.layer.People implements mp4.datenbank.
     }
     
     public void export(){
-        Query q = query.clone(TABLE_CUSTOMERS);
-        
-        q.export("Kunden.txt");
-    
-    
+
     }
 
     private void setDeleted(boolean b) {

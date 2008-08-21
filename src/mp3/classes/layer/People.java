@@ -166,7 +166,7 @@ public abstract class People implements Queries, mp4.datenbank.struktur.Tabellen
      * @param like 
      * @return
      */
-    public String[] selectLast(String what, String from, String where, boolean id, boolean ghosts, boolean like) {
+    public String[] selectLast(String what, String from, String where, boolean id) {
         String hk = "'";
         if (id) {
             hk = "";
@@ -174,7 +174,7 @@ public abstract class People implements Queries, mp4.datenbank.struktur.Tabellen
 
         String[] wher = {from, where, hk};
 
-        return q.selectLast(what, wher, ghosts, like);
+        return q.selectLast(what, wher);
     }
 
     public int insert(String set, String value) {

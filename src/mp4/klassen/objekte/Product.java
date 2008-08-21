@@ -36,6 +36,14 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
     private String Ean = "00000000";
     private String Nummer = "";
     private String Name = "";
+    
+    private String Bestellnr = "";
+    private String Herstellernr = "";
+    private String Liefernr = "";
+    private String Bestelldatum = "";
+    private Double Bestellmenge = 0d;
+    private Double Lagermenge = 0d;
+    
     private Date Datum = new Date();
     private String url = "";
     private String Text = "";
@@ -163,6 +171,14 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
         this.setDatum(DateConverter.getDate(select[10]));
         this.setUrl(select[11]);
         this.setEan(select[12]);
+        
+        this.setBestellnr(select[12+1]);
+        this.setHerstellernr(select[14]);
+        this.setLiefernr(select[15]);
+        this.setBestelldatum(select[16]);
+        this.setBestellmenge(Double.valueOf(select[17]));
+        this.setLagermenge(Double.valueOf(select[18]));
+        
     }
 
     public String[][] getAll() {
@@ -176,7 +192,7 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
                 "LEFT OUTER JOIN  lieferanten ON produkte.lieferantenid = lieferanten.id " +
                 "LEFT OUTER JOIN  hersteller ON produkte.herstellerid = hersteller.id " +
                 "LEFT OUTER JOIN  warengruppengruppen ON produkte.warengruppenid = warengruppengruppen.id " +
-                "WHERE produkte.deleted = 0");
+                "WHERE produkte.deleted = 0", null);
 
         return str;
     }
@@ -194,7 +210,15 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
         str = str + this.getWarengruppenId() + "(;;,;;)";
         str = str + "(;;2#4#1#1#8#0#;;)" + DateConverter.getSQLDateString(this.getDatum()) + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
         str = str + "(;;2#4#1#1#8#0#;;)" + this.getUrl() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
-        str = str + "(;;2#4#1#1#8#0#;;)" + this.getEan() + "(;;2#4#1#1#8#0#;;)";
+        str = str + "(;;2#4#1#1#8#0#;;)" + this.getEan() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
+        
+        str = str + "(;;2#4#1#1#8#0#;;)" + this.getBestellnr() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
+        str = str + "(;;2#4#1#1#8#0#;;)" + this.getHerstellernr() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
+        str = str + "(;;2#4#1#1#8#0#;;)" + this.getLiefernr() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
+        str = str + "(;;2#4#1#1#8#0#;;)" + this.getBestelldatum() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
+        str = str + this.getBestellmenge() + "(;;,;;)";
+        str = str + this.getLagermenge();
+        
 
         return str;
     }
@@ -355,7 +379,7 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
                 "produkte.VK,produkte.EK,produkte.Tax,Hersteller,Lieferanten.firma AS Lieferant," +
                 "Warengruppenid,produkte.Datum,produkte.EAN FROM produkte " +
                 "LEFT OUTER JOIN  lieferanten ON produkte.lieferantenid = lieferanten.id " +
-                "LEFT OUTER JOIN  warengruppengruppen ON produkte.warengruppenid = warengruppengruppen.id");
+                "LEFT OUTER JOIN  warengruppengruppen ON produkte.warengruppenid = warengruppengruppen.id", null);
 
         return str;
     }
@@ -378,5 +402,53 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
 
     public Hersteller getHersteller() {
         return hersteller;
+    }
+
+    public String getBestellnr() {
+        return Bestellnr;
+    }
+
+    public void setBestellnr(String Bestellnr) {
+        this.Bestellnr = Bestellnr;
+    }
+
+    public String getHerstellernr() {
+        return Herstellernr;
+    }
+
+    public void setHerstellernr(String Herstellernr) {
+        this.Herstellernr = Herstellernr;
+    }
+
+    public String getLiefernr() {
+        return Liefernr;
+    }
+
+    public void setLiefernr(String Liefernr) {
+        this.Liefernr = Liefernr;
+    }
+
+    public String getBestelldatum() {
+        return Bestelldatum;
+    }
+
+    public void setBestelldatum(String Bestelldatum) {
+        this.Bestelldatum = Bestelldatum;
+    }
+
+    public Double getBestellmenge() {
+        return Bestellmenge;
+    }
+
+    public void setBestellmenge(Double Bestellmenge) {
+        this.Bestellmenge = Bestellmenge;
+    }
+
+    public Double getLagermenge() {
+        return Lagermenge;
+    }
+
+    public void setLagermenge(Double Lagermenge) {
+        this.Lagermenge = Lagermenge;
     }
 }
