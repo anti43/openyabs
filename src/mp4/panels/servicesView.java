@@ -131,8 +131,6 @@ public class servicesView extends javax.swing.JPanel implements mp4.datenbank.st
 
         jTextField4.setEditable(false);
 
-        GetDienstleistungImage t = new GetDienstleistungImage(this);
-        t.execute();
     }
 
     /** This method is called from within the constructor to
