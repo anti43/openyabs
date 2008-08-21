@@ -202,8 +202,8 @@ public interface Installation {
 //        ******************************************************************************************************************************
         
         "INSERT INTO steuersaetze (name, wert) VALUES ('Default', 0.0)",
-        "INSERT INTO hersteller (herstellernummer, name, firma) VALUES ('1000', 'Default', 'Default')",
-        "INSERT INTO lieferanten (lieferantennummer, name, firma) VALUES ('1000', 'Default', 'Default')",
+        "INSERT INTO hersteller (herstellernummer, name, firma, ort) VALUES ('1000', 'Default', 'Default', '')",
+        "INSERT INTO lieferanten (lieferantennummer, name, firma, ort) VALUES ('1000', 'Default', 'Default', '')",
 
 //        *****************************************Programmdatenb*************************************************************************************        
         

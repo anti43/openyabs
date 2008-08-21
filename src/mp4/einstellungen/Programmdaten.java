@@ -52,6 +52,38 @@ public class Programmdaten implements mp4.datenbank.struktur.Tabellen {
         return handler.getString("WARENGRUPPEN_SEPARATOR");
     }
 
+    public void setSERVICES_NUMMER_FORMAT(String SERVICES_NUMMER_FORMAT) {
+         handler.setString("SERVICES_NUMMER_FORMAT", SERVICES_NUMMER_FORMAT);
+    }
+    
+    public String getSERVICES_NUMMER_FORMAT() {
+        return handler.getString("SERVICES_NUMMER_FORMAT");
+    }
+    
+   public void setCUSTOMER_NUMMER_FORMAT(String CUSTOMER_NUMMER_FORMAT) {
+         handler.setString("CUSTOMER_NUMMER_FORMAT", CUSTOMER_NUMMER_FORMAT);
+    }
+    
+    public String getCUSTOMER_NUMMER_FORMAT() {
+        return handler.getString("CUSTOMER_NUMMER_FORMAT");
+    }
+    
+    public void setSUPPLIER_NUMMER_FORMAT(String SUPPLIER_NUMMER_FORMAT) {
+         handler.setString("SUPPLIER_NUMMER_FORMAT", SUPPLIER_NUMMER_FORMAT);
+    }
+    
+    public String getSUPPLIER_NUMMER_FORMAT() {
+        return handler.getString("SUPPLIER_NUMMER_FORMAT");
+    }
+    
+    public void setMANUFACTURER_NUMMER_FORMAT(String MANUFACTURER_NUMMER_FORMAT) {
+         handler.setString("MANUFACTURER_NUMMER_FORMAT", MANUFACTURER_NUMMER_FORMAT);
+    }
+    
+    public String getMANUFACTURER_NUMMER_FORMAT() {
+        return handler.getString("MANUFACTURER_NUMMER_FORMAT");
+    }
+
     public void setWARENGRUPPEN_SEPARATOR(String WARENGRUPPEN_SEPARATOR) {
         handler.setString("WARENGRUPPEN_SEPARATOR", WARENGRUPPEN_SEPARATOR);
     }

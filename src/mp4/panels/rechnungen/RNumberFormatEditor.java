@@ -25,14 +25,7 @@ public class RNumberFormatEditor extends javax.swing.JFrame {
     private Countable mode;
 
 
-    /** Creates new form RNumberFormatEditor
-     * @param mode 
-     */
-//    private RNumberFormatEditor() {
-//        initComponents();
-//    }
-
-    
+   
     public RNumberFormatEditor(Countable mode) {
         initComponents();
         this.mode = mode;
@@ -46,7 +39,6 @@ public class RNumberFormatEditor extends javax.swing.JFrame {
             Log.Debug(e);
         }
     }
-
     
 
     /** This method is called from within the constructor to

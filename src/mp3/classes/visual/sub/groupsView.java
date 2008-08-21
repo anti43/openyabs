@@ -53,9 +53,18 @@ public class groupsView extends javax.swing.JFrame implements TreeSelectionListe
     private JScrollPane jScrollPane1;
     private Product produkt;
     private JTextField field;
+    private Dienstleistung produkt2;
 
-    public groupsView(mainframe mainframe, Dienstleistung current, JTextField jTextField12) {
-        throw new UnsupportedOperationException("Not yet implemented");
+    public groupsView(mainframe frame, Dienstleistung prod, JTextField field) {
+        initComponents();
+        this.frame = frame;
+        this.produkt2 = prod;
+        this.field = field;
+        p = ProductGroupHandler.instanceOf();
+        new Position(this);
+        this.setTreeData(true);
+        jTextField5.setText(Programmdaten.instanceOf().getWARENGRUPPEN_SEPARATOR());
+        this.setVisible(rootPaneCheckingEnabled);
     }
 
     /** Creates new form groupsView
@@ -78,9 +87,7 @@ public class groupsView extends javax.swing.JFrame implements TreeSelectionListe
 //        tree.addTreeSelectionListener(this);
 
         this.setTreeData(true);
-
         jTextField5.setText(Programmdaten.instanceOf().getWARENGRUPPEN_SEPARATOR());
-
         this.setVisible(rootPaneCheckingEnabled);
     }
 
@@ -88,13 +95,11 @@ public class groupsView extends javax.swing.JFrame implements TreeSelectionListe
         initComponents();
         p = ProductGroupHandler.instanceOf();
         new Position(this);
-
         root = new DefaultMutableTreeNode("MP");
         setTreeData(false);
         tree = this.jTree1;
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         tree.addTreeSelectionListener(this);
-
         this.setVisible(rootPaneCheckingEnabled);
     }
 
@@ -396,13 +401,16 @@ pack();
 
         if (leaf) {
             try {
-                produkt.setWarengruppenId(grp.getId());
-                field.setText(produkt.getProductgroupPath());
-                Log.Debug("Path: " + produkt.getProductgroupPath() + " : " + grp.getId());
+                if (produkt != null) {
+                    produkt.setWarengruppenId(grp.getId());
+                    field.setText(produkt.getProductgroupPath());
+                } else if (produkt != null) {
+                    produkt2.setWarengruppenId(grp.getId());
+                    field.setText(produkt2.getProductgroupPath());
+                }
             } catch (Exception e) {
                 Log.Debug(e);
             }
-
             this.dispose();
         } else {
             Popup.notice("Sie müssen eine Produktgruppe auswählen");
@@ -502,9 +510,8 @@ private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 }//GEN-LAST:event_jButton5ActionPerformed
 
 private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-Programmdaten.instanceOf().setWARENGRUPPEN_SEPARATOR(jTextField5.getText());
+    Programmdaten.instanceOf().setWARENGRUPPEN_SEPARATOR(jTextField5.getText());
 }//GEN-LAST:event_jButton8ActionPerformed
-
 // Variables declaration - do not modify//GEN-BEGIN:variables
 private javax.swing.JButton jButton1;
 private javax.swing.JButton jButton2;
@@ -576,11 +583,9 @@ private javax.swing.JTextField jTextField5;
         tree.setExpandsSelectedPaths(true);
 
         this.jPanel1.add(jScrollPane1, BorderLayout.CENTER);
-        
+
         TreeFormat.expandTree(tree);
-        
+
         this.validate();
     }
-
-
 }

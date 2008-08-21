@@ -23,11 +23,11 @@ package mp3.classes.interfaces;
  * @author anti43
  */
 public interface Strings {
+
     public String NO = "Nein";
     public String YES = "Ja";
     public String NO_PDF = "Bitte geben Sie unter \nBearbeiten-> Einstellungen ein PDF-Template an.\n";
-    public String NO_BROWSER =  "Kein Browser angegeben. Wählen Sie Ihren Internetbrowser unter 'Programmeinstellungen'.";
-
+    public String NO_BROWSER = "Kein Browser angegeben. Wählen Sie Ihren Internetbrowser unter 'Programmeinstellungen'.";
     public String TEST_CONF = "Teste Konfiguration";
     public String PERMISSION_DENIED = "Nicht möglich, Dateien anzulegen. Programm wird beendet.";
     public String SHUTDOWN = "Programm wird beendet";
@@ -44,37 +44,23 @@ public interface Strings {
             "Tel" + "," + "Fax" + "," + "Mobil" + "," + "Mail" + "," + "Webseite";
     public String TABLE_PRODUCTS_LIST_PRINT_HEADER =
             "P-Nr" + "," + "Name" + "," + "Text" + "," + "VK" + "," + "EK" +
-            "," + "Tax" + "," + "Hersteller" + "," + "Lieferant" + "," + "Warengruppennr" + "," + 
+            "," + "Tax" + "," + "Hersteller" + "," + "Lieferant" + "," + "Warengruppennr" + "," +
             "Datum" + "," + "EAN";
-    
-     /**
-      * 
-      * String utilitis
-      */
-     public final String ALL = "*";
-     public final String NULL = "";
-     public final String ID = "id";
-     public final String NOTNULL = "NOT null";
-     
-     public final String CUSTOMER = "Kunde";
-
-     
-     public final String SUPPLIER = "Lieferant";
-
-     
-     public final String PRODUCT = "Produkt";
-  
-     
-     public final String ORDER = "Angebot";
-
-     
-     public final String BILL = "Rechnung";
-     
-     public final String BACKUP = "Datensicherung";
-     
-     public final String KONTEN = "Konten";
-     
-     public final String EINNAHME = "Einnahme";
-     
-     
+    /**
+     * 
+     * String utilitis
+     */
+    public final String ALL = "*";
+    public final String NULL = "";
+    public final String ID = "id";
+    public final String NOTNULL = "NOT null";
+    public final String CUSTOMER = "Kunde";
+    public final String SUPPLIER = "Lieferant";
+    public final String PRODUCT = "Produkt";
+    public final String ORDER = "Angebot";
+    public final String SERVICE = "Dienstleistung";
+    public final String BILL = "Rechnung";
+    public final String BACKUP = "Datensicherung";
+    public final String KONTEN = "Konten";
+    public final String EINNAHME = "Einnahme";
 }

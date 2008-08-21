@@ -18,10 +18,9 @@ package mp4.klassen.objekte;
 
 import java.net.URI;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Date;
 
-import mp3.classes.utils.Log;
+import mp3.classes.interfaces.Countable;
 import mp4.datenbank.verbindung.ConnectionHandler;
 
 import mp4.datenbank.verbindung.Query;
@@ -31,7 +30,7 @@ import mp4.utils.datum.DateConverter;
  *
  * @author anti43
  */
-public class Product extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen {
+public class Product extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen, Countable {
 
     private String Ean = "00000000";
     private String Nummer = "";
@@ -450,5 +449,14 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
 
     public void setLagermenge(Double Lagermenge) {
         this.Lagermenge = Lagermenge;
+    }
+
+
+    public String getTable() {
+        return TABLE_PRODUCTS;
+    }
+
+    public String getCountColumn() {
+       return "produktnummer";
     }
 }

@@ -77,6 +77,7 @@ import mp4.panels.eurAPanel;
 import mp4.panels.eurEPanel;
 import mp4.panels.kontakte.suppliersView;
 import mp4.panels.productsView;
+import mp4.panels.servicesView;
 import mp4.utils.text.FadeOnChangeLabel;
 import mp4.utils.windows.Position;
 import mp4.utils.windows.TabCloseIcon;
@@ -461,6 +462,11 @@ public class mainframe extends javax.swing.JFrame {
         jButton10.setText("Services");
         jButton10.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton10.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton10ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -1143,6 +1149,16 @@ private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
         Popup.notice("Die Benutzerverwaltung kann nur von einem Administrator geöffnet werden!");
     }
 }//GEN-LAST:event_jMenuItem5ActionPerformed
+
+private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
+
+    servicesView panel = new servicesView(this);
+
+    mainTabPane.add("Dienstleistung", panel);
+    mainTabPane.setSelectedComponent(panel);
+    mainTabPane.setIconAt(mainTabPane.getSelectedIndex(), new TabCloseIcon());
+    mainTabPane.validate();
+}//GEN-LAST:event_jButton10ActionPerformed
 
     @Override
     public void finalize() {

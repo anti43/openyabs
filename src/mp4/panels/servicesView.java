@@ -12,18 +12,22 @@ import java.util.Date;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
+import mp3.classes.interfaces.Strings;
 import mp3.classes.interfaces.panelInterface;
 import mp3.classes.utils.Formater;
 import mp3.classes.utils.Log;
 import mp3.classes.layer.Popup;
 
+import mp3.classes.layer.visual.DatePick;
 import mp4.benutzerverwaltung.User;
 import mp4.frames.mainframe;
 import mp4.klassen.objekte.Angebot;
 import mp4.klassen.objekte.Dienstleistung;
 import mp4.klassen.objekte.Hersteller;
 
+import mp4.klassen.objekte.HistoryItem;
 import mp4.klassen.objekte.Rechnung;
+import mp4.panels.rechnungen.RNumberFormatEditor;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.files.DialogOpenFile;
 import mp4.utils.tabellen.SelectionCheck;
@@ -119,6 +123,7 @@ public class servicesView extends javax.swing.JPanel implements mp4.datenbank.st
 
         this.jTextField16.setText(current.getTaxValue().toString());
         this.jTextField9.setText(DateConverter.getDefDateString(current.getDatum()));
+        this.jTextField10.setText(current.getEinheit());
    
         if (!current.getWarengruppenId().equals("0")) {
             this.getJTextField12().setText(current.getProductgroupPath());
@@ -179,6 +184,7 @@ public class servicesView extends javax.swing.JPanel implements mp4.datenbank.st
         jTextField4 = new javax.swing.JTextField();
         jTextField5 = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
+        jButton16 = new javax.swing.JButton();
         jPanel8 = new javax.swing.JPanel();
         jTextField9 = new javax.swing.JTextField();
         jLabel18 = new javax.swing.JLabel();
@@ -187,6 +193,9 @@ public class servicesView extends javax.swing.JPanel implements mp4.datenbank.st
         jTextField8 = new javax.swing.JTextField();
         jTextField16 = new javax.swing.JTextField();
         jButton22 = new javax.swing.JButton();
+        jLabel11 = new javax.swing.JLabel();
+        jTextField10 = new javax.swing.JTextField();
+        jButton13 = new javax.swing.JButton();
         jPanel9 = new javax.swing.JPanel();
         jLabel15 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
@@ -311,7 +320,7 @@ public class servicesView extends javax.swing.JPanel implements mp4.datenbank.st
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jToolBar2, javax.swing.GroupLayout.DEFAULT_SIZE, 690, Short.MAX_VALUE)
+            .addComponent(jToolBar2, javax.swing.GroupLayout.DEFAULT_SIZE, 724, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -466,41 +475,55 @@ public class servicesView extends javax.swing.JPanel implements mp4.datenbank.st
 
         jLabel6.setText("Name");
 
+        jButton16.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/small/search.png"))); // NOI18N
+        jButton16.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton16ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
-                .addContainerGap(17, Short.MAX_VALUE)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel6)
                     .addComponent(jLabel5))
                 .addGap(17, 17, 17)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jTextField4)
+                    .addComponent(jTextField5, javax.swing.GroupLayout.DEFAULT_SIZE, 124, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton16, javax.swing.GroupLayout.PREFERRED_SIZE, 35, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(7, 7, 7)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel6)
-                    .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(66, 66, 66))
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel5)
+                            .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(7, 7, 7)
+                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel6)
+                            .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jButton16))
+                .addContainerGap(60, Short.MAX_VALUE))
         );
 
         jPanel8.setBackground(new java.awt.Color(227, 219, 202));
         jPanel8.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
+        jTextField9.setEditable(false);
+
         jLabel18.setText("Steuersatz");
 
-        jLabel9.setText("VK");
+        jLabel9.setText("Preis");
 
         jLabel17.setText("Datum");
 
@@ -527,6 +550,26 @@ public class servicesView extends javax.swing.JPanel implements mp4.datenbank.st
             }
         });
 
+        jLabel11.setText("Einheit");
+
+        jTextField10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField10ActionPerformed(evt);
+            }
+        });
+
+        jButton13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/small/cal.png"))); // NOI18N
+        jButton13.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton13ActionPerformed(evt);
+            }
+        });
+        jButton13.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jButton13KeyPressed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
         jPanel8Layout.setHorizontalGroup(
@@ -536,16 +579,18 @@ public class servicesView extends javax.swing.JPanel implements mp4.datenbank.st
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel17)
                     .addComponent(jLabel9)
-                    .addComponent(jLabel18))
+                    .addComponent(jLabel18)
+                    .addComponent(jLabel11))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel8Layout.createSequentialGroup()
-                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField8, javax.swing.GroupLayout.DEFAULT_SIZE, 96, Short.MAX_VALUE)
-                            .addComponent(jTextField16, javax.swing.GroupLayout.DEFAULT_SIZE, 96, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton22, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jTextField9, javax.swing.GroupLayout.DEFAULT_SIZE, 131, Short.MAX_VALUE))
+                    .addComponent(jTextField9, javax.swing.GroupLayout.DEFAULT_SIZE, 96, Short.MAX_VALUE)
+                    .addComponent(jTextField8, javax.swing.GroupLayout.DEFAULT_SIZE, 96, Short.MAX_VALUE)
+                    .addComponent(jTextField16, javax.swing.GroupLayout.DEFAULT_SIZE, 96, Short.MAX_VALUE)
+                    .addComponent(jTextField10, javax.swing.GroupLayout.DEFAULT_SIZE, 96, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jButton22, javax.swing.GroupLayout.PREFERRED_SIZE, 29, Short.MAX_VALUE)
+                    .addComponent(jButton13, 0, 0, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel8Layout.setVerticalGroup(
@@ -557,15 +602,21 @@ public class servicesView extends javax.swing.JPanel implements mp4.datenbank.st
                         .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel9)
                             .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(30, 30, 30)
+                        .addGap(4, 4, 4)
+                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel11)
+                            .addComponent(jTextField10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel18)
                             .addComponent(jTextField16, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(jButton22, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel17)
-                    .addComponent(jTextField9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel17)
+                        .addComponent(jTextField9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jButton13, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -607,12 +658,12 @@ public class servicesView extends javax.swing.JPanel implements mp4.datenbank.st
                     .addComponent(jLabel10)
                     .addComponent(jLabel15))
                 .addGap(4, 4, 4)
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
-                        .addComponent(jTextField12, javax.swing.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE)
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel9Layout.createSequentialGroup()
+                        .addComponent(jTextField12, javax.swing.GroupLayout.DEFAULT_SIZE, 392, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton21, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 176, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1))
                 .addContainerGap())
         );
         jPanel9Layout.setVerticalGroup(
@@ -626,8 +677,8 @@ public class servicesView extends javax.swing.JPanel implements mp4.datenbank.st
                 .addGap(6, 6, 6)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel10)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(73, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
@@ -636,24 +687,26 @@ public class servicesView extends javax.swing.JPanel implements mp4.datenbank.st
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(69, 69, 69))))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addGap(0, 0, 0)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(235, Short.MAX_VALUE))
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -723,7 +776,7 @@ public class servicesView extends javax.swing.JPanel implements mp4.datenbank.st
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jButton6))
-            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 689, Short.MAX_VALUE)
+            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 723, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -740,7 +793,7 @@ public class servicesView extends javax.swing.JPanel implements mp4.datenbank.st
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 694, Short.MAX_VALUE)
+            .addComponent(jTabbedPane1)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -932,9 +985,27 @@ private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     }
 }//GEN-LAST:event_jTextField3ActionPerformed
 
+private void jTextField10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField10ActionPerformed
+// TODO add your handling code here:
+}//GEN-LAST:event_jTextField10ActionPerformed
+
+private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
+new DatePick(jTextField9);
+}//GEN-LAST:event_jButton13ActionPerformed
+
+private void jButton13KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton13KeyPressed
+// TODO add your handling code here:
+}//GEN-LAST:event_jButton13KeyPressed
+
+private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
+new RNumberFormatEditor(this.current);
+}//GEN-LAST:event_jButton16ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton jButton10;
     public javax.swing.JButton jButton11;
+    public javax.swing.JButton jButton13;
+    public javax.swing.JButton jButton16;
     public javax.swing.JButton jButton18;
     public javax.swing.JButton jButton20;
     public javax.swing.JButton jButton21;
@@ -945,6 +1016,7 @@ private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     public javax.swing.JButton jButton9;
     public javax.swing.JEditorPane jEditorPane1;
     public javax.swing.JLabel jLabel10;
+    public javax.swing.JLabel jLabel11;
     public javax.swing.JLabel jLabel15;
     public javax.swing.JLabel jLabel17;
     public javax.swing.JLabel jLabel18;
@@ -973,6 +1045,7 @@ private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     public javax.swing.JTable jTable2;
     public javax.swing.JTable jTable3;
     public javax.swing.JTextField jTextField1;
+    public javax.swing.JTextField jTextField10;
     public javax.swing.JTextField jTextField12;
     public javax.swing.JTextField jTextField14;
     public javax.swing.JTextField jTextField16;
@@ -985,9 +1058,9 @@ private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     public javax.swing.JToolBar jToolBar2;
     // End of variables declaration//GEN-END:variables
     private void createNew() {
-        Dienstleistung product = new Dienstleistung();
+        Dienstleistung service = new Dienstleistung();
         if (!jTextField4.isEditable() || jTextField4.getText().equals("")) {
-            Integer tz = product.getNextIndex("produktnummer");
+            Integer tz = service.getNextIndex("produktnummer");
             jTextField4.setText(tz.toString());
         }
         if (jTextField5.getText().equals("")) {
@@ -1000,21 +1073,22 @@ private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
             jTextField8.setText("0");
         }
    
-        product.setNummer(jTextField4.getText());
-        product.setName(jTextField5.getText());
+        service.setNummer(jTextField4.getText());
+        service.setName(jTextField5.getText());
+        service.setPreis(Double.valueOf(jTextField8.getText()));
+        service.setTaxID(taxID);
+        service.setDatum(DateConverter.getDate(jTextField9.getText()));
+        service.setEinheit(jTextField10.getText());
+        service.setDatum(DateConverter.getDate(jTextField9.getText()));
+        service.setBeschreibung(jEditorPane1.getText());
+        service.setWarengruppenId(current.getWarengruppenId());
+        service.save();
 
-        product.setPreis(Double.valueOf(jTextField8.getText()));
-
-        product.setTaxID(taxID);
-        product.setDatum(DateConverter.getDate(jTextField9.getText()));
-
-        product.setBeschreibung(jEditorPane1.getText());
-        product.setWarengruppenId(current.getWarengruppenId());
-
-        product.save();
-
-        getMainframe().setMessage("Dienstleistung Nummer " + product.getProduktNummer() + " gespeichert.");
-        setDienstleistung(new Dienstleistung(product.getId()));
+        getMainframe().setMessage("Dienstleistung Nummer " + service.getProduktNummer() + " angelegt.");
+       
+        new HistoryItem(Strings.SERVICE, "Dienstleistung Nummer: " + service.getProduktNummer() + " angelegt.");
+        
+        setDienstleistung(new Dienstleistung(service.getId()));
     }
 
     public void save() {
@@ -1049,10 +1123,13 @@ private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
             current.setPreis(Double.valueOf(jTextField8.getText()));
             current.setTaxID(taxID);
             current.setDatum(DateConverter.getDate(jTextField9.getText()));
+            current.setEinheit(jTextField10.getText());
             current.setBeschreibung(jEditorPane1.getText());
             current.save();
 
-            getMainframe().setMessage("Produkt Nummer " + current.getProduktNummer() + " gespeichert.");
+            getMainframe().setMessage("Dienstleistung Nummer " + current.getProduktNummer() + " gespeichert.");
+            new HistoryItem(Strings.SERVICE, "Dienstleistung Nummer: " + current.getProduktNummer() + " gespeichert.");
+        
             setDienstleistung(new Dienstleistung(current.getId()));
         }
     }

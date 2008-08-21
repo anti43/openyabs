@@ -556,7 +556,7 @@
                           <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="1" attributes="0">
                                   <Component id="jPanel11" max="32767" attributes="1"/>
-                                  <Component id="jPanel9" alignment="1" pref="110" max="32767" attributes="1"/>
+                                  <Component id="jPanel9" alignment="1" max="32767" attributes="1"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jPanel10" min="-2" max="-2" attributes="0"/>

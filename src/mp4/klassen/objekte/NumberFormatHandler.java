@@ -66,6 +66,14 @@ public class NumberFormatHandler {
             Programmdaten.instanceOf().setRECHNUNG_NUMMER_FORMAT(formatString);
         } else if (type.getClass().isInstance(new mp4.klassen.objekte.Angebot())) {
             Programmdaten.instanceOf().setANGEBOT_NUMMER_FORMAT(formatString);
+        } else if (type.getClass().isInstance(new mp4.klassen.objekte.Dienstleistung())) {
+            Programmdaten.instanceOf().setSERVICES_NUMMER_FORMAT(formatString);
+        } else if (type.getClass().isInstance(new mp4.klassen.objekte.Customer())) {
+            Programmdaten.instanceOf().setCUSTOMER_NUMMER_FORMAT(formatString);
+        } else if (type.getClass().isInstance(new mp4.klassen.objekte.Lieferant())) {
+            Programmdaten.instanceOf().setSUPPLIER_NUMMER_FORMAT(formatString);
+        } else if (type.getClass().isInstance(new mp4.klassen.objekte.Hersteller())) {
+            Programmdaten.instanceOf().setMANUFACTURER_NUMMER_FORMAT(formatString);
         }
     }
 
@@ -105,6 +113,14 @@ public class NumberFormatHandler {
             processRechnungType();
         } else if (type.getClass().isInstance(new mp4.klassen.objekte.Angebot())) {
             processAngebotType();
+        } else if (type.getClass().isInstance(new mp4.klassen.objekte.Dienstleistung())) {
+            processServicesType();
+        } else if (type.getClass().isInstance(new mp4.klassen.objekte.Customer())) {
+            processCustomerType();
+        } else if (type.getClass().isInstance(new mp4.klassen.objekte.Lieferant())) {
+            processSupplierType();
+        } else if (type.getClass().isInstance(new mp4.klassen.objekte.Hersteller())) {
+            processManufacturerType();
         }
 
     }
@@ -118,8 +134,28 @@ public class NumberFormatHandler {
         setFormatter(parseFormat(format));
     }
 
+    private void processCustomerType() {
+         format = Programmdaten.instanceOf().getCUSTOMER_NUMMER_FORMAT();
+        setFormatter(parseFormat(format));
+    }
+
+    private void processSupplierType() {
+         format = Programmdaten.instanceOf().getSUPPLIER_NUMMER_FORMAT();
+        setFormatter(parseFormat(format));
+    }
+
+    private void processManufacturerType() {
+         format = Programmdaten.instanceOf().getMANUFACTURER_NUMMER_FORMAT() ;
+        setFormatter(parseFormat(format));
+    }
+
     private void processRechnungType() {
         format = Programmdaten.instanceOf().getRECHNUNG_NUMMER_FORMAT();
+        setFormatter(parseFormat(format));
+    }
+
+    private void processServicesType() {
+        format = Programmdaten.instanceOf().getSERVICES_NUMMER_FORMAT();
         setFormatter(parseFormat(format));
     }
 

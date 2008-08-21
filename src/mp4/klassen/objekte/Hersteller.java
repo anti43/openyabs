@@ -17,6 +17,8 @@
 
 package mp4.klassen.objekte;
 
+import java.util.Date;
+import mp3.classes.interfaces.Countable;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.datenbank.verbindung.Query;
 
@@ -24,7 +26,7 @@ import mp4.datenbank.verbindung.Query;
  *
  * @author anti
  */
-public class Hersteller extends mp3.classes.layer.People implements mp4.datenbank.struktur.Tabellen {
+public class Hersteller extends mp3.classes.layer.People implements mp4.datenbank.struktur.Tabellen, Countable {
 
    
     private String herstellernummer = "";
@@ -235,5 +237,17 @@ public class Hersteller extends mp3.classes.layer.People implements mp4.datenban
         else {
             return false;
         }
+    }
+
+    public Date getDatum() {
+        return new Date();
+    }
+
+    public String getTable() {
+        return TABLE_MANUFACTURER;
+    }
+
+    public String getCountColumn() {
+       return "herstellernummer";
     }
 }

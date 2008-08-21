@@ -18,6 +18,7 @@ package mp4.klassen.objekte;
 
 import java.util.Date;
 
+import mp3.classes.interfaces.Countable;
 import mp4.datenbank.verbindung.ConnectionHandler;
 
 import mp4.datenbank.verbindung.PrepareData;
@@ -28,7 +29,7 @@ import mp4.utils.datum.DateConverter;
  *
  * @author anti43
  */
-public class Dienstleistung extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen {
+public class Dienstleistung extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen, Countable {
 
     
     private String Nummer = "";
@@ -106,7 +107,7 @@ public class Dienstleistung extends mp3.classes.layer.Things implements mp4.date
         this.setSteuersatzId(Integer.valueOf(select[6]));
         this.setWarengruppenId(Integer.valueOf(select[7]));
 
-        this.setDatum(DateConverter.getDate(select[10]));
+        this.setDatum(DateConverter.getDate(select[8]));
 
     }
 
@@ -233,5 +234,12 @@ public class Dienstleistung extends mp3.classes.layer.Things implements mp4.date
     }
 
 
+    public String getTable() {
+        return TABLE_SERVICES;
+    }
+
+    public String getCountColumn() {
+       return "produktnummer";
+    }
 
 }

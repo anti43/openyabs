@@ -17,6 +17,8 @@
 
 package mp4.klassen.objekte;
 
+import java.util.Date;
+import mp3.classes.interfaces.Countable;
 import mp3.classes.interfaces.Strings;
 import mp4.datenbank.verbindung.Query;
 
@@ -27,7 +29,7 @@ import mp4.datenbank.verbindung.ConnectionHandler;
  *
  * @author anti
  */
-public class Lieferant extends mp3.classes.layer.People implements mp4.datenbank.struktur.Tabellen {
+public class Lieferant extends mp3.classes.layer.People implements mp4.datenbank.struktur.Tabellen, Countable {
 
   
     private String Lieferantennummer = "";
@@ -283,5 +285,17 @@ public class Lieferant extends mp3.classes.layer.People implements mp4.datenbank
         else {
             return false;
         }
+    }
+
+      public Date getDatum() {
+        return new Date();
+    }
+
+    public String getTable() {
+        return TABLE_CUSTOMERS;
+    }
+
+    public String getCountColumn() {
+       return "lieferantennummer";
     }
 }

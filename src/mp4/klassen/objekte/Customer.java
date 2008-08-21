@@ -18,6 +18,8 @@
 package mp4.klassen.objekte;
 
 import java.util.ArrayList;
+import java.util.Date;
+import mp3.classes.interfaces.Countable;
 import mp4.datenbank.verbindung.Query;
 
 import mp3.classes.layer.Popup;
@@ -28,7 +30,7 @@ import mp3.classes.utils.Log;
  *
  * @author anti
  */
-public class Customer extends mp3.classes.layer.People implements mp4.datenbank.struktur.Tabellen {
+public class Customer extends mp3.classes.layer.People implements mp4.datenbank.struktur.Tabellen , Countable{
 
    
     private String Kundennummer = "";
@@ -371,5 +373,17 @@ public class Customer extends mp3.classes.layer.People implements mp4.datenbank.
 
     public void setKundensteuernummer(String Kundensteuernummer) {
         this.Kundensteuernummer = Kundensteuernummer;
+    }
+
+    public Date getDatum() {
+        return new Date();
+    }
+
+    public String getTable() {
+        return TABLE_CUSTOMERS;
+    }
+
+    public String getCountColumn() {
+       return "kundennummer";
     }
 }
