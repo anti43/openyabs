@@ -37,7 +37,7 @@ import mp4.utils.tabellen.TableFormat;
  *
  * @author  anti43
  */
-public class servicesView extends javax.swing.JPanel implements mp4.datenbank.struktur.Tabellen, panelInterface {
+public class servicesView extends javax.swing.JPanel implements mp4.datenbank.installation.Tabellen, panelInterface {
 
     private mainframe mainframe;
     private Dienstleistung current;
@@ -1074,12 +1074,23 @@ numberfieldedited = true;
     public javax.swing.JTextField jTextField9;
     public javax.swing.JToolBar jToolBar2;
     // End of variables declaration//GEN-END:variables
-    private void createNew() {
+    private boolean createNew() {
         Dienstleistung service = new Dienstleistung();
-        if (!jTextField4.isEditable() || jTextField4.getText().equals("")) {
-            Integer tz = service.getNextIndex("produktnummer");
-            jTextField4.setText(tz.toString());
-        }
+        
+        if(!numberfieldedited && current.isValid())jTextField4.setText(null);
+
+            if (jTextField4.getText() == null || jTextField4.getText().length() == 0) {
+                String s = service.getNfh().getNextNumber();
+                service.setNummer(s);
+            } else {
+                if (!service.getNfh().exists(jTextField4.getText())) {
+                    service.setNummer(jTextField4.getText());
+                } else {
+                    Popup.notice("Angegebene Produktnummer existiert bereits.");
+                    return false;
+                }
+            }
+        
         if (jTextField5.getText().equals("")) {
             jTextField5.setText(jTextField4.getText());
         }
@@ -1106,6 +1117,8 @@ numberfieldedited = true;
         new HistoryItem(Strings.SERVICE, "Dienstleistung Nummer: " + service.getProduktNummer() + " angelegt.");
 
         setDienstleistung(new Dienstleistung(service.getId()));
+        
+        return true;
     }
 
     public void save() {

@@ -28,7 +28,7 @@ import mp3.classes.layer.*;
  *
  * @author anti43
  */
-public class SKRKonto extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen{
+public class SKRKonto extends mp3.classes.layer.Things implements mp4.datenbank.installation.Tabellen{
 
 
     private String Nummer = "0";

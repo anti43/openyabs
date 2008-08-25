@@ -39,7 +39,7 @@ import mp4.utils.zahlen.FormatNumber;
  *
  * @author anti43
  */
-public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen, Countable {
+public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.installation.Tabellen, Countable {
 
     private String Rechnungnummer = "";
     private String UnserZeichen = "";
@@ -587,7 +587,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
     }
 
     public NumberFormatHandler getNfh() {
-        return nfh;
+        return getNfh();
     }
 
     public void setNumberFormatHandler(NumberFormatHandler nfh) {

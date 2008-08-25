@@ -130,4 +130,10 @@ private javax.swing.JTextArea jTextArea1;
             }
         }
     }
+    
+    @Override
+    public void finalize(){
+       System.out.print(jTextArea1.getText());
+    
+    }
 }

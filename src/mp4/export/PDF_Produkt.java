@@ -14,7 +14,7 @@
  *      You should have received a copy of the GNU General Public License
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-package handling.pdf;
+package mp4.export;
 
 import com.lowagie.text.BadElementException;
 import com.lowagie.text.pdf.*;

@@ -6,7 +6,7 @@
 package mp4.panels.rechnungen;
 
 import mp4.panels.misc.NumberFormatEditor;
-import handling.pdf.PDF_Angebot;
+import mp4.export.PDF_Angebot;
 
 import mp4.items.RechnungPosten;
 
@@ -59,7 +59,7 @@ import mp4.utils.tabellen.models.OfferSearchListTableModel;
  *
  * @author  anti43
  */
-public class offersView extends javax.swing.JPanel implements panelInterface, mp4.datenbank.struktur.Tabellen {
+public class offersView extends javax.swing.JPanel implements panelInterface, mp4.datenbank.installation.Tabellen {
 
     private Angebot currentOffer;
     private String[][] liste;

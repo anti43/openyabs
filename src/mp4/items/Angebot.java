@@ -33,7 +33,7 @@ import mp4.utils.datum.DateConverter;
  *
  * @author anti43
  */
-public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen, Countable {
+public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.installation.Tabellen, Countable {
 
     private String Angebotnummer = "";
     private Integer KundenId = 0;
@@ -107,9 +107,6 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.s
         return DateConverter.getDefDateString(getDatum());
     }
 
-    public NumberFormatHandler getNfh() {
-        return nfh;
-    }
 
     public boolean hasId() {
         if (id > 0) {
@@ -343,7 +340,7 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.s
      */
     public String[][] getAllWithDepencies() {
         Query q = query.clone(TABLE_OFFERS);
-        String[][] prods = q.select("angebote.id,angebotnummer,datum,name,firma, auftragdatum", null, TABLE_CUSTOMERS, "kundenid");
+        String[][] prods = q.select("angebote.id,angebotnummer,angebote.datum,name,firma, auftragdatum", null, TABLE_CUSTOMERS, "kundenid");
         return prods;
     }
 

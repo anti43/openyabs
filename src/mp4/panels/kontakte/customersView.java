@@ -41,7 +41,7 @@ import mp4.utils.tabellen.TableFormat;
  *
  * @author  anti43
  */
-public class customersView extends javax.swing.JPanel implements mp4.datenbank.struktur.Tabellen, panelInterface {
+public class customersView extends javax.swing.JPanel implements mp4.datenbank.installation.Tabellen, panelInterface {
 
     public Customer current;
     private String[][] liste;   
@@ -1012,6 +1012,7 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.s
         this.jTable1.setModel(new CustomerBAListTableModel(current));
         TableFormat.stripFirst(jTable1);
         this.jTable4.setModel(new CustomerBAListTableModel(current, true));
+        numberfieldedited = false;
         TableFormat.stripFirst(jTable4);
     }
 

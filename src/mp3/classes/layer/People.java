@@ -26,7 +26,7 @@ import mp4.datenbank.verbindung.Query;
  *
  * @author anti
  */
-public abstract class People implements Queries, mp4.datenbank.struktur.Tabellen{
+public abstract class People implements Queries, mp4.datenbank.installation.Tabellen{
 
     public Integer id = 0;
     public boolean isSaved = false;

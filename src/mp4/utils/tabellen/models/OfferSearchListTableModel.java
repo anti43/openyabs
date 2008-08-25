@@ -43,7 +43,7 @@ public class OfferSearchListTableModel extends MPTableModel {
          super(new Class[]{java.lang.String.class, java.lang.String.class,
                     java.lang.String.class
                 }, new boolean[]{false,false,false},
-                new Angebot().select("angebote.id, angebotnummer, datum ", key, searchtext, "datum,angebote.id  DESC ", true, "kunden", "kundenid"),
+                new Angebot().select("angebote.id, angebotnummer, datum ", key, searchtext, "angebote.datum,angebote.id  DESC ", true, "kunden", "kundenid"),
                 new Object[]{"id", "Nummer","Datum"});
     }
 }

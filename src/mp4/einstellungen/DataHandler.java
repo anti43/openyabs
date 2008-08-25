@@ -24,7 +24,7 @@ import mp3.classes.utils.Log;
  *
  * @author Andreas
  */
-public class DataHandler extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen {
+public class DataHandler extends mp3.classes.layer.Things implements mp4.datenbank.installation.Tabellen {
 
     public DataHandler(String table) {
         super(ConnectionHandler.instanceOf().clone(table));

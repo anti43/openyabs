@@ -25,13 +25,14 @@ import mp3.classes.interfaces.Countable;
 import mp4.datenbank.verbindung.ConnectionHandler;
 
 import mp4.datenbank.verbindung.Query;
+import mp4.items.handler.NumberFormatHandler;
 import mp4.utils.datum.DateConverter;
 
 /**
  *
  * @author anti43
  */
-public class Product extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen, Countable {
+public class Product extends mp3.classes.layer.Things implements mp4.datenbank.installation.Tabellen, Countable {
 
     private String Ean = "00000000";
     private String Nummer = "";
@@ -74,7 +75,7 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
         super(ConnectionHandler.instanceOf().clone(TABLE_PRODUCTS));
         lieferant = new Lieferant();
         this.query = ConnectionHandler.instanceOf();
-
+        nfh = new NumberFormatHandler(this, new Date());
 
     }
 
@@ -82,7 +83,7 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
         super(ConnectionHandler.instanceOf().clone(TABLE_PRODUCTS));
         this.setName(text);
         this.setVK(parseDezimal);
-
+        nfh = new NumberFormatHandler(this, new Date());
         this.save();
 
     }
@@ -91,6 +92,7 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
         super(query.clone(TABLE_PRODUCTS));
         lieferant = new Lieferant(query);
         this.query = query;
+        nfh = new NumberFormatHandler(this, new Date());
     }
 
     /**
@@ -113,6 +115,7 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.s
 
         this.isvalid = true;
         this.query = ConnectionHandler.instanceOf();
+        this.nfh = new NumberFormatHandler(this, new Date());
 
         fetchImage();
 

@@ -36,7 +36,7 @@ import mp4.utils.datum.DateConverter;
  *
  * @author anti
  */
-public abstract class Query implements mp4.datenbank.struktur.Tabellen {
+public abstract class Query implements mp4.datenbank.installation.Tabellen {
 
     private Connection conn = null;
     private Statement stm = null;
@@ -77,7 +77,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
         try {
             // Select-Anweisung ausführen
             stm = conn.createStatement();
-            Log.Debug(query);
+            Log.Debug(query, true);
             return stm.execute(query);
         } catch (SQLException ex) {
             Log.Debug(message + ex.getMessage());
@@ -125,7 +125,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
         try {
             // Select-Anweisung ausführen
             stm = conn.createStatement();
-            Log.Debug(query);
+            Log.Debug(query, true);
             resultSet = stm.executeQuery(query);
             ArrayList spalten = new ArrayList();
             ArrayList zeilen = new ArrayList();
@@ -278,7 +278,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
         Integer i = null;
 
 
-        Log.Debug(query);
+        Log.Debug(query, true);
 
         try {
             // Select-Anweisung ausführen
@@ -307,7 +307,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     message = "Database Error (getNextIndex:COUNT):";
                     stm = null;
                     resultSet = null;
-                    Log.Debug(query);
+                    Log.Debug(query, true);
                     // Select-Anweisung ausführen
                     stm = conn.createStatement(resultSet.TYPE_SCROLL_INSENSITIVE, resultSet.CONCUR_READ_ONLY);
                     resultSet = stm.executeQuery(query);
@@ -368,7 +368,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
         String integer = "0";
         Integer i = 0;
         Integer oldi = 0;
-        Log.Debug(query);
+        Log.Debug(query, true);
         try {
             // Select-Anweisung ausführen
             stm = conn.createStatement(resultSet.TYPE_SCROLL_INSENSITIVE, resultSet.CONCUR_READ_ONLY);
@@ -386,7 +386,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
                     message = "Database Error (getNextIndex:COUNT):";
                     stm = null;
                     resultSet = null;
-                    Log.Debug(query);
+                    Log.Debug(query, true);
                     // Select-Anweisung ausführen
                     stm = conn.createStatement(resultSet.TYPE_SCROLL_INSENSITIVE, resultSet.CONCUR_READ_ONLY);
                     resultSet = stm.executeQuery(query);
@@ -449,7 +449,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
         start();
 
         query = "INSERT INTO " + table + " (" + what[0] + " ) VALUES (" + what[1] + ") ";
-        Log.Debug(query);
+        Log.Debug(query, true);
         message = "Database Error:";
         stm = null;
         resultSet = null;
@@ -515,7 +515,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
         message = "Database Error:";
         stm = null;
         resultSet = null;
-        Log.Debug(query);
+        Log.Debug(query, true);
         try {
             // Select-Anweisung ausführenconn.createStatement(rs.TYPE_SCROLL_INSENSITIVE,rs.CONCUR_READ_ONLY);
             stm = conn.createStatement(resultSet.TYPE_SCROLL_INSENSITIVE, resultSet.CONCUR_READ_ONLY);
@@ -569,7 +569,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
         resultSet = null;
         ResultSetMetaData rsmd;
         String[] pax = null;
-        Log.Debug(query);
+        Log.Debug(query, true);
 
         try {
             // Select-Anweisung ausführen
@@ -818,7 +818,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
         message = "Database Error:";
         stm =null;
         resultSet = null;
-        Log.Debug(query);
+        Log.Debug(query, true);
         try {
             // Select-Anweisung ausführen
             stm = conn.createStatement();
@@ -929,7 +929,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
         }
 
         query = "SELECT " + what + " FROM " + table + wher + ord;
-        Log.Debug(query);
+        Log.Debug(query, true);
         message = "Database Error (select) :";
         
         return selectFreeQuery(query, message);
@@ -947,7 +947,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
         stm = null;
         resultSet = null;
 
-        Log.Debug(query);
+        Log.Debug(query, true);
         try {
             // Select-Anweisung ausführen
             stm = conn.createStatement(resultSet.TYPE_SCROLL_INSENSITIVE, resultSet.CONCUR_READ_ONLY);

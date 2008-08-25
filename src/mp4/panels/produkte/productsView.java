@@ -7,10 +7,7 @@ package mp4.panels.produkte;
 
 import mp4.frames.PdfVorschauWindow;
 import mp4.panels.*;
-import handling.pdf.PDF_Produkt;
-import java.util.concurrent.ExecutionException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import mp4.export.PDF_Produkt;
 import mp3.classes.visual.sub.*;
 import mp3.classes.layer.People;
 import mp4.items.Product;
@@ -21,7 +18,6 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.File;
 import java.net.URI;
-import java.net.URL;
 import java.util.Date;
 import javax.swing.*;
 import javax.swing.SwingWorker;
@@ -63,7 +59,7 @@ import mp4.utils.zahlen.NumberCheck;
  *
  * @author  anti43
  */
-public class productsView extends javax.swing.JPanel implements mp4.datenbank.struktur.Tabellen, panelInterface {
+public class productsView extends javax.swing.JPanel implements mp4.datenbank.installation.Tabellen, panelInterface {
 
     private mainframe mainframe;
     private Product current;
@@ -1532,12 +1528,25 @@ numberfieldedited = true;
     public javax.swing.JTextField jTextField9;
     public javax.swing.JToolBar jToolBar2;
     // End of variables declaration//GEN-END:variables
-    private void createNew() {
-        Product product = new Product(ConnectionHandler.instanceOf());
-        if (!jTextField4.isEditable() || jTextField4.getText().equals("")) {
-            Integer tz = product.getNextIndex("produktnummer");
-            jTextField4.setText(tz.toString());
-        }
+    private boolean createNew() {
+        Product product = new Product();
+        
+        
+         if(!numberfieldedited && current.isValid())jTextField4.setText(null);
+
+            if (jTextField4.getText() == null || jTextField4.getText().length() == 0) {
+                String s = product.getNfh().getNextNumber();
+                product.setNummer(s);
+            } else {
+                if (!product.getNfh().exists(jTextField4.getText())) {
+                    product.setNummer(jTextField4.getText());
+                } else {
+                    Popup.notice("Angegebene Produktnummer existiert bereits.");
+                    return false;
+                }
+            }
+       
+        
         if (jTextField5.getText().equals("")) {
             jTextField5.setText(jTextField4.getText());
         }
@@ -1556,7 +1565,7 @@ numberfieldedited = true;
         } catch (NumberFormatException numberFormatException) {
             jTextField7.setText("0");
         }
-        product.setNummer(jTextField4.getText());
+        
         product.setName(jTextField5.getText());
         product.setHersteller(hersteller);
         product.setSupplier(lieferant);
@@ -1584,6 +1593,7 @@ numberfieldedited = true;
         new HistoryItem(Strings.PRODUCT, "Produkt Nummer: " + product.getProduktNummer() + " angelegt.");
 
         setProduct(new Product(product.getId()));
+        return true;
     }
 
     public void save() {

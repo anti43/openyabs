@@ -22,7 +22,7 @@ import java.awt.Dimension;
  *
  * @author Andreas
  */
-public class Programmdaten implements mp4.datenbank.struktur.Tabellen {
+public class Programmdaten implements mp4.datenbank.installation.Tabellen {
 
     private DataHandler handler;
     private static Programmdaten dat;
@@ -53,33 +53,41 @@ public class Programmdaten implements mp4.datenbank.struktur.Tabellen {
     }
 
     public void setSERVICES_NUMMER_FORMAT(String SERVICES_NUMMER_FORMAT) {
-         handler.setString("SERVICES_NUMMER_FORMAT", SERVICES_NUMMER_FORMAT);
+        handler.setString("SERVICES_NUMMER_FORMAT", SERVICES_NUMMER_FORMAT);
     }
-    
+
     public String getSERVICES_NUMMER_FORMAT() {
         return handler.getString("SERVICES_NUMMER_FORMAT");
     }
-    
-   public void setCUSTOMER_NUMMER_FORMAT(String CUSTOMER_NUMMER_FORMAT) {
-         handler.setString("CUSTOMER_NUMMER_FORMAT", CUSTOMER_NUMMER_FORMAT);
+
+    public void setCUSTOMER_NUMMER_FORMAT(String CUSTOMER_NUMMER_FORMAT) {
+        handler.setString("CUSTOMER_NUMMER_FORMAT", CUSTOMER_NUMMER_FORMAT);
     }
-    
+
+    public String getPRODUCT_NUMMER_FORMAT() {
+        return handler.getString("PRODUCT_NUMMER_FORMAT");
+    }
+
+    public void setPRODUCT_NUMMER_FORMAT(String PRODUCT_NUMMER_FORMAT) {
+        handler.setString("PRODUCT_NUMMER_FORMAT", PRODUCT_NUMMER_FORMAT);
+    }
+
     public String getCUSTOMER_NUMMER_FORMAT() {
         return handler.getString("CUSTOMER_NUMMER_FORMAT");
     }
-    
+
     public void setSUPPLIER_NUMMER_FORMAT(String SUPPLIER_NUMMER_FORMAT) {
-         handler.setString("SUPPLIER_NUMMER_FORMAT", SUPPLIER_NUMMER_FORMAT);
+        handler.setString("SUPPLIER_NUMMER_FORMAT", SUPPLIER_NUMMER_FORMAT);
     }
-    
+
     public String getSUPPLIER_NUMMER_FORMAT() {
         return handler.getString("SUPPLIER_NUMMER_FORMAT");
     }
-    
+
     public void setMANUFACTURER_NUMMER_FORMAT(String MANUFACTURER_NUMMER_FORMAT) {
-         handler.setString("MANUFACTURER_NUMMER_FORMAT", MANUFACTURER_NUMMER_FORMAT);
+        handler.setString("MANUFACTURER_NUMMER_FORMAT", MANUFACTURER_NUMMER_FORMAT);
     }
-    
+
     public String getMANUFACTURER_NUMMER_FORMAT() {
         return handler.getString("MANUFACTURER_NUMMER_FORMAT");
     }

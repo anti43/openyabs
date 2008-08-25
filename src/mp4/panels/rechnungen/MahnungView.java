@@ -10,7 +10,7 @@ import mp4.items.Product;
 import mp4.items.Rechnung;
 
 import mp4.items.Customer;
-import handling.pdf.PDF_Mahnung;
+import mp4.export.PDF_Mahnung;
 import mp4.benutzerverwaltung.User;
 import mp4.einstellungen.Einstellungen;
 import mp4.einstellungen.Programmdaten;

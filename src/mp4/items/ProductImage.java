@@ -37,7 +37,7 @@ import mp4.utils.datum.DateConverter;
  *
  * @author anti43
  */
-public class ProductImage extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen {
+public class ProductImage extends mp3.classes.layer.Things implements mp4.datenbank.installation.Tabellen {
 
     private Integer Produktid = null;
     private String Path = null;

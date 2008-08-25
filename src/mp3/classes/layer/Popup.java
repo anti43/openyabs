@@ -17,6 +17,7 @@
 package mp3.classes.layer;
 
 import javax.swing.JOptionPane;
+import mp3.classes.utils.Log;
 import mp4.utils.text.TextFormat;
 
 /**
@@ -61,6 +62,7 @@ public class Popup {
      */
     public static void error(String text, String label) {
 
+        Log.Debug(text, true);
         text = TextFormat.maxLineLength(text, 80);
         JOptionPane.showMessageDialog(null, text, label, JOptionPane.ERROR_MESSAGE);
     }

@@ -24,7 +24,7 @@ import mp4.datenbank.verbindung.ConnectionHandler;
  *
  * @author anti43
  */
-public class RechnungBetreffzeile extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen {
+public class RechnungBetreffzeile extends mp3.classes.layer.Things implements mp4.datenbank.installation.Tabellen {
 
     private Integer id = 0;
     private String[] value;

@@ -33,7 +33,7 @@ import mp4.utils.datum.DateConverter;
  *
  * @author anti43
  */
-public class HistoryItem extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen{
+public class HistoryItem extends mp3.classes.layer.Things implements mp4.datenbank.installation.Tabellen{
 
     
 

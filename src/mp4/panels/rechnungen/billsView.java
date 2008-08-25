@@ -34,7 +34,7 @@ import mp4.items.HistoryItem;
 import mp4.items.Product;
 import mp4.frames.mainframe;
 
-import handling.pdf.PDF_Rechnung;
+import mp4.export.PDF_Rechnung;
 import java.awt.event.ActionListener;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
@@ -64,7 +64,7 @@ import mp4.utils.tabellen.models.BillSearchListTableModel;
  *
  * @author  anti43
  */
-public class billsView extends javax.swing.JPanel implements panelInterface, mp4.datenbank.struktur.Tabellen {
+public class billsView extends javax.swing.JPanel implements panelInterface, mp4.datenbank.installation.Tabellen {
 
     private Rechnung currentBill;
     private String[][] liste;

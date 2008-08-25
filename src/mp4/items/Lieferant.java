@@ -29,7 +29,7 @@ import mp4.datenbank.verbindung.ConnectionHandler;
  *
  * @author anti
  */
-public class Lieferant extends mp3.classes.layer.People implements mp4.datenbank.struktur.Tabellen, Countable {
+public class Lieferant extends mp3.classes.layer.People implements mp4.datenbank.installation.Tabellen, Countable {
 
   
     private String Lieferantennummer = "";

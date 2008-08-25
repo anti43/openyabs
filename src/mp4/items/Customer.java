@@ -30,7 +30,7 @@ import mp3.classes.utils.Log;
  *
  * @author anti
  */
-public class Customer extends mp3.classes.layer.People implements mp4.datenbank.struktur.Tabellen , Countable{
+public class Customer extends mp3.classes.layer.People implements mp4.datenbank.installation.Tabellen , Countable{
 
    
     private String Kundennummer = "";

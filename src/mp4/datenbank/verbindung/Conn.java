@@ -24,7 +24,8 @@ import mp3.classes.utils.FileReaderWriter;
 import mp3.classes.layer.Popup;
 import mp3.classes.utils.Log;
 import mp3.classes.utils.SplashScreen;
-import mp4.datenbank.struktur.Installation;
+import mp4.datenbank.installation.Daten;
+import mp4.datenbank.installation.Struktur;
 
 /**
  *
@@ -112,7 +113,8 @@ public class Conn implements Strings {
 
 //        tablesCreated = this.query(Structure.tables);
 
-        tablesCreated = this.query(Installation.SQL_COMMAND);
+        tablesCreated = this.query(Struktur.SQL_COMMAND);
+        this.query(Daten.SQL_COMMAND);
 
         Conn.reboot();
     }

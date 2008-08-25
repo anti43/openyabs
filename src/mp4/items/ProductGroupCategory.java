@@ -23,7 +23,7 @@ import mp4.datenbank.verbindung.Query;
  /**
  * @author anti43         
  */
-public class ProductGroupCategory extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen {
+public class ProductGroupCategory extends mp3.classes.layer.Things implements mp4.datenbank.installation.Tabellen {
 
     private String kategorienummer = "0";
     private String name = "";

@@ -24,13 +24,14 @@ import mp4.datenbank.verbindung.ConnectionHandler;
 
 import mp4.datenbank.verbindung.PrepareData;
 import mp4.datenbank.verbindung.Query;
+import mp4.items.handler.NumberFormatHandler;
 import mp4.utils.datum.DateConverter;
 
 /**
  *
  * @author anti43
  */
-public class Dienstleistung extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen, Countable {
+public class Dienstleistung extends mp3.classes.layer.Things implements mp4.datenbank.installation.Tabellen, Countable {
 
     
     private String Nummer = "";
@@ -59,12 +60,14 @@ public class Dienstleistung extends mp3.classes.layer.Things implements mp4.date
     public Dienstleistung() {
         super(ConnectionHandler.instanceOf().clone(TABLE_SERVICES));
         this.query = ConnectionHandler.instanceOf();
+        nfh = new NumberFormatHandler(this, new Date());
     }
 
     public Dienstleistung(String text, Double parseDezimal) {
         super(ConnectionHandler.instanceOf().clone(TABLE_SERVICES));
         this.setName(text);
         this.setPreis(parseDezimal);
+        nfh = new NumberFormatHandler(this, new Date());
         this.save();
     }
 
@@ -80,6 +83,7 @@ public class Dienstleistung extends mp3.classes.layer.Things implements mp4.date
         this.explode(this.selectLast("*", "id", id.toString(), true));
         this.isvalid = true;
         this.query = ConnectionHandler.instanceOf();
+        nfh = new NumberFormatHandler(this, new Date());
     }
 
     public void setTaxID(int taxID) {

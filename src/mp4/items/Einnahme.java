@@ -36,7 +36,7 @@ import mp4.utils.zahlen.FormatTax;
  *
  * @author anti43
  */
-public class Einnahme extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen, Daemonable, Serializable {
+public class Einnahme extends mp3.classes.layer.Things implements mp4.datenbank.installation.Tabellen, Daemonable, Serializable {
     private static final long serialVersionUID = 1L;
 
     private Integer Kontenid = 0;

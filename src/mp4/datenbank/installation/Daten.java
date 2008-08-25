@@ -14,7 +14,8 @@
  *      You should have received a copy of the GNU General Public License
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mp4.datenbank.struktur;
+
+package mp4.datenbank.installation;
 
 import java.io.File;
 import java.util.Date;
@@ -23,187 +24,20 @@ import mp4.utils.datum.DateConverter;
 
 /**
  *
- * @author anti
+ * @author Andreas
  */
-public interface Installation {
-
-    //////////////////////////////////////////////////////////////////////////77
+public abstract class Daten {
+    
     /**
-     * Installation data (tables)
+     * 
      */
-    public final String[] SQL_COMMAND = {
-        "CREATE TABLE kunden (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
-        "Kundennummer VARCHAR(250),Firma VARCHAR(250) default NULL," +
-        "Anrede VARCHAR(250) default NULL," +
-        "Vorname VARCHAR(250) default NULL, " +
-        "Name VARCHAR(250) default NULL, " +
-        "Str VARCHAR(250) default NULL, PLZ VARCHAR(50) default NULL," +
-        "Ort VARCHAR(300) default NULL, Tel VARCHAR(250) default NULL,Fax VARCHAR(250) default NULL," +
-        "Mobil VARCHAR(250) default NULL," +
-        "Mail VARCHAR(350) default NULL, Webseite VARCHAR(350) default NULL,Notizen VARCHAR(10000)," +
-        "Steuernummer VARCHAR(350) default NULL,"+ "Datum DATE DEFAULT CURRENT_DATE," +
-        "deleted INTEGER DEFAULT 0, " + 
-        "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
-        "PRIMARY KEY  (id))",
-        
-        "CREATE TABLE lieferanten (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
-        "lieferantennummer VARCHAR(250),Firma VARCHAR(250) default NULL," +
-        "Anrede VARCHAR(250) default NULL," +
-        "Vorname VARCHAR(250) default NULL, " +
-        "Name VARCHAR(250) default NULL, " +
-        "Str VARCHAR(250) default NULL, PLZ VARCHAR(50) default NULL," +
-        "Ort VARCHAR(300) default NULL, Tel VARCHAR(250) default NULL,Fax VARCHAR(250) default NULL," +
-        "Mobil VARCHAR(250) default NULL," +
-        "Mail VARCHAR(350) default NULL, Webseite VARCHAR(350) default NULL,Notizen VARCHAR(10000)," +"Datum DATE DEFAULT CURRENT_DATE," +
-        "deleted INTEGER DEFAULT 0, " +
-        "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
-        "PRIMARY KEY  (id))",
-        
-        "CREATE TABLE hersteller (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
-        "herstellernummer VARCHAR(250),Firma VARCHAR(250) default NULL,Anrede VARCHAR(250) default NULL," +
-        "Vorname VARCHAR(250) default NULL, " +
-        "Name VARCHAR(250) default NULL, Str VARCHAR(250) default NULL, PLZ VARCHAR(50) default NULL," +
-        "Ort VARCHAR(300) default NULL, Tel VARCHAR(250) default NULL,Fax VARCHAR(250) default NULL," +
-        "Mobil VARCHAR(250) default NULL," +
-        "Mail VARCHAR(350) default NULL, Webseite VARCHAR(350) default NULL,Notizen VARCHAR(10000)," +"Datum DATE DEFAULT CURRENT_DATE," +
-        "deleted INTEGER DEFAULT 0, " +
-        "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
-        "PRIMARY KEY  (id))",
-        
-        "CREATE TABLE rechnungen (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
-        "Rechnungnummer VARCHAR(250) UNIQUE NOT NULL, KundenId INTEGER REFERENCES kunden (id)," +
-        "Datum DATE NOT NULL," + "storno INTEGER DEFAULT 0," + "bezahlt INTEGER DEFAULT 0," +
-        "gesamtpreis DOUBLE DEFAULT 0," + "gesamttax INTEGER NOT NULL," +
-        "AfDatum DATE NOT NULL," + "mahnungen INTEGER DEFAULT 0," +
-        "deleted INTEGER DEFAULT 0," +
-        "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
-        "PRIMARY KEY  (id))",
-        
-        "CREATE TABLE rechnungsposten (ID BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-        "rechnungid INTEGER REFERENCES rechnungen (id)," + "anzahl DOUBLE DEFAULT 0 NOT NULL," +
-        "posten VARCHAR(1000) default NULL,  preis DOUBLE DEFAULT 0 NOT NULL, " +
-        "steuersatz DOUBLE DEFAULT 0 NOT NULL," +
-        "deleted INTEGER DEFAULT 0," +
-        "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
-        "PRIMARY KEY  (id))",
-        
-        
-        "CREATE TABLE angebote (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
-        "angebotnummer VARCHAR(250) default NULL, KundenId INTEGER REFERENCES kunden(id)," +
-        "Datum DATE NOT NULL," + "auftragdatum DATE DEFAULT NULL," + "anfragevom DATE NOT NULL," + "validvon DATE NOT NULL," + "validbis DATE NOT NULL," +
-        "rechnungid INTEGER DEFAULT 0," +
-        "deleted INTEGER DEFAULT 0," +
-        "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
-        "PRIMARY KEY  (id))",
-        
-        "CREATE TABLE angebotposten (ID BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-        "angebotid INTEGER REFERENCES angebote  (id)," + "anzahl DOUBLE DEFAULT 0 NOT NULL," +
-        "posten VARCHAR(1000) default NULL,  preis DOUBLE DEFAULT 0 NOT NULL, " +
-        "steuersatz DOUBLE DEFAULT 0 NOT NULL," +
-        "deleted INTEGER DEFAULT 0," +
-        "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
-        "PRIMARY KEY  (id))",
-        
-        "CREATE TABLE daten (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-        "name VARCHAR(250), wert VARCHAR(250)," +
-        "deleted INTEGER DEFAULT 0," +
-        "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
-        
-        "CREATE TABLE rechnungbetreffz (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-        "name VARCHAR(100), text VARCHAR(500), isvorlage INTEGER DEFAULT 0," +
-        "deleted INTEGER DEFAULT 0," +
-        "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
-
-        "CREATE TABLE programmdaten (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-        "name VARCHAR(250), wert VARCHAR(2500)," +
-        "deleted INTEGER DEFAULT 0," +
-        "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
-        
-        "CREATE TABLE steuersaetze (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-        "name VARCHAR(250), wert DOUBLE DEFAULT 0," +
-        "deleted INTEGER DEFAULT 0," +
-        "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
-        
-        "CREATE TABLE dienstleistungen (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-        "produktnummer VARCHAR(500),name VARCHAR(50),beschreibung VARCHAR(500),einheit VARCHAR(50)," +
-        "preis DOUBLE DEFAULT 0, steuersatzid INTEGER REFERENCES steuersaetze (id)," +
-        "warengruppenid INTEGER  DEFAULT 0," + "datum DATE NOT NULL," +
-        "deleted INTEGER DEFAULT 0," +       
-        "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
-        
-        "CREATE TABLE produkte (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-        "produktnummer VARCHAR(500),name VARCHAR(50),text VARCHAR(500),vk DOUBLE DEFAULT 0,ek DOUBLE DEFAULT 0, steuersatzid INTEGER REFERENCES steuersaetze (id)," +
-        "herstellerid INTEGER REFERENCES hersteller(id), lieferantenid INTEGER REFERENCES lieferanten (id)," +
-        "warengruppenid INTEGER DEFAULT 0,datum DATE NOT NULL,url VARCHAR(250) default NULL," +
-        "ean VARCHAR(25),bestellnr VARCHAR(50),herstellernr VARCHAR(50),lieferantennr VARCHAR(50)," + 
-        "bestelldatum VARCHAR(50),bestellmenge DOUBLE DEFAULT 0, lagermenge DOUBLE DEFAULT 0," +    
-        "deleted INTEGER DEFAULT 0," +
-        "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
-        
-        "CREATE TABLE warengruppenkategorien (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-        "kategorienummer VARCHAR(120),name VARCHAR(500)," +
-        "deleted INTEGER DEFAULT 0," +
-        "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
-        
-        "CREATE TABLE benutzer (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-        "username VARCHAR(250),password VARCHAR(250)," +
-        "createdon DATE default NULL," +
-        "createdby VARCHAR(50)," + "iseditor INTEGER DEFAULT 0," + "isadmin INTEGER DEFAULT 0," +
-        "deleted INTEGER DEFAULT 0," +
-        "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
-        
-        "CREATE TABLE warengruppenfamilien (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-        "familienummer VARCHAR(120), kategorieid  INTEGER DEFAULT 0, name VARCHAR(500)," +
-        "deleted INTEGER DEFAULT 0," +
-        "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
-        
-        "CREATE TABLE warengruppengruppen (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-        "gruppenummer VARCHAR(120),familienid  INTEGER DEFAULT 0,name VARCHAR(500)," +
-        "deleted INTEGER DEFAULT 0," +
-        "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
-        
-        "CREATE TABLE dateien (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-        "productid INTEGER  DEFAULT 0,url VARCHAR(500)," +
-        "datum DATE NOT NULL," +
-        "deleted INTEGER DEFAULT 0," +
-        "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
-        
-        "CREATE TABLE historie (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-        "aktion VARCHAR(500) default NULL,text VARCHAR(250) default NULL," +
-        "datum DATE NOT NULL," +
-        "benutzer VARCHAR(500) default NULL," +
-        "deleted INTEGER DEFAULT 0," +
-        "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
-        
-        "CREATE TABLE konten (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-        "nummer VARCHAR(500) default NULL,klasse VARCHAR(1000) default NULL," +
-        "gruppe VARCHAR(1000) default NULL," +
-        "art VARCHAR(1000) default NULL," +
-        "deleted INTEGER DEFAULT 0," +
-        "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
-        
-        "CREATE TABLE ausgaben (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-        "kontenid INTEGER REFERENCES konten (id), beschreibung VARCHAR(500) default NULL," +
-        "preis DOUBLE DEFAULT 0," + "tax INTEGER NOT NULL," + "datum DATE NOT NULL," +
-        "deleted INTEGER DEFAULT 0," +
-        "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
-        
-        "CREATE TABLE einnahmen (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-        "kontenid INTEGER REFERENCES konten (id), beschreibung VARCHAR(500) default NULL," +
-        "preis DOUBLE DEFAULT 0," + "tax INTEGER NOT NULL," + "datum DATE NOT NULL," +
-        "deleted INTEGER DEFAULT 0," +
-        "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
-        
-        "CREATE TABLE  betreffz_zu_rechnung   (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-        "rechnungid INTEGER REFERENCES rechnungen (id)," +
-        "betreffzid INTEGER REFERENCES rechnungbetreffz (id)," +
-        "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
-        
+    public final static String[] SQL_COMMAND = {
+    
 //        ******************************************************************************************************************************
         
         "INSERT INTO steuersaetze (name, wert) VALUES ('Default', 0.0)",
-        "INSERT INTO hersteller (herstellernummer, name, firma, ort, deleted) VALUES ('1000', 'Default', 'Default', '', 1)",
-        "INSERT INTO lieferanten (lieferantennummer, name, firma, ort, deleted) VALUES ('1000', 'Default', 'Default', '', 1)",
+        "INSERT INTO hersteller (Herstellernummer,Firma,Anrede,Vorname,Name,Str,PLZ,Ort,Tel,Fax,Mobil,Mail,Webseite,Notizen ) VALUES ('HS-00000','Default','','','Default','','','','','','','','','') ",
+        "INSERT INTO lieferanten (Lieferantennummer,Firma,Anrede,Vorname,Name,Str,PLZ,Ort,Tel,Fax,Mobil,Mail,Webseite,Notizen ) VALUES ('LF-00000','Default','','','Default','','','','','','','','','') ",
 
 //        *****************************************Programmdatenb*************************************************************************************        
         
@@ -215,8 +49,15 @@ public interface Installation {
                 "Sollten Sie die Zahlung bereits vorgenommen haben, dann setzen Sie sich bitte mit uns " +
                 "in Verbindung. Möglicherweise konnten wir Ihre Zahlung nicht zuordnen, " +
                 "weil z.B. der Verwendungszweck nicht korrekt angegeben wurde.\n\nMit freundlichen Grüßen\n\n')",
+                
         "INSERT INTO programmdaten(name, wert) VALUES ('RECHNUNG_NUMMER_FORMAT',  '{JAHR}-{MONAT_NAME}-&!00000&!2')",
         "INSERT INTO programmdaten(name, wert) VALUES ('ANGEBOT_NUMMER_FORMAT',  '{JAHR}-{MONAT_NAME}-&!00000&!2')", 
+        "INSERT INTO programmdaten(name, wert) VALUES ('MANUFACTURER_NUMMER_FORMAT',  'HS-&!00000&!0')",
+        "INSERT INTO programmdaten(name, wert) VALUES ('SUPPLIER_NUMMER_FORMAT',  'LF-&!00000&!0')", 
+        "INSERT INTO programmdaten(name, wert) VALUES ('CUSTOMER_NUMMER_FORMAT',  'KU-&!00000&!0')",
+        "INSERT INTO programmdaten(name, wert) VALUES ('SERVICES_NUMMER_FORMAT',  'DL-&!00000&!0')", 
+        "INSERT INTO programmdaten(name, wert) VALUES ('PRODUCT_NUMMER_FORMAT',   'PR-&!00000&!0')", 
+        
         "INSERT INTO programmdaten(name, wert) VALUES ('MAINFRAME_WINDOW_STATE',  '790,1000')",    
         "INSERT INTO programmdaten(name, wert) VALUES ('WARENGRUPPEN_SEPARATOR',  '->')",   
         "INSERT INTO programmdaten(name, wert) VALUES ('IMAGE_CACHE_FOLDER', '" + Setup.instanceOf().install_dirs.getCache_dir() +"')",  
@@ -307,5 +148,6 @@ public interface Installation {
         "INSERT INTO warengruppenkategorien (kategorienummer,name) VALUES ('2','Dienstleistungen')",
         "INSERT INTO warengruppenfamilien (familienummer, kategorieid, name) VALUES ('2',2,'ProduktFamilie2')",
         "INSERT INTO warengruppengruppen (gruppenummer, familienid, name) VALUES ('2',2,'ProduktGruppe2')"
-    };
+};
 }
+

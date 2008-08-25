@@ -74,6 +74,8 @@ public class NumberFormatHandler {
              return Programmdaten.instanceOf().getSUPPLIER_NUMMER_FORMAT().split("&!");
         } else if (type.getClass().isInstance(new mp4.items.Hersteller())) {
              return Programmdaten.instanceOf().getMANUFACTURER_NUMMER_FORMAT().split("&!");
+        } else if (type.getClass().isInstance(new mp4.items.Product())) {
+             return Programmdaten.instanceOf().getPRODUCT_NUMMER_FORMAT().split("&!");
         }
        return null;
     }
@@ -91,6 +93,8 @@ public class NumberFormatHandler {
             Programmdaten.instanceOf().setSUPPLIER_NUMMER_FORMAT(formatString);
         } else if (type.getClass().isInstance(new mp4.items.Hersteller())) {
             Programmdaten.instanceOf().setMANUFACTURER_NUMMER_FORMAT(formatString);
+        } else if (type.getClass().isInstance(new mp4.items.Product())) {
+            Programmdaten.instanceOf().setPRODUCT_NUMMER_FORMAT(formatString);
         }
     }
 
@@ -138,6 +142,8 @@ public class NumberFormatHandler {
             processSupplierType();
         } else if (type.getClass().isInstance(new mp4.items.Hersteller())) {
             processManufacturerType();
+        } else if (type.getClass().isInstance(new mp4.items.Product())) {
+            processProductType();
         }
 
     }
@@ -153,6 +159,11 @@ public class NumberFormatHandler {
 
     private void processCustomerType() {
         format = Programmdaten.instanceOf().getCUSTOMER_NUMMER_FORMAT();
+        setFormatter(parseFormat(format));
+    }
+
+    private void processProductType() {
+        format = Programmdaten.instanceOf().getPRODUCT_NUMMER_FORMAT();
         setFormatter(parseFormat(format));
     }
 

@@ -36,7 +36,7 @@ import mp3.classes.utils.Log;
  *
  * @author anti
  */
-public class Einstellungen extends mp3.classes.layer.People implements mp4.datenbank.struktur.Tabellen {
+public class Einstellungen extends mp3.classes.layer.People implements mp4.datenbank.installation.Tabellen {
 
     private static Einstellungen dat;
     

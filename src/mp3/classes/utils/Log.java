@@ -105,7 +105,9 @@ public class Log {
     public static void Debug(Object string, boolean konsole) {
         if (konsole) {
             logger.log(string);
-            System.out.println(string);
+            if (loglevel != LOGLEVEL_LOW) {
+                System.out.println(string);
+            }
         } else {
             Debug(string);
         }

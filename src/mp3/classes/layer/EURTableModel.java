@@ -35,7 +35,7 @@ import mp4.utils.datum.DateConverter;
  *
  * @author anti43
  */
-public class EURTableModel implements ProtectedStrings, Constants, Strings, mp4.datenbank.struktur.Tabellen {
+public class EURTableModel implements ProtectedStrings, Constants, Strings, mp4.datenbank.installation.Tabellen {
 
     private Object[][] data;
     String[] head = new String[]{"Beschreibung", "Wert"};

@@ -26,7 +26,7 @@ import mp4.datenbank.verbindung.ConnectionHandler;
  *
  * @author anti43
  */
-public class RechnungPosten extends mp3.classes.layer.Things implements mp4.datenbank.struktur.Tabellen {
+public class RechnungPosten extends mp3.classes.layer.Things implements mp4.datenbank.installation.Tabellen {
 
     private Integer rechnungid = null;
     private Double anzahl = 0.0;

@@ -29,7 +29,7 @@ import mp4.utils.datum.DateConverter;
  *
  * @author anti
  */
-public abstract class Things implements Queries, mp4.datenbank.struktur.Tabellen {
+public abstract class Things implements Queries, mp4.datenbank.installation.Tabellen {
 //    public Integer id = 0;
     public boolean isSaved = false;
     private Query q;
@@ -315,6 +315,10 @@ public abstract class Things implements Queries, mp4.datenbank.struktur.Tabellen
         }
 
         return q.select(what, wher, additionalTable, addTableKey, order, like);
+    }
+
+    public NumberFormatHandler getNfh() {
+        return nfh;
     }
 
 

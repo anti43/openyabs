@@ -24,7 +24,7 @@ import mp3.classes.interfaces.Constants;
  *
  * @author anti
  */
-public class ConnectionHandler extends mp4.datenbank.verbindung.Query implements mp4.datenbank.struktur.Tabellen, Cloneable {
+public class ConnectionHandler extends mp4.datenbank.verbindung.Query implements mp4.datenbank.installation.Tabellen, Cloneable {
 
     private static ConnectionHandler qc = null;
 

@@ -32,6 +32,7 @@ import java.util.Date;
 import java.util.Vector;
 
 import javax.swing.JPanel;
+import mp3.classes.utils.Log;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartUtilities;
@@ -109,8 +110,8 @@ public class Diagramme {
         ((PiePlot) jfcKuchen.getPlot()).setLabelGenerator(new StandardPieSectionLabelGenerator("{0} = {1}" + stEinheit, nfBeschrFormat, NumberFormat.getInstance()));
 
         panel.add(new ChartPanel(jfcKuchen), BorderLayout.CENTER);
-        
-        
+
+
 //        try {
 ////            ChartUtilities.saveChartAsPNG(new File(stDateiPfad), jfcKuchen, 500, 400);
 //        } catch (IOException e) {
@@ -161,7 +162,7 @@ public class Diagramme {
         cpPlotter.setRenderer(ciRenderer);
 
         panel.add(new ChartPanel(jfcBalken), BorderLayout.CENTER);
-        
+
 //        try {
 //            ChartUtilities.saveChartAsPNG(new File(stDateiPfad), jfcBalken, 500, 400);
 //        } catch (IOException e) {
@@ -222,7 +223,7 @@ public class Diagramme {
         daAchse.setMaximumDate(new Date(vecDatWerte.lastElement().getTime() + 2629800000L));
 
         panel.add(new ChartPanel(jfcLinien), BorderLayout.CENTER);
-        
+
 //        try {
 //            ChartUtilities.saveChartAsPNG(new File(stDateiPfad), jfcLinien, 500, 400);
 //        } catch (IOException e) {
@@ -295,5 +296,15 @@ public class Diagramme {
         xyDaten.addSeries(tsZuordnung);
 
         return xyDaten;
+    }
+
+    public File writeToFile(String stDateiPfad, JFreeChart chart) {
+        File file = new File(stDateiPfad);
+        try {
+            ChartUtilities.saveChartAsPNG(file, chart, 500, 400);
+        } catch (IOException e) {
+            Log.Debug(e);
+        }
+        return file;
     }
 }

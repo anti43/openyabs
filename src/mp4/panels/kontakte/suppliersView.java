@@ -34,7 +34,7 @@ import mp4.utils.tabellen.models.LProduktListTableModel;
  *
  * @author  anti43
  */
-public class suppliersView extends javax.swing.JPanel implements mp4.datenbank.struktur.Tabellen, panelInterface {
+public class suppliersView extends javax.swing.JPanel implements mp4.datenbank.installation.Tabellen, panelInterface {
 
     public Lieferant current;
     private String[][] liste;   
@@ -914,6 +914,7 @@ public class suppliersView extends javax.swing.JPanel implements mp4.datenbank.s
         
         this.jTable1.setModel(new LProduktListTableModel(current));
         TableFormat.stripFirst(jTable1);
+        numberfieldedited = false;
 
     }
 

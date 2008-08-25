@@ -14,12 +14,10 @@
  *      You should have received a copy of the GNU General Public License
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-package handling.pdf;
-
+package mp4.export;
 
 import mp4.items.Customer;
 import mp4.items.Rechnung;
-
 import com.lowagie.text.pdf.*;
 import com.lowagie.text.DocumentException;
 import java.io.*;
@@ -33,13 +31,16 @@ import mp3.classes.layer.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp3.classes.utils.Formater;
 import mp3.classes.utils.Log;
+
 import mp4.einstellungen.Einstellungen;
+
+import mp4.utils.datum.DateConverter;
 
 /**
  *
  * @author anti43
  */
-public class PDF_Lieferschein {
+public class PDF_Rechnung {
 
     private AcroFields acroFields;
     private Set fieldNameKeys;
@@ -52,13 +53,12 @@ public class PDF_Lieferschein {
     private Object[][] products;
     private Double netto = 0d;
     private Double brutto = 0d;
-//Insert the following into a servlet or adapt it to a standard java class
-    //get a handle to the file location
+
     /**
      * 
      * @param b
      */
-    public PDF_Lieferschein(Rechnung b) {
+    public PDF_Rechnung(Rechnung b) {
 
 
         l = Einstellungen.instanceOf();
@@ -68,7 +68,6 @@ public class PDF_Lieferschein {
 
         products = r.getProductlistAsArray();
 
-//          Log.Debug(products);
 
         this.start();
     }
@@ -79,14 +78,11 @@ public class PDF_Lieferschein {
 
             Properties prop = System.getProperties();
             separator = prop.getProperty("file.separator");
-            //new out(separator);
 
             PdfReader template = new PdfReader(l.getRechnungtemp());
             filename = l.getRechnungverz() + separator +
-                    "Lieferschein-" + r.getRechnungnummer().replaceAll(" ", "_") + "_" + k.getFirma().replaceAll(" ", "_") + "_" + k.getName().replaceAll(" ", "_") + ".pdf";
+                    r.getRechnungnummer().replaceAll(" ", "_") + "_" + k.getFirma().replaceAll(" ", "_") + "_" + k.getName().replaceAll(" ", "_") + ".pdf";
 
-
-//            filename = filename.replaceAll(" ", "_");
             filename = filename.trim();
 
             File updatedPDF = new File(filename);
@@ -111,14 +107,11 @@ public class PDF_Lieferschein {
 
 
             pdfStamper.setFormFlattening(true);
-
             pdfStamper.close();
-
             open();
         } catch (Exception e) {
             Log.Debug(e);
             Popup.error(Strings.NO_PDF + e.getMessage(), Popup.ERROR);
-
         }
     }
 
@@ -131,9 +124,9 @@ public class PDF_Lieferschein {
 
                 acroFields.setField(fieldName, fieldName);
             } catch (IOException ex) {
-                Logger.getLogger(PDF_Lieferschein.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(PDF_Rechnung.class.getName()).log(Level.SEVERE, null, ex);
             } catch (DocumentException ex) {
-                Logger.getLogger(PDF_Lieferschein.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(PDF_Rechnung.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -148,6 +141,7 @@ public class PDF_Lieferschein {
             }
         } catch (IOException ex) {
 
+//            Popup.notice("Es ist ein Fehler aufgetreten: " +"\n"+ ex);
             Log.Debug("Es ist ein Fehler aufgetreten: " + "\n" + ex);
 
         }
@@ -161,7 +155,7 @@ public class PDF_Lieferschein {
         acroFields.setField("street", k.getStr());
         acroFields.setField("city", k.getPLZ() + " " + k.getOrt());
 
-        acroFields.setField("date", r.getFDatum());
+        acroFields.setField("date", DateConverter.getDefDateString(r.getDatum()));
         acroFields.setField("number", r.getRechnungnummer());
         acroFields.setField("knumber", k.getKundennummer());
 
@@ -175,33 +169,31 @@ public class PDF_Lieferschein {
             try {
 
                 if (products[i][2] != null && String.valueOf(products[i][2]).length() > 0) {
-
-                    acroFields.setField("count" + t, t + ".");
                     acroFields.setField("quantity" + t, Formater.formatDecimal((Double) products[i][1]));
                     acroFields.setField("product" + t, String.valueOf(products[i][2]));
-//                acroFields.setField("price" + t, Formater.formatMoney((Double)products[i][5]));
-//                
-//                acroFields.setField("multipliedprice" + t, Formater.formatMoney((Double)products[i][5] *  (Double)products[i][1]));
-//               
+                    acroFields.setField("price" + t, Formater.formatMoney((Double) products[i][5]));
+                    
+                    acroFields.setField("pricenet" + t, Formater.formatMoney((Double) products[i][4]));
+                    acroFields.setField("pricetax" + t, Formater.formatPercent(products[i][3]));
 
-//
-//                netto = netto + ((Double) products[i][4] * (Double)products[i][1]);
-//                brutto = brutto + ((Double) products[i][5] * (Double)products[i][1]);
+                    acroFields.setField("multipliedprice" + t, Formater.formatMoney((Double) products[i][5] * (Double) products[i][1]));
+
+                    netto = netto + ((Double) products[i][4] * (Double) products[i][1]);
+                    brutto = brutto + ((Double) products[i][5] * (Double) products[i][1]);
+                    acroFields.setField("count" + t, t + ".");
                 }
             } catch (Exception exception) {
 
                 Popup.notice(exception.getMessage());
             }
 
-
-
         }
 
-//        Double tax = brutto -netto;
-//           
-//        acroFields.setField("taxrate",l.getGlobaltax());
-//        acroFields.setField("tax", Formater.formatMoney(tax));
-//        acroFields.setField("totalprice", Formater.formatMoney(brutto));
+        Double tax = brutto - netto;
+
+        acroFields.setField("taxrate", l.getGlobaltax().toString());
+        acroFields.setField("tax", Formater.formatMoney(tax));
+        acroFields.setField("totalprice", Formater.formatMoney(brutto));
 
     }
 }
