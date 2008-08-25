@@ -8,13 +8,14 @@ package mp3.classes.visual.util;
 import javax.swing.JFileChooser;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableModel;
-import mp3.installer.MpInstaller;
+
 import mp3.classes.layer.DefaultHelpModel;
 import mp3.classes.layer.visual.Help;
 
 import mp4.utils.windows.Position;
 import mp4.frames.mainframe;
 import mp4.einstellungen.Einstellungen;
+import mp4.installation.Setup;
 import mp4.utils.tabellen.TableFormat;
 
 /**
@@ -259,11 +260,8 @@ public class settingsView extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton4MouseClicked
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-      
-        
-         MpInstaller.writeDesktopIcon();
-        
-    
+
+         Setup.writeDesktopIcon();
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed

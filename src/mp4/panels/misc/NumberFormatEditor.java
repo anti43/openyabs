@@ -22,24 +22,25 @@ import mp4.utils.windows.Position;
  * @author  Andreas
  */
 public class NumberFormatEditor extends javax.swing.JFrame {
+
     private Countable mode;
+    private NumberFormatHandler nfh;
 
-
-   
     public NumberFormatEditor(Countable mode) {
         initComponents();
         this.mode = mode;
+        nfh = new NumberFormatHandler(mode, new Date());
         new Position(this);
         this.setVisible(rootPaneCheckingEnabled);
         try {
-            String[] str = Programmdaten.instanceOf().getRECHNUNG_NUMMER_FORMAT().split("&!");
+
+            String[] str = nfh.getCurrentFormat();
             this.jTextField1.setText(str[0] + "&!" + str[1]);
             jComboBox1.setSelectedIndex(Integer.valueOf(str[2]));
         } catch (Exception e) {
             Log.Debug(e);
         }
     }
-    
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -68,8 +69,7 @@ public class NumberFormatEditor extends javax.swing.JFrame {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Format Editor"));
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Gesamt", "Jahr", "Monat", "Tag" }));
-        jComboBox1.setSelectedIndex(1);
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Gesamt", "Jahr", "Monat", "Tag", "Autowert" }));
         jComboBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBox1ActionPerformed(evt);
@@ -211,12 +211,12 @@ private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 
 private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
- if(mainframe.getUser().doAction(User.ADMIN)) {
+    if (mainframe.getUser().doAction(User.ADMIN)) {
         NumberFormatHandler nfh = new NumberFormatHandler(mode, new Date());
 
         String fstring = jTextField1.getText() + "&!" + jComboBox1.getSelectedIndex();
         nfh.setFormatter(nfh.parseFormat(jTextField1.getText() + "&!" + jComboBox1.getSelectedIndex()));
-        
+
         String formatString = "&!&!00000";
 
         try {
@@ -234,17 +234,17 @@ private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
 
     new Help("resource/helpfiles/nummernformat1");
-    
+
 }//GEN-LAST:event_jButton4ActionPerformed
 
 private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
 
-    if(mainframe.getUser().doAction(User.ADMIN)) {
+    if (mainframe.getUser().doAction(User.ADMIN)) {
         NumberFormatHandler nfh = new NumberFormatHandler(mode, new Date());
 
         String fstring = jTextField1.getText() + "&!" + jComboBox1.getSelectedIndex();
         nfh.setFormatter(nfh.parseFormat(jTextField1.getText() + "&!" + jComboBox1.getSelectedIndex()));
-        
+
         String formatString = "&!&!00000";
 
         if (Popup.Y_N_dialog("Wollen Sie wirklich " + jTextField2.getText() + " als Startwert festlegen?")) {
@@ -260,7 +260,6 @@ private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         }
     }
 }//GEN-LAST:event_jButton5ActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;

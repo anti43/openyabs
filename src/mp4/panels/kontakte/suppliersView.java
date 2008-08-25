@@ -40,6 +40,7 @@ public class suppliersView extends javax.swing.JPanel implements mp4.datenbank.s
     private String[][] liste;   
     private mainframe mainframe;
     private boolean edited = false;
+    private boolean numberfieldedited;
 
     /** Creates new form Lieferants
      * @param aThis 
@@ -491,9 +492,20 @@ public class suppliersView extends javax.swing.JPanel implements mp4.datenbank.s
         jPanel9.setBackground(new java.awt.Color(227, 219, 202));
         jPanel9.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
+        jTextField4.setEditable(false);
+        jTextField4.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTextField4MouseClicked(evt);
+            }
+        });
         jTextField4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField4ActionPerformed(evt);
+            }
+        });
+        jTextField4.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextField4KeyTyped(evt);
             }
         });
 
@@ -969,32 +981,29 @@ public class suppliersView extends javax.swing.JPanel implements mp4.datenbank.s
     private void jTextField15ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField15ActionPerformed
     }//GEN-LAST:event_jTextField15ActionPerformed
 
-    private void createNew() {
-        String[][] i;
-
+    private boolean createNew() {
+       
         if (jTextField7.getText().length() >= 1 || jTextField5.getText().length() >= 1) {
             if (jTextField5.getText().length() == 0) {
                 jTextField5.setText(jTextField7.getText());
             }
 
+            if(!numberfieldedited && current.isValid())jTextField4.setText(null);
             current = new Lieferant();
 
             if (jTextField4.getText() == null || jTextField4.getText().length() == 0) {
-                current.setLieferantennummer(current.getNextStringNumber("Lieferantennummer"));
+                String s = current.getNfh().getNextNumber();
+                current.setLieferantennummer(s);
             } else {
-
-                i = current.select("id", "Lieferantennummer", jTextField4.getText(), false);
-
-                if (i == null || i.length == 0) {
+                if (!current.getNfh().exists(jTextField4.getText())) {
                     current.setLieferantennummer(jTextField4.getText());
                 } else {
-                    String s = current.getNextStringNumber("Lieferantennummer");
-                    current.setLieferantennummer(s);
-                    Popup.notice("Angegebene Lieferantennummer existiert bereits,\n" + s + " wurde verwendet.");
+                    Popup.notice("Angegebene Lieferantennummer existiert bereits.");
+                    return false;
                 }
             }
 
-            String cur = current.getLieferantennummer();
+            
             current.setFirma(jTextField5.getText());
             current.setAnrede(jTextField6.getText());
             current.setName(jTextField7.getText());
@@ -1027,6 +1036,7 @@ public class suppliersView extends javax.swing.JPanel implements mp4.datenbank.s
         } else {
             new Popup("Sie müssen mindestens einen Namen angeben.", Popup.ERROR);
         }
+        return true;
     }
 
     private void jTextField16ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField16ActionPerformed
@@ -1187,7 +1197,7 @@ private void jTextField5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST
 
 private void jTextField17MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextField17MouseClicked
     setEdited(true);
-    jTextField5.setEnabled(true);
+    jTextField17.setEnabled(true);
 }//GEN-LAST:event_jTextField17MouseClicked
 
 private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
@@ -1197,6 +1207,14 @@ private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
 new NumberFormatEditor(this.current);
 }//GEN-LAST:event_jButton16ActionPerformed
+
+private void jTextField4KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField4KeyTyped
+numberfieldedited =true;
+}//GEN-LAST:event_jTextField4KeyTyped
+
+private void jTextField4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextField4MouseClicked
+jTextField4.setEditable(true);
+}//GEN-LAST:event_jTextField4MouseClicked
 
     private void deactivate() {
         if ((JOptionPane.showConfirmDialog(this, "Wirklich löschen?", "Sicher?", JOptionPane.YES_NO_OPTION)) == JOptionPane.YES_OPTION) {

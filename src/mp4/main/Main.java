@@ -24,7 +24,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import mp3.installer.MpInstaller;
+import mp4.installation.Setup;
 import mp3.classes.interfaces.Constants;
 import mp3.classes.interfaces.Strings;
 import mp3.classes.layer.Popup;
@@ -32,6 +32,7 @@ import mp3.classes.utils.FileReaderWriter;
 import mp3.classes.utils.Log;
 import mp3.classes.utils.SplashScreen;
 import mp4.frames.mainframe;
+import mp4.installation.Verzeichnisse;
 
 /**
  *
@@ -128,7 +129,7 @@ public class Main implements Strings {
             }
         //Falls Datenbank nicht vorhanden, Installer starten
         } else {
-            splash.setComp(new MpInstaller());
+            splash.setComp(new Setup());
         }
 
     }
@@ -136,13 +137,13 @@ public class Main implements Strings {
     private void doArgCommands() {
         if (FORCE_FILE_COPY) {
             try {
-                new MpInstaller().copyFiles();
+                Verzeichnisse.copyFiles();
             } catch (Exception ex) {
                 Popup.error(ex.getMessage(), "Es ist ein Fehler aufgetreten:");
             }
         }
         if (FORCE_CREATE_DATABASE) {
-            new MpInstaller().makeDB();
+            new Setup().createDatabase();
         }
     }
 

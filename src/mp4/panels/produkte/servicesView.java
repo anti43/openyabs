@@ -47,6 +47,7 @@ public class servicesView extends javax.swing.JPanel implements mp4.datenbank.st
     private boolean edited = false;
     private int taxID = 1;
     private DialogOpenFile dialog = null;
+    private boolean numberfieldedited;
 
     /** Creates new form customers
      * @param frame 
@@ -458,6 +459,11 @@ public class servicesView extends javax.swing.JPanel implements mp4.datenbank.st
                 jTextField4ActionPerformed(evt);
             }
         });
+        jTextField4.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextField4KeyTyped(evt);
+            }
+        });
 
         jTextField5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -637,6 +643,11 @@ public class servicesView extends javax.swing.JPanel implements mp4.datenbank.st
         jButton21.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jButton21MouseClicked(evt);
+            }
+        });
+        jButton21.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton21ActionPerformed(evt);
             }
         });
 
@@ -998,6 +1009,15 @@ private void jButton13KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
 private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
     new NumberFormatEditor(this.current);
 }//GEN-LAST:event_jButton16ActionPerformed
+
+private void jButton21ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton21ActionPerformed
+
+}//GEN-LAST:event_jButton21ActionPerformed
+
+private void jTextField4KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField4KeyTyped
+numberfieldedited = true;
+}//GEN-LAST:event_jTextField4KeyTyped
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton jButton10;
     public javax.swing.JButton jButton11;

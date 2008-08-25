@@ -107,7 +107,7 @@ public abstract class People implements Queries, mp4.datenbank.struktur.Tabellen
             wher = null;
         }
 
-        return q.select(what, wher);
+        return q.select(what, wher, false);
     }
 
     /**
@@ -151,7 +151,7 @@ public abstract class People implements Queries, mp4.datenbank.struktur.Tabellen
             wher = null;
         }
 
-        return q.select(what, wher, order, like);
+        return q.select(what, wher, order, like, false, false);
     }
 
     /**

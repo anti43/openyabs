@@ -18,7 +18,7 @@ package mp4.datenbank.struktur;
 
 import java.io.File;
 import java.util.Date;
-import mp3.installer.MpInstaller;
+import mp4.installation.Setup;
 import mp4.utils.datum.DateConverter;
 
 /**
@@ -41,8 +41,8 @@ public interface Installation {
         "Ort VARCHAR(300) default NULL, Tel VARCHAR(250) default NULL,Fax VARCHAR(250) default NULL," +
         "Mobil VARCHAR(250) default NULL," +
         "Mail VARCHAR(350) default NULL, Webseite VARCHAR(350) default NULL,Notizen VARCHAR(10000)," +
-        "Steuernummer VARCHAR(350) default NULL,"+
-        "deleted INTEGER DEFAULT 0, " +
+        "Steuernummer VARCHAR(350) default NULL,"+ "Datum DATE DEFAULT CURRENT_DATE," +
+        "deleted INTEGER DEFAULT 0, " + 
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
         "PRIMARY KEY  (id))",
         
@@ -54,7 +54,7 @@ public interface Installation {
         "Str VARCHAR(250) default NULL, PLZ VARCHAR(50) default NULL," +
         "Ort VARCHAR(300) default NULL, Tel VARCHAR(250) default NULL,Fax VARCHAR(250) default NULL," +
         "Mobil VARCHAR(250) default NULL," +
-        "Mail VARCHAR(350) default NULL, Webseite VARCHAR(350) default NULL,Notizen VARCHAR(10000)," +
+        "Mail VARCHAR(350) default NULL, Webseite VARCHAR(350) default NULL,Notizen VARCHAR(10000)," +"Datum DATE DEFAULT CURRENT_DATE," +
         "deleted INTEGER DEFAULT 0, " +
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
         "PRIMARY KEY  (id))",
@@ -65,7 +65,7 @@ public interface Installation {
         "Name VARCHAR(250) default NULL, Str VARCHAR(250) default NULL, PLZ VARCHAR(50) default NULL," +
         "Ort VARCHAR(300) default NULL, Tel VARCHAR(250) default NULL,Fax VARCHAR(250) default NULL," +
         "Mobil VARCHAR(250) default NULL," +
-        "Mail VARCHAR(350) default NULL, Webseite VARCHAR(350) default NULL,Notizen VARCHAR(10000)," +
+        "Mail VARCHAR(350) default NULL, Webseite VARCHAR(350) default NULL,Notizen VARCHAR(10000)," +"Datum DATE DEFAULT CURRENT_DATE," +
         "deleted INTEGER DEFAULT 0, " +
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
         "PRIMARY KEY  (id))",
@@ -202,8 +202,8 @@ public interface Installation {
 //        ******************************************************************************************************************************
         
         "INSERT INTO steuersaetze (name, wert) VALUES ('Default', 0.0)",
-        "INSERT INTO hersteller (herstellernummer, name, firma, ort) VALUES ('1000', 'Default', 'Default', '')",
-        "INSERT INTO lieferanten (lieferantennummer, name, firma, ort) VALUES ('1000', 'Default', 'Default', '')",
+        "INSERT INTO hersteller (herstellernummer, name, firma, ort, deleted) VALUES ('1000', 'Default', 'Default', '', 1)",
+        "INSERT INTO lieferanten (lieferantennummer, name, firma, ort, deleted) VALUES ('1000', 'Default', 'Default', '', 1)",
 
 //        *****************************************Programmdatenb*************************************************************************************        
         
@@ -219,7 +219,7 @@ public interface Installation {
         "INSERT INTO programmdaten(name, wert) VALUES ('ANGEBOT_NUMMER_FORMAT',  '{JAHR}-{MONAT_NAME}-&!00000&!2')", 
         "INSERT INTO programmdaten(name, wert) VALUES ('MAINFRAME_WINDOW_STATE',  '790,1000')",    
         "INSERT INTO programmdaten(name, wert) VALUES ('WARENGRUPPEN_SEPARATOR',  '->')",   
-        "INSERT INTO programmdaten(name, wert) VALUES ('IMAGE_CACHE_FOLDER', '" + MpInstaller.instanceOf().getCache_dir() +"')",  
+        "INSERT INTO programmdaten(name, wert) VALUES ('IMAGE_CACHE_FOLDER', '" + Setup.instanceOf().install_dirs.getCache_dir() +"')",  
         
 //        ******************************************************************************************************************************        
         
@@ -230,17 +230,17 @@ public interface Installation {
         "INSERT INTO rechnungbetreffz (name, text, isvorlage) VALUES ('Ihr Auftrag..', 'Ihr Auftrag vom {Auftrag_Datum}', 1)",
         "INSERT INTO rechnungbetreffz (name, text, isvorlage) VALUES ('Bearbeiter..', 'Bearbeiter: {Benutzer}', 1)",      
          
-        "INSERT INTO daten (name, wert) VALUES ('Backup Verzeichnis', '" + MpInstaller.instanceOf().getCache_dir() + "')",
-        "INSERT INTO daten (name, wert) VALUES ('PDF Rechnungen Verzeichnis', '" +  MpInstaller.instanceOf().getPathpdf_bill_dir()+ "')",
-        "INSERT INTO daten (name, wert) VALUES ('PDF Angebote Verzeichnis', '" + MpInstaller.instanceOf().getPathpdf_offer_dir() + "')",
-        "INSERT INTO daten (name, wert) VALUES ('PDF Mahnung Verzeichnis', '" + MpInstaller.instanceOf().getPathpdf_mahnung_dir()+ "')",
-        "INSERT INTO daten (name, wert) VALUES ('PDF Produkt Verzeichnis', '" + MpInstaller.instanceOf().getPathpdf_produkt_dir()+ "')",
+        "INSERT INTO daten (name, wert) VALUES ('Backup Verzeichnis', '" + Setup.instanceOf().install_dirs.getCache_dir() + "')",
+        "INSERT INTO daten (name, wert) VALUES ('PDF Rechnungen Verzeichnis', '" +  Setup.instanceOf().install_dirs.getPathpdf_bill_dir()+ "')",
+        "INSERT INTO daten (name, wert) VALUES ('PDF Angebote Verzeichnis', '" + Setup.instanceOf().install_dirs.getPathpdf_offer_dir() + "')",
+        "INSERT INTO daten (name, wert) VALUES ('PDF Mahnung Verzeichnis', '" + Setup.instanceOf().install_dirs.getPathpdf_mahnung_dir()+ "')",
+        "INSERT INTO daten (name, wert) VALUES ('PDF Produkt Verzeichnis', '" + Setup.instanceOf().install_dirs.getPathpdf_produkt_dir()+ "')",
        
-        "INSERT INTO daten (name, wert) VALUES ('Rechnung Template', '" + MpInstaller.instanceOf().getPathtemplates_dir() + File.separator + "rechnung.pdf')",
-        "INSERT INTO daten (name, wert) VALUES ('Angebot Template', '" + MpInstaller.instanceOf().getPathtemplates_dir() + File.separator + "angebot.pdf')",
-        "INSERT INTO daten (name, wert) VALUES ('Mahnung Template', '" + MpInstaller.instanceOf().getPathtemplates_dir() + File.separator + "mahnung.pdf')",
-        "INSERT INTO daten (name, wert) VALUES ('Serienbrief Template', '" + MpInstaller.instanceOf().getPathtemplates_dir() + File.separator + "serienbrief.pdf')",
-        "INSERT INTO daten (name, wert) VALUES ('Produkt Template', '" + MpInstaller.instanceOf().getPathtemplates_dir() + File.separator + "produkt.pdf')",
+        "INSERT INTO daten (name, wert) VALUES ('Rechnung Template', '" + Setup.instanceOf().install_dirs.getPathtemplates_dir() + File.separator + "rechnung.pdf')",
+        "INSERT INTO daten (name, wert) VALUES ('Angebot Template', '" + Setup.instanceOf().install_dirs.getPathtemplates_dir() + File.separator + "angebot.pdf')",
+        "INSERT INTO daten (name, wert) VALUES ('Mahnung Template', '" + Setup.instanceOf().install_dirs.getPathtemplates_dir() + File.separator + "mahnung.pdf')",
+        "INSERT INTO daten (name, wert) VALUES ('Serienbrief Template', '" + Setup.instanceOf().install_dirs.getPathtemplates_dir() + File.separator + "serienbrief.pdf')",
+        "INSERT INTO daten (name, wert) VALUES ('Produkt Template', '" + Setup.instanceOf().install_dirs.getPathtemplates_dir() + File.separator + "produkt.pdf')",
      
         
         "INSERT INTO daten (name, wert) VALUES ('Mehrwertsteuersatz', '19')",

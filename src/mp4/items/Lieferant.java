@@ -21,7 +21,7 @@ import java.util.Date;
 import mp3.classes.interfaces.Countable;
 import mp3.classes.interfaces.Strings;
 import mp4.datenbank.verbindung.Query;
-
+import mp4.items.handler.NumberFormatHandler;
 import mp3.classes.layer.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
 
@@ -47,12 +47,13 @@ public class Lieferant extends mp3.classes.layer.People implements mp4.datenbank
     private String Webseite = "";
     private String Notizen = "";
     private Query query;
+    private NumberFormatHandler nfh;
 
     public Lieferant() {
         super(ConnectionHandler.instanceOf().clone(TABLE_SUPPLIER));
         this.id = 0;
         this.query =ConnectionHandler.instanceOf();
-        
+        nfh = new NumberFormatHandler(this, new Date());
     }
 
 
@@ -61,7 +62,7 @@ public class Lieferant extends mp3.classes.layer.People implements mp4.datenbank
         super(query.clone(TABLE_SUPPLIER));
         this.id = 0;
         this.query =query;
-
+        nfh = new NumberFormatHandler(this, new Date());
     }
 
     public Lieferant(Integer id) {
@@ -69,6 +70,7 @@ public class Lieferant extends mp3.classes.layer.People implements mp4.datenbank
         this.query =ConnectionHandler.instanceOf();
         this.id = id;
         this.explode(this.selectLast("*", "id", id.toString(), true));
+        nfh = new NumberFormatHandler(this, new Date());
     }
 
 
@@ -292,10 +294,14 @@ public class Lieferant extends mp3.classes.layer.People implements mp4.datenbank
     }
 
     public String getTable() {
-        return TABLE_CUSTOMERS;
+        return TABLE_SUPPLIER;
     }
 
     public String getCountColumn() {
        return "lieferantennummer";
+    }
+
+    public NumberFormatHandler getNfh() {
+        return nfh;
     }
 }

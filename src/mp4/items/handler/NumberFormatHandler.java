@@ -61,6 +61,23 @@ public class NumberFormatHandler {
 
     }
 
+    public String[] getCurrentFormat() {
+        if (type.getClass().isInstance(new mp4.items.Rechnung())) {
+             return Programmdaten.instanceOf().getRECHNUNG_NUMMER_FORMAT().split("&!");
+        } else if (type.getClass().isInstance(new mp4.items.Angebot())) {
+             return Programmdaten.instanceOf().getANGEBOT_NUMMER_FORMAT().split("&!");
+        } else if (type.getClass().isInstance(new mp4.items.Dienstleistung())) {
+             return Programmdaten.instanceOf().getSERVICES_NUMMER_FORMAT().split("&!");
+        } else if (type.getClass().isInstance(new mp4.items.Customer())) {
+             return Programmdaten.instanceOf().getCUSTOMER_NUMMER_FORMAT().split("&!");
+        } else if (type.getClass().isInstance(new mp4.items.Lieferant())) {
+             return Programmdaten.instanceOf().getSUPPLIER_NUMMER_FORMAT().split("&!");
+        } else if (type.getClass().isInstance(new mp4.items.Hersteller())) {
+             return Programmdaten.instanceOf().getMANUFACTURER_NUMMER_FORMAT().split("&!");
+        }
+       return null;
+    }
+
     public void save(String formatString) {
         if (type.getClass().isInstance(new mp4.items.Rechnung())) {
             Programmdaten.instanceOf().setRECHNUNG_NUMMER_FORMAT(formatString);
@@ -135,17 +152,17 @@ public class NumberFormatHandler {
     }
 
     private void processCustomerType() {
-         format = Programmdaten.instanceOf().getCUSTOMER_NUMMER_FORMAT();
+        format = Programmdaten.instanceOf().getCUSTOMER_NUMMER_FORMAT();
         setFormatter(parseFormat(format));
     }
 
     private void processSupplierType() {
-         format = Programmdaten.instanceOf().getSUPPLIER_NUMMER_FORMAT();
+        format = Programmdaten.instanceOf().getSUPPLIER_NUMMER_FORMAT();
         setFormatter(parseFormat(format));
     }
 
     private void processManufacturerType() {
-         format = Programmdaten.instanceOf().getMANUFACTURER_NUMMER_FORMAT() ;
+        format = Programmdaten.instanceOf().getMANUFACTURER_NUMMER_FORMAT();
         setFormatter(parseFormat(format));
     }
 
@@ -176,7 +193,7 @@ public class NumberFormatHandler {
             Integer count = 0;
 
             Log.Debug("Number Parser mode: " + this.getMode());
-            Log.Debug("Number Parser format: " + this.getFormatter());
+            Log.Debug("Number Parser format: " + this.getFormatter().format(1d));
 
             switch (this.getMode()) {
 
@@ -195,6 +212,10 @@ public class NumberFormatHandler {
                             DateConverter.addDay(DateConverter.getDate(DateConverter.getDay(type.getDatum()))));
                     break;
 
+                case 4:
+                    count = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(type.getTable()).getNextIndexOfStringCol(type.getCountColumn()) - 1;
+                    break;
+
                 case 0:
                     count = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(type.getTable()).getCount();
                     break;
@@ -205,6 +226,8 @@ public class NumberFormatHandler {
 
             return this.getFormatter().format(count + 1);
         } else {
+            Log.Debug("Number Parser uses: " + startwert);
+            startwert = checkValue(startwert);
             String tmp = startwert;
             startwert = null;
             return tmp;
@@ -213,5 +236,24 @@ public class NumberFormatHandler {
 
     public void setFormatter(NumberFormat formatter) {
         this.formatter = formatter;
+    }
+
+    public boolean exists(String value) {
+
+        String[][] i = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(type.getTable()).select("id", new String[]{type.getCountColumn(), value, "'"});
+
+        if (i != null && i.length > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public String checkValue(String value) {
+        if (exists(value)) {
+            return checkValue(value + 1);
+        } else {
+            return value;
+        }
     }
 }

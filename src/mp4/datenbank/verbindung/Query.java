@@ -721,7 +721,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
             str = " OR deleted = 1";
         }
         if (where != null) {
-            query = "SELECT " + what + " FROM " + table + " WHERE " + where[0] + " = " + where[2] + where[1] + where[2] + " " + " AND WHERE deleted = 0" + str;
+            query = "SELECT " + what + " FROM " + table + " WHERE " + where[0] + " = " + where[2] + where[1] + where[2] + " " + " AND deleted = 0" + str;
         } else {
             query = "SELECT " + what + " FROM " + table + " WHERE deleted = 0" + str;
         }
@@ -942,7 +942,7 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
             wher = " WHERE " + from + " " + where;
         }
 
-        query = "SELECT COUNT(1) FROM " + table + " " + wher;
+        query = "SELECT COUNT(*) AS rowcount FROM " + table + " " + wher;
         message = "Database Error (SelectCount:COUNT):";
         stm = null;
         resultSet = null;
@@ -954,8 +954,8 @@ public abstract class Query implements mp4.datenbank.struktur.Tabellen {
             resultSet = stm.executeQuery(query);
 
             if (resultSet.first()) {
-                Log.Debug("Count " + resultSet.getInt(1));
-                return resultSet.getInt(1);
+                Log.Debug("Count " + resultSet.getInt("rowcount"));
+                return resultSet.getInt("rowcount");
             } else {
                 stop();
                 return 0;

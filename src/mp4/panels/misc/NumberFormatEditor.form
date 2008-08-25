@@ -110,14 +110,14 @@
         <Component class="javax.swing.JComboBox" name="jComboBox1">
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="4">
+              <StringArray count="5">
                 <StringItem index="0" value="Gesamt"/>
                 <StringItem index="1" value="Jahr"/>
                 <StringItem index="2" value="Monat"/>
                 <StringItem index="3" value="Tag"/>
+                <StringItem index="4" value="Autowert"/>
               </StringArray>
             </Property>
-            <Property name="selectedIndex" type="int" value="1"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jComboBox1ActionPerformed"/>

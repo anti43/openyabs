@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import mp3.classes.interfaces.Countable;
 import mp4.datenbank.verbindung.Query;
-
+import mp4.items.handler.NumberFormatHandler;
 import mp3.classes.layer.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp3.classes.utils.Log;
@@ -50,16 +50,19 @@ public class Customer extends mp3.classes.layer.People implements mp4.datenbank.
     private String Kundensteuernummer = "";
     private Query query;
     private boolean deleted=false;
+    private NumberFormatHandler nfh;
 
     public Customer() {
         super(ConnectionHandler.instanceOf().clone(TABLE_CUSTOMERS));
         this.query=ConnectionHandler.instanceOf();
+         nfh = new NumberFormatHandler(this, new Date());
     }
  
 
     public Customer(Query query) {
         super(query.clone(TABLE_CUSTOMERS));
         this.query=query;
+        nfh = new NumberFormatHandler(this, new Date());
 
     }
 
@@ -68,6 +71,7 @@ public class Customer extends mp3.classes.layer.People implements mp4.datenbank.
         this.id=Integer.valueOf(id);
         this.explode(this.selectLast("*", "id", id.toString(), true ));
         this.query=ConnectionHandler.instanceOf();
+        nfh = new NumberFormatHandler(this, new Date());
     }
 
     public Customer(ConnectionHandler query, String kundennummer, boolean like) {
@@ -75,6 +79,7 @@ public class Customer extends mp3.classes.layer.People implements mp4.datenbank.
 //        this.id=Integer.valueOf(id);
         this.explode(this.selectLast("*","kundennummer",kundennummer, false));
         this.query=query;
+        nfh = new NumberFormatHandler(this, new Date());
     }
 
 //    public String[][] getAll() {
@@ -385,5 +390,9 @@ public class Customer extends mp3.classes.layer.People implements mp4.datenbank.
 
     public String getCountColumn() {
        return "kundennummer";
+    }
+    
+    public NumberFormatHandler getNfh() {
+        return nfh;
     }
 }

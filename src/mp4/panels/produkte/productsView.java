@@ -58,6 +58,7 @@ import mp4.utils.text.RandomText;
 import mp4.utils.zahlen.FormatNumber;
 import mp4.utils.zahlen.NumberCheck;
 
+
 /**
  *
  * @author  anti43
@@ -75,6 +76,7 @@ public class productsView extends javax.swing.JPanel implements mp4.datenbank.st
     private URI currentImageURI;
     private int taxID = 1;
     private DialogOpenFile dialog = null;
+    private boolean numberfieldedited;
 
     /** Creates new form customers
      * @param frame 
@@ -586,6 +588,11 @@ public class productsView extends javax.swing.JPanel implements mp4.datenbank.st
         jTextField4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField4ActionPerformed(evt);
+            }
+        });
+        jTextField4.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextField4KeyTyped(evt);
             }
         });
 
@@ -1431,6 +1438,11 @@ private void jButton13KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
 private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
     new NumberFormatEditor(this.current);
 }//GEN-LAST:event_jButton16ActionPerformed
+
+private void jTextField4KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField4KeyTyped
+numberfieldedited = true;
+}//GEN-LAST:event_jTextField4KeyTyped
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JLabel imgLabel;
     public javax.swing.JButton jButton1;
@@ -1714,7 +1726,6 @@ private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         TableFormat.stripFirst(jTable2);
     }
 }
-
 class GetProductImage extends SwingWorker<Void, Void> {
 
     private productsView view;

@@ -21,7 +21,7 @@ import java.util.Date;
 import mp3.classes.interfaces.Countable;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.datenbank.verbindung.Query;
-
+import mp4.items.handler.NumberFormatHandler;
 /**
  *
  * @author anti
@@ -43,16 +43,19 @@ public class Hersteller extends mp3.classes.layer.People implements mp4.datenban
     private String Mail = "";
     private String Webseite = "";
     private String Notizen = "";
+    private NumberFormatHandler nfh;
 
 
     public Hersteller() {
         super(ConnectionHandler.instanceOf().clone(TABLE_MANUFACTURER));
+        nfh = new NumberFormatHandler(this, new Date());
     }
 
     public Hersteller(Integer id) {
         super(ConnectionHandler.instanceOf().clone(TABLE_MANUFACTURER));
         this.id = id;
         this.explode(this.selectLast("*", "id", id.toString(), true));
+        nfh = new NumberFormatHandler(this, new Date());
     }
     public String getid() {
         return id.toString();
@@ -213,7 +216,6 @@ public class Hersteller extends mp3.classes.layer.People implements mp4.datenban
     }
 
     public void save() {
-
         if (id > 0) {
             this.update(TABLE_MANUFACTURER_FIELDS, this.collect(), id.toString());
             isSaved = true;
@@ -230,7 +232,7 @@ public class Hersteller extends mp3.classes.layer.People implements mp4.datenban
         this.Fax = Fax;
     }
     
-        public boolean isValid() {
+    public boolean isValid() {
         if(this.id > 0) {
             return true;
         }
@@ -249,5 +251,9 @@ public class Hersteller extends mp3.classes.layer.People implements mp4.datenban
 
     public String getCountColumn() {
        return "herstellernummer";
+    }
+
+    public NumberFormatHandler getNfh() {
+        return nfh;
     }
 }
