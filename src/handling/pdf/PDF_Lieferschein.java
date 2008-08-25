@@ -17,8 +17,8 @@
 package handling.pdf;
 
 
-import mp4.klassen.objekte.Customer;
-import mp4.klassen.objekte.Rechnung;
+import mp4.items.Customer;
+import mp4.items.Rechnung;
 
 import com.lowagie.text.pdf.*;
 import com.lowagie.text.DocumentException;

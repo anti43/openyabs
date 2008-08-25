@@ -6,15 +6,17 @@
 
 package mp4.panels.rechnungen;
 
-import mp4.klassen.objekte.*;
-import mp4.klassen.objekte.Customer;
+import mp4.items.Product;
+import mp4.items.Rechnung;
+
+import mp4.items.Customer;
 import handling.pdf.PDF_Mahnung;
 import mp4.benutzerverwaltung.User;
 import mp4.einstellungen.Einstellungen;
 import mp4.einstellungen.Programmdaten;
 import mp4.einstellungen.VariablenZuText;
 import mp4.frames.mainframe;
-import mp4.panels.PdfVorschauWindow;
+import mp4.frames.PdfVorschauWindow;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.windows.Position;
 import mp4.utils.zahlen.FormatNumber;

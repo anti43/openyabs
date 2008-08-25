@@ -7,8 +7,8 @@ package mp3.classes.visual.sub;
 
 import java.awt.Font;
 import mp4.datenbank.verbindung.ConnectionHandler;
-import mp4.klassen.objekte.Rechnung;
-import mp4.klassen.objekte.Customer;
+import mp4.items.Rechnung;
+import mp4.items.Customer;
 import mp3.classes.utils.Formater;
 import mp4.utils.tabellen.SelectionCheck;
 

@@ -31,7 +31,7 @@ import mp3.classes.utils.UnZip;
 import mp3.classes.utils.Zip;
 import mp4.frames.mainframe;
 import mp4.einstellungen.Einstellungen;
-import mp4.klassen.objekte.HistoryItem;
+import mp4.items.HistoryItem;
 
 
 /**

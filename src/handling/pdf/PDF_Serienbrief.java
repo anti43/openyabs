@@ -16,8 +16,9 @@
  */
 package handling.pdf;
 
+import mp4.items.Customer;
 import mp4.einstellungen.Einstellungen;
-import mp4.klassen.objekte.*;
+
 import com.lowagie.text.DocumentException;
 
 import com.lowagie.text.pdf.AcroFields;

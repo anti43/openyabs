@@ -4,8 +4,8 @@
  */
 package mp4.einstellungen;
 
-import mp4.klassen.objekte.Customer;
-import mp4.klassen.objekte.Rechnung;
+import mp4.items.Customer;
+import mp4.items.Rechnung;
 import mp4.utils.datum.DateConverter;
 
 /**
@@ -25,10 +25,10 @@ public class VariablenZuText {
     public static String parseText(String text, Object[] object) {
 
         for (int i = 0; i < object.length; i++) {
-            if (object[i].getClass().isInstance(new mp4.klassen.objekte.Rechnung())) {
-                if(object[i]!=null)text = parseRechnung(text, (mp4.klassen.objekte.Rechnung) object[i]);
-            } else if (object[i].getClass().isInstance(new mp4.klassen.objekte.Customer())) {
-                if(object[i]!=null)text = parseKunde(text, (mp4.klassen.objekte.Customer) object[i]);
+            if (object[i].getClass().isInstance(new mp4.items.Rechnung())) {
+                if(object[i]!=null)text = parseRechnung(text, (mp4.items.Rechnung) object[i]);
+            } else if (object[i].getClass().isInstance(new mp4.items.Customer())) {
+                if(object[i]!=null)text = parseKunde(text, (mp4.items.Customer) object[i]);
             }
         }
 

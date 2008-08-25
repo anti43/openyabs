@@ -17,7 +17,7 @@
 
 package mp4.utils.tabellen.models;
 
-import mp4.klassen.objekte.Rechnung;
+import mp4.items.Rechnung;
 import mp4.utils.datum.DateConverter;
 
 /**

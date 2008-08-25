@@ -6,18 +6,20 @@
 package mp3.classes.visual.util;
 
 
+import mp4.items.Ausgabe;
+import mp4.items.Einnahme;
 import mp4.datenbank.verbindung.ConnectionHandler;
-import mp4.klassen.objekte.SKRKonto;
 
+import mp4.items.SKRKonto;
 import javax.swing.JTextField;
 import mp3.classes.utils.*;
 
 import mp3.classes.layer.*;
 import mp3.classes.layer.visual.Help;
-import mp4.panels.eurAPanel;
+import mp4.panels.eur.eurAPanel;
 
-import mp4.klassen.objekte.*;
-import mp4.panels.eurEPanel;
+
+import mp4.panels.eur.eurEPanel;
 import mp4.utils.windows.Position;
 
 

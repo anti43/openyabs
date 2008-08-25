@@ -26,11 +26,11 @@ import mp3.classes.layer.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp3.classes.layer.KontenImporteur;
 
-import mp4.klassen.objekte.HistoryItem;
-import mp4.klassen.objekte.ProductGroupCategory;
-import mp4.klassen.objekte.ProductGroupFamily;
-import mp4.klassen.objekte.ProductGroupGroup;
-import mp4.klassen.objekte.Lieferant;
+import mp4.items.HistoryItem;
+import mp4.items.ProductGroupCategory;
+import mp4.items.ProductGroupFamily;
+import mp4.items.ProductGroupGroup;
+import mp4.items.Lieferant;
 import org.supercsv.cellprocessor.constraint.StrMinMax;
 import org.supercsv.cellprocessor.ift.CellProcessor;
 import org.supercsv.io.CsvBeanReader;
@@ -433,7 +433,7 @@ public class csvKontenImporter extends javax.swing.JFrame {
                 for (int i = 0; i < thisa.data.length; i++) {
 
                     
-                    new mp4.klassen.objekte.SKRKonto(thisa.data[i].getNummer(),thisa.data[i].getKlasse(),thisa.data[i].getGruppe(),thisa.data[i].getArt());
+                    new mp4.items.SKRKonto(thisa.data[i].getNummer(),thisa.data[i].getKlasse(),thisa.data[i].getGruppe(),thisa.data[i].getArt());
 
                    
                     thisa.jProgressBar1.setValue(i);

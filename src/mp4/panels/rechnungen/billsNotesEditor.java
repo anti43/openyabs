@@ -5,16 +5,16 @@
  */
 package mp4.panels.rechnungen;
 
-import javax.swing.table.DefaultTableModel;
+import mp4.items.RechnungBetreffzeile;
+import mp4.items.Rechnung;
 import mp4.benutzerverwaltung.User;
 import mp4.frames.mainframe;
-import mp4.klassen.objekte.*;
+
 import mp3.classes.interfaces.panelInterface;
 import mp4.utils.tabellen.DataModelUtils;
 import mp4.utils.tabellen.SelectionCheck;
 import mp4.utils.tabellen.TableFormat;
 import mp4.utils.tabellen.models.BillNotesTableModel;
-import mp4.utils.tabellen.models.MPTableModel;
 
 /**
  *

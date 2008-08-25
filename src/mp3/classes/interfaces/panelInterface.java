@@ -20,7 +20,7 @@ along with MP.  If not, see <http://www.gnu.org/licenses/>.
 package mp3.classes.interfaces;
 
 import mp3.classes.layer.People;
-import mp4.klassen.objekte.Customer;
+import mp4.items.Customer;
 
 /**
  *

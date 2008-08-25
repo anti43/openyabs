@@ -24,7 +24,7 @@ import mp3.classes.interfaces.Constants;
 import mp3.classes.interfaces.ProtectedStrings;
 import mp3.classes.interfaces.Strings;
 
-import mp4.klassen.objekte.Rechnung;
+import mp4.items.Rechnung;
 import mp3.classes.utils.Formater;
 import mp3.classes.utils.Log;
 import mp4.datenbank.verbindung.Query;

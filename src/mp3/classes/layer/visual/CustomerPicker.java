@@ -11,7 +11,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
-import mp4.klassen.objekte.Customer;
+import mp4.items.Customer;
 import mp4.panels.rechnungen.billsView;
 import mp4.panels.rechnungen.offersView;
 import mp4.utils.tabellen.SelectionCheck;

@@ -17,9 +17,9 @@
 
 package mp4.utils.tabellen.models;
 
-import mp4.klassen.objekte.Hersteller;
-import mp4.klassen.objekte.Lieferant;
-import mp4.klassen.objekte.Product;
+import mp4.items.Hersteller;
+import mp4.items.Lieferant;
+import mp4.items.Product;
 
 /**
  *

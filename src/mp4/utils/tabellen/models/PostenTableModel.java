@@ -6,7 +6,7 @@ import javax.swing.table.TableModel;
 import mp3.classes.layer.Popup;
 import mp3.classes.utils.Log;
 import mp4.einstellungen.Einstellungen;
-import mp4.klassen.objekte.Product;
+import mp4.items.Product;
 import mp4.utils.tabellen.DataModelUtils;
 import mp4.utils.zahlen.FormatNumber;
 import mp4.utils.text.*;

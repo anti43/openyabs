@@ -16,20 +16,20 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeSelectionModel;
-import mp4.klassen.objekte.Dienstleistung;
+import mp4.items.Dienstleistung;
 import mp4.utils.windows.Position;
 import mp3.classes.utils.Log;
 import mp3.classes.layer.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
 
 import mp4.einstellungen.Programmdaten;
-import mp4.klassen.objekte.Product;
-import mp4.panels.productsView;
+import mp4.items.Product;
+import mp4.panels.produkte.productsView;
 
-import mp4.klassen.objekte.ProductGroupCategory;
-import mp4.klassen.objekte.ProductGroupFamily;
-import mp4.klassen.objekte.ProductGroupGroup;
-import mp4.klassen.objekte.ProductGroupHandler;
+import mp4.items.ProductGroupCategory;
+import mp4.items.ProductGroupFamily;
+import mp4.items.ProductGroupGroup;
+import mp4.items.handler.ProductGroupHandler;
 import mp4.utils.trees.TreeFormat;
 
 /**

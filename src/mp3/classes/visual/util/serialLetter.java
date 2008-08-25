@@ -19,9 +19,9 @@ import mp3.classes.interfaces.Constants;
 import mp3.classes.interfaces.ProtectedStrings;
 import mp3.classes.layer.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
-import mp4.klassen.objekte.Customer;
+import mp4.items.Customer;
 
-import mp4.klassen.objekte.Lieferant;
+import mp4.items.Lieferant;
 import mp4.utils.windows.Position;
 import mp3.classes.utils.Formater;
 import mp3.classes.utils.Log;

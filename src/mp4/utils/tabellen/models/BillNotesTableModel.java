@@ -16,7 +16,7 @@
  */
 package mp4.utils.tabellen.models;
 
-import mp4.klassen.objekte.RechnungBetreffzeile;
+import mp4.items.RechnungBetreffzeile;
 
 /**
  *

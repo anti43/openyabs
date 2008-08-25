@@ -5,9 +5,10 @@
  */
 package mp4.panels.rechnungen;
 
+import mp4.panels.misc.NumberFormatEditor;
 import handling.pdf.PDF_Angebot;
 
-import mp4.klassen.objekte.RechnungPosten;
+import mp4.items.RechnungPosten;
 
 import java.awt.Color;
 import java.awt.event.MouseEvent;
@@ -28,9 +29,9 @@ import mp4.utils.tabellen.models.PostenTableModel;
 import mp3.classes.layer.visual.ProductPicker;
 import mp4.datenbank.verbindung.ConnectionHandler;
 
-import mp4.klassen.objekte.Customer;
-import mp4.klassen.objekte.HistoryItem;
-import mp4.klassen.objekte.Product;
+import mp4.items.Customer;
+import mp4.items.HistoryItem;
+import mp4.items.Product;
 import mp4.frames.mainframe;
 
 
@@ -40,7 +41,7 @@ import javax.swing.JTabbedPane;
 import mp4.benutzerverwaltung.User;
 import mp4.einstellungen.Einstellungen;
 
-import mp4.klassen.objekte.Angebot;
+import mp4.items.Angebot;
 import mp3.classes.interfaces.panelInterface;
 import mp3.classes.layer.People;
 import mp4.utils.datum.DateConverter;
@@ -1275,7 +1276,7 @@ private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 
 private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
 
-    new RNumberFormatEditor(this.currentOffer);
+    new NumberFormatEditor(this.currentOffer);
     
     
 }//GEN-LAST:event_jButton16ActionPerformed

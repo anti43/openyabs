@@ -14,7 +14,7 @@ import javax.swing.table.DefaultTableModel;
 import mp3.classes.interfaces.Strings;
 import mp3.classes.layer.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
-import mp4.klassen.objekte.HistoryItem;
+import mp4.items.HistoryItem;
 import mp4.frames.mainframe;
 import mp3.classes.visual.util.serialLetter;
 import mp4.utils.tabellen.SelectionCheck;
@@ -24,9 +24,9 @@ import mp4.benutzerverwaltung.User;
 import mp4.utils.windows.TabCloseIcon;
 import mp3.classes.interfaces.panelInterface;
 import mp3.classes.layer.People;
-import mp4.klassen.objekte.Lieferant;
-import mp4.klassen.objekte.Rechnung;
-import mp4.panels.rechnungen.RNumberFormatEditor;
+import mp4.items.Lieferant;
+import mp4.items.Rechnung;
+import mp4.panels.misc.NumberFormatEditor;
 import mp4.utils.tabellen.TableFormat;
 import mp4.utils.tabellen.models.LProduktListTableModel;
 
@@ -1195,7 +1195,7 @@ private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 }//GEN-LAST:event_jButton6ActionPerformed
 
 private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
-new RNumberFormatEditor(this.current);
+new NumberFormatEditor(this.current);
 }//GEN-LAST:event_jButton16ActionPerformed
 
     private void deactivate() {

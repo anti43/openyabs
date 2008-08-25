@@ -16,6 +16,8 @@
  */
 package handling.pdf;
 
+import mp4.items.Customer;
+import mp4.items.Rechnung;
 import com.lowagie.text.pdf.*;
 import com.lowagie.text.DocumentException;
 import java.io.*;
@@ -31,7 +33,7 @@ import mp3.classes.utils.Formater;
 import mp3.classes.utils.Log;
 
 import mp4.einstellungen.Einstellungen;
-import mp4.klassen.objekte.*;
+
 import mp4.utils.datum.DateConverter;
 
 /**

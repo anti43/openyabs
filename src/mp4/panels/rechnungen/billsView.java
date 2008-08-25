@@ -5,10 +5,11 @@
  */
 package mp4.panels.rechnungen;
 
+import mp4.panels.misc.NumberFormatEditor;
 import java.awt.event.ActionEvent;
 import javax.swing.Icon;
-import mp4.klassen.objekte.RechnungPosten;
-import mp4.klassen.objekte.Rechnung;
+import mp4.items.RechnungPosten;
+import mp4.items.Rechnung;
 import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.text.SimpleDateFormat;
@@ -28,9 +29,9 @@ import mp4.utils.tabellen.models.PostenTableModel;
 import mp3.classes.layer.visual.ProductPicker;
 import mp4.datenbank.verbindung.ConnectionHandler;
 
-import mp4.klassen.objekte.Customer;
-import mp4.klassen.objekte.HistoryItem;
-import mp4.klassen.objekte.Product;
+import mp4.items.Customer;
+import mp4.items.HistoryItem;
+import mp4.items.Product;
 import mp4.frames.mainframe;
 
 import handling.pdf.PDF_Rechnung;
@@ -43,7 +44,7 @@ import javax.swing.JTabbedPane;
 import mp4.einstellungen.Einstellungen;
 
 import mp4.einstellungen.Programmdaten;
-import mp4.klassen.objekte.Angebot;
+import mp4.items.Angebot;
 import mp4.benutzerverwaltung.User;
 import mp3.classes.interfaces.panelInterface;
 import mp3.classes.layer.People;
@@ -1412,7 +1413,7 @@ private void jCheckBox4ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIR
 
 private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
 //GEN-LAST:event_jButton16ActionPerformed
-    new RNumberFormatEditor(this.getCurrent());
+    new NumberFormatEditor(this.getCurrent());
 
 
 }                                         

@@ -6,16 +6,16 @@
 package mp3.classes.layer.visual;
 
 import mp3.classes.utils.Formater;
-import mp4.panels.servicesView;
+import mp4.panels.produkte.servicesView;
 import mp4.utils.windows.Position;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
-import mp4.klassen.objekte.Customer;
+import mp4.items.Customer;
 import mp4.utils.tabellen.SelectionCheck;
 import mp3.classes.interfaces.panelInterface;
-import mp4.klassen.objekte.Hersteller;
-import mp4.klassen.objekte.Lieferant;
-import mp4.panels.productsView;
+import mp4.items.Hersteller;
+import mp4.items.Lieferant;
+import mp4.panels.produkte.productsView;
 
 /**
  *

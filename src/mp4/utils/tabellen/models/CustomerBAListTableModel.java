@@ -17,9 +17,9 @@
 
 package mp4.utils.tabellen.models;
 
-import mp4.klassen.objekte.Angebot;
-import mp4.klassen.objekte.Customer;
-import mp4.klassen.objekte.Rechnung;
+import mp4.items.Angebot;
+import mp4.items.Customer;
+import mp4.items.Rechnung;
 import mp4.utils.tabellen.DataModelUtils;
 
 /**

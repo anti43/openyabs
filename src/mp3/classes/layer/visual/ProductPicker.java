@@ -13,7 +13,7 @@ import mp3.classes.utils.Formater;
 import java.awt.event.MouseEvent;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
-import mp4.klassen.objekte.Product;
+import mp4.items.Product;
 import mp4.panels.rechnungen.billsView;
 import mp4.panels.rechnungen.offersView;
 import mp4.utils.tabellen.SelectionCheck;

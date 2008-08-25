@@ -16,8 +16,8 @@
  */
 package handling.pdf;
 
-import mp4.klassen.objekte.Customer;
-import mp4.klassen.objekte.Angebot;
+import mp4.items.Customer;
+import mp4.items.Angebot;
 import com.lowagie.text.pdf.*;
 import com.lowagie.text.DocumentException;
 import java.io.*;
