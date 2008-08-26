@@ -59,20 +59,14 @@ public abstract class Formater {
         }
         
         String[][] mergedArray = new String[array1.length ][array1[0].length];
-       
         int i = 0;
-
         for (i = 0; i < array1.length; i++) {
 
             for (int k = 0; k < array1[i].length; k++) {
 
                 mergedArray[i][k] = array1[i][k].toString();
-
-
             }
-
-        }
-        
+        }        
         return mergedArray;
     }
 
