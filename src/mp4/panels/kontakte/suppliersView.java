@@ -790,7 +790,7 @@ public class suppliersView extends javax.swing.JPanel implements mp4.datenbank.i
         jToolBar2.add(jButton6);
 
         jButton20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/medium/tab_remove.png"))); // NOI18N
-        jButton20.setToolTipText("Kunde deaktivieren und Tab schliessen");
+        jButton20.setToolTipText("Kontakt deaktivieren und Tab schliessen");
         jButton20.setFocusable(false);
         jButton20.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton20.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -1218,6 +1218,7 @@ jTextField4.setEditable(true);
 }//GEN-LAST:event_jTextField4MouseClicked
 
     private void deactivate() {
+     if (current.getId() > 0) {
         if ((JOptionPane.showConfirmDialog(this, "Wirklich löschen?", "Sicher?", JOptionPane.YES_NO_OPTION)) == JOptionPane.YES_OPTION) {
             try {
                 current.deactivate(current.getId().toString());
@@ -1231,7 +1232,9 @@ jTextField4.setEditable(true);
                 Popup.warn(ex.getMessage(), Popup.ERROR);
             }
         }
-
+        } else {
+            mainframe.setMessage("Kein Kontakt gewählt.");
+        }
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton jButton10;

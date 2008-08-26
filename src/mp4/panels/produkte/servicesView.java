@@ -83,7 +83,7 @@ public class servicesView extends javax.swing.JPanel implements mp4.datenbank.in
 
     private void deactivate() {
 
-        if (current.getId() < 0) {
+        if (current.getId() > 0) {
             if ((JOptionPane.showConfirmDialog(this, "Wirklich löschen?", "Sicher?", JOptionPane.YES_NO_OPTION)) == JOptionPane.YES_OPTION) {
                 current.destroy();
                 current = new Dienstleistung();
@@ -229,7 +229,7 @@ public class servicesView extends javax.swing.JPanel implements mp4.datenbank.in
         jToolBar2.add(jButton11);
 
         jButton20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/medium/tab_remove.png"))); // NOI18N
-        jButton20.setToolTipText("Kunde deaktivieren und Tab schliessen");
+        jButton20.setToolTipText("Produkt deaktivieren und Tab schliessen");
         jButton20.setFocusable(false);
         jButton20.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton20.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);

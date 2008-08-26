@@ -44,7 +44,7 @@ import mp4.utils.tabellen.TableFormat;
 public class customersView extends javax.swing.JPanel implements mp4.datenbank.installation.Tabellen, panelInterface {
 
     public Customer current;
-    private String[][] liste;   
+    private String[][] liste;
     private mainframe mainframe;
     private boolean edited = false;
     private boolean numberfieldedited;
@@ -1034,7 +1034,7 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.i
 
         this.jTable3.setModel(new DefaultTableModel(list, k.split(",")));
         TableFormat.stripFirst(jTable3);
-   
+
     }//GEN-LAST:event_jTextField2ActionPerformed
 
     private void jTextField3ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
@@ -1044,7 +1044,7 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.i
 
         this.jTable3.setModel(new DefaultTableModel(list, k.split(",")));
         TableFormat.stripFirst(jTable3);
-    
+
     }//GEN-LAST:event_jTextField3ActionPerformed
 
     private void jTextField4ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
@@ -1081,21 +1081,23 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.i
     }//GEN-LAST:event_jTextField15ActionPerformed
 
     private boolean createNew() {
-       
-        
+
+
         if (jTextField7.getText().length() >= 1 || jTextField5.getText().length() >= 1) {
             if (jTextField5.getText().length() == 0) {
                 jTextField5.setText(jTextField7.getText());
             }
 
-            if(!numberfieldedited && current.isValid())jTextField4.setText(null);
+            if (!numberfieldedited && current.isValid()) {
+                jTextField4.setText(null);
+            }
             current = new Customer();
 
             if (jTextField4.getText() == null || jTextField4.getText().length() == 0) {
-                String s =current.getNfh().getNextNumber();
+                String s = current.getNfh().getNextNumber();
                 current.setKundennummer(s);
             } else {
-                    if (!current.getNfh().exists(jTextField4.getText())) {
+                if (!current.getNfh().exists(jTextField4.getText())) {
                     current.setKundennummer(jTextField4.getText());
                 } else {
                     Popup.notice("Angegebene Kundennummer existiert bereits.");
@@ -1103,7 +1105,7 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.i
                 }
             }
 
-        
+
             current.setFirma(jTextField5.getText());
             current.setAnrede(jTextField6.getText());
             current.setName(jTextField7.getText());
@@ -1326,36 +1328,39 @@ private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 }//GEN-LAST:event_jButton6ActionPerformed
 
 private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
-new NumberFormatEditor(this.current);
+    new NumberFormatEditor(this.current);
 }//GEN-LAST:event_jButton16ActionPerformed
 
 private void jTextField4KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField4KeyTyped
-numberfieldedited =true;
+    numberfieldedited = true;
 }//GEN-LAST:event_jTextField4KeyTyped
 
 private void jTextField4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextField4MouseClicked
-jTextField4.setEditable(true);
+    jTextField4.setEditable(true);
 }//GEN-LAST:event_jTextField4MouseClicked
 
     private void deactivate() {
-        if ((JOptionPane.showConfirmDialog(this, "Wirklich löschen?", "Sicher?", JOptionPane.YES_NO_OPTION)) == JOptionPane.YES_OPTION) {
-            try {
-                current.deactivate(current.getId().toString());
+        if (current.getId() > 0) {
+            if ((JOptionPane.showConfirmDialog(this, "Wirklich löschen?", "Sicher?", JOptionPane.YES_NO_OPTION)) == JOptionPane.YES_OPTION) {
+                try {
+                    current.deactivate(current.getId().toString());
 
-                new HistoryItem(ConnectionHandler.instanceOf(), Strings.CUSTOMER, "Kunde Nummer: " + current.getKundennummer() + " gelöscht.");
+                    new HistoryItem(ConnectionHandler.instanceOf(), Strings.CUSTOMER, "Kunde Nummer: " + current.getKundennummer() + " gelöscht.");
 
-                this.liste = current.getAll(false);
-                String k = "id," + TABLE_CUSTOMER_FIELDS;
+                    this.liste = current.getAll(false);
+                    String k = "id," + TABLE_CUSTOMER_FIELDS;
 
-                this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
-                TableFormat.stripFirst(jTable2);
+                    this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
+                    TableFormat.stripFirst(jTable2);
 
-                current = new Customer(ConnectionHandler.instanceOf());
-            } catch (Exception ex) {
-                Popup.warn(ex.getMessage(), Popup.ERROR);
+                    current = new Customer(ConnectionHandler.instanceOf());
+                } catch (Exception ex) {
+                    Popup.warn(ex.getMessage(), Popup.ERROR);
+                }
             }
+        } else {
+            mainframe.setMessage("Kein Kontakt gewählt.");
         }
-
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton jButton10;
@@ -1481,7 +1486,7 @@ jTextField4.setEditable(true);
     }
 
     public void switchTab(int i) {
-       jTabbedPane1.setSelectedIndex(i);
+        jTabbedPane1.setSelectedIndex(i);
     }
 }
 
