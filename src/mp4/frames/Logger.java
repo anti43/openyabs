@@ -98,6 +98,14 @@ pack();
 
         jTextArea1.append(e.getMessage());
     }
+    
+         
+    public void flush() {
+       System.out.print(jTextArea1.getText());
+       jTextArea1.setText(null);
+       
+    }
+
 // Variables declaration - do not modify//GEN-BEGIN:variables
 private javax.swing.JLabel jLabel1;
 private javax.swing.JScrollPane jScrollPane1;
@@ -131,9 +139,5 @@ private javax.swing.JTextArea jTextArea1;
         }
     }
     
-    @Override
-    public void finalize(){
-       System.out.print(jTextArea1.getText());
-    
-    }
+  
 }

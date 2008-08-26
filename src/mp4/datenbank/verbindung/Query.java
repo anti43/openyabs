@@ -199,9 +199,10 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
         }
 
         if (where != null) {
+            
             query = "SELECT " + what + " FROM " + table +
                     " LEFT OUTER JOIN " + leftJoinTable + " ON " + table + "." + leftJoinKey + " = " + leftJoinTable + ".id" +
-                    " WHERE " + where[0] + " " + k + " " + where[2] + l1 + where[1] + l2 + where[2] + " AND " + table + ".deleted = 0 ORDER BY " + order;
+                    " WHERE " + table + "." + where[0] + " " + k + " " + where[2] + l1 + where[1] + l2 + where[2] + " AND " + table + ".deleted = 0 ORDER BY " + order;
         } else {
             query = "SELECT " + what + " FROM " + table +
                     " LEFT OUTER JOIN  " + leftJoinTable + " ON " +
@@ -924,12 +925,12 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
         } else {
             wher = " WHERE " + where[0] + " " + k + " " + where[2] + l + where[1] + l + where[2] + " " + wher;
             if (where.length > 3) {
-                wher = wher + " AND " + where[3] + " " + k + " " + where[5] + l + where[4] + l + where[5] + " " + wher;
+                wher = wher + " AND " + where[3] + " " + k + " " + where[5] + l + where[4] + l + where[5] + " ";
             }
         }
 
         query = "SELECT " + what + " FROM " + table + wher + ord;
-        Log.Debug(query, true);
+//        Log.Debug(query, true);
         message = "Database Error (select) :";
         
         return selectFreeQuery(query, message);

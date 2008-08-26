@@ -36,6 +36,7 @@ public abstract class Daten {
 //        ******************************************************************************************************************************
         
         "INSERT INTO steuersaetze (name, wert) VALUES ('Default', 0.0)",
+        "INSERT INTO steuersaetze (name, wert) VALUES ('Allgemein - DE', 19)",
         "INSERT INTO hersteller (Herstellernummer,Firma,Anrede,Vorname,Name,Str,PLZ,Ort,Tel,Fax,Mobil,Mail,Webseite,Notizen ) VALUES ('HS-00000','Default','','','Default','','','','','','','','','') ",
         "INSERT INTO lieferanten (Lieferantennummer,Firma,Anrede,Vorname,Name,Str,PLZ,Ort,Tel,Fax,Mobil,Mail,Webseite,Notizen ) VALUES ('LF-00000','Default','','','Default','','','','','','','','','') ",
 

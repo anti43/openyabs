@@ -78,6 +78,7 @@ import mp4.panels.eur.eurEPanel;
 import mp4.panels.kontakte.suppliersView;
 import mp4.panels.produkte.productsView;
 import mp4.panels.produkte.servicesView;
+import mp4.panels.misc.TaxRatesEditor;
 import mp4.utils.text.FadeOnChangeLabel;
 import mp4.utils.windows.Position;
 import mp4.utils.windows.TabCloseIcon;
@@ -318,6 +319,7 @@ public class mainframe extends javax.swing.JFrame {
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem5 = new javax.swing.JMenuItem();
+        jMenuItem7 = new javax.swing.JMenuItem();
         jMenu7 = new javax.swing.JMenu();
         jMenuItem6 = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JSeparator();
@@ -855,6 +857,14 @@ public class mainframe extends javax.swing.JFrame {
         });
         jMenu1.add(jMenuItem5);
 
+        jMenuItem7.setText("Steuersatzverwaltung");
+        jMenuItem7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem7ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem7);
+
         jMenuBar2.add(jMenu1);
 
         jMenu7.setText("Hilfe");
@@ -1160,6 +1170,15 @@ private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     mainTabPane.validate();
 }//GEN-LAST:event_jButton10ActionPerformed
 
+private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
+ boolean useauth = Programmdaten.instanceOf().getUSE_AUTHENTIFICATION();
+
+    if (!useauth || getUser().isIsAdmin()) {
+    new TaxRatesEditor(this); } else {
+        Popup.notice("Die Steuersatzverwaltung kann nur von einem Administrator geöffnet werden!");
+    }
+}//GEN-LAST:event_jMenuItem7ActionPerformed
+
     @Override
     public void finalize() {
         Conn.shutdown();
@@ -1210,6 +1229,7 @@ private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem6;
+    private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JMenuItem jMenuItem9;
     private com.l2fprod.common.swing.JOutlookBar jOutlookBar1;
@@ -1271,6 +1291,8 @@ private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         Programmdaten.instanceOf().setMAINFRAME_TAB(mainTabPane.getSelectedIndex());
         Einstellungen.instanceOf().save();
         Conn.shutdown();
+        Log.getLogger().flush();
+        
         super.dispose();
     }
 

@@ -24,13 +24,14 @@ import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableModel;
 
 import mp3.classes.interfaces.Strings;
-import mp3.classes.interfaces.panelInterface;
+import mp3.classes.interfaces.*;
 import mp3.classes.utils.Formater;
 import mp3.classes.utils.Log;
 import mp3.classes.layer.Popup;
 import mp3.classes.layer.visual.DatePick;
 import mp3.classes.layer.visual.ManufacturerPicker;
 import mp3.classes.layer.visual.ProductPicker;
+import mp3.classes.layer.visual.TaxRatePicker;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.benutzerverwaltung.User;
 import mp4.einstellungen.Programmdaten;
@@ -40,6 +41,7 @@ import mp4.items.Hersteller;
 import mp4.items.HistoryItem;
 import mp4.items.ProductImage;
 import mp4.items.Rechnung;
+import mp4.items.Steuersatz;
 import mp4.panels.misc.NumberFormatEditor;
 import mp4.panels.rechnungen.billsView;
 import mp4.panels.rechnungen.offersView;
@@ -59,7 +61,7 @@ import mp4.utils.zahlen.NumberCheck;
  *
  * @author  anti43
  */
-public class productsView extends javax.swing.JPanel implements mp4.datenbank.installation.Tabellen, panelInterface {
+public class productsView extends javax.swing.JPanel implements mp4.datenbank.installation.Tabellen, panelInterface, moneyPanelInterface{
 
     private mainframe mainframe;
     private Product current;
@@ -1369,7 +1371,9 @@ private void jButton21MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
 }//GEN-LAST:event_jButton21MouseClicked
 
 private void jButton22MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton22MouseClicked
-// TODO add your handling code here:
+
+    new TaxRatePicker(this);
+    
 }//GEN-LAST:event_jButton22MouseClicked
 
 private void jTextField22ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField22ActionPerformed
@@ -1734,6 +1738,11 @@ numberfieldedited = true;
         String k = "id, " + TABLE_PRODUCTS_LIST_COLUMNS;
         this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
         TableFormat.stripFirst(jTable2);
+    }
+
+    public void setTax(Steuersatz sts) {
+        this.taxID = sts.getId();
+        jTextField16.setText(sts.getWert().toString());
     }
 }
 class GetProductImage extends SwingWorker<Void, Void> {

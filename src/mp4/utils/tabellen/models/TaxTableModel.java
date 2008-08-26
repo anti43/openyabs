@@ -17,27 +17,28 @@
 
 package mp4.utils.tabellen.models;
 
-import mp4.items.Rechnung;
-import mp4.utils.tabellen.DataModelUtils;
+import mp4.items.Steuersatz;
+
+
+
 
 /**
  *
  * @author Andreas
  */
-public class BillListTableModel extends MPTableModel {
+public class TaxTableModel extends MPTableModel {
     private static final long serialVersionUID = 5414150884755558696L;
     
     /**
      * 
      */
-    public BillListTableModel(){
+    public TaxTableModel(){
       super(new Class[]{java.lang.String.class, java.lang.String.class,
-                    java.lang.String.class, java.lang.String.class, java.lang.String.class,
-                    java.lang.Boolean.class,java.lang.Boolean.class
-                }, new boolean[]{false,false,false,false,false,false,false},
+                    java.lang.String.class
+                }, new boolean[]{false,false,false},
                 
-                new Rechnung().getWithDependencies(),
-                new Object[]{"id","Nummer","Datum","Kunde","Firma", "Bezahlt", "Storniert"});
+                new Steuersatz().getAll(),
+                new Object[]{"ID","Name","Wert"});
     
     }
 

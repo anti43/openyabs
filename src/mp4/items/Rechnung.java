@@ -453,9 +453,9 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
      * @param table1fields
      * @return
      */
-    public Object[][] getWithDependencies(String table1fields) {
+    public Object[][] getWithDependencies() {
         Query q = query.clone(TABLE_BILLS);
-        String[][] prods = q.select(table1fields, null, TABLE_CUSTOMERS, "kundenid", "datum");
+        String[][] prods = q.select("rechnungen.id,rechnungen.rechnungnummer,rechnungen.datum,kundennummer,firma, bezahlt, storno", null, TABLE_CUSTOMERS, "kundenid", "rechnungen.datum");
         if (prods == null || prods.length < 1) {
             prods = new String[][]{{null, null, null, null, null, "0", "0"}};
         }
@@ -586,9 +586,6 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         return Angebot;
     }
 
-    public NumberFormatHandler getNfh() {
-        return getNfh();
-    }
 
     public void setNumberFormatHandler(NumberFormatHandler nfh) {
         this.nfh = nfh;
