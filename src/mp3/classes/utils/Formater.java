@@ -53,6 +53,29 @@ public abstract class Formater {
     public final static int INTEGER = 2;
     public final static int YEAR = 3;
 
+    public static String[][] ObjectToStringArray(Object[][] array1) {
+        if (array1 == null) {
+            array1 = new Object[0][0];
+        }
+        
+        String[][] mergedArray = new String[array1.length ][array1[0].length];
+       
+        int i = 0;
+
+        for (i = 0; i < array1.length; i++) {
+
+            for (int k = 0; k < array1[i].length; k++) {
+
+                mergedArray[i][k] = array1[i][k].toString();
+
+
+            }
+
+        }
+        
+        return mergedArray;
+    }
+
     public static void clearText(JPanel jPanel6) {
         JTextField jt = null;
         Object p;
@@ -384,12 +407,12 @@ public abstract class Formater {
         return str;
     }
 
-    public static String[][] merge(String[][] array1, String[][] array2) {
+    public static Object[][] merge(Object[][] array1, Object[][] array2) {
         if (array1 == null) {
-            array1 = new String[0][0];
+            array1 = new Object[0][0];
         }
         if (array2 == null) {
-            array2 = new String[0][0];
+            array2 = new Object[0][0];
         }
 
         int z = 0;
@@ -403,7 +426,7 @@ public abstract class Formater {
         }
 
 
-        String[][] mergedArray = new String[array1.length + array2.length][z];
+        Object[][] mergedArray = new Object[array1.length + array2.length][z];
         int i = 0;
 
         for (i = 0; i < array1.length; i++) {

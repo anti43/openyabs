@@ -203,4 +203,23 @@ public class DataModelUtils {
         DefaultTableModel m = (DefaultTableModel) table.getModel();
         m.addRow(o);
     }
+    
+   public static Object[][] inserValue(Object[][] original_array, Object value, int place) {
+        Object[][] array_formatiert = null;
+        if (original_array.length > 0) {
+            array_formatiert = new String[original_array.length][original_array[0].length + 1];       
+            for (int zeile = 0; zeile < array_formatiert.length; zeile++) {
+                int merker = 0;         
+                for (int spalte = 0; spalte < array_formatiert[zeile].length; spalte++, merker++) {
+                    if (spalte == place) {
+                        array_formatiert[zeile][place] = value;
+                        merker--;
+                    } else {        
+                        array_formatiert[zeile][spalte] = original_array[zeile][merker];
+                    }
+                }
+            }
+        }        
+        return array_formatiert;
+    }
 }

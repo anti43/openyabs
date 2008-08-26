@@ -499,29 +499,9 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
     public void setGesamtpreis(Double Gesamtpreis) {
         this.Gesamtpreis = Gesamtpreis;
     }
-//    public String[][] inserType(String[][] prods) {
-//        String[][] pro = null;
-//        if (prods.length > 0) {
-//            pro = new String[prods.length][prods[0].length + 1];
-//            
-//            for (int i = 0; i < pro.length; i++) {
-//                int m = 0;
-//                for (int j = 0; j < pro[i].length; j++, m++) {
-//                    
-//                    
-//                    if (j == 2) {
-//                        pro[i][2] = "Rechnung";
-//                        m--;
-//                    } else {
-//                        
-//                        pro[i][j] = prods[i][m];
-//                    }
-//
-//                }
-//            }
-//        }        
-//        return pro;
-//    }
+    
+
+    
     public Double getGesamttax() {
         return Gesamttax;
     }
