@@ -31,7 +31,7 @@ import java.util.Locale;
  */
 public class rechnung {
 
-    private String[] NRField = {"rechnungnummer", "kundennummer", "posten1", "preis1", "posten2", "preis2", "posten3", "preis3", "posten4", "preis4", "posten5", "preis5", "posten6", "preis6", "posten7", "preis7", "posten8", "preis8", "posten9", "preis9", "posten10", "preis10", "datum", "gesamtpreis", "mwst"};
+    private String[] NRField = {"rechnungnummer", "nummer", "posten1", "preis1", "posten2", "preis2", "posten3", "preis3", "posten4", "preis4", "posten5", "preis5", "posten6", "preis6", "posten7", "preis7", "posten8", "preis8", "posten9", "preis9", "posten10", "preis10", "datum", "gesamtpreis", "mwst"};
     
     public Integer id = 0;
     public String rechnungnummer = "";
@@ -852,7 +852,7 @@ public class rechnung {
     public String[][] getData(String kundenIDs) throws SQLException {
 
 
-        sqlQuery = "SELECT id,rechnungnummer,datum FROM " + table + " WHERE kundennummer = '" + kundenIDs + "' AND deleted = 0";
+        sqlQuery = "SELECT id,rechnungnummer,datum FROM " + table + " WHERE nummer = '" + kundenIDs + "' AND deleted = 0";
 
         frame.progress(true); ////System.out.println(sqlQuery);
         ResultSet rs = null;
@@ -959,7 +959,7 @@ public class rechnung {
 
     public String[][] getAllOf(String kundenID) {
 
-        sqlQuery = "SELECT id,rechnungnummer,datum FROM rechnungen WHERE kundennummer = '" + kundenID + "' ORDER BY id";
+        sqlQuery = "SELECT id,rechnungnummer,datum FROM rechnungen WHERE nummer = '" + kundenID + "' ORDER BY id";
         frame.progress(true); ////System.out.println(sqlQuery);
         ResultSet rs = null;
         try {
@@ -1189,7 +1189,7 @@ public class rechnung {
     }
 //    public String[][] askForDeletedNumbers() {
 //        String[][] deletedSouls = new String[2000][3];
-//        sqlQuery = "SELECT id,rechnungnummer,kundennummer FROM rechnungen WHERE deleted = 1 ORDER BY id";
+//        sqlQuery = "SELECT id,rechnungnummer,nummer FROM rechnungen WHERE deleted = 1 ORDER BY id";
 //        frame.progress(true); ////System.out.println(sqlQuery);
 //        ResultSet rs = null;
 //        try {
@@ -1242,7 +1242,7 @@ public class rechnung {
 //    }
     /*
     public String[][] askForAllNames() {
-    sqlQuery = "SELECT name,kundennummer FROM kunden WHERE deleted = 0 ORDER BY Name";
+    sqlQuery = "SELECT name,nummer FROM kunden WHERE deleted = 0 ORDER BY Name";
     frame.progress(true); ////System.out.println(sqlQuery);
     ResultSet rs = null;
     try {
@@ -1274,7 +1274,7 @@ public class rechnung {
      */
 /*
     public String[][] askForNames() {
-    sqlQuery = "SELECT name,kundennummer FROM kunden WHERE deleted = 0 ORDER BY Name";
+    sqlQuery = "SELECT name,nummer FROM kunden WHERE deleted = 0 ORDER BY Name";
     frame.progress(true); ////System.out.println(sqlQuery);
     ResultSet rs = null;
     try {
@@ -1415,9 +1415,9 @@ public class rechnung {
     frame.hinweis("Daten gefunden. Es werden max. 100 Kunden angezeigt.");
     frame.progress(false); return search;
     }
-    public String[] getData(String kundennummer) throws SQLException {
+    public String[] getData(String nummer) throws SQLException {
     String[] values = new String[15];
-    sqlQuery = "SELECT * FROM " + table + " WHERE kundennummer = '" + kundennummer + "' AND deleted = 0";
+    sqlQuery = "SELECT * FROM " + table + " WHERE nummer = '" + nummer + "' AND deleted = 0";
     ResultSet rs = s.executeQuery(sqlQuery);
     while (rs.next()) {
     for (int i = 0; i < 14; i++) {
@@ -1425,7 +1425,7 @@ public class rechnung {
     }
     }
     id = Integer.valueOf(values[0]);
-    Kundennummer = kundennummer;
+    Kundennummer = nummer;
     Firma = values[2];
     Anrede = values[3];
     Vorname = values[4];
@@ -1451,7 +1451,7 @@ public class rechnung {
     }
     whatsup = whatsup.substring(0, whatsup.length() - 4);
     whatsup=whatsup + " AND ";
-    sqlQuery = "SELECT id,kundennummer,name,firma,tel FROM kunden WHERE " + whatsup + " deleted = 0 ORDER BY Name";
+    sqlQuery = "SELECT id,nummer,name,firma,tel FROM kunden WHERE " + whatsup + " deleted = 0 ORDER BY Name";
     frame.progress(true); ////System.out.println(sqlQuery);
     ResultSet rs = null;
     try {

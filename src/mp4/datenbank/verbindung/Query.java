@@ -107,7 +107,8 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
 
     /**
      * Free SQL Select Statement!
-     * @param string (Query)
+     * @param query 
+     * @param message 
      * @return Your Data
      */
     @SuppressWarnings({"unchecked", "unchecked"})
@@ -755,6 +756,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
      * 
      * @param what
      * @param where : {value, comparison, "'"}
+     * @param order 
      * @param like - datum will be returned between given and given + 1 month
      * @return results as multidimensional string array
      */
@@ -895,9 +897,9 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
         String j = "";
         String ord = " ORDER BY " + order;
         String wher = "";
-        wher = " AND deleted = 0 ";
+        wher = " deleted = 0 ";
         if (ghosts) {
-            wher = wher + " AND deleted = 1 ";
+            wher = "";
         }
         if (integer) {
             if (where[1].equals("")) {
@@ -923,13 +925,13 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
 
         if (where == null) {
         } else {
-            wher = " WHERE " + where[0] + " " + k + " " + where[2] + l + where[1] + l + where[2] + " " + wher;
+            wher = where[0] + " " + k + " " + where[2] + l + where[1] + l + where[2] + " AND " + wher;
             if (where.length > 3) {
                 wher = wher + " AND " + where[3] + " " + k + " " + where[5] + l + where[4] + l + where[5] + " ";
             }
         }
 
-        query = "SELECT " + what + " FROM " + table + wher + ord;
+        query = "SELECT " + what + " FROM " + table + " WHERE " + wher + ord;
 //        Log.Debug(query, true);
         message = "Database Error (select) :";
         

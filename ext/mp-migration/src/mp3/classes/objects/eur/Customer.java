@@ -63,11 +63,11 @@ public class Customer extends mp3.classes.layer.People implements mp3.classes.in
         this.query=query;
     }
 
-    public Customer(QueryClass query, String kundennummer, boolean like) {
+    public Customer(QueryClass query, String nummer, boolean like) {
         super(query.clone(TABLE_CUSTOMERS));
 //        this.id=Integer.valueOf(id);
         this.explode(
-                this.selectLast("*","kundennummer",kundennummer, false, false, false));
+                this.selectLast("*","nummer",nummer, false, false, false));
         this.query=query;
     }
 

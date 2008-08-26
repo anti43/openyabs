@@ -278,7 +278,7 @@ public class mp2Importer extends javax.swing.JFrame {
 
                     for (int i = 0; i < rechngs.length; i++) {
                         this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-//rechnungnummer", "kundennummer", "posten1", "preis1", "posten2", "preis2", 
+//rechnungnummer", "nummer", "posten1", "preis1", "posten2", "preis2", 
 //                    "posten3", "preis3", "posten4", "preis4", "posten5", 
 //                            "preis5", "posten6", "preis6", "posten7", "preis7", 
 //                            "posten8", "preis8", "posten9", "preis9", "posten10", 

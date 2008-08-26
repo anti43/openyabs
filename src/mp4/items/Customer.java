@@ -74,10 +74,10 @@ public class Customer extends mp3.classes.layer.People implements mp4.datenbank.
         nfh = new NumberFormatHandler(this, new Date());
     }
 
-    public Customer(ConnectionHandler query, String kundennummer, boolean like) {
+    public Customer(ConnectionHandler query, String nummer, boolean like) {
         super(query.clone(TABLE_CUSTOMERS));
 //        this.id=Integer.valueOf(id);
-        this.explode(this.selectLast("*","kundennummer",kundennummer, false));
+        this.explode(this.selectLast("*","nummer",nummer, false));
         this.query=query;
         nfh = new NumberFormatHandler(this, new Date());
     }
@@ -389,7 +389,7 @@ public class Customer extends mp3.classes.layer.People implements mp4.datenbank.
     }
 
     public String getCountColumn() {
-       return "kundennummer";
+       return "nummer";
     }
     
     public NumberFormatHandler getNfh() {

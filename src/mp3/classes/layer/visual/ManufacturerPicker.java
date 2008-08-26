@@ -37,7 +37,7 @@ public class ManufacturerPicker extends javax.swing.JFrame {
         contact = new Hersteller();
         new Position(this);
 
-        String[][] list = contact.select("id, herstellernummer, firma, name, ort", null, null, "herstellernummer", true);
+        String[][] list = contact.select("id, nummer, firma, name, ort", null, null, "nummer", true);
         k = "id, " + "Nummer,Firma, Name, Ort";
 
         this.jTable2.setModel(new DefaultTableModel(list, k.split(",")));
@@ -259,7 +259,7 @@ public class ManufacturerPicker extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jTextField1ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        String[][] list = contact.select("id, herstellernummer, firma, name, ort", "herstellernummer", jTextField1.getText(), "herstellernummer", true);
+        String[][] list = contact.select("id, nummer, firma, name, ort", "nummer", jTextField1.getText(), "nummer", true);
 
 
         this.jTable2.setModel(new DefaultTableModel(list, k.split(",")));
@@ -267,7 +267,7 @@ public class ManufacturerPicker extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jTextField2ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
-        String[][] list = contact.select("id, herstellernummer, firma, name, ort", "firma", jTextField2.getText(), "firma", true);
+        String[][] list = contact.select("id, nummer, firma, name, ort", "firma", jTextField2.getText(), "firma", true);
 
 
         this.jTable2.setModel(new DefaultTableModel(list, k.split(",")));
@@ -287,13 +287,13 @@ private void jTable2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
 }//GEN-LAST:event_jTable2MouseClicked
 
 private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
-    String[][] list = contact.select("id, herstellernummer, firma, name, ort", "ort", jTextField3.getText(), "ort", true);
+    String[][] list = contact.select("id, nummer, firma, name, ort", "ort", jTextField3.getText(), "ort", true);
     this.jTable2.setModel(new DefaultTableModel(list, k.split(",")));
     Formater.stripFirst(jTable2);
 }//GEN-LAST:event_jTextField3ActionPerformed
 
 private void jTextField4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
-    String[][] list = contact.select("id, herstellernummer, firma, name, ort", "name", jTextField4.getText(), "name", true);
+    String[][] list = contact.select("id, nummer, firma, name, ort", "name", jTextField4.getText(), "name", true);
     this.jTable2.setModel(new DefaultTableModel(list, k.split(",")));
     Formater.stripFirst(jTable2);
 }//GEN-LAST:event_jTextField4ActionPerformed

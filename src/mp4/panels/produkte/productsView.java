@@ -171,7 +171,7 @@ public class productsView extends javax.swing.JPanel implements mp4.datenbank.in
     }
 
     private void fillSearchTable() {
-        String[][] list = current.select("id,produktnummer,name", "produktnummer", jTextField1.getText(), "produktnummer", true);
+        String[][] list = current.select("id,produktnummer,name", "produktnummer", "", "produktnummer", true);
         String k = "id, " + "Nummer,Name";
         this.jTable3.setModel(new DefaultTableModel(list, k.split(",")));
         TableFormat.stripFirst(jTable3);
@@ -187,7 +187,7 @@ public class productsView extends javax.swing.JPanel implements mp4.datenbank.in
         }
     }
 
-    private void setProduct(Product product) {
+    public void setProduct(Product product) {
 
         this.current = product;
         this.setSupplier(current.getSupplier());
@@ -1538,7 +1538,7 @@ numberfieldedited = true;
         
          if(!numberfieldedited && current.isValid())jTextField4.setText(null);
 
-            if (jTextField4.getText() == null || jTextField4.getText().length() == 0) {
+            if (jTextField4.getText() == null || !(jTextField4.getText().length() > 0)) {
                 String s = product.getNfh().getNextNumber();
                 product.setNummer(s);
             } else {

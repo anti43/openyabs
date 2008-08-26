@@ -28,7 +28,7 @@ public abstract class Struktur {
      */
     public final static String[] SQL_COMMAND = {
         "CREATE TABLE kunden (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
-        "Kundennummer VARCHAR(250),Firma VARCHAR(250) default NULL," +
+        "nummer VARCHAR(250),Firma VARCHAR(250) default NULL," +
         "Anrede VARCHAR(250) default NULL," +
         "Vorname VARCHAR(250) default NULL, " +
         "Name VARCHAR(250) default NULL, " +
@@ -42,7 +42,7 @@ public abstract class Struktur {
         "PRIMARY KEY  (id))",
         
         "CREATE TABLE lieferanten (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
-        "lieferantennummer VARCHAR(250),Firma VARCHAR(250) default NULL," +
+        "nummer VARCHAR(250),Firma VARCHAR(250) default NULL," +
         "Anrede VARCHAR(250) default NULL," +
         "Vorname VARCHAR(250) default NULL, " +
         "Name VARCHAR(250) default NULL, " +
@@ -55,7 +55,7 @@ public abstract class Struktur {
         "PRIMARY KEY  (id))",
         
         "CREATE TABLE hersteller (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
-        "herstellernummer VARCHAR(250),Firma VARCHAR(250) default NULL,Anrede VARCHAR(250) default NULL," +
+        "nummer VARCHAR(250),Firma VARCHAR(250) default NULL,Anrede VARCHAR(250) default NULL," +
         "Vorname VARCHAR(250) default NULL, " +
         "Name VARCHAR(250) default NULL, Str VARCHAR(250) default NULL, PLZ VARCHAR(50) default NULL," +
         "Ort VARCHAR(300) default NULL, Tel VARCHAR(250) default NULL,Fax VARCHAR(250) default NULL," +

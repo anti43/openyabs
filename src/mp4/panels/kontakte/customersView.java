@@ -36,6 +36,7 @@ import mp4.items.Angebot;
 import mp4.items.Rechnung;
 import mp4.panels.misc.NumberFormatEditor;
 import mp4.utils.tabellen.TableFormat;
+import mp4.utils.tabellen.models.ContactListTableModel;
 
 /**
  *
@@ -48,9 +49,10 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.i
     private mainframe mainframe;
     private boolean edited = false;
     private boolean numberfieldedited;
+  
 
     /** Creates new form customers
-     * @param aThis 
+     * @param frame 
      */
     public customersView(mainframe frame) {
 
@@ -58,6 +60,7 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.i
         current = new Customer();
         this.mainframe = frame;
         updateListTable();
+        fillSearchTable();
     }
 
     public customersView(Customer current, mainframe frame) {
@@ -65,7 +68,16 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.i
         this.current = current;
         this.mainframe = frame;
         updateListTable();
+        fillSearchTable();
         setContact(current);
+    }
+
+    private void fillSearchTable() {
+        String[][] list = current.select("id, nummer, firma ", null, null, "nummer", false);
+        String k = "id, " + "Nummer,Firma";
+
+        this.jTable3.setModel(new DefaultTableModel(list, k.split(",")));
+        TableFormat.stripFirst(jTable3);
     }
 
     /** This method is called from within the constructor to
@@ -1017,9 +1029,9 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.i
     }
 
     private void jTextField1ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        System.out.println(jPanel5.getSize());
+      
 
-        String[][] list = current.select("id, kundennummer, firma ", "kundennummer", jTextField1.getText(), "kundennummer", true);
+        String[][] list = current.select("id, nummer, firma ", "nummer", jTextField1.getText(), "nummer", true);
         String k = "id, " + "Nummer,Firma";
 
         this.jTable3.setModel(new DefaultTableModel(list, k.split(",")));
@@ -1029,7 +1041,7 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.i
 
     private void jTextField2ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
 
-        String[][] list = current.select("id, kundennummer, name ", "name", jTextField2.getText(), "name", true);
+        String[][] list = current.select("id, nummer, name ", "name", jTextField2.getText(), "name", true);
         String k = "id, " + "Nummer,Name";
 
         this.jTable3.setModel(new DefaultTableModel(list, k.split(",")));
@@ -1039,7 +1051,7 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.i
 
     private void jTextField3ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
 
-        String[][] list = current.select("id, kundennummer, firma ", "firma", jTextField3.getText(), "firma", true);
+        String[][] list = current.select("id, nummer, firma ", "firma", jTextField3.getText(), "firma", true);
         String k = "id, " + "Nummer,Firma";
 
         this.jTable3.setModel(new DefaultTableModel(list, k.split(",")));
@@ -1224,18 +1236,14 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.i
 
     }
     private void jButton8MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton8MouseClicked
+        Rechnung r;
 
         if (mainframe.getUser().doAction(User.EDITOR)) {
             save();
             if (current.isValid()) {
-                mp4.panels.rechnungen.billsView panel = new mp4.panels.rechnungen.billsView(mainframe);
-
-                panel.setContact(current);
-
-                mainframe.getTabPane().add("Rechnung", panel);
-                mainframe.getTabPane().setSelectedComponent(panel);
-                mainframe.getTabPane().setIconAt(mainframe.getTabPane().getSelectedIndex(), new TabCloseIcon());
-                mainframe.getTabPane().validate();
+               r = new Rechnung();
+               r.setKundenId(current.getId());
+               mainframe.addBillPanel(r);
             }
         }
     }//GEN-LAST:event_jButton8MouseClicked
@@ -1474,11 +1482,10 @@ private void jTextField4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST
     }
 
     private void updateListTable() {
-        String[][] list = current.select("id, kundennummer, firma ", "firma", jTextField3.getText(), "firma", true);
-        String k = "id, " + "Nummer,Firma";
+     
 
-        this.jTable3.setModel(new DefaultTableModel(list, k.split(",")));
-        TableFormat.stripFirst(jTable3);
+        this.jTable2.setModel(new ContactListTableModel(current));
+        TableFormat.stripFirst(jTable2);
     }
 
     public People getContact() {

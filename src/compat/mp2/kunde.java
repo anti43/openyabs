@@ -6,9 +6,7 @@
  * To change this template, choose Tools | Template Manager
  * and open the template in the editor.
  */
-
 package compat.mp2;
-
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,18 +16,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import mp3.classes.utils.Log;
 
-
-
 /**
  *
  * @author anti
  */
 public class kunde {
 
-    public String[] printFields={"Kundennummer", "Firma", "Name", "Vorname",  "Str", "PLZ", "Ort"};
-    
+    public String[] printFields = {"Kundennummer", "Firma", "Name", "Vorname", "Str", "PLZ", "Ort"};
     private String[] NKField = {"Kundennummer", "Firma", "Anrede", "Vorname", "Name", "Str", "PLZ", "Ort", "Tel", "Mobil", "Mail", "Webseite", "Notizen", "nn", "deleted"};
-   
     public Integer id = 0;
     public String Kundennummer = "";
     public String Firma = "";
@@ -54,7 +48,9 @@ public class kunde {
     private String[] search = new String[100];
     private String[][] answer;
 
-    /** Creates a new instance of kundenClass */
+    /** Creates a new instance of kundenClass
+     * @param frames 
+     */
     public kunde(mainFrame frames) {
         mp_db_connector dbconn;
 
@@ -64,7 +60,7 @@ public class kunde {
         frame = frames;
     }
 
-    public kunde(mainFrame frames, String kundennummer, boolean printer) {
+    public kunde(mainFrame frames, String nummer, boolean printer) {
 
         mp_db_connector dbconn;
 
@@ -73,7 +69,7 @@ public class kunde {
 
         frame = frames;
 
-        this.getDataByNr(kundennummer);
+        this.getDataByNr(nummer);
     }
 
     public kunde(mainFrame frames, String Id) {
@@ -87,7 +83,7 @@ public class kunde {
 
             this.getDataById(Id);
         } catch (SQLException ex) {
-          //  Logger.getLogger(kunde.class.getName()).log(Level.SEVERE, null, ex);
+            //  Logger.getLogger(kunde.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -184,7 +180,7 @@ public class kunde {
     }
 
     public String[][] askForNamesAnd2() {
-        sqlQuery = "SELECT id,kundennummer,name,firma,ort FROM kunden WHERE deleted = 0 ORDER BY Name";
+        sqlQuery = "SELECT id,nummer,name,firma,ort FROM kunden WHERE deleted = 0 ORDER BY Name";
         frame.progress(true); ////System.out.println(sqlQuery);
         ResultSet rs = null;
         try {
@@ -214,7 +210,7 @@ public class kunde {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-         answer = new String[p][5];
+        answer = new String[p][5];
         try {
 
             if (rs.first()) {
@@ -249,7 +245,8 @@ public class kunde {
         frame.progress(false);
         return answer;
     }
-public String[][] askForAll() {
+
+    public String[][] askForAll() {
         sqlQuery = "SELECT * FROM kunden WHERE deleted = 0 ORDER BY Name";
         frame.progress(true); ////System.out.println(sqlQuery);
         ResultSet rs = null;
@@ -280,7 +277,7 @@ public String[][] askForAll() {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-         answer = new String[p][7];
+        answer = new String[p][7];
         try {
 
             if (rs.first()) {
@@ -298,13 +295,13 @@ public String[][] askForAll() {
                 while (rs.next()) {
 
 
-                answer[i][0] = rs.getString(1);
-                answer[i][1] = rs.getString(2);
-                answer[i][2] = rs.getString(3);
-                answer[i][3] = rs.getString(4);
-                answer[i][4] = rs.getString(5);
-                answer[i][5] = rs.getString(6);
-                answer[i][6] = rs.getString(7);
+                    answer[i][0] = rs.getString(1);
+                    answer[i][1] = rs.getString(2);
+                    answer[i][2] = rs.getString(3);
+                    answer[i][3] = rs.getString(4);
+                    answer[i][4] = rs.getString(5);
+                    answer[i][5] = rs.getString(6);
+                    answer[i][6] = rs.getString(7);
 
                     i++;
                 }
@@ -319,6 +316,7 @@ public String[][] askForAll() {
         frame.progress(false);
         return answer;
     }
+
     public String[][] askForNamesAndWhere(String[] ids) {
         String whatsup = "";
 
@@ -334,7 +332,7 @@ public String[][] askForAll() {
 
             whatsup = whatsup + " AND ";
 
-            sqlQuery = "SELECT id,kundennummer,name,firma,tel FROM kunden WHERE " + whatsup + " deleted = 0 ORDER BY Name";
+            sqlQuery = "SELECT id,nummer,name,firma,tel FROM kunden WHERE " + whatsup + " deleted = 0 ORDER BY Name";
             frame.progress(true); ////System.out.println(sqlQuery);
 
             ResultSet rs = null;
@@ -344,24 +342,24 @@ public String[][] askForAll() {
                 ex.printStackTrace();
             }
 
-                    int p = 0;
-        try {
+            int p = 0;
+            try {
 
-            if (rs.first()) {
+                if (rs.first()) {
 
-
-                p++;
-                while (rs.next()) {
 
                     p++;
-                }
-            } else {
+                    while (rs.next()) {
 
-                p = 0;
+                        p++;
+                    }
+                } else {
+
+                    p = 0;
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
             }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
             answer = new String[p][5];
 
             try {
@@ -401,8 +399,8 @@ public String[][] askForAll() {
         } else {
             frame.progress(false);
             answer = new String[1][1];
-                answer[0][0]="";
-                return answer;
+            answer[0][0] = "";
+            return answer;
         }
     }
 
@@ -417,8 +415,8 @@ public String[][] askForAll() {
             ex.printStackTrace();
         }
 
-        
-                int p = 0;
+
+        int p = 0;
         try {
 
             if (rs.first()) {
@@ -457,39 +455,39 @@ public String[][] askForAll() {
                 answer[i][11] = rs.getString(12);
                 answer[i][12] = rs.getString(13);
                 answer[i][13] = rs.getString(14);
-             
+
 
                 i++;
                 while (rs.next()) {
 
 
                     answer[i][0] = rs.getString(1);
-                answer[i][1] = rs.getString(2);
-                answer[i][2] = rs.getString(3);
-                answer[i][3] = rs.getString(4);
-                answer[i][4] = rs.getString(5);
-                answer[i][5] = rs.getString(6);
-                answer[i][6] = rs.getString(7);
-                answer[i][7] = rs.getString(8);
-                answer[i][8] = rs.getString(9);
-                answer[i][9] = rs.getString(10);
-                answer[i][10] = rs.getString(11);
-                answer[i][11] = rs.getString(12);
-                answer[i][12] = rs.getString(13);
-                answer[i][13] = rs.getString(14);
-             
+                    answer[i][1] = rs.getString(2);
+                    answer[i][2] = rs.getString(3);
+                    answer[i][3] = rs.getString(4);
+                    answer[i][4] = rs.getString(5);
+                    answer[i][5] = rs.getString(6);
+                    answer[i][6] = rs.getString(7);
+                    answer[i][7] = rs.getString(8);
+                    answer[i][8] = rs.getString(9);
+                    answer[i][9] = rs.getString(10);
+                    answer[i][10] = rs.getString(11);
+                    answer[i][11] = rs.getString(12);
+                    answer[i][12] = rs.getString(13);
+                    answer[i][13] = rs.getString(14);
+
 
                     i++;
                 }
             } else {
 
                 answer = new String[1][1];
-                answer[0][0]="null";
+                answer[0][0] = "null";
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-         Log.Debug("Daten gefunden.");
+        Log.Debug("Daten gefunden.");
         frame.progress(false);
         return answer;
     }
@@ -607,8 +605,8 @@ public String[][] askForAll() {
 //            ids = "1";
 //        }
 
-         sqlQuery = "SELECT * FROM " + table + " WHERE id = " + ids;
-Log.Debug(sqlQuery);
+        sqlQuery = "SELECT * FROM " + table + " WHERE id = " + ids;
+        Log.Debug(sqlQuery);
         ResultSet rs = s.executeQuery(sqlQuery);
         if (rs.first()) {
 
@@ -616,9 +614,7 @@ Log.Debug(sqlQuery);
 
                 values[i] = rs.getString(i + 1);
             }
-        } else {
-
-//            new mpPopup("Der Kunde existiert nicht");
+        } else {//            new mpPopup("Der Kunde existiert nicht");
         }
 
         id = Integer.valueOf(ids);
@@ -642,15 +638,15 @@ Log.Debug(sqlQuery);
         frame.progress(false);
         return values;
     }
-    
-     public String[] getALLL() throws SQLException {
+
+    public String[] getALLL() throws SQLException {
         String[] values = new String[15];
 //        if(ids.equals(null)) {
 //            ids = "1";
 //        }
 
-         sqlQuery = "SELECT * FROM " + table;
-Log.Debug(sqlQuery);
+        sqlQuery = "SELECT * FROM " + table;
+        Log.Debug(sqlQuery);
         ResultSet rs = s.executeQuery(sqlQuery);
         if (rs.first()) {
 
@@ -658,9 +654,7 @@ Log.Debug(sqlQuery);
 
                 values[i] = rs.getString(i + 1);
             }
-        } else {
-
-//            new mpPopup("Der Kunde existiert nicht");
+        } else {//            new mpPopup("Der Kunde existiert nicht");
         }
 
 //        id = Integer.valueOf(ids);
@@ -684,7 +678,6 @@ Log.Debug(sqlQuery);
         frame.progress(false);
         return values;
     }
-
 
     public String[] searchIds(String field, String value) throws SQLException {
 
@@ -726,10 +719,10 @@ Log.Debug(sqlQuery);
         return search;
     }
 
-    public String[] getData(String kundennummer) throws SQLException {
+    public String[] getData(String nummer) throws SQLException {
         String[] values = new String[15];
 
-        sqlQuery = "SELECT * FROM " + table + " WHERE kundennummer = '" + kundennummer + "' AND deleted = 0";
+        sqlQuery = "SELECT * FROM " + table + " WHERE nummer = '" + nummer + "' AND deleted = 0";
 
         ResultSet rs = s.executeQuery(sqlQuery);
         while (rs.next()) {
@@ -741,7 +734,7 @@ Log.Debug(sqlQuery);
         }
 
         id = Integer.valueOf(values[0]);
-        Kundennummer = kundennummer;
+        Kundennummer = nummer;
         Firma = values[2];
         Anrede = values[3];
         Vorname = values[4];
@@ -797,12 +790,11 @@ Log.Debug(sqlQuery);
 //
 //       frame.progress (false); return  values;
 //    }
-
     public String[][] askForAllNames() {
 
 
 
-        sqlQuery = "SELECT name,kundennummer FROM kunden WHERE deleted = 0 ORDER BY Name";
+        sqlQuery = "SELECT name,nummer FROM kunden WHERE deleted = 0 ORDER BY Name";
         frame.progress(true); ////System.out.println(sqlQuery);
         ResultSet rs = null;
         try {
@@ -863,7 +855,7 @@ Log.Debug(sqlQuery);
 
 
 
-        sqlQuery = "SELECT name,kundennummer FROM kunden WHERE deleted = 0 ORDER BY Name";
+        sqlQuery = "SELECT name,nummer FROM kunden WHERE deleted = 0 ORDER BY Name";
         frame.progress(true); ////System.out.println(sqlQuery);
         ResultSet rs = null;
         try {
@@ -922,7 +914,7 @@ Log.Debug(sqlQuery);
 
     public String[][] askForDeletedNames() {
         String[][] deletedSouls = new String[2000][3];
-        sqlQuery = "SELECT name,kundennummer FROM kunden WHERE deleted = 1 ORDER BY Name";
+        sqlQuery = "SELECT name,nummer FROM kunden WHERE deleted = 1 ORDER BY Name";
         frame.progress(true); ////System.out.println(sqlQuery);
         ResultSet rs = null;
         try {
@@ -961,7 +953,7 @@ Log.Debug(sqlQuery);
     }
 
     public String askForHighestNumber() {
-          sqlQuery = "SELECT kundennummer FROM kunden WHERE deleted = 0 ORDER BY kundennummer";
+        sqlQuery = "SELECT nummer FROM kunden WHERE deleted = 0 ORDER BY nummer";
         frame.progress(true); ////System.out.println(sqlQuery);
         ResultSet rs = null;
         try {
@@ -969,34 +961,22 @@ Log.Debug(sqlQuery);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-
-        String answer="0";
+        String answere = "0";
 
         try {
-
             if (rs.first()) {
-            
-
-                answer = rs.getString(1);
-                
-
-
-              
+                answere = rs.getString(1);
                 while (rs.next()) {
-
-
-                    answer = rs.getString(1);
-     
+                    answere = rs.getString(1);
                 }
             } else {
-
-                answer = "0";
+                answere = "0";
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-       
-        frame.progress(false); return answer;
+        frame.progress(false);
+        return answere;
     }
 
     void letReIncarnate(String id) {
@@ -1015,12 +995,12 @@ Log.Debug(sqlQuery);
         frame.hinweis("Datensatz " + error + " !");
     }
 
-    private String[] getDataByNr(String kundennummer) {
+    private String[] getDataByNr(String nummer) {
         try {
 
             String[] values = new String[16];
 
-            sqlQuery = "SELECT * FROM " + table + " WHERE kundennummer = '" + kundennummer + "'";
+            sqlQuery = "SELECT * FROM " + table + " WHERE nummer = '" + nummer + "'";
             frame.progress(true); ////System.out.println(sqlQuery);
             ResultSet rs = s.executeQuery(sqlQuery);
             if (rs.first()) {
@@ -1028,7 +1008,7 @@ Log.Debug(sqlQuery);
                 for (int i = 0; i < 16; i++) {
 
                     values[i] = rs.getString(i + 1);
-                    // new out(values[i]);
+                // new out(values[i]);
                 }
             }
             if (rs.next()) {

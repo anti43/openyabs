@@ -111,7 +111,7 @@ public interface Tabellen {
      * Fields in customer table
      */
     public final String TABLE_CUSTOMER_FIELDS =
-            "Kundennummer" + "," + "Firma" + "," + "Anrede" + "," + "Vorname" +
+            "nummer" + "," + "Firma" + "," + "Anrede" + "," + "Vorname" +
             "," + "Name" + "," + "Str" + "," + "PLZ" + "," + "Ort" + "," +
             "Tel" + "," + "Fax" + "," + "Mobil" + "," + "Mail" + "," + 
             "Webseite" + "," + "Notizen"+ "," + "Steuernummer";
@@ -119,21 +119,21 @@ public interface Tabellen {
      * Fields in supplier table
      */
     public final String TABLE_SUPPLIER_FIELDS =
-            "Lieferantennummer" + "," + "Firma" + "," + "Anrede" + "," + "Vorname" +
+            "nummer" + "," + "Firma" + "," + "Anrede" + "," + "Vorname" +
             "," + "Name" + "," + "Str" + "," + "PLZ" + "," + "Ort" + "," +
             "Tel" + "," + "Fax" + "," + "Mobil" + "," + "Mail" + "," + "Webseite" + "," + "Notizen";
     /**
      * Fields in supplier table
      */
     public final String TABLE_SUPPLIER_PRINT_FIELDS =
-            "Lieferantennummer" + "," + "Firma" + "," + "Anrede" + "," + "Vorname" +
+            "nummer" + "," + "Firma" + "," + "Anrede" + "," + "Vorname" +
             "," + "Name" + "," + "Str" + "," + "PLZ" + "," + "Ort" + "," +
             "Tel" + "," + "Fax" + "," + "Mobil" + "," + "Mail" + "," + "Webseite";
     /**
      * Fields in manufacturer table
      */
     public final String TABLE_MANUFACTURER_FIELDS =
-            "Herstellernummer" + "," + "Firma" + "," + "Anrede" + "," + "Vorname" +
+            "nummer" + "," + "Firma" + "," + "Anrede" + "," + "Vorname" +
             "," + "Name" + "," + "Str" + "," + "PLZ" + "," + "Ort" + "," +
             "Tel" + "," + "Fax" + "," + "Mobil" + "," + "Mail" + "," + "Webseite" + "," + "Notizen";
     /**

@@ -298,7 +298,7 @@ public class Lieferant extends mp3.classes.layer.People implements mp4.datenbank
     }
 
     public String getCountColumn() {
-       return "lieferantennummer";
+       return "nummer";
     }
 
     public NumberFormatHandler getNfh() {

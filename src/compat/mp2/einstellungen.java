@@ -25,7 +25,7 @@ public class einstellungen {
     public ResultSet rs;
     public Connection con;
     public int counter;
-    public String[][] kundennummer = new String[1000][20];
+    public String[][] nummer = new String[1000][20];
     public String[] adr_daten = new String[15];
     public String framework = "embedded";
     public String driver = "org.apache.derby.jdbc.EmbeddedDriver";

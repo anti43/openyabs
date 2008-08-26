@@ -29,7 +29,7 @@ import mp4.items.handler.NumberFormatHandler;
 public class Hersteller extends mp3.classes.layer.People implements mp4.datenbank.installation.Tabellen, Countable {
 
    
-    private String herstellernummer = "";
+    private String nummer = "";
     private String Firma = "";
     private String Anrede = "";
     private String Vorname = "";
@@ -61,11 +61,11 @@ public class Hersteller extends mp3.classes.layer.People implements mp4.datenban
         return id.toString();
     }
     public String getHerstellernummer() {
-        return herstellernummer;
+        return nummer;
     }
 
     public void setHerstellernummer(String Herstellernummer) {
-        this.herstellernummer = Herstellernummer;
+        this.nummer = Herstellernummer;
         this.isSaved = false;
     }
 
@@ -250,7 +250,7 @@ public class Hersteller extends mp3.classes.layer.People implements mp4.datenban
     }
 
     public String getCountColumn() {
-       return "herstellernummer";
+       return "nummer";
     }
 
     public NumberFormatHandler getNfh() {

@@ -19,6 +19,7 @@ along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
 package mp4.utils.tabellen;
 
+import java.util.Date;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -131,8 +132,12 @@ public class DataModelUtils {
                             data[idx][cols[k]] = false;
                         }
                     } else if (aClass.getName().matches("java.util.Date")) {
-                        data[idx][cols[k]] =
-                                DateConverter.getDate(String.valueOf(data[idx][cols[k]]));
+                        Date d = DateConverter.getDate(String.valueOf(prods[idx][cols[k]]));
+                        if (d != null) {
+                            data[idx][cols[k]] = DateConverter.getDefDateString(d);
+                        } else {
+                            data[idx][cols[k]] = "Kein";
+                        }
                     }
                 }
 
@@ -184,7 +189,7 @@ public class DataModelUtils {
 
     public static Object[][] reverseArray(Object[][] array) {
         //Reverse order
-        int i = 0, j = array.length - 1;
+           int i = 0, j = array.length - 1;
         while (i < j) {
             Object[] h = array[i];
             array[i] = array[j];
@@ -203,23 +208,23 @@ public class DataModelUtils {
         DefaultTableModel m = (DefaultTableModel) table.getModel();
         m.addRow(o);
     }
-    
-   public static Object[][] inserValue(Object[][] original_array, Object value, int place) {
+
+    public static Object[][] inserValue(Object[][] original_array, Object value, int place) {
         Object[][] array_formatiert = null;
         if (original_array.length > 0) {
-            array_formatiert = new String[original_array.length][original_array[0].length + 1];       
+            array_formatiert = new String[original_array.length][original_array[0].length + 1];
             for (int zeile = 0; zeile < array_formatiert.length; zeile++) {
-                int merker = 0;         
+                int merker = 0;
                 for (int spalte = 0; spalte < array_formatiert[zeile].length; spalte++, merker++) {
                     if (spalte == place) {
                         array_formatiert[zeile][place] = value;
                         merker--;
-                    } else {        
+                    } else {
                         array_formatiert[zeile][spalte] = original_array[zeile][merker];
                     }
                 }
             }
-        }        
+        }
         return array_formatiert;
     }
 }
