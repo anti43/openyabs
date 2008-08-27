@@ -1197,7 +1197,7 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.i
             } else {
                 new Popup("Sie müssen mindestens einen Namen angeben.", Popup.ERROR);
             }
-        }
+        } else createNew();
     }
 
     private void jTable3MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable3MouseClicked
@@ -1236,12 +1236,11 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.i
 
     }
     private void jButton8MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton8MouseClicked
-        Rechnung r;
 
         if (mainframe.getUser().doAction(User.EDITOR)) {
             save();
             if (current.isValid()) {
-               r = new Rechnung();
+               Rechnung r = new Rechnung();
                r.setKundenId(current.getId());
                mainframe.addBillPanel(r);
             }

@@ -210,8 +210,8 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
             this.setRechnungnummer(select[1]);
             this.setKundenId(Integer.valueOf(select[2]));
             this.setDatum(DateConverter.getDate(select[3]));
-            this.setStorno(select[4]);
-            this.setBezahlt(select[5]);
+            this.setStorno(PrepareData.parseBoolean(select[4]));
+            this.setBezahlt(PrepareData.parseBoolean(select[5]));
             this.setGesamtpreis(Double.valueOf(select[6]));
             this.setGesamttax(Double.valueOf(select[7]));
             this.setAusfuehrungsDatum(DateConverter.getDate(select[8]));
@@ -235,15 +235,11 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         String str = PrepareData.prepareString(this.getRechnungnummer());
         str = str + PrepareData.prepareNumber(this.getKundenId());
         str = str + PrepareData.prepareString(DateConverter.getSQLDateString(this.getDatum()));
-        str =
-                str + PrepareData.prepareBoolean(isStorno());
+        str = str + PrepareData.prepareBoolean(isStorno());
         str = str + PrepareData.prepareBoolean(isBezahlt());
-        str = str +
-                PrepareData.prepareNumber(
-                this.getGesamtpreis());
+        str = str + PrepareData.prepareNumber(this.getGesamtpreis());
         str = str + PrepareData.prepareNumber(this.getGesamttax());
-        str = str + PrepareData.prepareString(DateConverter.getSQLDateString(
-                this.getAusfuehrungsDatum()));
+        str = str + PrepareData.prepareString(DateConverter.getSQLDateString(this.getAusfuehrungsDatum()));
         str = str + PrepareData.prepareNumber(this.getMahnungen());
         return PrepareData.finalize(str);
 
@@ -546,21 +542,21 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         this.Mahnungen = Mahnungen;
     }
 
-    private void setBezahlt(String string) {
-        if (string.equals("1")) {
-            setBezahlt(true);
-        } else {
-            setBezahlt(false);
-        }
-    }
-
-    private void setStorno(String string) {
-        if (string.equals("1")) {
-            setStorno(true);
-        } else {
-            setStorno(false);
-        }
-    }
+//    private void setBezahlt(String string) {
+//        if (string.equals("1")) {
+//            setBezahlt(true);
+//        } else {
+//            setBezahlt(false);
+//        }
+//    }
+//
+//    private void setStorno(String string) {
+//        if (string.equals("1")) {
+//            setStorno(true);
+//        } else {
+//            setStorno(false);
+//        }
+//    }
 
     public Angebot getAngebot() {
         return Angebot;

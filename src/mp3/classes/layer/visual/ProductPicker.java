@@ -3,7 +3,6 @@
  *
  * Created on 15. Januar 2008, 07:02
  */
-
 package mp3.classes.layer.visual;
 
 import mp4.datenbank.verbindung.ConnectionHandler;
@@ -13,12 +12,12 @@ import mp3.classes.utils.Formater;
 import java.awt.event.MouseEvent;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
+import mp4.einstellungen.Programmdaten;
 import mp4.items.Product;
 import mp4.panels.rechnungen.billsView;
 import mp4.panels.rechnungen.offersView;
 import mp4.utils.tabellen.SelectionCheck;
 import mp4.utils.windows.Position;
-
 
 /**
  *
@@ -38,64 +37,73 @@ public class ProductPicker extends javax.swing.JFrame {
     private static String[][] liste;
     private String[][] list;
     private offersView frame1;
-    private boolean order=false;
-    private Position pos = new Position(); 
+    private boolean order = false;
+    private Position pos = new Position();
 
-public static void update(){
+    public static void update() {
         Product n = new Product(ConnectionHandler.instanceOf());
-        ProductPicker.setListe( n.select("id,produktnummer,name", "produktnummer", "", "produktnummer", true));
-}
+        ProductPicker.setListe(n.select("id,produktnummer,name", "produktnummer", "", "produktnummer", true));
+    }
 
     public ProductPicker(offersView aThis) {
-        initComponents ();
-        this.frame1=aThis;
+        initComponents();
+        this.frame1 = aThis;
         p = new Product(ConnectionHandler.instanceOf());
-        
- 
-        if(ProductPicker.getListe()==null){
+
+
+        if (ProductPicker.getListe() == null) {
             list = p.select("id,produktnummer,name", "produktnummer", "", "produktnummer", true);
             ProductPicker.setListe(list);
         } else {
-        
-            list=ProductPicker.getListe();
+
+            list = ProductPicker.getListe();
         }
-        
+
         String k = "id, " + "Nummer,Name";
 
         this.jTable1.setModel(new DefaultTableModel(list, k.split(",")));
         Formater.stripFirst(jTable1);
-        
+
+        jCheckBox1.setSelected(Programmdaten.instanceOf().getPRODUCTPICKER_EAN());
+        jCheckBox2.setSelected(Programmdaten.instanceOf().getPRODUCTPICKER_NAME());
+        jCheckBox3.setSelected(Programmdaten.instanceOf().getPRODUCTPICKER_TEXT());
+
         this.setVisible(rootPaneCheckingEnabled);
         this.jTable1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        order =true;
+        order = true;
     }
-    
+
     /** Creates new form CustomerPicker
      * @param frame 
      */
-    public ProductPicker (billsView frame) {
-        initComponents ();
-        this.frame=frame;
+    public ProductPicker(billsView frame) {
+        initComponents();
+        this.frame = frame;
         p = new Product(ConnectionHandler.instanceOf());
         pos.center(this);
- 
-        if(ProductPicker.getListe()==null){
+
+        if (ProductPicker.getListe() == null) {
             list = p.select("id,produktnummer,name", "produktnummer", "", "produktnummer", true);
             ProductPicker.setListe(list);
         } else {
-        
-            list=ProductPicker.getListe();
+
+            list = ProductPicker.getListe();
         }
-        
+
         String k = "id, " + "Nummer,Name";
 
         this.jTable1.setModel(new DefaultTableModel(list, k.split(",")));
         Formater.stripFirst(jTable1);
+        
+        jCheckBox1.setSelected(Programmdaten.instanceOf().getPRODUCTPICKER_EAN());
+        jCheckBox2.setSelected(Programmdaten.instanceOf().getPRODUCTPICKER_NAME());
+        jCheckBox3.setSelected(Programmdaten.instanceOf().getPRODUCTPICKER_TEXT());
+        
         this.jTable1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         this.setVisible(rootPaneCheckingEnabled);
-        
+
     }
-    
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -119,10 +127,9 @@ public static void update(){
         jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Pick");
+        setTitle("MP Produkt Auswahl ");
         setAlwaysOnTop(true);
         setBackground(new java.awt.Color(255, 255, 255));
-        setUndecorated(true);
 
         jPanel1.setBackground(new java.awt.Color(227, 219, 202));
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Wählen Sie eine Produkt"));
@@ -178,17 +185,42 @@ public static void update(){
             }
         });
 
-        jCheckBox1.setBackground(new java.awt.Color(255, 255, 255));
+        jCheckBox1.setBackground(new java.awt.Color(227, 219, 202));
         jCheckBox1.setSelected(true);
         jCheckBox1.setText("EAN");
+        jCheckBox1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jCheckBox1MouseClicked(evt);
+            }
+        });
+        jCheckBox1.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jCheckBox1ItemStateChanged(evt);
+            }
+        });
 
-        jCheckBox2.setBackground(new java.awt.Color(255, 255, 255));
+        jCheckBox2.setBackground(new java.awt.Color(227, 219, 202));
         jCheckBox2.setSelected(true);
         jCheckBox2.setText("Name");
+        jCheckBox2.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jCheckBox2ItemStateChanged(evt);
+            }
+        });
 
-        jCheckBox3.setBackground(new java.awt.Color(255, 255, 255));
+        jCheckBox3.setBackground(new java.awt.Color(227, 219, 202));
         jCheckBox3.setSelected(true);
         jCheckBox3.setText("Text");
+        jCheckBox3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jCheckBox3MouseClicked(evt);
+            }
+        });
+        jCheckBox3.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jCheckBox3ItemStateChanged(evt);
+            }
+        });
 
         jLabel3.setText("Einfügen:");
 
@@ -276,90 +308,70 @@ public static void update(){
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField1ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        
-        
-        String[][] list = p.select("id,produktnummer,name", "produktnummer", jTextField1.getText(), "produktnummer", true);
-        String k = "id, " + "Nummer,Name";
+private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    this.dispose();
+}//GEN-LAST:event_jButton2ActionPerformed
 
-        this.jTable1.setModel(new DefaultTableModel(list, k.split(",")));
-        Formater.stripFirst(jTable1);
-
-        
-    }//GEN-LAST:event_jTextField1ActionPerformed
-
-    private void jTextField2ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
 //        String[][] list = p.select("id,produktnummer,name", "hersteller", jTextField2.getText(), "produktnummer", true);
 //        String k = "id, " + "Nummer,Name";
 //
 //        this.jTable1.setModel(new DefaultTableModel(list, k.split(",")));
 //        Formater.stripFirst(jTable1);
+}//GEN-LAST:event_jTextField2ActionPerformed
 
-    }//GEN-LAST:event_jTextField2ActionPerformed
+private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    jTable1MouseClicked(new MouseEvent(frame, WIDTH, WIDTH, WIDTH, WIDTH, WIDTH, WIDTH, rootPaneCheckingEnabled));
+}//GEN-LAST:event_jButton1ActionPerformed
 
-    private void jTable1MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
-        boolean ean;
-        boolean text;
-        boolean name;
-        
-        if(jCheckBox1.isSelected()) {
-            ean = true;
-        } else {
-            ean = false;
-        }
-        if(jCheckBox2.isSelected()) {
-            name = true;
-        } else {
-            name = false;
-        }
-        
-        if(jCheckBox3.isSelected()) {
-            text = true;
-        } else {
-            text = false;
-        }
-        
-        SelectionCheck selection =new SelectionCheck(jTable1);
+private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    String[][] list2 = p.select("id,produktnummer,name", "produktnummer", jTextField1.getText(), "produktnummer", true);
+    String k = "id, " + "Nummer,Name";
 
+    this.jTable1.setModel(new DefaultTableModel(list2, k.split(",")));
+    Formater.stripFirst(jTable1);
+}//GEN-LAST:event_jTextField1ActionPerformed
 
-        if (selection.checkID()) {
-
-            try {
-                if(!order) {
-                    frame.addProductToBillsTable(new Product(selection.getId()));
-                }else{
-                     frame1.addToOrder(new Product(selection.getId()));
-                }
-                this.dispose();
-            } catch (Exception exception) {
-//                exception.printStackTrace();
-            }
-        } 
-
-    }//GEN-LAST:event_jTable1MouseClicked
-
-    private void jButton1ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        
-        
+    @SuppressWarnings(value = "static-access")
+private void jTable1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTable1KeyPressed
+    if (evt.getKeyCode() == evt.VK_ENTER) {
         jTable1MouseClicked(new MouseEvent(frame, WIDTH, WIDTH, WIDTH, WIDTH, WIDTH, WIDTH, rootPaneCheckingEnabled));
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }
+}//GEN-LAST:event_jTable1KeyPressed
 
-    private void jButton2ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        
-        this.dispose();
-    }//GEN-LAST:event_jButton2ActionPerformed
+private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
 
-    @SuppressWarnings("static-access")
-    private void jTable1KeyPressed (java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTable1KeyPressed
-        
-        
-        if(evt.getKeyCode() == evt.VK_ENTER    ) {
-            jTable1MouseClicked(new MouseEvent(frame, WIDTH, WIDTH, WIDTH, WIDTH, WIDTH, WIDTH, rootPaneCheckingEnabled));
-        }
-    }//GEN-LAST:event_jTable1KeyPressed
-    
-  
-    
+    SelectionCheck selection = new SelectionCheck(jTable1);
+    if (selection.checkID()) {
+        try {
+            if (!order) {
+                frame.addProductToBillsTable(new Product(selection.getId()));
+            } else {
+                frame1.addToOrder(new Product(selection.getId()));
+            }
+            this.dispose();
+        } catch (Exception exception) {
+       }
+    }
+}//GEN-LAST:event_jTable1MouseClicked
+
+private void jCheckBox1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jCheckBox1MouseClicked
+}//GEN-LAST:event_jCheckBox1MouseClicked
+
+private void jCheckBox3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jCheckBox3MouseClicked
+}//GEN-LAST:event_jCheckBox3MouseClicked
+
+private void jCheckBox2ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBox2ItemStateChanged
+    Programmdaten.instanceOf().setPRODUCTPICKER_NAME(jCheckBox2.isSelected());
+}//GEN-LAST:event_jCheckBox2ItemStateChanged
+
+private void jCheckBox3ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBox3ItemStateChanged
+    Programmdaten.instanceOf().setPRODUCTPICKER_TEXT(jCheckBox3.isSelected());
+}//GEN-LAST:event_jCheckBox3ItemStateChanged
+
+private void jCheckBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBox1ItemStateChanged
+    Programmdaten.instanceOf().setPRODUCTPICKER_EAN(jCheckBox1.isSelected());
+}//GEN-LAST:event_jCheckBox1ItemStateChanged
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton jButton1;
     public javax.swing.JButton jButton2;
@@ -375,5 +387,4 @@ public static void update(){
     public javax.swing.JTextField jTextField1;
     public javax.swing.JTextField jTextField2;
     // End of variables declaration//GEN-END:variables
-    
 }

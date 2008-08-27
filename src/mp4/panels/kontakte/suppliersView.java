@@ -1101,7 +1101,7 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             } else {
                 new Popup("Sie müssen mindestens einen Namen angeben.", Popup.ERROR);
             }
-        }
+        } else createNew();
     }
 
     private void jTable3MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable3MouseClicked

@@ -6,6 +6,7 @@ import javax.swing.table.TableModel;
 import mp3.classes.layer.Popup;
 import mp3.classes.utils.Log;
 import mp4.einstellungen.Einstellungen;
+import mp4.einstellungen.Programmdaten;
 import mp4.items.Product;
 import mp4.utils.tabellen.DataModelUtils;
 import mp4.utils.zahlen.FormatNumber;
@@ -66,9 +67,10 @@ public class PostenTableModel extends MPTableModel {
         try {
             try {
                 end = TextFormat.verifyTextMaxLength(product.getText(), 60);
-                String str = product.getName() + " ";
-                str = str + product.getText().substring(0, end) + " ";
-                str = str + product.getEan();
+                String str = "";
+                if(Programmdaten.instanceOf().getPRODUCTPICKER_NAME())str = product.getName() + " ";
+                if(Programmdaten.instanceOf().getPRODUCTPICKER_TEXT())str = str + product.getText().substring(0, end) + " ";
+                if(Programmdaten.instanceOf().getPRODUCTPICKER_EAN())str = str + product.getEan();
                 m.setValueAt(str, selectedRow, 2);
             } catch (Exception exception) {
                 Log.Debug(exception);

@@ -191,6 +191,7 @@ public class productsView extends javax.swing.JPanel implements mp4.datenbank.in
 
         this.current = product;
         this.setSupplier(current.getSupplier());
+        this.setManufacturer(current.getHersteller());
         this.jTextField4.setText(current.getProduktNummer());
         this.jTextField5.setText(current.getName());
         if (current.getHersteller() != null) {
@@ -802,7 +803,7 @@ public class productsView extends javax.swing.JPanel implements mp4.datenbank.in
                         .addComponent(jLabel17)
                         .addComponent(jTextField9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jButton13, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
 
         jPanel9.setBackground(new java.awt.Color(227, 219, 202));
@@ -1062,10 +1063,11 @@ public class productsView extends javax.swing.JPanel implements mp4.datenbank.in
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1571,8 +1573,8 @@ numberfieldedited = true;
         }
         
         product.setName(jTextField5.getText());
-        product.setHersteller(hersteller);
-        product.setSupplier(lieferant);
+        if(hersteller!=null&&hersteller.isValid())product.setHersteller(hersteller);
+        if(lieferant!=null&&lieferant.isValid())product.setSupplier(lieferant);
         product.setVK(Double.valueOf(jTextField8.getText()));
         product.setEK(Double.valueOf(jTextField7.getText()));
         product.setTaxID(taxID);
@@ -1602,20 +1604,20 @@ numberfieldedited = true;
 
     public void save() {
         if (current.getId() > 0) {
-            if (jTextField4.getText().equals("")) {
-                Integer tz = current.getNextIndex("produktnummer");
-                jTextField4.setText(tz.toString());
-                Log.Debug("Setting 'Productnumber' to " + tz);
-            } else {
-                try {
-                    Integer i = Integer.valueOf(jTextField4.getText());
-                    jTextField4.setText(i.toString());
-                } catch (NumberFormatException numberFormatException) {
-                    Integer tz = current.getNextIndex("produktnummer");
-                    jTextField4.setText(tz.toString());
-                    Log.Debug("Setting 'Productnumber' to " + tz);
-                }
-            }
+//            if (jTextField4.getText().equals("")) {
+//                Integer tz = current.getNextIndex("produktnummer");
+//                jTextField4.setText(tz.toString());
+//                Log.Debug("Setting 'Productnumber' to " + tz);
+//            } else {
+//                try {
+//                    Integer i = Integer.valueOf(jTextField4.getText());
+//                    jTextField4.setText(i.toString());
+//                } catch (NumberFormatException numberFormatException) {
+//                    Integer tz = current.getNextIndex("produktnummer");
+//                    jTextField4.setText(tz.toString());
+//                    Log.Debug("Setting 'Productnumber' to " + tz);
+//                }
+//            }
             try {
                 Double.valueOf(jTextField8.getText());
             } catch (NumberFormatException numberFormatException) {
@@ -1633,8 +1635,8 @@ numberfieldedited = true;
             }
             current.setNummer(jTextField4.getText());
             current.setName(jTextField5.getText());
-            current.setHersteller(hersteller);
-            current.setSupplier(lieferant);
+            if(hersteller!=null&&hersteller.isValid())current.setHersteller(hersteller);
+            if(lieferant!=null&&lieferant.isValid())current.setSupplier(lieferant);
             current.setVK(Double.valueOf(jTextField8.getText()));
             current.setEK(Double.valueOf(jTextField7.getText()));
             current.setTaxID(taxID);
@@ -1658,7 +1660,7 @@ numberfieldedited = true;
             new HistoryItem(Strings.PRODUCT, "Produkt Nummer: " + current.getProduktNummer() + " gespeichert.");
 
             setProduct(new Product(current.getId()));
-        }
+        } else createNew();
     }
 
     public void setSupplier(Lieferant supplier) {

@@ -268,7 +268,10 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
 
         setBetreffZeilen(current);
 
+        
         this.getJTable1().setModel(current.getProductlistAsTableModel());
+        if(jTable1.getModel().getRowCount()==0)renewTableModel(true);
+        
         renewTableModel(false);
         resizeFields();
     }
@@ -1285,14 +1288,6 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
     }//GEN-LAST:event_jTable3MouseClicked
 
     private void clear() {
-
-        this.customer = new Customer();
-        this.currentBill = new Rechnung();
-
-        jTextField4.setText("");
-        jTextField5.setText("");
-        jTextField6.setText("");
-
         renewTableModel(true);
         resizeFields();
     }
@@ -1372,14 +1367,16 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
     private void jButton13MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton13MouseClicked
 
         this.currentBill.setStorno(true);
-        this.jButton4MouseClicked(evt);
+        jCheckBox3.setSelected(true);
+        
         setEdited(true);
     }//GEN-LAST:event_jButton13MouseClicked
 
     private void jButton14MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton14MouseClicked
 
         this.currentBill.setBezahlt(true);
-        this.jButton4MouseClicked(evt);
+
+        jCheckBox2.setSelected(true);
         setEdited(true);
     }//GEN-LAST:event_jButton14MouseClicked
 

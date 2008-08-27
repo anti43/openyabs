@@ -330,7 +330,7 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.i
 //        return prof;
 //    }
     public String getNextNumber() {
-        throw new UnsupportedOperationException("format?");//format?
+       return  getNfh().getNextNumber();
 //        return query.getNextIndexOfIntCol("angebotnummer");
     }
 

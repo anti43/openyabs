@@ -1065,20 +1065,20 @@ public javax.swing.JToolBar jToolBar2;
 
     public void save() {
         if (current.getId() > 0) {
-            if (jTextField4.getText().equals("")) {
-                Integer tz = current.getNextIndex("produktnummer");
-                jTextField4.setText(tz.toString());
-                Log.Debug("Setting 'Dienstleistungnumber' to " + tz);
-            } else {
-                try {
-                    Integer i = Integer.valueOf(jTextField4.getText());
-                    jTextField4.setText(i.toString());
-                } catch (NumberFormatException numberFormatException) {
-                    Integer tz = current.getNextIndex("produktnummer");
-                    jTextField4.setText(tz.toString());
-                    Log.Debug("Setting 'Dienstleistungnumber' to " + tz);
-                }
-            }
+//            if (jTextField4.getText().equals("")) {
+//                Integer tz = current.getNextIndex("produktnummer");
+//                jTextField4.setText(tz.toString());
+//                Log.Debug("Setting 'Dienstleistungnumber' to " + tz);
+//            } else {
+//                try {
+//                    Integer i = Integer.valueOf(jTextField4.getText());
+//                    jTextField4.setText(i.toString());
+//                } catch (NumberFormatException numberFormatException) {
+//                    Integer tz = current.getNextIndex("produktnummer");
+//                    jTextField4.setText(tz.toString());
+//                    Log.Debug("Setting 'Dienstleistungnumber' to " + tz);
+//                }
+//            }
             try {
                 Double.valueOf(jTextField8.getText());
             } catch (NumberFormatException numberFormatException) {
@@ -1103,7 +1103,7 @@ public javax.swing.JToolBar jToolBar2;
             new HistoryItem(Strings.SERVICE, "Dienstleistung Nummer: " + current.getProduktNummer() + " gespeichert.");
 
             setDienstleistung(new Dienstleistung(current.getId()));
-        }
+        } else createNew();
     }
 
     public javax.swing.JTextField getJTextField12() {

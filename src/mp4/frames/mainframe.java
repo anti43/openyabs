@@ -198,7 +198,7 @@ public class mainframe extends javax.swing.JFrame {
 
     public void addProductPanel(Product product) {
         productsView panel = new productsView(this);
-        mainTabPane.add("Rechnung", panel);
+        mainTabPane.add("Produkt", panel);
         mainTabPane.setSelectedComponent(panel);
         mainTabPane.setIconAt(mainTabPane.getSelectedIndex(), new TabCloseIcon());
         if (product != null) {
@@ -211,37 +211,12 @@ public class mainframe extends javax.swing.JFrame {
         wt.center(this);
     }
 
-    /**
-     * 
-     * @return  
-     *          0:start 
-     *          1:kunden
-     *          2:rechnungen
-     *          3:angebote
-     *          4:eur
-     *          5:produkte
-     *          6:lieferanten
-     *          7:verlauf  
-     *          8:sicherung
-     *          
-     */
+
     public int getShowingTab() {
         return getTabPane().getSelectedIndex();
     }
 
-    /**
-     * 
-     * @param i
-     *          0:start 
-     *          1:kunden
-     *          2:rechnungen
-     *          3:angebote
-     *          4:eur
-     *          5:produkte
-     *          6:lieferanten
-     *          7:verlauf  
-     *          8:sicherung
-     */
+    
     public void setShowingTab(int i) {
         getTabPane().setSelectedIndex(i);
     }

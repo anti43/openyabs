@@ -52,6 +52,30 @@ public class Programmdaten implements mp4.datenbank.installation.Tabellen {
         return handler.getString("WARENGRUPPEN_SEPARATOR");
     }
 
+    public void setPRODUCTPICKER_EAN(boolean PRODUCTPICKER_EAN) {
+        handler.setBoolean("PRODUCTPICKER_EAN", PRODUCTPICKER_EAN);
+    }
+
+    public void setPRODUCTPICKER_NAME(boolean PRODUCTPICKER_NAME) {
+       handler.setBoolean("PRODUCTPICKER_NAME", PRODUCTPICKER_NAME);
+    }
+
+    public void setPRODUCTPICKER_TEXT(boolean PRODUCTPICKER_TEXT) {
+        handler.setBoolean("PRODUCTPICKER_TEXT", PRODUCTPICKER_TEXT);
+    }
+    
+   public boolean getPRODUCTPICKER_EAN() {
+       return handler.getBoolean("PRODUCTPICKER_EAN");
+    }
+
+    public boolean getPRODUCTPICKER_NAME() {
+       return handler.getBoolean("PRODUCTPICKER_NAME");
+    }
+
+    public boolean getPRODUCTPICKER_TEXT() {
+        return handler.getBoolean("PRODUCTPICKER_TEXT");
+    }
+
     public void setSERVICES_NUMMER_FORMAT(String SERVICES_NUMMER_FORMAT) {
         handler.setString("SERVICES_NUMMER_FORMAT", SERVICES_NUMMER_FORMAT);
     }
