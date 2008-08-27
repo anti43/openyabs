@@ -68,9 +68,10 @@ public class ProductPicker extends javax.swing.JFrame {
         jCheckBox2.setSelected(Programmdaten.instanceOf().getPRODUCTPICKER_NAME());
         jCheckBox3.setSelected(Programmdaten.instanceOf().getPRODUCTPICKER_TEXT());
 
-        this.setVisible(rootPaneCheckingEnabled);
         this.jTable1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         order = true;
+        new Position(this);
+        this.setVisible(rootPaneCheckingEnabled);
     }
 
     /** Creates new form CustomerPicker
@@ -100,6 +101,7 @@ public class ProductPicker extends javax.swing.JFrame {
         jCheckBox3.setSelected(Programmdaten.instanceOf().getPRODUCTPICKER_TEXT());
         
         this.jTable1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        new Position(this);
         this.setVisible(rootPaneCheckingEnabled);
 
     }

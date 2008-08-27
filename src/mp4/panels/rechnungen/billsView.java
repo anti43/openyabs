@@ -48,6 +48,7 @@ import mp4.items.Angebot;
 import mp4.benutzerverwaltung.User;
 import mp3.classes.interfaces.panelInterface;
 import mp3.classes.layer.People;
+import mp4.items.Dienstleistung;
 import mp4.utils.combobox.CheckComboListener;
 import mp4.utils.combobox.CheckComboRenderer;
 import mp4.utils.datum.DateConverter;
@@ -124,6 +125,10 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
 
     public void addProductToBillsTable(Product product) {
         ((PostenTableModel) jTable1.getModel()).addProduct(jTable1, product);
+    }
+    
+    public void addServiceToBillsTable(Dienstleistung product) {
+        ((PostenTableModel) jTable1.getModel()).addService(jTable1, product);
     }
 
     private void createNew() {
@@ -231,9 +236,10 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
         if(current.getKundenId()!=0)this.setContact(new Customer(current.getKundenId()));
 
         if (current.getAngebot() != null) {
-            jTextField13.setText(DateConverter.getDefDateString(current.getAngebot().getDatum()));
+            jTextField13.setText(current.getAngebot().getAngebotnummer());
+            jTextField12.setText(DateConverter.getDefDateString(current.getAngebot().getDatum()));
         } else {
-            jTextField13.setText(null);
+            jTextField13.setText("Kein Angebot");
         }
         this.jTextField6.setText(current.getRechnungnummer());
         jTextField6.setBackground(Color.WHITE);

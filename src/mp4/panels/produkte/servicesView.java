@@ -29,6 +29,8 @@ import mp4.items.HistoryItem;
 import mp4.items.Rechnung;
 import mp4.items.Steuersatz;
 import mp4.panels.misc.NumberFormatEditor;
+import mp4.panels.rechnungen.billsView;
+import mp4.panels.rechnungen.offersView;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.files.DialogOpenFile;
 import mp4.utils.tabellen.SelectionCheck;
@@ -886,14 +888,14 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 
         if (current.getId() != 0) {
             getMainframe().addBillPanel(new Rechnung());
-//            ((billsView) getMainframe().getTabPane().getSelectedComponent()).addProductToBillsTable(current);
+            ((billsView) getMainframe().getTabPane().getSelectedComponent()).addServiceToBillsTable(current);
         }
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
         if (current.getId() != 0) {
             getMainframe().addAngebotPanel(new Angebot());
-//            ((offersView) getMainframe().getTabPane().getSelectedComponent()).addToOrder(current);
+            ((offersView) getMainframe().getTabPane().getSelectedComponent()).addServiceToOrder(current);
         }
     }//GEN-LAST:event_jButton10ActionPerformed
 

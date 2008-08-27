@@ -226,7 +226,7 @@ public abstract class Things implements Queries, mp4.datenbank.installation.Tabe
             wher = null;
         }
 
-        return q.select(what, wher, order, like);
+        return q.select(what, wher, order, like, false, false);
     }
 
     /**

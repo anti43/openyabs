@@ -44,6 +44,7 @@ import mp4.einstellungen.Einstellungen;
 import mp4.items.Angebot;
 import mp3.classes.interfaces.panelInterface;
 import mp3.classes.layer.People;
+import mp4.items.Dienstleistung;
 import mp4.items.Rechnung;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.tabellen.DataModelUtils;
@@ -118,6 +119,9 @@ public class offersView extends javax.swing.JPanel implements panelInterface, mp
 
     public void addToOrder(Product product) {
         ((PostenTableModel) jTable1.getModel()).addProduct(jTable1, product);
+    }
+    public void addServiceToOrder(Dienstleistung product) {
+        ((PostenTableModel) jTable1.getModel()).addService(jTable1, product);
     }
 
     private void createNew() {
@@ -1276,6 +1280,7 @@ private void jButton13MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
             r.setKundenId(currentOffer.getKundenId());
             r.add((PostenTableModel) jTable1.getModel());
             r.setDatum(new Date());
+            r.setAngebot(currentOffer);
             r.save();
             currentOffer.setRechnung(true);
             currentOffer.setRechnungId(r.getId());

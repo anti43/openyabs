@@ -84,7 +84,7 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.i
         this.setName(text);
         this.setVK(parseDezimal);
         nfh = new NumberFormatHandler(this, new Date());
-        this.save();
+//        this.save();
 
     }
 
