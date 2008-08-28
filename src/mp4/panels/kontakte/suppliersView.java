@@ -1344,6 +1344,7 @@ public javax.swing.JToolBar jToolBar2;
 
     public void changeTabText(String text) {
         ((JTabbedPane) this.getParent()).setTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex(), text);
+    
     }
 
     public boolean isEdited() {

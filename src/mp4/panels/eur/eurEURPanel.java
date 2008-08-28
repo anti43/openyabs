@@ -3,7 +3,7 @@
  *
  * Created on 21. Februar 2008, 21:50
  */
-package mp3.classes.visual.sub;
+package mp4.panels.eur;
 
 import java.awt.Color;
 import java.io.File;
@@ -11,9 +11,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import javax.swing.JTabbedPane;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
+import mp3.classes.interfaces.panelInterface;
 import mp3.classes.layer.EURTableModel;
+import mp3.classes.layer.People;
 import mp3.classes.layer.Popup;
 import mp3.classes.utils.Browser;
 import mp3.classes.utils.Formater;
@@ -26,7 +28,7 @@ import mp4.utils.datum.DateConverter;
  *
  * @author  anti43
  */
-public class eurEURPanel extends javax.swing.JPanel {
+public class eurEURPanel extends javax.swing.JPanel  implements panelInterface{
 
     private String year;
     private String month;
@@ -268,4 +270,45 @@ public class eurEURPanel extends javax.swing.JPanel {
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
+
+    public void updateTables() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void save() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void close() {
+      ((JTabbedPane) this.getParent()).remove(this);
+    }
+
+    public void undo() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void redo() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void changeTabText(String text) {
+        ((JTabbedPane) this.getParent()).setTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex(), text);
+    
+    }
+
+    public boolean isEdited() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setContact(People contact) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public People getContact() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void switchTab(int i) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

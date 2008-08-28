@@ -5,9 +5,13 @@
  */
 package mp4.panels.eur;
 
+import java.awt.Font;
+import javax.swing.JTabbedPane;
+import mp3.classes.layer.People;
 import mp4.items.HistoryItem;
 import mp4.items.Rechnung;
 import mp3.classes.interfaces.Strings;
+import mp3.classes.interfaces.panelInterface;
 import mp3.classes.layer.Popup;
 import mp3.classes.layer.visual.DatePick;
 
@@ -31,7 +35,7 @@ import mp4.utils.zahlen.vDouble;
  *
  * @author  anti43
  */
-public class eurEPanel extends javax.swing.JPanel {
+public class eurEPanel extends javax.swing.JPanel implements panelInterface {
 
     private Einnahme curEinnahme;
     private SKRKonto curKonto;
@@ -473,9 +477,10 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
         Customer c = new Customer(bill.getKundenId());
 
-        jEditorPane1.setContentType("text/html");
-        jEditorPane1.setText("<html><font face=arial size=12px><b>" + c.getFirma() + "</b><br><br>" + c.getAnrede() + " " + c.getVorname() + " " + c.getName() + "<br>" + c.getStr() + "<br>" + "<br>" + c.getPLZ() + " " + c.getOrt() + "<br>" + "<br>" +
-                "Rechnung Nr.: " + bill.getRechnungnummer() + "<br>");
+//        jEditorPane1.setContentType("text/html");
+        jEditorPane1.setFont(new Font(Font.SANS_SERIF,Font.PLAIN, 12));
+        jEditorPane1.setText(c.getFirma() + "\n\n" + c.getAnrede() + " " + c.getVorname() + " " + c.getName() + "\n" + c.getStr() + "\n\n" + c.getPLZ() + " " + c.getOrt() + "\n\n" +
+                "Rechnung Nr.: " + bill.getRechnungnummer() + "\n");
 
         jTextField4.setText(bill.getFGesamtpreis());
         jTextField3.setText("");
@@ -510,5 +515,46 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
     public String[][] getData() {
         return updateTableData();
+    }
+
+    public void updateTables() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void save() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void close() {
+       ((JTabbedPane) this.getParent()).remove(this);
+    }
+
+    public void undo() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void redo() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void changeTabText(String text) {
+         ((JTabbedPane) this.getParent()).setTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex(), text);
+    
+    }
+
+    public boolean isEdited() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setContact(People contact) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public People getContact() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void switchTab(int i) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

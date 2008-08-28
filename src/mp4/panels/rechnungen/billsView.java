@@ -81,7 +81,8 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
     private TableCalculator calculator;
     private boolean edited = false;
 
-    public billsView() {}
+    public billsView() {
+    }
 
     /** Creates new form customers
      * @param frame 
@@ -126,7 +127,7 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
     public void addProductToBillsTable(Product product) {
         ((PostenTableModel) jTable1.getModel()).addProduct(jTable1, product);
     }
-    
+
     public void addServiceToBillsTable(Dienstleistung product) {
         ((PostenTableModel) jTable1.getModel()).addService(jTable1, product);
     }
@@ -142,9 +143,9 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
             m = (PostenTableModel) jTable1.getModel();
 
             Rechnung bill = new Rechnung();
-            
+
             bill.setDatum(DateConverter.getDate(jTextField7.getText()));
-           
+
             bill.setRechnungnummer(bill.getNfh().getNextNumber());
             if (DateConverter.getDate(jTextField11.getText()) != null) {
                 bill.setAusfuehrungsDatum(DateConverter.getDate(jTextField11.getText()));
@@ -210,7 +211,9 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
     }
 
     private void renewTableModel(boolean empty) {
-        if(empty)getJTable1().setModel(new PostenTableModel());
+        if (empty) {
+            getJTable1().setModel(new PostenTableModel());
+        }
         jTable1.getColumnModel().getColumn(1).setCellEditor(new TableCellEditorForDezimal(new JFormattedTextField()));
         jTable1.getColumnModel().getColumn(3).setCellEditor(new TableCellEditorForDezimal(new JFormattedTextField()));
         jTable1.getColumnModel().getColumn(4).setCellEditor(new TableCellEditorForDezimal(new JFormattedTextField()));
@@ -231,10 +234,11 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
     public void setBill(Rechnung current) {
 
         this.changeTabText("Rechnung: " + current.getRechnungnummer());
-        
-        this.currentBill = current;
-        if(current.getKundenId()!=0)this.setContact(new Customer(current.getKundenId()));
 
+        this.currentBill = current;
+        if (current.getKundenId() != 0) {
+            this.setContact(new Customer(current.getKundenId()));
+        }
         if (current.getAngebot() != null) {
             jTextField13.setText(current.getAngebot().getAngebotnummer());
             jTextField12.setText(DateConverter.getDefDateString(current.getAngebot().getDatum()));
@@ -274,10 +278,11 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
 
         setBetreffZeilen(current);
 
-        
+
         this.getJTable1().setModel(current.getProductlistAsTableModel());
-        if(jTable1.getModel().getRowCount()==0)renewTableModel(true);
-        
+        if (jTable1.getModel().getRowCount() == 0) {
+            renewTableModel(true);
+        }
         renewTableModel(false);
         resizeFields();
     }
@@ -287,9 +292,9 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
         oldcustomer = this.customer;
         this.customer = (Customer) c;
 
-        jLabel19.setText(customer .getKundennummer());
-        jTextField5.setText(customer .getName());
-        jTextField4.setText(customer .getFirma());
+        jLabel19.setText(customer.getKundennummer());
+        jTextField5.setText(customer.getName());
+        jTextField4.setText(customer.getFirma());
 
         if (getCustomer().isDeleted()) {
             jLabel19.setForeground(Color.GRAY);
@@ -1199,8 +1204,8 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
 
     private void jButton3MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
 
-      if(mainframe.getUser().doAction(User.EDITOR)) createNew();
-
+        if (mainframe.getUser().doAction(User.EDITOR)) {
+            createNew();}
     }//GEN-LAST:event_jButton3MouseClicked
 
     private void jTable2MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable2MouseClicked
@@ -1276,7 +1281,8 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
     }
 
     private void jButton4MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton4MouseClicked
-         if(mainframe.getUser().doAction(User.EDITOR))save();
+        if (mainframe.getUser().doAction(User.EDITOR)) {
+            save();}
     }//GEN-LAST:event_jButton4MouseClicked
 
     private void jTable3MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable3MouseClicked
@@ -1315,7 +1321,7 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
 
         new CustomerPicker(this);
         setEdited(true);
-        
+
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void jButton10ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
@@ -1372,17 +1378,29 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
 
     private void jButton13MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton13MouseClicked
 
-        this.currentBill.setStorno(true);
-        jCheckBox3.setSelected(true);
-        
-        setEdited(true);
+        if (mainframe.getUser().doAction(User.ADMIN)) {
+            if (!currentBill.isStorno()) {
+                this.currentBill.setStorno(true);
+                jCheckBox3.setSelected(true);
+            } else {
+                this.currentBill.setStorno(false);
+                jCheckBox3.setSelected(false);
+            }
+            setEdited(true);
+        }
     }//GEN-LAST:event_jButton13MouseClicked
 
     private void jButton14MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton14MouseClicked
-
-        this.currentBill.setBezahlt(true);
-
-        jCheckBox2.setSelected(true);
+       
+        if (mainframe.getUser().doAction(User.ADMIN)) {
+            if (!currentBill.isBezahlt()) {
+                this.currentBill.setBezahlt(true);
+                jCheckBox2.setSelected(true);
+            } else {
+                this.currentBill.setBezahlt(false);
+                jCheckBox2.setSelected(false);
+            }
+        }
         setEdited(true);
     }//GEN-LAST:event_jButton14MouseClicked
 
@@ -1416,10 +1434,10 @@ private void jCheckBox4ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIR
 
 private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
 //GEN-LAST:event_jButton16ActionPerformed
-    new NumberFormatEditor(this.getCurrent());
+        new NumberFormatEditor(this.getCurrent());
 
 
-}                                         
+    }
 
 private void jButton19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton19ActionPerformed
     new DatePick(jTextField12);
@@ -1580,7 +1598,7 @@ private void jCheckBox3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     }
 
     public void changeTabText(String text) {
-       ((JTabbedPane) this.getParent()).setTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex(),text);
+        ((JTabbedPane) this.getParent()).setTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex(), text);
     }
 
     public boolean isEdited() {
@@ -1590,7 +1608,6 @@ private void jCheckBox3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     public People getContact() {
         return customer;
     }
-
 
     public void switchTab(int i) {
         jTabbedPane1.setSelectedIndex(i);

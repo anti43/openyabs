@@ -5,7 +5,11 @@
  */
 package mp4.panels.eur;
 
+import java.awt.Font;
+import javax.swing.JTabbedPane;
 import mp3.classes.interfaces.Strings;
+import mp3.classes.interfaces.panelInterface;
+import mp3.classes.layer.People;
 import mp3.classes.layer.Popup;
 import mp3.classes.layer.visual.DatePick;
 
@@ -32,7 +36,7 @@ import mp4.utils.zahlen.vDouble;
  *
  * @author  anti43
  */
-public class eurAPanel extends javax.swing.JPanel {
+public class eurAPanel extends javax.swing.JPanel implements panelInterface {
 
     private Ausgabe curAusgabe;
     private SKRKonto curKonto;
@@ -447,6 +451,7 @@ public class eurAPanel extends javax.swing.JPanel {
         jTextField6.setText(Ausgabe.getFDatum());
 
         jEditorPane1.setContentType("text/html");
+        jEditorPane1.setFont(new Font(Font.SANS_SERIF,Font.PLAIN, 12));
         jEditorPane1.setText("<html><font face=Arial size=12px>" + Ausgabe.getBeschreibung() + "<br>");
 
         jTextField4.setText(Ausgabe.getFPreis());
@@ -466,5 +471,46 @@ public class eurAPanel extends javax.swing.JPanel {
 
     public String[][] getData() {
         return updateTableData();
+    }
+
+    public void updateTables() {
+        updateTableData();
+    }
+
+    public void save() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void close() {
+      ((JTabbedPane) this.getParent()).remove(this);
+    }
+
+    public void undo() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void redo() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void changeTabText(String text) {
+          ((JTabbedPane) this.getParent()).setTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex(), text);
+    
+    }
+
+    public boolean isEdited() {
+       return false;
+    }
+
+    public void setContact(People contact) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public People getContact() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void switchTab(int i) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

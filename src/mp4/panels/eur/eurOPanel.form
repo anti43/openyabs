@@ -35,7 +35,7 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jPanel11" min="-2" max="-2" attributes="0"/>
               </Group>
-              <Component id="jToolBar4" alignment="0" pref="745" max="32767" attributes="0"/>
+              <Component id="jToolBar4" alignment="0" pref="484" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
@@ -98,7 +98,7 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jScrollPane5" alignment="0" pref="370" max="32767" attributes="0"/>
+                  <Component id="jScrollPane5" alignment="0" pref="109" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">

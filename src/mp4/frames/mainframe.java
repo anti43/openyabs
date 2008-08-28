@@ -32,6 +32,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import mp3.classes.interfaces.Constants;
@@ -52,8 +53,8 @@ import mp4.panels.rechnungen.billsView;
 
 import mp4.panels.kontakte.customersView;
 //import mp3.classes.visual.sub.*;
-import mp3.classes.visual.sub.eurEURPanel;
-import mp3.classes.visual.sub.eurOPanel;
+import mp4.panels.eur.eurEURPanel;
+import mp4.panels.eur.eurOPanel;
 import mp4.panels.rechnungen.offersView;
 
 
@@ -80,6 +81,7 @@ import mp4.panels.kontakte.suppliersView;
 import mp4.panels.produkte.productsView;
 import mp4.panels.produkte.servicesView;
 import mp4.panels.misc.TaxRatesEditor;
+import mp4.utils.datum.DateConverter;
 import mp4.utils.text.FadeOnChangeLabel;
 import mp4.utils.windows.Position;
 import mp4.utils.windows.TabCloseIcon;
@@ -1072,7 +1074,7 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
     eurOPanel panel = new eurOPanel();
 
-    mainTabPane.add("EUR", panel);
+    mainTabPane.add("Offene Posten (Stand: "+DateConverter.getFullDefDateString(new Date())+")", panel);
     mainTabPane.setSelectedComponent(panel);
     mainTabPane.setIconAt(mainTabPane.getSelectedIndex(), new TabCloseIcon());
     mainTabPane.validate();
@@ -1103,7 +1105,7 @@ private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
     eurEPanel panel = new eurEPanel();
 
-    mainTabPane.add("Einnahmen", panel);
+    mainTabPane.add("Einnahmen (Stand: "+DateConverter.getFullDefDateString(new Date())+")", panel);
     mainTabPane.setSelectedComponent(panel);
     mainTabPane.setIconAt(mainTabPane.getSelectedIndex(), new TabCloseIcon());
     mainTabPane.validate();
@@ -1112,7 +1114,7 @@ private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
     eurAPanel panel = new eurAPanel();
 
-    mainTabPane.add("Ausgaben", panel);
+    mainTabPane.add("Ausgaben (Stand: "+DateConverter.getFullDefDateString(new Date())+")", panel);
     mainTabPane.setSelectedComponent(panel);
     mainTabPane.setIconAt(mainTabPane.getSelectedIndex(), new TabCloseIcon());
     mainTabPane.validate();

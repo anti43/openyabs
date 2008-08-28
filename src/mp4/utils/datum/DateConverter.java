@@ -21,8 +21,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -53,6 +51,11 @@ public class DateConverter {
         DE_DATE_FORMAT, DE_DATE_FORMAT_SHORTYEAR, DE_DATE_FORMAT_SHORTMONTH, DE_DATE_FORMAT_NODAY_SHORTMONTH_SHORTYEAR,
         DE_DATE_FORMAT_SHORTMONTH_SHORTYEAR, DE_DATE_FORMAT_NODAY_MONTH_YEAR, DE_DATE_FORMAT_YEAR, DE_DATE_FORMAT_NODAY_SHORTMONTH_YEAR
     };
+    public static final DateFormat  DE_FULL_DATE_FORMAT = new SimpleDateFormat("dd.MM.yyy - HH:mm:ss");
+
+    public static String getFullDefDateString(Date date) {
+       return DE_FULL_DATE_FORMAT.format(new Date());
+    }
 
     public static String getTodayDefDate() {
         return DE_DATE_FORMAT.format(new Date());

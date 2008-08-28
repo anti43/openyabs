@@ -3,20 +3,24 @@
  *
  * Created on 20. Februar 2008, 08:35
  */
-package mp3.classes.visual.sub;
+package mp4.panels.eur;
 
 import java.awt.Font;
+import javax.swing.JTabbedPane;
+import mp3.classes.interfaces.panelInterface;
+import mp3.classes.layer.People;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.items.Rechnung;
 import mp4.items.Customer;
 import mp3.classes.utils.Formater;
+import mp4.utils.datum.DateConverter;
 import mp4.utils.tabellen.SelectionCheck;
 
 /**
  *
  * @author  anti43
  */
-public class eurOPanel extends javax.swing.JPanel {
+public class eurOPanel extends javax.swing.JPanel  implements panelInterface {
 
     private String[][] data;
     private Rechnung current;
@@ -111,11 +115,11 @@ public class eurOPanel extends javax.swing.JPanel {
         jPanel10.setLayout(jPanel10Layout);
         jPanel10Layout.setHorizontalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE)
+            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
         );
         jPanel10Layout.setVerticalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 363, Short.MAX_VALUE)
+            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 364, Short.MAX_VALUE)
         );
 
         jPanel11.setBorder(javax.swing.BorderFactory.createTitledBorder("Details"));
@@ -164,7 +168,7 @@ public class eurOPanel extends javax.swing.JPanel {
                 .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addComponent(jToolBar4, javax.swing.GroupLayout.DEFAULT_SIZE, 745, Short.MAX_VALUE)
+            .addComponent(jToolBar4, javax.swing.GroupLayout.DEFAULT_SIZE, 484, Short.MAX_VALUE)
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -241,7 +245,7 @@ public class eurOPanel extends javax.swing.JPanel {
         jTextArea3.setText(" Kundennummer: "+c.getKundennummer() + "\n\n " + c.getAnrede() + " " + c.getVorname() + " " + c.getName() + "\n " +
                 c.getStr() + "\n " + c.getPLZ() + "\n " + c.getOrt() + "\n\n Mail: " +
                 c.getMail() + "\n Telefonnummer: " + c.getTel() + "\n\n" +
-                " Datum: " + current.getDatum() + "\n Rechnungnummer: " + current.getRechnungnummer());
+                " Datum: " + DateConverter.getDefDateString(current.getDatum()) + "\n Rechnungnummer: " + current.getRechnungnummer());
 
         jTextField14.setText(current.getGesamtpreis().toString());
 
@@ -255,5 +259,45 @@ public class eurOPanel extends javax.swing.JPanel {
 
     public javax.swing.JTable getJTable3() {
         return jTable3;
+    }
+
+    public void updateTables() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void save() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void close() {
+       ((JTabbedPane) this.getParent()).remove(this);
+    }
+
+    public void undo() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void redo() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void changeTabText(String text) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public boolean isEdited() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setContact(People contact) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public People getContact() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void switchTab(int i) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
