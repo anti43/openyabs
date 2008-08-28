@@ -1282,13 +1282,13 @@ private void jButton13MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
             r.setDatum(new Date());
             r.setAngebot(currentOffer);
             r.save();
-            currentOffer.setRechnung(true);
+           
             currentOffer.setRechnungId(r.getId());
         } else {
             r = new Rechnung(currentOffer.getRechnungId());
             Popup.notice("Diesem Angebot ist bereits eine Rechnung zugewiesen: " + r.getRechnungnummer());
         }
-        currentOffer.save();
+        save();
         mainframe.addBillPanel(r);
     }
 }//GEN-LAST:event_jButton13MouseClicked

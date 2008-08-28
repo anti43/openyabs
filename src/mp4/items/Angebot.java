@@ -38,7 +38,7 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.i
     private String Angebotnummer = "";
     private Integer KundenId = 0;
     private Integer RechnungId = 0;
-    private boolean hasRechnung = false;
+    
     private boolean isAuftrag = false;
     private Date anfrageVom = new Date();
     private Date Datum = new Date();
@@ -203,6 +203,7 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.i
         this.setValidVon(DateConverter.getDate(select[6]));
         this.setBisDatum(DateConverter.getDate(select[7]));
         this.setRechnungId(Integer.valueOf(select[8]));
+        hasRechnung();
 
     }
 
@@ -377,12 +378,13 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.i
         this.validBis = bisDatum;
     }
 
-    public void setRechnung(boolean rechnung) {
-        this.hasRechnung = rechnung;
-    }
+//    public void setRechnung(boolean rechnung) {
+//        this.hasRechnung = rechnung;
+//    }
 
     public boolean hasRechnung() {
         if (getRechnungId() > 0) {
+            
             return true;
         } else {
             return false;
@@ -415,6 +417,7 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.i
 
     public void setRechnungId(Integer RechnungId) {
         this.RechnungId = RechnungId;
+        
     }
 
     private void setAuftrag(String datum) {
