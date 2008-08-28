@@ -56,6 +56,7 @@ public interface Strings {
     public final String NOTNULL = "NOT null";
     public final String CUSTOMER = "Kunde";
     public final String SUPPLIER = "Lieferant";
+    public final String MANUFACTURER = "Hersteller";
     public final String PRODUCT = "Produkt";
     public final String ORDER = "Angebot";
     public final String SERVICE = "Dienstleistung";

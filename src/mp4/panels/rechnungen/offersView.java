@@ -1126,13 +1126,13 @@ public class offersView extends javax.swing.JPanel implements panelInterface, mp
     }//GEN-LAST:event_jTable3MouseClicked
 
     private void clear() {
-
-        this.customer = new Customer();
-        this.currentOffer = new Angebot();
-
-        jTextField4.setText("");
-        jTextField5.setText("");
-        jTextField6.setText("");
+//
+//        this.customer = new Customer();
+//        this.currentOffer = new Angebot();
+//
+//        jTextField4.setText("");
+//        jTextField5.setText("");
+//        jTextField6.setText("");
 
         renewTableModel(true);
         resizeFields();
@@ -1286,6 +1286,7 @@ private void jButton13MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
             currentOffer.setRechnungId(r.getId());
         } else {
             r = new Rechnung(currentOffer.getRechnungId());
+            Popup.notice("Diesem Angebot ist bereits eine Rechnung zugewiesen: " + r.getRechnungnummer());
         }
         currentOffer.save();
         mainframe.addBillPanel(r);

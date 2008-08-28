@@ -53,12 +53,12 @@ public class groupsView extends javax.swing.JFrame implements TreeSelectionListe
     private JScrollPane jScrollPane1;
     private Product produkt;
     private JTextField field;
-    private Dienstleistung produkt2;
+    private Dienstleistung service;
 
     public groupsView(mainframe frame, Dienstleistung prod, JTextField field) {
         initComponents();
         this.frame = frame;
-        this.produkt2 = prod;
+        this.service = prod;
         this.field = field;
         p = ProductGroupHandler.instanceOf();
         new Position(this);
@@ -404,9 +404,9 @@ pack();
                 if (produkt != null) {
                     produkt.setWarengruppenId(grp.getId());
                     field.setText(produkt.getProductgroupPath());
-                } else if (produkt != null) {
-                    produkt2.setWarengruppenId(grp.getId());
-                    field.setText(produkt2.getProductgroupPath());
+                } else if (service != null) {
+                    service.setWarengruppenId(grp.getId());
+                    field.setText(service.getProductgroupPath());
                 }
             } catch (Exception e) {
                 Log.Debug(e);

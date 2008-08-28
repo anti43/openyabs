@@ -166,7 +166,10 @@ public class ProductImage extends mp3.classes.layer.Things implements mp4.datenb
     }
 
     public Image getImage() {
-        Image coverImg = Toolkit.getDefaultToolkit().getImage("/bilder/medium/messagebox_warning.png");
+//        Image coverImg = Toolkit.getDefaultToolkit().getImage("/bilder/medium/messagebox_warning.png");
+        
+        Image coverImg = null;
+        
         try {
             if (getPath() != null) {
                 Log.Debug("Loading Image ..: " + getURI().getPath());

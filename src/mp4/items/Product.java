@@ -37,14 +37,12 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.i
     private String Ean = "00000000";
     private String Nummer = "";
     private String Name = "";
-    
     private String Bestellnr = "";
     private String Herstellernr = "";
     private String Liefernr = "";
     private String Bestelldatum = "";
     private Double Bestellmenge = 0d;
     private Double Lagermenge = 0d;
-    
     private Date Datum = new Date();
     private String url = "";
     private String Text = "";
@@ -121,6 +119,14 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.i
 
     }
 
+    public boolean hasImage() {
+        if (getImage() != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public void setTaxID(int taxID) {
         this.setSteuersatzId(taxID);
     }
@@ -155,6 +161,7 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.i
 
     public void setHersteller(Hersteller hersteller) {
         this.hersteller = hersteller;
+        this.HerstellerId = hersteller.getId();
     }
 
     private void explode(String[] select) {
@@ -174,14 +181,14 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.i
         this.setDatum(DateConverter.getDate(select[10]));
         this.setUrl(select[11]);
         this.setEan(select[12]);
-        
-        this.setBestellnr(select[12+1]);
+
+        this.setBestellnr(select[12 + 1]);
         this.setHerstellernr(select[14]);
         this.setLiefernr(select[15]);
         this.setBestelldatum(select[16]);
         this.setBestellmenge(Double.valueOf(select[17]));
         this.setLagermenge(Double.valueOf(select[18]));
-        
+
     }
 
     public String[][] getAll() {
@@ -214,14 +221,14 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.i
         str = str + "(;;2#4#1#1#8#0#;;)" + DateConverter.getSQLDateString(this.getDatum()) + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
         str = str + "(;;2#4#1#1#8#0#;;)" + this.getUrl() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
         str = str + "(;;2#4#1#1#8#0#;;)" + this.getEan() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
-        
+
         str = str + "(;;2#4#1#1#8#0#;;)" + this.getBestellnr() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
         str = str + "(;;2#4#1#1#8#0#;;)" + this.getHerstellernr() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
         str = str + "(;;2#4#1#1#8#0#;;)" + this.getLiefernr() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
         str = str + "(;;2#4#1#1#8#0#;;)" + this.getBestelldatum() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
         str = str + this.getBestellmenge() + "(;;,;;)";
         str = str + this.getLagermenge();
-        
+
 
         return str;
     }
@@ -271,14 +278,13 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.i
 
     public void setSupplier(mp4.items.Lieferant supplier) {
 
-
         if (supplier != null) {
             this.setLieferantenId(supplier.getId());
         } else {
             this.setLieferantenId(0);
         }
         this.lieferant = supplier;
-
+        this.LieferantenId = supplier.getId();
 
         this.isSaved = false;
     }
@@ -296,6 +302,7 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.i
 
     public void setLieferantenId(Integer LieferantenId) {
         this.LieferantenId = LieferantenId;
+        this.lieferant =new Lieferant(LieferantenId);
     }
 
     public String getProduktNummer() {
@@ -455,12 +462,11 @@ public class Product extends mp3.classes.layer.Things implements mp4.datenbank.i
         this.Lagermenge = Lagermenge;
     }
 
-
     public String getTable() {
         return TABLE_PRODUCTS;
     }
 
     public String getCountColumn() {
-       return "produktnummer";
+        return "produktnummer";
     }
 }
