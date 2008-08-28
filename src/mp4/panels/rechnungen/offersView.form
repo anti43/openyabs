@@ -138,7 +138,7 @@
             </Component>
             <Component class="javax.swing.JButton" name="jButton13">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Rechnung anlegen"/>
+                <Property name="text" type="java.lang.String" value="Rechnung anlegen / &#xf6;ffnen"/>
                 <Property name="focusable" type="boolean" value="false"/>
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="verticalTextPosition" type="int" value="3"/>
@@ -385,7 +385,7 @@
                       <Group type="102" alignment="1" attributes="0">
                           <Component id="jPanel7" min="-2" max="-2" attributes="1"/>
                           <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
-                          <Component id="jScrollPane1" pref="78" max="32767" attributes="0"/>
+                          <Component id="jScrollPane1" pref="76" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="jLabel12" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -534,7 +534,7 @@
                           <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="1" attributes="0">
                                   <Component id="jPanel11" max="32767" attributes="1"/>
-                                  <Component id="jPanel9" alignment="1" max="32767" attributes="1"/>
+                                  <Component id="jPanel9" alignment="1" pref="112" max="32767" attributes="1"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jPanel10" min="-2" max="-2" attributes="0"/>
@@ -608,7 +608,7 @@
                                           </Group>
                                       </Group>
                                   </Group>
-                                  <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>
@@ -919,6 +919,7 @@
                                           <EmptySpace max="-2" attributes="0"/>
                                           <Component id="jButton19" min="-2" pref="34" max="-2" attributes="1"/>
                                       </Group>
+                                      <Component id="jCheckBox2" alignment="0" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace pref="25" max="32767" attributes="0"/>
                               </Group>
@@ -935,7 +936,9 @@
                                       <Component id="jButton19" alignment="2" min="-2" max="-2" attributes="0"/>
                                       <Component id="jTextField12" alignment="2" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <EmptySpace pref="38" max="32767" attributes="0"/>
+                                  <EmptySpace pref="10" max="32767" attributes="0"/>
+                                  <Component id="jCheckBox2" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>
@@ -972,6 +975,15 @@
                             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton19ActionPerformed"/>
                             <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="jButton19KeyPressed"/>
                           </Events>
+                        </Component>
+                        <Component class="javax.swing.JCheckBox" name="jCheckBox2">
+                          <Properties>
+                            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                              <Color blue="ca" green="db" red="e3" type="rgb"/>
+                            </Property>
+                            <Property name="text" type="java.lang.String" value="Keine Rechnung"/>
+                            <Property name="enabled" type="boolean" value="false"/>
+                          </Properties>
                         </Component>
                       </SubComponents>
                     </Container>
