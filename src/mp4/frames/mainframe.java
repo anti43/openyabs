@@ -34,6 +34,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import mp3.classes.interfaces.Constants;
 
@@ -81,6 +82,7 @@ import mp4.panels.kontakte.suppliersView;
 import mp4.panels.produkte.productsView;
 import mp4.panels.produkte.servicesView;
 import mp4.panels.misc.TaxRatesEditor;
+import mp4.panels.misc.historyView;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.text.FadeOnChangeLabel;
 import mp4.utils.windows.Position;
@@ -98,6 +100,12 @@ public class mainframe extends javax.swing.JFrame {
     public static JLabel nachricht = new JLabel();
     private mainframe identifier;
     private static User currentUser = new User();
+    private historyView verlaufpanel;
+    private eurEURPanel eurpanel;
+    private eurEPanel eurEpanel;
+    private eurAPanel eurApanel;
+    private eurOPanel eurOpanel;
+    private historyView backuppanel;
 
     /** Creates new form mainframe
      * @param splash
@@ -210,16 +218,29 @@ public class mainframe extends javax.swing.JFrame {
         mainTabPane.validate();
     }
 
+    private void addPanel(String string, JPanel panel) {
+        mainTabPane.add(string, panel);
+        mainTabPane.setSelectedComponent(panel);
+        mainTabPane.setIconAt(mainTabPane.getSelectedIndex(), new TabCloseIcon());
+        mainTabPane.validate();
+    }
+    
+    private void removePanel(JPanel panel) {
+        try {
+            mainTabPane.remove(panel);
+        } catch (Exception e) {
+        }
+        mainTabPane.validate();
+    }
+
     private void resize() {
         wt.center(this);
     }
-
 
     public int getShowingTab() {
         return getTabPane().getSelectedIndex();
     }
 
-    
     public void setShowingTab(int i) {
         getTabPane().setSelectedIndex(i);
     }
@@ -597,12 +618,22 @@ public class mainframe extends javax.swing.JFrame {
         jButton12.setToolTipText("Verlauf");
         jButton12.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton12.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton12.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton12ActionPerformed(evt);
+            }
+        });
 
         jButton13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/3232/file-manager.png"))); // NOI18N
         jButton13.setText("Sicherung");
         jButton13.setToolTipText("Sicherung");
         jButton13.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton13.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton13.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton13ActionPerformed(evt);
+            }
+        });
 
         jButton14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/3232/configure.png"))); // NOI18N
         jButton14.setText("Einstellungen");
@@ -1055,38 +1086,27 @@ public class mainframe extends javax.swing.JFrame {
 private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
 
     customersView panel = new customersView(this);
+    addPanel("Kunde", panel);
 
-    mainTabPane.add("Kunde", panel);
-    mainTabPane.setSelectedComponent(panel);
-    mainTabPane.setIconAt(mainTabPane.getSelectedIndex(), new TabCloseIcon());
-    mainTabPane.validate();
 }//GEN-LAST:event_jButton4ActionPerformed
 
 private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
     suppliersView panel = new suppliersView(this);
-
-    mainTabPane.add("Lieferant", panel);
-    mainTabPane.setSelectedComponent(panel);
-    mainTabPane.setIconAt(mainTabPane.getSelectedIndex(), new TabCloseIcon());
-    mainTabPane.validate();
+    addPanel("Lieferant", panel);
 }//GEN-LAST:event_jButton1ActionPerformed
 
 private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-    eurOPanel panel = new eurOPanel();
+   
+    removePanel(eurOpanel); 
+    eurOpanel = new eurOPanel();
+    addPanel("Offene Posten (Stand: " + DateConverter.getFullDefDateString(new Date()) + ")", eurOpanel);
 
-    mainTabPane.add("Offene Posten (Stand: "+DateConverter.getFullDefDateString(new Date())+")", panel);
-    mainTabPane.setSelectedComponent(panel);
-    mainTabPane.setIconAt(mainTabPane.getSelectedIndex(), new TabCloseIcon());
-    mainTabPane.validate();
 }//GEN-LAST:event_jButton7ActionPerformed
 
 private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
     productsView panel = new productsView(this);
+    addPanel("Produkt", panel);
 
-    mainTabPane.add("Produkt", panel);
-    mainTabPane.setSelectedComponent(panel);
-    mainTabPane.setIconAt(mainTabPane.getSelectedIndex(), new TabCloseIcon());
-    mainTabPane.validate();
 }//GEN-LAST:event_jButton9ActionPerformed
 
 private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
@@ -1094,30 +1114,26 @@ private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 }//GEN-LAST:event_jButton11ActionPerformed
 
 private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-    eurEURPanel panel = new eurEURPanel();
-
-    mainTabPane.add("EUR", panel);
-    mainTabPane.setSelectedComponent(panel);
-    mainTabPane.setIconAt(mainTabPane.getSelectedIndex(), new TabCloseIcon());
-    mainTabPane.validate();
+    
+    
+    removePanel(eurpanel);
+    eurpanel = new eurEURPanel();
+    addPanel("EUR", eurpanel);
 }//GEN-LAST:event_jButton8ActionPerformed
 
 private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-    eurEPanel panel = new eurEPanel();
-
-    mainTabPane.add("Einnahmen (Stand: "+DateConverter.getFullDefDateString(new Date())+")", panel);
-    mainTabPane.setSelectedComponent(panel);
-    mainTabPane.setIconAt(mainTabPane.getSelectedIndex(), new TabCloseIcon());
-    mainTabPane.validate();
+    
+    removePanel(eurEpanel);
+    eurEpanel = new eurEPanel();
+    addPanel("Einnahmen (Stand: " + DateConverter.getFullDefDateString(new Date()) + ")", eurEpanel);
 }//GEN-LAST:event_jButton5ActionPerformed
 
 private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-    eurAPanel panel = new eurAPanel();
+    
+    removePanel(eurApanel);
+    eurApanel = new eurAPanel();
+    addPanel("Ausgaben (Stand: " + DateConverter.getFullDefDateString(new Date()) + ")", eurApanel);
 
-    mainTabPane.add("Ausgaben (Stand: "+DateConverter.getFullDefDateString(new Date())+")", panel);
-    mainTabPane.setSelectedComponent(panel);
-    mainTabPane.setIconAt(mainTabPane.getSelectedIndex(), new TabCloseIcon());
-    mainTabPane.validate();
 }//GEN-LAST:event_jButton6ActionPerformed
 
 private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -1171,32 +1187,41 @@ private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
 
     servicesView panel = new servicesView(this);
-
-    mainTabPane.add("Dienstleistung", panel);
-    mainTabPane.setSelectedComponent(panel);
-    mainTabPane.setIconAt(mainTabPane.getSelectedIndex(), new TabCloseIcon());
-    mainTabPane.validate();
+    addPanel("Dienstleistung", panel);
 }//GEN-LAST:event_jButton10ActionPerformed
 
 private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
- boolean useauth = Programmdaten.instanceOf().getUSE_AUTHENTIFICATION();
+    boolean useauth = Programmdaten.instanceOf().getUSE_AUTHENTIFICATION();
 
     if (!useauth || getUser().isIsAdmin()) {
-    new TaxRatesEditor(this); } else {
+        new TaxRatesEditor(this);
+    } else {
         Popup.notice("Die Steuersatzverwaltung kann nur von einem Administrator geöffnet werden!");
     }
 }//GEN-LAST:event_jMenuItem7ActionPerformed
 
 private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
 
-    
-    manufacturerView panel = new  manufacturerView(this);
+    manufacturerView panel = new manufacturerView(this);
+    addPanel("Hersteller", panel);
 
-    mainTabPane.add("Hersteller", panel);
-    mainTabPane.setSelectedComponent(panel);
-    mainTabPane.setIconAt(mainTabPane.getSelectedIndex(), new TabCloseIcon());
-    mainTabPane.validate();
 }//GEN-LAST:event_jButton18ActionPerformed
+
+private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
+
+    
+    removePanel(verlaufpanel);
+    verlaufpanel = new historyView(this);
+    addPanel("Verlauf", verlaufpanel);
+
+}//GEN-LAST:event_jButton12ActionPerformed
+
+private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
+    
+    removePanel(backuppanel);
+    backuppanel = new historyView(this);
+    addPanel("Datensicherung", backuppanel);
+}//GEN-LAST:event_jButton13ActionPerformed
 
     @Override
     public void finalize() {
@@ -1312,7 +1337,7 @@ private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         Einstellungen.instanceOf().save();
         Conn.shutdown();
         Log.getLogger().flush();
-        
+
         super.dispose();
     }
 

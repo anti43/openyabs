@@ -5,6 +5,7 @@
  */
 package mp4.panels.produkte;
 
+import mp4.panels.misc.groupsView;
 import mp4.frames.PdfVorschauWindow;
 import mp4.panels.*;
 import mp4.export.PDF_Produkt;

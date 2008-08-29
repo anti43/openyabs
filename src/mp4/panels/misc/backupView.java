@@ -3,7 +3,7 @@
  *
  * Created on 28. Dezember 2007, 19:17
  */
-package mp3.classes.visual.sub;
+package mp4.panels.misc;
 
 import java.awt.Cursor;
 import java.io.File;
@@ -33,12 +33,12 @@ import mp4.frames.mainframe;
 import mp4.einstellungen.Einstellungen;
 import mp4.items.HistoryItem;
 
-
 /**
  *
  * @author  anti43
  */
-public class backupView extends javax.swing.JPanel{ 
+public class backupView extends javax.swing.JPanel {
+
     private String[][] liste;
     private String[] header;
     private mainframe mainframe;
@@ -58,23 +58,16 @@ public class backupView extends javax.swing.JPanel{
      */
     public backupView(mainframe aThis) {
         initComponents();
-
         mainframe = aThis;
         l = Einstellungen.instanceOf();
         header = new String[]{"id", "Datum", "Datei"};
         jTextField1.setText(l.getBackupverz());
         this.savepath = l.getBackupverz();
-
-
         df = new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss");
         df2 = new SimpleDateFormat("dd. MMMMMMMM yyyy HH:mm:ss");
-
         this.validateTable();
-        
-           rw = new FileReaderWriter(Constants.SETTINGS_FILE);
-            
-           dat = rw.read().split(";");
-
+        rw = new FileReaderWriter(Constants.SETTINGS_FILE);
+        dat = rw.read().split(";");
 
     }
 
@@ -118,7 +111,7 @@ public class backupView extends javax.swing.JPanel{
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(387, Short.MAX_VALUE))
+                .addContainerGap(389, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -154,7 +147,7 @@ public class backupView extends javax.swing.JPanel{
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 492, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 496, Short.MAX_VALUE)
                     .addComponent(jLabel2)
                     .addComponent(jButton3)
                     .addComponent(jLabel3)
@@ -226,23 +219,19 @@ public class backupView extends javax.swing.JPanel{
     }// </editor-fold>//GEN-END:initComponents
 
     public void saving() {
-            String store, path;
+        String store, path;
         String savefile;
 
         try {
-
             path = dat[0] + File.separator + Constants.DATABASENAME;
             store = l.getBackupverz();
-
             savefile = store + File.separator + df.format(new Date()) + ".mpsavefile-35.zip";
-
 
             if (store.equals("")) {
                 store = Constants.HOME + File.separator + Constants.DATABASENAME;
             }
 
             Log.Debug("Anlegen einer Sicherungsdatei:\nZiel: " + savefile, true);
-
             this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
             Zip.zip(path, savefile);
             this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -252,106 +241,67 @@ public class backupView extends javax.swing.JPanel{
             Log.Debug(ex.getMessage(), true);
         }
         this.validateTable();
-        
-        
     }
+
     private void setSavePath(String path) {
         this.savepath = path;
         validateTable();
     }
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        
 
         JFileChooser fc = new JFileChooser();
         fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
         if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
             jTextField1.setText(fc.getSelectedFile().toString());
-
             setSavePath(fc.getSelectedFile().toString());
         }
-
         l.setBackupverz(jTextField1.getText());
         l.save();
-
         l = Einstellungen.instanceOf();
-
         mainframe.setMessage("Sicherungspfad '" + l.getBackupverz() + "' gespeichert");
-        
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-      
-
-       
-      
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jButton6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton6MouseClicked
-                saving();
+        saving();
     }//GEN-LAST:event_jButton6MouseClicked
 
     private void jButton7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton7MouseClicked
 
-
-
         boolean idOk = true;
         Integer id = 0;
-
-
         try {
             id = Integer.valueOf((String) jTable1.getValueAt(jTable1.getSelectedRow(), 0));
         } catch (Exception numberFormatException) {
             idOk = false;
             Popup.notice("Sie müssen eine Sicherungsdatei auswählen.");
         }
-
         File path;
-
         String store = "";
-
-
-
-
         if (idOk) {
             if ((JOptionPane.showConfirmDialog(this, "Möglicherweise vorhandene neuere Daten,\n " +
                     "die Sie seit der Sicherung angelegt haben, werden gelöscht!\n " +
                     "Vor dem Ersetzen wird eine Sicherheitskopie des aktuellen Datenbestandes angelegt.\n " +
                     "Wollen Sie wirklich die Sicherungsdatei vom * " + str[id][1] + " * zurückspielen?",
                     "Sicher?", JOptionPane.YES_NO_OPTION)) == JOptionPane.YES_OPTION) {
-
-
                 jButton6MouseClicked(evt);
-
-
-
                 try {
-
-
-
-
                     File olddb = new File(dat[0] + File.separator + Constants.DATABASENAME);
-
                     path = new File(dat[0]);
                     store = path.getCanonicalPath() + File.separator + Constants.DATABASENAME;
                     Log.Debug("Zurückspielen einer Sicherungsdatei:\nZiel: " + store, true);
-
                     FileDirectoryHandler.deleteTree(olddb);
 //                int z =path.getCanonicalPath().lastIndexOf(File.separator);
 //                store =store.substring(0, z);
                     Log.Debug("Rücksichern nach: " + store, true);
-
                     UnZip.deflate(str[id][2], store);
-
                     mainframe.setMessage("Sicherungsdatei '" + str[id][2] + "' wiederhergestellt.");
-
                     new Popup("Starten Sie das Programm neu.", Popup.NOTICE);
-                    
                     System.exit(0);
-                    
-
-
 
                 } catch (IOException ex) {
                     Log.Debug(ex.getMessage(), true);
@@ -377,27 +327,18 @@ public class backupView extends javax.swing.JPanel{
     public javax.swing.JTextField jTextField1;
     public javax.swing.JToolBar jToolBar1;
     // End of variables declaration//GEN-END:variables
-
-    
-
     private void validateTable() {
-
-
         try {
             this.lstFiles = new ArrayList();
             this.src = new File(this.savepath);
-
             Log.Debug("Backup Verzeichnis: " + src, true);
-
             File[] files = src.listFiles();
             Log.Debug("Dateien analysieren...", true);
             str = new String[files.length][3];
 
-            for (int i = 0,  k = 0; i < files.length; i++) {
-
+            for (int i = 0,   k = 0; i < files.length; i++) {
 //                Log.Debug("Datei analysieren: " + files[i].getName());
                 if (files[i].isFile() && files[i].toString().contains("mpsavefile-35")) {
-
                     try {
                         str[k][0] = String.valueOf(k);
                         str[k][1] = df2.format(df.parse(files[i].getName().substring(0, 18)));
@@ -405,31 +346,21 @@ public class backupView extends javax.swing.JPanel{
                         Log.Debug("Sicherungsdatei gefunden: " + files[i].getName(), true);
                         k++;
                     } catch (Exception ex) {
-
 //                        Log.Debug(ex);
                         Log.Debug(ex.getMessage(), true);
                     }
-
                 }
-
             }
             if (files.length == 0) {
-
                 str[0][0] = "Keine Datei vorhanden";
             }
         } catch (Exception exception) {
-//            Log.Debug(exception);
-//            Log.Debug(exception.getMessage(), true);
+            Log.Debug(exception);
+            Log.Debug(exception.getMessage(), true);
         }
 
-
         jTable1.setModel(new DefaultTableModel(str, header));
-
         l.stripFirst(jTable1);
-
         Formater.format(jTable1, 1, 180);
-
-
-
     }
 }

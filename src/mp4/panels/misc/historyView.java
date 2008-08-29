@@ -3,20 +3,23 @@
  *
  * Created on 28. Dezember 2007, 19:17
  */
-package mp3.classes.visual.sub;
+package mp4.panels.misc;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import mp3.classes.layer.People;
 import mp4.items.handler.HistoryHandler;
 import javax.swing.table.DefaultTableModel;
+import mp3.classes.interfaces.panelInterface;
 import mp4.frames.mainframe;
 
 /**
  *
  * @author  anti43
  */
-public class historyView extends javax.swing.JPanel implements Runnable {
+public class historyView extends javax.swing.JPanel implements Runnable, panelInterface {
     private static final long serialVersionUID = 7605611553087473038L;
 
     private String[][] liste;
@@ -63,7 +66,7 @@ public class historyView extends javax.swing.JPanel implements Runnable {
 
         setBackground(new java.awt.Color(204, 204, 255));
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 204));
+        jPanel1.setBackground(new java.awt.Color(227, 219, 202));
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         jLabel1.setFont(new java.awt.Font("DejaVu Sans", 1, 14));
@@ -83,7 +86,7 @@ public class historyView extends javax.swing.JPanel implements Runnable {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 256, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 61, Short.MAX_VALUE)
                 .addComponent(jButton6)
                 .addContainerGap())
         );
@@ -111,14 +114,14 @@ public class historyView extends javax.swing.JPanel implements Runnable {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 488, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 273, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -150,9 +153,9 @@ public class historyView extends javax.swing.JPanel implements Runnable {
                 liste = HistoryHandler.getHistory();
                 historytable.setModel(new DefaultTableModel(liste, header));
                 resizeTable();
-                Thread.sleep(60000);
+                Thread.sleep(50000);
             } catch (InterruptedException ex) {
-                Logger.getLogger(historyView.class.getName()).log(Level.SEVERE, null, ex);
+              
             }
         }
     }
@@ -160,5 +163,45 @@ public class historyView extends javax.swing.JPanel implements Runnable {
     private void resizeTable() {
         getHistoryTable().getColumn(getHistoryTable().getColumnName(0)).setPreferredWidth(100);
         getHistoryTable().getColumn(getHistoryTable().getColumnName(0)).setMaxWidth(100);
+    }
+
+    public void updateTables() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void save() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void close() {
+       ((JTabbedPane) this.getParent()).remove(this);
+    }
+
+    public void undo() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void redo() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void changeTabText(String text) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public boolean isEdited() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setContact(People contact) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public People getContact() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void switchTab(int i) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

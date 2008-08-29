@@ -20,6 +20,8 @@ import mp3.classes.layer.Popup;
 import mp3.classes.layer.visual.DatePick;
 import mp3.classes.layer.visual.TaxRatePicker;
 import mp4.benutzerverwaltung.User;
+import mp4.export.PDF_Produkt;
+import mp4.frames.PdfVorschauWindow;
 import mp4.frames.mainframe;
 import mp4.items.Angebot;
 import mp4.items.Dienstleistung;
@@ -29,12 +31,14 @@ import mp4.items.HistoryItem;
 import mp4.items.Rechnung;
 import mp4.items.Steuersatz;
 import mp4.panels.misc.NumberFormatEditor;
+import mp4.panels.misc.groupsView;
 import mp4.panels.rechnungen.billsView;
 import mp4.panels.rechnungen.offersView;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.files.DialogOpenFile;
 import mp4.utils.tabellen.SelectionCheck;
 import mp4.utils.tabellen.TableFormat;
+import mp4.utils.tasks.Job;
 
 /**
  *
@@ -920,14 +924,14 @@ private void jButton18MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
   try {//GEN-LAST:event_jButton18MouseClicked
         } catch (Exception numberFormatException) {
         }
-//
-//        if (current.isValid()) {
-//            setPanelValues();
-//
-//            Job job = new Job(new PDF_Produkt(current, image), new PdfVorschauWindow(), mainframe.getMainProgress());
-//            job.execute();
-//
-//        }
+
+        if (current.isValid()) {
+            setPanelValues();
+
+            Job job = new Job(new PDF_Produkt(current), new PdfVorschauWindow(), mainframe.getMainProgress());
+            job.execute();
+
+        }
     }
 
 private void jButton21MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton21MouseClicked

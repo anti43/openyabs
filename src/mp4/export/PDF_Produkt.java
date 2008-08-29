@@ -35,6 +35,7 @@ import mp3.classes.layer.Popup;
 import mp3.classes.utils.Formater;
 import mp3.classes.utils.Log;
 import mp4.einstellungen.Einstellungen;
+import mp4.items.Dienstleistung;
 import mp4.items.Hersteller;
 import mp4.items.Lieferant;
 import mp4.items.Product;
@@ -64,6 +65,15 @@ public class PDF_Produkt implements Waitable {
     private PdfStamper pdfStamper;
     private boolean scale = false;
     private int width,  height;
+    private Dienstleistung produkt2;
+
+    public PDF_Produkt(Dienstleistung produkt2) {
+        separator = File.separator;
+        settings = Einstellungen.instanceOf();
+
+        this.produkt2 = produkt2;
+ 
+    }
 
     public PDF_Produkt(Product produkt, java.awt.Image image) {
 

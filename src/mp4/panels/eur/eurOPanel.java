@@ -122,6 +122,7 @@ public class eurOPanel extends javax.swing.JPanel  implements panelInterface {
             .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 364, Short.MAX_VALUE)
         );
 
+        jPanel11.setBackground(new java.awt.Color(227, 219, 202));
         jPanel11.setBorder(javax.swing.BorderFactory.createTitledBorder("Details"));
 
         jLabel14.setText("Beschreibung");
