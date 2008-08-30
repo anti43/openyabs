@@ -80,6 +80,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
             Log.Debug(query, true);
             return stm.execute(query);
         } catch (SQLException ex) {
+            stop();
             Log.Debug(message + ex.getMessage());
             Popup.error(message + ex.getMessage(), "Datenbankfehler");
         } finally {
@@ -88,6 +89,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
                 try {
                     resultSet.close();
                 } catch (SQLException ex) {
+                    stop();
                     Log.Debug(message + ex.getMessage());
                     Popup.error(message + ex.getMessage(), "Datenbankfehler");
                 }
@@ -96,6 +98,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
                 try {
                     stm.close();
                 } catch (SQLException ex) {
+                    stop();
                     Log.Debug(message + ex.getMessage());
                     Popup.error(message + ex.getMessage(), "Datenbankfehler");
                 }

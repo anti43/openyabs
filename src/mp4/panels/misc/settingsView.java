@@ -3,7 +3,6 @@
  *
  * Created on 30. August 2008, 12:04
  */
-
 package mp4.panels.misc;
 
 import javax.swing.JFileChooser;
@@ -23,23 +22,25 @@ import mp4.utils.tabellen.TableFormat;
  *
  * @author  Andreas
  */
-public class settingsView extends javax.swing.JPanel implements panelInterface{
+public class settingsView extends javax.swing.JPanel implements panelInterface {
+
     private Einstellungen data;
     private Einstellungen oldData;
     private TableModel model;
     private mainframe mainframe;
     private TableCellEditor editor;
+
     /** Creates new form settingsView
      * @param frame 
      */
     public settingsView(mainframe frame) {
-       
+
         initComponents();
-       
+
         data = Einstellungen.newInstanceOf();
         oldData = data;
         this.mainframe = frame;
-        
+
         this.jTable1.setModel(data.getDefaultTablemodel());
         TableFormat.resizeCols(jTable1, new Integer[]{150, 300}, false);
     }
@@ -201,35 +202,39 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 }// </editor-fold>//GEN-END:initComponents
 
 private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
-editor = jTable1.getCellEditor();
-        if (editor != null) {
-            editor.stopCellEditing();
-        }
+    editor = jTable1.getCellEditor();
+    if (editor != null) {
+        editor.stopCellEditing();
+    }
 
-            data.setModel(jTable1.getModel());
-            data.save();
-            mainframe.setMessage("Einstellungen gespeichert.");
+    data.setModel(jTable1.getModel());
+    data.save();
+    mainframe.setMessage("Einstellungen gespeichert.");
 //            this.close();
 }//GEN-LAST:event_jButton2MouseClicked
 
 private void jButton3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
-this.jTable1.setModel(oldData.getDefaultTablemodel());
+    this.jTable1.setModel(oldData.getDefaultTablemodel());
+    TableFormat.resizeCols(jTable1, new Integer[]{150, 300}, false);
+    data.setModel(jTable1.getModel());
+    data.save();
+    mainframe.setMessage("Einstellungen wiederhergestellt.");
 }//GEN-LAST:event_jButton3MouseClicked
 
 private void jButton4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton4MouseClicked
-JFileChooser fc = new JFileChooser();
-        fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+    JFileChooser fc = new JFileChooser();
+    fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 
-        if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+    if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
 
 
-            try {
-                jTable1.setValueAt(fc.getSelectedFile().toString(), jTable1.getSelectedRow(), 1);
+        try {
+            jTable1.setValueAt(fc.getSelectedFile().toString(), jTable1.getSelectedRow(), 1);
 
-            } catch (Exception exception) {
-            }
-
+        } catch (Exception exception) {
         }
+
+    }
 }//GEN-LAST:event_jButton4MouseClicked
 
 private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
@@ -237,20 +242,15 @@ private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 }//GEN-LAST:event_jButton4ActionPerformed
 
 private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-Setup.writeDesktopIcon();
+    Setup.writeDesktopIcon();
 }//GEN-LAST:event_jButton5ActionPerformed
 
 private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-new Help(new DefaultHelpModel("Einstellungen", 
-                "<P><FONT FACE='DejaVu Sans, sans-serif'>Sie m&uuml;ssen den Pfad zu Ihrem PDF-Programm angeben, <BR>um erstellte Rechnungen sofort anzusehen und auszudrucken.<BR>Unter  <B>KDE 3.5</B> ist dies z.B.  <B>KPdf </B>  ( /opt/kde3/bin/kpdf ).</FONT></P>"+
-"<P><FONT FACE='DejaVu Sans, sans-serif'>Sie m&uuml;ssen den Pfad zu Ihrem Internet Browser-Programm angeben, <BR>um direkt zum Hilfeforum zu gelangen.</FONT></P>"+
-"<P><FONT FACE='DejaVu Sans, sans-serif'>Der Internetbrowser <B>Firefox 2</B> befindet sich unter <B>OpenSuse 10.x</B> unter: /usr/bin/firefox</FONT></P>"
-
-                
-                ));
+    new Help(new DefaultHelpModel("Einstellungen",
+            "<P><FONT FACE='DejaVu Sans, sans-serif'>Sie m&uuml;ssen den Pfad zu Ihrem PDF-Programm angeben, <BR>um erstellte Rechnungen sofort anzusehen und auszudrucken.<BR>Unter  <B>KDE 3.5</B> ist dies z.B.  <B>KPdf </B>  ( /opt/kde3/bin/kpdf ).</FONT></P>" +
+            "<P><FONT FACE='DejaVu Sans, sans-serif'>Sie m&uuml;ssen den Pfad zu Ihrem Internet Browser-Programm angeben, <BR>um direkt zum Hilfeforum zu gelangen.</FONT></P>" +
+            "<P><FONT FACE='DejaVu Sans, sans-serif'>Der Internetbrowser <B>Firefox 2</B> befindet sich unter <B>OpenSuse 10.x</B> unter: /usr/bin/firefox</FONT></P>"));
 }//GEN-LAST:event_jButton6ActionPerformed
-
-
 // Variables declaration - do not modify//GEN-BEGIN:variables
 private javax.swing.JButton jButton2;
 private javax.swing.JButton jButton3;
@@ -272,7 +272,7 @@ private javax.swing.JTable jTable1;
     }
 
     public void close() {
-       ((JTabbedPane) this.getParent()).remove(this);
+        ((JTabbedPane) this.getParent()).remove(this);
     }
 
     public void undo() {

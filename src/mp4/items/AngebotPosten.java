@@ -84,7 +84,7 @@ public class AngebotPosten extends mp3.classes.layer.Things implements mp4.daten
     }
 
     public void deleteExistingOf(Angebot angebot) {
-        this.freeQuery("delete from angebotposten where angebotid = " + angebot.getId());
+        this.freeQuery("DELETE FROM angebotposten WHERE angebotid = " + angebot.getId());
     }
 
     private String collect() {
@@ -108,11 +108,7 @@ public class AngebotPosten extends mp3.classes.layer.Things implements mp4.daten
             this.update(TABLE_OFFERS_DATA_FIELDS, this.collect(), id.toString());
             isSaved = true;
         } else if (id == 0) {
-            this.insert(TABLE_OFFERS_DATA_FIELDS, this.collect());
-        } else {
-
-            mp3.classes.layer.Popup.warn(java.util.ResourceBundle.getBundle("languages/Bundle").getString("no_data_to_save"), Popup.WARN);
-
+            this.id = this.insert(TABLE_OFFERS_DATA_FIELDS, this.collect());
         }
     }
 
