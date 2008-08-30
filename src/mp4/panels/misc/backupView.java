@@ -338,7 +338,7 @@ public class backupView extends javax.swing.JPanel {
 
             for (int i = 0,   k = 0; i < files.length; i++) {
 //                Log.Debug("Datei analysieren: " + files[i].getName());
-                if (files[i].isFile() && files[i].toString().contains("mpsavefile-35")) {
+                if (files[i].isFile() && files[i].toString().contains("mpsavefile-40")) {
                     try {
                         str[k][0] = String.valueOf(k);
                         str[k][1] = df2.format(df.parse(files[i].getName().substring(0, 18)));
@@ -352,7 +352,8 @@ public class backupView extends javax.swing.JPanel {
                 }
             }
             if (files.length == 0) {
-                str[0][0] = "Keine Datei vorhanden";
+                str = new String[1][3];
+                str[0][2] = "Keine Datei vorhanden";
             }
         } catch (Exception exception) {
             Log.Debug(exception);

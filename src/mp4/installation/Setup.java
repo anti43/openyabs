@@ -43,7 +43,11 @@ import mp4.main.Main;
 public class Setup extends javax.swing.JFrame implements ProtectedStrings, Strings {
 
     private static Setup instance;
-    public static Verzeichnisse install_dirs;
+    private static Verzeichnisse install_dirs;
+
+    public static Verzeichnisse getInstall_dirs() {
+        return install_dirs;
+    }
     private JFileChooser fc;
     /**
      * 

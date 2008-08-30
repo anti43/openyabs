@@ -61,7 +61,7 @@ public abstract class Daten {
         
         "INSERT INTO programmdaten(name, wert) VALUES ('MAINFRAME_WINDOW_STATE',  '790,1000')",    
         "INSERT INTO programmdaten(name, wert) VALUES ('WARENGRUPPEN_SEPARATOR',  '->')",   
-        "INSERT INTO programmdaten(name, wert) VALUES ('IMAGE_CACHE_FOLDER', '" + Setup.instanceOf().install_dirs.getCache_dir() +"')",  
+        "INSERT INTO programmdaten(name, wert) VALUES ('IMAGE_CACHE_FOLDER', '" + Setup.instanceOf().getInstall_dirs().getCache_dir() +"')",  
         
 //        ******************************************************************************************************************************        
         
@@ -72,17 +72,17 @@ public abstract class Daten {
         "INSERT INTO rechnungbetreffz (name, text, isvorlage) VALUES ('Ihr Auftrag..', 'Ihr Auftrag vom {Auftrag_Datum}', 1)",
         "INSERT INTO rechnungbetreffz (name, text, isvorlage) VALUES ('Bearbeiter..', 'Bearbeiter: {Benutzer}', 1)",      
          
-        "INSERT INTO daten (name, wert) VALUES ('Backup Verzeichnis', '" + Setup.instanceOf().install_dirs.getCache_dir() + "')",
-        "INSERT INTO daten (name, wert) VALUES ('PDF Rechnungen Verzeichnis', '" +  Setup.instanceOf().install_dirs.getPathpdf_bill_dir()+ "')",
-        "INSERT INTO daten (name, wert) VALUES ('PDF Angebote Verzeichnis', '" + Setup.instanceOf().install_dirs.getPathpdf_offer_dir() + "')",
-        "INSERT INTO daten (name, wert) VALUES ('PDF Mahnung Verzeichnis', '" + Setup.instanceOf().install_dirs.getPathpdf_mahnung_dir()+ "')",
-        "INSERT INTO daten (name, wert) VALUES ('PDF Produkt Verzeichnis', '" + Setup.instanceOf().install_dirs.getPathpdf_produkt_dir()+ "')",
+        "INSERT INTO daten (name, wert) VALUES ('Backup Verzeichnis', '" + Setup.instanceOf().getInstall_dirs().getBackup_dir() + "')",
+        "INSERT INTO daten (name, wert) VALUES ('PDF Rechnungen Verzeichnis', '" +  Setup.instanceOf().getInstall_dirs().getPathpdf_bill_dir()+ "')",
+        "INSERT INTO daten (name, wert) VALUES ('PDF Angebote Verzeichnis', '" + Setup.instanceOf().getInstall_dirs().getPathpdf_offer_dir() + "')",
+        "INSERT INTO daten (name, wert) VALUES ('PDF Mahnung Verzeichnis', '" + Setup.instanceOf().getInstall_dirs().getPathpdf_mahnung_dir()+ "')",
+        "INSERT INTO daten (name, wert) VALUES ('PDF Produkt Verzeichnis', '" + Setup.instanceOf().getInstall_dirs().getPathpdf_produkt_dir()+ "')",
        
-        "INSERT INTO daten (name, wert) VALUES ('Rechnung Template', '" + Setup.instanceOf().install_dirs.getPathtemplates_dir() + File.separator + "rechnung.pdf')",
-        "INSERT INTO daten (name, wert) VALUES ('Angebot Template', '" + Setup.instanceOf().install_dirs.getPathtemplates_dir() + File.separator + "angebot.pdf')",
-        "INSERT INTO daten (name, wert) VALUES ('Mahnung Template', '" + Setup.instanceOf().install_dirs.getPathtemplates_dir() + File.separator + "mahnung.pdf')",
-        "INSERT INTO daten (name, wert) VALUES ('Serienbrief Template', '" + Setup.instanceOf().install_dirs.getPathtemplates_dir() + File.separator + "serienbrief.pdf')",
-        "INSERT INTO daten (name, wert) VALUES ('Produkt Template', '" + Setup.instanceOf().install_dirs.getPathtemplates_dir() + File.separator + "produkt.pdf')",
+        "INSERT INTO daten (name, wert) VALUES ('Rechnung Template', '" + Setup.instanceOf().getInstall_dirs().getPathtemplates_dir() + File.separator + "rechnung.pdf')",
+        "INSERT INTO daten (name, wert) VALUES ('Angebot Template', '" + Setup.instanceOf().getInstall_dirs().getPathtemplates_dir() + File.separator + "angebot.pdf')",
+        "INSERT INTO daten (name, wert) VALUES ('Mahnung Template', '" + Setup.instanceOf().getInstall_dirs().getPathtemplates_dir() + File.separator + "mahnung.pdf')",
+        "INSERT INTO daten (name, wert) VALUES ('Serienbrief Template', '" + Setup.instanceOf().getInstall_dirs().getPathtemplates_dir() + File.separator + "serienbrief.pdf')",
+        "INSERT INTO daten (name, wert) VALUES ('Produkt Template', '" + Setup.instanceOf().getInstall_dirs().getPathtemplates_dir() + File.separator + "produkt.pdf')",
      
         
         "INSERT INTO daten (name, wert) VALUES ('Mehrwertsteuersatz', '19')",
