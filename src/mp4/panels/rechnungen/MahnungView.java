@@ -7,11 +7,12 @@
 package mp4.panels.rechnungen;
 
 import mp3.classes.utils.Formater;
+import mp3.classes.utils.Log;
 import mp4.items.Product;
 import mp4.items.Rechnung;
 
 import mp4.items.Customer;
-import mp4.export.PDF_Mahnung;
+import mp4.utils.export.pdf.PDF_Mahnung;
 import mp4.benutzerverwaltung.User;
 import mp4.einstellungen.Einstellungen;
 import mp4.einstellungen.Programmdaten;
@@ -19,6 +20,7 @@ import mp4.einstellungen.VariablenZuText;
 import mp4.frames.mainframe;
 import mp4.frames.PdfVorschauWindow;
 import mp4.utils.datum.DateConverter;
+import mp4.utils.export.pdf.PDFFile;
 import mp4.utils.windows.Position;
 import mp4.utils.zahlen.FormatNumber;
 
@@ -232,9 +234,7 @@ public class MahnungView extends javax.swing.JFrame {
                 Programmdaten.instanceOf().setMAHNUNG_TEXT_DEFAULT(jTextArea1.getText());
                 this.dispose();
             } catch (NumberFormatException numberFormatException) {
-                
-                new PDF_Mahnung(bill, jTextArea1.getText(), bill.getMahnungen().toString(), FormatNumber.parseDezimal("0"));
-                this.dispose();
+                Log.Debug(numberFormatException);
             }
         }
        
@@ -246,9 +246,9 @@ public class MahnungView extends javax.swing.JFrame {
 
 private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
 
-   new PdfVorschauWindow(new PDF_Mahnung(bill, 
-           VariablenZuText.parseText(jTextArea1.getText(), new Object[]{bill, c}), bill.getMahnungen().toString(), 
-           FormatNumber.parseDezimal(jTextField2.getText()), true ).getFile());
+   new PdfVorschauWindow(new PDFFile(new PDF_Mahnung(bill, 
+           VariablenZuText.parseText(jTextArea1.getText(), new Object[]{bill, c}), 
+           FormatNumber.parseDezimal(jTextField2.getText()), bill.getMahnungen())));
 
 }//GEN-LAST:event_jButton3ActionPerformed
     

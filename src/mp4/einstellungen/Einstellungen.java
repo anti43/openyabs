@@ -92,6 +92,10 @@ public class Einstellungen extends mp3.classes.layer.People implements mp4.daten
         Locale.setDefault(getLocale());
     }
 
+    public String getLieferscheintemplate() {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
     public User getUser() {
         return user;
     }

@@ -17,6 +17,7 @@
 package mp4.einstellungen;
 
 import java.awt.Dimension;
+import java.io.File;
 
 /**
  *
@@ -38,6 +39,10 @@ public class Programmdaten implements mp4.datenbank.installation.Tabellen {
     public Programmdaten() {
         handler = new DataHandler(TABLE_PROG_DATA);
 
+    }
+
+    public File getDIR_CACHE() {
+        return new File(handler.getString("IMAGE_CACHE_FOLDER"));
     }
 
     public Integer getPRODUCTPANEL_CHECKBOX_SCALEIMAGE_SIZE() {

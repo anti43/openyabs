@@ -411,6 +411,17 @@ public abstract class Formater {
         
         return str;
     }
+    
+     public static String[][] StringListToTableArray(ArrayList list) {
+        
+        String[][] str = new String[list.size()][];
+        
+        for (int i = 0; i < list.size(); i++) {
+                str[i] = (String[]) list.get(i);
+        }
+        
+        return str;
+    }
 
     public static Object[][] merge(Object[][] array1, Object[][] array2) {
         if (array1 == null) {

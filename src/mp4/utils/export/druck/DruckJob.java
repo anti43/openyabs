@@ -17,20 +17,31 @@ import javax.print.SimpleDoc;
 import javax.print.attribute.Attribute;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.standard.MediaSizeName;
+import mp3.classes.interfaces.Waiter;
 import mp3.classes.utils.Log;
 
 /**
  *
  * @author anti43
  */
-public class DruckJob {
+public class DruckJob implements Waiter{
 
-    public static final String PDF = "pdf";
+    
     private PrintService prservDflt;
     private PrintService[] prservices;
     int idxPrintService = -1;
     private HashPrintRequestAttributeSet aset;
     private DocFlavor flavor;
+
+    public DruckJob() {
+        aset = new HashPrintRequestAttributeSet();
+        aset.add(MediaSizeName.ISO_A4);
+        
+        this.flavor = DocFlavor.INPUT_STREAM.PDF;
+
+        prservDflt = PrintServiceLookup.lookupDefaultPrintService();
+        prservices = PrintServiceLookup.lookupPrintServices(flavor, aset);
+    }
   
 
     public DruckJob(DocFlavor flavor) {
@@ -95,6 +106,16 @@ public class DruckJob {
                 }
                 s1 = s2;
             }
+        }
+    }
+
+    public void set(Object object) {
+        try {
+            print((File) object);
+        } catch (FileNotFoundException ex) {
+            Log.Debug(ex);
+        } catch (PrintException ex) {
+            Log.Debug(ex);
         }
     }
 }

@@ -65,7 +65,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         this.explode(this.selectLast(Strings.ALL, "rechnungnummer", text, true));
         zeilenHandler = new RechnungBetreffZZR(id);
         nfh = new NumberFormatHandler(this, getDatum());
-        
+
     }
 
     public void add(PostenTableModel m) {
@@ -94,7 +94,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         this.query = ConnectionHandler.instanceOf();
         zeilenHandler = new RechnungBetreffZZR();
         nfh = new NumberFormatHandler(this, getDatum());
-        
+
     }
 
     public Rechnung(Query query) {
@@ -102,7 +102,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         this.query = query;
         zeilenHandler = new RechnungBetreffZZR();
         nfh = new NumberFormatHandler(this, getDatum());
-        
+
     }
 
     /**
@@ -121,7 +121,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
             this.Angebot = new Angebot(aid);
         }
         nfh = new NumberFormatHandler(this, getDatum());
-        
+
     }
 
     public String getFDatum() {
@@ -320,17 +320,10 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
         String[] wher = {"rechnungid", this.getId().toString(), ""};
         String[][] prods = q.select(Strings.ALL, wher);
         Object[][] nstr = new Object[prods.length][6];
-
         try {
-
             for (int i = 0; i < nstr.length; i++) {
-
                 nstr[i][0] = Integer.valueOf(prods[i][0]);
-
                 nstr[i][1] = Double.valueOf(prods[i][2]);
-
-
-
                 nstr[i][2] = String.valueOf(prods[i][3]);
                 nstr[i][3] = Double.valueOf(prods[i][5]);
                 try {
@@ -339,58 +332,48 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
                             (Double.valueOf(prods[i][4]) *
                             (((Double.valueOf(prods[i][5])) / 100) + 1)));
                 } catch (NumberFormatException numberFormatException) {
-
                     nstr[i][    4] = Double.valueOf("0");
                     nstr[i][5] = Double.valueOf("0");
-
-
                 }
             }
         } catch (Exception exception) {
             Log.Debug(exception);
         }
         return nstr;
-
     }
 
-    
- 
-
     public PostenTableModel getProductlistAsTableModel() {
+        Object[][] nstr = null;
+        if (this.postendata == null) {
+            DecimalFormat n = new DecimalFormat("0.00");
+            Query q = query.clone(TABLE_BILLS_DATA);
+            String[] wher = {"rechnungid", this.getId().toString(), ""};
+            String[][] prods = q.select(Strings.ALL, wher);
+            nstr = new Object[prods.length][6];
 
-        DecimalFormat n = new DecimalFormat("0.00");
-  
-        Query q = query.clone(TABLE_BILLS_DATA);
-        String[] wher = {"rechnungid", this.getId().toString(), ""};
-        String[][] prods = q.select(Strings.ALL, wher);
-        Object[][] nstr = new Object[prods.length][6];
-
-        try {
-            for (int i = 0; i < nstr.length; i++) {
-                nstr[i][0] = Integer.valueOf(prods[i][0]);
-
-                nstr[i][1] = Double.valueOf(prods[i][2]);
-
-
-
-                nstr[i][2] = String.valueOf(prods[i][3]);
-                nstr[i][3] = Double.valueOf(prods[i][5]);
-                try {
-                    nstr[i][4] = Double.valueOf(prods[i][4]);
-                    nstr[i][5] = Double.valueOf(
-                            (Double.valueOf(prods[i][4]) *
-                            (((Double.valueOf(prods[i][5])) / 100) + 1)));
-                } catch (NumberFormatException numberFormatException) {
-                    nstr[i][4] = Double.valueOf("0");
-                    nstr[i][5] = Double.valueOf("0");
+            try {
+                for (int i = 0; i < nstr.length; i++) {
+                    nstr[i][0] = Integer.valueOf(prods[i][0]);
+                    nstr[i][1] = Double.valueOf(prods[i][2]);
+                    nstr[i][2] = String.valueOf(prods[i][3]);
+                    nstr[i][3] = Double.valueOf(prods[i][5]);
+                    try {
+                        nstr[i][4] = Double.valueOf(prods[i][4]);
+                        nstr[i][5] = Double.valueOf(
+                                (Double.valueOf(prods[i][4]) *
+                                (((Double.valueOf(prods[i][5])) / 100) + 1)));
+                    } catch (NumberFormatException numberFormatException) {
+                        nstr[i][4] = Double.valueOf("0");
+                        nstr[i][5] = Double.valueOf("0");
+                    }
                 }
-
+            } catch (Exception exception) {
+                Log.Debug(exception);
             }
-        } catch (Exception exception) {
-
-            Log.Debug(exception);
+            return new PostenTableModel(nstr);
+        } else {
+            return this.postendata;
         }
-        return new PostenTableModel(nstr);
     }
 
     private void explode(PostenTableModel m) {
@@ -398,24 +381,24 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
             if (m.getValueAt(i, 4) != null || m.getValueAt(i, 2) != null) {
                 RechnungPosten b = new RechnungPosten();
                 b.setRechnungid(this.getId());
-                b.setPosten((String) m.getValueAt(i,2));
-              
+                b.setPosten((String) m.getValueAt(i, 2));
+
                 try {
-                    
+
                     b.setAnzahl(Double.valueOf((Double) m.getValueAt(i, 1)));
                 } catch (Exception e) {
-                     b.setAnzahl(0d);
+                    b.setAnzahl(0d);
                 }
 
                 try {
-                    
+
                     b.setSteuersatz(Double.valueOf((Double) m.getValueAt(i, 3)));
                 } catch (Exception e) {
                     b.setSteuersatz(0d);
                 }
 
                 try {
-                    
+
                     b.setPreis(Double.valueOf((Double) m.getValueAt(i, 4)));
                 } catch (Exception e) {
                     b.setPreis(0d);
@@ -495,9 +478,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
     public void setGesamtpreis(Double Gesamtpreis) {
         this.Gesamtpreis = Gesamtpreis;
     }
-    
 
-    
     public Double getGesamttax() {
         return Gesamttax;
     }
@@ -557,11 +538,9 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
 //            setStorno(false);
 //        }
 //    }
-
     public Angebot getAngebot() {
         return Angebot;
     }
-
 
     public void setNumberFormatHandler(NumberFormatHandler nfh) {
         this.nfh = nfh;
@@ -570,5 +549,4 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
     public String getTable() {
         return TABLE_BILLS;
     }
-
 }

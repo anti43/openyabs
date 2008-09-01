@@ -20,7 +20,7 @@ import mp3.classes.layer.Popup;
 import mp3.classes.layer.visual.DatePick;
 import mp3.classes.layer.visual.TaxRatePicker;
 import mp4.benutzerverwaltung.User;
-import mp4.export.PDF_Produkt;
+import mp4.utils.export.pdf.PDF_Produkt;
 import mp4.frames.PdfVorschauWindow;
 import mp4.frames.mainframe;
 import mp4.items.Angebot;
@@ -310,6 +310,11 @@ jButton18.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
 jButton18.addMouseListener(new java.awt.event.MouseAdapter() {
 public void mouseClicked(java.awt.event.MouseEvent evt) {
 jButton18MouseClicked(evt);
+}
+});
+jButton18.addActionListener(new java.awt.event.ActionListener() {
+public void actionPerformed(java.awt.event.ActionEvent evt) {
+jButton18ActionPerformed(evt);
 }
 });
 jToolBar2.add(jButton18);
@@ -928,7 +933,7 @@ private void jButton18MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
         if (current.isValid()) {
             setPanelValues();
 
-            Job job = new Job(new PDF_Produkt(current), new PdfVorschauWindow(), mainframe.getMainProgress());
+            Job job = new Job((Waitable) new PDF_Produkt(current),new PdfVorschauWindow(), mainframe.getMainProgress());
             job.execute();
 
         }
@@ -970,6 +975,10 @@ private void jButton21ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 private void jTextField4KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField4KeyTyped
 numberfieldedited = true;
 }//GEN-LAST:event_jTextField4KeyTyped
+
+private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
+
+}//GEN-LAST:event_jButton18ActionPerformed
 
 // Variables declaration - do not modify//GEN-BEGIN:variables
 public javax.swing.JButton jButton10;

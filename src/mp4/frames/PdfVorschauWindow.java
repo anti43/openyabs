@@ -8,7 +8,7 @@ package mp4.frames;
 import com.sun.pdfview.PDFFile;
 import com.sun.pdfview.PDFPage;
 import com.sun.pdfview.PagePanel;
-import mp4.export.PDF_Produkt;
+import mp4.utils.export.pdf.PDF_Produkt;
 import java.awt.BorderLayout;
 import java.io.*;
 import java.nio.ByteBuffer;
@@ -145,7 +145,7 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
 public void set(Object object){
 
-        file = ((PDF_Produkt) object).getFile();
+        file = ((mp4.utils.export.pdf.PDFFile) object);
            
         try {
             initComponents();

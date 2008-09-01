@@ -8,7 +8,7 @@ package mp4.panels.produkte;
 import mp4.panels.misc.groupsView;
 import mp4.frames.PdfVorschauWindow;
 import mp4.panels.*;
-import mp4.export.PDF_Produkt;
+import mp4.utils.export.pdf.PDF_Produkt;
 import mp3.classes.visual.sub.*;
 import mp3.classes.layer.People;
 import mp4.items.Product;
@@ -48,6 +48,7 @@ import mp4.panels.rechnungen.billsView;
 import mp4.panels.rechnungen.offersView;
 import mp4.utils.bilder.ImageFormat;
 import mp4.utils.datum.DateConverter;
+import mp4.utils.export.pdf.PDFFile;
 import mp4.utils.files.DialogOpenFile;
 import mp4.utils.files.FileDirectoryHandler;
 import mp4.utils.tabellen.SelectionCheck;
@@ -1351,10 +1352,11 @@ private void jButton18MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
                 }
             }
 
-            Job job = new Job(new PDF_Produkt(current, image), new PdfVorschauWindow(), mainframe.getMainProgress());
+            Job job = new Job(new PDFFile(new PDF_Produkt(current, image)),new PdfVorschauWindow(), mainframe.getMainProgress());
             job.execute();
 
-        }
+        }else
+        Popup.notice("Sie müssen das Produkt erst anlegen.");
     }
 
 private void jTextField14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField14ActionPerformed

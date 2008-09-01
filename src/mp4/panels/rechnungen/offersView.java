@@ -6,7 +6,7 @@
 package mp4.panels.rechnungen;
 
 import mp4.panels.misc.NumberFormatEditor;
-import mp4.export.PDF_Angebot;
+import mp4.utils.export.pdf.PDF_Angebot;
 
 import mp4.items.RechnungPosten;
 
@@ -38,12 +38,14 @@ import mp4.frames.mainframe;
 import javax.swing.JFormattedTextField;
 import javax.swing.JTabbedPane;
 
+import mp3.classes.interfaces.Waitable;
 import mp4.benutzerverwaltung.User;
 import mp4.einstellungen.Einstellungen;
 
 import mp4.items.Angebot;
 import mp3.classes.interfaces.panelInterface;
 import mp3.classes.layer.People;
+import mp4.frames.PdfVorschauWindow;
 import mp4.items.Dienstleistung;
 import mp4.items.Rechnung;
 import mp4.utils.datum.DateConverter;
@@ -56,6 +58,7 @@ import mp4.utils.tabellen.TableFormat;
 import mp4.utils.tabellen.TablePopupMenu;
 import mp4.utils.tabellen.models.OfferListTableModel;
 import mp4.utils.tabellen.models.OfferSearchListTableModel;
+import mp4.utils.tasks.Job;
 
 /**
  *
@@ -120,6 +123,7 @@ public class offersView extends javax.swing.JPanel implements panelInterface, mp
     public void addToOrder(Product product) {
         ((PostenTableModel) jTable1.getModel()).addProduct(jTable1, product);
     }
+
     public void addServiceToOrder(Dienstleistung product) {
         ((PostenTableModel) jTable1.getModel()).addService(jTable1, product);
     }
@@ -230,7 +234,7 @@ public class offersView extends javax.swing.JPanel implements panelInterface, mp
             jCheckBox2.setSelected(false);
             jCheckBox2.setText("Keine Rechnung");
         }
-        
+
         this.getJTable1().setModel(current.getProductlistAsTableModel());
         renewTableModel(false);
         resizeFields();
@@ -280,6 +284,7 @@ jButton3 = new javax.swing.JButton();
 jSeparator2 = new javax.swing.JToolBar.Separator();
 jButton13 = new javax.swing.JButton();
 jSeparator1 = new javax.swing.JToolBar.Separator();
+jButton1 = new javax.swing.JButton();
 jButton12 = new javax.swing.JButton();
 jTabbedPane1 = new javax.swing.JTabbedPane();
 jPanel2 = new javax.swing.JPanel();
@@ -422,6 +427,17 @@ jButton13MouseClicked(evt);
 });
 jToolBar1.add(jButton13);
 jToolBar1.add(jSeparator1);
+
+jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/3232/acroread.png"))); // NOI18N
+jButton1.setFocusable(false);
+jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+jButton1.addActionListener(new java.awt.event.ActionListener() {
+public void actionPerformed(java.awt.event.ActionEvent evt) {
+jButton1ActionPerformed(evt);
+}
+});
+jToolBar1.add(jButton1);
 
 jButton12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/medium/print_printer.png"))); // NOI18N
 jButton12.setToolTipText("Drucken");
@@ -1224,7 +1240,8 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
         if (currentOffer != null && currentOffer.hasId()) {
             new PDF_Angebot(currentOffer);
             new HistoryItem(ConnectionHandler.instanceOf(), Strings.BILL, "Angebot Nummer: " + currentOffer.getAngebotnummer() + " als PDF erzeugt.");
-        }
+        }else
+        Popup.notice("Sie müssen das Angebot erst anlegen.");
     }//GEN-LAST:event_jButton12MouseClicked
 
     private void jTextField6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextField6MouseClicked
@@ -1244,7 +1261,7 @@ private void jButton17KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
 //private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {                                          
 //   }
 private void jButton19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton19ActionPerformed
-    new DatePick(jTextField12);
+            new DatePick(jTextField12);
 }//GEN-LAST:event_jButton19ActionPerformed
 
 private void jButton19KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton19KeyPressed
@@ -1288,9 +1305,9 @@ private void jButton13MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
         if (!currentOffer.isAuftrag()) {
             currentOffer.setAuftrag(true);
             currentOffer.setAuftragdatum(new Date());
-            
-        }
 
+        }
+        save();
         Rechnung r = null;
         if (!currentOffer.hasRechnung()) {
             r = new Rechnung();
@@ -1299,18 +1316,28 @@ private void jButton13MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
             r.add((PostenTableModel) jTable1.getModel());
             r.setDatum(new Date());
             r.setAngebot(currentOffer);
-            r.save();
-           
-            currentOffer.setRechnungId(r.getId());
+//            r.save();
+//
+//            currentOffer.setRechnungId(r.getId());
         } else {
             r = new Rechnung(currentOffer.getRechnungId());
             Popup.notice("Diesem Angebot ist bereits eine Rechnung zugewiesen: " + r.getRechnungnummer());
         }
-        save();
+
         mainframe.addBillPanel(r);
     }
 }//GEN-LAST:event_jButton13MouseClicked
+
+private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    if (currentOffer.hasId()) {
+        Job job = new Job((Waitable) new PDF_Angebot(currentOffer), new PdfVorschauWindow(), mainframe.getMainProgress());
+        job.execute();
+    } else
+        Popup.notice("Sie müssen das Angebot erst anlegen.");
+}//GEN-LAST:event_jButton1ActionPerformed
+
 // Variables declaration - do not modify//GEN-BEGIN:variables
+public javax.swing.JButton jButton1;
 public javax.swing.JButton jButton10;
 public javax.swing.JButton jButton11;
 public javax.swing.JButton jButton12;
@@ -1319,6 +1346,7 @@ public javax.swing.JButton jButton14;
 public javax.swing.JButton jButton15;
 public javax.swing.JButton jButton16;
 public javax.swing.JButton jButton17;
+public javax.swing.JButton jButton18;
 public javax.swing.JButton jButton19;
 public javax.swing.JButton jButton20;
 public javax.swing.JButton jButton3;
