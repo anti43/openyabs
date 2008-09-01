@@ -33,13 +33,10 @@ public class historyView extends javax.swing.JPanel implements Runnable, panelIn
      */
     public historyView(mainframe frame) {
         initComponents();
-
         mainframe = frame;
         liste = HistoryHandler.getHistory();
         header = new String[]{"Aktion", "Beschreibung", "Datum", "Benutzer"};
-
         historytable.setModel(new DefaultTableModel(liste, header));
-
         resizeTable();
         t = new Thread(this);
         t.setPriority(Thread.MIN_PRIORITY);

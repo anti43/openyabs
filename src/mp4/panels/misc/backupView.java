@@ -47,11 +47,11 @@ public class backupView extends javax.swing.JPanel {
     private ArrayList lstFiles;
     private File src;
     private Einstellungen l;
-    private String[][] str;
     private SimpleDateFormat df;
     private FileReaderWriter rw;
     private SimpleDateFormat df2;
     private String[] dat;
+    private ArrayList list;
 
     /** Creates new form customers
      * @param aThis 
@@ -225,7 +225,7 @@ public class backupView extends javax.swing.JPanel {
         try {
             path = dat[0] + File.separator + Constants.DATABASENAME;
             store = l.getBackupverz();
-            savefile = store + File.separator + df.format(new Date()) + ".mpsavefile-35.zip";
+            savefile = store + File.separator + df.format(new Date()) + ".mpsavefile-40.zip";
 
             if (store.equals("")) {
                 store = Constants.HOME + File.separator + Constants.DATABASENAME;
@@ -286,7 +286,7 @@ public class backupView extends javax.swing.JPanel {
             if ((JOptionPane.showConfirmDialog(this, "Möglicherweise vorhandene neuere Daten,\n " +
                     "die Sie seit der Sicherung angelegt haben, werden gelöscht!\n " +
                     "Vor dem Ersetzen wird eine Sicherheitskopie des aktuellen Datenbestandes angelegt.\n " +
-                    "Wollen Sie wirklich die Sicherungsdatei vom * " + str[id][1] + " * zurückspielen?",
+                    "Wollen Sie wirklich die Sicherungsdatei vom * " + ((String[])list.get(id))[1] + " * zurückspielen?",
                     "Sicher?", JOptionPane.YES_NO_OPTION)) == JOptionPane.YES_OPTION) {
                 jButton6MouseClicked(evt);
                 try {
@@ -298,8 +298,8 @@ public class backupView extends javax.swing.JPanel {
 //                int z =path.getCanonicalPath().lastIndexOf(File.separator);
 //                store =store.substring(0, z);
                     Log.Debug("Rücksichern nach: " + store, true);
-                    UnZip.deflate(str[id][2], store);
-                    mainframe.setMessage("Sicherungsdatei '" + str[id][2] + "' wiederhergestellt.");
+                    UnZip.deflate(((String[])list.get(id))[2], store);
+                    mainframe.setMessage("Sicherungsdatei '" + ((String[])list.get(id))[2] + "' wiederhergestellt.");
                     new Popup("Starten Sie das Programm neu.", Popup.NOTICE);
                     System.exit(0);
 
@@ -334,15 +334,18 @@ public class backupView extends javax.swing.JPanel {
             Log.Debug("Backup Verzeichnis: " + src, true);
             File[] files = src.listFiles();
             Log.Debug("Dateien analysieren...", true);
-            str = new String[files.length][3];
+//            str = new String[files.length][3];
+            list = new ArrayList();
 
             for (int i = 0,   k = 0; i < files.length; i++) {
 //                Log.Debug("Datei analysieren: " + files[i].getName());
                 if (files[i].isFile() && files[i].toString().contains("mpsavefile-40")) {
                     try {
-                        str[k][0] = String.valueOf(k);
-                        str[k][1] = df2.format(df.parse(files[i].getName().substring(0, 18)));
-                        str[k][2] = files[i].getCanonicalPath();
+                        String[] fileinfo = new String[3];
+                        fileinfo[0] = String.valueOf(k);
+                        fileinfo[1] = df2.format(df.parse(files[i].getName().substring(0, 18)));
+                        fileinfo[2] = files[i].getCanonicalPath();
+                        list.add(fileinfo);
                         Log.Debug("Sicherungsdatei gefunden: " + files[i].getName(), true);
                         k++;
                     } catch (Exception ex) {
@@ -352,15 +355,16 @@ public class backupView extends javax.swing.JPanel {
                 }
             }
             if (files.length == 0) {
-                str = new String[1][3];
-                str[0][2] = "Keine Datei vorhanden";
+                String[] fileinfo = new String[3];
+                fileinfo [2] = "Keine Datei vorhanden";
+                list.add(fileinfo);
             }
         } catch (Exception exception) {
             Log.Debug(exception);
             Log.Debug(exception.getMessage(), true);
         }
 
-        jTable1.setModel(new DefaultTableModel(str, header));
+        jTable1.setModel(new DefaultTableModel(Formater.listToTableArray(list), header));
         l.stripFirst(jTable1);
         Formater.format(jTable1, 1, 180);
     }

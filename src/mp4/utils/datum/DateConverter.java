@@ -28,10 +28,10 @@ import java.util.Date;
  */
 public class DateConverter {
 
-    public static final String[] monthName = {"Januar", "Februar",
-        "Maerz", "April", "Mai", "Juni", "Juli",
-        "August", "September", "Oktober", "November",
-        "Dezember"
+    public static final String[] monthName = {"Jan", "Feb",
+        "Mar", "Apr", "Mai", "Jun", "Jul",
+        "Aug", "Sept", "Okt", "Nov",
+        "Dez"
     };
     private static Calendar cl = Calendar.getInstance();
     //   yyyy-mm-dd hh.mm.ss[.nnnnnn] - SQL DATE Timestamp

@@ -146,8 +146,8 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.i
         return nstr;
     }
 
-    public int search(Integer angebotid) {
-        String[] in = this.selectLast("id", "id", angebotid.toString(), true);
+    public int search(Integer rechnungid) {
+        String[] in = this.selectLast("id", "rechnungid", rechnungid.toString(), true);
         if (in != null && in.length > 0) {
             return Integer.valueOf(in[0]);
         } else {

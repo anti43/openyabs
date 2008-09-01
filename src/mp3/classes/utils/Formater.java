@@ -401,6 +401,17 @@ public abstract class Formater {
         return str;
     }
 
+    public static Object[][] listToTableArray(ArrayList list) {
+        
+        Object[][] str = new Object[list.size()][];
+        
+        for (int i = 0; i < list.size(); i++) {
+                str[i] = (Object[]) list.get(i);
+        }
+        
+        return str;
+    }
+
     public static Object[][] merge(Object[][] array1, Object[][] array2) {
         if (array1 == null) {
             array1 = new Object[0][0];
