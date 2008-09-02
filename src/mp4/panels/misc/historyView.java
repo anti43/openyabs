@@ -5,6 +5,7 @@
  */
 package mp4.panels.misc;
 
+import java.util.Formattable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JTabbedPane;
@@ -14,6 +15,7 @@ import mp4.items.handler.HistoryHandler;
 import javax.swing.table.DefaultTableModel;
 import mp3.classes.interfaces.panelInterface;
 import mp4.frames.mainframe;
+import mp4.utils.tabellen.TableFormat;
 
 /**
  *
@@ -158,8 +160,9 @@ public class historyView extends javax.swing.JPanel implements Runnable, panelIn
     }
 
     private void resizeTable() {
-        getHistoryTable().getColumn(getHistoryTable().getColumnName(0)).setPreferredWidth(100);
-        getHistoryTable().getColumn(getHistoryTable().getColumnName(0)).setMaxWidth(100);
+        
+       TableFormat.resizeCols(getHistoryTable(), new Integer[]{130,null,100,100}, true);
+        
     }
 
     public void updateTables() {

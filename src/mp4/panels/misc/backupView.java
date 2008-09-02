@@ -263,7 +263,7 @@ public class backupView extends javax.swing.JPanel implements panelInterface{
         l.setBackupverz(jTextField1.getText());
         l.save();
         l = Einstellungen.instanceOf();
-        mainframe.setMessage("Sicherungspfad '" + l.getBackupverz() + "' gespeichert");
+        mainframe.setMessage("Sicherungspfad '" + l.getBackupverz() + "' editiert.");
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed

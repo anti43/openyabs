@@ -65,20 +65,20 @@ public class Help extends javax.swing.JFrame {
 
     }
 
-    /**
-     * 
-     * @param helpfile
-     * @param theme
-     */
-    public Help(String helpfile, String theme) {
-        initComponents();
-        new Position(this);
-
-        FileToString t = new FileToString("/helpfiles/" + helpfile);
-
-        this.setModel(new DefaultHelpModel(theme, t.getContent()));
-        this.setVisible(rootPaneCheckingEnabled);
-    }
+//    /**
+//     * 
+//     * @param helpfile
+//     * @param theme
+//     */
+//    public Help(String helpfile, String theme) {
+//        initComponents();
+//        new Position(this);
+//
+//        FileToString t = new FileToString(helpfile);
+//
+//        this.setModel(new DefaultHelpModel(theme, t.getContent()));
+//        this.setVisible(rootPaneCheckingEnabled);
+//    }
 
     public DefaultHelpModel getModel() {
         return model;

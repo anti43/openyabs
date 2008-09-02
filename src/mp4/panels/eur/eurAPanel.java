@@ -367,6 +367,11 @@ public class eurAPanel extends javax.swing.JPanel implements panelInterface {
             vDouble  steuer = new vDouble (jTextField3.getText());
             vDate datum = new vDate(jTextField6.getText());
 
+            
+             if (!steuer.isVerified || !steuer.isPositive) {
+                    steuer = new vDouble(Einstellungen.instanceOf().getGlobaltax());
+                }
+            
             if (betrag.isVerified && betrag.isPositive && steuer.isVerified && steuer.isPositive && datum.isVerified) {
 
             this.setAusgabe(new Ausgabe(curKonto.getId(), jEditorPane1.getText(), betrag.value, steuer.value, datum.date));

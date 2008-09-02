@@ -38,7 +38,6 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.i
     private String Angebotnummer = "";
     private Integer KundenId = 0;
     private Integer RechnungId = 0;
-    
     private boolean isAuftrag = false;
     private Date anfrageVom = new Date();
     private Date Datum = new Date();
@@ -84,7 +83,7 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.i
      */
     public Angebot(Integer id) {
         super(ConnectionHandler.instanceOf().clone(TABLE_OFFERS));
-        this.id = Integer.valueOf(id);
+        this.id = id;
         this.explode(this.selectLast(Strings.ALL, Strings.ID, id.toString(), true));
         this.query = ConnectionHandler.instanceOf();
         nfh = new NumberFormatHandler(this, getDatum());
@@ -106,7 +105,6 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.i
     public String getFDatum() {
         return DateConverter.getDefDateString(getDatum());
     }
-
 
     public boolean hasId() {
         if (id > 0) {
@@ -163,21 +161,21 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.i
                 b.setPosten((String) m.getValueAt(i, 2));
 
                 try {
-                    
+
                     b.setAnzahl(Double.valueOf((Double) m.getValueAt(i, 1)));
                 } catch (Exception e) {
-                     b.setAnzahl(0d);
+                    b.setAnzahl(0d);
                 }
 
                 try {
-                    
+
                     b.setSteuersatz(Double.valueOf((Double) m.getValueAt(i, 3)));
                 } catch (Exception e) {
                     b.setSteuersatz(0d);
                 }
 
                 try {
-                    
+
                     b.setPreis(Double.valueOf((Double) m.getValueAt(i, 4)));
                 } catch (Exception e) {
                     b.setPreis(0d);
@@ -331,7 +329,7 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.i
 //        return prof;
 //    }
     public String getNextNumber() {
-       return  getNfh().getNextNumber();
+        return getNfh().getNextNumber();
 //        return query.getNextIndexOfIntCol("angebotnummer");
     }
 
@@ -368,6 +366,7 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.i
 
     public void setAuftrag(boolean auftrag) {
         this.isAuftrag = auftrag;
+        this.isSaved = false;
     }
 
     public Date getBisDatum() {
@@ -376,15 +375,15 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.i
 
     public void setBisDatum(Date bisDatum) {
         this.validBis = bisDatum;
+        this.isSaved = false;
     }
 
 //    public void setRechnung(boolean rechnung) {
 //        this.hasRechnung = rechnung;
 //    }
-
     public boolean hasRechnung() {
         if (getRechnungId() > 0) {
-            
+
             return true;
         } else {
             return false;
@@ -401,6 +400,7 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.i
 
     public void setAnfrageVom(Date anfrageVom) {
         this.anfrageVom = anfrageVom;
+        this.isSaved = false;
     }
 
     public Date getValidVon() {
@@ -409,6 +409,7 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.i
 
     public void setValidVon(Date validVon) {
         this.validVon = validVon;
+        this.isSaved = false;
     }
 
     public Integer getRechnungId() {
@@ -417,7 +418,7 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.i
 
     public void setRechnungId(Integer RechnungId) {
         this.RechnungId = RechnungId;
-        
+        this.isSaved = false;
     }
 
     private void setAuftrag(String datum) {
@@ -427,6 +428,7 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.i
         } else {
             this.setAuftrag(false);
         }
+        this.isSaved = false;
     }
 
     public Date getAuftragdatum() {
@@ -435,6 +437,7 @@ public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.i
 
     public void setAuftragdatum(Date auftragdatum) {
         this.auftragdatum = auftragdatum;
+        this.isSaved = false;
     }
 
     public String getTable() {

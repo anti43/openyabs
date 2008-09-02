@@ -1036,7 +1036,7 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             current.setNotizen(jTextArea1.getText());
             current.save();
 
-            mainframe.setMessage("Lieferant Nummer " + current.getLieferantennummer() + " gespeichert.");
+            mainframe.setMessage("Lieferant Nummer " + current.getLieferantennummer() + " editiert.");
             try {
                 new HistoryItem(ConnectionHandler.instanceOf(), Strings.SUPPLIER, "Lieferant Nummer: " + current.getLieferantennummer() + " angelegt.");
             } catch (Exception ex) {
@@ -1091,7 +1091,7 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     current.setWebseite(jTextField15.getText());
                     current.setNotizen(jTextArea1.getText());
                     current.save();
-                    mainframe.setMessage("Lieferant Nummer " + current.getLieferantennummer() + " gespeichert.");
+                    mainframe.setMessage("Lieferant Nummer " + current.getLieferantennummer() + " editiert.");
                     new HistoryItem(ConnectionHandler.instanceOf(), Strings.SUPPLIER, "Lieferant Nummer: " + current.getLieferantennummer() + " editiert.");
 
                     updateListTable();

@@ -1114,8 +1114,8 @@ public javax.swing.JToolBar jToolBar2;
             current.setBeschreibung(jEditorPane1.getText());
             current.save();
 
-            getMainframe().setMessage("Dienstleistung Nummer " + current.getProduktNummer() + " gespeichert.");
-            new HistoryItem(Strings.SERVICE, "Dienstleistung Nummer: " + current.getProduktNummer() + " gespeichert.");
+            getMainframe().setMessage("Dienstleistung Nummer " + current.getProduktNummer() + " editiert.");
+            new HistoryItem(Strings.SERVICE, "Dienstleistung Nummer: " + current.getProduktNummer() + " editiert.");
 
             setDienstleistung(new Dienstleistung(current.getId()));
         } else createNew();

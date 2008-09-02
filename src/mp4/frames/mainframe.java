@@ -257,6 +257,7 @@ public class mainframe extends javax.swing.JFrame {
             setEnabled(true);
             usern.setUseAuth(true);
             this.setUser(usern);
+            Einstellungen.instanceOf().setUser(usern);
             return true;
         } else {
             setEnabled(false);

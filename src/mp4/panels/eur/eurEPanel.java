@@ -25,6 +25,7 @@ import mp3.classes.utils.Log;
 import mp3.classes.visual.util.konten;
 import mp4.cache.ObjectCopy;
 import mp4.cache.undoCache;
+import mp4.einstellungen.Programmdaten;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.datum.vDate;
 import mp4.utils.tabellen.SelectionCheck;
@@ -389,6 +390,9 @@ public class eurEPanel extends javax.swing.JPanel implements panelInterface {
             vDouble steuer = new vDouble(FormatNumber.parseDezimal(jTextField3.getText()));
             vDate datum = new vDate(jTextField6.getText());
 
+             if (!steuer.isVerified || !steuer.isPositive) {
+                    steuer = new vDouble(Einstellungen.instanceOf().getGlobaltax());
+                }
 
             if (betrag.isVerified && steuer.isVerified && steuer.isPositive && datum.isVerified) {
                 this.setEinnahme(new Einnahme(curKonto.getId(), jEditorPane1.getText(), betrag.value, steuer.value, datum.date));
@@ -478,7 +482,7 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
         Customer c = new Customer(bill.getKundenId());
 
-//        jEditorPane1.setContentType("text/html");
+        jEditorPane1.setContentType("text/plain");
         jEditorPane1.setFont(new Font(Font.SANS_SERIF,Font.PLAIN, 12));
         jEditorPane1.setText(c.getFirma() + "\n\n" + c.getAnrede() + " " + c.getVorname() + " " + c.getName() + "\n" + c.getStr() + "\n\n" + c.getPLZ() + " " + c.getOrt() + "\n\n" +
                 "Rechnung Nr.: " + bill.getRechnungnummer() + "\n");
@@ -494,7 +498,7 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
         this.curEinnahme = einnahme;
         jTextField6.setText(einnahme.getFDatum());
-//        jEditorPane1.setContentType("text/html");
+        jEditorPane1.setContentType("text/plain");
         jEditorPane1.setFont(new Font(Font.SANS_SERIF,Font.PLAIN, 12));
         jEditorPane1.setText(einnahme.getBeschreibung());
 

@@ -88,6 +88,7 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
     private int taxcount = 0;
     private TableCalculator calculator;
     private boolean edited = false;
+    private Angebot angebot;
 
     public billsView() {
     }
@@ -144,7 +145,7 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
 
         this.jTextField13.setText(angebot.getAngebotnummer());
         this.jTextField12.setText(DateConverter.getDefDateString(angebot.getDatum()));
-        currentBill.setAngebot(angebot);
+        this.angebot = angebot;
     }
 
     private void createNew() {
@@ -180,13 +181,16 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
             if (bill.save()) {
 
                 if (jTextField12.getText() != null && DateConverter.getDate(jTextField12.getText()) != null) {
-                    if (bill.getAngebot() != null) {
+                    if (bill.getAngebot() != null && angebot == null) {
+                        bill.getAngebot().setRechnungId(bill.getId());
                         bill.getAngebot().setAuftragdatum(DateConverter.getDate(jTextField12.getText()));
                         bill.getAngebot().save();
                     } else {
-                        bill.setAngebot(new Angebot());
+                        if (angebot != null) {
+                        bill.setAngebot(angebot);
+                        bill.getAngebot().setRechnungId(bill.getId());
                         bill.getAngebot().setAuftragdatum(DateConverter.getDate(jTextField12.getText()));
-                        bill.getAngebot().save();
+                        bill.getAngebot().save();}
                     }
                 }
 
@@ -194,6 +198,7 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
                 this.setEdited(false);
                 mainframe.setMessage("Rechnung Nummer: " + bill.getRechnungnummer() + " angelegt.");
                 new HistoryItem(Strings.BILL, "Rechnung Nummer: " + bill.getRechnungnummer() + " angelegt.");
+                angebot = null;
                 setBill(bill);
 //                this.setBill(new Rechnung());
 
@@ -256,10 +261,10 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
             this.setContact(new Customer(current.getKundenId()));
         }
         if (current.getAngebot() != null) {
-            jTextField13.setText(current.getAngebot().getAngebotnummer());
-            jTextField12.setText(DateConverter.getDefDateString(current.getAngebot().getDatum()));
+            setAngebot(current.getAngebot());
         } else {
             jTextField13.setText("Kein Angebot");
+            jTextField12.setText(null);
         }
         this.jTextField6.setText(current.getRechnungnummer());
         jTextField6.setBackground(Color.WHITE);
@@ -1278,21 +1283,23 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 if (bill.save()) {
 
                     if (jTextField12.getText() != null && DateConverter.getDate(jTextField12.getText()) != null) {
-                        if (bill.getAngebot() != null) {
+                        if (bill.getAngebot() != null && angebot == null) {
                             bill.getAngebot().setAuftragdatum(DateConverter.getDate(jTextField12.getText()));
-                            bill.getAngebot().save();
-                        } else {
-                            bill.setAngebot(new Angebot());
-                            bill.getAngebot().setAuftragdatum(DateConverter.getDate(jTextField12.getText()));
-                            bill.getAngebot().save();
-                        }
-                    } else if (bill.getAngebot() != null) {
                         bill.getAngebot().save();
+                        } else {
+                            if (angebot == null) {
+                                angebot = new Angebot();
+                            }
+                            bill.setAngebot(angebot);
+                            bill.getAngebot().setAuftragdatum(DateConverter.getDate(jTextField12.getText()));
+                        bill.getAngebot().save();
+                        }
                     }
 
                     this.setEdited(false);
-                    mainframe.setMessage("Rechnung Nummer: " + bill.getRechnungnummer() + " gespeichert.");
-                    new HistoryItem(Strings.BILL, "Rechnung Nummer: " + bill.getRechnungnummer() + " gespeichert.");
+                    mainframe.setMessage("Rechnung Nummer: " + bill.getRechnungnummer() + " editiert.");
+                    new HistoryItem(Strings.BILL, "Rechnung Nummer: " + bill.getRechnungnummer() + " editiert.");
+                    this.angebot = null;
                     this.setBill(bill);
 
                 } else {
@@ -1490,8 +1497,8 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     if (currentBill.hasId()) {
         Job job = new Job(new PDFFile(new PDF_Rechnung(currentBill)), new PdfVorschauWindow(), mainframe.getMainProgress());
         job.execute();
-    }else
-        Popup.notice("Sie müssen die Rechnung erst anlegen.");
+    } else {
+        Popup.notice("Sie müssen die Rechnung erst anlegen.");}
 }//GEN-LAST:event_jButton1ActionPerformed
 
 private void jButton12KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton12KeyTyped
@@ -1502,11 +1509,9 @@ private void jButton12MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
     if (currentBill.hasId()) {
         Job job = new Job((Waitable) new PDF_Rechnung(currentBill), (Waiter) new DruckJob(), mainframe.getMainProgress());
         job.execute();
-    }else
-        Popup.notice("Sie müssen die Rechnung erst anlegen.");
-
+    } else {
+        Popup.notice("Sie müssen die Rechnung erst anlegen.");}
 }//GEN-LAST:event_jButton12MouseClicked
-
 // Variables declaration - do not modify//GEN-BEGIN:variables
 public javax.swing.JButton jButton1;
 public javax.swing.JButton jButton10;

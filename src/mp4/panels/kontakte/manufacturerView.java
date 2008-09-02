@@ -1034,7 +1034,7 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             current.setNotizen(jTextArea1.getText());
             current.save();
 
-            mainframe.setMessage("Hersteller Nummer " + current.getHerstellernummer() + " gespeichert.");
+            mainframe.setMessage("Hersteller Nummer " + current.getHerstellernummer() + " editiert.");
             try {
                 new HistoryItem(ConnectionHandler.instanceOf(), Strings.MANUFACTURER, "Hersteller Nummer: " + current.getHerstellernummer() + " angelegt.");
             } catch (Exception ex) {
@@ -1089,7 +1089,7 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     current.setWebseite(jTextField15.getText());
                     current.setNotizen(jTextArea1.getText());
                     current.save();
-                    mainframe.setMessage("Hersteller Nummer " + current.getHerstellernummer() + " gespeichert.");
+                    mainframe.setMessage("Hersteller Nummer " + current.getHerstellernummer() + " editiert.");
                     new HistoryItem(ConnectionHandler.instanceOf(), Strings.MANUFACTURER, "Hersteller Nummer: " + current.getHerstellernummer() + " editiert.");
 
                     updateListTable();

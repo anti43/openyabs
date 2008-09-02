@@ -209,7 +209,7 @@ private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:ev
 
     data.setModel(jTable1.getModel());
     data.save();
-    mainframe.setMessage("Einstellungen gespeichert.");
+    mainframe.setMessage("Einstellungen editiert.");
 //            this.close();
 }//GEN-LAST:event_jButton2MouseClicked
 

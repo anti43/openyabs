@@ -1118,8 +1118,8 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 
                 if (offer.save()) {
                     this.setEdited(false);
-                    mainframe.setMessage("Angebot Nummer: " + offer.getAngebotnummer() + " gespeichert.");
-                    new HistoryItem(Strings.BILL, "Angebot Nummer: " + offer.getAngebotnummer() + " gespeichert.");
+                    mainframe.setMessage("Angebot Nummer: " + offer.getAngebotnummer() + " editiert.");
+                    new HistoryItem(Strings.BILL, "Angebot Nummer: " + offer.getAngebotnummer() + " editiert.");
                     this.setAngebot(offer);
 
                 } else {
@@ -1325,7 +1325,8 @@ private void jButton13MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
         }
 
         mainframe.addBillPanel(r);
-    }
+    }else
+        Popup.notice("Sie müssen das Angebot erst anlegen.");
 }//GEN-LAST:event_jButton13MouseClicked
 
 private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed

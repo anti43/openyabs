@@ -1660,8 +1660,8 @@ numberfieldedited = true;
             if ((current.getImagePath() == null && currentImageURI != null) || (currentImageURI != null && currentImageURI != current.getImagePath())) {
                 copyImage(current);
             }
-            getMainframe().setMessage("Produkt Nummer " + current.getProduktNummer() + " gespeichert.");
-            new HistoryItem(Strings.PRODUCT, "Produkt Nummer: " + current.getProduktNummer() + " gespeichert.");
+            getMainframe().setMessage("Produkt Nummer " + current.getProduktNummer() + " editiert.");
+            new HistoryItem(Strings.PRODUCT, "Produkt Nummer: " + current.getProduktNummer() + " editiert.");
 
             setProduct(new Product(current.getId()));
         } else createNew();

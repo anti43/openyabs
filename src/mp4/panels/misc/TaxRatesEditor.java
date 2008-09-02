@@ -260,7 +260,7 @@ private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:ev
                 tax.setWert(Double.valueOf(jTextField2.getText()));
                 tax.save();
             } catch (NumberFormatException numberFormatException) {
-                Popup.notice("Steuersatz nicht gespeichert.");
+                Popup.notice("Steuersatz nicht editiert.");
             }
         }
         jTable1.setModel(new TaxTableModel());

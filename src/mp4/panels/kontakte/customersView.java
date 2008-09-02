@@ -1133,7 +1133,7 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.i
             current.setNotizen(jTextArea1.getText());
             current.save();
 
-            mainframe.setMessage("Kunde Nummer " + current.getKundennummer() + " gespeichert.");
+            mainframe.setMessage("Kunde Nummer " + current.getKundennummer() + " editiert.");
             try {
                 new HistoryItem(ConnectionHandler.instanceOf(), Strings.CUSTOMER, "Kunde Nummer: " + current.getKundennummer() + " angelegt.");
             } catch (Exception ex) {
@@ -1188,7 +1188,7 @@ public class customersView extends javax.swing.JPanel implements mp4.datenbank.i
                     current.setWebseite(jTextField15.getText());
                     current.setNotizen(jTextArea1.getText());
                     current.save();
-                    mainframe.setMessage("Kunde Nummer " + current.getKundennummer() + " gespeichert.");
+                    mainframe.setMessage("Kunde Nummer " + current.getKundennummer() + " editiert.");
                     new HistoryItem(ConnectionHandler.instanceOf(), Strings.CUSTOMER, "Kunde Nummer: " + current.getKundennummer() + " editiert.");
                     updateListTable();
                 } catch (Exception ex) {

@@ -100,6 +100,10 @@ public class Einstellungen extends mp3.classes.layer.People implements mp4.daten
         return user;
     }
 
+    public void setUser(User usern) {
+        this.user = usern;
+    }
+
     private int getAppVersion() {
         return Integer.valueOf(Constants.VERSION);
     }

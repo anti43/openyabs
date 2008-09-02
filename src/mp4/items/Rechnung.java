@@ -174,7 +174,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
     public void setAngebot(Angebot angebot) {
         if (angebot.hasId()) {
             angebot.setRechnungId(this.getId());
-            angebot.save();
+////            angebot.save();
             this.Angebot = angebot;
         } else {
             angebot.setRechnungId(this.getId());
@@ -184,7 +184,7 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
             angebot.setValidVon(this.getDatum());
             angebot.setBisDatum(DateConverter.addMonth(this.getDatum()));
             angebot.setAngebotnummer(angebot.getNextNumber());
-            angebot.save();
+//            angebot.save();
             this.Angebot = angebot;
         }
     }
@@ -254,15 +254,20 @@ public class Rechnung extends mp3.classes.layer.Things implements mp4.datenbank.
                 clearPostenData();
                 explode(postendata);
             }
+            if(Angebot!=null){
+            Angebot.setRechnungId(this.getId());
+            Angebot.save();}
             zeilenHandler.save();
             isSaved = true;
         } else if (id == 0 && !isSaved) {
-            result = this.insert(TABLE_BILLS_FIELDS, this.collect());
-            this.id = this.getMyId();
-            if (postendata !=
-                    null) {
+            this.id = this.insert(TABLE_BILLS_FIELDS, this.collect());
+            result =id;
+            if (postendata !=null) {
                 explode(postendata);
             }
+            if(Angebot!=null){
+            Angebot.setRechnungId(this.getId());
+            Angebot.save();}
             zeilenHandler.setRechnungId(id);
             zeilenHandler.save();
             isSaved = true;
