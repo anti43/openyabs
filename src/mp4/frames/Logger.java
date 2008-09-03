@@ -24,7 +24,9 @@ public class Logger extends javax.swing.JFrame {
     public static void setLogFile(String string) throws Exception {
         Logger.logfile = new File(string);
 
-        if (!logfile.canWrite()) {
+        logfile.delete();
+        
+        if (logfile.createNewFile() && !logfile.canWrite()) {
             throw new Exception("Fehler in " + logfile.getCanonicalPath());
         } else {
             FILE_LOG_ENABLED = true;
