@@ -22,10 +22,10 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import mp3.classes.interfaces.Countable;
+import mp4.interfaces.Countable;
 import mp4.datenbank.verbindung.Query;
 
-import mp3.classes.interfaces.Strings;
+import mp4.globals.Strings;
 import mp3.classes.utils.Log;
 import mp4.utils.tabellen.models.PostenTableModel;
 

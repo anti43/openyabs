@@ -13,7 +13,7 @@ import java.awt.BorderLayout;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import mp3.classes.interfaces.Waiter;
+import mp4.interfaces.Waiter;
 import mp3.classes.utils.Log;
 import mp4.utils.windows.Position;
 

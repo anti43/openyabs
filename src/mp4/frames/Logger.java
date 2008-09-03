@@ -5,6 +5,9 @@
  */
 package mp4.frames;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.Writer;
 import javax.swing.text.BadLocationException;
 
@@ -14,6 +17,21 @@ import javax.swing.text.BadLocationException;
  */
 public class Logger extends javax.swing.JFrame {
 
+    private static File logfile = null;
+    private static boolean FILE_LOG_ENABLED = false;
+    private static FileWriter logwriter;
+
+    public static void setLogFile(String string) throws Exception {
+        Logger.logfile = new File(string);
+
+        if (!logfile.canWrite()) {
+            throw new Exception("Fehler in " + logfile.getCanonicalPath());
+        } else {
+            FILE_LOG_ENABLED = true;
+            logwriter = new FileWriter(logfile);
+        }
+    }
+
     /** Creates new form Logger */
     public Logger() {
         initComponents();
@@ -21,20 +39,29 @@ public class Logger extends javax.swing.JFrame {
 
     }
 
-    public void log() {
-        jTextArea1.append("\n");
-    }
-
-    public void log(Object object) {
-        if (object != null) {
-            jTextArea1.append("\n" + object.toString());
+    public void log() throws IOException {
+        if (FILE_LOG_ENABLED) {
+            logwriter.write("\n");
         } else {
-            jTextArea1.append("\nNULL");
+            jTextArea1.append("\n");
         }
     }
 
-    public void log(String string) {
-        jTextArea1.append("\n" + string);
+    public void log(Object object) throws IOException {
+        if (FILE_LOG_ENABLED)logwriter.write(object.toString()); 
+        else {
+            if (object != null) {
+                jTextArea1.append("\n" + object.toString());
+            } else {
+                jTextArea1.append("\nNULL");
+            }
+        }
+    }
+
+    public void log(String string) throws IOException {
+        if (FILE_LOG_ENABLED)logwriter.write(string); else {
+            jTextArea1.append("\n" + string);
+        }
     }
 
     /** This method is called from within the constructor to
@@ -94,7 +121,7 @@ public class Logger extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
 private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-jTextArea1.setText(null);
+    jTextArea1.setText(null);
 }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

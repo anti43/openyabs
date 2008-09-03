@@ -15,7 +15,7 @@ import mp4.items.Customer;
 import mp4.panels.rechnungen.billsView;
 import mp4.panels.rechnungen.offersView;
 import mp4.utils.tabellen.SelectionCheck;
-import mp3.classes.interfaces.panelInterface;
+import mp4.interfaces.panelInterface;
 
 /**
  *

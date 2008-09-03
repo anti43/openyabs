@@ -23,13 +23,13 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import mp3.classes.interfaces.ProtectedStrings;
+import mp4.globals.Constants;
 
 /**
  *
  * @author anti43
  */
-public class DesktopIcon implements ProtectedStrings{
+public class DesktopIcon implements Constants{
     public static void createLinuxDesktopIcon(){
     
         BufferedWriter out = null;
@@ -45,16 +45,16 @@ public class DesktopIcon implements ProtectedStrings{
             out.write("Encoding=UTF-8");
             out.newLine();
 
-            out.write("Name="+ProtectedStrings.PROG_NAME);
+            out.write("Name="+Constants.PROG_NAME);
             out.newLine();
 
             out.write("GenericName=MP Rechnungs und Kundenverwaltung");
             out.newLine();
 
-            out.write("Exec=java -jar " + System.getProperty("user.home") + File.separator + ProtectedStrings.PROG_NAME + File.separator + ProtectedStrings.JAR_NAME);
+            out.write("Exec=java -jar " + System.getProperty("user.home") + File.separator + Constants.PROG_NAME + File.separator + Constants.JAR_NAME);
             out.newLine();
 
-            out.write("Icon=" + System.getProperty("user.home") + File.separator + ProtectedStrings.PROG_NAME + File.separator +"lib" + File.separator + "mpd.png");
+            out.write("Icon=" + System.getProperty("user.home") + File.separator + Constants.PROG_NAME + File.separator +"lib" + File.separator + "mpd.png");
             out.newLine();
 
             out.write("Type=Application");
@@ -93,7 +93,7 @@ public class DesktopIcon implements ProtectedStrings{
             out = new BufferedWriter(new FileWriter(USER_HOME + File.separator + DESKTOP + File.separator + ICON_NAME_WIN, false));
             out.write("[InternetShortcut]");
             out.newLine();
-            out.write("URL=file://"+System.getProperty("user.home") + File.separator + ProtectedStrings.PROG_NAME + File.separator + ProtectedStrings.JAR_NAME);
+            out.write("URL=file://"+System.getProperty("user.home") + File.separator + Constants.PROG_NAME + File.separator + Constants.JAR_NAME);
             out.newLine();
             out.close();
         } catch (IOException ex) {

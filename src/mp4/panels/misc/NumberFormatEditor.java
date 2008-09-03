@@ -11,7 +11,7 @@ import mp3.classes.utils.Log;
 import mp4.einstellungen.Programmdaten;
 import mp4.items.Angebot;
 import mp4.items.handler.NumberFormatHandler;
-import mp3.classes.interfaces.Countable;
+import mp4.interfaces.Countable;
 import mp3.classes.layer.visual.Help;
 import mp4.benutzerverwaltung.User;
 import mp4.frames.mainframe;

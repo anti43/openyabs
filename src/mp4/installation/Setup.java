@@ -26,9 +26,9 @@ import java.io.IOException;
 import java.awt.Cursor;
 import java.io.File;
 import javax.swing.JFileChooser;
-import mp3.classes.interfaces.Constants;
-import mp3.classes.interfaces.ProtectedStrings;
-import mp3.classes.interfaces.Strings;
+import mp4.globals.Constants;
+import mp4.globals.Constants;
+import mp4.globals.Strings;
 import mp4.utils.windows.Position;
 import mp3.classes.layer.Popup;
 import mp3.classes.utils.DesktopIcon;
@@ -40,7 +40,7 @@ import mp4.main.Main;
 /**
  * @author  anti43
  */
-public class Setup extends javax.swing.JFrame implements ProtectedStrings, Strings {
+public class Setup extends javax.swing.JFrame implements Constants, Strings {
 
     private static Setup instance;
     private static Verzeichnisse install_dirs;
@@ -49,6 +49,7 @@ public class Setup extends javax.swing.JFrame implements ProtectedStrings, Strin
         return install_dirs;
     }
     private JFileChooser fc;
+
     /**
      * 
      * @return
@@ -60,8 +61,7 @@ public class Setup extends javax.swing.JFrame implements ProtectedStrings, Strin
             return instance;
         }
     }
-   
-
+    private boolean finished = false;
 //    private String pdf_root_dirPATH;
 //    private String backup_dirPATH;
 //    private String public_dirPATH;
@@ -84,9 +84,9 @@ public class Setup extends javax.swing.JFrame implements ProtectedStrings, Strin
         fc = new JFileChooser();
         fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         fc.setSelectedFile(new File(USER_HOME));
-        
+
         File public_dir;
-        
+
         try {
             public_dir = new File(USER_HOME + SEP + PROG_NAME);
             backuppathtf.setText(public_dir.getCanonicalPath() + File.separator + BACKUPS_SAVE_DIR);
@@ -110,7 +110,6 @@ public class Setup extends javax.swing.JFrame implements ProtectedStrings, Strin
             Log.Debug(ex);
         }
     }
-
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -331,43 +330,46 @@ public class Setup extends javax.swing.JFrame implements ProtectedStrings, Strin
         this.dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
 
-  
-
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-      
-        Verzeichnisse.setBackuppathtftext(backuppathtf.getText());
-        Verzeichnisse.setPdfpathtftext(pdfpathtf.getText());
-        
-        try {
-            Verzeichnisse.buildPath();
-            Verzeichnisse.createDirs();
-        } catch (IOException ex) {
-            Log.Debug(ex);
-        }
-        
-        if (jCheckBox2.isSelected()) {
-            try {
-                this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+        if (!finished) {
+            if (jCheckBox2.isSelected()) {
+                Verzeichnisse.setBackuppathtftext(backuppathtf.getText());
+                Verzeichnisse.setPdfpathtftext(pdfpathtf.getText());
 
-                if (createDatabase()) {
-                    if (jCheckBox1.isSelected()) {
-                        Setup.writeDesktopIcon();
-                    }
-                    if (!Main.FORCE_NO_FILE_COPY) {
-                        Verzeichnisse.copyFiles();
-                    }
-                    this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-                    new Popup("Sie können das Programm nun starten.", Popup.NOTICE);
-                    System.exit(0);
-                } else {
-                    this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                try {
+                    Verzeichnisse.buildPath();
+                    Verzeichnisse.createDirs();
+                } catch (IOException ex) {
+                    Log.Debug(ex);
                 }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                Popup.error(ex.getMessage(), "Fehler bei der Installation.");
-                Popup.notice(PERMISSION_DENIED, Popup.ERROR);
-            } finally {
+                try {
+                    this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+
+                    if (createDatabase()) {
+                        if (jCheckBox1.isSelected()) {
+                            Setup.writeDesktopIcon();
+                        }
+                        if (!Main.FORCE_NO_FILE_COPY) {
+                            Verzeichnisse.copyFiles();
+                        }
+                        this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                        new Popup("Sie können das Programm nun starten.", Popup.NOTICE);
+                        finished = true;
+                        jButton1.setText("Beenden");
+                    } else {
+                        this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    Popup.error(ex.getMessage(), "Fehler bei der Installation.");
+                    Popup.notice(PERMISSION_DENIED, Popup.ERROR);
+                } finally {
+                }
+            } else {
+                Popup.notice("Sie muessen die Lizenzbedingungen akzeptieren,\num das Programm zu installieren.");
             }
+        } else {
+            System.exit(0);
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -435,7 +437,6 @@ private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         }
         return false;
     }
- 
 
     public static void writeDesktopIcon() {
         if (Main.IS_WINDOWS) {
@@ -444,5 +445,4 @@ private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             DesktopIcon.createLinuxDesktopIcon();
         }
     }
-  
 }

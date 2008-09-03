@@ -25,7 +25,7 @@ import mp4.items.Rechnung;
 import java.io.*;
 import java.util.ArrayList;
 
-import mp3.classes.interfaces.Printable;
+import mp4.interfaces.Printable;
 import mp3.classes.layer.Popup;
 import mp3.classes.utils.Formater;
 import mp4.einstellungen.Einstellungen;

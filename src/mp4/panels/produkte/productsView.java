@@ -5,6 +5,8 @@
  */
 package mp4.panels.produkte;
 
+import mp4.interfaces.panelInterface;
+import mp4.interfaces.moneyPanelInterface;
 import mp4.panels.misc.groupsView;
 import mp4.frames.PdfVorschauWindow;
 import mp4.panels.*;
@@ -24,8 +26,8 @@ import javax.swing.*;
 import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableModel;
 
-import mp3.classes.interfaces.Strings;
-import mp3.classes.interfaces.*;
+import mp4.globals.Strings;
+
 import mp3.classes.utils.Formater;
 import mp3.classes.utils.Log;
 import mp3.classes.layer.Popup;
@@ -1699,7 +1701,7 @@ numberfieldedited = true;
     public void close() {
         setPanelValues();
         if (isEdited()) {
-            if (Popup.Y_N_dialog("Änderungen verwerfen?")) {
+            if (Popup.Y_N_dialog("Wenn Sie jetzt schliessen, gehen Ihre Änderungen verloren.\nTrotzdem schliessen?")) {
                 ((JTabbedPane) this.getParent()).remove(this);
             }
         } else {

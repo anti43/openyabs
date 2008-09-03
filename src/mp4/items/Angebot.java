@@ -19,8 +19,8 @@ package mp4.items;
 import mp4.items.handler.NumberFormatHandler;
 import java.util.Date;
 
-import mp3.classes.interfaces.Countable;
-import mp3.classes.interfaces.Strings;
+import mp4.interfaces.Countable;
+import mp4.globals.Strings;
 import mp3.classes.layer.Popup;
 import mp4.datenbank.verbindung.Query;
 import mp3.classes.utils.Log;

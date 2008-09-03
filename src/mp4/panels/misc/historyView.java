@@ -13,7 +13,7 @@ import javax.swing.JTable;
 import mp3.classes.layer.People;
 import mp4.items.handler.HistoryHandler;
 import javax.swing.table.DefaultTableModel;
-import mp3.classes.interfaces.panelInterface;
+import mp4.interfaces.panelInterface;
 import mp4.frames.mainframe;
 import mp4.utils.tabellen.TableFormat;
 

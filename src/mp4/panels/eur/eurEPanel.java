@@ -10,8 +10,8 @@ import javax.swing.JTabbedPane;
 import mp3.classes.layer.People;
 import mp4.items.HistoryItem;
 import mp4.items.Rechnung;
-import mp3.classes.interfaces.Strings;
-import mp3.classes.interfaces.panelInterface;
+import mp4.globals.Strings;
+import mp4.interfaces.panelInterface;
 import mp3.classes.layer.Popup;
 import mp3.classes.layer.visual.DatePick;
 

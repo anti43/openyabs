@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.Locale;
 import javax.swing.JTabbedPane;
 import javax.swing.table.DefaultTableModel;
-import mp3.classes.interfaces.panelInterface;
+import mp4.interfaces.panelInterface;
 import mp3.classes.layer.EURTableModel;
 import mp3.classes.layer.People;
 import mp3.classes.layer.Popup;

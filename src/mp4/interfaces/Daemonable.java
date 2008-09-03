@@ -17,31 +17,18 @@
  *  
  */
 
-package mp4.datenbank.verbindung;
-
-import mp4.globals.Constants;
-import mp4.globals.Constants;
-import mp4.globals.Strings;
-import mp4.datenbank.verbindung.ConnectionHandler;
-import mp3.classes.layer.Things;
+package mp4.interfaces;
 
 /**
  *
  * @author anti43
  */
-public class DbAdmin extends Things implements Strings, Constants{
+public interface Daemonable {
 
-    public DbAdmin(){
-        super(ConnectionHandler.instanceOf());
+    /**
+     * 
+     * @return
+     */
+    public abstract String[][] getAll();
     
-    }
-    
-    public void clearTable(String table){
-    
-    this.freeQuery("DELETE FROM " + table);
-    
-    }
-    
-
-
 }

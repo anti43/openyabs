@@ -21,7 +21,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Date;
 
-import mp3.classes.interfaces.Countable;
+import mp4.interfaces.Countable;
 import mp4.datenbank.verbindung.ConnectionHandler;
 
 import mp4.datenbank.verbindung.Query;

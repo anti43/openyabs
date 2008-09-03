@@ -21,7 +21,7 @@ import mp4.items.Customer;
 import mp4.items.Angebot;
 import java.io.*;
 import java.util.ArrayList;
-import mp3.classes.interfaces.Printable;
+import mp4.interfaces.Printable;
 import mp3.classes.utils.Formater;
 import mp3.classes.utils.Log;
 import mp4.einstellungen.Einstellungen;

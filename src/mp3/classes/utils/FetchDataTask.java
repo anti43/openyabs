@@ -22,7 +22,7 @@ import java.awt.Cursor;
 import javax.swing.JComponent;
 import javax.swing.JProgressBar;
 import javax.swing.SwingWorker;
-import mp3.classes.interfaces.Daemonable;
+import mp4.interfaces.Daemonable;
 
 /**
  *

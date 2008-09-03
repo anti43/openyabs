@@ -18,8 +18,9 @@ package mp4.datenbank.verbindung;
 
 import java.io.File;
 import java.sql.*;
-import mp3.classes.interfaces.Constants;
-import mp3.classes.interfaces.Strings;
+import mp4.globals.Constants;
+import mp4.globals.Constants;
+import mp4.globals.Strings;
 import mp3.classes.utils.FileReaderWriter;
 import mp3.classes.layer.Popup;
 import mp3.classes.utils.Log;
@@ -167,6 +168,7 @@ public class Conn implements Strings {
             conn = DriverManager.getConnection(URL);
             // Benötige Ressourcen für eine SQL-Anweisung bereitstellen 
             statement = conn.createStatement();
+            new File(Constants.USER_HOME+File.separator+"derby.log").deleteOnExit();
         } catch (SQLException ex) {
             System.out.println("Database Error:" + ex.getMessage());
             ex.printStackTrace();

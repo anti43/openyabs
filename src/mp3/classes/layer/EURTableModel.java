@@ -20,9 +20,9 @@ package mp3.classes.layer;
 
 import mp4.datenbank.verbindung.ConnectionHandler;
 import javax.swing.table.DefaultTableModel;
-import mp3.classes.interfaces.Constants;
-import mp3.classes.interfaces.ProtectedStrings;
-import mp3.classes.interfaces.Strings;
+import mp4.globals.Constants;
+import mp4.globals.Constants;
+import mp4.globals.Strings;
 
 import mp4.items.Rechnung;
 import mp3.classes.utils.Formater;
@@ -35,7 +35,7 @@ import mp4.utils.datum.DateConverter;
  *
  * @author anti43
  */
-public class EURTableModel implements ProtectedStrings, Constants, Strings, mp4.datenbank.installation.Tabellen {
+public class EURTableModel implements Constants, Strings, mp4.datenbank.installation.Tabellen {
 
     private Object[][] data;
     String[] head = new String[]{"Beschreibung", "Wert"};

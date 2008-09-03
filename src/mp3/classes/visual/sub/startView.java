@@ -6,7 +6,7 @@
 
 package mp3.classes.visual.sub;
 
-import mp3.classes.interfaces.Constants;
+import mp4.globals.Constants;
 //import mp3.classes.objects.ungrouped.MyData;
 import mp4.frames.mainframe;
 import mp4.einstellungen.Einstellungen;

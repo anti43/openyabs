@@ -24,7 +24,7 @@ import java.util.Date;
 import java.util.Locale;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
-import mp3.classes.interfaces.Constants;
+import mp4.globals.Constants;
 
 import mp3.classes.layer.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
@@ -113,6 +113,10 @@ public class Einstellungen extends mp3.classes.layer.People implements mp4.daten
 
         String[] head = new String[]{"Option", "Wert"};
         return new DefaultTableModel(valurarray, head);
+    }
+    
+    public String[][] getData() {
+        return valurarray;
     }
 
     public String getDate() {

@@ -31,7 +31,7 @@ import mp4.utils.zahlen.FormatTax;
  *
  * @author anti43
  */
-public class Ausgabe extends mp3.classes.layer.Things implements mp4.datenbank.installation.Tabellen, mp3.classes.interfaces.Daemonable,Serializable {
+public class Ausgabe extends mp3.classes.layer.Things implements mp4.datenbank.installation.Tabellen, mp4.interfaces.Daemonable,Serializable {
     private static final long serialVersionUID = -7686611027679884281L;
 //  "kontenid INTEGER DEFAULT NULL, beschreibung varchar(500) default NULL,"+
 //  "preis varchar(50) default NULL,"+"tax varchar(50) default NULL,"+"datum varchar(50) default NULL,"+

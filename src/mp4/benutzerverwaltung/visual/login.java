@@ -56,7 +56,7 @@ public class login extends javax.swing.JFrame {
 
         jLabel2.setText("Passwort:");
 
-        jButton1.setText("Ok");
+        jButton1.setText("Login");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -69,7 +69,7 @@ public class login extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setText("Abbrechen");
+        jButton2.setText("Programm beenden");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);

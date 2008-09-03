@@ -16,9 +16,9 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableModel;
-import mp3.classes.interfaces.Strings;
+import mp4.globals.Strings;
 
-import mp3.classes.interfaces.panelInterface;
+import mp4.interfaces.panelInterface;
 import mp3.classes.layer.People;
 import mp4.utils.windows.Position;
 import mp3.classes.layer.DefaultHelpModel;

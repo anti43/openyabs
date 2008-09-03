@@ -2,13 +2,12 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package mp4.installation;
 
 import java.io.File;
 import java.io.IOException;
-import mp3.classes.interfaces.ProtectedStrings;
-import mp3.classes.interfaces.Strings;
+import mp4.globals.Constants;
+import mp4.globals.Strings;
 import mp3.classes.layer.Popup;
 import mp3.classes.utils.JarFinder;
 import mp3.classes.utils.Log;
@@ -19,34 +18,31 @@ import mp4.utils.files.FileDirectoryHandler;
  *
  * @author anti43
  */
-public class Verzeichnisse  implements ProtectedStrings, Strings {
-    
+public class Verzeichnisse implements Constants, Strings {
+
     private static String url;
     private static String workdir;
     private static File pdf_root_dir;
     private static File backup_dir;
     private static File public_dir;
-  
     private static File lib_dir;
     private static File install_lib_dir;
     private static File install_templates_dir;
-    
     private static File pdf_offer_dir;
     private static File pdf_bill_dir;
     private static File pdf_mahnung_dir;
     private static File pdf_produkt_dir;
-    
     private static File templates_dir;
     private static File cache_dir;
-    
-   private static String backuppathtftext = System.getProperty("user.home");
-   private static String pdfpathtftext = System.getProperty("user.home");;
-    
- public  static void buildPath() throws IOException {
+    private static String backuppathtftext = System.getProperty("user.home");
+    private static String pdfpathtftext = System.getProperty("user.home");
+    ;
+
+    public static void buildPath() throws IOException {
         try {
             workdir = JarFinder.getPathOfJar(JAR_NAME);
         } catch (Exception ex) {
-            Log.Debug(ex);
+            ex.printStackTrace();
         }
         System.out.println("Workdir: " + workdir);
 
@@ -95,24 +91,28 @@ public class Verzeichnisse  implements ProtectedStrings, Strings {
                     getPdf_offer_dir().mkdirs() &
                     getPdf_mahnung_dir().mkdirs() &
                     getCache_dir().mkdirs()) {
-                
+
                 Log.Debug("Erfolgreich!", true);
+            }  else {
+                Log.Debug("Es ist ein Fehler aufgetreten,\nüberprüfen Sie Ihre Berechtigungen!", true);
             }
         } catch (Exception e) {
-             Log.Debug("Fehler!: " + e.getMessage(), true);
+            Log.Debug("Fehler!: " + e.getMessage(), true);
         }
     }
- public static void copyFiles() throws Exception {
 
-        if (!public_dir.exists() && getInstall_lib_dir().exists()) {
-            if (getPublic_dir().mkdirs()) {
+    public static void copyFiles() throws Exception {
+
+        Log.Debug("Kopiere von: " + getInstall_lib_dir(), true);
+        if (public_dir.exists() && getInstall_lib_dir().exists()) {
+           
                 try {
 
                     if (!Main.FORCE_NO_FILE_COPY) {
                         Log.Debug("Libraries kopieren..", true);
                         FileDirectoryHandler.copyDirectory(getInstall_lib_dir(), getLib_dir());
                         Log.Debug("MP Jar kopieren..", true);
-                        FileDirectoryHandler.copyDirectory(new File(workdir + File.separator + ProtectedStrings.JAR_NAME), new File(getPublic_dir().getAbsolutePath() + File.separator + ProtectedStrings.JAR_NAME));
+                        FileDirectoryHandler.copyDirectory(new File(workdir + File.separator + Constants.JAR_NAME), new File(getPublic_dir().getAbsolutePath() + File.separator + Constants.JAR_NAME));
                     }
 
                     Log.Debug("Templates kopieren..", true);
@@ -123,22 +123,22 @@ public class Verzeichnisse  implements ProtectedStrings, Strings {
                     Popup.error(ex.getMessage(), "Es ist ein Fehler aufgetreten:");
                     Log.Debug("Es ist ein Fehler aufgetreten: " + ex.getMessage(), true);
                 }
-            } else {
-
-                Log.Debug("Es ist ein Fehler aufgetreten,\nüberprüfen Sie Ihre Berechtigungen!", true);
-            }
+            
+        } else {
+            Log.Debug("Es ist ein Fehler aufgetreten,\nexistiert das /lib Verzeichnis?", true);
         }
 
     }
-    public  static void deleteFiles() {
+
+    public static void deleteFiles() {
         try {
             File fil = new File(workdir);
             FileDirectoryHandler.deleteTree(fil);
         } catch (IOException ex) {
         }
     }
-    
-      public static File getPdf_root_dir() {
+
+    public static File getPdf_root_dir() {
         return pdf_root_dir;
     }
 
@@ -225,9 +225,9 @@ public class Verzeichnisse  implements ProtectedStrings, Strings {
     public static String getPathcache_dir() {
         return cache_dir.getPath();
     }
-    
+
     public static String getPathpdf_produkt_dir() {
-       return pdf_produkt_dir.getPath();
+        return pdf_produkt_dir.getPath();
     }
 
     public static void setBackuppathtftext(String aBackuppathtftext) {
@@ -237,6 +237,4 @@ public class Verzeichnisse  implements ProtectedStrings, Strings {
     public static void setPdfpathtftext(String aPdfpathtftext) {
         pdfpathtftext = aPdfpathtftext;
     }
-   
-
 }

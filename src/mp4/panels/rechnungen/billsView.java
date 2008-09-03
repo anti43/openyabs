@@ -5,8 +5,8 @@
  */
 package mp4.panels.rechnungen;
 
-import mp3.classes.interfaces.Waitable;
-import mp3.classes.interfaces.Waiter;
+import mp4.interfaces.Waitable;
+import mp4.interfaces.Waiter;
 import mp4.panels.misc.NumberFormatEditor;
 import java.awt.event.ActionEvent;
 import javax.swing.Icon;
@@ -19,7 +19,7 @@ import java.util.Date;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableModel;
-import mp3.classes.interfaces.Strings;
+import mp4.globals.Strings;
 
 import mp3.classes.layer.visual.CustomerPicker;
 import mp3.classes.layer.visual.DatePick;
@@ -49,7 +49,7 @@ import mp4.einstellungen.Einstellungen;
 import mp4.einstellungen.Programmdaten;
 import mp4.items.Angebot;
 import mp4.benutzerverwaltung.User;
-import mp3.classes.interfaces.panelInterface;
+import mp4.interfaces.panelInterface;
 import mp3.classes.layer.People;
 import mp3.classes.layer.visual.OfferPicker;
 import mp4.frames.PdfVorschauWindow;
@@ -1636,7 +1636,7 @@ public javax.swing.JToolBar jToolBar2;
 
     public void close() {
         if (isEdited()) {
-            if (Popup.Y_N_dialog("Änderungen verwerfen?")) {
+            if (Popup.Y_N_dialog("Wenn Sie jetzt schliessen, gehen Ihre Änderungen verloren.\nTrotzdem schliessen?")) {
                 ((JTabbedPane) this.getParent()).remove(this);
             }
         } else {

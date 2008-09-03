@@ -20,7 +20,7 @@ package mp3.classes.utils;
 
 import java.io.File;
 import java.io.IOException;
-import mp3.classes.interfaces.Strings;
+import mp4.globals.Strings;
 import mp3.classes.layer.Popup;
 import mp4.einstellungen.Einstellungen;
 

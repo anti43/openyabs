@@ -12,7 +12,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import mp4.items.Customer;
 import mp4.utils.tabellen.SelectionCheck;
-import mp3.classes.interfaces.panelInterface;
+import mp4.interfaces.panelInterface;
 import mp4.items.Hersteller;
 import mp4.items.Lieferant;
 import mp4.panels.produkte.productsView;

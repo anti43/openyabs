@@ -9,7 +9,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JTabbedPane;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableModel;
-import mp3.classes.interfaces.panelInterface;
+import mp4.interfaces.panelInterface;
 import mp3.classes.layer.DefaultHelpModel;
 import mp3.classes.layer.People;
 import mp3.classes.layer.visual.Help;
@@ -17,6 +17,7 @@ import mp4.einstellungen.Einstellungen;
 import mp4.frames.mainframe;
 import mp4.installation.Setup;
 import mp4.utils.tabellen.TableFormat;
+import mp4.utils.tabellen.models.SettingsTableModel;
 
 /**
  *
@@ -41,8 +42,9 @@ public class settingsView extends javax.swing.JPanel implements panelInterface {
         oldData = data;
         this.mainframe = frame;
 
-        this.jTable1.setModel(data.getDefaultTablemodel());
+        this.jTable1.setModel(new SettingsTableModel());
         TableFormat.resizeCols(jTable1, new Integer[]{150, 300}, false);
+        
     }
 
     /** This method is called from within the constructor to
@@ -214,7 +216,7 @@ private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:ev
 }//GEN-LAST:event_jButton2MouseClicked
 
 private void jButton3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
-    this.jTable1.setModel(oldData.getDefaultTablemodel());
+    this.jTable1.setModel(new SettingsTableModel(oldData.getData()));
     TableFormat.resizeCols(jTable1, new Integer[]{150, 300}, false);
     data.setModel(jTable1.getModel());
     data.save();
@@ -226,19 +228,15 @@ private void jButton4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:ev
     fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 
     if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-
-
         try {
             jTable1.setValueAt(fc.getSelectedFile().toString(), jTable1.getSelectedRow(), 1);
-
         } catch (Exception exception) {
         }
-
     }
 }//GEN-LAST:event_jButton4MouseClicked
 
 private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-// TODO add your handling code here:
+
 }//GEN-LAST:event_jButton4ActionPerformed
 
 private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
@@ -246,10 +244,7 @@ private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 }//GEN-LAST:event_jButton5ActionPerformed
 
 private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-    new Help(new DefaultHelpModel("Einstellungen",
-            "<P><FONT FACE='DejaVu Sans, sans-serif'>Sie m&uuml;ssen den Pfad zu Ihrem PDF-Programm angeben, <BR>um erstellte Rechnungen sofort anzusehen und auszudrucken.<BR>Unter  <B>KDE 3.5</B> ist dies z.B.  <B>KPdf </B>  ( /opt/kde3/bin/kpdf ).</FONT></P>" +
-            "<P><FONT FACE='DejaVu Sans, sans-serif'>Sie m&uuml;ssen den Pfad zu Ihrem Internet Browser-Programm angeben, <BR>um direkt zum Hilfeforum zu gelangen.</FONT></P>" +
-            "<P><FONT FACE='DejaVu Sans, sans-serif'>Der Internetbrowser <B>Firefox 2</B> befindet sich unter <B>OpenSuse 10.x</B> unter: /usr/bin/firefox</FONT></P>"));
+    new Help("/resources/helpfiles/einstellungen1");
 }//GEN-LAST:event_jButton6ActionPerformed
 // Variables declaration - do not modify//GEN-BEGIN:variables
 private javax.swing.JButton jButton2;

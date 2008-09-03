@@ -7,8 +7,8 @@ package mp4.panels.eur;
 
 import java.awt.Font;
 import javax.swing.JTabbedPane;
-import mp3.classes.interfaces.Strings;
-import mp3.classes.interfaces.panelInterface;
+import mp4.globals.Strings;
+import mp4.interfaces.panelInterface;
 import mp3.classes.layer.People;
 import mp3.classes.layer.Popup;
 import mp3.classes.layer.visual.DatePick;

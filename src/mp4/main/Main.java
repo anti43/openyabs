@@ -20,17 +20,15 @@ import com.l2fprod.common.swing.plaf.LookAndFeelAddons;
 import de.muntjak.tinylookandfeel.TinyLookAndFeel;
 import java.io.File;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import mp4.installation.Setup;
-import mp3.classes.interfaces.Constants;
-import mp3.classes.interfaces.Strings;
+import mp4.globals.Constants;
+import mp4.globals.Strings;
 import mp3.classes.layer.Popup;
 import mp3.classes.utils.FileReaderWriter;
 import mp3.classes.utils.Log;
 import mp3.classes.utils.SplashScreen;
+import mp4.frames.Logger;
 import mp4.frames.mainframe;
 import mp4.installation.Verzeichnisse;
 
@@ -57,6 +55,7 @@ public class Main implements Strings {
     private static final String argCHANGE_TEMPLATE_DIR = "-templatedir=";
     private static final String argCHANGE_BACKUP_DIR = "-backupdir=";
     private static final String argCHANGE_PDF_DIR = "-pdfdir=";
+    private static final String argFILE_LOGGING = "-log=";
     
     
     public static String PDFDIR = null;
@@ -105,6 +104,13 @@ public class Main implements Strings {
                     } catch (Exception e) {
                         PDFDIR = null;
                     }
+                } else if (arg.contentEquals(argFILE_LOGGING)) {
+                    try {
+                        Logger.setLogFile(arg.split("=")[1]);
+                    } catch (Exception e) {
+                        Log.Debug("Fehler beim Schreiben der Logdatei: " +e.getMessage(), true);
+                        
+                    }
                 }
             }
         }
@@ -137,9 +143,10 @@ public class Main implements Strings {
     private void doArgCommands() {
         if (FORCE_FILE_COPY) {
             try {
+                Verzeichnisse.buildPath();
                 Verzeichnisse.copyFiles();
             } catch (Exception ex) {
-                Popup.error(ex.getMessage(), "Es ist ein Fehler aufgetreten:");
+                ex.printStackTrace();
             }
         }
         if (FORCE_CREATE_DATABASE) {

@@ -33,8 +33,8 @@ import java.util.*;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import mp3.classes.interfaces.Printable;
-import mp3.classes.interfaces.Waitable;
+import mp4.interfaces.Printable;
+import mp4.interfaces.Waitable;
 import mp3.classes.layer.Popup;
 
 import mp3.classes.utils.Log;

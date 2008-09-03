@@ -5,16 +5,16 @@
  */
 package mp4.panels.produkte;
 
-import mp3.classes.visual.sub.*;
+import mp4.globals.Strings;
+import mp4.interfaces.panelInterface;
+import mp4.interfaces.Waitable;
+import mp4.interfaces.moneyPanelInterface;
 import mp3.classes.layer.People;
-import mp4.items.Lieferant;
 import java.util.Date;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
-import mp3.classes.interfaces.*;
 import mp3.classes.utils.Formater;
-import mp3.classes.utils.Log;
 import mp3.classes.layer.Popup;
 
 import mp3.classes.layer.visual.DatePick;
@@ -25,7 +25,6 @@ import mp4.frames.PdfVorschauWindow;
 import mp4.frames.mainframe;
 import mp4.items.Angebot;
 import mp4.items.Dienstleistung;
-import mp4.items.Hersteller;
 
 import mp4.items.HistoryItem;
 import mp4.items.Rechnung;
@@ -1144,7 +1143,7 @@ public javax.swing.JToolBar jToolBar2;
     public void close() {
         setPanelValues();
         if (isEdited()) {
-            if (Popup.Y_N_dialog("Änderungen verwerfen?")) {
+            if (Popup.Y_N_dialog("Wenn Sie jetzt schliessen, gehen Ihre Änderungen verloren.\nTrotzdem schliessen?")) {
                 ((JTabbedPane) this.getParent()).remove(this);
             }
         } else {

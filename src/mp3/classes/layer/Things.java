@@ -20,7 +20,7 @@ import mp4.items.handler.NumberFormatHandler;
 import java.util.Date;
 import javax.swing.JTable;
 
-import mp3.classes.interfaces.Queries;
+import mp4.interfaces.Queries;
 import mp4.datenbank.verbindung.Query;
 
 import mp4.utils.datum.DateConverter;

@@ -10,7 +10,7 @@ import mp4.utils.windows.Position;
 import javax.swing.ListSelectionModel;
 import mp4.items.Customer;
 import mp4.utils.tabellen.SelectionCheck;
-import mp3.classes.interfaces.moneyPanelInterface;
+import mp4.interfaces.moneyPanelInterface;
 import mp4.items.Steuersatz;
 import mp4.utils.tabellen.models.TaxTableModel;
 

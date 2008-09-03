@@ -11,7 +11,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.table.DefaultTableModel;
 
 
-import mp3.classes.interfaces.Strings;
+import mp4.globals.Strings;
 import mp3.classes.layer.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.items.HistoryItem;
@@ -21,7 +21,7 @@ import mp4.utils.tabellen.SelectionCheck;
 import mp3.classes.utils.Log;
 import mp4.benutzerverwaltung.User;
 
-import mp3.classes.interfaces.panelInterface;
+import mp4.interfaces.panelInterface;
 import mp3.classes.layer.People;
 import mp4.items.Hersteller;
 import mp4.items.Product;
@@ -1324,7 +1324,7 @@ public javax.swing.JToolBar jToolBar2;
 
     public void close() {
         if (isEdited()) {
-            if (Popup.Y_N_dialog("Änderungen verwerfen?")) {
+            if (Popup.Y_N_dialog("Wenn Sie jetzt schliessen, gehen Ihre Änderungen verloren.\nTrotzdem schliessen?")) {
                 ((JTabbedPane) this.getParent()).remove(this);
             }
         } else {

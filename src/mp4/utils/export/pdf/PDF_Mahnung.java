@@ -23,7 +23,7 @@ import mp4.items.Customer;
 import java.util.ArrayList;
 import java.util.Date;
 
-import mp3.classes.interfaces.Printable;
+import mp4.interfaces.Printable;
 import mp3.classes.utils.Formater;
 import mp4.einstellungen.Einstellungen;
 import mp4.einstellungen.Programmdaten;

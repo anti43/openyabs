@@ -16,6 +16,8 @@
  */
 package mp3.classes.utils;
 
+import java.io.IOException;
+import java.util.logging.Level;
 import mp4.frames.Logger;
 
 /**
@@ -36,12 +38,24 @@ public class Log {
         }
 
         for (int i = 0; i < array.length; i++) {
-            logger.log();
-            for (int k = 0; k < array[i].length; k++) {
+            try {
                 logger.log();
+            } catch (IOException ex) {
+                java.util.logging.Logger.getLogger(Log.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            for (int k = 0; k < array[i].length; k++) {
+                try {
+                    logger.log();
+                } catch (IOException ex) {
+                    java.util.logging.Logger.getLogger(Log.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 for (int f = 0; f < array[i][k].length; f++) {
                     if (loglevel != LOGLEVEL_LOW) {
-                        logger.log(array[i][k][f] + " ");
+                        try {
+                            logger.log(array[i][k][f] + " ");
+                        } catch (IOException ex) {
+                            java.util.logging.Logger.getLogger(Log.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     }
                 }
             }
@@ -55,7 +69,11 @@ public class Log {
         for (int i = 0; i < array.length; i++) {
             for (int k = 0; k < array[i].length; k++) {
                 if (loglevel != LOGLEVEL_LOW) {
-                    logger.log("[" + i + "]" + " [" + k + "] " + array[i][k]);
+                    try {
+                        logger.log("[" + i + "]" + " [" + k + "] " + array[i][k]);
+                    } catch (IOException ex) {
+                        java.util.logging.Logger.getLogger(Log.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             }
         }
@@ -68,7 +86,11 @@ public class Log {
         for (int i = 0; i < string.length; i++) {
 
             if (loglevel != LOGLEVEL_LOW) {
-                logger.log(string[i]);
+                try {
+                    logger.log(string[i]);
+                } catch (IOException ex) {
+                    java.util.logging.Logger.getLogger(Log.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
 
         }
@@ -79,7 +101,11 @@ public class Log {
             logger.setVisible(true);
         }
         if (loglevel != LOGLEVEL_LOW) {
-            logger.log(obj);
+            try {
+                logger.log(obj);
+            } catch (IOException ex) {
+                java.util.logging.Logger.getLogger(Log.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
@@ -88,14 +114,22 @@ public class Log {
             logger.setVisible(true);
         }
         if (loglevel != LOGLEVEL_LOW) {
-            logger.log(ex.getMessage() + "\n" + ex.getCause());
+            try {
+                logger.log(ex.getMessage() + "\n" + ex.getCause());
+            } catch (IOException ex1) {
+                java.util.logging.Logger.getLogger(Log.class.getName()).log(Level.SEVERE, null, ex1);
+            }
             ex.printStackTrace();
         }
     }
 
     public static void Debug(Exception ex, boolean konsole) {
         if (konsole) {
-            logger.log(ex.getMessage() + "\n" + ex.getCause());
+            try {
+                logger.log(ex.getMessage() + "\n" + ex.getCause());
+            } catch (IOException ex1) {
+                java.util.logging.Logger.getLogger(Log.class.getName()).log(Level.SEVERE, null, ex1);
+            }
             ex.printStackTrace();
         } else {
             Debug(ex.getMessage() + "\n" + ex.getCause());
@@ -104,7 +138,11 @@ public class Log {
 
     public static void Debug(Object string, boolean konsole) {
         if (konsole) {
-            logger.log(string);
+            try {
+                logger.log(string);
+            } catch (IOException ex) {
+                java.util.logging.Logger.getLogger(Log.class.getName()).log(Level.SEVERE, null, ex);
+            }
             if (loglevel != LOGLEVEL_LOW) {
                 System.out.println(string);
             }
@@ -115,7 +153,11 @@ public class Log {
 
     public static void debug(char cChar) {
         if (loglevel != LOGLEVEL_LOW) {
-            logger.log(cChar);
+            try {
+                logger.log(cChar);
+            } catch (IOException ex) {
+                java.util.logging.Logger.getLogger(Log.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
@@ -130,7 +172,11 @@ public class Log {
         for (int i = 0; i < array.length; i++) {
             for (int k = 0; k < array[i].length; k++) {
                 if (loglevel != LOGLEVEL_LOW) {
-                    logger.log("[" + i + "]" + " [" + k + "] " + array[i][k]);
+                    try {
+                        logger.log("[" + i + "]" + " [" + k + "] " + array[i][k]);
+                    } catch (IOException ex) {
+                        java.util.logging.Logger.getLogger(Log.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             }
         }

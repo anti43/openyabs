@@ -10,7 +10,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.border.EtchedBorder;
-import mp3.classes.interfaces.panelInterface;
+import mp4.interfaces.panelInterface;
 
 /**
  *

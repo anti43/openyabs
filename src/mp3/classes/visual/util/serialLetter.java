@@ -15,8 +15,8 @@ import javax.swing.JFileChooser;
 import javax.swing.JTable;
 import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableModel;
-import mp3.classes.interfaces.Constants;
-import mp3.classes.interfaces.ProtectedStrings;
+import mp4.globals.Constants;
+import mp4.globals.Constants;
 import mp3.classes.layer.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.items.Customer;
@@ -33,7 +33,7 @@ import mp4.utils.export.pdf.PDFFile;
  *
  * @author  anti43
  */
-public class serialLetter extends javax.swing.JFrame implements ProtectedStrings {
+public class serialLetter extends javax.swing.JFrame implements Constants {
 
     private static ArrayList customers;
     private static JTable jtable1;

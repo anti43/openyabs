@@ -10,7 +10,7 @@ import mp4.items.Rechnung;
 import mp4.benutzerverwaltung.User;
 import mp4.frames.mainframe;
 
-import mp3.classes.interfaces.panelInterface;
+import mp4.interfaces.panelInterface;
 import mp4.utils.tabellen.DataModelUtils;
 import mp4.utils.tabellen.SelectionCheck;
 import mp4.utils.tabellen.TableFormat;

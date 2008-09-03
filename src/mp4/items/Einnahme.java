@@ -19,7 +19,6 @@ package mp4.items;
 /*import mp3.classes.objects.*;*/
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.einstellungen.Einstellungen;
-import mp3.classes.interfaces.Daemonable;
 import java.util.Date;
 import mp4.datenbank.verbindung.Query;
 
@@ -28,6 +27,7 @@ import mp3.classes.layer.*;
 import mp3.classes.utils.Formater;
 
 import mp3.classes.utils.Log;
+import mp4.interfaces.Daemonable;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.tabellen.DataModelUtils;
 import mp4.utils.zahlen.FormatNumber;

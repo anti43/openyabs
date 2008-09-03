@@ -28,9 +28,27 @@ import mp4.utils.tabellen.models.MPTableModel;
 public class TableFormat {
 
     public static void makeUneditable(JTable table) {
-      
+
         try {
             ((MPTableModel) table.getModel()).setCanEdits(new boolean[]{false, false, false, false, false, false, false, false, false, false, false, false, false});
+        } catch (Exception e) {
+            Log.Debug("Can not change this table to uneditable.", true);
+        }
+    }
+
+    public static void makeUneditableColumns(JTable table, Integer[] desiredCol) {
+        boolean[] unedits;
+        try {
+            unedits = new boolean[desiredCol.length];
+            for (int i = 0; i < desiredCol.length; i++) {
+                if (desiredCol[i] != null) {
+                    unedits[i] = false;
+                } else {
+                    unedits[i] = true;
+                }
+            }
+
+            ((MPTableModel) table.getModel()).setCanEdits(unedits);
         } catch (Exception e) {
             Log.Debug("Can not change this table to uneditable.", true);
         }
@@ -68,15 +86,15 @@ public class TableFormat {
      * @param fixed Should the cols be non-resizable
      */
     public static void resizeCols(JTable table, Integer[] desiredColSizes, boolean fixed) {
-       
-            for (int i = 0; i < desiredColSizes.length; i++) {
-                if (desiredColSizes[i] != null) {
-                    table.getColumn(table.getColumnName(i)).setMinWidth(desiredColSizes[i]);
-                    table.getColumn(table.getColumnName(i)).setPreferredWidth(desiredColSizes[i]);
-                    if (fixed) {
-                        table.getColumn(table.getColumnName(i)).setMaxWidth(desiredColSizes[i]);
-                    }
+
+        for (int i = 0; i < desiredColSizes.length; i++) {
+            if (desiredColSizes[i] != null) {
+                table.getColumn(table.getColumnName(i)).setMinWidth(desiredColSizes[i]);
+                table.getColumn(table.getColumnName(i)).setPreferredWidth(desiredColSizes[i]);
+                if (fixed) {
+                    table.getColumn(table.getColumnName(i)).setMaxWidth(desiredColSizes[i]);
                 }
             }
+        }
     }
 }

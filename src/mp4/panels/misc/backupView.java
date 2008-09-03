@@ -17,10 +17,10 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 //import mp3.classes.objects.ungrouped.HistoryHandler;
 import javax.swing.table.DefaultTableModel;
-import mp3.classes.interfaces.Constants;
+import mp4.globals.Constants;
 
-import mp3.classes.interfaces.Strings;
-import mp3.classes.interfaces.panelInterface;
+import mp4.globals.Strings;
+import mp4.interfaces.panelInterface;
 import mp3.classes.layer.People;
 import mp3.classes.utils.FileReaderWriter;
 import mp3.classes.utils.Log;
@@ -231,7 +231,7 @@ public class backupView extends javax.swing.JPanel implements panelInterface{
             savefile = store + File.separator + df.format(new Date()) + ".mpsavefile-40.zip";
 
             if (store.equals("")) {
-                store = Constants.HOME + File.separator + Constants.DATABASENAME;
+                store = Constants.USER_HOME + File.separator + Constants.DATABASENAME;
             }
 
             Log.Debug("Anlegen einer Sicherungsdatei:\nZiel: " + savefile, true);

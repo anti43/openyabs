@@ -18,8 +18,8 @@ package mp4.utils.tasks;
 
 import javax.swing.JProgressBar;
 import javax.swing.SwingWorker;
-import mp3.classes.interfaces.Waitable;
-import mp3.classes.interfaces.Waiter;
+import mp4.interfaces.Waitable;
+import mp4.interfaces.Waiter;
 import mp3.classes.utils.Log;
 
 /**

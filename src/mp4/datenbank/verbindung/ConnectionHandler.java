@@ -18,7 +18,7 @@ package mp4.datenbank.verbindung;
 
 import mp3.classes.layer.*;
 import java.io.File;
-import mp3.classes.interfaces.Constants;
+import mp4.globals.Constants;
 
 /**
  *

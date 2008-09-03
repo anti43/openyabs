@@ -21,7 +21,7 @@ package mp4.items;
 import mp4.benutzerverwaltung.User;
 import mp4.einstellungen.Einstellungen;
 import java.util.Date;
-import mp3.classes.interfaces.Strings;
+import mp4.globals.Strings;
 import mp4.datenbank.verbindung.Query;
 
 import mp4.datenbank.verbindung.ConnectionHandler;
