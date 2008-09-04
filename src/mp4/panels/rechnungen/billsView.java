@@ -149,13 +149,14 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
     }
 
     private void createNew() {
-        CalculatedTableValues calculated;
+//        CalculatedTableValues calculated;
         PostenTableModel m;
+        calculator.setStopped(true);
 
         if (hasCustomer() && validDate()) {
 
             SelectionCheck selection = new SelectionCheck(jTable1);
-            calculated = DataModelUtils.calculateTableCols(jTable1, 0, 3, 4);
+//            calculated = DataModelUtils.calculateTableCols(jTable1, 0, 3, 4);
             m = (PostenTableModel) jTable1.getModel();
 
             Rechnung bill = new Rechnung();
@@ -169,7 +170,8 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
                 bill.setAusfuehrungsDatum(bill.getDatum());
             }
             bill.setKundenId(getCustomer().getId());
-            bill.setGesamtpreis(calculated.getBruttobetrag());
+            bill.setGesamtpreis(calculator.brutto);
+            bill.setGesamttax(calculator.allovertax);
             bill.setBezahlt(jCheckBox2.isSelected());
             bill.setStorno(jCheckBox3.isSelected());
             bill.add(m);
@@ -198,6 +200,7 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
                 this.setEdited(false);
                 mainframe.setMessage("Rechnung Nummer: " + bill.getRechnungnummer() + " angelegt.");
                 new HistoryItem(Strings.BILL, "Rechnung Nummer: " + bill.getRechnungnummer() + " angelegt.");
+                calculator.setStopped(false);
                 angebot = null;
                 setBill(bill);
 //                this.setBill(new Rechnung());
@@ -1259,7 +1262,7 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 
     public void save() {
 
-        CalculatedTableValues calculated;
+//        CalculatedTableValues calculated;
         PostenTableModel m;
 
         if (hasValidCurrentBill()) {
@@ -1267,7 +1270,7 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 
 
                 SelectionCheck selection = new SelectionCheck(jTable1);
-                calculated = DataModelUtils.calculateTableCols(jTable1, 0, 3, 4);
+//                calculated = DataModelUtils.calculateTableCols(jTable1, 0, 3, 4);
                 m = (PostenTableModel) jTable1.getModel();
 
                 Rechnung bill = currentBill;
@@ -1277,7 +1280,8 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 bill.setKundenId(getCustomer().getId());
                 bill.setBezahlt(jCheckBox2.isSelected());
                 bill.setStorno(jCheckBox3.isSelected());
-                bill.setGesamtpreis(calculated.getBruttobetrag());
+                bill.setGesamtpreis(calculator.brutto);
+                bill.setGesamttax(calculator.allovertax);
                 bill.add(m);
 
                 if (bill.save()) {

@@ -105,6 +105,7 @@ public abstract class Formater {
         return mergedArray;
     }
 
+ 
     public static void clearText(JPanel jPanel6) {
         JTextField jt = null;
         Object p;
@@ -453,6 +454,7 @@ public abstract class Formater {
         return str;
     }
 
+    @SuppressWarnings("unchecked")
     public static ArrayList merge(ArrayList list1, ArrayList list2) {
         Iterator it =list2.iterator();
 
@@ -462,6 +464,62 @@ public abstract class Formater {
         
       return list1;
    }
+    
+    /**
+     * list 1 +2 must have same element count!
+     * 
+     * @param list1
+     * @param list2
+     * @return list1.values(n) - list2.values(n)
+     * @throws Exception 
+     */
+    @SuppressWarnings("unchecked")
+    public static ArrayList substract(ArrayList<Double> list1, ArrayList<Double> list2) throws Exception {
+        Iterator it1 = list1.iterator();
+        Iterator it2 = list2.iterator();
+        
+        if(list1.size() != list2.size()) {
+            throw new Exception("list 1 + 2 must have same element count!");
+        }
+        
+        ArrayList<Double> list3 = new ArrayList();
+
+        while (it1.hasNext() && it2.hasNext()) {
+            Double value = (Double)it1.next() - (Double)it2.next();
+            list3.add(value);
+        }
+        
+      return list1;
+    }
+    
+    /**
+     * list 1 + 2 must have same element count!
+     * 
+     * @param list1
+     * @param list2
+     * @return list1.values(n) + list2.values(n)
+     * @throws Exception 
+     */
+    public static ArrayList<Double> add(ArrayList<Double> list1, ArrayList<Double> list2) throws Exception {
+         
+        Iterator it1 = list1.iterator();
+        Iterator it2 = list2.iterator();
+        
+        if(list1.size() != list2.size()) {
+            throw new Exception("list 1 + 2 must have same element count!");
+        }
+        
+        @SuppressWarnings("unchecked")
+        ArrayList<Double> list3 = new ArrayList();
+
+        while (it1.hasNext() && it2.hasNext()) {
+            Double value = (Double)it1.next() + (Double)it2.next();
+            list3.add(value);
+        }
+        
+      return list1;
+    }
+
 
     public static Object[][] merge(Object[][] array1, Object[][] array2) {
         if (array1 == null) {
@@ -613,6 +671,8 @@ public abstract class Formater {
         return new DateInputVerifier(field);
 
     }
+
+  
 }
 class FormattedTextFieldVerifier extends InputVerifier {
 

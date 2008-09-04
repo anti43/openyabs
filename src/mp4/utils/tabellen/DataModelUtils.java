@@ -75,48 +75,48 @@ public class DataModelUtils {
         }
         table.setModel(new DefaultTableModel(data, columnNames));
     }
-
-    /**
-     * 
-     * @param table
-     * @param countcol
-     * @param nettocol
-     * @param taxcol
-     * @return
-     */
-    public static CalculatedTableValues calculateTableCols(JTable table, int countcol, int nettocol, int taxcol) {
-
-        TableModel m = table.getModel();
-        Double bruttobetrag = 0d;
-        Double nettobetrag = 0d;
-        Double allovertax = 0d;
-        boolean error = false;
-
-        for (int i = 0; i < m.getRowCount(); i++) {
-            if (m.getValueAt(i, nettocol) != null && m.getValueAt(i, countcol) != null && m.getValueAt(i, taxcol) != null) {
-                try {
-                    bruttobetrag = bruttobetrag + (FormatNumber.parseDezimal(m.getValueAt(i, nettocol).toString()) * (Double.valueOf((FormatNumber.parseDezimal(m.getValueAt(i, taxcol).toString()) / 100) + 1)));
-                    nettobetrag = nettobetrag + (FormatNumber.parseDezimal(m.getValueAt(i, nettocol).toString()));
-                    allovertax = allovertax + ((FormatNumber.parseDezimal(m.getValueAt(i, taxcol).toString())) + 100);
-                } catch (Exception exception) {
-                    Log.Debug(exception);
-                    error = true;
-                }
-            }
-        }
-
-        if (nettobetrag > 0) {
-            allovertax = (allovertax / nettobetrag);
-        } else {
-            allovertax = 0d;
-        }
-
-        if (!error) {
-            return new CalculatedTableValues(bruttobetrag, nettobetrag, allovertax);
-        } else {
-            return null;
-        }
-    }
+//
+//    /**
+//     * 
+//     * @param table
+//     * @param countcol
+//     * @param nettocol
+//     * @param taxcol
+//     * @return
+//     */
+//    public static CalculatedTableValues calculateTableCols(JTable table, int countcol, int nettocol, int taxcol) {
+//
+//        TableModel m = table.getModel();
+//        Double bruttobetrag = 0d;
+//        Double nettobetrag = 0d;
+//        Double allovertax = 0d;
+//        boolean error = false;
+//
+//        for (int i = 0; i < m.getRowCount(); i++) {
+//            if (m.getValueAt(i, nettocol) != null && m.getValueAt(i, countcol) != null && m.getValueAt(i, taxcol) != null) {
+//                try {
+//                    bruttobetrag = bruttobetrag + (FormatNumber.parseDezimal(m.getValueAt(i, nettocol).toString()) * (Double.valueOf((FormatNumber.parseDezimal(m.getValueAt(i, taxcol).toString()) / 100) + 1)));
+//                    nettobetrag = nettobetrag + (FormatNumber.parseDezimal(m.getValueAt(i, nettocol).toString()));
+//                    allovertax = allovertax + ((FormatNumber.parseDezimal(m.getValueAt(i, taxcol).toString())) + 100);
+//                } catch (Exception exception) {
+//                    Log.Debug(exception);
+//                    error = true;
+//                }
+//            }
+//        }
+//
+//        if (nettobetrag > 0) {
+//            allovertax = (allovertax / nettobetrag);
+//        } else {
+//            allovertax = 0d;
+//        }
+//
+//        if (!error) {
+//            return new CalculatedTableValues(bruttobetrag, nettobetrag, allovertax);
+//        } else {
+//            return null;
+//        }
+//    }
 
     public static Object[][] changeToClassValue(Object[][] prods, Class aClass, int[] cols) {
 

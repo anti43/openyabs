@@ -42,20 +42,23 @@ public class TableCalculator implements Runnable {
     private boolean nettoprices = true;
     private JTextField taxTextField = new JTextField();
     private JTextField bruttoTextField = new JTextField();
+    public Double brutto = 0d;
+    public Double netto = 0d;
+    public Double allovertax  = 0d;
     private JComponent panel;
+    
 
     public TableCalculator(JTable table, JComponent panel) {
         defaultTaxRate = Double.valueOf(Einstellungen.instanceOf().getGlobaltax());
-        
+
         this.table = table;
         this.panel = panel;
-        
+
         t = new Thread(this);
         t.setPriority(Thread.MIN_PRIORITY);
         t.start();
 
     }
-
 
     public void run() {
 
@@ -78,8 +81,9 @@ public class TableCalculator implements Runnable {
 
                 Double tax = 0d;
                 Double itax = 0d;
-                Double netto = 0d;
-                Double brutto = 0d;
+                netto = 0d;
+                brutto = 0d;
+                allovertax = 0d;
                 Double curnetto = 0d;
                 Double curbrutto = 0d;
                 Double curnettoe = 0d;
@@ -126,9 +130,17 @@ public class TableCalculator implements Runnable {
 
                                 m.setValueAt((curnetto), row, 4);
                             }
+                            
+                            allovertax = allovertax + (tax + 100);
                         }
                         getTaxTextField().setText(FormatNumber.formatDezimal(brutto - netto));//!tax
                         getBruttoTextField().setText(FormatNumber.formatDezimal(brutto));//!tax
+
+                        if (netto > 0) {
+                           allovertax = (allovertax / netto);
+                        } else {
+                            allovertax = 0d;
+                        }
                     }
                 } catch (Exception e) {
                 }

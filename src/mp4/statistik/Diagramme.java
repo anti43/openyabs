@@ -32,6 +32,7 @@ import java.util.Date;
 import java.util.Vector;
 
 import javax.swing.JPanel;
+import mp3.classes.layer.Popup;
 import mp3.classes.utils.Log;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -72,6 +73,7 @@ import org.jfree.ui.RectangleInsets;
 public class Diagramme {
 
     private JPanel panel;
+    private JFreeChart chart;
 
     public Diagramme(JPanel panel) {
         this.panel = panel;
@@ -92,6 +94,7 @@ public class Diagramme {
         DefaultPieDataset dpdDaten = setzeDaten(vecStTitel, vecOWerte);
         JFreeChart jfcKuchen = ChartFactory.createPieChart3D(stDiaTitel, dpdDaten, true, true, false);
 
+         this.chart = jfcKuchen;
         jfcKuchen.setBackgroundPaint(Color.WHITE);
         jfcKuchen.setAntiAlias(true);
         jfcKuchen.setTextAntiAlias(true);
@@ -138,6 +141,7 @@ public class Diagramme {
         DefaultCategoryDataset dcdDaten = setzeDaten(vecStTitel, vecDWerte);
         JFreeChart jfcBalken = ChartFactory.createBarChart3D(stDiaTitel, stAbszisse, stOrdinate,
                 dcdDaten, PlotOrientation.VERTICAL, true, true, false);
+        this.chart = jfcBalken;
 
         jfcBalken.setBackgroundPaint(Color.WHITE);
         jfcBalken.setAntiAlias(true);
@@ -192,6 +196,7 @@ public class Diagramme {
 
         JFreeChart jfcLinien = ChartFactory.createTimeSeriesChart(stDiaTitel, stAbszisse, stOrdinate,
                 xyDaten, true, true, false);
+        this.chart = jfcLinien;
 
         jfcLinien.setBackgroundPaint(Color.WHITE);
         jfcLinien.setAntiAlias(true);
@@ -232,6 +237,8 @@ public class Diagramme {
 //            // e.printStackTrace();
 //        }
     }
+
+  
 
    
 
@@ -302,13 +309,18 @@ public class Diagramme {
         return xyDaten;
     }
 
-    public File writeToFile(String stDateiPfad, JFreeChart chart) {
-        File file = new File(stDateiPfad);
+ 
+    
+    public File writeToFile(String stDateiPfad) {
+       File file = new File(stDateiPfad);
         try {
             ChartUtilities.saveChartAsPNG(file, chart, 500, 400);
+            Popup.notice("Diagramm gespeichert:\n" + file.getCanonicalPath());
+            Log.Debug("Schreibe Datei:" + file.getCanonicalPath());
         } catch (IOException e) {
             Log.Debug(e);
         }
+       
         return file;
     }
 }

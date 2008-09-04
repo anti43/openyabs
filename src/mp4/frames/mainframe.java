@@ -85,7 +85,7 @@ import mp4.panels.misc.TaxRatesEditor;
 import mp4.panels.misc.backupView;
 import mp4.panels.misc.historyView;
 import mp4.panels.misc.settingsView;
-import mp4.statistik.DiagrammTest;
+import mp4.statistik.graphs.LinienDiagramm;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.text.FadeOnChangeLabel;
 import mp4.utils.windows.Position;
@@ -1255,7 +1255,7 @@ private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 
 private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
 
-    new DiagrammTest();
+    new LinienDiagramm("2008", "2009", "hallo");
 }//GEN-LAST:event_jButton15ActionPerformed
 
     @Override

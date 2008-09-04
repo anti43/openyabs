@@ -129,13 +129,13 @@ public class offersView extends javax.swing.JPanel implements panelInterface, mp
     }
 
     private void createNew() {
-        CalculatedTableValues calculated;
+//        CalculatedTableValues calculated;
         PostenTableModel m;
 
         if (hasCustomer() && validDate()) {
 
             SelectionCheck selection = new SelectionCheck(jTable1);
-            calculated = DataModelUtils.calculateTableCols(jTable1, 0, 3, 4);
+//            calculated = DataModelUtils.calculateTableCols(jTable1, 0, 3, 4);
             m = (PostenTableModel) jTable1.getModel();
 
             Angebot offer = new Angebot();
@@ -1093,14 +1093,14 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 
     public void save() {
 
-        CalculatedTableValues calculated;
+//        CalculatedTableValues calculated;
         PostenTableModel m;
 
         if (hasValidCurrentBill()) {
             if (hasCustomer() && validDate()) {
 
                 SelectionCheck selection = new SelectionCheck(jTable1);
-                calculated = DataModelUtils.calculateTableCols(jTable1, 0, 3, 4);
+//                calculated = DataModelUtils.calculateTableCols(jTable1, 0, 3, 4);
                 m = (PostenTableModel) jTable1.getModel();
 
                 Angebot offer = currentOffer;

@@ -27,6 +27,12 @@ public class FormatNumber {
         n.setMaximumFractionDigits(2);
         return n.format(number);
     }
+    
+     public static Double formatDoubleDec(Double number) {
+        java.text.DecimalFormat n = new java.text.DecimalFormat("####0.00;(####0.00)");
+        n.setMaximumFractionDigits(2);
+        return Double.valueOf(n.format(number));
+    }
 
     public static Double parseDezimal(String number) {
         java.text.DecimalFormat n = new java.text.DecimalFormat("#,##0.00;(#,##0.00)");
