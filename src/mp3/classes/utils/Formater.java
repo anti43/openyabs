@@ -25,6 +25,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import javax.swing.InputVerifier;
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
@@ -41,7 +42,7 @@ import javax.swing.plaf.basic.BasicBorders.FieldBorder;
 import mp4.einstellungen.Einstellungen;
 import mp4.utils.datum.DateConverter;
 
- 
+
 /**
  *
  * @author anti43
@@ -53,12 +54,46 @@ public abstract class Formater {
     public final static int INTEGER = 2;
     public final static int YEAR = 3;
 
+    public static ArrayList ArrayToColumnList(Object[][] array, int column, Class aClass) {
+
+        ArrayList list = new ArrayList();
+
+        for (int idx = 0; idx < array.length; idx++) {
+            list.add((aClass.cast(array[idx][column])));
+        }
+
+        return list;
+    }
+    
+    public static ArrayList ArrayToDoubleColumnList(Object[][] array, int column) {
+
+        ArrayList list = new ArrayList();
+
+        for (int idx = 0; idx < array.length; idx++) {
+            list.add(Double.valueOf(array[idx][column].toString()));
+        }
+
+        return list;
+    }
+    
+      public static ArrayList ArrayToDateColumnList(Object[][] array, int column) {
+
+        ArrayList list = new ArrayList();
+
+        for (int idx = 0; idx < array.length; idx++) {
+            list.add(DateConverter.getDate(array[idx][column].toString()));
+        }
+
+        return list;
+    }
+      
+      
     public static String[][] ObjectToStringArray(Object[][] array1) {
         if (array1 == null) {
             array1 = new Object[0][0];
         }
-        
-        String[][] mergedArray = new String[array1.length ][array1[0].length];
+
+        String[][] mergedArray = new String[array1.length][array1[0].length];
         int i = 0;
         for (i = 0; i < array1.length; i++) {
 
@@ -66,49 +101,49 @@ public abstract class Formater {
 
                 mergedArray[i][k] = array1[i][k].toString();
             }
-        }        
+        }
         return mergedArray;
     }
 
     public static void clearText(JPanel jPanel6) {
         JTextField jt = null;
         Object p;
-        JEditorPane ja =null;
-        JTextArea je =null;
-        
-       for(int i=0;i<jPanel6.getComponents().length;i++){
-       
-        
-       
-           try {
-               p=(java.lang.Object) jPanel6.getComponents()[i];
-               
-               if(p.getClass().isInstance(new JTextField())) {
+        JEditorPane ja = null;
+        JTextArea je = null;
+
+        for (int i = 0; i < jPanel6.getComponents().length; i++) {
+
+
+
+            try {
+                p = (java.lang.Object) jPanel6.getComponents()[i];
+
+                if (p.getClass().isInstance(new JTextField())) {
 
                     jt = (JTextField) jPanel6.getComponents()[i];
                     jt.setText("");
                 }
-               
-                 
-               if(p.getClass().isInstance(new JEditorPane())) {
+
+
+                if (p.getClass().isInstance(new JEditorPane())) {
 
                     ja = (JEditorPane) jPanel6.getComponents()[i];
                     ja.setText(null);
                 }
-               
-               
-                if(p.getClass().isInstance(new JTextArea())) {
+
+
+                if (p.getClass().isInstance(new JTextArea())) {
 
                     je = (JTextArea) jPanel6.getComponents()[i];
                     je.setText("");
                 }
-           } catch (Exception exception) {
-           }
+            } catch (Exception exception) {
+            }
 
-       
-       
-       
-       }
+
+
+
+        }
     }
 
     /**
@@ -125,13 +160,10 @@ public abstract class Formater {
 
     }
 
-
-
     public static String formatPercent(Object obj) {
         return obj.toString() + "%";
     }
-    
-    
+
     /**
      * 
      * @param von
@@ -139,35 +171,33 @@ public abstract class Formater {
      * @param datum
      * @return
      */
-    public static boolean isBetween(String start, String ende, String datum){
-    
+    public static boolean isBetween(String start, String ende, String datum) {
+
         SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy");
-    
-            try {
 
-                Date vond = df.parse(start);
-                Date bisd = df.parse(ende);
-                Date dat = df.parse(datum);
-  
+        try {
 
-               if ((dat.after(vond) && dat.before(bisd)) || dat.equals(vond) || dat.equals(bisd)){
-                    return true;
-                    
-                }
-                else {
-                
-                    return false;
-                
-                }
+            Date vond = df.parse(start);
+            Date bisd = df.parse(ende);
+            Date dat = df.parse(datum);
 
-            } catch (ParseException ex) {
-                Log.Debug(ex.getMessage());
+
+            if ((dat.after(vond) && dat.before(bisd)) || dat.equals(vond) || dat.equals(bisd)) {
+                return true;
+
+            } else {
+
+                return false;
+
             }
-    
-       return false;
-    
+
+        } catch (ParseException ex) {
+            Log.Debug(ex.getMessage());
+        }
+
+        return false;
+
     }
-    
 
     /**
      * 
@@ -176,7 +206,7 @@ public abstract class Formater {
      */
     public static Date getDate(String string) {
         DateFormat df;
-        df = new SimpleDateFormat( "dd.MM.yyyy" );
+        df = new SimpleDateFormat("dd.MM.yyyy");
         Date date;
         try {
 
@@ -239,7 +269,7 @@ public abstract class Formater {
 
         DecimalFormat n = new DecimalFormat("0.00");
         String str = n.format(price);
-        
+
         return Double.valueOf(str.replaceAll(",", "."));
 
 
@@ -248,12 +278,12 @@ public abstract class Formater {
 
     public static String formatMoney(String price) {
 
-         NumberFormat formatter = NumberFormat.getCurrencyInstance(Einstellungen.instanceOf().getLocale());      
-         
-         return formatter.format(Double.valueOf(price));
+        NumberFormat formatter = NumberFormat.getCurrencyInstance(Einstellungen.instanceOf().getLocale());
+
+        return formatter.format(Double.valueOf(price));
 
     }
-    
+
     public static String formatMoney(Double price) {
 
         NumberFormat n = NumberFormat.getCurrencyInstance(Einstellungen.instanceOf().getLocale());
@@ -265,7 +295,7 @@ public abstract class Formater {
     public static boolean check(String string, int mode) {
 
         DateFormat df;
-        df = new SimpleDateFormat( "dd.MM.yyyy" );
+        df = new SimpleDateFormat("dd.MM.yyyy");
         Date date;
         Double number;
         Integer integer;
@@ -309,21 +339,21 @@ public abstract class Formater {
             case 3:
                 try {
 
-                     if(string.length()>4)return false;
-                     SimpleDateFormat dfg = new SimpleDateFormat("yyyy");
-                    
-                     Log.Debug(dfg.parse(string));
+                    if (string.length() > 4) {
+                        return false;
+                    }
+                    SimpleDateFormat dfg = new SimpleDateFormat("yyyy");
+
+                    Log.Debug(dfg.parse(string));
                 } catch (Exception ex) {
                     return false;
                 }
 
                 return true;
-            }
+        }
         return false;
     }
 
-       
-    
     public static void formatUneditableTable(JTable jTable1, String[][] data, String[] header) {
 
 
@@ -358,7 +388,7 @@ public abstract class Formater {
 
         Integer[][][] str = new Integer[list.size()][][];
 
-        ArrayList a, b;
+        ArrayList a,b ;
 
         for (int i = 0; i < list.size(); i++) {
 
@@ -402,26 +432,36 @@ public abstract class Formater {
     }
 
     public static Object[][] listToTableArray(ArrayList list) {
-        
+
         Object[][] str = new Object[list.size()][];
-        
+
         for (int i = 0; i < list.size(); i++) {
-                str[i] = (Object[]) list.get(i);
+            str[i] = (Object[]) list.get(i);
         }
-        
+
         return str;
     }
-    
-     public static String[][] StringListToTableArray(ArrayList list) {
-        
+
+    public static String[][] StringListToTableArray(ArrayList list) {
+
         String[][] str = new String[list.size()][];
-        
+
         for (int i = 0; i < list.size(); i++) {
-                str[i] = (String[]) list.get(i);
+            str[i] = (String[]) list.get(i);
         }
-        
+
         return str;
     }
+
+    public static ArrayList merge(ArrayList list1, ArrayList list2) {
+        Iterator it =list2.iterator();
+
+        while (it.hasNext()) {
+            list1.add(it.next());
+        }
+        
+      return list1;
+   }
 
     public static Object[][] merge(Object[][] array1, Object[][] array2) {
         if (array1 == null) {
@@ -478,6 +518,7 @@ public abstract class Formater {
     public static void stripFirst(JTable table) {
         Formater.stripFirstColumn(table);
     }
+
     /**
      * 
      * @param table
@@ -490,6 +531,7 @@ public abstract class Formater {
 
         table.doLayout();
     }
+
     /**
      * 
      * @param table
@@ -513,7 +555,7 @@ public abstract class Formater {
     }
 
     public static String[] reverseArray(String[] str) {
-        int i = 0, j = str.length - 1;
+        int i = 0,  j = str.length - 1;
         while (i < j) {
             String h = str[i];
             str[i] = str[j];
@@ -526,7 +568,7 @@ public abstract class Formater {
     }
 
     public static String[][] reverseArray(String[][] str) {
-        int i = 0, j = str.length - 1;
+        int i = 0,  j = str.length - 1;
         while (i < j) {
             String[] h = str[i];
             str[i] = str[j];
@@ -537,66 +579,71 @@ public abstract class Formater {
         return str;
 
     }
- public static String formatYear(Date date) {
+
+    public static String formatYear(Date date) {
         SimpleDateFormat df = new SimpleDateFormat("yyyy");
 
         return df.format(date);
 
     }
+
     public static String formatDate(Date date) {
         SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy");
 
         return df.format(date);
 
     }
+
     /**
      * 
      * @param field
      * @return
      */
-    public static InputVerifier getDoubleInputVerfier(JTextField field){
+    public static InputVerifier getDoubleInputVerfier(JTextField field) {
         return new DoubleInputVerifier(field);
-    
+
     }
+
     /**
      * 
      * @param field
      * @return
      */
-    public static InputVerifier getDateInputVerfier(JTextField field){
+    public static InputVerifier getDateInputVerfier(JTextField field) {
         return new DateInputVerifier(field);
-    
+
     }
 }
 class FormattedTextFieldVerifier extends InputVerifier {
-     public boolean verify(JComponent input) {
-         if (input instanceof JFormattedTextField) {
-             JFormattedTextField ftf = (JFormattedTextField)input;
-             AbstractFormatter formatter = ftf.getFormatter();
-             if (formatter != null) {
-                 String text = ftf.getText();
-                 try {
-                      formatter.stringToValue(text);
-                      return true;
-                  } catch (ParseException pe) {
-                      return false;
-                  }
-              }
-          }
-          return true;
-      }
-    @Override
-      public boolean shouldYieldFocus(JComponent input) {
-          return verify(input);
-      }
 
-    
-  }
+    public boolean verify(JComponent input) {
+        if (input instanceof JFormattedTextField) {
+            JFormattedTextField ftf = (JFormattedTextField) input;
+            AbstractFormatter formatter = ftf.getFormatter();
+            if (formatter != null) {
+                String text = ftf.getText();
+                try {
+                    formatter.stringToValue(text);
+                    return true;
+                } catch (ParseException pe) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean shouldYieldFocus(JComponent input) {
+        return verify(input);
+    }
+}
 
 class DateInputVerifier extends javax.swing.InputVerifier {
+
     public DateInputVerifier(JComponent input) {
         super();
-        
+
         this.shouldYieldFocus(input);
     }
 
@@ -604,24 +651,24 @@ class DateInputVerifier extends javax.swing.InputVerifier {
         javax.swing.JTextField jTF = (javax.swing.JTextField) input;
         String sInput = jTF.getText();
         //DateChecker ist eine Klasse, welche Daten auf Korrektheit prüft
-        return (DateConverter.getDate(sInput)!=null);
+        return (DateConverter.getDate(sInput) != null);
     }
 
     @Override
     public boolean shouldYieldFocus(javax.swing.JComponent input) {
         if (!verify(input)) {
             //Textfeld Vordergrund rot färben
-            input.setBorder(new EtchedBorder(Color.WHITE,Color.BLUE ));
+            input.setBorder(new EtchedBorder(Color.WHITE, Color.BLUE));
             return false;
-        }
-        else {
-            input.setBorder(new EtchedBorder( Color.WHITE,Color.GRAY));
+        } else {
+            input.setBorder(new EtchedBorder(Color.WHITE, Color.GRAY));
             return true;
         }
     }
 }
 
 class DoubleInputVerifier extends javax.swing.InputVerifier {
+
     public DoubleInputVerifier(JComponent input) {
         super();
         this.shouldYieldFocus(input);
@@ -638,12 +685,11 @@ class DoubleInputVerifier extends javax.swing.InputVerifier {
     public boolean shouldYieldFocus(javax.swing.JComponent input) {
         if (!verify(input)) {
             //Textfeld Vordergrund rot färben
-            input.setBorder(new EtchedBorder( Color.WHITE,Color.BLUE));
-            ((JTextField) input).setText("0"); 
+            input.setBorder(new EtchedBorder(Color.WHITE, Color.BLUE));
+            ((JTextField) input).setText("0");
             return false;
-        }
-        else {
-            input.setBorder(new EtchedBorder( Color.WHITE,Color.GRAY));
+        } else {
+            input.setBorder(new EtchedBorder(Color.WHITE, Color.GRAY));
             return true;
         }
     }

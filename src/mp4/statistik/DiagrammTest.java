@@ -3,7 +3,6 @@
  *
  * Created on 20. August 2008, 20:55
  */
-
 package mp4.statistik;
 
 import java.text.DecimalFormat;
@@ -11,6 +10,9 @@ import java.util.ArrayList;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import mp4.statistik.models.Jahr;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.zahlen.FormatNumber;
 
@@ -41,42 +43,49 @@ public class DiagrammTest extends javax.swing.JFrame {
 //        dates.add(DateConverter.addYear(DateConverter.addYear(DateConverter.addYear(DateConverter.addYear(DateConverter.addYear(DateConverter.addYear(DateConverter.addYear(new Date()))))))));
 //        dates.add(DateConverter.addYear(DateConverter.addYear(DateConverter.addYear(DateConverter.addYear(DateConverter.addYear(DateConverter.addYear(DateConverter.addYear(DateConverter.addYear(new Date())))))))));
 //        dates.add(DateConverter.addYear(DateConverter.addYear(DateConverter.addYear(DateConverter.addYear(DateConverter.addYear(DateConverter.addYear(DateConverter.addYear(DateConverter.addYear(DateConverter.addYear(new Date()))))))))));
-        
-        ArrayList  vals = new ArrayList();
-        
-        vals.add("Januar");
-        vals.add("Februar");
-        vals.add("März");
-        vals.add("April");
-        vals.add("Mai");
-        vals.add("Juni");
-        vals.add("Juli");
-        vals.add("August");
-        vals.add("September");
-        vals.add("Oktober");
-        vals.add("November");
-        vals.add("Dezember");
-        
-        
-        ArrayList values = new ArrayList();
-        
-        values.add(new Double(2300));
-        values.add(new Double(500));
-        values.add(new Double(7300));
-        values.add(new Double(8900));
-        values.add(new Double(5600));
-        values.add(new Double(4400));
-        values.add(new Double(300));
-        values.add(new Double(4300));
-        values.add(new Double(6700));
-        values.add(new Double(78));
-        values.add(new Double(437));
-        values.add(new Double(60));
-        
-        
+
+//        ArrayList  vals = new ArrayList();
+//        
+//        vals.add("Januar");
+//        vals.add("Februar");
+//        vals.add("März");
+//        vals.add("April");
+//        vals.add("Mai");
+//        vals.add("Juni");
+//        vals.add("Juli");
+//        vals.add("August");
+//        vals.add("September");
+//        vals.add("Oktober");
+//        vals.add("November");
+//        vals.add("Dezember");
+//        
+//        
+//        ArrayList values = new ArrayList();
+//        
+//        values.add(new Double(2300));
+//        values.add(new Double(500));
+//        values.add(new Double(7300));
+//        values.add(new Double(8900));
+//        values.add(new Double(5600));
+//        values.add(new Double(4400));
+//        values.add(new Double(300));
+//        values.add(new Double(4300));
+//        values.add(new Double(6700));
+//        values.add(new Double(78));
+//        values.add(new Double(437));
+//        values.add(new Double(60));
+        Jahr jahr;
+
         Diagramme d = new Diagramme(jPanel1);
+        try {
+            jahr = new Jahr("2008");
+
 //        d.erzeugeLinienGrafik(null, new Vector(dates), new Vector(values), " €", "Umsatz", "Zeitraum", "", "Umsatzverlauf",FormatNumber.getDefaultDecimalFormat());
-         d.erzeugeBalkenGrafik("", new Vector(vals), new Vector(values), " €", "Umsatz 2007", "Zeitraum", "Mio. Euro",FormatNumber.getDefaultDecimalFormat());
+            d.erzeugeLinienGrafik("", new Vector(jahr.getColumns()), 
+                    new Vector(jahr.getUmsatz()), " €", "Umsatz 2007", "Zeitraum", "Euro", "Umsatzverlauf", FormatNumber.getDefaultDecimalFormat());
+        } catch (Exception ex) {
+            Logger.getLogger(DiagrammTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /** This method is called from within the constructor to

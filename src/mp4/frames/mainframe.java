@@ -85,6 +85,7 @@ import mp4.panels.misc.TaxRatesEditor;
 import mp4.panels.misc.backupView;
 import mp4.panels.misc.historyView;
 import mp4.panels.misc.settingsView;
+import mp4.statistik.DiagrammTest;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.text.FadeOnChangeLabel;
 import mp4.utils.windows.Position;
@@ -513,8 +514,8 @@ public class mainframe extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton10, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 86, Short.MAX_VALUE)
-                    .addComponent(jButton9, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 86, Short.MAX_VALUE))
+                    .addComponent(jButton10, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 77, Short.MAX_VALUE)
+                    .addComponent(jButton9, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -524,7 +525,7 @@ public class mainframe extends javax.swing.JFrame {
                 .addComponent(jButton10)
                 .addGap(11, 11, 11)
                 .addComponent(jButton9)
-                .addContainerGap(229, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jOutlookBar1.addTab("Produkte", jPanel4);
@@ -613,7 +614,7 @@ public class mainframe extends javax.swing.JFrame {
                 .addComponent(jButton7)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton8)
-                .addContainerGap(39, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jOutlookBar1.addTab("Buchhaltung", jPanel3);
@@ -658,6 +659,11 @@ public class mainframe extends javax.swing.JFrame {
         jButton15.setToolTipText("Auswertungen");
         jButton15.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton15.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton15.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton15ActionPerformed(evt);
+            }
+        });
 
         jButton16.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/3232/calc.png"))); // NOI18N
         jButton16.setText("Rechner");
@@ -692,7 +698,7 @@ public class mainframe extends javax.swing.JFrame {
                 .addComponent(jButton15)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton16)
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jOutlookBar1.addTab("Extras", jPanel6);
@@ -1246,6 +1252,11 @@ private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     settingspanel = new settingsView(this);
     addPanel("Einstellungen", settingspanel);
 }//GEN-LAST:event_jButton14ActionPerformed
+
+private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
+
+    new DiagrammTest();
+}//GEN-LAST:event_jButton15ActionPerformed
 
     @Override
     public void finalize() {

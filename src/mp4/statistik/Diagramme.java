@@ -185,6 +185,7 @@ public class Diagramme {
      * @param nfBeschrFormat Format für die Beschriftung der XY-Punkte.
      * @exception IOException
      */
+   
     public void erzeugeLinienGrafik(String stDateiPfad, Vector<Date> vecDatWerte, Vector<Double> vecDWerte,
             String stEinheit, String stDiaTitel, String stAbszisse, String stOrdinate, String stLinienName, NumberFormat nfBeschrFormat) {
         XYDataset xyDaten = setzeDaten(vecDatWerte, vecDWerte, stLinienName);
@@ -231,6 +232,8 @@ public class Diagramme {
 //            // e.printStackTrace();
 //        }
     }
+
+   
 
     /**
      * Gruppiert die Daten für das Kuchendiagramm.
@@ -289,7 +292,8 @@ public class Diagramme {
 //            DateFormat dfJahr = new SimpleDateFormat("yyyy");
 //            int iJahr = Integer.parseInt(dfJahr.format((Date) vecDatWerte.get(i)));
 
-            tsZuordnung.add(new Month((Date) vecDatWerte.get(i)), vecDWerte.get(i));
+            tsZuordnung.add(new Month((Date) vecDatWerte.get(i)), 
+                    vecDWerte.get(i));
         }
 
         TimeSeriesCollection xyDaten = new TimeSeriesCollection();

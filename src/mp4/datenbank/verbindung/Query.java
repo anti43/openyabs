@@ -19,7 +19,7 @@ package mp4.datenbank.verbindung;
 import java.awt.Cursor;
 
 import java.sql.*;
-
+import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -31,6 +31,7 @@ import javax.swing.JFrame;
 import mp3.classes.layer.Popup;
 import mp3.classes.utils.Log;
 import mp4.utils.datum.DateConverter;
+import mp4.utils.datum.vTimeframe;
 
 /**
  *
@@ -42,18 +43,15 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
     private Statement stm = null;
     public String[] resultArray = null;
     private ResultSet resultSet = null;
-    
     private String table = "";
     public String resultString = null;
     private String query;
     private String message;
     private String originalvalue = "";
-    
     private int startcount = 0;
     private int resultCount;
     private int substringcount = 0;
-    
-    private static JFrame comp;
+    private static JFrame comp = new JFrame();
     private DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss");
 
     public Query(String table) throws Exception {
@@ -106,6 +104,48 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
         }
         stop();
         return false;
+    }
+    /**/
+
+    public String[][] selectBetween(String what, String[] where, vTimeframe zeitraum) {
+
+        String str = "AND datum BETWEEN '" + DateConverter.getSQLDateString(zeitraum.getStart()) + "' AND '" + DateConverter.getSQLDateString(zeitraum.getEnd()) + "'";
+
+        if (where != null) {
+            query = "SELECT " + what + " FROM " + table + " WHERE " + where[0] + " = " + where[2] + where[1] + where[2] + " " + " AND deleted = 0 " + str;
+        } else {
+            query = "SELECT " + what + " FROM " + table + " WHERE deleted = 0 " + str;
+        }
+        message = "Database Error (select) :";
+
+        return selectFreeQuery(query, message);
+    }
+
+    public ArrayList<Double> selectMonthlySums(String what, String[] where, vTimeframe zeitraum) {
+
+        Date temdate = zeitraum.getStart();
+        ArrayList<Double> values = new ArrayList();
+
+        do {
+            String str = "AND datum BETWEEN '" + DateConverter.getSQLDateString(temdate) + "' AND '" + DateConverter.getSQLDateString(DateConverter.addMonth(temdate)) + "'";
+
+            if (where != null) {
+                query = "SELECT SUM(" + what + ") FROM " + table + " WHERE " + where[0] + " = " + where[2] + where[1] + where[2] + " " + " AND deleted = 0 " + str;
+            } else {
+                query = "SELECT SUM(" + what + ") FROM " + table + " WHERE deleted = 0 " + str;
+            }
+
+            String[][] o = selectFreeQuery(query, message);
+            if(o!=null && o[0][0]!=null && !o[0][0].equals("null"))
+            values.add(Double.valueOf(o[0][0]));
+            else
+                values.add(0d);
+            
+            temdate = DateConverter.addMonth(temdate);
+        } while (temdate.before(zeitraum.getEnd())); 
+
+        return values;
+
     }
 
     /**
@@ -203,7 +243,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
         }
 
         if (where != null) {
-            
+
             query = "SELECT " + what + " FROM " + table +
                     " LEFT OUTER JOIN " + leftJoinTable + " ON " + table + "." + leftJoinKey + " = " + leftJoinTable + ".id" +
                     " WHERE " + table + "." + where[0] + " " + k + " " + where[2] + l1 + where[1] + l2 + where[2] + " AND " + table + ".deleted = 0 ORDER BY " + order;
@@ -813,7 +853,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
         String str = "";
 
         if (where != null) {
-            for (int i = 0; i <where.length; i++) {
+            for (int i = 0; i < where.length; i++) {
                 str = str + where[i][0] + " = " + where[i][2] + where[i][1] + where[i][2];
             }
             query = "DELETE FROM " + table + " WHERE " + str;
@@ -822,13 +862,13 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
         }
 
         message = "Database Error:";
-        stm =null;
+        stm = null;
         resultSet = null;
         Log.Debug(query, true);
         try {
             // Select-Anweisung ausführen
             stm = conn.createStatement();
-            resultCount =stm.executeUpdate(query);
+            resultCount = stm.executeUpdate(query);
             Log.Debug("Entries deleted: " + resultCount);
         } catch (SQLException ex) {
             Log.Debug(message + ex.getMessage());
@@ -937,7 +977,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
         query = "SELECT " + what + " FROM " + table + " WHERE " + wher + ord;
 //        Log.Debug(query, true);
         message = "Database Error (select) :";
-        
+
         return selectFreeQuery(query, message);
     }
 
