@@ -22,7 +22,7 @@ import mp4.datenbank.verbindung.Query;
 /**
  * @author anti43         
  */
-public class ProductGroupGroup extends mp3.classes.layer.Things implements mp4.datenbank.installation.Tabellen {
+public class ProductGroupGroup extends mp4.items.Things implements mp4.datenbank.installation.Tabellen {
 
     private String gruppennummer = "0";
     private Integer familienid = 0;

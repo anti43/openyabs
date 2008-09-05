@@ -11,8 +11,8 @@ import mp4.panels.misc.groupsView;
 import mp4.frames.PdfVorschauWindow;
 import mp4.panels.*;
 import mp4.utils.export.pdf.PDF_Produkt;
-import mp3.classes.visual.sub.*;
-import mp3.classes.layer.People;
+
+import mp4.items.People;
 import mp4.items.Product;
 import mp4.items.Lieferant;
 import java.awt.Cursor;
@@ -30,11 +30,11 @@ import mp4.globals.Strings;
 
 import mp4.utils.ui.inputfields.InputVerifiers;
 import mp4.logs.*;
-import mp3.classes.layer.Popup;
-import mp3.classes.layer.visual.DatePick;
-import mp3.classes.layer.visual.ManufacturerPicker;
-import mp3.classes.layer.visual.ProductPicker;
-import mp3.classes.layer.visual.TaxRatePicker;
+import mp4.items.Popup;
+import mp4.items.visual.DatePick;
+import mp4.items.visual.ManufacturerPicker;
+import mp4.items.visual.ProductPicker;
+import mp4.items.visual.TaxRatePicker;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.benutzerverwaltung.User;
 import mp4.einstellungen.Programmdaten;
@@ -1432,7 +1432,7 @@ private void jButton12KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
 }//GEN-LAST:event_jButton12KeyPressed
 
 private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-    new mp3.classes.layer.visual.SupplierPicker(this);
+    new mp4.items.visual.SupplierPicker(this);
 }//GEN-LAST:event_jButton5ActionPerformed
 
 private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed

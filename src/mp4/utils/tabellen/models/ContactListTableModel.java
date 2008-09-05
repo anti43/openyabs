@@ -17,7 +17,7 @@
 
 package mp4.utils.tabellen.models;
 
-import mp3.classes.layer.People;
+import mp4.items.People;
 
 /**
  *String[][] list = current.select("id, nummer, firma ", "firma", jTextField3.getText(), "firma", true);

@@ -18,7 +18,7 @@ package mp4.items;
 
 import java.util.ArrayList;
 import java.util.Date;
-import mp3.classes.layer.Things;
+import mp4.items.Things;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.utils.combobox.CheckComboItem;
 

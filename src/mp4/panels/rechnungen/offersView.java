@@ -19,14 +19,14 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableModel;
 import mp4.globals.Strings;
 
-import mp3.classes.layer.visual.CustomerPicker;
-import mp3.classes.layer.visual.DatePick;
+import mp4.items.visual.CustomerPicker;
+import mp4.items.visual.DatePick;
 import mp4.utils.ui.inputfields.InputVerifiers;
 import mp4.logs.*;
-import mp3.classes.layer.Popup;
+import mp4.items.Popup;
 import mp4.utils.tabellen.CalculatedTableValues;
 import mp4.utils.tabellen.models.PostenTableModel;
-import mp3.classes.layer.visual.ProductPicker;
+import mp4.items.visual.ProductPicker;
 import mp4.datenbank.verbindung.ConnectionHandler;
 
 import mp4.items.Customer;
@@ -44,7 +44,7 @@ import mp4.einstellungen.Einstellungen;
 
 import mp4.items.Angebot;
 import mp4.interfaces.panelInterface;
-import mp3.classes.layer.People;
+import mp4.items.People;
 import mp4.frames.PdfVorschauWindow;
 import mp4.items.Dienstleistung;
 import mp4.items.Rechnung;

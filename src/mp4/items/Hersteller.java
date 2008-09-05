@@ -26,7 +26,7 @@ import mp4.items.handler.NumberFormatHandler;
  *
  * @author anti
  */
-public class Hersteller extends mp3.classes.layer.People implements mp4.datenbank.installation.Tabellen, Countable {
+public class Hersteller extends mp4.items.People implements mp4.datenbank.installation.Tabellen, Countable {
 
    
     private String nummer = "";

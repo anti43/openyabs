@@ -30,7 +30,7 @@ import mp4.globals.Constants;
 import mp4.globals.Constants;
 import mp4.globals.Strings;
 import mp4.utils.ui.Position;
-import mp3.classes.layer.Popup;
+import mp4.items.Popup;
 import mp4.installation.DesktopIcon;
 import mp4.logs.*;
 import mp4.frames.license;

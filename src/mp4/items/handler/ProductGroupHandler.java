@@ -18,7 +18,7 @@ import mp4.einstellungen.Programmdaten;
  *
  * @author anti43
  */
-public class ProductGroupHandler extends mp3.classes.layer.Things implements mp4.datenbank.installation.Tabellen {
+public class ProductGroupHandler extends mp4.items.Things implements mp4.datenbank.installation.Tabellen {
 
     private ProductGroupCategory[] categories;
     private ProductGroupFamily[] families;

@@ -28,7 +28,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 
-import mp3.classes.layer.Popup;
+import mp4.items.Popup;
 import mp4.logs.*;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.utils.datum.DateConverter;
@@ -37,7 +37,7 @@ import mp4.utils.datum.DateConverter;
  *
  * @author anti43
  */
-public class ProductImage extends mp3.classes.layer.Things implements mp4.datenbank.installation.Tabellen {
+public class ProductImage extends mp4.items.Things implements mp4.datenbank.installation.Tabellen {
 
     private Integer Produktid = null;
     private String Path = null;

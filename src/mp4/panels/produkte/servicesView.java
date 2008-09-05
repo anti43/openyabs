@@ -9,16 +9,16 @@ import mp4.globals.Strings;
 import mp4.interfaces.panelInterface;
 import mp4.interfaces.Waitable;
 import mp4.interfaces.moneyPanelInterface;
-import mp3.classes.layer.People;
+import mp4.items.People;
 import java.util.Date;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 
-import mp3.classes.layer.Popup;
+import mp4.items.Popup;
 
-import mp3.classes.layer.visual.DatePick;
-import mp3.classes.layer.visual.TaxRatePicker;
+import mp4.items.visual.DatePick;
+import mp4.items.visual.TaxRatePicker;
 import mp4.benutzerverwaltung.User;
 import mp4.utils.export.pdf.PDF_Produkt;
 import mp4.frames.PdfVorschauWindow;

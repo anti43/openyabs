@@ -19,7 +19,7 @@ import javax.swing.tree.TreeSelectionModel;
 import mp4.items.Dienstleistung;
 import mp4.utils.ui.Position;
 import mp4.logs.*;
-import mp3.classes.layer.Popup;
+import mp4.items.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
 
 import mp4.einstellungen.Programmdaten;

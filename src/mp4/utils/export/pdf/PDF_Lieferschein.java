@@ -26,7 +26,7 @@ import java.io.*;
 import java.util.ArrayList;
 
 import mp4.interfaces.Printable;
-import mp3.classes.layer.Popup;
+import mp4.items.Popup;
 import mp4.utils.ui.inputfields.InputVerifiers;
 import mp4.einstellungen.Einstellungen;
 import mp4.utils.listen.ListenDataUtils;

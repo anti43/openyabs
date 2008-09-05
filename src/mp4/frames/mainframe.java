@@ -18,10 +18,10 @@ package mp4.frames;
 
 import mp4.benutzerverwaltung.visual.login;
 import mp4.datenbank.verbindung.Conn;
-import mp3.classes.visual.util.csvProductImporter;
-import mp3.classes.visual.util.fastChoice;
-import mp3.classes.visual.util.serialLetter;
-import mp3.classes.visual.util.mp2Importer;
+import mp4.items.visual.csvProductImporter;
+import mp4.items.visual.fastChoice;
+import mp4.items.visual.serialLetter;
+import mp4.items.visual.mp2Importer;
 
 import mp4.items.Rechnung;
 import mp4.main.Main;
@@ -39,7 +39,7 @@ import javax.swing.JPanel;
 import mp4.globals.Constants;
 
 import mp4.globals.Strings;
-import mp3.classes.layer.Popup;
+import mp4.items.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
 
 
@@ -56,7 +56,7 @@ import mp4.panels.rechnungen.offersView;
 
 
 //import mp3.classes.visual.sub.*;
-import mp3.classes.visual.sub.startView;
+import mp4.panels.misc.startView;
 
 
 

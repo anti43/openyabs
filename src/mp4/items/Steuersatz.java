@@ -24,7 +24,7 @@ import mp4.datenbank.verbindung.PrepareData;
  *
  * @author anti43
  */
-public class Steuersatz extends mp3.classes.layer.Things implements mp4.datenbank.installation.Tabellen {
+public class Steuersatz extends mp4.items.Things implements mp4.datenbank.installation.Tabellen {
 
     private String Name = null;
     private Double Wert = 0d;

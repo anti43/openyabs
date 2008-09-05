@@ -6,13 +6,13 @@
 package mp4.panels.misc;
 
 import java.util.Date;
-import mp3.classes.layer.Popup;
+import mp4.items.Popup;
 import mp4.logs.*;
 import mp4.einstellungen.Programmdaten;
 import mp4.items.Angebot;
 import mp4.items.handler.NumberFormatHandler;
 import mp4.interfaces.Countable;
-import mp3.classes.layer.visual.Help;
+import mp4.items.visual.Help;
 import mp4.benutzerverwaltung.User;
 import mp4.frames.mainframe;
 import mp4.utils.ui.Position;

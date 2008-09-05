@@ -12,17 +12,17 @@ import javax.swing.table.DefaultTableModel;
 
 
 import mp4.globals.Strings;
-import mp3.classes.layer.Popup;
+import mp4.items.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.items.HistoryItem;
 import mp4.frames.mainframe;
-import mp3.classes.visual.util.serialLetter;
+import mp4.items.visual.serialLetter;
 import mp4.utils.tabellen.SelectionCheck;
 import mp4.logs.*;
 import mp4.benutzerverwaltung.User;
 
 import mp4.interfaces.panelInterface;
-import mp3.classes.layer.People;
+import mp4.items.People;
 import mp4.items.Hersteller;
 import mp4.items.Product;
 import mp4.logs.*;

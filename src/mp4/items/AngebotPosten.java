@@ -18,7 +18,7 @@ package mp4.items;
 
 import java.util.Date;
 import mp4.datenbank.verbindung.Query;
-import mp3.classes.layer.Popup;
+import mp4.items.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.logs.*;
 
@@ -26,7 +26,7 @@ import mp4.logs.*;
  *
  * @author anti43
  */
-public class AngebotPosten extends mp3.classes.layer.Things implements mp4.datenbank.installation.Tabellen {
+public class AngebotPosten extends mp4.items.Things implements mp4.datenbank.installation.Tabellen {
 
     private Integer auftragid = null;
     private Double anzahl = 0d;

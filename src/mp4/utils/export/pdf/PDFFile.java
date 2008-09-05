@@ -35,7 +35,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import mp4.interfaces.Printable;
 import mp4.interfaces.Waitable;
-import mp3.classes.layer.Popup;
+import mp4.items.Popup;
 
 import mp4.logs.*;
 import mp4.einstellungen.Einstellungen;

@@ -22,7 +22,7 @@ import java.util.Date;
 import mp4.interfaces.Countable;
 import mp4.datenbank.verbindung.Query;
 import mp4.items.handler.NumberFormatHandler;
-import mp3.classes.layer.Popup;
+import mp4.items.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.logs.*;
 
@@ -30,7 +30,7 @@ import mp4.logs.*;
  *
  * @author anti
  */
-public class Customer extends mp3.classes.layer.People implements mp4.datenbank.installation.Tabellen , Countable{
+public class Customer extends mp4.items.People implements mp4.datenbank.installation.Tabellen , Countable{
 
    
     private String Kundennummer = "";

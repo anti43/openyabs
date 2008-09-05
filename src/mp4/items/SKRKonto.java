@@ -22,13 +22,13 @@ import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.globals.Strings;
 import mp4.datenbank.verbindung.Query;
 
-import mp3.classes.layer.*;
+import mp4.items.*;
 
 /**
  *
  * @author anti43
  */
-public class SKRKonto extends mp3.classes.layer.Things implements mp4.datenbank.installation.Tabellen{
+public class SKRKonto extends mp4.items.Things implements mp4.datenbank.installation.Tabellen{
 
 
     private String Nummer = "0";
@@ -122,7 +122,7 @@ public class SKRKonto extends mp3.classes.layer.Things implements mp4.datenbank.
             this.insert(TABLE_KONTEN_FIELDS, this.collect());
         } else {
 
-            mp3.classes.layer.Popup.warn(java.util.ResourceBundle.getBundle("languages/Bundle").getString("no_data_to_save"), Popup.WARN);
+            mp4.items.Popup.warn(java.util.ResourceBundle.getBundle("languages/Bundle").getString("no_data_to_save"), Popup.WARN);
 
         }
     }

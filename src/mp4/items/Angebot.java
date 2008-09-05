@@ -21,7 +21,7 @@ import java.util.Date;
 
 import mp4.interfaces.Countable;
 import mp4.globals.Strings;
-import mp3.classes.layer.Popup;
+import mp4.items.Popup;
 import mp4.datenbank.verbindung.Query;
 import mp4.logs.*;
 import mp4.utils.tabellen.models.PostenTableModel;
@@ -33,7 +33,7 @@ import mp4.utils.datum.DateConverter;
  *
  * @author anti43
  */
-public class Angebot extends mp3.classes.layer.Things implements mp4.datenbank.installation.Tabellen, Countable {
+public class Angebot extends mp4.items.Things implements mp4.datenbank.installation.Tabellen, Countable {
 
     private String Angebotnummer = "";
     private Integer KundenId = 0;

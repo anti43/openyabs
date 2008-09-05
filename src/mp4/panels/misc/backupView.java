@@ -21,10 +21,10 @@ import mp4.globals.Constants;
 
 import mp4.globals.Strings;
 import mp4.interfaces.panelInterface;
-import mp3.classes.layer.People;
+import mp4.items.People;
 import mp4.utils.files.FileReaderWriter;
 import mp4.logs.*;
-import mp3.classes.layer.Popup;
+import mp4.items.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
 //import mp3.classes.objects.ungrouped.History;
 //import mp3.classes.objects.ungrouped.MyData;

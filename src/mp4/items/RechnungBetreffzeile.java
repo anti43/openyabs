@@ -17,14 +17,14 @@
 package mp4.items;
 
 import java.util.Date;
-import mp3.classes.layer.Things;
+import mp4.items.Things;
 import mp4.datenbank.verbindung.ConnectionHandler;
 
 /**
  *
  * @author anti43
  */
-public class RechnungBetreffzeile extends mp3.classes.layer.Things implements mp4.datenbank.installation.Tabellen {
+public class RechnungBetreffzeile extends mp4.items.Things implements mp4.datenbank.installation.Tabellen {
 
     private Integer id = 0;
     private String[] value;

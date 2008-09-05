@@ -10,12 +10,13 @@ import javax.swing.JTabbedPane;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableModel;
 import mp4.interfaces.panelInterface;
-import mp3.classes.layer.DefaultHelpModel;
-import mp3.classes.layer.People;
-import mp3.classes.layer.visual.Help;
+
+import mp4.items.People;
+
 import mp4.einstellungen.Einstellungen;
 import mp4.frames.mainframe;
 import mp4.installation.Setup;
+import mp4.items.visual.Help;
 import mp4.utils.tabellen.TableFormat;
 import mp4.utils.tabellen.models.SettingsTableModel;
 

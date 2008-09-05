@@ -22,14 +22,14 @@ import mp4.interfaces.Countable;
 import mp4.globals.Strings;
 import mp4.datenbank.verbindung.Query;
 import mp4.items.handler.NumberFormatHandler;
-import mp3.classes.layer.Popup;
+import mp4.items.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
 
 /**
  *
  * @author anti
  */
-public class Lieferant extends mp3.classes.layer.People implements mp4.datenbank.installation.Tabellen, Countable {
+public class Lieferant extends mp4.items.People implements mp4.datenbank.installation.Tabellen, Countable {
 
   
     private String Lieferantennummer = "";

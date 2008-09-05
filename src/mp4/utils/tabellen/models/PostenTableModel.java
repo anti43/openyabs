@@ -3,7 +3,7 @@ package mp4.utils.tabellen.models;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
-import mp3.classes.layer.Popup;
+import mp4.items.Popup;
 import mp4.logs.*;
 import mp4.einstellungen.Einstellungen;
 import mp4.einstellungen.Programmdaten;

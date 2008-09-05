@@ -14,9 +14,9 @@ import java.util.Locale;
 import javax.swing.JTabbedPane;
 import javax.swing.table.DefaultTableModel;
 import mp4.interfaces.panelInterface;
-import mp3.classes.layer.EURTableModel;
-import mp3.classes.layer.People;
-import mp3.classes.layer.Popup;
+
+import mp4.items.People;
+import mp4.items.Popup;
 import mp4.utils.files.Browser;
 
 import mp4.logs.*;
@@ -24,6 +24,7 @@ import mp4.utils.files.SaveAs;
 import mp4.utils.files.TableHtmlWriter;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.tabellen.TableFormat;
+import mp4.utils.tabellen.models.EURTableModel;
 
 /**
  *

@@ -8,7 +8,7 @@ package mp4.panels.eur;
 import java.awt.Font;
 import javax.swing.JTabbedPane;
 import mp4.interfaces.panelInterface;
-import mp3.classes.layer.People;
+import mp4.items.People;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.items.Rechnung;
 import mp4.items.Customer;

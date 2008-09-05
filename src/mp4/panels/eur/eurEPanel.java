@@ -7,13 +7,13 @@ package mp4.panels.eur;
 
 import java.awt.Font;
 import javax.swing.JTabbedPane;
-import mp3.classes.layer.People;
+import mp4.items.People;
 import mp4.items.HistoryItem;
 import mp4.items.Rechnung;
 import mp4.globals.Strings;
 import mp4.interfaces.panelInterface;
-import mp3.classes.layer.Popup;
-import mp3.classes.layer.visual.DatePick;
+import mp4.items.Popup;
+import mp4.items.visual.DatePick;
 
 import mp4.items.Customer;
 import mp4.items.Einnahme;
@@ -22,10 +22,11 @@ import mp4.items.SKRKonto;
 import mp4.utils.tasks.FetchDataTask;
 
 import mp4.logs.*;
-import mp3.classes.visual.util.konten;
+
 import mp4.cache.ObjectCopy;
 import mp4.cache.undoCache;
 import mp4.einstellungen.Programmdaten;
+import mp4.items.visual.konten;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.datum.vDate;
 import mp4.utils.tabellen.SelectionCheck;

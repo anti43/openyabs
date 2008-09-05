@@ -10,7 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
-import mp3.classes.layer.People;
+import mp4.items.People;
 import mp4.items.handler.HistoryHandler;
 import javax.swing.table.DefaultTableModel;
 import mp4.interfaces.panelInterface;

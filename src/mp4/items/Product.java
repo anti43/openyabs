@@ -32,7 +32,7 @@ import mp4.utils.datum.DateConverter;
  *
  * @author anti43
  */
-public class Product extends mp3.classes.layer.Things implements mp4.datenbank.installation.Tabellen, Countable {
+public class Product extends mp4.items.Things implements mp4.datenbank.installation.Tabellen, Countable {
 
     private String Ean = "00000000";
     private String Nummer = "";
