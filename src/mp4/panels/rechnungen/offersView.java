@@ -184,8 +184,14 @@ public class offersView extends javax.swing.JPanel implements panelInterface, mp
         mainframe.getNachricht().setText(string);
     }
 
-    public void setEdited(boolean bool) {
-        this.edited = bool;
+    public void setEdited(boolean edit) {
+        if (edit && (edit != edited)) {
+            this.changeTabText(((JTabbedPane) this.getParent()).getTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex()) + "*");
+        } else if (!edit && (edit != edited)) {
+            this.changeTabText(((JTabbedPane) this.getParent()).getTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex()).substring(0,
+                    ((JTabbedPane) this.getParent()).getTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex()).length()));
+        }
+        edited = edit;
     }
 
     private void renewTableModel(boolean empty) {
@@ -1241,8 +1247,8 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
         if (currentOffer != null && currentOffer.hasId()) {
             new PDF_Angebot(currentOffer);
             new HistoryItem(ConnectionHandler.instanceOf(), Strings.BILL, "Angebot Nummer: " + currentOffer.getAngebotnummer() + " als PDF erzeugt.");
-        }else
-        Popup.notice("Sie müssen das Angebot erst anlegen.");
+        } else {
+            Popup.notice("Sie müssen das Angebot erst anlegen.");}
     }//GEN-LAST:event_jButton12MouseClicked
 
     private void jTextField6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextField6MouseClicked
@@ -1326,18 +1332,17 @@ private void jButton13MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
         }
 
         mainframe.addBillPanel(r);
-    }else
-        Popup.notice("Sie müssen das Angebot erst anlegen.");
+    } else {
+        Popup.notice("Sie müssen das Angebot erst anlegen.");}
 }//GEN-LAST:event_jButton13MouseClicked
 
 private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
     if (currentOffer.hasId()) {
         Job job = new Job((Waitable) new PDF_Angebot(currentOffer), new PdfVorschauWindow(), mainframe.getMainProgress());
         job.execute();
-    } else
-        Popup.notice("Sie müssen das Angebot erst anlegen.");
+    } else {
+        Popup.notice("Sie müssen das Angebot erst anlegen.");}
 }//GEN-LAST:event_jButton1ActionPerformed
-
 // Variables declaration - do not modify//GEN-BEGIN:variables
 public javax.swing.JButton jButton1;
 public javax.swing.JButton jButton10;

@@ -38,7 +38,7 @@ import mp4.utils.tabellen.models.LProduktListTableModel;
 public class suppliersView extends javax.swing.JPanel implements mp4.datenbank.installation.Tabellen, panelInterface {
 
     public Lieferant current;
-    private String[][] liste;   
+    private String[][] liste;
     private mainframe mainframe;
     private boolean edited = false;
     private boolean numberfieldedited;
@@ -65,14 +65,13 @@ public class suppliersView extends javax.swing.JPanel implements mp4.datenbank.i
     }
 
     private void fillSearchTable() {
-       
+
         String[][] list = current.select("id, nummer, firma ", null, null, "nummer", false);
         String k = "id, " + "Nummer,Firma";
 
         this.jTable3.setModel(new DefaultTableModel(list, k.split(",")));
         TableFormat.stripFirst(jTable3);
     }
-    
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -926,7 +925,7 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
         this.jTextField15.setText(current.getWebseite());
         this.jTextField16.setText(current.getPLZ());
         this.jTextArea1.setText(current.getNotizen());
-        
+
         this.jTable1.setModel(new LProduktListTableModel(current));
         TableFormat.stripFirst(jTable1);
         numberfieldedited = false;
@@ -951,7 +950,7 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 
         this.jTable3.setModel(new DefaultTableModel(list, k.split(",")));
         TableFormat.stripFirst(jTable3);
-   
+
     }//GEN-LAST:event_jTextField2ActionPerformed
 
     private void jTextField3ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
@@ -961,7 +960,7 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 
         this.jTable3.setModel(new DefaultTableModel(list, k.split(",")));
         TableFormat.stripFirst(jTable3);
-    
+
     }//GEN-LAST:event_jTextField3ActionPerformed
 
     private void jTextField4ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
@@ -998,13 +997,15 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
     }//GEN-LAST:event_jTextField15ActionPerformed
 
     private boolean createNew() {
-       
+
         if (jTextField7.getText().length() >= 1 || jTextField5.getText().length() >= 1) {
             if (jTextField5.getText().length() == 0) {
                 jTextField5.setText(jTextField7.getText());
             }
 
-            if(!numberfieldedited && current.isValid())jTextField4.setText(null);
+            if (!numberfieldedited && current.isValid()) {
+                jTextField4.setText(null);
+            }
             current = new Lieferant();
 
             if (jTextField4.getText() == null || jTextField4.getText().length() == 0) {
@@ -1019,7 +1020,7 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 }
             }
 
-            
+
             current.setFirma(jTextField5.getText());
             current.setAnrede(jTextField6.getText());
             current.setName(jTextField7.getText());
@@ -1035,6 +1036,7 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             current.setNotizen(jTextArea1.getText());
             current.save();
 
+            setEdited(false);
             mainframe.setMessage("Lieferant Nummer " + current.getLieferantennummer() + " editiert.");
             try {
                 new HistoryItem(ConnectionHandler.instanceOf(), Strings.SUPPLIER, "Lieferant Nummer: " + current.getLieferantennummer() + " angelegt.");
@@ -1073,7 +1075,7 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 
     public void save() {
 
-         if (current.isValid()) {
+        if (current.isValid()) {
             if (jTextField7.getText().length() > 0) {
                 try {
                     current.setFirma(jTextField5.getText());
@@ -1090,6 +1092,7 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     current.setWebseite(jTextField15.getText());
                     current.setNotizen(jTextArea1.getText());
                     current.save();
+                    setEdited(false);
                     mainframe.setMessage("Lieferant Nummer " + current.getLieferantennummer() + " editiert.");
                     new HistoryItem(ConnectionHandler.instanceOf(), Strings.SUPPLIER, "Lieferant Nummer: " + current.getLieferantennummer() + " editiert.");
 
@@ -1100,7 +1103,9 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             } else {
                 new Popup("Sie müssen mindestens einen Namen angeben.", Popup.ERROR);
             }
-        } else createNew();
+        } else {
+            createNew();
+        }
     }
 
     private void jTable3MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable3MouseClicked
@@ -1144,7 +1149,7 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
         if (mainframe.getUser().doAction(User.EDITOR)) {
             save();
             if (current.isValid()) {
-                p=new Product();
+                p = new Product();
                 p.setLieferantenId(current.getId());
                 mainframe.addProductPanel(p);
             }
@@ -1217,32 +1222,32 @@ private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 }//GEN-LAST:event_jButton6ActionPerformed
 
 private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
-new NumberFormatEditor(this.current);
+    new NumberFormatEditor(this.current);
 }//GEN-LAST:event_jButton16ActionPerformed
 
 private void jTextField4KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField4KeyTyped
-numberfieldedited =true;
+    numberfieldedited = true;
 }//GEN-LAST:event_jTextField4KeyTyped
 
 private void jTextField4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextField4MouseClicked
-jTextField4.setEditable(true);
+    jTextField4.setEditable(true);
 }//GEN-LAST:event_jTextField4MouseClicked
 
     private void deactivate() {
-     if (current.getId() > 0) {
-        if ((JOptionPane.showConfirmDialog(this, "Wirklich löschen?", "Sicher?", JOptionPane.YES_NO_OPTION)) == JOptionPane.YES_OPTION) {
-            try {
-                current.deactivate(current.getId().toString());
+        if (current.getId() > 0) {
+            if ((JOptionPane.showConfirmDialog(this, "Wirklich löschen?", "Sicher?", JOptionPane.YES_NO_OPTION)) == JOptionPane.YES_OPTION) {
+                try {
+                    current.deactivate(current.getId().toString());
 
-                new HistoryItem(ConnectionHandler.instanceOf(), Strings.SUPPLIER , "Lieferant Nummer: " + current.getLieferantennummer() + " gelöscht.");
+                    new HistoryItem(ConnectionHandler.instanceOf(), Strings.SUPPLIER, "Lieferant Nummer: " + current.getLieferantennummer() + " gelöscht.");
 
-                updateListTable();
+                    updateListTable();
 
-                current = new Lieferant(ConnectionHandler.instanceOf());
-            } catch (Exception ex) {
-                Popup.warn(ex.getMessage(), Popup.ERROR);
+                    current = new Lieferant(ConnectionHandler.instanceOf());
+                } catch (Exception ex) {
+                    Popup.warn(ex.getMessage(), Popup.ERROR);
+                }
             }
-        }
         } else {
             mainframe.setMessage("Kein Kontakt gewählt.");
         }
@@ -1343,7 +1348,7 @@ public javax.swing.JToolBar jToolBar2;
 
     public void changeTabText(String text) {
         ((JTabbedPane) this.getParent()).setTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex(), text);
-    
+
     }
 
     public boolean isEdited() {
@@ -1351,6 +1356,13 @@ public javax.swing.JToolBar jToolBar2;
     }
 
     private void setEdited(boolean edit) {
+
+        if (edit && (edit != edited)) {
+            this.changeTabText(((JTabbedPane) this.getParent()).getTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex()) + "*");
+        } else if (!edit && (edit != edited)) {
+            this.changeTabText(((JTabbedPane) this.getParent()).getTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex()).substring(0, 
+                    ((JTabbedPane) this.getParent()).getTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex()).length()));
+        }
         edited = edit;
     }
 
@@ -1364,7 +1376,7 @@ public javax.swing.JToolBar jToolBar2;
     }
 
     public void switchTab(int i) {
-       jTabbedPane1.setSelectedIndex(i);
+        jTabbedPane1.setSelectedIndex(i);
     }
 }
 

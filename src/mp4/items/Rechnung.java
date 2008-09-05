@@ -68,6 +68,7 @@ public class Rechnung extends mp4.items.Things implements mp4.datenbank.installa
 
     }
 
+
     public void add(PostenTableModel m) {
         this.postendata = m;
     }

@@ -1069,6 +1069,7 @@ public javax.swing.JToolBar jToolBar2;
         service.setWarengruppenId(current.getWarengruppenId());
         service.save();
 
+        setEdited(false);
         getMainframe().setMessage("Dienstleistung Nummer " + service.getProduktNummer() + " angelegt.");
 
         new HistoryItem(Strings.SERVICE, "Dienstleistung Nummer: " + service.getProduktNummer() + " angelegt.");
@@ -1114,6 +1115,7 @@ public javax.swing.JToolBar jToolBar2;
             current.setBeschreibung(jEditorPane1.getText());
             current.save();
 
+             setEdited(false);
             getMainframe().setMessage("Dienstleistung Nummer " + current.getProduktNummer() + " editiert.");
             new HistoryItem(Strings.SERVICE, "Dienstleistung Nummer: " + current.getProduktNummer() + " editiert.");
 
@@ -1169,6 +1171,12 @@ public javax.swing.JToolBar jToolBar2;
     }
 
     private void setEdited(boolean edit) {
+         if (edit && (edit != edited)) {
+            this.changeTabText(((JTabbedPane) this.getParent()).getTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex()) + "*");
+        } else if (!edit && (edit != edited)) {
+            this.changeTabText(((JTabbedPane) this.getParent()).getTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex()).substring(0, 
+                    ((JTabbedPane) this.getParent()).getTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex()).length()));
+        }
         edited = edit;
     }
 

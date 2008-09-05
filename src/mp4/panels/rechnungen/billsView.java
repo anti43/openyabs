@@ -183,6 +183,7 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
 
             if (bill.save()) {
 
+                setEdited(false);
                 if (jTextField12.getText() != null && DateConverter.getDate(jTextField12.getText()) != null) {
                     if (bill.getAngebot() != null && angebot == null) {
                         bill.getAngebot().setRechnungId(bill.getId());
@@ -231,8 +232,14 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
         mainframe.getNachricht().setText(string);
     }
 
-    public void setEdited(boolean bool) {
-        this.edited = bool;
+    public void setEdited(boolean edit) {
+          if (edit && (edit != edited)) {
+            this.changeTabText(((JTabbedPane) this.getParent()).getTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex()) + "*");
+        } else if (!edit && (edit != edited)) {
+            this.changeTabText(((JTabbedPane) this.getParent()).getTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex()).substring(0, 
+                    ((JTabbedPane) this.getParent()).getTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex()).length()));
+        }
+        edited = edit;
     }
 
     private void renewTableModel(boolean empty) {

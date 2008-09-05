@@ -1034,7 +1034,7 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             current.setWebseite(jTextField15.getText());
             current.setNotizen(jTextArea1.getText());
             current.save();
-
+             setEdited(false);
             mainframe.setMessage("Hersteller Nummer " + current.getHerstellernummer() + " editiert.");
             try {
                 new HistoryItem(ConnectionHandler.instanceOf(), Strings.MANUFACTURER, "Hersteller Nummer: " + current.getHerstellernummer() + " angelegt.");
@@ -1090,6 +1090,7 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     current.setWebseite(jTextField15.getText());
                     current.setNotizen(jTextArea1.getText());
                     current.save();
+                     setEdited(false);
                     mainframe.setMessage("Hersteller Nummer " + current.getHerstellernummer() + " editiert.");
                     new HistoryItem(ConnectionHandler.instanceOf(), Strings.MANUFACTURER, "Hersteller Nummer: " + current.getHerstellernummer() + " editiert.");
 
@@ -1350,6 +1351,12 @@ public javax.swing.JToolBar jToolBar2;
     }
 
     private void setEdited(boolean edit) {
+          if (edit && (edit != edited)) {
+            this.changeTabText(((JTabbedPane) this.getParent()).getTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex()) + "*");
+        } else if (!edit && (edit != edited)) {
+            this.changeTabText(((JTabbedPane) this.getParent()).getTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex()).substring(0, 
+                    ((JTabbedPane) this.getParent()).getTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex()).length()));
+        }
         edited = edit;
     }
 

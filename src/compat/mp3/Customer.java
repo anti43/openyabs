@@ -15,22 +15,17 @@
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mp4.items;
+package compat.mp3;
 
 import java.util.ArrayList;
-import java.util.Date;
-import mp4.interfaces.Countable;
-import mp4.datenbank.verbindung.Query;
-import mp4.items.handler.NumberFormatHandler;
-import mp4.items.Popup;
-import mp4.datenbank.verbindung.ConnectionHandler;
-import mp4.logs.*;
+import mp4.logs.Log;
+
 
 /**
  *
  * @author anti
  */
-public class Customer extends mp4.items.People implements mp4.datenbank.installation.Tabellen , Countable{
+public class Customer extends compat.mp3.People implements compat.mp3.Structure {
 
    
     private String Kundennummer = "";
@@ -47,39 +42,30 @@ public class Customer extends mp4.items.People implements mp4.datenbank.installa
     private String Mail = "";
     private String Webseite = "";
     private String Notizen = "";
-    private String Kundensteuernummer = "";
     private Query query;
     private boolean deleted=false;
-    private NumberFormatHandler nfh;
 
-    public Customer() {
-        super(ConnectionHandler.instanceOf().clone(TABLE_CUSTOMERS));
-        this.query=ConnectionHandler.instanceOf();
-         nfh = new NumberFormatHandler(this, new Date());
-    }
  
 
     public Customer(Query query) {
         super(query.clone(TABLE_CUSTOMERS));
         this.query=query;
-        nfh = new NumberFormatHandler(this, new Date());
 
     }
 
-    public Customer(Integer id) {
-        super(ConnectionHandler.instanceOf().clone(TABLE_CUSTOMERS));
+    public Customer(Query query, String id) {
+        super(query.clone(TABLE_CUSTOMERS));
         this.id=Integer.valueOf(id);
-        this.explode(this.selectLast("*", "id", id.toString(), true ));
-        this.query=ConnectionHandler.instanceOf();
-        nfh = new NumberFormatHandler(this, new Date());
+        this.explode(this.selectLast("*", "id", id, true , true, false));
+        this.query=query;
     }
 
-    public Customer(ConnectionHandler query, String nummer, boolean like) {
+    public Customer(QueryClass query, String kundennummer, boolean like) {
         super(query.clone(TABLE_CUSTOMERS));
 //        this.id=Integer.valueOf(id);
-        this.explode(this.selectLast("*","nummer",nummer, false));
+        this.explode(
+                this.selectLast("*","kundennummer",kundennummer, false, false, false));
         this.query=query;
-        nfh = new NumberFormatHandler(this, new Date());
     }
 
 //    public String[][] getAll() {
@@ -92,14 +78,24 @@ public class Customer extends mp4.items.People implements mp4.datenbank.installa
         ArrayList arr = new ArrayList();
         
         Query q = query.clone(TABLE_CUSTOMERS);
+
         String[][] str = q.select("id", null);
+   
+     
        
-        for (int i = 0; i < str.length; i++) {   
-            arr.add(new Customer(Integer.valueOf(str[i][0])));
+        for (int i = 0; i < str.length; i++) {
+            
+            arr.add(new Customer(QueryClass.instanceOf(ImportHelper.dbURL), str[i][0]));
+
         }
+
+        
         
         return arr;
     }
+
+
+
 
 
     public String getid() {
@@ -120,6 +116,7 @@ public class Customer extends mp4.items.People implements mp4.datenbank.installa
             return false;
         }
     }
+
 
 
     public void setKundennummer(String Kundennummer) {
@@ -253,8 +250,8 @@ public class Customer extends mp4.items.People implements mp4.datenbank.installa
         str = str +  "(;;2#4#1#1#8#0#;;)" + this.getMobil() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
         str = str +  "(;;2#4#1#1#8#0#;;)" + this.getMail() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
         str = str +  "(;;2#4#1#1#8#0#;;)" + this.getWebseite() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
-        str = str +  "(;;2#4#1#1#8#0#;;)" + this.getNotizen() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
-        str = str +  "(;;2#4#1#1#8#0#;;)" + this.getKundensteuernummer() + "(;;2#4#1#1#8#0#;;)";
+        str = str +  "(;;2#4#1#1#8#0#;;)" + this.getNotizen() + "(;;2#4#1#1#8#0#;;)";
+
 
 
         return str;
@@ -283,35 +280,6 @@ public class Customer extends mp4.items.People implements mp4.datenbank.installa
             this.setMail(str[12]);
             this.setWebseite(str[12 + 1]);
             this.setNotizen(str[12 + 2]);
-            this.setKundensteuernummer(str[12+3]);
-            if(str[12+4].equals("1")) {
-                this.setDeleted(true);
-            }
-
-        } catch (Exception exception) {
-            Log.Debug(exception);
-        }
-
-    }
-    
-    public void LEGACYexplode(String[] str) {
-        try {
-
-            this.id = Integer.valueOf(str[0]);
-            this.setKundennummer(str[1]);
-            this.setFirma(str[2]);
-            this.setAnrede(str[3]);
-            this.setVorname(str[4]);
-            this.setName(str[5]);
-            this.setStr(str[6]);
-            this.setPLZ(str[7]);
-            this.setOrt(str[8]);
-            this.setTel(str[9]);
-            this.setFax(str[10]);
-            this.setMobil(str[11]);
-            this.setMail(str[12]);
-            this.setWebseite(str[12 + 1]);
-            this.setNotizen(str[12 + 2]);
             if(str[12+3].equals("1")) {
                 this.setDeleted(true);
             }
@@ -321,15 +289,22 @@ public class Customer extends mp4.items.People implements mp4.datenbank.installa
         }
 
     }
-    
     public void save() {
 
         if (id > 0) {
             this.update(TABLE_CUSTOMER_FIELDS, this.collect(), id.toString());
             isSaved = true;
         } else if (id == 0) {
-            this.id = this.insert(TABLE_CUSTOMER_FIELDS, this.collect());  
-        } 
+            this.insert(TABLE_CUSTOMER_FIELDS, this.collect());
+            
+            
+
+            
+        } else {
+
+            compat.mp3.Popup.warn(java.util.ResourceBundle.getBundle("languages/Bundle").getString("no_data_to_save"), Popup.WARN);
+
+        }
     }
 
     public String getFax() {
@@ -345,7 +320,7 @@ public class Customer extends mp4.items.People implements mp4.datenbank.installa
            
         Query q = query.clone(TABLE_BILLS);
 
-        String[] wher = {"kundenid", this.getId().toString(), ""};
+        String[] wher = {"kundenid", this.getId(), ""};
 
         String[][] str = q.select("id,rechnungnummer,datum", wher);
    
@@ -358,7 +333,7 @@ public class Customer extends mp4.items.People implements mp4.datenbank.installa
     
         Query q = query.clone(TABLE_CUSTOMERS);
 
-        String[][] str = q.select(TABLE_CUSTOMER_PRINT_FIELDS, null);
+        String[][] str = q.select(Structure.TABLE_CUSTOMER_PRINT_FIELDS, null);
    
         return str;  
     }
@@ -368,13 +343,17 @@ public class Customer extends mp4.items.People implements mp4.datenbank.installa
         Query q = query.clone(TABLE_CUSTOMERS);
 
         
-        String[][] str = q.select("*", null, withDeleted);
+        String[][] str = q.select(ALL, null, withDeleted);
    
         return str;  
     }
     
     public void export(){
-
+        Query q = query.clone(TABLE_CUSTOMERS);
+        
+        q.export("Kunden.txt");
+    
+    
     }
 
     private void setDeleted(boolean b) {
@@ -399,29 +378,5 @@ public class Customer extends mp4.items.People implements mp4.datenbank.installa
         
          return str;  
     
-    }
-
-    public String getKundensteuernummer() {
-        return Kundensteuernummer;
-    }
-
-    public void setKundensteuernummer(String Kundensteuernummer) {
-        this.Kundensteuernummer = Kundensteuernummer;
-    }
-
-    public Date getDatum() {
-        return new Date();
-    }
-
-    public String getTable() {
-        return TABLE_CUSTOMERS;
-    }
-
-    public String getCountColumn() {
-       return "nummer";
-    }
-    
-    public NumberFormatHandler getNfh() {
-        return nfh;
     }
 }

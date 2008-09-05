@@ -123,7 +123,7 @@ public class productsView extends javax.swing.JPanel implements mp4.datenbank.in
             this.getProduct().setLieferantenId(hersteller.getId());
         }
 
-        setEdited(edited);
+        setEdited(true);
     }
 
     Product getCurrent() {
@@ -1598,6 +1598,7 @@ numberfieldedited = true;
         product.setLagermenge(NumberCheck.checkDoubleNN(jTextField21.getText()));
 
         product.save();
+        setEdited(false);
         if (currentImageURI != null) {
             copyImage(product);
         }
@@ -1659,9 +1660,11 @@ numberfieldedited = true;
             current.setLagermenge(NumberCheck.checkDoubleNN(jTextField21.getText()));
 
             current.save();
+            
             if ((current.getImagePath() == null && currentImageURI != null) || (currentImageURI != null && currentImageURI != current.getImagePath())) {
                 copyImage(current);
             }
+            setEdited(false);
             getMainframe().setMessage("Produkt Nummer " + current.getProduktNummer() + " editiert.");
             new HistoryItem(Strings.PRODUCT, "Produkt Nummer: " + current.getProduktNummer() + " editiert.");
 
@@ -1675,7 +1678,7 @@ numberfieldedited = true;
             this.jTextField10.setText(supplier.getFirma());
             this.getProduct().setLieferantenId(supplier.getId());
         }
-        setEdited(edited);
+        setEdited(true);
     }
 
     public javax.swing.JTextField getJTextField12() {
@@ -1726,6 +1729,11 @@ numberfieldedited = true;
     }
 
     private void setEdited(boolean edit) {
+          if (edit && (edit != edited)) {
+            this.changeTabText(((JTabbedPane) this.getParent()).getTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex()) + "*");
+        } else if (!edit && (edit != edited)) {
+            this.changeTabText(((JTabbedPane) this.getParent()).getTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex()).replaceAll("\\*", ""));
+        }
         edited = edit;
     }
 
