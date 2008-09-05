@@ -1729,11 +1729,11 @@ numberfieldedited = true;
     }
 
     private void setEdited(boolean edit) {
-          if (edit && (edit != edited)) {
-            this.changeTabText(((JTabbedPane) this.getParent()).getTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex()) + "*");
-        } else if (!edit && (edit != edited)) {
-            this.changeTabText(((JTabbedPane) this.getParent()).getTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex()).replaceAll("\\*", ""));
-        }
+//          if (edit && (edit != edited)) {
+//            this.changeTabText(((JTabbedPane) this.getParent()).getTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex()) + "*");
+//        } else if (!edit) {
+//            this.changeTabText(((JTabbedPane) this.getParent()).getTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex()).replaceAll("\\*", ""));
+//        }
         edited = edit;
     }
 

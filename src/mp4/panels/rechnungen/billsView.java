@@ -233,12 +233,12 @@ public class billsView extends javax.swing.JPanel implements panelInterface, mp4
     }
 
     public void setEdited(boolean edit) {
-          if (edit && (edit != edited)) {
-            this.changeTabText(((JTabbedPane) this.getParent()).getTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex()) + "*");
-        } else if (!edit && (edit != edited)) {
-            this.changeTabText(((JTabbedPane) this.getParent()).getTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex()).substring(0, 
-                    ((JTabbedPane) this.getParent()).getTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex()).length()));
-        }
+//          if (edit && (edit != edited)) {
+//            this.changeTabText(((JTabbedPane) this.getParent()).getTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex()) + "*");
+//        } else if (!edit && (edit != edited)) {
+//            this.changeTabText(((JTabbedPane) this.getParent()).getTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex()).substring(0, 
+//                    ((JTabbedPane) this.getParent()).getTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex()).length()));
+//        }
         edited = edit;
     }
 
