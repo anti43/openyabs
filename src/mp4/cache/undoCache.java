@@ -27,7 +27,7 @@ import mp4.frames.mainframe;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import mp3.classes.utils.Log;
+import mp4.logs.*;
 
 
 /**

@@ -28,8 +28,8 @@ import javax.swing.table.DefaultTableModel;
 
 import mp4.globals.Strings;
 
-import mp3.classes.utils.Formater;
-import mp3.classes.utils.Log;
+import mp4.utils.ui.inputfields.InputVerifiers;
+import mp4.logs.*;
 import mp3.classes.layer.Popup;
 import mp3.classes.layer.visual.DatePick;
 import mp3.classes.layer.visual.ManufacturerPicker;
@@ -100,13 +100,13 @@ public class productsView extends javax.swing.JPanel implements mp4.datenbank.in
         jTextField8.setText("0.0");
         jTextField7.setText("0.0");
 
-        jTextField20.setInputVerifier(Formater.getDoubleInputVerfier(jTextField20));
-        jTextField21.setInputVerifier(Formater.getDoubleInputVerfier(jTextField21));
-        jTextField8.setInputVerifier(Formater.getDoubleInputVerfier(jTextField8));
-        jTextField7.setInputVerifier(Formater.getDoubleInputVerfier(jTextField7));
+        jTextField20.setInputVerifier(InputVerifiers.getDoubleInputVerfier(jTextField20));
+        jTextField21.setInputVerifier(InputVerifiers.getDoubleInputVerfier(jTextField21));
+        jTextField8.setInputVerifier(InputVerifiers.getDoubleInputVerfier(jTextField8));
+        jTextField7.setInputVerifier(InputVerifiers.getDoubleInputVerfier(jTextField7));
 
-        jTextField19.setInputVerifier(Formater.getDateInputVerfier(jTextField19));
-        jTextField9.setInputVerifier(Formater.getDateInputVerfier(jTextField9));
+        jTextField19.setInputVerifier(InputVerifiers.getDateInputVerfier(jTextField19));
+        jTextField9.setInputVerifier(InputVerifiers.getDateInputVerfier(jTextField9));
 
         jCheckBox1.setSelected(Programmdaten.instanceOf().getPRODUCTPANEL_CHECKBOX_SCALEIMAGE_state());
         jTextField23.setText(Programmdaten.instanceOf().getPRODUCTPANEL_CHECKBOX_SCALEIMAGE_SIZE().toString());

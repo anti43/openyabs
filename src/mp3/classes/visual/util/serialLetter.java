@@ -23,11 +23,13 @@ import mp4.items.Customer;
 
 import mp4.items.Hersteller;
 import mp4.items.Lieferant;
-import mp4.utils.windows.Position;
-import mp3.classes.utils.Formater;
-import mp3.classes.utils.Log;
+
+
+import mp4.logs.*;
 import mp4.utils.export.druck.DruckJob;
 import mp4.utils.export.pdf.PDFFile;
+import mp4.utils.tabellen.TableFormat;
+import mp4.utils.ui.Position;
 
 /**
  *
@@ -42,7 +44,7 @@ public class serialLetter extends javax.swing.JFrame implements Constants {
     /** Creates new form serialLetter */
     public serialLetter() {
         initComponents();
-        Formater.stripFirst(jTable1);
+        TableFormat.stripFirst(jTable1);
         new Position(this);
         this.setVisible(rootPaneCheckingEnabled);
     }

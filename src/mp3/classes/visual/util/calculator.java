@@ -10,8 +10,8 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
-import mp4.utils.windows.Position;
-import mp3.classes.utils.Log;
+import mp4.utils.ui.Position;
+import mp4.logs.*;
 
 /**
  *

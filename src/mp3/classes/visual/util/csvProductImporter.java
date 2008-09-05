@@ -20,10 +20,10 @@ import mp4.globals.Strings;
 
 import mp4.interfaces.panelInterface;
 import mp3.classes.layer.People;
-import mp4.utils.windows.Position;
+
 import mp3.classes.layer.DefaultHelpModel;
 import mp3.classes.layer.visual.Help;
-import mp3.classes.utils.Log;
+import mp4.logs.*;
 import mp3.classes.layer.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp3.classes.layer.visual.SupplierPicker;
@@ -36,6 +36,7 @@ import mp4.items.ProductGroupFamily;
 import mp4.items.ProductGroupGroup;
 import mp4.items.handler.ProductGroupHandler;
 import mp4.items.Lieferant;
+import mp4.utils.ui.Position;
 import org.supercsv.cellprocessor.constraint.StrMinMax;
 import org.supercsv.cellprocessor.ift.CellProcessor;
 import org.supercsv.exception.SuperCSVException;

@@ -17,7 +17,7 @@
 package mp3.classes.layer;
 
 import javax.swing.JOptionPane;
-import mp3.classes.utils.Log;
+import mp4.logs.*;
 import mp4.utils.text.TextFormat;
 
 /**

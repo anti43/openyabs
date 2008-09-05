@@ -17,8 +17,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeSelectionModel;
 import mp4.items.Dienstleistung;
-import mp4.utils.windows.Position;
-import mp3.classes.utils.Log;
+import mp4.utils.ui.Position;
+import mp4.logs.*;
 import mp3.classes.layer.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
 

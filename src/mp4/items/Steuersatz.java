@@ -16,7 +16,7 @@
  */
 package mp4.items;
 
-import mp3.classes.utils.Log;
+import mp4.logs.*;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.datenbank.verbindung.PrepareData;
 

@@ -8,10 +8,8 @@ package mp4.utils.files;
  *
  * @author Galileo Computing
  */
-import java.net.URISyntaxException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import mp3.classes.utils.*;
+import mp4.logs.*;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

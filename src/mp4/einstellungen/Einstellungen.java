@@ -28,9 +28,10 @@ import mp4.globals.Constants;
 
 import mp3.classes.layer.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
-import mp3.classes.utils.FileReaderWriter;
-import mp3.classes.utils.Formater;
-import mp3.classes.utils.Log;
+import mp4.utils.files.FileReaderWriter;
+import mp4.utils.ui.inputfields.InputVerifiers;
+import mp4.logs.*;
+import mp4.utils.datum.DateConverter;
 
 /**
  *
@@ -120,7 +121,7 @@ public class Einstellungen extends mp3.classes.layer.People implements mp4.daten
     }
 
     public String getDate() {
-        return Formater.formatDate(new Date());
+        return DateConverter.getDefDateString(new Date());
     }
 
     public String getVersion() {

@@ -21,15 +21,18 @@ import mp4.items.Customer;
 import mp4.items.Rechnung;
 
 import java.io.*;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 
 import mp4.interfaces.Printable;
 import mp3.classes.layer.Popup;
-import mp3.classes.utils.Formater;
+import mp4.utils.ui.inputfields.InputVerifiers;
 
 import mp4.einstellungen.Einstellungen;
 
 import mp4.utils.datum.DateConverter;
+import mp4.utils.listen.ListenDataUtils;
+import mp4.utils.zahlen.FormatNumber;
 
 /**
  *
@@ -79,12 +82,12 @@ public class PDF_Rechnung implements Printable{
             int t = i + 1;
             try {
                 if (products[i][2] != null && String.valueOf(products[i][2]).length() > 0) {
-                    fields.add(new String[]{"quantity" + t, Formater.formatDecimal((Double) products[i][1])});
+                    fields.add(new String[]{"quantity" + t, FormatNumber.formatDezimal((Double) products[i][1])});
                     fields.add(new String[]{"product" + t, String.valueOf(products[i][2])});
-                    fields.add(new String[]{"price" + t, Formater.formatMoney((Double) products[i][5])}); 
-                    fields.add(new String[]{"pricenet" + t, Formater.formatMoney((Double) products[i][4])});
-                    fields.add(new String[]{"pricetax" + t, Formater.formatPercent(products[i][3])});
-                    fields.add(new String[]{"multipliedprice" + t, Formater.formatMoney((Double) products[i][5] * (Double) products[i][1])});
+                    fields.add(new String[]{"price" + t, FormatNumber.formatLokalCurrency((Double) products[i][5])}); 
+                    fields.add(new String[]{"pricenet" + t, FormatNumber.formatLokalCurrency((Double) products[i][4])});
+                    fields.add(new String[]{"pricetax" + t, FormatNumber.formatPercent(products[i][3])});
+                    fields.add(new String[]{"multipliedprice" + t, FormatNumber.formatLokalCurrency((Double) products[i][5] * (Double) products[i][1])});
                     netto = netto + ((Double) products[i][4] * (Double) products[i][1]);
                     brutto = brutto + ((Double) products[i][5] * (Double) products[i][1]);
                     fields.add(new String[]{"count" + t, t + "."});
@@ -95,10 +98,10 @@ public class PDF_Rechnung implements Printable{
         }
         Double tax = brutto - netto;
         fields.add(new String[]{"taxrate", l.getGlobaltax().toString()});
-        fields.add(new String[]{"tax", Formater.formatMoney(tax)});
-        fields.add(new String[]{"totalprice", Formater.formatMoney(brutto)});
+        fields.add(new String[]{"tax", FormatNumber.formatLokalCurrency(tax)});
+        fields.add(new String[]{"totalprice", FormatNumber.formatLokalCurrency(brutto)});
 
-        return (String[][]) Formater.StringListToTableArray(fields);
+        return (String[][]) ListenDataUtils.StringListToTableArray(fields);
     }
 
     public String getPath() {

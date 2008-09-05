@@ -24,7 +24,7 @@ import mp4.datenbank.verbindung.Query;
 import mp4.items.handler.NumberFormatHandler;
 import mp3.classes.layer.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
-import mp3.classes.utils.Log;
+import mp4.logs.*;
 
 /**
  *

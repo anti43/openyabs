@@ -18,7 +18,7 @@ package mp4.einstellungen;
 
 import java.util.Date;
 import mp4.datenbank.verbindung.ConnectionHandler;
-import mp3.classes.utils.Log;
+import mp4.logs.*;
 
 /**
  *

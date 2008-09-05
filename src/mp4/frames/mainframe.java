@@ -25,7 +25,7 @@ import mp3.classes.visual.util.mp2Importer;
 
 import mp4.items.Rechnung;
 import mp4.main.Main;
-import java.awt.BorderLayout;
+
 
 import java.awt.Color;
 import java.awt.event.WindowAdapter;
@@ -35,7 +35,7 @@ import java.io.IOException;
 import java.util.Date;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
+
 import mp4.globals.Constants;
 
 import mp4.globals.Strings;
@@ -43,12 +43,8 @@ import mp3.classes.layer.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
 
 
-import mp3.classes.utils.Browser;
+import mp4.logs.*;
 
-import mp3.classes.utils.Log;
-import mp3.classes.utils.SaveAs;
-import mp3.classes.utils.SplashScreen;
-import mp3.classes.utils.TableHtmlWriter;
 import mp4.frames.license;
 import mp4.panels.rechnungen.billsView;
 
@@ -79,6 +75,7 @@ import mp4.panels.eur.eurAPanel;
 import mp4.panels.eur.eurEPanel;
 import mp4.panels.kontakte.manufacturerView;
 import mp4.panels.kontakte.suppliersView;
+import mp4.panels.misc.SplashScreen;
 import mp4.panels.produkte.productsView;
 import mp4.panels.produkte.servicesView;
 import mp4.panels.misc.TaxRatesEditor;
@@ -87,9 +84,13 @@ import mp4.panels.misc.historyView;
 import mp4.panels.misc.settingsView;
 import mp4.statistik.graphs.LinienDiagramm;
 import mp4.utils.datum.DateConverter;
+import mp4.utils.files.Browser;
+import mp4.utils.files.SaveAs;
+import mp4.utils.files.TableHtmlWriter;
 import mp4.utils.text.FadeOnChangeLabel;
-import mp4.utils.windows.Position;
-import mp4.utils.windows.TabCloseIcon;
+import mp4.utils.ui.Position;
+import mp4.utils.ui.TabCloseIcon;
+
 
 /**
  *

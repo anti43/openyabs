@@ -10,7 +10,7 @@ import mp4.frames.mainframe;
 import mp4.benutzerverwaltung.User;
 import mp4.utils.tabellen.SelectionCheck;
 import mp4.utils.tabellen.models.UserTableModel;
-import mp4.utils.windows.Position;
+import mp4.utils.ui.Position;
 
 /**
  *

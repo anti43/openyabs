@@ -12,7 +12,7 @@ import mp3.classes.layer.QueryClass;
 import mp3.classes.objects.bill.Bill;
 import mp3.classes.objects.eur.Ausgabe;
 import mp3.classes.objects.eur.Einnahme;
-import mp3.classes.utils.Formater;
+
 import mp3.database.util.Conn;
 
 /**

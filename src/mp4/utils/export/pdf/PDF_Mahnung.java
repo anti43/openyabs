@@ -24,9 +24,12 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import mp4.interfaces.Printable;
-import mp3.classes.utils.Formater;
+import mp4.utils.ui.inputfields.InputVerifiers;
 import mp4.einstellungen.Einstellungen;
 import mp4.einstellungen.Programmdaten;
+import mp4.utils.datum.DateConverter;
+import mp4.utils.listen.ListenDataUtils;
+import mp4.utils.zahlen.FormatNumber;
 
 /**
  *
@@ -74,7 +77,7 @@ public class PDF_Mahnung implements Printable{
         fields.add(new String[]{"street", k.getStr()});
         fields.add(new String[]{"city", k.getPLZ() + " " + k.getOrt()});
         fields.add(new String[]{"originaldate", rechnung.getFDatum()});
-        fields.add(new String[]{"date", Formater.formatDate(new Date())});
+        fields.add(new String[]{"date", DateConverter.getDefDateString(new Date())});
         fields.add(new String[]{"rnumber", rechnung.getRechnungnummer()});
         fields.add(new String[]{"number", String.valueOf(nummer)});
         fields.add(new String[]{"knumber", k.getKundennummer()});
@@ -89,11 +92,11 @@ public class PDF_Mahnung implements Printable{
             }
         }
 
-        fields.add(new String[]{"originalprice", Formater.formatMoney(brutto)});
-        fields.add(new String[]{"arrearsfee", Formater.formatMoney(betrag)});
-        fields.add(new String[]{"totalprice", Formater.formatMoney(brutto)});
+        fields.add(new String[]{"originalprice", FormatNumber.formatLokalCurrency(brutto)});
+        fields.add(new String[]{"arrearsfee", FormatNumber.formatLokalCurrency(betrag)});
+        fields.add(new String[]{"totalprice", FormatNumber.formatLokalCurrency(brutto)});
 
-        return Formater.StringListToTableArray(fields);
+        return ListenDataUtils.StringListToTableArray(fields);
     }
 
     public String getPath() {

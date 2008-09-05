@@ -33,7 +33,7 @@ import java.util.Vector;
 
 import javax.swing.JPanel;
 import mp3.classes.layer.Popup;
-import mp3.classes.utils.Log;
+import mp4.logs.*;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartUtilities;

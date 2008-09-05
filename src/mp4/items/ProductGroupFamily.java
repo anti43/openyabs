@@ -17,7 +17,7 @@
 package mp4.items;
 
 import java.util.Date;
-import mp3.classes.utils.Log;
+import mp4.logs.*;
 import mp4.datenbank.verbindung.Query;
 
 

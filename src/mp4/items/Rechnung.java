@@ -26,7 +26,7 @@ import mp4.interfaces.Countable;
 import mp4.datenbank.verbindung.Query;
 
 import mp4.globals.Strings;
-import mp3.classes.utils.Log;
+import mp4.logs.*;
 import mp4.utils.tabellen.models.PostenTableModel;
 
 import mp4.datenbank.verbindung.ConnectionHandler;

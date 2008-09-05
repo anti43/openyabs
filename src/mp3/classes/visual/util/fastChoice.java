@@ -12,7 +12,7 @@ import mp4.datenbank.verbindung.ConnectionHandler;
 
 import mp4.items.Customer;
 import mp4.items.Rechnung;
-import mp4.utils.windows.Position;
+import mp4.utils.ui.Position;
 
 /**
  *

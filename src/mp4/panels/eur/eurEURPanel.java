@@ -17,12 +17,13 @@ import mp4.interfaces.panelInterface;
 import mp3.classes.layer.EURTableModel;
 import mp3.classes.layer.People;
 import mp3.classes.layer.Popup;
-import mp3.classes.utils.Browser;
-import mp3.classes.utils.Formater;
-import mp3.classes.utils.Log;
-import mp3.classes.utils.SaveAs;
-import mp3.classes.utils.TableHtmlWriter;
+import mp4.utils.files.Browser;
+
+import mp4.logs.*;
+import mp4.utils.files.SaveAs;
+import mp4.utils.files.TableHtmlWriter;
 import mp4.utils.datum.DateConverter;
+import mp4.utils.tabellen.TableFormat;
 
 /**
  *
@@ -208,7 +209,7 @@ public class eurEURPanel extends javax.swing.JPanel  implements panelInterface{
             model = new EURTableModel(year, month);
 
             jTable1.setModel(model.getModel());
-            Formater.format(jTable1, 0, 380);
+            TableFormat.format(jTable1, 0, 380);
 
             jTable1.doLayout();
         } catch (ParseException ex) {
@@ -223,7 +224,7 @@ public class eurEURPanel extends javax.swing.JPanel  implements panelInterface{
                 model = new EURTableModel(year);
 
                 jTable1.setModel(model.getModel());
-                Formater.format(jTable1, 0, 380);
+                TableFormat.format(jTable1, 0, 380);
 
                 jTable1.doLayout();
             } catch (ParseException ex1) {

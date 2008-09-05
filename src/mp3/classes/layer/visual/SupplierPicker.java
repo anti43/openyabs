@@ -5,14 +5,16 @@
  */
 package mp3.classes.layer.visual;
 
-import mp3.classes.utils.Formater;
-import mp4.utils.windows.Position;
+
+
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import mp4.items.Customer;
 import mp4.utils.tabellen.SelectionCheck;
 import mp4.interfaces.panelInterface;
 import mp4.items.Lieferant;
+import mp4.utils.tabellen.TableFormat;
+import mp4.utils.ui.Position;
 
 /**
  *
@@ -38,7 +40,7 @@ public class SupplierPicker extends javax.swing.JFrame {
         k = "id, " + "Nummer,Firma, Name, Ort";
 
         this.jTable2.setModel(new DefaultTableModel(list, k.split(",")));
-        Formater.stripFirst(jTable2);
+        TableFormat.stripFirst(jTable2);
         this.jTable2.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         this.setVisible(rootPaneCheckingEnabled);
 
@@ -258,7 +260,7 @@ public class SupplierPicker extends javax.swing.JFrame {
 
 
         this.jTable2.setModel(new DefaultTableModel(list, k.split(",")));
-        Formater.stripFirst(jTable2);
+        TableFormat.stripFirst(jTable2);
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jTextField2ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
@@ -266,7 +268,7 @@ public class SupplierPicker extends javax.swing.JFrame {
 
 
         this.jTable2.setModel(new DefaultTableModel(list, k.split(",")));
-        Formater.stripFirst(jTable2);
+        TableFormat.stripFirst(jTable2);
     }//GEN-LAST:event_jTextField2ActionPerformed
 
     private void jButton1ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -284,13 +286,13 @@ private void jTable2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
 private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
     String[][] list = contact.select("id, nummer, firma, name, ort", "ort", jTextField3.getText(), "ort", true);
     this.jTable2.setModel(new DefaultTableModel(list, k.split(",")));
-    Formater.stripFirst(jTable2);
+    TableFormat.stripFirst(jTable2);
 }//GEN-LAST:event_jTextField3ActionPerformed
 
 private void jTextField4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
     String[][] list = contact.select("id, nummer, firma, name, ort", "name", jTextField4.getText(), "name", true);
     this.jTable2.setModel(new DefaultTableModel(list, k.split(",")));
-    Formater.stripFirst(jTable2);
+    TableFormat.stripFirst(jTable2);
 }//GEN-LAST:event_jTextField4ActionPerformed
 
 private void jTable2KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTable2KeyPressed

@@ -4,7 +4,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import mp3.classes.layer.Popup;
-import mp3.classes.utils.Log;
+import mp4.logs.*;
 import mp4.einstellungen.Einstellungen;
 import mp4.einstellungen.Programmdaten;
 import mp4.items.Dienstleistung;

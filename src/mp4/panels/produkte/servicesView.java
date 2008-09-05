@@ -14,7 +14,7 @@ import java.util.Date;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
-import mp3.classes.utils.Formater;
+
 import mp3.classes.layer.Popup;
 
 import mp3.classes.layer.visual.DatePick;
@@ -38,6 +38,7 @@ import mp4.utils.files.DialogOpenFile;
 import mp4.utils.tabellen.SelectionCheck;
 import mp4.utils.tabellen.TableFormat;
 import mp4.utils.tasks.Job;
+import mp4.utils.ui.inputfields.InputVerifiers;
 
 /**
  *
@@ -69,8 +70,8 @@ public class servicesView extends javax.swing.JPanel implements mp4.datenbank.in
         jTextField9.setText(DateConverter.getDefDateString(new Date()));
         jTextField8.setText("0.0");
 
-        jTextField8.setInputVerifier(Formater.getDoubleInputVerfier(jTextField8));
-        jTextField9.setInputVerifier(Formater.getDateInputVerfier(jTextField9));
+        jTextField8.setInputVerifier(InputVerifiers.getDoubleInputVerfier(jTextField8));
+        jTextField9.setInputVerifier(InputVerifiers.getDateInputVerfier(jTextField9));
     }
 
     public Dienstleistung getDienstleistung() {

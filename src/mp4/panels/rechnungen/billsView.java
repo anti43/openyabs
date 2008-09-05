@@ -23,8 +23,8 @@ import mp4.globals.Strings;
 
 import mp3.classes.layer.visual.CustomerPicker;
 import mp3.classes.layer.visual.DatePick;
-import mp3.classes.utils.Formater;
-import mp3.classes.utils.Log;
+import mp4.utils.ui.inputfields.InputVerifiers;
+import mp4.logs.*;
 import mp3.classes.layer.Popup;
 import mp4.utils.tabellen.CalculatedTableValues;
 import mp4.utils.tabellen.models.PostenTableModel;
@@ -57,6 +57,7 @@ import mp4.items.Dienstleistung;
 import mp4.utils.combobox.CheckComboListener;
 import mp4.utils.combobox.CheckComboRenderer;
 import mp4.utils.datum.DateConverter;
+import mp4.utils.datum.vDate;
 import mp4.utils.export.druck.DruckJob;
 import mp4.utils.export.pdf.PDFFile;
 import mp4.utils.tabellen.DataModelUtils;
@@ -1603,7 +1604,8 @@ public javax.swing.JToolBar jToolBar1;
 public javax.swing.JToolBar jToolBar2;
 // End of variables declaration//GEN-END:variables
     private boolean validDate() {
-        if (Formater.check(jTextField7.getText(), Formater.DATE)) {
+        vDate val = new vDate(jTextField7.getText());
+        if (val.isVerified) {
             return true;
         } else {
             new Popup("Sie müssen ein Datum angeben.", Popup.ERROR);

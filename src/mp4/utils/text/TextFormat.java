@@ -19,7 +19,7 @@ along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
 package mp4.utils.text;
 
-import mp3.classes.utils.Log;
+import mp4.logs.*;
 
 /**
  *

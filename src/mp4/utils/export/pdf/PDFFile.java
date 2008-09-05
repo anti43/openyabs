@@ -37,7 +37,7 @@ import mp4.interfaces.Printable;
 import mp4.interfaces.Waitable;
 import mp3.classes.layer.Popup;
 
-import mp3.classes.utils.Log;
+import mp4.logs.*;
 import mp4.einstellungen.Einstellungen;
 import mp4.einstellungen.Programmdaten;
 import mp4.main.Main;

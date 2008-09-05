@@ -9,8 +9,8 @@ import java.io.IOException;
 import mp4.globals.Constants;
 import mp4.globals.Strings;
 import mp3.classes.layer.Popup;
-import mp3.classes.utils.JarFinder;
-import mp3.classes.utils.Log;
+import mp4.utils.files.JarFinder;
+import mp4.logs.*;
 import mp4.main.Main;
 import mp4.utils.files.FileDirectoryHandler;
 

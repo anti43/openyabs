@@ -18,13 +18,14 @@ import mp4.items.HistoryItem;
 import mp4.frames.mainframe;
 import mp3.classes.visual.util.serialLetter;
 import mp4.utils.tabellen.SelectionCheck;
-import mp3.classes.utils.Log;
+import mp4.logs.*;
 import mp4.benutzerverwaltung.User;
 
 import mp4.interfaces.panelInterface;
 import mp3.classes.layer.People;
 import mp4.items.Hersteller;
 import mp4.items.Product;
+import mp4.logs.*;
 import mp4.panels.misc.NumberFormatEditor;
 import mp4.utils.tabellen.TableFormat;
 import mp4.utils.tabellen.models.ContactListTableModel;

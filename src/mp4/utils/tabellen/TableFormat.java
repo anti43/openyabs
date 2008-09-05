@@ -17,8 +17,9 @@
 package mp4.utils.tabellen;
 
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.table.TableCellEditor;
-import mp3.classes.utils.Log;
+import mp4.logs.*;
 import mp4.utils.tabellen.models.MPTableModel;
 
 /**
@@ -96,5 +97,62 @@ public class TableFormat {
                 }
             }
         }
+    }
+
+    public static void formatUneditableTable(JTable jTable1, String[][] data, String[] header) {
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+                data,
+                header) {
+
+            boolean[] canEdits = new boolean[]{
+                false, false, false, false, false,
+                false, false, false, false, false,
+                false, false, false, false, false
+            };
+
+            @Override
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdits[columnIndex];
+            }
+        });
+
+        jTable1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        stripFirst(jTable1);
+    }
+
+
+    /**
+     * 
+     * @param table
+     */
+    public static void stripSecondColumn(JTable table) {
+        table.getColumn(table.getColumnName(1)).setWidth(0);
+        table.getColumn(table.getColumnName(1)).setPreferredWidth(0);
+        table.getColumn(table.getColumnName(1)).setMinWidth(0);
+        table.getColumn(table.getColumnName(1)).setMaxWidth(0);
+
+        table.doLayout();
+    }
+
+    /**
+     * 
+     * @param table
+     */
+    public static void stripFirstColumn(JTable table) {
+        table.getColumn(table.getColumnName(0)).setWidth(0);
+        table.getColumn(table.getColumnName(0)).setPreferredWidth(0);
+        table.getColumn(table.getColumnName(0)).setMinWidth(0);
+        table.getColumn(table.getColumnName(0)).setMaxWidth(0);
+
+        table.doLayout();
+    }
+
+    public static void format(JTable table, int column, int width) {
+        table.getColumn(table.getColumnName(column)).setWidth(width);
+        table.getColumn(table.getColumnName(column)).setPreferredWidth(width);
+        table.getColumn(table.getColumnName(column)).setMinWidth(width);
+        table.getColumn(table.getColumnName(column)).setMaxWidth(width);
+
+
     }
 }

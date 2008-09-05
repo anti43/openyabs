@@ -21,13 +21,14 @@ import java.awt.Image;
 import java.io.File;
 import java.util.ArrayList;
 import mp4.interfaces.Printable;
-import mp3.classes.utils.Formater;
+import mp4.utils.ui.inputfields.InputVerifiers;
 import mp4.einstellungen.Einstellungen;
 import mp4.items.Dienstleistung;
 import mp4.items.Hersteller;
 import mp4.items.Lieferant;
 import mp4.items.Product;
 import mp4.utils.datum.DateConverter;
+import mp4.utils.listen.ListenDataUtils;
 import mp4.utils.zahlen.FormatNumber;
 import mp4.utils.zahlen.FormatTax;
 
@@ -86,7 +87,7 @@ public class PDF_Produkt implements Printable {
         fields.add(new String[]{"vk", FormatNumber.formatLokalCurrency(produkt.getVK())});
         fields.add(new String[]{"steuersatz", FormatTax.formatLokal(produkt.getTaxValue())});
         
-        return Formater.StringListToTableArray(fields);
+        return ListenDataUtils.StringListToTableArray(fields);
 
     }
 

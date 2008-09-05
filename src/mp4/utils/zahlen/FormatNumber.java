@@ -7,7 +7,7 @@ package mp4.utils.zahlen;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import mp3.classes.layer.Popup;
-import mp3.classes.utils.Log;
+import mp4.logs.*;
 import mp4.einstellungen.Einstellungen;
 
 
@@ -55,5 +55,9 @@ public class FormatNumber {
     public static String formatLokalCurrency(Double betrag) {
         NumberFormat n = NumberFormat.getCurrencyInstance(Einstellungen.instanceOf().getLocale());
         return n.format(betrag);
+    }
+    
+    public static String formatPercent(Object obj) {
+        return obj.toString() + "%";
     }
 }

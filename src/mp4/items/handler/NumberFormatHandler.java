@@ -20,7 +20,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Date;
 
-import mp3.classes.utils.Log;
+import mp4.logs.*;
 import mp4.einstellungen.Programmdaten;
 import mp4.interfaces.Countable;
 import mp4.utils.datum.DateConverter;

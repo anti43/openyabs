@@ -15,6 +15,7 @@ import mp4.utils.tabellen.DataModelUtils;
 import mp4.utils.tabellen.SelectionCheck;
 import mp4.utils.tabellen.TableFormat;
 import mp4.utils.tabellen.models.BillNotesTableModel;
+import mp4.utils.ui.Position;
 
 /**
  *
@@ -34,7 +35,7 @@ public class billsNotesEditor extends javax.swing.JFrame {
         resizeTables();
         this.rechnung = current;
         this.panel = panel;
-        new mp4.utils.windows.Position().center(this);
+        new Position().center(this);
         setVisible(rootPaneCheckingEnabled);
     }
 

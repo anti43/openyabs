@@ -29,7 +29,7 @@ import java.util.logging.Logger;
 import javax.swing.JFrame;
 
 import mp3.classes.layer.Popup;
-import mp3.classes.utils.Log;
+import mp4.logs.*;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.datum.vTimeframe;
 

@@ -7,7 +7,7 @@ package mp3.classes.layer.visual;
 
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp3.classes.layer.*;
-import mp3.classes.utils.Formater;
+
 
 import java.awt.event.MouseEvent;
 import javax.swing.ListSelectionModel;
@@ -17,7 +17,9 @@ import mp4.items.Product;
 import mp4.panels.rechnungen.billsView;
 import mp4.panels.rechnungen.offersView;
 import mp4.utils.tabellen.SelectionCheck;
-import mp4.utils.windows.Position;
+import mp4.utils.tabellen.TableFormat;
+import mp4.utils.ui.Position;
+
 
 /**
  *
@@ -62,7 +64,7 @@ public class ProductPicker extends javax.swing.JFrame {
         String k = "id, " + "Nummer,Name";
 
         this.jTable1.setModel(new DefaultTableModel(list, k.split(",")));
-        Formater.stripFirst(jTable1);
+        TableFormat.stripFirst(jTable1);
 
         jCheckBox1.setSelected(Programmdaten.instanceOf().getPRODUCTPICKER_EAN());
         jCheckBox2.setSelected(Programmdaten.instanceOf().getPRODUCTPICKER_NAME());
@@ -94,7 +96,7 @@ public class ProductPicker extends javax.swing.JFrame {
         String k = "id, " + "Nummer,Name";
 
         this.jTable1.setModel(new DefaultTableModel(list, k.split(",")));
-        Formater.stripFirst(jTable1);
+        TableFormat.stripFirst(jTable1);
         
         jCheckBox1.setSelected(Programmdaten.instanceOf().getPRODUCTPICKER_EAN());
         jCheckBox2.setSelected(Programmdaten.instanceOf().getPRODUCTPICKER_NAME());
@@ -319,7 +321,7 @@ private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
 //        String k = "id, " + "Nummer,Name";
 //
 //        this.jTable1.setModel(new DefaultTableModel(list, k.split(",")));
-//        Formater.stripFirst(jTable1);
+//        TableFormat.stripFirst(jTable1);
 }//GEN-LAST:event_jTextField2ActionPerformed
 
 private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -331,7 +333,7 @@ private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     String k = "id, " + "Nummer,Name";
 
     this.jTable1.setModel(new DefaultTableModel(list2, k.split(",")));
-    Formater.stripFirst(jTable1);
+    TableFormat.stripFirst(jTable1);
 }//GEN-LAST:event_jTextField1ActionPerformed
 
     @SuppressWarnings(value = "static-access")

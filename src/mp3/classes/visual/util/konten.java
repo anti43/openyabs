@@ -12,15 +12,16 @@ import mp4.datenbank.verbindung.ConnectionHandler;
 
 import mp4.items.SKRKonto;
 import javax.swing.JTextField;
-import mp3.classes.utils.*;
 
-import mp3.classes.layer.*;
+import mp4.logs.*;
+
 import mp3.classes.layer.visual.Help;
 import mp4.panels.eur.eurAPanel;
 
 
 import mp4.panels.eur.eurEPanel;
-import mp4.utils.windows.Position;
+import mp4.utils.tabellen.TableFormat;
+import mp4.utils.ui.Position;
 
 
 /**
@@ -51,9 +52,9 @@ public class konten extends javax.swing.JFrame {
         k = new SKRKonto();
 
 
-        Formater.formatUneditableTable(jTable1, k.getAll(), "id, Nummer, Klasse, Gruppe, Art".split(","));
+        TableFormat.formatUneditableTable(jTable1, k.getAll(), "id, Nummer, Klasse, Gruppe, Art".split(","));
 
-        Formater.format(jTable1, 1, 100);
+        TableFormat.format(jTable1, 1, 100);
 
         pos.center(this);
         this.setVisible(rootPaneCheckingEnabled);
@@ -74,9 +75,9 @@ public class konten extends javax.swing.JFrame {
         k = new SKRKonto();
 
 
-        Formater.formatUneditableTable(jTable1, k.getAll(), "id, Nummer, Klasse, Gruppe, Art".split(","));
+        TableFormat.formatUneditableTable(jTable1, k.getAll(), "id, Nummer, Klasse, Gruppe, Art".split(","));
 
-        Formater.format(jTable1, 1, 100);
+        TableFormat.format(jTable1, 1, 100);
 
          pos.center(this);
         this.setVisible(rootPaneCheckingEnabled);
@@ -92,9 +93,9 @@ public class konten extends javax.swing.JFrame {
         k = new SKRKonto();
 
 
-        Formater.formatUneditableTable(jTable1, k.getAll(), "id, Nummer, Klasse, Gruppe, Art".split(","));
+        TableFormat.formatUneditableTable(jTable1, k.getAll(), "id, Nummer, Klasse, Gruppe, Art".split(","));
 
-        Formater.format(jTable1, 1, 100);
+        TableFormat.format(jTable1, 1, 100);
 
          pos.center(this);
         
@@ -109,9 +110,9 @@ public class konten extends javax.swing.JFrame {
         k = new SKRKonto();
 
 
-        Formater.formatUneditableTable(jTable1, k.select("*", "gruppe", string, "gruppe", true), "id, Nummer, Klasse, Gruppe, Art".split(","));
+        TableFormat.formatUneditableTable(jTable1, k.select("*", "gruppe", string, "gruppe", true), "id, Nummer, Klasse, Gruppe, Art".split(","));
 
-        Formater.format(jTable1, 1, 50);
+        TableFormat.format(jTable1, 1, 50);
 
          pos.center(this);
         this.setVisible(rootPaneCheckingEnabled);
@@ -130,9 +131,9 @@ public class konten extends javax.swing.JFrame {
         k = new SKRKonto();
 
 
-        Formater.formatUneditableTable(jTable1, k.select("*", "klasse", "Ausgabe", "klasse", true), "id, Nummer, Klasse, Gruppe, Art".split(","));
+        TableFormat.formatUneditableTable(jTable1, k.select("*", "klasse", "Ausgabe", "klasse", true), "id, Nummer, Klasse, Gruppe, Art".split(","));
 
-        Formater.format(jTable1, 1, 50);
+        TableFormat.format(jTable1, 1, 50);
 
          pos.center(this);
         this.setVisible(rootPaneCheckingEnabled);
@@ -150,9 +151,9 @@ public class konten extends javax.swing.JFrame {
         k = new SKRKonto();
 
 
-        Formater.formatUneditableTable(jTable1, k.select("*", "klasse", "Einnahme", "klasse", true), "id, Nummer, Klasse, Gruppe, Art".split(","));
+        TableFormat.formatUneditableTable(jTable1, k.select("*", "klasse", "Einnahme", "klasse", true), "id, Nummer, Klasse, Gruppe, Art".split(","));
 
-        Formater.format(jTable1, 1,50);
+        TableFormat.format(jTable1, 1,50);
 
          pos.center(this);
         this.setVisible(rootPaneCheckingEnabled);
@@ -463,35 +464,35 @@ public class konten extends javax.swing.JFrame {
 
     private void jTextField4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
 
-        Formater.formatUneditableTable(jTable1, k.select("*", "nummer", jTextField4.getText(), "nummer", true), "id, Nummer, Klasse, Gruppe, Art".split(","));
+        TableFormat.formatUneditableTable(jTable1, k.select("*", "nummer", jTextField4.getText(), "nummer", true), "id, Nummer, Klasse, Gruppe, Art".split(","));
 
-        Formater.format(jTable1, 1, 50);
+        TableFormat.format(jTable1, 1, 50);
         
     }//GEN-LAST:event_jTextField4ActionPerformed
 
     private void jTextField5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField5ActionPerformed
-        Formater.formatUneditableTable(jTable1, k.select("*", "gruppe", jTextField5.getText(), "gruppe", true), "id, Nummer, Klasse, Gruppe, Art".split(","));
+        TableFormat.formatUneditableTable(jTable1, k.select("*", "gruppe", jTextField5.getText(), "gruppe", true), "id, Nummer, Klasse, Gruppe, Art".split(","));
 
-        Formater.format(jTable1, 1, 50);
+        TableFormat.format(jTable1, 1, 50);
     }//GEN-LAST:event_jTextField5ActionPerformed
 
     private void jTextField6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField6ActionPerformed
-        Formater.formatUneditableTable(jTable1, k.select("*", "klasse", jTextField6.getText(), "klasse", true), "id, Nummer, Klasse, Gruppe, Art".split(","));
+        TableFormat.formatUneditableTable(jTable1, k.select("*", "klasse", jTextField6.getText(), "klasse", true), "id, Nummer, Klasse, Gruppe, Art".split(","));
 
-        Formater.format(jTable1, 1, 50);
+        TableFormat.format(jTable1, 1, 50);
         
     }//GEN-LAST:event_jTextField6ActionPerformed
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
-        Formater.formatUneditableTable(jTable1, k.select("*", "klasse", jTextField6.getText(), "klasse", true), "id, Nummer, Klasse, Gruppe, Art".split(","));
+        TableFormat.formatUneditableTable(jTable1, k.select("*", "klasse", jTextField6.getText(), "klasse", true), "id, Nummer, Klasse, Gruppe, Art".split(","));
 
-        Formater.format(jTable1, 1, 50);
+        TableFormat.format(jTable1, 1, 50);
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
-        Formater.formatUneditableTable(jTable1, k.select("*", "gruppe", jTextField5.getText(), "gruppe", true), "id, Nummer, Klasse, Gruppe, Art".split(","));
+        TableFormat.formatUneditableTable(jTable1, k.select("*", "gruppe", jTextField5.getText(), "gruppe", true), "id, Nummer, Klasse, Gruppe, Art".split(","));
 
-        Formater.format(jTable1, 1,50);
+        TableFormat.format(jTable1, 1,50);
     }//GEN-LAST:event_jButton10ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed

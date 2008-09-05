@@ -6,7 +6,7 @@
 package mp4.benutzerverwaltung.visual;
 
 import mp4.frames.*;
-import mp4.utils.windows.Position;
+import mp4.utils.ui.Position;
 
 /**
  *

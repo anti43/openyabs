@@ -10,7 +10,7 @@ import java.util.Date;
 import mp4.datenbank.verbindung.Query;
 
 
-import mp3.classes.utils.Log;
+import mp4.logs.*;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.einstellungen.Programmdaten;
 

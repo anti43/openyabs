@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import mp3.classes.utils.Log;
+import mp4.logs.*;
 
 /**
  *

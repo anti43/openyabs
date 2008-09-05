@@ -19,7 +19,7 @@ package mp4.utils.bilder;
 import java.awt.Image;
 import java.awt.MediaTracker;
 import javax.swing.JFrame;
-import mp3.classes.utils.Log;
+import mp4.logs.*;
 
 /**
  *

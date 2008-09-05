@@ -12,9 +12,10 @@ import mp3.classes.layer.People;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.items.Rechnung;
 import mp4.items.Customer;
-import mp3.classes.utils.Formater;
+
 import mp4.utils.datum.DateConverter;
 import mp4.utils.tabellen.SelectionCheck;
+import mp4.utils.tabellen.TableFormat;
 
 /**
  *
@@ -255,7 +256,7 @@ public class eurOPanel extends javax.swing.JPanel  implements panelInterface {
     private void updateTable() {
         data = new Rechnung(ConnectionHandler.instanceOf()).getUnpaid();
         String header = "id,Nummer,Betrag,Datum";
-        Formater.formatUneditableTable(getJTable3(),data, header.split(","));
+        TableFormat.formatUneditableTable(getJTable3(),data, header.split(","));
     }
 
     public javax.swing.JTable getJTable3() {

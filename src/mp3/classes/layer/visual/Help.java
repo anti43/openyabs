@@ -9,8 +9,8 @@ import java.io.File;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLDocument.HTMLReader;
 import mp3.classes.layer.*;
-import mp4.utils.windows.Position;
-import mp3.classes.utils.FileToString;
+import mp4.utils.ui.Position;
+import mp4.utils.files.FileToString;
 import mp4.einstellungen.Programmdaten;
 
 /**

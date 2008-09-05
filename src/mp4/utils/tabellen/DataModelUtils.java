@@ -23,7 +23,7 @@ import java.util.Date;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
-import mp3.classes.utils.Log;
+import mp4.logs.*;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.tabellen.models.MPTableModel;
 import mp4.utils.zahlen.FormatNumber;
@@ -117,7 +117,6 @@ public class DataModelUtils {
 //            return null;
 //        }
 //    }
-
     public static Object[][] changeToClassValue(Object[][] prods, Class aClass, int[] cols) {
 
         try {
@@ -189,7 +188,7 @@ public class DataModelUtils {
 
     public static Object[][] reverseArray(Object[][] array) {
         //Reverse order
-           int i = 0, j = array.length - 1;
+        int i = 0, j = array.length - 1;
         while (i < j) {
             Object[] h = array[i];
             array[i] = array[j];
@@ -226,5 +225,41 @@ public class DataModelUtils {
             }
         }
         return array_formatiert;
+    }
+
+    /**
+     * 
+     * @param table
+     * @param columns
+     * @return
+     */
+    public static String[][] formatTableArrayYesNo(String[][] table, int[] columns) {
+        for (int i = 0; i < table.length; i++) {
+
+            for (int z = 0; z < table[i].length; z++) {
+
+
+                for (int h = 0; h < columns.length; h++) {
+
+                    if (z == columns[h]) {
+
+                        if (table[i][z].equals("0")) {
+                            table[i][z] = "Nein";
+                        } else {
+                            table[i][z] = "Ja";
+                        }
+                    }
+
+
+                }
+
+
+            }
+
+        }
+
+
+        return table;
+
     }
 }

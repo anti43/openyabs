@@ -9,8 +9,8 @@
 package compat.mp2;
 
 import java.sql.*;
-import mp3.classes.utils.Log;
-import mp3.classes.utils.Out;
+import mp4.logs.*;
+
 
 
 

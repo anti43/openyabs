@@ -9,11 +9,10 @@ package mp4.statistik.graphs;
 import java.util.Currency;
 import mp4.statistik.*;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import mp3.classes.utils.Log;
+//import mp4.logs.*;*
 import mp4.einstellungen.Einstellungen;
-import mp4.statistik.data.DefaultData;
+import mp4.logs.*;
+import mp4.statistik.data.DefaultDataMonths;
 import mp4.utils.zahlen.FormatNumber;
 
 /**
@@ -37,11 +36,11 @@ public class LinienDiagramm extends javax.swing.JFrame {
     @SuppressWarnings({"unchecked", "unchecked","unchecked"})
     private void addDiagram(String von, String bis, String title) {
 
-        DefaultData data;
+        DefaultDataMonths data;
 
         d = new Diagramme(jPanel1);
         try {
-            data = new DefaultData(von, bis);        
+            data = new DefaultDataMonths(von, bis);        
             d.erzeugeLinienGrafik("", new Vector(data.getColumns()), 
                     new Vector(data.getUmsatz()), Currency.getInstance(Einstellungen.instanceOf().getLocale()).getSymbol(), title + " " + von + " - " + bis, "Zeitraum", Currency.getInstance(Einstellungen.instanceOf().getLocale()).getSymbol(), "", FormatNumber.getDefaultDecimalFormat());
         } catch (Exception ex) {

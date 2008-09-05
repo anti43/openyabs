@@ -22,7 +22,7 @@ package mp4.utils.tabellen;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
-import mp3.classes.utils.Log;
+import mp4.logs.*;
 
 /**
  *

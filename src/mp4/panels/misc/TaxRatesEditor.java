@@ -5,15 +5,18 @@
  */
 package mp4.panels.misc;
 
+
 import mp3.classes.layer.Popup;
-import mp3.classes.utils.Formater;
+
 import mp4.frames.mainframe;
 import mp4.utils.tabellen.SelectionCheck;
-import mp4.utils.windows.Position;
+
 import mp4.items.*;
 import mp4.utils.tabellen.models.TaxTableModel;
 import mp4.utils.zahlen.NumberCheck;
 import mp4.benutzerverwaltung.User;
+import mp4.utils.ui.Position;
+import mp4.utils.ui.inputfields.InputVerifiers;
 
 /**
  *
@@ -29,7 +32,7 @@ public class TaxRatesEditor extends javax.swing.JFrame {
         this.frame = farme;
         jTable1.setModel(new TaxTableModel());
 
-        jTextField2.setInputVerifier(Formater.getDoubleInputVerfier(jTextField2));
+        jTextField2.setInputVerifier(InputVerifiers.getDoubleInputVerfier(jTextField2));
 
         new Position(this);
         setVisible(rootPaneCheckingEnabled);

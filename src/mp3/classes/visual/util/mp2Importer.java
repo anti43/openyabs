@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
 import compat.mp2.mainFrame;
 import compat.mp2.rechnung;
-import mp4.utils.windows.Position;
+import mp4.utils.ui.Position;
 import mp3.classes.layer.DefaultHelpModel;
 import mp3.classes.layer.visual.Help;
 import mp3.classes.layer.Popup;
@@ -21,7 +21,7 @@ import mp4.items.Rechnung;
 import mp4.items.RechnungPosten;
 import mp4.items.Customer;
 import mp4.items.Product;
-import mp3.classes.utils.Log;
+import mp4.logs.*;
 import mp4.utils.datum.DateConverter;
 
 /**

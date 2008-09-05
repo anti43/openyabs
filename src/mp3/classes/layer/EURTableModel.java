@@ -25,10 +25,11 @@ import mp4.globals.Constants;
 import mp4.globals.Strings;
 
 import mp4.items.Rechnung;
-import mp3.classes.utils.Formater;
-import mp3.classes.utils.Log;
+import mp4.utils.ui.inputfields.InputVerifiers;
+import mp4.logs.*;
 import mp4.datenbank.verbindung.Query;
 import mp4.utils.datum.DateConverter;
+import mp4.utils.zahlen.FormatNumber;
 
 
 /**
@@ -180,27 +181,27 @@ public class EURTableModel implements Constants, Strings, mp4.datenbank.installa
             }
         }
 
-        data[0][1] = Formater.formatMoney(konto1110);
-        data[1][1] = Formater.formatMoney(konto1120);
-        data[2][1] = Formater.formatMoney(konto1130);
-        data[3][1] = Formater.formatMoney(konto1140);
-        data[4][1] = Formater.formatMoney(konto1150);
-        data[5][1] = Formater.formatMoney(konto1160);
-        data[6][1] = Formater.formatMoney(konto1170);
-        data[7][1] = Formater.formatMoney(konto1180);
-        data[8][1] = Formater.formatMoney(konto1190);
-        data[9][1] = Formater.formatMoney(konto1200);
-        data[10][1] = Formater.formatMoney(konto1210);
-        data[11][1] = Formater.formatMoney(konto1220);
-        data[12][1] = Formater.formatMoney(konto1230);
-        data[13][1] = Formater.formatMoney(konto1240);
-        data[14][1] = Formater.formatMoney(konto1250);
-        data[15][1] = Formater.formatMoney(konto1260);
-        data[16][1] = Formater.formatMoney(konto1270);
+        data[0][1] = FormatNumber.formatLokalCurrency(konto1110);
+        data[1][1] = FormatNumber.formatLokalCurrency(konto1120);
+        data[2][1] = FormatNumber.formatLokalCurrency(konto1130);
+        data[3][1] = FormatNumber.formatLokalCurrency(konto1140);
+        data[4][1] = FormatNumber.formatLokalCurrency(konto1150);
+        data[5][1] = FormatNumber.formatLokalCurrency(konto1160);
+        data[6][1] = FormatNumber.formatLokalCurrency(konto1170);
+        data[7][1] = FormatNumber.formatLokalCurrency(konto1180);
+        data[8][1] = FormatNumber.formatLokalCurrency(konto1190);
+        data[9][1] = FormatNumber.formatLokalCurrency(konto1200);
+        data[10][1] = FormatNumber.formatLokalCurrency(konto1210);
+        data[11][1] = FormatNumber.formatLokalCurrency(konto1220);
+        data[12][1] = FormatNumber.formatLokalCurrency(konto1230);
+        data[13][1] = FormatNumber.formatLokalCurrency(konto1240);
+        data[14][1] = FormatNumber.formatLokalCurrency(konto1250);
+        data[15][1] = FormatNumber.formatLokalCurrency(konto1260);
+        data[16][1] = FormatNumber.formatLokalCurrency(konto1270);
 
-        data[18][1] = Formater.formatMoney(vorsteuerausgabe);
+        data[18][1] = FormatNumber.formatLokalCurrency(vorsteuerausgabe);
 
-        data[20][1] = Formater.formatMoney(gesamtausgabe);
+        data[20][1] = FormatNumber.formatLokalCurrency(gesamtausgabe);
 
 
         q = ConnectionHandler.instanceOf().clone(TABLE_INCOME);
@@ -331,19 +332,19 @@ public class EURTableModel implements Constants, Strings, mp4.datenbank.installa
             }
         }
         
-        data[22][1] = Formater.formatMoney(konto2100);
-        data[23][1] = Formater.formatMoney(konto2110);
-        data[24][1] = Formater.formatMoney(konto2120);
-        data[25][1] = Formater.formatMoney(konto2130);
-        data[26][1] = Formater.formatMoney(konto2140);
+        data[22][1] = FormatNumber.formatLokalCurrency(konto2100);
+        data[23][1] = FormatNumber.formatLokalCurrency(konto2110);
+        data[24][1] = FormatNumber.formatLokalCurrency(konto2120);
+        data[25][1] = FormatNumber.formatLokalCurrency(konto2130);
+        data[26][1] = FormatNumber.formatLokalCurrency(konto2140);
         
-        data[28][1] = Formater.formatMoney(vorsteuereinnahme);
+        data[28][1] = FormatNumber.formatLokalCurrency(vorsteuereinnahme);
         
-        data[30][1] = Formater.formatMoney(gesamteinnahme);
+        data[30][1] = FormatNumber.formatLokalCurrency(gesamteinnahme);
         
-        data[33][1] = Formater.formatMoney(gesamteinnahme);
-        data[34][1] = Formater.formatMoney(gesamtausgabe);
-        data[35][1] = Formater.formatMoney(gesamteinnahme - gesamtausgabe);
+        data[33][1] = FormatNumber.formatLokalCurrency(gesamteinnahme);
+        data[34][1] = FormatNumber.formatLokalCurrency(gesamtausgabe);
+        data[35][1] = FormatNumber.formatLokalCurrency(gesamteinnahme - gesamtausgabe);
 
     }
 // "1110 Waren, Rohstoffe und Hilfsstoffe einschl. der Nebenkosten",
@@ -484,27 +485,27 @@ public class EURTableModel implements Constants, Strings, mp4.datenbank.installa
             }
         }
 
-        data[0][1] = Formater.formatMoney(konto1110);
-        data[1][1] = Formater.formatMoney(konto1120);
-        data[2][1] = Formater.formatMoney(konto1130);
-        data[3][1] = Formater.formatMoney(konto1140);
-        data[4][1] = Formater.formatMoney(konto1150);
-        data[5][1] = Formater.formatMoney(konto1160);
-        data[6][1] = Formater.formatMoney(konto1170);
-        data[7][1] = Formater.formatMoney(konto1180);
-        data[8][1] = Formater.formatMoney(konto1190);
-        data[9][1] = Formater.formatMoney(konto1200);
-        data[10][1] = Formater.formatMoney(konto1210);
-        data[11][1] = Formater.formatMoney(konto1220);
-        data[12][1] = Formater.formatMoney(konto1230);
-        data[13][1] = Formater.formatMoney(konto1240);
-        data[14][1] = Formater.formatMoney(konto1250);
-        data[15][1] = Formater.formatMoney(konto1260);
-        data[16][1] = Formater.formatMoney(konto1270);
+        data[0][1] = FormatNumber.formatLokalCurrency(konto1110);
+        data[1][1] = FormatNumber.formatLokalCurrency(konto1120);
+        data[2][1] = FormatNumber.formatLokalCurrency(konto1130);
+        data[3][1] = FormatNumber.formatLokalCurrency(konto1140);
+        data[4][1] = FormatNumber.formatLokalCurrency(konto1150);
+        data[5][1] = FormatNumber.formatLokalCurrency(konto1160);
+        data[6][1] = FormatNumber.formatLokalCurrency(konto1170);
+        data[7][1] = FormatNumber.formatLokalCurrency(konto1180);
+        data[8][1] = FormatNumber.formatLokalCurrency(konto1190);
+        data[9][1] = FormatNumber.formatLokalCurrency(konto1200);
+        data[10][1] = FormatNumber.formatLokalCurrency(konto1210);
+        data[11][1] = FormatNumber.formatLokalCurrency(konto1220);
+        data[12][1] = FormatNumber.formatLokalCurrency(konto1230);
+        data[13][1] = FormatNumber.formatLokalCurrency(konto1240);
+        data[14][1] = FormatNumber.formatLokalCurrency(konto1250);
+        data[15][1] = FormatNumber.formatLokalCurrency(konto1260);
+        data[16][1] = FormatNumber.formatLokalCurrency(konto1270);
 
-        data[18][1] = Formater.formatMoney(vorsteuerausgabe);
+        data[18][1] = FormatNumber.formatLokalCurrency(vorsteuerausgabe);
 
-        data[20][1] = Formater.formatMoney(gesamtausgabe);
+        data[20][1] = FormatNumber.formatLokalCurrency(gesamtausgabe);
 
 
         q = ConnectionHandler.instanceOf().clone(TABLE_INCOME);
@@ -636,19 +637,19 @@ public class EURTableModel implements Constants, Strings, mp4.datenbank.installa
             }
         }
         
-        data[22][1] = Formater.formatMoney(konto2100);
-        data[23][1] = Formater.formatMoney(konto2110);
-        data[24][1] = Formater.formatMoney(konto2120);
-        data[25][1] = Formater.formatMoney(konto2130);
-        data[26][1] = Formater.formatMoney(konto2140);
+        data[22][1] = FormatNumber.formatLokalCurrency(konto2100);
+        data[23][1] = FormatNumber.formatLokalCurrency(konto2110);
+        data[24][1] = FormatNumber.formatLokalCurrency(konto2120);
+        data[25][1] = FormatNumber.formatLokalCurrency(konto2130);
+        data[26][1] = FormatNumber.formatLokalCurrency(konto2140);
         
-        data[28][1] = Formater.formatMoney(vorsteuereinnahme);
+        data[28][1] = FormatNumber.formatLokalCurrency(vorsteuereinnahme);
         
-        data[30][1] = Formater.formatMoney(gesamteinnahme);
+        data[30][1] = FormatNumber.formatLokalCurrency(gesamteinnahme);
         
-        data[33][1] = Formater.formatMoney(gesamteinnahme);
-        data[34][1] = Formater.formatMoney(gesamtausgabe);
-        data[35][1] = Formater.formatMoney(gesamteinnahme - gesamtausgabe);
+        data[33][1] = FormatNumber.formatLokalCurrency(gesamteinnahme);
+        data[34][1] = FormatNumber.formatLokalCurrency(gesamtausgabe);
+        data[35][1] = FormatNumber.formatLokalCurrency(gesamteinnahme - gesamtausgabe);
 
     }
 

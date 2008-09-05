@@ -8,19 +8,21 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import mp3.classes.utils.Formater;
-import mp3.classes.utils.Log;
+
+import mp4.logs.*;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.datenbank.verbindung.Query;
+import mp4.interfaces.Waitable;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.datum.vDate;
 import mp4.utils.datum.vTimeframe;
+import mp4.utils.listen.ListenDataUtils;
 
 /**
  *
  * @author anti43
  */
-public class DefaultData {
+public class DefaultDataMonths implements Waitable {
 
     private vTimeframe zeitraum;
     private ArrayList columns = new ArrayList(1);
@@ -30,7 +32,7 @@ public class DefaultData {
     private ArrayList<Double> ausgabenVal;
 
     @SuppressWarnings("unchecked")
-    public DefaultData(String start, String ende) throws Exception {
+    public DefaultDataMonths(String start, String ende) throws Exception {
 
         try {
             vDate von = new vDate(start);
@@ -47,6 +49,30 @@ public class DefaultData {
                 date = DateConverter.addMonth(date);
             }
 
+        } catch (NumberFormatException numberFormatException) {
+            Log.Debug(numberFormatException);
+        }
+    }
+
+    public ArrayList getGewinn() {
+        try {
+            return ListenDataUtils.substract(ListenDataUtils.add(einnahmenVal, rechnungenVal), ausgabenVal);
+        } catch (Exception ex) {
+            Log.Debug(ex.getMessage());
+        }
+        return null;
+    }
+
+    public ArrayList getUmsatz() {
+
+        return ListenDataUtils.merge(rechnungenVal, ListenDataUtils.merge(einnahmenVal, ausgabenVal));
+    }
+
+    public ArrayList getColumns() {
+        return columns;
+    }
+
+    public void waitFor() {
             query = ConnectionHandler.instanceOf().clone(null);
 
             query.setTable("Rechnungen");
@@ -67,26 +93,5 @@ public class DefaultData {
             if (ausgabenVal.isEmpty()) {
                 ausgabenVal.add(0d);
             }
-        } catch (NumberFormatException numberFormatException) {
-            Log.Debug(numberFormatException);
-        }
-    }
-
-    public ArrayList getGewinn() {
-        try {
-            return Formater.substract(Formater.add(einnahmenVal, rechnungenVal), ausgabenVal);
-        } catch (Exception ex) {
-            Log.Debug(ex.getMessage());
-        }
-        return null;
-    }
-
-    public ArrayList getUmsatz() {
-
-        return Formater.merge(rechnungenVal, Formater.merge(einnahmenVal, ausgabenVal));
-    }
-
-    public ArrayList getColumns() {
-        return columns;
     }
 }

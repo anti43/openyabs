@@ -17,7 +17,7 @@
 
 package mp3.classes.objects.eur;
 
-import mp3.classes.utils.Formater;
+
 import mp3.classes.layer.QueryClass;
 import java.util.Date;
 import mp3.database.util.Query;

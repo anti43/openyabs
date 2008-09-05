@@ -24,11 +24,13 @@ import mp4.datenbank.verbindung.Query;
 
 import java.io.Serializable;
 import mp3.classes.layer.*;
-import mp3.classes.utils.Formater;
 
-import mp3.classes.utils.Log;
+
+import mp4.logs.*;
 import mp4.interfaces.Daemonable;
 import mp4.utils.datum.DateConverter;
+import mp4.utils.listen.ArrayUtils;
+import mp4.utils.listen.ListenDataUtils;
 import mp4.utils.tabellen.DataModelUtils;
 import mp4.utils.zahlen.FormatNumber;
 import mp4.utils.zahlen.FormatTax;
@@ -184,7 +186,7 @@ public class Einnahme extends mp3.classes.layer.Things implements mp4.datenbank.
 
         Object[][] bills = new Rechnung(q).getPaid();
 
-        return Formater.ObjectToStringArray(Formater.merge(DataModelUtils.inserValue(prods,"Eingabe",2), DataModelUtils.inserValue(bills, "Rechnung", 2)));
+        return ArrayUtils.ObjectToStringArray(ArrayUtils.merge(DataModelUtils.inserValue(prods,"Eingabe",2), DataModelUtils.inserValue(bills, "Rechnung", 2)));
     }
 
     public Integer getKontenid() {

@@ -20,7 +20,7 @@ import javax.swing.JProgressBar;
 import javax.swing.SwingWorker;
 import mp4.interfaces.Waitable;
 import mp4.interfaces.Waiter;
-import mp3.classes.utils.Log;
+import mp4.logs.*;
 
 /**
  *

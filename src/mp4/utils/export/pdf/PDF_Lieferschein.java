@@ -27,8 +27,10 @@ import java.util.ArrayList;
 
 import mp4.interfaces.Printable;
 import mp3.classes.layer.Popup;
-import mp3.classes.utils.Formater;
+import mp4.utils.ui.inputfields.InputVerifiers;
 import mp4.einstellungen.Einstellungen;
+import mp4.utils.listen.ListenDataUtils;
+import mp4.utils.zahlen.FormatNumber;
 
 /**
  *
@@ -72,7 +74,7 @@ public class PDF_Lieferschein implements Printable{
             try {
                 if (products[i][2] != null && String.valueOf(products[i][2]).length() > 0) {
                     fields.add(new String[]{"count" + t, t + "."});
-                    fields.add(new String[]{"quantity" + t, Formater.formatDecimal((Double) products[i][1])});
+                    fields.add(new String[]{"quantity" + t, FormatNumber.formatDezimal((Double) products[i][1])});
                     fields.add(new String[]{"product" + t, String.valueOf(products[i][2])});
                 }
             } catch (Exception exception) {
@@ -81,7 +83,7 @@ public class PDF_Lieferschein implements Printable{
         }
 
         
-        return Formater.StringListToTableArray(fields);
+        return ListenDataUtils.StringListToTableArray(fields);
     }
 
     public String getPath() {

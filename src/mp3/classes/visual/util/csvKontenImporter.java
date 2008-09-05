@@ -18,10 +18,10 @@ import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableModel;
 
 import mp4.globals.Strings;
-import mp4.utils.windows.Position;
+import mp4.utils.ui.Position;
 import mp3.classes.layer.DefaultHelpModel;
 import mp3.classes.layer.visual.Help;
-import mp3.classes.utils.Log;
+import mp4.logs.*;
 import mp3.classes.layer.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp3.classes.layer.KontenImporteur;

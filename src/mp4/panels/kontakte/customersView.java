@@ -5,16 +5,9 @@
  */
 package mp4.panels.kontakte;
 
-import java.awt.PopupMenu;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
 import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableModel;
 
 
@@ -26,10 +19,10 @@ import mp4.items.HistoryItem;
 import mp4.frames.mainframe;
 import mp3.classes.visual.util.serialLetter;
 import mp4.utils.tabellen.SelectionCheck;
-import mp3.classes.utils.Log;
+import mp4.logs.*;
 import mp4.benutzerverwaltung.User;
 import mp4.utils.tabellen.models.CustomerBAListTableModel;
-import mp4.utils.windows.TabCloseIcon;
+
 import mp4.interfaces.panelInterface;
 import mp3.classes.layer.People;
 import mp4.items.Angebot;

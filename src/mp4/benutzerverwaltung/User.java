@@ -20,7 +20,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import mp3.classes.layer.Popup;
 import mp3.classes.layer.Things;
-import mp3.classes.utils.Log;
+import mp4.logs.*;
 import mp4.benutzerverwaltung.md5hash;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.datenbank.verbindung.PrepareData;

@@ -21,10 +21,10 @@ import java.sql.*;
 import mp4.globals.Constants;
 import mp4.globals.Constants;
 import mp4.globals.Strings;
-import mp3.classes.utils.FileReaderWriter;
+import mp4.utils.files.FileReaderWriter;
 import mp3.classes.layer.Popup;
-import mp3.classes.utils.Log;
-import mp3.classes.utils.SplashScreen;
+import mp4.logs.*;
+import mp4.panels.misc.SplashScreen;
 import mp4.datenbank.installation.Daten;
 import mp4.datenbank.installation.Struktur;
 

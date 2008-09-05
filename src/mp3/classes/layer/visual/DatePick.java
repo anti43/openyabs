@@ -5,7 +5,7 @@
  */
 package mp3.classes.layer.visual;
 
-import mp4.utils.windows.Position;
+import mp4.utils.ui.Position;
 import com.michaelbaranov.microba.calendar.CalendarPane;
 import java.awt.BorderLayout;
 import java.awt.event.KeyEvent;

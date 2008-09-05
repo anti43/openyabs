@@ -28,8 +28,10 @@ import java.util.Date;
 
 
 import mp4.interfaces.Printable;
-import mp3.classes.utils.Formater;
+
 import mp4.utils.datum.DateConverter;
+import mp4.utils.listen.ArrayUtils;
+import mp4.utils.listen.ListenDataUtils;
 /**
  *
  * @author anti43
@@ -79,7 +81,7 @@ public class PDF_Serienbrief implements Printable{
         }
         fields.add(new String[]{"text", text});
         
-        return Formater.StringListToTableArray(fields);
+        return ListenDataUtils.StringListToTableArray(fields);
     }
 
     public String getPath() {

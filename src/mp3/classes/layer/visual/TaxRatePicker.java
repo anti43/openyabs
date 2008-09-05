@@ -5,14 +5,15 @@
  */
 package mp3.classes.layer.visual;
 
-import mp3.classes.utils.Formater;
-import mp4.utils.windows.Position;
+
 import javax.swing.ListSelectionModel;
 import mp4.items.Customer;
 import mp4.utils.tabellen.SelectionCheck;
 import mp4.interfaces.moneyPanelInterface;
 import mp4.items.Steuersatz;
+import mp4.utils.tabellen.TableFormat;
 import mp4.utils.tabellen.models.TaxTableModel;
+import mp4.utils.ui.Position;
 
 /**
  *
@@ -35,7 +36,7 @@ public class TaxRatePicker extends javax.swing.JFrame {
         new Position(this);
 
         this.jTable2.setModel(new TaxTableModel());
-        Formater.stripFirst(jTable2);
+        TableFormat.stripFirst(jTable2);
         this.jTable2.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         this.setVisible(rootPaneCheckingEnabled);
 

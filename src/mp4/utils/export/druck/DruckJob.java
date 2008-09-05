@@ -18,7 +18,7 @@ import javax.print.attribute.Attribute;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.standard.MediaSizeName;
 import mp4.interfaces.Waiter;
-import mp3.classes.utils.Log;
+import mp4.logs.*;
 
 /**
  *

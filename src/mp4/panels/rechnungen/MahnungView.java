@@ -6,8 +6,8 @@
 
 package mp4.panels.rechnungen;
 
-import mp3.classes.utils.Formater;
-import mp3.classes.utils.Log;
+
+import mp4.logs.*;
 import mp4.items.Product;
 import mp4.items.Rechnung;
 
@@ -21,7 +21,9 @@ import mp4.frames.mainframe;
 import mp4.frames.PdfVorschauWindow;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.export.pdf.PDFFile;
-import mp4.utils.windows.Position;
+import mp4.utils.ui.Position;
+import mp4.utils.ui.inputfields.InputVerifiers;
+
 import mp4.utils.zahlen.FormatNumber;
 
 /**
@@ -51,7 +53,7 @@ public class MahnungView extends javax.swing.JFrame {
         jLabel6.setText(customer.getFirma());
         jTextField1.setText(DateConverter.getTodayDefDate());
         
-        jTextField2.setInputVerifier(Formater.getDoubleInputVerfier(jTextField2));
+        jTextField2.setInputVerifier(InputVerifiers.getDoubleInputVerfier(jTextField2));
         
         new Position(this);
         this.setVisible(rootPaneCheckingEnabled);

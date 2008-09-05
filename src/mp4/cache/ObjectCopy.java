@@ -30,7 +30,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectInputStream;
-import mp3.classes.utils.Log;
+import mp4.logs.*;
 
 /**
  * Utility for making deep copies (vs. clone()'s shallow copies) of

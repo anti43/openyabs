@@ -23,7 +23,7 @@ import java.util.Date;
 import mp3.database.util.Query;
 import mp3.classes.interfaces.Structure;
 import mp3.classes.layer.*;
-import mp3.classes.utils.Formater;
+
 //import mp3.classes.objects.ungrouped.*;
 import mp3.classes.objects.bill.*;
 /**

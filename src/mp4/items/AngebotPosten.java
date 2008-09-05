@@ -20,7 +20,7 @@ import java.util.Date;
 import mp4.datenbank.verbindung.Query;
 import mp3.classes.layer.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
-import mp3.classes.utils.Log;
+import mp4.logs.*;
 
 /**
  *

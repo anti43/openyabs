@@ -17,9 +17,9 @@ import mp3.classes.layer.visual.DatePick;
 
 //import mp3.classes.objects.ungrouped.MyData;
 //import mp3.classes.objects.eur.SKRKonto;
-import mp3.classes.utils.FetchDataTask;
-import mp3.classes.utils.Formater;
-import mp3.classes.utils.Log;
+import mp4.utils.tasks.FetchDataTask;
+
+import mp4.logs.*;
 import mp3.classes.visual.util.konten;
 import mp4.cache.ObjectCopy;
 import mp4.cache.undoCache;
@@ -30,6 +30,8 @@ import mp4.items.SKRKonto;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.datum.vDate;
 import mp4.utils.tabellen.SelectionCheck;
+import mp4.utils.tabellen.TableFormat;
+import mp4.utils.ui.inputfields.InputVerifiers;
 import mp4.utils.zahlen.vDouble;
 
 /**
@@ -52,9 +54,9 @@ public class eurAPanel extends javax.swing.JPanel implements panelInterface {
         jTextField3.setText(Einstellungen.instanceOf().getGlobaltax().toString());
         jTextField4.setText("0");
         jTextField5.setText(Einstellungen.instanceOf().getAusgabeDefKonto().getArt());
-//        jTextField3.setInputVerifier(Formater.getDoubleInputVerfier(jTextField3));
-//        jTextField4.setInputVerifier(Formater.getDoubleInputVerfier(jTextField4));
-        jTextField6.setInputVerifier(Formater.getDateInputVerfier(jTextField6));
+//        jTextField3.setInputVerifier(InputVerifiers.getDoubleInputVerfier(jTextField3));
+//        jTextField4.setInputVerifier(InputVerifiers.getDoubleInputVerfier(jTextField4));
+        jTextField6.setInputVerifier(InputVerifiers.getDateInputVerfier(jTextField6));
 
         updateTableData();
     }
@@ -413,10 +415,10 @@ public class eurAPanel extends javax.swing.JPanel implements panelInterface {
             task.execute();
             data = task.get();
 
-            Formater.formatUneditableTable(getJTable1(), data, new String[]{"kontenid", "Nummer", "Typ", "Betrag", "Datum"});
-            Formater.format(jTable1, 1, 80);
-            Formater.format(jTable1, 3, 100);
-            Formater.format(jTable1, 4, 100);
+            TableFormat.formatUneditableTable(getJTable1(), data, new String[]{"kontenid", "Nummer", "Typ", "Betrag", "Datum"});
+            TableFormat.format(jTable1, 1, 80);
+            TableFormat.format(jTable1, 3, 100);
+            TableFormat.format(jTable1, 4, 100);
 
         } catch (Exception ex) {
             Log.Debug(ex.getMessage());
