@@ -44,7 +44,7 @@ import mp4.utils.ui.inputfields.InputVerifiers;
  *
  * @author  anti43
  */
-public class servicesView extends javax.swing.JPanel implements mp4.datenbank.installation.Tabellen, panelInterface, moneyPanelInterface {
+public class servicesView extends mp4.panels.misc.commonPanel implements mp4.datenbank.installation.Tabellen, panelInterface, moneyPanelInterface {
 
     private mainframe mainframe;
     private Dienstleistung current;
@@ -1143,42 +1143,8 @@ public javax.swing.JToolBar jToolBar2;
         this.updateListTable();
     }
 
-    public void close() {
-        setPanelValues();
-        if (isEdited()) {
-            if (Popup.Y_N_dialog("Wenn Sie jetzt schliessen, gehen Ihre Änderungen verloren.\nTrotzdem schliessen?")) {
-                ((JTabbedPane) this.getParent()).remove(this);
-            }
-        } else {
-            ((JTabbedPane) this.getParent()).remove(this);
-        }
-    }
-
-    public void undo() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void redo() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void changeTabText(String text) {
-        ((JTabbedPane) this.getParent()).setTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex(), text);
-    }
-
-    public boolean isEdited() {
-        return edited;
-    }
-
-    private void setEdited(boolean edit) {
-//         if (edit && (edit != edited)) {
-//            this.changeTabText(((JTabbedPane) this.getParent()).getTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex()) + "*");
-//        } else if (!edit && (edit != edited)) {
-//            this.changeTabText(((JTabbedPane) this.getParent()).getTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex()).substring(0, 
-//                    ((JTabbedPane) this.getParent()).getTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex()).length()));
-//        }
-        edited = edit;
-    }
+  
+ 
 
     public void setContact(People contact) {
     }

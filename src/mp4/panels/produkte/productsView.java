@@ -45,7 +45,7 @@ import mp4.items.HistoryItem;
 import mp4.items.ProductImage;
 import mp4.items.Rechnung;
 import mp4.items.Steuersatz;
-import mp4.panels.misc.NumberFormatEditor;
+import mp4.panels.misc.*;
 import mp4.panels.rechnungen.billsView;
 import mp4.panels.rechnungen.offersView;
 import mp4.utils.bilder.ImageFormat;
@@ -65,7 +65,7 @@ import mp4.utils.zahlen.NumberCheck;
  *
  * @author  anti43
  */
-public class productsView extends javax.swing.JPanel implements mp4.datenbank.installation.Tabellen, panelInterface, moneyPanelInterface{
+public class productsView extends commonPanel implements mp4.datenbank.installation.Tabellen, panelInterface, moneyPanelInterface{
 
     private mainframe mainframe;
     private Product current;
@@ -123,7 +123,7 @@ public class productsView extends javax.swing.JPanel implements mp4.datenbank.in
             this.getProduct().setLieferantenId(hersteller.getId());
         }
 
-        setEdited(true);
+        super.setEdited(true);
     }
 
     Product getCurrent() {
@@ -1325,13 +1325,13 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 }//GEN-LAST:event_jButton3ActionPerformed
 
 private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
-    undo();
+    super.undo();
 }//GEN-LAST:event_jButton11ActionPerformed
 
 private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton20ActionPerformed
     if (mainframe.getUser().doAction(User.EDITOR)) {
         deactivate();
-        this.close();
+        super.close();
     }
 }//GEN-LAST:event_jButton20ActionPerformed
 
@@ -1375,7 +1375,7 @@ private void jButton17MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
 
 private void jButton21MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton21MouseClicked
     new groupsView(getMainframe(), current, jTextField12).setTreeData(true);
-    setEdited(true);
+    super.setEdited(true);
 }//GEN-LAST:event_jButton21MouseClicked
 
 private void jButton22MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton22MouseClicked
@@ -1398,7 +1398,7 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     if (dialog.getFilePath(jTextField11)) {
         new GetAnyImage(this, dialog.getFile()).execute();
     }
-    setEdited(true);
+    super.setEdited(true);
 }//GEN-LAST:event_jButton1ActionPerformed
 
 private void jTextField4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextField4MouseClicked
@@ -1424,7 +1424,7 @@ private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
 
 private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
     new DatePick(jTextField19);
-    setEdited(true);
+    super.setEdited(true);
 }//GEN-LAST:event_jButton12ActionPerformed
 
 private void jButton12KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton12KeyPressed
@@ -1598,7 +1598,7 @@ numberfieldedited = true;
         product.setLagermenge(NumberCheck.checkDoubleNN(jTextField21.getText()));
 
         product.save();
-        setEdited(false);
+        super.setEdited(false);
         if (currentImageURI != null) {
             copyImage(product);
         }
@@ -1664,7 +1664,7 @@ numberfieldedited = true;
             if ((current.getImagePath() == null && currentImageURI != null) || (currentImageURI != null && currentImageURI != current.getImagePath())) {
                 copyImage(current);
             }
-            setEdited(false);
+            super.setEdited(false);
             getMainframe().setMessage("Produkt Nummer " + current.getProduktNummer() + " editiert.");
             new HistoryItem(Strings.PRODUCT, "Produkt Nummer: " + current.getProduktNummer() + " editiert.");
 
@@ -1678,7 +1678,7 @@ numberfieldedited = true;
             this.jTextField10.setText(supplier.getFirma());
             this.getProduct().setLieferantenId(supplier.getId());
         }
-        setEdited(true);
+        super.setEdited(true);
     }
 
     public javax.swing.JTextField getJTextField12() {
@@ -1701,41 +1701,7 @@ numberfieldedited = true;
         this.updateListTable();
     }
 
-    public void close() {
-        setPanelValues();
-        if (isEdited()) {
-            if (Popup.Y_N_dialog("Wenn Sie jetzt schliessen, gehen Ihre Änderungen verloren.\nTrotzdem schliessen?")) {
-                ((JTabbedPane) this.getParent()).remove(this);
-            }
-        } else {
-            ((JTabbedPane) this.getParent()).remove(this);
-        }
-    }
-
-    public void undo() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void redo() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void changeTabText(String text) {
-        ((JTabbedPane) this.getParent()).setTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex(), text);
-    }
-
-    public boolean isEdited() {
-        return edited;
-    }
-
-    private void setEdited(boolean edit) {
-//          if (edit && (edit != edited)) {
-//            this.changeTabText(((JTabbedPane) this.getParent()).getTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex()) + "*");
-//        } else if (!edit) {
-//            this.changeTabText(((JTabbedPane) this.getParent()).getTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex()).replaceAll("\\*", ""));
-//        }
-        edited = edit;
-    }
+    
 
     public void setContact(People contact) {
         setSupplier((Lieferant) contact);

@@ -40,49 +40,49 @@ public interface panelInterface {
      */
     public abstract void save();
 
-    /**
-     *
-     * To be called on closing the tab
-     */
-    public abstract void close();
-
-    /**
-     *
-     * To be called for Undo action
-     */
-    public abstract void undo();
-
-    /**
-     *
-     * To be called for Redo action
-     */
-    public abstract void redo();
-
-    /**
-     *
-     * To change the tab text
-     * @param text 
-     */
-    public abstract void changeTabText(String text);
-
-    /**
-     *
-     * To check whether any changes have been done to the Tabs initial data
-     * @return 
-     */
-    public abstract boolean isEdited();
+//    /**
+//     *
+//     * To be called on closing the tab
+//     */
+//    public abstract void close();
+//
+//    /**
+//     *
+//     * To be called for Undo action
+//     */
+//    public abstract void undo();
+//
+//    /**
+//     *
+//     * To be called for Redo action
+//     */
+//    public abstract void redo();
+//
+//    /**
+//     *
+//     * To change the tab text
+//     * @param text 
+//     */
+//    public abstract void changeTabText(String text);
+//
+//    /**
+//     *
+//     * To check whether any changes have been done to the Tabs initial data
+//     * @return 
+//     */
+//    public abstract boolean isEdited();
 
     /**
      *
      * To change the panels' contact
-     * @param text 
+     * @param contact 
      */
     public abstract void setContact(People contact);
 
     /**
      *
      * To get the data (people)
-     * @param text 
+     * @return 
      */
     public abstract People getContact();
 
@@ -90,7 +90,7 @@ public interface panelInterface {
     /**
      *
      * To change the tab
-     * @param text 
+     * @param i 
      */
     public abstract void switchTab(int i);
 }

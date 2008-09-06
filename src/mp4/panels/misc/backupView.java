@@ -42,7 +42,7 @@ import mp4.utils.tabellen.TableFormat;
  *
  * @author  anti43
  */
-public class backupView extends javax.swing.JPanel implements panelInterface{
+public class backupView extends mp4.panels.misc.commonPanel implements panelInterface{
 
     private String[][] liste;
     private String[] header;
@@ -374,7 +374,8 @@ public class backupView extends javax.swing.JPanel implements panelInterface{
         l.stripFirst(jTable1);
         TableFormat.format(jTable1, 1, 180);
     }
-        public void updateTables() {
+        
+    public void updateTables() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -382,30 +383,10 @@ public class backupView extends javax.swing.JPanel implements panelInterface{
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void close() {
-        ((JTabbedPane) this.getParent()).remove(this);
-    }
-
-    public void undo() {
+    public void setContact(People c) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
-    public void redo() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void changeTabText(String text) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public boolean isEdited() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void setContact(People contact) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
+    
     public People getContact() {
         throw new UnsupportedOperationException("Not supported yet.");
     }

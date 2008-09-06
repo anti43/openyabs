@@ -35,7 +35,7 @@ import mp4.utils.tabellen.models.ContactListTableModel;
  *
  * @author  anti43
  */
-public class customersView extends javax.swing.JPanel implements mp4.datenbank.installation.Tabellen, panelInterface {
+public class customersView extends mp4.panels.misc.commonPanel implements mp4.datenbank.installation.Tabellen, panelInterface {
 
     public Customer current;
     private String[][] liste;
@@ -1445,41 +1445,7 @@ private void jTextField4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST
         this.updateListTable();
     }
 
-    public void close() {
-        if (isEdited()) {
-            if (Popup.Y_N_dialog("Wenn Sie jetzt schliessen, gehen Ihre Änderungen verloren.\nTrotzdem schliessen?")) {
-                ((JTabbedPane) this.getParent()).remove(this);
-            }
-        } else {
-            ((JTabbedPane) this.getParent()).remove(this);
-        }
-    }
-
-    public void undo() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void redo() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void changeTabText(String text) {
-        ((JTabbedPane) this.getParent()).setTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex(), text);
-    }
-
-    public boolean isEdited() {
-        return edited;
-    }
-
-    private void setEdited(boolean edit) {
-//         if (edit && (edit != edited)) {
-//            this.changeTabText(((JTabbedPane) this.getParent()).getTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex()) + "*");
-//        } else if (!edit && (edit != edited)) {
-//            this.changeTabText(((JTabbedPane) this.getParent()).getTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex()).substring(0, 
-//                    ((JTabbedPane) this.getParent()).getTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex()).length()));
-//        }
-        edited = edit;
-    }
+ 
 
     private void updateListTable() {
      

@@ -65,7 +65,7 @@ import mp4.utils.tasks.Job;
  *
  * @author  anti43
  */
-public class offersView extends javax.swing.JPanel implements panelInterface, mp4.datenbank.installation.Tabellen {
+public class offersView extends mp4.panels.misc.commonPanel implements panelInterface, mp4.datenbank.installation.Tabellen {
 
     private Angebot currentOffer;
     private String[][] liste;
@@ -1452,31 +1452,6 @@ public javax.swing.JToolBar jToolBar2;
 
     }
 
-    public void close() {
-        if (isEdited()) {
-            if (Popup.Y_N_dialog("Wenn Sie jetzt schliessen, gehen Ihre Änderungen verloren.\nTrotzdem schliessen?")) {
-                ((JTabbedPane) this.getParent()).remove(this);
-            }
-        } else {
-            ((JTabbedPane) this.getParent()).remove(this);
-        }
-    }
-
-    public void undo() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void redo() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void changeTabText(String text) {
-        ((JTabbedPane) this.getParent()).setTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex(), text);
-    }
-
-    public boolean isEdited() {
-        return edited;
-    }
 
     public People getContact() {
         return customer;

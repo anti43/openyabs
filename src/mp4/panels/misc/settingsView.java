@@ -24,7 +24,7 @@ import mp4.utils.tabellen.models.SettingsTableModel;
  *
  * @author  Andreas
  */
-public class settingsView extends javax.swing.JPanel implements panelInterface {
+public class settingsView extends mp4.panels.misc.commonPanel implements panelInterface {
 
     private Einstellungen data;
     private Einstellungen oldData;
@@ -267,25 +267,6 @@ private javax.swing.JTable jTable1;
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void close() {
-        ((JTabbedPane) this.getParent()).remove(this);
-    }
-
-    public void undo() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void redo() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void changeTabText(String text) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public boolean isEdited() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 
     public void setContact(People contact) {
         throw new UnsupportedOperationException("Not supported yet.");

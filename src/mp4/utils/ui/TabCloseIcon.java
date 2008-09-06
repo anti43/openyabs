@@ -31,6 +31,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JTabbedPane;
+import mp4.panels.misc.commonPanel;
 
 /**
  *
@@ -70,7 +71,7 @@ public class TabCloseIcon implements Icon {
                     if (!e.isConsumed() && mPosition.contains(e.getX(), e.getY())) {
                         final int index = mTabbedPane.getSelectedIndex();
 //						mTabbedPane.remove( index );                                           
-                        ((panelInterface) mTabbedPane.getComponentAt(index)).close();
+                        ((commonPanel) mTabbedPane.getComponentAt(index)).close();
                         e.consume();
                     }
                 }

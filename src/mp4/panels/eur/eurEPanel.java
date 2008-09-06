@@ -39,7 +39,7 @@ import mp4.utils.zahlen.vDouble;
  *
  * @author  anti43
  */
-public class eurEPanel extends javax.swing.JPanel implements panelInterface {
+public class eurEPanel extends mp4.panels.misc.commonPanel implements panelInterface {
 
     private Einnahme curEinnahme;
     private SKRKonto curKonto;
@@ -534,26 +534,7 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void close() {
-       ((JTabbedPane) this.getParent()).remove(this);
-    }
-
-    public void undo() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void redo() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void changeTabText(String text) {
-         ((JTabbedPane) this.getParent()).setTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex(), text);
-    
-    }
-
-    public boolean isEdited() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+   
 
     public void setContact(People contact) {
         throw new UnsupportedOperationException("Not supported yet.");

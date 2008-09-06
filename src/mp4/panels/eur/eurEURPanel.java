@@ -30,7 +30,7 @@ import mp4.utils.tabellen.models.EURTableModel;
  *
  * @author  anti43
  */
-public class eurEURPanel extends javax.swing.JPanel  implements panelInterface{
+public class eurEURPanel extends mp4.panels.misc.commonPanel implements panelInterface{
 
     private String year;
     private String month;
@@ -281,26 +281,7 @@ public class eurEURPanel extends javax.swing.JPanel  implements panelInterface{
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void close() {
-      ((JTabbedPane) this.getParent()).remove(this);
-    }
 
-    public void undo() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void redo() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void changeTabText(String text) {
-        ((JTabbedPane) this.getParent()).setTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex(), text);
-    
-    }
-
-    public boolean isEdited() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 
     public void setContact(People contact) {
         throw new UnsupportedOperationException("Not supported yet.");

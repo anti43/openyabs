@@ -21,7 +21,7 @@ import mp4.utils.tabellen.TableFormat;
  *
  * @author  anti43
  */
-public class historyView extends javax.swing.JPanel implements Runnable, panelInterface {
+public class historyView extends mp4.panels.misc.commonPanel implements Runnable, panelInterface {
     private static final long serialVersionUID = 7605611553087473038L;
 
     private String[][] liste;
@@ -173,25 +173,6 @@ public class historyView extends javax.swing.JPanel implements Runnable, panelIn
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void close() {
-       ((JTabbedPane) this.getParent()).remove(this);
-    }
-
-    public void undo() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void redo() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void changeTabText(String text) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public boolean isEdited() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 
     public void setContact(People contact) {
         throw new UnsupportedOperationException("Not supported yet.");
