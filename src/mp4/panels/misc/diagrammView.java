@@ -1,52 +1,36 @@
 /*
- * LinienDiagramm.java
+ * diagrammView.java
  *
- * Created on 20. August 2008, 20:55
+ * Created on 7. September 2008, 18:09
  */
-package mp4.statistik.graphs;
 
+package mp4.panels.misc;
 
 import java.util.Currency;
-import mp4.statistik.*;
 import java.util.Vector;
-//import mp4.logs.*;*
 import mp4.einstellungen.Einstellungen;
-import mp4.logs.*;
+import mp4.frames.mainframe;
+import mp4.interfaces.Waiter;
+import mp4.logs.Log;
+import mp4.statistik.Diagramme;
 import mp4.statistik.data.DefaultDataMonths;
+import mp4.utils.tasks.Job;
 import mp4.utils.zahlen.FormatNumber;
 
 /**
  *
  * @author  Andreas
  */
-public class LinienDiagramm extends javax.swing.JFrame {
+public class diagrammView extends commonPanel implements Waiter{
     private Diagramme d;
 
-    /** Creates new form LinienDiagramm
-     * @param von
-     * @param bis
-     * @param title 
-     */
-    public LinienDiagramm(String von, String bis, String title) {
+    /** Creates new form diagrammView */
+    public diagrammView() {
         initComponents();
-        addDiagram(von, bis, title);
-        setVisible(rootPaneCheckingEnabled);
+//        addLinienDiagram("2008", "2009", "test");
     }
 
-    @SuppressWarnings({"unchecked", "unchecked","unchecked"})
-    private void addDiagram(String von, String bis, String title) {
-
-        DefaultDataMonths data;
-
-        d = new Diagramme(jPanel1);
-        try {
-            data = new DefaultDataMonths(von, bis);        
-            d.erzeugeLinienGrafik("", new Vector(data.getColumns()), 
-                    new Vector(data.getUmsatz()), Currency.getInstance(Einstellungen.instanceOf().getLocale()).getSymbol(), title + " " + von + " - " + bis, "Zeitraum", Currency.getInstance(Einstellungen.instanceOf().getLocale()).getSymbol(), "", FormatNumber.getDefaultDecimalFormat());
-        } catch (Exception ex) {
-            Log.Debug(ex);
-        }
-    }
+   
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -61,9 +45,6 @@ jToolBar1 = new javax.swing.JToolBar();
 jButton1 = new javax.swing.JButton();
 jButton2 = new javax.swing.JButton();
 jPanel1 = new javax.swing.JPanel();
-
-setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-setTitle("MP Diagramm");
 
 jToolBar1.setFloatable(false);
 jToolBar1.setRollover(true);
@@ -85,34 +66,42 @@ jButton2ActionPerformed(evt);
 });
 jToolBar1.add(jButton2);
 
-jPanel1.setBackground(new java.awt.Color(51, 0, 51));
+jPanel1.setBackground(new java.awt.Color(227, 219, 202));
 jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 jPanel1.setLayout(new java.awt.BorderLayout());
 
-javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-getContentPane().setLayout(layout);
+javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+this.setLayout(layout);
 layout.setHorizontalGroup(
 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-.addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 591, Short.MAX_VALUE)
-.addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 591, Short.MAX_VALUE)
+.addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+.addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
 );
 layout.setVerticalGroup(
 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-.addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 462, Short.MAX_VALUE)
+.addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 281, Short.MAX_VALUE)
 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-.addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+.addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
 );
-
-pack();
 }// </editor-fold>//GEN-END:initComponents
 
 private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-
-    d.writeToFile("test.png");
+  d.writeToFile("test.png");
 }//GEN-LAST:event_jButton2ActionPerformed
 
-  
+@SuppressWarnings("unchecked")
+public void set(Object obj){
+ DefaultDataMonths data = (DefaultDataMonths) obj;   
+ d = new Diagramme(jPanel1);
+        try {
+               
+            d.erzeugeLinienGrafik("", new Vector(data.getColumns()), 
+                    new Vector(data.getUmsatz()), Currency.getInstance(Einstellungen.instanceOf().getLocale()).getSymbol(), data.title + " " + data.vonYear + " - " + data.bisYear, "Zeitraum", Currency.getInstance(Einstellungen.instanceOf().getLocale()).getSymbol(), "", FormatNumber.getDefaultDecimalFormat());
+        } catch (Exception ex) {
+            Log.Debug(ex);
+        }
+}
 
 // Variables declaration - do not modify//GEN-BEGIN:variables
 private javax.swing.JButton jButton1;

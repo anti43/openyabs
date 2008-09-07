@@ -13,6 +13,7 @@ import mp4.logs.*;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.datenbank.verbindung.Query;
 import mp4.interfaces.Waitable;
+import mp4.interfaces.Waiter;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.datum.vDate;
 import mp4.utils.datum.vTimeframe;
@@ -30,9 +31,15 @@ public class DefaultDataMonths implements Waitable {
     private ArrayList<Double> rechnungenVal;
     private ArrayList<Double> einnahmenVal;
     private ArrayList<Double> ausgabenVal;
+    public String title = "titelPlatzHalter";
+    public String vonYear;
+    public String bisYear;
 
     @SuppressWarnings("unchecked")
     public DefaultDataMonths(String start, String ende) throws Exception {
+
+        this.vonYear = start;
+        this.bisYear = ende;
 
         try {
             vDate von = new vDate(start);
@@ -73,25 +80,25 @@ public class DefaultDataMonths implements Waitable {
     }
 
     public void waitFor() {
-            query = ConnectionHandler.instanceOf().clone(null);
+        query = ConnectionHandler.instanceOf().clone(null);
 
-            query.setTable("Rechnungen");
-            rechnungenVal = query.selectMonthlySums("gesamtpreis", new String[]{"storno", "0", ""}, zeitraum, " AND bezahlt = 1 ");
+        query.setTable("Rechnungen");
+        rechnungenVal = query.selectMonthlySums("gesamtpreis", new String[]{"storno", "0", ""}, zeitraum, " AND bezahlt = 1 ");
 
-            query.setTable("Einnahmen");
-            einnahmenVal = query.selectMonthlySums("Preis", null, zeitraum, "");
+        query.setTable("Einnahmen");
+        einnahmenVal = query.selectMonthlySums("Preis", null, zeitraum, "");
 
-            query.setTable("Ausgaben");
-            ausgabenVal = query.selectMonthlySums("Preis", null, zeitraum, "");
+        query.setTable("Ausgaben");
+        ausgabenVal = query.selectMonthlySums("Preis", null, zeitraum, "");
 
-            if (rechnungenVal.isEmpty()) {
-                rechnungenVal.add(0d);
-            }
-            if (einnahmenVal.isEmpty()) {
-                einnahmenVal.add(0d);
-            }
-            if (ausgabenVal.isEmpty()) {
-                ausgabenVal.add(0d);
-            }
+        if (rechnungenVal.isEmpty()) {
+            rechnungenVal.add(0d);
+        }
+        if (einnahmenVal.isEmpty()) {
+            einnahmenVal.add(0d);
+        }
+        if (ausgabenVal.isEmpty()) {
+            ausgabenVal.add(0d);
+        }
     }
 }

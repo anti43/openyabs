@@ -46,6 +46,7 @@ import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.logs.*;
 
 import mp4.frames.license;
+import mp4.panels.misc.diagrammView;
 import mp4.panels.rechnungen.billsView;
 
 import mp4.panels.kontakte.customersView;
@@ -80,9 +81,10 @@ import mp4.panels.produkte.productsView;
 import mp4.panels.produkte.servicesView;
 import mp4.panels.misc.TaxRatesEditor;
 import mp4.panels.misc.backupView;
+import mp4.panels.misc.diagrammChooseView;
 import mp4.panels.misc.historyView;
 import mp4.panels.misc.settingsView;
-import mp4.statistik.graphs.LinienDiagramm;
+
 import mp4.utils.datum.DateConverter;
 import mp4.utils.files.Browser;
 import mp4.utils.files.SaveAs;
@@ -112,6 +114,7 @@ public class mainframe extends javax.swing.JFrame {
     private eurOPanel eurOpanel;
     private backupView backuppanel;
     private settingsView settingspanel;
+    private diagrammChooseView diagrammpanel;
 
     /** Creates new form mainframe
      * @param splash
@@ -210,6 +213,14 @@ public class mainframe extends javax.swing.JFrame {
         if (bill != null) {
             panel.setBill(bill);
         }
+        mainTabPane.validate();
+    }
+
+
+    public void addDiagramm(diagrammView panel) {
+        mainTabPane.add("Diagramm", panel);
+        mainTabPane.setSelectedComponent(panel);
+        mainTabPane.setIconAt(mainTabPane.getSelectedIndex(), new TabCloseIcon());
         mainTabPane.validate();
     }
 
@@ -1256,7 +1267,9 @@ private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 
 private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
 
-    new LinienDiagramm("2008", "2009", "hallo");
+    removePanel(diagrammpanel);
+    diagrammpanel = new diagrammChooseView(this);
+    addPanel("Auswertungen", diagrammpanel);
 }//GEN-LAST:event_jButton15ActionPerformed
 
     @Override
