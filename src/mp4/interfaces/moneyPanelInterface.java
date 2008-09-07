@@ -30,6 +30,7 @@ public interface moneyPanelInterface {
     /**
      *
      * 
+     * @param steuersatz 
      */
     public void setTax(Steuersatz steuersatz);
 

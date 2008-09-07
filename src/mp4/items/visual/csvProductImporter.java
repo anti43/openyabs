@@ -643,7 +643,7 @@ public class csvProductImporter extends javax.swing.JFrame implements panelInter
     }
     }
 
-    public void updateTables() {
+    public void update() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

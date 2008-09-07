@@ -295,7 +295,7 @@ private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             }
         }
 
-        panel.updateTables();
+        panel.update();
         this.dispose();
     }
     

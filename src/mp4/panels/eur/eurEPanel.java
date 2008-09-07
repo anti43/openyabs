@@ -526,7 +526,7 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         return updateTableData();
     }
 
-    public void updateTables() {
+    public void update() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

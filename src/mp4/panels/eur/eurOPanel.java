@@ -263,7 +263,7 @@ public class eurOPanel extends mp4.panels.misc.commonPanel implements panelInter
         return jTable3;
     }
 
-    public void updateTables() {
+    public void update() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

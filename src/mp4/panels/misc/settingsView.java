@@ -259,7 +259,7 @@ private javax.swing.JPanel jPanel1;
 private javax.swing.JScrollPane jScrollPane1;
 private javax.swing.JTable jTable1;
 // End of variables declaration//GEN-END:variables
-    public void updateTables() {
+    public void update() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

@@ -375,7 +375,7 @@ public class backupView extends mp4.panels.misc.commonPanel implements panelInte
         TableFormat.format(jTable1, 1, 180);
     }
         
-    public void updateTables() {
+    public void update() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

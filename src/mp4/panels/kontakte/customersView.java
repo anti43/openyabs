@@ -1441,7 +1441,7 @@ private void jTextField4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST
     public javax.swing.JTextField jTextField9;
     public javax.swing.JToolBar jToolBar2;
     // End of variables declaration//GEN-END:variables
-    public void updateTables() {
+    public void update() {
         this.updateListTable();
     }
 

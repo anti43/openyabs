@@ -1357,8 +1357,9 @@ private void jButton18MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
             Job job = new Job(new PDFFile(new PDF_Produkt(current, image)),new PdfVorschauWindow(), mainframe.getMainProgress());
             job.execute();
 
-        }else
-        Popup.notice("Sie müssen das Produkt erst anlegen.");
+        }else {
+            Popup.notice("Sie müssen das Produkt erst anlegen.");
+        }
     }
 
 private void jTextField14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField14ActionPerformed
@@ -1697,7 +1698,7 @@ numberfieldedited = true;
         this.currentProductGroupId = currentProductGroupId;
     }
 
-    public void updateTables() {
+    public void update() {
         this.updateListTable();
     }
 

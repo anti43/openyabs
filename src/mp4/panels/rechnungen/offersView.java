@@ -1446,7 +1446,7 @@ public javax.swing.JToolBar jToolBar2;
         return jTable1;
     }
 
-    public void updateTables() {
+    public void update() {
 
         updateListTable();
 

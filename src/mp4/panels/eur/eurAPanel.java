@@ -482,7 +482,7 @@ public class eurAPanel extends mp4.panels.misc.commonPanel implements panelInter
         return updateTableData();
     }
 
-    public void updateTables() {
+    public void update() {
         updateTableData();
     }
 

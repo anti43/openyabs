@@ -1324,7 +1324,7 @@ public javax.swing.JTextField jTextField8;
 public javax.swing.JTextField jTextField9;
 public javax.swing.JToolBar jToolBar2;
 // End of variables declaration//GEN-END:variables
-    public void updateTables() {
+    public void update() {
         this.updateListTable();
     }
 

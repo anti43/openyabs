@@ -1139,7 +1139,7 @@ public javax.swing.JToolBar jToolBar2;
         this.currentDienstleistungGroupId = currentDienstleistungGroupId;
     }
 
-    public void updateTables() {
+    public void update() {
         this.updateListTable();
     }
 

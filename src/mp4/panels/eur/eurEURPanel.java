@@ -273,7 +273,7 @@ public class eurEURPanel extends mp4.panels.misc.commonPanel implements panelInt
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
 
-    public void updateTables() {
+    public void update() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

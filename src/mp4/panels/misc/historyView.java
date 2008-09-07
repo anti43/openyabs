@@ -165,7 +165,7 @@ public class historyView extends mp4.panels.misc.commonPanel implements Runnable
         
     }
 
-    public void updateTables() {
+    public void update() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
