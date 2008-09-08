@@ -89,7 +89,7 @@ public class ProductGroupGroup extends mp4.items.Things implements mp4.datenbank
             if (this.getGruppennummer().equals("0")) {
                 this.setGruppennummer(this.getNextIndex("gruppenummer").toString());
             }
-            id = this.insert(TABLE_PRODUCTS_GROUPS_GROUP_FIELDS, this.collect());
+            id = this.insert(TABLE_PRODUCTS_GROUPS_GROUP_FIELDS, this.collect(),null);
         } else {
         }
     }

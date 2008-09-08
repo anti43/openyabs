@@ -177,9 +177,9 @@ public abstract class People implements Queries, mp4.datenbank.installation.Tabe
         return q.selectLast(what, wher);
     }
 
-    public int insert(String set, String value) {
+    public int insert(String set, String value, int[] unique) {
         String[] str = {set, value, ""};
-        return q.insert(str);
+        return q.insert(str,unique);
     }
 
     public void destroy() {

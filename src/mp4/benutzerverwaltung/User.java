@@ -136,7 +136,7 @@ public class User extends Things {
 
     public boolean save() {
         int result = -1;
-        result = this.insert(TABLE_USER_FIELDS, this.collect());
+        result = this.insert(TABLE_USER_FIELDS, this.collect(),new int[]{0});
         if (result > 0) {
             return true;
         } else {

@@ -142,7 +142,7 @@ public class HistoryItem extends mp4.items.Things implements mp4.datenbank.insta
             this.update(TABLE_HISTORY_FIELDS, this.collect(), id.toString());
             isSaved = true;
         } else if (id == 0) {
-            this.insert(TABLE_HISTORY_FIELDS, this.collect());
+            this.insert(TABLE_HISTORY_FIELDS, this.collect(),null);
         } 
     }
 

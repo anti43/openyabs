@@ -240,7 +240,7 @@ public class Product extends mp4.items.Things implements mp4.datenbank.installat
             isSaved = true;
             fetchImage();
         } else if (id == 0) {
-            this.id = this.insert(TABLE_PRODUCTS_FIELDS, this.collect());
+            this.id = this.insert(TABLE_PRODUCTS_FIELDS, this.collect(),new int[]{0});
             fetchImage();
         }
     }

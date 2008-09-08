@@ -81,7 +81,7 @@ public class Steuersatz extends mp4.items.Things implements mp4.datenbank.instal
             this.update(TABLE_TAXES_FIELDS, this.collect(), getId().toString());
             isSaved = true;
         } else if (getId() == 0) {
-            this.id = this.insert(TABLE_TAXES_FIELDS, this.collect());
+            this.id = this.insert(TABLE_TAXES_FIELDS, this.collect(),null);
         }
     }
 

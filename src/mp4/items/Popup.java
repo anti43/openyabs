@@ -51,7 +51,7 @@ public class Popup {
      */
     public static void warn(String text, String label) {
 
-        text = TextFormat.maxLineLength(text, 80);
+        text = TextFormat.maxLineLength(text, 120);
         JOptionPane.showMessageDialog(null, text, label, JOptionPane.WARNING_MESSAGE);
     }
 
@@ -63,7 +63,7 @@ public class Popup {
     public static void error(String text, String label) {
 
         Log.Debug(text, true);
-        text = TextFormat.maxLineLength(text, 80);
+        text = TextFormat.maxLineLength(text, 120);
         JOptionPane.showMessageDialog(null, text, label, JOptionPane.ERROR_MESSAGE);
     }
 
@@ -74,7 +74,7 @@ public class Popup {
      */
     public static void notice(String text, String label) {
 
-        text = TextFormat.maxLineLength(text, 80);
+        text = TextFormat.maxLineLength(text, 120);
         JOptionPane.showMessageDialog(null, text, label, JOptionPane.INFORMATION_MESSAGE);
     }
 
@@ -84,12 +84,12 @@ public class Popup {
      */
     public static void notice(String text) {
         
-        text = TextFormat.maxLineLength(text, 80);
+        text = TextFormat.maxLineLength(text, 120);
         JOptionPane.showMessageDialog(null, text, Popup.NOTICE, JOptionPane.INFORMATION_MESSAGE);
     }
 
     public Popup(String text) {
-        text = TextFormat.maxLineLength(text, 80);
+        text = TextFormat.maxLineLength(text, 120);
         JOptionPane.showMessageDialog(null, text, Popup.NOTICE, JOptionPane.INFORMATION_MESSAGE);
     }
 
@@ -99,7 +99,7 @@ public class Popup {
      * @param label
      */
     public Popup(String text, String label) {
-        text = TextFormat.maxLineLength(text, 80);
+        text = TextFormat.maxLineLength(text, 120);
         JOptionPane.showMessageDialog(null, text, label, JOptionPane.INFORMATION_MESSAGE);
     }
 

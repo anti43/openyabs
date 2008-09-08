@@ -102,7 +102,7 @@ public class ProductGroupFamily extends mp4.items.Things implements mp4.datenban
             
                 this.setFamiliennummer((this.getNextIndex("familienummer").toString()));
             }
-            id = this.insert(TABLE_PRODUCTS_GROUPS_FAMILY_FIELDS, this.collect());
+            id = this.insert(TABLE_PRODUCTS_GROUPS_FAMILY_FIELDS, this.collect(),null);
         } else {
 
         }

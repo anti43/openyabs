@@ -119,7 +119,7 @@ public class RechnungBetreffzeile extends mp4.items.Things implements mp4.datenb
             this.update(TABLE_BILL_TEXTS_FIELDS, this.collect(), getId().toString());
             isSaved = true;
         } else if (getId() == 0) {
-            id = this.insert(TABLE_BILL_TEXTS_FIELDS, this.collect());
+            id = this.insert(TABLE_BILL_TEXTS_FIELDS, this.collect(),null);
         }
     }
 

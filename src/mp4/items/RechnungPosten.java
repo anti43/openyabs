@@ -100,7 +100,7 @@ public class RechnungPosten extends mp4.items.Things implements mp4.datenbank.in
             this.update(TABLE_BILLS_DATA_FIELDS, this.collect(), id.toString());
             isSaved = true;
         } else if (id == 0) {
-            this.insert(TABLE_BILLS_DATA_FIELDS, this.collect());
+            this.insert(TABLE_BILLS_DATA_FIELDS, this.collect(),null);
         }
     }
 

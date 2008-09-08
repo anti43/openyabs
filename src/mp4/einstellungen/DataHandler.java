@@ -99,7 +99,7 @@ public class DataHandler extends mp4.items.Things implements mp4.datenbank.insta
 
         if (newKey) {
             Log.Debug("Creating new key: " + key);
-            if (this.insert("name, wert", "(;;2#4#1#1#8#0#;;)" + key + "(;;2#4#1#1#8#0#;;)" + ",(;;2#4#1#1#8#0#;;)" + value + "(;;2#4#1#1#8#0#;;)") == 1) {
+            if (this.insert("name, wert", "(;;2#4#1#1#8#0#;;)" + key + "(;;2#4#1#1#8#0#;;)" + ",(;;2#4#1#1#8#0#;;)" + value + "(;;2#4#1#1#8#0#;;)",null) == 1) {
                 return true;
             } else {
                 return false;

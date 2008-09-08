@@ -150,7 +150,7 @@ public class Dienstleistung extends mp4.items.Things implements mp4.datenbank.in
             isSaved = true;
            
         } else if (id == 0) {
-            this.id = this.insert(TABLE_SERVICES_FIELDS, this.collect());
+            this.id = this.insert(TABLE_SERVICES_FIELDS, this.collect(),null);
            
         }
     }

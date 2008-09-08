@@ -169,7 +169,7 @@ public class Einnahme extends mp4.items.Things implements mp4.datenbank.installa
             this.update(TABLE_INCOME_FIELDS, this.collect(), id.toString());
             isSaved = true;
         } else if (id == 0) {
-           this.id = this.insert(TABLE_INCOME_FIELDS, this.collect());
+           this.id = this.insert(TABLE_INCOME_FIELDS, this.collect(),null);
       
         } 
     }

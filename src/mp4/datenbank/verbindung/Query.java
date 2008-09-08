@@ -130,7 +130,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
             String str = "AND datum BETWEEN '" + DateConverter.getSQLDateString(temdate) + "' AND '" + DateConverter.getSQLDateString(DateConverter.addMonth(temdate)) + "'";
 
             if (where != null) {
-                query = "SELECT SUM(" + what + ") FROM " + table + " WHERE " + where[0] + " = " + where[2] + where[1] + where[2] + " " + " AND deleted = 0 " + str + " " +additionalCondition;
+                query = "SELECT SUM(" + what + ") FROM " + table + " WHERE " + where[0] + " = " + where[2] + where[1] + where[2] + " " + " AND deleted = 0 " + str + " " + additionalCondition;
             } else {
                 query = "SELECT SUM(" + what + ") FROM " + table + " WHERE deleted = 0 " + str + " " + additionalCondition;
             }
@@ -302,6 +302,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
         message = "Database Error (getNextIndex:COUNT):";
 
         int i = selectCount(null, null);
+        stop();
 
         i = (i < 0) ? -i : i;
         return i;
@@ -484,15 +485,32 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
      * 
      * @param what  : {set, value, "'"}
      *   this.insert("name,wert", "'Sprache (Waehrung, z.B. Schweiz:  de_CH' ,'de_DE'");
+     * @param unique 
      * @return id of inserted row
      */
-    public int insert(String[] what) {
+    public int insert(String[] what, int[] unique) {
 
         what[1] = what[1].replaceAll("'", "`");
         what[1] = what[1].replaceAll("\\(;;2#4#1#1#8#0#;;\\)", "'");
         what[1] = what[1].replaceAll("\\(;;\\,;;\\)", ",");
 
         start();
+
+       
+           if (unique!=null) {
+            for (int i = 0; i < unique.length; i++) {
+                int j = unique[i];
+                String[][] val = select(what[0].split(",")[j], new String[]{what[0].split(",")[j], what[1].split(",")[j], what[2]});
+                if (val != null && val.length > 0) {
+                    Popup.error("Wert für `" + what[0].split(",")[j] + "´ existiert bereits: " + val[0][0] +
+                            ",\nund kann nicht mehrfach eingetragen werden.",
+                            "Fehler beim Überprüfen der Datenkonsistenz");
+                    
+                    return -1;
+                }
+            }
+        }
+        
 
         query = "INSERT INTO " + table + " (" + what[0] + " ) VALUES (" + what[1] + ") ";
         Log.Debug(query, true);

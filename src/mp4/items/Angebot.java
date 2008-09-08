@@ -225,16 +225,16 @@ public class Angebot extends mp4.items.Things implements mp4.datenbank.installat
         int result = -1;
         if (id > 0 && !isSaved) {
             result = this.update(TABLE_OFFERS_FIELDS, this.collect(), id.toString());
-            if (postendata != null) {
+            if (result>0&&postendata != null) {
                 clearPostenData();
                 explode(postendata);
             }
 
             isSaved = true;
         } else if (id == 0 && !isSaved) {
-            this.id = this.insert(TABLE_OFFERS_FIELDS, this.collect());
+            this.id = this.insert(TABLE_OFFERS_FIELDS, this.collect(),new int[]{0});
             result = id;
-            if (postendata != null) {
+            if (result>0&&postendata != null) {
                 explode(postendata);
             }
 

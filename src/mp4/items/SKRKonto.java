@@ -119,7 +119,7 @@ public class SKRKonto extends mp4.items.Things implements mp4.datenbank.installa
             this.update(TABLE_KONTEN_FIELDS, this.collect(), id.toString());
             isSaved = true;
         } else if (id == 0) {
-            this.insert(TABLE_KONTEN_FIELDS, this.collect());
+            this.insert(TABLE_KONTEN_FIELDS, this.collect(),null);
         } else {
 
             mp4.items.Popup.warn(java.util.ResourceBundle.getBundle("languages/Bundle").getString("no_data_to_save"), Popup.WARN);

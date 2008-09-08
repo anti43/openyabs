@@ -128,7 +128,7 @@ public class ProductImage extends mp4.items.Things implements mp4.datenbank.inst
             this.update(TABLE_PRODUCTS_FILES_FIELDS, this.collect(), id.toString());
             isSaved = true;
         } else if (id == 0) {
-            this.id = this.insert(TABLE_PRODUCTS_FILES_FIELDS, this.collect());
+            this.id = this.insert(TABLE_PRODUCTS_FILES_FIELDS, this.collect(),new int[]{0});
         }
     }
 

@@ -220,7 +220,7 @@ public class Hersteller extends mp4.items.People implements mp4.datenbank.instal
             this.update(TABLE_MANUFACTURER_FIELDS, this.collect(), id.toString());
             isSaved = true;
         } else if (id == 0) {
-            this.id = this.insert(TABLE_MANUFACTURER_FIELDS, this.collect());
+            this.id = this.insert(TABLE_MANUFACTURER_FIELDS, this.collect(),new int[]{0});
         }
     }
 

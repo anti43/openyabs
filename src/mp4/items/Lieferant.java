@@ -235,7 +235,7 @@ public class Lieferant extends mp4.items.People implements mp4.datenbank.install
             this.update(TABLE_SUPPLIER_FIELDS, this.collect(), id.toString());
             isSaved = true;
         } else if (id == 0) {
-            this.id = this.insert(TABLE_SUPPLIER_FIELDS, this.collect());
+            this.id = this.insert(TABLE_SUPPLIER_FIELDS, this.collect(),new int[]{0});
         }
     }
 

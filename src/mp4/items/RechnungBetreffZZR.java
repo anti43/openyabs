@@ -122,7 +122,7 @@ public class RechnungBetreffZZR extends Things {
         this.freeQuery("DELETE FROM " + TABLE_BILL_TEXTS_TO_BILLS + " WHERE rechnungid = " + rechnungid);
         for (int i = 0; i < liste.size() - vls; i++) {
             zeile = (RechnungBetreffzeile) liste.get(i);
-            this.insert(TABLE_BILL_TEXTS_TO_BILLS_FIELDS, rechnungid + "," + zeile.getId());
+            this.insert(TABLE_BILL_TEXTS_TO_BILLS_FIELDS, rechnungid + "," + zeile.getId(),null);
         }
     }
 

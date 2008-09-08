@@ -68,7 +68,6 @@ public class Rechnung extends mp4.items.Things implements mp4.datenbank.installa
 
     }
 
-
     public void add(PostenTableModel m) {
         this.postendata = m;
     }
@@ -255,23 +254,30 @@ public class Rechnung extends mp4.items.Things implements mp4.datenbank.installa
                 clearPostenData();
                 explode(postendata);
             }
-            if(Angebot!=null){
-            Angebot.setRechnungId(this.getId());
-            Angebot.save();}
+            if (Angebot != null) {
+                Angebot.setRechnungId(this.getId());
+                Angebot.save();
+            }
             zeilenHandler.save();
             isSaved = true;
         } else if (id == 0 && !isSaved) {
-            this.id = this.insert(TABLE_BILLS_FIELDS, this.collect());
-            result =id;
-            if (postendata !=null) {
-                explode(postendata);
+            this.id = this.insert(TABLE_BILLS_FIELDS, this.collect(), new int[]{0});
+            result = id;
+            if (result > 0) {
+                if (postendata != null) {
+                    explode(postendata);
+                }
+                if (Angebot != null) {
+                    Angebot.setRechnungId(this.getId());
+                    Angebot.save();
+                }
+                zeilenHandler.setRechnungId(id);
+                zeilenHandler.save();
+                isSaved = true;
+                return true;
+            } else {
+                return false;
             }
-            if(Angebot!=null){
-            Angebot.setRechnungId(this.getId());
-            Angebot.save();}
-            zeilenHandler.setRechnungId(id);
-            zeilenHandler.save();
-            isSaved = true;
         }
         if (result > 0) {
             return true;

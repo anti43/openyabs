@@ -29,9 +29,10 @@ public interface Queries {
      * 
      * @param set
      * @param value
-     * @return 
+     * @param unique 
+     * @return
      */
-    public abstract int insert(String set,String value);
+    public abstract int insert(String set,String value, int[] unique);
 
     /**
      * 

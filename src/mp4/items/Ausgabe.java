@@ -149,7 +149,7 @@ public class Ausgabe extends mp4.items.Things implements mp4.datenbank.installat
             this.update(TABLE_OUTGOINGS_FIELDS, this.collect(), id.toString());
             isSaved = true;
         } else if (id == 0) {
-            this.id = this.insert(TABLE_OUTGOINGS_FIELDS, this.collect());
+            this.id = this.insert(TABLE_OUTGOINGS_FIELDS, this.collect(),null);
         } 
     }
 

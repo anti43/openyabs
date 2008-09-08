@@ -328,7 +328,7 @@ public class Customer extends mp4.items.People implements mp4.datenbank.installa
             this.update(TABLE_CUSTOMER_FIELDS, this.collect(), id.toString());
             isSaved = true;
         } else if (id == 0) {
-            this.id = this.insert(TABLE_CUSTOMER_FIELDS, this.collect());  
+            this.id = this.insert(TABLE_CUSTOMER_FIELDS, this.collect(),null);  
         } 
     }
 

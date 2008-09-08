@@ -79,7 +79,7 @@ public class ProductGroupCategory extends mp4.items.Things implements mp4.datenb
             
                 this.setKategorienummer(this.getNextIndex("kategorienummer").toString());
             }
-            id = this.insert(TABLE_PRODUCTS_GROUPS_CATEGORIES_FIELDS, this.collect());
+            id = this.insert(TABLE_PRODUCTS_GROUPS_CATEGORIES_FIELDS, this.collect(),null);
         } else {
 
         }
