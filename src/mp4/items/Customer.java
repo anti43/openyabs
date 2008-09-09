@@ -297,7 +297,7 @@ public class Customer extends mp4.items.People implements mp4.datenbank.installa
     public void LEGACYexplode(String[] str) {
         try {
 
-            this.id = Integer.valueOf(str[0]);
+//            this.id = Integer.valueOf(str[0]);
             this.setKundennummer(str[1]);
             this.setFirma(str[2]);
             this.setAnrede(str[3]);

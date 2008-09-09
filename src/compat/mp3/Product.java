@@ -109,18 +109,30 @@ public class Product extends compat.mp3.Things implements compat.mp3.Structure {
         this.setEan(select[12]);
     }
 
-    public String[][] getAll(){
-    
+    public String getAll(){
+//    "produktnummer", "name", "text", "vk",
+//                    "ek", "tax", "hersteller", "warengruppenkategorie", "warengruppenfamilie",
+//                    "warengruppe", "url", "ean", "lieferantenid"
         Query q = query.clone(TABLE_PRODUCTS);
 
-        String[][] str = q.selectFreeQuery("SELECT produkte.id, produkte.Produktnummer AS Nummer,produkte.Name,produkte.Text," +
-                "produkte.VK,produkte.EK,produkte.Tax,Hersteller,Lieferanten.firma AS Lieferant," +
-                "Warengruppenid,produkte.Datum,produkte.Url,produkte.EAN FROM produkte " +
-//                "LEFT OUTER JOIN  hersteller ON produkte.herstellerid = hersteller.id " +
+        String[][] str = q.selectFreeQuery("SELECT produkte.Produktnummer,produkte.Name,produkte.Text," +
+                "produkte.VK,produkte.EK,produkte.Tax,Hersteller," +
+                "Warengruppenkategorien.name, warengruppenfamilien.name, warengruppengruppen.name,produkte.Url,produkte.EAN, produkte.lieferantenid FROM produkte " +
                 "LEFT OUTER JOIN  lieferanten ON produkte.lieferantenid = lieferanten.id " +
-                "LEFT OUTER JOIN  warengruppengruppen ON produkte.warengruppenid = warengruppengruppen.id");
-   
-        return str;  
+                "LEFT OUTER JOIN  warengruppengruppen ON produkte.warengruppenid = warengruppengruppen.id " +
+                "LEFT OUTER JOIN  warengruppenfamilien ON warengruppengruppen.familienid = warengruppenfamilien.id " +
+                "LEFT OUTER JOIN  Warengruppenkategorien ON warengruppenfamilien.kategorieid = Warengruppenkategorien.id "
+                );
+
+        String string = "";
+        for (int i = 0; i < str.length; i++) {
+            string += str[i][0] + ";" + str[i][1] + ";" + str[i][2] + ";" + str[i][3] + ";" + str[i][4] 
+                    + ";" + str[i][5] + ";" + str[i][6] + ";" + str[i][7] + ";" + str[i][8] + ";" + str[i][9] + ";" 
+                    + str[i][10] + ";" + str[i][11] + ";" + str[i][12] +"\r\n";
+        }
+        
+        
+        return string;  
     }
 
     private String collect() {

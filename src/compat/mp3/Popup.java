@@ -29,9 +29,9 @@ import javax.swing.JOptionPane;
 public class Popup {
 
 
-    public static String WARN =java.util.ResourceBundle.getBundle("mp3/languages/warning").getString("Warning");
-    public static String ERROR =java.util.ResourceBundle.getBundle("mp3/languages/warning").getString("Error");
-    public static String NOTICE =java.util.ResourceBundle.getBundle("mp3/languages/warning").getString("Notice");
+    public static String WARN ="Warnung";
+    public static String ERROR ="Fehler";
+    public static String NOTICE ="Hinweis";
     /**
      * A popup..
      * @param text

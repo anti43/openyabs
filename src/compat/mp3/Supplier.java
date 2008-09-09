@@ -72,13 +72,20 @@ public class Supplier extends compat.mp3.People implements compat.mp3.Structure 
     }
     
     
-    public String[][] getAll(){
+    public Supplier[] getAll(){
     
         Query q = query.clone(TABLE_SUPPLIER);
 
-        String[][] str = q.select(ALL, null);
+        String[][] str = q.select("id", null);
    
-        return str;  
+        Supplier[] sups = new Supplier[str.length];
+        
+        for (int i = 0; i < sups.length; i++) {
+            
+            sups[i] = new Supplier(query, str[i][0]);
+        }
+        
+        return sups;  
     }
 
 

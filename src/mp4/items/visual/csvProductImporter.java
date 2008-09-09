@@ -7,6 +7,7 @@ package mp4.items.visual;
 
 import com.Ostermiller.util.CSVParser;
 import java.awt.Cursor;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -44,7 +45,6 @@ import org.supercsv.io.CsvBeanReader;
 import org.supercsv.io.ICsvBeanReader;
 import org.supercsv.prefs.CsvPreference;
 
-
 /**
  *
  * @author  anti43
@@ -73,8 +73,101 @@ public class csvProductImporter extends javax.swing.JFrame implements panelInter
     public csvProductImporter() {
         initComponents();
         new Position(this);
-        this.supplier =new Lieferant(ConnectionHandler.instanceOf());
+        this.supplier = new Lieferant(ConnectionHandler.instanceOf());
 
+    }
+
+    public csvProductImporter(File file) {
+         initComponents();
+        new Position(this);
+        this.supplier = new Lieferant(ConnectionHandler.instanceOf());
+        this.jTextField1.setText(file.getPath());
+        this.setVisible(rootPaneCheckingEnabled);
+          boolean succ = true;
+        ProductImporteur user = new ProductImporteur();
+        liste = new ArrayList();
+        header = new String[]{"produktnummer", "name", "text", "vk",
+                    "ek", "tax", "hersteller", "warengruppenkategorie", "warengruppenfamilie",
+                    "warengruppe", "url", "ean", "lieferantenid"
+                };
+
+        try {
+
+            final CellProcessor[] processors = new CellProcessor[]{
+                new StrMinMax(0, 49),
+                new StrMinMax(0, 49),
+                new StrMinMax(0, 499),
+                new StrMinMax(0, 99),
+                new StrMinMax(0, 99),
+                new StrMinMax(0, 99),
+                new StrMinMax(0, 99),
+                new StrMinMax(0, 99),
+                new StrMinMax(0, 99),
+                new StrMinMax(0, 99),
+                new StrMinMax(0, 135),
+                new StrMinMax(0, 19),
+                new StrMinMax(0, 19)
+            };
+
+
+            CsvPreference pref = CsvPreference.STANDARD_PREFERENCE;
+            if (jCheckBox2.isSelected()) {
+                pref = CsvPreference.EXCEL_NORTH_EUROPE_PREFERENCE;
+            }
+
+            this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+
+            ICsvBeanReader inFile = new CsvBeanReader(new FileReader(jTextField1.getText()), pref);
+            try {
+//                final String[] header = inFile.getCSVHeader(true);
+
+
+                while ((user = inFile.read(ProductImporteur.class, header, processors)) != null) {
+                    liste.add(user);
+                }
+
+
+            } catch (SuperCSVException ex) {
+                succ = false;
+                new Popup(ex.getMessage(), Popup.ERROR);
+                ex.printStackTrace();
+            } catch (IOException ex) {
+                succ = false;
+                new Popup(ex.getMessage(), Popup.ERROR);
+
+                ex.printStackTrace();
+            } finally {
+                this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                inFile.close();
+
+            }
+
+        } catch (Exception ex) {
+            succ = false;
+            new Popup(ex.getMessage(), Popup.ERROR);
+            ex.printStackTrace();
+        }
+
+        try {
+            user = new ProductImporteur();
+            data = ProductImporteur.listToImporteurArray(liste, this.supplier.getId());
+            datstr = user.getData(data);
+
+
+
+            jTable1.setModel(new DefaultTableModel(datstr, header));
+
+
+        } catch (Exception ex) {
+            succ = false;
+            new Popup(ex.getMessage(), Popup.ERROR);
+            ex.printStackTrace();
+        }
+
+
+        if (succ) {
+            getJButton4().setEnabled(true);
+        }
     }
 
     public void setSupplier(Lieferant supplier) {
@@ -285,9 +378,6 @@ public class csvProductImporter extends javax.swing.JFrame implements panelInter
     }// </editor-fold>//GEN-END:initComponents
     private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
 
-
-        System.exit(1);
-
         this.dispose();
     }//GEN-LAST:event_jButton2MouseClicked
 
@@ -296,10 +386,10 @@ public class csvProductImporter extends javax.swing.JFrame implements panelInter
         boolean succ = true;
         ProductImporteur user = new ProductImporteur();
         liste = new ArrayList();
-        header = new String[]{"produktnummer", "name", "text", "vk", 
-        "ek","tax", "hersteller", "warengruppenkategorie", "warengruppenfamilie", 
-        "warengruppe", "url", "ean"
-        };
+        header = new String[]{"produktnummer", "name", "text", "vk",
+                    "ek", "tax", "hersteller", "warengruppenkategorie", "warengruppenfamilie",
+                    "warengruppe", "url", "ean", "lieferantenid"
+                };
 
         try {
 
@@ -314,8 +404,8 @@ public class csvProductImporter extends javax.swing.JFrame implements panelInter
                 new StrMinMax(0, 99),
                 new StrMinMax(0, 99),
                 new StrMinMax(0, 99),
-                
                 new StrMinMax(0, 135),
+                new StrMinMax(0, 19),
                 new StrMinMax(0, 19)
             };
 
@@ -340,11 +430,11 @@ public class csvProductImporter extends javax.swing.JFrame implements panelInter
             } catch (SuperCSVException ex) {
                 succ = false;
                 new Popup(ex.getMessage(), Popup.ERROR);
-                 ex.printStackTrace();
+                ex.printStackTrace();
             } catch (IOException ex) {
                 succ = false;
                 new Popup(ex.getMessage(), Popup.ERROR);
-                
+
                 ex.printStackTrace();
             } finally {
                 this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -355,15 +445,15 @@ public class csvProductImporter extends javax.swing.JFrame implements panelInter
         } catch (Exception ex) {
             succ = false;
             new Popup(ex.getMessage(), Popup.ERROR);
-             ex.printStackTrace();
+            ex.printStackTrace();
         }
 
         try {
             user = new ProductImporteur();
             data = ProductImporteur.listToImporteurArray(liste, this.supplier.getId());
             datstr = user.getData(data);
-            
-           
+
+
 
             jTable1.setModel(new DefaultTableModel(datstr, header));
 
@@ -371,7 +461,7 @@ public class csvProductImporter extends javax.swing.JFrame implements panelInter
         } catch (Exception ex) {
             succ = false;
             new Popup(ex.getMessage(), Popup.ERROR);
-             ex.printStackTrace();
+            ex.printStackTrace();
         }
 
 
@@ -381,7 +471,6 @@ public class csvProductImporter extends javax.swing.JFrame implements panelInter
     }//GEN-LAST:event_jButton1MouseClicked
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-    
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jButton3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
@@ -392,11 +481,10 @@ public class csvProductImporter extends javax.swing.JFrame implements panelInter
         if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
             jTextField1.setText(fc.getSelectedFile().toString());
         }
-        
+
     }//GEN-LAST:event_jButton3MouseClicked
 
     private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
-    
     }//GEN-LAST:event_jCheckBox1ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
@@ -413,7 +501,6 @@ public class csvProductImporter extends javax.swing.JFrame implements panelInter
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
-    
     }//GEN-LAST:event_jTextField2ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
@@ -422,31 +509,28 @@ public class csvProductImporter extends javax.swing.JFrame implements panelInter
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-       
-        new Help(new DefaultHelpModel("CSV Import", 
-                "<P><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3>Die zu "+
-"importierenden Daten m&uuml;ssen in dieser Form vorliegen:</FONT></FONT></P>"+
-"<P><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3><B>&lt;produktnummer&gt;;"+
-"&lt;name&gt;;&lt;text&gt;;&lt;vk&gt;;&lt;ek&gt;;&lt;tax&gt;"+
-";&lt;hersteller&gt;;&lt;warengruppenkategorie&gt;;&lt;warengruppenfamilie&gt;;&lt;warengruppe&gt;;&lt;url&gt;;&lt;ean&gt;</B></FONT></FONT></P>"+
-"<P><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3>Zum Beispiel:</FONT></FONT></P>"+
-"<P><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3>1000143;&quot;NPPSU023&quot;;&quot;INTEL&nbsp;NPPSU023&nbsp;POWERSUPPLY&nbsp;UK&quot;;;07.01.08;19;&quot;INTEL&quot;;;;;&quot;http://www.google.de/logo.gif&quot;;675900307711"+
-"<BR>1000144;&quot;NPPSU023&quot;;&quot;INTEL&nbsp;NPPSU023&nbsp;POWERSUPPLY&nbsp;UK&quot;;;07.01.08;19;&quot;INTEL&quot;;;;;&quot;http://www.google.de/logo.gif&quot;;675900307711"+
-"<BR>1000145;&quot;NPPSU023&quot;;&quot;INTEL&nbsp;NPPSU023&nbsp;POWERSUPPLY&nbsp;UK&quot;;;07.01.08;19;&quot;INTEL&quot;;;;;&quot;http://www.google.de/logo.gif&quot;;675900307711</FONT></FONT></P>"+
-"<P><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3>Kontrollieren "+
-"Sie die Korrektheit ihrer Daten in der Vorschautabelle.<BR></FONT></FONT><BR><BR>"+
-"</P>"+
-"<P><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3>Das Importieren "+
-"kann abh&auml;ngig von der Dtenstruktur und der verwendeten Hardware "+
-"sehr lange dauern (</FONT></FONT><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3><B>~1.5"+
-"h f&uuml;r 32000</B></FONT></FONT><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3>"+
-"</FONT></FONT><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3><B>Produkte"+
-"</B></FONT></FONT><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3>(Dual-Core"+
-                "2 Ghz mit Sata2-Festplatte)).</FONT></FONT></P>"
-                
-                ));
-    }//GEN-LAST:event_jButton6ActionPerformed
 
+        new Help(new DefaultHelpModel("CSV Import",
+                "<P><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3>Die zu " +
+                "importierenden Daten m&uuml;ssen in dieser Form vorliegen:</FONT></FONT></P>" +
+                "<P><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3><B>&lt;produktnummer&gt;;" +
+                "&lt;name&gt;;&lt;text&gt;;&lt;vk&gt;;&lt;ek&gt;;&lt;tax&gt;" +
+                ";&lt;hersteller&gt;;&lt;warengruppenkategorie&gt;;&lt;warengruppenfamilie&gt;;&lt;warengruppe&gt;;&lt;url&gt;;&lt;ean&gt;</B></FONT></FONT></P>" +
+                "<P><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3>Zum Beispiel:</FONT></FONT></P>" +
+                "<P><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3>1000143;&quot;NPPSU023&quot;;&quot;INTEL&nbsp;NPPSU023&nbsp;POWERSUPPLY&nbsp;UK&quot;;;07.01.08;19;&quot;INTEL&quot;;;;;&quot;http://www.google.de/logo.gif&quot;;675900307711" +
+                "<BR>1000144;&quot;NPPSU023&quot;;&quot;INTEL&nbsp;NPPSU023&nbsp;POWERSUPPLY&nbsp;UK&quot;;;07.01.08;19;&quot;INTEL&quot;;;;;&quot;http://www.google.de/logo.gif&quot;;675900307711" +
+                "<BR>1000145;&quot;NPPSU023&quot;;&quot;INTEL&nbsp;NPPSU023&nbsp;POWERSUPPLY&nbsp;UK&quot;;;07.01.08;19;&quot;INTEL&quot;;;;;&quot;http://www.google.de/logo.gif&quot;;675900307711</FONT></FONT></P>" +
+                "<P><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3>Kontrollieren " +
+                "Sie die Korrektheit ihrer Daten in der Vorschautabelle.<BR></FONT></FONT><BR><BR>" +
+                "</P>" +
+                "<P><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3>Das Importieren " +
+                "kann abh&auml;ngig von der Dtenstruktur und der verwendeten Hardware " +
+                "sehr lange dauern (</FONT></FONT><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3><B>~1.5" +
+                "h f&uuml;r 32000</B></FONT></FONT><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3>" +
+                "</FONT></FONT><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3><B>Produkte" +
+                "</B></FONT></FONT><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3>(Dual-Core" +
+                "2 Ghz mit Sata2-Festplatte)).</FONT></FONT></P>"));
+    }//GEN-LAST:event_jButton6ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton jButton1;
@@ -467,220 +551,185 @@ public class csvProductImporter extends javax.swing.JFrame implements panelInter
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     // End of variables declaration//GEN-END:variables
-
     public javax.swing.JButton getJButton4() {
         return jButton4;
     }
-    
+
     class Task extends SwingWorker<Void, Void> {
 
-    private csvProductImporter thisa;
-    private ProductGroupCategory newcat;
-    private ProductGroupFamily newfam;
-    private ProductGroupGroup newgrp;
-    private String fam;
-    private String grp;
-    /*
-     * Main task. Executed in background thread.
-     */
+        private csvProductImporter thisa;
+        private ProductGroupCategory newcat;
+        private ProductGroupFamily newfam;
+        private ProductGroupGroup newgrp;
+        private String fam;
+        private String grp;
+        /*
+         * Main task. Executed in background thread.
+         */
 
-    public Task(csvProductImporter thisa) {
+        public Task(csvProductImporter thisa) {
 
-        this.thisa = thisa;
-    }
-
-    public Void doInBackground() {
-        int h = 0;
-        SimpleDateFormat df = new SimpleDateFormat();
-        Date datum = new Date();
-        String cat;
-        boolean news=false;
-
-
-
-
-        if ((JOptionPane.showConfirmDialog(thisa, "Wirklich alle Daten übernehmen? Dies wird möglicherweise einige Zeit dauern!", "Sicher?", JOptionPane.YES_NO_OPTION)) == JOptionPane.YES_OPTION) {
-
-            if (thisa.data != null) {
-                Date d=new Date();
-//                Log.setLogLevel(Log.LOGLEVEL_LOW);
-                Log.Debug("Einlesen gestartet: " + d,true);
-                thisa.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-
-                thisa.jProgressBar1.setMaximum(thisa.data.length);
-                thisa.jProgressBar1.setMinimum(0);
-
-                for (int i = 0; i < thisa.data.length; i++) {
-
-                    Product pg = new Product(ConnectionHandler.instanceOf());
-                    ProductGroupHandler handler = ProductGroupHandler.instanceOf();
-
-                    pg.setNummer(thisa.data[i].getProduktnummer());
-                    pg.setName(thisa.data[i].getName());
-                    pg.setDatum(datum);
-                    pg.setEK(Double.valueOf(thisa.data[i].getEk()));
-                    pg.setVK(Double.valueOf(thisa.data[i].getVk()));
-                    pg.setEan(thisa.data[i].getEan());
-//                    pg.setHersteller(thisa.data[i].getHersteller());
-//                    pg.setTAX(Double.valueOf(thisa.data[i].getTax()));
-                    pg.setText(thisa.data[i].getText());
-                    pg.setUrl(thisa.data[i].getUrl());
-
-
-                    if (thisa.supplier != null) {
-                        pg.setLieferantenId(thisa.supplier.getId());
-                    } else {
-                        pg.setLieferantenId(0);
-                    }
-
-                    cat = thisa.data[i].getWarengruppenkategorie();
-                    fam = thisa.data[i].getWarengruppenfamilie();
-                    grp = thisa.data[i].getWarengruppe();
-                    
-//                     Log.Debug( pg.getName()+":Produkt \n" +cat,true);
-//                      Log.Debug(fam,true);
-//                       Log.Debug(grp,true);
-//                       
-//                       Log.Debug("---------------------------",true);
-                    
-
-                    if (cat.length() > 1 && fam.length() > 1 && grp.length() > 1) {
-
-                        int z = handler.exists(cat, handler.CATEGORY);
-                        if (z == 0) {
-
-                            newcat = new ProductGroupCategory(ConnectionHandler.instanceOf());
-
-                            newcat.setName(cat);
-                            newcat.save();
-                            z = newcat.getID();
-                            news=true;
-                        }else{
-                           
-//                            newcat = handler.getCategory(z);
-                        }
-                        
-                        int f = handler.existFam(fam);
-                        if (f == 0) {
-//                            Log.Debug("creating fam: "+fam + " " + f,true);
-                            newfam = new ProductGroupFamily(ConnectionHandler.instanceOf());
-                            newfam.setName(fam);
-                            newfam.setKategorieid(z);
-                            newfam.save();
-                            f=newfam.getID();
-                            news=true;
-                         }else{
-//                          Log.Debug("existing fam: "+fam + " " + f,true);
-//                            newfam = handler.getFamily(f);
-                         }
-                        
-                        
-                        
-                        int l = handler.exists(grp, handler.GROUP);
-                        if (l == 0) {
-
-                            newgrp = new ProductGroupGroup(ConnectionHandler.instanceOf());
-                            newgrp.setName(grp);
-                            newgrp.setFamilienid(f);
-                            newgrp.save();
-                            news=true;
-                         }else{
-                            newgrp = handler.getGroup(l);
-                         }
-
-
-                       pg.setWarengruppenId(1);
-                       
-                      
-                       if(news) {
-                            handler.getCats(true); //speed?
-                        } //speed?
-                       
-                       news=false;
-
-
-                    }else{
-                    
-                     pg.setWarengruppenId(1);
-                    
-                    }
-
-                   
-
-                    pg.save();
-                    h++;
-                    thisa.jProgressBar1.setValue(i);
-
-                    thisa.jLabel1.setText(h + " Produkte angelegt");
-                    pg = null;
-                }
-                d=new Date();
-                Log.Debug("Einlesen beendet: " + d + " Produkte: " + h,true);
-                
-                 new HistoryItem(ConnectionHandler.instanceOf(), Strings.PRODUCT ,h + " Produkte importiert.");
-            
-                
-                thisa.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-                thisa.getJButton4().setEnabled(false);
-                 thisa.jProgressBar1.setValue(0);
-                 thisa.setVisible(false);
-            }
-
+            this.thisa = thisa;
         }
 
+        public Void doInBackground() {
+            int h = 0;
+            SimpleDateFormat df = new SimpleDateFormat();
+            Date datum = new Date();
+            String cat;
+            boolean news = false;
 
-        return null;
-    }
 
-    /*
-     * Executed in event dispatching thread
-     */
-    @Override
-    public void done() {
+
+
+            if ((JOptionPane.showConfirmDialog(thisa, "Wirklich alle Daten übernehmen? Dies wird möglicherweise einige Zeit dauern!", "Sicher?", JOptionPane.YES_NO_OPTION)) == JOptionPane.YES_OPTION) {
+
+                if (thisa.data != null) {
+                    Date d = new Date();
+//                Log.setLogLevel(Log.LOGLEVEL_LOW);
+                    Log.Debug("Einlesen gestartet: " + d, true);
+                    thisa.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+
+                    thisa.jProgressBar1.setMaximum(thisa.data.length);
+                    thisa.jProgressBar1.setMinimum(0);
+
+                    for (int i = 0; i < thisa.data.length; i++) {
+
+                        Product pg = new Product(ConnectionHandler.instanceOf());
+                        ProductGroupHandler handler = ProductGroupHandler.instanceOf();
+
+                        pg.setNummer(thisa.data[i].getProduktnummer());
+                        pg.setName(thisa.data[i].getName());
+                        pg.setDatum(datum);
+                        pg.setEK(Double.valueOf(thisa.data[i].getEk()));
+                        pg.setVK(Double.valueOf(thisa.data[i].getVk()));
+                        pg.setEan(thisa.data[i].getEan());
+                        pg.setHerstellernr(thisa.data[i].getHersteller());
+//                        pg.setTAX(Double.valueOf(thisa.data[i].getTax()));
+                        pg.setText(thisa.data[i].getText());
+                        pg.setUrl(thisa.data[i].getUrl());
+                        pg.setLieferantenId(Integer.valueOf(thisa.data[i].getLieferantenid()));
+
+
+                        if (thisa.supplier != null) {
+                            pg.setLieferantenId(thisa.supplier.getId());
+                        } else {
+                            pg.setLieferantenId(Integer.valueOf(thisa.data[i].getLieferantenid()));
+                        }
+
+                        cat = thisa.data[i].getWarengruppenkategorie();
+                        fam = thisa.data[i].getWarengruppenfamilie();
+                        grp = thisa.data[i].getWarengruppe();
+
+                       Log.Debug( pg.getName()+":Produkt \n" +cat,true);
+                       Log.Debug(fam,true);
+                       Log.Debug(grp,true);
+                       
+                       Log.Debug("---------------------------",true);
+
+
+                        if (cat.length() > 1 && fam.length() > 1 && grp.length() > 1) {
+
+                            int z = handler.exists(cat, handler.CATEGORY);
+                            if (z == 0) {
+
+                                newcat = new ProductGroupCategory(ConnectionHandler.instanceOf());
+
+                                newcat.setName(cat);
+                                newcat.save();
+                                z = newcat.getID();
+                                news = true;
+                            } else {//                            newcat = handler.getCategory(z);
+                            }
+
+                            int f = handler.existFam(fam);
+                            if (f == 0) {
+//                            Log.Debug("creating fam: "+fam + " " + f,true);
+                                newfam = new ProductGroupFamily(ConnectionHandler.instanceOf());
+                                newfam.setName(fam);
+                                newfam.setKategorieid(z);
+                                newfam.save();
+                                f = newfam.getID();
+                                news = true;
+                            } else {
+//                          Log.Debug("existing fam: "+fam + " " + f,true);
+//                            newfam = handler.getFamily(f);
+                            }
+
+
+
+                            int l = handler.exists(grp, handler.GROUP);
+                            if (l == 0) {
+
+                                newgrp = new ProductGroupGroup(ConnectionHandler.instanceOf());
+                                newgrp.setName(grp);
+                                newgrp.setFamilienid(f);
+                                newgrp.save();
+                                news = true;
+                            } else {
+                                newgrp = handler.getGroup(l);
+                            }
+
+
+                            pg.setWarengruppenId(1);
+
+
+                            if (news) {
+                                handler.getCats(true); //speed?
+                            } //speed?
+
+                            news = false;
+
+
+                        } else {
+
+                            pg.setWarengruppenId(1);
+
+                        }
+
+
+
+                        pg.save();
+                        h++;
+                        thisa.jProgressBar1.setValue(i);
+
+                        thisa.jLabel1.setText(h + " Produkte angelegt");
+                        pg = null;
+                    }
+                    d = new Date();
+                    Log.Debug("Einlesen beendet: " + d + " Produkte: " + h, true);
+
+                    new HistoryItem(ConnectionHandler.instanceOf(), Strings.PRODUCT, h + " Produkte importiert.");
+
+
+                    thisa.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                    thisa.getJButton4().setEnabled(false);
+                    thisa.jProgressBar1.setValue(0);
+                    thisa.setVisible(false);
+                }
+
+            }
+
+
+            return null;
+        }
+
+        /*
+         * Executed in event dispatching thread
+         */
+        @Override
+        public void done() {
 //        Toolkit.getDefaultToolkit().beep();
-        thisa.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+            thisa.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 
-    }
+        }
     }
 
     public void update() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void save() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void close() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void undo() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void redo() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void changeTabText(String text) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public boolean isEdited() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
     public void setContact(People contact) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        this.supplier = (Lieferant) contact;
     }
-
-    public People getContact() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void switchTab(int i) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
 }

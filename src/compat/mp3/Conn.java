@@ -115,11 +115,13 @@ public class Conn implements Strings {
             statement = conn.createStatement();
         } catch (SQLException ex) {
             System.out.println("Database Error:" + ex.getMessage());
-            ex.printStackTrace();
-            Log.Debug(ex);
-//            Popup.warn(ex.getMessage(), Popup.ERROR);
+//            ex.printStackTrace();
+            
+            Popup.warn(ex.getMessage(), Popup.ERROR);
+            
             Conn.shutdown();
-            System.exit(1);
+//            System.exit(1);
+            Log.Debug(ex);
 
             throw new Exception("Datenbank konnte nicht gestartet werden.");
 

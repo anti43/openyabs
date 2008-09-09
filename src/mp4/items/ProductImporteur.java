@@ -109,12 +109,12 @@ public class ProductImporteur {
         this.Hersteller = Hersteller;
     }
 
-    public Integer getLieferantenid() {
-        return LieferantenId;
+    public String getLieferantenid() {
+        return LieferantenId.toString();
     }
 
-    public void setLieferantenid(Integer LieferantenId) {
-        this.LieferantenId = LieferantenId;
+    public void setLieferantenid(String LieferantenId) {
+        this.LieferantenId = Integer.valueOf(LieferantenId);
     }
 
 
@@ -125,7 +125,7 @@ public class ProductImporteur {
         "ek","tax", "hersteller", "warengruppenkategorie", "warengruppenfamilie", 
         "warengruppe", "url", "ean"
          */
-        String[][] str = new String[imp.length][12];
+        String[][] str = new String[imp.length][12+1];
 
   
         
@@ -145,7 +145,7 @@ public class ProductImporteur {
          
             str[i][10] = imp[i].getUrl();
             str[i][11] = imp[i].getEan();
-           
+            str[i][12] = imp[i].getLieferantenid();
 
         }
 
@@ -165,7 +165,7 @@ public class ProductImporteur {
             if(imp.getEan().equals(""))imp.setEan("0");
             if(imp.getEk().equals(""))imp.setEk("0");
             if(imp.getHersteller().equals(""))imp.setHersteller(" ");
-            if(imp.getLieferantenid().equals(""))imp.setLieferantenid(0);
+            if(imp.getLieferantenid().equals(""))imp.setLieferantenid("0");
             if(imp.getName().equals(""))imp.setName(" ");
             if(imp.getProduktnummer().equals(""))imp.setProduktnummer("0");
             if(imp.getTax().equals(""))imp.setTax("0");
@@ -176,7 +176,7 @@ public class ProductImporteur {
             if(imp.getWarengruppenfamilie().equals(""))imp.setWarengruppenfamilie("0");
             if(imp.getWarengruppe().equals(""))imp.setWarengruppe("0");
             
-            imp.setLieferantenid(id);
+            if(id!=0)imp.setLieferantenid(id.toString());
             
             
             str[i] = imp;
