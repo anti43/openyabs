@@ -624,7 +624,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
         String l = "";
         String k = " = ";
         String deleted = " ";
-
+      
 
         start();
         query = "SELECT " + what + " FROM " + table + " WHERE " + where[0] + k + where[2] + l + where[1] + l + where[2] + deleted;

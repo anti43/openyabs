@@ -21,12 +21,11 @@ import javax.swing.JTable;
 import mp4.interfaces.Queries;
 import mp4.datenbank.verbindung.Query;
 
-
 /**
  *
  * @author anti
  */
-public abstract class People implements Queries, mp4.datenbank.installation.Tabellen{
+public abstract class People implements Queries, mp4.datenbank.installation.Tabellen {
 
     public Integer id = 0;
     public boolean isSaved = false;
@@ -37,8 +36,7 @@ public abstract class People implements Queries, mp4.datenbank.installation.Tabe
         q = query;
     }
 
-   
-        /**
+    /**
      * Deletes the item with the given id
      * @param id
      * @return 1 if successfull
@@ -61,12 +59,9 @@ public abstract class People implements Queries, mp4.datenbank.installation.Tabe
     }
 
     @Override
-    public void finalize() {
-
-//        if (!isSaved) {
+    public void finalize() {//        if (!isSaved) {
 //            this.save();
 //        }
-
     }
 
     public Integer getId() {
@@ -100,6 +95,13 @@ public abstract class People implements Queries, mp4.datenbank.installation.Tabe
         String hk = "'";
         if (id) {
             hk = "";
+
+            if (from.equals("id") && where.equals("0")) {
+
+                Popup.error(from + " = " + where, "Abfrage nicht möglich.");
+                return null;
+            }
+
         }
 
         String[] wher = {from, where, hk};
@@ -124,6 +126,11 @@ public abstract class People implements Queries, mp4.datenbank.installation.Tabe
         String hk = "'";
         if (id) {
             hk = "";
+            if (from.equals("id") && where.equals("0")) {
+
+                Popup.error(from + " = " + where, "Abfrage nicht möglich.");
+                return null;
+            }
         }
 
         String[] wher = {from, where, hk};
@@ -147,7 +154,7 @@ public abstract class People implements Queries, mp4.datenbank.installation.Tabe
         String hk = "'";
 
         String[] wher = {from, where, hk};
-        if(from == null) {
+        if (from == null) {
             wher = null;
         }
 
@@ -162,14 +169,16 @@ public abstract class People implements Queries, mp4.datenbank.installation.Tabe
      * @param from
      * @param where
      * @param id
-     * @param ghosts 
-     * @param like 
      * @return
+     * @throws Exception 
      */
-    public String[] selectLast(String what, String from, String where, boolean id) {
+    public String[] selectLast(String what, String from, String where, boolean id) throws Exception {
         String hk = "'";
         if (id) {
             hk = "";
+            if (from.equals("id") && where.equals("0")) {
+                throw new Exception(from + " = " + where + " Abfrage nicht möglich.");
+            }
         }
 
         String[] wher = {from, where, hk};
@@ -179,7 +188,7 @@ public abstract class People implements Queries, mp4.datenbank.installation.Tabe
 
     public int insert(String set, String value, int[] unique) {
         String[] str = {set, value, ""};
-        return q.insert(str,unique);
+        return q.insert(str, unique);
     }
 
     public void destroy() {
@@ -194,21 +203,22 @@ public abstract class People implements Queries, mp4.datenbank.installation.Tabe
     public String getNextStringNumber(String what) {
         return q.getNextStringNumber(what);
     }
-    /**
-     * Hides he first column of a table (usually "id")
-     * @param table
-     */
-    public void stripFirst(JTable table) {
 
-        table.getColumn(table.getColumnName(0)).setWidth(0);
-        table.getColumn(table.getColumnName(0)).setPreferredWidth(0);
-        table.getColumn(table.getColumnName(0)).setMinWidth(0);
-        table.getColumn(table.getColumnName(0)).setMaxWidth(0);
-
-        table.doLayout();
-
-
-    }
+//    /**
+//     * Hides he first column of a table (usually "id")
+//     * @param table
+//     */
+//    public void stripFirst(JTable table) {
+//
+//        table.getColumn(table.getColumnName(0)).setWidth(0);
+//        table.getColumn(table.getColumnName(0)).setPreferredWidth(0);
+//        table.getColumn(table.getColumnName(0)).setMinWidth(0);
+//        table.getColumn(table.getColumnName(0)).setMaxWidth(0);
+//
+//        table.doLayout();
+//
+//
+//    }
 
     /**
      * to be overwritten..

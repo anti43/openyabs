@@ -67,11 +67,13 @@ public abstract class Daten {
         
         
         "INSERT INTO benutzer(username, password, createdon, createdby, iseditor, isadmin) VALUES ('admin',  '2CB336AE1494258BCD5DFD35C698EDB1','"+DateConverter.getSQLDateString(new Date())+"', 'Niemand' , 1, 1)",       
-            
+//        ******************************************************************************************************************************        
+              
         "INSERT INTO rechnungbetreffz (name, text, isvorlage) VALUES ('Unser Angebot..', 'Unser Angebot vom {Angebot_Datum}', 1)",
         "INSERT INTO rechnungbetreffz (name, text, isvorlage) VALUES ('Ihr Auftrag..', 'Ihr Auftrag vom {Auftrag_Datum}', 1)",
         "INSERT INTO rechnungbetreffz (name, text, isvorlage) VALUES ('Bearbeiter..', 'Bearbeiter: {Benutzer}', 1)",      
-         
+//        ******************************************************************************************************************************        
+           
         "INSERT INTO daten (name, wert) VALUES ('Backup Verzeichnis', '" + Setup.instanceOf().getInstall_dirs().getBackup_dir() + "')",
         "INSERT INTO daten (name, wert) VALUES ('PDF Rechnungen Verzeichnis', '" +  Setup.instanceOf().getInstall_dirs().getPathpdf_bill_dir()+ "')",
         "INSERT INTO daten (name, wert) VALUES ('PDF Angebote Verzeichnis', '" + Setup.instanceOf().getInstall_dirs().getPathpdf_offer_dir() + "')",

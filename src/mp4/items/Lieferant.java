@@ -24,6 +24,7 @@ import mp4.datenbank.verbindung.Query;
 import mp4.items.handler.NumberFormatHandler;
 import mp4.items.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
+import mp4.logs.Log;
 
 /**
  *
@@ -69,7 +70,11 @@ public class Lieferant extends mp4.items.People implements mp4.datenbank.install
         super(ConnectionHandler.instanceOf().clone(TABLE_SUPPLIER));
         this.query =ConnectionHandler.instanceOf();
         this.id = id;
-        this.explode(this.selectLast("*", "id", id.toString(), true));
+        try {
+            this.explode(this.selectLast("*", "id", id.toString(), true));
+        } catch (Exception ex) {
+            Log.Debug(ex);
+        }
         nfh = new NumberFormatHandler(this, new Date());
     }
 

@@ -301,6 +301,7 @@ public class Product extends mp4.items.Things implements mp4.datenbank.installat
     }
 
     public void setLieferantenId(Integer LieferantenId) {
+        if(LieferantenId == 0)LieferantenId =1;
         this.LieferantenId = LieferantenId;
         this.lieferant =new Lieferant(LieferantenId);
     }

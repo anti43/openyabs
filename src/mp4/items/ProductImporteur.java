@@ -5,6 +5,7 @@
 package mp4.items;
 
 import java.util.ArrayList;
+import mp4.utils.text.RandomText;
 
 /**
  *
@@ -24,7 +25,7 @@ public class ProductImporteur {
     private String Ek = "";
     private String Tax = "";
     private String Hersteller = "";
-    private Integer LieferantenId = 0;
+    private Integer LieferantenId = 1;
     private String Warengruppenkategorie = "";
     private String Warengruppenfamilie = "";
     private String Warengruppe = "";
@@ -152,7 +153,7 @@ public class ProductImporteur {
         return str;
     }
 
-    public static ProductImporteur[] listToImporteurArray(ArrayList list, Integer id) {
+    public static ProductImporteur[] listToImporteurArray(ArrayList list, Lieferant sup) {
 
         ProductImporteur[] str = new ProductImporteur[list.size()];
         ProductImporteur imp = null;
@@ -165,18 +166,18 @@ public class ProductImporteur {
             if(imp.getEan().equals(""))imp.setEan("0");
             if(imp.getEk().equals(""))imp.setEk("0");
             if(imp.getHersteller().equals(""))imp.setHersteller(" ");
-            if(imp.getLieferantenid().equals(""))imp.setLieferantenid("0");
+            if(imp.getLieferantenid().equals(""))imp.setLieferantenid("1");
             if(imp.getName().equals(""))imp.setName(" ");
-            if(imp.getProduktnummer().equals(""))imp.setProduktnummer("0");
+            if(imp.getProduktnummer().equals(""))imp.setProduktnummer(new RandomText().getString());
             if(imp.getTax().equals(""))imp.setTax("0");
             if(imp.getText().equals(""))imp.setText(" ");
             if(imp.getUrl().equals(""))imp.setUrl(" ");
             if(imp.getVk().equals(""))imp.setVk("0");
-            if(imp.getWarengruppenkategorie().equals(""))imp.setWarengruppenkategorie("0");
-            if(imp.getWarengruppenfamilie().equals(""))imp.setWarengruppenfamilie("0");
-            if(imp.getWarengruppe().equals(""))imp.setWarengruppe("0");
+            if(imp.getWarengruppenkategorie().equals(""))imp.setWarengruppenkategorie("1");
+            if(imp.getWarengruppenfamilie().equals(""))imp.setWarengruppenfamilie("1");
+            if(imp.getWarengruppe().equals(""))imp.setWarengruppe("1");
             
-            if(id!=0)imp.setLieferantenid(id.toString());
+            if(sup!=null)imp.setLieferantenid(sup.getid());
             
             
             str[i] = imp;

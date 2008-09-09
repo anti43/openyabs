@@ -373,7 +373,7 @@ public javax.swing.JToolBar jToolBar1;
         }
 
         jTable1.setModel(new DefaultTableModel(ListenDataUtils.listToTableArray(list), header));
-        l.stripFirst(jTable1);
+        TableFormat.stripFirst(jTable1);
         TableFormat.format(jTable1, 1, 180);
     }
         

@@ -18,10 +18,13 @@
 package mp4.items;
 
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mp4.interfaces.Countable;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.datenbank.verbindung.Query;
 import mp4.items.handler.NumberFormatHandler;
+import mp4.logs.Log;
 /**
  *
  * @author anti
@@ -54,7 +57,11 @@ public class Hersteller extends mp4.items.People implements mp4.datenbank.instal
     public Hersteller(Integer id) {
         super(ConnectionHandler.instanceOf().clone(TABLE_MANUFACTURER));
         this.id = id;
-        this.explode(this.selectLast("*", "id", id.toString(), true));
+        try {
+            this.explode(this.selectLast("*", "id", id.toString(), true));
+        } catch (Exception ex) {
+            Log.Debug(ex);
+        }
         nfh = new NumberFormatHandler(this, new Date());
     }
     public String getid() {

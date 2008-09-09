@@ -66,21 +66,19 @@ public class csvProductImporter extends javax.swing.JFrame implements panelInter
     private String[][] datstr;
     private String[] header;
     public ProductImporteur[] data;
-    public Lieferant supplier;
+    public Lieferant supplier = null;
     private Task task;
 
     /** Creates new form productImporter */
     public csvProductImporter() {
         initComponents();
         new Position(this);
-        this.supplier = new Lieferant(ConnectionHandler.instanceOf());
 
     }
 
     public csvProductImporter(File file) {
          initComponents();
         new Position(this);
-        this.supplier = new Lieferant(ConnectionHandler.instanceOf());
         this.jTextField1.setText(file.getPath());
         this.setVisible(rootPaneCheckingEnabled);
           boolean succ = true;
@@ -149,12 +147,14 @@ public class csvProductImporter extends javax.swing.JFrame implements panelInter
         }
 
         try {
+            this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
             user = new ProductImporteur();
-            data = ProductImporteur.listToImporteurArray(liste, this.supplier.getId());
+            data = ProductImporteur.listToImporteurArray(liste, this.supplier);
             datstr = user.getData(data);
-
-
-
+            
+            Thread.sleep(5000);//Wait for the data..
+            this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            
             jTable1.setModel(new DefaultTableModel(datstr, header));
 
 
@@ -381,10 +381,10 @@ public class csvProductImporter extends javax.swing.JFrame implements panelInter
         this.dispose();
     }//GEN-LAST:event_jButton2MouseClicked
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "unchecked"})
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
         boolean succ = true;
-        ProductImporteur user = new ProductImporteur();
+        ProductImporteur importeur = new ProductImporteur();
         liste = new ArrayList();
         header = new String[]{"produktnummer", "name", "text", "vk",
                     "ek", "tax", "hersteller", "warengruppenkategorie", "warengruppenfamilie",
@@ -422,8 +422,8 @@ public class csvProductImporter extends javax.swing.JFrame implements panelInter
 //                final String[] header = inFile.getCSVHeader(true);
 
 
-                while ((user = inFile.read(ProductImporteur.class, header, processors)) != null) {
-                    liste.add(user);
+                while ((importeur = inFile.read(ProductImporteur.class, header, processors)) != null) {
+                    liste.add(importeur);
                 }
 
 
@@ -449,10 +449,9 @@ public class csvProductImporter extends javax.swing.JFrame implements panelInter
         }
 
         try {
-            user = new ProductImporteur();
-            data = ProductImporteur.listToImporteurArray(liste, this.supplier.getId());
-            datstr = user.getData(data);
-
+            importeur = new ProductImporteur();
+            data = ProductImporteur.listToImporteurArray(liste, this.supplier);
+            datstr = importeur.getData(data);
 
 
             jTable1.setModel(new DefaultTableModel(datstr, header));
@@ -490,12 +489,10 @@ public class csvProductImporter extends javax.swing.JFrame implements panelInter
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         if (jButton4.isEnabled()) {
             setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-            //Instances of javax.swing.SwingWorker are not reusuable, so
-            //we create new instances as needed.
             task = new Task(this);
-//        task.addPropertyChangeListener(this);
             task.execute();
-
+           
+            jButton2.setText("Beenden");
         }
 
     }//GEN-LAST:event_jButton4ActionPerformed
@@ -586,7 +583,7 @@ public class csvProductImporter extends javax.swing.JFrame implements panelInter
 
                 if (thisa.data != null) {
                     Date d = new Date();
-//                Log.setLogLevel(Log.LOGLEVEL_LOW);
+//                Log.setLogLevel(Log.LOGLEVEL_HIGH);
                     Log.Debug("Einlesen gestartet: " + d, true);
                     thisa.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 
@@ -611,11 +608,12 @@ public class csvProductImporter extends javax.swing.JFrame implements panelInter
                         pg.setLieferantenId(Integer.valueOf(thisa.data[i].getLieferantenid()));
 
 
-                        if (thisa.supplier != null) {
+                        if (thisa.supplier != null && thisa.supplier.isValid()) {
                             pg.setLieferantenId(thisa.supplier.getId());
-                        } else {
-                            pg.setLieferantenId(Integer.valueOf(thisa.data[i].getLieferantenid()));
-                        }
+                        } 
+//                        else {
+//                            pg.setLieferantenId(Integer.valueOf(thisa.data[i].getLieferantenid()));
+//                        }
 
                         cat = thisa.data[i].getWarengruppenkategorie();
                         fam = thisa.data[i].getWarengruppenfamilie();
@@ -628,7 +626,7 @@ public class csvProductImporter extends javax.swing.JFrame implements panelInter
                        Log.Debug("---------------------------",true);
 
 
-                        if (cat.length() > 1 && fam.length() > 1 && grp.length() > 1) {
+                        if (!cat.equals("null") && !fam.equals("null") && !grp.equals("null")) {
 
                             int z = handler.exists(cat, handler.CATEGORY);
                             if (z == 0) {
@@ -644,7 +642,7 @@ public class csvProductImporter extends javax.swing.JFrame implements panelInter
 
                             int f = handler.existFam(fam);
                             if (f == 0) {
-//                            Log.Debug("creating fam: "+fam + " " + f,true);
+                            Log.Debug("creating fam: "+fam + " " + f,true);
                                 newfam = new ProductGroupFamily(ConnectionHandler.instanceOf());
                                 newfam.setName(fam);
                                 newfam.setKategorieid(z);
@@ -671,7 +669,7 @@ public class csvProductImporter extends javax.swing.JFrame implements panelInter
                             }
 
 
-                            pg.setWarengruppenId(1);
+                            pg.setWarengruppenId(newgrp.getID());
 
 
                             if (news) {
@@ -698,14 +696,14 @@ public class csvProductImporter extends javax.swing.JFrame implements panelInter
                     }
                     d = new Date();
                     Log.Debug("Einlesen beendet: " + d + " Produkte: " + h, true);
-
+                    Popup.notice("Einlesen beendet: " + d + " Produkte: " + h);
                     new HistoryItem(ConnectionHandler.instanceOf(), Strings.PRODUCT, h + " Produkte importiert.");
 
 
                     thisa.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                     thisa.getJButton4().setEnabled(false);
                     thisa.jProgressBar1.setValue(0);
-                    thisa.setVisible(false);
+                    
                 }
 
             }
@@ -721,6 +719,7 @@ public class csvProductImporter extends javax.swing.JFrame implements panelInter
         public void done() {
 //        Toolkit.getDefaultToolkit().beep();
             thisa.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+            
 
         }
     }
