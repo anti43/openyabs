@@ -20,6 +20,7 @@ package mp4.utils.export.pdf;
 import java.awt.Image;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Locale;
 import mp4.interfaces.Printable;
 import mp4.utils.ui.inputfields.InputVerifiers;
 import mp4.einstellungen.Einstellungen;
@@ -49,6 +50,7 @@ public class PDF_Produkt implements Printable {
     public PDF_Produkt(Dienstleistung produkt) {
         settings = Einstellungen.instanceOf();
         this.service = produkt;
+        Locale.setDefault(Einstellungen.instanceOf().getLocale());
     }
 
     public PDF_Produkt(Product produkt, java.awt.Image image) {
@@ -57,6 +59,7 @@ public class PDF_Produkt implements Printable {
         this.lieferant = new Lieferant(produkt.getLieferantenId());
         this.hersteller = new Hersteller(produkt.getHerstellerId());
         this.bild = image;
+        Locale.setDefault(Einstellungen.instanceOf().getLocale());
     }
 
 

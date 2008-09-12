@@ -18,6 +18,7 @@
  */
 package mp4.utils.tabellen.models;
 
+import java.util.Locale;
 import mp4.items.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import javax.swing.table.DefaultTableModel;
@@ -29,6 +30,7 @@ import mp4.items.Rechnung;
 import mp4.utils.ui.inputfields.InputVerifiers;
 import mp4.logs.*;
 import mp4.datenbank.verbindung.Query;
+import mp4.einstellungen.Einstellungen;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.zahlen.FormatNumber;
 
@@ -74,6 +76,7 @@ public class EURTableModel implements Constants, Strings, mp4.datenbank.installa
    
     public EURTableModel(String year) {
 
+        Locale.setDefault(Einstellungen.instanceOf().getLocale());
         data = new Object[EUR_TEMPLATE.length][2];
 
         for (int i = 0; i < EUR_TEMPLATE.length; i++) {

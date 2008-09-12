@@ -393,6 +393,10 @@ jMenuItem5 = new javax.swing.JMenuItem();
 jMenuItem7 = new javax.swing.JMenuItem();
 pluginMenu = new javax.swing.JMenu();
 jMenuItem20 = new javax.swing.JMenuItem();
+jMenu2 = new javax.swing.JMenu();
+jMenu3 = new javax.swing.JMenu();
+jMenuItem22 = new javax.swing.JMenuItem();
+jMenuItem23 = new javax.swing.JMenuItem();
 jMenu7 = new javax.swing.JMenu();
 jMenuItem6 = new javax.swing.JMenuItem();
 jSeparator1 = new javax.swing.JSeparator();
@@ -994,6 +998,30 @@ jMenu1.add(pluginMenu);
 
 jMenuBar2.add(jMenu1);
 
+jMenu2.setText("Ansicht");
+
+jMenu3.setText("Rechungen");
+
+jMenuItem22.setText("Default");
+jMenuItem22.addActionListener(new java.awt.event.ActionListener() {
+public void actionPerformed(java.awt.event.ActionEvent evt) {
+jMenuItem22ActionPerformed(evt);
+}
+});
+jMenu3.add(jMenuItem22);
+
+jMenuItem23.setText("Variation 1");
+jMenuItem23.addActionListener(new java.awt.event.ActionListener() {
+public void actionPerformed(java.awt.event.ActionEvent evt) {
+jMenuItem23ActionPerformed(evt);
+}
+});
+jMenu3.add(jMenuItem23);
+
+jMenu2.add(jMenu3);
+
+jMenuBar2.add(jMenu2);
+
 jMenu7.setText("Hilfe");
 
 jMenuItem6.setText("Hilfe...");
@@ -1335,6 +1363,16 @@ private void jMenuItem20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     new pluginHandler(this);
 }//GEN-LAST:event_jMenuItem20ActionPerformed
 
+private void jMenuItem22ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem22ActionPerformed
+Programmdaten.instanceOf().setBILLPANEL_MASK("Default");
+this.setMessage("Rechnungen Ansicht: Default gewählt.");
+}//GEN-LAST:event_jMenuItem22ActionPerformed
+
+private void jMenuItem23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem23ActionPerformed
+Programmdaten.instanceOf().setBILLPANEL_MASK("MEDICAL");
+this.setMessage("Rechnungen Ansicht: Variation 1 gewählt.");
+}//GEN-LAST:event_jMenuItem23ActionPerformed
+
     @Override
     public void finalize() {
         Conn.shutdown();
@@ -1362,6 +1400,8 @@ private javax.swing.JButton jButton9;
 private javax.swing.JMenu jMenu1;
 private javax.swing.JMenu jMenu10;
 private javax.swing.JMenu jMenu11;
+private javax.swing.JMenu jMenu2;
+private javax.swing.JMenu jMenu3;
 private javax.swing.JMenu jMenu4;
 private javax.swing.JMenu jMenu5;
 private javax.swing.JMenu jMenu6;
@@ -1383,6 +1423,8 @@ private javax.swing.JMenuItem jMenuItem19;
 private javax.swing.JMenuItem jMenuItem2;
 private javax.swing.JMenuItem jMenuItem20;
 private javax.swing.JMenuItem jMenuItem21;
+private javax.swing.JMenuItem jMenuItem22;
+private javax.swing.JMenuItem jMenuItem23;
 private javax.swing.JMenuItem jMenuItem3;
 private javax.swing.JMenuItem jMenuItem4;
 private javax.swing.JMenuItem jMenuItem5;

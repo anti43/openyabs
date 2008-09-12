@@ -95,15 +95,11 @@ public class billsView extends mp4.panels.misc.commonPanel implements panelInter
     public billsView() {
     }
 
-    /** Creates new form customers
-     * @param frame 
-     */
     public billsView(mainframe frame) {
-        
-        Locale.setDefault(new Locale("de", "DE", "MEDICAL"));
-        
-        System.out.print(Locale.getDefault());
+       
+        Locale.setDefault(new Locale("de", "DE", Programmdaten.instanceOf().getBILLPANEL_MASK()));
         initComponents();
+//        Locale.setDefault(Einstellungen.instanceOf().getLocale());
 
         settings = Einstellungen.instanceOf();
         defaultTaxRate = Double.valueOf(settings.getGlobaltax());

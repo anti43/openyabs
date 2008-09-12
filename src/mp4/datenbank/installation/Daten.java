@@ -40,7 +40,7 @@ public abstract class Daten {
         "INSERT INTO hersteller (nummer,Firma,Anrede,Vorname,Name,Str,PLZ,Ort,Tel,Fax,Mobil,Mail,Webseite,Notizen ) VALUES ('HS-00000','Default','','','Default','','','','','','','','','') ",
         "INSERT INTO lieferanten (nummer,Firma,Anrede,Vorname,Name,Str,PLZ,Ort,Tel,Fax,Mobil,Mail,Webseite,Notizen ) VALUES ('LF-00000','Default','','','Default','','','','','','','','','') ",
 
-//        *****************************************Programmdatenb*************************************************************************************        
+//        *****************************************Programmdaten*************************************************************************************        
         
         "INSERT INTO programmdaten(name, wert) VALUES ('MAHNUNG_TEXT_DEFAULT',  'Sehr geehrter {KUNDE_ANREDE} {KUNDE_VORNAME} {KUNDE_NAME},\nin Bezug auf unsere Rechnung Nr. "+ 
         "{RECHNUNG_NUMMER} vom {RECHNUNG_DATUM} mussten wir heute feststellen, dass " +
@@ -58,7 +58,7 @@ public abstract class Daten {
         "INSERT INTO programmdaten(name, wert) VALUES ('CUSTOMER_NUMMER_FORMAT',  'KU-&!00000&!0')",
         "INSERT INTO programmdaten(name, wert) VALUES ('SERVICES_NUMMER_FORMAT',  'DL-&!00000&!0')", 
         "INSERT INTO programmdaten(name, wert) VALUES ('PRODUCT_NUMMER_FORMAT',   'PR-&!00000&!0')", 
-        
+        "INSERT INTO programmdaten(name, wert) VALUES ('BILLPANEL_MASK',   'Default')",
         "INSERT INTO programmdaten(name, wert) VALUES ('MAINFRAME_WINDOW_STATE',  '790,1000')",    
         "INSERT INTO programmdaten(name, wert) VALUES ('WARENGRUPPEN_SEPARATOR',  '->')",   
         "INSERT INTO programmdaten(name, wert) VALUES ('IMAGE_CACHE_FOLDER', '" + Setup.instanceOf().getInstall_dirs().getCache_dir() +"')",  
@@ -94,6 +94,7 @@ public abstract class Daten {
         
         "INSERT INTO daten (name, wert) VALUES ('Default Konto Einnahme (auf dieses Konto werden auch Ihre Rechnungen verbucht!)', '2112')",
         "INSERT INTO daten (name, wert) VALUES ('Default Konto Ausgabe', '1111')",
+        "INSERT INTO daten (name, wert) VALUES ('Land (Waehrung) (DE,CH)', 'DE')",
         "INSERT INTO daten (name, wert) VALUES ('Land (Waehrung) (DE,CH)', 'DE')",
      
         

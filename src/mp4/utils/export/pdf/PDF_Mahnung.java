@@ -23,6 +23,7 @@ import mp4.items.Customer;
 import java.util.ArrayList;
 import java.util.Date;
 
+import java.util.Locale;
 import mp4.interfaces.Printable;
 import mp4.utils.ui.inputfields.InputVerifiers;
 import mp4.einstellungen.Einstellungen;
@@ -65,7 +66,8 @@ public class PDF_Mahnung implements Printable{
         this.betrag = betrag;
         this.nummer = nummer;
         this.text = text;
-
+ 
+        Locale.setDefault(Einstellungen.instanceOf().getLocale());
     }
 
 

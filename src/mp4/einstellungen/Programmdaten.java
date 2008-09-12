@@ -47,6 +47,7 @@ public class Programmdaten implements mp4.datenbank.installation.Tabellen {
         pluginhandler.addRow(elem.getUID().toString(), null);
     }
 
+
     public boolean getONLOAD(mpplugin elem) {
         if (pluginhandler.getString(elem.getUID().toString()) != null) {
             return true;
@@ -221,5 +222,13 @@ public class Programmdaten implements mp4.datenbank.installation.Tabellen {
 
     public void setPLUGIN_FOLDER(String PLUGIN_FOLDER) {
         datahandler.setString("PLUGIN_FOLDER", PLUGIN_FOLDER);
+    }
+    
+    public void setBILLPANEL_MASK(String BILLPANEL_MASK) {
+        datahandler.setString("BILLPANEL_MASK", BILLPANEL_MASK);
+    }
+    
+    public String getBILLPANEL_MASK() {
+       return datahandler.getString("BILLPANEL_MASK");
     }
 }

@@ -21,6 +21,7 @@ import mp4.items.Customer;
 import mp4.items.Angebot;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Locale;
 import mp4.interfaces.Printable;
 import mp4.utils.ui.inputfields.InputVerifiers;
 import mp4.logs.*;
@@ -51,7 +52,7 @@ public class PDF_Angebot implements Printable{
         this.r = b;
         k = new Customer(b.getKundenId());
         products = r.getProductlistAsArray();
-
+        Locale.setDefault(Einstellungen.instanceOf().getLocale());
     }
 
    
