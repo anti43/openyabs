@@ -37,12 +37,14 @@ public interface Constants {
     public static String PROG_NAME = "MP-RUK_4";
     public static String SEP = File.separator;
     public static String JAVA_VERSION = "Java Version: " + System.getProperty("java.version");
+    public static String PLUGIN_IDENTIFIER = "MP4Plugin";
        
     public String TEMPLATES_DIR = "templates";
     public String LIB_DIR = "lib";
     public String PDF = "PDF";
     public String OFFER_SAVE_DIR = "Angebote";
     public String CACHE_DIR = "Cache";
+    public String PLUGIN_DIR = "Plugins";
     public String BILL_SAVE_DIR = "Rechnungen";
     public String ARREAR_SAVE_DIR = "Mahnungen";
     public String PRODUCT_SAVE_DIR = "Produkte";

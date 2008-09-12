@@ -27,6 +27,7 @@ public class Verzeichnisse implements Constants, Strings {
     private static File public_dir;
     private static File lib_dir;
     private static File install_lib_dir;
+    private static File install_plugin_dir;
     private static File install_templates_dir;
     private static File pdf_offer_dir;
     private static File pdf_bill_dir;
@@ -34,6 +35,7 @@ public class Verzeichnisse implements Constants, Strings {
     private static File pdf_produkt_dir;
     private static File templates_dir;
     private static File cache_dir;
+    private static File plugin_dir;
     private static String backuppathtftext = System.getProperty("user.home");
     private static String pdfpathtftext = System.getProperty("user.home");
     ;
@@ -51,7 +53,9 @@ public class Verzeichnisse implements Constants, Strings {
         lib_dir = new File(getPublic_dir().getCanonicalPath() + File.separator + LIB_DIR);
         install_lib_dir = new File(workdir + SEP + LIB_DIR);
         install_templates_dir = new File(workdir + SEP + TEMPLATES_DIR);
+        install_plugin_dir = new File(workdir + SEP + PLUGIN_DIR);
         cache_dir = new File(DBROOTDIR + SEP + CACHE_DIR);
+        plugin_dir = new File(getPublic_dir().getCanonicalPath() + File.separator + PLUGIN_DIR);
 
         if (Main.BACKUP_DIR == null) {
             backup_dir = new File(backuppathtftext);
@@ -90,6 +94,7 @@ public class Verzeichnisse implements Constants, Strings {
                     getPdf_bill_dir().mkdirs() &
                     getPdf_offer_dir().mkdirs() &
                     getPdf_mahnung_dir().mkdirs() &
+                    getPlugin_dir().mkdirs() &
                     getCache_dir().mkdirs()) {
 
                 Log.Debug("Erfolgreich!", true);
@@ -111,6 +116,8 @@ public class Verzeichnisse implements Constants, Strings {
                     if (!Main.FORCE_NO_FILE_COPY) {
                         Log.Debug("Libraries kopieren..", true);
                         FileDirectoryHandler.copyDirectory(getInstall_lib_dir(), getLib_dir());
+                        Log.Debug("Plugins kopieren..", true);
+                        FileDirectoryHandler.copyDirectory(getInstall_plugin_dir(), getPlugin_dir());
                         Log.Debug("MP Jar kopieren..", true);
                         FileDirectoryHandler.copyDirectory(new File(workdir + File.separator + Constants.JAR_NAME), new File(getPublic_dir().getAbsolutePath() + File.separator + Constants.JAR_NAME));
                     }
@@ -236,5 +243,17 @@ public class Verzeichnisse implements Constants, Strings {
 
     public static void setPdfpathtftext(String aPdfpathtftext) {
         pdfpathtftext = aPdfpathtftext;
+    }
+
+    public static File getPlugin_dir() {
+        return plugin_dir;
+    }
+
+    public static File getInstall_plugin_dir() {
+        return install_plugin_dir;
+    }
+
+    public String getPathplugin_dir() {
+       return plugin_dir.getPath();
     }
 }

@@ -62,7 +62,8 @@ public abstract class Daten {
         "INSERT INTO programmdaten(name, wert) VALUES ('MAINFRAME_WINDOW_STATE',  '790,1000')",    
         "INSERT INTO programmdaten(name, wert) VALUES ('WARENGRUPPEN_SEPARATOR',  '->')",   
         "INSERT INTO programmdaten(name, wert) VALUES ('IMAGE_CACHE_FOLDER', '" + Setup.instanceOf().getInstall_dirs().getCache_dir() +"')",  
-        
+        "INSERT INTO programmdaten(name, wert) VALUES ('PLUGIN_FOLDER', '" + Setup.instanceOf().getInstall_dirs().getPathplugin_dir() +"')",  
+       
 //        ******************************************************************************************************************************        
         
         

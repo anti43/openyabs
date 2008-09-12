@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
+import java.util.ArrayList;
 
 public class FileDirectoryHandler {
 
@@ -88,6 +89,49 @@ public class FileDirectoryHandler {
             
    
     }
+    
+    public static File[] getFilesOfDirectory(String dir, String identifier){
+        File src;
+    
+        try {
+            lstFiles = new ArrayList();
+            src = new File(dir);
+            Log.Debug("Verzeichnis: " + src, true);
+            File[] files = src.listFiles();
+            Log.Debug("Dateien analysieren...", true);
+            lstFiles = new ArrayList();
+
+            for (int i = 0,   k = 0; i < files.length; i++) {
+//                Log.Debug("Datei analysieren: " + files[i].getName());
+                if (files[i].isFile() && files[i].toString().contains(identifier)) {
+                    try {
+//                        String[] fileinfo = new String[3];
+//                        fileinfo[0] = String.valueOf(k);
+//                        fileinfo[1] = files[i].getName();
+//                        fileinfo[2] = files[i].getCanonicalPath();
+                        lstFiles.add(files[i]);
+                        Log.Debug("Datei gefunden: " + files[i].getName(), true);
+                        k++;
+                    } catch (Exception ex) {
+                        Log.Debug(ex.getMessage(), true);
+                    }
+                }
+            }
+            if (files.length == 0) {
+//                String[] fileinfo = new String[3];
+//                fileinfo [2] = "Keine Datei vorhanden";
+//                lstFiles.add(fileinfo);
+                 Log.Debug("Keine Datei gefunden.");
+            }
+        } catch (Exception exception) {
+            Log.Debug(exception);
+            Log.Debug(exception.getMessage(), true);
+        }
+    
+        return (File[]) lstFiles.toArray(new File[0]);
+        
+    }
+    private static ArrayList<File> lstFiles;
 }
     
 

@@ -85,6 +85,8 @@ import mp4.panels.misc.diagrammChooseView;
 import mp4.panels.misc.historyView;
 import mp4.panels.misc.settingsView;
 
+import mp4.plugin.mpplugin;
+import mp4.plugin.pluginHandler;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.files.Browser;
 import mp4.utils.files.SaveAs;
@@ -189,6 +191,8 @@ public class mainframe extends javax.swing.JFrame {
             this.setEnabled(false);
             new login(this);
         }
+        
+        new pluginHandler(this);
     }
 
     public void addAngebotPanel(Angebot offer) {
@@ -220,6 +224,13 @@ public class mainframe extends javax.swing.JFrame {
     public void addDiagramm(diagrammView panel) {
         mainTabPane.add("Diagramm", panel);
         mainTabPane.setSelectedComponent(panel);
+        mainTabPane.setIconAt(mainTabPane.getSelectedIndex(), new TabCloseIcon());
+        mainTabPane.validate();
+    }
+
+    public void addPluginPanel(mpplugin elem) {
+        mainTabPane.add(elem.getName(), elem);
+        mainTabPane.setSelectedComponent(elem);
         mainTabPane.setIconAt(mainTabPane.getSelectedIndex(), new TabCloseIcon());
         mainTabPane.validate();
     }
@@ -349,6 +360,7 @@ public class mainframe extends javax.swing.JFrame {
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem5 = new javax.swing.JMenuItem();
         jMenuItem7 = new javax.swing.JMenuItem();
+        jMenuItem20 = new javax.swing.JMenuItem();
         jMenu7 = new javax.swing.JMenu();
         jMenuItem6 = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JSeparator();
@@ -936,6 +948,14 @@ public class mainframe extends javax.swing.JFrame {
         });
         jMenu1.add(jMenuItem7);
 
+        jMenuItem20.setText("Plugins neu laden");
+        jMenuItem20.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem20ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem20);
+
         jMenuBar2.add(jMenu1);
 
         jMenu7.setText("Hilfe");
@@ -1272,6 +1292,10 @@ private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     addPanel("Auswertungen", diagrammpanel);
 }//GEN-LAST:event_jButton15ActionPerformed
 
+private void jMenuItem20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem20ActionPerformed
+ new pluginHandler(this);
+}//GEN-LAST:event_jMenuItem20ActionPerformed
+
     @Override
     public void finalize() {
         Conn.shutdown();
@@ -1318,6 +1342,7 @@ private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     private javax.swing.JMenuItem jMenuItem18;
     private javax.swing.JMenuItem jMenuItem19;
     private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem20;
     private javax.swing.JMenuItem jMenuItem21;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;

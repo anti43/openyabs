@@ -196,4 +196,12 @@ public class Programmdaten implements mp4.datenbank.installation.Tabellen {
     public void setIMAGE_CACHE_FOLDER(String IMAGE_CACHE_FOLDER) {
         handler.setString("IMAGE_CACHE_FOLDER", IMAGE_CACHE_FOLDER);
     }
+    
+    public String getPLUGIN_FOLDER() {
+        return handler.getString("PLUGIN_FOLDER");
+    }
+
+    public void setPLUGIN_FOLDER(String PLUGIN_FOLDER) {
+        handler.setString("PLUGIN_FOLDER", PLUGIN_FOLDER);
+    }
 }
