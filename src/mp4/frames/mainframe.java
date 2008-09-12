@@ -38,6 +38,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Locale;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
@@ -130,6 +131,8 @@ public class mainframe extends javax.swing.JFrame {
      */
     public mainframe(SplashScreen splash, Main mainclass) {
 
+        
+        
         this.loader = mainclass;
         this.identifier = this;
         splash.setMessage("Initialisiere Oberfläche...");

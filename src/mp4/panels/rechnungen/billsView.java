@@ -38,6 +38,7 @@ import mp4.frames.mainframe;
 
 import mp4.utils.export.pdf.PDF_Rechnung;
 import java.awt.event.ActionListener;
+import java.util.Locale;
 import javax.print.DocFlavor;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
@@ -98,6 +99,10 @@ public class billsView extends mp4.panels.misc.commonPanel implements panelInter
      * @param frame 
      */
     public billsView(mainframe frame) {
+        
+        Locale.setDefault(new Locale("de", "DE", "MEDICAL"));
+        
+        System.out.print(Locale.getDefault());
         initComponents();
 
         settings = Einstellungen.instanceOf();
@@ -132,6 +137,7 @@ public class billsView extends mp4.panels.misc.commonPanel implements panelInter
         jComboBox1.addActionListener(new CheckComboListener());
         jComboBox1.setRenderer(new CheckComboRenderer());
 
+       
     }
 
     public void addProduct(Product product) {
@@ -353,7 +359,6 @@ public class billsView extends mp4.panels.misc.commonPanel implements panelInter
 // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
 private void initComponents() {
 
-jLabel14 = new javax.swing.JLabel();
 jPanel1 = new javax.swing.JPanel();
 jToolBar1 = new javax.swing.JToolBar();
 jButton6 = new javax.swing.JButton();
@@ -450,8 +455,6 @@ jTable2 = new javax.swing.JTable()
 
 ;
 
-jLabel14.setText("jLabel14");
-
 setBackground(new java.awt.Color(204, 204, 204));
 
 jPanel1.setBackground(new java.awt.Color(255, 255, 204));
@@ -462,21 +465,22 @@ jToolBar1.setFloatable(false);
 jToolBar1.setRollover(true);
 
 jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/medium/undo.png"))); // NOI18N
-jButton6.setToolTipText("Rueckgaengig");
+java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("viewMasks/rechnung"); // NOI18N
+jButton6.setToolTipText(bundle.getString("billsView.jButton6.toolTipText")); // NOI18N
 jButton6.setFocusable(false);
 jButton6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 jButton6.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
 jToolBar1.add(jButton6);
 
 jButton20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/medium/tab_remove.png"))); // NOI18N
-jButton20.setToolTipText("Tab schliessen");
+jButton20.setToolTipText(bundle.getString("billsView.jButton20.toolTipText")); // NOI18N
 jButton20.setFocusable(false);
 jButton20.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 jButton20.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
 jToolBar1.add(jButton20);
 
 jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/medium/filesave.png"))); // NOI18N
-jButton4.setToolTipText("Speichern");
+jButton4.setToolTipText(bundle.getString("billsView.jButton4.toolTipText")); // NOI18N
 jButton4.setFocusable(false);
 jButton4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 jButton4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -488,7 +492,7 @@ jButton4MouseClicked(evt);
 jToolBar1.add(jButton4);
 
 jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/medium/new_window.png"))); // NOI18N
-jButton3.setToolTipText("Als neue Rechnung anlegen");
+jButton3.setToolTipText(bundle.getString("billsView.jButton3.toolTipText")); // NOI18N
 jButton3.setFocusable(false);
 jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -500,7 +504,7 @@ jButton3MouseClicked(evt);
 jToolBar1.add(jButton3);
 jToolBar1.add(jSeparator2);
 
-jButton13.setText("Storno");
+jButton13.setText(bundle.getString("billsView.jButton13.text")); // NOI18N
 jButton13.setFocusable(false);
 jButton13.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 jButton13.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -511,7 +515,7 @@ jButton13MouseClicked(evt);
 });
 jToolBar1.add(jButton13);
 
-jButton14.setText("Bezahlt");
+jButton14.setText(bundle.getString("billsView.jButton14.text")); // NOI18N
 jButton14.setFocusable(false);
 jButton14.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 jButton14.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -522,7 +526,7 @@ jButton14MouseClicked(evt);
 });
 jToolBar1.add(jButton14);
 
-jButton15.setText("Mahnung");
+jButton15.setText(bundle.getString("billsView.jButton15.text")); // NOI18N
 jButton15.setFocusable(false);
 jButton15.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 jButton15.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -546,7 +550,7 @@ jButton1ActionPerformed(evt);
 jToolBar1.add(jButton1);
 
 jButton12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/medium/print_printer.png"))); // NOI18N
-jButton12.setToolTipText("Drucken");
+jButton12.setToolTipText(bundle.getString("billsView.jButton12.toolTipText")); // NOI18N
 jButton12.setFocusable(false);
 jButton12.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 jButton12.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -562,7 +566,7 @@ jButton12KeyTyped(evt);
 });
 jToolBar1.add(jButton12);
 
-jCheckBox4.setText("mit Lieferschein");
+jCheckBox4.setText(bundle.getString("billsView.jCheckBox4.text")); // NOI18N
 jCheckBox4.setFocusable(false);
 jCheckBox4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 jCheckBox4.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
@@ -574,7 +578,7 @@ jCheckBox4ItemStateChanged(evt);
 });
 jToolBar1.add(jCheckBox4);
 
-jCheckBox5.setText("mit Angebot");
+jCheckBox5.setText(bundle.getString("billsView.jCheckBox5.text")); // NOI18N
 jCheckBox5.setFocusable(false);
 jCheckBox5.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
 jToolBar1.add(jCheckBox5);
@@ -595,7 +599,7 @@ jTabbedPane1.setOpaque(true);
 
 jPanel2.setBackground(new java.awt.Color(255, 255, 255));
 
-jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Datensätze"));
+jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("billsView.jPanel5.border.title"))); // NOI18N
 
 jScrollPane5.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 jScrollPane5.setAutoscrolls(true);
@@ -637,10 +641,10 @@ jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 282, Short.MAX_VALUE)
 );
 
-jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Suche"));
+jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("billsView.jPanel4.border.title"))); // NOI18N
 jPanel4.setMaximumSize(new java.awt.Dimension(240, 32767));
 
-jLabel2.setText("Nummer:");
+jLabel2.setText(bundle.getString("billsView.jLabel2.text")); // NOI18N
 
 jTextField1.addActionListener(new java.awt.event.ActionListener() {
 public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -654,7 +658,7 @@ jTextField2ActionPerformed(evt);
 }
 });
 
-jLabel3.setText("Datum:");
+jLabel3.setText(bundle.getString("billsView.jLabel3.text")); // NOI18N
 
 jTextField3.addActionListener(new java.awt.event.ActionListener() {
 public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -662,7 +666,7 @@ jTextField3ActionPerformed(evt);
 }
 });
 
-jLabel4.setText("Firma:");
+jLabel4.setText(bundle.getString("billsView.jLabel4.text")); // NOI18N
 
 javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
 jPanel4.setLayout(jPanel4Layout);
@@ -697,7 +701,7 @@ jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 );
 
-jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Details"));
+jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("billsView.jPanel6.border.title"))); // NOI18N
 
 jTable1.setAutoCreateRowSorter(true);
 jTable1.setModel( new DefaultTableModel()
@@ -708,26 +712,26 @@ jTable1.setFillsViewportHeight(true);
 jTable1.setSurrendersFocusOnKeystroke(true);
 jScrollPane1.setViewportView(jTable1);
 
-jLabel11.setText("Gesamtbruttopreis");
+jLabel11.setText(bundle.getString("billsView.jLabel11.text")); // NOI18N
 
-jLabel12.setText("Steuer");
+jLabel12.setText(bundle.getString("billsView.jLabel12.text")); // NOI18N
 
 jCheckBox1.setSelected(true);
-jCheckBox1.setText("Nettopreise");
+jCheckBox1.setText(bundle.getString("billsView.jCheckBox1.text")); // NOI18N
 jCheckBox1.addItemListener(new java.awt.event.ItemListener() {
 public void itemStateChanged(java.awt.event.ItemEvent evt) {
 jCheckBox1ItemStateChanged(evt);
 }
 });
 
-jCheckBox2.setText("Bezahlt");
+jCheckBox2.setText(bundle.getString("billsView.jCheckBox2.text")); // NOI18N
 jCheckBox2.addActionListener(new java.awt.event.ActionListener() {
 public void actionPerformed(java.awt.event.ActionEvent evt) {
 jCheckBox2ActionPerformed(evt);
 }
 });
 
-jCheckBox3.setText("Storniert");
+jCheckBox3.setText(bundle.getString("billsView.jCheckBox3.text")); // NOI18N
 jCheckBox3.addActionListener(new java.awt.event.ActionListener() {
 public void actionPerformed(java.awt.event.ActionEvent evt) {
 jCheckBox3ActionPerformed(evt);
@@ -735,14 +739,14 @@ jCheckBox3ActionPerformed(evt);
 });
 
 jTextField10.setEditable(false);
-jTextField10.setText("0");
+jTextField10.setText(bundle.getString("billsView.jTextField10.text")); // NOI18N
 
-jLabel13.setText("Mahnungen");
+jLabel13.setText(bundle.getString("billsView.jLabel13.text")); // NOI18N
 
 jToolBar2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 jToolBar2.setRollover(true);
 
-jButton8.setText("Zeile hinzu");
+jButton8.setText(bundle.getString("billsView.jButton8.text")); // NOI18N
 jButton8.setFocusable(false);
 jButton8.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 jButton8.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -758,7 +762,7 @@ jButton8ActionPerformed(evt);
 });
 jToolBar2.add(jButton8);
 
-jButton11.setText("Zeile löschen");
+jButton11.setText(bundle.getString("billsView.jButton11.text")); // NOI18N
 jButton11.setFocusable(false);
 jButton11.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 jButton11.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -769,7 +773,7 @@ jButton11MouseClicked(evt);
 });
 jToolBar2.add(jButton11);
 
-jButton7.setText("AC");
+jButton7.setText(bundle.getString("billsView.jButton7.text")); // NOI18N
 jButton7.setFocusable(false);
 jButton7.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 jButton7.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -781,7 +785,7 @@ jButton7ActionPerformed(evt);
 jToolBar2.add(jButton7);
 jToolBar2.add(jSeparator3);
 
-jButton5.setText("Produkt hinzu");
+jButton5.setText(bundle.getString("billsView.jButton5.text")); // NOI18N
 jButton5.setFocusable(false);
 jButton5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 jButton5.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -814,11 +818,11 @@ jButton9ActionPerformed(evt);
 jLabel19.setFont(new java.awt.Font("Tahoma", 1, 11));
 
 jLabel5.setFont(new java.awt.Font("Tahoma", 1, 11));
-jLabel5.setText("Kunde");
+jLabel5.setText(bundle.getString("billsView.jLabel5.text")); // NOI18N
 
-jLabel6.setText("Name");
+jLabel6.setText(bundle.getString("billsView.jLabel6.text")); // NOI18N
 
-jLabel7.setText("Firma");
+jLabel7.setText(bundle.getString("billsView.jLabel7.text")); // NOI18N
 
 javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
 jPanel9.setLayout(jPanel9Layout);
@@ -868,9 +872,9 @@ jPanel10.setBackground(new java.awt.Color(227, 219, 202));
 jPanel10.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
 jLabel8.setFont(new java.awt.Font("Tahoma", 1, 11));
-jLabel8.setText("Rechnung");
+jLabel8.setText(bundle.getString("billsView.jLabel8.text")); // NOI18N
 
-jLabel10.setText("Datum");
+jLabel10.setText(bundle.getString("billsView.jLabel10.text")); // NOI18N
 
 jTextField7.setEditable(false);
 jTextField7.setDisabledTextColor(new java.awt.Color(0, 0, 0));
@@ -902,7 +906,7 @@ jButton10KeyPressed(evt);
 }
 });
 
-jLabel9.setText("Nummer");
+jLabel9.setText(bundle.getString("billsView.jLabel9.text")); // NOI18N
 
 jComboBox1.setMaximumRowCount(10);
 jComboBox1.setFocusCycleRoot(true);
@@ -911,9 +915,9 @@ jComboBox1.setFocusTraversalPolicyProvider(true);
 jTextField11.setEditable(false);
 jTextField11.setDisabledTextColor(new java.awt.Color(0, 0, 0));
 
-jLabel15.setText("Ausführen");
+jLabel15.setText(bundle.getString("billsView.jLabel15.text")); // NOI18N
 
-jLabel16.setText("Betreff");
+jLabel16.setText(bundle.getString("billsView.jLabel16.text")); // NOI18N
 
 jButton18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/small/edit.png"))); // NOI18N
 jButton18.addActionListener(new java.awt.event.ActionListener() {
@@ -1001,21 +1005,21 @@ jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 jPanel11.setBackground(new java.awt.Color(227, 219, 202));
 jPanel11.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-jLabel18.setText("Nummer");
+jLabel18.setText(bundle.getString("billsView.jLabel18.text")); // NOI18N
 
 jLabel17.setFont(new java.awt.Font("Tahoma", 1, 11));
-jLabel17.setText("Angebot");
+jLabel17.setText(bundle.getString("billsView.jLabel17.text")); // NOI18N
 
 jTextField13.setEditable(false);
 jTextField13.setDisabledTextColor(new java.awt.Color(0, 0, 0));
 
 jLabel20.setFont(new java.awt.Font("Tahoma", 1, 11));
-jLabel20.setText("Auftrag");
+jLabel20.setText(bundle.getString("billsView.jLabel20.text")); // NOI18N
 
 jTextField12.setEditable(false);
 jTextField12.setDisabledTextColor(new java.awt.Color(0, 0, 0));
 
-jLabel21.setText("Datum");
+jLabel21.setText(bundle.getString("billsView.jLabel21.text")); // NOI18N
 
 jButton19.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/small/cal.png"))); // NOI18N
 jButton19.addActionListener(new java.awt.event.ActionListener() {
@@ -1174,7 +1178,7 @@ jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 );
 
-jTabbedPane1.addTab("Allgemein", jPanel2);
+jTabbedPane1.addTab(bundle.getString("billsView.jPanel2.TabConstraints.tabTitle"), jPanel2); // NOI18N
 
 jPanel3.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -1207,7 +1211,7 @@ jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 421, Short.MAX_VALUE)
 );
 
-jTabbedPane1.addTab("Liste", jPanel3);
+jTabbedPane1.addTab(bundle.getString("billsView.jPanel3.TabConstraints.tabTitle"), jPanel3); // NOI18N
 
 javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
 this.setLayout(layout);
@@ -1537,10 +1541,6 @@ public javax.swing.JButton jButton17;
 public javax.swing.JButton jButton18;
 public javax.swing.JButton jButton19;
 public javax.swing.JButton jButton20;
-public javax.swing.JButton jButton21;
-public javax.swing.JButton jButton22;
-public javax.swing.JButton jButton23;
-public javax.swing.JButton jButton24;
 public javax.swing.JButton jButton3;
 public javax.swing.JButton jButton4;
 public javax.swing.JButton jButton5;
@@ -1558,7 +1558,6 @@ public javax.swing.JLabel jLabel10;
 public javax.swing.JLabel jLabel11;
 public javax.swing.JLabel jLabel12;
 public javax.swing.JLabel jLabel13;
-public javax.swing.JLabel jLabel14;
 public javax.swing.JLabel jLabel15;
 public javax.swing.JLabel jLabel16;
 public javax.swing.JLabel jLabel17;
