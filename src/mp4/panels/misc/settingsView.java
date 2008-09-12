@@ -16,6 +16,7 @@ import mp4.items.People;
 import mp4.einstellungen.Einstellungen;
 import mp4.frames.mainframe;
 import mp4.installation.Setup;
+import mp4.items.Product;
 import mp4.items.visual.Help;
 import mp4.utils.tabellen.TableFormat;
 import mp4.utils.tabellen.models.SettingsTableModel;
@@ -272,6 +273,10 @@ private javax.swing.JTable jTable1;
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    public void addProduct(Product p) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
     public People getContact() {
         throw new UnsupportedOperationException("Not supported yet.");
     }

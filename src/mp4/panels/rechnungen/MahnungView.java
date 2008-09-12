@@ -19,6 +19,7 @@ import mp4.einstellungen.Programmdaten;
 import mp4.einstellungen.VariablenZuText;
 import mp4.frames.mainframe;
 import mp4.frames.PdfVorschauWindow;
+import mp4.interfaces.panelInterface;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.export.pdf.PDFFile;
 import mp4.utils.ui.Position;
@@ -33,14 +34,14 @@ import mp4.utils.zahlen.FormatNumber;
 public class MahnungView extends javax.swing.JFrame {
     private Rechnung bill;
     private Customer c;
-    private billsView view;
+    private panelInterface view;
     
     /** Creates new form overdue
      * @param bill
      * @param customer
      * @param view 
      */
-    public MahnungView(Rechnung bill, Customer customer, billsView view) {
+    public MahnungView(Rechnung bill, Customer customer, panelInterface  view) {
         initComponents();
         
         this.bill=bill;
@@ -231,7 +232,7 @@ public class MahnungView extends javax.swing.JFrame {
 
 //            new PDF_Mahnung(bill, VariablenZuText.parseText(jTextArea1.getText(), new Object[]{bill, customer}), bill.getMahnungen().toString(), FormatNumber.parseDezimal(jTextField2.getText()));
                 
-                view.addProductToBillsTable(new Product("Mahnung vom " + DateConverter.getTodayDefDate(),
+                view.addProduct(new Product("Mahnung vom " + DateConverter.getTodayDefDate(),
                         FormatNumber.parseDezimal(jTextField2.getText())));
                 Programmdaten.instanceOf().setMAHNUNG_TEXT_DEFAULT(jTextArea1.getText());
                 this.dispose();

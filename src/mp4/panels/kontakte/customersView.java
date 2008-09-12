@@ -26,6 +26,7 @@ import mp4.utils.tabellen.models.CustomerBAListTableModel;
 import mp4.interfaces.panelInterface;
 import mp4.items.People;
 import mp4.items.Angebot;
+import mp4.items.Product;
 import mp4.items.Rechnung;
 import mp4.panels.misc.NumberFormatEditor;
 import mp4.utils.tabellen.TableFormat;
@@ -1445,7 +1446,9 @@ private void jTextField4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST
         this.updateListTable();
     }
 
- 
+  public void addProduct(Product p) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
     private void updateListTable() {
      

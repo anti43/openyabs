@@ -20,6 +20,7 @@ along with MP.  If not, see <http://www.gnu.org/licenses/>.
 package mp4.interfaces;
 
 import mp4.items.People;
+import mp4.items.Product;
 
 /**
  *
@@ -78,6 +79,12 @@ public interface panelInterface {
      */
     public abstract void setContact(People contact);
 
+    /**
+     * Yes, i know it's dirty..
+     * To add a Product (if possible :-)
+     * @param product 
+     */
+    public abstract void addProduct(Product product);
 //    /**
 //     *
 //     * To get the data (people)

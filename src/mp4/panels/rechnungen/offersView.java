@@ -121,7 +121,7 @@ public class offersView extends mp4.panels.misc.commonPanel implements panelInte
 
     }
 
-    public void addToOrder(Product product) {
+    public void addProduct(Product product) {
         ((PostenTableModel) jTable1.getModel()).addProduct(jTable1, product);
     }
 

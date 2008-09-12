@@ -1307,14 +1307,14 @@ public class productsView extends commonPanel implements mp4.datenbank.installat
 
         if (current.getId() != 0) {
             getMainframe().addBillPanel(new Rechnung());
-            ((billsView) getMainframe().getTabPane().getSelectedComponent()).addProductToBillsTable(current);
+            ((billsView) getMainframe().getTabPane().getSelectedComponent()).addProduct(current);
         }
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
         if (current.getId() != 0) {
             getMainframe().addAngebotPanel(new Angebot());
-            ((offersView) getMainframe().getTabPane().getSelectedComponent()).addToOrder(current);
+            ((offersView) getMainframe().getTabPane().getSelectedComponent()).addProduct(current);
         }
     }//GEN-LAST:event_jButton10ActionPerformed
 
@@ -1702,7 +1702,9 @@ numberfieldedited = true;
         this.updateListTable();
     }
 
-    
+    public void addProduct(Product p) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
     public void setContact(People contact) {
         setSupplier((Lieferant) contact);

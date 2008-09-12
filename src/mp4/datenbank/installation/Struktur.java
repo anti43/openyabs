@@ -192,6 +192,11 @@ public abstract class Struktur {
         "CREATE TABLE  betreffz_zu_rechnung   (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
         "rechnungid INTEGER REFERENCES rechnungen (id)," +
         "betreffzid INTEGER REFERENCES rechnungbetreffz (id)," +
+        "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
+        
+        "CREATE TABLE plugins_to_load (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
+        "name VARCHAR(250), wert VARCHAR(2500)," +
+        "deleted INTEGER DEFAULT 0," +
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))"
         
 

@@ -14,23 +14,21 @@
  *      You should have received a copy of the GNU General Public License
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package mp4.panels.misc;
 
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
-
 /**
  *
  * @author Andreas
  */
-public class commonPanel extends JPanel {
+public abstract class commonPanel extends JPanel {
+
     private static final long serialVersionUID = 1L;
-    
     private boolean edited;
-    
-public void close() {
+
+    public void close() {
 //        setPanelValues();
         if (isEdited()) {
             if (mp4.items.Popup.Y_N_dialog("Wenn Sie jetzt schliessen, gehen Ihre Änderungen verloren.\nTrotzdem schliessen?")) {

@@ -98,6 +98,11 @@ public interface Tabellen {
      */
     public final String TABLE_INCOME = "einnahmen";
     /**
+     * Einnahmen
+     */
+    public final String TABLE_PLUGINS = "plugins_to_load";
+   
+    /**
      * Betreffzeilen
      */
     public final String TABLE_BILL_TEXTS = "rechnungbetreffz";

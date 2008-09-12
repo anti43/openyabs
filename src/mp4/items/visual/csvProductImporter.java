@@ -77,11 +77,11 @@ public class csvProductImporter extends javax.swing.JFrame implements panelInter
     }
 
     public csvProductImporter(File file) {
-         initComponents();
+        initComponents();
         new Position(this);
         this.jTextField1.setText(file.getPath());
         this.setVisible(rootPaneCheckingEnabled);
-          boolean succ = true;
+        boolean succ = true;
         ProductImporteur user = new ProductImporteur();
         liste = new ArrayList();
         header = new String[]{"produktnummer", "name", "text", "vk",
@@ -151,10 +151,10 @@ public class csvProductImporter extends javax.swing.JFrame implements panelInter
             user = new ProductImporteur();
             data = ProductImporteur.listToImporteurArray(liste, this.supplier);
             datstr = user.getData(data);
-            
+
             Thread.sleep(5000);//Wait for the data..
             this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-            
+
             jTable1.setModel(new DefaultTableModel(datstr, header));
 
 
@@ -491,7 +491,7 @@ public class csvProductImporter extends javax.swing.JFrame implements panelInter
             setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
             task = new Task(this);
             task.execute();
-           
+
             jButton2.setText("Beenden");
         }
 
@@ -610,7 +610,7 @@ public class csvProductImporter extends javax.swing.JFrame implements panelInter
 
                         if (thisa.supplier != null && thisa.supplier.isValid()) {
                             pg.setLieferantenId(thisa.supplier.getId());
-                        } 
+                        }
 //                        else {
 //                            pg.setLieferantenId(Integer.valueOf(thisa.data[i].getLieferantenid()));
 //                        }
@@ -619,11 +619,11 @@ public class csvProductImporter extends javax.swing.JFrame implements panelInter
                         fam = thisa.data[i].getWarengruppenfamilie();
                         grp = thisa.data[i].getWarengruppe();
 
-                       Log.Debug( pg.getName()+":Produkt \n" +cat,true);
-                       Log.Debug(fam,true);
-                       Log.Debug(grp,true);
-                       
-                       Log.Debug("---------------------------",true);
+                        Log.Debug(pg.getName() + ":Produkt \n" + cat, true);
+                        Log.Debug(fam, true);
+                        Log.Debug(grp, true);
+
+                        Log.Debug("---------------------------", true);
 
 
                         if (!cat.equals("null") && !fam.equals("null") && !grp.equals("null")) {
@@ -642,7 +642,7 @@ public class csvProductImporter extends javax.swing.JFrame implements panelInter
 
                             int f = handler.existFam(fam);
                             if (f == 0) {
-                            Log.Debug("creating fam: "+fam + " " + f,true);
+                                Log.Debug("creating fam: " + fam + " " + f, true);
                                 newfam = new ProductGroupFamily(ConnectionHandler.instanceOf());
                                 newfam.setName(fam);
                                 newfam.setKategorieid(z);
@@ -703,7 +703,7 @@ public class csvProductImporter extends javax.swing.JFrame implements panelInter
                     thisa.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                     thisa.getJButton4().setEnabled(false);
                     thisa.jProgressBar1.setValue(0);
-                    
+
                 }
 
             }
@@ -719,12 +719,16 @@ public class csvProductImporter extends javax.swing.JFrame implements panelInter
         public void done() {
 //        Toolkit.getDefaultToolkit().beep();
             thisa.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-            
+
 
         }
     }
 
     public void update() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void addProduct(Product p) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

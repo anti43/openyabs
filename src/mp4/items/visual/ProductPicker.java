@@ -13,9 +13,9 @@ import java.awt.event.MouseEvent;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import mp4.einstellungen.Programmdaten;
+import mp4.interfaces.panelInterface;
 import mp4.items.Product;
-import mp4.panels.rechnungen.billsView;
-import mp4.panels.rechnungen.offersView;
+import mp4.panels.misc.commonPanel;
 import mp4.utils.tabellen.SelectionCheck;
 import mp4.utils.tabellen.TableFormat;
 import mp4.utils.ui.Position;
@@ -34,12 +34,10 @@ public class ProductPicker extends javax.swing.JFrame {
     private static void setListe(String[][] list) {
         ProductPicker.liste = list;
     }
-    private billsView frame;
+    private panelInterface frame;
     private Product p;
     private static String[][] liste;
     private String[][] list;
-    private offersView frame1;
-    private boolean order = false;
     private Position pos = new Position();
 
     public static void update() {
@@ -47,9 +45,9 @@ public class ProductPicker extends javax.swing.JFrame {
         ProductPicker.setListe(n.select("id,produktnummer,name", "produktnummer", "", "produktnummer", true));
     }
 
-    public ProductPicker(offersView aThis) {
+    public ProductPicker(panelInterface panel) {
         initComponents();
-        this.frame1 = aThis;
+        this.frame = panel;
         p = new Product(ConnectionHandler.instanceOf());
 
 
@@ -71,42 +69,42 @@ public class ProductPicker extends javax.swing.JFrame {
         jCheckBox3.setSelected(Programmdaten.instanceOf().getPRODUCTPICKER_TEXT());
 
         this.jTable1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        order = true;
+
         new Position(this);
         this.setVisible(rootPaneCheckingEnabled);
     }
 
-    /** Creates new form CustomerPicker
-     * @param frame 
-     */
-    public ProductPicker(billsView frame) {
-        initComponents();
-        this.frame = frame;
-        p = new Product(ConnectionHandler.instanceOf());
-        pos.center(this);
-
-        if (ProductPicker.getListe() == null) {
-            list = p.select("id,produktnummer,name", "produktnummer", "", "produktnummer", true);
-            ProductPicker.setListe(list);
-        } else {
-
-            list = ProductPicker.getListe();
-        }
-
-        String k = "id, " + "Nummer,Name";
-
-        this.jTable1.setModel(new DefaultTableModel(list, k.split(",")));
-        TableFormat.stripFirst(jTable1);
-        
-        jCheckBox1.setSelected(Programmdaten.instanceOf().getPRODUCTPICKER_EAN());
-        jCheckBox2.setSelected(Programmdaten.instanceOf().getPRODUCTPICKER_NAME());
-        jCheckBox3.setSelected(Programmdaten.instanceOf().getPRODUCTPICKER_TEXT());
-        
-        this.jTable1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        new Position(this);
-        this.setVisible(rootPaneCheckingEnabled);
-
-    }
+//    /** Creates new form CustomerPicker
+//     * @param frame 
+//     */
+//    public ProductPicker(billsView frame) {
+//        initComponents();
+//        this.frame = frame;
+//        p = new Product(ConnectionHandler.instanceOf());
+//        pos.center(this);
+//
+//        if (ProductPicker.getListe() == null) {
+//            list = p.select("id,produktnummer,name", "produktnummer", "", "produktnummer", true);
+//            ProductPicker.setListe(list);
+//        } else {
+//
+//            list = ProductPicker.getListe();
+//        }
+//
+//        String k = "id, " + "Nummer,Name";
+//
+//        this.jTable1.setModel(new DefaultTableModel(list, k.split(",")));
+//        TableFormat.stripFirst(jTable1);
+//        
+//        jCheckBox1.setSelected(Programmdaten.instanceOf().getPRODUCTPICKER_EAN());
+//        jCheckBox2.setSelected(Programmdaten.instanceOf().getPRODUCTPICKER_NAME());
+//        jCheckBox3.setSelected(Programmdaten.instanceOf().getPRODUCTPICKER_TEXT());
+//        
+//        this.jTable1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+//        new Position(this);
+//        this.setVisible(rootPaneCheckingEnabled);
+//
+//    }
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -325,7 +323,7 @@ private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
 }//GEN-LAST:event_jTextField2ActionPerformed
 
 private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-    jTable1MouseClicked(new MouseEvent(frame, WIDTH, WIDTH, WIDTH, WIDTH, WIDTH, WIDTH, rootPaneCheckingEnabled));
+    jTable1MouseClicked(new MouseEvent(this, WIDTH, WIDTH, WIDTH, WIDTH, WIDTH, WIDTH, rootPaneCheckingEnabled));
 }//GEN-LAST:event_jButton1ActionPerformed
 
 private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
@@ -339,7 +337,7 @@ private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     @SuppressWarnings(value = "static-access")
 private void jTable1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTable1KeyPressed
     if (evt.getKeyCode() == evt.VK_ENTER) {
-        jTable1MouseClicked(new MouseEvent(frame, WIDTH, WIDTH, WIDTH, WIDTH, WIDTH, WIDTH, rootPaneCheckingEnabled));
+        jTable1MouseClicked(new MouseEvent(this, WIDTH, WIDTH, WIDTH, WIDTH, WIDTH, WIDTH, rootPaneCheckingEnabled));
     }
 }//GEN-LAST:event_jTable1KeyPressed
 
@@ -347,12 +345,8 @@ private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
 
     SelectionCheck selection = new SelectionCheck(jTable1);
     if (selection.checkID()) {
-        try {
-            if (!order) {
-                frame.addProductToBillsTable(new Product(selection.getId()));
-            } else {
-                frame1.addToOrder(new Product(selection.getId()));
-            }
+        try {    
+            frame.addProduct(new Product(selection.getId())); 
             this.dispose();
         } catch (Exception exception) {
        }

@@ -26,6 +26,7 @@ import mp4.logs.*;
 import mp4.cache.ObjectCopy;
 import mp4.cache.undoCache;
 import mp4.einstellungen.Programmdaten;
+import mp4.items.Product;
 import mp4.items.visual.konten;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.datum.vDate;
@@ -534,7 +535,13 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-   
+    /**
+     * 
+     */
+    public void addProduct(Product p) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
 
     public void setContact(People contact) {
         throw new UnsupportedOperationException("Not supported yet.");

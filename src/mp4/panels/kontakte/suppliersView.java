@@ -1328,7 +1328,9 @@ public javax.swing.JToolBar jToolBar2;
         this.updateListTable();
     }
 
-  
+    public void addProduct(Product p) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
     private void updateListTable() {
         this.jTable2.setModel(new ContactListTableModel(current));

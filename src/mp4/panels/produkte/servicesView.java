@@ -27,6 +27,7 @@ import mp4.items.Angebot;
 import mp4.items.Dienstleistung;
 
 import mp4.items.HistoryItem;
+import mp4.items.Product;
 import mp4.items.Rechnung;
 import mp4.items.Steuersatz;
 import mp4.panels.misc.NumberFormatEditor;
@@ -897,7 +898,7 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 
         if (current.getId() != 0) {
             getMainframe().addBillPanel(new Rechnung());
-            ((billsView) getMainframe().getTabPane().getSelectedComponent()).addServiceToBillsTable(current);
+            ((billsView) getMainframe().getTabPane().getSelectedComponent()).addService(current);
         }
     }//GEN-LAST:event_jButton9ActionPerformed
 
@@ -1143,7 +1144,9 @@ public javax.swing.JToolBar jToolBar2;
         this.updateListTable();
     }
 
-  
+   public void addProduct(Product p) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
  
 
     public void setContact(People contact) {

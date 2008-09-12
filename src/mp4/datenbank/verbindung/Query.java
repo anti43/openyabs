@@ -72,11 +72,14 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
         message = "Database Error (freeQuery) :";
         stm = null;
         resultSet = null;
+        boolean bool;
         try {
             // Select-Anweisung ausführen
             stm = conn.createStatement();
             Log.Debug(query, true);
-            return stm.execute(query);
+            bool  = stm.execute(query);
+            stop();
+            return bool;
         } catch (SQLException ex) {
             stop();
             Log.Debug(message + ex.getMessage());

@@ -17,6 +17,7 @@ import mp4.interfaces.panelInterface;
 
 import mp4.items.People;
 import mp4.items.Popup;
+import mp4.items.Product;
 import mp4.utils.files.Browser;
 
 import mp4.logs.*;
@@ -281,7 +282,9 @@ public class eurEURPanel extends mp4.panels.misc.commonPanel implements panelInt
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-
+    public void addProduct(Product p) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
     public void setContact(People contact) {
         throw new UnsupportedOperationException("Not supported yet.");

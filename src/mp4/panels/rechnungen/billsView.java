@@ -134,11 +134,11 @@ public class billsView extends mp4.panels.misc.commonPanel implements panelInter
 
     }
 
-    public void addProductToBillsTable(Product product) {
+    public void addProduct(Product product) {
         ((PostenTableModel) jTable1.getModel()).addProduct(jTable1, product);
     }
 
-    public void addServiceToBillsTable(Dienstleistung product) {
+    public void addService(Dienstleistung product) {
         ((PostenTableModel) jTable1.getModel()).addService(jTable1, product);
     }
 

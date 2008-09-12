@@ -35,6 +35,7 @@ import mp4.utils.files.Zip;
 import mp4.frames.mainframe;
 import mp4.einstellungen.Einstellungen;
 import mp4.items.HistoryItem;
+import mp4.items.Product;
 import mp4.utils.listen.ListenDataUtils;
 import mp4.utils.tabellen.TableFormat;
 
@@ -385,6 +386,10 @@ public javax.swing.JToolBar jToolBar1;
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    public void addProduct(Product p) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+     
     public void setContact(People c) {
         throw new UnsupportedOperationException("Not supported yet.");
     }

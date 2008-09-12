@@ -26,43 +26,44 @@ public class pluginHandler {
     public pluginHandler(mainframe frame) {
 
         this.frame = frame;
-        
+
         try {
             plugins = getPlugins();
             loadplugins(plugins);
         } catch (Exception ex) {
             Popup.error("Fehler beim Laden des/der Plugin(s)", "Plugin Fehler");
             Log.Debug(ex);
-        } 
+        }
 
     }
 
     private mpplugin[] getPlugins() throws MalformedURLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-
+        @SuppressWarnings("unchecked")
         ArrayList<mpplugin> list = new ArrayList();
         File[] jars = FileDirectoryHandler.getFilesOfDirectory(Programmdaten.instanceOf().getPLUGIN_FOLDER(), Constants.PLUGIN_IDENTIFIER);
 
         for (int i = 0; i < jars.length; i++) {
             URL[] urls = {new URL("jar:file:" + jars[i].getPath() + "!/")};
-            URLClassLoader loader =  URLClassLoader.newInstance(urls);
+            URLClassLoader loader = URLClassLoader.newInstance(urls);
 
             Class c = loader.loadClass(Constants.PLUGIN_LOAD_CLASS);
-            // Create an instance of the class just loaded
             Object o = c.newInstance();
             mpplugin m = (mpplugin) o;
             list.add(m);
         }
 
-        return (mpplugin[]) list.toArray(new mpplugin[0]);
-        
+        return list.toArray(new mpplugin[0]);
     }
 
     private void loadplugins(mpplugin[] plugins) {
-        
+
         for (int i = 0; i < plugins.length; i++) {
             mpplugin elem = plugins[i];
-            elem.load();
-            frame.addPluginPanel(elem);
+            elem.load(frame);
+            frame.addPlugin(elem);
+            if (Programmdaten.instanceOf().getONLOAD(elem)) {
+                frame.addPluginPanel(elem);
+            }
         }
     }
 }

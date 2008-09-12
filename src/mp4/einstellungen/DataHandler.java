@@ -16,7 +16,6 @@
  */
 package mp4.einstellungen;
 
-import java.util.Date;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.logs.*;
 
@@ -25,9 +24,11 @@ import mp4.logs.*;
  * @author Andreas
  */
 public class DataHandler extends mp4.items.Things implements mp4.datenbank.installation.Tabellen {
+    private String table;
 
     public DataHandler(String table) {
         super(ConnectionHandler.instanceOf().clone(table));
+        this.table = table;
     }
 
     public boolean getBoolean(String ofKey) {
@@ -62,7 +63,15 @@ public class DataHandler extends mp4.items.Things implements mp4.datenbank.insta
         }
     }
 
-    void setBoolean(String ofKey, boolean value) {
+    public void addRow(String key, String value) {
+         setString(key, value, true);
+    }
+
+    public void deleteRow(String key) {
+        this.freeQuery("DELETE FROM " + table + " WHERE name = '" + key + "'");
+    }
+
+    public void setBoolean(String ofKey, boolean value) {
         if (value) {
             if (!setString(ofKey, "1", false)) {
                 setString(ofKey, "1", true);

@@ -13,6 +13,7 @@ import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.items.Rechnung;
 import mp4.items.Customer;
 
+import mp4.items.Product;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.tabellen.SelectionCheck;
 import mp4.utils.tabellen.TableFormat;
@@ -271,7 +272,9 @@ public class eurOPanel extends mp4.panels.misc.commonPanel implements panelInter
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-   
+    public void addProduct(Product p) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
     public void setContact(People contact) {
         throw new UnsupportedOperationException("Not supported yet.");

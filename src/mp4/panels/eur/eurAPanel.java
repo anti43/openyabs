@@ -26,6 +26,7 @@ import mp4.cache.undoCache;
 import mp4.items.Ausgabe;
 import mp4.items.HistoryItem;
 import mp4.einstellungen.Einstellungen;
+import mp4.items.Product;
 import mp4.items.SKRKonto;
 import mp4.items.visual.konten;
 import mp4.utils.datum.DateConverter;
@@ -490,7 +491,9 @@ public class eurAPanel extends mp4.panels.misc.commonPanel implements panelInter
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    
+    public void addProduct(Product p) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
     public void setContact(People contact) {
         throw new UnsupportedOperationException("Not supported yet.");
