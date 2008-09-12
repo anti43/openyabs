@@ -37,6 +37,24 @@ public class DialogOpenFile extends JFileChooser {
         this.setSelectedFile(new File(""));
     }
 
+    public DialogOpenFile(int mode, String filename) {
+       super();
+        this.setFileSelectionMode(mode);
+        this.setSelectedFile(new File(filename));
+    }
+
+    public boolean choseFile(){
+     if (this.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+            try {
+                this.file = this.getSelectedFile();
+                return true;
+            } catch (Exception ex) {
+                Log.Debug(ex);
+            }
+        }
+        return false;
+    }
+    
     public File getFile() {
         return file;
     }

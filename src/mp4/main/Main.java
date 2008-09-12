@@ -181,6 +181,7 @@ public class Main implements Strings {
 
     public static void main(String[] args) {
 
+        printEnv();
         getOS();
         parseArgs(args);
 
@@ -205,5 +206,12 @@ public class Main implements Strings {
             }
             Log.Debug(exe.getMessage());
         }
+    }
+    
+    public static void printEnv(){ 
+        System.out.println(System.getenv("HOMEDRIVE"));
+        System.out.println(System.getenv("SystemDrive"));
+        System.out.println(System.getenv("SystemRoot"));
+        System.out.println(System.getenv("USERPROFILE"));   
     }
 }

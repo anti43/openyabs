@@ -16,7 +16,6 @@
  *  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  *  
  */
-
 package mp4.globals;
 
 import java.io.File;
@@ -26,8 +25,8 @@ import java.io.File;
  * @author anti43
  */
 public interface Constants {
-    
-     /**
+
+    /**
      * Version info
      */
     public static String VERSION = "4.00";
@@ -35,149 +34,39 @@ public interface Constants {
     public static String VERSION_URL = "Not Used";
     public static String JAR_NAME = "MPV4.jar";
     public static String PROG_NAME = "MP-RUK_4";
-    public static String SEP = File.separator;
     public static String JAVA_VERSION = "Java Version: " + System.getProperty("java.version");
     public static String PLUGIN_IDENTIFIER = "MP4Plugin";
-       
-    public String TEMPLATES_DIR = "templates";
-    public String LIB_DIR = "lib";
-    public String PDF = "PDF";
-    public String OFFER_SAVE_DIR = "Angebote";
-    public String CACHE_DIR = "Cache";
-    public String PLUGIN_DIR = "Plugins";
-    public String BILL_SAVE_DIR = "Rechnungen";
-    public String ARREAR_SAVE_DIR = "Mahnungen";
-    public String PRODUCT_SAVE_DIR = "Produkte";
-    public String BACKUPS_SAVE_DIR =  "backups";
-    public String ICON_NAME_LIN = "mp.desktop";
-    public String ICON_NAME_WIN = "Rechnungs-Kundenverwaltung.url";
-    public String DESKTOP = "Desktop";
-    public String DBROOTDIR = System.getProperty("user.home") + File.separator + ".mp";
-     /**
+    public static String PLUGIN_LOAD_CLASS = "plugin.Main";
+    /**
      * Home directory of user
      */
-    public static String USER_HOME = System.getProperty("user.home");
-    
-     /**
+//    public static String USER_HOME = System.getProperty("user.home");
+    public static String USER_HOME = System.getenv("USERPROFILE");
+    /**
      * Name of databasedir 
      */
     public static final String DATABASENAME = "mpv40Database";
-   
-     /**
+    /**
      * Full path to database dir 
      */
-    public static final String MPPATH = Constants.USER_HOME + File.separator +".mp" ;
-    
+    public static final String MPPATH = Constants.USER_HOME + File.separator + ".mp";
     /**
      * Full path to settings file 
      */
-    public static String SETTINGS_FILE  = Constants.USER_HOME + File.separator +".mp" + File.separator + "settings40.mp";
-
-    public String[] MONTHS= new String[]{"Jan","Feb","Mar","Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov","Dez"};
-
-    public String[] KONTEN_GRUPPEN = new String[]{
-            "1110 Waren, Rohstoffe und Hilfsstoffe einschl. der Nebenkosten",
-            "1120 Bezogene Leistungen (z.B. Fremdleistungen) ",
-            "1130 Ausgaben für eigenes Personal  ",
-            "1140 Aufwendungen für geringwertige Wirtschaftsgüter ",
-            "1150 Miete / Pacht für Geschäftsräume und betrieblich genutzte Grundstücke ",
-            "1160 Sonstige Aufwendungen für betrieblich genutzte Grundstücke ",
-            "1170 Abziehbare Aufwendungen für ein häusliches Arbeitszimmer ",
-            "1180 Reisekosten,Aufwendungen für doppelte Haushaltsführung ",
-            "1190 Geschenke – abziehbar ",
-            "1200 Geschenke – nicht abziehbar ",
-            "1210 Bewirtung – abziehbar ",
-            "1220 Bewirtung – nicht abziehbar ",
-            "1230 Übrige Betriebsausgaben ",
-            "1240 Fortbildung und Fachliteratur ",
-            "1250 Rechts- und Steuerberatung, Buchführung ",
-            "1260 Porto, Telefon, Büromaterial ",
-            "1270 An das Finanzamt gezahlte und ggf. verrechnete Umsatzsteuer ",
-            
-            "<html>&nbsp;",
-            
-            "<html><p align=right><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                    "Gezahlte Vorsteuerbeträge: &nbsp;",
-            
-            "<html>&nbsp;",
-            
-            "<html><p align=right><b><font color=red>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                                      "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                    "&nbsp;Summe Betriebsausgaben: &nbsp;",
-            "<html>&nbsp;",
-            
-            "2100 Betriebseinnahmen als umsatzsteuerlicher Kleinunternehmer ",
-            "2110 Umsatzsteuerpflichtige Betriebseinnahmen ",
-            "2120 Sonstige Sach-, Nutzungs- und Leistungsentnahmen ",
-            "2130 Private Kfz-Nutzung ",
-            "2140 Vom Finanzamt erstattete und ggf. verrechnete Umsatzsteuer",
-            "<html>&nbsp;&nbsp;",
-            
-            "<html><p align=right><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                                      "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                    "&nbsp;&nbsp;" +
-                    "Vereinnahmte Vorsteuerbeträge: &nbsp;",
-            
-            "<html>&nbsp;",
-            "<html><p align=right><b><font color=green>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                                      "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                    "Summe Betriebseinnahmen: &nbsp;",
-            
-            "<html>&nbsp;",
-            
-            "<html><p align=right>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                                      "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                    "<b>Gesamtübersicht:&nbsp;",
-            
-            "<html><p align=right><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                                      "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                                      "&nbsp;" +
-                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+&nbsp;Einnahmen: &nbsp;" +
-                    "</b>",
-            "<html><p align=right><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                                      "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                                      "&nbsp;" +
-                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;" +
-                    "Ausgaben: &nbsp;</b>",
-            "<html><p align=right><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                                      "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                                      "&nbsp;" +
-                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
-                    "=&nbsp;&nbsp;&nbsp;&nbsp;Summe: &nbsp;</b>"
-                    
-        };
-   
+    public static String SETTINGS_FILE = Constants.USER_HOME + File.separator + ".mp" + File.separator + "settings40.mp";
+    public static String SEP = File.separator;
+    public static String TEMPLATES_DIR = "templates";
+    public static String LIB_DIR = "lib";
+    public static String PDF = "PDF";
+    public static String OFFER_SAVE_DIR = "Angebote";
+    public static String CACHE_DIR = "Cache";
+    public static String PLUGIN_DIR = "Plugins";
+    public static String BILL_SAVE_DIR = "Rechnungen";
+    public static String ARREAR_SAVE_DIR = "Mahnungen";
+    public static String PRODUCT_SAVE_DIR = "Produkte";
+    public static String BACKUPS_SAVE_DIR = "backups";
+    public static String ICON_NAME_LIN = "mp.desktop";
+    public static String ICON_NAME_WIN = "Rechnungs-Kundenverwaltung.url";
+    public static String DESKTOP = "Desktop";
+    public static String DBROOTDIR = Constants.USER_HOME + File.separator + ".mp";
 }

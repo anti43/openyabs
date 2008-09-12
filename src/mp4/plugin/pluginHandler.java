@@ -10,6 +10,8 @@ import java.util.logging.Logger;
 import mp4.einstellungen.Programmdaten;
 import mp4.frames.mainframe;
 import mp4.globals.Constants;
+import mp4.items.Popup;
+import mp4.logs.Log;
 import mp4.utils.files.FileDirectoryHandler;
 
 /**
@@ -28,15 +30,10 @@ public class pluginHandler {
         try {
             plugins = getPlugins();
             loadplugins(plugins);
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(pluginHandler.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(pluginHandler.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            Logger.getLogger(pluginHandler.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            Logger.getLogger(pluginHandler.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        } catch (Exception ex) {
+            Popup.error("Fehler beim Laden des/der Plugin(s)", "Plugin Fehler");
+            Log.Debug(ex);
+        } 
 
     }
 
@@ -49,15 +46,11 @@ public class pluginHandler {
             URL[] urls = {new URL("jar:file:" + jars[i].getPath() + "!/")};
             URLClassLoader loader =  URLClassLoader.newInstance(urls);
 
-            Class c = loader.loadClass("plugin.Main");
-
+            Class c = loader.loadClass(Constants.PLUGIN_LOAD_CLASS);
             // Create an instance of the class just loaded
             Object o = c.newInstance();
             mpplugin m = (mpplugin) o;
-
-
             list.add(m);
-
         }
 
         return (mpplugin[]) list.toArray(new mpplugin[0]);

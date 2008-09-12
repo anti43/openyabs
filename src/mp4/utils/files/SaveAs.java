@@ -24,20 +24,21 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import javax.swing.JFileChooser;
+import mp4.globals.Constants;
 
 /**
  *
  * @author anti43
  */
 public class SaveAs {
-    private File file3 = new File(System.getProperty("user.home")+File.separator+"Desktop");
-
+    private File file3 = new File(Constants.USER_HOME+File.separator+"Desktop");
 
     public SaveAs(File file) throws FileNotFoundException, IOException {
 
-        String wd = System.getProperty("user.home")+File.separator+"Desktop";
+        String wd = Constants.USER_HOME+File.separator+"Desktop";
 
         JFileChooser fc = new JFileChooser(new File(wd));
+        
         fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
         int rc = fc.showDialog(null, "Speichern");

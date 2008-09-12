@@ -238,7 +238,7 @@ public class Diagramme {
 //        }
     }
 
-  
+ 
 
    
 
@@ -309,7 +309,19 @@ public class Diagramme {
         return xyDaten;
     }
 
- 
+
+     public File writeToFile(File file) {
+      
+        try {
+            ChartUtilities.saveChartAsPNG(file, chart, 500, 400);
+            Popup.notice("Diagramm gespeichert:\n" + file.getCanonicalPath());
+            Log.Debug("Schreibe Datei:" + file.getCanonicalPath());
+        } catch (IOException e) {
+            Log.Debug(e);
+        }
+       
+        return file;
+    }
     
     public File writeToFile(String stDateiPfad) {
        File file = new File(stDateiPfad);

@@ -83,7 +83,7 @@ public class Setup extends javax.swing.JFrame implements Constants, Strings {
 
         fc = new JFileChooser();
         fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        fc.setSelectedFile(new File(USER_HOME));
+        fc.setSelectedFile(new File(Constants.USER_HOME + Constants.SEP + Constants.PROG_NAME));
 
         File public_dir;
 

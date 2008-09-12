@@ -51,10 +51,10 @@ public class DesktopIcon implements Constants{
             out.write("GenericName=MP Rechnungs und Kundenverwaltung");
             out.newLine();
 
-            out.write("Exec=java -jar " + System.getProperty("user.home") + File.separator + Constants.PROG_NAME + File.separator + Constants.JAR_NAME);
+            out.write("Exec=java -jar " + Constants.USER_HOME + File.separator + Constants.PROG_NAME + File.separator + Constants.JAR_NAME);
             out.newLine();
 
-            out.write("Icon=" + System.getProperty("user.home") + File.separator + Constants.PROG_NAME + File.separator +"lib" + File.separator + "mpd.png");
+            out.write("Icon=" + Constants.USER_HOME + File.separator + Constants.PROG_NAME + File.separator +"lib" + File.separator + "mpd.png");
             out.newLine();
 
             out.write("Type=Application");
@@ -93,7 +93,7 @@ public class DesktopIcon implements Constants{
             out = new BufferedWriter(new FileWriter(USER_HOME + File.separator + DESKTOP + File.separator + ICON_NAME_WIN, false));
             out.write("[InternetShortcut]");
             out.newLine();
-            out.write("URL=file://"+System.getProperty("user.home") + File.separator + Constants.PROG_NAME + File.separator + Constants.JAR_NAME);
+            out.write("URL=file://"+Constants.USER_HOME + File.separator + Constants.PROG_NAME + File.separator + Constants.JAR_NAME);
             out.newLine();
             out.close();
         } catch (IOException ex) {

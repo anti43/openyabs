@@ -36,10 +36,11 @@ public class DefaultDataMonths implements Waitable {
     public String bisYear;
 
     @SuppressWarnings("unchecked")
-    public DefaultDataMonths(String start, String ende) throws Exception {
+    public DefaultDataMonths(String start, String ende, String title) throws Exception {
 
         this.vonYear = start;
         this.bisYear = ende;
+        this.title = title;
 
         try {
             vDate von = new vDate(start);

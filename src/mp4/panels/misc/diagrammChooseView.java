@@ -75,7 +75,7 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         diagrammView view = new diagrammView();
         Job job = null;
         try {
-            job = new Job(new DefaultDataMonths(vonYear, bisYear), view, frame.getMainProgress());
+            job = new Job(new DefaultDataMonths(vonYear, bisYear, title), view, frame.getMainProgress());
         } catch (Exception ex) {
             Logger.getLogger(diagrammChooseView.class.getName()).log(Level.SEVERE, null, ex);
         }

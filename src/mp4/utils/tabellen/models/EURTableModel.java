@@ -74,11 +74,11 @@ public class EURTableModel implements Constants, Strings, mp4.datenbank.installa
    
     public EURTableModel(String year) {
 
-        data = new Object[KONTEN_GRUPPEN.length][2];
+        data = new Object[EUR_TEMPLATE.length][2];
 
-        for (int i = 0; i < KONTEN_GRUPPEN.length; i++) {
+        for (int i = 0; i < EUR_TEMPLATE.length; i++) {
 
-            data[i][0] = KONTEN_GRUPPEN[i];
+            data[i][0] = EUR_TEMPLATE[i];
 
         }
 
@@ -374,11 +374,11 @@ public class EURTableModel implements Constants, Strings, mp4.datenbank.installa
 
        year = month+"."+year;
         
-       data = new Object[KONTEN_GRUPPEN.length][2];
+       data = new Object[EUR_TEMPLATE.length][2];
 
-        for (int i = 0; i < KONTEN_GRUPPEN.length; i++) {
+        for (int i = 0; i < EUR_TEMPLATE.length; i++) {
 
-            data[i][0] = KONTEN_GRUPPEN[i];
+            data[i][0] = EUR_TEMPLATE[i];
 
         }
 
