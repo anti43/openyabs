@@ -31,7 +31,9 @@ import java.awt.event.MouseEvent;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JTabbedPane;
+import mp4.logs.Log;
 import mp4.panels.misc.commonPanel;
+import mp4.plugin.mpplugin;
 
 /**
  *
@@ -70,7 +72,14 @@ public class TabCloseIcon implements Icon {
                     // asking for isConsumed is *very* important, otherwise more than one tab might get closed!
                     if (!e.isConsumed() && mPosition.contains(e.getX(), e.getY())) {
                         final int index = mTabbedPane.getSelectedIndex();
-//						mTabbedPane.remove( index );                                           
+//						mTabbedPane.remove( index );    elem.unload();     
+                      
+                        try {
+                            ((mpplugin) mTabbedPane.getComponentAt(index)).unload();
+                            Log.Debug("Unloaded a Plugin: " + ((mpplugin) mTabbedPane.getComponentAt(index)).getName());
+                        } catch (Exception ej) {
+                        }
+                        
                         ((commonPanel) mTabbedPane.getComponentAt(index)).close();
                         e.consume();
                     }

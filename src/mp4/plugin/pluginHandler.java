@@ -59,7 +59,8 @@ public class pluginHandler {
 
         for (int i = 0; i < plugins.length; i++) {
             mpplugin elem = plugins[i];
-            elem.load(frame);
+//            elem.load(frame);
+//            elem.unload();
             frame.addPlugin(elem);
             if (Programmdaten.instanceOf().getONLOAD(elem)) {
                 frame.addPluginPanel(elem);

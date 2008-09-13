@@ -260,6 +260,8 @@ public class mainframe extends javax.swing.JFrame {
     }
 
     public void addPluginPanel(mpplugin elem) {
+        mainTabPane.remove(elem);
+        elem.load(this);
         mainTabPane.add(elem.getName(), elem);
         mainTabPane.setSelectedComponent(elem);
         mainTabPane.setIconAt(mainTabPane.getSelectedIndex(), new TabCloseIcon());
@@ -333,13 +335,13 @@ public class mainframe extends javax.swing.JFrame {
 private void initComponents() {
 
 jPanel7 = new javax.swing.JPanel();
-jPanel1 = new javax.swing.JPanel();
+bottomPanel = new javax.swing.JPanel();
 messagePanel = new FadeOnChangeLabel();
-jProgressBar1 = new javax.swing.JProgressBar();
-jScrollPane1 = new javax.swing.JScrollPane();
+mainProgressBar = new javax.swing.JProgressBar();
+mainScrollPane = new javax.swing.JScrollPane();
 mainTabPane = new javax.swing.JTabbedPane();
-jPanel10 = new javax.swing.JPanel();
-jOutlookBar1 = new com.l2fprod.common.swing.JOutlookBar();
+leftBar = new javax.swing.JPanel();
+outlookBar = new com.l2fprod.common.swing.JOutlookBar();
 jPanel2 = new javax.swing.JPanel();
 jButton4 = new javax.swing.JButton();
 jButton1 = new javax.swing.JButton();
@@ -360,9 +362,9 @@ jButton13 = new javax.swing.JButton();
 jButton14 = new javax.swing.JButton();
 jButton15 = new javax.swing.JButton();
 jButton16 = new javax.swing.JButton();
-jButton3 = new javax.swing.JButton();
-jButton17 = new javax.swing.JButton();
-jMenuBar2 = new javax.swing.JMenuBar();
+closeButton = new javax.swing.JButton();
+logoutButton = new javax.swing.JButton();
+menuBar = new javax.swing.JMenuBar();
 jMenu4 = new javax.swing.JMenu();
 jMenu9 = new javax.swing.JMenu();
 jMenuItem10 = new javax.swing.JMenuItem();
@@ -418,32 +420,33 @@ jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
 setTitle("MP");
 setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+setFocusableWindowState(false);
 setMinimumSize(new java.awt.Dimension(800, 600));
 
-jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+bottomPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-jProgressBar1.setBorderPainted(false);
+mainProgressBar.setBorderPainted(false);
 
-javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-jPanel1.setLayout(jPanel1Layout);
-jPanel1Layout.setHorizontalGroup(
-jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-.addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+javax.swing.GroupLayout bottomPanelLayout = new javax.swing.GroupLayout(bottomPanel);
+bottomPanel.setLayout(bottomPanelLayout);
+bottomPanelLayout.setHorizontalGroup(
+bottomPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+.addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bottomPanelLayout.createSequentialGroup()
 .addComponent(messagePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 371, Short.MAX_VALUE)
 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-.addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+.addComponent(mainProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
 );
-jPanel1Layout.setVerticalGroup(
-jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-.addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-.addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+bottomPanelLayout.setVerticalGroup(
+bottomPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+.addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bottomPanelLayout.createSequentialGroup()
+.addGroup(bottomPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
 .addComponent(messagePanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-.addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
+.addComponent(mainProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
 .addGap(0, 0, 0))
 );
 
-jScrollPane1.setBorder(null);
-jScrollPane1.setAutoscrolls(true);
+mainScrollPane.setBorder(null);
+mainScrollPane.setAutoscrolls(true);
 
 mainTabPane.setTabLayoutPolicy(javax.swing.JTabbedPane.SCROLL_TAB_LAYOUT);
 mainTabPane.setAutoscrolls(true);
@@ -451,13 +454,12 @@ mainTabPane.setDoubleBuffered(true);
 mainTabPane.setFocusCycleRoot(true);
 mainTabPane.setFocusTraversalPolicyProvider(true);
 mainTabPane.setOpaque(true);
-jScrollPane1.setViewportView(mainTabPane);
+mainScrollPane.setViewportView(mainTabPane);
 
-jPanel10.setBackground(new java.awt.Color(204, 204, 204));
-jPanel10.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+leftBar.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-jOutlookBar1.setBackground(new java.awt.Color(204, 204, 204));
-jOutlookBar1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+outlookBar.setBackground(new java.awt.Color(204, 204, 204));
+outlookBar.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
 jPanel2.setBackground(new java.awt.Color(153, 153, 153));
 
@@ -541,7 +543,7 @@ jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 .addGap(102, 102, 102))
 );
 
-jOutlookBar1.addTab("Kontakte", jPanel2);
+outlookBar.addTab("Kontakte", jPanel2);
 
 jPanel4.setBackground(new java.awt.Color(153, 153, 153));
 
@@ -588,7 +590,7 @@ jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 );
 
-jOutlookBar1.addTab("Produkte", jPanel4);
+outlookBar.addTab("Produkte", jPanel4);
 
 jPanel3.setBackground(new java.awt.Color(153, 153, 153));
 
@@ -677,7 +679,7 @@ jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 );
 
-jOutlookBar1.addTab("Buchhaltung", jPanel3);
+outlookBar.addTab("Buchhaltung", jPanel3);
 
 jPanel6.setBackground(new java.awt.Color(153, 153, 153));
 
@@ -761,48 +763,48 @@ jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 );
 
-jOutlookBar1.addTab("Extras", jPanel6);
+outlookBar.addTab("Extras", jPanel6);
 
-jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/3232/endturn.png"))); // NOI18N
-jButton3.setToolTipText("Programm beenden");
-jButton3.addActionListener(new java.awt.event.ActionListener() {
+closeButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/3232/endturn.png"))); // NOI18N
+closeButton.setToolTipText("Programm beenden");
+closeButton.addActionListener(new java.awt.event.ActionListener() {
 public void actionPerformed(java.awt.event.ActionEvent evt) {
-jButton3ActionPerformed(evt);
+closeButtonActionPerformed(evt);
 }
 });
 
-jButton17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/3232/lock.png"))); // NOI18N
-jButton17.setToolTipText("Programm sperren");
-jButton17.addActionListener(new java.awt.event.ActionListener() {
+logoutButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/3232/lock.png"))); // NOI18N
+logoutButton.setToolTipText("Programm sperren");
+logoutButton.addActionListener(new java.awt.event.ActionListener() {
 public void actionPerformed(java.awt.event.ActionEvent evt) {
-jButton17ActionPerformed(evt);
+logoutButtonActionPerformed(evt);
 }
 });
 
-javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
-jPanel10.setLayout(jPanel10Layout);
-jPanel10Layout.setHorizontalGroup(
-jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-.addGroup(jPanel10Layout.createSequentialGroup()
-.addComponent(jOutlookBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+javax.swing.GroupLayout leftBarLayout = new javax.swing.GroupLayout(leftBar);
+leftBar.setLayout(leftBarLayout);
+leftBarLayout.setHorizontalGroup(
+leftBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+.addGroup(leftBarLayout.createSequentialGroup()
+.addComponent(outlookBar, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
 .addGap(0, 0, 0))
-.addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
+.addGroup(javax.swing.GroupLayout.Alignment.TRAILING, leftBarLayout.createSequentialGroup()
 .addContainerGap()
-.addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
+.addComponent(closeButton, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
 .addContainerGap())
-.addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
+.addGroup(javax.swing.GroupLayout.Alignment.TRAILING, leftBarLayout.createSequentialGroup()
 .addContainerGap()
-.addComponent(jButton17, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
+.addComponent(logoutButton, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
 .addContainerGap())
 );
-jPanel10Layout.setVerticalGroup(
-jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-.addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
-.addComponent(jOutlookBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 461, javax.swing.GroupLayout.PREFERRED_SIZE)
+leftBarLayout.setVerticalGroup(
+leftBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+.addGroup(javax.swing.GroupLayout.Alignment.TRAILING, leftBarLayout.createSequentialGroup()
+.addComponent(outlookBar, javax.swing.GroupLayout.PREFERRED_SIZE, 461, javax.swing.GroupLayout.PREFERRED_SIZE)
 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
-.addComponent(jButton17)
+.addComponent(logoutButton)
 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-.addComponent(jButton3)
+.addComponent(closeButton)
 .addContainerGap())
 );
 
@@ -896,7 +898,7 @@ jMenuItem18ActionPerformed(evt);
 });
 jMenu4.add(jMenuItem18);
 
-jMenuBar2.add(jMenu4);
+menuBar.add(jMenu4);
 
 jMenu5.setText("Bearbeiten");
 
@@ -936,7 +938,7 @@ jMenuItem4ActionPerformed(evt);
 });
 jMenu5.add(jMenuItem4);
 
-jMenuBar2.add(jMenu5);
+menuBar.add(jMenu5);
 
 jMenu8.setText("Auswertungen");
 
@@ -956,7 +958,7 @@ jMenuItem19ActionPerformed(evt);
 });
 jMenu8.add(jMenuItem19);
 
-jMenuBar2.add(jMenu8);
+menuBar.add(jMenu8);
 
 jMenu1.setText("Tools");
 
@@ -996,7 +998,7 @@ pluginMenu.add(jMenuItem20);
 
 jMenu1.add(pluginMenu);
 
-jMenuBar2.add(jMenu1);
+menuBar.add(jMenu1);
 
 jMenu2.setText("Ansicht");
 
@@ -1020,7 +1022,7 @@ jMenu3.add(jMenuItem23);
 
 jMenu2.add(jMenu3);
 
-jMenuBar2.add(jMenu2);
+menuBar.add(jMenu2);
 
 jMenu7.setText("Hilfe");
 
@@ -1050,9 +1052,9 @@ jMenuItem21ActionPerformed(evt);
 });
 jMenu7.add(jMenuItem21);
 
-jMenuBar2.add(jMenu7);
+menuBar.add(jMenu7);
 
-setJMenuBar(jMenuBar2);
+setJMenuBar(menuBar);
 
 javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
 getContentPane().setLayout(layout);
@@ -1060,20 +1062,20 @@ layout.setHorizontalGroup(
 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 .addGroup(layout.createSequentialGroup()
 .addGap(3, 3, 3)
-.addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+.addComponent(leftBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-.addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 406, Short.MAX_VALUE))
-.addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+.addComponent(mainScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 406, Short.MAX_VALUE))
+.addComponent(bottomPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 );
 layout.setVerticalGroup(
 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 .addGroup(layout.createSequentialGroup()
 .addContainerGap()
 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-.addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 586, Short.MAX_VALUE)
-.addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+.addComponent(mainScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 586, Short.MAX_VALUE)
+.addComponent(leftBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-.addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+.addComponent(bottomPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
 );
 
 pack();
@@ -1256,16 +1258,16 @@ private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     addAngebotPanel(null);
 }//GEN-LAST:event_jButton2ActionPerformed
 
-private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton17ActionPerformed
+private void logoutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutButtonActionPerformed
 
     this.setEnabled(false);
     new login(this);
-}//GEN-LAST:event_jButton17ActionPerformed
+}//GEN-LAST:event_logoutButtonActionPerformed
 
-private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButtonActionPerformed
 
     close();
-}//GEN-LAST:event_jButton3ActionPerformed
+}//GEN-LAST:event_closeButtonActionPerformed
 
 private void jMenuItem1ActionPerformed1(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed1
 
@@ -1379,6 +1381,8 @@ this.setMessage("Rechnungen Ansicht: Variation 1 gewählt.");
         System.gc();
     }
 // Variables declaration - do not modify//GEN-BEGIN:variables
+public javax.swing.JPanel bottomPanel;
+public javax.swing.JButton closeButton;
 private javax.swing.JButton jButton1;
 private javax.swing.JButton jButton10;
 private javax.swing.JButton jButton11;
@@ -1387,10 +1391,8 @@ private javax.swing.JButton jButton13;
 private javax.swing.JButton jButton14;
 private javax.swing.JButton jButton15;
 private javax.swing.JButton jButton16;
-private javax.swing.JButton jButton17;
 private javax.swing.JButton jButton18;
 private javax.swing.JButton jButton2;
-private javax.swing.JButton jButton3;
 private javax.swing.JButton jButton4;
 private javax.swing.JButton jButton5;
 private javax.swing.JButton jButton6;
@@ -1408,7 +1410,6 @@ private javax.swing.JMenu jMenu6;
 private javax.swing.JMenu jMenu7;
 private javax.swing.JMenu jMenu8;
 private javax.swing.JMenu jMenu9;
-private javax.swing.JMenuBar jMenuBar2;
 private javax.swing.JMenuItem jMenuItem1;
 private javax.swing.JMenuItem jMenuItem10;
 private javax.swing.JMenuItem jMenuItem11;
@@ -1432,38 +1433,39 @@ private javax.swing.JMenuItem jMenuItem6;
 private javax.swing.JMenuItem jMenuItem7;
 private javax.swing.JMenuItem jMenuItem8;
 private javax.swing.JMenuItem jMenuItem9;
-private com.l2fprod.common.swing.JOutlookBar jOutlookBar1;
-private javax.swing.JPanel jPanel1;
-private javax.swing.JPanel jPanel10;
 private javax.swing.JPanel jPanel2;
 private javax.swing.JPanel jPanel3;
 private javax.swing.JPanel jPanel4;
 private javax.swing.JPanel jPanel6;
 private javax.swing.JPanel jPanel7;
-private javax.swing.JProgressBar jProgressBar1;
-private javax.swing.JScrollPane jScrollPane1;
 private javax.swing.JSeparator jSeparator1;
 private javax.swing.JSeparator jSeparator2;
 private javax.swing.JSeparator jSeparator3;
 private javax.swing.JSeparator jSeparator4;
 private javax.swing.JSeparator jSeparator5;
-private javax.swing.JTabbedPane mainTabPane;
-private javax.swing.JLabel messagePanel;
+public javax.swing.JPanel leftBar;
+public javax.swing.JButton logoutButton;
+public javax.swing.JProgressBar mainProgressBar;
+public javax.swing.JScrollPane mainScrollPane;
+public javax.swing.JTabbedPane mainTabPane;
+public javax.swing.JMenuBar menuBar;
+public javax.swing.JLabel messagePanel;
+public com.l2fprod.common.swing.JOutlookBar outlookBar;
 private javax.swing.JMenu pluginMenu;
 // End of variables declaration//GEN-END:variables
     public javax.swing.JPanel getJPanel1() {
-        return jPanel1;
+        return bottomPanel;
     }
 
     public javax.swing.JPanel getJPanel10() {
-        return jPanel10;
+        return leftBar;
     }
 //
 //    public javax.swing.JPanel getJPanel11() {
 //        return jPanel11;
 //    }
     public javax.swing.JScrollPane getJScrollPane1() {
-        return jScrollPane1;
+        return mainScrollPane;
     }
 
     public javax.swing.JTabbedPane getTabPane() {
@@ -1471,7 +1473,7 @@ private javax.swing.JMenu pluginMenu;
     }
 
     public javax.swing.JProgressBar getMainProgress() {
-        return jProgressBar1;
+        return mainProgressBar;
     }
 
     /**
