@@ -1227,6 +1227,15 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 
     private void setBetreffZeilen(Rechnung current) {
         jComboBox1.setModel(new DefaultComboBoxModel(current.getZeilenHandler().getDisplayListData()));
+
+        ActionListener[] list = jComboBox1.getActionListeners();
+        ActionListener l;
+               
+        for (int i = 0; i < list.length; i++) {
+             l = list[i];
+            jComboBox1.removeActionListener(l);
+        }
+       
         jComboBox1.addActionListener(new CheckComboListener());
         jComboBox1.setRenderer(new CheckComboRenderer());
     }
