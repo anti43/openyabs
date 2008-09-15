@@ -44,7 +44,7 @@ public class DialogOpenFile extends JFileChooser {
     }
 
     public boolean choseFile(){
-     if (this.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+     if (this.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
             try {
                 this.file = this.getSelectedFile();
                 return true;
