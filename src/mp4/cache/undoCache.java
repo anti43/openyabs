@@ -27,6 +27,7 @@ import mp4.frames.mainframe;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import mp4.items.Hersteller;
 import mp4.logs.*;
 
 
@@ -214,6 +215,24 @@ public class undoCache {
                     break;
 
             }
+        } else if (item.getClass().isInstance(new Hersteller())) {
+
+            Hersteller it = (Hersteller) item;
+
+            switch (aktion) {
+
+                case 1:
+                    it.destroy();
+                    break;
+                case 2:
+
+//                    it.unDelete(it.getId());
+                    break;
+                case 3:
+                    it.save();
+                    break;
+
+            }
         }
 
 //        removeItem(index);
@@ -267,7 +286,12 @@ public class undoCache {
 
             Lieferant it = (Lieferant) item;
             text = "Lieferant Nummer " + it.getLieferantennummer() + text;
+        }else if (item.getClass().isInstance(new Hersteller())) {
+
+            Hersteller it = (Hersteller) item;
+            text = "Hersteller Nummer " + it.getHerstellernummer() + text;
         }
+
 
 
 
