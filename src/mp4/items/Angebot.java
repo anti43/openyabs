@@ -274,6 +274,7 @@ public class Angebot extends mp4.items.Things implements mp4.datenbank.installat
     }
 
     public void setDatum(Date Datum) {
+        nfh = new NumberFormatHandler(this, Datum);
         this.Datum = Datum;
         this.isSaved = false;
     }

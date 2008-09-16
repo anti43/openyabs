@@ -315,8 +315,8 @@ public class Rechnung extends mp4.items.Things implements mp4.datenbank.installa
         return Datum;
     }
 
-    public void setDatum(
-            Date Datum) {
+    public void setDatum(Date Datum) {
+        nfh = new NumberFormatHandler(this, Datum);
         this.Datum = Datum;
         this.isSaved = false;
     }

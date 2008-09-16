@@ -72,8 +72,14 @@ public class DefaultDataMonths implements Waitable {
     }
 
     public ArrayList getUmsatz() {
+        try {
 
-        return ListenDataUtils.merge(rechnungenVal, ListenDataUtils.merge(einnahmenVal, ausgabenVal));
+            return ListenDataUtils.add(rechnungenVal, ListenDataUtils.add(einnahmenVal, ausgabenVal));
+//         return ListenDataUtils.merge(einnahmenVal, ausgabenVal);
+        } catch (Exception ex) {
+            Logger.getLogger(DefaultDataMonths.class.getName()).log(Level.SEVERE, null, ex);
+        }
+         return null;
     }
 
     public ArrayList getColumns() {

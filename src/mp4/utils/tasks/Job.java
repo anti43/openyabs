@@ -45,11 +45,11 @@ public class Job extends SwingWorker<Object, Object> {
         try {
             object.waitFor();
         } catch (Exception e) {
-            Log.Debug(e);
-        } finally {
             if (bar != null) {
                 bar.setIndeterminate(false);
             }
+            Log.Debug(e);
+        } finally {
         }
         return object;
     }
@@ -57,5 +57,8 @@ public class Job extends SwingWorker<Object, Object> {
     @Override
     public void done() {
         recipient.set(object);
+        if (bar != null) {
+            bar.setIndeterminate(false);
+        }
     }
 }

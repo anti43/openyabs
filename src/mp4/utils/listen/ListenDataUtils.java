@@ -90,10 +90,17 @@ public class ListenDataUtils {
 
     @SuppressWarnings("unchecked")
     public static ArrayList merge(ArrayList list1, ArrayList list2) {
-        Iterator it =list2.iterator();
+        Iterator it1 = list1.iterator();
+        Iterator it2 = list2.iterator();
 
-        while (it.hasNext()) {
-            list1.add(it.next());
+        ArrayList<Double> list3 = new ArrayList();
+
+        while (it1.hasNext()) {
+            list3.add((Double) it1.next());
+        }
+        
+        while (it2.hasNext()) {
+            list3.add((Double) it2.next());
         }
         
       return list1;

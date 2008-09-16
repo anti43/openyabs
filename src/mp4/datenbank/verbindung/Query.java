@@ -143,6 +143,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
                 Log.Debug("Summe: " + o[0][0]);
                 values.add(Double.valueOf(o[0][0]));
             } else {
+                Log.Debug("Summe: " + 0);
                 values.add(0d);
             }
             temdate = DateConverter.addMonth(temdate);
