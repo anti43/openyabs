@@ -103,7 +103,7 @@ public class ListenDataUtils {
             list3.add((Double) it2.next());
         }
         
-      return list1;
+      return list3;
    }
     
       
@@ -131,7 +131,7 @@ public class ListenDataUtils {
             list3.add(value);
         }
         
-      return list1;
+      return list3;
     }
     
     /**
@@ -159,7 +159,7 @@ public class ListenDataUtils {
             list3.add(value);
         }
         
-      return list1;
+      return list3;
     }
 
 }
