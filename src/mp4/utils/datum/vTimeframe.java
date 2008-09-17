@@ -16,6 +16,12 @@ public class vTimeframe {
     private Date end;
     private long time;
 
+    public vTimeframe(Date start, Date ende) {
+        this.start = start; 
+        this.end = ende;   
+        this.time = end.getTime() - start.getTime();   
+    }
+
     public vTimeframe(vDate von, vDate bis){
         this.start = von.date; 
         this.end = bis.date;   

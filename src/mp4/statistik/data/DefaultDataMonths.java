@@ -6,14 +6,11 @@ package mp4.statistik.data;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import mp4.logs.*;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.datenbank.verbindung.Query;
 import mp4.interfaces.Waitable;
-import mp4.interfaces.Waiter;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.datum.vDate;
 import mp4.utils.datum.vTimeframe;
@@ -26,7 +23,7 @@ import mp4.utils.listen.ListenDataUtils;
 public class DefaultDataMonths implements Waitable {
 
     private vTimeframe zeitraum;
-    private ArrayList columns = new ArrayList(1);
+    private ArrayList columns = new ArrayList(12);
     private Query query;
     private ArrayList<Double> rechnungenVal;
     private ArrayList<Double> einnahmenVal;
@@ -34,13 +31,35 @@ public class DefaultDataMonths implements Waitable {
     public String title = "titelPlatzHalter";
     public String vonYear;
     public String bisYear;
+    private ArrayList data;
+    public static int UMSATZ = 0;
+    public static int GEWINN = 1;
+    public static int EINNAHMEN = 2;
+    public static int AUSGABEN = 3;
+    private int mode = 0;
+
+    public DefaultDataMonths(Date date, Date date0, String title, int mode) {
+        this.vonYear = DateConverter.getDefDateString(date);
+        this.bisYear = DateConverter.getDefDateString(date0);
+        this.title = title;
+        this.mode = mode;
+        
+        zeitraum = new vTimeframe(date, date0);
+
+        while (date.before(date0)) {
+            columns.add(date);
+            date = DateConverter.addMonth(date);
+        }
+    }
 
     @SuppressWarnings("unchecked")
-    public DefaultDataMonths(String start, String ende, String title) throws Exception {
+    public DefaultDataMonths(String start, String ende, String title, int mode) throws Exception {
 
         this.vonYear = start;
         this.bisYear = ende;
         this.title = title;
+        this.mode = mode;
+
 
         try {
             vDate von = new vDate(start);
@@ -62,24 +81,44 @@ public class DefaultDataMonths implements Waitable {
         }
     }
 
-    public ArrayList getGewinn() {
+    private ArrayList getGewinn() {
         try {
-            return ListenDataUtils.substract(ListenDataUtils.add(einnahmenVal, rechnungenVal), ausgabenVal);
+            data = ListenDataUtils.substract(ListenDataUtils.add(einnahmenVal, rechnungenVal), ausgabenVal);
         } catch (Exception ex) {
             Log.Debug(ex.getMessage());
         }
-        return null;
+        return data;
     }
 
-    public ArrayList getUmsatz() {
+    private ArrayList getUmsatz() {
         try {
-
-            return ListenDataUtils.add(rechnungenVal, ListenDataUtils.add(einnahmenVal, ausgabenVal));
-//         return ListenDataUtils.add(einnahmenVal, ausgabenVal);
+            data = ListenDataUtils.add(rechnungenVal, ListenDataUtils.add(einnahmenVal, ausgabenVal));
         } catch (Exception ex) {
-            Logger.getLogger(DefaultDataMonths.class.getName()).log(Level.SEVERE, null, ex);
+            Log.Debug(ex);
         }
-         return null;
+        return data;
+    }
+
+    private ArrayList getEinnahmen() {
+        try {
+            data = ListenDataUtils.add(rechnungenVal, einnahmenVal);
+        } catch (Exception ex) {
+            Log.Debug(ex);
+        }
+        return data;
+    }
+
+    private ArrayList getAusgaben() {
+        try {
+            data = ausgabenVal;
+        } catch (Exception ex) {
+            Log.Debug(ex);
+        }
+        return data;
+    }
+
+    public ArrayList getData() {
+        return data;
     }
 
     public ArrayList getColumns() {
@@ -106,6 +145,25 @@ public class DefaultDataMonths implements Waitable {
         }
         if (ausgabenVal.isEmpty()) {
             ausgabenVal.add(0d);
+        }
+
+        switch (mode) {
+
+            case 0:
+                getUmsatz();
+                break;
+
+            case 1:
+                getGewinn();
+                break;
+
+            case 2:
+                getEinnahmen();
+                break;
+
+            case 3:
+                getAusgaben();
+                break;
         }
     }
 }

@@ -123,7 +123,35 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
 
         return selectFreeQuery(query, message);
     }
+    
+    public ArrayList<Double> selectYearlySums(String what, String[] where, vTimeframe zeitraum, String additionalCondition) {
 
+        Date temdate = zeitraum.getStart();
+        ArrayList<Double> values = new ArrayList();
+
+        do {
+            String str = "AND datum BETWEEN '" + DateConverter.getSQLDateString(temdate) + "' AND '" + DateConverter.getSQLDateString(DateConverter.addYear(temdate)) + "'";
+
+            if (where != null) {
+                query = "SELECT SUM(" + what + ") FROM " + table + " WHERE " + where[0] + " = " + where[2] + where[1] + where[2] + " " + " AND deleted = 0 " + str + " " + additionalCondition;
+            } else {
+                query = "SELECT SUM(" + what + ") FROM " + table + " WHERE deleted = 0 " + str + " " + additionalCondition;
+            }
+
+            String[][] o = selectFreeQuery(query, message);
+            if (o != null && o[0][0] != null && !o[0][0].equals("null")) {
+                Log.Debug("Summe: " + o[0][0]);
+                values.add(Double.valueOf(o[0][0]));
+            } else {
+                Log.Debug("Summe: " + 0);
+                values.add(0d);
+            }
+            temdate = DateConverter.addMonth(temdate);
+        } while (temdate.before(zeitraum.getEnd()));
+
+        return values;
+
+    }
     public ArrayList<Double> selectMonthlySums(String what, String[] where, vTimeframe zeitraum, String additionalCondition) {
 
         Date temdate = zeitraum.getStart();

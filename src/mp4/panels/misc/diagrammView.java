@@ -7,26 +7,17 @@
 package mp4.panels.misc;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.Currency;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.print.DocFlavor;
-import javax.print.PrintException;
 import javax.swing.JFileChooser;
 import mp4.einstellungen.Einstellungen;
-import mp4.frames.mainframe;
 import mp4.interfaces.Waiter;
 import mp4.logs.Log;
 import mp4.statistik.Diagramme;
 import mp4.statistik.data.DefaultDataMonths;
 import mp4.utils.export.druck.DruckJob;
 import mp4.utils.files.DialogOpenFile;
-import mp4.utils.files.FileDirectoryHandler;
-import mp4.utils.files.SaveAs;
-import mp4.utils.tasks.Job;
 import mp4.utils.zahlen.FormatNumber;
 
 /**
@@ -112,13 +103,13 @@ private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     DialogOpenFile f = new DialogOpenFile(JFileChooser.FILES_ONLY, "chart.png");
     
     if(f.choseFile())
-    d.writeToFile(f.getFile());
+    d.writeToFile(f.getFile(), true);
 }//GEN-LAST:event_jButton2ActionPerformed
 
 private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         
             try {
-                new DruckJob(DocFlavor.INPUT_STREAM.PNG).print(d.writeToFile(File.createTempFile("MPCHART", ".png")));
+                new DruckJob(DocFlavor.INPUT_STREAM.PNG).print(d.writeToFile(File.createTempFile("MPCHART", ".png"), false));
             } catch (Exception ex) {//GEN-LAST:event_jButton1ActionPerformed
                  Log.Debug(ex);
             }
@@ -128,11 +119,12 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 @SuppressWarnings("unchecked")
 public void set(Object obj){
  DefaultDataMonths data = (DefaultDataMonths) obj;   
+ this.changeTabText(data.title + " " + data.vonYear + " - " + data.bisYear);
  d = new Diagramme(jPanel1);
         try {
                
             d.erzeugeLinienGrafik("", new Vector(data.getColumns()), 
-                    new Vector(data.getUmsatz()), Currency.getInstance(Einstellungen.instanceOf().getLocale()).getSymbol(), data.title + " " + data.vonYear + " - " + data.bisYear, "Zeitraum", Currency.getInstance(Einstellungen.instanceOf().getLocale()).getSymbol(), "", FormatNumber.getDefaultDecimalFormat());
+                    new Vector(data.getData()), Currency.getInstance(Einstellungen.instanceOf().getLocale()).getSymbol(), data.title + " " + data.vonYear + " - " + data.bisYear, "Zeitraum", Currency.getInstance(Einstellungen.instanceOf().getLocale()).getSymbol(), "", FormatNumber.getDefaultDecimalFormat());
         } catch (Exception ex) {
             Log.Debug(ex);
         }

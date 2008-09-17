@@ -34,6 +34,7 @@ import mp4.utils.datum.vDate;
 import mp4.utils.tabellen.SelectionCheck;
 import mp4.utils.tabellen.TableFormat;
 import mp4.utils.ui.inputfields.InputVerifiers;
+import mp4.utils.zahlen.FormatNumber;
 import mp4.utils.zahlen.vDouble;
 
 /**
@@ -328,8 +329,8 @@ public class eurAPanel extends mp4.panels.misc.commonPanel implements panelInter
 
         if (jButton3.isEnabled()) {
 
-            vDouble  betrag = new vDouble (jTextField4.getText());
-            vDouble  steuer = new vDouble (jTextField3.getText());
+            vDouble betrag = new vDouble(jTextField4.getText());
+            vDouble steuer = new vDouble(jTextField3.getText());
             vDate datum = new vDate(jTextField6.getText());
 
             if (betrag.isVerified && betrag.isPositive && steuer.isVerified && steuer.isPositive && datum.isVerified) {
@@ -342,46 +343,45 @@ public class eurAPanel extends mp4.panels.misc.commonPanel implements panelInter
                     curAusgabe.save();
 
                     updateTableData();
-                    
-                    undoCache.instanceOf().addItem(ObjectCopy.copy(curAusgabe), undoCache.CREATE);     
+
+//                    undoCache.instanceOf().addItem(ObjectCopy.copy(curAusgabe), undoCache.CREATE);     
                     new HistoryItem(Strings.EINNAHME, "Einnahme Nummer: " + curAusgabe.getId() + " angelegt.");
                 }
-             
 
-        } else {
-            String text = "";
-            if (!betrag.isVerified) {
-                text += "Betrag: " + betrag.ovalue + "\n";
+
+            } else {
+                String text = "";
+                if (!betrag.isVerified) {
+                    text += "Betrag: " + betrag.ovalue + "\n";
+                }
+                if (!steuer.isVerified || !steuer.isPositive) {
+                    text += "Steuer: " + steuer.ovalue + "\n";
+                }
+                if (!datum.isVerified) {
+                    text += "Datum: " + datum.ovalue;
+                }
+                Popup.error(text, "Überprüfen Sie Ihre Angaben.");
             }
-            if (!steuer.isVerified || !steuer.isPositive) {
-                text += "Steuer: " + steuer.ovalue + "\n";
-            }
-            if (!datum.isVerified) {
-                text += "Datum: " + datum.ovalue;
-            }
-            Popup.error(text, "Überprüfen Sie Ihre Angaben.");
-        }
         }
 
     }//GEN-LAST:event_jButton3MouseClicked
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
 
-            vDouble  betrag = new vDouble (jTextField4.getText());
-            vDouble  steuer = new vDouble (jTextField3.getText());
-            vDate datum = new vDate(jTextField6.getText());
+        vDouble betrag = new vDouble(FormatNumber.parseDezimal(jTextField4.getText()));
+        vDouble steuer = new vDouble(FormatNumber.parseDezimal(jTextField3.getText()));
+        vDate datum = new vDate(jTextField6.getText());
 
-            
-             if (!steuer.isVerified || !steuer.isPositive) {
-                    steuer = new vDouble(Einstellungen.instanceOf().getGlobaltax());
-                }
-            
-            if (betrag.isVerified && betrag.isPositive && steuer.isVerified && steuer.isPositive && datum.isVerified) {
+        if (!steuer.isVerified || !steuer.isPositive) {
+            steuer = new vDouble(Einstellungen.instanceOf().getGlobaltax());
+        }
+
+        if (betrag.isVerified && betrag.isPositive && steuer.isVerified && steuer.isPositive && datum.isVerified) {
 
             this.setAusgabe(new Ausgabe(curKonto.getId(), jEditorPane1.getText(), betrag.value, steuer.value, datum.date));
             updateTableData();
-             
-            undoCache.instanceOf().addItem(ObjectCopy.copy(curAusgabe), undoCache.CREATE);
+
+//            undoCache.instanceOf().addItem(ObjectCopy.copy(curAusgabe), undoCache.CREATE);
             new HistoryItem(Strings.EINNAHME, "Einnahme Nummer: " + curAusgabe.getId() + " angelegt.");
 
         } else {
@@ -402,10 +402,10 @@ public class eurAPanel extends mp4.panels.misc.commonPanel implements panelInter
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         if (this.curAusgabe != null) {
-            
-            undoCache.instanceOf().addItem(ObjectCopy.copy(this.curAusgabe), undoCache.DELETE);
+
+//            undoCache.instanceOf().addItem(ObjectCopy.copy(this.curAusgabe), undoCache.DELETE);
             new HistoryItem(Strings.EINNAHME, "Einnahme Nummer: " + curAusgabe.getId() + " gelöscht.");
-            
+
             curAusgabe.disable();
             updateTableData();
         }

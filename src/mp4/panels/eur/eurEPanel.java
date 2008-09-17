@@ -358,7 +358,7 @@ public class eurEPanel extends mp4.panels.misc.commonPanel implements panelInter
 
                 if (this.curEinnahme != null && curEinnahme.id > 0) {
 
-                    undoCache.instanceOf().addItem(ObjectCopy.copy(this.curEinnahme), undoCache.EDIT);
+//                    undoCache.instanceOf().addItem(ObjectCopy.copy(this.curEinnahme), undoCache.EDIT);
 
                     curEinnahme.setDatum(datum.date);
                     curEinnahme.setBeschreibung(jEditorPane1.getText());
@@ -402,7 +402,7 @@ public class eurEPanel extends mp4.panels.misc.commonPanel implements panelInter
                 this.setEinnahme(new Einnahme(curKonto.getId(), jEditorPane1.getText(), betrag.value, steuer.value, datum.date));
                 updateTableData();
 
-                undoCache.instanceOf().addItem(ObjectCopy.copy(curEinnahme), undoCache.CREATE);
+//                undoCache.instanceOf().addItem(ObjectCopy.copy(curEinnahme), undoCache.CREATE);
                 new HistoryItem(Strings.EINNAHME, "Einnahme Nummer: " + curEinnahme.getId() + " angelegt.");
 
             } else {
@@ -424,7 +424,7 @@ public class eurEPanel extends mp4.panels.misc.commonPanel implements panelInter
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         if (this.curEinnahme != null) {
-            undoCache.instanceOf().addItem(ObjectCopy.copy(this.curEinnahme), undoCache.DELETE);
+//            undoCache.instanceOf().addItem(ObjectCopy.copy(this.curEinnahme), undoCache.DELETE);
 
             new HistoryItem(Strings.EINNAHME, "Einnahme Nummer: " + curEinnahme.getId() + " gelöscht.");
             curEinnahme.disable();

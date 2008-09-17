@@ -118,7 +118,7 @@ public class Main implements Strings {
 
     public Main() {
 
-        Log.setLogLevel(Log.LOGLEVEL_HIGH);
+        Log.setLogLevel(Log.LOGLEVEL_LOW);
 
         setLaF();
         splash = new SplashScreen(TEST_CONF);
@@ -181,7 +181,6 @@ public class Main implements Strings {
 
     public static void main(String[] args) {
 
-        printEnv();
         getOS();
         parseArgs(args);
 

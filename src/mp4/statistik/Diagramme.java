@@ -310,11 +310,11 @@ public class Diagramme {
     }
 
 
-     public File writeToFile(File file) {
+     public File writeToFile(File file, boolean notify) {
       
         try {
-            ChartUtilities.saveChartAsPNG(file, chart, 500, 400);
-            Popup.notice("Diagramm gespeichert:\n" + file.getCanonicalPath());
+            ChartUtilities.saveChartAsPNG(file, chart, 1000, 800);
+            if(notify)Popup.notice("Diagramm gespeichert:\n" + file.getCanonicalPath());
             Log.Debug("Schreibe Datei:" + file.getCanonicalPath());
         } catch (IOException e) {
             Log.Debug(e);
@@ -322,17 +322,17 @@ public class Diagramme {
        
         return file;
     }
-    
-    public File writeToFile(String stDateiPfad) {
-       File file = new File(stDateiPfad);
-        try {
-            ChartUtilities.saveChartAsPNG(file, chart, 500, 400);
-            Popup.notice("Diagramm gespeichert:\n" + file.getCanonicalPath());
-            Log.Debug("Schreibe Datei:" + file.getCanonicalPath());
-        } catch (IOException e) {
-            Log.Debug(e);
-        }
-       
-        return file;
-    }
+//    
+//    public File writeToFile(String stDateiPfad) {
+//       File file = new File(stDateiPfad);
+//        try {
+//            ChartUtilities.saveChartAsPNG(file, chart, 1000, 800);
+//            Popup.notice("Diagramm gespeichert:\n" + file.getCanonicalPath());
+//            Log.Debug("Schreibe Datei:" + file.getCanonicalPath());
+//        } catch (IOException e) {
+//            Log.Debug(e);
+//        }
+//       
+//        return file;
+//    }
 }
