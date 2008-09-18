@@ -148,20 +148,20 @@ public class Rechnung extends mp4.items.Things implements mp4.datenbank.installa
         return prods;
     }
 
-    public String[][] getPaidEUR() {
-//        kontenid, preis, tax, datum
-        Query q = query.clone(TABLE_BILLS);
-        String[][] prods = q.select("gesamtpreis, gesamttax, datum", new String[]{"bezahlt", "1", "", "storno", "0", ""}, "datum", false, true, false);
-        String[][] tzh = new String[prods.length][4];
-
-        for (int g = 0; g < prods.length; g++) {
-            tzh[g][0] = Einstellungen.instanceOf().getEinnahmeDefKonto().getId().toString();
-            for (int l = 0; l < prods[g].length; l++) {
-                tzh[g][l + 1] = prods[g][l];
-            }
-        }
-        return tzh;
-    }
+//    public String[][] getPaidEUR() {
+////        kontenid, preis, tax, datumq.selectBetween("kontenid, preis, tax, datum", null, timeframe);
+//        Query q = query.clone(TABLE_BILLS);
+//        String[][] prods = q.select("gesamtpreis, gesamttax, datum", new String[]{"bezahlt", "1", "", "storno", "0", ""}, "datum", false, true, false);
+//        String[][] tzh = new String[prods.length][4];
+//
+//        for (int g = 0; g < prods.length; g++) {
+//            tzh[g][0] = Einstellungen.instanceOf().getEinnahmeDefKonto().getId().toString();
+//            for (int l = 0; l < prods[g].length; l++) {
+//                tzh[g][l + 1] = prods[g][l];
+//            }
+//        }
+//        return tzh;
+//    }
 
     public boolean hasId() {
         if (id > 0) {

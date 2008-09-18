@@ -44,9 +44,9 @@ public class TableCalculator implements Runnable {
     private JTextField bruttoTextField = new JTextField();
     public Double brutto = 0d;
     public Double netto = 0d;
-    public Double allovertax  = 0d;
+    public Double allovertax = 0d;
     private JComponent panel;
-    
+    private boolean checked = true;
 
     public TableCalculator(JTable table, JComponent panel) {
         defaultTaxRate = Double.valueOf(Einstellungen.instanceOf().getGlobaltax());
@@ -66,17 +66,62 @@ public class TableCalculator implements Runnable {
         CellEditor cell;
 
         while (true) {
+
+            while (!isStopped() && panel.isShowing()) {
+
+               calculate();
+                try {
+                    Thread.sleep(200);
+                } catch (Exception e) {
+                }
+            }
             try {
                 Thread.sleep(1000);
             } catch (Exception e) {
             }
-            while (!isStopped() && panel.isShowing()) {
+        }
+    }
 
-                try {
-                    Thread.sleep(800);
-                } catch (Exception e) {
-                }
+    public boolean isStopped() {
+        return stopped;
+    }
 
+    public void setStopped(boolean stopped) {
+
+        if (stopped) {
+            table.getCellEditor().stopCellEditing();
+            calculate();
+        }
+
+        this.stopped = stopped;
+    }
+
+    public boolean isNettoprices() {
+        return nettoprices;
+    }
+
+    public void setNettoprices(boolean nettoprices) {
+        this.nettoprices = nettoprices;
+    }
+
+    public JTextField getTaxTextField() {
+        return taxTextField;
+    }
+
+    public void setTaxTextField(JTextField taxTextField) {
+        this.taxTextField = taxTextField;
+    }
+
+    public JTextField getBruttoTextField() {
+        return bruttoTextField;
+    }
+
+    public void setBruttoTextField(JTextField bruttoTextField) {
+        this.bruttoTextField = bruttoTextField;
+    }
+
+    private void calculate() {
+         checked = false;
                 TableModel m = table.getModel();
 
                 Double tax = 0d;
@@ -84,14 +129,15 @@ public class TableCalculator implements Runnable {
                 netto = 0d;
                 brutto = 0d;
                 allovertax = 0d;
+                int count = 0;
                 Double curnetto = 0d;
                 Double curbrutto = 0d;
                 Double curnettoe = 0d;
                 Double curbruttoe = 0d;
 
-
                 try {
                     if (!table.isEditing()) {
+
                         for (int row = 0; row < m.getRowCount(); row++) {
                             //anzahl,bezeichnung,mehrwertsteuer,nettopreis
 
@@ -130,53 +176,23 @@ public class TableCalculator implements Runnable {
 
                                 m.setValueAt((curnetto), row, 4);
                             }
-                            
+
                             allovertax = allovertax + (tax + 100);
+                            count++;
                         }
                         getTaxTextField().setText(FormatNumber.formatDezimal(brutto - netto));//!tax
                         getBruttoTextField().setText(FormatNumber.formatDezimal(brutto));//!tax
 
-                        if (netto > 0) {
-                           allovertax = (allovertax / netto);
+                        if (netto > 0 && count > 0) {
+                            allovertax = (allovertax / count)/100;
                         } else {
                             allovertax = 0d;
                         }
+                        checked = true;
+
+//                       System.out.println(brutto + " , " + allovertax);
                     }
                 } catch (Exception e) {
                 }
-            }
-        }
-    }
-
-    public boolean isStopped() {
-        return stopped;
-    }
-
-    public void setStopped(boolean stopped) {
-        this.stopped = stopped;
-    }
-
-    public boolean isNettoprices() {
-        return nettoprices;
-    }
-
-    public void setNettoprices(boolean nettoprices) {
-        this.nettoprices = nettoprices;
-    }
-
-    public JTextField getTaxTextField() {
-        return taxTextField;
-    }
-
-    public void setTaxTextField(JTextField taxTextField) {
-        this.taxTextField = taxTextField;
-    }
-
-    public JTextField getBruttoTextField() {
-        return bruttoTextField;
-    }
-
-    public void setBruttoTextField(JTextField bruttoTextField) {
-        this.bruttoTextField = bruttoTextField;
     }
 }

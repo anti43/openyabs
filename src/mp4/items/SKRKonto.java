@@ -17,12 +17,10 @@
 
 package mp4.items;
 
-import java.util.Date;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.globals.Strings;
 import mp4.datenbank.verbindung.Query;
 
-import mp4.items.*;
 
 /**
  *
@@ -54,7 +52,6 @@ public class SKRKonto extends mp4.items.Things implements mp4.datenbank.installa
 
     public SKRKonto(ConnectionHandler query, String string, boolean b) {
         super(query.clone(TABLE_KONTEN));
-        
         this.explode(this.selectLast("*", "nummer", string, false));
     }
  
@@ -120,11 +117,7 @@ public class SKRKonto extends mp4.items.Things implements mp4.datenbank.installa
             isSaved = true;
         } else if (id == 0) {
             this.insert(TABLE_KONTEN_FIELDS, this.collect(),null);
-        } else {
-
-            mp4.items.Popup.warn(java.util.ResourceBundle.getBundle("languages/Bundle").getString("no_data_to_save"), Popup.WARN);
-
-        }
+        } 
     }
 
     public String[][] getAll() {

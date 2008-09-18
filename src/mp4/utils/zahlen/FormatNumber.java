@@ -4,12 +4,11 @@
  */
 package mp4.utils.zahlen;
 
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.ParseException;
-import mp4.items.Popup;
 import mp4.logs.*;
 import mp4.einstellungen.Einstellungen;
-
 
 /**
  *
@@ -17,21 +16,22 @@ import mp4.einstellungen.Einstellungen;
  */
 public class FormatNumber {
 
-    public static NumberFormat getDefaultDecimalFormat(){
-    
+    public static NumberFormat getDefaultDecimalFormat() {
+
         return new java.text.DecimalFormat("#,##0.00;(#,##0.00)");
     }
-    
+
     public static String formatDezimal(Double number) {
         java.text.DecimalFormat n = new java.text.DecimalFormat("#,##0.00;(#,##0.00)");
         n.setMaximumFractionDigits(2);
-        return n.format(number);
+        return n.format(round(number));
     }
-    
-     public static Double formatDoubleDec(Double number) {
-        java.text.DecimalFormat n = new java.text.DecimalFormat("####0.00;(####0.00)");
-        n.setMaximumFractionDigits(2);
-        return Double.valueOf(n.format(number));
+
+    public static Double round(double number) {
+//        System.out.print(number);
+        BigDecimal b = BigDecimal.valueOf(number);
+        b = b.setScale(2, BigDecimal.ROUND_HALF_UP);
+        return b.doubleValue();
     }
 
     public static Double parseDezimal(String number) {
@@ -49,14 +49,14 @@ public class FormatNumber {
     static String formatDezimal(Float number) {
         java.text.DecimalFormat n = new java.text.DecimalFormat("#,##0.00;(#,##0.00)");
         n.setMaximumFractionDigits(2);
-        return n.format(number);
+        return n.format(round(Double.valueOf(number)));
     }
-    
+
     public static String formatLokalCurrency(Double betrag) {
         NumberFormat n = NumberFormat.getCurrencyInstance(Einstellungen.instanceOf().getLocale());
-        return n.format(betrag);
+        return n.format(round(betrag));
     }
-    
+
     public static String formatPercent(Object obj) {
         return obj.toString() + "%";
     }

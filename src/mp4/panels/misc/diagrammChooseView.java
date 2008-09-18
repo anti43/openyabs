@@ -30,7 +30,7 @@ public class diagrammChooseView extends commonPanel{
     public diagrammChooseView(mainframe frame) {
         initComponents();
         this.frame = frame;
-        dateField2.setDate(DateConverter.addYear(new Date()));
+        dateField1.setDate(DateConverter.getSylvesterOf(new Date()));
     }
 
     /** This method is called from within the constructor to

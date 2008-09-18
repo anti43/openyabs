@@ -39,4 +39,9 @@ public class vTimeframe {
     public long getTime() {
         return time;
     }
+    
+    @Override
+    public String toString(){
+     return start + " - " + end; 
+    }
 }

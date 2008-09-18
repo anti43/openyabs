@@ -68,7 +68,7 @@ public abstract class Struktur {
         "CREATE TABLE rechnungen (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
         "Rechnungnummer VARCHAR(250) UNIQUE NOT NULL, KundenId INTEGER REFERENCES kunden (id)," +
         "Datum DATE NOT NULL," + "storno INTEGER DEFAULT 0," + "bezahlt INTEGER DEFAULT 0," +
-        "gesamtpreis DOUBLE DEFAULT 0," + "gesamttax INTEGER NOT NULL," +
+        "gesamtpreis DOUBLE DEFAULT 0," + "gesamttax DOUBLE DEFAULT 0," +
         "AfDatum DATE NOT NULL," + "mahnungen INTEGER DEFAULT 0," +
         "deleted INTEGER DEFAULT 0," +
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +

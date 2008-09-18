@@ -132,10 +132,10 @@ public class offersView extends mp4.panels.misc.commonPanel implements panelInte
     private void createNew() {
 //        CalculatedTableValues calculated;
         PostenTableModel m;
-
+        SelectionCheck selection = new SelectionCheck(jTable1);
         if (hasCustomer() && validDate()) {
 
-            SelectionCheck selection = new SelectionCheck(jTable1);
+
 //            calculated = DataModelUtils.calculateTableCols(jTable1, 0, 3, 4);
             m = (PostenTableModel) jTable1.getModel();
 
@@ -1102,11 +1102,10 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 
 //        CalculatedTableValues calculated;
         PostenTableModel m;
-
+        SelectionCheck selection = new SelectionCheck(jTable1);
         if (hasValidCurrentBill()) {
             if (hasCustomer() && validDate()) {
 
-                SelectionCheck selection = new SelectionCheck(jTable1);
 //                calculated = DataModelUtils.calculateTableCols(jTable1, 0, 3, 4);
                 m = (PostenTableModel) jTable1.getModel();
 
@@ -1248,7 +1247,8 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             new PDF_Angebot(currentOffer);
             new HistoryItem(ConnectionHandler.instanceOf(), Strings.BILL, "Angebot Nummer: " + currentOffer.getAngebotnummer() + " als PDF erzeugt.");
         } else {
-            Popup.notice("Sie müssen das Angebot erst anlegen.");}
+            Popup.notice("Sie müssen das Angebot erst anlegen.");
+        }
     }//GEN-LAST:event_jButton12MouseClicked
 
     private void jTextField6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextField6MouseClicked
@@ -1333,7 +1333,8 @@ private void jButton13MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
 
         mainframe.addBillPanel(r);
     } else {
-        Popup.notice("Sie müssen das Angebot erst anlegen.");}
+        Popup.notice("Sie müssen das Angebot erst anlegen.");
+    }
 }//GEN-LAST:event_jButton13MouseClicked
 
 private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -1341,7 +1342,8 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         Job job = new Job((Waitable) new PDF_Angebot(currentOffer), new PdfVorschauWindow(), mainframe.getMainProgress());
         job.execute();
     } else {
-        Popup.notice("Sie müssen das Angebot erst anlegen.");}
+        Popup.notice("Sie müssen das Angebot erst anlegen.");
+    }
 }//GEN-LAST:event_jButton1ActionPerformed
 // Variables declaration - do not modify//GEN-BEGIN:variables
 public javax.swing.JButton jButton1;
@@ -1451,7 +1453,6 @@ public javax.swing.JToolBar jToolBar2;
         updateListTable();
 
     }
-
 
     public People getContact() {
         return customer;

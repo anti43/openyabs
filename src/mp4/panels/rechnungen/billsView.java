@@ -5,6 +5,8 @@
  */
 package mp4.panels.rechnungen;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mp4.interfaces.Waitable;
 import mp4.interfaces.Waiter;
 import mp4.panels.misc.NumberFormatEditor;
@@ -60,6 +62,7 @@ import mp4.utils.tabellen.TableFormat;
 import mp4.utils.tabellen.models.BillListTableModel;
 import mp4.utils.tabellen.models.BillSearchListTableModel;
 import mp4.utils.tasks.Job;
+import mp4.utils.zahlen.FormatNumber;
 
 /**
  *
@@ -142,13 +145,14 @@ public class billsView extends mp4.panels.misc.commonPanel implements panelInter
     }
 
     private void createNew() {
-//        CalculatedTableValues calculated;
+////        CalculatedTableValues calculated;
+//        SelectionCheck selection = new SelectionCheck(jTable1);
+//  
         PostenTableModel m;
         calculator.setStopped(true);
 
         if (hasCustomer() && validDate()) {
-
-            SelectionCheck selection = new SelectionCheck(jTable1);
+            
 //            calculated = DataModelUtils.calculateTableCols(jTable1, 0, 3, 4);
             m = (PostenTableModel) jTable1.getModel();
 
@@ -1271,12 +1275,11 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 
 //        CalculatedTableValues calculated;
         PostenTableModel m;
+        calculator.setStopped(true);
 
         if (hasValidCurrentBill()) {
             if (hasCustomer() && validDate()) {
 
-
-                SelectionCheck selection = new SelectionCheck(jTable1);
 //                calculated = DataModelUtils.calculateTableCols(jTable1, 0, 3, 4);
                 m = (PostenTableModel) jTable1.getModel();
 
@@ -1310,6 +1313,7 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     this.setEdited(false);
                     mainframe.setMessage("Rechnung Nummer: " + bill.getRechnungnummer() + " editiert.");
                     new HistoryItem(Strings.BILL, "Rechnung Nummer: " + bill.getRechnungnummer() + " editiert.");
+                    calculator.setStopped(false);
                     this.angebot = null;
                     this.setBill(bill);
 

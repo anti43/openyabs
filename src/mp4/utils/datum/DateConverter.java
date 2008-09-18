@@ -21,6 +21,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  *
@@ -36,18 +37,19 @@ public class DateConverter {
     private static Calendar cl = Calendar.getInstance();
     //   yyyy-mm-dd hh.mm.ss[.nnnnnn] - SQL DATE Timestamp
     public static final DateFormat DB_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    public static final DateFormat DE_DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
-    public static final DateFormat DE_DATE_FORMAT_DAY = new SimpleDateFormat("dd");
-    public static final DateFormat DE_DATE_FORMAT_SHORTYEAR = new SimpleDateFormat("dd.MM.yy");
-    public static final DateFormat DE_DATE_FORMAT_SHORTMONTH = new SimpleDateFormat("dd.M.yyyy");
-    public static final DateFormat DE_DATE_FORMAT_NODAY_SHORTMONTH_SHORTYEAR = new SimpleDateFormat("M.yy");
-    public static final DateFormat DE_DATE_FORMAT_NODAY_SHORTMONTH_YEAR = new SimpleDateFormat("M.yyyy");
-    public static final DateFormat DE_DATE_FORMAT_SHORTMONTH_SHORTYEAR = new SimpleDateFormat("dd.M.yy");
-    public static final DateFormat DE_DATE_FORMAT_NODAY_MONTH_YEAR = new SimpleDateFormat("MM.yyyy");
-    public static final DateFormat DE_DATE_FORMAT_YEAR = new SimpleDateFormat("yyyy");
-    public static final DateFormat DE_DATE_FORMAT_MONTH = new SimpleDateFormat("MM");
+    public static final DateFormat DE_DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN);
+    public static final DateFormat DE_DATE_FORMAT_DAY = new SimpleDateFormat("dd", Locale.GERMAN);
+    public static final DateFormat DE_DATE_FORMAT_SHORTYEAR = new SimpleDateFormat("dd.MM.yy", Locale.GERMAN);
+    public static final DateFormat DE_DATE_FORMAT_SHORTMONTH = new SimpleDateFormat("dd.M.yyyy", Locale.GERMAN);
+    public static final DateFormat DE_DATE_FORMAT_NODAY_SHORTMONTH_SHORTYEAR = new SimpleDateFormat("M.yy", Locale.GERMAN);
+    public static final DateFormat DE_DATE_FORMAT_NODAY_SHORTMONTH_YEAR = new SimpleDateFormat("M.yyyy", Locale.GERMAN);
+    public static final DateFormat DE_DATE_FORMAT_SHORTMONTH_SHORTYEAR = new SimpleDateFormat("dd.M.yy", Locale.GERMAN);
+    public static final DateFormat DE_DATE_FORMAT_NODAY_MONTH_YEAR = new SimpleDateFormat("MM.yyyy", Locale.GERMAN);
+    public static final DateFormat DE_DATE_FORMAT_YEAR = new SimpleDateFormat("yyyy", Locale.GERMAN);
+    public static final DateFormat DE_DATE_FORMAT_MONTH = new SimpleDateFormat("MMMM", Locale.GERMAN);
+    public static final DateFormat DE_DATE_FORMAT_NODAY_LONGMONTH_YEAR = new SimpleDateFormat("MMMM.yyyy", Locale.GERMAN);
     public static final DateFormat ENG_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
-    public static final DateFormat[] DE_DATES = new DateFormat[]{DB_DATE_FORMAT, ENG_DATE_FORMAT,
+    public static final DateFormat[] DE_DATES = new DateFormat[]{DB_DATE_FORMAT, ENG_DATE_FORMAT, DE_DATE_FORMAT_NODAY_LONGMONTH_YEAR,
         DE_DATE_FORMAT, DE_DATE_FORMAT_SHORTYEAR, DE_DATE_FORMAT_SHORTMONTH, DE_DATE_FORMAT_NODAY_SHORTMONTH_SHORTYEAR,
         DE_DATE_FORMAT_SHORTMONTH_SHORTYEAR, DE_DATE_FORMAT_NODAY_MONTH_YEAR, DE_DATE_FORMAT_YEAR, DE_DATE_FORMAT_NODAY_SHORTMONTH_YEAR
     };
@@ -55,6 +57,10 @@ public class DateConverter {
 
     public static String getFullDefDateString(Date date) {
        return DE_FULL_DATE_FORMAT.format(new Date());
+    }
+
+    public static Date getSylvesterOf(Date date) {
+      return DateConverter.getDate(DE_DATE_FORMAT_YEAR.format(date));   
     }
 
     public static String getTodayDefDate() {

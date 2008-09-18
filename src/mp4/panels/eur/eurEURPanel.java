@@ -26,6 +26,7 @@ import mp4.utils.files.TableHtmlWriter;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.tabellen.TableFormat;
 import mp4.utils.tabellen.models.EURTableModel;
+import mp4.utils.ui.inputfields.InputVerifiers;
 
 /**
  *
@@ -40,8 +41,8 @@ public class eurEURPanel extends mp4.panels.misc.commonPanel implements panelInt
         initComponents();
 
         jTextField1.setText(DateConverter.getYear());
-
         jTable1.setModel(new EURTableModel().getModel());
+        jTextField1.setInputVerifier(InputVerifiers.getDateInputVerfier(jTextField1));
     }
 
     /** This method is called from within the constructor to
@@ -189,50 +190,28 @@ public class eurEURPanel extends mp4.panels.misc.commonPanel implements panelInt
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        SimpleDateFormat dateform;
-        Date date;
+
         EURTableModel model;
+        
         try {
-            SimpleDateFormat dateform2;
-            Date date2;
 
-            SimpleDateFormat dateformat3 = new SimpleDateFormat("MMMM", Locale.GERMAN);
-            SimpleDateFormat dateformat4 = new SimpleDateFormat("yyyy", Locale.GERMAN);
-
-            date2 = dateformat3.parse(jComboBox1.getSelectedItem().toString());
-            date = dateformat4.parse(jTextField1.getText());
-
-            dateform2 = new SimpleDateFormat("MM");
-            dateform = new SimpleDateFormat("yyyy");
-
-            year = dateform.format(date);
-            month = dateform2.format(date2);
-
-            model = new EURTableModel(year, month);
+            if(jComboBox1.getSelectedItem()!=null && !jComboBox1.getSelectedItem().equals("")) {
+                model = new EURTableModel(DateConverter.getDate(jComboBox1.getSelectedItem().toString() + "." + jTextField1.getText()), EURTableModel.MONAT);
+                year = jTextField1.getText();
+                month = jComboBox1.getSelectedItem().toString();
+            }
+            else {
+                model = new EURTableModel(DateConverter.getDate(jTextField1.getText()), EURTableModel.JAHR);
+                year = jTextField1.getText();
+            }
 
             jTable1.setModel(model.getModel());
             TableFormat.format(jTable1, 0, 380);
 
             jTable1.doLayout();
-        } catch (ParseException ex) {
-            try {
-                SimpleDateFormat d3 = new SimpleDateFormat("yyyy", Locale.GERMAN);
-                date = d3.parse(jTextField1.getText());
-
-                dateform = new SimpleDateFormat("yyyy");
-
-
-                year = dateform.format(date);
-                model = new EURTableModel(year);
-
-                jTable1.setModel(model.getModel());
-                TableFormat.format(jTable1, 0, 380);
-
-                jTable1.doLayout();
-            } catch (ParseException ex1) {
-                Popup.notice("Sie müssen ein Jahr angeben.");
-            }
-
+        } catch (Exception ex) {   
+                Popup.notice("Sie müssen ein Jahr angeben."); 
+                Log.Debug(ex);
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
