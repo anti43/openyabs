@@ -36,7 +36,7 @@ public class Ausgabe extends mp4.items.Things implements mp4.datenbank.installat
 //  "kontenid INTEGER DEFAULT NULL, beschreibung varchar(500) default NULL,"+
 //  "preis varchar(50) default NULL,"+"tax varchar(50) default NULL,"+"datum varchar(50) default NULL,"+
 
-    private Integer Kontenid = 0;
+    private Integer kontenid = 0;
     private String Beschreibung = "";
     private Double Preis = 0d;
     private Double Tax = 0d;
@@ -157,7 +157,7 @@ public class Ausgabe extends mp4.items.Things implements mp4.datenbank.installat
 
         Query q = ConnectionHandler.instanceOf().clone(TABLE_DUES);
 
-        String[][] prods = q.select("id,id,preis, datum", null, false);
+        String[][] prods = q.select("id,id,preis, datum, kontenid", null, false);
 
         return inserType(prods);
     }
@@ -177,7 +177,7 @@ public class Ausgabe extends mp4.items.Things implements mp4.datenbank.installat
 
 
                     if (j == 2) {
-                        pro[i][2] = new SKRKonto(Integer.valueOf(prods[i][0])).getGruppe();
+                        pro[i][2] = new SKRKonto(Integer.valueOf(prods[i][4])).getGruppe();
 
                         m--;
                     } else {
@@ -193,11 +193,11 @@ public class Ausgabe extends mp4.items.Things implements mp4.datenbank.installat
     }
 
     public Integer getKontenid() {
-        return Kontenid;
+        return kontenid;
     }
 
     public void setKontenid(Integer Kontenid) {
-        this.Kontenid = Kontenid;
+        this.kontenid = Kontenid;
     }
 
     public String getBeschreibung() {

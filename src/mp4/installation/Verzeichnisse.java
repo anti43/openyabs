@@ -36,8 +36,8 @@ public class Verzeichnisse implements Constants, Strings {
     private static File templates_dir;
     private static File cache_dir;
     private static File plugin_dir;
-    private static String backuppathtftext = Constants.USER_HOME;
-    private static String pdfpathtftext = Constants.USER_HOME;
+    private static String backuppathtftext = Main.MPPATH;
+    private static String pdfpathtftext = Main.MPPATH;
     ;
 
     public static void buildPath() throws IOException {
@@ -46,15 +46,15 @@ public class Verzeichnisse implements Constants, Strings {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        System.out.println("Workdir: " + workdir);
+        Log.Debug("Quellverzeichnis: " + workdir, true);
 
-        public_dir = new File(USER_HOME + SEP + PROG_NAME);
+        public_dir = new File(Main.APP_DIR);
 
         lib_dir = new File(getPublic_dir().getCanonicalPath() + File.separator + LIB_DIR);
         install_lib_dir = new File(workdir + SEP + LIB_DIR);
         install_templates_dir = new File(workdir + SEP + TEMPLATES_DIR);
         install_plugin_dir = new File(workdir + SEP + PLUGIN_DIR);
-        cache_dir = new File(DBROOTDIR + SEP + CACHE_DIR);
+        cache_dir = new File(Main.MPPATH + SEP + CACHE_DIR);
         plugin_dir = new File(getPublic_dir().getCanonicalPath() + File.separator + PLUGIN_DIR);
 
         if (Main.BACKUP_DIR == null) {

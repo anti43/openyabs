@@ -33,7 +33,8 @@ public class SKRKonto extends mp4.items.Things implements mp4.datenbank.installa
     private String Klasse = "";
     private String Gruppe = "";
     private String Art = "";
-   public Integer id = 0;
+    public Integer id = 0;
+   
     public Integer getId() {
         return id;
     }

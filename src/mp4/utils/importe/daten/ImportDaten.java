@@ -20,7 +20,7 @@ public class ImportDaten extends javax.swing.JFrame {
     /** Creates new form ImportDaten */
     public ImportDaten() {
         initComponents();
-        jTextField1.setText(Constants.DBROOTDIR + File.separator + "mpv36Database");
+        jTextField1.setText(Constants.USER_HOME + File.separator + ".mp" + File.separator + "mpv36Database");
         new Position(this);
         this.setVisible(rootPaneCheckingEnabled);
     }

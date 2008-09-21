@@ -95,17 +95,17 @@ public class Conn implements Strings {
         URL = "jdbc:derby:" + url + ";create=" + create + ";";
         this.connect();
 
-        try {
-            FileReaderWriter f = new FileReaderWriter(Constants.SETTINGS);
-
-            String[] dat = f.read().split(";");
-
-            f.write(Constants.DATABASEPATH + ";" + dat[1]);
-
-        } catch (Exception exception) {
-
-            Popup.notice(SETTINGS_NOT_FOUND + exception.getMessage());
-        }
+//        try {
+//            FileReaderWriter f = new FileReaderWriter(Constants.SETTINGS);
+//
+//            String[] dat = f.read().split(";");
+//
+//            f.write(Constants.DATABASEPATH + ";" + dat[1]);
+//
+//        } catch (Exception exception) {
+//
+//            Popup.notice(SETTINGS_NOT_FOUND + exception.getMessage());
+//        }
 
 
 //        tablesCreated = this.query(Structure.tables);

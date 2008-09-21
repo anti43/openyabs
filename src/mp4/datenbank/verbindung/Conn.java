@@ -27,6 +27,7 @@ import mp4.logs.*;
 import mp4.panels.misc.SplashScreen;
 import mp4.datenbank.installation.Daten;
 import mp4.datenbank.installation.Struktur;
+import mp4.main.Main;
 
 /**
  *
@@ -91,32 +92,24 @@ public class Conn implements Strings {
      * @param create 
      */
     private Conn(String url, boolean create) throws Exception {
-
         if (splash != null) {
             splash.setMessage(DB_INIT);
         }
-
         URL = "jdbc:derby:" + url + ";create=" + create + ";";
         this.connect();
-
-        try {
-            FileReaderWriter f = new FileReaderWriter(Constants.SETTINGS_FILE);
-
-            String[] dat = f.read().split(";");
-
-            f.write(Constants.MPPATH + ";" + dat[1]);
-
-        } catch (Exception exception) {
-
-            Popup.notice(SETTINGS_NOT_FOUND + exception.getMessage());
-        }
-
+//        try {
+//            FileReaderWriter f = new FileReaderWriter(Constants.SETTINGS_FILE);
+//            String[] dat = f.read().split(";");
+//            f.write(url + ";" + dat[1]);
+//
+//        } catch (Exception exception) {
+//
+//            Popup.notice(SETTINGS_NOT_FOUND + exception.getMessage());
+//        }
 
 //        tablesCreated = this.query(Structure.tables);
-
         tablesCreated = this.query(Struktur.SQL_COMMAND);
         this.query(Daten.SQL_COMMAND);
-
         Conn.reboot();
     }
 
@@ -128,19 +121,12 @@ public class Conn implements Strings {
             splash.setMessage(DB_INIT);
         }
         try {
-            FileReaderWriter rw = new FileReaderWriter(Constants.SETTINGS_FILE);
+            FileReaderWriter rw = new FileReaderWriter(Main.SETTINGS_FILE);
             String[] dat = rw.read().split(";");
-
-
-
             URL = "jdbc:derby:" + dat[0] + File.separator + Constants.DATABASENAME;
-
         } catch (Exception exception) {
             Popup.notice(SETTINGS_NOT_FOUND + exception.getMessage());
         }
-
-
-
         this.connect();
 
     }
@@ -195,9 +181,9 @@ public class Conn implements Strings {
             }
 
 
-            File f = new File(Constants.MPPATH + File.separator + Constants.DATABASENAME + File.separator + "dbex.lck");
+            File f = new File(Main.MPPATH + File.separator + Constants.DATABASENAME + File.separator + "dbex.lck");
             f.deleteOnExit();
-            File fi = new File(Constants.MPPATH + File.separator + Constants.DATABASENAME + File.separator + "db.lck");
+            File fi = new File(Main.MPPATH+ File.separator + Constants.DATABASENAME + File.separator + "db.lck");
             fi.deleteOnExit();
         } catch (SQLException ex) {
 

@@ -56,11 +56,19 @@ public class Main implements Strings {
     private static final String argCHANGE_BACKUP_DIR = "-backupdir=";
     private static final String argCHANGE_PDF_DIR = "-pdfdir=";
     private static final String argFILE_LOGGING = "-log=";
+    private static final String argDB_LOCATION = "-dbpath=";
+    private static final String argAPP_LOCATION = "-instpath=";
     
     
     public static String PDFDIR = null;
     public static String TEMPLATEDIR = null;
     public static String BACKUP_DIR = null;
+    public static String MPPATH  = Constants.USER_HOME + File.separator + ".mp";
+      /**
+     * Full path to settings file
+     */
+    public static String SETTINGS_FILE = Main.MPPATH + File.separator + "settings" + Constants.RELEASE_VERSION + ".mp";
+    public static String APP_DIR  = Constants.USER_HOME + Constants.SEP + Constants.PROG_NAME;
 
     private static void getOS() {
         if (System.getProperty("os.name").contains("Windows")) {
@@ -75,42 +83,46 @@ public class Main implements Strings {
         if (args != null && args.length > 0) {
             for (int i = 0; i < args.length; i++) {
                 arg = args[i];
-                if (arg.contentEquals(argFORCECOPYFILES)) {
+                if (arg.contains(argFORCECOPYFILES)) {
                     FORCE_FILE_COPY = true;
-                } else if (arg.contentEquals(argFORCECREATEDB)) {
+                } else if (arg.contains(argFORCECREATEDB)) {
                     FORCE_CREATE_DATABASE = true;
                 }
-                if (arg.contentEquals(argNOCOPYFILES)) {
+                if (arg.contains(argNOCOPYFILES)) {
                     FORCE_NO_FILE_COPY = true;
-                } else if (arg.contentEquals(argNOCREATEDB)) {
+                } else if (arg.contains(argNOCREATEDB)) {
                     FORCE_NO_DATABASE = true;
-                } else if (arg.contentEquals(argVERBOSE)) {
+                } else if (arg.contains(argVERBOSE)) {
                     Log.setLogLevel(Log.LOGLEVEL_HIGH);
-                } else if (arg.contentEquals(argCHANGE_TEMPLATE_DIR)) {
+                } else if (arg.contains(argCHANGE_TEMPLATE_DIR)) {
                     try {
                         TEMPLATEDIR = arg.split("=")[1];
                     } catch (Exception e) {
                         TEMPLATEDIR = null;
                     }
-                } else if (arg.contentEquals(argCHANGE_BACKUP_DIR)) {
+                } else if (arg.contains(argCHANGE_BACKUP_DIR)) {
                     try {
                         BACKUP_DIR = arg.split("=")[1];
                     } catch (Exception e) {
                         BACKUP_DIR = null;
                     }
-                } else if (arg.contentEquals(argCHANGE_PDF_DIR)) {
+                } else if (arg.contains(argCHANGE_PDF_DIR)) {
                     try {
                         PDFDIR = arg.split("=")[1];
                     } catch (Exception e) {
                         PDFDIR = null;
                     }
-                } else if (arg.contentEquals(argFILE_LOGGING)) {
+                } else if (arg.contains(argFILE_LOGGING)) {
                     try {
                         Logger.setLogFile(arg.split("=")[1]);
                     } catch (Exception e) {
                         Log.Debug("Fehler beim Schreiben der Logdatei: " +e.getMessage(), true);
-                        
                     }
+                } else if (arg.contains(argDB_LOCATION)) {
+                    MPPATH = arg.split("=")[1];
+                    SETTINGS_FILE = Main.MPPATH + File.separator + "settings" + Constants.RELEASE_VERSION + ".mp";
+                } else if (arg.contains(argAPP_LOCATION)) {
+                    APP_DIR = arg.split("=")[1];
                 }
             }
         }
@@ -118,7 +130,6 @@ public class Main implements Strings {
 
     public Main() {
 
-        Log.setLogLevel(Log.LOGLEVEL_LOW);
 
         setLaF();
         splash = new SplashScreen(TEST_CONF);
@@ -155,7 +166,7 @@ public class Main implements Strings {
     }
 
     private boolean findDatabase() {
-        FileReaderWriter f = new FileReaderWriter(Constants.SETTINGS_FILE);
+        FileReaderWriter f = new FileReaderWriter(SETTINGS_FILE);
         String[] dat = f.read().split(COLON);
         String db = dat[0] + File.separator + Constants.DATABASENAME;
         File test = new File(db);
@@ -164,12 +175,13 @@ public class Main implements Strings {
 
     private boolean findSettings() {
         //Settings Datei suchen und schreiben
-        File df = new File(Constants.SETTINGS_FILE);
+        File df = new File(SETTINGS_FILE);
+        Log.Debug("Arbeitsverzeichnis: " + df.getParent(), true);
         if (df.exists()) {
         } else {
             if (df.mkdirs()) {
-                FileReaderWriter f = new FileReaderWriter(Constants.SETTINGS_FILE);
-                f.write(Constants.MPPATH + COLON + VERSION);
+                FileReaderWriter f = new FileReaderWriter(SETTINGS_FILE);
+                f.write(Main.MPPATH + COLON + VERSION);
             } else {
                 Popup.notice(PERMISSION_DENIED);
                 System.err.println(PERMISSION_DENIED);

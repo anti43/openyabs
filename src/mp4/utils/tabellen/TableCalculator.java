@@ -89,7 +89,10 @@ public class TableCalculator implements Runnable {
     public void setStopped(boolean stopped) {
 
         if (stopped) {
-            table.getCellEditor().stopCellEditing();
+            try {
+                table.getCellEditor().stopCellEditing();
+            } catch (Exception e) {
+            }
             calculate();
         }
 

@@ -36,6 +36,7 @@ import mp4.frames.mainframe;
 import mp4.einstellungen.Einstellungen;
 import mp4.items.HistoryItem;
 import mp4.items.Product;
+import mp4.main.Main;
 import mp4.utils.listen.ListenDataUtils;
 import mp4.utils.tabellen.TableFormat;
 
@@ -54,9 +55,7 @@ public class backupView extends mp4.panels.misc.commonPanel implements panelInte
     private File src;
     private Einstellungen l;
     private SimpleDateFormat df;
-    private FileReaderWriter rw;
     private SimpleDateFormat df2;
-    private String[] dat;
     private ArrayList list;
 
     /** Creates new form customers
@@ -72,8 +71,6 @@ public class backupView extends mp4.panels.misc.commonPanel implements panelInte
         df = new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss");
         df2 = new SimpleDateFormat("dd. MMMMMMMM yyyy HH:mm:ss");
         this.validateTable();
-        rw = new FileReaderWriter(Constants.SETTINGS_FILE);
-        dat = rw.read().split(";");
 
     }
 
@@ -90,7 +87,9 @@ public class backupView extends mp4.panels.misc.commonPanel implements panelInte
 private void initComponents() {
 
 jPanel1 = new javax.swing.JPanel();
-jLabel1 = new javax.swing.JLabel();
+jToolBar1 = new javax.swing.JToolBar();
+jButton6 = new javax.swing.JButton();
+jButton7 = new javax.swing.JButton();
 jPanel2 = new javax.swing.JPanel();
 jLabel2 = new javax.swing.JLabel();
 jScrollPane1 = new javax.swing.JScrollPane();
@@ -98,34 +97,58 @@ jTable1 = new javax.swing.JTable();
 jLabel3 = new javax.swing.JLabel();
 jTextField1 = new javax.swing.JTextField();
 jButton3 = new javax.swing.JButton();
-jToolBar1 = new javax.swing.JToolBar();
-jButton6 = new javax.swing.JButton();
-jButton7 = new javax.swing.JButton();
 
-setBackground(new java.awt.Color(204, 204, 255));
+setBackground(new java.awt.Color(204, 204, 204));
 
 jPanel1.setBackground(new java.awt.Color(255, 255, 204));
 jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-jLabel1.setFont(new java.awt.Font("DejaVu Sans", 1, 14));
-jLabel1.setText("Backup");
+jToolBar1.setFloatable(false);
+jToolBar1.setRollover(true);
+
+jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/3232/filesave.png"))); // NOI18N
+jButton6.setToolTipText("Sicherung anlegen");
+jButton6.setFocusable(false);
+jButton6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+jButton6.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+jButton6.addMouseListener(new java.awt.event.MouseAdapter() {
+public void mouseClicked(java.awt.event.MouseEvent evt) {
+jButton6MouseClicked(evt);
+}
+});
+jToolBar1.add(jButton6);
+
+jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/3232/agt_reload.png"))); // NOI18N
+jButton7.setToolTipText("Sicherung zurückspielen");
+jButton7.setFocusable(false);
+jButton7.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+jButton7.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+jButton7.addMouseListener(new java.awt.event.MouseAdapter() {
+public void mouseClicked(java.awt.event.MouseEvent evt) {
+jButton7MouseClicked(evt);
+}
+});
+jButton7.addActionListener(new java.awt.event.ActionListener() {
+public void actionPerformed(java.awt.event.ActionEvent evt) {
+jButton7ActionPerformed(evt);
+}
+});
+jToolBar1.add(jButton7);
 
 javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
 jPanel1.setLayout(jPanel1Layout);
 jPanel1Layout.setHorizontalGroup(
 jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-.addGroup(jPanel1Layout.createSequentialGroup()
-.addContainerGap()
-.addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-.addContainerGap(389, Short.MAX_VALUE))
+.addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 512, Short.MAX_VALUE)
 );
 jPanel1Layout.setVerticalGroup(
 jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-.addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE)
+.addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
 );
 
 jPanel2.setBackground(new java.awt.Color(227, 219, 202));
 
+jLabel2.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
 jLabel2.setText("Verfügbare Sicherungsdateien:");
 
 jTable1.setAutoCreateRowSorter(true);
@@ -139,7 +162,7 @@ jTable1.setModel(new javax.swing.table.DefaultTableModel(
 ));
 jScrollPane1.setViewportView(jTable1);
 
-jLabel3.setText("Pfad");
+jLabel3.setText("Pfad:");
 
 jButton3.setText("wählen..");
 jButton3.addActionListener(new java.awt.event.ActionListener() {
@@ -168,7 +191,7 @@ jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 .addContainerGap()
 .addComponent(jLabel2)
 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-.addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE)
+.addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE)
 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 .addComponent(jLabel3)
 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -178,41 +201,11 @@ jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 .addContainerGap())
 );
 
-jToolBar1.setRollover(true);
-
-jButton6.setText("Sicherung anlegen");
-jButton6.setFocusable(false);
-jButton6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-jButton6.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-jButton6.addMouseListener(new java.awt.event.MouseAdapter() {
-public void mouseClicked(java.awt.event.MouseEvent evt) {
-jButton6MouseClicked(evt);
-}
-});
-jToolBar1.add(jButton6);
-
-jButton7.setText("zurückspielen");
-jButton7.setFocusable(false);
-jButton7.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-jButton7.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-jButton7.addMouseListener(new java.awt.event.MouseAdapter() {
-public void mouseClicked(java.awt.event.MouseEvent evt) {
-jButton7MouseClicked(evt);
-}
-});
-jButton7.addActionListener(new java.awt.event.ActionListener() {
-public void actionPerformed(java.awt.event.ActionEvent evt) {
-jButton7ActionPerformed(evt);
-}
-});
-jToolBar1.add(jButton7);
-
 javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
 this.setLayout(layout);
 layout.setHorizontalGroup(
 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-.addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 516, Short.MAX_VALUE)
 .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 );
 layout.setVerticalGroup(
@@ -220,9 +213,7 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 .addGroup(layout.createSequentialGroup()
 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-.addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-.addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+.addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 );
 }// </editor-fold>//GEN-END:initComponents
 
@@ -231,12 +222,12 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
         String savefile;
 
         try {
-            path = dat[0] + File.separator + Constants.DATABASENAME;
+            path = Main.MPPATH + File.separator + Constants.DATABASENAME;
             store = l.getBackupverz();
             savefile = store + File.separator + df.format(new Date()) + ".mpsavefile-40.zip";
 
             if (store.equals("")) {
-                store = Constants.USER_HOME + File.separator + Constants.DATABASENAME;
+                store = Main.MPPATH + File.separator + Constants.DATABASENAME;
             }
 
             Log.Debug("Anlegen einer Sicherungsdatei:\nZiel: " + savefile, true);
@@ -298,9 +289,9 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     "Sicher?", JOptionPane.YES_NO_OPTION)) == JOptionPane.YES_OPTION) {
                 jButton6MouseClicked(evt);
                 try {
-                    File olddb = new File(dat[0] + File.separator + Constants.DATABASENAME);
-                    path = new File(dat[0]);
-                    store = path.getCanonicalPath() + File.separator + Constants.DATABASENAME;
+                    File olddb = new File(Main.MPPATH + File.separator + Constants.DATABASENAME);
+//                    path = new File(dat[0]);
+                    store = Main.MPPATH + File.separator + Constants.DATABASENAME;
                     Log.Debug("Zurückspielen einer Sicherungsdatei:\nZiel: " + store, true);
                     FileDirectoryHandler.deleteTree(olddb);
 //                int z =path.getCanonicalPath().lastIndexOf(File.separator);
@@ -325,7 +316,6 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 public javax.swing.JButton jButton3;
 public javax.swing.JButton jButton6;
 public javax.swing.JButton jButton7;
-public javax.swing.JLabel jLabel1;
 public javax.swing.JLabel jLabel2;
 public javax.swing.JLabel jLabel3;
 public javax.swing.JPanel jPanel1;

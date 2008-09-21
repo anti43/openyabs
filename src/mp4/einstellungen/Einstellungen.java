@@ -31,6 +31,7 @@ import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.utils.files.FileReaderWriter;
 import mp4.utils.ui.inputfields.InputVerifiers;
 import mp4.logs.*;
+import mp4.main.Main;
 import mp4.utils.datum.DateConverter;
 
 /**
@@ -127,7 +128,7 @@ public class Einstellungen extends mp4.items.People implements mp4.datenbank.ins
     public String getVersion() {
 
         try {
-            FileReaderWriter f = new FileReaderWriter(Constants.SETTINGS_FILE);
+            FileReaderWriter f = new FileReaderWriter(Main.SETTINGS_FILE);
             String[] dats = f.read().split(";");
 
             return dats[1];
@@ -143,7 +144,7 @@ public class Einstellungen extends mp4.items.People implements mp4.datenbank.ins
     public String getDbPath() {
 
         try {
-            FileReaderWriter f = new FileReaderWriter(Constants.SETTINGS_FILE);
+            FileReaderWriter f = new FileReaderWriter(Main.SETTINGS_FILE);
             String[] dats = f.read().split(";");
 
             return dats[0];

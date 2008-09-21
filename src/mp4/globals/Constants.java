@@ -19,6 +19,7 @@
 package mp4.globals;
 
 import java.io.File;
+import mp4.main.Main;
 
 /**
  *
@@ -30,10 +31,11 @@ public interface Constants {
      * Version info
      */
     public static String VERSION = "4.00";
-    public static String TITLE = "[Teatime]";
+    public static String RELEASE_VERSION = "4";
+    public static String TITLE = "[Vermont]";
     public static String VERSION_URL = "Not Used";
     public static String JAR_NAME = "MPV4.jar";
-    public static String PROG_NAME = "MP-RUK_4";
+    public static String PROG_NAME = "MP-RUK_" + Constants.VERSION + "";
     public static String JAVA_VERSION = "Java Version: " + System.getProperty("java.version");
     public static String PLUGIN_IDENTIFIER = "MP4Plugin";
     public static String PLUGIN_LOAD_CLASS = "plugin.Main";
@@ -45,17 +47,14 @@ public interface Constants {
     /**
      * Name of databasedir 
      */
-    public static final String DATABASENAME = "mpv40Database";
+    public static final String DATABASENAME = "mpv" + Constants.RELEASE_VERSION  + "Database";
     /**
      * Full path to database dir 
      */
-    public static final String MPPATH = Constants.USER_HOME + File.separator + ".mp";
-    /**
-     * Full path to settings file 
-     */
-    public static String SETTINGS_FILE = Constants.USER_HOME + File.separator + ".mp" + File.separator + "settings40.mp";
+//    public static final String MPPATH = Main.MPPATH;
+  
     public static String SEP = File.separator;
-    public static String TEMPLATES_DIR = "templates";
+    public static String TEMPLATES_DIR = "Vorlagen";
     public static String LIB_DIR = "lib";
     public static String PDF = "PDF";
     public static String OFFER_SAVE_DIR = "Angebote";
@@ -64,9 +63,8 @@ public interface Constants {
     public static String BILL_SAVE_DIR = "Rechnungen";
     public static String ARREAR_SAVE_DIR = "Mahnungen";
     public static String PRODUCT_SAVE_DIR = "Produkte";
-    public static String BACKUPS_SAVE_DIR = "backups";
+    public static String BACKUPS_SAVE_DIR = "Backup";
     public static String ICON_NAME_LIN = "mp.desktop";
-    public static String ICON_NAME_WIN = "Rechnungs-Kundenverwaltung.url";
+    public static String ICON_NAME_WIN = "MP-Rechnungs-Kundenverwaltung.url";
     public static String DESKTOP = "Desktop";
-    public static String DBROOTDIR = Constants.USER_HOME + File.separator + ".mp";
 }
