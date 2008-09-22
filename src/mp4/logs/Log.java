@@ -28,14 +28,14 @@ public class Log {
 
     public static final int LOGLEVEL_LOW = 0;
     public static final int LOGLEVEL_HIGH = 1;
-    private static int loglevel = 1;
+    private static int loglevel = 0;
     private static Logger logger = new Logger();
 
     public static void PrintArray(Object[][][] array) {
-
-        if (loglevel != LOGLEVEL_LOW) {
-            logger.setVisible(true);
-        }
+//
+//        if (loglevel != LOGLEVEL_LOW) {
+//            logger.setVisible(true);
+//        }
 
         for (int i = 0; i < array.length; i++) {
             try {
@@ -63,9 +63,9 @@ public class Log {
     }
 
     public static void PrintArray(Object[][] array) {
-        if (loglevel != LOGLEVEL_LOW) {
-            logger.setVisible(true);
-        }
+//        if (loglevel != LOGLEVEL_LOW) {
+//            logger.setVisible(true);
+//        }
         for (int i = 0; i < array.length; i++) {
             for (int k = 0; k < array[i].length; k++) {
                 if (loglevel != LOGLEVEL_LOW) {
@@ -80,9 +80,9 @@ public class Log {
     }
 
     public static void PrintArray(Object[] string) {
-        if (loglevel != LOGLEVEL_LOW) {
-            logger.setVisible(true);
-        }
+//        if (loglevel != LOGLEVEL_LOW) {
+//            logger.setVisible(true);
+//        }
         for (int i = 0; i < string.length; i++) {
 
             if (loglevel != LOGLEVEL_LOW) {
@@ -97,9 +97,9 @@ public class Log {
     }
 
     public static void Debug(Object obj) {
-        if (loglevel != LOGLEVEL_LOW) {
-            logger.setVisible(true);
-        }
+//        if (loglevel != LOGLEVEL_LOW) {
+//            logger.setVisible(true);
+//        }
         if (loglevel != LOGLEVEL_LOW) {
             try {
                 logger.log(obj);
@@ -110,9 +110,9 @@ public class Log {
     }
 
     public static void Debug(Exception ex) {
-        if (loglevel != LOGLEVEL_LOW) {
-            logger.setVisible(true);
-        }
+//        if (loglevel != LOGLEVEL_LOW) {
+//            logger.setVisible(true);
+//        }
         if (loglevel != LOGLEVEL_LOW) {
             try {
                 logger.log(ex.getMessage() + "\n" + ex.getCause());
@@ -166,9 +166,9 @@ public class Log {
     }
 
     public static void Debug(String[][] array) {
-        if (loglevel != LOGLEVEL_LOW) {
-            logger.setVisible(true);
-        }
+//        if (loglevel != LOGLEVEL_LOW) {
+//            logger.setVisible(true);
+//        }
         for (int i = 0; i < array.length; i++) {
             for (int k = 0; k < array[i].length; k++) {
                 if (loglevel != LOGLEVEL_LOW) {

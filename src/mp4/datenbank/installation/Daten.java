@@ -51,8 +51,8 @@ public abstract class Daten {
                 "in Verbindung. Möglicherweise konnten wir Ihre Zahlung nicht zuordnen, " +
                 "weil z.B. der Verwendungszweck nicht korrekt angegeben wurde.\n\nMit freundlichen Grüßen\n\n')",
                 
-        "INSERT INTO programmdaten(name, wert) VALUES ('RECHNUNG_NUMMER_FORMAT',  '{JAHR}-{MONAT_NAME}-&!00000&!2')",
-        "INSERT INTO programmdaten(name, wert) VALUES ('ANGEBOT_NUMMER_FORMAT',  '{JAHR}-{MONAT_NAME}-&!00000&!2')", 
+        "INSERT INTO programmdaten(name, wert) VALUES ('RECHNUNG_NUMMER_FORMAT',  '{JAHR}-&!00000&!1')",
+        "INSERT INTO programmdaten(name, wert) VALUES ('ANGEBOT_NUMMER_FORMAT',  '{JAHR}-&!00000&!1')", 
         "INSERT INTO programmdaten(name, wert) VALUES ('MANUFACTURER_NUMMER_FORMAT',  'HS-&!00000&!0')",
         "INSERT INTO programmdaten(name, wert) VALUES ('SUPPLIER_NUMMER_FORMAT',  'LF-&!00000&!0')", 
         "INSERT INTO programmdaten(name, wert) VALUES ('CUSTOMER_NUMMER_FORMAT',  'KU-&!00000&!0')",

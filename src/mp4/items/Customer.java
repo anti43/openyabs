@@ -21,7 +21,6 @@ import java.util.Date;
 import mp4.interfaces.Countable;
 import mp4.datenbank.verbindung.Query;
 import mp4.items.handler.NumberFormatHandler;
-import mp4.items.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.logs.*;
 
@@ -75,21 +74,18 @@ public class Customer extends mp4.items.People implements mp4.datenbank.installa
         nfh = new NumberFormatHandler(this, new Date());
     }
 
-    public Customer(ConnectionHandler query, String nummer, boolean like) {
-        super(query.clone(TABLE_CUSTOMERS));
-//        this.id=Integer.valueOf(id);
-        try {
-            this.explode(this.selectLast("*", "id", id.toString(), true));
-        } catch (Exception ex) {
-            Log.Debug(ex);
+    public Customer(String nummer) throws Exception {
+        super(ConnectionHandler.instanceOf().clone(TABLE_CUSTOMERS));
+        String[] vals = this.selectLast("*", "nummer", nummer, false);
+        if (vals != null && vals.length > 0) {
+            this.explode(vals);
+        } else {
+            throw new Exception("Datensatz nicht vorhanden");
         }
-        this.query = query;
+        this.query = ConnectionHandler.instanceOf();
         nfh = new NumberFormatHandler(this, new Date());
     }
 
-//    public String[][] getAll() {
-//       return getAll(true);
-//    }
     @SuppressWarnings("unchecked")
     public ArrayList getAllCustomers() {
         ArrayList arr = new ArrayList();

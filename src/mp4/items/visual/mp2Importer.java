@@ -5,6 +5,8 @@
  */
 package mp4.items.visual;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mp4.frames.mainframe;
 
 import java.awt.Cursor;
@@ -290,9 +292,14 @@ public class mp2Importer extends javax.swing.JFrame {
 
                         compat.mp2.kunde k = new compat.mp2.kunde(mainf, r.kundenID);
                         Log.Debug("MP3 Kunde Instanzieren : Nummer:" + k.Kundennummer);
-                        Customer c = new Customer(ConnectionHandler.instanceOf(), k.Kundennummer, true);
+                        Customer c = null;
 //     Log.Debug(rechngs);
                         Rechnung b = new Rechnung(ConnectionHandler.instanceOf());
+                        try {
+                            c = new Customer( k.Kundennummer);
+                        } catch (Exception ex) {
+                            Logger.getLogger(mp2Importer.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                         b.setRechnungnummer(rechngs[i][1]);
                         b.setKundenId(c.getId());
 

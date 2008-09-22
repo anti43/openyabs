@@ -10,6 +10,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import javax.swing.text.BadLocationException;
+import mp4.logs.Log;
+import mp4.utils.files.FileReaderWriter;
 
 /**
  *
@@ -19,7 +21,7 @@ public class Logger extends javax.swing.JFrame {
 
     private static File logfile = null;
     private static boolean FILE_LOG_ENABLED = false;
-    private static FileWriter logwriter;
+    private static FileReaderWriter logwriter;
 
     public static void setLogFile(String string) throws Exception {
         Logger.logfile = new File(string);
@@ -30,7 +32,9 @@ public class Logger extends javax.swing.JFrame {
             throw new Exception("Fehler in " + logfile.getCanonicalPath());
         } else {
             FILE_LOG_ENABLED = true;
-            logwriter = new FileWriter(logfile);
+            logwriter = new FileReaderWriter(logfile);
+            Log.Debug("Logging to File: " +  logfile.getPath(), true);
+            
         }
     }
 
@@ -102,7 +106,7 @@ public class Logger extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 434, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 463, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(jLabel1)
                         .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING)))
@@ -114,7 +118,7 @@ public class Logger extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 533, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 173, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1))
         );

@@ -31,7 +31,6 @@ import java.util.logging.Logger;
 
 public class FileReaderWriter {
 
-    private String file;
     private BufferedReader datenstrom;
     private char[] charArray;
     private File filer;
@@ -42,24 +41,52 @@ public class FileReaderWriter {
      * A reader/writer helper class for textfiles
      * @param file
      */
-    public FileReaderWriter(String file) {
-        this.file = file;
+    public FileReaderWriter(File file) {
+        this.filer = file;
     }
 
     /**
+     * A reader/writer helper class for textfiles
+     * @param file
+     */
+    public FileReaderWriter(String file) {
+        filer = new File(file);
+    }
+
+    /**
+     * Appends the String to a file (new line) or creates it if needed
      * 
      * @param text
      * @return true is writing successful
      */
-    public boolean write (String text) {
+    public boolean write(String text) {
+        try {
+            text+="\r\n";
+            FileWriter out = new FileWriter(filer, true);
+            BufferedWriter writer = new BufferedWriter(out);
+            writer.write(text);
+            writer.close();
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Creates a file and writes the String into it - \
+     * deletes existing files!
+     * 
+     * @param text
+     * @return true is writing successful
+     */
+    public boolean writeOnce(String text) {
         try {
 
-            filer = new File(file);
-            
-            if(filer.exists()) {
+            if (filer.exists()) {
                 filer.delete();
             }
-            
+
             fw = new FileWriter(filer);
             bw = new BufferedWriter(fw);
             bw.write(text);
@@ -75,41 +102,26 @@ public class FileReaderWriter {
     }
 
     /**
-     * 
+     * Reads a whole text file into a String
      * @return a string with text of file
      */
     public String read() {
         try {
             int charArrayLaenge;
-
-
             //Wie heist die Datei?
-            File dateiHandle = new File(file);
-
+            File dateiHandle = filer;
             //Wie lange ist diese Datei?
             long datenStromLaenge = dateiHandle.length() + 1;
-
-
             charArrayLaenge = (int) datenStromLaenge - 1;
             charArray = new char[charArrayLaenge];
-
-
             try {
-
-
                 FileReader dateiInhalt = new FileReader(dateiHandle);
-
-
                 datenstrom = new BufferedReader(dateiInhalt);
-
-
                 datenstrom.read(charArray, 0, charArrayLaenge);
             } catch (IOException e) {
                 System.out.println(e.toString());
             }
-
             datenstrom.close();
-
         } catch (IOException ex) {
             Logger.getLogger(FileReaderWriter.class.getName()).log(Level.SEVERE, null, ex);
         }

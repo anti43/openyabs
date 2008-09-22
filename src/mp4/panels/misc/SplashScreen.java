@@ -61,9 +61,9 @@ public class SplashScreen extends javax.swing.JFrame implements Runnable {
 
     public SplashScreen(String string) {
         
-         Thread t=new Thread(this);
+        Thread t=new Thread(this);
         this.setUndecorated(true);
-        this.setAlwaysOnTop(true);
+
         initComponents();
         this.setTitle("Starte MP...");
         new Position(this);
@@ -71,7 +71,7 @@ public class SplashScreen extends javax.swing.JFrame implements Runnable {
         
         jProgressBar1.setIndeterminate(true);
         message.setText(string);
-         t.start();
+        t.start();
     }
 
     /** This method is called from within the constructor to

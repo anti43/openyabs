@@ -62,7 +62,10 @@ public class Rechnung extends mp4.items.Things implements mp4.datenbank.installa
     public Rechnung(String text) {
         super(ConnectionHandler.instanceOf().clone(TABLE_BILLS));
         this.query = ConnectionHandler.instanceOf();
-        this.explode(this.selectLast(Strings.ALL, "rechnungnummer", text, true));
+        String[] vals = this.selectLast(Strings.ALL, "rechnungnummer", text, true);
+        if(vals!=null && vals.length > 0)
+        this.explode(vals);
+        else throw new Exception("Datensatz nicht vorhanden");
         zeilenHandler = new RechnungBetreffZZR(id);
         nfh = new NumberFormatHandler(this, getDatum());
 
