@@ -45,8 +45,6 @@ public class Main implements Strings {
     public static boolean FORCE_NO_FILE_COPY = false;
     public static boolean FORCE_CREATE_DATABASE = false;
     public static boolean FORCE_FILE_COPY = false;
-    
-    
     private static final String argVERBOSE = "-verbose";
     private static final String argNOCOPYFILES = "-nocopy";
     private static final String argNOCREATEDB = "-nodb";
@@ -58,17 +56,15 @@ public class Main implements Strings {
     private static final String argFILE_LOGGING = "-log=";
     private static final String argDB_LOCATION = "-dbpath=";
     private static final String argAPP_LOCATION = "-instpath=";
-    
-    
     public static String PDFDIR = null;
     public static String TEMPLATEDIR = null;
     public static String BACKUP_DIR = null;
-    public static String MPPATH  = Constants.USER_HOME + File.separator + ".mp";
-      /**
+    public static String MPPATH = Constants.USER_HOME + File.separator + ".mp";
+    /**
      * Full path to settings file
      */
     public static String SETTINGS_FILE = Main.MPPATH + File.separator + "settings" + Constants.RELEASE_VERSION + ".mp";
-    public static String APP_DIR  = Constants.USER_HOME + Constants.SEP + Constants.PROG_NAME;
+    public static String APP_DIR = Constants.USER_HOME + Constants.SEP + Constants.PROG_NAME;
 
     private static void getOS() {
         if (System.getProperty("os.name").contains("Windows")) {
@@ -87,8 +83,7 @@ public class Main implements Strings {
                     FORCE_FILE_COPY = true;
                 } else if (arg.contains(argFORCECREATEDB)) {
                     FORCE_CREATE_DATABASE = true;
-                }
-                if (arg.contains(argNOCOPYFILES)) {
+                } else if (arg.contains(argNOCOPYFILES)) {
                     FORCE_NO_FILE_COPY = true;
                 } else if (arg.contains(argNOCREATEDB)) {
                     FORCE_NO_DATABASE = true;
@@ -116,7 +111,7 @@ public class Main implements Strings {
                     try {
                         Logger.setLogFile(arg.split("=")[1]);
                     } catch (Exception e) {
-                        Log.Debug("Fehler beim Schreiben der Logdatei: " +e.getMessage(), true);
+                        Log.Debug("Fehler beim Schreiben der Logdatei: " + e.getMessage(), true);
                     }
                 } else if (arg.contains(argDB_LOCATION)) {
                     MPPATH = arg.split("=")[1];
@@ -129,11 +124,8 @@ public class Main implements Strings {
     }
 
     public Main() {
-
-
         setLaF();
         splash = new SplashScreen(TEST_CONF);
-
         doArgCommands();
 
         //Datenbank suchen
@@ -148,7 +140,6 @@ public class Main implements Strings {
         } else {
             splash.setComp(new Setup());
         }
-
     }
 
     private void doArgCommands() {
@@ -218,11 +209,11 @@ public class Main implements Strings {
             Log.Debug(exe.getMessage());
         }
     }
-    
-    public static void printEnv(){ 
+
+    public static void printEnv() {
         System.out.println(System.getenv("HOMEDRIVE"));
         System.out.println(System.getenv("SystemDrive"));
         System.out.println(System.getenv("SystemRoot"));
-        System.out.println(System.getenv("USERPROFILE"));   
+        System.out.println(System.getenv("USERPROFILE"));
     }
 }
