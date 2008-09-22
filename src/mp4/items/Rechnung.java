@@ -59,7 +59,7 @@ public class Rechnung extends mp4.items.Things implements mp4.datenbank.installa
     private RechnungBetreffZZR zeilenHandler;
     private Angebot Angebot = null;
 
-    public Rechnung(String text) {
+    public Rechnung(String text) throws Exception {
         super(ConnectionHandler.instanceOf().clone(TABLE_BILLS));
         this.query = ConnectionHandler.instanceOf();
         String[] vals = this.selectLast(Strings.ALL, "rechnungnummer", text, true);
