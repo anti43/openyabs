@@ -28,7 +28,7 @@ import javax.swing.SwingConstants;
 
 /**
  *
- * @author Administrator
+ * @author anti43
  */
 public class TableCellEditorForDezimal extends DefaultCellEditor {
     private static final long serialVersionUID = 1L;

@@ -26,7 +26,7 @@ import mp4.logs.*;
 
 /**
  *
- * @author Administrator
+ * @author anti43
  */
 public class SelectionCheck {
 

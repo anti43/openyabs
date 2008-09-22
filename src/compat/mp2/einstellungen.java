@@ -8,7 +8,7 @@ import java.sql.*;
  * Created on 15. Februar 2007, 08:32
  *
  * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
+ * 
  */
 /**
  *

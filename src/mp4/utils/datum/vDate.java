@@ -23,7 +23,7 @@ import java.util.Date;
 
 /**
  *
- * @author Administrator
+ * @author anti43
  */
 public class vDate {
 

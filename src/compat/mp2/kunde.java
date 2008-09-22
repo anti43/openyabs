@@ -4,7 +4,7 @@
  * Created on 6. März 2007, 13:21
  *
  * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
+ * 
  */
 package compat.mp2;
 

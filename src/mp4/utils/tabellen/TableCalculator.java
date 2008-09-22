@@ -31,7 +31,7 @@ import mp4.utils.zahlen.FormatNumber;
 
 /**
  *
- * @author Administrator
+ * @author anti43
  */
 public class TableCalculator implements Runnable {
 

@@ -24,7 +24,7 @@ import mp4.einstellungen.Einstellungen;
 
 /**
  *
- * @author Administrator
+ * @author anti43
  */
 public class FormatTax {
 

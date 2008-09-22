@@ -24,7 +24,7 @@ import mp3.classes.visual.main.mainframe;
 
 /**
  *
- * @author Administrator
+ * @author anti43
  */
 public class Main {
 

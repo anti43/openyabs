@@ -21,7 +21,7 @@ package mp4.datenbank.installation;
 
 /**
  *
- * @author Administrator
+ * @author anti43
  */
 public interface Tabellen {
 
