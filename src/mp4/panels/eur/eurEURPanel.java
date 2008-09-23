@@ -7,23 +7,21 @@ package mp4.panels.eur;
 
 import java.awt.Color;
 import java.io.File;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import javax.swing.JTabbedPane;
 import javax.swing.table.DefaultTableModel;
+import mp4.globals.Constants;
 import mp4.interfaces.panelInterface;
 
 import mp4.items.People;
-import mp4.items.Popup;
+import mp4.items.Steuersatz;
+import mp4.items.visual.Popup;
 import mp4.items.Product;
 import mp4.utils.files.Browser;
 
 import mp4.logs.*;
-import mp4.utils.files.SaveAs;
+
 import mp4.utils.files.TableHtmlWriter;
 import mp4.utils.datum.DateConverter;
+import mp4.utils.files.DialogForFile;
 import mp4.utils.tabellen.TableFormat;
 import mp4.utils.tabellen.models.EURTableModel;
 import mp4.utils.ui.inputfields.InputVerifiers;
@@ -219,7 +217,8 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        SaveAs sav;
+        DialogForFile dialog;
+        
 
         if (year != null) {
             if (month == null) {
@@ -227,11 +226,12 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             }
 
             try {
-                TableHtmlWriter writ = new TableHtmlWriter((DefaultTableModel) jTable1.getModel(), new File(month + "_" + year + "EUR.html"), "Beschreibung,Daten".split(","), "Einnahmen / Ausgaben " + month + "/" + year);
-                sav = new SaveAs(writ.createHtml(1, Color.LIGHT_GRAY));
-                if (sav.getName() != null && sav.getName().lastIndexOf(".") > 0) {
-                    new Browser(sav.getName());
-                }
+                TableHtmlWriter writ = new TableHtmlWriter((DefaultTableModel) jTable1.getModel(), new File(month + "_" + year + ".html"), "Beschreibung,Daten".split(","), "Einnahmen / Ausgaben " + month + "/" + year);
+               
+                dialog = new DialogForFile(new File(Constants.DESKTOP + File.separator + writ.getFile().getName()));
+                dialog.saveFile(writ.createHtmlFile(1, Color.LIGHT_GRAY));
+                new Browser(dialog.getFile());
+                
             } catch (Exception ex) {
                 Log.Debug(ex);
             }
@@ -277,6 +277,10 @@ private javax.swing.JTextField jTextField1;
     }
 
     public void switchTab(int i) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setTax(Steuersatz steuersatz) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

@@ -8,14 +8,14 @@ package mp4.panels.produkte;
 import mp4.globals.Strings;
 import mp4.interfaces.panelInterface;
 import mp4.interfaces.Waitable;
-import mp4.interfaces.moneyPanelInterface;
+
 import mp4.items.People;
 import java.util.Date;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 
-import mp4.items.Popup;
+import mp4.items.visual.Popup;
 
 import mp4.items.visual.DatePick;
 import mp4.items.visual.TaxRatePicker;
@@ -35,7 +35,7 @@ import mp4.panels.misc.groupsView;
 import mp4.panels.rechnungen.billsView;
 import mp4.panels.rechnungen.offersView;
 import mp4.utils.datum.DateConverter;
-import mp4.utils.files.DialogOpenFile;
+import mp4.utils.files.DialogForFile;
 import mp4.utils.tabellen.SelectionCheck;
 import mp4.utils.tabellen.TableFormat;
 import mp4.utils.tasks.Job;
@@ -45,7 +45,7 @@ import mp4.utils.ui.inputfields.InputVerifiers;
  *
  * @author  anti43
  */
-public class servicesView extends mp4.panels.misc.commonPanel implements mp4.datenbank.installation.Tabellen, panelInterface, moneyPanelInterface {
+public class servicesView extends mp4.panels.misc.commonPanel implements mp4.datenbank.installation.Tabellen, panelInterface{
 
     private mainframe mainframe;
     private Dienstleistung current;
@@ -54,7 +54,7 @@ public class servicesView extends mp4.panels.misc.commonPanel implements mp4.dat
     private Integer currentDienstleistungGroupId = 0;
     private boolean edited = false;
     private int taxID = 1;
-    private DialogOpenFile dialog = null;
+    private DialogForFile dialog = null;
     private boolean numberfieldedited;
 
     /** Creates new form customers
@@ -954,7 +954,7 @@ private void jTextField4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST
 }//GEN-LAST:event_jTextField4MouseClicked
 
 private void jTextField10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField10ActionPerformed
-// TODO add your handling code here:
+
 }//GEN-LAST:event_jTextField10ActionPerformed
 
 private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
@@ -962,7 +962,7 @@ private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 }//GEN-LAST:event_jButton13ActionPerformed
 
 private void jButton13KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton13KeyPressed
-// TODO add your handling code here:
+
 }//GEN-LAST:event_jButton13KeyPressed
 
 private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed

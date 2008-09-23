@@ -14,6 +14,7 @@ import mp4.items.Rechnung;
 import mp4.items.Customer;
 
 import mp4.items.Product;
+import mp4.items.Steuersatz;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.tabellen.SelectionCheck;
 import mp4.utils.tabellen.TableFormat;
@@ -285,6 +286,10 @@ private javax.swing.JToolBar jToolBar4;
     }
 
     public void switchTab(int i) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setTax(Steuersatz steuersatz) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

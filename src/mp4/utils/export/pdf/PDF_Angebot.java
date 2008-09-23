@@ -17,12 +17,13 @@
 package mp4.utils.export.pdf;
 
 import java.awt.Image;
+import javax.print.DocFlavor;
 import mp4.items.Customer;
 import mp4.items.Angebot;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Locale;
-import mp4.interfaces.Printable;
+import mp4.interfaces.Template;
 import mp4.utils.ui.inputfields.InputVerifiers;
 import mp4.logs.*;
 import mp4.einstellungen.Einstellungen;
@@ -33,7 +34,7 @@ import mp4.utils.zahlen.FormatNumber;
  *
  * @author anti43
  */
-public class PDF_Angebot implements Printable{
+public class PDF_Angebot implements Template{
 
     private Einstellungen l;
     private Angebot r;
@@ -109,4 +110,6 @@ public class PDF_Angebot implements Printable{
     public String getTemplate() {
         return l.getAngebottemp();
     }
+
+ 
 }

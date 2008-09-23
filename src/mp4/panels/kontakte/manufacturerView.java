@@ -12,7 +12,8 @@ import javax.swing.table.DefaultTableModel;
 
 
 import mp4.globals.Strings;
-import mp4.items.Popup;
+import mp4.items.Steuersatz;
+import mp4.items.visual.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.items.HistoryItem;
 import mp4.frames.mainframe;
@@ -1339,6 +1340,10 @@ public javax.swing.JToolBar jToolBar2;
 
     public void switchTab(int i) {
        jTabbedPane1.setSelectedIndex(i);
+    }
+
+    public void setTax(Steuersatz steuersatz) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
 

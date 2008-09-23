@@ -14,26 +14,25 @@
  *      You should have received a copy of the GNU General Public License
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mp4.interfaces;
 
-import java.io.File;
-import javax.print.DocFlavor;
+package mp4.utils.export.csv;
+
+import mp4.interfaces.TableData;
 
 /**
  *
  * @author anti43
  */
-public interface Printable {
-    /*
-     * 
-     * 
-     */
+public class CSV_Kundenliste implements TableData{
 
-    public DocFlavor getFlavor();
+    public Object[][] getData() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-    /*
-     * 
-     * 
-     */
-    public File getFile();
+    public String getTitle() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    
+  
 }

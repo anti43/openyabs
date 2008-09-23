@@ -25,8 +25,9 @@ import mp4.items.Rechnung;
 import java.io.*;
 import java.util.ArrayList;
 
-import mp4.interfaces.Printable;
-import mp4.items.Popup;
+import javax.print.DocFlavor;
+import mp4.interfaces.Template;
+import mp4.items.visual.Popup;
 import mp4.utils.ui.inputfields.InputVerifiers;
 import mp4.einstellungen.Einstellungen;
 import mp4.utils.listen.ListenDataUtils;
@@ -36,7 +37,7 @@ import mp4.utils.zahlen.FormatNumber;
  *
  * @author anti43
  */
-public class PDF_Lieferschein implements Printable{
+public class PDF_Lieferschein implements Template{
 
     private Einstellungen l;
     private Rechnung rechnung;
@@ -102,4 +103,6 @@ public class PDF_Lieferschein implements Printable{
     public String getTemplate() {
         return l.getLieferscheintemplate();
     }
+    
+ 
 }

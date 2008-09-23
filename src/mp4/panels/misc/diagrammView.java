@@ -17,7 +17,7 @@ import mp4.logs.Log;
 import mp4.statistik.Diagramme;
 import mp4.statistik.data.DefaultDataMonths;
 import mp4.utils.export.druck.DruckJob;
-import mp4.utils.files.DialogOpenFile;
+import mp4.utils.files.DialogForFile;
 import mp4.utils.zahlen.FormatNumber;
 
 /**
@@ -100,9 +100,9 @@ public class diagrammView extends commonPanel implements Waiter{
 private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
     
-    DialogOpenFile f = new DialogOpenFile(JFileChooser.FILES_ONLY, "chart.png");
+    DialogForFile f = new DialogForFile(JFileChooser.FILES_ONLY, "chart.png");
     
-    if(f.choseFile())
+    if(f.chooseFile())
     d.writeToFile(f.getFile(), true);
 }//GEN-LAST:event_jButton2ActionPerformed
 

@@ -66,5 +66,5 @@ public interface Constants {
     public static String BACKUPS_SAVE_DIR = "Backup";
     public static String ICON_NAME_LIN = "mp.desktop";
     public static String ICON_NAME_WIN = "MP-Rechnungs-Kundenverwaltung.url";
-    public static String DESKTOP = "Desktop";
+    public static String DESKTOP = USER_HOME + SEP + "Desktop";
 }

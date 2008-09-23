@@ -6,6 +6,8 @@ import java.io.FileInputStream;
 
 import java.io.FileNotFoundException;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.print.Doc;
 import javax.print.DocFlavor;
 import javax.print.DocPrintJob;
@@ -17,6 +19,8 @@ import javax.print.SimpleDoc;
 import javax.print.attribute.Attribute;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.standard.MediaSizeName;
+import mp4.interfaces.Printable;
+import mp4.interfaces.Template;
 import mp4.interfaces.Waiter;
 import mp4.logs.*;
 
@@ -54,7 +58,10 @@ public class DruckJob implements Waiter{
         prservices = PrintServiceLookup.lookupPrintServices(flavor, aset);
 
     }
-
+  
+    /*
+     * Prints a File
+     */
     public void print(File file) throws FileNotFoundException, PrintException {
         if (null == prservices || 0 >= prservices.length) {
             if (null != prservDflt) {
@@ -88,6 +95,21 @@ public class DruckJob implements Waiter{
         }
 
     }
+  
+    /*
+     * Prints a mp4.interfaces.Printable Object
+     */
+    private void print(Printable printable) {
+        this.flavor = printable.getFlavor();
+        try {
+            print(printable.getFile());
+        } catch (FileNotFoundException fileNotFoundException) {
+            Log.Debug(fileNotFoundException);
+        } catch (PrintException printException) {
+            Log.Debug(printException);
+        }
+        
+    }
 
     private void printPrintServiceAttributesAndDocFlavors(PrintService prserv) {
         String s1 = null, s2;
@@ -109,13 +131,20 @@ public class DruckJob implements Waiter{
         }
     }
 
+    /*
+     * Prints a File or mp4.interfaces.Printable Object
+     */
     public void set(Object object) {
         try {
-            print((File) object);
-        } catch (FileNotFoundException ex) {
-            Log.Debug(ex);
-        } catch (PrintException ex) {
-            Log.Debug(ex);
+            try {
+                print((File) object);
+            } catch (ClassCastException ex) {
+                print((Printable) object);
+            }
+        } catch (FileNotFoundException fileNotFoundException) {
+            Log.Debug(fileNotFoundException);
+        } catch (PrintException printException) {
+            Log.Debug(printException);
         }
     }
 }

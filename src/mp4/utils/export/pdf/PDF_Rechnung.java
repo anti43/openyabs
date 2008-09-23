@@ -24,8 +24,9 @@ import java.io.*;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 
-import mp4.interfaces.Printable;
-import mp4.items.Popup;
+import javax.print.DocFlavor;
+import mp4.interfaces.Template;
+import mp4.items.visual.Popup;
 import mp4.utils.ui.inputfields.InputVerifiers;
 
 import mp4.einstellungen.Einstellungen;
@@ -38,7 +39,7 @@ import mp4.utils.zahlen.FormatNumber;
  *
  * @author anti43
  */
-public class PDF_Rechnung implements Printable{
+public class PDF_Rechnung implements Template{
     private static final long serialVersionUID = 9219937118331945981L;
 
 
@@ -119,4 +120,5 @@ public class PDF_Rechnung implements Printable{
     public String getTemplate() {
        return l.getRechnungtemp();
     }
+
 }

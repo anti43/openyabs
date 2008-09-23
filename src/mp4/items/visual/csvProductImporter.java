@@ -22,9 +22,10 @@ import mp4.globals.Strings;
 import mp4.interfaces.panelInterface;
 import mp4.items.People;
 
+import mp4.items.Steuersatz;
 import mp4.items.visual.Help;
 import mp4.logs.*;
-import mp4.items.Popup;
+import mp4.items.visual.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.items.visual.SupplierPicker;
 
@@ -734,5 +735,9 @@ public class csvProductImporter extends javax.swing.JFrame implements panelInter
 
     public void setContact(People contact) {
         this.supplier = (Lieferant) contact;
+    }
+
+    public void setTax(Steuersatz steuersatz) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

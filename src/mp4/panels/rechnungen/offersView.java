@@ -5,6 +5,7 @@
  */
 package mp4.panels.rechnungen;
 
+import mp4.items.Steuersatz;
 import mp4.panels.misc.NumberFormatEditor;
 import mp4.utils.export.pdf.PDF_Angebot;
 
@@ -23,7 +24,7 @@ import mp4.items.visual.CustomerPicker;
 import mp4.items.visual.DatePick;
 import mp4.utils.ui.inputfields.InputVerifiers;
 import mp4.logs.*;
-import mp4.items.Popup;
+import mp4.items.visual.Popup;
 import mp4.utils.tabellen.CalculatedTableValues;
 import mp4.utils.tabellen.models.PostenTableModel;
 import mp4.items.visual.ProductPicker;
@@ -1278,11 +1279,11 @@ private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 }//GEN-LAST:event_jButton5ActionPerformed
 
 private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
-// TODO add your handling code here:
+
 }//GEN-LAST:event_jButton14ActionPerformed
 
 private void jButton14KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton14KeyPressed
-// TODO add your handling code here:
+
 }//GEN-LAST:event_jButton14KeyPressed
 
 private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
@@ -1290,7 +1291,7 @@ private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 }//GEN-LAST:event_jButton15ActionPerformed
 
 private void jButton15KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton15KeyPressed
-// TODO add your handling code here:
+
 }//GEN-LAST:event_jButton15KeyPressed
 
 private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton20ActionPerformed
@@ -1460,6 +1461,10 @@ public javax.swing.JToolBar jToolBar2;
 
     public void switchTab(int i) {
         jTabbedPane1.setSelectedIndex(i);
+    }
+
+    public void setTax(Steuersatz steuersatz) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
 

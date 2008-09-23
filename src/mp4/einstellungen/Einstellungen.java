@@ -26,7 +26,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import mp4.globals.Constants;
 
-import mp4.items.Popup;
+import mp4.items.visual.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.utils.files.FileReaderWriter;
 import mp4.utils.ui.inputfields.InputVerifiers;

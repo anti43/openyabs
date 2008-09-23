@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 import mp4.einstellungen.Programmdaten;
 import mp4.frames.mainframe;
 import mp4.globals.Constants;
-import mp4.items.Popup;
+import mp4.items.visual.Popup;
 import mp4.logs.Log;
 import mp4.utils.files.FileDirectoryHandler;
 

@@ -20,7 +20,7 @@ package mp4.utils.tabellen.models;
 
 import java.util.Date;
 import java.util.Locale;
-import mp4.items.Popup;
+import mp4.items.visual.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import javax.swing.table.DefaultTableModel;
 import mp4.globals.Constants;

@@ -33,20 +33,22 @@ import java.util.*;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import mp4.interfaces.Printable;
+import javax.print.DocFlavor;
+import mp4.interfaces.Template;
 import mp4.interfaces.Waitable;
-import mp4.items.Popup;
+import mp4.items.visual.Popup;
 
 import mp4.logs.*;
 import mp4.einstellungen.Einstellungen;
 import mp4.einstellungen.Programmdaten;
+import mp4.interfaces.Printable;
 import mp4.main.Main;
 
 /**
  *
  * @author anti43
  */
-public class PDFFile extends File implements Waitable {
+public class PDFFile extends File implements Waitable, Printable {
     private static final long serialVersionUID = 7455276510000739261L;
 
     private AcroFields acroFields;
@@ -55,9 +57,9 @@ public class PDFFile extends File implements Waitable {
     private PdfStamper pdfStamper;
     private boolean scale = false;
     private int width,  height;
-    private Printable object;
+    private Template object;
 
-    public PDFFile(Printable object) {
+    public PDFFile(Template object) {
         super(object.getPath());
         this.object = object;
         settings = Einstellungen.instanceOf();
@@ -167,6 +169,14 @@ public class PDFFile extends File implements Waitable {
             Log.Debug(ex);
         }
         return file.getPath();
+    }
+
+    public DocFlavor getFlavor() {
+        return DocFlavor.BYTE_ARRAY.PDF;
+    }
+
+    public File getFile() {
+        return this;
     }
 }
 

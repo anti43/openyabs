@@ -16,6 +16,7 @@
  */
 package mp4.items;
 
+import mp4.items.visual.Popup;
 import javax.swing.JTable;
 
 import mp4.interfaces.Queries;

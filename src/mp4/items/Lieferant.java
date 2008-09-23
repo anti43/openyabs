@@ -22,7 +22,7 @@ import mp4.interfaces.Countable;
 import mp4.globals.Strings;
 import mp4.datenbank.verbindung.Query;
 import mp4.items.handler.NumberFormatHandler;
-import mp4.items.Popup;
+import mp4.items.visual.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.logs.Log;
 

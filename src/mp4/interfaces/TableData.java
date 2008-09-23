@@ -16,24 +16,23 @@
  */
 package mp4.interfaces;
 
-import java.io.File;
-import javax.print.DocFlavor;
-
 /**
  *
  * @author anti43
  */
-public interface Printable {
-    /*
-     * 
+public interface TableData {
+
+    /**
+     *
+     * Returns the table data
      * 
      */
+    public Object[][] getData();
 
-    public DocFlavor getFlavor();
-
-    /*
-     * 
+    /**
+     *
+     * Returns the table name
      * 
      */
-    public File getFile();
+    public String getTitle();
 }

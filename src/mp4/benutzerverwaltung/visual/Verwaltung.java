@@ -5,7 +5,7 @@
  */
 package mp4.benutzerverwaltung.visual;
 
-import mp4.items.Popup;
+import mp4.items.visual.Popup;
 import mp4.frames.mainframe;
 import mp4.benutzerverwaltung.User;
 import mp4.utils.tabellen.SelectionCheck;

@@ -17,6 +17,7 @@ import mp4.einstellungen.Einstellungen;
 import mp4.frames.mainframe;
 import mp4.installation.Setup;
 import mp4.items.Product;
+import mp4.items.Steuersatz;
 import mp4.items.visual.Help;
 import mp4.utils.tabellen.TableFormat;
 import mp4.utils.tabellen.models.SettingsTableModel;
@@ -282,6 +283,10 @@ private javax.swing.JTable jTable1;
     }
 
     public void switchTab(int i) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setTax(Steuersatz steuersatz) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

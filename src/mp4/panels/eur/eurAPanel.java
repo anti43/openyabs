@@ -10,7 +10,8 @@ import javax.swing.JTabbedPane;
 import mp4.globals.Strings;
 import mp4.interfaces.panelInterface;
 import mp4.items.People;
-import mp4.items.Popup;
+import mp4.items.Steuersatz;
+import mp4.items.visual.Popup;
 import mp4.items.visual.DatePick;
 
 
@@ -504,6 +505,10 @@ private javax.swing.JToolBar jToolBar2;
     }
 
     public void switchTab(int i) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setTax(Steuersatz steuersatz) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

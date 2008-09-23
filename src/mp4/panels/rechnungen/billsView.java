@@ -9,6 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import mp4.interfaces.Waitable;
 import mp4.interfaces.Waiter;
+import mp4.items.Steuersatz;
 import mp4.panels.misc.NumberFormatEditor;
 import mp4.items.RechnungPosten;
 import mp4.items.Rechnung;
@@ -24,7 +25,7 @@ import mp4.globals.Strings;
 import mp4.items.visual.CustomerPicker;
 import mp4.items.visual.DatePick;
 import mp4.logs.*;
-import mp4.items.Popup;
+import mp4.items.visual.Popup;
 import mp4.utils.tabellen.models.PostenTableModel;
 import mp4.items.visual.ProductPicker;
 import mp4.datenbank.verbindung.ConnectionHandler;
@@ -1517,7 +1518,7 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 }//GEN-LAST:event_jButton1ActionPerformed
 
 private void jButton12KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton12KeyTyped
-// TODO add your handling code here:
+
 }//GEN-LAST:event_jButton12KeyTyped
 
 private void jButton12MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton12MouseClicked
@@ -1651,6 +1652,10 @@ public javax.swing.JToolBar jToolBar2;
 
     public void switchTab(int i) {
         jTabbedPane1.setSelectedIndex(i);
+    }
+
+    public void setTax(Steuersatz steuersatz) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
 

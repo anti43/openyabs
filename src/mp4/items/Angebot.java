@@ -21,7 +21,7 @@ import java.util.Date;
 
 import mp4.interfaces.Countable;
 import mp4.globals.Strings;
-import mp4.items.Popup;
+import mp4.items.visual.Popup;
 import mp4.datenbank.verbindung.Query;
 import mp4.logs.*;
 import mp4.utils.tabellen.models.PostenTableModel;

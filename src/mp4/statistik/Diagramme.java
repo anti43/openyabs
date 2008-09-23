@@ -32,7 +32,7 @@ import java.util.Date;
 import java.util.Vector;
 
 import javax.swing.JPanel;
-import mp4.items.Popup;
+import mp4.items.visual.Popup;
 import mp4.logs.*;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;

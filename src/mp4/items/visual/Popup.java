@@ -14,7 +14,7 @@
  *      You should have received a copy of the GNU General Public License
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mp4.items;
+package mp4.items.visual;
 
 import javax.swing.JOptionPane;
 import mp4.logs.*;

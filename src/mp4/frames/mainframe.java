@@ -48,7 +48,7 @@ import javax.swing.JPanel;
 import mp4.globals.Constants;
 
 import mp4.globals.Strings;
-import mp4.items.Popup;
+import mp4.items.visual.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
 
 
@@ -98,8 +98,10 @@ import mp4.plugin.mpplugin;
 import mp4.plugin.pluginHandler;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.files.Browser;
-import mp4.utils.files.SaveAs;
+
+import mp4.utils.files.DialogForFile;
 import mp4.utils.files.TableHtmlWriter;
+import mp4.utils.importe.daten.ImportDaten;
 import mp4.utils.text.FadeOnChangeLabel;
 import mp4.utils.ui.Position;
 import mp4.utils.ui.TabCloseIcon;
@@ -383,10 +385,13 @@ public class mainframe extends javax.swing.JFrame {
         jMenuItem17 = new javax.swing.JMenuItem();
         jMenuItem18 = new javax.swing.JMenuItem();
         jMenu5 = new javax.swing.JMenu();
-        jMenu11 = new javax.swing.JMenu();
         jMenu6 = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
+        jMenu12 = new javax.swing.JMenu();
+        jMenu11 = new javax.swing.JMenu();
+        jMenuItem24 = new javax.swing.JMenuItem();
+        jSeparator6 = new javax.swing.JSeparator();
         jMenuItem4 = new javax.swing.JMenuItem();
         jMenu8 = new javax.swing.JMenu();
         jMenuItem9 = new javax.swing.JMenuItem();
@@ -453,7 +458,7 @@ public class mainframe extends javax.swing.JFrame {
 
         jPanel2.setBackground(new java.awt.Color(153, 153, 153));
 
-        jButton4.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton4.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/3232/agt_family.png"))); // NOI18N
         jButton4.setText("Kunden");
         jButton4.setToolTipText("Kunden");
@@ -465,7 +470,7 @@ public class mainframe extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton1.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/3232/edit_user.png"))); // NOI18N
         jButton1.setText("Lieferanten");
         jButton1.setToolTipText("Lieferanten");
@@ -477,7 +482,7 @@ public class mainframe extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton2.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/medium/adept_update.png"))); // NOI18N
         jButton2.setText("Angebote");
         jButton2.setToolTipText("Angebote");
@@ -489,7 +494,7 @@ public class mainframe extends javax.swing.JFrame {
             }
         });
 
-        jButton18.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton18.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/3232/edit_user.png"))); // NOI18N
         jButton18.setText("Hersteller");
         jButton18.setToolTipText("Hersteller");
@@ -541,7 +546,7 @@ public class mainframe extends javax.swing.JFrame {
 
         jPanel4.setBackground(new java.awt.Color(153, 153, 153));
 
-        jButton9.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton9.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/3232/blockdevice.png"))); // NOI18N
         jButton9.setText("Produkte");
         jButton9.setToolTipText("Produkte");
@@ -553,7 +558,7 @@ public class mainframe extends javax.swing.JFrame {
             }
         });
 
-        jButton10.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton10.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/3232/share.png"))); // NOI18N
         jButton10.setText("Services");
         jButton10.setToolTipText("Services");
@@ -572,8 +577,8 @@ public class mainframe extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton10, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 86, Short.MAX_VALUE)
-                    .addComponent(jButton9, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 86, Short.MAX_VALUE))
+                    .addComponent(jButton10, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 77, Short.MAX_VALUE)
+                    .addComponent(jButton9, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -583,14 +588,14 @@ public class mainframe extends javax.swing.JFrame {
                 .addComponent(jButton10)
                 .addGap(11, 11, 11)
                 .addComponent(jButton9)
-                .addContainerGap(229, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         outlookBar.addTab("Produkte", jPanel4);
 
         jPanel3.setBackground(new java.awt.Color(153, 153, 153));
 
-        jButton5.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton5.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/small/next.png"))); // NOI18N
         jButton5.setText("Einnahmen");
         jButton5.setToolTipText("Einnahmen");
@@ -602,7 +607,7 @@ public class mainframe extends javax.swing.JFrame {
             }
         });
 
-        jButton6.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton6.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/small/previous.png"))); // NOI18N
         jButton6.setText("Ausgaben");
         jButton6.setToolTipText("Ausgaben");
@@ -614,7 +619,7 @@ public class mainframe extends javax.swing.JFrame {
             }
         });
 
-        jButton7.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton7.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/medium/adept_update.png"))); // NOI18N
         jButton7.setText("Offen");
         jButton7.setToolTipText("Offen");
@@ -626,7 +631,7 @@ public class mainframe extends javax.swing.JFrame {
             }
         });
 
-        jButton11.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton11.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/small/business.png"))); // NOI18N
         jButton11.setText("Rechnung");
         jButton11.setToolTipText("Rechnungen");
@@ -638,7 +643,7 @@ public class mainframe extends javax.swing.JFrame {
             }
         });
 
-        jButton8.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton8.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/3232/kspread.png"))); // NOI18N
         jButton8.setText("Übersicht");
         jButton8.setToolTipText("Übersicht");
@@ -657,11 +662,11 @@ public class mainframe extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton11, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 86, Short.MAX_VALUE)
-                    .addComponent(jButton6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 86, Short.MAX_VALUE)
-                    .addComponent(jButton5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 86, Short.MAX_VALUE)
-                    .addComponent(jButton7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 86, Short.MAX_VALUE)
-                    .addComponent(jButton8, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 86, Short.MAX_VALUE))
+                    .addComponent(jButton11, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
+                    .addComponent(jButton6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
+                    .addComponent(jButton5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
+                    .addComponent(jButton8, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -677,14 +682,14 @@ public class mainframe extends javax.swing.JFrame {
                 .addComponent(jButton7)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton8)
-                .addContainerGap(39, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         outlookBar.addTab("Buchhaltung", jPanel3);
 
         jPanel6.setBackground(new java.awt.Color(153, 153, 153));
 
-        jButton12.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton12.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/3232/kghostview.png"))); // NOI18N
         jButton12.setText("Verlauf");
         jButton12.setToolTipText("Verlauf");
@@ -696,7 +701,7 @@ public class mainframe extends javax.swing.JFrame {
             }
         });
 
-        jButton13.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton13.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/3232/file-manager.png"))); // NOI18N
         jButton13.setText("Sicherung");
         jButton13.setToolTipText("Sicherung");
@@ -708,7 +713,7 @@ public class mainframe extends javax.swing.JFrame {
             }
         });
 
-        jButton14.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton14.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/3232/configure.png"))); // NOI18N
         jButton14.setText("Einstellung");
         jButton14.setToolTipText("Einstellungen");
@@ -720,7 +725,7 @@ public class mainframe extends javax.swing.JFrame {
             }
         });
 
-        jButton15.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton15.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/3232/log.png"))); // NOI18N
         jButton15.setText("Statistik");
         jButton15.setToolTipText("Auswertungen");
@@ -732,7 +737,7 @@ public class mainframe extends javax.swing.JFrame {
             }
         });
 
-        jButton16.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton16.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton16.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/3232/calc.png"))); // NOI18N
         jButton16.setText("Rechner");
         jButton16.setToolTipText("Auswertungen");
@@ -751,11 +756,11 @@ public class mainframe extends javax.swing.JFrame {
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton14, javax.swing.GroupLayout.DEFAULT_SIZE, 86, Short.MAX_VALUE)
-                    .addComponent(jButton15, javax.swing.GroupLayout.DEFAULT_SIZE, 86, Short.MAX_VALUE)
-                    .addComponent(jButton13, javax.swing.GroupLayout.DEFAULT_SIZE, 86, Short.MAX_VALUE)
-                    .addComponent(jButton16, javax.swing.GroupLayout.DEFAULT_SIZE, 86, Short.MAX_VALUE)
-                    .addComponent(jButton12, javax.swing.GroupLayout.DEFAULT_SIZE, 86, Short.MAX_VALUE))
+                    .addComponent(jButton14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton15, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE)
+                    .addComponent(jButton13, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE)
+                    .addComponent(jButton16, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE)
+                    .addComponent(jButton12, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
@@ -771,7 +776,7 @@ public class mainframe extends javax.swing.JFrame {
                 .addComponent(jButton15)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton16)
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         outlookBar.addTab("Extras", jPanel6);
@@ -913,9 +918,6 @@ public class mainframe extends javax.swing.JFrame {
 
         jMenu5.setText("Bearbeiten");
 
-        jMenu11.setText("Undo");
-        jMenu5.add(jMenu11);
-
         jMenu6.setText("Importieren..");
 
         jMenuItem2.setText("Produkte (CSV)");
@@ -926,7 +928,7 @@ public class mainframe extends javax.swing.JFrame {
         });
         jMenu6.add(jMenuItem2);
 
-        jMenuItem3.setText("Daten (Version 2.x)");
+        jMenuItem3.setText("Daten (Version 3.x)");
         jMenuItem3.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jMenuItem3MouseClicked(evt);
@@ -940,6 +942,23 @@ public class mainframe extends javax.swing.JFrame {
         jMenu6.add(jMenuItem3);
 
         jMenu5.add(jMenu6);
+
+        jMenu12.setText("Exportieren..");
+
+        jMenu11.setText("Kunden");
+
+        jMenuItem24.setText("CSV-Datei");
+        jMenuItem24.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem24ActionPerformed(evt);
+            }
+        });
+        jMenu11.add(jMenuItem24);
+
+        jMenu12.add(jMenu11);
+
+        jMenu5.add(jMenu12);
+        jMenu5.add(jSeparator6);
 
         jMenuItem4.setText("Einstellungen");
         jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
@@ -1100,7 +1119,7 @@ public class mainframe extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem3MouseClicked
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
-        new mp2Importer(this);
+        new ImportDaten();
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
@@ -1157,43 +1176,44 @@ public class mainframe extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem14ActionPerformed
 
     private void jMenuItem15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem15ActionPerformed
-        String fils = "";
+        
+        DialogForFile dialog = new DialogForFile(DialogForFile.DIRECTORIES_ONLY);
         try {
             Customer k = new Customer();
             TableHtmlWriter writ = new TableHtmlWriter(k.getPrintModel(), new File("Kundenliste.html"), Strings.TABLE_CUSTOMER_PRINT_HEADER.split(","), "Kundenliste");
-            fils = new SaveAs(writ.createHtml(1, Color.LIGHT_GRAY)).getName();
+            dialog.saveFile(writ.createHtmlFile(1, Color.LIGHT_GRAY));
         } catch (Exception ex) {
             Popup.notice(ex.getMessage());
             Log.Debug(ex);
         }
-        new Browser(fils);
+        new Browser(dialog.getFile());
     }//GEN-LAST:event_jMenuItem15ActionPerformed
 
     private void jMenuItem16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem16ActionPerformed
 
-        String fils = "";
+        DialogForFile dialog = new DialogForFile(DialogForFile.DIRECTORIES_ONLY);
         try {
             Lieferant k = new Lieferant();
             TableHtmlWriter writ = new TableHtmlWriter(k.getPrintModel(), new File("Lieferantenliste.html"), Strings.TABLE_SUPPLIER_PRINT_HEADER.split(","), "Lieferantenliste");
-            fils = new SaveAs(writ.createHtml(1, Color.LIGHT_GRAY)).getName();
+            dialog.saveFile(writ.createHtmlFile(1, Color.LIGHT_GRAY));
         } catch (Exception ex) {
             Popup.notice(ex.getMessage());
             Log.Debug(ex);
         }
-        new Browser(fils);
+        new Browser(dialog.getFile());
     }//GEN-LAST:event_jMenuItem16ActionPerformed
 
     private void jMenuItem17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem17ActionPerformed
-        String fils = "";
+        DialogForFile dialog = new DialogForFile(DialogForFile.DIRECTORIES_ONLY);
         try {
             Product k = new Product();
             TableHtmlWriter writ = new TableHtmlWriter(k.getPrintModel(), new File("Produktliste.html"), Strings.TABLE_PRODUCTS_LIST_PRINT_HEADER.split(","), "Lieferantenliste");
-            fils = new SaveAs(writ.createHtml(1, Color.LIGHT_GRAY)).getName();
+            dialog.saveFile(writ.createHtmlFile(1, Color.LIGHT_GRAY));
         } catch (Exception ex) {
             Popup.notice(ex.getMessage());
             Log.Debug(ex);
         }
-        new Browser(fils);
+        new Browser(dialog.getFile());
     }//GEN-LAST:event_jMenuItem17ActionPerformed
 
     private void jMenuItem18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem18ActionPerformed
@@ -1390,6 +1410,12 @@ private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 Rechner.instanceOf().setVisible(rootPaneCheckingEnabled);
 }//GEN-LAST:event_jButton16ActionPerformed
 
+private void jMenuItem24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem24ActionPerformed
+
+    
+    
+}//GEN-LAST:event_jMenuItem24ActionPerformed
+
     @Override
     public void finalize() {
         Conn.shutdown();
@@ -1417,6 +1443,7 @@ Rechner.instanceOf().setVisible(rootPaneCheckingEnabled);
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu10;
     private javax.swing.JMenu jMenu11;
+    private javax.swing.JMenu jMenu12;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
@@ -1441,6 +1468,7 @@ Rechner.instanceOf().setVisible(rootPaneCheckingEnabled);
     private javax.swing.JMenuItem jMenuItem21;
     private javax.swing.JMenuItem jMenuItem22;
     private javax.swing.JMenuItem jMenuItem23;
+    private javax.swing.JMenuItem jMenuItem24;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
@@ -1457,6 +1485,7 @@ Rechner.instanceOf().setVisible(rootPaneCheckingEnabled);
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JSeparator jSeparator4;
     private javax.swing.JSeparator jSeparator5;
+    private javax.swing.JSeparator jSeparator6;
     public javax.swing.JPanel leftBar;
     public javax.swing.JButton logoutButton;
     public javax.swing.JProgressBar mainProgressBar;

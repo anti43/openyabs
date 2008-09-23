@@ -17,7 +17,7 @@ import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableModel;
 import mp4.globals.Constants;
 import mp4.globals.Constants;
-import mp4.items.Popup;
+import mp4.items.visual.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.items.Customer;
 

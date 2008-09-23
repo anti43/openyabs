@@ -17,7 +17,7 @@ import compat.mp2.rechnung;
 import mp4.utils.ui.Position;
 
 import mp4.items.visual.Help;
-import mp4.items.Popup;
+import mp4.items.visual.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.items.Rechnung;
 import mp4.items.RechnungPosten;

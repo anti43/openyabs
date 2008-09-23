@@ -14,26 +14,13 @@
  *      You should have received a copy of the GNU General Public License
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mp4.interfaces;
 
-import java.io.File;
-import javax.print.DocFlavor;
+package mp4.panels.produkte;
 
 /**
  *
  * @author anti43
  */
-public interface Printable {
-    /*
-     * 
-     * 
-     */
+interface moneyPanelInterface {
 
-    public DocFlavor getFlavor();
-
-    /*
-     * 
-     * 
-     */
-    public File getFile();
 }

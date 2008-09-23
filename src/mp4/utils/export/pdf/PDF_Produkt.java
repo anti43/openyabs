@@ -21,7 +21,8 @@ import java.awt.Image;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Locale;
-import mp4.interfaces.Printable;
+import javax.print.DocFlavor;
+import mp4.interfaces.Template;
 import mp4.utils.ui.inputfields.InputVerifiers;
 import mp4.einstellungen.Einstellungen;
 import mp4.items.Dienstleistung;
@@ -37,7 +38,7 @@ import mp4.utils.zahlen.FormatTax;
  *
  * @author anti43
  */
-public class PDF_Produkt implements Printable {
+public class PDF_Produkt implements Template {
 
     private Einstellungen settings;
     private Product produkt;
@@ -109,4 +110,6 @@ public class PDF_Produkt implements Printable {
     public String getTemplate() {
         return settings.getProdukttemp();
     }
+    
+
 }

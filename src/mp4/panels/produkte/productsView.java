@@ -6,8 +6,7 @@
 package mp4.panels.produkte;
 
 import mp4.interfaces.panelInterface;
-import mp4.interfaces.moneyPanelInterface;
-import mp4.panels.misc.groupsView;
+
 import mp4.frames.PdfVorschauWindow;
 import mp4.panels.*;
 import mp4.utils.export.pdf.PDF_Produkt;
@@ -30,7 +29,7 @@ import mp4.globals.Strings;
 
 import mp4.utils.ui.inputfields.InputVerifiers;
 import mp4.logs.*;
-import mp4.items.Popup;
+import mp4.items.visual.Popup;
 import mp4.items.visual.DatePick;
 import mp4.items.visual.ManufacturerPicker;
 import mp4.items.visual.ProductPicker;
@@ -51,7 +50,7 @@ import mp4.panels.rechnungen.offersView;
 import mp4.utils.bilder.ImageFormat;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.export.pdf.PDFFile;
-import mp4.utils.files.DialogOpenFile;
+import mp4.utils.files.DialogForFile;
 import mp4.utils.files.FileDirectoryHandler;
 import mp4.utils.tabellen.SelectionCheck;
 import mp4.utils.tabellen.TableFormat;
@@ -65,7 +64,7 @@ import mp4.utils.zahlen.NumberCheck;
  *
  * @author  anti43
  */
-public class productsView extends commonPanel implements mp4.datenbank.installation.Tabellen, panelInterface, moneyPanelInterface{
+public class productsView extends commonPanel implements mp4.datenbank.installation.Tabellen, panelInterface{
 
     private mainframe mainframe;
     private Product current;
@@ -77,7 +76,7 @@ public class productsView extends commonPanel implements mp4.datenbank.installat
     private boolean edited = false;
     private URI currentImageURI;
     private int taxID = 1;
-    private DialogOpenFile dialog = null;
+    private DialogForFile dialog = null;
     private boolean numberfieldedited;
 
     /** Creates new form customers
@@ -1386,14 +1385,14 @@ private void jButton22MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
 }//GEN-LAST:event_jButton22MouseClicked
 
 private void jTextField22ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField22ActionPerformed
-// TODO add your handling code here:
+
 }//GEN-LAST:event_jTextField22ActionPerformed
 
 private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-//    DialogOpenFile dialog = null;
+//    DialogForFile dialog = null;
 
     if (dialog == null) {
-        dialog = new DialogOpenFile(DialogOpenFile.FILES_ONLY);
+        dialog = new DialogForFile(DialogForFile.FILES_ONLY);
     }
 
     if (dialog.getFilePath(jTextField11)) {
@@ -1441,7 +1440,7 @@ private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 }//GEN-LAST:event_jButton13ActionPerformed
 
 private void jButton13KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton13KeyPressed
-// TODO add your handling code here:
+
 }//GEN-LAST:event_jButton13KeyPressed
 
 private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed

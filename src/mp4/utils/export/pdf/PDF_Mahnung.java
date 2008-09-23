@@ -24,7 +24,8 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import java.util.Locale;
-import mp4.interfaces.Printable;
+import javax.print.DocFlavor;
+import mp4.interfaces.Template;
 import mp4.utils.ui.inputfields.InputVerifiers;
 import mp4.einstellungen.Einstellungen;
 import mp4.einstellungen.Programmdaten;
@@ -36,7 +37,7 @@ import mp4.utils.zahlen.FormatNumber;
  *
  * @author anti43
  */
-public class PDF_Mahnung implements Printable{
+public class PDF_Mahnung implements Template{
 
     private Einstellungen l;
     private Rechnung rechnung;
@@ -116,4 +117,6 @@ public class PDF_Mahnung implements Printable{
     public String getTemplate() {
        return l.getRechnungtemp();
     }
+    
+  
 }

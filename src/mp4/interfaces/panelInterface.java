@@ -85,6 +85,13 @@ public interface panelInterface {
      * @param product 
      */
     public abstract void addProduct(Product product);
+    /**
+     * Yes, i know it's dirty.. do it better
+     * 
+     * @param steuersatz 
+     */
+    public void setTax(mp4.items.Steuersatz steuersatz);
+
 //    /**
 //     *
 //     * To get the data (people)

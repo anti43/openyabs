@@ -18,7 +18,7 @@ package mp4.benutzerverwaltung;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
-import mp4.items.Popup;
+import mp4.items.visual.Popup;
 import mp4.items.Things;
 import mp4.logs.*;
 import mp4.benutzerverwaltung.md5hash;

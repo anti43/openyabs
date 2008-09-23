@@ -16,24 +16,37 @@
  */
 package mp4.interfaces;
 
-import java.io.File;
+import java.awt.Image;
 import javax.print.DocFlavor;
 
 /**
  *
- * @author anti43
+ * @author Andreas
  */
-public interface Printable {
-    /*
-     * 
-     * 
-     */
+public interface Template {
 
-    public DocFlavor getFlavor();
-
-    /*
+ 
+     /*
      * 
-     * 
+     * Returns the path to this printable objects (temp)file
      */
-    public File getFile();
+    public String getPath();
+   
+    /*
+     * If this is a PDF Template,
+     * return the fields, else null
+     */
+    public String[][] getFields();
+    
+    /*
+     * If this is a PDF Template and has an image,
+     * return the image, else null
+     */
+    public Image getImage();
+    
+    /*
+     * If this is a PDF Template,
+     * return the path to template, else null
+     */
+    public String getTemplate();
 }

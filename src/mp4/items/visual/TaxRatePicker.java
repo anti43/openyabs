@@ -9,7 +9,7 @@ package mp4.items.visual;
 import javax.swing.ListSelectionModel;
 import mp4.items.Customer;
 import mp4.utils.tabellen.SelectionCheck;
-import mp4.interfaces.moneyPanelInterface;
+import mp4.interfaces.panelInterface;
 import mp4.items.Steuersatz;
 import mp4.utils.tabellen.TableFormat;
 import mp4.utils.tabellen.models.TaxTableModel;
@@ -21,7 +21,7 @@ import mp4.utils.ui.Position;
  */
 public class TaxRatePicker extends javax.swing.JFrame {
 
-    private moneyPanelInterface frame;
+    private panelInterface frame;
 
     private String k;
     private Steuersatz tax;
@@ -29,7 +29,7 @@ public class TaxRatePicker extends javax.swing.JFrame {
     /** Creates new form CustomerPicker
      * @param frame 
      */
-    public TaxRatePicker(moneyPanelInterface frame) {
+    public TaxRatePicker(panelInterface frame) {
         initComponents();
         this.frame = frame;
         tax = new Steuersatz();

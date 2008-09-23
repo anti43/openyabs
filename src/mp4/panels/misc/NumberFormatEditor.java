@@ -6,7 +6,7 @@
 package mp4.panels.misc;
 
 import java.util.Date;
-import mp4.items.Popup;
+import mp4.items.visual.Popup;
 import mp4.logs.*;
 import mp4.einstellungen.Programmdaten;
 import mp4.items.Angebot;

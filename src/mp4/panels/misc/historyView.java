@@ -12,6 +12,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import mp4.items.People;
 import mp4.items.Product;
+import mp4.items.Steuersatz;
 import mp4.items.handler.HistoryHandler;
 import javax.swing.table.DefaultTableModel;
 import mp4.interfaces.panelInterface;
@@ -188,6 +189,10 @@ public class historyView extends mp4.panels.misc.commonPanel implements Runnable
     }
 
     public void addProduct(Product product) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setTax(Steuersatz steuersatz) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

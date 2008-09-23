@@ -31,7 +31,7 @@ public abstract class commonPanel extends JPanel {
     public void close() {
 //        setPanelValues();
         if (isEdited()) {
-            if (mp4.items.Popup.Y_N_dialog("Wenn Sie jetzt schliessen, gehen Ihre Änderungen verloren.\nTrotzdem schliessen?")) {
+            if (mp4.items.visual.Popup.Y_N_dialog("Wenn Sie jetzt schliessen, gehen Ihre Änderungen verloren.\nTrotzdem schliessen?")) {
                 ((JTabbedPane) this.getParent()).remove(this);
             }
         } else {

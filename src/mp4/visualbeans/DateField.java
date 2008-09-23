@@ -7,7 +7,7 @@ package mp4.visualbeans;
 
 import mp4.utils.ui.inputfields.*;
 import java.util.Date;
-import mp4.items.Popup;
+import mp4.items.visual.Popup;
 import mp4.items.visual.DatePick;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.datum.vDate;

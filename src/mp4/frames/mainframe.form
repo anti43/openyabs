@@ -126,11 +126,6 @@
             <Property name="text" type="java.lang.String" value="Bearbeiten"/>
           </Properties>
           <SubComponents>
-            <Menu class="javax.swing.JMenu" name="jMenu11">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Undo"/>
-              </Properties>
-            </Menu>
             <Menu class="javax.swing.JMenu" name="jMenu6">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Importieren.."/>
@@ -146,7 +141,7 @@
                 </MenuItem>
                 <MenuItem class="javax.swing.JMenuItem" name="jMenuItem3">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Daten (Version 2.x)"/>
+                    <Property name="text" type="java.lang.String" value="Daten (Version 3.x)"/>
                   </Properties>
                   <Events>
                     <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jMenuItem3MouseClicked"/>
@@ -155,6 +150,30 @@
                 </MenuItem>
               </SubComponents>
             </Menu>
+            <Menu class="javax.swing.JMenu" name="jMenu12">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Exportieren.."/>
+              </Properties>
+              <SubComponents>
+                <Menu class="javax.swing.JMenu" name="jMenu11">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Kunden"/>
+                  </Properties>
+                  <SubComponents>
+                    <MenuItem class="javax.swing.JMenuItem" name="jMenuItem24">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="CSV-Datei"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem24ActionPerformed"/>
+                      </Events>
+                    </MenuItem>
+                  </SubComponents>
+                </Menu>
+              </SubComponents>
+            </Menu>
+            <MenuItem class="javax.swing.JSeparator" name="jSeparator6">
+            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem4">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Einstellungen"/>
@@ -646,8 +665,8 @@
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="1" attributes="0">
-                              <Component id="jButton10" alignment="0" pref="86" max="32767" attributes="1"/>
-                              <Component id="jButton9" alignment="0" pref="86" max="32767" attributes="1"/>
+                              <Component id="jButton10" alignment="0" pref="77" max="32767" attributes="1"/>
+                              <Component id="jButton9" alignment="0" max="32767" attributes="1"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
@@ -660,7 +679,7 @@
                           <Component id="jButton10" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="11" max="-2" attributes="0"/>
                           <Component id="jButton9" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="229" max="32767" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -722,11 +741,11 @@
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="1" attributes="0">
-                              <Component id="jButton11" alignment="0" pref="86" max="32767" attributes="1"/>
-                              <Component id="jButton6" alignment="0" pref="86" max="32767" attributes="1"/>
-                              <Component id="jButton5" alignment="0" pref="86" max="32767" attributes="1"/>
-                              <Component id="jButton7" alignment="0" pref="86" max="32767" attributes="1"/>
-                              <Component id="jButton8" alignment="0" pref="86" max="32767" attributes="1"/>
+                              <Component id="jButton11" alignment="0" pref="85" max="32767" attributes="1"/>
+                              <Component id="jButton6" alignment="0" pref="85" max="32767" attributes="1"/>
+                              <Component id="jButton5" alignment="0" max="32767" attributes="1"/>
+                              <Component id="jButton7" alignment="0" pref="85" max="32767" attributes="1"/>
+                              <Component id="jButton8" alignment="0" pref="85" max="32767" attributes="1"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
@@ -745,7 +764,7 @@
                           <Component id="jButton7" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jButton8" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="39" max="32767" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -858,11 +877,11 @@
                       <Group type="102" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jButton14" alignment="0" pref="86" max="32767" attributes="1"/>
-                              <Component id="jButton15" alignment="0" pref="86" max="32767" attributes="1"/>
-                              <Component id="jButton13" alignment="0" pref="86" max="32767" attributes="1"/>
-                              <Component id="jButton16" alignment="0" pref="86" max="32767" attributes="1"/>
-                              <Component id="jButton12" alignment="0" pref="86" max="32767" attributes="1"/>
+                              <Component id="jButton14" alignment="0" max="32767" attributes="1"/>
+                              <Component id="jButton15" alignment="0" pref="83" max="32767" attributes="1"/>
+                              <Component id="jButton13" alignment="0" pref="83" max="32767" attributes="1"/>
+                              <Component id="jButton16" alignment="0" pref="83" max="32767" attributes="1"/>
+                              <Component id="jButton12" alignment="0" pref="83" max="32767" attributes="1"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
@@ -881,7 +900,7 @@
                           <Component id="jButton15" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="jButton16" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="19" max="32767" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>

@@ -22,7 +22,7 @@ import mp4.globals.Constants;
 import mp4.globals.Constants;
 import mp4.globals.Strings;
 import mp4.utils.files.FileReaderWriter;
-import mp4.items.Popup;
+import mp4.items.visual.Popup;
 import mp4.logs.*;
 import mp4.panels.misc.SplashScreen;
 import mp4.datenbank.installation.Daten;

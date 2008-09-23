@@ -27,7 +27,8 @@ import java.util.Date;
 
 
 
-import mp4.interfaces.Printable;
+import javax.print.DocFlavor;
+import mp4.interfaces.Template;
 
 import mp4.utils.datum.DateConverter;
 import mp4.utils.listen.ArrayUtils;
@@ -36,7 +37,7 @@ import mp4.utils.listen.ListenDataUtils;
  *
  * @author anti43
  */
-public class PDF_Serienbrief implements Printable{
+public class PDF_Serienbrief implements Template{
 
 
     private Customer kontakt;
@@ -99,4 +100,5 @@ public class PDF_Serienbrief implements Printable{
     public String getTemplate() {
        return l.getSerienbrieftemp();
     }
+ 
 }

@@ -18,7 +18,7 @@ package mp4.items;
 
 import java.util.Date;
 import mp4.datenbank.verbindung.Query;
-import mp4.items.Popup;
+import mp4.items.visual.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.logs.*;
 
