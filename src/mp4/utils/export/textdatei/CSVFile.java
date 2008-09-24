@@ -15,7 +15,7 @@
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mp4.utils.export.csv;
+package mp4.utils.export.textdatei;
 
 import java.io.File;
 import javax.print.DocFlavor;

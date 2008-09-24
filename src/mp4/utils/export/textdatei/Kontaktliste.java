@@ -14,25 +14,38 @@
  *      You should have received a copy of the GNU General Public License
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mp4.utils.export.csv;
+package mp4.utils.export.textdatei;
 
+import mp4.datenbank.installation.Tabellen;
+import mp4.datenbank.verbindung.Query;
 import mp4.interfaces.TableData;
 import mp4.utils.datum.DateConverter;
+
 
 /**
  *
  * @author anti43
  */
-public class CSV_Kontaktliste implements TableData {
+public class Kontaktliste implements TableData, Tabellen{
+    private Query queryhandler;
 
-    public CSV_Kontaktliste(Class clazz) {
+    public Kontaktliste(Class clazz) {
+    
+        if (clazz.isInstance(new mp4.items.Customer())) {
+           queryhandler = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(TABLE_CUSTOMERS);
+        } else if (clazz.isInstance(new mp4.items.Lieferant())) {
+           queryhandler = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(TABLE_SUPPLIER);
+        } else if (clazz.isInstance(new mp4.items.Hersteller())) {
+           queryhandler = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(TABLE_MANUFACTURER); 
+        } 
     }
 
-    public CSV_Kontaktliste(Class clazz, Integer id) {
+    public Kontaktliste(Class clazz, Integer id) {
     }
 
     public Object[][] getData() {
-        throw new UnsupportedOperationException("Not supported yet.");
+//        return queryhandler.select("", return null;)
+        return null;
     }
 
     public String getTitle() {

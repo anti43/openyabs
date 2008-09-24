@@ -100,6 +100,10 @@ public class Customer extends mp4.items.People implements mp4.datenbank.installa
         return arr;
     }
 
+    public Query getConnectionHandler() {
+        return  query;
+    }
+
     public String getid() {
         return id.toString();
     }
