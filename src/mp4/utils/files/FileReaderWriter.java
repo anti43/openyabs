@@ -23,11 +23,16 @@ package mp4.utils.files;
 import java.io.File;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import mp4.utils.listen.ArrayUtils;
+import mp4.utils.listen.ListenDataUtils;
 
 public class FileReaderWriter {
 
@@ -53,6 +58,54 @@ public class FileReaderWriter {
         filer = new File(file);
     }
 
+    public String read1Line() {
+
+        BufferedReader in = null;
+        String s = null;
+
+        try {
+            in = new BufferedReader(new InputStreamReader(new FileInputStream(filer)));
+            s = in.readLine();
+        } catch (IOException ex) {
+            Logger.getLogger(FileReaderWriter.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                in.close();
+            } catch (IOException ex) {
+                Logger.getLogger(FileReaderWriter.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        return s;
+    }
+
+    public String[] readLines() {
+
+        BufferedReader in = null;
+        @SuppressWarnings("unchecked")
+        ArrayList<String> arr = new ArrayList();
+        try {
+            in = new BufferedReader(new InputStreamReader(new FileInputStream(filer)));
+            String s = in.readLine();
+
+            while (s != null) {
+                arr.add(s);
+                s = in.readLine();
+            }
+
+        } catch (IOException ex) {
+            Logger.getLogger(FileReaderWriter.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                in.close();
+            } catch (IOException ex) {
+                Logger.getLogger(FileReaderWriter.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        return ListenDataUtils.listToStringArray(arr);
+    }
+
     /**
      * Appends the String to a file (new line) or creates it if needed
      * 
@@ -61,7 +114,7 @@ public class FileReaderWriter {
      */
     public boolean write(String text) {
         try {
-            text+="\r\n";
+            text += "\r\n";
             FileWriter out = new FileWriter(filer, true);
             BufferedWriter writer = new BufferedWriter(out);
             writer.write(text);

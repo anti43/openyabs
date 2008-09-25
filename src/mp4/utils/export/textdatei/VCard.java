@@ -36,6 +36,7 @@ public class VCard{
 
   /**
    *  This function returns a String containing the VCard.
+   * @return 
    */
   public String getVCard() {
 

@@ -20,6 +20,7 @@ import mp4.datenbank.installation.Tabellen;
 import mp4.datenbank.verbindung.Query;
 import mp4.interfaces.TableData;
 import mp4.utils.datum.DateConverter;
+import mp4.utils.listen.ArrayUtils;
 
 
 /**
@@ -42,10 +43,15 @@ public class Kontaktliste implements TableData, Tabellen{
 
     public Kontaktliste(Class clazz, Integer id) {
     }
-
+//Name	E-mail Address	Notes	E-mail 2 Address	E-mail 3 Address	
+//Mobile Phone	Pager	Company	Job Title	Home Phone	
+//Home Phone 2	Home Fax	Home Address	Business Phone	
+//Business Phone 2	Business Fax	Business Address	
+//Other Phone	Other Fax	Other Address																																																																																																																																																																																																																																												
     public Object[][] getData() {
-//        return queryhandler.select("", return null;)
-        return null;
+        return ArrayUtils.merge(new String[][]{{"Name","E-mail Address","Notes","Mobile Phone",
+                "Company","Business Phone", "Business Fax","Business Address"}
+        }, queryhandler.select("vorname||' '||name,mail,notizen,mobil,firma,tel,fax,str||' '||plz||' '||ort", null));
     }
 
     public String getTitle() {

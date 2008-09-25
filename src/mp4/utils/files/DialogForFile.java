@@ -25,13 +25,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JTextField;
+import mp4.interfaces.Waiter;
 import mp4.logs.*;
 
 /**
  *
  * @author Andreas
  */
-public class DialogForFile extends JFileChooser {
+public class DialogForFile extends JFileChooser implements Waiter {
 
     private static final long serialVersionUID = 1L;
     private File file = null;
@@ -81,6 +82,13 @@ public class DialogForFile extends JFileChooser {
     public void saveFile(File fileToSave) {
 
         if (chooseFile()) {
+            if (!fileToSave.exists()) {
+                try {
+                    fileToSave.createNewFile();
+                } catch (IOException ex) {
+                    Logger.getLogger(DialogForFile.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
             FileReader in = null;
             FileWriter out = null;
             int c;
@@ -132,5 +140,9 @@ public class DialogForFile extends JFileChooser {
             }
         }
         return false;
+    }
+
+    public void set(Object object) {
+        saveFile((File) object);
     }
 }

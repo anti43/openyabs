@@ -66,6 +66,18 @@ public class ListenDataUtils {
         return str;
     }
 
+    public static String[][] listToStringArrayArray(ArrayList<String[]> list) {
+     
+        String[][] str = new String[list.size()][];
+
+        for (int i = 0; i < list.size(); i++) {
+            str[i] = (String[]) list.get(i);
+        }
+
+        return str;
+        
+    }
+
     public static Object[][] listToTableArray(ArrayList list) {
 
         Object[][] str = new Object[list.size()][];
