@@ -162,7 +162,7 @@ public class PDFFile extends File implements Waitable, Printable {
             } else {
 //                img.scaleToFit(rect.width(), rect.height());
             }
-            img.setAbsolutePosition(photograph[1] + (rect.width() - img.scaledWidth()) / 2, photograph[2] + (rect.height() - img.scaledHeight()) / 2);
+            img.setAbsolutePosition(photograph[1] + (rect.getWidth() - img.getScaledWidth()) / 2, photograph[2] + (rect.getHeight() - img.getScaledHeight()) / 2);
             PdfContentByte cb = pdfStamper.getOverContent((int) photograph[0]);
             cb.addImage(img);
         }
