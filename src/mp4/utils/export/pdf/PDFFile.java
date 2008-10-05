@@ -14,14 +14,12 @@
  *      You should have received a copy of the GNU General Public License
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package mp4.utils.export.pdf;
 
 /**
  *
  * @author Andreas
  */
-
 import com.lowagie.text.BadElementException;
 import com.lowagie.text.pdf.*;
 import com.lowagie.text.DocumentException;
@@ -49,8 +47,8 @@ import mp4.main.Main;
  * @author anti43
  */
 public class PDFFile extends File implements Waitable, Printable {
-    private static final long serialVersionUID = 7455276510000739261L;
 
+    private static final long serialVersionUID = 7455276510000739261L;
     private AcroFields acroFields;
     private Set fieldNameKeys;
     private Einstellungen settings;
@@ -58,24 +56,33 @@ public class PDFFile extends File implements Waitable, Printable {
     private boolean scale = false;
     private int width,  height;
     private Template object;
+    private String[][] fields;
 
     public PDFFile(Template object) {
         super(object.getPath());
         this.object = object;
+        this.fields = object.getFields();
         settings = Einstellungen.instanceOf();
     }
 
     public void start() {
         try {
             PdfReader template = new PdfReader(object.getTemplate());
+            if (this.exists()) {
+                this.delete();
+            }
             Log.Debug("Creating PDF File: " + this.getPath());
             pdfStamper = new PdfStamper(template, new FileOutputStream(this.getPath()));
             acroFields = pdfStamper.getAcroFields();
             HashMap PDFFields = acroFields.getFields();
             fieldNameKeys = PDFFields.keySet();
+            Log.Debug("Set field values..");
             setFields();
+            Log.Debug("Set image (if exists)..");
             setImage();
-        } catch (Exception e) {
+        } catch (DocumentException ex) {
+            Logger.getLogger(PDFFile.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException e) {
             Popup.error("Bitte geben Sie unter \nBearbeiten-> Einstellungen ein PDF-Template an.\n" + e.getMessage(), Popup.ERROR);
             Log.Debug(e);
         } finally {
@@ -92,9 +99,14 @@ public class PDFFile extends File implements Waitable, Printable {
     }
 
     public void printOutFieldNames() {
+        String fieldnames = "";
         for (Iterator fieldNames = fieldNameKeys.iterator(); fieldNames.hasNext();) {
-            String fieldName = (String) fieldNames.next();
-            Log.Debug("Field: " + fieldName);
+            fieldnames += ", " + (String) fieldNames.next();
+        }
+        Log.Debug("Template: " + fieldnames);
+        Log.Debug("Objekt: ");
+        for (int i = 0; i < fields.length; i++) {
+            Log.Debug(fields[i][0] + "= " + fields[i][1]);
         }
     }
 
@@ -127,14 +139,20 @@ public class PDFFile extends File implements Waitable, Printable {
         if (Log.getLoglevel() == Log.LOGLEVEL_HIGH) {
             printOutFieldNames();
         }
-      
-        for (int i = 0; i < object.getFields().length; i++) {
-            acroFields.setField(object.getFields()[i][0], object.getFields()[i][1]);
+
+        for (int i = 0; i < fields.length; i++) {
+            try {
+                acroFields.setField(fields[i][0], fields[i][1]);
+            } catch (IOException e) {
+                Log.Debug(e);
+            } catch (DocumentException ex) {
+                Log.Debug(ex);
+            }
         }
     }
 
     private void setImage() throws DocumentException {
-        if (object.getImage()!= null) {
+        if (object.getImage() != null) {
             Log.Debug("Write Image..");
             float[] photograph = acroFields.getFieldPositions("abbildung");
             Rectangle rect = new Rectangle(photograph[1], photograph[2], photograph[3], photograph[4]);
@@ -159,8 +177,8 @@ public class PDFFile extends File implements Waitable, Printable {
         this.width = width;
         this.height = height;
     }
-    
-    public static String getTempFilename(){
+
+    public static String getTempFilename() {
         File file = null;
         try {
             file = File.createTempFile("mpTempPdf", ".pdf", Programmdaten.instanceOf().getDIR_CACHE());
@@ -172,7 +190,7 @@ public class PDFFile extends File implements Waitable, Printable {
     }
 
     public DocFlavor getFlavor() {
-        return DocFlavor.BYTE_ARRAY.PDF;
+        return DocFlavor.INPUT_STREAM.PDF;
     }
 
     public File getFile() {

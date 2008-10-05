@@ -1,4 +1,3 @@
-
 package mp4.utils.export.druck;
 
 import java.io.File;
@@ -23,46 +22,43 @@ import mp4.interfaces.Printable;
 import mp4.interfaces.Template;
 import mp4.interfaces.Waiter;
 import mp4.logs.*;
+import mp4.main.Main;
 
 /**
  *
  * @author anti43
  */
-public class DruckJob implements Waiter{
+public class DruckJob implements Waiter {
 
-    
     private PrintService prservDflt;
     private PrintService[] prservices;
     int idxPrintService = -1;
     private HashPrintRequestAttributeSet aset;
     private DocFlavor flavor;
+    public static boolean FORCE_WIN_PRINT = false;
 
     public DruckJob() {
         aset = new HashPrintRequestAttributeSet();
         aset.add(MediaSizeName.ISO_A4);
-        
-        this.flavor = DocFlavor.INPUT_STREAM.PDF;
-
+        this.flavor = DocFlavor.INPUT_STREAM.AUTOSENSE;
         prservDflt = PrintServiceLookup.lookupDefaultPrintService();
         prservices = PrintServiceLookup.lookupPrintServices(flavor, aset);
     }
-  
 
     public DruckJob(DocFlavor flavor) {
         aset = new HashPrintRequestAttributeSet();
         aset.add(MediaSizeName.ISO_A4);
-        
         this.flavor = flavor;
-
         prservDflt = PrintServiceLookup.lookupDefaultPrintService();
         prservices = PrintServiceLookup.lookupPrintServices(flavor, aset);
 
     }
-  
+
     /*
      * Prints a File
      */
     public void print(File file) throws FileNotFoundException, PrintException {
+
         if (null == prservices || 0 >= prservices.length) {
             if (null != prservDflt) {
                 System.err.println("Nur Default-Printer, da lookupPrintServices fehlgeschlagen.");
@@ -91,24 +87,39 @@ public class DruckJob implements Waiter{
             FileInputStream fis = new FileInputStream(file);
             Doc doc = new SimpleDoc(fis, flavor, null);
             pj.print(doc, aset);
-
         }
 
     }
-  
+
     /*
      * Prints a mp4.interfaces.Printable Object
      */
     private void print(Printable printable) {
         this.flavor = printable.getFlavor();
         try {
-            print(printable.getFile());
+            if ((flavor == DocFlavor.INPUT_STREAM.PDF && Main.IS_WINDOWS)) {
+                printWIN(printable.getFile());
+            } else {
+                print(printable.getFile());
+            }
         } catch (FileNotFoundException fileNotFoundException) {
             Log.Debug(fileNotFoundException);
         } catch (PrintException printException) {
             Log.Debug(printException);
         }
-        
+
+    }
+
+    public void printWIN(File file) {
+        try {
+            if (file.getName().contains("pdf")) {
+                Runtime.getRuntime().exec("cmd.exe /C start acrord32 /P /h" + file.getPath());
+            } else {
+                print(file);
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
     }
 
     private void printPrintServiceAttributesAndDocFlavors(PrintService prserv) {
@@ -137,9 +148,13 @@ public class DruckJob implements Waiter{
     public void set(Object object) {
         try {
             try {
-                print((File) object);
-            } catch (ClassCastException ex) {
                 print((Printable) object);
+            } catch (ClassCastException ex) {
+                if (FORCE_WIN_PRINT) {
+                    printWIN((File) object);
+                } else {
+                    print((File) object);
+                }
             }
         } catch (FileNotFoundException fileNotFoundException) {
             Log.Debug(fileNotFoundException);

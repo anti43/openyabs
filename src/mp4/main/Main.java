@@ -31,6 +31,7 @@ import mp4.panels.misc.SplashScreen;
 import mp4.frames.Logger;
 import mp4.frames.mainframe;
 import mp4.installation.Verzeichnisse;
+import mp4.utils.export.druck.DruckJob;
 
 /**
  *
@@ -69,6 +70,7 @@ public class Main implements Strings {
     private static void getOS() {
         if (System.getProperty("os.name").contains("Windows")) {
             IS_WINDOWS = true;
+            DruckJob.FORCE_WIN_PRINT = true;
         } else {
             IS_WINDOWS = false;
         }

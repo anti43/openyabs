@@ -1523,7 +1523,7 @@ private void jButton12KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_j
 
 private void jButton12MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton12MouseClicked
     if (currentBill.hasId()) {
-        Job job = new Job((Waitable) new PDF_Rechnung(currentBill), (Waiter) new DruckJob(), mainframe.getMainProgress());
+        Job job = new Job((Waitable) new PDFFile(new PDF_Rechnung(currentBill)), (Waiter) new DruckJob(), mainframe.getMainProgress());
         job.execute();
     } else {
         Popup.notice("Sie müssen die Rechnung erst anlegen.");}

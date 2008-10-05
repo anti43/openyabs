@@ -8,6 +8,8 @@ package mp4.utils.files;
  *
  * @author Galileo Computing
  */
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mp4.logs.*;
 
 import java.io.File;
@@ -18,6 +20,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.util.ArrayList;
+import mp4.utils.text.RandomText;
 
 public class FileDirectoryHandler {
 
@@ -132,6 +135,22 @@ public class FileDirectoryHandler {
         
     }
     private static ArrayList<File> lstFiles;
+
+    public static File tempFileClone(File file) {
+
+        return tempFileClone(file, new RandomText().getString());
+    }
+
+    public static File tempFileClone(File file, String suffix) {
+        try {
+            File fil = new File(copyFile(file, new File(System.getProperty("java.io.tmpdir")), new RandomText().getString() + "." + suffix));
+            fil.deleteOnExit();
+            return fil;
+        } catch (IOException ex) {
+            Log.Debug(ex);
+        }
+        return null;
+    }
 }
     
 
