@@ -38,7 +38,6 @@ public class Conn implements Strings {
     private static Conn connector;
 
     public static void reboot() throws Exception {
-
         Conn.shutdown();
         connector = new Conn();
     }
@@ -53,7 +52,6 @@ public class Conn implements Strings {
             connector = new Conn();
         }
         return connector;
-
     }
 
     /**
@@ -97,17 +95,6 @@ public class Conn implements Strings {
         }
         URL = "jdbc:derby:" + url + ";create=" + create + ";";
         this.connect();
-//        try {
-//            FileReaderWriter f = new FileReaderWriter(Constants.SETTINGS_FILE);
-//            String[] dat = f.read().split(";");
-//            f.write(url + ";" + dat[1]);
-//
-//        } catch (Exception exception) {
-//
-//            Popup.notice(SETTINGS_NOT_FOUND + exception.getMessage());
-//        }
-
-//        tablesCreated = this.query(Structure.tables);
         tablesCreated = this.query(Struktur.SQL_COMMAND);
         this.query(Daten.SQL_COMMAND);
         Conn.reboot();
@@ -136,15 +123,11 @@ public class Conn implements Strings {
      * @return Connection
      */
     private Connection connect() throws Exception {
-
-
-
         // Treiber laden
         try {
             Class.forName(DRIVER).newInstance();
         } catch (Exception ex) {
             ex.printStackTrace();
-
             Popup.warn(ex.getMessage(), Popup.ERROR);
             Conn.shutdown();
         }
@@ -177,10 +160,7 @@ public class Conn implements Strings {
             if (conn != null && !conn.isClosed()) {
                 conn.close();
                 conn = null;
-
             }
-
-
             File f = new File(Main.MPPATH + File.separator + Constants.DATABASENAME + File.separator + "dbex.lck");
             f.deleteOnExit();
             File fi = new File(Main.MPPATH+ File.separator + Constants.DATABASENAME + File.separator + "db.lck");
@@ -198,19 +178,13 @@ public class Conn implements Strings {
      * 
      */
     public static void query(String query) {
-
         String message = "Database Error:";
         statement = null;
         ResultSet resultSet = null;
-
         try {
-
             statement = conn.createStatement();
             statement.execute(query);
-
             System.out.println(statement.getUpdateCount());
-
-
         } catch (SQLException ex) {
             System.out.println(query);
             System.out.println(message + ex.getMessage());
@@ -275,16 +249,6 @@ public class Conn implements Strings {
         }
     }
 
-//    @Override
-//    public void finalize(){
-//        
-//        Out.out("Closing connection..");
-////        try {
-////            conn.close();
-////        } catch (SQLException ex) {
-////            Logger.getLogger(Conn.class.getName()).log(Level.SEVERE, null, ex);
-////        }
-//    }
     public static Connection getConnection() throws Exception {
         if (connector == null) {
             connector = new Conn();

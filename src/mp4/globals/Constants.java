@@ -19,7 +19,6 @@
 package mp4.globals;
 
 import java.io.File;
-import mp4.main.Main;
 
 /**
  *

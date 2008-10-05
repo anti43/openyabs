@@ -179,7 +179,7 @@ public class Main implements Strings {
                 System.exit(1);
             }
         }
-        return df.exists();
+        return df.canRead();
     }
 
     public static void main(String[] args) {
