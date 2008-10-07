@@ -36,7 +36,7 @@ public class Browser {
         try {
 
 
-            Process proc = Runtime.getRuntime().exec(Einstellungen.instanceOf().getBrowser() + " " + file.getAbsolutePath());
+            Process proc = Runtime.getRuntime().exec(Einstellungen.instanceOf().getBrowser_Programm() + " " + file.getAbsolutePath());
         } catch (IOException ex) {
 
             new Popup(Strings.NO_BROWSER);

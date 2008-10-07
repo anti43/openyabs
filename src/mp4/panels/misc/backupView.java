@@ -67,8 +67,8 @@ public class backupView extends mp4.panels.misc.commonPanel implements panelInte
         mainframe = aThis;
         l = Einstellungen.instanceOf();
         header = new String[]{"id", "Datum", "Datei"};
-        jTextField1.setText(l.getBackupverz());
-        this.savepath = l.getBackupverz();
+        jTextField1.setText(l.getBackup_Verzeichnis());
+        this.savepath = l.getBackup_Verzeichnis();
         df = new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss");
         df2 = new SimpleDateFormat("dd. MMMMMMMM yyyy HH:mm:ss");
         this.validateTable();
@@ -226,7 +226,7 @@ public class backupView extends mp4.panels.misc.commonPanel implements panelInte
 
         try {
             path = Main.MPPATH + File.separator + Constants.DATABASENAME;
-            store = l.getBackupverz();
+            store = l.getBackup_Verzeichnis();
             savefile = store + File.separator + df.format(new Date()) + ".mpsavefile-40.zip";
 
             if (store.equals("")) {
@@ -259,10 +259,10 @@ public class backupView extends mp4.panels.misc.commonPanel implements panelInte
             jTextField1.setText(fc.getSelectedFile().toString());
             setSavePath(fc.getSelectedFile().toString());
         }
-        l.setBackupverz(jTextField1.getText());
-        l.save();
+        l.setBackup_Verzeichnis(jTextField1.getText());
+//        l.save();
         l = Einstellungen.instanceOf();
-        mainframe.setMessage("Sicherungspfad '" + l.getBackupverz() + "' editiert.");
+        mainframe.setMessage("Sicherungspfad '" + l.getBackup_Verzeichnis() + "' editiert.");
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed

@@ -42,7 +42,7 @@ import mp4.utils.zahlen.FormatTax;
 public class Einnahme extends mp4.items.Things implements mp4.datenbank.installation.Tabellen, Daemonable, Serializable {
     private static final long serialVersionUID = 1L;
 
-    private Integer Kontenid = Einstellungen.instanceOf().getEinnahmeDefKonto().getId();
+    private Integer Kontenid = Einstellungen.instanceOf().getEinnahmen_Standard_Konto().getId();
     private String Beschreibung = "";
     private Double Preis = 0.0;
     private Double Tax = 0.0;
@@ -79,7 +79,7 @@ public class Einnahme extends mp4.items.Things implements mp4.datenbank.installa
     }
     public Einnahme() {
         super(ConnectionHandler.instanceOf().clone(TABLE_INCOME));
-        this.setKontenid(Einstellungen.instanceOf().getEinnahmeDefKonto().getId());
+        this.setKontenid(Einstellungen.instanceOf().getEinnahmen_Standard_Konto().getId());
     }
 
     /**

@@ -62,7 +62,7 @@ public class PDF_Rechnung implements Template{
         this.r = b;
         k = new Customer(b.getKundenId());
         products = r.getProductlistAsArray();
-        path = l.getRechnungverz() + File.separator + r.getRechnungnummer().replaceAll(" ", "_") + "_" + k.getFirma().replaceAll(" ", "_") + "_" + k.getName().replaceAll(" ", "_") + ".pdf".trim();
+        path = l.getRechnung_Verzeichnis() + File.separator + r.getRechnungnummer().replaceAll(" ", "_") + "_" + k.getFirma().replaceAll(" ", "_") + "_" + k.getName().replaceAll(" ", "_") + ".pdf".trim();
 
     }
 
@@ -98,7 +98,7 @@ public class PDF_Rechnung implements Template{
             }
         }
         Double tax = brutto - netto;
-        fields.add(new String[]{"taxrate", l.getGlobaltax().toString()});
+        fields.add(new String[]{"taxrate", l.getHauptsteuersatz().toString()});
         fields.add(new String[]{"tax", FormatNumber.formatLokalCurrency(tax)});
         fields.add(new String[]{"totalprice", FormatNumber.formatLokalCurrency(brutto)});
 
@@ -118,7 +118,7 @@ public class PDF_Rechnung implements Template{
     }
 
     public String getTemplate() {
-       return l.getRechnungtemp();
+       return l.getRechnung_Template();
     }
 
 }

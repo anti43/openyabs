@@ -75,26 +75,26 @@ public abstract class Daten {
         "INSERT INTO rechnungbetreffz (name, text, isvorlage) VALUES ('Bearbeiter..', 'Bearbeiter: {Benutzer}', 1)",      
 //        ******************************************************************************************************************************        
            
-        "INSERT INTO daten (name, wert) VALUES ('Backup Verzeichnis', '" + Setup.instanceOf().getInstall_dirs().getBackup_dir() + "')",
-        "INSERT INTO daten (name, wert) VALUES ('PDF Rechnungen Verzeichnis', '" +  Setup.instanceOf().getInstall_dirs().getPathpdf_bill_dir()+ "')",
-        "INSERT INTO daten (name, wert) VALUES ('PDF Angebote Verzeichnis', '" + Setup.instanceOf().getInstall_dirs().getPathpdf_offer_dir() + "')",
-        "INSERT INTO daten (name, wert) VALUES ('PDF Mahnung Verzeichnis', '" + Setup.instanceOf().getInstall_dirs().getPathpdf_mahnung_dir()+ "')",
-        "INSERT INTO daten (name, wert) VALUES ('PDF Produkt Verzeichnis', '" + Setup.instanceOf().getInstall_dirs().getPathpdf_produkt_dir()+ "')",
+        "INSERT INTO einstellungen (name, wert) VALUES ('Backup Verzeichnis', '" + Setup.instanceOf().getInstall_dirs().getBackup_dir() + "')",
+        "INSERT INTO einstellungen (name, wert) VALUES ('Rechnung Verzeichnis', '" +  Setup.instanceOf().getInstall_dirs().getPathpdf_bill_dir()+ "')",
+        "INSERT INTO einstellungen (name, wert) VALUES ('Angebot Verzeichnis', '" + Setup.instanceOf().getInstall_dirs().getPathpdf_offer_dir() + "')",
+        "INSERT INTO einstellungen (name, wert) VALUES ('Mahnung Verzeichnis', '" + Setup.instanceOf().getInstall_dirs().getPathpdf_mahnung_dir()+ "')",
+        "INSERT INTO einstellungen (name, wert) VALUES ('Produkt Verzeichnis', '" + Setup.instanceOf().getInstall_dirs().getPathpdf_produkt_dir()+ "')",
        
-        "INSERT INTO daten (name, wert) VALUES ('Rechnung Template', '" + Setup.instanceOf().getInstall_dirs().getPathtemplates_dir() + File.separator + "rechnung.pdf')",
-        "INSERT INTO daten (name, wert) VALUES ('Angebot Template', '" + Setup.instanceOf().getInstall_dirs().getPathtemplates_dir() + File.separator + "angebot.pdf')",
-        "INSERT INTO daten (name, wert) VALUES ('Mahnung Template', '" + Setup.instanceOf().getInstall_dirs().getPathtemplates_dir() + File.separator + "mahnung.pdf')",
-        "INSERT INTO daten (name, wert) VALUES ('Serienbrief Template', '" + Setup.instanceOf().getInstall_dirs().getPathtemplates_dir() + File.separator + "serienbrief.pdf')",
-        "INSERT INTO daten (name, wert) VALUES ('Produkt Template', '" + Setup.instanceOf().getInstall_dirs().getPathtemplates_dir() + File.separator + "produkt.pdf')",
+        "INSERT INTO einstellungen (name, wert) VALUES ('Rechnung Template', '" + Setup.instanceOf().getInstall_dirs().getPathtemplates_dir() + File.separator + "rechnung.pdf')",
+        "INSERT INTO einstellungen (name, wert) VALUES ('Angebot Template', '" + Setup.instanceOf().getInstall_dirs().getPathtemplates_dir() + File.separator + "angebot.pdf')",
+        "INSERT INTO einstellungen (name, wert) VALUES ('Mahnung Template', '" + Setup.instanceOf().getInstall_dirs().getPathtemplates_dir() + File.separator + "mahnung.pdf')",
+        "INSERT INTO einstellungen (name, wert) VALUES ('Serienbrief Template', '" + Setup.instanceOf().getInstall_dirs().getPathtemplates_dir() + File.separator + "serienbrief.pdf')",
+        "INSERT INTO einstellungen (name, wert) VALUES ('Produkt Template', '" + Setup.instanceOf().getInstall_dirs().getPathtemplates_dir() + File.separator + "produkt.pdf')",
      
         
-        "INSERT INTO daten (name, wert) VALUES ('Mehrwertsteuersatz', '19')",
-        "INSERT INTO daten (name, wert) VALUES ('PDF Programm', '/opt/kde3/bin/kpdf')",
-        "INSERT INTO daten (name, wert) VALUES ('Internetbrowser', '/usr/bin/firefox')",
+        "INSERT INTO einstellungen (name, wert) VALUES ('Hauptsteuersatz', '19')",
+        "INSERT INTO einstellungen (name, wert) VALUES ('PDF Programm', '/opt/kde3/bin/kpdf')",
+        "INSERT INTO einstellungen (name, wert) VALUES ('Browser Programm', '/usr/bin/firefox')",
         
-        "INSERT INTO daten (name, wert) VALUES ('Default Konto Einnahme (auf dieses Konto werden auch Ihre Rechnungen verbucht!)', '2112')",
-        "INSERT INTO daten (name, wert) VALUES ('Default Konto Ausgabe', '1111')",
-        "INSERT INTO daten (name, wert) VALUES ('Land (Waehrung) (DE,CH)', 'DE')",
+        "INSERT INTO einstellungen (name, wert) VALUES ('Konto Einnahme', '2112')",
+        "INSERT INTO einstellungen (name, wert) VALUES ('Konto Ausgabe', '1111')",
+        "INSERT INTO einstellungen (name, wert) VALUES ('Locale', 'de_DE')",
      
         
 //        ******************************************************************************************************************************        

@@ -60,7 +60,7 @@ public class PDF_Serienbrief implements Template{
             kontakt = contact;
             this.text = text;
             this.pretext = pretext;
-            this.template = l.getSerienbrieftemp();
+            this.template = l.getSerienbrief_Template();
             this.named = named;
     }
 
@@ -98,7 +98,7 @@ public class PDF_Serienbrief implements Template{
     }
 
     public String getTemplate() {
-       return l.getSerienbrieftemp();
+       return l.getSerienbrief_Template();
     }
  
 }

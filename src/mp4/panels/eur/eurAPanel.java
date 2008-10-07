@@ -55,7 +55,7 @@ public class eurAPanel extends mp4.panels.misc.commonPanel implements panelInter
         curKonto = Einstellungen.instanceOf().getAusgabeDefKonto();
 
         jTextField6.setText(DateConverter.getTodayDefDate());
-        jTextField3.setText(Einstellungen.instanceOf().getGlobaltax().toString());
+        jTextField3.setText(Einstellungen.instanceOf().getHauptsteuersatz().toString());
         jTextField4.setText("0");
         jTextField5.setText(Einstellungen.instanceOf().getAusgabeDefKonto().getArt());
 //        jTextField3.setInputVerifier(InputVerifiers.getDoubleInputVerfier(jTextField3));
@@ -374,7 +374,7 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
         vDate datum = new vDate(jTextField6.getText());
 
         if (!steuer.isVerified || !steuer.isPositive) {
-            steuer = new vDouble(Einstellungen.instanceOf().getGlobaltax());
+            steuer = new vDouble(Einstellungen.instanceOf().getHauptsteuersatz());
         }
 
         if (betrag.isVerified && betrag.isPositive && steuer.isVerified && steuer.isPositive && datum.isVerified) {

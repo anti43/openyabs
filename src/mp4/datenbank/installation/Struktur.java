@@ -99,8 +99,8 @@ public abstract class Struktur {
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
         "PRIMARY KEY  (id))",
         
-        "CREATE TABLE daten (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-        "name VARCHAR(250), wert VARCHAR(250)," +
+        "CREATE TABLE einstellungen (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
+        "name VARCHAR(250), wert VARCHAR(2500)," +
         "deleted INTEGER DEFAULT 0," +
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
         

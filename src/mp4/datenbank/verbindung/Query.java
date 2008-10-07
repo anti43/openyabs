@@ -224,6 +224,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
                 }
             }
         } catch (SQLException ex) {
+            Log.Debug("Datenbankfehler: " + query, true);
             Log.Debug(message + ex.getMessage());
             Popup.error(message + ex.getMessage(), "Datenbankfehler");
         } finally {

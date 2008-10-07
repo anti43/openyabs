@@ -20,6 +20,7 @@ import com.l2fprod.common.swing.plaf.LookAndFeelAddons;
 import de.muntjak.tinylookandfeel.TinyLookAndFeel;
 import java.io.File;
 
+import java.io.IOException;
 import javax.swing.UIManager;
 import mp4.installation.Setup;
 import mp4.globals.Constants;
@@ -125,7 +126,7 @@ public class Main implements Strings {
         }
     }
 
-    public Main() {
+    public Main() throws Exception {
         setLaF();
         splash = new SplashScreen(TEST_CONF);
         doArgCommands();
@@ -159,20 +160,23 @@ public class Main implements Strings {
     }
 
     private boolean findDatabase() {
-        FileReaderWriter f = new FileReaderWriter(SETTINGS_FILE);
+        File file = new File(SETTINGS_FILE);
+        if (!file.exists() | !file.canRead()) {
+            return false;
+        }
+        FileReaderWriter f = new FileReaderWriter(file);
         String[] dat = f.read().split(COLON);
         String db = dat[0] + File.separator + Constants.DATABASENAME;
         File test = new File(db);
         return test.exists();
     }
 
-    private boolean findSettings() {
+    private boolean findSettings() throws IOException {
         //Settings Datei suchen und schreiben
         File df = new File(SETTINGS_FILE);
         Log.Debug("Arbeitsverzeichnis: " + df.getParent(), true);
-        if (df.exists()) {
-        } else {
-            if (df.mkdirs()) {
+        if (!df.exists()){
+            if (df.getParentFile().mkdirs() && df.createNewFile()) {
                 FileReaderWriter f = new FileReaderWriter(SETTINGS_FILE);
                 f.write(Main.MPPATH + COLON + VERSION);
             } else {

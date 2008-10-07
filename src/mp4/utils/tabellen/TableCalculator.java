@@ -49,7 +49,7 @@ public class TableCalculator implements Runnable {
     private boolean checked = true;
 
     public TableCalculator(JTable table, JComponent panel) {
-        defaultTaxRate = Double.valueOf(Einstellungen.instanceOf().getGlobaltax());
+        defaultTaxRate = Einstellungen.instanceOf().getHauptsteuersatz();
 
         this.table = table;
         this.panel = panel;

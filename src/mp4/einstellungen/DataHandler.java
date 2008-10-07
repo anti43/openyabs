@@ -18,12 +18,14 @@ package mp4.einstellungen;
 
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.logs.*;
+import mp4.utils.zahlen.FormatNumber;
 
 /**
  *
  * @author Andreas
  */
 public class DataHandler extends mp4.items.Things implements mp4.datenbank.installation.Tabellen {
+
     private String table;
 
     public DataHandler(String table) {
@@ -45,11 +47,9 @@ public class DataHandler extends mp4.items.Things implements mp4.datenbank.insta
         }
     }
 
-
-
     public Integer getInteger(String ofKey) {
         String values = "";
-        
+
         try {
             values = getString(ofKey);
         } catch (Exception e) {
@@ -64,7 +64,7 @@ public class DataHandler extends mp4.items.Things implements mp4.datenbank.insta
     }
 
     public void addRow(String key, String value) {
-         setString(key, value, true);
+        setString(key, value, true);
     }
 
     public void deleteRow(String key) {
@@ -104,11 +104,32 @@ public class DataHandler extends mp4.items.Things implements mp4.datenbank.insta
         }
     }
 
+    public Double getDouble(String ofKey) {
+        String values = "";
+        try {
+            values = getString(ofKey);
+        } catch (Exception e) {
+            setString(ofKey, "0", true);
+            return getDouble(ofKey);
+        }
+        try {
+            return FormatNumber.parseDezimal(values);
+        } catch (NumberFormatException numberFormatException) {
+            return 0d;
+        }
+    }
+
+    public void setDouble(String ofKey, Double value) {
+        if (!setString(ofKey, FormatNumber.formatDezimal(value), false)) {
+            setString(ofKey, FormatNumber.formatDezimal(value), true);
+        }
+    }
+    
     private boolean setString(String key, String value, boolean newKey) {
 
         if (newKey) {
             Log.Debug("Creating new key: " + key);
-            if (this.insert("name, wert", "(;;2#4#1#1#8#0#;;)" + key + "(;;2#4#1#1#8#0#;;)" + ",(;;2#4#1#1#8#0#;;)" + value + "(;;2#4#1#1#8#0#;;)",null) == 1) {
+            if (this.insert("name, wert", "(;;2#4#1#1#8#0#;;)" + key + "(;;2#4#1#1#8#0#;;)" + ",(;;2#4#1#1#8#0#;;)" + value + "(;;2#4#1#1#8#0#;;)", null) == 1) {
                 return true;
             } else {
                 return false;
@@ -129,8 +150,6 @@ public class DataHandler extends mp4.items.Things implements mp4.datenbank.insta
             setString(ofKey, value, true);
         }
     }
-
- 
 }
 
 

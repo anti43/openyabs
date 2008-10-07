@@ -92,7 +92,7 @@ public class offersView extends mp4.panels.misc.commonPanel implements panelInte
         initComponents();
 
         settings = Einstellungen.instanceOf();
-        defaultTaxRate = Double.valueOf(settings.getGlobaltax());
+        defaultTaxRate = settings.getHauptsteuersatz();
         currentOffer = new Angebot();
         this.customer = new Customer(ConnectionHandler.instanceOf());
         this.mainframe = frame;

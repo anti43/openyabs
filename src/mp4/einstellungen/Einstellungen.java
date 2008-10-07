@@ -16,59 +16,39 @@
  */
 package mp4.einstellungen;
 
-
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import mp4.items.SKRKonto;
 import mp4.benutzerverwaltung.User;
 
 import java.util.Date;
 import java.util.Locale;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 import mp4.globals.Constants;
 
-import mp4.items.visual.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
+import mp4.globals.Strings;
+import mp4.items.visual.Popup;
 import mp4.utils.files.FileReaderWriter;
-import mp4.utils.ui.inputfields.InputVerifiers;
 import mp4.logs.*;
 import mp4.main.Main;
 import mp4.utils.datum.DateConverter;
+import mp4.utils.listen.ListenDataUtils;
 
 /**
  *
  * @author anti
  */
-public class Einstellungen extends mp4.items.People implements mp4.datenbank.installation.Tabellen {
+public class Einstellungen implements mp4.datenbank.installation.Tabellen {
 
     private static Einstellungen dat;
-    
-    private String backupverz = "";
-    private String rechnungverz = "";
-    private String angebotverz = "";
-    private String mahnungverz = "";
-    private String produktverz = "";
-    
-    private String rechnungtemp = "";
-    private String angebottemp = "";
-    private String mahnungtemp = "";
-    private String produkttemp = "";
-    
-    private String serienbrieftemp = "";
-    private Double globaltax = 0d;
-    private String pdfviewer = "";
-    private String browser = "";
-    
-    private String ekDefaultKontoNummer = "";
-    private String agDefaultKontoNummer = "";
-    private SKRKonto einnahmeDefKonto;
-    private SKRKonto ausgabeDefKonto;
-    
-    private Locale locale;
-    private String[][] valurarray;
-    private String[][] orig_valuearray;
-
+    private DataHandler datahandler;
     private User user = new User();
-    
+
+    private Einstellungen() {
+        datahandler = new DataHandler(TABLE_CONFIG_DATA);
+        Locale.setDefault(getLocale());
+    }
+
     public static Einstellungen instanceOf() {
         if (dat == null) {
             dat = new Einstellungen();
@@ -76,28 +56,44 @@ public class Einstellungen extends mp4.items.People implements mp4.datenbank.ins
         }
         return dat;
     }
-
-    public static Einstellungen newInstanceOf() {
-        dat = null;
-        dat = new Einstellungen();
-        return dat;
-    }
-    
-
-    private Einstellungen() {
-        super(ConnectionHandler.instanceOf().clone(TABLE_MYDATA));
-        this.id = 1;
-        this.valurarray = this.select("name, wert", null, null, false);
-        orig_valuearray = valurarray;
-        this.explode(valurarray);
-        this.id = 1;
-        Locale.setDefault(getLocale());
+////////////////////////////////////////////////////////////////////////////////
+    public Object[][] getExtProgs() {
+        return getDaten("Programm");
     }
 
-    public String getLieferscheintemplate() {
-        throw new UnsupportedOperationException("Not yet implemented");
+    public Object[][] getVorlagen() {
+        return getDaten("Template");
     }
 
+    public Object[][] getVerzeichnisse() {
+        return getDaten("Verzeichnis");
+    }
+
+//    private Object[][] getDaten(String string) {
+//        throw new UnsupportedOperationException("Not yet implemented");
+//    }
+    @SuppressWarnings("unchecked")
+    public Object[][] getDaten(String typ) {
+        ArrayList values = null;
+        try {
+            values = new ArrayList();
+            Method[] methods = this.getClass().getMethods();
+
+            for (int i = 0; i < methods.length; i++) {
+                if (methods[i].getName().startsWith("get") && methods[i].getName().endsWith(typ)) {
+
+                    values.add(new Object[]{methods[i].getName().substring(3, methods[i].getName().length()).replaceAll("_", " "), 
+                    methods[i].invoke(this, (Object[]) null)});
+                    
+                    return ListenDataUtils.listToTableArray(values);
+                }
+            }
+        } catch (Exception ex) {
+            return ListenDataUtils.listToTableArray(values);
+        }
+        return new Object[][]{};
+    }
+////////////////////////////////////////////////////////////////////////////////
     public User getUser() {
         return user;
     }
@@ -106,301 +102,198 @@ public class Einstellungen extends mp4.items.People implements mp4.datenbank.ins
         this.user = usern;
     }
 
-    private int getAppVersion() {
-        return Integer.valueOf(Constants.VERSION);
-    }
-
-
-    public DefaultTableModel getDefaultTablemodel() {
-
-        String[] head = new String[]{"Option", "Wert"};
-        return new DefaultTableModel(valurarray, head);
-    }
-    
-    public String[][] getData() {
-        return valurarray;
-    }
-
     public String getDate() {
         return DateConverter.getDefDateString(new Date());
     }
 
     public String getVersion() {
-
-        try {
-            FileReaderWriter f = new FileReaderWriter(Main.SETTINGS_FILE);
-            String[] dats = f.read().split(";");
-
-            return dats[1];
-
-        } catch (Exception exception) {
-            Log.Debug(exception);
-
-            return "N/A";
-        }
-
+        return Constants.VERSION;
     }
-
-    public String getDbPath() {
-
+////////////////////////////////////////////////////////////////////////////////  
+    public String getDatenbank_Verzeichnis() {
         try {
             FileReaderWriter f = new FileReaderWriter(Main.SETTINGS_FILE);
             String[] dats = f.read().split(";");
-
             return dats[0];
-
         } catch (Exception exception) {
             Log.Debug(exception);
-
             return "N/A";
         }
+    }
+
+    public void setDatenbank_Verzeichnis(String pfad) {
+        FileReaderWriter f = new FileReaderWriter(Main.SETTINGS_FILE);
+        f.write(pfad + Strings.COLON + Constants.VERSION);
 
     }
 
-    public void setModel(TableModel model) {
-
-        orig_valuearray = new String[valurarray.length][2];
-
-
-        for (int k = 0; k < valurarray.length; k++) {
-
-            orig_valuearray[k][0] = String.valueOf(model.getValueAt(k, 0));
-            orig_valuearray[k][1] = String.valueOf(model.getValueAt(k, 1));
-
-        }
-
-        this.explode(orig_valuearray);
-
+    public String getBackup_Verzeichnis() {
+        return datahandler.getString("Backup Verzeichnis");
     }
 
-
-
-    private void explode(String[][] str) {
-        if (str != null) {
-            this.setBackupverz(str[0][1]);
-            this.setRechnungverz(str[1][1]);
-            this.setAngebotverz(str[2][1]);
-            this.setMahnungverz(str[3][1]);
-            this.setProduktverz(str[4][1]);
-            this.setRechnungtemp(str[5][1]);
-            this.setAngebottemp(str[6][1]);
-            this.setMahnungtemp(str[7][1]);
-            this.setSerienbrieftemp(str[8][1]);
-            this.setProdukttemp(str[9][1]);
-            this.setGlobaltax(Double.valueOf(str[10][1]));
-            this.setPdfviewer(str[11][1]);
-            this.setBrowser(str[12][1]);
-            this.setEkDefaultKonto(str[12+1][1]);
-            this.setAgDefaultKonto(str[14][1]);
-            this.setLocale(new Locale("de", str[15][1]));
-            
-            try {
-                this.setEinnahmeDefKonto(new SKRKonto(ConnectionHandler.instanceOf(), getEkDefaultKonto(), true));
-            } catch (Exception exception) {
-                Popup.notice("Einnahmenkonto nicht vorhanden.\nBeachten Sie die genaue Schreibweise (z.B. '3 000' anstatt '3000')");
-                this.setEkDefaultKonto("2100");
-                this.setEinnahmeDefKonto(new SKRKonto(ConnectionHandler.instanceOf(), getEkDefaultKonto(), true));
-            }
-
-            try {
-                this.setAusgabeDefKonto(new SKRKonto(ConnectionHandler.instanceOf(), getAgDefaultKonto(), true));
-            } catch (Exception exception) {
-                Popup.notice("Ausgabenkonto nicht vorhanden.\nBeachten Sie die genaue Schreibweise (z.B. '3 000' anstatt '3000')");
-                this.setAgDefaultKonto("1111");
-                this.setAusgabeDefKonto(new SKRKonto(ConnectionHandler.instanceOf(), getAgDefaultKonto(), true));
-            }
-        }
+    public void setBackup_Verzeichnis(String Backupverzeichnis) {
+        datahandler.setString("Backup Verzeichnis", Backupverzeichnis);
     }
 
-    private void collect() {
-        orig_valuearray[0][1] = getBackupverz();
-        orig_valuearray[1][1] = getRechnungverz();
-        orig_valuearray[2][1] = getAngebotverz();
-        orig_valuearray[3][1] = getMahnungverz();
-        orig_valuearray[4][1] = getProduktverz();
-        
-        orig_valuearray[5][1] = getRechnungtemp();
-        orig_valuearray[6][1] = getAngebottemp();
-        orig_valuearray[7][1] = getMahnungtemp();
-        orig_valuearray[8][1] = getSerienbrieftemp();
-        orig_valuearray[9][1] = getProdukttemp();
-        
-        orig_valuearray[10][1] = getGlobaltax().toString();
-        orig_valuearray[11][1] = getPdfviewer();
-        orig_valuearray[12][1] = getBrowser();
-       
-        orig_valuearray[12+1][1] = getEkDefaultKonto();
-        orig_valuearray[14][1] = getAgDefaultKonto();
-        orig_valuearray[15][1] = getLocale().getCountry();
-       
+    public String getRechnung_Verzeichnis() {
+        return datahandler.getString("Rechnung Verzeichnis");
     }
 
-    public void save() {
-        collect();
-        for (int i = 0; i < orig_valuearray.length; i++) {
-            this.update("wert", "(;;2#4#1#1#8#0#;;)" + orig_valuearray[i][1] + "(;;2#4#1#1#8#0#;;)", String.valueOf(i + 1));
-        }
-        dat = new Einstellungen();
+    public void setRechnung_Verzeichnis(String Rechnungverzeichnis) {
+        datahandler.setString("Rechnung Verzeichnis", Rechnungverzeichnis);
     }
 
-    public String getBackupverz() {
-        return backupverz;
+    public String getAngebot_Verzeichnis() {
+        return datahandler.getString("Angebot Verzeichnis");
     }
 
-    public void setBackupverz(String backupverz) {
-        this.backupverz = backupverz;
+    public void setAngebot_Verzeichnis(String Angebotverzeichnis) {
+        datahandler.setString("Angebot Verzeichnis", Angebotverzeichnis);
     }
 
-    public String getRechnungverz() {
-        return rechnungverz;
+    public String getMahnung_Verzeichnis() {
+        return datahandler.getString("Mahnung Verzeichnis");
     }
 
-    public void setRechnungverz(String rechnungverz) {
-        this.rechnungverz = rechnungverz;
+    public void setMahnung_Verzeichnis(String Mahnungverzeichnis) {
+        datahandler.setString("Mahnung Verzeichnis", Mahnungverzeichnis);
     }
 
-    public String getAngebotverz() {
-        return angebotverz;
+    public String getProdukt_Verzeichnis() {
+        return datahandler.getString("Produkt Verzeichnis");
     }
 
-    public void setAngebotverz(String angebotverz) {
-        this.angebotverz = angebotverz;
+    public void setProdukt_Verzeichnis(String Produktverzeichnis) {
+        datahandler.setString("Produkt Verzeichnis", Produktverzeichnis);
+    }
+////////////////////////////////////////////////////////////////////////////////  
+    public String getLieferschein_Template() {
+        return datahandler.getString("Lieferschein Template");
     }
 
-    public String getMahnungverz() {
-        return mahnungverz;
+    public void setLieferschein_Template(String Lieferscheintemplate) {
+        datahandler.setString("Lieferschein Template", Lieferscheintemplate);
     }
 
-    public void setMahnungverz(String mahnungverz) {
-        this.mahnungverz = mahnungverz;
+    public String getRechnung_Template() {
+        return datahandler.getString("Rechnung Template");
     }
 
-    public String getRechnungtemp() {
-        return rechnungtemp;
+    public void setRechnung_Template(String Rechnungtemplate) {
+        datahandler.setString("Rechnung Template", Rechnungtemplate);
     }
 
-    public void setRechnungtemp(String rechnungtemp) {
-        this.rechnungtemp = rechnungtemp;
+    public String getAngebot_Template() {
+        return datahandler.getString("Angebot Template");
     }
 
-    public String getAngebottemp() {
-        return angebottemp;
+    public void setAngebot_Template(String Angebottemplate) {
+        datahandler.setString("Angebot Template", Angebottemplate);
     }
 
-    public void setAngebottemp(String angebottemp) {
-        this.angebottemp = angebottemp;
+    public String getMahnung_Template() {
+        return datahandler.getString("Mahnung Template");
     }
 
-    public String getMahnungtemp() {
-        return mahnungtemp;
+    public void setMahnung_Template(String Mahnungtemplate) {
+        datahandler.setString("Mahnung Template", Mahnungtemplate);
     }
 
-    public void setMahnungtemp(String mahnungtemp) {
-        this.mahnungtemp = mahnungtemp;
+    public String getSerienbrief_Template() {
+        return datahandler.getString("Serienbrief Template");
     }
 
-    public String getSerienbrieftemp() {
-        return serienbrieftemp;
+    public void setSerienbrief_Template(String Serienbrieftemplate) {
+        datahandler.setString("Serienbrief Template", Serienbrieftemplate);
     }
 
-    public void setSerienbrieftemp(String serienbrieftemp) {
-        this.serienbrieftemp = serienbrieftemp;
+    public String getProdukt_Template() {
+        return datahandler.getString("Produkt Template");
     }
 
-    public Double getGlobaltax() {
+    public void setProdukt_Template(String Produkttemplate) {
+        datahandler.setString("Produkt Template", Produkttemplate);
+    }
+////////////////////////////////////////////////////////////////////////////////  
+    public String getPdf_Programm() {
+        return datahandler.getString("Pdf Programm");
+    }
 
+    public void setPdf_Programm(String Pdfprogramm) {
+        datahandler.setString("Pdf Programm", Pdfprogramm);
+    }
+
+    public String getBrowser_Programm() {
+        return datahandler.getString("Browser Programm");
+    }
+
+    public void setBrowser_Programm(String Browser) {
+        datahandler.setString("Browser Programm", Browser);
+    }
+////////////////////////////////////////////////////////////////////////////////
+    public Double getHauptsteuersatz() {
+        return datahandler.getDouble("Hauptsteuersatz");
+    }
+
+    public void setHauptsteuersatz(Double Hauptsteuersatz) {
+        datahandler.setDouble("Hauptsteuersatz", Hauptsteuersatz);
+    }
+
+    public Locale getLocale() {
         try {
-            Double.valueOf(globaltax);
-
-        } catch (NumberFormatException numberFormatException) {
-
-            return 0d;
+            return new Locale(datahandler.getString("Locale").split("_")[0], datahandler.getString("Locale").split("_")[1]);
+        } catch (Exception e) {
+            Popup.notice("Es ist ein Fehler aufgetreten, Locale de_DE wird benutzt.\n" + e.getMessage());
+            return new Locale("de", "DE");
         }
-
-
-        return globaltax;
     }
 
-    public void setGlobaltax(Double globaltax) {
-        this.globaltax = globaltax;
+    public void setLocale(Locale locale) {
+        datahandler.setString("Locale", locale.toString());
     }
 
-    public String getPdfviewer() {
-        return pdfviewer;
-    }
-
-    public void setPdfviewer(String pdfviewer) {
-        this.pdfviewer = pdfviewer;
-    }
-
-    public String getBrowser() {
-        return browser;
-    }
-
-    public void setBrowser(String browser) {
-        this.browser = browser;
-    }
-
-
+////////////////////////////////////////////////////////////////////////////////
     private String getEkDefaultKonto() {
-        return ekDefaultKontoNummer;
+        return datahandler.getString("Konto Einnahme");
     }
 
-    private void setEkDefaultKonto(String ekDefaultKonto) {
-        this.ekDefaultKontoNummer = ekDefaultKonto;
+    private void setEkDefaultKonto(String EkDefaultKonto) {
+        datahandler.setString("Konto Einnahme", EkDefaultKonto);
     }
 
     private String getAgDefaultKonto() {
-        return agDefaultKontoNummer;
+        return datahandler.getString("Konto Ausgabe");
     }
 
-    private void setAgDefaultKonto(String agDefaultKonto) {
-        this.agDefaultKontoNummer = agDefaultKonto;
+    private void setAgDefaultKonto(String AgDefaultKonto) {
+        datahandler.setString("Konto Ausgabe", AgDefaultKonto);
     }
 
-    public SKRKonto getEinnahmeDefKonto() {
-        return einnahmeDefKonto;
+    public SKRKonto getEinnahmen_Standard_Konto() {
+        try {
+            return new SKRKonto(ConnectionHandler.instanceOf(), getEkDefaultKonto(), true);
+        } catch (Exception e) {
+            Popup.notice("Einnahmenkonto nicht vorhanden.\nBeachten Sie die genaue Schreibweise (z.B. '3000' anstatt '3 000')");
+            this.setEkDefaultKonto("2100");
+            return new SKRKonto(ConnectionHandler.instanceOf(), getEkDefaultKonto(), true);
+        }
     }
 
-    public void setEinnahmeDefKonto(SKRKonto einnahmeDefKonto) {
-        this.einnahmeDefKonto = einnahmeDefKonto;
+    public void setEinnahme_Standard_Konto(SKRKonto einnahmeDefKonto) {
         this.setEkDefaultKonto(einnahmeDefKonto.getNummer());
     }
 
     public SKRKonto getAusgabeDefKonto() {
-        return ausgabeDefKonto;
+        try {
+            return new SKRKonto(ConnectionHandler.instanceOf(), getAgDefaultKonto(), true);
+        } catch (Exception e) {
+            Popup.notice("Ausgabenkonto nicht vorhanden.\nBeachten Sie die genaue Schreibweise (z.B. '3 000' anstatt '3000')");
+            this.setAgDefaultKonto("1111");
+            return new SKRKonto(ConnectionHandler.instanceOf(), getAgDefaultKonto(), true);
+        }
     }
 
     public void setAusgabeDefKonto(SKRKonto ausgabeDefKonto) {
-        this.ausgabeDefKonto = ausgabeDefKonto;
         this.setAgDefaultKonto(ausgabeDefKonto.getNummer());
     }
-
-    public Locale getLocale() {
-        return locale;
-    }
-
-    public void setLocale(Locale locale) {
-        this.locale = locale;
-    }
-
-    public String getProduktverz() {
-        return produktverz;
-    }
-
-    public void setProduktverz(String produktverz) {
-        this.produktverz = produktverz;
-    }
-
-    public String getProdukttemp() {
-        return produkttemp;
-    }
-
-    public void setProdukttemp(String produkttemp) {
-        this.produkttemp = produkttemp;
-    }
-
-
-
-   
 }

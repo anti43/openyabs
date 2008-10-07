@@ -30,16 +30,16 @@ public class PostenTableModel extends MPTableModel {
                     true, true, true, true, true, true
                 },
                 new Object[][]{
-                    {null, 1.0, null, Einstellungen.instanceOf().getGlobaltax(), null, null},
-                    {null, 1.0, null, Einstellungen.instanceOf().getGlobaltax(), null, null},
-                    {null, 1.0, null, Einstellungen.instanceOf().getGlobaltax(), null, null},
-                    {null, 1.0, null, Einstellungen.instanceOf().getGlobaltax(), null, null},
-                    {null, 1.0, null, Einstellungen.instanceOf().getGlobaltax(), null, null},
-                    {null, 1.0, null, Einstellungen.instanceOf().getGlobaltax(), null, null},
-                    {null, 1.0, null, Einstellungen.instanceOf().getGlobaltax(), null, null},
-                    {null, 1.0, null, Einstellungen.instanceOf().getGlobaltax(), null, null},
-                    {null, 1.0, null, Einstellungen.instanceOf().getGlobaltax(), null, null},
-                    {null, 1.0, null, Einstellungen.instanceOf().getGlobaltax(), null, null}
+                    {null, 1.0, null, Einstellungen.instanceOf().getHauptsteuersatz(), null, null},
+                    {null, 1.0, null, Einstellungen.instanceOf().getHauptsteuersatz(), null, null},
+                    {null, 1.0, null, Einstellungen.instanceOf().getHauptsteuersatz(), null, null},
+                    {null, 1.0, null, Einstellungen.instanceOf().getHauptsteuersatz(), null, null},
+                    {null, 1.0, null, Einstellungen.instanceOf().getHauptsteuersatz(), null, null},
+                    {null, 1.0, null, Einstellungen.instanceOf().getHauptsteuersatz(), null, null},
+                    {null, 1.0, null, Einstellungen.instanceOf().getHauptsteuersatz(), null, null},
+                    {null, 1.0, null, Einstellungen.instanceOf().getHauptsteuersatz(), null, null},
+                    {null, 1.0, null, Einstellungen.instanceOf().getHauptsteuersatz(), null, null},
+                    {null, 1.0, null, Einstellungen.instanceOf().getHauptsteuersatz(), null, null}
                 },
                 new Object[]{"id", "Anzahl", "Bezeichnung", "Steuersatz", "Nettopreis", "Bruttopreis"});
         
@@ -81,7 +81,7 @@ public class PostenTableModel extends MPTableModel {
                 m.setValueAt(product.getTaxValue(), selectedRow, 3);
             } catch (NumberFormatException numberFormatException) {
                 Popup.notice("Wert 'Steuer' unzulässig: Produkt " + product.getProduktNummer());
-                m.setValueAt(Einstellungen.instanceOf().getGlobaltax(), selectedRow, 3);
+                m.setValueAt(Einstellungen.instanceOf().getHauptsteuersatz(), selectedRow, 3);
             }
             try {
                 m.setValueAt(new Double(product.getVK()), selectedRow, 4);
@@ -120,7 +120,7 @@ public class PostenTableModel extends MPTableModel {
                 m.setValueAt(product.getTaxValue(), selectedRow, 3);
             } catch (NumberFormatException numberFormatException) {
                 Popup.notice("Wert 'Steuer' unzulässig: Produkt " + product.getProduktNummer());
-                m.setValueAt(Einstellungen.instanceOf().getGlobaltax(), selectedRow, 3);
+                m.setValueAt(Einstellungen.instanceOf().getHauptsteuersatz(), selectedRow, 3);
             }
             try {
                 m.setValueAt(new Double(product.getPreis()), selectedRow, 4);

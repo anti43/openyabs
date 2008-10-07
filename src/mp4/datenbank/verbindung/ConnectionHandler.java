@@ -52,7 +52,7 @@ public class ConnectionHandler extends mp4.datenbank.verbindung.Query implements
      * Singleton!
      */
     private ConnectionHandler() throws Exception {
-        super(TABLE_MYDATA);
+        super(TABLE_CONFIG_DATA);
     }
 
     public static ConnectionHandler instanceOf() {

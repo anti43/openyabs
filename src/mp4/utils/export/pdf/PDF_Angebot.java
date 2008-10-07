@@ -88,7 +88,7 @@ public class PDF_Angebot implements Template{
             }
         }
         Double tax = brutto - netto;
-        fields.add(new String[]{"taxrate", l.getGlobaltax().toString()});
+        fields.add(new String[]{"taxrate", l.getHauptsteuersatz().toString()});
         fields.add(new String[]{"tax", FormatNumber.formatLokalCurrency(tax)});
         fields.add(new String[]{"totalprice", FormatNumber.formatLokalCurrency(brutto)});
         
@@ -96,7 +96,7 @@ public class PDF_Angebot implements Template{
     }
 
     public String getPath() {
-        return  l.getAngebotverz() + File.separator + r.getAngebotnummer().replaceAll(" ", "_") + "_" + k.getFirma().replaceAll(" ", "_") + "_" + k.getName().replaceAll(" ", "_") + ".pdf".trim();
+        return  l.getAngebot_Verzeichnis() + File.separator + r.getAngebotnummer().replaceAll(" ", "_") + "_" + k.getFirma().replaceAll(" ", "_") + "_" + k.getName().replaceAll(" ", "_") + ".pdf".trim();
     }
 
     public String[][] getFields() {
@@ -108,7 +108,7 @@ public class PDF_Angebot implements Template{
     }
 
     public String getTemplate() {
-        return l.getAngebottemp();
+        return l.getAngebot_Template();
     }
 
  

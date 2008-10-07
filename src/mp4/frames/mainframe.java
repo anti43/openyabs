@@ -1142,7 +1142,7 @@ pack();
 
     private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
         try {
-            Process proc = Runtime.getRuntime().exec(Einstellungen.instanceOf().getBrowser() + " http://www.supernature-forum.de");
+            Process proc = Runtime.getRuntime().exec(Einstellungen.instanceOf().getBrowser_Programm() + " http://www.supernature-forum.de");
         } catch (IOException ex) {
             new Popup("Kein Browser angegeben. Wählen Sie Ihren Internetbrowser unter 'Programmeinstellungen'.");
         }
@@ -1152,7 +1152,7 @@ pack();
         try {
             Programmdaten.instanceOf().setMAINFRAME_WINDOW_STATE(this.getSize());
             Programmdaten.instanceOf().setMAINFRAME_TAB(mainTabPane.getSelectedIndex());
-            Einstellungen.instanceOf().save();
+
             System.exit(0);
         } catch (Exception exc) {
             Log.Debug(exc, true);
@@ -1179,7 +1179,7 @@ pack();
 
         Programmdaten.instanceOf().setMAINFRAME_WINDOW_STATE(this.getSize());
         Programmdaten.instanceOf().setMAINFRAME_TAB(mainTabPane.getSelectedIndex());
-        Einstellungen.instanceOf().save();
+
         System.exit(0);
     }//GEN-LAST:event_jMenuItem14ActionPerformed
 
@@ -1546,7 +1546,7 @@ private javax.swing.JMenu pluginMenu;
     public void dispose() {
         Programmdaten.instanceOf().setMAINFRAME_WINDOW_STATE(this.getSize());
         Programmdaten.instanceOf().setMAINFRAME_TAB(mainTabPane.getSelectedIndex());
-        Einstellungen.instanceOf().save();
+
         Conn.shutdown();
         Log.getLogger().flush();
 

@@ -96,7 +96,7 @@ public class billsView extends mp4.panels.misc.commonPanel implements panelInter
 //        Locale.setDefault(Einstellungen.instanceOf().getLocale());
 
         settings = Einstellungen.instanceOf();
-        defaultTaxRate = Double.valueOf(settings.getGlobaltax());
+        defaultTaxRate = settings.getHauptsteuersatz();
         currentBill = new Rechnung();
         this.customer = new Customer(ConnectionHandler.instanceOf());
         this.mainframe = frame;

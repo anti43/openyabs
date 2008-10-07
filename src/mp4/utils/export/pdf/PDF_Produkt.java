@@ -96,7 +96,7 @@ public class PDF_Produkt implements Template {
     }
 
     public String getPath() {
-        return settings.getProduktverz() + File.separator + produkt.getProduktNummer().replaceAll(" ", "_") + ".pdf".trim();
+        return settings.getProdukt_Verzeichnis() + File.separator + produkt.getProduktNummer().replaceAll(" ", "_") + ".pdf".trim();
     }
 
     public String[][] getFields() {
@@ -108,7 +108,7 @@ public class PDF_Produkt implements Template {
     }
 
     public String getTemplate() {
-        return settings.getProdukttemp();
+        return settings.getProdukt_Template();
     }
     
 

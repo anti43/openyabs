@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import mp4.globals.Constants;
+import mp4.main.Main;
 
 /**
  *
@@ -51,10 +52,10 @@ public class DesktopIcon implements Constants{
             out.write("GenericName=MP Rechnungs und Kundenverwaltung");
             out.newLine();
 
-            out.write("Exec=java -jar " + Constants.USER_HOME + File.separator + Constants.PROG_NAME + File.separator + Constants.JAR_NAME);
+            out.write("Exec=java -jar " + Main.APP_DIR + File.separator + Constants.JAR_NAME);
             out.newLine();
 
-            out.write("Icon=" + Constants.USER_HOME + File.separator + Constants.PROG_NAME + File.separator +"lib" + File.separator + "mpd.png");
+            out.write("Icon=" + Main.APP_DIR + File.separator +"lib" + File.separator + "mpd.png");
             out.newLine();
 
             out.write("Type=Application");
@@ -90,10 +91,10 @@ public class DesktopIcon implements Constants{
         File fol = new File(USER_HOME + File.separator + PROG_NAME + File.separator + LIB_DIR);
 
         try {
-            out = new BufferedWriter(new FileWriter(USER_HOME + File.separator + DESKTOP + File.separator + ICON_NAME_WIN, false));
+            out = new BufferedWriter(new FileWriter(USER_HOME + File.separator + ICON_NAME_WIN, false));
             out.write("[InternetShortcut]");
             out.newLine();
-            out.write("URL=file://"+Constants.USER_HOME + File.separator + Constants.PROG_NAME + File.separator + Constants.JAR_NAME);
+            out.write("URL=file://" + Main.APP_DIR + File.separator + Constants.JAR_NAME);
             out.newLine();
             out.close();
         } catch (IOException ex) {

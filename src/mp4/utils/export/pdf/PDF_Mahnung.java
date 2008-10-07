@@ -115,7 +115,7 @@ public class PDF_Mahnung implements Template{
     }
 
     public String getTemplate() {
-       return l.getRechnungtemp();
+       return l.getRechnung_Template();
     }
     
   

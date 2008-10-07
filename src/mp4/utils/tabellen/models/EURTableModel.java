@@ -287,7 +287,7 @@ public class EURTableModel implements Constants, Strings, mp4.datenbank.installa
 //        kontenid, preis, tax, datumq.selectBetween("kontenid, preis, tax, datum", null, timeframe);
         q = ConnectionHandler.instanceOf().clone(TABLE_BILLS);
         String[][] rechnungen = q.selectBetween("id, gesamtpreis, gesamttax, datum", new String[]{"bezahlt", "1", "", "storno", "0", ""}, timeframe);
-        kontoID = Einstellungen.instanceOf().getEinnahmeDefKonto().getId();
+        kontoID = Einstellungen.instanceOf().getEinnahmen_Standard_Konto().getId();
 
         for (int h = 0; h < rechnungen.length; h++) {
             nettobetrag = 0d;
