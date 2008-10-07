@@ -80,18 +80,18 @@ public class Einstellungen implements mp4.datenbank.installation.Tabellen {
             Method[] methods = this.getClass().getMethods();
 
             for (int i = 0; i < methods.length; i++) {
-                if (methods[i].getName().startsWith("get") && methods[i].getName().endsWith(typ)) {
+                if (methods[i].getName().startsWith("get") && methods[i].getName().endsWith(typ) &&!methods[i].isVarArgs()) {
 
                     values.add(new Object[]{methods[i].getName().substring(3, methods[i].getName().length()).replaceAll("_", " "), 
                     methods[i].invoke(this, (Object[]) null)});
                     
-                    return ListenDataUtils.listToTableArray(values);
+                    
                 }
             }
         } catch (Exception ex) {
             return ListenDataUtils.listToTableArray(values);
         }
-        return new Object[][]{};
+        return ListenDataUtils.listToTableArray(values);
     }
 ////////////////////////////////////////////////////////////////////////////////
     public User getUser() {
