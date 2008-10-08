@@ -19,27 +19,62 @@ package mp4.utils.text;
 import java.util.Random;
 
 /**
- *
- * @author Belto
+ * A random text generator
+ * @author Andreas
  */
 public class RandomText {
 
+    private String source = new String("QAa0bcLdUK2eHfJgTP8XhiFj61DOklNm9nBoI5pGqYVrs3" +
+            "CtSuMZvwWx4yEkjsdhgfkurewyhflkdsnfukhewlfkrelugflsdnfuiosefkkl" +
+            "kndgldslgfmlfdhiglklkjljliurdgouhkjgiuerhg0lndfvgbhorekngfdnvo" +
+            "nrejgrhgntroghrejglerhjgoijergkjerg7zRhhkjhsfdjnqkuweyljnlihlf" +
+            "loiuwyehflnoqwyld6poqoidandkiuqwhdjhdgiwqdnedgwefdutgddknwyqfi" +
+            "uhvljjdgiwejfnuigdifuqazwsxedcrfvtgbyhnujmikkklopq1234567894343");
     private String string;
+    private int length = 5;
 
+    /**
+     * Constructs a random text generator 
+     * with the given length and source text
+     */
+    public RandomText(String source, int length) {
+        this.length = length;
+        this.source = source;
+    }
+
+    /**
+     * Constructs a random text generator with the given length
+     */
+    public RandomText(int length) {
+        this.length = length;
+    }
+    
+    /**
+     * Constructs a random text generator with the default length (5)
+     */
     public RandomText() {
+    }
 
-        String str = new String("QAa0bcLdUK2eHfJgTP8XhiFj61DOklNm9nBoI5pGqYVrs3CtSuMZvwWx4yE7zR");
+    /**
+     * @return The random text
+     */
+    public String getString() {
         StringBuffer sb = new StringBuffer();
         Random r = new Random();
         int te = 0;
-        for (int i = 1; i <= 4; i++) {
-            te = r.nextInt(62);
-            sb.append(str.charAt(te));
+        for (int i = 1; i <= length; i++) {
+            te = r.nextInt(source.length());
+            sb.append(source.charAt(te));
         }
         string = sb.toString();
+        return string;
     }
 
-    public String getString() {
-        return string;
+    /**
+     * Equal to new RandomText(8).getString()
+     * @return A random 8- char text
+     */
+    public static String getText() {
+        return new RandomText(8).getString();
     }
 }

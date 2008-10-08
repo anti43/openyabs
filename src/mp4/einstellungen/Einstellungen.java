@@ -69,9 +69,6 @@ public class Einstellungen implements mp4.datenbank.installation.Tabellen {
         return getDaten("Verzeichnis");
     }
 
-//    private Object[][] getDaten(String string) {
-//        throw new UnsupportedOperationException("Not yet implemented");
-//    }
     @SuppressWarnings("unchecked")
     public Object[][] getDaten(String typ) {
         ArrayList values = null;
@@ -83,15 +80,29 @@ public class Einstellungen implements mp4.datenbank.installation.Tabellen {
                 if (methods[i].getName().startsWith("get") && methods[i].getName().endsWith(typ) &&!methods[i].isVarArgs()) {
 
                     values.add(new Object[]{methods[i].getName().substring(3, methods[i].getName().length()).replaceAll("_", " "), 
-                    methods[i].invoke(this, (Object[]) null)});
-                    
-                    
+                    methods[i].invoke(this, (Object[]) null)});   
                 }
             }
         } catch (Exception ex) {
             return ListenDataUtils.listToTableArray(values);
         }
         return ListenDataUtils.listToTableArray(values);
+    }
+    
+     public void setDaten(Object[][] daten) {
+       
+        try {  
+            Method[] methods = this.getClass().getMethods();
+
+            for (int i = 0; i < methods.length; i++) {
+                for (int j = 0; j < daten.length; j++) {            
+                    if (methods[i].getName().equals("set" + daten[j][0].toString().replace(" ", "_"))) {        
+                        methods[i].invoke(this,(String) daten[j][1]);  
+                    }
+                }
+            }     
+        } catch (Exception ex) { 
+        }
     }
 ////////////////////////////////////////////////////////////////////////////////
     public User getUser() {
@@ -215,12 +226,12 @@ public class Einstellungen implements mp4.datenbank.installation.Tabellen {
         datahandler.setString("Produkt Template", Produkttemplate);
     }
 ////////////////////////////////////////////////////////////////////////////////  
-    public String getPdf_Programm() {
-        return datahandler.getString("Pdf Programm");
+    public String getPDF_Programm() {
+        return datahandler.getString("PDF Programm");
     }
 
-    public void setPdf_Programm(String Pdfprogramm) {
-        datahandler.setString("Pdf Programm", Pdfprogramm);
+    public void setPDF_Programm(String Pdfprogramm) {
+        datahandler.setString("PDF Programm", Pdfprogramm);
     }
 
     public String getBrowser_Programm() {

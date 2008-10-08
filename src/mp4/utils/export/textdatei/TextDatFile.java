@@ -23,9 +23,9 @@ import mp4.globals.Constants;
 import mp4.interfaces.Printable;
 import mp4.interfaces.Waitable;
 import mp4.logs.Log;
+import mp4.utils.files.FileDirectoryHandler;
 import mp4.utils.files.FileReaderWriter;
 import mp4.utils.listen.ListenDataUtils;
-import mp4.utils.text.RandomText;
 
 /**
  *
@@ -39,7 +39,7 @@ public class TextDatFile extends File implements Waitable, Printable {
     private int mode;
 
     public TextDatFile(String[][] data) {
-        super(new RandomText().getString());
+        super(FileDirectoryHandler.getTempFile().getPath());
         rw = new FileReaderWriter(this);
         this.data = data;
         mode = 0;

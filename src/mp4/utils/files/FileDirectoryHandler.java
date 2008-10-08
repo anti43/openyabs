@@ -8,8 +8,6 @@ package mp4.utils.files;
  *
  * @author Galileo Computing
  */
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mp4.logs.*;
 
 import java.io.File;
@@ -42,7 +40,7 @@ public class FileDirectoryHandler {
      * @param targetLocation
      * @throws java.io.IOException
      */
-    public static void copyDirectory(File sourceLocation, File targetLocation)
+    public static URI copyDirectory(File sourceLocation, File targetLocation)
             throws IOException {
 
         if (sourceLocation.isDirectory()) {
@@ -68,8 +66,8 @@ public class FileDirectoryHandler {
             }
             in.close();
             out.close();
-        }
-      
+        }    
+        return targetLocation.toURI();
     }
 
     public static URI copyFile(File sourceFile, File targetDirectory, String targetFilename)
@@ -89,16 +87,13 @@ public class FileDirectoryHandler {
             out.close();
        
             return outp.toURI();
-            
-   
     }
     
-    public static File[] getFilesOfDirectory(String dir, String identifier){
+    public static File[] getFilesOfDirectory(String directory, String identifier){
         File src;
-    
         try {
             lstFiles = new ArrayList();
-            src = new File(dir);
+            src = new File(directory);
             Log.Debug("Verzeichnis: " + src, true);
             File[] files = src.listFiles();
             Log.Debug("Dateien analysieren...", true);
@@ -130,14 +125,11 @@ public class FileDirectoryHandler {
             Log.Debug(exception);
             Log.Debug(exception.getMessage(), true);
         }
-    
-        return (File[]) lstFiles.toArray(new File[0]);
-        
+        return (File[]) lstFiles.toArray(new File[0]); 
     }
     private static ArrayList<File> lstFiles;
 
     public static File tempFileClone(File file) {
-
         return tempFileClone(file, new RandomText().getString());
     }
 
@@ -151,6 +143,16 @@ public class FileDirectoryHandler {
         }
         return null;
     }
+    
+    public static File getTempFile(String suffix) {
+            File fil = new File(System.getProperty("java.io.tmpdir") + File.separator + new RandomText().getString() + "." + suffix);
+            fil.deleteOnExit();
+            return fil;
+    }
+    
+     public static File getTempFile() {
+         return getTempFile("tmp");
+     }
 }
     
 

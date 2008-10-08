@@ -80,12 +80,14 @@ public abstract class Daten {
         "INSERT INTO einstellungen (name, wert) VALUES ('Angebot Verzeichnis', '" + Setup.instanceOf().getInstall_dirs().getPathpdf_offer_dir() + "')",
         "INSERT INTO einstellungen (name, wert) VALUES ('Mahnung Verzeichnis', '" + Setup.instanceOf().getInstall_dirs().getPathpdf_mahnung_dir()+ "')",
         "INSERT INTO einstellungen (name, wert) VALUES ('Produkt Verzeichnis', '" + Setup.instanceOf().getInstall_dirs().getPathpdf_produkt_dir()+ "')",
-       
+        "INSERT INTO einstellungen (name, wert) VALUES ('Lieferschein Verzeichnis', '" + Setup.instanceOf().getInstall_dirs().getPathpdf_bill_dir()+ "')",
+
         "INSERT INTO einstellungen (name, wert) VALUES ('Rechnung Template', '" + Setup.instanceOf().getInstall_dirs().getPathtemplates_dir() + File.separator + "rechnung.pdf')",
         "INSERT INTO einstellungen (name, wert) VALUES ('Angebot Template', '" + Setup.instanceOf().getInstall_dirs().getPathtemplates_dir() + File.separator + "angebot.pdf')",
         "INSERT INTO einstellungen (name, wert) VALUES ('Mahnung Template', '" + Setup.instanceOf().getInstall_dirs().getPathtemplates_dir() + File.separator + "mahnung.pdf')",
         "INSERT INTO einstellungen (name, wert) VALUES ('Serienbrief Template', '" + Setup.instanceOf().getInstall_dirs().getPathtemplates_dir() + File.separator + "serienbrief.pdf')",
         "INSERT INTO einstellungen (name, wert) VALUES ('Produkt Template', '" + Setup.instanceOf().getInstall_dirs().getPathtemplates_dir() + File.separator + "produkt.pdf')",
+        "INSERT INTO einstellungen (name, wert) VALUES ('Lieferschein Template', '" + Setup.instanceOf().getInstall_dirs().getPathtemplates_dir() + File.separator + "lieferschein.pdf')",
      
         
         "INSERT INTO einstellungen (name, wert) VALUES ('Hauptsteuersatz', '19')",

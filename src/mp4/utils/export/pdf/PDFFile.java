@@ -113,9 +113,9 @@ public class PDFFile extends File implements Waitable, Printable {
     public void open() {
         try {
             if (Main.IS_WINDOWS) {
-                Process proc = Runtime.getRuntime().exec(settings.getPdf_Programm() + "  \"" + this.getPath() + "\"");
+                Process proc = Runtime.getRuntime().exec(settings.getPDF_Programm() + "  \"" + this.getPath() + "\"");
             } else {
-                Process proc = Runtime.getRuntime().exec(settings.getPdf_Programm() + "  " + this.getPath());
+                Process proc = Runtime.getRuntime().exec(settings.getPDF_Programm() + "  " + this.getPath());
             }
         } catch (IOException ex) {
             Log.Debug("Es ist ein Fehler aufgetreten: " + "\n" + ex);
