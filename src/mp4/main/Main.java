@@ -16,9 +16,14 @@
  */
 package mp4.main;
 
+import org.apache.commons.cli2.*;
+import org.apache.commons.cli2.builder.*;
+import org.apache.commons.cli2.commandline.*;
+import org.apache.commons.cli2.util.*;
 import com.l2fprod.common.swing.plaf.LookAndFeelAddons;
 import de.muntjak.tinylookandfeel.TinyLookAndFeel;
 import java.io.File;
+import java.util.Map;
 
 import java.io.IOException;
 import javax.swing.UIManager;
@@ -47,19 +52,8 @@ public class Main implements Strings {
     public static boolean FORCE_NO_FILE_COPY = false;
     public static boolean FORCE_CREATE_DATABASE = false;
     public static boolean FORCE_FILE_COPY = false;
-    private static final String argVERBOSE = "-verbose";
-    private static final String argNOCOPYFILES = "-nocopy";
-    private static final String argNOCREATEDB = "-nodb";
-    private static final String argFORCECOPYFILES = "-forcecopy";
-    private static final String argFORCECREATEDB = "-forcedb";
-    private static final String argCHANGE_TEMPLATE_DIR = "-templatedir=";
-    private static final String argCHANGE_BACKUP_DIR = "-backupdir=";
-    private static final String argCHANGE_PDF_DIR = "-pdfdir=";
-    private static final String argFILE_LOGGING = "-log=";
-    private static final String argDB_LOCATION = "-dbpath=";
-    private static final String argAPP_LOCATION = "-instpath=";
-    public static String PDFDIR = null;
-    public static String TEMPLATEDIR = null;
+    public static String PDF_DIR = null;
+    public static String TEMPLATE_DIR = null;
     public static String BACKUP_DIR = null;
     public static String MPPATH = Constants.USER_HOME + File.separator + ".mp";
     /**
@@ -78,52 +72,95 @@ public class Main implements Strings {
     }
 
     private static void parseArgs(String[] args) {
-        String arg = "";
-        if (args != null && args.length > 0) {
-            for (int i = 0; i < args.length; i++) {
-                arg = args[i];
-                if (arg.contains(argFORCECOPYFILES)) {
-                    FORCE_FILE_COPY = true;
-                } else if (arg.contains(argFORCECREATEDB)) {
-                    FORCE_CREATE_DATABASE = true;
-                } else if (arg.contains(argNOCOPYFILES)) {
-                    FORCE_NO_FILE_COPY = true;
-                } else if (arg.contains(argNOCREATEDB)) {
-                    FORCE_NO_DATABASE = true;
-                } else if (arg.contains(argVERBOSE)) {
-                    Log.setLogLevel(Log.LOGLEVEL_HIGH);
-                } else if (arg.contains(argCHANGE_TEMPLATE_DIR)) {
-                    try {
-                        TEMPLATEDIR = arg.split("=")[1];
-                    } catch (Exception e) {
-                        TEMPLATEDIR = null;
-                    }
-                } else if (arg.contains(argCHANGE_BACKUP_DIR)) {
-                    try {
-                        BACKUP_DIR = arg.split("=")[1];
-                    } catch (Exception e) {
-                        BACKUP_DIR = null;
-                    }
-                } else if (arg.contains(argCHANGE_PDF_DIR)) {
-                    try {
-                        PDFDIR = arg.split("=")[1];
-                    } catch (Exception e) {
-                        PDFDIR = null;
-                    }
-                } else if (arg.contains(argFILE_LOGGING)) {
-                    try {
-                        Logger.setLogFile(arg.split("=")[1]);
-                    } catch (Exception e) {
-                        Log.Debug("Fehler beim Schreiben der Logdatei: " + e.getMessage(), true);
-                    }
-                } else if (arg.contains(argDB_LOCATION)) {
-                    MPPATH = arg.split("=")[1];
-                    SETTINGS_FILE = Main.MPPATH + File.separator + "settings" + Constants.RELEASE_VERSION + ".mp";
-                } else if (arg.contains(argAPP_LOCATION)) {
-                    APP_DIR = arg.split("=")[1];
-                }
-            }
+	DefaultOptionBuilder obuilder = new DefaultOptionBuilder();
+        ArgumentBuilder abuilder = new ArgumentBuilder();
+        GroupBuilder gbuilder = new GroupBuilder();
+        Argument filearg   = abuilder.withName("file").withMinimum(1).withMaximum(1).create();
+        Argument dirarg    = abuilder.withName("directory").withMinimum(1).withMaximum(1).create();
+        Option help        = obuilder.withShortName("help").withShortName("h").withDescription("print this message").create();
+        Option version     = obuilder.withShortName("version").withDescription("print the version information and exit").create();
+        Option verbose     = obuilder.withShortName("verbose").withDescription("be extra verbose").create();
+        Option nodb        = obuilder.withShortName("nodb").withDescription("force no database") .create();
+        Option nocopy      = obuilder.withShortName("nocopy").withDescription("force no copy of files").create();
+        Option forcedb     = obuilder.withShortName("forcedb").withDescription("force database").create();
+        Option forcecopy   = obuilder.withShortName("forcecopy").withDescription("force copy of files").create();
+        Option dbpath      = obuilder.withShortName("dbpath")     .withShortName("d").withDescription("use database path").withArgument(dirarg).create();
+        Option instpath    = obuilder.withShortName("instpath")   .withShortName("i").withDescription("use installation path").withArgument(dirarg).create();
+        Option logfile     = obuilder.withShortName("log")        .withShortName("l").withDescription("use file for log").withArgument(filearg).create();
+        Option pdfdir      = obuilder.withShortName("pdfdir")     .withShortName("p").withDescription("use pdfdir").withArgument(dirarg).create();
+        Option backupdir   = obuilder.withShortName("backupdir")  .withShortName("b").withDescription("use backupdir").withArgument(dirarg).create();
+        Option templatedir = obuilder.withShortName("templatedir").withShortName("t").withDescription("use templatedir").withArgument(dirarg).create();
+        Group options = gbuilder.withName("options")
+        .withOption( help )
+        .withOption( version )
+        .withOption( verbose )
+        .withOption( nodb )
+        .withOption( nocopy )
+        .withOption( forcedb )
+        .withOption( forcecopy )
+        .withOption( dbpath )
+        .withOption( instpath )
+        .withOption( logfile )
+        .withOption( pdfdir )
+        .withOption( backupdir )
+        .withOption( templatedir )
+        .create();
+
+        HelpFormatter hf = new HelpFormatter();
+        Parser p = new Parser();
+        p.setGroup(options);
+        p.setHelpFormatter(hf);
+        CommandLine cl = p.parseAndHelp( args );
+        if (cl == null) {
+            System.err.println("Cannot parse arguments");
+            System.exit(1);
         }
+        if (cl.hasOption( help )) {
+            hf.print();
+            System.exit(0);
+
+        } else if (cl.hasOption( version )) {
+            // TODO:
+
+        } else if (cl.hasOption( verbose )) {
+            Log.setLogLevel(Log.LOGLEVEL_HIGH);
+
+        } else if (cl.hasOption( forcecopy )) {
+            FORCE_FILE_COPY = true;
+
+        } else if (cl.hasOption( forcedb )) {
+            FORCE_CREATE_DATABASE = true;
+
+        } else if (cl.hasOption( nocopy )) {
+            FORCE_NO_FILE_COPY = true;
+
+        } else if (cl.hasOption( nodb )) {
+            FORCE_NO_DATABASE = true;
+
+        } else if (cl.hasOption( templatedir )) {
+            TEMPLATE_DIR = (String)cl.getValue( "templatedir" );
+
+        } else if (cl.hasOption( backupdir )) {
+            BACKUP_DIR = (String)cl.getValue( backupdir );
+
+        } else if (cl.hasOption( pdfdir )) {
+            PDF_DIR = (String)cl.getValue(  pdfdir  );
+
+        } else if (cl.hasOption( logfile )) {
+            try {
+                Logger.setLogFile( (String)cl.getValue( logfile ) );
+            } catch (Exception e) {
+                Log.Debug( "Fehler beim Schreiben der Logdatei: " + e.getMessage(), true );
+            }
+
+        } else if (cl.hasOption( dbpath )) {
+            MPPATH = (String)cl.getValue( dbpath );
+            SETTINGS_FILE = Main.MPPATH + File.separator + "settings" + Constants.RELEASE_VERSION + ".mp";
+
+        } else if (cl.hasOption( instpath )) {
+            APP_DIR = (String)cl.getValue( instpath );
+        }
+	System.exit(1);
     }
 
     public Main() throws Exception {
@@ -217,9 +254,9 @@ public class Main implements Strings {
     }
 
     public static void printEnv() {
-        System.out.println(System.getenv("HOMEDRIVE"));
-        System.out.println(System.getenv("SystemDrive"));
-        System.out.println(System.getenv("SystemRoot"));
-        System.out.println(System.getenv("USERPROFILE"));
+        Map<String, String> env = System.getenv();
+        for (String envName : env.keySet()) {
+            System.out.format("%s=%s%n", envName, env.get(envName));
+        }
     }
 }
