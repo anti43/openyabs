@@ -64,17 +64,17 @@ public class Verzeichnisse implements Constants, Strings {
         }
 
 
-        if (Main.TEMPLATEDIR == null) {
+        if (Main.TEMPLATE_DIR == null) {
             templates_dir = new File(getPublic_dir().getCanonicalPath() + File.separator + TEMPLATES_DIR);
         } else {
-            templates_dir = new File(Main.TEMPLATEDIR);
+            templates_dir = new File(Main.TEMPLATE_DIR);
         }
 
 
-        if (Main.PDFDIR == null) {
+        if (Main.PDF_DIR == null) {
             pdf_root_dir = new File(pdfpathtftext);
         } else {
-            pdf_root_dir = new File(Main.PDFDIR);
+            pdf_root_dir = new File(Main.PDF_DIR);
         }
 
         pdf_offer_dir = new File(getPdf_root_dir().getCanonicalPath() + File.separator + OFFER_SAVE_DIR);
