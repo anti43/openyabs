@@ -160,7 +160,8 @@ public class Main implements Strings {
         } else if (cl.hasOption( instpath )) {
             APP_DIR = (String)cl.getValue( instpath );
         }
-	System.exit(1);
+//      Terminate everytime?
+//	System.exit(1);
     }
 
     public Main() throws Exception {

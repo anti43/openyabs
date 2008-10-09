@@ -16,8 +16,6 @@
  */
 package mp4.einstellungen;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
 import mp4.items.SKRKonto;
 import mp4.benutzerverwaltung.User;
 
@@ -32,13 +30,17 @@ import mp4.utils.files.FileReaderWriter;
 import mp4.logs.*;
 import mp4.main.Main;
 import mp4.utils.datum.DateConverter;
-import mp4.utils.listen.ListenDataUtils;
 
 /**
- *
+ * Um Programme, Verzeichnisse oder Vorlagen der Konfiguration hinzuzufügen, 
+ * muessen dieser Klasse nur zwei entsprechende Methoden hinzugefügt werden:
+ * 
+ *  public String get<keyname>_Verzeichnis(){return datahandler.getString("<keyname> Verzeichnis");}
+ *  public void set<keyname>_Verzeichnis(String value){datahandler.setString("<keyname> Verzeichnis", value);}
+ * 
  * @author anti
  */
-public class Einstellungen implements mp4.datenbank.installation.Tabellen {
+public class Einstellungen extends MethodParser implements mp4.datenbank.installation.Tabellen {
 
     private static Einstellungen dat;
     private DataHandler datahandler;
@@ -56,6 +58,7 @@ public class Einstellungen implements mp4.datenbank.installation.Tabellen {
         }
         return dat;
     }
+    
 ////////////////////////////////////////////////////////////////////////////////
     public Object[][] getExtProgs() {
         return getDaten("Programm");
@@ -68,43 +71,8 @@ public class Einstellungen implements mp4.datenbank.installation.Tabellen {
     public Object[][] getVerzeichnisse() {
         return getDaten("Verzeichnis");
     }
-
-    @SuppressWarnings("unchecked")
-    public Object[][] getDaten(String typ) {
-        ArrayList values = null;
-        try {
-            values = new ArrayList();
-            Method[] methods = this.getClass().getMethods();
-
-            for (int i = 0; i < methods.length; i++) {
-                if (methods[i].getName().startsWith("get") && methods[i].getName().endsWith(typ) &&!methods[i].isVarArgs()) {
-
-                    values.add(new Object[]{methods[i].getName().substring(3, methods[i].getName().length()).replaceAll("_", " "), 
-                    methods[i].invoke(this, (Object[]) null)});   
-                }
-            }
-        } catch (Exception ex) {
-            return ListenDataUtils.listToTableArray(values);
-        }
-        return ListenDataUtils.listToTableArray(values);
-    }
-    
-     public void setDaten(Object[][] daten) {
-       
-        try {  
-            Method[] methods = this.getClass().getMethods();
-
-            for (int i = 0; i < methods.length; i++) {
-                for (int j = 0; j < daten.length; j++) {            
-                    if (methods[i].getName().equals("set" + daten[j][0].toString().replace(" ", "_"))) {        
-                        methods[i].invoke(this,(String) daten[j][1]);  
-                    }
-                }
-            }     
-        } catch (Exception ex) { 
-        }
-    }
 ////////////////////////////////////////////////////////////////////////////////
+    
     public User getUser() {
         return user;
     }
@@ -176,6 +144,15 @@ public class Einstellungen implements mp4.datenbank.installation.Tabellen {
 
     public void setProdukt_Verzeichnis(String Produktverzeichnis) {
         datahandler.setString("Produkt Verzeichnis", Produktverzeichnis);
+    }
+    
+    public String getLieferschein_Verzeichnis() {
+        return datahandler.getString("Lieferschein Verzeichnis");
+    }
+
+    public void setLieferschein_Verzeichnis(String Lieferscheinverzeichnis) {
+        datahandler.setString("Lieferschein Verzeichnis", Lieferscheinverzeichnis);
+    
     }
 ////////////////////////////////////////////////////////////////////////////////  
     public String getLieferschein_Template() {
