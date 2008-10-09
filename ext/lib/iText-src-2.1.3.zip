@@ -1,0 +1,614 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- Server: sfs-web-4 -->
+<!--
+  ~ SourceForge.net: Create, Participate, Evaluate
+  ~ Copyright (c) 1999-2008 SourceForge, Inc. All rights reserved.
+  -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">  
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<meta name="description" content="The world's largest development and download repository of Open Source code and applications" />
+	<meta name="keywords" content="Open Source, Development, Developers, Projects, Downloads, OSTG, VA Software, SF.net, SourceForge" />
+	<link rel="alternate" type="application/rss+xml" title="SourceForge.net Project News" href="/export/rss2_sfnews.php?group_id=1&amp;rss_fulltext=1" />
+	<link rel="alternate" type="application/rss+xml" title="SourceForge.net News" href="/export/rss2_projnews.php?group_id=141424&amp;rss_fulltext=1" />
+	<title>SourceForge.net: Downloading ...</title>
+	<link rel="stylesheet" type="text/css" href="http://static.sourceforge.net/css/phoneix/style.php?secure=0&amp;20080417-1657" media="all" />
+        <link rel="stylesheet" type="text/css" href="http://static.sourceforge.net/css/phoneix/hideaway.php?secure=0&amp;20080417-1657" media="all" />
+
+
+        <link rel="stylesheet" type="text/css" href="http://static.sourceforge.net/css/phoneix/project.php?secure=0&amp;20080417-1657" media="all" />
+	<link rel="stylesheet" type="text/css" href="http://static.sourceforge.net/css/phoneix/droppy.php?secure=0&amp;20080417-1657" media="all" />
+
+<!--   -->
+        <script type="text/javascript" src="http://static.sourceforge.net/include/jquery/jquery-1.2.6.min.js"></script>
+
+
+
+        <script type="text/javascript">
+        //<![CDATA[
+
+                var jsonly = document.createElement('link');
+                jsonly.setAttribute('rel', 'stylesheet');
+                jsonly.setAttribute('type', 'text/css');
+                jsonly.setAttribute('href', 'http://static.sourceforge.net/css/phoneix/jsonly.css?secure=0&amp;20080417-1657');
+                document.getElementsByTagName('head')[0].appendChild(jsonly);
+
+jQuery(document).ready(function(){
+        $('#ft').prepend('<span class="tog"><img src="http://c.fsdn.com/sf/images/phoneix/dwn.png" /></span>');
+        $('#ft .tog').toggle(
+                function(){$('#ft .yui-g.hide').slideDown(); $(this).find('img').attr('src','http://c.fsdn.com/sf/images/phoneix/up.png'); $('#fadbtm').css('margin-top','-32em'); return false},
+                function(){$('#ft .yui-g.hide').slideUp(); $(this).find('img').attr('src','http://c.fsdn.com/sf/images/phoneix/dwn.png');  $('#fadbtm').css('margin-top','-25em'); return false}
+        );
+
+});
+
+
+jQuery(document).ready(function(){
+        $('.platter').append('<div class="btmfade"></div>');
+	if(!$.browser.msie) { 
+		$('#hd').prepend('<canvas id="canvas"><\/canvas>');
+		$('.glossbar').prepend('<canvas id="nav"><\/canvas>');
+		$('.platter').prepend('<canvas id="high"><\/canvas>');
+		$('.btmfade').prepend('<canvas id="low"><\/canvas>');
+	        $('.tog').prepend('<canvas id="gloss"><\/canvas>');
+	}
+
+
+        $('.glossbar h2 a:eq(1)').click(
+                function(){$('.platter, .msg').slideUp(); $('.glossbar h2 a').removeClass('hi'); $('.platter').slideDown().find('.msg:eq(1)').fadeIn('slow'); $(this).addClass('hi'); return false;},
+                function(){$('.platter').slideUp(); $(this).removeClass('hi'); return false;}
+        );
+
+
+
+});
+
+var google_hints = "pdf,emule,php,crm,delphi,backup,gaim,ares,project management,java, ,cad,cms,FileZilla,vnc,erp,nagios,inventory,ftp,audacity,gimp,python,j2me,torrent";
+
+function draw() {
+	if (document.getElementById('canvas')){
+		var ctx = document.getElementById('canvas').getContext('2d');
+		var lingrad = ctx.createLinearGradient(0,0,0,256);
+		lingrad.addColorStop(0, '#fc3');
+		lingrad.addColorStop(0.3, '#f60');
+		ctx.fillStyle = lingrad;
+		ctx.fillRect(0,0,356,256);
+	}
+
+	if (document.getElementById('nav')){
+        var ctx = document.getElementById('nav').getContext('2d');
+        var lingrad = ctx.createLinearGradient(0,0,0,150);
+        lingrad.addColorStop(0, 'rgba(0,0,0,0)');
+        lingrad.addColorStop(0.05, 'rgba(0,0,0,0.4)');
+        lingrad.addColorStop(0.05, 'rgba(255,255,255,0)');
+        lingrad.addColorStop(0.5, 'rgba(135,135,135,0.35)');
+        lingrad.addColorStop(0.5, 'rgba(135,135,135,0.5)');
+        lingrad.addColorStop(1, 'rgba(255,255,255,0)');
+        ctx.fillStyle = lingrad;
+        ctx.fillRect(0,0,1000,150);
+	}
+
+	if (document.getElementById('high')){
+        var ctx = document.getElementById('high').getContext('2d');
+        var lingrad = ctx.createLinearGradient(0,0,0,50);
+        lingrad.addColorStop(0, 'rgba(255,255,255,0)');
+        lingrad.addColorStop(0.1, 'rgba(255,255,255,0.2)');
+        lingrad.addColorStop(1, 'rgba(255,255,255,0)');
+        ctx.fillStyle = lingrad;
+        ctx.fillRect(0,0,1000,50);
+	}
+        
+	if (document.getElementById('low')){
+        var ctx = document.getElementById('low').getContext('2d');
+        var lingrad = ctx.createLinearGradient(0,0,0,50);
+        lingrad.addColorStop(0, 'rgba(255,255,255,0)');
+        lingrad.addColorStop(0.9, 'rgba(255,255,255,0.2)');
+        lingrad.addColorStop(1, 'rgba(255,255,255,0)');
+        ctx.fillStyle = lingrad;
+        ctx.fillRect(0,0,1000,50);
+	}
+	
+	if (document.getElementById('gloss')){
+        var ctx = document.getElementById('gloss').getContext('2d');
+        var lingrad = ctx.createLinearGradient(0,0,0,150);
+        lingrad.addColorStop(0, 'rgba(255,255,255,0)');
+        lingrad.addColorStop(0.5, 'rgba(135,135,135,0.35)');
+        lingrad.addColorStop(0.5, 'rgba(135,135,135,0.5)');
+        lingrad.addColorStop(1, 'rgba(255,255,255,0)');
+        ctx.fillStyle = lingrad;
+        ctx.fillRect(0,0,1000,150);
+	}
+}
+
+        //]]>
+        </script>
+<!-- BEGIN: AdSolution-Tag 4.2: Global-Code [PLACE IN HTML-HEAD-AREA!] -->
+<!-- DoubleClick Random Number -->
+<script language="JavaScript" type="text/javascript">
+   dfp_ord=Math.random()*10000000000000000;
+   dfp_tile = 1;
+</script>
+<!-- End DoubleClick Random Number -->
+<script type="text/javascript">
+        var google_page_url = 'http://sourceforge.net/projects/itext/';
+        var sourceforge_project_name = 'itext';
+        var sourceforge_project_description = 'This library contains classes that generate documents in the Portable Document Format (PDF) and/or HTML.';
+</script>
+<!-- END: AdSolution-Tag 4.2: Global-Code -->
+<!-- End OSDN NavBar gid: 15255 keywords: itext,os_groups,textprocessing,independent,java,presentation,graphics,multimedia,dynamic,www,internet,editors:multimed -->
+<script type="text/javascript">
+var immersion_adcode = "";
+var adid = "";
+</script>
+	<style type="text/css">
+
+		#immersion_frame div, #immersion_frame p, #immersion_frame h1,
+		#immersion_frame h2, #immersion_frame h3, #immersion_frame #footer
+		{
+			margin: 0;
+			padding: 0;
+			font-family: arial, sans-serif;
+		}
+		
+                #immersion_frame a { color: #456; }
+		
+		#immersion_frame #header h1, #immersion_frame #header h2, #immersion_frame #footer h3
+		{
+			display: inline;
+			font-size: 1.2em;
+		}
+		
+		#immersion_frame #header, #immersion_frame #header div,	#immersion_frame #footer
+		{
+			display: block;
+			position: relative;
+		}
+		
+		#immersion_frame #header
+		{
+			
+                        background: #000 url('http://c.fsdn.com/sf/images//sfxi_dl_bg.png') repeat-x;
+
+			padding: 12px 0px 0px 0px;
+		}
+		
+		#immersion_frame #header div
+		{
+			color: #456;
+			margin-top: 15px;
+			font-size: 80%;
+			padding: .4em 1.2em;
+			background: #eee;
+			border-top: 1px solid #ddd;
+			border-bottom: 1px solid #ddd;
+		}
+		
+		#immersion_frame #footer
+		{
+			font-size: 80%;
+                        padding: .4em 1.2em;
+			text-align: center;
+			color: #456;
+		}
+		#immersion_frame #footer h3
+		{
+			display: block;
+			clear: both;
+			margin-bottom: 2em;
+		}
+		#immersion_frame #footer ul li
+		{
+			list-style: none;
+			display: inline;
+			padding: 0 .3em;
+		}
+		
+		#immersion_frame #header h1
+		{
+			position: absolute;
+			left: 0;
+			top: 0;
+			z-index: 0;
+			width: 283px;
+			height: 50px;
+			
+                        background: transparent url('http://c.fsdn.com/sf/images//sfxi_dl_logo.png') no-repeat;
+
+
+		}
+		
+		#immersion_frame #header h1 a
+		{
+			text-indent: -700em;
+			text-decoration: none;
+			left: 0;
+			top: 0;
+			position: absolute;
+			width: 283px;
+			height: 50px;
+			z-index: 1;
+		}
+		
+		#immersion_frame #header h1 a:hover { text-decoration: none !important; }
+		
+		#immersion_frame #header h2
+		{
+			margin-left: 283px;
+			position: relative;
+			color: #fff;
+			width: 80%;
+                        font-weight: bold;
+                        line-height: 1em;
+                        text-align: left;
+                        
+		}
+		#immersion_frame #addashboard 
+		{
+			text-align: center;
+			padding: 1em;
+		}
+		#immersion_frame p.c1 {float: right; position: relative;}
+		#immersion_frame #fad77p {width: 728px; margin: 0 auto;}
+                #immersion_frame .mirror_selection { width: 728px; margin: 0 auto; font-size: 75%; text-align: center;}
+                #immersion_frame .mirror_selection .mirror_wrapper { float: left; width: 350px; margin: 0 180px; text-align: center; padding-top: .4em;}
+                #immersion_frame .mirror_selection .mirror_wrapper .mirror_wrapper_left { float: left; }
+                #immersion_frame .mirror_selection .mirror_wrapper .mirror_wrapper_right { float: right; }
+                #immersion_frame .mirror_selection .mirror_bottom { clear: both; padding-top: .4em;}
+                #immersion_frame { display: none; text-align: left; font-size: 16px;}
+
+	</style>
+<!-- DoubleClick Ad Tag -->
+<script type="text/javascript">
+//<![CDATA[
+   if(immersion_adcode == ""){
+	  var adspot = "pg_dwnld_multimed_p77_immersion";
+	  if(adid !="") adspot+= ";comp=" +adid +"";
+      document.write('<script src="http://ad.doubleclick.net/adj/ostg.sourceforge/'+adspot+';pg=/project/downloading.php;psrch=0;logged_in=0;tile='+dfp_tile+';tpc=itext;tpc=os_groups;tpc=textprocessing;tpc=independent;tpc=java;tpc=presentation;tpc=graphics;tpc=multimedia;tpc=dynamic;tpc=www;tpc=internet;tpc=editors;ord='+dfp_ord+'?" type="text/javascript"><\/script>');
+   dfp_tile++;
+   }
+//]]>
+</script>
+<!-- End DoubleClick Ad Tag --> 
+
+<!-- after META tags -->
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-32013-6");
+var external_pageTracker = _gat._getTracker("UA-5239675-1");
+pageTracker._initData();
+</script>
+        <!--[if IE]>
+        <link rel="stylesheet" type="text/css" media="screen" href="http://static.sourceforge.net/css/phoneix/iestyles.php?secure=0&amp;20080417-1657"  />
+        <![endif]-->
+        <!--[if lte IE 6]>
+        <link rel="stylesheet" type="text/css" media="screen" href="http://static.sourceforge.net/css/phoneix/ie6styles.php?secure=0&amp;20080417-1657"  />
+   		<![endif]-->
+<link href="http://static.sourceforge.net/css/phoneix/facebox.css" media="screen" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="http://static.sourceforge.net/include/jquery/facebox.js"></script>
+<script type="text/javascript" src="http://static.sourceforge.net/include/js/modal.js"></script>
+
+        <script type="text/javascript" src="http://static.sourceforge.net/sfx.js"></script>
+
+</head>
+<body onload="draw();">
+<div id="immersion_frame">
+<div id="header">
+	<h1><a href="/" title="Go to SourceForge.net, the world&#39;s largest Open Source software development web site.">SourceForge.net</a></h1> 
+	<h2>You are downloading iText, a JAVA-PDF library...</h2>	
+	<div>
+	<p class="c1">
+		<a href="http://ovh.dl.sourceforge.net/sourceforge/itext/iText-src-2.1.3.zip" title="Why wait for our machine overlords?  Take control of your download.">Click here</a> to download iText, a JAVA-PDF library manually
+	</p>
+	<p>
+		A message from our advertiser
+	</p>
+	</div>
+</div>
+<!-- AD CODE GOES HERE -->
+<div id="addashboard">
+	<div id="fad77p">
+	  <script type="text/javascript">
+	    document.write(immersion_adcode);
+	  </script>
+	</div>
+</div>
+<div id="footer">
+
+  <h3>
+		For more information on this download visit:   <a href="http://www.lowagie.com/iText">http://www.lowagie.com/iText</a>
+  </h3>
+
+</div>
+<div class='mirror_selection'>
+<div> <strong>Downloading from the following mirror:</strong></div>
+<div class='mirror_wrapper'><div class='mirror_wrapper_left'>
+  <a href="http://www.ovh.com/"><img src="http://images.sourceforge.net/mirrorimages/ovh-small.jpg" title="Mirror icon" ></a>
+</div>
+<div class ='mirror_wrapper_right'> <a href="http://www.ovh.com/"><strong>ovh.dl.sourceforge.net</strong></a>
+  <br />
+  ( Paris, France - Europe )
+  <br />
+</div>
+</div>
+<div class='mirror_bottom'>
+<a href="#" onClick="TB_show('Currently downloading from Paris, France - Europe', '/project/mirror_picker.php?height=350&width=300&group_id=15255&use_mirror=ovh&filesize=&filename=iText-src-2.1.3.zip&abmode=', false); return false;" title="Currently downloading from Paris, France - Europe">Select a different mirror?</a>
+</div>
+<div>
+IP Geolocation for mirror selection is provided by <a href="http://www.maxmind.com/">Maxmind</a>.
+</div>
+</div>
+<div id="footer">
+        <ul>
+		<li><a href="/docs/about">About SourceForge.net</a></li>
+		<li><a href="/tos/privacy.php">Privacy Statement</a></li>
+		<li><a href="/tos/tos.php">Terms of Use</a></li>
+		<li><a href="http://web.sourceforge.com/media_kit.php">Advertise</a></li>
+		<li><a href="/support/getsupport.php">Get Support</a></li>
+		<li><a href="/supporters.php">Our Supporters</a></li>
+		<li><a href="/subscriptions.php">Subscribe</a></li>
+		<li><a href="/export/rss2_sfnews.php?group_id=1&amp;rss_fulltext=1">RSS</a></li>
+	</ul>
+	<p>
+		&copy;Copyright 1999-2008 - <a href="http://sourceforge.com"  title="Network which provides and promotes Open Source software downloads, development, discussion and news.">SourceForge</a>, Inc., All Rights Reserved 
+	</p>
+        	<ul class="ostgnavbar">
+		<li class="begin"><a href="http://sourceforge.com">SourceForge</a></li>
+		<li><a href="http://thinkgeek.com">ThinkGeek</a></li>
+		<li><a href="http://slashdot.org">Slashdot</a></li>
+		<li><a href="http://linux.com">Linux.com</a></li>
+		<li><a href="http://freshmeat.net">freshmeat</a></li>
+		<li><a href="http://ad.doubleclick.net/clk;201022080;26352883;r?http://seeker.dice.com/jobsearch/genthree/index.jsp">Jobs</a></li>
+	</ul>
+</div>
+
+
+
+</div>
+<div id='non_immersion_frame'>
+<div id="doc3" class="yui-t6 post_download">
+
+	<div id="hd">
+               <h1><a href="/" title="">SourceForge.net</a></h1>
+					    							<p class="hello">Open Source Software - You are downloading <a href="/projects/itext/">iText, a JAVA-PDF library</a> ...
+<br />
+<small>Problems with the download? Please use this <a href="http://ovh.dl.sourceforge.net/sourceforge/itext/iText-src-2.1.3.zip"  title="When the automatic download fails or takes forever use this link.">direct link</a
+> or try another <a href="/project/mirror_picker.php?height=350&width=300&group_id=15255&use_mirror=ovh&filesize=&filename=iText-src-2.1.3.zip&abmode=" onclick="return SFX.modal.modal_box(this);" title="Currently downloading from Paris, France - Europe">mirror</a>.</small>
+</p>
+                        	</div>
+        <div id="bd">
+                <!-- begin content -->
+
+<a name="content"></a>
+						 
+<!--
+/project/downloading.html - Copyright 1999-2006 (c) Open Source Technology Group
+@version $Id$
+-->
+<iframe id="file_download" width="0" height="0" scrolling="no" frameborder="0" src="http://downloads.sourceforge.net/sourceforge/itext/iText-src-2.1.3.zip?use_mirror=ovh"></iframe>
+
+<div class="yui-gb glossbar">
+        <div class="yui-u first">
+<!-- ADDTHIS BUTTON BEGIN -->
+<script type="text/javascript">
+addthis_pub  = 'sfnet';
+addthis_brand = 'SourceForge.net';
+addthis_options = 'email, slashdot, digg, delicious, more';
+</script>
+		<h2><a title="Share this project" onmouseover="return  addthis_open(this, '', '[URL]', '[TITLE]')" onmouseout="addthis_close()" onclick="return addthis_sendto()" href="http://www.addthis.com/bookmark.php">Share this project</a></h2>
+<script type="text/javascript" src="http://s7.addthis.com/js/152/addthis_widget.js"></script>
+<!-- AddThis Button END -->
+
+        </div>
+        <div class="yui-u">
+                <h2><a href="">Related SourceForge</a></h2>
+        </div>
+        <div class="yui-u">
+                <h2><a href="/forum/?group_id=15255">Forums</a></h2>
+        </div>
+</div>
+
+<div class="platter">
+	<div class="msg">
+	</div>
+
+	<div class="yui-gb msg">
+        	<div class="yui-u first">
+                	<h3><a href="http://slashdot.org">Slashdot</a></h3>
+																		<li><a href="http://slashdot.org/article.pl?sid=08/09/23/1320258" onclick="javascript: pageTracker._trackPageview('/tracking/download_related_items/PDF+Exploits+On+the+Rise');">PDF Exploits On the Rise</a></li>
+													<li><a href="http://slashdot.org/article.pl?sid=08/07/09/019240" onclick="javascript: pageTracker._trackPageview('/tracking/download_related_items/The+Handwriting+of+Type+Designers');">The Handwriting of Type Designers</a></li>
+													<li><a href="http://slashdot.org/article.pl?sid=07/12/22/026216" onclick="javascript: pageTracker._trackPageview('/tracking/download_related_items/Norway+Mandates+Government+Use+of+ODF+and+PDF');">Norway Mandates Government Use of ODF and PDF</a></li>
+													<li><a href="http://slashdot.org/article.pl?sid=07/08/25/1835256" onclick="javascript: pageTracker._trackPageview('/tracking/download_related_items/Content-Aware+Image+Resizing');">Content-Aware Image Resizing</a></li>
+													<li><a href="http://slashdot.org/article.pl?sid=07/12/05/0149227" onclick="javascript: pageTracker._trackPageview('/tracking/download_related_items/PDF+Is+Now+ISO+32000');">PDF Is Now ISO 32000</a></li>
+											        	</div>
+
+        	<div class="yui-u">
+                	<h3><a href="http://linux.com">Linux.com</a></h3>
+                							<li><a href="http://www.linux.com/feature/149492" onclick="javascript: pageTracker._trackPageview('/tracking/download_related_items/Security+scans+with+OpenVAS');">Security scans with OpenVAS</a></li>
+                    						<li><a href="http://www.linux.com/feature/149903" onclick="javascript: pageTracker._trackPageview('/tracking/download_related_items/After+2.0+release%2C+Miguel+de+Icaza+reflects+on+Mono%27s+past+and+future');">After 2.0 release, Miguel de Icaza reflects on Mono's past and future</a></li>
+                    						<li><a href="http://www.linux.com/feature/149406" onclick="javascript: pageTracker._trackPageview('/tracking/download_related_items/In+search+of+bigger%2C+stronger+calculators');">In search of bigger, stronger calculators</a></li>
+                    						<li><a href="http://www.linux.com/feature/149491" onclick="javascript: pageTracker._trackPageview('/tracking/download_related_items/Monitor+your+network+with+GroundWork+Monitor+Community+Edition');">Monitor your network with GroundWork Monitor Community Edition</a></li>
+                    						<li><a href="http://www.linux.com/feature/149400" onclick="javascript: pageTracker._trackPageview('/tracking/download_related_items/Sidux+grows+on+you');">Sidux grows on you</a></li>
+                    			<p></p>
+        	</div>
+        	<div class="yui-u">
+                	<h3><a href="/community/">Community</a></h3>
+
+                							<li><a href="http://rss.sourceforge.net/~r/SourceforgeCommunityHub/~3/ph8XaHWE7og/" onclick="javascript: pageTracker._trackPageview('/tracking/download_related_items/October%E2%80%99s+Project+of+the+Month');">October’s Project of the Month</a></li>
+                    						<li><a href="http://rss.sourceforge.net/~r/SourceforgeCommunityHub/~3/szXmE2iBkY8/" onclick="javascript: pageTracker._trackPageview('/tracking/download_related_items/Remember+%E2%80%9CRemember+Me%E2%80%9D%3F+It%E2%80%99s+making+a+comeback%21');">Remember “Remember Me”? It’s making a comeback!</a></li>
+                    						<li><a href="http://rss.sourceforge.net/~r/SourceforgeCommunityHub/~3/wgP3syvAhvY/" onclick="javascript: pageTracker._trackPageview('/tracking/download_related_items/Thoughts+on+our+new+UI');">Thoughts on our new UI</a></li>
+                    						<li><a href="http://rss.sourceforge.net/~r/SourceforgeCommunityHub/~3/lzLRVXxOP54/" onclick="javascript: pageTracker._trackPageview('/tracking/download_related_items/Next+week+in+Paris');">Next week in Paris</a></li>
+                    						<li><a href="http://rss.sourceforge.net/~r/SourceforgeCommunityHub/~3/tiwzcivFxT0/" onclick="javascript: pageTracker._trackPageview('/tracking/download_related_items/Because+the+world+needed+a+prettier+tracker');">Because the world needed a prettier tracker</a></li>
+                    			<p></p>
+       		</div>
+
+	</div>
+</div>
+<br />
+<div class="yui-g ads tier1">
+	<div class="yui-u first"> 
+        <!-- DoubleClick Ad Tag -->
+<script type="text/javascript">
+//<![CDATA[
+   if(immersion_adcode == ""){
+	  var adspot = "pg_dwnld_multimed_p84_medrec";
+	  if(adid !="") adspot+= ";comp=" +adid +"";
+      document.write('<script src="http://ad.doubleclick.net/adj/ostg.sourceforge/'+adspot+';pg=/project/downloading.php;psrch=0;logged_in=0;tile='+dfp_tile+';tpc=itext;tpc=os_groups;tpc=textprocessing;tpc=independent;tpc=java;tpc=presentation;tpc=graphics;tpc=multimedia;tpc=dynamic;tpc=www;tpc=internet;tpc=editors;ord='+dfp_ord+'?" type="text/javascript"><\/script>');
+   dfp_tile++;
+   }
+//]]>
+</script>
+<!-- End DoubleClick Ad Tag -->
+	</div>
+	<div class="yui-u">
+        <!-- DoubleClick Ad Tag -->
+<script type="text/javascript">
+//<![CDATA[
+   if(immersion_adcode == ""){
+	  var adspot = "pg_dwnld_multimed_p87_fusion";
+	  if(adid !="") adspot+= ";comp=" +adid +"";
+      document.write('<script src="http://ad.doubleclick.net/adj/ostg.sourceforge/'+adspot+';pg=/project/downloading.php;psrch=0;logged_in=0;tile='+dfp_tile+';tpc=itext;tpc=os_groups;tpc=textprocessing;tpc=independent;tpc=java;tpc=presentation;tpc=graphics;tpc=multimedia;tpc=dynamic;tpc=www;tpc=internet;tpc=editors;ord='+dfp_ord+'?" type="text/javascript"><\/script>');
+   dfp_tile++;
+   }
+//]]>
+</script>
+<!-- End DoubleClick Ad Tag -->
+    </div>
+</div>
+<p style="text-align: center">
+	<a href="/project/mirror_picker.php?height=350&width=300&group_id=15255&use_mirror=ovh&filesize=&filename=iText-src-2.1.3.zip&abmode=" onclick="return SFX.modal.modal_box(this);" title="Currently downloading from Paris, France - Europe">Mirror</a> provided by: <a href="http://www.ovh.com/" style="margin-left: .5em;" title="Paris, France - Europe"><img src="http://images.sourceforge.net/mirrorimages/ovh-small.jpg" alt="Mirror icon" align="middle" /></a>
+</p>
+<div class="yui-g ads tier2">
+        <div class="yui-u first">
+		<!-- DoubleClick Ad Tag -->
+<script type="text/javascript">
+//<![CDATA[
+   if(immersion_adcode == ""){
+	  var adspot = "pg_dwnld_multimed_p86_featureddl";
+	  if(adid !="") adspot+= ";comp=" +adid +"";
+      document.write('<script src="http://ad.doubleclick.net/adj/ostg.sourceforge/'+adspot+';pg=/project/downloading.php;psrch=0;logged_in=0;tile='+dfp_tile+';tpc=itext;tpc=os_groups;tpc=textprocessing;tpc=independent;tpc=java;tpc=presentation;tpc=graphics;tpc=multimedia;tpc=dynamic;tpc=www;tpc=internet;tpc=editors;ord='+dfp_ord+'?" type="text/javascript"><\/script>');
+   dfp_tile++;
+   }
+//]]>
+</script>
+<!-- End DoubleClick Ad Tag -->
+        </div>
+        <div class="yui-u">
+        <!-- DoubleClick Ad Tag -->
+<script type="text/javascript">
+//<![CDATA[
+   if(immersion_adcode == ""){
+	  var adspot = "pg_dwnld_multimed_p71_text";
+	  if(adid !="") adspot+= ";comp=" +adid +"";
+      document.write('<script src="http://ad.doubleclick.net/adj/ostg.sourceforge/'+adspot+';pg=/project/downloading.php;psrch=0;logged_in=0;tile='+dfp_tile+';tpc=itext;tpc=os_groups;tpc=textprocessing;tpc=independent;tpc=java;tpc=presentation;tpc=graphics;tpc=multimedia;tpc=dynamic;tpc=www;tpc=internet;tpc=editors;ord='+dfp_ord+'?" type="text/javascript"><\/script>');
+   dfp_tile++;
+   }
+//]]>
+</script>
+<!-- End DoubleClick Ad Tag -->
+        <!-- DoubleClick Ad Tag -->
+<script type="text/javascript">
+//<![CDATA[
+   if(immersion_adcode == ""){
+	  var adspot = "pg_dwnld_multimed_p72_text";
+	  if(adid !="") adspot+= ";comp=" +adid +"";
+      document.write('<script src="http://ad.doubleclick.net/adj/ostg.sourceforge/'+adspot+';pg=/project/downloading.php;psrch=0;logged_in=0;tile='+dfp_tile+';tpc=itext;tpc=os_groups;tpc=textprocessing;tpc=independent;tpc=java;tpc=presentation;tpc=graphics;tpc=multimedia;tpc=dynamic;tpc=www;tpc=internet;tpc=editors;ord='+dfp_ord+'?" type="text/javascript"><\/script>');
+   dfp_tile++;
+   }
+//]]>
+</script>
+<!-- End DoubleClick Ad Tag -->
+        </div>
+</div>
+
+
+ 
+	</div>
+
+
+ 
+
+		<div id="ft">
+		<div class="togbar">
+		</div>
+		<div class="yui-g hide"> 
+            <div class="yui-g first"> 
+                <div class="yui-u first">
+					<strong><a href="/support/getsupport.php">Support</a></strong><br />
+					<a href="/sitestatus">Site Status</a><br />
+					<a href="/support/getsupport.php#sitesupport">Site Support</a><br />
+					<a href="/support/getsupport.php#projectsupport">Project Support</a><br />
+					<a href="/services/help.php">Marketplace Support</a>
+				</div>
+				<div class="yui-u">
+					<strong>Syndication Feeds / RSS</strong><br />
+					<a href="/community/feed/">Community News</a><br />
+					<a href="/export/rss2_sfnews.php?group_id=1&amp;rss_fulltext=1">Project Releases</a><br />
+				</div> 
+			</div> 
+            <div class="yui-g"> 
+                <div class="yui-u first">
+                        <strong>About</strong><br />
+                        <a href="/docs/about">SourceForge.net</a><br />
+                        <a href="http://sourceforge.com"  title="Network which provides and promotes Open Source software downloads, development, discussion and news.">SourceForge, Inc.</a><br />
+						<a href="/services/buy/index.php">Marketplace</a><br />
+				</div> 
+                <div class="yui-u">
+					<br />
+					<a href="http://web.sourceforge.com/media_kit.php">Advertising</a><br />
+					<a href="http://jobs.sourceforge.net/">Jobs</a>
+				</div> 
+            </div> 
+		</div> 
+		<div class="yui-g divider">
+			<div class="yui-u first copyright">
+				&copy;Copyright 1999-2008 - <a href="http://sourceforge.com"  title="Network which provides and promotes Open Source software downloads, development, discussion and news.">SourceForge</a>, Inc., All Rights Reserved 
+			</div> 
+			<div class="yui-u">
+				<a href="http://sourceforge.net/community/forum/forum.php?id=12">Feedback</a> <a href="/tos/tos.php">Legal</a> <a href="/support">Help</a>
+			</div>
+		</div>
+	</div>
+</div>
+ 
+<!-- Ad calls and positioning -->
+<div id="adbatch" class="post_download pville">
+	         	<div id="fad85"><!-- DoubleClick Ad Tag -->
+<script type="text/javascript">
+//<![CDATA[
+   if(immersion_adcode == ""){
+	  var adspot = "pg_dwnld_multimed_p85_skybox";
+	  if(adid !="") adspot+= ";comp=" +adid +"";
+      document.write('<script src="http://ad.doubleclick.net/adj/ostg.sourceforge/'+adspot+';pg=/project/downloading.php;dcopt=ist;psrch=0;logged_in=0;tile='+dfp_tile+';tpc=itext;tpc=os_groups;tpc=textprocessing;tpc=independent;tpc=java;tpc=presentation;tpc=graphics;tpc=multimedia;tpc=dynamic;tpc=www;tpc=internet;tpc=editors;ord='+dfp_ord+'?" type="text/javascript"><\/script>');
+   dfp_tile++;
+   }
+//]]>
+</script>
+<!-- End DoubleClick Ad Tag --></div>
+    </div>
+
+
+<script type="text/javascript">
+pageTracker._trackPageview();
+external_pageTracker._trackPageview();
+</script>
+
+
+<script type="text/javascript">
+	if(typeof(urchinTracker)!='function')document.write('<sc'+'ript src="'+
+	'http'+(document.location.protocol=='https:'?'s://ssl':'://www')+
+	'.google-analytics.com/urchin.js'+'"></sc'+'ript>');
+</script>
+<script type="text/javascript">
+_uacct = "";
+urchinTracker("//goal");
+</script>
+ 
+</body>
+</html>
+ 
+ 	  	 
