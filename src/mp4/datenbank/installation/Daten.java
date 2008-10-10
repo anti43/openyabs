@@ -80,7 +80,7 @@ public abstract class Daten {
         "INSERT INTO einstellungen (name, wert) VALUES ('Angebot Verzeichnis', '" + Setup.instanceOf().getInstall_dirs().getPathpdf_offer_dir() + "')",
         "INSERT INTO einstellungen (name, wert) VALUES ('Mahnung Verzeichnis', '" + Setup.instanceOf().getInstall_dirs().getPathpdf_mahnung_dir()+ "')",
         "INSERT INTO einstellungen (name, wert) VALUES ('Produkt Verzeichnis', '" + Setup.instanceOf().getInstall_dirs().getPathpdf_produkt_dir()+ "')",
-        "INSERT INTO einstellungen (name, wert) VALUES ('Lieferschein Verzeichnis', '" + Setup.instanceOf().getInstall_dirs().getPathpdf_bill_dir()+ "')",
+        "INSERT INTO einstellungen (name, wert) VALUES ('Lieferschein Verzeichnis', '" + Setup.instanceOf().getInstall_dirs().getPathpdf_lieferschein_dir()+ "')",
 
         "INSERT INTO einstellungen (name, wert) VALUES ('Rechnung Template', '" + Setup.instanceOf().getInstall_dirs().getPathtemplates_dir() + File.separator + "rechnung.pdf')",
         "INSERT INTO einstellungen (name, wert) VALUES ('Angebot Template', '" + Setup.instanceOf().getInstall_dirs().getPathtemplates_dir() + File.separator + "angebot.pdf')",

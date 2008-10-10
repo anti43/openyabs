@@ -95,9 +95,11 @@ public class Conn implements Strings {
         }
         URL = "jdbc:derby:" + url + ";create=" + create + ";";
         this.connect();
-        tablesCreated = this.query(Struktur.SQL_COMMAND);
-        this.query(Daten.SQL_COMMAND);
-        Conn.reboot();
+        if (create) {
+            tablesCreated = this.query(Struktur.SQL_COMMAND);
+            this.query(Daten.SQL_COMMAND);
+            Conn.shutdown();
+        }
     }
 
     /**
@@ -265,12 +267,17 @@ public class Conn implements Strings {
 
             statement = conn.createStatement();
             for (int i = 0; i < querys.length; i++) {
-                Log.Debug(querys[i]);
-                statement.execute(querys[i]);
+                
+                try {
+                    Log.Debug(querys[i]);
+                    statement.execute(querys[i]);
+                } catch (SQLException e) {
+                    System.err.println(message + e.getMessage());
+                }
 
             }
         } catch (SQLException ex) {
-            System.out.println(message + ex.getMessage());
+            System.err.println(message + ex.getMessage());
             return false;
         } finally {
 

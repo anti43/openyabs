@@ -62,6 +62,7 @@ public interface Constants {
     public static String BILL_SAVE_DIR = "Rechnungen";
     public static String ARREAR_SAVE_DIR = "Mahnungen";
     public static String PRODUCT_SAVE_DIR = "Produkte";
+    public static String LIEFERSCHEIN_SAVE_DIR = "Lieferscheine";
     public static String BACKUPS_SAVE_DIR = "Backup";
     public static String ICON_NAME_LIN = "mp.desktop";
     public static String ICON_NAME_WIN = "MP-Rechnungs-Kundenverwaltung.url";

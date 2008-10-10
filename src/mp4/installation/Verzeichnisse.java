@@ -33,6 +33,7 @@ public class Verzeichnisse implements Constants, Strings {
     private static File pdf_bill_dir;
     private static File pdf_mahnung_dir;
     private static File pdf_produkt_dir;
+    private static File pdf_lieferschein_dir;
     private static File templates_dir;
     private static File cache_dir;
     private static File plugin_dir;
@@ -81,6 +82,7 @@ public class Verzeichnisse implements Constants, Strings {
         pdf_bill_dir = new File(getPdf_root_dir().getCanonicalPath() + File.separator + BILL_SAVE_DIR);
         pdf_mahnung_dir = new File(getPdf_root_dir().getCanonicalPath() + File.separator + ARREAR_SAVE_DIR);
         pdf_produkt_dir = new File(getPdf_root_dir().getCanonicalPath() + File.separator + PRODUCT_SAVE_DIR);
+        pdf_lieferschein_dir = new File(getPdf_root_dir().getCanonicalPath() + File.separator + LIEFERSCHEIN_SAVE_DIR);
     }
 
     public static void createDirs() {
@@ -94,6 +96,7 @@ public class Verzeichnisse implements Constants, Strings {
                     getPdf_bill_dir().mkdirs() &
                     getPdf_offer_dir().mkdirs() &
                     getPdf_mahnung_dir().mkdirs() &
+                    getPdf_lieferschein_dir().mkdirs() &
                     getPlugin_dir().mkdirs() &
                     getCache_dir().mkdirs()) {
 
@@ -172,6 +175,10 @@ public class Verzeichnisse implements Constants, Strings {
     public static File getPdf_offer_dir() {
         return pdf_offer_dir;
     }
+    
+    public static File getPdf_lieferschein_dir() {
+        return pdf_lieferschein_dir;
+    }
 
     public static File getPdf_bill_dir() {
         return pdf_bill_dir;
@@ -235,6 +242,10 @@ public class Verzeichnisse implements Constants, Strings {
 
     public static String getPathpdf_produkt_dir() {
         return pdf_produkt_dir.getPath();
+    }
+    
+    public static String getPathpdf_lieferschein_dir() {
+        return pdf_lieferschein_dir.getPath();
     }
 
     public static void setBackuppathtftext(String aBackuppathtftext) {

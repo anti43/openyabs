@@ -354,7 +354,8 @@ pack();
                         this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                         new Popup("Sie können das Programm nun starten.", Popup.NOTICE);
                         finished = true;
-                        jButton1.setText("Beenden");
+                        new Main();
+//                        jButton1.setText("Schliessen");
                     } else {
                         this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                     }
@@ -423,9 +424,17 @@ javax.swing.JTextArea jTextArea1;
 javax.swing.JTextField pdfpathtf;
 // End of variables declaration//GEN-END:variables
     public boolean createDatabase() {
+        return createDatabase(null);
+    }
+
+    public boolean createDatabase(String db) {
         String url;
         if (!Main.FORCE_NO_DATABASE) {
-            url = Main.MPPATH + File.separator + Constants.DATABASENAME;
+            if (db == null) {
+                url = Main.MPPATH + File.separator + Constants.DATABASENAME;
+            } else {
+                url = db;
+            }
             Conn c = null;
             try {
                 c = Conn.instanceOf(url, true);

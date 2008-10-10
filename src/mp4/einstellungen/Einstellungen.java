@@ -16,6 +16,7 @@
  */
 package mp4.einstellungen;
 
+import java.io.File;
 import mp4.items.SKRKonto;
 import mp4.benutzerverwaltung.User;
 
@@ -102,8 +103,7 @@ public class Einstellungen extends MethodParser implements mp4.datenbank.install
 
     public void setDatenbank_Verzeichnis(String pfad) {
         FileReaderWriter f = new FileReaderWriter(Main.SETTINGS_FILE);
-        f.write(pfad + Strings.COLON + Constants.VERSION);
-
+        f.writeOnce(pfad + Strings.COLON + Constants.VERSION);
     }
 
     public String getBackup_Verzeichnis() {
