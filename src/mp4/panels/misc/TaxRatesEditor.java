@@ -26,10 +26,12 @@ public class TaxRatesEditor extends javax.swing.JFrame {
 
     private mainframe frame;
 
-    /** Creates new form Anmeldung */
-    public TaxRatesEditor(mainframe farme) {
+    /** Creates new form Anmeldung
+     * @param frame 
+     */
+    public TaxRatesEditor(mainframe frame) {
         initComponents();
-        this.frame = farme;
+        this.frame = frame;
         jTable1.setModel(new TaxTableModel());
 
         jTextField2.setInputVerifier(InputVerifiers.getDoubleInputVerfier(jTextField2));

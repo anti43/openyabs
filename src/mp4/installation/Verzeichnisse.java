@@ -37,9 +37,9 @@ public class Verzeichnisse implements Constants, Strings {
     private static File templates_dir;
     private static File cache_dir;
     private static File plugin_dir;
-    private static String backuppathtftext = Main.MPPATH;
-    private static String pdfpathtftext = Main.MPPATH;
-    ;
+    private static String backuppathtftext = Main.APP_DIR + File.separator + "Backup";
+    private static String pdfpathtftext = Main.APP_DIR + File.separator + "PDF";
+    
 
     public static void buildPath() throws IOException {
         try {

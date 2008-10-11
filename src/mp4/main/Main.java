@@ -173,8 +173,14 @@ public class Main implements Strings {
             Log.Debug(db + " not found :-(", true);
             Popup.notice("Datenbank existiert nicht am angegebenen Ort.\n" + db);
 
+            splash.setMessage("Versuche, Datenbank anzulegen");
+            
             if (new Setup(true).createDatabase(db)) {
                 Popup.notice("Datenbank angelegt in\n" + db);
+                splash.setMessage("Starte MP");
+            } else {
+                Popup.notice("Es ist ein Fehler aufgetreten, Programm wird beendet.");
+                System.exit(1);
             }
             new Main();
 

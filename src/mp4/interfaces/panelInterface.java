@@ -33,45 +33,7 @@ public interface panelInterface {
      * To be called after a database change in the panels view scope
      */
     public abstract void update();
-//
-//    /**
-//     *
-//     * To be called to save the current data 
-//     */
-//    public abstract void save();
-//
-////    /**
-////     *
-////     * To be called on closing the tab
-////     */
-////    public abstract void close();
-////
-////    /**
-////     *
-////     * To be called for Undo action
-////     */
-////    public abstract void undo();
-////
-////    /**
-////     *
-////     * To be called for Redo action
-////     */
-////    public abstract void redo();
-////
-////    /**
-////     *
-////     * To change the tab text
-////     * @param text 
-////     */
-////    public abstract void changeTabText(String text);
-////
-////    /**
-////     *
-////     * To check whether any changes have been done to the Tabs initial data
-////     * @return 
-////     */
-////    public abstract boolean isEdited();
-//
+
     /**
      *
      * To change the panels' contact
@@ -90,20 +52,6 @@ public interface panelInterface {
      * 
      * @param steuersatz 
      */
-    public void setTax(mp4.items.Steuersatz steuersatz);
+    public abstract void setTax(mp4.items.Steuersatz steuersatz);
 
-//    /**
-//     *
-//     * To get the data (people)
-//     * @return 
-//     */
-//    public abstract People getContact();
-//
-//
-//    /**
-//     *
-//     * To change the tab
-//     * @param i 
-//     */
-//    public abstract void switchTab(int i);
 }

@@ -89,15 +89,16 @@ public class FileDirectoryHandler {
             return outp.toURI();
     }
     
+    @SuppressWarnings("unchecked")
     public static File[] getFilesOfDirectory(String directory, String identifier){
         File src;
         try {
-            lstFiles = new ArrayList();
+            lstFiles = new ArrayList<java.io.File>();
             src = new File(directory);
             Log.Debug("Verzeichnis: " + src, true);
             File[] files = src.listFiles();
             Log.Debug("Dateien analysieren...", true);
-            lstFiles = new ArrayList();
+            lstFiles = new ArrayList<java.io.File>();
 
             for (int i = 0,   k = 0; i < files.length; i++) {
 //                Log.Debug("Datei analysieren: " + files[i].getName());

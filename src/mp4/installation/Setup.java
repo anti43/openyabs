@@ -52,7 +52,7 @@ public class Setup extends javax.swing.JFrame implements Constants, Strings {
 
     /**
      * 
-     * @return
+     * @return Instance of silent setup (no gui)
      */
     public static Setup instanceOf() {
         if (instance == null) {
@@ -62,17 +62,7 @@ public class Setup extends javax.swing.JFrame implements Constants, Strings {
         }
     }
     private boolean finished = false;
-//    private String pdf_root_dirPATH;
-//    private String backup_dirPATH;
-//    private String public_dirPATH;
-//    private String lib_dirPATH;
-//    private String install_lib_dirPATH;
-//    private String install_templates_dirPATH;
-//    private String pdf_offer_dirPATH;
-//    private String pdf_bill_dirPATH;
-//    private String pdf_mahnung_dirPATH;
-//    private String templates_dirPATH;
-//    private String cache_dirPATH;
+
     /** Creates new form mpInstaller
      */
     public Setup() {
@@ -101,13 +91,21 @@ public class Setup extends javax.swing.JFrame implements Constants, Strings {
         Log.Debug(JAVA_VERSION);
     }
 
+    /**
+     * If silent is set to true, no setup gui is loaded.
+     * @param silent
+     */
     public Setup(boolean silent) {
-        try {
-            Verzeichnisse.buildPath();
-            Verzeichnisse.createDirs();
-            install_dirs = new Verzeichnisse();
-        } catch (IOException ex) {
-            Log.Debug(ex);
+        if (silent) {
+            try {
+                Verzeichnisse.buildPath();
+                Verzeichnisse.createDirs();
+                install_dirs = new Verzeichnisse();
+            } catch (IOException ex) {
+                Log.Debug(ex);
+            }
+        } else {
+            new Setup();
         }
     }
 
@@ -423,10 +421,19 @@ javax.swing.JScrollPane jScrollPane1;
 javax.swing.JTextArea jTextArea1;
 javax.swing.JTextField pdfpathtf;
 // End of variables declaration//GEN-END:variables
-    public boolean createDatabase() {
+/**
+ * Creates the database on the default path
+ * @return true if creating the database was true
+ */
+public boolean createDatabase() {
         return createDatabase(null);
     }
 
+    /**
+     * Creates the database on the given path
+     * @param db  The path
+     * @return true if creating the database was true
+     */
     public boolean createDatabase(String db) {
         String url;
         if (!Main.FORCE_NO_DATABASE) {
@@ -446,6 +453,9 @@ javax.swing.JTextField pdfpathtf;
         return false;
     }
 
+    /**
+     * Calls the creation of a desktop icon for MP, depending on the OS
+     */
     public static void writeDesktopIcon() {
         if (Main.IS_WINDOWS) {
             DesktopIcon.createWindowsDesktopIcon();

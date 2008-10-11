@@ -77,6 +77,7 @@ public class csvProductImporter extends javax.swing.JFrame implements panelInter
 
     }
 
+    @SuppressWarnings("unchecked")
     public csvProductImporter(File file) {
         initComponents();
         new Position(this);

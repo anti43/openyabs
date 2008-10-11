@@ -127,7 +127,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
     public ArrayList<Double> selectYearlySums(String what, String[] where, vTimeframe zeitraum, String additionalCondition) {
 
         Date temdate = zeitraum.getStart();
-        ArrayList<Double> values = new ArrayList();
+        ArrayList<Double> values = new ArrayList<java.lang.Double>();
 
         do {
             String str = "AND datum BETWEEN '" + DateConverter.getSQLDateString(temdate) + "' AND '" + DateConverter.getSQLDateString(DateConverter.addYear(temdate)) + "'";
@@ -155,7 +155,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
     public ArrayList<Double> selectMonthlySums(String what, String[] where, vTimeframe zeitraum, String additionalCondition) {
 
         Date temdate = zeitraum.getStart();
-        ArrayList<Double> values = new ArrayList();
+        ArrayList<Double> values = new ArrayList<java.lang.Double>();
 
         do {
             String str = "AND datum BETWEEN '" + DateConverter.getSQLDateString(temdate) + "' AND '" + DateConverter.getSQLDateString(DateConverter.addMonth(temdate)) + "'";

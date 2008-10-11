@@ -17,8 +17,6 @@
 package mp4.frames;
 
 import calculator.Rechner;
-import compat.mp2.kunde;
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -27,7 +25,6 @@ import mp4.datenbank.verbindung.Conn;
 import mp4.items.visual.csvProductImporter;
 import mp4.items.visual.fastChoice;
 import mp4.items.visual.serialLetter;
-import mp4.items.visual.mp2Importer;
 
 import mp4.items.Rechnung;
 import mp4.main.Main;
@@ -40,9 +37,8 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
-import java.util.Locale;
 import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -73,7 +69,6 @@ import mp4.panels.misc.startView;
 
 
 import mp4.benutzerverwaltung.visual.Verwaltung;
-import mp4.cache.undoCache;
 import mp4.datenbank.verbindung.Query;
 import mp4.items.Customer;
 import mp4.items.Lieferant;
@@ -109,7 +104,6 @@ import mp4.utils.importe.daten.ImportDaten;
 import mp4.utils.listen.ArrayUtils;
 import mp4.utils.tasks.Job;
 import mp4.utils.text.FadeOnChangeLabel;
-import mp4.utils.text.RandomText;
 import mp4.utils.ui.Position;
 import mp4.utils.ui.TabCloseIcon;
 
@@ -194,19 +188,11 @@ public class mainframe extends javax.swing.JFrame {
                 close();
             }
         });
-//        
-//        this.addComponentListener(new ComponentListener() {  
-//            public void componentResized(ComponentEvent e) {resize();}
-//            public void componentMoved(ComponentEvent e) {}
-//            public void componentShown(ComponentEvent e) {}
-//            public void componentHidden(ComponentEvent e) {}
-//        });
 
-
-//        undoCache.setMenu(jMenu11, this);
         setMessage("Anmerkungen, Bugs und Feedback zu MP bitte an mp-rechnungs-und-kundenverwaltung@googlegroups.com senden. Vielen Dank!");
         nachricht = messagePanel;
         new pluginHandler(this);
+
         this.setVisible(rootPaneCheckingEnabled);
         if (Programmdaten.instanceOf().getUSE_AUTHENTIFICATION()) {
             this.setEnabled(false);
@@ -254,12 +240,14 @@ public class mainframe extends javax.swing.JFrame {
         jmi.addActionListener(
                 new ActionListener() {
 
+                    @Override
                     public void actionPerformed(ActionEvent e) {
                         identifier.addPluginPanel(elem);
                     }
                 });
         jmi.addItemListener(new ItemListener() {
 
+            @Override
             public void itemStateChanged(ItemEvent e) {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
                     Programmdaten.instanceOf().addONLOAD_PLUGIN(elem);
@@ -1423,8 +1411,8 @@ private void jMenuItem24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     dialog = new DialogForFile(DialogForFile.FILES_ONLY, "Kontaktliste.csv");
     TextDatFile file = new TextDatFile(ArrayUtils.ObjectToStringArray(new Kontaktliste(new Customer().getClass()).getData()));
     new Job(file, dialog, mainProgressBar).execute();
-    
-   
+
+
 }//GEN-LAST:event_jMenuItem24ActionPerformed
 
     @Override

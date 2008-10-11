@@ -13,6 +13,7 @@ import mp4.utils.datum.DateConverter;
  * @author anti43
  */
 public class ArrayUtils {
+    @SuppressWarnings("unchecked")
   public static ArrayList ArrayToColumnList(Object[][] array, int column, Class aClass) {
 
         ArrayList list = new ArrayList();
@@ -24,6 +25,7 @@ public class ArrayUtils {
         return list;
     }
     
+    @SuppressWarnings("unchecked")
     public static ArrayList ArrayToDoubleColumnList(Object[][] array, int column) {
 
         ArrayList list = new ArrayList();
@@ -35,6 +37,7 @@ public class ArrayUtils {
         return list;
     }
     
+    @SuppressWarnings("unchecked")
       public static ArrayList ArrayToDateColumnList(Object[][] array, int column) {
 
         ArrayList list = new ArrayList();

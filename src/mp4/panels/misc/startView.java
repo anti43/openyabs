@@ -49,17 +49,18 @@ jLabel5 = new javax.swing.JLabel();
 jScrollPane1 = new javax.swing.JScrollPane();
 jTextArea1 = new javax.swing.JTextArea();
 jLabel7 = new javax.swing.JLabel();
+jLabel3 = new javax.swing.JLabel();
 
 setLayout(new java.awt.BorderLayout());
 
-jLabel1.setFont(new java.awt.Font("DejaVu Sans", 1, 12)); // NOI18N
+jLabel1.setFont(new java.awt.Font("DejaVu Sans", 1, 12));
 jLabel1.setText("Willkommen zur MP Kunden und Rechnungsverwaltung!");
 add(jLabel1, java.awt.BorderLayout.CENTER);
 
 jPanel3.setBackground(new java.awt.Color(255, 255, 255));
 jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-jLabel2.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+jLabel2.setFont(new java.awt.Font("Arial", 1, 12));
 jLabel2.setText("MP Kunden und Rechnungsverwaltung");
 
 jLabel5.setForeground(new java.awt.Color(0, 51, 51));
@@ -71,7 +72,8 @@ jScrollPane1.setAutoscrolls(true);
 jScrollPane1.setOpaque(false);
 
 jTextArea1.setColumns(20);
-jTextArea1.setFont(new java.awt.Font("Monospaced", 0, 10)); // NOI18N
+jTextArea1.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
+jTextArea1.setForeground(new java.awt.Color(0, 51, 51));
 jTextArea1.setLineWrap(true);
 jTextArea1.setRows(5);
 jTextArea1.setText("Apache Derby\nCopyright 2004-2007 The Apache Software Foundation\n\n\nMicroba \nCopyright (c) 2005-2006, Michael Baranov\nAll rights reserved.\n\n\niText\nPortions created by the Initial Developer are \nCopyright (C) 1999, 2000, 2001, 2002 by Bruno Lowagie.\nAll Rights Reserved.\nPortions created by the Co-Developer\nare Copyright (C) 2000, 2001, 2002 by Paulo Soares. \nAll Rights Reserved.\n\n\nOstermillerUtils\nCopyright (C) 2002-2004 Stephen Ostermiller\n\n\nSuperCsv\nCopyright 2007, Kasper B. Graversen\n\n\nTinyLaF\n© 2000 - 2007 Hans Bickel \n\n\nKDE Crystal Diamond Icons- by paolino");
@@ -84,10 +86,14 @@ jScrollPane1.setViewportView(jTextArea1);
 
 jLabel7.setText("Version:");
 
+jLabel3.setText("Enthaltene Bibliotheken:");
+
 javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
 jPanel3.setLayout(jPanel3Layout);
 jPanel3Layout.setHorizontalGroup(
 jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+.addGroup(jPanel3Layout.createSequentialGroup()
+.addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 .addGroup(jPanel3Layout.createSequentialGroup()
 .addContainerGap()
 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -95,11 +101,12 @@ jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 .addComponent(jLabel2)
 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 .addComponent(jLabel7))
+.addComponent(jLabel5)))
 .addGroup(jPanel3Layout.createSequentialGroup()
-.addComponent(jLabel5)
-.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-.addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
-.addGap(266, 266, 266)))
+.addGap(14, 14, 14)
+.addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+.addComponent(jLabel3)
+.addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE))))
 .addContainerGap())
 );
 jPanel3Layout.setVerticalGroup(
@@ -109,10 +116,15 @@ jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
 .addComponent(jLabel2)
 .addComponent(jLabel7))
-.addGap(27, 27, 27)
 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-.addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING)
-.addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))
+.addGroup(jPanel3Layout.createSequentialGroup()
+.addGap(323, 323, 323)
+.addComponent(jLabel5))
+.addGroup(jPanel3Layout.createSequentialGroup()
+.addGap(83, 83, 83)
+.addComponent(jLabel3)
+.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+.addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 215, Short.MAX_VALUE)))
 .addContainerGap())
 );
 
@@ -122,14 +134,14 @@ jPanel2Layout.setHorizontalGroup(
 jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 .addGroup(jPanel2Layout.createSequentialGroup()
 .addContainerGap()
-.addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
-.addContainerGap(48, Short.MAX_VALUE))
+.addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+.addContainerGap())
 );
 jPanel2Layout.setVerticalGroup(
 jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 .addGroup(jPanel2Layout.createSequentialGroup()
 .addContainerGap()
-.addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 364, Short.MAX_VALUE)
+.addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 .addContainerGap())
 );
 
@@ -140,6 +152,7 @@ add(jPanel2, java.awt.BorderLayout.CENTER);
 // Variables declaration - do not modify//GEN-BEGIN:variables
 private javax.swing.JLabel jLabel1;
 private javax.swing.JLabel jLabel2;
+private javax.swing.JLabel jLabel3;
 private javax.swing.JLabel jLabel5;
 private javax.swing.JLabel jLabel7;
 private javax.swing.JPanel jPanel2;

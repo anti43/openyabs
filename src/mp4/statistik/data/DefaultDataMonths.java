@@ -38,6 +38,7 @@ public class DefaultDataMonths implements Waitable {
     public static int AUSGABEN = 3;
     private int mode = 0;
 
+    @SuppressWarnings("unchecked")
     public DefaultDataMonths(Date date, Date date0, String title, int mode) {
         this.vonYear = DateConverter.getDefDateString(date);
         this.bisYear = DateConverter.getDefDateString(date0);

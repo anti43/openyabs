@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 //import mp3.classes.objects.ungrouped.HistoryHandler;
 import javax.swing.table.DefaultTableModel;
@@ -23,7 +22,6 @@ import mp4.globals.Strings;
 import mp4.interfaces.panelInterface;
 import mp4.items.People;
 import mp4.items.Steuersatz;
-import mp4.utils.files.FileReaderWriter;
 import mp4.logs.*;
 import mp4.items.visual.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
@@ -45,7 +43,7 @@ import mp4.utils.tabellen.TableFormat;
  *
  * @author  anti43
  */
-public class backupView extends mp4.panels.misc.commonPanel implements panelInterface{
+public class backupView extends mp4.panels.misc.commonPanel{
 
     private String[][] liste;
     private String[] header;
@@ -371,31 +369,4 @@ public class backupView extends mp4.panels.misc.commonPanel implements panelInte
         TableFormat.format(jTable1, 1, 180);
     }
         
-    public void update() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void save() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void addProduct(Product p) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-     
-    public void setContact(People c) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-    
-    public People getContact() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void switchTab(int i) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void setTax(Steuersatz steuersatz) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 }

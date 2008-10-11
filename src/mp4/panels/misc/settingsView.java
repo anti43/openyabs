@@ -5,24 +5,16 @@
  */
 package mp4.panels.misc;
 
-import java.awt.HeadlessException;
-import java.io.File;
 import javax.swing.JFileChooser;
-import javax.swing.JTabbedPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableModel;
-import mp4.interfaces.panelInterface;
 
-import mp4.items.People;
 
 import mp4.einstellungen.Einstellungen;
 import mp4.frames.mainframe;
-import mp4.globals.Constants;
 import mp4.installation.Setup;
-import mp4.items.Product;
-import mp4.items.Steuersatz;
 import mp4.items.visual.Help;
+import mp4.logs.Log;
 import mp4.main.Main;
 import mp4.utils.tabellen.DataModelUtils;
 import mp4.utils.tabellen.TableFormat;
@@ -32,7 +24,7 @@ import mp4.utils.tabellen.TableFormat;
  *
  * @author  Andreas
  */
-public class settingsView extends mp4.panels.misc.commonPanel implements panelInterface {
+public class settingsView extends mp4.panels.misc.commonPanel {
 
     private Einstellungen data;
     private mainframe mainframe;
@@ -444,17 +436,18 @@ private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:ev
 
 private void jButton4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton4MouseClicked
     try {
-        JFileChooser fc = new JFileChooser();
+        JFileChooser fc = new JFileChooser("null");
         fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        fc.setSelectedFile(new File(Main.APP_DIR));
+//        fc.setSelectedFile(new File(Constants.USER_HOME + File.separator + "afile"));
 
-        if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+        if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             try {
                 jTable1.setValueAt(fc.getSelectedFile().toString(), jTable1.getSelectedRow(), 1);
             } catch (Exception exception) {
             }
         }
-    } catch (HeadlessException headlessException) {
+    } catch (Exception e) {
+        Log.Debug(e);
     }
 }//GEN-LAST:event_jButton4MouseClicked
 
@@ -477,17 +470,18 @@ private void jTable2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
 
 private void jButton7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton7MouseClicked
     try {
-        JFileChooser fc = new JFileChooser();
+        JFileChooser fc = new JFileChooser(Main.APP_DIR);
         fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        fc.setSelectedFile(new File(Main.APP_DIR));
+//        fc.setSelectedFile(new File(Main.APP_DIR + File.separator + "afile"));
 
-        if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+        if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             try {
                 jTable2.setValueAt(fc.getSelectedFile().toString(), jTable2.getSelectedRow(), 1);
             } catch (Exception exception) {
             }
         }
-    } catch (HeadlessException headlessException) {
+    } catch (Exception e) {
+        Log.Debug(e);
     }
 }//GEN-LAST:event_jButton7MouseClicked
 
@@ -497,17 +491,19 @@ private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
 private void jButton8MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton8MouseClicked
     try {
-        JFileChooser fc = new JFileChooser();
+        JFileChooser fc = new JFileChooser(Main.APP_DIR);
         fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        fc.setSelectedFile(new File(Main.APP_DIR));
+//        fc.setSelectedFile(new File(Main.APP_DIR + File.separator + "afile"));
 
-        if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+        if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             try {
                 jTable3.setValueAt(fc.getSelectedFile().toString(), jTable3.getSelectedRow(), 1);
             } catch (Exception exception) {
+                
             }
         }
-    } catch (HeadlessException headlessException) {
+    } catch (Exception e) {
+        Log.Debug(e);
     }
 }//GEN-LAST:event_jButton8MouseClicked
 
@@ -557,10 +553,6 @@ private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
     // End of variables declaration//GEN-END:variables
-    //Ja, das ist Mist
-    public void update() {}
-    public void setContact(People contact) {}
-    public void addProduct(Product p) {}
-    public void setTax(Steuersatz steuersatz) {}
+
 
 }
