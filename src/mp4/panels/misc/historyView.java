@@ -6,12 +6,8 @@
 package mp4.panels.misc;
 
 import javax.swing.JTable;
-import mp4.items.People;
-import mp4.items.Product;
-import mp4.items.Steuersatz;
 import mp4.items.handler.HistoryHandler;
 import javax.swing.table.DefaultTableModel;
-import mp4.interfaces.panelInterface;
 import mp4.frames.mainframe;
 import mp4.logs.Log;
 import mp4.utils.tabellen.TableFormat;
@@ -160,28 +156,10 @@ public javax.swing.JScrollPane jScrollPane1;
        TableFormat.resizeCols(getHistoryTable(), new Integer[]{130,null,100,100}, true);       
     }
 
-
     public void update() {
         HistoryHandler.validate();
             liste = HistoryHandler.getHistory();
             historytable.setModel(new DefaultTableModel(liste, header));
             resizeTable();
     }
-
-//    @Override
-//    public void setContact(People contact) {
-//        throw new UnsupportedOperationException("Not supported yet.");
-//    }
-//
-//    @Override
-//    public void addProduct(Product product) {
-//        throw new UnsupportedOperationException("Not supported yet.");
-//    }
-//
-//    @Override
-//    public void setTax(Steuersatz steuersatz) {
-//        throw new UnsupportedOperationException("Not supported yet.");
-//    }
-
-
 }
