@@ -76,7 +76,8 @@ public class Conn implements Strings {
     /**
      * JDBC-Treiber-Name. Muss im Klassenpfad sein.
      */
-    private static String DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
+//    private static String DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
+      private static String DRIVER = "com.mysql.jdbc.Driver";
     /**
      * Verbindungs-URL. Erstellt beim ersten Aufruf eine neue Datenbank.
      */
@@ -93,6 +94,7 @@ public class Conn implements Strings {
         if (splash != null) {
             splash.setMessage(DB_INIT);
         }
+//        URL = "jdbc:mysql:" + url;
         URL = "jdbc:derby:" + url + ";create=" + create + ";";
         this.connect();
         if (create) {
@@ -112,6 +114,7 @@ public class Conn implements Strings {
         try {
             FileReaderWriter rw = new FileReaderWriter(Main.SETTINGS_FILE);
             String[] dat = rw.read().split(";");
+//            URL = "jdbc:mysql:" + dat[0] + File.separator + Constants.DATABASENAME;
             URL = "jdbc:derby:" + dat[0] + File.separator + Constants.DATABASENAME;
         } catch (Exception exception) {
             Popup.notice(SETTINGS_NOT_FOUND + exception.getMessage());
@@ -136,7 +139,8 @@ public class Conn implements Strings {
 
         // Verbindung herstellen
         try {
-            conn = DriverManager.getConnection(URL);
+            Log.Debug("Datenbank: " + URL, true);
+            conn = DriverManager.getConnection(URL, "root", null);
             // Benötige Ressourcen für eine SQL-Anweisung bereitstellen 
             statement = conn.createStatement();
             new File(Constants.USER_HOME+File.separator+"derby.log").deleteOnExit();
@@ -163,10 +167,7 @@ public class Conn implements Strings {
                 conn.close();
                 conn = null;
             }
-            File f = new File(Main.MPPATH + File.separator + Constants.DATABASENAME + File.separator + "dbex.lck");
-            f.deleteOnExit();
-            File fi = new File(Main.MPPATH+ File.separator + Constants.DATABASENAME + File.separator + "db.lck");
-            fi.deleteOnExit();
+            ConnectionHandler.unlockDbOnExit();
         } catch (SQLException ex) {
 
             ex.printStackTrace();

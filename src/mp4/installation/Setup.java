@@ -438,7 +438,7 @@ public boolean createDatabase() {
         String url;
         if (!Main.FORCE_NO_DATABASE) {
             if (db == null) {
-                url = Main.MPPATH + File.separator + Constants.DATABASENAME;
+                url = Main.DB_LOCATION + "/" + Constants.DATABASENAME;
             } else {
                 url = db;
             }

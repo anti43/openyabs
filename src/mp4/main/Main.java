@@ -56,6 +56,8 @@ public class Main implements Strings {
     public static String TEMPLATE_DIR = null;
     public static String BACKUP_DIR = null;
     public static String MPPATH = Constants.USER_HOME + File.separator + ".mp";
+    public static String DB_LOCATION = MPPATH;
+    
     /**
      * Full path to settings file
      */
@@ -139,8 +141,7 @@ public class Main implements Strings {
             }
 
         } else if (cl.hasOption(dbpath)) {
-            MPPATH = (String) cl.getValue(dbpath);
-            SETTINGS_FILE = Main.MPPATH + File.separator + "settings" + Constants.RELEASE_VERSION + ".mp";
+            DB_LOCATION = (String) cl.getValue(dbpath);
 
         } else if (cl.hasOption(instpath)) {
             APP_DIR = (String) cl.getValue(instpath);
