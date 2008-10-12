@@ -17,7 +17,12 @@
 package mp4.datenbank.verbindung;
 
 import java.io.File;
-import java.sql.*;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import mp4.globals.Constants;
 import mp4.globals.Strings;
 import mp4.utils.files.FileReaderWriter;
