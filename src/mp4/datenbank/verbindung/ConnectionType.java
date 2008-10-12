@@ -50,8 +50,6 @@ public class ConnectionType {
     //Connection string
     private String CONNECTION_STRING = null;
     private String URL = null;
-    private String USER = null;
-    private String PASSWORD = null;
     private int mode = 0;
 
     
@@ -111,18 +109,6 @@ public class ConnectionType {
         this.mode = mode;
     }
 
-    public String getUSER() {
-        return USER;
-    }
-
-    public void setUSER(String USER) {
-        this.USER = USER;
-    }
-
-    public void setPASSWORD(String PASSWORD) {
-        this.PASSWORD = PASSWORD;
-    }
-
     public String getDriver() {
        switch (mode) {
             case DERBY:
@@ -134,8 +120,4 @@ public class ConnectionType {
         }
           return null;
     }
-//
-//    public String getPWD() {
-//       return PASSWORD;
-//    }
 }

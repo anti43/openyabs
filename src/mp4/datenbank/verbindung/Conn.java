@@ -19,7 +19,6 @@ package mp4.datenbank.verbindung;
 import java.io.File;
 import java.sql.*;
 import mp4.globals.Constants;
-import mp4.globals.Constants;
 import mp4.globals.Strings;
 import mp4.utils.files.FileReaderWriter;
 import mp4.items.visual.Popup;
@@ -63,7 +62,7 @@ public class Conn implements Strings {
      */
     public static Conn instanceOf(String url, boolean create) throws Exception {
         if (connector == null) {
-            connector = new Conn(url, create);
+            connector = new Conn(url, create, null, null);
         }
         return connector;
 
@@ -84,17 +83,20 @@ public class Conn implements Strings {
     private static String URL = "";
     private static boolean tablesCreated = false;
     private SplashScreen splash;
+    private String user = null;
+    private String password = null;
 
     /**
      * 
      * @param url
      * @param create 
      */
-    private Conn(String url, boolean create) throws Exception {
+    private Conn(String url, boolean create, String user, String password) throws Exception {
         if (splash != null) {
             splash.setMessage(DB_INIT);
         }
-//        URL = "jdbc:mysql:" + url;
+        this.user = user;
+        this.password = password;
         URL = "jdbc:derby:" + url + ";create=" + create + ";";
         this.connect();
         if (create) {
@@ -102,6 +104,9 @@ public class Conn implements Strings {
             this.query(Daten.SQL_COMMAND);
             Conn.shutdown();
         }
+        
+//        FileReaderWriter f = new FileReaderWriter(SETTINGS_FILE);
+//                f.write(Main.MPPATH + COLON + VERSION);
     }
 
     /**
