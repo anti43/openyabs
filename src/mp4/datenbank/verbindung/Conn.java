@@ -76,8 +76,8 @@ public class Conn implements Strings {
     /**
      * JDBC-Treiber-Name. Muss im Klassenpfad sein.
      */
-//    private static String DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
-      private static String DRIVER = "com.mysql.jdbc.Driver";
+    private static String DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
+//      private static String DRIVER = "com.mysql.jdbc.Driver";
     /**
      * Verbindungs-URL. Erstellt beim ersten Aufruf eine neue Datenbank.
      */
