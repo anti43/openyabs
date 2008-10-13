@@ -61,7 +61,9 @@ public class ConnectionHandler extends mp4.datenbank.verbindung.Query implements
                 
                 return qc;
             } catch (Exception ex) {
-                Popup.warn(ex.getMessage(), Popup.ERROR);
+                if(Popup.Y_N_dialog(ex.getMessage() + "\nProgramm/Instanz beenden?")) {
+                    System.exit(2);
+                } 
             }
         } else {
             
