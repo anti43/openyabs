@@ -89,15 +89,15 @@ public class Verzeichnisse implements Constants, Strings {
         try {
             Log.Debug("Verzeichnisse anlegen..", true);
             if (
-                    getPublic_dir().mkdirs() &&
-                    getTemplates_dir().mkdirs() &&
-                    getBackup_dir().mkdirs() &&
-                    getPdf_root_dir().mkdirs() &&
-                    getPdf_bill_dir().mkdirs() &&
-                    getPdf_offer_dir().mkdirs() &&
-                    getPdf_mahnung_dir().mkdirs() &&
-                    getPdf_lieferschein_dir().mkdirs() &&
-                    getPlugin_dir().mkdirs() &&
+                    getPublic_dir().mkdirs() &
+                    getTemplates_dir().mkdirs() &
+                    getBackup_dir().mkdirs() &
+                    getPdf_root_dir().mkdirs() &
+                    getPdf_bill_dir().mkdirs() &
+                    getPdf_offer_dir().mkdirs() &
+                    getPdf_mahnung_dir().mkdirs() &
+                    getPdf_lieferschein_dir().mkdirs() &
+                    getPlugin_dir().mkdirs() &
                     getCache_dir().mkdirs()) {
 
                 Log.Debug("Erfolgreich!", true);

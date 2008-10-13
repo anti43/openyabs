@@ -421,32 +421,22 @@ javax.swing.JScrollPane jScrollPane1;
 javax.swing.JTextArea jTextArea1;
 javax.swing.JTextField pdfpathtf;
 // End of variables declaration//GEN-END:variables
-/**
- * Creates the database on the default path
- * @return true if creating the database was true
- */
-public boolean createDatabase() {
-        return createDatabase(null);
-    }
 
     /**
-     * Creates the database on the given path
-     * @param db  The path
+     * Creates the database on the given path in mpsettings
      * @return true if creating the database was true
      */
-    public boolean createDatabase(String db) {
-        String url;
+    public boolean createDatabase() {
+        
         if (!Main.FORCE_NO_DATABASE) {
-            if (db == null) {
-                url = Main.DB_LOCATION + "/" + Constants.DATABASENAME;
-            } else {
-                url = db;
-            }
             Conn c = null;
             try {
-                c = Conn.instanceOf(url, true);
+                c = Conn.instanceOf();
+                c.createDatabase();
             } catch (Exception ex) {
+                Log.Debug(ex);
                 Popup.warn(ex.getMessage(), Popup.ERROR);
+                return false;
             }
             return Conn.isTablesCreated();
         }

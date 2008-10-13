@@ -35,6 +35,7 @@ public interface Strings {
     public String SETTINGS_NOT_FOUND = "'settings.mp' nicht gefunden. Programm beendet.\n";
     public String DB_INIT = "Initialisiere Datenbank...";
     public String ONE_INSTANCE = "Beenden Sie zuerst alle anderen Instanzen von MP!";
+    public String SETTINGS_EXAMPLE = "#Beispiel:<version>;<dbpath>;<dbuser>;<dbpassword>;<dbdriver> [(DERBY)(MYSQL)(custom driver)]";
     
     public String TABLE_CUSTOMER_PRINT_HEADER =
             "K-Nr" + "," + "Firma" + "," + "Anrede" + "," + "Vorname" +

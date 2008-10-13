@@ -14,7 +14,7 @@
  *      You should have received a copy of the GNU General Public License
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mp4.benutzerverwaltung;
+package mp4.utils.security;
 
 import java.security.*;
 

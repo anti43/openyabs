@@ -27,11 +27,12 @@ import java.util.Map;
 
 import java.io.IOException;
 import javax.swing.UIManager;
+import mp4.einstellungen.SettingsFile;
 import mp4.installation.Setup;
 import mp4.globals.Constants;
 import mp4.globals.Strings;
 import mp4.items.visual.Popup;
-import mp4.utils.files.FileReaderWriter;
+
 import mp4.logs.*;
 import mp4.panels.misc.SplashScreen;
 import mp4.frames.Logger;
@@ -46,7 +47,6 @@ import mp4.utils.export.druck.DruckJob;
 public class Main implements Strings {
 
     private static SplashScreen splash;
-    private static String VERSION = Constants.VERSION;
     public static boolean IS_WINDOWS = false;
     public static boolean FORCE_NO_DATABASE = false;
     public static boolean FORCE_NO_FILE_COPY = false;
@@ -56,8 +56,8 @@ public class Main implements Strings {
     public static String TEMPLATE_DIR = null;
     public static String BACKUP_DIR = null;
     public static String MPPATH = Constants.USER_HOME + File.separator + ".mp";
-    public static String DB_LOCATION = MPPATH;
-    
+    public static SettingsFile settings = null;
+    public static String DB_LOCATION = null;
     /**
      * Full path to settings file
      */
@@ -89,6 +89,7 @@ public class Main implements Strings {
         Option dbpath = obuilder.withShortName("dbpath").withShortName("d").withDescription("use database path").withArgument(dirarg).create();
         Option instpath = obuilder.withShortName("instpath").withShortName("i").withDescription("use installation path").withArgument(dirarg).create();
         Option logfile = obuilder.withShortName("log").withShortName("l").withDescription("use file for log").withArgument(filearg).create();
+        Option settingsfile = obuilder.withShortName("settings").withShortName("s").withDescription("mp settings file").withArgument(filearg).create();
         Option pdfdir = obuilder.withShortName("pdfdir").withShortName("p").withDescription("use pdfdir").withArgument(dirarg).create();
         Option backupdir = obuilder.withShortName("backupdir").withShortName("b").withDescription("use backupdir").withArgument(dirarg).create();
         Option templatedir = obuilder.withShortName("templatedir").withShortName("t").withDescription("use templatedir").withArgument(dirarg).create();
@@ -145,38 +146,40 @@ public class Main implements Strings {
 
         } else if (cl.hasOption(instpath)) {
             APP_DIR = (String) cl.getValue(instpath);
+        } else if (cl.hasOption(settingsfile)) {
+            SETTINGS_FILE = (String) cl.getValue(settingsfile);
         }
-//      Terminate everytime?
-//	System.exit(1);
     }
 
     public Main() throws Exception {
         setLaF();
+        settings = new SettingsFile();
         splash = new SplashScreen(TEST_CONF);
+
         doArgCommands();
+        checkDB_Location();
 
         //Datenbank suchen
-        File setFile = new File(SETTINGS_FILE);
         Log.Debug("MP Datei: " + SETTINGS_FILE, true);
-        if (setFile.exists() && setFile.canRead() && findDatabase()) {
+        if (settings.getFile().exists() && settings.getFile().canRead() && findDatabase()) {
             try {
+                settings.read();
                 splash.setComp(new mainframe(splash, this));
             } catch (Exception exception) {
                 exception.printStackTrace();
                 System.exit(1);
             }
         //Falls Datenbank nicht vorhanden, aber mpsettings Datei:
-        } else if (setFile.exists() && setFile.canRead()) {
-            File file = new File(SETTINGS_FILE);
-            FileReaderWriter f = new FileReaderWriter(file);
-            String[] dat = f.read().split(COLON);
-            String db = dat[0] + File.separator + Constants.DATABASENAME;
+        } else if (settings.getFile().exists() && settings.getFile().canRead()) {
+            settings.read();
+            checkDB_Location();
+            String db = settings.getDBPath() + File.separator + Constants.DATABASENAME;
             Log.Debug(db + " not found :-(", true);
             Popup.notice("Datenbank existiert nicht am angegebenen Ort.\n" + db);
 
             splash.setMessage("Versuche, Datenbank anzulegen");
-            
-            if (new Setup(true).createDatabase(db)) {
+
+            if (new Setup(true).createDatabase()) {
                 Popup.notice("Datenbank angelegt in\n" + db);
                 splash.setMessage("Starte MP");
             } else {
@@ -187,12 +190,20 @@ public class Main implements Strings {
 
         //Falls Datenbank und mpsettings nicht vorhanden, Installer starten
         } else if (createSettingsFile()) {
+            checkDB_Location();
             splash.setComp(new Setup());
         } else {
             Popup.notice(PERMISSION_DENIED);
             System.err.println(PERMISSION_DENIED);
             System.exit(1);
         }
+    }
+
+    private void checkDB_Location() {
+       if (DB_LOCATION == null) {
+                DB_LOCATION = settings.getDBPath();
+            }
+       new File(DB_LOCATION).mkdirs();
     }
 
     private void doArgCommands() {
@@ -210,33 +221,18 @@ public class Main implements Strings {
     }
 
     private boolean findDatabase() {
-        File file = new File(SETTINGS_FILE);
-        if (!file.exists() | !file.canRead()) {
-            return false;
+
+        if (DB_LOCATION == null) {
+            DB_LOCATION = settings.getDBPath();
         }
-        FileReaderWriter f = new FileReaderWriter(file);
-        String[] dat = f.read().split(COLON);
-        String db = dat[0] + File.separator + Constants.DATABASENAME;
+
+        String db = DB_LOCATION + File.separator + Constants.DATABASENAME;
         File test = new File(db);
         return test.exists();
     }
 
     private boolean createSettingsFile() throws IOException {
-        //Settings Datei suchen und schreiben
-        File df = new File(SETTINGS_FILE);
-        Log.Debug("Arbeitsverzeichnis: " + df.getParent(), true);
-        if (!df.exists()) {
-            df.getParentFile().mkdirs();
-            if (df.createNewFile()) {
-                FileReaderWriter f = new FileReaderWriter(SETTINGS_FILE);
-                f.write(Main.MPPATH + COLON + VERSION);
-            } else {
-                Popup.notice(PERMISSION_DENIED);
-                System.err.println(PERMISSION_DENIED);
-                System.exit(1);
-            }
-        }
-        return df.canRead();
+        return settings.create();
     }
 
     public static void main(String[] args) {

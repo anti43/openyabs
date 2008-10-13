@@ -17,7 +17,9 @@
 package mp4.datenbank.verbindung;
 
 import java.io.File;
+import mp4.globals.Constants;
 import mp4.logs.Log;
+import mp4.main.Main;
 import mp4.utils.files.FileReaderWriter;
 
 /**
@@ -37,37 +39,43 @@ public class ConnectionType {
     /**
      * Use custom database driver
      */
-    public static final int CUSTOM = 2;   
-    
-    //Available Drivers
+    public static final int CUSTOM = 2;    //Available Drivers
     public static String DERBY_DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
     public static String MYSQL_DRIVER = "com.mysql.jdbc.Driver";
-    public static String CUSTOM_DRIVER = "";    
-    //Available SQL Files
+    public static String CUSTOM_DRIVER = "";    //Available SQL Files
     public static File DERBY_FILE = new File("ext/sql/derby.sql");
     public static File MYSQL_FILE = new File("ext/sql/mysql.sql");
-    public static File CUSTOM_FILE = new File("ext/sql/custom.sql");    
-    //Connection string
+    public static File CUSTOM_FILE = new File("ext/sql/custom.sql");    //Connection string
     private String CONNECTION_STRING = null;
-    private String URL = null;
-    private int mode = 0;
+    private String URL = Main.DB_LOCATION;
+    private int mode = 2;
 
-    
-    public ConnectionType(){}
-    
-    public ConnectionType(int mode, String dburl){
-        this.mode = mode;
-        this.URL = dburl;
+    public ConnectionType() {
+        if (Main.settings.getDBDriver().equals(DERBY_DRIVER)) {
+            this.mode = 0;
+        } else if (Main.settings.getDBDriver().equals(MYSQL_DRIVER) ) {
+            this.mode = 1;
+        } else {
+            this.mode = 2;
+        }
     }
-    
+
+    public ConnectionType(int mode) {
+        this.mode = mode;
+    }
+
     public String getConnectionString(boolean withCreate) {
 
         switch (mode) {
             case DERBY:
-                setURL("jdbc:derby:" + getURL() + ";create=" + withCreate + ";");
+                String cstring = "jdbc:derby:" + getURL() + File.separator + Constants.DATABASENAME + ";";
+                if (withCreate) {
+                    cstring += "create=true;";
+                }
+                setCONNECTION_STRING(cstring);
                 break;
             case MYSQL:
-                setURL("jdbc:mysql:" + getURL());
+                setCONNECTION_STRING("jdbc:mysql:" + getURL() + File.separator +  Constants.DATABASENAME + ";");
                 if (withCreate) {
                     Log.Debug("Sie müssen die MYSQL Datenbank manuell anlegen.", true);
                 }
@@ -78,11 +86,11 @@ public class ConnectionType {
                 }
                 break;
         }
-        return URL;
+        return CONNECTION_STRING;
     }
-    
-    public String getSQL_Command(){
-          switch (mode) {
+
+    public String getSQL_Command() {
+        switch (mode) {
             case DERBY:
                 return new FileReaderWriter(DERBY_FILE).read();
             case MYSQL:
@@ -90,7 +98,7 @@ public class ConnectionType {
             case CUSTOM:
                 return new FileReaderWriter(CUSTOM_FILE).read();
         }
-          return null;
+        return null;
     }
 
     public void setCONNECTION_STRING(String CONNECTION_STRING) {
@@ -110,7 +118,7 @@ public class ConnectionType {
     }
 
     public String getDriver() {
-       switch (mode) {
+        switch (mode) {
             case DERBY:
                 return DERBY_DRIVER;
             case MYSQL:
@@ -118,6 +126,6 @@ public class ConnectionType {
             case CUSTOM:
                 return CUSTOM_DRIVER;
         }
-          return null;
+        return null;
     }
 }

@@ -196,6 +196,10 @@ public abstract class Struktur {
         
         "CREATE TABLE plugins_to_load (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
         "name VARCHAR(250), wert VARCHAR(2500)," +
+        "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))",
+                
+        "CREATE TABLE rowlock (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
+        "tablename VARCHAR(250), rowid INTEGER NOT NULL," +
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (id))"
 
 

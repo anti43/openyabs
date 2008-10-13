@@ -23,15 +23,12 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import mp4.datenbank.installation.*;
 import mp4.globals.Constants;
 import mp4.globals.Strings;
-import mp4.utils.files.FileReaderWriter;
 import mp4.items.visual.Popup;
 import mp4.logs.*;
 import mp4.panels.misc.SplashScreen;
-import mp4.datenbank.installation.Daten;
-import mp4.datenbank.installation.Struktur;
-import mp4.main.Main;
 
 /**
  *
@@ -40,6 +37,7 @@ import mp4.main.Main;
 public class Conn implements Strings {
 
     private static Conn connector;
+    private ConnectionType ctype;
 
     public static void reboot() throws Exception {
         Conn.shutdown();
@@ -58,89 +56,56 @@ public class Conn implements Strings {
         return connector;
     }
 
-    /**
-     * 
-     * @param url 
-     * @param create 
-     * @return Database connector
-     * @throws Exception 
-     */
-    public static Conn instanceOf(String url, boolean create) throws Exception {
-        if (connector == null) {
-            connector = new Conn(url, create, null, null);
-        }
-        return connector;
-
-    }
+//    /**
+//     * 
+//     * @param create 
+//     * @return Database connector
+//     * @throws Exception 
+//     */
+//    public static Conn instanceOf() throws Exception {
+//        if (connector == null) {
+//            connector = new Conn();
+//        }
+//        return connector;
+//
+//    }
     private static Statement statement;
     private static java.sql.Connection conn;
-    /**
-     * Verbindung zur Datenbank
-     */
-    /**
-     * JDBC-Treiber-Name. Muss im Klassenpfad sein.
-     */
-    private static String DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
-//      private static String DRIVER = "com.mysql.jdbc.Driver";
-    /**
-     * Verbindungs-URL. Erstellt beim ersten Aufruf eine neue Datenbank.
-     */
-    private static String URL = "";
     private static boolean tablesCreated = false;
     private SplashScreen splash;
     private String user = null;
     private String password = null;
 
-    /**
-     * 
-     * @param url
-     * @param create 
-     */
-    private Conn(String url, boolean create, String user, String password) throws Exception {
-        if (splash != null) {
-            splash.setMessage(DB_INIT);
-        }
-        this.user = user;
-        this.password = password;
-        URL = "jdbc:derby:" + url + ";create=" + create + ";";
-        this.connect();
-        if (create) {
-            tablesCreated = this.query(Struktur.SQL_COMMAND);
-            this.query(Daten.SQL_COMMAND);
-            Conn.shutdown();
-        }
-        
-//        FileReaderWriter f = new FileReaderWriter(SETTINGS_FILE);
-//                f.write(Main.MPPATH + COLON + VERSION);
-    }
 
-    /**
-     * 
-     */
     private Conn() throws Exception {
         if (splash != null) {
             splash.setMessage(DB_INIT);
         }
-        try {
-            FileReaderWriter rw = new FileReaderWriter(Main.SETTINGS_FILE);
-            String[] dat = rw.read().split(";");
-//            URL = "jdbc:mysql:" + dat[0] + File.separator + Constants.DATABASENAME;
-            URL = "jdbc:derby:" + dat[0] + File.separator + Constants.DATABASENAME;
-        } catch (Exception exception) {
-            Popup.notice(SETTINGS_NOT_FOUND + exception.getMessage());
-        }
-        this.connect();
-
+        
+        ctype = new ConnectionType();
     }
+
+    /**
+     * MP Datenbank anlegen und Daten einfuegen
+     * @throws Exception 
+     */
+    public void createDatabase() throws Exception {
+            getCreatingConnection();
+            tablesCreated = this.query(Struktur.SQL_COMMAND);
+            this.query(Daten.SQL_COMMAND);
+            Conn.shutdown();
+    }
+
 
     /**
      * Verbindung zur Datenbank herstellen. 
      * @return Connection
      */
-    private Connection connect() throws Exception {
+    private Connection connect(boolean create) throws Exception {
         // Treiber laden
         try {
-            Class.forName(DRIVER).newInstance();
+            Log.Debug("Datenbanktreiber: " + ctype.getDriver(), true);
+            Class.forName(ctype.getDriver()).newInstance();
         } catch (Exception ex) {
             ex.printStackTrace();
             Popup.warn(ex.getMessage(), Popup.ERROR);
@@ -149,8 +114,8 @@ public class Conn implements Strings {
 
         // Verbindung herstellen
         try {
-            Log.Debug("Datenbank: " + URL, true);
-            conn = DriverManager.getConnection(URL, "root", null);
+            Log.Debug("Datenbankverbindung: " + ctype.getConnectionString(create), true);
+            conn = DriverManager.getConnection(ctype.getConnectionString(create),user, password);
             // Benötige Ressourcen für eine SQL-Anweisung bereitstellen 
             statement = conn.createStatement();
             new File(Constants.USER_HOME+File.separator+"derby.log").deleteOnExit();
@@ -262,11 +227,18 @@ public class Conn implements Strings {
         }
     }
 
+    public static Connection getCreatingConnection() throws Exception {
+        if (connector == null) {
+            connector = new Conn();
+        }
+        return connector.connect(true);
+    }
+    
     public static Connection getConnection() throws Exception {
         if (connector == null) {
             connector = new Conn();
         }
-        return connector.connect();
+        return connector.connect(false);
     }
 
     private boolean query(String[] querys) {

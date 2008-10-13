@@ -16,7 +16,7 @@
  */
 package mp4.einstellungen;
 
-import java.io.File;
+
 import mp4.items.SKRKonto;
 import mp4.benutzerverwaltung.User;
 
@@ -27,7 +27,7 @@ import mp4.globals.Constants;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.globals.Strings;
 import mp4.items.visual.Popup;
-import mp4.utils.files.FileReaderWriter;
+
 import mp4.logs.*;
 import mp4.main.Main;
 import mp4.utils.datum.DateConverter;
@@ -90,21 +90,14 @@ public class Einstellungen extends MethodParser implements mp4.datenbank.install
         return Constants.VERSION;
     }
 ////////////////////////////////////////////////////////////////////////////////  
-    public String getDatenbank_Verzeichnis() {
-        try {
-            FileReaderWriter f = new FileReaderWriter(Main.SETTINGS_FILE);
-            String[] dats = f.read().split(";");
-            return dats[0];
-        } catch (Exception exception) {
-            Log.Debug(exception);
-            return "N/A";
-        }
-    }
-
-    public void setDatenbank_Verzeichnis(String pfad) {
-        FileReaderWriter f = new FileReaderWriter(Main.SETTINGS_FILE);
-        f.writeOnce(pfad + Strings.COLON + Constants.VERSION);
-    }
+//    public String getDatenbank_Verzeichnis() {
+//        return Main.settings.getDBPath();
+//    }
+//
+//    public void setDatenbank_Verzeichnis(String pfad) {
+//        Main.settings.setDBPath(pfad);
+//        Main.settings.save();
+//    }
 
     public String getBackup_Verzeichnis() {
         return datahandler.getString("Backup Verzeichnis");

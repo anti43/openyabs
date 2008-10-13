@@ -22,6 +22,7 @@ import java.util.Locale;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import mp4.logs.Log;
+import mp4.main.Main;
 import mp4.utils.files.FileReaderWriter;
 
 
@@ -118,35 +119,11 @@ public class MyData extends People implements Structure {
     }
 
     public String getVersion() {
-
-        try {
-            FileReaderWriter f = new FileReaderWriter(Constants.SETTINGS);
-            String[] dats = f.read().split(";");
-
-            return dats[1];
-
-        } catch (Exception exception) {
-            Log.Debug(exception);
-
-            return "N/A";
-        }
-
+        return Main.settings.getVersion();
     }
 
     public String getDbPath() {
-
-        try {
-            FileReaderWriter f = new FileReaderWriter(Constants.SETTINGS);
-            String[] dats = f.read().split(";");
-
-            return dats[0];
-
-        } catch (Exception exception) {
-            Log.Debug(exception);
-
-            return "N/A";
-        }
-
+        return Main.settings.getDBPath();
     }
 
     public void setModel(TableModel model) {

@@ -21,7 +21,7 @@ import java.util.Date;
 import mp4.items.visual.Popup;
 import mp4.items.Things;
 import mp4.logs.*;
-import mp4.benutzerverwaltung.md5hash;
+import mp4.utils.security.md5hash;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.datenbank.verbindung.PrepareData;
 import mp4.utils.datum.DateConverter;

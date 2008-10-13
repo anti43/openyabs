@@ -31,7 +31,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import mp4.utils.listen.ArrayUtils;
 import mp4.utils.listen.ListenDataUtils;
 
 public class FileReaderWriter {
@@ -41,6 +40,7 @@ public class FileReaderWriter {
     private File filer;
     private FileWriter fw;
     private BufferedWriter bw;
+    private String zeilenumbruch = "\r\n";
 
     /**
      * A reader/writer helper class for textfiles
@@ -105,6 +105,16 @@ public class FileReaderWriter {
 
         return ListenDataUtils.listToStringArray(arr);
     }
+    
+    public boolean write(String[] text){
+    
+        for (int i = 0; i < text.length; i++) {
+            String string = text[i];
+            if (!write(string))return false;
+        }
+    
+        return true;
+    }
 
     /**
      * Appends the String to a file (new line) or creates it if needed
@@ -114,7 +124,7 @@ public class FileReaderWriter {
      */
     public boolean write(String text) {
         try {
-            text += "\r\n";
+            text = zeilenumbruch + text;
             FileWriter out = new FileWriter(filer, true);
             BufferedWriter writer = new BufferedWriter(out);
             writer.write(text);
