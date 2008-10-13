@@ -38,10 +38,10 @@ public class FileDirectoryHandler {
      * 
      * @param sourceLocation
      * @param targetLocation
+     * @return 
      * @throws java.io.IOException
      */
-    public static URI copyDirectory(File sourceLocation, File targetLocation)
-            throws IOException {
+    public static URI copyDirectory(File sourceLocation, File targetLocation)throws IOException {
 
         if (sourceLocation.isDirectory()) {
             if (!targetLocation.exists()) {

@@ -17,6 +17,9 @@
 package mp4.datenbank.verbindung;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mp4.globals.Constants;
 import mp4.logs.Log;
 import mp4.main.Main;
@@ -47,7 +50,7 @@ public class ConnectionType {
     public static File MYSQL_FILE = new File("ext/sql/mysql.sql");
     public static File CUSTOM_FILE = new File("ext/sql/custom.sql");    //Connection string
     private String CONNECTION_STRING = null;
-    private String URL = Main.DB_LOCATION;
+    private String URL = Main.settings.getDBPath();
     private int mode = 2;
 
     public ConnectionType() {
@@ -72,10 +75,10 @@ public class ConnectionType {
                 if (withCreate) {
                     cstring += "create=true;";
                 }
-                setCONNECTION_STRING(cstring);
+                setConnectionString(cstring);
                 break;
             case MYSQL:
-                setCONNECTION_STRING("jdbc:mysql:" + getURL() + File.separator +  Constants.DATABASENAME + ";");
+                setConnectionString("jdbc:mysql://" + getURL() + ":3306/" +  Constants.DATABASENAME + ";");
                 if (withCreate) {
                     Log.Debug("Sie müssen die MYSQL Datenbank manuell anlegen.", true);
                 }
@@ -89,20 +92,30 @@ public class ConnectionType {
         return CONNECTION_STRING;
     }
 
-    public String getSQL_Command() {
+    public String[] getSQL_Command() {
+       File filen = null;
         switch (mode) {
             case DERBY:
-                return new FileReaderWriter(DERBY_FILE).read();
+                filen = DERBY_FILE;
+                break;
             case MYSQL:
-                return new FileReaderWriter(MYSQL_FILE).read();
+                filen = MYSQL_FILE;
+                break;
             case CUSTOM:
-                return new FileReaderWriter(CUSTOM_FILE).read();
+                filen = CUSTOM_FILE;
+                break;
         }
-        return null;
+        try {
+
+            Log.Debug("SQL Datei: " + filen.getCanonicalPath(), true);
+        } catch (IOException ex) {
+            Log.Debug(ex);
+        }
+        return new FileReaderWriter(filen).readLines();
     }
 
-    public void setCONNECTION_STRING(String CONNECTION_STRING) {
-        this.CONNECTION_STRING = CONNECTION_STRING;
+    public void setConnectionString(String conn_string) {
+        this.CONNECTION_STRING = conn_string;
     }
 
     public String getURL() {

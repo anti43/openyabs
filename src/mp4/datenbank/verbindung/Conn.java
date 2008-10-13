@@ -91,7 +91,7 @@ public class Conn implements Strings {
      */
     public void createDatabase() throws Exception {
             getCreatingConnection();
-            tablesCreated = this.query(Struktur.SQL_COMMAND);
+            tablesCreated = this.query(ctype.getSQL_Command());
             this.query(Daten.SQL_COMMAND);
             Conn.shutdown();
     }

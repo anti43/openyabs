@@ -34,35 +34,35 @@ public class PAnelUtils {
         JTextArea je = null;
 
         for (int i = 0; i < panel.getComponents().length; i++) {
-
             try {
                 p = (java.lang.Object) panel.getComponents()[i];
-
                 if (p.getClass().isInstance(new JTextField())) {
-
                     jt = (JTextField) panel.getComponents()[i];
                     jt.setText("");
                 }
-
-
                 if (p.getClass().isInstance(new JEditorPane())) {
-
                     ja = (JEditorPane) panel.getComponents()[i];
                     ja.setText(null);
                 }
-
-
                 if (p.getClass().isInstance(new JTextArea())) {
-
                     je = (JTextArea) panel.getComponents()[i];
                     je.setText("");
                 }
             } catch (Exception exception) {
             }
-
-
-
-
         }
     }
+    
+    public static void enableSubComponents(JComponent component){
+         for (int i = 0; i < component.getComponents().length; i++) {
+                component.getComponents()[i].setEnabled(true);
+          }
+        }
+     
+    public static void disableSubComponents(JComponent component){
+         for (int i = 0; i < component.getComponents().length; i++) {
+                component.getComponents()[i].setEnabled(false);
+          }
+        }
+    
 }

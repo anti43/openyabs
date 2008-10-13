@@ -56,13 +56,15 @@ public class Main implements Strings {
     public static String TEMPLATE_DIR = null;
     public static String BACKUP_DIR = null;
     public static String MPPATH = Constants.USER_HOME + File.separator + ".mp";
-    public static SettingsFile settings = null;
-    public static String DB_LOCATION = null;
+    
     /**
      * Full path to settings file
      */
     public static String SETTINGS_FILE = Main.MPPATH + File.separator + "settings" + Constants.RELEASE_VERSION + ".mp";
     public static String APP_DIR = Constants.USER_HOME + Constants.SEP + Constants.PROG_NAME;
+    public static SettingsFile settings = new SettingsFile();
+
+
 
     private static void getOS() {
         if (System.getProperty("os.name").contains("Windows")) {
@@ -140,10 +142,8 @@ public class Main implements Strings {
             } catch (Exception e) {
                 Log.Debug("Fehler beim Schreiben der Logdatei: " + e.getMessage(), true);
             }
-
         } else if (cl.hasOption(dbpath)) {
-            DB_LOCATION = (String) cl.getValue(dbpath);
-
+            settings.setDBPath((String) cl.getValue(dbpath));
         } else if (cl.hasOption(instpath)) {
             APP_DIR = (String) cl.getValue(instpath);
         } else if (cl.hasOption(settingsfile)) {
@@ -153,11 +153,8 @@ public class Main implements Strings {
 
     public Main() throws Exception {
         setLaF();
-        settings = new SettingsFile();
         splash = new SplashScreen(TEST_CONF);
-
         doArgCommands();
-        checkDB_Location();
 
         //Datenbank suchen
         Log.Debug("MP Datei: " + SETTINGS_FILE, true);
@@ -200,10 +197,7 @@ public class Main implements Strings {
     }
 
     private void checkDB_Location() {
-       if (DB_LOCATION == null) {
-                DB_LOCATION = settings.getDBPath();
-            }
-       new File(DB_LOCATION).mkdirs();
+       new File(settings.getDBPath()).mkdirs();
     }
 
     private void doArgCommands() {
@@ -221,12 +215,7 @@ public class Main implements Strings {
     }
 
     private boolean findDatabase() {
-
-        if (DB_LOCATION == null) {
-            DB_LOCATION = settings.getDBPath();
-        }
-
-        String db = DB_LOCATION + File.separator + Constants.DATABASENAME;
+        String db = settings.getDBPath() + File.separator + Constants.DATABASENAME;
         File test = new File(db);
         return test.exists();
     }

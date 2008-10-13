@@ -86,7 +86,7 @@ public class Verzeichnisse implements Constants, Strings {
     }
 
     public static void createDirs() {
-        try {
+
             Log.Debug("Verzeichnisse anlegen..", true);
             if (
                     getPublic_dir().mkdirs() &
@@ -104,9 +104,7 @@ public class Verzeichnisse implements Constants, Strings {
             }  else {
                 Log.Debug("Es ist ein Fehler aufgetreten,\nüberprüfen Sie Ihre Berechtigungen!", true);
             }
-        } catch (Exception e) {
-            Log.Debug("Fehler!: " + e.getMessage(), true);
-        }
+
     }
 
     public static void copyFiles() throws Exception {
@@ -114,7 +112,6 @@ public class Verzeichnisse implements Constants, Strings {
         Log.Debug("Kopiere von: " + getInstall_lib_dir(), true);
         if (public_dir.exists() && getInstall_lib_dir().exists()) {
            
-                try {
 
                     if (!Main.FORCE_NO_FILE_COPY) {
                         Log.Debug("Libraries kopieren..", true);
@@ -129,13 +126,9 @@ public class Verzeichnisse implements Constants, Strings {
                     FileDirectoryHandler.copyDirectory(getInstall_templates_dir(), getTemplates_dir());
                     Log.Debug("Installation abgeschlossen.", true);
 
-                } catch (IOException ex) {
-                    Popup.error(ex.getMessage(), "Es ist ein Fehler aufgetreten:");
-                    Log.Debug("Es ist ein Fehler aufgetreten: " + ex.getMessage(), true);
-                }
             
         } else {
-            Log.Debug("Es ist ein Fehler aufgetreten,\nexistiert das /lib Verzeichnis?", true);
+            throw new Exception("Installationsdateien nicht gefunden:\n" + getInstall_lib_dir());
         }
 
     }
