@@ -29,7 +29,7 @@ import mp4.utils.files.FileReaderWriter;
  *
  * @author Andreas
  */
-public class ConnectionType {
+public class ConnectionTypeHandler {
 
     /**
      * Use embedded derby database
@@ -53,7 +53,7 @@ public class ConnectionType {
     private String URL = Main.settings.getDBPath();
     private int mode = 2;
 
-    public ConnectionType() {
+    public ConnectionTypeHandler() {
         if (Main.settings.getDBDriver().equals(DERBY_DRIVER)) {
             this.mode = 0;
         } else if (Main.settings.getDBDriver().equals(MYSQL_DRIVER) ) {
@@ -63,7 +63,7 @@ public class ConnectionType {
         }
     }
 
-    public ConnectionType(int mode) {
+    public ConnectionTypeHandler(int mode) {
         this.mode = mode;
     }
 
@@ -78,7 +78,7 @@ public class ConnectionType {
                 setConnectionString(cstring);
                 break;
             case MYSQL:
-                setConnectionString("jdbc:mysql://" + getURL() + ":3306/" +  Constants.DATABASENAME + ";");
+                setConnectionString("jdbc:mysql://" + getURL() + "/" +  Constants.DATABASENAME);
                 if (withCreate) {
                     Log.Debug("Sie müssen die MYSQL Datenbank manuell anlegen.", true);
                 }

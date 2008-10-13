@@ -58,14 +58,32 @@ public class FileReaderWriter {
         filer = new File(file);
     }
 
-    public String read1Line() {
+    /**
+     * Reads a specific line number
+     * @param skipsign If a line starts with this, skip it. 
+     *                 Skip none if null.
+     * @return The specified line
+     */
+    public String read1Line(String skipsign) {
 
         BufferedReader in = null;
         String s = null;
+        boolean reading = true;
 
         try {
             in = new BufferedReader(new InputStreamReader(new FileInputStream(filer)));
-            s = in.readLine();
+            if (skipsign != null) {
+                s = skipsign;
+                while (reading) {
+                    if (s.startsWith(skipsign)) {
+                        s = in.readLine();
+                    } else {
+                        reading = false;
+                    }
+                }
+            } else {
+                s = in.readLine();
+            }
         } catch (IOException ex) {
             Logger.getLogger(FileReaderWriter.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
@@ -105,14 +123,16 @@ public class FileReaderWriter {
 
         return ListenDataUtils.listToStringArray(arr);
     }
-    
-    public boolean write(String[] text){
-    
+
+    public boolean write(String[] text) {
+
         for (int i = 0; i < text.length; i++) {
             String string = text[i];
-            if (!write(string))return false;
+            if (!write(string)) {
+                return false;
+            }
         }
-    
+
         return true;
     }
 

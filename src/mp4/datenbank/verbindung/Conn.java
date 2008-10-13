@@ -28,6 +28,7 @@ import mp4.globals.Constants;
 import mp4.globals.Strings;
 import mp4.items.visual.Popup;
 import mp4.logs.*;
+import mp4.main.Main;
 import mp4.panels.misc.SplashScreen;
 
 /**
@@ -37,7 +38,7 @@ import mp4.panels.misc.SplashScreen;
 public class Conn implements Strings {
 
     private static Conn connector;
-    private ConnectionType ctype;
+    private ConnectionTypeHandler ctype;
 
     public static void reboot() throws Exception {
         Conn.shutdown();
@@ -54,9 +55,7 @@ public class Conn implements Strings {
             connector = new Conn();
         }
         return connector;
-    }
-
-//    /**
+    }//    /**
 //     * 
 //     * @param create 
 //     * @return Database connector
@@ -76,13 +75,11 @@ public class Conn implements Strings {
     private String user = null;
     private String password = null;
 
-
     private Conn() throws Exception {
         if (splash != null) {
             splash.setMessage(DB_INIT);
         }
-        
-        ctype = new ConnectionType();
+
     }
 
     /**
@@ -90,22 +87,26 @@ public class Conn implements Strings {
      * @throws Exception 
      */
     public void createDatabase() throws Exception {
-            getCreatingConnection();
-            tablesCreated = this.query(ctype.getSQL_Command());
-            this.query(Daten.SQL_COMMAND);
-            Conn.shutdown();
+        getCreatingConnection();
+        tablesCreated = this.query(ctype.getSQL_Command());
+        this.query(Daten.SQL_COMMAND);
+        Conn.shutdown();
     }
-
 
     /**
      * Verbindung zur Datenbank herstellen. 
      * @return Connection
      */
     private Connection connect(boolean create) throws Exception {
+        
+        ctype = new ConnectionTypeHandler();
         // Treiber laden
         try {
             Log.Debug("Datenbanktreiber: " + ctype.getDriver(), true);
             Class.forName(ctype.getDriver()).newInstance();
+            user = Main.settings.getDBUser();
+            password = Main.settings.getDBPassword();
+
         } catch (Exception ex) {
             ex.printStackTrace();
             Popup.warn(ex.getMessage(), Popup.ERROR);
@@ -115,17 +116,17 @@ public class Conn implements Strings {
         // Verbindung herstellen
         try {
             Log.Debug("Datenbankverbindung: " + ctype.getConnectionString(create), true);
-            conn = DriverManager.getConnection(ctype.getConnectionString(create),user, password);
+            conn = DriverManager.getConnection(ctype.getConnectionString(create), user, password);
             // Benötige Ressourcen für eine SQL-Anweisung bereitstellen 
             statement = conn.createStatement();
-            new File(Constants.USER_HOME+File.separator+"derby.log").deleteOnExit();
+            new File(Constants.USER_HOME + File.separator + "derby.log").deleteOnExit();
         } catch (SQLException ex) {
             System.out.println("Database Error:" + ex.getMessage());
-            ex.printStackTrace();
+//            ex.printStackTrace();
             Log.Debug(ex);
-//            Popup.warn(ex.getMessage(), Popup.ERROR);
+            Popup.warn(ex.getMessage(), Popup.ERROR);
             Conn.shutdown();
-            System.exit(1);
+//            System.exit(1);
 
             throw new Exception("Datenbank konnte nicht gestartet werden.");
 
@@ -233,7 +234,7 @@ public class Conn implements Strings {
         }
         return connector.connect(true);
     }
-    
+
     public static Connection getConnection() throws Exception {
         if (connector == null) {
             connector = new Conn();
@@ -245,17 +246,20 @@ public class Conn implements Strings {
         String message = "Database error:";
         statement = null;
         ResultSet resultSet = null;
+        boolean error = false;
 
         try {
 
             statement = conn.createStatement();
             for (int i = 0; i < querys.length; i++) {
-                
+
                 try {
                     Log.Debug(querys[i]);
                     statement.execute(querys[i]);
                 } catch (SQLException e) {
                     System.err.println(message + e.getMessage());
+                    Log.Debug(e);
+                    error = true;
                 }
 
             }
@@ -280,7 +284,11 @@ public class Conn implements Strings {
                 }
             }
         }
-        return true;
+        if (!error) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public static boolean isTablesCreated() {

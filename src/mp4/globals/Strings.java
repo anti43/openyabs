@@ -32,6 +32,7 @@ public interface Strings {
     public String PERMISSION_DENIED = "Nicht möglich, Dateien anzulegen. Programm wird beendet.";
     public String SHUTDOWN = "Programm wird beendet";
     public String COLON = ";";
+    public String COMMENT_SIGN = "#";
     public String SETTINGS_NOT_FOUND = "'settings.mp' nicht gefunden. Programm beendet.\n";
     public String DB_INIT = "Initialisiere Datenbank...";
     public String ONE_INSTANCE = "Beenden Sie zuerst alle anderen Instanzen von MP!";

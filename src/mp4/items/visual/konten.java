@@ -5,7 +5,6 @@
  */
 package mp4.items.visual;
 
-
 import mp4.items.Ausgabe;
 import mp4.items.Einnahme;
 import mp4.datenbank.verbindung.ConnectionHandler;
@@ -23,13 +22,11 @@ import mp4.panels.eur.eurEPanel;
 import mp4.utils.tabellen.TableFormat;
 import mp4.utils.ui.Position;
 
-
 /**
  *
  * @author  anti43
  */
 public class konten extends javax.swing.JFrame {
-
 
     private SKRKonto current;
     private JTextField field;
@@ -39,11 +36,20 @@ public class konten extends javax.swing.JFrame {
     private eurAPanel ap = null;
     private Position pos = new Position();
 
- 
-    public konten(JTextField jText, Ausgabe bill, eurAPanel panel) {
-          
+    public konten() {
         initComponents();
-        this.ap =panel;
+        current = new SKRKonto();
+        TableFormat.formatUneditableTable(jTable1, current.select("id, Nummer, Klasse, Gruppe, Art", null, null, "klasse", false), "id, Nummer, Klasse, Gruppe, Art".split(","));
+        TableFormat.format(jTable1, 1, 50);
+        pos.center(this);
+        jButton5.setEnabled(false);
+        this.setVisible(rootPaneCheckingEnabled);
+    }
+
+    public konten(JTextField jText, Ausgabe bill, eurAPanel panel) {
+
+        initComponents();
+        this.ap = panel;
         this.ausgabe = bill;
         this.einnahme = null;
         this.field = jText;
@@ -56,16 +62,16 @@ public class konten extends javax.swing.JFrame {
 
     public konten(JTextField jText, Einnahme bill, eurEPanel panel) {
         initComponents();
-        this.ep =panel;
+        this.ep = panel;
         this.einnahme = bill;
         this.ausgabe = null;
         this.field = jText;
         current = new SKRKonto();
         TableFormat.formatUneditableTable(jTable1, current.select("*", "klasse", "Einnahme", "klasse", true), "id, Nummer, Klasse, Gruppe, Art".split(","));
-        TableFormat.format(jTable1, 1,50);
+        TableFormat.format(jTable1, 1, 50);
         pos.center(this);
         this.setVisible(rootPaneCheckingEnabled);
-       
+
     }
 
     /** This method is called from within the constructor to
@@ -168,12 +174,14 @@ jButton2ActionPerformed(evt);
 jToolBar1.add(jButton2);
 
 jTextField4.setEditable(false);
+jTextField4.setDragEnabled(true);
 jTextField4.addActionListener(new java.awt.event.ActionListener() {
 public void actionPerformed(java.awt.event.ActionEvent evt) {
 jTextField4ActionPerformed(evt);
 }
 });
 
+jTextField5.setDragEnabled(true);
 jTextField5.addActionListener(new java.awt.event.ActionListener() {
 public void actionPerformed(java.awt.event.ActionEvent evt) {
 jTextField5ActionPerformed(evt);
@@ -184,6 +192,7 @@ jLabel6.setText("Art");
 
 jLabel7.setText("Klasse");
 
+jTextField6.setDragEnabled(true);
 jTextField6.addActionListener(new java.awt.event.ActionListener() {
 public void actionPerformed(java.awt.event.ActionEvent evt) {
 jTextField6ActionPerformed(evt);
@@ -212,6 +221,7 @@ jTextArea2.setColumns(20);
 jTextArea2.setLineWrap(true);
 jTextArea2.setRows(5);
 jTextArea2.setWrapStyleWord(true);
+jTextArea2.setDragEnabled(true);
 jScrollPane3.setViewportView(jTextArea2);
 
 jLabel10.setText("Nummer:");
@@ -322,6 +332,7 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 pack();
 }// </editor-fold>//GEN-END:initComponents
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+
         boolean idOk = true;
         Integer id = 0;
         try {
@@ -336,25 +347,26 @@ pack();
                 Log.Debug(exception);
             }
         }
+        if (einnahme != null || ausgabe != null) {
+            if (evt.getClickCount() >= 2 && idOk) {
+                try {
+                    this.current = new SKRKonto(ConnectionHandler.instanceOf(), id);
+                    this.field.setText(getKonto().getArt());
 
-        if (evt.getClickCount() >= 2 && idOk) {
-            try {
-                this.current = new SKRKonto(ConnectionHandler.instanceOf(), id);
-                this.field.setText(getKonto().getArt());
-               
-                if(this.einnahme!=null) {
-                    einnahme.setKontenid(getKonto().getId());
-                    this.ep.setKonto(getKonto());
-                }else if(ausgabe!=null) {
-                    ausgabe.setKontenid(getKonto().getId());
-                    this.ap.setKonto(getKonto());
-                }  
-                this.dispose();
-            } catch (Exception exception) {
-                Log.Debug(exception);
+                    if (this.einnahme != null) {
+                        einnahme.setKontenid(getKonto().getId());
+                        this.ep.setKonto(getKonto());
+                    } else if (ausgabe != null) {
+                        ausgabe.setKontenid(getKonto().getId());
+                        this.ap.setKonto(getKonto());
+                    }
+                    this.dispose();
+                } catch (Exception exception) {
+                    Log.Debug(exception);
+                }
             }
+            idOk = true;
         }
-        idOk = true;
     }//GEN-LAST:event_jTable1MouseClicked
 
     private void jTextField4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
@@ -371,7 +383,7 @@ pack();
     private void jTextField6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField6ActionPerformed
         TableFormat.formatUneditableTable(jTable1, current.select("*", "klasse", jTextField6.getText(), "klasse", true), "id, Nummer, Klasse, Gruppe, Art".split(","));
         TableFormat.format(jTable1, 1, 50);
-        
+
     }//GEN-LAST:event_jTextField6ActionPerformed
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
@@ -381,7 +393,7 @@ pack();
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
         TableFormat.formatUneditableTable(jTable1, current.select("*", "gruppe", jTextField5.getText(), "gruppe", true), "id, Nummer, Klasse, Gruppe, Art".split(","));
-        TableFormat.format(jTable1, 1,50);
+        TableFormat.format(jTable1, 1, 50);
     }//GEN-LAST:event_jButton10ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
@@ -397,15 +409,15 @@ pack();
         try {
             this.current = new SKRKonto(ConnectionHandler.instanceOf(), id);
             this.field.setText(getKonto().getArt());
-            
-               if(this.einnahme!=null) {
-                    einnahme.setKontenid(getKonto().getId());
-                    this.ep.setKonto(getKonto());
-                }else if(ausgabe!=null) {
-                    ausgabe.setKontenid(getKonto().getId());
-                    this.ap.setKonto(getKonto());
-                }
-           
+
+            if (this.einnahme != null) {
+                einnahme.setKontenid(getKonto().getId());
+                this.ep.setKonto(getKonto());
+            } else if (ausgabe != null) {
+                ausgabe.setKontenid(getKonto().getId());
+                this.ap.setKonto(getKonto());
+            }
+
             this.dispose();
         } catch (Exception exception) {
             Log.Debug(exception);
@@ -418,10 +430,9 @@ pack();
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
- 
-             new Help("resource/helpfiles/konten1");
-    }//GEN-LAST:event_jButton2ActionPerformed
 
+        new Help("resource/helpfiles/konten1");
+    }//GEN-LAST:event_jButton2ActionPerformed
 // Variables declaration - do not modify//GEN-BEGIN:variables
 private javax.swing.JButton jButton10;
 private javax.swing.JButton jButton2;

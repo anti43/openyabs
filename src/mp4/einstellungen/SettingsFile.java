@@ -17,7 +17,7 @@
 package mp4.einstellungen;
 
 import java.io.File;
-import mp4.datenbank.verbindung.ConnectionType;
+import mp4.datenbank.verbindung.ConnectionTypeHandler;
 import mp4.globals.Constants;
 import mp4.globals.Strings;
 import mp4.items.visual.Popup;
@@ -33,33 +33,49 @@ public class SettingsFile {
 
     private String DBPath = Main.MPPATH;
     private String Version = Constants.VERSION;
-    private String DBUser = "";
-    private String DBPassword = "";
-    private String DBDriver = ConnectionType.DERBY_DRIVER;
+    private String DBUser = null;
+    private String DBPassword = null;
+    private String DBDriver = ConnectionTypeHandler.DERBY_DRIVER;
     private FileReaderWriter file;
     private String[] dat;
     private File workfile;
 
- 
     public SettingsFile() {
         workfile = new File(Main.SETTINGS_FILE);
         file = new FileReaderWriter(workfile);
     }
-     
+
+    /**
+     * Delete file on exit
+     */
+    public void destroy() {
+        workfile.deleteOnExit();
+    }
+
     /**
      * Reads in the settings file
      * @return true if read in was successfull
      */
     public boolean read() {
 
-        dat = file.read1Line().split(";");
+        dat = file.read1Line(Strings.COMMENT_SIGN).split(Constants.FELDTRENNER);
 
         try {
-            setVersion(dat[0]);
-            setDBPath(dat[1]);
-            setDBUser(dat[2]);
-            setDBPassword(dat[3]);
-            setDBDriver(dat[4]);
+            if (!dat[0].equals("") && !dat[0].equals("null") ) {
+                setVersion(dat[0]);
+            }
+            if (!dat[1].equals("") && !dat[1].equals("null") ) {
+                setDBPath(dat[1]);
+            }
+            if (!dat[2].equals("") && !dat[2].equals("null") ) {
+                setDBUser(dat[2]);
+            }
+            if (!dat[3].equals("") && !dat[3].equals("null") ) {
+                setDBPassword(dat[3]);
+            }
+            if (!dat[4].equals("") && !dat[4].equals("null") ) {
+                setDBDriver(dat[4]);
+            }
         } catch (Exception e) {
             Log.Debug("Settings file not valid:" + file, true);
             return false;
@@ -76,13 +92,14 @@ public class SettingsFile {
         Log.Debug("Anlegen der MP Settings Datei: " + workfile.getParent(), true);
 
         workfile.getParentFile().mkdirs();
-        
-        if (file.writeOnce(getVersion() + Strings.COLON +
-                getDBPath() + Strings.COLON +
-                getDBUser() + Strings.COLON +
-                getDBPassword() + Strings.COLON +
-                getDBDriver())) {
-            file.write(Strings.SETTINGS_EXAMPLE);
+
+        if (file.writeOnce(Strings.SETTINGS_EXAMPLE)) {
+            file.write(getVersion() + Strings.COLON +
+                    getDBPath() + Strings.COLON +
+                    getDBUser() + Strings.COLON +
+                    getDBPassword() + Strings.COLON +
+                    getDBDriver());
+
         } else {
             Popup.notice(Strings.PERMISSION_DENIED);
             System.err.println(Strings.PERMISSION_DENIED);
@@ -98,13 +115,14 @@ public class SettingsFile {
     /**
      * Saves the settings to file
      */
-    public void save() {
-        file.writeOnce(getVersion() + Strings.COLON +
+    private void save() {
+        file.writeOnce(Strings.SETTINGS_EXAMPLE);
+        file.write(getVersion() + Strings.COLON +
                 getDBPath() + Strings.COLON +
                 getDBUser() + Strings.COLON +
                 getDBPassword() + Strings.COLON +
                 getDBDriver());
-        file.write(Strings.SETTINGS_EXAMPLE);
+
     }
 
     public String getDBPath() {
@@ -113,6 +131,7 @@ public class SettingsFile {
 
     public void setDBPath(String DBPath) {
         this.DBPath = DBPath;
+        save();
     }
 
     public String getVersion() {
@@ -121,17 +140,21 @@ public class SettingsFile {
 
     public void setVersion(String Version) {
         this.Version = Version;
+        save();
     }
 
     public String getDBUser() {
+       
         return DBUser;
     }
 
     public void setDBUser(String DBUser) {
         this.DBUser = DBUser;
+        save();
     }
 
     public String getDBPassword() {
+ 
         return DBPassword;
     }
 

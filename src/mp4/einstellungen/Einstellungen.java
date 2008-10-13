@@ -25,6 +25,7 @@ import java.util.Locale;
 import mp4.globals.Constants;
 
 import mp4.datenbank.verbindung.ConnectionHandler;
+import mp4.frames.mainframe;
 import mp4.globals.Strings;
 import mp4.items.visual.Popup;
 
@@ -224,7 +225,7 @@ public class Einstellungen extends MethodParser implements mp4.datenbank.install
         try {
             return new Locale(datahandler.getString("Locale").split("_")[0], datahandler.getString("Locale").split("_")[1]);
         } catch (Exception e) {
-            Popup.notice("Es ist ein Fehler aufgetreten, Locale de_DE wird benutzt.\n" + e.getMessage());
+            mainframe.nachricht.setText("Es ist ein Fehler aufgetreten, Locale de_DE wird benutzt.");
             return new Locale("de", "DE");
         }
     }

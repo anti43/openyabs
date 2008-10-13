@@ -34,6 +34,11 @@ public class SKRKonto extends mp4.items.Things implements mp4.datenbank.installa
     private String Gruppe = "";
     private String Art = "";
     public Integer id = 0;
+
+    public SKRKonto(String nummer) {
+       super(ConnectionHandler.instanceOf().clone(TABLE_KONTEN));
+       this.explode(this.selectLast("*", "nummer", nummer, false));
+    }
    
     public Integer getId() {
         return id;
@@ -51,7 +56,7 @@ public class SKRKonto extends mp4.items.Things implements mp4.datenbank.installa
        
     }
 
-    public SKRKonto(ConnectionHandler query, String string, boolean b) {
+    public SKRKonto(ConnectionHandler query, String string, boolean bool) {
         super(query.clone(TABLE_KONTEN));
         this.explode(this.selectLast("*", "nummer", string, false));
     }

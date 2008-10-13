@@ -180,6 +180,7 @@ public class Main implements Strings {
                 Popup.notice("Datenbank angelegt in\n" + db);
                 splash.setMessage("Starte MP");
             } else {
+                
                 Popup.notice("Es ist ein Fehler aufgetreten, Programm wird beendet.");
                 System.exit(1);
             }

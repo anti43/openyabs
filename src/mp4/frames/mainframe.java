@@ -114,11 +114,12 @@ import mp4.utils.ui.TabCloseIcon;
 public class mainframe extends javax.swing.JFrame {
 
     private static final long serialVersionUID = 518894730966031646L;
+
     private startView i;
     private Main loader;
     private Position wt = new Position();
     public static JLabel nachricht = new JLabel();
-    private mainframe identifier;
+    public static mainframe identifier;
     private static User currentUser = new User();
     private historyView verlaufpanel;
     private eurEURPanel eurpanel;
@@ -139,7 +140,7 @@ public class mainframe extends javax.swing.JFrame {
 
 
         this.loader = mainclass;
-        this.identifier = this;
+        mainframe.identifier = this;
         splash.setMessage("Initialisiere Oberfläche...");
         initComponents();
         splash.setMessage("Initialisiere Datenbank...");
@@ -1544,4 +1545,6 @@ private javax.swing.JMenu pluginMenu;
     private void setUser(User usern) {
         currentUser = usern;
     }
+    
+
 }

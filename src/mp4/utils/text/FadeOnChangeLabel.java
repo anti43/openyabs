@@ -142,10 +142,10 @@ extends JLabel implements Runnable{
     @Override
     public void setText(String text) {
         super.setText(text);
-        if (!text.equals(lastValue)) {
-            lastValue = text;
+//        if (!text.equals(lastValue)) {
+//            lastValue = text;
             animate();
-        }
+//        }
     }
 
     /**
@@ -184,6 +184,7 @@ extends JLabel implements Runnable{
     /**
      * The core of the animation.
      */
+    @Override
     public void run() {
         animating = true;
         fade = initFade;
