@@ -25,11 +25,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JTextField;
+import mp4.frames.mainframe;
 import mp4.interfaces.Waiter;
 import mp4.logs.*;
 
 /**
- *
+ *  This class is useful for selecting files and directories
  * @author Andreas
  */
 public class DialogForFile extends JFileChooser implements Waiter {
@@ -37,36 +38,61 @@ public class DialogForFile extends JFileChooser implements Waiter {
     private static final long serialVersionUID = 1L;
     private File file = null;
 
+    /**
+     * Create a new dialog for files and dirs
+     */
     public DialogForFile() {
         super();
         this.setFileSelectionMode(DialogForFile.FILES_AND_DIRECTORIES);
         this.setSelectedFile(new File(""));
     }
 
+    /**
+     * Create a new dialog for the given selection mode
+     * @param mode DialogForFile.MODE
+     */
     public DialogForFile(int mode) {
         super();
         this.setFileSelectionMode(mode);
         this.setSelectedFile(new File(""));
     }
 
+    /**
+     * Create a new dialog for files and dirs with the given file seleced
+     * @param file 
+     */
     public DialogForFile(File file) {
         super();
         this.setFileSelectionMode(DialogForFile.FILES_AND_DIRECTORIES);
         this.setSelectedFile(file);
     }
 
+    /**
+     * Create a new dialog for the given selection mode with the given file seleced
+     * @param mode
+     * @param filename 
+     */
     public DialogForFile(int mode, String filename) {
         super();
         this.setFileSelectionMode(mode);
         this.setSelectedFile(new File(filename));
     }
 
+    /**
+     * Create a new dialog for the given selection mode with the given file seleced
+     * @param mode
+     * @param file 
+     */
     public DialogForFile(int mode, File file) {
         super();
         this.setFileSelectionMode(mode);
         this.setSelectedFile(file);
     }
 
+    /**
+     * Show a file selection dialog
+     * @return true if a file/dir was selected
+     */
     public boolean chooseFile() {
         if (this.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
             try {
@@ -79,6 +105,10 @@ public class DialogForFile extends JFileChooser implements Waiter {
         return false;
     }
 
+    /**
+     * Show a file save dialog
+     * @param fileToSave 
+     */
     public void saveFile(File fileToSave) {
 
         if (chooseFile()) {
@@ -107,8 +137,9 @@ public class DialogForFile extends JFileChooser implements Waiter {
                     out.write(c);
                 }
                 fileToSave.delete();
+                mainframe.nachricht.setText("Datei gespeichert: " + file.getCanonicalPath());
             } catch (IOException iOException) {
-                mp4.items.visual.Popup.error("Konnte Datei " + fileToSave.getName() + " nicht schreiben.", "Es ist ein Fehler aufgetreten.");
+                mp4.items.visual.Popup.error("Konnte Datei " + file.getName() + " nicht schreiben.", "Es ist ein Fehler aufgetreten.");
 
             } finally {
                 try {
@@ -125,10 +156,19 @@ public class DialogForFile extends JFileChooser implements Waiter {
         }
     }
 
+    /**
+     * 
+     * @return The selected file
+     */
     public File getFile() {
         return file;
     }
 
+    /**
+     * Show a file selection dialog
+     * @param field This gets the selected files' canonical path
+     * @return True if a file was selected
+     */
     public boolean getFilePath(JTextField field) {
         if (this.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
             try {
@@ -142,6 +182,11 @@ public class DialogForFile extends JFileChooser implements Waiter {
         return false;
     }
 
+    /**
+     * Calls saveFile((File) object)
+     * @param object 
+     */
+    @Override
     public void set(Object object) {
         saveFile((File) object);
     }

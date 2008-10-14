@@ -1737,6 +1737,7 @@ class GetProductImage extends SwingWorker<Void, Void> {
         this.view = view;
     }
 
+    @Override
     public Void doInBackground() {
 
         view.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -1768,6 +1769,7 @@ class GetAnyImage extends SwingWorker<Void, Void> {
         this.file = file;
     }
 
+    @Override
     public Void doInBackground() {
 
         Image coverImg = null;

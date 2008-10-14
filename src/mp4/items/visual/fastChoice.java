@@ -204,7 +204,6 @@ public class fastChoice extends javax.swing.JFrame {
                     panel.setContact(kl);
                     this.dispose();
                 } catch (Exception e) {
-                    Log.Debug(e);
                     jLabel3.setText("Fehler: " + e.getMessage());
                 }
                 break;

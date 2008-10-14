@@ -461,18 +461,21 @@ private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:ev
         data.setEinnahme_Standard_Konto(new SKRKonto(jTextField1.getText()));
     } catch (Exception e) {
         Popup.notice("Konto existiert nicht: " + jTextField1.getText());
+        data.setEinnahme_Standard_Konto(new SKRKonto("2112"));
     }
 
     try {
         data.setAusgabeDefKonto(new SKRKonto(jTextField2.getText()));
     } catch (Exception e) {
         Popup.notice("Konto existiert nicht: " + jTextField2.getText());
+        data.setAusgabeDefKonto(new SKRKonto("1111"));
     }
 
     try {
         data.setLocale(new Locale(jTextField3.getText()));
     } catch (Exception e) {
         Popup.notice("Locale existiert nicht: " + jTextField3.getText());
+        data.setLocale(new Locale("de_DE"));
     }
 
     mainframe.setMessage("Einstellungen gespeichert.");

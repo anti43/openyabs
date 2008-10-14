@@ -387,9 +387,11 @@ public class Product extends mp4.items.Things implements mp4.datenbank.installat
         Query q = query.clone(TABLE_PRODUCTS);
 
         String[][] str = q.selectFreeQuery("SELECT produkte.Produktnummer AS Nummer,produkte.Name,produkte.Text," +
-                "produkte.VK,produkte.EK,produkte.Tax,Hersteller,Lieferanten.firma AS Lieferant," +
+                "produkte.VK,produkte.EK,steuersaetze.wert,Hersteller.name,Lieferanten.firma AS Lieferant," +
                 "Warengruppenid,produkte.Datum,produkte.EAN FROM produkte " +
                 "LEFT OUTER JOIN  lieferanten ON produkte.lieferantenid = lieferanten.id " +
+                "LEFT OUTER JOIN  steuersaetze ON produkte.steuersatzid = steuersaetze.id " +
+                "LEFT OUTER JOIN  hersteller ON produkte.herstellerid = hersteller.id " +
                 "LEFT OUTER JOIN  warengruppengruppen ON produkte.warengruppenid = warengruppengruppen.id", null);
 
         return str;

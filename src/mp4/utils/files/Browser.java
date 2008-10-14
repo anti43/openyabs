@@ -23,6 +23,7 @@ import java.io.IOException;
 import mp4.globals.Strings;
 import mp4.items.visual.Popup;
 import mp4.einstellungen.Einstellungen;
+import mp4.logs.Log;
 
 
 /**
@@ -32,22 +33,18 @@ import mp4.einstellungen.Einstellungen;
 public class Browser {
 
     public Browser(File file) {
-
         try {
-
-
-            Process proc = Runtime.getRuntime().exec(Einstellungen.instanceOf().getBrowser_Programm() + " " + file.getAbsolutePath());
-        } catch (IOException ex) {
-
-            new Popup(Strings.NO_BROWSER);
-        
+            try {
+                Process proc = Runtime.getRuntime().exec(Einstellungen.instanceOf().getBrowser_Programm() + " " + file.getAbsolutePath());
+            } catch (IOException ex) {
+                new Popup(Strings.NO_BROWSER);
+            }
+        } catch (Exception e) {
+            Log.Debug(e);
         }
-
     }
 
     public Browser(String file) {
-
         new Browser(new File(file));
-
     }
 }

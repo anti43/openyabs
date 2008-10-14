@@ -41,7 +41,7 @@ public class TableHtmlWriter {
 
     private Object[][] model = null;
     private String[] header = null;
-    private File file = null;
+    private File file = FileDirectoryHandler.getTempFile();
     private String prefix = null;
 
     /**
@@ -178,7 +178,7 @@ public class TableHtmlWriter {
      * @param bordercolor The bordercolor of the created HTML table
      * @return The HTML file
      */
-    public File createHtmlFile(Integer border, Color bordercolor) {
+    public File createHtml(Integer border, Color bordercolor) {
 
         if (getModel() != null) {
             try {
@@ -190,6 +190,7 @@ public class TableHtmlWriter {
             System.err.println("No datamodel given.");
         }
 
+        
         return getFile();
     }
 
@@ -210,10 +211,7 @@ public class TableHtmlWriter {
             System.err.println("No datamodel given.");
         }
 
-        File f = getFile();
-        this.file = f;
-        return f;
-
+        return getFile();
     }
 
 

@@ -112,7 +112,7 @@ public interface Tabellen {
     public final String TABLE_BILL_TEXTS_TO_BILLS = "betreffz_zu_rechnung";
     public final String TABLE_TAXES = "steuersaetze";
     public final String TABLE_CUSTOMER_PRINT_FIELDS =
-            "Kundennummer" + "," + "Firma" + "," + "Anrede" + "," + "Vorname" +
+            "Nummer" + "," + "Firma" + "," + "Anrede" + "," + "Vorname" +
             "," + "Name" + "," + "Str" + "," + "PLZ" + "," + "Ort" + "," +
             "Tel" + "," + "Fax" + "," + "Mobil" + "," + "Mail" + "," + "Webseite";
     /**

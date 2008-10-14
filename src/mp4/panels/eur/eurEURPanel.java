@@ -229,7 +229,7 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 TableHtmlWriter writ = new TableHtmlWriter((DefaultTableModel) jTable1.getModel(), new File(month + "_" + year + ".html"), "Beschreibung,Daten".split(","), "Einnahmen / Ausgaben " + month + "/" + year);
                
                 dialog = new DialogForFile(new File(Constants.DESKTOP + File.separator + writ.getFile().getName()));
-                dialog.saveFile(writ.createHtmlFile(1, Color.LIGHT_GRAY));
+                dialog.saveFile(writ.createHtml(1, Color.LIGHT_GRAY));
                 new Browser(dialog.getFile());
                 
             } catch (Exception ex) {
