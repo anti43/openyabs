@@ -232,6 +232,20 @@ public interface Tabellen {
             "Produktnummer" + "," + "Name" + "," + "Text" + "," + "VK" + "," + "EK" +
             "," + "Tax" + "," + "Hersteller" + "," + "Lieferant" + "," + "Warengruppennummer" + "," + "Datum" + "," + "Url" + "," + "EAN";
     /**
+     * Columns for serviceslist table
+     */
+    public final String TABLE_SERVICES_LIST_COLUMNS =
+            "Nummer" + "," + "Name" + "," + "Text" + "," + "Preis" + "," + "Einheit" +
+            "," + "Datum";
+   
+    
+//   dienstleistungen.Produktnummer AS Nummer,dienstleistungen.Name,dienstleistungen.beschreibung," +
+//                "dienstleistungen.preis," + "dienstleistungen.einheit," +
+//                "Warengruppenid,dienstleistungen.Datum FROM dienstleistungen " +
+//                "LEFT OUTER JOIN  steuersaetze ON dienstleistungen.steuersatzid = steuersaetze.id " +
+//                "LEFT OUTER JOIN  warengruppengruppen ON dienstleistungen.warengruppenid = warengruppengruppen.id " +
+//                "WHERE dienstleistungen.deleted = 0", null);
+    /**
      * Kontenrahmen
      */
     public final String TABLE_KONTEN_FIELDS = "nummer" + "," + "klasse" + "," + "gruppe" + "," + "art";

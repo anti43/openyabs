@@ -12,7 +12,6 @@ import mp4.interfaces.Waitable;
 import mp4.items.People;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Locale;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
@@ -226,7 +225,8 @@ public class servicesView extends mp4.panels.misc.commonPanel implements mp4.dat
         jToolBar2.setRollover(true);
 
         jButton11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/medium/undo.png"))); // NOI18N
-        jButton11.setToolTipText("Rueckgaengig");
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("viewMasks/service"); // NOI18N
+        jButton11.setToolTipText(bundle.getString("servicesView.jButton11.toolTipText")); // NOI18N
         jButton11.setFocusable(false);
         jButton11.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton11.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -238,7 +238,7 @@ public class servicesView extends mp4.panels.misc.commonPanel implements mp4.dat
         jToolBar2.add(jButton11);
 
         jButton20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/medium/tab_remove.png"))); // NOI18N
-        jButton20.setToolTipText("Produkt deaktivieren und Tab schliessen");
+        jButton20.setToolTipText(bundle.getString("servicesView.jButton20.toolTipText")); // NOI18N
         jButton20.setFocusable(false);
         jButton20.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton20.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -250,7 +250,7 @@ public class servicesView extends mp4.panels.misc.commonPanel implements mp4.dat
         jToolBar2.add(jButton20);
 
         jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/medium/filesave.png"))); // NOI18N
-        jButton3.setToolTipText("Speichern");
+        jButton3.setToolTipText(bundle.getString("servicesView.jButton3.toolTipText")); // NOI18N
         jButton3.setFocusable(false);
         jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -267,7 +267,7 @@ public class servicesView extends mp4.panels.misc.commonPanel implements mp4.dat
         jToolBar2.add(jButton3);
 
         jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/medium/new_window.png"))); // NOI18N
-        jButton4.setToolTipText("Neu anlegen");
+        jButton4.setToolTipText(bundle.getString("servicesView.jButton4.toolTipText")); // NOI18N
         jButton4.setFocusable(false);
         jButton4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -284,7 +284,7 @@ public class servicesView extends mp4.panels.misc.commonPanel implements mp4.dat
         jToolBar2.add(jButton4);
         jToolBar2.add(jSeparator2);
 
-        jButton9.setText("Neue Rechnung");
+        jButton9.setText(bundle.getString("servicesView.jButton9.text")); // NOI18N
         jButton9.setFocusable(false);
         jButton9.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton9.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -295,7 +295,7 @@ public class servicesView extends mp4.panels.misc.commonPanel implements mp4.dat
         });
         jToolBar2.add(jButton9);
 
-        jButton10.setText("Neues Angebot");
+        jButton10.setText(bundle.getString("servicesView.jButton10.text")); // NOI18N
         jButton10.setFocusable(false);
         jButton10.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton10.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -308,7 +308,7 @@ public class servicesView extends mp4.panels.misc.commonPanel implements mp4.dat
         jToolBar2.add(jSeparator3);
 
         jButton18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/3232/acroread.png"))); // NOI18N
-        jButton18.setToolTipText("Drucken");
+        jButton18.setToolTipText(bundle.getString("servicesView.jButton18.toolTipText")); // NOI18N
         jButton18.setFocusable(false);
         jButton18.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton18.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -342,7 +342,7 @@ public class servicesView extends mp4.panels.misc.commonPanel implements mp4.dat
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
 
-        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Datensätze"));
+        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("servicesView.jPanel5.border.title"))); // NOI18N
 
         jScrollPane5.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
@@ -383,9 +383,9 @@ public class servicesView extends mp4.panels.misc.commonPanel implements mp4.dat
             .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 201, Short.MAX_VALUE)
         );
 
-        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Suche"));
+        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("servicesView.jPanel4.border.title"))); // NOI18N
 
-        jLabel2.setText("Nummer:");
+        jLabel2.setText(bundle.getString("servicesView.jLabel2.text")); // NOI18N
 
         jTextField1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -399,7 +399,7 @@ public class servicesView extends mp4.panels.misc.commonPanel implements mp4.dat
             }
         });
 
-        jLabel3.setText("Name:");
+        jLabel3.setText(bundle.getString("servicesView.jLabel3.text")); // NOI18N
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -429,12 +429,12 @@ public class servicesView extends mp4.panels.misc.commonPanel implements mp4.dat
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Details"));
+        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("servicesView.jPanel6.border.title"))); // NOI18N
 
         jPanel7.setBackground(new java.awt.Color(227, 219, 202));
         jPanel7.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jLabel5.setText("Nummer");
+        jLabel5.setText(bundle.getString("servicesView.jLabel5.text")); // NOI18N
 
         jTextField4.setEditable(false);
         jTextField4.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -459,7 +459,7 @@ public class servicesView extends mp4.panels.misc.commonPanel implements mp4.dat
             }
         });
 
-        jLabel6.setText("Name");
+        jLabel6.setText(bundle.getString("servicesView.jLabel6.text")); // NOI18N
 
         jButton16.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/small/search.png"))); // NOI18N
         jButton16.addActionListener(new java.awt.event.ActionListener() {
@@ -507,11 +507,11 @@ public class servicesView extends mp4.panels.misc.commonPanel implements mp4.dat
 
         jTextField9.setEditable(false);
 
-        jLabel18.setText("Steuersatz");
+        jLabel18.setText(bundle.getString("servicesView.jLabel18.text")); // NOI18N
 
-        jLabel9.setText("Preis");
+        jLabel9.setText(bundle.getString("servicesView.jLabel9.text")); // NOI18N
 
-        jLabel17.setText("Datum");
+        jLabel17.setText(bundle.getString("servicesView.jLabel17.text")); // NOI18N
 
         jTextField8.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -536,7 +536,7 @@ public class servicesView extends mp4.panels.misc.commonPanel implements mp4.dat
             }
         });
 
-        jLabel11.setText("Einheit");
+        jLabel11.setText(bundle.getString("servicesView.jLabel11.text")); // NOI18N
 
         jTextField10.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -609,9 +609,9 @@ public class servicesView extends mp4.panels.misc.commonPanel implements mp4.dat
         jPanel9.setBackground(new java.awt.Color(227, 219, 202));
         jPanel9.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jLabel15.setText("Warengruppe");
+        jLabel15.setText(bundle.getString("servicesView.jLabel15.text_1")); // NOI18N
 
-        jLabel10.setText("Beschreibung");
+        jLabel10.setText(bundle.getString("servicesView.jLabel10.text")); // NOI18N
 
         jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
@@ -720,7 +720,7 @@ public class servicesView extends mp4.panels.misc.commonPanel implements mp4.dat
             .addComponent(jPanel6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
-        jTabbedPane1.addTab("Allgemein", jPanel2);
+        jTabbedPane1.addTab(bundle.getString("servicesView.jPanel2.TabConstraints.tabTitle"), jPanel2); // NOI18N
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -753,7 +753,7 @@ public class servicesView extends mp4.panels.misc.commonPanel implements mp4.dat
         });
         jScrollPane4.setViewportView(jTable2);
 
-        jButton6.setText("Markierte entfernen");
+        jButton6.setText(bundle.getString("servicesView.jButton6.text")); // NOI18N
         jButton6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton6ActionPerformed(evt);
@@ -777,7 +777,7 @@ public class servicesView extends mp4.panels.misc.commonPanel implements mp4.dat
                 .addComponent(jButton6))
         );
 
-        jTabbedPane1.addTab("Liste", jPanel3);
+        jTabbedPane1.addTab(bundle.getString("servicesView.jPanel3.TabConstraints.tabTitle"), jPanel3); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -852,7 +852,7 @@ public class servicesView extends mp4.panels.misc.commonPanel implements mp4.dat
         }
 
         liste = current.getAll();
-        String k = "id, " + TABLE_PRODUCTS_LIST_COLUMNS;
+        String k = "id, " + TABLE_SERVICES_LIST_COLUMNS;
         this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
         TableFormat.stripFirst(jTable2);
         this.clear();
@@ -1166,7 +1166,7 @@ private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 
     private void updateListTable() {
         liste = current.getAll();
-        String k = "id, " + TABLE_PRODUCTS_LIST_COLUMNS;
+        String k = "id, " + TABLE_SERVICES_LIST_COLUMNS;
         this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
         TableFormat.stripFirst(jTable2);
     }
