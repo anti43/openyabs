@@ -370,10 +370,7 @@ public class mainframe extends javax.swing.JFrame {
         jMenu9 = new javax.swing.JMenu();
         jMenuItem10 = new javax.swing.JMenuItem();
         jMenuItem11 = new javax.swing.JMenuItem();
-        jSeparator3 = new javax.swing.JSeparator();
-        jMenuItem13 = new javax.swing.JMenuItem();
-        jMenuItem14 = new javax.swing.JMenuItem();
-        jMenu5 = new javax.swing.JMenu();
+        jSeparator4 = new javax.swing.JSeparator();
         jMenu6 = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
@@ -385,6 +382,10 @@ public class mainframe extends javax.swing.JFrame {
         jMenuItem12 = new javax.swing.JMenuItem();
         jMenu13 = new javax.swing.JMenu();
         jMenuItem19 = new javax.swing.JMenuItem();
+        jSeparator3 = new javax.swing.JSeparator();
+        jMenuItem13 = new javax.swing.JMenuItem();
+        jMenuItem14 = new javax.swing.JMenuItem();
+        jMenu5 = new javax.swing.JMenu();
         jSeparator6 = new javax.swing.JSeparator();
         jMenuItem4 = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
@@ -402,6 +403,7 @@ public class mainframe extends javax.swing.JFrame {
         jMenuItem6 = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JSeparator();
         jMenuItem8 = new javax.swing.JMenuItem();
+        jMenuItem15 = new javax.swing.JMenuItem();
         jSeparator5 = new javax.swing.JSeparator();
         jMenuItem21 = new javax.swing.JMenuItem();
 
@@ -839,29 +841,7 @@ public class mainframe extends javax.swing.JFrame {
         jMenu9.add(jMenuItem11);
 
         jMenu4.add(jMenu9);
-        jMenu4.add(jSeparator3);
-
-        jMenuItem13.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.InputEvent.ALT_MASK));
-        jMenuItem13.setText("Beenden");
-        jMenuItem13.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem13ActionPerformed(evt);
-            }
-        });
-        jMenu4.add(jMenuItem13);
-
-        jMenuItem14.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItem14.setText("Beenden und Sichern");
-        jMenuItem14.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem14ActionPerformed(evt);
-            }
-        });
-        jMenu4.add(jMenuItem14);
-
-        menuBar.add(jMenu4);
-
-        jMenu5.setText("Bearbeiten");
+        jMenu4.add(jSeparator4);
 
         jMenu6.setText("Importieren..");
 
@@ -886,7 +866,7 @@ public class mainframe extends javax.swing.JFrame {
         });
         jMenu6.add(jMenuItem3);
 
-        jMenu5.add(jMenu6);
+        jMenu4.add(jMenu6);
 
         jMenu12.setText("Exportieren..");
 
@@ -934,7 +914,30 @@ public class mainframe extends javax.swing.JFrame {
 
         jMenu12.add(jMenu13);
 
-        jMenu5.add(jMenu12);
+        jMenu4.add(jMenu12);
+        jMenu4.add(jSeparator3);
+
+        jMenuItem13.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.InputEvent.ALT_MASK));
+        jMenuItem13.setText("Beenden");
+        jMenuItem13.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem13ActionPerformed(evt);
+            }
+        });
+        jMenu4.add(jMenuItem13);
+
+        jMenuItem14.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem14.setText("Beenden und Sichern");
+        jMenuItem14.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem14ActionPerformed(evt);
+            }
+        });
+        jMenu4.add(jMenuItem14);
+
+        menuBar.add(jMenu4);
+
+        jMenu5.setText("Bearbeiten");
         jMenu5.add(jSeparator6);
 
         jMenuItem4.setText("Einstellungen");
@@ -997,9 +1000,10 @@ public class mainframe extends javax.swing.JFrame {
 
         jMenu2.setText("Ansicht");
 
-        jMenu3.setText("Rechungen");
+        jMenu3.setText("Vorlagen");
 
-        jMenuItem22.setText("Default");
+        jMenuItem22.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/small/ok.png"))); // NOI18N
+        jMenuItem22.setText("Normal");
         jMenuItem22.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem22ActionPerformed(evt);
@@ -1007,7 +1011,7 @@ public class mainframe extends javax.swing.JFrame {
         });
         jMenu3.add(jMenuItem22);
 
-        jMenuItem23.setText("Variation 1");
+        jMenuItem23.setText("Medizinisch");
         jMenuItem23.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem23ActionPerformed(evt);
@@ -1037,6 +1041,9 @@ public class mainframe extends javax.swing.JFrame {
             }
         });
         jMenu7.add(jMenuItem8);
+
+        jMenuItem15.setText("MP...");
+        jMenu7.add(jMenuItem15);
         jMenu7.add(jSeparator5);
 
         jMenuItem21.setText("Log Konsole");
@@ -1225,6 +1232,8 @@ private void jMenuItem1ActionPerformed1(java.awt.event.ActionEvent evt) {//GEN-F
                 Programmdaten.instanceOf().setUSE_AUTHENTIFICATION(!useauth);
                 this.setMessage("Benutzerauthentifizierung eingeschaltet");
                 new HistoryItem("Benutzerauthentifizierung", "Eingeschaltet", mainframe.getUser());
+                    Programmdaten.instanceOf().setBILLPANEL_MASK("MEDICAL");
+                    jMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/small/ok.png")));
                 this.setEnabled(false);
                 new login(this);
             }
@@ -1232,6 +1241,8 @@ private void jMenuItem1ActionPerformed1(java.awt.event.ActionEvent evt) {//GEN-F
             Programmdaten.instanceOf().setUSE_AUTHENTIFICATION(!useauth);
             this.setMessage("Benutzerauthentifizierung ausgeschaltet");
             new HistoryItem("Benutzerauthentifizierung", "Ausgeschaltet", mainframe.getUser());
+            jMenuItem1.setIcon(null);
+
         }
     } else {
         Popup.notice("Die Benutzerauthentifizierung kann nur von einem Administrator ausgeschaltet werden!");
@@ -1313,12 +1324,18 @@ private void jMenuItem20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
 
 private void jMenuItem22ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem22ActionPerformed
     Programmdaten.instanceOf().setBILLPANEL_MASK("Default");
-    this.setMessage("Rechnungen Ansicht: Default gewählt.");
+    Programmdaten.instanceOf().setSERVICEPANEL_MASK("Default");
+    this.setMessage("Ansicht: 'Normal' gewählt.");
+    jMenuItem22.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/small/ok.png")));
+    jMenuItem23.setIcon(null);
 }//GEN-LAST:event_jMenuItem22ActionPerformed
 
 private void jMenuItem23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem23ActionPerformed
     Programmdaten.instanceOf().setBILLPANEL_MASK("MEDICAL");
-    this.setMessage("Rechnungen Ansicht: Variation 1 gewählt.");
+    Programmdaten.instanceOf().setSERVICEPANEL_MASK("MEDICAL");
+    this.setMessage("Ansicht: 'Medizinisch' gewählt.");
+    jMenuItem23.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/small/ok.png")));
+    jMenuItem22.setIcon(null);
 }//GEN-LAST:event_jMenuItem23ActionPerformed
 
 private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
@@ -1421,6 +1438,7 @@ private void jMenuItem19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     private javax.swing.JMenuItem jMenuItem12;
     private javax.swing.JMenuItem jMenuItem13;
     private javax.swing.JMenuItem jMenuItem14;
+    private javax.swing.JMenuItem jMenuItem15;
     private javax.swing.JMenuItem jMenuItem18;
     private javax.swing.JMenuItem jMenuItem19;
     private javax.swing.JMenuItem jMenuItem2;
@@ -1442,6 +1460,7 @@ private void jMenuItem19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     private javax.swing.JPanel jPanel6;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator3;
+    private javax.swing.JSeparator jSeparator4;
     private javax.swing.JSeparator jSeparator5;
     private javax.swing.JSeparator jSeparator6;
     public javax.swing.JPanel leftBar;

@@ -231,4 +231,13 @@ public class Programmdaten implements mp4.datenbank.installation.Tabellen {
     public String getBILLPANEL_MASK() {
        return datahandler.getString("BILLPANEL_MASK");
     }
+    
+    public String getSERVICEPANEL_MASK() {
+       return datahandler.getString("SERVICEPANEL_MASK");
+    }
+  
+    public void setSERVICEPANEL_MASK(String SERVICEPANEL_MASK) {
+        datahandler.setString("SERVICEPANEL_MASK", SERVICEPANEL_MASK);
+    }
+    
 }

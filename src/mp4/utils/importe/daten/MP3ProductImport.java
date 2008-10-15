@@ -9,8 +9,6 @@ import compat.mp3.Supplier;
 import java.awt.Cursor;
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 import javax.swing.SwingWorker;
