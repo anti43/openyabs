@@ -27,7 +27,7 @@ import mp4.items.Lieferant;
 
 import mp4.logs.*;
 import mp4.utils.export.druck.DruckJob;
-import mp4.utils.export.pdf.PDFFile;
+import mp4.utils.files.PDFFile;
 import mp4.utils.tabellen.TableFormat;
 import mp4.utils.ui.Position;
 
@@ -64,7 +64,7 @@ public class serialLetter extends javax.swing.JFrame implements Constants {
     }
 
     public void addLieferant(Lieferant c) {
-        Object[] o = new Object[]{c.getId(), c.getLieferantennummer(), c.getFirma(), true};
+        Object[] o = new Object[]{c.getId(), c.getNummer(), c.getFirma(), true};
         DefaultTableModel m = (DefaultTableModel) jTable1.getModel();
         m.addRow(o);
     }
@@ -231,7 +231,7 @@ pack();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     public void addCustomer(Customer c) {
-        Object[] o = new Object[]{c.getId(), c.getKundennummer(), c.getFirma(), true};
+        Object[] o = new Object[]{c.getId(), c.getNummer(), c.getFirma(), true};
         DefaultTableModel m = (DefaultTableModel) jTable1.getModel();
         m.addRow(o);
     }

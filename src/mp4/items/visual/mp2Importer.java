@@ -256,7 +256,7 @@ public class mp2Importer extends javax.swing.JFrame {
 
                         Customer c = new Customer(ConnectionHandler.instanceOf());
 
-                        c.setKundennummer(kund[i][1]);
+                        c.setNummer(kund[i][1]);
                         c.setFirma(kund[i][2]);
                         c.setAnrede(kund[i][3]);
                         c.setVorname(kund[i][4]);

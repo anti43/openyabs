@@ -64,7 +64,11 @@ public class ProductImage extends mp4.items.Things implements mp4.datenbank.inst
     public ProductImage(Integer id) {
         super(ConnectionHandler.instanceOf().clone(TABLE_PRODUCTS_FILES));
         this.id = id;
-        this.explode(this.selectLast("productid,url,datum", "id", id.toString(), true));
+        try {
+            this.explode(this.selectLast("productid,url,datum", "id", id.toString(), true));
+        } catch (Exception ex) {
+             Log.Debug(ex);
+        }
     }
 
     public boolean hasImage() {
@@ -78,7 +82,12 @@ public class ProductImage extends mp4.items.Things implements mp4.datenbank.inst
 
     public ProductImage searchImage(Integer id) {
         ProductImage image = null;
-        String[] data = this.selectLast("productid,url,datum", "productid", id.toString(), true);
+        String[] data = null;
+        try {
+            data = this.selectLast("productid,url,datum", "productid", id.toString(), true);
+        } catch (Exception ex) {
+            Log.Debug(ex);
+        }
         if (data != null && data.length > 0) {
             image = new ProductImage();
             image.setProduktid(Integer.valueOf(data[0]));

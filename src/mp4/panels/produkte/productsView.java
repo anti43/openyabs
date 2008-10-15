@@ -49,7 +49,7 @@ import mp4.panels.rechnungen.billsView;
 import mp4.panels.rechnungen.offersView;
 import mp4.utils.bilder.ImageFormat;
 import mp4.utils.datum.DateConverter;
-import mp4.utils.export.pdf.PDFFile;
+import mp4.utils.files.PDFFile;
 import mp4.utils.files.DialogForFile;
 import mp4.utils.files.FileDirectoryHandler;
 import mp4.utils.tabellen.SelectionCheck;
@@ -243,7 +243,6 @@ public class productsView extends commonPanel implements mp4.datenbank.installat
 
         jPanel1 = new javax.swing.JPanel();
         jToolBar2 = new javax.swing.JToolBar();
-        jButton11 = new javax.swing.JButton();
         jButton20 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
@@ -349,18 +348,6 @@ public class productsView extends commonPanel implements mp4.datenbank.installat
         jToolBar2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jToolBar2.setFloatable(false);
         jToolBar2.setRollover(true);
-
-        jButton11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/medium/undo.png"))); // NOI18N
-        jButton11.setToolTipText("Rueckgaengig");
-        jButton11.setFocusable(false);
-        jButton11.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton11.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton11.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton11ActionPerformed(evt);
-            }
-        });
-        jToolBar2.add(jButton11);
 
         jButton20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/medium/tab_remove.png"))); // NOI18N
         jButton20.setToolTipText("Produkt deaktivieren und Tab schliessen");
@@ -1323,14 +1310,10 @@ private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
 }//GEN-LAST:event_jButton3ActionPerformed
 
-private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
-    super.undo();
-}//GEN-LAST:event_jButton11ActionPerformed
-
 private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton20ActionPerformed
-    if (mainframe.getUser().doAction(User.EDITOR)) {
+   if (Popup.Y_N_dialog("Diesen Datensatz wirklich deaktivieren?") && mainframe.getUser().doAction(User.EDITOR)) {
         deactivate();
-        super.close();
+        this.close();
     }
 }//GEN-LAST:event_jButton20ActionPerformed
 
@@ -1455,7 +1438,6 @@ numberfieldedited = true;
     public javax.swing.JLabel imgLabel;
     public javax.swing.JButton jButton1;
     public javax.swing.JButton jButton10;
-    public javax.swing.JButton jButton11;
     public javax.swing.JButton jButton12;
     public javax.swing.JButton jButton13;
     public javax.swing.JButton jButton16;

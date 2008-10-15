@@ -17,6 +17,8 @@
 package mp4.items;
 
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mp4.logs.*;
 import mp4.datenbank.verbindung.Query;
 
@@ -50,7 +52,11 @@ public class ProductGroupFamily extends mp4.items.Things implements mp4.datenban
         super(query.clone(TABLE_PRODUCTS_GROUPS_FAMILIES));
         
         this.id=Integer.valueOf(id);
-        this.explode(this.selectLast("*", "id", id, true ));
+        try {
+            this.explode(this.selectLast("*", "id", id, true));
+        } catch (Exception ex) {
+             Log.Debug(ex);
+        }
         this.query=query;
     }
 

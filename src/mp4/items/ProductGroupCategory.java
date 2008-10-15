@@ -17,7 +17,10 @@
 package mp4.items;
 
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mp4.datenbank.verbindung.Query;
+import mp4.logs.Log;
 
 
  /**
@@ -47,7 +50,11 @@ public class ProductGroupCategory extends mp4.items.Things implements mp4.datenb
         super(query.clone(TABLE_PRODUCTS_GROUPS_CATEGORIES));
         
         this.id=Integer.valueOf(id);
-        this.explode(this.selectLast("*", "id", id, true ));
+        try {
+            this.explode(this.selectLast("*", "id", id, true));
+        } catch (Exception ex) {
+             Log.Debug(ex);
+        }
         this.query=query;
     }
 

@@ -21,7 +21,7 @@ import mp4.frames.mainframe;
 import mp4.frames.PdfVorschauWindow;
 import mp4.interfaces.panelInterface;
 import mp4.utils.datum.DateConverter;
-import mp4.utils.export.pdf.PDFFile;
+import mp4.utils.files.PDFFile;
 import mp4.utils.ui.Position;
 import mp4.utils.ui.inputfields.InputVerifiers;
 

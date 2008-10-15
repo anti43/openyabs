@@ -14,7 +14,7 @@
  *      You should have received a copy of the GNU General Public License
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mp4.utils.export.pdf;
+package mp4.utils.files;
 
 /**
  *
@@ -168,6 +168,7 @@ public class PDFFile extends File implements Waitable, Printable {
         }
     }
 
+    @Override
     public void waitFor() {
         start();
     }
@@ -189,10 +190,12 @@ public class PDFFile extends File implements Waitable, Printable {
         return file.getPath();
     }
 
+    @Override
     public DocFlavor getFlavor() {
         return DocFlavor.INPUT_STREAM.PDF;
     }
 
+    @Override
     public File getFile() {
         return this;
     }

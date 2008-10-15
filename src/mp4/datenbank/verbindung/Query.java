@@ -108,8 +108,14 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
         stop();
         return false;
     }
-    /**/
-
+ 
+    /**
+     * 
+     * @param what
+     * @param where
+     * @param zeitraum
+     * @return
+     */
     public String[][] selectBetween(String what, String[] where, vTimeframe zeitraum) {
 
         String str = "AND datum BETWEEN '" + DateConverter.getSQLDateString(zeitraum.getStart()) + "' AND '" + DateConverter.getSQLDateString(zeitraum.getEnd()) + "'";

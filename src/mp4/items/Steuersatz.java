@@ -50,7 +50,11 @@ public class Steuersatz extends mp4.items.Things implements mp4.datenbank.instal
     public Steuersatz(Integer id) {
         super(ConnectionHandler.instanceOf().clone(TABLE_TAXES));
         this.id = id;
-        this.explode(this.selectLast("name, wert", "id", id.toString(), true));
+        try {
+            this.explode(this.selectLast("name, wert", "id", id.toString(), true));
+        } catch (Exception ex) {
+             Log.Debug(ex);
+        }
     }
 
     public String[][] getAll() {

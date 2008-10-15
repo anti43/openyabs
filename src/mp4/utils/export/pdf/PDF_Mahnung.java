@@ -75,7 +75,9 @@ public class PDF_Mahnung implements Template{
     @SuppressWarnings("unchecked")
     private String[][] buildFieldList(){
         
-        fields.add(new String[]{"company", k.getFirma()});
+        if(Programmdaten.instanceOf().getBILLPANEL_CHECKBOX_MITFIRMENNAME_state()) {
+            fields.add(new String[]{"company", k.getFirma()});
+        }
         fields.add(new String[]{"name", k.getAnrede() + " " + k.getVorname() + " " + k.getName()});
         fields.add(new String[]{"street", k.getStr()});
         fields.add(new String[]{"city", k.getPLZ() + " " + k.getOrt()});
@@ -83,7 +85,7 @@ public class PDF_Mahnung implements Template{
         fields.add(new String[]{"date", DateConverter.getDefDateString(new Date())});
         fields.add(new String[]{"rnumber", rechnung.getRechnungnummer()});
         fields.add(new String[]{"number", String.valueOf(nummer)});
-        fields.add(new String[]{"knumber", k.getKundennummer()});
+        fields.add(new String[]{"knumber", k.getNummer()});
         fields.add(new String[]{"text", text});
 
 //id,Anzahl,Posten,Mehrwertsteuer,Nettopreis,Bruttopreis

@@ -7,7 +7,6 @@ package mp4.panels.kontakte;
 
 import java.awt.event.MouseEvent;
 import javax.swing.JOptionPane;
-import javax.swing.JTabbedPane;
 import javax.swing.table.DefaultTableModel;
 
 
@@ -30,6 +29,9 @@ import mp4.items.Angebot;
 import mp4.items.Product;
 import mp4.items.Rechnung;
 import mp4.panels.misc.NumberFormatEditor;
+import mp4.utils.export.textdatei.VCard;
+import mp4.utils.files.DialogForFile;
+import mp4.utils.files.FileReaderWriter;
 import mp4.utils.tabellen.TableFormat;
 import mp4.utils.tabellen.models.ContactListTableModel;
 
@@ -37,7 +39,7 @@ import mp4.utils.tabellen.models.ContactListTableModel;
  *
  * @author  anti43
  */
-public class customersView extends mp4.panels.misc.commonPanel implements mp4.datenbank.installation.Tabellen, panelInterface {
+public class customersView extends mp4.panels.misc.commonPanel implements mp4.datenbank.installation.Tabellen{
 
     public Customer current;
     private String[][] liste;
@@ -179,7 +181,6 @@ public class customersView extends mp4.panels.misc.commonPanel implements mp4.da
         jButton11 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jToolBar2 = new javax.swing.JToolBar();
-        jButton6 = new javax.swing.JButton();
         jButton20 = new javax.swing.JButton();
         jButton13 = new javax.swing.JButton();
         jButton14 = new javax.swing.JButton();
@@ -882,18 +883,6 @@ public class customersView extends mp4.panels.misc.commonPanel implements mp4.da
         jToolBar2.setFloatable(false);
         jToolBar2.setRollover(true);
 
-        jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/medium/undo.png"))); // NOI18N
-        jButton6.setToolTipText("Rueckgaengig");
-        jButton6.setFocusable(false);
-        jButton6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton6.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
-            }
-        });
-        jToolBar2.add(jButton6);
-
         jButton20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/medium/tab_remove.png"))); // NOI18N
         jButton20.setToolTipText("Kunde deaktivieren und Tab schliessen");
         jButton20.setFocusable(false);
@@ -954,8 +943,8 @@ public class customersView extends mp4.panels.misc.commonPanel implements mp4.da
         jToolBar2.add(jButton8);
         jToolBar2.add(jSeparator3);
 
-        jButton18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/medium/print_printer.png"))); // NOI18N
-        jButton18.setToolTipText("Drucken");
+        jButton18.setText("VCard");
+        jButton18.setToolTipText("Export");
         jButton18.setFocusable(false);
         jButton18.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton18.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -1002,7 +991,7 @@ public class customersView extends mp4.panels.misc.commonPanel implements mp4.da
     public void setContact(People c) {
         this.current = (Customer) c;
         this.changeTabText("Kunde: " + current.getName());
-        this.jTextField4.setText(current.getKundennummer());
+        this.jTextField4.setText(current.getNummer());
         this.jTextField5.setText(current.getFirma());
         this.jTextField6.setText(current.getAnrede());
         this.jTextField7.setText(current.getName());
@@ -1102,10 +1091,10 @@ public class customersView extends mp4.panels.misc.commonPanel implements mp4.da
 
             if (jTextField4.getText() == null || jTextField4.getText().length() == 0) {
                 String s = current.getNfh().getNextNumber();
-                current.setKundennummer(s);
+                current.setNummer(s);
             } else {
                 if (!current.getNfh().exists(jTextField4.getText())) {
-                    current.setKundennummer(jTextField4.getText());
+                    current.setNummer(jTextField4.getText());
                 } else {
                     Popup.notice("Angegebene Kundennummer existiert bereits.");
                     return false;
@@ -1129,9 +1118,9 @@ public class customersView extends mp4.panels.misc.commonPanel implements mp4.da
             current.save();
 
              setEdited(false);
-            mainframe.setMessage("Kunde Nummer " + current.getKundennummer() + " editiert.");
+            mainframe.setMessage("Kunde Nummer " + current.getNummer() + " editiert.");
             try {
-                new HistoryItem(ConnectionHandler.instanceOf(), Strings.CUSTOMER, "Kunde Nummer: " + current.getKundennummer() + " angelegt.");
+                new HistoryItem(ConnectionHandler.instanceOf(), Strings.CUSTOMER, "Kunde Nummer: " + current.getNummer() + " angelegt.");
             } catch (Exception ex) {
                 Popup.warn(ex.getMessage(), Popup.ERROR);
             }
@@ -1185,8 +1174,8 @@ public class customersView extends mp4.panels.misc.commonPanel implements mp4.da
                     current.setNotizen(jTextArea1.getText());
                     current.save();
                      setEdited(false);
-                    mainframe.setMessage("Kunde Nummer " + current.getKundennummer() + " editiert.");
-                    new HistoryItem(ConnectionHandler.instanceOf(), Strings.CUSTOMER, "Kunde Nummer: " + current.getKundennummer() + " editiert.");
+                    mainframe.setMessage("Kunde Nummer " + current.getNummer() + " editiert.");
+                    new HistoryItem(ConnectionHandler.instanceOf(), Strings.CUSTOMER, "Kunde Nummer: " + current.getNummer() + " editiert.");
                     updateListTable();
                 } catch (Exception ex) {
                     Popup.warn(ex.getMessage(), Popup.ERROR);
@@ -1286,10 +1275,16 @@ private void jButton14MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
 }//GEN-LAST:event_jButton14MouseClicked
 
 private void jButton18MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton18MouseClicked
-}//GEN-LAST:event_jButton18MouseClicked
+    if (current.isValid()) {//GEN-LAST:event_jButton18MouseClicked
+        DialogForFile dialog = new DialogForFile(DialogForFile.FILES_ONLY, current.getName() + ".vcf");
+        if (dialog.chooseFile()) {
+            new FileReaderWriter(dialog.getFile()).write(new VCard(current).getVCard());
+        }
+    }
+}                                      
 
 private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton20ActionPerformed
-    if (mainframe.getUser().doAction(User.EDITOR)) {
+    if (Popup.Y_N_dialog("Diesen Kontakt wirklich deaktivieren?") && mainframe.getUser().doAction(User.EDITOR)) {
         deactivate();
         this.close();
     }
@@ -1327,10 +1322,6 @@ private void jTextField17MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRS
     jTextField17.setEnabled(true);
 }//GEN-LAST:event_jTextField17MouseClicked
 
-private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-    undo();
-}//GEN-LAST:event_jButton6ActionPerformed
-
 private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
     new NumberFormatEditor(this.current);
 }//GEN-LAST:event_jButton16ActionPerformed
@@ -1349,7 +1340,7 @@ private void jTextField4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST
                 try {
                     current.deactivate(current.getId().toString());
 
-                    new HistoryItem(ConnectionHandler.instanceOf(), Strings.CUSTOMER, "Kunde Nummer: " + current.getKundennummer() + " gelöscht.");
+                    new HistoryItem(ConnectionHandler.instanceOf(), Strings.CUSTOMER, "Kunde Nummer: " + current.getNummer() + " gelöscht.");
 
                     this.liste = current.getAll(false);
                     String k = "id," + TABLE_CUSTOMER_FIELDS;
@@ -1374,7 +1365,6 @@ private void jTextField4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST
     public javax.swing.JButton jButton16;
     public javax.swing.JButton jButton18;
     public javax.swing.JButton jButton20;
-    public javax.swing.JButton jButton6;
     public javax.swing.JButton jButton7;
     public javax.swing.JButton jButton8;
     public javax.swing.JLabel jLabel1;
@@ -1447,13 +1437,7 @@ private void jTextField4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST
         this.updateListTable();
     }
 
-  public void addProduct(Product p) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
     private void updateListTable() {
-     
-
         this.jTable2.setModel(new ContactListTableModel(current));
         TableFormat.stripFirst(jTable2);
     }
@@ -1466,8 +1450,5 @@ private void jTextField4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST
         jTabbedPane1.setSelectedIndex(i);
     }
 
-    public void setTax(Steuersatz steuersatz) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 }
 

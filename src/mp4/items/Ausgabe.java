@@ -16,6 +16,8 @@
  */
 package mp4.items;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mp4.logs.*;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import java.util.Date;
@@ -81,7 +83,11 @@ public class Ausgabe extends mp4.items.Things implements mp4.datenbank.installat
     public Ausgabe(Integer id) {
         super(ConnectionHandler.instanceOf().clone( TABLE_DUES));
         this.id = Integer.valueOf(id);
-        this.explode(this.selectLast("*", "id", id.toString(), true));
+        try {
+            this.explode(this.selectLast("*", "id", id.toString(), true));
+        } catch (Exception ex) {
+             Log.Debug(ex);
+        }
         
     }
 

@@ -16,6 +16,8 @@
  */
 package mp4.items;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mp4.items.handler.ProductGroupHandler;
 import java.net.URI;
 import java.net.URL;
@@ -26,6 +28,7 @@ import mp4.datenbank.verbindung.ConnectionHandler;
 
 import mp4.datenbank.verbindung.Query;
 import mp4.items.handler.NumberFormatHandler;
+import mp4.logs.Log;
 import mp4.utils.datum.DateConverter;
 
 /**
@@ -95,13 +98,16 @@ public class Product extends mp4.items.Things implements mp4.datenbank.installat
 
     /**
      * 
-     * @param query
      * @param id
      */
     public Product(Integer id) {
         super(ConnectionHandler.instanceOf().clone(TABLE_PRODUCTS));
         this.id = Integer.valueOf(id);
-        this.explode(this.selectLast("*", "id", id.toString(), true));
+        try {
+            this.explode(this.selectLast("*", "id", id.toString(), true));
+        } catch (Exception ex) {
+             Log.Debug(ex);
+        }
 
         if (!this.getLieferantenId().equals(0)) {
             this.lieferant = new Lieferant(this.getLieferantenId());

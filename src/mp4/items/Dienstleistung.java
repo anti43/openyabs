@@ -16,6 +16,8 @@
  */
 package mp4.items;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mp4.items.handler.ProductGroupHandler;
 import java.util.Date;
 
@@ -25,6 +27,7 @@ import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.datenbank.verbindung.PrepareData;
 import mp4.datenbank.verbindung.Query;
 import mp4.items.handler.NumberFormatHandler;
+import mp4.logs.Log;
 import mp4.utils.datum.DateConverter;
 
 /**
@@ -74,13 +77,16 @@ public class Dienstleistung extends mp4.items.Things implements mp4.datenbank.in
 
     /**
      * 
-     * @param query
      * @param id
      */
     public Dienstleistung(Integer id) {
         super(ConnectionHandler.instanceOf().clone(TABLE_SERVICES));
         this.id = Integer.valueOf(id);
-        this.explode(this.selectLast("*", "id", id.toString(), true));
+        try {
+            this.explode(this.selectLast("*", "id", id.toString(), true));
+        } catch (Exception ex) {
+             Log.Debug(ex);
+        }
         this.isvalid = true;
         this.query = ConnectionHandler.instanceOf();
         nfh = new NumberFormatHandler(this, new Date());

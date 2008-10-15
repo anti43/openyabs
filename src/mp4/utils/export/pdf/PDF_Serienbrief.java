@@ -16,6 +16,7 @@
  */
 package mp4.utils.export.pdf;
 
+import mp4.utils.files.PDFFile;
 import java.awt.Image;
 import mp4.items.Customer;
 import mp4.einstellungen.Einstellungen;
@@ -28,6 +29,7 @@ import java.util.Date;
 
 
 import javax.print.DocFlavor;
+import mp4.einstellungen.Programmdaten;
 import mp4.interfaces.Template;
 
 import mp4.utils.datum.DateConverter;
@@ -69,11 +71,13 @@ public class PDF_Serienbrief implements Template{
     @SuppressWarnings("unchecked")
     private String[][] buildFieldList(){
 
-        fields.add(new String[]{"company", kontakt.getFirma()});
+        if(Programmdaten.instanceOf().getBILLPANEL_CHECKBOX_MITFIRMENNAME_state()) {
+            fields.add(new String[]{"company", kontakt.getFirma()});
+        }
         fields.add(new String[]{"name", kontakt.getAnrede() + " " + kontakt.getVorname() + " " + kontakt.getName()});
         fields.add(new String[]{"street", kontakt.getStr()});
         fields.add(new String[]{"city", kontakt.getPLZ() + " " + kontakt.getOrt()});      
-        fields.add(new String[]{"knumber", kontakt.getKundennummer()});
+        fields.add(new String[]{"knumber", kontakt.getNummer()});
         fields.add(new String[]{"date", DateConverter.getDefDateString(new Date())});
         if (named) {
             fields.add(new String[]{"pretext", pretext + " " + kontakt.getAnrede() + " " + kontakt.getName()});

@@ -16,9 +16,7 @@
  */
 package mp4.items;
 
-import java.util.Date;
 import mp4.datenbank.verbindung.Query;
-import mp4.items.visual.Popup;
 import mp4.logs.*;
 import mp4.datenbank.verbindung.ConnectionHandler;
 
@@ -33,14 +31,12 @@ public class RechnungPosten extends mp4.items.Things implements mp4.datenbank.in
     private String posten = "";
     private Double preis = 0.0;
     private Double steuersatz = 0.0;
-   public Integer id = 0;
+
 
     public RechnungPosten() {
          super(ConnectionHandler.instanceOf().clone(TABLE_BILLS_DATA));
     }
-    public Integer getId() {
-        return id;
-    }
+
     public void destroy() {
         this.delete(this.id);
         this.id = 0;
@@ -58,7 +54,11 @@ public class RechnungPosten extends mp4.items.Things implements mp4.datenbank.in
     public RechnungPosten(Query query, String id) {
         super(query.clone(TABLE_BILLS_DATA));
         this.id = Integer.valueOf(id);
-        this.explode(this.selectLast("*", "id", id, true));
+        try {
+            this.explode(this.selectLast("*", "id", id, true));
+        } catch (Exception ex) {
+             Log.Debug(ex);
+        }
     }
 
     public void deleteExistingOf(Rechnung bill) {

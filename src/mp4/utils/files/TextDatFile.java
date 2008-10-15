@@ -14,7 +14,7 @@
  *      You should have received a copy of the GNU General Public License
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mp4.utils.export.textdatei;
+package mp4.utils.files;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ import mp4.utils.files.FileReaderWriter;
 import mp4.utils.listen.ListenDataUtils;
 
 /**
- *
+ * This is a helper class for reading and writing csv files
  * @author anti43
  */
 public class TextDatFile extends File implements Waitable, Printable {
@@ -38,6 +38,10 @@ public class TextDatFile extends File implements Waitable, Printable {
     private String[][] data;
     private int mode;
 
+    /**
+     * Constructs a new temporary text file
+     * @param data The data to write to the file
+     */
     public TextDatFile(String[][] data) {
         super(FileDirectoryHandler.getTempFile().getPath());
         rw = new FileReaderWriter(this);
@@ -45,20 +49,28 @@ public class TextDatFile extends File implements Waitable, Printable {
         mode = 0;
         this.deleteOnExit();
     }
-
+    /**
+     * Constructs a new text file
+     * @param data The data to write to the file
+     * @param name The name/path of the file
+     */
     public TextDatFile(String[][] data, String name) {
         super(name);
         rw = new FileReaderWriter(this);
         this.data = data;
         mode = 0;
     }
-
+    /**
+     * Constructs a new file and sets 'read' mode
+     * @param file The file (to read from)
+     */
     public TextDatFile(File file) {
         super(file.getPath());
         rw = new FileReaderWriter(this);
         mode = 1;
     }
 
+    @Override
     public void waitFor() {
         switch (mode) {
             case 0:
@@ -69,6 +81,9 @@ public class TextDatFile extends File implements Waitable, Printable {
         }
     }
 
+    /**
+     * Write the file to disk
+     */
     public void print() {
 
         for (int i = 0; i < getData().length; i++) {
@@ -79,12 +94,15 @@ public class TextDatFile extends File implements Waitable, Printable {
                 line += string + getFieldSeparator();
             }  
             line = (line.substring(0, line.length() - getFieldSeparator().length())).replaceAll("[\\r\\n]","");
-;
             Log.Debug(line);
             rw.write(line);
         }
     }
 
+    /**
+     * Reads the file
+     * @return The data from file
+     */
     public String[][] read() {
         @SuppressWarnings("unchecked")
         ArrayList<String[]> arr = new ArrayList();
@@ -98,26 +116,44 @@ public class TextDatFile extends File implements Waitable, Printable {
         return data;
     }
 
+    @Override
     public DocFlavor getFlavor() {
         return DocFlavor.CHAR_ARRAY.TEXT_PLAIN;
     }
 
+    @Override
     public File getFile() {
         return this;
     }
 
+    /**
+     * 
+     * @return the field separating char
+     */
     public String getFieldSeparator() {
         return fieldSeparator;
     }
 
+    /**
+     * Set the field separating char (default: ';')
+     * @param fieldSeparator
+     */
     public void setFieldSeparator(String fieldSeparator) {
         this.fieldSeparator = fieldSeparator;
     }
 
+    /**
+     * 
+     * @return The data
+     */
     public String[][] getData() {
         return data;
     }
 
+    /**
+     * 
+     * @param data Set the data of the file
+     */
     public void setData(String[][] data) {
         this.data = data;
     }

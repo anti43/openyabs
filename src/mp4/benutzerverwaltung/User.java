@@ -18,6 +18,8 @@ package mp4.benutzerverwaltung;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mp4.items.visual.Popup;
 import mp4.items.Things;
 import mp4.logs.*;
@@ -55,7 +57,12 @@ public class User extends Things {
 
     public User(Integer id) {
         super(ConnectionHandler.instanceOf().clone(TABLE_USER));
-        String[] t = this.selectLast("*", "id", id.toString(), true);
+        String[] t = null;
+        try {
+            t = this.selectLast("*", "id", id.toString(), true);
+        } catch (Exception ex) {
+            Logger.getLogger(User.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         if (t != null && t.length > 0) {
 

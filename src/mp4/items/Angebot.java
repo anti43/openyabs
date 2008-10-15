@@ -16,6 +16,8 @@
  */
 package mp4.items;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mp4.items.handler.NumberFormatHandler;
 import java.util.Date;
 
@@ -84,7 +86,11 @@ public class Angebot extends mp4.items.Things implements mp4.datenbank.installat
     public Angebot(Integer id) {
         super(ConnectionHandler.instanceOf().clone(TABLE_OFFERS));
         this.id = id;
-        this.explode(this.selectLast(Strings.ALL, Strings.ID, id.toString(), true));
+        try {
+            this.explode(this.selectLast(Strings.ALL, Strings.ID, id.toString(), true));
+        } catch (Exception ex) {
+            Log.Debug(ex);
+        }
         this.query = ConnectionHandler.instanceOf();
         nfh = new NumberFormatHandler(this, getDatum());
 
@@ -145,7 +151,12 @@ public class Angebot extends mp4.items.Things implements mp4.datenbank.installat
     }
 
     public int search(Integer rechnungid) {
-        String[] in = this.selectLast("id", "rechnungid", rechnungid.toString(), true);
+        String[] in = null;
+        try {
+            in = this.selectLast("id", "rechnungid", rechnungid.toString(), true);
+        } catch (Exception ex) {
+            Log.Debug(ex);
+        }
         if (in != null && in.length > 0) {
             return Integer.valueOf(in[0]);
         } else {
@@ -312,7 +323,12 @@ public class Angebot extends mp4.items.Things implements mp4.datenbank.installat
     }
 
     private Integer getMyId() {
-        String[] str = this.selectLast("id", "Angebotnummer", this.getAngebotnummer(), false);
+        String[] str = null;
+        try {
+            str = this.selectLast("id", "Angebotnummer", this.getAngebotnummer(), false);
+        } catch (Exception ex) {
+             Log.Debug(ex);
+        }
         return Integer.valueOf(str[0]);
     }
 

@@ -246,7 +246,7 @@ private javax.swing.JToolBar jToolBar4;
         Customer c = new Customer( b.getKundenId());
 
         jTextArea3.setFont(new Font(Font.SANS_SERIF,Font.PLAIN, 12));
-        jTextArea3.setText(" Kundennummer: "+c.getKundennummer() + "\n\n " + c.getAnrede() + " " + c.getVorname() + " " + c.getName() + "\n " +
+        jTextArea3.setText(" Kundennummer: "+c.getNummer() + "\n\n " + c.getAnrede() + " " + c.getVorname() + " " + c.getName() + "\n " +
                 c.getStr() + "\n " + c.getPLZ() + "\n " + c.getOrt() + "\n\n Mail: " +
                 c.getMail() + "\n Telefonnummer: " + c.getTel() + "\n\n" +
                 " Datum: " + DateConverter.getDefDateString(current.getDatum()) + "\n Rechnungnummer: " + current.getRechnungnummer());

@@ -54,7 +54,7 @@ import mp4.utils.combobox.CheckComboRenderer;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.datum.vDate;
 import mp4.utils.export.druck.DruckJob;
-import mp4.utils.export.pdf.PDFFile;
+import mp4.utils.files.PDFFile;
 import mp4.utils.tabellen.DataModelUtils;
 import mp4.utils.tabellen.SelectionCheck;
 import mp4.utils.tabellen.TableCalculator;
@@ -324,7 +324,7 @@ public class billsView extends mp4.panels.misc.commonPanel implements panelInter
         oldcustomer = this.customer;
         this.customer = (Customer) c;
 
-        jLabel19.setText(customer.getKundennummer());
+        jLabel19.setText(customer.getNummer());
         jTextField5.setText(customer.getName());
         jTextField4.setText(customer.getFirma());
 

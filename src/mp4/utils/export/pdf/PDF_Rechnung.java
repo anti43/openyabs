@@ -31,6 +31,7 @@ import mp4.utils.ui.inputfields.InputVerifiers;
 
 import mp4.einstellungen.Einstellungen;
 
+import mp4.einstellungen.Programmdaten;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.listen.ListenDataUtils;
 import mp4.utils.zahlen.FormatNumber;
@@ -70,14 +71,15 @@ public class PDF_Rechnung implements Template{
     @SuppressWarnings("unchecked")
     private String[][] buildFieldList(){
 
-        fields.add(new String[]{"company", k.getFirma()});
-        fields.add(new String[]{"company", k.getFirma()});
+        if(Programmdaten.instanceOf().getBILLPANEL_CHECKBOX_MITFIRMENNAME_state()) {
+            fields.add(new String[]{"company", k.getFirma()});
+        }
         fields.add(new String[]{"name", k.getAnrede() + " " + k.getVorname() + " " + k.getName()});
         fields.add(new String[]{"street", k.getStr()});
         fields.add(new String[]{"city", k.getPLZ() + " " + k.getOrt()});
         fields.add(new String[]{"date", DateConverter.getDefDateString(r.getDatum())});
         fields.add(new String[]{"number", r.getRechnungnummer()});
-        fields.add(new String[]{"knumber", k.getKundennummer()});
+        fields.add(new String[]{"knumber", k.getNummer()});
 
         for (int i = 0; i < products.length; i++) {
             int t = i + 1;

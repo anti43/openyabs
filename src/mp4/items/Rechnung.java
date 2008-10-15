@@ -16,6 +16,8 @@
  */
 package mp4.items;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mp4.items.handler.NumberFormatHandler;
 import mp4.einstellungen.Einstellungen;
 import java.text.DecimalFormat;
@@ -115,7 +117,11 @@ public class Rechnung extends mp4.items.Things implements mp4.datenbank.installa
     public Rechnung(Integer id) {
         super(ConnectionHandler.instanceOf().clone(TABLE_BILLS));
         this.id = Integer.valueOf(id);
-        this.explode(this.selectLast(Strings.ALL, Strings.ID, id.toString(), true));
+        try {
+            this.explode(this.selectLast(Strings.ALL, Strings.ID, id.toString(), true));
+        } catch (Exception ex) {
+             Log.Debug(ex);
+        }
         this.query = ConnectionHandler.instanceOf().clone(TABLE_BILLS);
         zeilenHandler = new RechnungBetreffZZR(id);
 
@@ -424,7 +430,12 @@ public class Rechnung extends mp4.items.Things implements mp4.datenbank.installa
     }
 
     private Integer getMyId() {
-        String[] str = this.selectLast("id", "rechnungnummer", this.getRechnungnummer(), false);
+        String[] str = null;
+        try {
+            str = this.selectLast("id", "rechnungnummer", this.getRechnungnummer(), false);
+        } catch (Exception ex) {
+            Logger.getLogger(Rechnung.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return Integer.valueOf(str[0]);
     }
 

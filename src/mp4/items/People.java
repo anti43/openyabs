@@ -16,210 +16,229 @@
  */
 package mp4.items;
 
-import mp4.items.visual.Popup;
-import javax.swing.JTable;
+import mp4.datenbank.verbindung.EasyQuery;
+import mp4.datenbank.verbindung.PrepareData;
 
 import mp4.interfaces.Queries;
 import mp4.datenbank.verbindung.Query;
+import mp4.logs.Log;
 
 /**
  *
  * @author anti
  */
-public abstract class People implements Queries, mp4.datenbank.installation.Tabellen {
+public abstract class People extends EasyQuery implements Queries, mp4.datenbank.installation.Tabellen {
 
     public Integer id = 0;
     public boolean isSaved = false;
-    private Query q;
+
+    
+    private String Nummer = "";
+    private String Firma = "";
+    private String Anrede = "";
+    private String Vorname = "";
+    private String Name = "";
+    private String Str = "";
+    private String PLZ = "";
+    private String Ort = "";
+    private String Tel = "";
+    private String Fax = "";
+    private String Mobil = "";
+    private String Mail = "";
+    private String Webseite = "";
+    private String Notizen = "";
 
     public People(Query query) {
-
-        q = query;
+        super(query);
+    }
+    
+     public void setNummer(String Kundennummer) {
+        this.Nummer = Kundennummer;
+        this.isSaved = false;
     }
 
+    public String getFirma() {
+        return Firma;
+    }
+
+    public void setFirma(String Firma) {
+        this.Firma = Firma;
+        this.isSaved = false;
+    }
+
+    public String getAnrede() {
+        return Anrede;
+    }
+
+    public void setAnrede(String Anrede) {
+        this.Anrede = Anrede;
+        this.isSaved = false;
+    }
+
+    public String getVorname() {
+        return Vorname;
+    }
+
+    public void setVorname(String Vorname) {
+        this.Vorname = Vorname;
+        this.isSaved = false;
+    }
+
+    public String getName() {
+        return Name;
+    }
+
+    public void setName(String Name) {
+        this.Name = Name;
+        this.isSaved = false;
+    }
+
+    public String getStr() {
+        return Str;
+    }
+
+    public void setStr(String Str) {
+        this.Str = Str;
+        this.isSaved = false;
+    }
+
+    public String getPLZ() {
+        return PLZ;
+    }
+
+    public void setPLZ(String PLZ) {
+        this.PLZ = PLZ;
+        this.isSaved = false;
+    }
+
+    public String getOrt() {
+        return Ort;
+    }
+
+    public void setOrt(String Ort) {
+        this.Ort = Ort;
+        this.isSaved = false;
+    }
+
+    public String getTel() {
+        return Tel;
+    }
+
+    public void setTel(String Tel) {
+        this.Tel = Tel;
+        this.isSaved = false;
+    }
+
+    public String getMobil() {
+        return Mobil;
+    }
+
+    public void setMobil(String Mobil) {
+        this.Mobil = Mobil;
+        this.isSaved = false;
+    }
+
+    public String getMail() {
+        return Mail;
+    }
+
+    public void setMail(String Mail) {
+        this.Mail = Mail;
+        this.isSaved = false;
+    }
+
+    public String getWebseite() {
+        return Webseite;
+    }
+
+    public void setWebseite(String Webseite) {
+        this.Webseite = Webseite;
+        this.isSaved = false;
+    }
+
+    public String getNotizen() {
+        return Notizen;
+    }
+
+    public void setNotizen(String Notizen) {
+        this.Notizen = Notizen;
+        this.isSaved = false;
+    }
+    
+    public String getNummer() {
+        return Nummer;
+    }
+    
+    
+    public String getFax() {
+        return Fax;
+    }
+
+    public void setFax(String Fax) {
+        this.Fax = Fax;
+        this.isSaved = false;
+    }
+    
     /**
-     * Deletes the item with the given id
-     * @param id
-     * @return 1 if successfull
+     * Collect the data, MUST be overridden with PrepareData.finalize(collect())
+     * @return The database insert string
      */
-    public int delete(Integer id) {
-        String[] where = {"id", id.toString(), ""};
-        return q.delete(where);
+    public String collect() {
+        String str = PrepareData.prepareString(this.getNummer());
+        str = str + PrepareData.prepareString(this.getFirma());
+        str = str + PrepareData.prepareString(this.getAnrede());
+        str = str + PrepareData.prepareString(this.getVorname());
+        str = str + PrepareData.prepareString(this.getName());
+        str = str + PrepareData.prepareString(this.getStr());
+        str = str + PrepareData.prepareString(this.getPLZ());
+        str = str + PrepareData.prepareString(this.getOrt());
+        str = str + PrepareData.prepareString(this.getTel());
+        str = str + PrepareData.prepareString(this.getFax());
+        str = str + PrepareData.prepareString(this.getMobil());
+        str = str + PrepareData.prepareString(this.getMail());
+        str = str + PrepareData.prepareString(this.getWebseite());
+        str = str + PrepareData.prepareString(this.getNotizen());
+        return str;
     }
 
-    /**
-     * 
-     * @param id
-     * @return
-     */
-    public int deactivate(String id) {
-
-        String[] where = {"id", id, ""};
-        String[] what = {"deleted", "1", ""};
-        return q.update(what, where);
+    public void expose() {
+        System.out.println(collect());
     }
 
-    @Override
-    public void finalize() {//        if (!isSaved) {
-//            this.save();
-//        }
+    public void explode(String[] str) {
+        try {
+            this.id = Integer.valueOf(str[0]);
+            this.setNummer(str[1]);
+            this.setFirma(str[2]);
+            this.setAnrede(str[3]);
+            this.setVorname(str[4]);
+            this.setName(str[5]);
+            this.setStr(str[6]);
+            this.setPLZ(str[7]);
+            this.setOrt(str[8]);
+            this.setTel(str[9]);
+            this.setFax(str[10]);
+            this.setMobil(str[11]);
+            this.setMail(str[12]);
+            this.setWebseite(str[12 + 1]);
+            this.setNotizen(str[12 + 2]);
+        } catch (Exception exception) {
+            Log.Debug(exception);
+        }
     }
 
     public Integer getId() {
         return id;
     }
 
-    /**
-     * 
-     * @param set
-     * @param value
-     * @param id
-     * @return rowcount
-     */
-    public int update(String set, String value, String id) {
-        String[] where = {"id", id, ""};
-        String[] what = {set, value, "'"};
-        return q.update(what, where);
-    }
-
-    /**
-     * 
-     * example: "*", name , anti43 , false 
-     * 
-     * @param what
-     * @param from
-     * @param where
-     * @param id
-     * @return
-     */
-    public String[][] select(String what, String from, String where, boolean id) {
-        String hk = "'";
-        if (id) {
-            hk = "";
-
-            if (from.equals("id") && where.equals("0")) {
-
-                Popup.error(from + " = " + where, "Abfrage nicht möglich.");
-                return null;
-            }
-
-        }
-
-        String[] wher = {from, where, hk};
-        if (from == null) {
-            wher = null;
-        }
-
-        return q.select(what, wher, false);
-    }
-
-    /**
-     * 
-     * example: "*", name , anti43 , false 
-     * 
-     * @param what
-     * @param from
-     * @param where
-     * @param id
-     * @return
-     */
-    public String[] selectFirst(String what, String from, String where, boolean id) {
-        String hk = "'";
-        if (id) {
-            hk = "";
-            if (from.equals("id") && where.equals("0")) {
-
-                Popup.error(from + " = " + where, "Abfrage nicht möglich.");
-                return null;
-            }
-        }
-
-        String[] wher = {from, where, hk};
-
-        return q.selectFirst(what, wher);
-    }
-
-    /**
-     * Example: "*", "Name", "anti43", "Name", true
-     * will return everyone who`s name is like "anti43" sortet by name.
-     * eg. anti43, anti43web
-     * 
-     * @param what
-     * @param from
-     * @param where
-     * @param order
-     * @param like
-     * @return A multidimensional string-array containing the data found
-     */
-    public String[][] select(String what, String from, String where, String order, boolean like) {
-        String hk = "'";
-
-        String[] wher = {from, where, hk};
-        if (from == null) {
-            wher = null;
-        }
-
-        return q.select(what, wher, order, like, false, false);
-    }
-
-    /**
-     * 
-     * example: "*", name , anti43 , false 
-     * 
-     * @param what
-     * @param from
-     * @param where
-     * @param id
-     * @return
-     * @throws Exception 
-     */
-    public String[] selectLast(String what, String from, String where, boolean id) throws Exception {
-        String hk = "'";
-        if (id) {
-            hk = "";
-            if (from.equals("id") && where.equals("0")) {
-                throw new Exception(from + " = " + where + " Abfrage nicht möglich.");
-            }
-        }
-
-        String[] wher = {from, where, hk};
-
-        return q.selectLast(what, wher);
-    }
-
-    public int insert(String set, String value, int[] unique) {
-        String[] str = {set, value, ""};
-        return q.insert(str, unique);
-    }
-
+    
     public void destroy() {
         this.delete(this.id);
         this.id = 0;
     }
 
-    public Integer getNextNumber(String what) {
-        return q.getNextIndexOfIntCol(what);
-    }
 
-    public String getNextStringNumber(String what) {
-        return q.getNextStringNumber(what);
-    }
 
-//    /**
-//     * Hides he first column of a table (usually "id")
-//     * @param table
-//     */
-//    public void stripFirst(JTable table) {
-//
-//        table.getColumn(table.getColumnName(0)).setWidth(0);
-//        table.getColumn(table.getColumnName(0)).setPreferredWidth(0);
-//        table.getColumn(table.getColumnName(0)).setMinWidth(0);
-//        table.getColumn(table.getColumnName(0)).setMaxWidth(0);
-//
-//        table.doLayout();
-//
-//
-//    }
 
     /**
      * to be overwritten..

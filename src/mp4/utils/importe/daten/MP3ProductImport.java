@@ -50,7 +50,7 @@ public class MP3ProductImport extends SwingWorker {
                 Lieferant nlief = new Lieferant();
                 nlief.setFax(lief2.getFax());
                 nlief.setFirma(lief2.getFirma());
-                nlief.setLieferantennummer(lief2.getLieferantennummer());
+                nlief.setNummer(lief2.getLieferantennummer());
                 nlief.setMail(lief2.getMail());
                 nlief.setMobil(lief2.getMobil());
                 nlief.setName(lief2.getFirma());

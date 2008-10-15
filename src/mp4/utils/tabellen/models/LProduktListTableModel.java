@@ -37,7 +37,7 @@ public class LProduktListTableModel extends MPTableModel {
                     java.lang.String.class, java.lang.String.class,
                     java.lang.String.class
                 }, new boolean[]{false,false,false,false,false},
-                new Product().select("id, produktnummer, name, datum, vk ", "lieferantenid", current.getid(), "produktnummer DESC ", false, true, false),
+                new Product().select("id, produktnummer, name, datum, vk ", "lieferantenid", current.getId().toString(), "produktnummer DESC ", false, true, false),
                 new Object[]{"id", "Nummer","Name","Datum", "VK"});
     }
     public LProduktListTableModel(Hersteller current){

@@ -16,8 +16,8 @@
  */
 package mp4.items;
 
-import java.util.Date;
 import mp4.datenbank.verbindung.Query;
+import mp4.logs.Log;
 
 /**
  * @author anti43         
@@ -30,6 +30,7 @@ public class ProductGroupGroup extends mp4.items.Things implements mp4.datenbank
     private String[][] data;
     private Query query;
     public Integer id = 0;
+
 
     public Integer getId() {
         return id;
@@ -49,7 +50,11 @@ public class ProductGroupGroup extends mp4.items.Things implements mp4.datenbank
         super(query.clone(TABLE_PRODUCTS_GROUPS_GROUP_FIELDS));
 
         this.id = id;
-        this.explode(this.selectLast("*", "id", id.toString(), true));
+        try {
+            this.explode(this.selectLast("*", "id", id.toString(), true));
+        } catch (Exception ex) {
+             Log.Debug(ex);
+        }
         this.query = query;
     }
 

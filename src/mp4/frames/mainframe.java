@@ -95,7 +95,7 @@ import mp4.plugin.mpplugin;
 import mp4.plugin.pluginHandler;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.export.textdatei.Kontaktliste;
-import mp4.utils.export.textdatei.TextDatFile;
+import mp4.utils.files.TextDatFile;
 import mp4.utils.files.Browser;
 
 import mp4.utils.files.DialogForFile;

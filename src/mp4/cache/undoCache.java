@@ -280,12 +280,12 @@ public class undoCache {
         } else if (item.getClass().isInstance(new Customer())) {
 
             Customer it = (Customer) item;
-            text = "Kunde Nummer " + it.getKundennummer() + text;
+            text = "Kunde Nummer " + it.getNummer() + text;
 
         } else if (item.getClass().isInstance(new Lieferant())) {
 
             Lieferant it = (Lieferant) item;
-            text = "Lieferant Nummer " + it.getLieferantennummer() + text;
+            text = "Lieferant Nummer " + it.getNummer() + text;
         }else if (item.getClass().isInstance(new Hersteller())) {
 
             Hersteller it = (Hersteller) item;

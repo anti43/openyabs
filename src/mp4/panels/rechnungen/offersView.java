@@ -253,7 +253,7 @@ public class offersView extends mp4.panels.misc.commonPanel implements panelInte
         oldcustomer = this.customer;
         this.customer = (Customer) c;
 
-        jLabel19.setText(customer.getKundennummer());
+        jLabel19.setText(customer.getNummer());
         jTextField5.setText(customer.getName());
         jTextField4.setText(customer.getFirma());
 

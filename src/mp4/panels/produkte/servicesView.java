@@ -154,7 +154,6 @@ public class servicesView extends mp4.panels.misc.commonPanel implements mp4.dat
 
         jPanel1 = new javax.swing.JPanel();
         jToolBar2 = new javax.swing.JToolBar();
-        jButton11 = new javax.swing.JButton();
         jButton20 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
@@ -224,20 +223,8 @@ public class servicesView extends mp4.panels.misc.commonPanel implements mp4.dat
         jToolBar2.setFloatable(false);
         jToolBar2.setRollover(true);
 
-        jButton11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/medium/undo.png"))); // NOI18N
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("viewMasks/service"); // NOI18N
-        jButton11.setToolTipText(bundle.getString("servicesView.jButton11.toolTipText")); // NOI18N
-        jButton11.setFocusable(false);
-        jButton11.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton11.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton11.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton11ActionPerformed(evt);
-            }
-        });
-        jToolBar2.add(jButton11);
-
         jButton20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/medium/tab_remove.png"))); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("viewMasks/service"); // NOI18N
         jButton20.setToolTipText(bundle.getString("servicesView.jButton20.toolTipText")); // NOI18N
         jButton20.setFocusable(false);
         jButton20.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -919,12 +906,8 @@ private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
 }//GEN-LAST:event_jButton3ActionPerformed
 
-private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
-    undo();
-}//GEN-LAST:event_jButton11ActionPerformed
-
 private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton20ActionPerformed
-    if (mainframe.getUser().doAction(User.EDITOR)) {
+    if (Popup.Y_N_dialog("Diesen Datensatz wirklich deaktivieren?") && mainframe.getUser().doAction(User.EDITOR)) {
         deactivate();
         this.close();
     }
@@ -987,7 +970,6 @@ private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton jButton10;
-    public javax.swing.JButton jButton11;
     public javax.swing.JButton jButton13;
     public javax.swing.JButton jButton16;
     public javax.swing.JButton jButton18;

@@ -37,7 +37,7 @@ public class VariablenZuText {
 
     private static String parseKunde(String text, Customer customer) {
           return text.replaceAll(VariablenZuText.KUNDE_NAME, customer.getName()).
-                replaceAll(VariablenZuText.KUNDE_NUMMER  , customer.getKundennummer()).
+                replaceAll(VariablenZuText.KUNDE_NUMMER  , customer.getNummer()).
                 replaceAll(VariablenZuText.KUNDE_ANREDE  , customer.getAnrede()).
                 replaceAll(VariablenZuText.KUNDE_VORNAME , customer.getVorname());
               

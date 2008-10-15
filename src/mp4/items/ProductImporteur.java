@@ -177,7 +177,7 @@ public class ProductImporteur {
             if(imp.getWarengruppenfamilie().equals(""))imp.setWarengruppenfamilie("1");
             if(imp.getWarengruppe().equals(""))imp.setWarengruppe("1");
             
-            if(sup!=null)imp.setLieferantenid(sup.getid());
+            if(sup!=null)imp.setLieferantenid(sup.getId().toString());
             
             
             str[i] = imp;

@@ -17,12 +17,14 @@
 
 package mp4.utils.export.textdatei;
 
+import mp4.items.People;
+
 /**
  *
  * @author anti43
  */
 public class VCard{
-  private String name = "";
+    private String vname = "";
     private String nName = "";
     private String comment = "";
     private String title = "";
@@ -34,6 +36,22 @@ public class VCard{
     private String email = "";
 
 
+    public VCard(People contact){
+    
+        this.setName(contact.getName());
+        this.setNName(contact.getName());
+        this.setAddress(contact.getStr() + "," + contact.getPLZ() + "," + contact.getOrt());
+        this.setComment(contact.getNotizen());
+        this.setEmail(contact.getMail());
+        this.setTitle(contact.getAnrede());
+        this.setOrganisation(contact.getFirma());
+        this.setPhone(contact.getTel());
+        this.setFax(contact.getFax());
+        this.setMobile(contact.getMobil());
+        this.setEmail(contact.getMail());
+    
+    }
+    
   /**
    *  This function returns a String containing the VCard.
    * @return 
@@ -51,7 +69,6 @@ public class VCard{
       + "TEL;Fax:" + getFax() + "\n"
       + "TEL;Cell:" + getMobile() + "\n"
       + "EMAIL;Internet:" + getEmail() + "\n"
-      + "EMAIL;Internet:" + getEmail() + "\n"
       + "VERSION:2.1\n"
       + "END:VCARD\n";
 
@@ -59,11 +76,11 @@ public class VCard{
   }
 
     public String getName() {
-        return name;
+        return vname;
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.vname = name;
     }
 
     public String getNName() {

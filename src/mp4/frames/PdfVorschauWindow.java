@@ -143,7 +143,7 @@ private javax.swing.JPanel jPanel1;
 // End of variables declaration//GEN-END:variables
     public void set(Object object) {
 
-        file = ((mp4.utils.export.pdf.PDFFile) object);
+        file = ((mp4.utils.files.PDFFile) object);
 
         try {
             initComponents();

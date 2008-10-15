@@ -53,9 +53,9 @@ public class MP3BasicImport extends SwingWorker {
             try {
                 kunde.LEGACYexplode(singleVals);
                 kunde.save();
-                textarea.append("\nErfolgreich: (Kunde " + kunde.getKundennummer() + ") ");
+                textarea.append("\nErfolgreich: (Kunde " + kunde.getNummer() + ") ");
             } catch (Exception e) {
-                textarea.append("\nFehler: (Kunde " + kunde.getKundennummer() + ") " + e.getMessage());
+                textarea.append("\nFehler: (Kunde " + kunde.getNummer() + ") " + e.getMessage());
             }
 
 

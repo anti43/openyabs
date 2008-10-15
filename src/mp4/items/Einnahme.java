@@ -17,6 +17,8 @@
 package mp4.items;
 
 /*import mp3.classes.objects.*;*/
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.einstellungen.Einstellungen;
 import java.util.Date;
@@ -109,7 +111,11 @@ public class Einnahme extends mp4.items.Things implements mp4.datenbank.installa
     public Einnahme(Integer id) {
         super(ConnectionHandler.instanceOf().clone(TABLE_INCOME));
         this.id = Integer.valueOf(id);
-        this.explode(this.selectLast("*", "id", id.toString(), true));
+        try {
+            this.explode(this.selectLast("*", "id", id.toString(), true));
+        } catch (Exception ex) {
+             Log.Debug(ex);
+        }
     }
 
     /**
@@ -120,7 +126,11 @@ public class Einnahme extends mp4.items.Things implements mp4.datenbank.installa
     public Einnahme(Query query, String id) {
         super(query.clone(TABLE_INCOME));
         this.id = Integer.valueOf(id);
-        this.explode(this.selectLast("*", "id", id, true));
+        try {
+            this.explode(this.selectLast("*", "id", id, true));
+        } catch (Exception ex) {
+             Log.Debug(ex);
+        }
     }
 
     /**

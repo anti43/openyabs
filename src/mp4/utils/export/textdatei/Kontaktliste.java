@@ -29,7 +29,12 @@ import mp4.utils.listen.ArrayUtils;
  */
 public class Kontaktliste implements TableData, Tabellen{
     private Query queryhandler;
+    private String[] where = null;
 
+    /**
+     * 
+     * @param clazz The contact type
+     */
     public Kontaktliste(Class clazz) {
     
         if (clazz.isInstance(new mp4.items.Customer())) {
@@ -41,19 +46,31 @@ public class Kontaktliste implements TableData, Tabellen{
         } 
     }
 
-    public Kontaktliste(Class clazz, Integer id) {
+    /**
+     * 
+     * @param clazz The contact type
+     * @param kontakt_id The id of the contact
+     */
+    public Kontaktliste(Class clazz, Integer kontakt_id) {
+        if (clazz.isInstance(new mp4.items.Customer())) {
+           queryhandler = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(TABLE_CUSTOMERS);
+        } else if (clazz.isInstance(new mp4.items.Lieferant())) {
+           queryhandler = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(TABLE_SUPPLIER);
+        } else if (clazz.isInstance(new mp4.items.Hersteller())) {
+           queryhandler = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(TABLE_MANUFACTURER); 
+        } 
+        
+        where = new String[]{"id", kontakt_id.toString(), ""};
     }
-//Name	E-mail Address	Notes	E-mail 2 Address	E-mail 3 Address	
-//Mobile Phone	Pager	Company	Job Title	Home Phone	
-//Home Phone 2	Home Fax	Home Address	Business Phone	
-//Business Phone 2	Business Fax	Business Address	
-//Other Phone	Other Fax	Other Address																																																																																																																																																																																																																																												
+																																																																																																																																																																																																																																											
+    @Override
     public Object[][] getData() {
         return ArrayUtils.merge(new String[][]{{"Name","E-mail Address","Notes","Mobile Phone",
                 "Company","Business Phone", "Business Fax","Business Address"}
-        }, queryhandler.select("vorname||' '||name,mail,notizen,mobil,firma,tel,fax,str||' '||plz||' '||ort", null));
+        }, queryhandler.select("vorname||' '||name,mail,notizen,mobil,firma,tel,fax,str||' '||plz||' '||ort", where));
     }
 
+    @Override
     public String getTitle() {
         return "Kontakte " + DateConverter.getTodayDefDate();
     }
