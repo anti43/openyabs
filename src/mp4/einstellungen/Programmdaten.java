@@ -47,7 +47,6 @@ public class Programmdaten implements mp4.datenbank.installation.Tabellen {
         pluginhandler.addRow(elem.getUID().toString(), null);
     }
 
-
     public boolean getONLOAD(mpplugin elem) {
         if (pluginhandler.getString(elem.getUID().toString()) != null) {
             return true;
@@ -74,6 +73,14 @@ public class Programmdaten implements mp4.datenbank.installation.Tabellen {
 
     public String getWARENGRUPPEN_SEPARATOR() {
         return datahandler.getString("WARENGRUPPEN_SEPARATOR");
+    }
+
+    public void setBILLPANEL_CHECKBOX_MITFIRMENNAME(boolean BILLPANEL_CHECKBOX_MITFIRMENNAME) {
+        datahandler.setBoolean("BILLPANEL_CHECKBOX_MITFIRMENNAME", BILLPANEL_CHECKBOX_MITFIRMENNAME);
+    }
+
+    public boolean getBILLPANEL_CHECKBOX_MITFIRMENNAME_state() {
+        return datahandler.getBoolean("BILLPANEL_CHECKBOX_MITFIRMENNAME");
     }
 
     public void setPRODUCTPICKER_EAN(boolean PRODUCTPICKER_EAN) {
@@ -168,6 +175,22 @@ public class Programmdaten implements mp4.datenbank.installation.Tabellen {
         datahandler.setBoolean("BILLPANELCHECKBOXMITLIEFERSCHEIN", BILLPANEL_CHECKBOX_MITLIEFERSCHEIN);
     }
 
+    public boolean getBILLPANEL_CHECKBOX_MITANEGBOT_state() {
+        return datahandler.getBoolean("BILLPANEL_CHECKBOX_MITANGEBOT");
+    }
+
+    public void setBILLPANEL_CHECKBOX_MITANGEBOT(boolean BILLPANEL_CHECKBOX_MITANGEBOT) {
+        datahandler.setBoolean("BILLPANEL_CHECKBOX_MITANGEBOT", BILLPANEL_CHECKBOX_MITANGEBOT);
+    }
+
+    public void setBILLPANEL_CHECKBOX_NETTOPREISE(boolean BILLPANEL_CHECKBOX_NETTOPREISE) {
+        datahandler.setBoolean("BILLPANEL_CHECKBOX_NETTOPREISE", BILLPANEL_CHECKBOX_NETTOPREISE);
+    }
+
+    public boolean getBILLPANEL_CHECKBOX_NETTOPREISE_state() {
+        return datahandler.getBoolean("BILLPANEL_CHECKBOX_NETTOPREISE");
+    }
+
     public Integer getMAINFRAME_TAB() {
         return datahandler.getInteger("MAINFRAME_TAB");
     }
@@ -223,21 +246,20 @@ public class Programmdaten implements mp4.datenbank.installation.Tabellen {
     public void setPLUGIN_FOLDER(String PLUGIN_FOLDER) {
         datahandler.setString("PLUGIN_FOLDER", PLUGIN_FOLDER);
     }
-    
+
     public void setBILLPANEL_MASK(String BILLPANEL_MASK) {
         datahandler.setString("BILLPANEL_MASK", BILLPANEL_MASK);
     }
-    
+
     public String getBILLPANEL_MASK() {
-       return datahandler.getString("BILLPANEL_MASK");
+        return datahandler.getString("BILLPANEL_MASK");
     }
-    
+
     public String getSERVICEPANEL_MASK() {
-       return datahandler.getString("SERVICEPANEL_MASK");
+        return datahandler.getString("SERVICEPANEL_MASK");
     }
-  
+
     public void setSERVICEPANEL_MASK(String SERVICEPANEL_MASK) {
         datahandler.setString("SERVICEPANEL_MASK", SERVICEPANEL_MASK);
     }
-    
 }
