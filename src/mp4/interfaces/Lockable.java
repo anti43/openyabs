@@ -26,8 +26,9 @@ public interface Lockable {
 
     /**
      * Lock the dataset 
+     * @return True if lock was sucessfull
      */
-    public abstract void lock();
+    public abstract boolean lock();
     
     /**
      * Unlock the dataset

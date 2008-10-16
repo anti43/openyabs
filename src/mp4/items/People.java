@@ -16,8 +16,6 @@
  */
 package mp4.items;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mp4.datenbank.installation.Tabellen;
 import mp4.datenbank.verbindung.EasyQuery;
 import mp4.datenbank.verbindung.PrepareData;
@@ -25,7 +23,6 @@ import mp4.datenbank.verbindung.PrepareData;
 import mp4.interfaces.Queries;
 import mp4.datenbank.verbindung.Query;
 import mp4.interfaces.Lockable;
-import mp4.items.visual.Popup;
 import mp4.logs.Log;
 
 /**
@@ -50,20 +47,24 @@ public abstract class People extends EasyQuery implements Queries, Tabellen, Loc
     private String Mail = "";
     private String Webseite = "";
     private String Notizen = "";
+    private Query query;
+    private DataLock datalock;
 
 
     public People(Query query) {
         super(query);
+        this.query = query;
     }
 
     @Override
-    public void lock() {
-
+    public boolean lock() {
+        datalock = new DataLock(query, id);
+        return datalock.lockRow();
     }
 
     @Override
     public void unlock() {
- 
+        datalock.unLockRow();
     }
     
     @Override

@@ -36,6 +36,8 @@ public abstract class Things extends EasyQuery implements Queries, mp4.datenbank
     public Integer id = 0;
     public boolean isSaved = false;
     public NumberFormatHandler nfh;
+    private Query query;
+    private DataLock datalock;
 
 
     /**
@@ -47,14 +49,16 @@ public abstract class Things extends EasyQuery implements Queries, mp4.datenbank
     }
 
     @Override
-    public void lock() {
- 
+    public boolean lock() {
+        datalock = new DataLock(query, id);
+        return datalock.lockRow();
     }
 
     @Override
     public void unlock() {
-       
+        datalock.unLockRow();
     }
+    
 
     /**
      * Needed for cloning subclasses
