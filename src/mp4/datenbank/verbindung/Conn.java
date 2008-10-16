@@ -55,19 +55,8 @@ public class Conn implements Strings {
             connector = new Conn();
         }
         return connector;
-    }//    /**
-//     * 
-//     * @param create 
-//     * @return Database connector
-//     * @throws Exception 
-//     */
-//    public static Conn instanceOf() throws Exception {
-//        if (connector == null) {
-//            connector = new Conn();
-//        }
-//        return connector;
-//
-//    }
+    }
+
     private static Statement statement;
     private static java.sql.Connection conn;
     private static boolean tablesCreated = false;
@@ -88,7 +77,7 @@ public class Conn implements Strings {
      */
     public void createDatabase() throws Exception {
         getCreatingConnection();
-        tablesCreated = this.query(ctype.getSQL_Command());
+        tablesCreated = this.query(ctype.getTableCreating_SQLCommand());
         this.query(Daten.SQL_COMMAND);
         Conn.shutdown();
     }

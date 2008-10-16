@@ -20,10 +20,7 @@ import java.awt.Cursor;
 
 import java.sql.*;
 import java.util.Date;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
@@ -52,7 +49,6 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
     private int resultCount;
     private int substringcount = 0;
     private static JFrame comp = new JFrame();
-    private DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss");
 
     public Query(String table) throws Exception {
         this.table = table;
@@ -520,15 +516,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
         return null;
     }
 
-    /**
-     * 
-     * @param what  : {set, value, "'"}
-     *   this.insert("name,wert", "'Sprache (Waehrung, z.B. Schweiz:  de_CH' ,'de_DE'");
-     * @param unique 
-     * @return id of inserted row
-     */
-    public int insert(String[] what, int[] unique) {
-
+    public int insert(String[] what, int[] uniquecols) {
         what[1] = what[1].replaceAll("'", "`");
         what[1] = what[1].replaceAll("\\(;;2#4#1#1#8#0#;;\\)", "'");
         what[1] = what[1].replaceAll("\\(;;\\,;;\\)", ",");
@@ -536,9 +524,9 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
         start();
 
        
-           if (unique!=null) {
-            for (int i = 0; i < unique.length; i++) {
-                int j = unique[i];
+           if (uniquecols!=null) {
+            for (int i = 0; i < uniquecols.length; i++) {
+                int j = uniquecols[i];
                 String[][] val = select(what[0].split(",")[j], new String[]{what[0].split(",")[j], what[1].split(",")[j], what[2]});
                 if (val != null && val.length > 0) {
                     Popup.error("Wert für `" + what[0].split(",")[j] + "´ existiert bereits: " + val[0][0] +
@@ -549,7 +537,6 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
                 }
             }
         }
-        
 
         query = "INSERT INTO " + table + " (" + what[0] + " ) VALUES (" + what[1] + ") ";
         Log.Debug(query, true);
@@ -588,6 +575,16 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
         }
         stop();
         return id;
+    }
+
+    /**
+     * 
+     * @param what  : {set, value, "'"}
+     *   this.insert("name,wert", "'Sprache (Waehrung, z.B. Schweiz:  de_CH' ,'de_DE'");
+     * @return id of inserted row
+     */
+    public int insert(String[] what) {        
+        return insert(what, null);
     }
 
     /**
@@ -654,7 +651,6 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
      * 
      * @param what
      * @param where : {value, comparison, "'"}
-     * @param ghosts deleted
      * @return last matching result as string array
      */
     @SuppressWarnings("unchecked")

@@ -45,8 +45,8 @@ public class EasyQuery implements Queries {
      * @return rowcount
      */
     @Override
-    public int update(String set, String value, String id) {
-        String[] where = {"id", id, ""};
+    public int update(String set, String value, Integer id) {
+        String[] where = {"id", id.toString(), ""};
         String[] what = {set, value, "'"};
         return q.update(what, where);
     }
@@ -90,12 +90,12 @@ public class EasyQuery implements Queries {
      * @param what
      * @param from
      * @param where
-     * @param id
+     * @param integerValue 
      * @return
      */
-    public String[] selectFirst(String what, String from, String where, boolean id) {
+    public String[] selectFirst(String what, String from, String where, boolean integerValue) {
         String hk = "'";
-        if (id) {
+        if (integerValue) {
             hk = "";
             if (from.equals("id") && where.equals("0")) {
 
@@ -158,9 +158,15 @@ public class EasyQuery implements Queries {
     }
 
     @Override
-    public int insert(String set, String value, int[] unique) {
+    public int insert(String set, String value) {
         String[] str = {set, value, ""};
-        return q.insert(str, unique);
+        return q.insert(str);
+    }
+    
+
+    public int insert(String set, String value, int[] uniquecols) {
+        String[] str = {set, value, ""};
+        return q.insert(str, uniquecols);
     }
 
     @Override
@@ -224,12 +230,12 @@ public class EasyQuery implements Queries {
     }
 
     /**
-     * 
-     * @param set
+     * Update for non-id datasets
+     * @param set 
      * @param value
      * @param from
      * @param where
-     * @return
+     * @return The rows affected
      */
     public int update(String set, String value, String from, String where) {
         String[] wher = {from, where, "'"};

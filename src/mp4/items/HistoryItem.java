@@ -146,7 +146,7 @@ public class HistoryItem extends mp4.items.Things implements mp4.datenbank.insta
     public void save() {
 
         if (id > 0) {
-            this.update(TABLE_HISTORY_FIELDS, this.collect(), id.toString());
+            this.update(TABLE_HISTORY_FIELDS, this.collect(), id);
             isSaved = true;
         } else if (id == 0) {
             this.insert(TABLE_HISTORY_FIELDS, this.collect(),null);

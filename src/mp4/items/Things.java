@@ -21,25 +21,39 @@ import mp4.items.handler.NumberFormatHandler;
 import mp4.datenbank.verbindung.EasyQuery;
 import mp4.interfaces.Queries;
 import mp4.datenbank.verbindung.Query;
+import mp4.interfaces.Lockable;
 
 
 /**
  *
  * @author anti
  */
-public abstract class Things extends EasyQuery implements Queries, mp4.datenbank.installation.Tabellen {
+public abstract class Things extends EasyQuery implements Queries, mp4.datenbank.installation.Tabellen, Lockable{
 
 
     public Integer id = 0;
     public boolean isSaved = false;
     public NumberFormatHandler nfh;
+    private DatabaseRowLocker locker;
 
     /**
      * 
      * @param query
      */
     public Things(Query query) {
-        super(query);
+            super(query);
+        locker = new DatabaseRowLocker(query);
+    }
+    
+    
+    @Override
+    public void lock() {
+        locker.lockRow(id);
+    }
+
+    @Override
+    public void unlock() {
+        locker.unlockRow();
     }
 
     /**

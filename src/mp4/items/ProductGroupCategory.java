@@ -79,7 +79,7 @@ public class ProductGroupCategory extends mp4.items.Things implements mp4.datenb
     public void save() {
 
         if (id > 0) {
-            this.update(TABLE_PRODUCTS_GROUPS_CATEGORIES_FIELDS, this.collect(), id.toString());
+            this.update(TABLE_PRODUCTS_GROUPS_CATEGORIES_FIELDS, this.collect(), id);
             isSaved = true;
         } else if (id == 0) {
             if(this.getKategorienummer().equals("0")){

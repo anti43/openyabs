@@ -18,15 +18,13 @@ package mp4.datenbank.verbindung;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mp4.globals.Constants;
 import mp4.logs.Log;
 import mp4.main.Main;
 import mp4.utils.files.FileReaderWriter;
 
 /**
- *
+ * This class handles the different DB connection types (derby, mysql, custom)
  * @author Andreas
  */
 public class ConnectionTypeHandler {
@@ -43,33 +41,65 @@ public class ConnectionTypeHandler {
      * Use custom database driver
      */
     public static final int CUSTOM = 2;    //Available Drivers
+    
+    /**
+     * Use single user database
+     */
+    public static final int SINGLE_USER = 0;
+    /**
+     * Use multi user database
+     */
+    public static final int MULTI_USER = 1;
+    
+    
     public static String DERBY_DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
     public static String MYSQL_DRIVER = "com.mysql.jdbc.Driver";
-    public static String CUSTOM_DRIVER = "";    //Available SQL Files
+    public static String CUSTOM_DRIVER = "";   
+    
+    //Available SQL Files
     public static File DERBY_FILE = new File("ext/sql/derby.sql");
     public static File MYSQL_FILE = new File("ext/sql/mysql.sql");
-    public static File CUSTOM_FILE = new File("ext/sql/custom.sql");    //Connection string
+    public static File CUSTOM_FILE = new File("ext/sql/custom.sql");    
+    
+    //Connection string
     private String CONNECTION_STRING = null;
+    
     private String URL = Main.settings.getDBPath();
-    private int mode = 2;
+    private Integer PREDEFINED_DRVER = 2;
+    private Integer MODE = 0;
 
+    /**
+     * Constructs a new ConnHandler
+     */
     public ConnectionTypeHandler() {
         if (Main.settings.getDBDriver().equals(DERBY_DRIVER)) {
-            this.mode = 0;
+            this.PREDEFINED_DRVER = ConnectionTypeHandler.DERBY;
+            this.MODE = ConnectionTypeHandler.SINGLE_USER;
         } else if (Main.settings.getDBDriver().equals(MYSQL_DRIVER) ) {
-            this.mode = 1;
+            this.PREDEFINED_DRVER = ConnectionTypeHandler.MYSQL;
+            this.MODE = ConnectionTypeHandler.MULTI_USER;
         } else {
-            this.mode = 2;
+            this.PREDEFINED_DRVER = ConnectionTypeHandler.CUSTOM;
+            this.MODE = ConnectionTypeHandler.MULTI_USER;
         }
     }
 
-    public ConnectionTypeHandler(int mode) {
-        this.mode = mode;
+    /**
+     * Constructs a new ConnHandler with predefind ConnectionTypeHandler.Driver
+     * @param driverset 
+     */
+    public ConnectionTypeHandler(int driverset) {
+        this.PREDEFINED_DRVER = driverset;
     }
 
+    /**
+     * 
+     * @param withCreate Shall we create a new database?
+     * @return The DB connection string
+     */
     public String getConnectionString(boolean withCreate) {
 
-        switch (mode) {
+        switch (PREDEFINED_DRVER) {
             case DERBY:
                 String cstring = "jdbc:derby:" + getURL() + File.separator + Constants.DATABASENAME + ";";
                 if (withCreate) {
@@ -92,9 +122,13 @@ public class ConnectionTypeHandler {
         return CONNECTION_STRING;
     }
 
-    public String[] getSQL_Command() {
+    /**
+     * Get the SQL command for creating the tables - for the choosen driver
+     * @return The SQL command for creating the tables
+     */
+    public String[] getTableCreating_SQLCommand() {
        File filen = null;
-        switch (mode) {
+        switch (PREDEFINED_DRVER) {
             case DERBY:
                 filen = DERBY_FILE;
                 break;
@@ -114,24 +148,44 @@ public class ConnectionTypeHandler {
         return new FileReaderWriter(filen).readLines();
     }
 
+    /**
+     * Override the JDBC connection string
+     * @param conn_string
+     */
     public void setConnectionString(String conn_string) {
         this.CONNECTION_STRING = conn_string;
     }
 
+    /**
+     * 
+     * @return The DB location
+     */
     public String getURL() {
         return URL;
     }
 
+    /**
+     * Set the DB location. May be file path, or network path
+     * @param URL
+     */
     public void setURL(String URL) {
         this.URL = URL;
     }
 
-    public void setMode(int mode) {
-        this.mode = mode;
+    /**
+     * Override the JDBC driver string
+     * @param predefinedDriver
+     */
+    public void setDRIVER(int predefinedDriver) {
+        this.PREDEFINED_DRVER = predefinedDriver;
     }
 
+    /**
+     * 
+     * @return The JDBC driver string
+     */
     public String getDriver() {
-        switch (mode) {
+        switch (PREDEFINED_DRVER) {
             case DERBY:
                 return DERBY_DRIVER;
             case MYSQL:

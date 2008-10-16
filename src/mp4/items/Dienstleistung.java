@@ -16,8 +16,6 @@
  */
 package mp4.items;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mp4.items.handler.ProductGroupHandler;
 import java.util.Date;
 
@@ -152,7 +150,7 @@ public class Dienstleistung extends mp4.items.Things implements mp4.datenbank.in
     public void save() {
 
         if (id > 0) {
-            this.update(TABLE_SERVICES_FIELDS, this.collect(), id.toString());
+            this.update(TABLE_SERVICES_FIELDS, this.collect(), id);
             isSaved = true;
            
         } else if (id == 0) {

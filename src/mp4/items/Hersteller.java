@@ -73,10 +73,10 @@ public class Hersteller extends mp4.items.People implements mp4.datenbank.instal
     @Override
     public void save() {
         if (id > 0) {
-            this.update(TABLE_MANUFACTURER_FIELDS, this.collect(), id.toString());
+            this.update(TABLE_MANUFACTURER_FIELDS, this.collect(), id);
             isSaved = true;
         } else if (id == 0) {
-            this.id = this.insert(TABLE_MANUFACTURER_FIELDS, this.collect(),new int[]{0});
+            this.id = this.insert(TABLE_MANUFACTURER_FIELDS, this.collect());
         }
     }
     

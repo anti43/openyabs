@@ -74,7 +74,12 @@ public interface Tabellen {
      * History
      */
     public final String TABLE_HISTORY = "historie";
-    public final String DATABASE = "Datenbank";
+            
+    /**
+     * 
+     */
+    public final String TABLE_ROWLOCK = "tablelock";
+
     /**
      * User
      */
@@ -275,4 +280,10 @@ public interface Tabellen {
      */
     public final String TABLE_TAXES_FIELDS = "name" + "," +
             "wert";
+    
+    /**
+     * Rowlocker
+     */
+    public final String TABLE_ROWLOCK_FIELDS = "tablename" + "," +
+            "rowid"+ "," + "userid";
 }

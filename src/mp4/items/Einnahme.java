@@ -17,8 +17,6 @@
 package mp4.items;
 
 /*import mp3.classes.objects.*;*/
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.einstellungen.Einstellungen;
 import java.util.Date;
@@ -32,7 +30,6 @@ import mp4.logs.*;
 import mp4.interfaces.Daemonable;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.listen.ArrayUtils;
-import mp4.utils.listen.ListenDataUtils;
 import mp4.utils.tabellen.DataModelUtils;
 import mp4.utils.zahlen.FormatNumber;
 import mp4.utils.zahlen.FormatTax;
@@ -49,15 +46,6 @@ public class Einnahme extends mp4.items.Things implements mp4.datenbank.installa
     private Double Preis = 0.0;
     private Double Tax = 0.0;
     private Date Datum = new Date();
-    public  Integer id = 0;
-
-    /**
-     * 
-     * @return id
-     */
-    public Integer getId() {
-        return id;
-    }
 
     /**
      * Disables this object 
@@ -176,7 +164,7 @@ public class Einnahme extends mp4.items.Things implements mp4.datenbank.installa
         }
 
         if (id > 0) {
-            this.update(TABLE_INCOME_FIELDS, this.collect(), id.toString());
+            this.update(TABLE_INCOME_FIELDS, this.collect(), id);
             isSaved = true;
         } else if (id == 0) {
            this.id = this.insert(TABLE_INCOME_FIELDS, this.collect(),null);
@@ -188,14 +176,11 @@ public class Einnahme extends mp4.items.Things implements mp4.datenbank.installa
         return DateConverter.getDefDateString(getDatum());
     }
 
+    @Override
     public String[][] getAll() {
-
         Query q = ConnectionHandler.instanceOf().clone(TABLE_INCOME);
-
         Object[][] prods = q.select("id, id, preis, datum", null,false);//brutto
-
         Object[][] bills = new Rechnung(q).getPaid();
-
         return ArrayUtils.ObjectToStringArray(ArrayUtils.merge(DataModelUtils.inserValue(prods,"Eingabe",2), DataModelUtils.inserValue(bills, "Rechnung", 2)));
     }
 
@@ -238,29 +223,4 @@ public class Einnahme extends mp4.items.Things implements mp4.datenbank.installa
     public void setDatum(Date datum) {
         this.Datum = datum;
     }
-
-//    private String[][] inserType(String[][] prods) {
-//        String[][] pro = null;
-//        if (prods.length > 0) {
-//            pro = new String[prods.length][prods[0].length + 1];
-//
-//            for (int i = 0; i < pro.length; i++) {
-//                int m = 0;
-//                for (int j = 0; j < pro[i].length; j++, m++) {
-//
-//
-//                    if (j == 2) {
-//                        pro[i][2] = "Eingabe";
-//                        m--;
-//                    } else {
-//
-//                        pro[i][j] = prods[i][m];
-//                    }
-//                }
-//            }
-//        }
-//        return pro;
-//    }
-    
-    
 }

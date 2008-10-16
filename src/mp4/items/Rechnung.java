@@ -19,9 +19,7 @@ package mp4.items;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mp4.items.handler.NumberFormatHandler;
-import mp4.einstellungen.Einstellungen;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import mp4.interfaces.Countable;
@@ -56,7 +54,7 @@ public class Rechnung extends mp4.items.Things implements mp4.datenbank.installa
     private boolean bezahlt = false;
     private boolean verzug = false;
     private Query query;
-    public Integer id = 0;
+
     private PostenTableModel postendata = null;
     private RechnungBetreffZZR zeilenHandler;
     private Angebot Angebot = null;
@@ -65,9 +63,12 @@ public class Rechnung extends mp4.items.Things implements mp4.datenbank.installa
         super(ConnectionHandler.instanceOf().clone(TABLE_BILLS));
         this.query = ConnectionHandler.instanceOf();
         String[] vals = this.selectLast(Strings.ALL, "rechnungnummer", text, true);
-        if(vals!=null && vals.length > 0)
-        this.explode(vals);
-        else throw new Exception("Datensatz nicht vorhanden");
+        if(vals!=null && vals.length > 0) {
+            this.explode(vals);
+        }
+        else {
+            throw new Exception("Datensatz nicht vorhanden");
+        }
         zeilenHandler = new RechnungBetreffZZR(id);
         nfh = new NumberFormatHandler(this, getDatum());
 
@@ -81,12 +82,9 @@ public class Rechnung extends mp4.items.Things implements mp4.datenbank.installa
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
+    @Override
     public String getCountColumn() {
         return "rechnungnummer";
-    }
-
-    public Integer getId() {
-        return id;
     }
 
     public void destroy() {
@@ -157,20 +155,6 @@ public class Rechnung extends mp4.items.Things implements mp4.datenbank.installa
         return prods;
     }
 
-//    public String[][] getPaidEUR() {
-////        kontenid, preis, tax, datumq.selectBetween("kontenid, preis, tax, datum", null, timeframe);
-//        Query q = query.clone(TABLE_BILLS);
-//        String[][] prods = q.select("gesamtpreis, gesamttax, datum", new String[]{"bezahlt", "1", "", "storno", "0", ""}, "datum", false, true, false);
-//        String[][] tzh = new String[prods.length][4];
-//
-//        for (int g = 0; g < prods.length; g++) {
-//            tzh[g][0] = Einstellungen.instanceOf().getEinnahmeDefKonto().getId().toString();
-//            for (int l = 0; l < prods[g].length; l++) {
-//                tzh[g][l + 1] = prods[g][l];
-//            }
-//        }
-//        return tzh;
-//    }
 
     public boolean hasId() {
         if (id > 0) {
@@ -258,7 +242,7 @@ public class Rechnung extends mp4.items.Things implements mp4.datenbank.installa
     public boolean save() {
         int result = -1;
         if (id > 0 && !isSaved) {
-            result = this.update(TABLE_BILLS_FIELDS, this.collect(), id.toString());
+            result = this.update(TABLE_BILLS_FIELDS, this.collect(), id);
             if (postendata != null) {
                 clearPostenData();
                 explode(postendata);
@@ -450,12 +434,9 @@ public class Rechnung extends mp4.items.Things implements mp4.datenbank.installa
         }
         return prof;
     }
-//    public RechnungPosten[] getBp() {
-//        return bp;
-//    }
+
     /**
      * 
-     * @param table1fields
      * @return
      */
     public Object[][] getWithDependencies() {
@@ -549,21 +530,6 @@ public class Rechnung extends mp4.items.Things implements mp4.datenbank.installa
         this.Mahnungen = Mahnungen;
     }
 
-//    private void setBezahlt(String string) {
-//        if (string.equals("1")) {
-//            setBezahlt(true);
-//        } else {
-//            setBezahlt(false);
-//        }
-//    }
-//
-//    private void setStorno(String string) {
-//        if (string.equals("1")) {
-//            setStorno(true);
-//        } else {
-//            setStorno(false);
-//        }
-//    }
     public Angebot getAngebot() {
         return Angebot;
     }
@@ -572,6 +538,7 @@ public class Rechnung extends mp4.items.Things implements mp4.datenbank.installa
         this.nfh = nfh;
     }
 
+    @Override
     public String getTable() {
         return TABLE_BILLS;
     }

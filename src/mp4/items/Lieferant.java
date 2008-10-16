@@ -92,10 +92,10 @@ public class Lieferant extends mp4.items.People implements mp4.datenbank.install
     public void save() {
 
         if (id > 0) {
-            this.update(TABLE_SUPPLIER_FIELDS, this.collect(), id.toString());
+            this.update(TABLE_SUPPLIER_FIELDS, this.collect(), id);
             isSaved = true;
         } else if (id == 0) {
-            this.id = this.insert(TABLE_SUPPLIER_FIELDS, this.collect(),new int[]{0});
+            this.id = this.insert(TABLE_SUPPLIER_FIELDS, this.collect());
         }
     }
     

@@ -16,18 +16,20 @@
  */
 package mp4.items;
 
+import mp4.datenbank.installation.Tabellen;
 import mp4.datenbank.verbindung.EasyQuery;
 import mp4.datenbank.verbindung.PrepareData;
 
 import mp4.interfaces.Queries;
 import mp4.datenbank.verbindung.Query;
+import mp4.interfaces.Lockable;
 import mp4.logs.Log;
 
 /**
  *
  * @author anti
  */
-public abstract class People extends EasyQuery implements Queries, mp4.datenbank.installation.Tabellen {
+public abstract class People extends EasyQuery implements Queries, Tabellen, Lockable {
 
     public Integer id = 0;
     public boolean isSaved = false;
@@ -47,9 +49,22 @@ public abstract class People extends EasyQuery implements Queries, mp4.datenbank
     private String Mail = "";
     private String Webseite = "";
     private String Notizen = "";
+    private DatabaseRowLocker locker;
 
     public People(Query query) {
         super(query);
+        locker = new DatabaseRowLocker(query);
+    }
+    
+    
+    @Override
+    public void lock() {
+        locker.lockRow(id);
+    }
+
+    @Override
+    public void unlock() {
+        locker.unlockRow();
     }
     
      public void setNummer(String Kundennummer) {

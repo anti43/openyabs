@@ -14,27 +14,23 @@
  *      You should have received a copy of the GNU General Public License
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package mp4.interfaces;
 
 /**
- *
+ * This interface shall be implemented for items which may be opened multiple 
+ * times in multiuser environments, to prevent cross-changes
  * @author anti43
  */
-public interface TableData {
+public interface Lockable {
 
     /**
-     *
-     * Returns the table data
-     * 
-     * @return 
+     * Lock the dataset 
      */
-    public Object[][] getData();
-
+    public abstract void lock();
+    
     /**
-     *
-     * Returns the table name
-     * 
-     * @return 
+     * Unlock the dataset
      */
-    public String getTitle();
+    public abstract void unlock();
 }

@@ -38,14 +38,7 @@ public class ConnectionHandler extends mp4.datenbank.verbindung.Query implements
         fi.deleteOnExit();
 
     }
-//    /***
-//     * Open the configurationfile "settings.mp"
-//     * @return the values in the file
-//     */
-//    public static String getPath() {
-//        FileReaderWriter rw = new FileReaderWriter("settings.mp");
-//        return rw.read();
-//    }
+
     /**
      * 
      * Singleton!

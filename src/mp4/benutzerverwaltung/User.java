@@ -122,7 +122,7 @@ public class User extends Things {
     }
 
     public void deactivate(Integer id) {
-        this.update("deleted", "1", id.toString());
+        this.update("deleted", "1", id);
     }
 
     public Object[][] getAll() {

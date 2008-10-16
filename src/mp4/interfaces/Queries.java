@@ -29,10 +29,9 @@ public interface Queries {
      * 
      * @param set
      * @param value
-     * @param unique 
      * @return
      */
-    public abstract int insert(String set,String value, int[] unique);
+    public abstract int insert(String set, String value);
 
     /**
      * 
@@ -41,7 +40,7 @@ public interface Queries {
      * @param id
      * @return 
      */
-    public abstract int update (String set, String value, String id);
+    public abstract int update (String set, String value, Integer id);
 
     /**
      * 
@@ -51,7 +50,7 @@ public interface Queries {
      * @param where 
      * @return
      */
-    public abstract String[][] select(String what, String from, String where,boolean id);
+    public abstract String[][] select(String what, String from, String where, boolean id);
 
     /**
      * 

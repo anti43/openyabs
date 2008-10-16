@@ -157,10 +157,10 @@ public class Customer extends mp4.items.People implements mp4.datenbank.installa
     public void save() {
 
         if (id > 0) {
-            this.update(TABLE_CUSTOMER_FIELDS, this.collect(), id.toString());
+            this.update(TABLE_CUSTOMER_FIELDS, this.collect(), id);
             isSaved = true;
         } else if (id == 0) {
-            this.id = this.insert(TABLE_CUSTOMER_FIELDS, this.collect(), null);
+            this.id = this.insert(TABLE_CUSTOMER_FIELDS, this.collect());
         }
     }
 
@@ -250,4 +250,5 @@ public class Customer extends mp4.items.People implements mp4.datenbank.installa
     public NumberFormatHandler getNfh() {
         return nfh;
     }
+
 }

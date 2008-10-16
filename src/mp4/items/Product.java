@@ -242,7 +242,7 @@ public class Product extends mp4.items.Things implements mp4.datenbank.installat
     public void save() {
 
         if (id > 0) {
-            this.update(TABLE_PRODUCTS_FIELDS, this.collect(), id.toString());
+            this.update(TABLE_PRODUCTS_FIELDS, this.collect(), id);
             isSaved = true;
             fetchImage();
         } else if (id == 0) {

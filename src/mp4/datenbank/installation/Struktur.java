@@ -17,11 +17,12 @@
 package mp4.datenbank.installation;
 
 /**
- *
+ * Do not use this!
+ * Moved to file !
  * @author anti
  */
 public abstract class Struktur {
-//Moved to file
+//
 //    //////////////////////////////////////////////////////////////////////////77
 //    /**
 //     * Struktur data (tables)

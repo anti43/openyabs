@@ -88,7 +88,7 @@ public class ProductGroupGroup extends mp4.items.Things implements mp4.datenbank
     public void save() {
 
         if (id > 0) {
-            this.update(TABLE_PRODUCTS_GROUPS_GROUP_FIELDS, this.collect(), id.toString());
+            this.update(TABLE_PRODUCTS_GROUPS_GROUP_FIELDS, this.collect(), id);
             isSaved = true;
         } else if (id == 0) {
             if (this.getGruppennummer().equals("0")) {
