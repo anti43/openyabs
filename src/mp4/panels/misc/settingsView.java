@@ -11,6 +11,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 
 
+import mp4.benutzerverwaltung.User;
 import mp4.einstellungen.Einstellungen;
 import mp4.frames.mainframe;
 import mp4.installation.Setup;
@@ -438,52 +439,54 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 }// </editor-fold>//GEN-END:initComponents
 
 private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
-    editor = jTable1.getCellEditor();
-    if (editor != null) {
-        editor.stopCellEditing();
+    if (mainframe.getUser().doAction(User.ADMIN)) {
+        editor = jTable1.getCellEditor();
+        if (editor != null) {
+            editor.stopCellEditing();
+        }
+
+        editor = jTable2.getCellEditor();
+        if (editor != null) {
+            editor.stopCellEditing();
+        }
+
+        editor = jTable3.getCellEditor();
+        if (editor != null) {
+            editor.stopCellEditing();
+        }
+
+        data.setDaten(DataModelUtils.tableModelToArray(jTable1));
+        data.setDaten(DataModelUtils.tableModelToArray(jTable2));
+        data.setDaten(DataModelUtils.tableModelToArray(jTable3));
+
+        try {
+            data.setEinnahme_Standard_Konto(new SKRKonto(jTextField1.getText()));
+        } catch (Exception e) {
+            Popup.notice("Konto existiert nicht: " + jTextField1.getText());
+            data.setEinnahme_Standard_Konto(new SKRKonto("2112"));
+        }
+
+        try {
+            data.setAusgabeDefKonto(new SKRKonto(jTextField2.getText()));
+        } catch (Exception e) {
+            Popup.notice("Konto existiert nicht: " + jTextField2.getText());
+            data.setAusgabeDefKonto(new SKRKonto("1111"));
+        }
+
+        try {
+            data.setLocale(new Locale(jTextField3.getText()));
+        } catch (Exception e) {
+            Popup.notice("Locale existiert nicht: " + jTextField3.getText());
+            data.setLocale(new Locale("de_DE"));
+        }
+
+        mainframe.setMessage("Einstellungen gespeichert.");
+
+        setValues();
+        TableFormat.resizeCols(jTable1, new Integer[]{150, null}, true);
+        TableFormat.resizeCols(jTable2, new Integer[]{150, null}, true);
+        TableFormat.resizeCols(jTable3, new Integer[]{150, null}, true);
     }
-
-    editor = jTable2.getCellEditor();
-    if (editor != null) {
-        editor.stopCellEditing();
-    }
-
-    editor = jTable3.getCellEditor();
-    if (editor != null) {
-        editor.stopCellEditing();
-    }
-
-    data.setDaten(DataModelUtils.tableModelToArray(jTable1));
-    data.setDaten(DataModelUtils.tableModelToArray(jTable2));
-    data.setDaten(DataModelUtils.tableModelToArray(jTable3));
-
-    try {
-        data.setEinnahme_Standard_Konto(new SKRKonto(jTextField1.getText()));
-    } catch (Exception e) {
-        Popup.notice("Konto existiert nicht: " + jTextField1.getText());
-        data.setEinnahme_Standard_Konto(new SKRKonto("2112"));
-    }
-
-    try {
-        data.setAusgabeDefKonto(new SKRKonto(jTextField2.getText()));
-    } catch (Exception e) {
-        Popup.notice("Konto existiert nicht: " + jTextField2.getText());
-        data.setAusgabeDefKonto(new SKRKonto("1111"));
-    }
-
-    try {
-        data.setLocale(new Locale(jTextField3.getText()));
-    } catch (Exception e) {
-        Popup.notice("Locale existiert nicht: " + jTextField3.getText());
-        data.setLocale(new Locale("de_DE"));
-    }
-
-    mainframe.setMessage("Einstellungen gespeichert.");
-
-    setValues();
-    TableFormat.resizeCols(jTable1, new Integer[]{150, null}, true);
-    TableFormat.resizeCols(jTable2, new Integer[]{150, null}, true);
-    TableFormat.resizeCols(jTable3, new Integer[]{150, null}, true);
 }//GEN-LAST:event_jButton2MouseClicked
 
 private void jButton4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton4MouseClicked
