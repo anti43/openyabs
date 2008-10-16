@@ -27,7 +27,7 @@ public class EasyQuery implements Queries {
 
     private Query q;
 
-    public EasyQuery(Query query) {
+    public EasyQuery(Query query){
         this.q = query;
     }
 
@@ -48,6 +48,7 @@ public class EasyQuery implements Queries {
     public int update(String set, String value, Integer id) {
         String[] where = {"id", id.toString(), ""};
         String[] what = {set, value, "'"};
+  
         return q.update(what, where);
     }
 
@@ -162,7 +163,6 @@ public class EasyQuery implements Queries {
         String[] str = {set, value, ""};
         return q.insert(str);
     }
-    
 
     public int insert(String set, String value, int[] uniquecols) {
         String[] str = {set, value, ""};

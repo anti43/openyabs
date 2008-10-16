@@ -64,6 +64,7 @@ public class Rechnung extends mp4.items.Things implements mp4.datenbank.installa
         this.query = ConnectionHandler.instanceOf();
         String[] vals = this.selectLast(Strings.ALL, "rechnungnummer", text, true);
         if(vals!=null && vals.length > 0) {
+            
             this.explode(vals);
         }
         else {
@@ -238,6 +239,7 @@ public class Rechnung extends mp4.items.Things implements mp4.datenbank.installa
 
 
     }
+
 
     public boolean save() {
         int result = -1;

@@ -35,7 +35,7 @@ import mp4.installation.DesktopIcon;
 import mp4.logs.*;
 import mp4.frames.license;
 import mp4.installation.Verzeichnisse;
-import mp4.interfaces.panelInterface;
+
 import mp4.main.Main;
 import mp4.utils.ui.inputfields.PAnelUtils;
 

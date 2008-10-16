@@ -5,7 +5,6 @@
  */
 package mp4.panels.produkte;
 
-import mp4.interfaces.panelInterface;
 
 import mp4.frames.PdfVorschauWindow;
 import mp4.panels.*;
@@ -38,6 +37,7 @@ import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.benutzerverwaltung.User;
 import mp4.einstellungen.Programmdaten;
 import mp4.frames.mainframe;
+import mp4.interfaces.panelInterface;
 import mp4.items.Angebot;
 import mp4.items.Hersteller;
 import mp4.items.HistoryItem;
@@ -64,7 +64,7 @@ import mp4.utils.zahlen.NumberCheck;
  *
  * @author  anti43
  */
-public class productsView extends commonPanel implements mp4.datenbank.installation.Tabellen, panelInterface{
+public class productsView extends commonPanel implements panelInterface, mp4.datenbank.installation.Tabellen{
 
     private mainframe mainframe;
     private Product current;

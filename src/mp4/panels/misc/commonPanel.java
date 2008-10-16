@@ -18,6 +18,7 @@ package mp4.panels.misc;
 
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import mp4.interfaces.Lockable;
 
 /**
  *
@@ -27,15 +28,24 @@ public abstract class commonPanel extends JPanel {
 
     private static final long serialVersionUID = 1L;
     private boolean edited;
+    private Lockable lockable;
 
     public void close() {
-//        setPanelValues();
+
         if (isEdited()) {
             if (mp4.items.visual.Popup.Y_N_dialog("Wenn Sie jetzt schliessen, gehen Ihre Änderungen verloren.\nTrotzdem schliessen?")) {
                 ((JTabbedPane) this.getParent()).remove(this);
+                this.setVisible(false);
+                if (getLockable() != null) {
+                    getLockable().unlock();
+                }
             }
         } else {
             ((JTabbedPane) this.getParent()).remove(this);
+            this.setVisible(false);
+            if (getLockable() != null) {
+                getLockable().unlock();
+            }
         }
     }
 
@@ -56,11 +66,14 @@ public abstract class commonPanel extends JPanel {
     }
 
     public void setEdited(boolean edit) {
-//          if (edit && (edit != edited)) {
-//            this.changeTabText(((JTabbedPane) this.getParent()).getTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex()) + "*");
-//        } else if (!edit) {
-//            this.changeTabText(((JTabbedPane) this.getParent()).getTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex()).replaceAll("\\*", ""));
-//        }
         edited = edit;
+    }
+    
+    public void setLockable(Lockable lockable) {
+       this.lockable = lockable;
+    }
+
+    public Lockable getLockable() {
+        return lockable;
     }
 }

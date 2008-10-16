@@ -269,8 +269,12 @@ public class mp2Importer extends javax.swing.JFrame {
                         c.setMail(kund[i][11]);
                         c.setWebseite(kund[i][12]);
                         c.setNotizen(kund[i][12 + 1]);
+                        try {
 
-                        c.save();
+                            c.save();
+                        } catch (Exception ex) {
+                            Log.Debug(ex);
+                        }
                         c = null;
                         this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                     }

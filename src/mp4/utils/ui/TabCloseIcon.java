@@ -22,7 +22,7 @@ package mp4.utils.ui;
 /*
  * TabCloseIcon.java
  */
-import mp4.interfaces.panelInterface;
+
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;

@@ -6,11 +6,9 @@ package mp4.items.handler;
 
 import mp4.items.*;
 import java.util.ArrayList;
-import java.util.Date;
 import mp4.datenbank.verbindung.Query;
 
 
-import mp4.logs.*;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.einstellungen.Programmdaten;
 

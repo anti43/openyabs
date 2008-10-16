@@ -52,7 +52,8 @@ public class Customer extends mp4.items.People implements mp4.datenbank.installa
 
     public Customer(Integer id) {
         super(ConnectionHandler.instanceOf().clone(TABLE_CUSTOMERS));
-        this.id = Integer.valueOf(id);
+        this.id = id;
+        lock();
         try {
             this.explode(this.selectLast("*", "id", id.toString(), true));
         } catch (Exception ex) {
@@ -67,6 +68,8 @@ public class Customer extends mp4.items.People implements mp4.datenbank.installa
         String[] vals = this.selectLast("*", "nummer", nummer, false);
         if (vals != null && vals.length > 0) {
             this.explode(vals);
+            //We can only lock it after explode() here, as ID is not set before
+            lock();
         } else {
             throw new Exception("Datensatz nicht vorhanden");
         }
@@ -153,12 +156,12 @@ public class Customer extends mp4.items.People implements mp4.datenbank.installa
 
     }
 
-    @Override
-    public void save() {
 
+    public void save() throws Exception {
         if (id > 0) {
             this.update(TABLE_CUSTOMER_FIELDS, this.collect(), id);
             isSaved = true;
+            unlock();
         } else if (id == 0) {
             this.id = this.insert(TABLE_CUSTOMER_FIELDS, this.collect());
         }

@@ -37,16 +37,17 @@ import mp4.frames.mainframe;
 
 
 import javax.swing.JFormattedTextField;
-import javax.swing.JTabbedPane;
+
 
 import mp4.interfaces.Waitable;
 import mp4.benutzerverwaltung.User;
 import mp4.einstellungen.Einstellungen;
 
 import mp4.items.Angebot;
-import mp4.interfaces.panelInterface;
+
 import mp4.items.People;
 import mp4.frames.PdfVorschauWindow;
+import mp4.interfaces.panelInterface;
 import mp4.items.Dienstleistung;
 import mp4.items.Rechnung;
 import mp4.utils.datum.DateConverter;
@@ -1450,9 +1451,7 @@ public javax.swing.JToolBar jToolBar2;
     }
 
     public void update() {
-
         updateListTable();
-
     }
 
     public People getContact() {

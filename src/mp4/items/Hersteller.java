@@ -70,7 +70,7 @@ public class Hersteller extends mp4.items.People implements mp4.datenbank.instal
           super.explode(str);
     }
 
-    @Override
+
     public void save() {
         if (id > 0) {
             this.update(TABLE_MANUFACTURER_FIELDS, this.collect(), id);

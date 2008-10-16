@@ -40,7 +40,6 @@ public class User extends Things {
     private boolean useAuth = false;
     private boolean isEditor = false;
     private md5hash md;
-    private Integer id = 0;
     public final static int EDITOR = 0;
     public final static int ADMIN = 1;
 
@@ -61,11 +60,12 @@ public class User extends Things {
         try {
             t = this.selectLast("*", "id", id.toString(), true);
         } catch (Exception ex) {
-            Logger.getLogger(User.class.getName()).log(Level.SEVERE, null, ex);
+            Log.Debug(ex);
         }
 
         if (t != null && t.length > 0) {
 
+            this.id = Integer.valueOf(t[0]);
             this.setName(t[1]);
             this.setCreatedOn(DateConverter.getDate(t[3]));
             this.setCreatedBy(t[4]);
@@ -105,6 +105,7 @@ public class User extends Things {
                 String[] strings = t[i];
                 if (md.hashData(password.getBytes()).matches(strings[2])) {
                     this.setValidUser(true);
+                    this.id = Integer.valueOf(strings[0]);
                     this.setName(strings[1]);
                     this.setCreatedOn(DateConverter.getDate(strings[3]));
                     this.setCreatedBy(strings[4]);
@@ -142,9 +143,8 @@ public class User extends Things {
     }
 
     public boolean save() {
-        int result = -1;
-        result = this.insert(TABLE_USER_FIELDS, this.collect(),new int[]{0});
-        if (result > 0) {
+        id = this.insert(TABLE_USER_FIELDS, this.collect(),new int[]{0});
+        if (id > 0) {
             return true;
         } else {
             return false;
@@ -212,6 +212,7 @@ public class User extends Things {
         return passwordHash;
     }
 
+    @SuppressWarnings("fallthrough")
     public boolean doAction(int level) {
         if (!useAuth) {
             return true;

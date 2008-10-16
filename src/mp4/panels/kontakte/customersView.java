@@ -11,7 +11,6 @@ import javax.swing.table.DefaultTableModel;
 
 
 import mp4.globals.Strings;
-import mp4.items.Steuersatz;
 import mp4.items.visual.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.items.Customer;
@@ -23,10 +22,8 @@ import mp4.logs.*;
 import mp4.benutzerverwaltung.User;
 import mp4.utils.tabellen.models.CustomerBAListTableModel;
 
-import mp4.interfaces.panelInterface;
 import mp4.items.People;
 import mp4.items.Angebot;
-import mp4.items.Product;
 import mp4.items.Rechnung;
 import mp4.panels.misc.NumberFormatEditor;
 import mp4.utils.export.textdatei.VCard;
@@ -986,9 +983,14 @@ public class customersView extends mp4.panels.misc.commonPanel implements mp4.da
 
     /**
      * 
-     * @param current
+     * @param c 
      */
     public void setContact(People c) {
+        if(getLockable()!=null) {
+            getLockable().unlock();
+            
+        }
+        setLockable(c);
         this.current = (Customer) c;
         this.changeTabText("Kunde: " + current.getName());
         this.jTextField4.setText(current.getNummer());
@@ -1115,10 +1117,17 @@ public class customersView extends mp4.panels.misc.commonPanel implements mp4.da
             current.setMail(jTextField14.getText());
             current.setWebseite(jTextField15.getText());
             current.setNotizen(jTextArea1.getText());
-            current.save();
+            
+            try {
+                current.save();
+                setEdited(false);
+            
+                mainframe.setMessage("Kunde Nummer " + current.getNummer() + " editiert.");
+            } catch (Exception ex) {
+                Popup.warn(ex.getMessage(), Popup.ERROR);
+            }
 
-             setEdited(false);
-            mainframe.setMessage("Kunde Nummer " + current.getNummer() + " editiert.");
+             
             try {
                 new HistoryItem(ConnectionHandler.instanceOf(), Strings.CUSTOMER, "Kunde Nummer: " + current.getNummer() + " angelegt.");
             } catch (Exception ex) {
@@ -1174,16 +1183,19 @@ public class customersView extends mp4.panels.misc.commonPanel implements mp4.da
                     current.setNotizen(jTextArea1.getText());
                     current.save();
                      setEdited(false);
-                    mainframe.setMessage("Kunde Nummer " + current.getNummer() + " editiert.");
-                    new HistoryItem(ConnectionHandler.instanceOf(), Strings.CUSTOMER, "Kunde Nummer: " + current.getNummer() + " editiert.");
+                    mainframe.setMessage("Kunde Nummer " + current.getNummer() + " gespeichert.");
+                    new HistoryItem(ConnectionHandler.instanceOf(), Strings.CUSTOMER, "Kunde Nummer: " + current.getNummer() + " gespeichert.");
                     updateListTable();
                 } catch (Exception ex) {
+                    Log.Debug(ex, true);
                     Popup.warn(ex.getMessage(), Popup.ERROR);
                 }
             } else {
                 new Popup("Sie müssen mindestens einen Namen angeben.", Popup.ERROR);
             }
-        } else createNew();
+        } else {
+            createNew();
+        }
     }
 
     private void jTable3MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable3MouseClicked
@@ -1192,7 +1204,7 @@ public class customersView extends mp4.panels.misc.commonPanel implements mp4.da
             try {
                 this.setContact(new Customer(selection.getId()));
             } catch (Exception exception) {
-                Log.Debug(exception);
+                Log.Debug(exception, true);
             }
         }
     }//GEN-LAST:event_jTable3MouseClicked

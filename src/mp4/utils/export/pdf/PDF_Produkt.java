@@ -21,9 +21,7 @@ import java.awt.Image;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Locale;
-import javax.print.DocFlavor;
 import mp4.interfaces.Template;
-import mp4.utils.ui.inputfields.InputVerifiers;
 import mp4.einstellungen.Einstellungen;
 import mp4.items.Dienstleistung;
 import mp4.items.Hersteller;
@@ -68,45 +66,49 @@ public class PDF_Produkt implements Template {
     private String[][] buildFieldsList(){
 
         if (lieferant.isValid()) {
-            fields.add(new String[]{"lieferantfirma", lieferant.getFirma()});
-            fields.add(new String[]{"lieferantname", lieferant.getAnrede() + " " + lieferant.getVorname() + " " + lieferant.getName()});
-            fields.add(new String[]{"lieferantstrasse", lieferant.getStr()});
-            fields.add(new String[]{"lieferantort", lieferant.getPLZ() + " " + lieferant.getOrt()});
+            fields.add(new String[]{"scompany", lieferant.getFirma()});
+            fields.add(new String[]{"sname", lieferant.getAnrede() + " " + lieferant.getVorname() + " " + lieferant.getName()});
+            fields.add(new String[]{"sstreet", lieferant.getStr()});
+            fields.add(new String[]{"scity", lieferant.getPLZ() + " " + lieferant.getOrt()});
         }
 
         if (hersteller.isValid()) {
-            fields.add(new String[]{"herstellerfirma", hersteller.getFirma()});
-            fields.add(new String[]{"herstellername", hersteller.getAnrede() + " " + hersteller.getVorname() + " " + hersteller.getName()});
-            fields.add(new String[]{"herstellerstrasse", hersteller.getStr()});
-            fields.add(new String[]{"herstellerort", hersteller.getPLZ() + " " + hersteller.getOrt()});
+            fields.add(new String[]{"mcompany", hersteller.getFirma()});
+            fields.add(new String[]{"mname", hersteller.getAnrede() + " " + hersteller.getVorname() + " " + hersteller.getName()});
+            fields.add(new String[]{"mstreet", hersteller.getStr()});
+            fields.add(new String[]{"mcity", hersteller.getPLZ() + " " + hersteller.getOrt()});
         }
 
-        fields.add(new String[]{"datum", DateConverter.getDefDateString(produkt.getDatum())});
+        fields.add(new String[]{"date", DateConverter.getDefDateString(produkt.getDatum())});
         fields.add(new String[]{"name", produkt.getName()});
         fields.add(new String[]{"ean", produkt.getEan()});
-        fields.add(new String[]{"nummer", produkt.getProduktNummer()});
-        fields.add(new String[]{"warengruppe", produkt.getProductgroupPath()});
-        fields.add(new String[]{"langtext", produkt.getText()});
+        fields.add(new String[]{"number", produkt.getProduktNummer()});
+        fields.add(new String[]{"group", produkt.getProductgroupPath()});
+        fields.add(new String[]{"text", produkt.getText()});
         fields.add(new String[]{"url", produkt.getUrl()});
-        fields.add(new String[]{"vk", FormatNumber.formatLokalCurrency(produkt.getVK())});
-        fields.add(new String[]{"steuersatz", FormatTax.formatLokal(produkt.getTaxValue())});
+        fields.add(new String[]{"price", FormatNumber.formatLokalCurrency(produkt.getVK())});
+        fields.add(new String[]{"taxrate", FormatTax.formatLokal(produkt.getTaxValue())});
         
         return ListenDataUtils.StringListToTableArray(fields);
 
     }
 
+    @Override
     public String getPath() {
         return settings.getProdukt_Verzeichnis() + File.separator + produkt.getProduktNummer().replaceAll(" ", "_") + ".pdf".trim();
     }
 
+    @Override
     public String[][] getFields() {
       return  buildFieldsList();
     }
 
+    @Override
     public Image getImage() {
         return bild;
     }
 
+    @Override
     public String getTemplate() {
         return settings.getProdukt_Template();
     }

@@ -16,6 +16,8 @@
  */
 package mp4.items;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mp4.datenbank.installation.Tabellen;
 import mp4.datenbank.verbindung.EasyQuery;
 import mp4.datenbank.verbindung.PrepareData;
@@ -23,6 +25,7 @@ import mp4.datenbank.verbindung.PrepareData;
 import mp4.interfaces.Queries;
 import mp4.datenbank.verbindung.Query;
 import mp4.interfaces.Lockable;
+import mp4.items.visual.Popup;
 import mp4.logs.Log;
 
 /**
@@ -33,8 +36,6 @@ public abstract class People extends EasyQuery implements Queries, Tabellen, Loc
 
     public Integer id = 0;
     public boolean isSaved = false;
-
-    
     private String Nummer = "";
     private String Firma = "";
     private String Anrede = "";
@@ -49,25 +50,29 @@ public abstract class People extends EasyQuery implements Queries, Tabellen, Loc
     private String Mail = "";
     private String Webseite = "";
     private String Notizen = "";
-    private DatabaseRowLocker locker;
+
 
     public People(Query query) {
         super(query);
-        locker = new DatabaseRowLocker(query);
     }
-    
-    
+
     @Override
     public void lock() {
-        locker.lockRow(id);
+
     }
 
     @Override
     public void unlock() {
-        locker.unlockRow();
+ 
     }
     
-     public void setNummer(String Kundennummer) {
+    @Override
+    public void finalize(){
+        Log.Debug("Releasing .." + id, true);
+        unlock();
+    }
+
+    public void setNummer(String Kundennummer) {
         this.Nummer = Kundennummer;
         this.isSaved = false;
     }
@@ -179,12 +184,11 @@ public abstract class People extends EasyQuery implements Queries, Tabellen, Loc
         this.Notizen = Notizen;
         this.isSaved = false;
     }
-    
+
     public String getNummer() {
         return Nummer;
     }
-    
-    
+
     public String getFax() {
         return Fax;
     }
@@ -193,7 +197,7 @@ public abstract class People extends EasyQuery implements Queries, Tabellen, Loc
         this.Fax = Fax;
         this.isSaved = false;
     }
-    
+
     /**
      * Collect the data, MUST be overridden with PrepareData.finalize(collect())
      * @return The database insert string
@@ -246,17 +250,9 @@ public abstract class People extends EasyQuery implements Queries, Tabellen, Loc
         return id;
     }
 
-    
     public void destroy() {
         this.delete(this.id);
         this.id = 0;
     }
 
-
-
-
-    /**
-     * to be overwritten..
-     */
-    public abstract void save();
 }

@@ -4,13 +4,9 @@
  */
 package mp4.utils.tabellen;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.JMenuItem;
+
 import javax.swing.JPopupMenu;
-import javax.swing.JTable;
-import javax.swing.border.EtchedBorder;
-import mp4.interfaces.panelInterface;
+
 
 /**
  *
@@ -21,7 +17,7 @@ public class TablePopupMenu extends JPopupMenu {
     /**
      * 
      */
-    public TablePopupMenu(panelInterface view, JTable jTable) {
+    public TablePopupMenu() {
 //        ActionListener actionListener = new PopupActionListener(view, jTable);
 //
 //        JMenuItem item;

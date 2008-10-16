@@ -20,7 +20,9 @@ public class Verwaltung extends javax.swing.JFrame {
 
     private mainframe frame;
 
-    /** Creates new form Anmeldung */
+    /** Creates new form Anmeldung
+     * @param farme 
+     */
     public Verwaltung(mainframe farme) {
         initComponents();
         this.frame = farme;
@@ -237,7 +239,7 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         if (selection.getId() != 1) {
             new User().deactivate(selection.getId());
         } else {
-            Popup.notice("Benutzer 'admin' kann nicht entfernt werden!");
+            Popup.notice("Benutzer 'Administrator' kann nicht entfernt werden!");
         }
     }
     jTable1.setModel(new UserTableModel());

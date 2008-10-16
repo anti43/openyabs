@@ -28,12 +28,10 @@ import java.util.Date;
 
 
 
-import javax.print.DocFlavor;
 import mp4.einstellungen.Programmdaten;
 import mp4.interfaces.Template;
 
 import mp4.utils.datum.DateConverter;
-import mp4.utils.listen.ArrayUtils;
 import mp4.utils.listen.ListenDataUtils;
 /**
  *

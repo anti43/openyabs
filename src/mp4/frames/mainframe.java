@@ -120,7 +120,7 @@ public class mainframe extends javax.swing.JFrame {
     private Position wt = new Position();
     public static JLabel nachricht = new JLabel();
     public static mainframe identifier;
-    private static User currentUser = new User();
+    private static User currentUser = new User(1);
     private historyView verlaufpanel;
     private eurEURPanel eurpanel;
     private eurEPanel eurEpanel;

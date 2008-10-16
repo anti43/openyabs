@@ -88,7 +88,6 @@ public class Lieferant extends mp4.items.People implements mp4.datenbank.install
           super.explode(str);
     }
 
-    @Override
     public void save() {
 
         if (id > 0) {
