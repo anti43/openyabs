@@ -57,19 +57,17 @@ public class Product extends mp4.items.Things implements mp4.datenbank.installat
     private Integer WarengruppenId = 0;
     private Query query;
     public boolean isvalid = false;
-    public Integer id = 0;
+
     private Hersteller hersteller;
     private Lieferant lieferant;
     private ProductImage image = new ProductImage();
     private URL ProductImageURL = null;
 
-    public Integer getId() {
-        return id;
-    }
 
     public void destroy() {
+        if (!readonly) {
         this.delete(this.id);
-        this.id = 0;
+        this.id = 0;}
     }
 
     public Product() {
@@ -85,8 +83,6 @@ public class Product extends mp4.items.Things implements mp4.datenbank.installat
         this.setName(text);
         this.setVK(parseDezimal);
         nfh = new NumberFormatHandler(this, new Date());
-//        this.save();
-
     }
 
     public Product(Query query) {
@@ -103,6 +99,7 @@ public class Product extends mp4.items.Things implements mp4.datenbank.installat
     public Product(Integer id) {
         super(ConnectionHandler.instanceOf().clone(TABLE_PRODUCTS));
         this.id = Integer.valueOf(id);
+        readonly = !lock();
         try {
             this.explode(this.selectLast("*", "id", id.toString(), true));
         } catch (Exception ex) {
@@ -239,16 +236,20 @@ public class Product extends mp4.items.Things implements mp4.datenbank.installat
         return str;
     }
 
-    public void save() {
+    public boolean save() {
 
-        if (id > 0) {
+        if (id > 0 && !readonly) {
             this.update(TABLE_PRODUCTS_FIELDS, this.collect(), id);
             isSaved = true;
             fetchImage();
+            return true;
         } else if (id == 0) {
             this.id = this.insert(TABLE_PRODUCTS_FIELDS, this.collect(),new int[]{0});
+            lock();
             fetchImage();
+            return true;
         }
+        return false;
     }
 
     public Integer getWarengruppenId() {
@@ -403,9 +404,6 @@ public class Product extends mp4.items.Things implements mp4.datenbank.installat
         return str;
     }
 
-    public int delete(String id) {
-        return delete(Integer.valueOf(id));
-    }
 
     public Integer getSteuersatzId() {
         return SteuersatzId;

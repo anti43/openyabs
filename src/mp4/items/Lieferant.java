@@ -56,6 +56,7 @@ public class Lieferant extends mp4.items.People implements mp4.datenbank.install
         super(ConnectionHandler.instanceOf().clone(TABLE_SUPPLIER));
         this.query =ConnectionHandler.instanceOf();
         this.id = id;
+        readonly = !lock();
         try {
             this.explode(this.selectLast("*", "id", id.toString(), true));
         } catch (Exception ex) {
@@ -88,14 +89,20 @@ public class Lieferant extends mp4.items.People implements mp4.datenbank.install
           super.explode(str);
     }
 
-    public void save() {
-
-        if (id > 0) {
-            this.update(TABLE_SUPPLIER_FIELDS, this.collect(), id);
-            isSaved = true;
-        } else if (id == 0) {
-            this.id = this.insert(TABLE_SUPPLIER_FIELDS, this.collect());
-        }
+     public boolean save() throws Exception {
+        
+            if (id > 0) {
+                if (!readonly) {
+                this.update(TABLE_SUPPLIER_FIELDS, this.collect(), id);
+                isSaved = true;
+                return true;
+                } 
+            } else if (id == 0) {
+                this.id = this.insert(TABLE_SUPPLIER_FIELDS , this.collect());
+                lock();
+                return true;
+            }
+        return false;
     }
     
      public String[][] getPrintModel(){
@@ -134,4 +141,5 @@ public class Lieferant extends mp4.items.People implements mp4.datenbank.install
     public NumberFormatHandler getNfh() {
         return nfh;
     }
+
 }

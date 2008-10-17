@@ -54,7 +54,8 @@ public class Einnahme extends mp4.items.Things implements mp4.datenbank.installa
         if (super.getQueryHandler() == null) {
             super.setQueryHandler(ConnectionHandler.instanceOf().clone(TABLE_INCOME));
         }
-        this.delete(this.id);
+        if (!readonly) {
+        this.delete(this.id);}
         
     }
     /**
@@ -90,6 +91,7 @@ public class Einnahme extends mp4.items.Things implements mp4.datenbank.installa
         this.setDatum(datum);
 
         this.save();
+        readonly = !lock();
     }
 
     /**
@@ -99,6 +101,7 @@ public class Einnahme extends mp4.items.Things implements mp4.datenbank.installa
     public Einnahme(Integer id) {
         super(ConnectionHandler.instanceOf().clone(TABLE_INCOME));
         this.id = Integer.valueOf(id);
+        readonly = !lock();
         try {
             this.explode(this.selectLast("*", "id", id.toString(), true));
         } catch (Exception ex) {
@@ -116,6 +119,7 @@ public class Einnahme extends mp4.items.Things implements mp4.datenbank.installa
         this.id = Integer.valueOf(id);
         try {
             this.explode(this.selectLast("*", "id", id, true));
+            readonly = !lock();
         } catch (Exception ex) {
              Log.Debug(ex);
         }
@@ -157,19 +161,23 @@ public class Einnahme extends mp4.items.Things implements mp4.datenbank.installa
         return str;
     }
 
-    public void save() {
+    public boolean save() {
 
         if (super.getQueryHandler() == null) {
             super.setQueryHandler(ConnectionHandler.instanceOf().clone(TABLE_INCOME));
         }
 
-        if (id > 0) {
+        if (id > 0 && !readonly) {
             this.update(TABLE_INCOME_FIELDS, this.collect(), id);
             isSaved = true;
+            return true;
         } else if (id == 0) {
            this.id = this.insert(TABLE_INCOME_FIELDS, this.collect(),null);
+           lock();
+           return true;
       
-        } 
+        }
+        return false;
     }
 
     public String getFDatum() {

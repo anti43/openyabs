@@ -16,6 +16,7 @@
  */
 package mp4.items;
 
+import mp4.datenbank.verbindung.DataLock;
 import mp4.datenbank.installation.Tabellen;
 import mp4.datenbank.verbindung.EasyQuery;
 import mp4.datenbank.verbindung.PrepareData;
@@ -33,6 +34,7 @@ public abstract class People extends EasyQuery implements Queries, Tabellen, Loc
 
     public Integer id = 0;
     public boolean isSaved = false;
+    public boolean readonly = false;
     private String Nummer = "";
     private String Firma = "";
     private String Anrede = "";
@@ -59,17 +61,19 @@ public abstract class People extends EasyQuery implements Queries, Tabellen, Loc
     @Override
     public boolean lock() {
         datalock = new DataLock(query, id);
-        return datalock.lockRow();
+        return getDatalock().lockRow();
     }
 
     @Override
     public void unlock() {
-        datalock.unLockRow();
+        try {
+            getDatalock().unLockRow();
+        } catch (Exception e) {
+        }
     }
-    
+
     @Override
     public void finalize(){
-        Log.Debug("Releasing .." + id, true);
         unlock();
     }
 
@@ -254,6 +258,10 @@ public abstract class People extends EasyQuery implements Queries, Tabellen, Loc
     public void destroy() {
         this.delete(this.id);
         this.id = 0;
+    }
+
+    public DataLock getDatalock() {
+        return datalock;
     }
 
 }

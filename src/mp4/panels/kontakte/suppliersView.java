@@ -169,8 +169,8 @@ public class suppliersView extends mp4.panels.misc.commonPanel implements mp4.da
         jPanel1 = new javax.swing.JPanel();
         jToolBar2 = new javax.swing.JToolBar();
         jButton20 = new javax.swing.JButton();
-        jButton13 = new javax.swing.JButton();
         jButton14 = new javax.swing.JButton();
+        jButton13 = new javax.swing.JButton();
         jSeparator2 = new javax.swing.JToolBar.Separator();
         jButton10 = new javax.swing.JButton();
         jButton8 = new javax.swing.JButton();
@@ -792,7 +792,7 @@ public class suppliersView extends mp4.panels.misc.commonPanel implements mp4.da
         jToolBar2.setFloatable(false);
         jToolBar2.setRollover(true);
 
-        jButton20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/medium/tab_remove.png"))); // NOI18N
+        jButton20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/3232/edittrash.png"))); // NOI18N
         jButton20.setToolTipText("Kontakt deaktivieren und Tab schliessen");
         jButton20.setFocusable(false);
         jButton20.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -803,18 +803,6 @@ public class suppliersView extends mp4.panels.misc.commonPanel implements mp4.da
             }
         });
         jToolBar2.add(jButton20);
-
-        jButton13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/medium/filesave.png"))); // NOI18N
-        jButton13.setToolTipText("Speichern");
-        jButton13.setFocusable(false);
-        jButton13.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton13.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton13.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton13MouseClicked(evt);
-            }
-        });
-        jToolBar2.add(jButton13);
 
         jButton14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/medium/new_window.png"))); // NOI18N
         jButton14.setToolTipText("Als neue Rechnung anlegen");
@@ -827,6 +815,19 @@ public class suppliersView extends mp4.panels.misc.commonPanel implements mp4.da
             }
         });
         jToolBar2.add(jButton14);
+
+        jButton13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/medium/filesave.png"))); // NOI18N
+        jButton13.setToolTipText("Speichern");
+        jButton13.setDisabledIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/3232/lock.png"))); // NOI18N
+        jButton13.setFocusable(false);
+        jButton13.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton13.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton13.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton13MouseClicked(evt);
+            }
+        });
+        jToolBar2.add(jButton13);
         jToolBar2.add(jSeparator2);
 
         jButton10.setText("Serienbrief");
@@ -852,8 +853,8 @@ public class suppliersView extends mp4.panels.misc.commonPanel implements mp4.da
         jToolBar2.add(jButton8);
         jToolBar2.add(jSeparator3);
 
-        jButton18.setText("VCard");
-        jButton18.setToolTipText("Export");
+        jButton18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/3232/edit_user.png"))); // NOI18N
+        jButton18.setToolTipText("VCard Export");
         jButton18.setFocusable(false);
         jButton18.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton18.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -895,9 +896,17 @@ public class suppliersView extends mp4.panels.misc.commonPanel implements mp4.da
 
     /**
      * 
-     * @param current
+     * @param c 
      */
+    @Override
     public void setContact(People c) {
+        
+        if (getLockable() != null) {
+            getLockable().unlock();
+
+        }
+        setLockable(c);
+        
         this.current = (Lieferant) c;
         this.changeTabText("Lieferant: " + current.getName());
         this.jTextField4.setText(current.getNummer());
@@ -1004,7 +1013,7 @@ public class suppliersView extends mp4.panels.misc.commonPanel implements mp4.da
                 if (!current.getNfh().exists(jTextField4.getText())) {
                     current.setNummer(jTextField4.getText());
                 } else {
-                    Popup.notice("Angegebene nummer existiert bereits.");
+                    Popup.notice("Angegebene Nummer existiert bereits.");
                     return false;
                 }
             }
@@ -1023,20 +1032,12 @@ public class suppliersView extends mp4.panels.misc.commonPanel implements mp4.da
             current.setMail(jTextField14.getText());
             current.setWebseite(jTextField15.getText());
             current.setNotizen(jTextArea1.getText());
-            current.save();
-
+            try {
+            if(current.save()){
             setEdited(false);
-            mainframe.setMessage("Lieferant Nummer " + current.getNummer() + " editiert.");
-            try {
-                new HistoryItem(ConnectionHandler.instanceOf(), Strings.SUPPLIER, "Lieferant Nummer: " + current.getNummer() + " angelegt.");
-            } catch (Exception ex) {
-                Popup.warn(ex.getMessage(), Popup.ERROR);
-            }
-
+            new HistoryItem(ConnectionHandler.instanceOf(), Strings.SUPPLIER, "Lieferant Nummer: " + current.getNummer() + " angelegt.");
             updateListTable();
-
-            try {
-                this.setContact(current);
+            this.setContact(current);}
             } catch (Exception exception) {
                 Popup.warn(exception.getMessage(), Popup.ERROR);
             }
@@ -1080,12 +1081,10 @@ public class suppliersView extends mp4.panels.misc.commonPanel implements mp4.da
                     current.setMail(jTextField14.getText());
                     current.setWebseite(jTextField15.getText());
                     current.setNotizen(jTextArea1.getText());
-                    current.save();
+                    if(current.save()){
                     setEdited(false);
-                    mainframe.setMessage("Lieferant Nummer " + current.getNummer() + " editiert.");
-                    new HistoryItem(ConnectionHandler.instanceOf(), Strings.SUPPLIER, "Lieferant Nummer: " + current.getNummer() + " editiert.");
-
-                    updateListTable();
+                    new HistoryItem(ConnectionHandler.instanceOf(), Strings.SUPPLIER, "Lieferant Nummer: " + current.getNummer() + " gespeichert.");
+                    updateListTable();}
                 } catch (Exception ex) {
                     Popup.warn(ex.getMessage(), Popup.ERROR);
                 }

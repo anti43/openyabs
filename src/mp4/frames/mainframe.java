@@ -77,6 +77,7 @@ import mp4.einstellungen.Programmdaten;
 import mp4.items.HistoryItem;
 import mp4.items.Product;
 import mp4.benutzerverwaltung.User;
+import mp4.datenbank.verbindung.DataLock;
 import mp4.items.Angebot;
 import mp4.panels.eur.eurAPanel;
 import mp4.panels.eur.eurEPanel;
@@ -103,7 +104,7 @@ import mp4.utils.files.TableHtmlWriter;
 import mp4.utils.importe.daten.ImportDaten;
 import mp4.utils.listen.ArrayUtils;
 import mp4.utils.tasks.Job;
-import mp4.utils.text.FadeOnChangeLabel;
+import mp4.utils.ui.FadeOnChangeLabel;
 import mp4.utils.ui.Position;
 import mp4.utils.ui.TabCloseIcon;
 
@@ -114,6 +115,17 @@ import mp4.utils.ui.TabCloseIcon;
 public class mainframe extends javax.swing.JFrame {
 
     private static final long serialVersionUID = 518894730966031646L;
+
+    public static void setErrorText(String string) {
+       ((FadeOnChangeLabel)nachricht).setFadeColor(Color.RED);
+       ((FadeOnChangeLabel)nachricht).setText(string);
+       
+    }
+    
+    public static void setInfoText(String string) { 
+       ((FadeOnChangeLabel)nachricht).reset();
+        nachricht.setText(string);
+    }
 
     private startView i;
     private Main loader;
@@ -1114,6 +1126,13 @@ public class mainframe extends javax.swing.JFrame {
 
     private void close() {
         try {
+            DataLock lockhandler = new mp4.datenbank.verbindung.DataLock();
+            for (int i = 0; i < DataLock.locks.size(); i++) {
+            Integer id = DataLock.locks.get(i);
+            Log.Debug("Rowlock: Late releasing .." + id, true);
+            lockhandler.delete(id);
+            }
+            
             Programmdaten.instanceOf().setMAINFRAME_WINDOW_STATE(this.getSize());
             Programmdaten.instanceOf().setMAINFRAME_TAB(mainTabPane.getSelectedIndex());
 
@@ -1520,6 +1539,7 @@ private void jMenuItem19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     }
 
     private void setUser(User usern) {
+        setTitle(getTitle() + " (Angemeldet als: " + usern + ")");
         currentUser = usern;
     }
     

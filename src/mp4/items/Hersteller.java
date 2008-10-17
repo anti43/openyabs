@@ -28,11 +28,7 @@ import mp4.logs.Log;
  * @author anti
  */
 public class Hersteller extends mp4.items.People implements mp4.datenbank.installation.Tabellen, Countable {
-
-
     private NumberFormatHandler nfh;
-    private String Herstellernummer = "";
-
 
     public Hersteller() {
         super(ConnectionHandler.instanceOf().clone(TABLE_MANUFACTURER));
@@ -42,6 +38,7 @@ public class Hersteller extends mp4.items.People implements mp4.datenbank.instal
     public Hersteller(Integer id) {
         super(ConnectionHandler.instanceOf().clone(TABLE_MANUFACTURER));
         this.id = id;
+        readonly = !lock();
         try {
             this.explode(this.selectLast("*", "id", id.toString(), true));
         } catch (Exception ex) {
@@ -71,14 +68,22 @@ public class Hersteller extends mp4.items.People implements mp4.datenbank.instal
     }
 
 
-    public void save() {
-        if (id > 0) {
-            this.update(TABLE_MANUFACTURER_FIELDS, this.collect(), id);
-            isSaved = true;
-        } else if (id == 0) {
-            this.id = this.insert(TABLE_MANUFACTURER_FIELDS, this.collect());
-        }
+    public boolean save() throws Exception {
+        
+            if (id > 0) {
+                if (!readonly) {
+                this.update(TABLE_MANUFACTURER_FIELDS, this.collect(), id);
+                isSaved = true;
+                return true;
+                } 
+            } else if (id == 0) {
+                this.id = this.insert(TABLE_MANUFACTURER_FIELDS, this.collect());
+                lock();
+                return true;
+            }
+        return false;
     }
+    
     
     public boolean isValid() {
         if(this.id > 0) {
@@ -107,4 +112,5 @@ public class Hersteller extends mp4.items.People implements mp4.datenbank.instal
     public NumberFormatHandler getNfh() {
         return nfh;
     }
+
 }

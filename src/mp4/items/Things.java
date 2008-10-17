@@ -16,16 +16,13 @@
  */
 package mp4.items;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import mp4.datenbank.verbindung.DataLock;
 import mp4.items.handler.NumberFormatHandler;
 
 import mp4.datenbank.verbindung.EasyQuery;
 import mp4.interfaces.Queries;
 import mp4.datenbank.verbindung.Query;
 import mp4.interfaces.Lockable;
-import mp4.items.visual.Popup;
-import mp4.logs.Log;
 
 /**
  *
@@ -35,6 +32,7 @@ public abstract class Things extends EasyQuery implements Queries, mp4.datenbank
 
     public Integer id = 0;
     public boolean isSaved = false;
+    public boolean readonly = false;
     public NumberFormatHandler nfh;
     private Query query;
     private DataLock datalock;
@@ -46,17 +44,26 @@ public abstract class Things extends EasyQuery implements Queries, mp4.datenbank
      */
     public Things(Query query) {
         super(query);
+        this.query = query;
     }
 
     @Override
     public boolean lock() {
         datalock = new DataLock(query, id);
-        return datalock.lockRow();
+        return getDatalock().lockRow();
     }
 
     @Override
     public void unlock() {
-        datalock.unLockRow();
+        try {
+            getDatalock().unLockRow();
+        } catch (Exception e) {
+        }
+    }
+
+    @Override
+    public void finalize(){
+        unlock();
     }
     
 
@@ -72,6 +79,10 @@ public abstract class Things extends EasyQuery implements Queries, mp4.datenbank
 
     public NumberFormatHandler getNfh() {
         return nfh;
+    }
+
+    public DataLock getDatalock() {
+        return datalock;
     }
 
   

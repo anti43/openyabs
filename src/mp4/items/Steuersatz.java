@@ -28,15 +28,13 @@ public class Steuersatz extends mp4.items.Things implements mp4.datenbank.instal
 
     private String Name = null;
     private Double Wert = 0d;
-    private Integer id = 0;
 
-    public Integer getId() {
-        return id;
-    }
 
     public void destroy() {
+        if (!readonly) {
         this.delete(this.getId());
         this.id = 0;
+        }
     }
 
     public Steuersatz() {
@@ -50,6 +48,7 @@ public class Steuersatz extends mp4.items.Things implements mp4.datenbank.instal
     public Steuersatz(Integer id) {
         super(ConnectionHandler.instanceOf().clone(TABLE_TAXES));
         this.id = id;
+        readonly = !lock(); 
         try {
             this.explode(this.selectLast("name, wert", "id", id.toString(), true));
         } catch (Exception ex) {
@@ -79,14 +78,18 @@ public class Steuersatz extends mp4.items.Things implements mp4.datenbank.instal
         return PrepareData.finalize(str);
     }
 
-    public void save() {
+    public boolean save() {
 
-        if (getId() > 0) {
+        if (!readonly && getId() > 0) {
             this.update(TABLE_TAXES_FIELDS, this.collect(), getId());
             isSaved = true;
+            return true;
         } else if (getId() == 0) {
             this.id = this.insert(TABLE_TAXES_FIELDS, this.collect(),null);
+            lock();
+            return true;
         }
+        return false;
     }
 
     public String getName() {

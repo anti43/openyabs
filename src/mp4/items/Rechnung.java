@@ -66,6 +66,7 @@ public class Rechnung extends mp4.items.Things implements mp4.datenbank.installa
         if(vals!=null && vals.length > 0) {
             
             this.explode(vals);
+            readonly = !lock();
         }
         else {
             throw new Exception("Datensatz nicht vorhanden");
@@ -88,10 +89,6 @@ public class Rechnung extends mp4.items.Things implements mp4.datenbank.installa
         return "rechnungnummer";
     }
 
-    public void destroy() {
-        this.delete(this.id);
-        this.id = 0;
-    }
 
     public Rechnung() {
         super(ConnectionHandler.instanceOf().clone(TABLE_BILLS));
@@ -116,6 +113,7 @@ public class Rechnung extends mp4.items.Things implements mp4.datenbank.installa
     public Rechnung(Integer id) {
         super(ConnectionHandler.instanceOf().clone(TABLE_BILLS));
         this.id = Integer.valueOf(id);
+        readonly = !lock();
         try {
             this.explode(this.selectLast(Strings.ALL, Strings.ID, id.toString(), true));
         } catch (Exception ex) {
@@ -243,7 +241,7 @@ public class Rechnung extends mp4.items.Things implements mp4.datenbank.installa
 
     public boolean save() {
         int result = -1;
-        if (id > 0 && !isSaved) {
+        if (id > 0 && !readonly && !isSaved ) {
             result = this.update(TABLE_BILLS_FIELDS, this.collect(), id);
             if (postendata != null) {
                 clearPostenData();
@@ -255,8 +253,9 @@ public class Rechnung extends mp4.items.Things implements mp4.datenbank.installa
             }
             zeilenHandler.save();
             isSaved = true;
-        } else if (id == 0 && !isSaved) {
+        } else if (id == 0) {
             this.id = this.insert(TABLE_BILLS_FIELDS, this.collect(), new int[]{0});
+            lock();
             result = id;
             if (result > 0) {
                 if (postendata != null) {

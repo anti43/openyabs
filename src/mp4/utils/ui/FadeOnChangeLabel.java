@@ -14,8 +14,7 @@
  *      You should have received a copy of the GNU General Public License
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mp4.utils.text;
-
+package mp4.utils.ui;
 
 import java.awt.Color;
 import java.awt.Container;
@@ -23,9 +22,10 @@ import java.awt.Graphics;
 
 import java.awt.Insets;
 
-       
 
-        import javax.swing.JLabel;
+
+import java.awt.color.ColorSpace;
+import javax.swing.JLabel;
 
 /**
  * <p>Title: FadeOnChangeLabel </p>
@@ -38,12 +38,13 @@ import java.awt.Insets;
  * @version 1.0
  */
 public class FadeOnChangeLabel
-extends JLabel implements Runnable{
+        extends JLabel implements Runnable {
+
     private static final long serialVersionUID = 1L;
-	/** 
-	 * The last value of the label.
-	 */
-	private String lastValue = "";
+    /** 
+     * The last value of the label.
+     */
+    private String lastValue = "";
     /** 
      * True when an animation is in progress. 
      */
@@ -51,7 +52,7 @@ extends JLabel implements Runnable{
     /** 
      * Fade value.
      */
-    private float fade = 0;
+    private static float fade = 0;
     /**
      * Initial fade value.
      */
@@ -64,19 +65,19 @@ extends JLabel implements Runnable{
     /**
      * Red component of the fade color.
      */
-    private float red = 0.4f;
+    private static float red = 0.4f;
     /**
      * Green component of the fade color.
      */
-    private float green = 0.8f;
+    private static float green = 0.8f;
     /**
      * Blue component of the fade color.
      */
-    private float blue = 0f;
+    private static float blue = 0f;
     /**
      * When a fade is initiated, the label will have this color.
      */
-    private Color fadeColor = new Color(red, green, blue, fade);
+    private static Color fadeColor = new Color(red, green, blue, fade);
     /**
      * Flag to control the fade process.
      */
@@ -142,10 +143,7 @@ extends JLabel implements Runnable{
     @Override
     public void setText(String text) {
         super.setText(text);
-//        if (!text.equals(lastValue)) {
-//            lastValue = text;
-            animate();
-//        }
+        animate();
     }
 
     /**
@@ -166,6 +164,22 @@ extends JLabel implements Runnable{
         // paintComponent() called, we can continue to the next
         // animation frame.
         paintCalled = true;
+    }
+
+    public void setFadeColor(Color color) {
+        float[] f = color.getComponents(null);
+        red = f[0];
+        green = f[1];
+        blue = f[2];
+        fadeColor = new Color(red, green, blue, fade);
+//        fadeColor = new Color(fadeColor.getColorSpace(), f, fade);
+    }
+
+    public void reset() {
+        red = 0.4f;
+        green = 0.8f;
+        blue = 0f;
+        fadeColor = new Color(red, green, blue, fade);
     }
 
     /**

@@ -953,7 +953,7 @@
             <Component class="javax.swing.JButton" name="jButton20">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/bilder/medium/tab_remove.png"/>
+                  <Image iconType="3" name="/bilder/3232/edittrash.png"/>
                 </Property>
                 <Property name="toolTipText" type="java.lang.String" value="Kontakt deaktivieren und Tab schliessen"/>
                 <Property name="focusable" type="boolean" value="false"/>
@@ -962,20 +962,6 @@
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton20ActionPerformed"/>
-              </Events>
-            </Component>
-            <Component class="javax.swing.JButton" name="jButton13">
-              <Properties>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/bilder/medium/filesave.png"/>
-                </Property>
-                <Property name="toolTipText" type="java.lang.String" value="Speichern"/>
-                <Property name="focusable" type="boolean" value="false"/>
-                <Property name="horizontalTextPosition" type="int" value="0"/>
-                <Property name="verticalTextPosition" type="int" value="3"/>
-              </Properties>
-              <Events>
-                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jButton13MouseClicked"/>
               </Events>
             </Component>
             <Component class="javax.swing.JButton" name="jButton14">
@@ -990,6 +976,23 @@
               </Properties>
               <Events>
                 <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jButton14MouseClicked"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="jButton13">
+              <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/bilder/medium/filesave.png"/>
+                </Property>
+                <Property name="toolTipText" type="java.lang.String" value="Speichern"/>
+                <Property name="disabledSelectedIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/bilder/3232/lock.png"/>
+                </Property>
+                <Property name="focusable" type="boolean" value="false"/>
+                <Property name="horizontalTextPosition" type="int" value="0"/>
+                <Property name="verticalTextPosition" type="int" value="3"/>
+              </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jButton13MouseClicked"/>
               </Events>
             </Component>
             <Component class="javax.swing.JToolBar$Separator" name="jSeparator2">
@@ -1020,8 +1023,10 @@
             </Component>
             <Component class="javax.swing.JButton" name="jButton18">
               <Properties>
-                <Property name="text" type="java.lang.String" value="VCard"/>
-                <Property name="toolTipText" type="java.lang.String" value="Export"/>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/bilder/3232/edit_user.png"/>
+                </Property>
+                <Property name="toolTipText" type="java.lang.String" value="VCard Export"/>
                 <Property name="focusable" type="boolean" value="false"/>
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="verticalTextPosition" type="int" value="3"/>

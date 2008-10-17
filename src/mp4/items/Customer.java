@@ -31,7 +31,6 @@ import mp4.logs.*;
  */
 public class Customer extends mp4.items.People implements mp4.datenbank.installation.Tabellen, Countable {
 
-
     private String Kundensteuernummer = "";
     private Query query;
     private boolean deleted = false;
@@ -53,7 +52,7 @@ public class Customer extends mp4.items.People implements mp4.datenbank.installa
     public Customer(Integer id) {
         super(ConnectionHandler.instanceOf().clone(TABLE_CUSTOMERS));
         this.id = id;
-        lock();
+        readonly = !lock();
         try {
             this.explode(this.selectLast("*", "id", id.toString(), true));
         } catch (Exception ex) {
@@ -69,7 +68,7 @@ public class Customer extends mp4.items.People implements mp4.datenbank.installa
         if (vals != null && vals.length > 0) {
             this.explode(vals);
             //We can only lock it after explode() here, as ID is not set before
-            lock();
+            readonly = !lock();
         } else {
             throw new Exception("Datensatz nicht vorhanden");
         }
@@ -92,7 +91,7 @@ public class Customer extends mp4.items.People implements mp4.datenbank.installa
     }
 
     public Query getConnectionHandler() {
-        return  query;
+        return query;
     }
 
     public String getid() {
@@ -107,13 +106,10 @@ public class Customer extends mp4.items.People implements mp4.datenbank.installa
         }
     }
 
-   
-
     @Override
     public String collect() {
-        return  PrepareData.finalize(super.collect() + PrepareData.prepareString(this.getKundensteuernummer()));
+        return PrepareData.finalize(super.collect() + PrepareData.prepareString(this.getKundensteuernummer()));
     }
-
 
     @Override
     public void explode(String[] str) {
@@ -156,17 +152,21 @@ public class Customer extends mp4.items.People implements mp4.datenbank.installa
 
     }
 
-
-    public void save() throws Exception {
-        if (id > 0) {
-            this.update(TABLE_CUSTOMER_FIELDS, this.collect(), id);
-            isSaved = true;
-            unlock();
-        } else if (id == 0) {
-            this.id = this.insert(TABLE_CUSTOMER_FIELDS, this.collect());
-        }
+    public boolean save() throws Exception {
+        
+            if (id > 0) {
+                if (!readonly) {
+                this.update(TABLE_CUSTOMER_FIELDS, this.collect(), id);
+                isSaved = true;
+                return true;
+                } 
+            } else if (id == 0) {
+                this.id = this.insert(TABLE_CUSTOMER_FIELDS, this.collect());
+                lock();
+                return true;
+            }
+        return false;
     }
-
 
     public String[][] getBills() {
 

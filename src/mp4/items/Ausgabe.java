@@ -16,8 +16,6 @@
  */
 package mp4.items;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mp4.logs.*;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import java.util.Date;
@@ -43,12 +41,7 @@ public class Ausgabe extends mp4.items.Things implements mp4.datenbank.installat
     private Double Preis = 0d;
     private Double Tax = 0d;
     private Date Datum = new Date();
-    public Integer id = 0;
 
-   
-   public Integer getId() {
-        return id;
-    }
     
     
     public Ausgabe() {
@@ -74,6 +67,7 @@ public class Ausgabe extends mp4.items.Things implements mp4.datenbank.installat
         this.setDatum(datum);
 
         this.save();
+        readonly = !lock();
     }
 
     /**
@@ -83,6 +77,7 @@ public class Ausgabe extends mp4.items.Things implements mp4.datenbank.installat
     public Ausgabe(Integer id) {
         super(ConnectionHandler.instanceOf().clone( TABLE_DUES));
         this.id = Integer.valueOf(id);
+        readonly = !lock();
         try {
             this.explode(this.selectLast("*", "id", id.toString(), true));
         } catch (Exception ex) {
@@ -99,8 +94,9 @@ public class Ausgabe extends mp4.items.Things implements mp4.datenbank.installat
         if (super.getQueryHandler() == null) {
             super.setQueryHandler(ConnectionHandler.instanceOf().clone(TABLE_DUES));
         }
+        if (!readonly) {
         this.delete(this.id);
-        
+        }
     }
     /**
      * Enables this object
@@ -149,14 +145,19 @@ public class Ausgabe extends mp4.items.Things implements mp4.datenbank.installat
         return str;
     }
 
-    public void save() {
+    public boolean save() {
 
-        if (id > 0) {
-            this.update(TABLE_OUTGOINGS_FIELDS, this.collect(), id);
-            isSaved = true;
-        } else if (id == 0) {
-            this.id = this.insert(TABLE_OUTGOINGS_FIELDS, this.collect(),null);
-        } 
+            if (id > 0) { 
+                if (!readonly) {
+                this.update(TABLE_OUTGOINGS_FIELDS, this.collect(), id);
+                isSaved = true;
+                return true;}
+            } else if (id == 0) {
+                this.id = this.insert(TABLE_OUTGOINGS_FIELDS, this.collect(), null);
+                lock();
+                return true;
+            }
+        return false;
     }
 
     public String[][] getAll() {

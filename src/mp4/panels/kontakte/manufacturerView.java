@@ -42,7 +42,7 @@ import mp4.utils.tabellen.models.LProduktListTableModel;
 public class manufacturerView extends mp4.panels.misc.commonPanel implements mp4.datenbank.installation.Tabellen, panelInterface {
 
     public Hersteller current;
-    private String[][] liste;   
+    private String[][] liste;
     private mainframe mainframe;
     private boolean edited = false;
     private boolean numberfieldedited;
@@ -69,14 +69,13 @@ public class manufacturerView extends mp4.panels.misc.commonPanel implements mp4
     }
 
     private void fillSearchTable() {
-       
+
         String[][] list = current.select("id, nummer, firma ", null, null, "nummer", false);
         String k = "id, " + "Nummer,Firma";
 
         this.jTable3.setModel(new DefaultTableModel(list, k.split(",")));
         TableFormat.stripFirst(jTable3);
     }
-    
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -170,8 +169,8 @@ public class manufacturerView extends mp4.panels.misc.commonPanel implements mp4
         jPanel1 = new javax.swing.JPanel();
         jToolBar2 = new javax.swing.JToolBar();
         jButton20 = new javax.swing.JButton();
-        jButton13 = new javax.swing.JButton();
         jButton14 = new javax.swing.JButton();
+        jButton13 = new javax.swing.JButton();
         jSeparator2 = new javax.swing.JToolBar.Separator();
         jButton10 = new javax.swing.JButton();
         jButton8 = new javax.swing.JButton();
@@ -793,7 +792,7 @@ public class manufacturerView extends mp4.panels.misc.commonPanel implements mp4
         jToolBar2.setFloatable(false);
         jToolBar2.setRollover(true);
 
-        jButton20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/medium/tab_remove.png"))); // NOI18N
+        jButton20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/3232/edittrash.png"))); // NOI18N
         jButton20.setToolTipText("Kontakt deaktivieren und Tab schliessen");
         jButton20.setFocusable(false);
         jButton20.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -804,18 +803,6 @@ public class manufacturerView extends mp4.panels.misc.commonPanel implements mp4
             }
         });
         jToolBar2.add(jButton20);
-
-        jButton13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/medium/filesave.png"))); // NOI18N
-        jButton13.setToolTipText("Speichern");
-        jButton13.setFocusable(false);
-        jButton13.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton13.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton13.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton13MouseClicked(evt);
-            }
-        });
-        jToolBar2.add(jButton13);
 
         jButton14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/medium/new_window.png"))); // NOI18N
         jButton14.setToolTipText("Als neue Rechnung anlegen");
@@ -828,6 +815,19 @@ public class manufacturerView extends mp4.panels.misc.commonPanel implements mp4
             }
         });
         jToolBar2.add(jButton14);
+
+        jButton13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/medium/filesave.png"))); // NOI18N
+        jButton13.setToolTipText("Speichern");
+        jButton13.setDisabledSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/3232/lock.png"))); // NOI18N
+        jButton13.setFocusable(false);
+        jButton13.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton13.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton13.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton13MouseClicked(evt);
+            }
+        });
+        jToolBar2.add(jButton13);
         jToolBar2.add(jSeparator2);
 
         jButton10.setText("Serienbrief");
@@ -853,8 +853,8 @@ public class manufacturerView extends mp4.panels.misc.commonPanel implements mp4
         jToolBar2.add(jButton8);
         jToolBar2.add(jSeparator3);
 
-        jButton18.setText("VCard");
-        jButton18.setToolTipText("Export");
+        jButton18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/3232/edit_user.png"))); // NOI18N
+        jButton18.setToolTipText("VCard Export");
         jButton18.setFocusable(false);
         jButton18.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton18.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -896,9 +896,17 @@ public class manufacturerView extends mp4.panels.misc.commonPanel implements mp4
 
     /**
      * 
-     * @param current
+     * @param c 
      */
+    @Override
     public void setContact(People c) {
+        
+        if (getLockable() != null) {
+            getLockable().unlock();
+
+        }
+        setLockable(c);
+        
         this.current = (Hersteller) c;
         this.changeTabText("Hersteller: " + current.getName());
         this.jTextField4.setText(current.getHerstellernummer());
@@ -915,7 +923,7 @@ public class manufacturerView extends mp4.panels.misc.commonPanel implements mp4
         this.jTextField15.setText(current.getWebseite());
         this.jTextField16.setText(current.getPLZ());
         this.jTextArea1.setText(current.getNotizen());
-        
+
         this.jTable1.setModel(new LProduktListTableModel(current));
         TableFormat.stripFirst(jTable1);
         numberfieldedited = false;
@@ -940,7 +948,7 @@ public class manufacturerView extends mp4.panels.misc.commonPanel implements mp4
 
         this.jTable3.setModel(new DefaultTableModel(list, k.split(",")));
         TableFormat.stripFirst(jTable3);
-   
+
     }//GEN-LAST:event_jTextField2ActionPerformed
 
     private void jTextField3ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
@@ -950,7 +958,7 @@ public class manufacturerView extends mp4.panels.misc.commonPanel implements mp4
 
         this.jTable3.setModel(new DefaultTableModel(list, k.split(",")));
         TableFormat.stripFirst(jTable3);
-    
+
     }//GEN-LAST:event_jTextField3ActionPerformed
 
     private void jTextField4ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
@@ -987,13 +995,15 @@ public class manufacturerView extends mp4.panels.misc.commonPanel implements mp4
     }//GEN-LAST:event_jTextField15ActionPerformed
 
     private boolean createNew() {
-       
+
         if (jTextField7.getText().length() >= 1 || jTextField5.getText().length() >= 1) {
             if (jTextField5.getText().length() == 0) {
                 jTextField5.setText(jTextField7.getText());
             }
 
-            if(!numberfieldedited && current.isValid())jTextField4.setText(null);
+            if (!numberfieldedited && current.isValid()) {
+                jTextField4.setText(null);
+            }
             current = new Hersteller();
 
             if (jTextField4.getText() == null || jTextField4.getText().length() == 0) {
@@ -1008,7 +1018,7 @@ public class manufacturerView extends mp4.panels.misc.commonPanel implements mp4
                 }
             }
 
-            
+
             current.setFirma(jTextField5.getText());
             current.setAnrede(jTextField6.getText());
             current.setName(jTextField7.getText());
@@ -1022,22 +1032,19 @@ public class manufacturerView extends mp4.panels.misc.commonPanel implements mp4
             current.setMail(jTextField14.getText());
             current.setWebseite(jTextField15.getText());
             current.setNotizen(jTextArea1.getText());
-            current.save();
-             setEdited(false);
-            mainframe.setMessage("Hersteller Nummer " + current.getHerstellernummer() + " editiert.");
+
             try {
-                new HistoryItem(ConnectionHandler.instanceOf(), Strings.MANUFACTURER, "Hersteller Nummer: " + current.getHerstellernummer() + " angelegt.");
+                if (current.save()) {
+                    setEdited(false);
+                    new HistoryItem(ConnectionHandler.instanceOf(), Strings.MANUFACTURER, "Hersteller Nummer: " + current.getHerstellernummer() + " angelegt.");
+                    updateListTable();
+
+                    this.setContact(current);
+                }
             } catch (Exception ex) {
                 Popup.warn(ex.getMessage(), Popup.ERROR);
             }
 
-            updateListTable();
-
-            try {
-                this.setContact(current);
-            } catch (Exception exception) {
-                Popup.warn(exception.getMessage(), Popup.ERROR);
-            }
         } else {
             new Popup("Sie müssen mindestens einen Namen angeben.", Popup.ERROR);
         }
@@ -1062,7 +1069,7 @@ public class manufacturerView extends mp4.panels.misc.commonPanel implements mp4
 
     public void save() {
 
-         if (current.isValid()) {
+        if (current.isValid()) {
             if (jTextField7.getText().length() > 0) {
                 try {
                     current.setFirma(jTextField5.getText());
@@ -1078,19 +1085,20 @@ public class manufacturerView extends mp4.panels.misc.commonPanel implements mp4
                     current.setMail(jTextField14.getText());
                     current.setWebseite(jTextField15.getText());
                     current.setNotizen(jTextArea1.getText());
-                    current.save();
-                     setEdited(false);
-                    mainframe.setMessage("Hersteller Nummer " + current.getHerstellernummer() + " editiert.");
-                    new HistoryItem(ConnectionHandler.instanceOf(), Strings.MANUFACTURER, "Hersteller Nummer: " + current.getHerstellernummer() + " editiert.");
-
-                    updateListTable();
+                    
+                    if(current.save()){
+                    setEdited(false);
+                    new HistoryItem(ConnectionHandler.instanceOf(), Strings.MANUFACTURER, "Hersteller Nummer: " + current.getHerstellernummer() + " gespeichert.");
+                    updateListTable();}
                 } catch (Exception ex) {
                     Popup.warn(ex.getMessage(), Popup.ERROR);
                 }
             } else {
                 new Popup("Sie müssen mindestens einen Namen angeben.", Popup.ERROR);
             }
-        } else createNew();
+        } else {
+            createNew();
+        }
     }
 
     private void jTable3MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable3MouseClicked
@@ -1134,7 +1142,7 @@ public class manufacturerView extends mp4.panels.misc.commonPanel implements mp4
         if (mainframe.getUser().doAction(User.EDITOR)) {
             save();
             if (current.isValid()) {
-                p=new Product();
+                p = new Product();
                 p.setHersteller(current);
                 mainframe.addProductPanel(p);
             }
@@ -1200,19 +1208,19 @@ private void jTextField17MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRS
 }//GEN-LAST:event_jTextField17MouseClicked
 
 private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
-new NumberFormatEditor(this.current);
+    new NumberFormatEditor(this.current);
 }//GEN-LAST:event_jButton16ActionPerformed
 
 private void jTextField4KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField4KeyTyped
-numberfieldedited =true;
+    numberfieldedited = true;
 }//GEN-LAST:event_jTextField4KeyTyped
 
 private void jTextField4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextField4MouseClicked
-jTextField4.setEditable(true);
+    jTextField4.setEditable(true);
 }//GEN-LAST:event_jTextField4MouseClicked
 
 private void jButton18MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton18MouseClicked
- if (current.isValid()) {
+    if (current.isValid()) {
         DialogForFile dialog = new DialogForFile(DialogForFile.FILES_ONLY, current.getName() + ".vcf");
         if (dialog.chooseFile()) {
             new FileReaderWriter(dialog.getFile()).write(new VCard(current).getVCard());
@@ -1221,20 +1229,20 @@ private void jButton18MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
 }//GEN-LAST:event_jButton18MouseClicked
 
     private void deactivate() {
-     if (current.getId() > 0) {
-        if ((JOptionPane.showConfirmDialog(this, "Wirklich löschen?", "Sicher?", JOptionPane.YES_NO_OPTION)) == JOptionPane.YES_OPTION) {
-            try {
-                current.deactivate(current.getId().toString());
+        if (current.getId() > 0) {
+            if ((JOptionPane.showConfirmDialog(this, "Wirklich löschen?", "Sicher?", JOptionPane.YES_NO_OPTION)) == JOptionPane.YES_OPTION) {
+                try {
+                    current.deactivate(current.getId().toString());
 
-                new HistoryItem(ConnectionHandler.instanceOf(), Strings.MANUFACTURER , "Hersteller Nummer: " + current.getHerstellernummer() + " gelöscht.");
+                    new HistoryItem(ConnectionHandler.instanceOf(), Strings.MANUFACTURER, "Hersteller Nummer: " + current.getHerstellernummer() + " gelöscht.");
 
-                updateListTable();
+                    updateListTable();
 
-                current = new Hersteller();
-            } catch (Exception ex) {
-                Popup.warn(ex.getMessage(), Popup.ERROR);
+                    current = new Hersteller();
+                } catch (Exception ex) {
+                    Popup.warn(ex.getMessage(), Popup.ERROR);
+                }
             }
-        }
         } else {
             mainframe.setMessage("Kein Kontakt gewählt.");
         }
@@ -1314,7 +1322,7 @@ private void jButton18MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
         this.updateListTable();
     }
 
-  public void addProduct(Product p) {
+    public void addProduct(Product p) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -1328,7 +1336,7 @@ private void jButton18MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
     }
 
     public void switchTab(int i) {
-       jTabbedPane1.setSelectedIndex(i);
+        jTabbedPane1.setSelectedIndex(i);
     }
 
     public void setTax(Steuersatz steuersatz) {

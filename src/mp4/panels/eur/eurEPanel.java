@@ -344,7 +344,7 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 
     private void jButton3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
 
-        if (jButton3.isEnabled()) {
+        if (jButton3.isEnabled() && !curEinnahme.readonly) {
 
             vDouble betrag = new vDouble(FormatNumber.parseDezimal(jTextField4.getText()));
             vDouble steuer = new vDouble(FormatNumber.parseDezimal(jTextField3.getText()));
@@ -359,11 +359,11 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     curEinnahme.setBeschreibung(jEditorPane1.getText());
                     curEinnahme.setPreis(betrag.value);
                     curEinnahme.setTax(steuer.value);
-                    curEinnahme.save();
+                    if(curEinnahme.save()){
                     updateTableData();
 
                     new HistoryItem(Strings.EINNAHME, "Einnahme Nummer: " + curEinnahme.getId() + " editiert.");
-                }
+                }}
             } else {
                
                 String text = "";
@@ -421,9 +421,8 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
         SelectionCheck sel  =new SelectionCheck(jTable1);
 
         if(sel.checkID()){
-//            undoCache.instanceOf().addItem(ObjectCopy.copy(this.curAusgabe), undoCache.DELETE);
-            new HistoryItem(Strings.EINNAHME, "Einnahme Nummer: " + sel.getId() + " gelöscht.");
             new Einnahme(sel.getId()).disable();
+            new HistoryItem(Strings.EINNAHME, "Einnahme Nummer: " + sel.getId() + " gelöscht.");   
             updateTableData();
         }
     }//GEN-LAST:event_jButton5ActionPerformed

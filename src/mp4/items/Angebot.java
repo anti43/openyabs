@@ -16,8 +16,6 @@
  */
 package mp4.items;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mp4.items.handler.NumberFormatHandler;
 import java.util.Date;
 
@@ -48,20 +46,17 @@ public class Angebot extends mp4.items.Things implements mp4.datenbank.installat
     private Date auftragdatum = null;
     private Query query;
     private String[][] products;
-    public Integer id = 0;
     private PostenTableModel postendata = null;
 
     public void add(PostenTableModel m) {
         this.postendata = m;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
     public void destroy() {
-        this.delete(this.id);
-        this.id = 0;
+        if (!readonly) {
+            this.delete(this.id);
+            this.id = 0;
+        }
     }
 
     public Angebot() {
@@ -86,6 +81,7 @@ public class Angebot extends mp4.items.Things implements mp4.datenbank.installat
     public Angebot(Integer id) {
         super(ConnectionHandler.instanceOf().clone(TABLE_OFFERS));
         this.id = id;
+        readonly = !lock();
         try {
             this.explode(this.selectLast(Strings.ALL, Strings.ID, id.toString(), true));
         } catch (Exception ex) {
@@ -234,7 +230,7 @@ public class Angebot extends mp4.items.Things implements mp4.datenbank.installat
 
     public boolean save() {
         int result = -1;
-        if (id > 0 && !isSaved) {
+        if (id > 0 && !isSaved &&!readonly) {
             result = this.update(TABLE_OFFERS_FIELDS, this.collect(), id);
             if (result>0&&postendata != null) {
                 clearPostenData();
@@ -245,6 +241,7 @@ public class Angebot extends mp4.items.Things implements mp4.datenbank.installat
         } else if (id == 0 && !isSaved) {
             this.id = this.insert(TABLE_OFFERS_FIELDS, this.collect(),new int[]{0});
             result = id;
+            lock();
             if (result>0&&postendata != null) {
                 explode(postendata);
             }
@@ -395,9 +392,6 @@ public class Angebot extends mp4.items.Things implements mp4.datenbank.installat
         this.isSaved = false;
     }
 
-//    public void setRechnung(boolean rechnung) {
-//        this.hasRechnung = rechnung;
-//    }
     public boolean hasRechnung() {
         if (getRechnungId() > 0) {
 
@@ -405,10 +399,6 @@ public class Angebot extends mp4.items.Things implements mp4.datenbank.installat
         } else {
             return false;
         }
-    }
-
-    public int delete(String id) {
-        return delete(Integer.valueOf(id));
     }
 
     public Date getAnfrageVom() {

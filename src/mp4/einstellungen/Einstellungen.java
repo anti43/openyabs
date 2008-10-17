@@ -225,7 +225,7 @@ public class Einstellungen extends MethodParser implements mp4.datenbank.install
         try {
             return new Locale(datahandler.getString("Locale").split("_")[0], datahandler.getString("Locale").split("_")[1]);
         } catch (Exception e) {
-            mainframe.nachricht.setText("Es ist ein Fehler aufgetreten, Locale de_DE wird benutzt.");
+            mainframe.setInfoText("Es ist ein Fehler aufgetreten, Locale de_DE wird benutzt.");
             return new Locale("de", "DE");
         }
     }

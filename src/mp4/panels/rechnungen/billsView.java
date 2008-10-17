@@ -72,19 +72,11 @@ import mp4.utils.zahlen.FormatNumber;
 public class billsView extends mp4.panels.misc.commonPanel implements panelInterface, mp4.datenbank.installation.Tabellen {
 
     private Rechnung currentBill;
-    private String[][] liste;
     private Customer customer;
     private mainframe mainframe;
-    private TableCellEditor editor;
-    private SimpleDateFormat df;
-    private Customer oldcustomer;
-    private double defaultTaxRate = 0d;
-    private Einstellungen settings;
-    private boolean pdf = false;
-    private int taxcount = 0;
     private TableCalculator calculator;
-    private boolean edited = false;
     private Angebot angebot;
+    private Einstellungen settings;
 
     public billsView() {
     }
@@ -93,10 +85,10 @@ public class billsView extends mp4.panels.misc.commonPanel implements panelInter
        
         Locale.setDefault(new Locale("de", "DE", Programmdaten.instanceOf().getBILLPANEL_MASK()));
         initComponents();
-//        Locale.setDefault(Einstellungen.instanceOf().getLocale());
+
 
         settings = Einstellungen.instanceOf();
-        defaultTaxRate = settings.getHauptsteuersatz();
+
         currentBill = new Rechnung();
         this.customer = new Customer(ConnectionHandler.instanceOf());
         this.mainframe = frame;
@@ -232,15 +224,6 @@ public class billsView extends mp4.panels.misc.commonPanel implements panelInter
         mainframe.getNachricht().setText(string);
     }
 
-    public void setEdited(boolean edit) {
-//          if (edit && (edit != edited)) {
-//            this.changeTabText(((JTabbedPane) this.getParent()).getTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex()) + "*");
-//        } else if (!edit && (edit != edited)) {
-//            this.changeTabText(((JTabbedPane) this.getParent()).getTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex()).substring(0, 
-//                    ((JTabbedPane) this.getParent()).getTitleAt(((JTabbedPane) this.getParent()).getSelectedIndex()).length()));
-//        }
-        edited = edit;
-    }
 
     private void renewTableModel(boolean empty) {
         if (empty) {
@@ -321,7 +304,7 @@ public class billsView extends mp4.panels.misc.commonPanel implements panelInter
 
     public void setContact(People c) {
 
-        oldcustomer = this.customer;
+//        oldcustomer = this.customer;
         this.customer = (Customer) c;
 
         jLabel19.setText(customer.getNummer());

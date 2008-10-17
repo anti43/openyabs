@@ -247,7 +247,7 @@
                                   <Group type="103" groupAlignment="1" attributes="0">
                                       <Component id="jPanel7" alignment="0" max="32767" attributes="1"/>
                                       <Component id="jPanel8" alignment="0" max="32767" attributes="1"/>
-                                      <Component id="jPanel9" alignment="0" max="32767" attributes="0"/>
+                                      <Component id="jPanel9" alignment="0" pref="461" max="32767" attributes="0"/>
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
                               </Group>
@@ -785,7 +785,7 @@
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="jScrollPane3" alignment="0" pref="201" max="32767" attributes="1"/>
+                                      <Component id="jScrollPane3" alignment="0" pref="202" max="32767" attributes="1"/>
                                       <Component id="jLabel19" alignment="0" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
@@ -858,7 +858,7 @@
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="jScrollPane6" alignment="0" pref="211" max="32767" attributes="1"/>
+                                      <Component id="jScrollPane6" alignment="0" pref="210" max="32767" attributes="1"/>
                                       <Component id="jLabel21" alignment="0" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
@@ -1047,7 +1047,7 @@
             <Component class="javax.swing.JButton" name="jButton20">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/bilder/medium/tab_remove.png"/>
+                  <Image iconType="3" name="/bilder/3232/edittrash.png"/>
                 </Property>
                 <Property name="toolTipText" type="java.lang.String" value="Kunde deaktivieren und Tab schliessen"/>
                 <Property name="focusable" type="boolean" value="false"/>
@@ -1058,24 +1058,10 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton20ActionPerformed"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JButton" name="jButton13">
-              <Properties>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/bilder/medium/filesave.png"/>
-                </Property>
-                <Property name="toolTipText" type="java.lang.String" value="Speichern"/>
-                <Property name="focusable" type="boolean" value="false"/>
-                <Property name="horizontalTextPosition" type="int" value="0"/>
-                <Property name="verticalTextPosition" type="int" value="3"/>
-              </Properties>
-              <Events>
-                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jButton13MouseClicked"/>
-              </Events>
-            </Component>
             <Component class="javax.swing.JButton" name="jButton14">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/bilder/medium/new_window.png"/>
+                  <Image iconType="3" name="/bilder/3232/new_window.png"/>
                 </Property>
                 <Property name="toolTipText" type="java.lang.String" value="Als neue Rechnung anlegen"/>
                 <Property name="focusable" type="boolean" value="false"/>
@@ -1084,6 +1070,23 @@
               </Properties>
               <Events>
                 <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jButton14MouseClicked"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="jButton13">
+              <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/bilder/3232/filesave.png"/>
+                </Property>
+                <Property name="toolTipText" type="java.lang.String" value="Speichern"/>
+                <Property name="disabledIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/bilder/3232/lock.png"/>
+                </Property>
+                <Property name="focusable" type="boolean" value="false"/>
+                <Property name="horizontalTextPosition" type="int" value="0"/>
+                <Property name="verticalTextPosition" type="int" value="3"/>
+              </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jButton13MouseClicked"/>
               </Events>
             </Component>
             <Component class="javax.swing.JToolBar$Separator" name="jSeparator2">
@@ -1114,8 +1117,10 @@
             </Component>
             <Component class="javax.swing.JButton" name="jButton18">
               <Properties>
-                <Property name="text" type="java.lang.String" value="VCard"/>
-                <Property name="toolTipText" type="java.lang.String" value="Export"/>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/bilder/3232/edit_user.png"/>
+                </Property>
+                <Property name="toolTipText" type="java.lang.String" value="VCard Export"/>
                 <Property name="focusable" type="boolean" value="false"/>
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="verticalTextPosition" type="int" value="3"/>

@@ -36,14 +36,13 @@ import mp4.utils.tabellen.models.ContactListTableModel;
  *
  * @author  anti43
  */
-public class customersView extends mp4.panels.misc.commonPanel implements mp4.datenbank.installation.Tabellen{
+public class customersView extends mp4.panels.misc.commonPanel implements mp4.datenbank.installation.Tabellen {
 
     public Customer current;
     private String[][] liste;
     private mainframe mainframe;
     private boolean edited = false;
     private boolean numberfieldedited;
-  
 
     /** Creates new form customers
      * @param frame 
@@ -179,8 +178,8 @@ public class customersView extends mp4.panels.misc.commonPanel implements mp4.da
         jPanel1 = new javax.swing.JPanel();
         jToolBar2 = new javax.swing.JToolBar();
         jButton20 = new javax.swing.JButton();
-        jButton13 = new javax.swing.JButton();
         jButton14 = new javax.swing.JButton();
+        jButton13 = new javax.swing.JButton();
         jSeparator2 = new javax.swing.JToolBar.Separator();
         jButton10 = new javax.swing.JButton();
         jButton8 = new javax.swing.JButton();
@@ -687,7 +686,7 @@ public class customersView extends mp4.panels.misc.commonPanel implements mp4.da
             .addGroup(jPanel11Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 201, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE)
                     .addComponent(jLabel19))
                 .addContainerGap())
         );
@@ -742,7 +741,7 @@ public class customersView extends mp4.panels.misc.commonPanel implements mp4.da
             .addGroup(jPanel12Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 211, Short.MAX_VALUE)
+                    .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE)
                     .addComponent(jLabel21))
                 .addContainerGap())
         );
@@ -880,7 +879,7 @@ public class customersView extends mp4.panels.misc.commonPanel implements mp4.da
         jToolBar2.setFloatable(false);
         jToolBar2.setRollover(true);
 
-        jButton20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/medium/tab_remove.png"))); // NOI18N
+        jButton20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/3232/edittrash.png"))); // NOI18N
         jButton20.setToolTipText("Kunde deaktivieren und Tab schliessen");
         jButton20.setFocusable(false);
         jButton20.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -892,19 +891,7 @@ public class customersView extends mp4.panels.misc.commonPanel implements mp4.da
         });
         jToolBar2.add(jButton20);
 
-        jButton13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/medium/filesave.png"))); // NOI18N
-        jButton13.setToolTipText("Speichern");
-        jButton13.setFocusable(false);
-        jButton13.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton13.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton13.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton13MouseClicked(evt);
-            }
-        });
-        jToolBar2.add(jButton13);
-
-        jButton14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/medium/new_window.png"))); // NOI18N
+        jButton14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/3232/new_window.png"))); // NOI18N
         jButton14.setToolTipText("Als neue Rechnung anlegen");
         jButton14.setFocusable(false);
         jButton14.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -915,6 +902,19 @@ public class customersView extends mp4.panels.misc.commonPanel implements mp4.da
             }
         });
         jToolBar2.add(jButton14);
+
+        jButton13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/3232/filesave.png"))); // NOI18N
+        jButton13.setToolTipText("Speichern");
+        jButton13.setDisabledIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/3232/lock.png"))); // NOI18N
+        jButton13.setFocusable(false);
+        jButton13.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton13.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton13.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton13MouseClicked(evt);
+            }
+        });
+        jToolBar2.add(jButton13);
         jToolBar2.add(jSeparator2);
 
         jButton10.setText("Serienbrief");
@@ -940,8 +940,8 @@ public class customersView extends mp4.panels.misc.commonPanel implements mp4.da
         jToolBar2.add(jButton8);
         jToolBar2.add(jSeparator3);
 
-        jButton18.setText("VCard");
-        jButton18.setToolTipText("Export");
+        jButton18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/3232/edit_user.png"))); // NOI18N
+        jButton18.setToolTipText("VCard Export");
         jButton18.setFocusable(false);
         jButton18.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton18.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -986,11 +986,15 @@ public class customersView extends mp4.panels.misc.commonPanel implements mp4.da
      * @param c 
      */
     public void setContact(People c) {
-        if(getLockable()!=null) {
+
+        if (getLockable() != null) {
             getLockable().unlock();
-            
+
         }
         setLockable(c);
+        jButton13.setEnabled(!c.readonly);
+
+
         this.current = (Customer) c;
         this.changeTabText("Kunde: " + current.getName());
         this.jTextField4.setText(current.getNummer());
@@ -1015,7 +1019,7 @@ public class customersView extends mp4.panels.misc.commonPanel implements mp4.da
     }
 
     private void jTextField1ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-      
+
 
         String[][] list = current.select("id, nummer, firma ", "nummer", jTextField1.getText(), "nummer", true);
         String k = "id, " + "Nummer,Firma";
@@ -1103,7 +1107,6 @@ public class customersView extends mp4.panels.misc.commonPanel implements mp4.da
                 }
             }
 
-
             current.setFirma(jTextField5.getText());
             current.setAnrede(jTextField6.getText());
             current.setName(jTextField7.getText());
@@ -1117,30 +1120,27 @@ public class customersView extends mp4.panels.misc.commonPanel implements mp4.da
             current.setMail(jTextField14.getText());
             current.setWebseite(jTextField15.getText());
             current.setNotizen(jTextArea1.getText());
-            
+
             try {
-                current.save();
-                setEdited(false);
-            
-                mainframe.setMessage("Kunde Nummer " + current.getNummer() + " editiert.");
+                if (current.save()) {
+                    setEdited(false);
+                    updateListTable();
+                    try {
+                        this.setContact(current);
+                    } catch (Exception exception) {
+                        Popup.warn(exception.getMessage(), Popup.ERROR);
+                    }
+                    try {
+                        new HistoryItem(ConnectionHandler.instanceOf(), Strings.CUSTOMER, "Kunde Nummer: " + current.getNummer() + " angelegt.");
+                    } catch (Exception ex) {
+                        Popup.warn(ex.getMessage(), Popup.ERROR);
+                    }
+                }
             } catch (Exception ex) {
                 Popup.warn(ex.getMessage(), Popup.ERROR);
             }
 
-             
-            try {
-                new HistoryItem(ConnectionHandler.instanceOf(), Strings.CUSTOMER, "Kunde Nummer: " + current.getNummer() + " angelegt.");
-            } catch (Exception ex) {
-                Popup.warn(ex.getMessage(), Popup.ERROR);
-            }
 
-            updateListTable();
-
-            try {
-                this.setContact(current);
-            } catch (Exception exception) {
-                Popup.warn(exception.getMessage(), Popup.ERROR);
-            }
         } else {
             new Popup("Sie müssen mindestens einen Namen angeben.", Popup.ERROR);
         }
@@ -1181,11 +1181,11 @@ public class customersView extends mp4.panels.misc.commonPanel implements mp4.da
                     current.setMail(jTextField14.getText());
                     current.setWebseite(jTextField15.getText());
                     current.setNotizen(jTextArea1.getText());
-                    current.save();
-                     setEdited(false);
-                    mainframe.setMessage("Kunde Nummer " + current.getNummer() + " gespeichert.");
-                    new HistoryItem(ConnectionHandler.instanceOf(), Strings.CUSTOMER, "Kunde Nummer: " + current.getNummer() + " gespeichert.");
-                    updateListTable();
+                    if (current.save()) {
+                        setEdited(false);
+                        new HistoryItem(ConnectionHandler.instanceOf(), Strings.CUSTOMER, "Kunde Nummer: " + current.getNummer() + " gespeichert.");
+                        updateListTable();
+                    }
                 } catch (Exception ex) {
                     Log.Debug(ex, true);
                     Popup.warn(ex.getMessage(), Popup.ERROR);
@@ -1238,9 +1238,9 @@ public class customersView extends mp4.panels.misc.commonPanel implements mp4.da
         if (mainframe.getUser().doAction(User.EDITOR)) {
             save();
             if (current.isValid()) {
-               Rechnung r = new Rechnung();
-               r.setKundenId(current.getId());
-               mainframe.addBillPanel(r);
+                Rechnung r = new Rechnung();
+                r.setKundenId(current.getId());
+                mainframe.addBillPanel(r);
             }
         }
     }//GEN-LAST:event_jButton8MouseClicked
@@ -1275,9 +1275,11 @@ private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 }//GEN-LAST:event_jButton11ActionPerformed
 
 private void jButton13MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton13MouseClicked
+
     if (mainframe.getUser().doAction(User.EDITOR)) {
         save();
     }
+
 }//GEN-LAST:event_jButton13MouseClicked
 
 private void jButton14MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton14MouseClicked
@@ -1288,12 +1290,12 @@ private void jButton14MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
 
 private void jButton18MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton18MouseClicked
     if (current.isValid()) {//GEN-LAST:event_jButton18MouseClicked
-        DialogForFile dialog = new DialogForFile(DialogForFile.FILES_ONLY, current.getName() + ".vcf");
-        if (dialog.chooseFile()) {
-            new FileReaderWriter(dialog.getFile()).write(new VCard(current).getVCard());
+            DialogForFile dialog = new DialogForFile(DialogForFile.FILES_ONLY, current.getName() + ".vcf");
+            if (dialog.chooseFile()) {
+                new FileReaderWriter(dialog.getFile()).write(new VCard(current).getVCard());
+            }
         }
     }
-}                                      
 
 private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton20ActionPerformed
     if (Popup.Y_N_dialog("Diesen Kontakt wirklich deaktivieren?") && mainframe.getUser().doAction(User.EDITOR)) {
@@ -1461,6 +1463,5 @@ private void jTextField4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST
     public void switchTab(int i) {
         jTabbedPane1.setSelectedIndex(i);
     }
-
 }
 

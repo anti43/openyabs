@@ -159,7 +159,9 @@ public javax.swing.JScrollPane jScrollPane1;
     public void update() {
         HistoryHandler.validate();
             liste = HistoryHandler.getHistory();
+            historytable.setVisible(false);
             historytable.setModel(new DefaultTableModel(liste, header));
             resizeTable();
+            historytable.setVisible(true);
     }
 }

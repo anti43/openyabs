@@ -78,6 +78,7 @@ public class User extends Things {
 
     }
 
+
     public User(String username, String password, boolean isEditor, boolean isAdmin, User user) {
         super(ConnectionHandler.instanceOf().clone(TABLE_USER));
 

@@ -87,13 +87,13 @@ public class HistoryItem extends mp4.items.Things implements mp4.datenbank.insta
      */
     public HistoryItem(Query query, String aktion, String text) {
         super(query.clone(TABLE_HISTORY));
-        
                 
         this.setAktion(aktion);
         this.setText(text);
         this.setDatum(new Date());
         
         this.save();
+        mainframe.setInfoText(text);
     }
 
     /**
@@ -122,7 +122,7 @@ public class HistoryItem extends mp4.items.Things implements mp4.datenbank.insta
         
         this.save();
         
-        mainframe.nachricht.setText(text);
+        mainframe.setInfoText(text);
     }
 
 

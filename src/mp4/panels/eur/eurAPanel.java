@@ -327,7 +327,7 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
     private void jButton3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
 
 
-        if (jButton3.isEnabled()) {
+        if (jButton3.isEnabled() && !curAusgabe.readonly) {
 
             vDouble betrag = new vDouble(jTextField4.getText());
             vDouble steuer = new vDouble(jTextField3.getText());
@@ -341,13 +341,10 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     curAusgabe.setBeschreibung(jEditorPane1.getText());
                     curAusgabe.setPreis(betrag.value);
                     curAusgabe.setTax(steuer.value);
-                    curAusgabe.save();
-
-                    updateTableData();
-
-//                    undoCache.instanceOf().addItem(ObjectCopy.copy(curAusgabe), undoCache.CREATE);     
+                    if(curAusgabe.save()){
+                    updateTableData();  
                     new HistoryItem(Strings.EINNAHME, "Einnahme Nummer: " + curAusgabe.getId() + " editiert.");
-                }
+                }}
 
 
             } else {

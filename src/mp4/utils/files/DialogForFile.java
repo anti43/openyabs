@@ -137,7 +137,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
                     out.write(c);
                 }
                 fileToSave.delete();
-                mainframe.nachricht.setText("Datei gespeichert: " + file.getCanonicalPath());
+                mainframe.setInfoText("Datei gespeichert: " + file.getCanonicalPath());
             } catch (IOException iOException) {
                 mp4.items.visual.Popup.error("Konnte Datei " + file.getName() + " nicht schreiben.", "Es ist ein Fehler aufgetreten.");
 

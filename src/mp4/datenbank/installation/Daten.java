@@ -59,6 +59,7 @@ public abstract class Daten {
         "INSERT INTO programmdaten(name, wert) VALUES ('SERVICES_NUMMER_FORMAT',  'DL-&!00000&!0')", 
         "INSERT INTO programmdaten(name, wert) VALUES ('PRODUCT_NUMMER_FORMAT',   'PR-&!00000&!0')", 
         "INSERT INTO programmdaten(name, wert) VALUES ('BILLPANEL_MASK',   'Default')",
+        "INSERT INTO programmdaten(name, wert) VALUES ('SERVICEPANEL_MASK',   'Default')",
         "INSERT INTO programmdaten(name, wert) VALUES ('MAINFRAME_WINDOW_STATE',  '790,1000')",    
         "INSERT INTO programmdaten(name, wert) VALUES ('WARENGRUPPEN_SEPARATOR',  '->')",   
         "INSERT INTO programmdaten(name, wert) VALUES ('IMAGE_CACHE_FOLDER', '" + Setup.instanceOf().getInstall_dirs().getCache_dir() +"')",  

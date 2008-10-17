@@ -46,16 +46,12 @@ public class Dienstleistung extends mp4.items.Things implements mp4.datenbank.in
     
     private Query query;
     public boolean isvalid = false;
-    public Integer id = 0;
-
-
-    public Integer getId() {
-        return id;
-    }
+  
 
     public void destroy() {
+       if (!readonly) {
         this.delete(this.id);
-        this.id = 0;
+        this.id = 0;}
     }
 
     public Dienstleistung() {
@@ -70,6 +66,7 @@ public class Dienstleistung extends mp4.items.Things implements mp4.datenbank.in
         this.setPreis(parseDezimal);
         nfh = new NumberFormatHandler(this, new Date());
         this.save();
+        readonly = !lock();
     }
 
 
@@ -80,6 +77,7 @@ public class Dienstleistung extends mp4.items.Things implements mp4.datenbank.in
     public Dienstleistung(Integer id) {
         super(ConnectionHandler.instanceOf().clone(TABLE_SERVICES));
         this.id = Integer.valueOf(id);
+        readonly = !lock();
         try {
             this.explode(this.selectLast("*", "id", id.toString(), true));
         } catch (Exception ex) {
@@ -149,13 +147,13 @@ public class Dienstleistung extends mp4.items.Things implements mp4.datenbank.in
 
     public void save() {
 
-        if (id > 0) {
+        if (id > 0 && !readonly) {
             this.update(TABLE_SERVICES_FIELDS, this.collect(), id);
             isSaved = true;
            
         } else if (id == 0) {
             this.id = this.insert(TABLE_SERVICES_FIELDS, this.collect(),null);
-           
+           lock();
         }
     }
 
@@ -200,11 +198,11 @@ public class Dienstleistung extends mp4.items.Things implements mp4.datenbank.in
     public Double getTaxValue() {
         return Double.valueOf(ConnectionHandler.instanceOf().clone(TABLE_TAXES).select("wert", new String[]{"id", this.getSteuersatzId().toString(), ""})[0][0]);
     }
-
-
-    public int delete(String id) {
-        return delete(Integer.valueOf(id));
-    }
+//
+//
+//    public int delete(String id) {
+//        return delete(Integer.valueOf(id));
+//    }
 
     public Integer getSteuersatzId() {
         return SteuersatzId;
