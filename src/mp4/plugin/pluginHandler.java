@@ -32,7 +32,7 @@ public class pluginHandler {
             loadplugins(plugins);
         } catch (Exception ex) {
             Popup.error("Fehler beim Laden des/der Plugin(s)", "Plugin Fehler");
-            Log.Debug(ex);
+            Log.Debug(this,ex);
         }
 
     }

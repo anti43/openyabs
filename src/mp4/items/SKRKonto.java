@@ -43,7 +43,7 @@ public class SKRKonto extends mp4.items.Things implements mp4.datenbank.installa
         try {
             this.explode(this.selectLast("*", "nummer", nummer, false));
         } catch (Exception ex) {
-             Log.Debug(ex);
+             Log.Debug(this,ex);
         }
     }
    
@@ -68,7 +68,7 @@ public class SKRKonto extends mp4.items.Things implements mp4.datenbank.installa
         try {
             this.explode(this.selectLast("*", "nummer", string, false));
         } catch (Exception ex) {
-             Log.Debug(ex);
+             Log.Debug(this,ex);
         }
     }
  
@@ -101,7 +101,7 @@ public class SKRKonto extends mp4.items.Things implements mp4.datenbank.installa
         try {
             this.explode(this.selectLast("*", "id", id.toString(), true));
         } catch (Exception ex) {
-             Log.Debug(ex);
+             Log.Debug(this,ex);
         }
     }
     
@@ -111,7 +111,7 @@ public class SKRKonto extends mp4.items.Things implements mp4.datenbank.installa
         try {
             this.explode(this.selectLast("*", "id", id.toString(), true));
         } catch (Exception ex) {
-             Log.Debug(ex);
+             Log.Debug(this,ex);
         }
     }
 

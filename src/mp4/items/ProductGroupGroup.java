@@ -53,7 +53,7 @@ public class ProductGroupGroup extends mp4.items.Things implements mp4.datenbank
         try {
             this.explode(this.selectLast("*", "id", id.toString(), true));
         } catch (Exception ex) {
-             Log.Debug(ex);
+             Log.Debug(this,ex);
         }
         this.query = query;
     }

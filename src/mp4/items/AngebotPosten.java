@@ -53,7 +53,7 @@ public class AngebotPosten extends mp4.items.Things implements mp4.datenbank.ins
         try {
             this.explode(this.selectLast("*", "id", id.toString(), true));
         } catch (Exception ex) {
-             Log.Debug(ex);
+             Log.Debug(this,ex);
         }
     }
 
@@ -72,7 +72,7 @@ public class AngebotPosten extends mp4.items.Things implements mp4.datenbank.ins
         try {
             this.explode(this.selectLast("*", "id", id, true));
         } catch (Exception ex) {
-             Log.Debug(ex);
+             Log.Debug(this,ex);
         }
     }
 
@@ -88,7 +88,7 @@ public class AngebotPosten extends mp4.items.Things implements mp4.datenbank.ins
             this.setSteuersatz(Double.valueOf(select[5]));
 
         } catch (Exception exception) {
-            Log.Debug(exception);
+            Log.Debug(this,exception);
         }
 
     }

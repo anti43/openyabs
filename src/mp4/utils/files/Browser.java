@@ -40,7 +40,7 @@ public class Browser {
                 new Popup(Strings.NO_BROWSER);
             }
         } catch (Exception e) {
-            Log.Debug(e);
+            Log.Debug(this,e);
         }
     }
 

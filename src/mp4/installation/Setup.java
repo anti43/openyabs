@@ -90,7 +90,7 @@ public class Setup extends javax.swing.JFrame implements Constants, Strings {
 
         new Position(this);
         this.setVisible(true);
-        Log.Debug(JAVA_VERSION);
+        Log.Debug(this,JAVA_VERSION);
     }
 
     /**
@@ -104,7 +104,7 @@ public class Setup extends javax.swing.JFrame implements Constants, Strings {
                 Verzeichnisse.createDirs();
                 install_dirs = new Verzeichnisse();
             } catch (IOException ex) {
-                Log.Debug(ex);
+                Log.Debug(this,ex);
             }
         } else {
             new Setup();
@@ -545,7 +545,7 @@ pack();
             }
         } catch (Exception ex) {
             Popup.error(ex.getMessage(), "Fehler bei der Installation.");
-            Log.Debug(ex);
+            Log.Debug(this,ex);
         } finally {
             this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 
@@ -580,7 +580,7 @@ private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         try {
             pdfpathtf.setText(fc.getSelectedFile().getCanonicalPath());
         } catch (IOException ex) {
-            Log.Debug(ex);
+            Log.Debug(this,ex);
         }
     }
 }//GEN-LAST:event_jButton5ActionPerformed
@@ -591,7 +591,7 @@ private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         try {
             backuppathtf.setText(fc.getSelectedFile().getCanonicalPath());
         } catch (IOException ex) {
-            Log.Debug(ex);
+            Log.Debug(this,ex);
         }
     }
 }//GEN-LAST:event_jButton4ActionPerformed
@@ -610,7 +610,7 @@ private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         try {
             jTextField1.setText(fc.getSelectedFile().getCanonicalPath());
         } catch (IOException ex) {
-            Log.Debug(ex);
+            Log.Debug(this,ex);
         }
     }
 }//GEN-LAST:event_jButton6ActionPerformed
@@ -666,7 +666,7 @@ javax.swing.JTextField pdfpathtf;
                 c = Conn.instanceOf();
                 c.createDatabase();
             } catch (Exception ex) {
-                Log.Debug(ex);
+                Log.Debug(this,ex);
                 Popup.warn(ex.getMessage(), Popup.ERROR);
                 return false;
             }

@@ -47,7 +47,7 @@ public class Verzeichnisse implements Constants, Strings {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        Log.Debug("Quellverzeichnis: " + workdir, true);
+        Log.Debug(Verzeichnisse.class,"Quellverzeichnis: " + workdir, true);
 
         public_dir = new File(Main.APP_DIR);
 
@@ -87,7 +87,7 @@ public class Verzeichnisse implements Constants, Strings {
 
     public static void createDirs() {
 
-            Log.Debug("Verzeichnisse anlegen..", true);
+            Log.Debug(Verzeichnisse.class,"Verzeichnisse anlegen..", true);
             if (
                     getPublic_dir().mkdirs() &
                     getTemplates_dir().mkdirs() &
@@ -100,31 +100,31 @@ public class Verzeichnisse implements Constants, Strings {
                     getPlugin_dir().mkdirs() &
                     getCache_dir().mkdirs()) {
 
-                Log.Debug("Erfolgreich!", true);
+                Log.Debug(Verzeichnisse.class,"Erfolgreich!", true);
             }  else {
-                Log.Debug("Es ist ein Fehler aufgetreten,\nüberprüfen Sie Ihre Berechtigungen!", true);
+                Log.Debug(Verzeichnisse.class,"Es ist ein Fehler aufgetreten,\nüberprüfen Sie Ihre Berechtigungen!", true);
             }
 
     }
 
     public static void copyFiles() throws Exception {
 
-        Log.Debug("Kopiere von: " + getInstall_lib_dir(), true);
+        Log.Debug(Verzeichnisse.class,"Kopiere von: " + getInstall_lib_dir(), true);
         if (public_dir.exists() && getInstall_lib_dir().exists()) {
            
 
                     if (!Main.FORCE_NO_FILE_COPY) {
-                        Log.Debug("Libraries kopieren..", true);
+                        Log.Debug(Verzeichnisse.class,"Libraries kopieren..", true);
                         FileDirectoryHandler.copyDirectory(getInstall_lib_dir(), getLib_dir());
-                        Log.Debug("Plugins kopieren..", true);
+                        Log.Debug(Verzeichnisse.class,"Plugins kopieren..", true);
                         FileDirectoryHandler.copyDirectory(getInstall_plugin_dir(), getPlugin_dir());
-                        Log.Debug("MP Jar kopieren..", true);
+                        Log.Debug(Verzeichnisse.class,"MP Jar kopieren..", true);
                         FileDirectoryHandler.copyDirectory(new File(workdir + File.separator + Constants.JAR_NAME), new File(getPublic_dir().getAbsolutePath() + File.separator + Constants.JAR_NAME));
                     }
 
-                    Log.Debug("Templates kopieren..", true);
+                    Log.Debug(Verzeichnisse.class,"Templates kopieren..", true);
                     FileDirectoryHandler.copyDirectory(getInstall_templates_dir(), getTemplates_dir());
-                    Log.Debug("Installation abgeschlossen.", true);
+                    Log.Debug(Verzeichnisse.class,"Installation abgeschlossen.", true);
 
             
         } else {

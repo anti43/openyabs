@@ -586,7 +586,7 @@ public class csvProductImporter extends javax.swing.JFrame implements panelInter
                 if (thisa.data != null) {
                     Date d = new Date();
 //                Log.setLogLevel(Log.LOGLEVEL_HIGH);
-                    Log.Debug("Einlesen gestartet: " + d, true);
+                    Log.Debug(this,"Einlesen gestartet: " + d, true);
                     thisa.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 
                     thisa.jProgressBar1.setMaximum(thisa.data.length);
@@ -621,11 +621,11 @@ public class csvProductImporter extends javax.swing.JFrame implements panelInter
                         fam = thisa.data[i].getWarengruppenfamilie();
                         grp = thisa.data[i].getWarengruppe();
 
-                        Log.Debug(pg.getName() + ":Produkt \n" + cat, true);
-                        Log.Debug(fam, true);
-                        Log.Debug(grp, true);
+                        Log.Debug(this,pg.getName() + ":Produkt \n" + cat, true);
+                        Log.Debug(this,fam, true);
+                        Log.Debug(this,grp, true);
 
-                        Log.Debug("---------------------------", true);
+                        Log.Debug(this,"---------------------------", true);
 
 
                         if (!cat.equals("null") && !fam.equals("null") && !grp.equals("null")) {
@@ -644,7 +644,7 @@ public class csvProductImporter extends javax.swing.JFrame implements panelInter
 
                             int f = handler.existFam(fam);
                             if (f == 0) {
-                                Log.Debug("creating fam: " + fam + " " + f, true);
+                                Log.Debug(this,"creating fam: " + fam + " " + f, true);
                                 newfam = new ProductGroupFamily(ConnectionHandler.instanceOf());
                                 newfam.setName(fam);
                                 newfam.setKategorieid(z);
@@ -652,7 +652,7 @@ public class csvProductImporter extends javax.swing.JFrame implements panelInter
                                 f = newfam.getID();
                                 news = true;
                             } else {
-//                          Log.Debug("existing fam: "+fam + " " + f,true);
+//                          Log.Debug(this,"existing fam: "+fam + " " + f,true);
 //                            newfam = handler.getFamily(f);
                             }
 
@@ -697,7 +697,7 @@ public class csvProductImporter extends javax.swing.JFrame implements panelInter
                         pg = null;
                     }
                     d = new Date();
-                    Log.Debug("Einlesen beendet: " + d + " Produkte: " + h, true);
+                    Log.Debug(this,"Einlesen beendet: " + d + " Produkte: " + h, true);
                     Popup.notice("Einlesen beendet: " + d + " Produkte: " + h);
                     new HistoryItem(ConnectionHandler.instanceOf(), Strings.PRODUCT, h + " Produkte importiert.");
 

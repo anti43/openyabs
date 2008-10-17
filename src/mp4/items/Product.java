@@ -103,7 +103,7 @@ public class Product extends mp4.items.Things implements mp4.datenbank.installat
         try {
             this.explode(this.selectLast("*", "id", id.toString(), true));
         } catch (Exception ex) {
-             Log.Debug(ex);
+             Log.Debug(this,ex);
         }
 
         if (!this.getLieferantenId().equals(0)) {

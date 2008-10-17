@@ -117,7 +117,7 @@ public class Rechnung extends mp4.items.Things implements mp4.datenbank.installa
         try {
             this.explode(this.selectLast(Strings.ALL, Strings.ID, id.toString(), true));
         } catch (Exception ex) {
-             Log.Debug(ex);
+             Log.Debug(this,ex);
         }
         this.query = ConnectionHandler.instanceOf().clone(TABLE_BILLS);
         zeilenHandler = new RechnungBetreffZZR(id);
@@ -209,7 +209,7 @@ public class Rechnung extends mp4.items.Things implements mp4.datenbank.installa
             this.setAusfuehrungsDatum(DateConverter.getDate(select[8]));
             this.setMahnungen(Integer.valueOf(select[9]));
         } catch (Exception exception) {
-            Log.Debug(exception.getMessage());
+            Log.Debug(this,exception.getMessage());
         }
         if (!isBezahlt()) {
             try {
@@ -218,7 +218,7 @@ public class Rechnung extends mp4.items.Things implements mp4.datenbank.installa
                     this.setVerzug(true);
                 }
             } catch (Exception ex) {
-                Log.Debug(ex.getMessage());
+                Log.Debug(this,ex.getMessage());
             }
         }
     }
@@ -343,7 +343,7 @@ public class Rechnung extends mp4.items.Things implements mp4.datenbank.installa
                 }
             }
         } catch (Exception exception) {
-            Log.Debug(exception);
+            Log.Debug(this,exception);
         }
         return nstr;
     }
@@ -374,7 +374,7 @@ public class Rechnung extends mp4.items.Things implements mp4.datenbank.installa
                     }
                 }
             } catch (Exception exception) {
-                Log.Debug(exception);
+                Log.Debug(this,exception);
             }
             return new PostenTableModel(nstr);
         } else {

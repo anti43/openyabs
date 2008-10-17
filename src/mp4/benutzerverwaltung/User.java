@@ -49,7 +49,7 @@ public class User extends Things {
         try {
             md = md5hash.getInstance();
         } catch (NoSuchAlgorithmException ex) {
-            Log.Debug(ex);
+            Log.Debug(this,ex);
         }
 
     }
@@ -60,7 +60,7 @@ public class User extends Things {
         try {
             t = this.selectLast("*", "id", id.toString(), true);
         } catch (Exception ex) {
-            Log.Debug(ex);
+            Log.Debug(this,ex);
         }
 
         if (t != null && t.length > 0) {
@@ -85,7 +85,7 @@ public class User extends Things {
         try {
             md = md5hash.getInstance();
         } catch (NoSuchAlgorithmException ex) {
-            Log.Debug(ex);
+            Log.Debug(this,ex);
         }
 
         this.name = username;

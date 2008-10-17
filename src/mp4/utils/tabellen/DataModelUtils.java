@@ -99,7 +99,7 @@ public class DataModelUtils {
 //                    nettobetrag = nettobetrag + (FormatNumber.parseDezimal(m.getValueAt(i, nettocol).toString()));
 //                    allovertax = allovertax + ((FormatNumber.parseDezimal(m.getValueAt(i, taxcol).toString())) + 100);
 //                } catch (Exception exception) {
-//                    Log.Debug(exception);
+//                    Log.Debug(this,exception);
 //                    error = true;
 //                }
 //            }
@@ -148,7 +148,7 @@ public class DataModelUtils {
             }
             return data;
         } catch (Exception e) {
-//            Log.Debug(e);
+//            Log.Debug(this,e);
             return new Object[0][0];
         }
     }

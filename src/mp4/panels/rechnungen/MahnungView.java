@@ -237,7 +237,7 @@ public class MahnungView extends javax.swing.JFrame {
                 Programmdaten.instanceOf().setMAHNUNG_TEXT_DEFAULT(jTextArea1.getText());
                 this.dispose();
             } catch (NumberFormatException numberFormatException) {
-                Log.Debug(numberFormatException);
+                Log.Debug(this,numberFormatException);
             }
         }
        

@@ -103,7 +103,7 @@ public class offersView extends mp4.panels.misc.commonPanel implements panelInte
             fetchBillsOfTheMonth();
         } catch (Exception e) {
             e.printStackTrace();
-            Log.Debug(e.getMessage());
+            Log.Debug(this,e.getMessage());
         }
 
         renewTableModel(true);
@@ -1162,7 +1162,7 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             try {
                 this.setAngebot(new Angebot(selection.getId()));
             } catch (Exception exception) {
-                Log.Debug(exception);
+                Log.Debug(this,exception);
             }
         }
     }//GEN-LAST:event_jTable3MouseClicked

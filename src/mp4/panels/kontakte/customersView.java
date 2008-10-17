@@ -1187,7 +1187,7 @@ public class customersView extends mp4.panels.misc.commonPanel implements mp4.da
                         updateListTable();
                     }
                 } catch (Exception ex) {
-                    Log.Debug(ex, true);
+                    Log.Debug(this,ex, true);
                     Popup.warn(ex.getMessage(), Popup.ERROR);
                 }
             } else {
@@ -1204,7 +1204,7 @@ public class customersView extends mp4.panels.misc.commonPanel implements mp4.da
             try {
                 this.setContact(new Customer(selection.getId()));
             } catch (Exception exception) {
-                Log.Debug(exception, true);
+                Log.Debug(this,exception, true);
             }
         }
     }//GEN-LAST:event_jTable3MouseClicked
@@ -1251,7 +1251,7 @@ public class customersView extends mp4.panels.misc.commonPanel implements mp4.da
             try {
                 mainframe.addBillPanel(new Rechnung(selection.getId()));
             } catch (Exception ex) {
-                Log.Debug(ex);
+                Log.Debug(this,ex);
                 Popup.warn(ex.getMessage(), Popup.ERROR);
             }
         }
@@ -1311,7 +1311,7 @@ private void jTable4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
         try {
             mainframe.addAngebotPanel(new Angebot(selection.getId()));
         } catch (Exception ex) {
-            Log.Debug(ex);
+            Log.Debug(this,ex);
             Popup.warn(ex.getMessage(), Popup.ERROR);
         }
     }

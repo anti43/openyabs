@@ -1107,7 +1107,7 @@ public class manufacturerView extends mp4.panels.misc.commonPanel implements mp4
             try {
                 this.setContact(new Hersteller(selection.getId()));
             } catch (Exception exception) {
-                Log.Debug(exception);
+                Log.Debug(this,exception);
             }
         }
     }//GEN-LAST:event_jTable3MouseClicked
@@ -1155,7 +1155,7 @@ public class manufacturerView extends mp4.panels.misc.commonPanel implements mp4
             try {
                 mainframe.addProductPanel(new Product(selection.getId()));
             } catch (Exception ex) {
-                Log.Debug(ex);
+                Log.Debug(this,ex);
                 Popup.warn(ex.getMessage(), Popup.ERROR);
             }
         }

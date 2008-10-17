@@ -28,14 +28,35 @@ public class Log {
 
     public static final int LOGLEVEL_LOW = 0;
     public static final int LOGLEVEL_HIGH = 1;
+    public static final int LOGLEVEL_DEBUG = 2;
     private static int loglevel = 0;
     private static Logger logger = new Logger();
 
+    public static void Debug(Object source, Object message, boolean alwaysToKonsole) {
+        if (loglevel == LOGLEVEL_DEBUG) {
+            Debug(source.getClass().getName() + ": " + message, alwaysToKonsole);
+        } else {
+            Debug(message, alwaysToKonsole);
+        }
+    }
+
+    public static void Debug(Object source, Object message) {
+        if (loglevel == LOGLEVEL_DEBUG) {
+            Debug(source.getClass().getName() + ": " + message, true);
+        } else {
+            Debug(message, true);
+        }
+    }
+
+    public static void Debug(Class source, Object message) {
+        if (loglevel == LOGLEVEL_DEBUG) {
+            Debug(source.getName() + ": " + message, true);
+        } else {
+            Debug(message, true);
+        }
+    }
+
     public static void PrintArray(Object[][][] array) {
-//
-//        if (loglevel != LOGLEVEL_LOW) {
-//            logger.setVisible(true);
-//        }
 
         for (int i = 0; i < array.length; i++) {
             try {
@@ -63,9 +84,7 @@ public class Log {
     }
 
     public static void PrintArray(Object[][] array) {
-//        if (loglevel != LOGLEVEL_LOW) {
-//            logger.setVisible(true);
-//        }
+
         for (int i = 0; i < array.length; i++) {
             for (int k = 0; k < array[i].length; k++) {
                 if (loglevel != LOGLEVEL_LOW) {
@@ -80,9 +99,7 @@ public class Log {
     }
 
     public static void PrintArray(Object[] string) {
-//        if (loglevel != LOGLEVEL_LOW) {
-//            logger.setVisible(true);
-//        }
+
         for (int i = 0; i < string.length; i++) {
 
             if (loglevel != LOGLEVEL_LOW) {
@@ -95,11 +112,23 @@ public class Log {
 
         }
     }
+    
+     public static void Debug(String[][] array) {
+        for (int i = 0; i < array.length; i++) {
+            for (int k = 0; k < array[i].length; k++) {
+                if (loglevel != LOGLEVEL_LOW) {
+                    try {
+                        logger.log("[" + i + "]" + " [" + k + "] " + array[i][k]);
+                    } catch (IOException ex) {
+                        java.util.logging.Logger.getLogger(Log.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        }
+    }
 
     public static void Debug(Object obj) {
-//        if (loglevel != LOGLEVEL_LOW) {
-//            logger.setVisible(true);
-//        }
+
         if (loglevel != LOGLEVEL_LOW) {
             try {
                 logger.log(obj);
@@ -110,17 +139,7 @@ public class Log {
     }
 
     public static void Debug(Exception ex) {
-//        if (loglevel != LOGLEVEL_LOW) {
-//            logger.setVisible(true);
-//        }
-        if (loglevel != LOGLEVEL_LOW) {
-            try {
-                logger.log(ex.getMessage() + "\n" + ex.getCause());
-            } catch (IOException ex1) {
-                java.util.logging.Logger.getLogger(Log.class.getName()).log(Level.SEVERE, null, ex1);
-            }
-            ex.printStackTrace();
-        }
+        Debug(ex, true);
     }
 
     public static void Debug(Exception ex, boolean konsole) {
@@ -151,36 +170,10 @@ public class Log {
         }
     }
 
-    public static void debug(char cChar) {
-        if (loglevel != LOGLEVEL_LOW) {
-            try {
-                logger.log(cChar);
-            } catch (IOException ex) {
-                java.util.logging.Logger.getLogger(Log.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }
-
     public static Logger getLogger() {
         return logger;
     }
 
-    public static void Debug(String[][] array) {
-//        if (loglevel != LOGLEVEL_LOW) {
-//            logger.setVisible(true);
-//        }
-        for (int i = 0; i < array.length; i++) {
-            for (int k = 0; k < array[i].length; k++) {
-                if (loglevel != LOGLEVEL_LOW) {
-                    try {
-                        logger.log("[" + i + "]" + " [" + k + "] " + array[i][k]);
-                    } catch (IOException ex) {
-                        java.util.logging.Logger.getLogger(Log.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-            }
-        }
-    }
 
     public static void setLogLevel(int level) {
         Log.loglevel = level;
@@ -192,5 +185,4 @@ public class Log {
     public static int getLoglevel() {
         return loglevel;
     }
-
 }

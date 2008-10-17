@@ -183,7 +183,7 @@ public class mainframe extends javax.swing.JFrame {
                 this.setExtendedState(mainframe.MAXIMIZED_BOTH);
             }
         } catch (Exception exception) {
-            Log.Debug(exception.getMessage(), true);
+            Log.Debug(this,exception.getMessage(), true);
             this.setExtendedState(mainframe.NORMAL);
         }
 
@@ -1129,7 +1129,7 @@ public class mainframe extends javax.swing.JFrame {
             DataLock lockhandler = new mp4.datenbank.verbindung.DataLock();
             for (int i = 0; i < DataLock.locks.size(); i++) {
             Integer id = DataLock.locks.get(i);
-            Log.Debug("Rowlock: Late releasing .." + id, true);
+            Log.Debug(this,"Rowlock: Late releasing .." + id, true);
             lockhandler.delete(id);
             }
             
@@ -1138,7 +1138,7 @@ public class mainframe extends javax.swing.JFrame {
 
             System.exit(0);
         } catch (Exception exc) {
-            Log.Debug(exc, true);
+            Log.Debug(this,exc, true);
             System.exit(0);
         }
     }
@@ -1381,7 +1381,7 @@ private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
             dialogd.saveFile(writ.getFile());
             new Browser(dialogd.getFile());
         } catch (Exception ex) {
-            Log.Debug(ex);
+            Log.Debug(this,ex);
         }
 }//GEN-LAST:event_jMenuItem9ActionPerformed
 
@@ -1396,7 +1396,7 @@ private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
             dialogd.saveFile(writ.getFile());
             new Browser(dialogd.getFile());
         } catch (Exception ex) {
-            Log.Debug(ex);
+            Log.Debug(this,ex);
         }
 }//GEN-LAST:event_jMenuItem12ActionPerformed
 
@@ -1411,7 +1411,7 @@ private void jMenuItem19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
             dialogd.saveFile(writ.getFile());
             new Browser(dialogd.getFile());
         } catch (Exception ex) {
-            Log.Debug(ex);
+            Log.Debug(this,ex);
         }
 }//GEN-LAST:event_jMenuItem19ActionPerformed
 

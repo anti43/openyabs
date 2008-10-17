@@ -329,7 +329,7 @@ public class undoCache {
 //                menu.remove(this);
 //                menu.validate();
 //            } catch (Exception e) {
-//                Log.Debug(e);
+//                Log.Debug(this,e);
 //            }
 //        }
 //

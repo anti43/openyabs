@@ -326,7 +326,7 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     this.setEinnahme(new Einnahme(selection.getId()));
                 }
             } catch (Exception exception) {
-                Log.Debug(exception);
+                Log.Debug(this,exception);
             }
         }
     }//GEN-LAST:event_jTable1MouseClicked
@@ -444,7 +444,7 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             TableFormat.format(jTable1, 3, 100);
             TableFormat.format(jTable1, 4, 100);
         } catch (Exception ex) {
-            Log.Debug(ex.getMessage());
+            Log.Debug(this,ex.getMessage());
         }
         return data;
     }
@@ -508,7 +508,7 @@ private javax.swing.JToolBar jToolBar2;
         try {
             jTextField5.setText(new SKRKonto(einnahme.getKontenid()).getArt());
         } catch (Exception exception) {
-            Log.Debug(exception);
+            Log.Debug(this,exception);
         }
 
         jButton3.setEnabled(true);

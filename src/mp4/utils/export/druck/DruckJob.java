@@ -65,10 +65,10 @@ public class DruckJob implements Waiter {
                 prservices = new PrintService[]{prservDflt};
             }
         }
-        Log.Debug("Print-Services:");
+        Log.Debug(this,"Print-Services:");
         int i;
         for (i = 0; i < prservices.length; i++) {
-            Log.Debug("  " + i + ":  " + prservices[i] + ((prservDflt != prservices[i]) ? "" : " (Default)"));
+            Log.Debug(this,"  " + i + ":  " + prservices[i] + ((prservDflt != prservices[i]) ? "" : " (Default)"));
         }
         PrintService prserv = null;
         if (0 <= idxPrintService && idxPrintService < prservices.length) {
@@ -80,8 +80,8 @@ public class DruckJob implements Waiter {
             prserv = ServiceUI.printDialog(null, 50, 50, prservices, prservDflt, null, aset);
         }
         if (null != prserv) {
-            Log.Debug("Ausgewaehlter Print-Service:");
-            Log.Debug("      " + prserv);
+            Log.Debug(this,"Ausgewaehlter Print-Service:");
+            Log.Debug(this,"      " + prserv);
             printPrintServiceAttributesAndDocFlavors(prserv);
             DocPrintJob pj = prserv.createPrintJob();
             FileInputStream fis = new FileInputStream(file);
@@ -103,9 +103,9 @@ public class DruckJob implements Waiter {
                 print(printable.getFile());
             }
         } catch (FileNotFoundException fileNotFoundException) {
-            Log.Debug(fileNotFoundException);
+            Log.Debug(this,fileNotFoundException);
         } catch (PrintException printException) {
-            Log.Debug(printException);
+            Log.Debug(this,printException);
         }
 
     }
@@ -128,14 +128,14 @@ public class DruckJob implements Waiter {
         DocFlavor[] prdfl = prserv.getSupportedDocFlavors();
         if (null != prattr && 0 < prattr.length) {
             for (int i = 0; i < prattr.length; i++) {
-                Log.Debug("      PrintService-Attribute[" + i + "]: " + prattr[i].getName() + " = " + prattr[i]);
+                Log.Debug(this,"      PrintService-Attribute[" + i + "]: " + prattr[i].getName() + " = " + prattr[i]);
             }
         }
         if (null != prdfl && 0 < prdfl.length) {
             for (int i = 0; i < prdfl.length; i++) {
                 s2 = prdfl[i].getMimeType();
                 if (null != s2 && !s2.equals(s1)) {
-                    Log.Debug("      PrintService-DocFlavor-Mime[" + i + "]: " + s2);
+                    Log.Debug(this,"      PrintService-DocFlavor-Mime[" + i + "]: " + s2);
                 }
                 s1 = s2;
             }
@@ -157,9 +157,9 @@ public class DruckJob implements Waiter {
                 }
             }
         } catch (FileNotFoundException fileNotFoundException) {
-            Log.Debug(fileNotFoundException);
+            Log.Debug(this,fileNotFoundException);
         } catch (PrintException printException) {
-            Log.Debug(printException);
+            Log.Debug(this,printException);
         }
     }
 }

@@ -77,7 +77,7 @@ public class SettingsFile {
                 setDBDriver(dat[4]);
             }
         } catch (Exception e) {
-            Log.Debug("Settings file not valid:" + file, true);
+            Log.Debug(this,"Settings file not valid:" + file, true);
             return false;
         }
 
@@ -89,7 +89,7 @@ public class SettingsFile {
      * @return this
      */
     public boolean create() {
-        Log.Debug("Anlegen der MP Settings Datei: " + workfile.getParent(), true);
+        Log.Debug(this,"Anlegen der MP Settings Datei: " + workfile.getParent(), true);
 
         workfile.getParentFile().mkdirs();
 

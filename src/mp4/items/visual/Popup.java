@@ -62,7 +62,7 @@ public class Popup {
      */
     public static void error(String text, String label) {
 
-        Log.Debug(text, true);
+        Log.Debug(Popup.class,text, true);
         text = TextFormat.maxLineLength(text, 120);
         JOptionPane.showMessageDialog(null, text, label, JOptionPane.ERROR_MESSAGE);
     }

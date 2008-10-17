@@ -111,7 +111,7 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             try {
                 new DruckJob(DocFlavor.INPUT_STREAM.PNG).print(d.writeToFile(File.createTempFile("MPCHART", ".png"), false));
             } catch (Exception ex) {//GEN-LAST:event_jButton1ActionPerformed
-                 Log.Debug(ex);
+                 Log.Debug(this,ex);
             }
        
 }
@@ -126,7 +126,7 @@ public void set(Object obj){
             d.erzeugeLinienGrafik("", new Vector(data.getColumns()), 
                     new Vector(data.getData()), Currency.getInstance(Einstellungen.instanceOf().getLocale()).getSymbol(), data.title + " " + data.vonYear + " - " + data.bisYear, "Zeitraum", Currency.getInstance(Einstellungen.instanceOf().getLocale()).getSymbol(), "", FormatNumber.getDefaultDecimalFormat());
         } catch (Exception ex) {
-            Log.Debug(ex);
+            Log.Debug(this,ex);
         }
 }
 

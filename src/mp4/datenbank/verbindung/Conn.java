@@ -91,7 +91,7 @@ public class Conn implements Strings {
         ctype = new ConnectionTypeHandler();
         // Treiber laden
         try {
-            Log.Debug("Datenbanktreiber: " + ctype.getDriver(), true);
+            Log.Debug(this,"Datenbanktreiber: " + ctype.getDriver(), true);
             Class.forName(ctype.getDriver()).newInstance();
             user = Main.settings.getDBUser();
             password = Main.settings.getDBPassword();
@@ -104,7 +104,7 @@ public class Conn implements Strings {
 
         // Verbindung herstellen
         try {
-            Log.Debug("Datenbankverbindung: " + ctype.getConnectionString(create), true);
+            Log.Debug(this,"Datenbankverbindung: " + ctype.getConnectionString(create), true);
             conn = DriverManager.getConnection(ctype.getConnectionString(create), user, password);
             // Benötige Ressourcen für eine SQL-Anweisung bereitstellen 
             statement = conn.createStatement();
@@ -112,7 +112,7 @@ public class Conn implements Strings {
         } catch (SQLException ex) {
             System.out.println("Database Error:" + ex.getMessage());
 //            ex.printStackTrace();
-            Log.Debug(ex);
+            Log.Debug(this,ex);
             Popup.warn(ex.getMessage(), Popup.ERROR);
             Conn.shutdown();
 //            System.exit(1);
@@ -243,11 +243,11 @@ public class Conn implements Strings {
             for (int i = 0; i < querys.length; i++) {
 
                 try {
-                    Log.Debug(querys[i]);
+                    Log.Debug(this,querys[i]);
                     statement.execute(querys[i]);
                 } catch (SQLException e) {
                     System.err.println(message + e.getMessage());
-                    Log.Debug(e);
+                    Log.Debug(this,e);
                     error = true;
                 }
 

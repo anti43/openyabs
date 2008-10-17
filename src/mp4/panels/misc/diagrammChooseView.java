@@ -214,7 +214,7 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         } catch (Exception ex) {
             frame.getMainProgress().setIndeterminate(false);
         this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-            Log.Debug(ex);
+            Log.Debug(this,ex);
         }
         job.execute();
 
@@ -237,7 +237,7 @@ private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         } catch (Exception ex) {
             frame.getMainProgress().setIndeterminate(false);
         this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-            Log.Debug(ex);
+            Log.Debug(this,ex);
         }
         job.execute();
 
@@ -259,7 +259,7 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         } catch (Exception ex) {
             frame.getMainProgress().setIndeterminate(false);
         this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-            Log.Debug(ex);
+            Log.Debug(this,ex);
         }
         job.execute();
 
@@ -281,7 +281,7 @@ private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         } catch (Exception ex) {
             frame.getMainProgress().setIndeterminate(false);
         this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-            Log.Debug(ex);
+            Log.Debug(this,ex);
         }
         job.execute();
 

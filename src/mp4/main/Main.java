@@ -113,7 +113,7 @@ public class Main implements Strings {
         } else if (cl.hasOption(version)) {
             // TODO:
         } else if (cl.hasOption(verbose)) {
-            Log.setLogLevel(Log.LOGLEVEL_HIGH);
+            Log.setLogLevel(Log.LOGLEVEL_DEBUG);
 
         } else if (cl.hasOption(forcecopy)) {
             FORCE_FILE_COPY = true;
@@ -140,7 +140,7 @@ public class Main implements Strings {
             try {
                 Logger.setLogFile((String) cl.getValue(logfile));
             } catch (Exception e) {
-                Log.Debug("Fehler beim Schreiben der Logdatei: " + e.getMessage(), true);
+                Log.Debug(Main.class,"Fehler beim Schreiben der Logdatei: " + e.getMessage(), true);
             }
         } else if (cl.hasOption(dbpath)) {
             settings.setDBPath((String) cl.getValue(dbpath));
@@ -157,7 +157,7 @@ public class Main implements Strings {
         doArgCommands();
 
         //Datenbank suchen
-        Log.Debug("MP Datei: " + SETTINGS_FILE, true);
+        Log.Debug(this,"MP Datei: " + SETTINGS_FILE, true);
         if (settings.getFile().exists() && settings.getFile().canRead() && findDatabase()) {
             try {
                 settings.read();
@@ -171,7 +171,7 @@ public class Main implements Strings {
             settings.read();
             checkDB_Location();
             String db = settings.getDBPath() + File.separator + Constants.DATABASENAME;
-            Log.Debug(db + " not found :-(", true);
+            Log.Debug(this,db + " not found :-(", true);
             Popup.notice("Datenbank existiert nicht am angegebenen Ort.\n" + db);
 
             splash.setMessage("Versuche, Datenbank anzulegen");
@@ -247,9 +247,9 @@ public class Main implements Strings {
             try {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             } catch (Exception ex) {
-                Log.Debug(ex.getMessage());
+                Log.Debug(this,ex.getMessage());
             }
-            Log.Debug(exe.getMessage());
+            Log.Debug(this,exe.getMessage());
         }
     }
 

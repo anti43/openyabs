@@ -74,7 +74,7 @@ public class PostenTableModel extends MPTableModel {
                 if(Programmdaten.instanceOf().getPRODUCTPICKER_EAN())str = str + product.getEan();
                 m.setValueAt(str, selectedRow, 2);
             } catch (Exception exception) {
-                Log.Debug(exception);
+                Log.Debug(this,exception);
             }
             m.setValueAt(new Double(1), selectedRow, 1);
             try {
@@ -90,7 +90,7 @@ public class PostenTableModel extends MPTableModel {
                 m.setValueAt(product.getVK(), selectedRow, 4);
             }
         } catch (Exception exception) {
-            Log.Debug(exception);
+            Log.Debug(this,exception);
         }
     }
     
@@ -113,7 +113,7 @@ public class PostenTableModel extends MPTableModel {
                 if(Programmdaten.instanceOf().getPRODUCTPICKER_EAN())str = str + product.getProduktNummer();
                 m.setValueAt(str, selectedRow, 2);
             } catch (Exception exception) {
-                Log.Debug(exception);
+                Log.Debug(this,exception);
             }
             m.setValueAt(new Double(1), selectedRow, 1);
             try {
@@ -129,7 +129,7 @@ public class PostenTableModel extends MPTableModel {
                 m.setValueAt(product.getPreis(), selectedRow, 4);
             }
         } catch (Exception exception) {
-            Log.Debug(exception);
+            Log.Debug(this,exception);
         }
     }
 

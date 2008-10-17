@@ -81,7 +81,7 @@ public class Ausgabe extends mp4.items.Things implements mp4.datenbank.installat
         try {
             this.explode(this.selectLast("*", "id", id.toString(), true));
         } catch (Exception ex) {
-             Log.Debug(ex);
+             Log.Debug(this,ex);
         }
         
     }
@@ -129,7 +129,7 @@ public class Ausgabe extends mp4.items.Things implements mp4.datenbank.installat
 
         } catch (Exception numberFormatException) {
 
-            Log.Debug(numberFormatException);
+            Log.Debug(this,numberFormatException);
         }
 
 

@@ -33,7 +33,7 @@ public class Logger extends javax.swing.JFrame {
         } else {
             FILE_LOG_ENABLED = true;
             logwriter = new FileReaderWriter(logfile);
-            Log.Debug("Logging to File: " +  logfile.getPath(), true);
+            Log.Debug(Logger.class,"Logging to File: " +  logfile.getPath(), true);
             
         }
     }

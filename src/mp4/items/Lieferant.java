@@ -60,7 +60,7 @@ public class Lieferant extends mp4.items.People implements mp4.datenbank.install
         try {
             this.explode(this.selectLast("*", "id", id.toString(), true));
         } catch (Exception ex) {
-            Log.Debug(ex);
+            Log.Debug(this,ex);
         }
         nfh = new NumberFormatHandler(this, new Date());
     }

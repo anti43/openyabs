@@ -247,7 +247,7 @@ public abstract class People extends EasyQuery implements Queries, Tabellen, Loc
             this.setWebseite(str[12 + 1]);
             this.setNotizen(str[12 + 2]);
         } catch (Exception exception) {
-            Log.Debug(exception);
+            Log.Debug(this,exception);
         }
     }
 

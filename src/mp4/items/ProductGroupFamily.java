@@ -55,7 +55,7 @@ public class ProductGroupFamily extends mp4.items.Things implements mp4.datenban
         try {
             this.explode(this.selectLast("*", "id", id, true));
         } catch (Exception ex) {
-             Log.Debug(ex);
+             Log.Debug(this,ex);
         }
         this.query=query;
     }
@@ -81,10 +81,10 @@ public class ProductGroupFamily extends mp4.items.Things implements mp4.datenban
             this.setKategorieid(Integer.valueOf(data[2]));
             this.setName(data[3]);
         } catch (NumberFormatException numberFormatException) {
-            Log.Debug(numberFormatException);
+            Log.Debug(this,numberFormatException);
         }
         
-//        Log.Debug("exp"+data[2]);
+//        Log.Debug(this,"exp"+data[2]);
         
     }
 

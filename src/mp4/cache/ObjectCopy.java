@@ -53,7 +53,7 @@ public class ObjectCopy {
      */
     public static Object copy(Object orig) {
         
-        Log.Debug("Cloning " + orig);
+        Log.Debug(ObjectCopy.class,"Cloning " + orig);
         Object obj = null;
         try {
             // Write the object out to a byte array

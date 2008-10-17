@@ -76,7 +76,7 @@ public class TabCloseIcon implements Icon {
                       
                         try {
                             ((mpplugin) mTabbedPane.getComponentAt(index)).unload();
-                            Log.Debug("Unloaded a Plugin: " + ((mpplugin) mTabbedPane.getComponentAt(index)).getName());
+                            Log.Debug(this,"Unloaded a Plugin: " + ((mpplugin) mTabbedPane.getComponentAt(index)).getName());
                         } catch (Exception ej) {
                         }
                         

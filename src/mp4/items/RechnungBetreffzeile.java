@@ -66,7 +66,7 @@ public class RechnungBetreffzeile extends mp4.items.Things implements mp4.datenb
         try {
             value = this.selectLast("*", "id", id.toString(), true);
         } catch (Exception ex) {
-             Log.Debug(ex);
+             Log.Debug(this,ex);
         }
         explode(value);
 

@@ -40,7 +40,7 @@ public class FileToString {
         try {
             resourcename = file.getCanonicalPath();
         } catch (IOException ex) {
-            Log.Debug(ex);
+            Log.Debug(this,ex);
         }
         try {
             InputStream ist = new FileInputStream(file); 
@@ -52,12 +52,12 @@ public class FileToString {
             }
             content = contentOfFile.toString();
         } catch (IOException ex) {
-            Log.Debug("File not found: " + resourcename,true);
+            Log.Debug(this,"File not found: " + resourcename,true);
         } finally {
             try {
                 br.close();
             } catch (Exception ex) {
-                   Log.Debug("File not found: " + resourcename,true);
+                   Log.Debug(this,"File not found: " + resourcename,true);
             }
         }
     }
@@ -73,18 +73,18 @@ public class FileToString {
             }
             content = contentOfFile.toString();
         } catch (IOException ex) {
-            Log.Debug("File not found: " + resourcename,true);
+            Log.Debug(this,"File not found: " + resourcename,true);
         } finally {
             try {
                 br.close();
             } catch (Exception ex) {
-                   Log.Debug("File not found: " + resourcename,true);
+                   Log.Debug(this,"File not found: " + resourcename,true);
             }
         }
     }
 
     public String getContent() {
-        Log.Debug(content);
+        Log.Debug(this,content);
         return content;
     }
 }

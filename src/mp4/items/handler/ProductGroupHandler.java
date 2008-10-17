@@ -64,7 +64,7 @@ public class ProductGroupHandler extends mp4.items.Things implements mp4.datenba
         
          for (int b = 0; b < getFamilies().length; b++) {
                     
-                     //Log.Debug("matching?: "+getFamilies()[b].getName() + " : " + fam,true);
+                     //Log.Debug(this,"matching?: "+getFamilies()[b].getName() + " : " + fam,true);
                     if (getFamilies()[b].getName().matches(fam)) {
                        
                         return getFamilies()[b].getID();
@@ -96,7 +96,7 @@ public class ProductGroupHandler extends mp4.items.Things implements mp4.datenba
 
                 for (int b = 0; b < getFamilies().length; b++) {
                     
-                     //Log.Debug("matching?: "+getFamilies()[b].getName() + " : " + cat,true);
+                     //Log.Debug(this,"matching?: "+getFamilies()[b].getName() + " : " + cat,true);
                     if (getFamilies()[b].getName().matches(cat)) {
                        
                         return getFamilies()[b].getID();
@@ -126,7 +126,7 @@ public class ProductGroupHandler extends mp4.items.Things implements mp4.datenba
 
     private void fillCategories() {
         String[][] tmp = this.select("*", null, null, false, false);
-        //Log.Debug("fillcats: " + tmp.length);
+        //Log.Debug(this,"fillcats: " + tmp.length);
         categories =
                 new ProductGroupCategory[tmp.length];
 
@@ -144,7 +144,7 @@ public class ProductGroupHandler extends mp4.items.Things implements mp4.datenba
 
             category.setKategorienummer(tmp[i][1]);
             category.setName(tmp[i][2]);
-//            //Log.Debug(category.getName());
+//            //Log.Debug(this,category.getName());
 
             categories[i] = category;
         }
@@ -167,7 +167,7 @@ public class ProductGroupHandler extends mp4.items.Things implements mp4.datenba
 
             try {
                 family.setId(Integer.valueOf(tmp[i][0]));
-                //Log.Debug("fillfam" + Integer.valueOf(tmp[i][0]));
+                //Log.Debug(this,"fillfam" + Integer.valueOf(tmp[i][0]));
 
             } catch (NumberFormatException numberFormatException) {
                 family.setId(0);
@@ -176,7 +176,7 @@ public class ProductGroupHandler extends mp4.items.Things implements mp4.datenba
             family.setFamiliennummer(tmp[i][1]);
             family.setKategorieid(Integer.valueOf(tmp[i][2]));
             family.setName(tmp[i][3]);
-            //Log.Debug(family.getName());
+            //Log.Debug(this,family.getName());
 
             families[i] = family;
         }
@@ -206,7 +206,7 @@ public class ProductGroupHandler extends mp4.items.Things implements mp4.datenba
             group.setGruppennummer(tmp[i][1]);
             group.setFamilienid(Integer.valueOf(tmp[i][2]));
             group.setName(tmp[i][3]);
-            //Log.Debug(group.getName());
+            //Log.Debug(this,group.getName());
 
             groups[i] = group;
         }

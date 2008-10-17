@@ -27,7 +27,7 @@ public class FileDirectoryHandler {
             if (file.isDirectory()) {
                 deleteTree(file);
             } else {
-                Log.Debug("Delete: " + file.getCanonicalPath(), true);
+                Log.Debug(FileDirectoryHandler.class,"Delete: " + file.getCanonicalPath(), true);
                 file.delete();
             }
         }
@@ -95,13 +95,13 @@ public class FileDirectoryHandler {
         try {
             lstFiles = new ArrayList<java.io.File>();
             src = new File(directory);
-            Log.Debug("Verzeichnis: " + src, true);
+            Log.Debug(FileDirectoryHandler.class,"Verzeichnis: " + src, true);
             File[] files = src.listFiles();
-            Log.Debug("Dateien analysieren...", true);
+            Log.Debug(FileDirectoryHandler.class,"Dateien analysieren...", true);
             lstFiles = new ArrayList<java.io.File>();
 
             for (int i = 0,   k = 0; i < files.length; i++) {
-//                Log.Debug("Datei analysieren: " + files[i].getName());
+//                Log.Debug(this,"Datei analysieren: " + files[i].getName());
                 if (files[i].isFile() && files[i].toString().contains(identifier)) {
                     try {
 //                        String[] fileinfo = new String[3];
@@ -109,10 +109,10 @@ public class FileDirectoryHandler {
 //                        fileinfo[1] = files[i].getName();
 //                        fileinfo[2] = files[i].getCanonicalPath();
                         lstFiles.add(files[i]);
-                        Log.Debug("Datei gefunden: " + files[i].getName(), true);
+                        Log.Debug(FileDirectoryHandler.class,"Datei gefunden: " + files[i].getName(), true);
                         k++;
                     } catch (Exception ex) {
-                        Log.Debug(ex.getMessage(), true);
+                        Log.Debug(FileDirectoryHandler.class,ex.getMessage(), true);
                     }
                 }
             }
@@ -120,11 +120,11 @@ public class FileDirectoryHandler {
 //                String[] fileinfo = new String[3];
 //                fileinfo [2] = "Keine Datei vorhanden";
 //                lstFiles.add(fileinfo);
-                 Log.Debug("Keine Datei gefunden.");
+                 Log.Debug(FileDirectoryHandler.class,"Keine Datei gefunden.");
             }
         } catch (Exception exception) {
-            Log.Debug(exception);
-            Log.Debug(exception.getMessage(), true);
+            Log.Debug(FileDirectoryHandler.class,exception);
+            Log.Debug(FileDirectoryHandler.class,exception.getMessage(), true);
         }
         return (File[]) lstFiles.toArray(new File[0]); 
     }
@@ -140,7 +140,7 @@ public class FileDirectoryHandler {
             fil.deleteOnExit();
             return fil;
         } catch (IOException ex) {
-            Log.Debug(ex);
+            Log.Debug(FileDirectoryHandler.class,ex);
         }
         return null;
     }

@@ -288,7 +288,7 @@ public class csvKontenImporter extends javax.swing.JFrame {
             } catch (Exception ex) {
                 succ = false;
                 new Popup(ex.getMessage(), Popup.ERROR);
-                Log.Debug(ex);
+                Log.Debug(this,ex);
                
          
                
@@ -301,7 +301,7 @@ public class csvKontenImporter extends javax.swing.JFrame {
         } catch (Exception ex) {
             succ = false;
             new Popup(ex.getMessage(), Popup.ERROR);
-             Log.Debug(ex);
+             Log.Debug(this,ex);
         }
 
         try {
@@ -317,7 +317,7 @@ public class csvKontenImporter extends javax.swing.JFrame {
         } catch (Exception ex) {
             succ = false;
             new Popup(ex.getMessage(), Popup.ERROR);
-             Log.Debug(ex);
+             Log.Debug(this,ex);
         }
 
 
@@ -423,7 +423,7 @@ public class csvKontenImporter extends javax.swing.JFrame {
             if (thisa.data != null) {
                 Date d=new Date();
 //                Log.setLogLevel(Log.LOGLEVEL_LOW);
-                Log.Debug("Einlesen gestartet: " + d,true);
+                Log.Debug(this,"Einlesen gestartet: " + d,true);
                 thisa.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 
                 thisa.jProgressBar1.setMaximum(thisa.data.length);
@@ -441,7 +441,7 @@ public class csvKontenImporter extends javax.swing.JFrame {
                    h++;
                 }
                 d=new Date();
-                Log.Debug("Einlesen beendet: " + d + " Konten: " + h,true);
+                Log.Debug(this,"Einlesen beendet: " + d + " Konten: " + h,true);
                 
                  new HistoryItem(ConnectionHandler.instanceOf(), Strings.KONTEN ,h + " Konten importiert.");
             

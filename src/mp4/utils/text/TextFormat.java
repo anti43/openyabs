@@ -37,7 +37,7 @@ public class TextFormat {
                     text = text.substring(0, position + linelength) + "\n" + text.substring(position + linelength, text.length());
                     
                 } catch (Exception e) {
-                    Log.Debug(e.getMessage(), true);
+                    Log.Debug(TextFormat.class,e.getMessage(), true);
                 }
                 position += linelength;
             }

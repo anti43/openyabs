@@ -409,7 +409,7 @@ public class groupsView extends javax.swing.JFrame implements TreeSelectionListe
                     field.setText(service.getProductgroupPath());
                 }
             } catch (Exception e) {
-                Log.Debug(e);
+                Log.Debug(this,e);
             }
             this.dispose();
         } else {
@@ -433,7 +433,7 @@ public class groupsView extends javax.swing.JFrame implements TreeSelectionListe
             setTreeData(true);
         } else {
 
-            Log.Debug("Nichts ausgewählt.");
+            Log.Debug(this,"Nichts ausgewählt.");
         }
     }//GEN-LAST:event_jButton4ActionPerformed
 

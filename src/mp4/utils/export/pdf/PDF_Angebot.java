@@ -87,7 +87,7 @@ public class PDF_Angebot implements Template{
                     brutto = brutto + ((Double) products[i][5] * (Double) products[i][1]);
                 }
             } catch (Exception exception) {
-                Log.Debug(exception);
+                Log.Debug(this,exception);
             }
         }
         Double tax = brutto - netto;

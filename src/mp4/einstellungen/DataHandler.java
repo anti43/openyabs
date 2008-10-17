@@ -128,14 +128,14 @@ public class DataHandler extends mp4.items.Things implements mp4.datenbank.insta
     private boolean setString(String key, String value, boolean newKey) {
 
         if (newKey) {
-            Log.Debug("Creating new key: " + key);
+            Log.Debug(this,"Creating new key: " + key);
             if (this.insert("name, wert", "(;;2#4#1#1#8#0#;;)" + key + "(;;2#4#1#1#8#0#;;)" + ",(;;2#4#1#1#8#0#;;)" + value + "(;;2#4#1#1#8#0#;;)", null) == 1) {
                 return true;
             } else {
                 return false;
             }
         } else {
-            Log.Debug("Updating key: " + key);
+            Log.Debug(this,"Updating key: " + key);
             if (this.update("wert", "(;;2#4#1#1#8#0#;;)" + value + "(;;2#4#1#1#8#0#;;)", "name", key) == 1) {
                 return true;
             } else {

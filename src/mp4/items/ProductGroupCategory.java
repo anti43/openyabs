@@ -53,7 +53,7 @@ public class ProductGroupCategory extends mp4.items.Things implements mp4.datenb
         try {
             this.explode(this.selectLast("*", "id", id, true));
         } catch (Exception ex) {
-             Log.Debug(ex);
+             Log.Debug(this,ex);
         }
         this.query=query;
     }

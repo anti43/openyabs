@@ -81,7 +81,7 @@ public class Dienstleistung extends mp4.items.Things implements mp4.datenbank.in
         try {
             this.explode(this.selectLast("*", "id", id.toString(), true));
         } catch (Exception ex) {
-             Log.Debug(ex);
+             Log.Debug(this,ex);
         }
         this.isvalid = true;
         this.query = ConnectionHandler.instanceOf();

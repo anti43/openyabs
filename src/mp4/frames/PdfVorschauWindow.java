@@ -58,7 +58,7 @@ public class PdfVorschauWindow extends javax.swing.JFrame implements Waiter {
 
 
         } catch (Exception ex) {
-            Log.Debug(ex);
+            Log.Debug(this,ex);
         }
     }
 
@@ -168,7 +168,7 @@ private javax.swing.JPanel jPanel1;
 
 
         } catch (Exception ex) {
-            Log.Debug(ex);
+            Log.Debug(this,ex);
         }
     }
 }

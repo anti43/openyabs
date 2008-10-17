@@ -231,14 +231,14 @@ public class backupView extends mp4.panels.misc.commonPanel{
                 store = Main.MPPATH + File.separator + Constants.DATABASENAME;
             }
 
-            Log.Debug("Anlegen einer Sicherungsdatei:\nZiel: " + savefile, true);
+            Log.Debug(this,"Anlegen einer Sicherungsdatei:\nZiel: " + savefile, true);
             this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
             Zip.zip(path, savefile);
             this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
             mainframe.setMessage("Sicherungsdatei '" + savefile + "' angelegt.");
             new HistoryItem(ConnectionHandler.instanceOf(), Strings.BACKUP, "Sicherungsdatei " + savefile + " angelegt.");
         } catch (Exception ex) {
-            Log.Debug(ex.getMessage(), true);
+            Log.Debug(this,ex.getMessage(), true);
         }
         this.validateTable();
     }
@@ -293,18 +293,18 @@ public class backupView extends mp4.panels.misc.commonPanel{
                     File olddb = new File(Main.MPPATH + File.separator + Constants.DATABASENAME);
 //                    path = new File(dat[0]);
                     store = Main.MPPATH + File.separator + Constants.DATABASENAME;
-                    Log.Debug("Zurückspielen einer Sicherungsdatei:\nZiel: " + store, true);
+                    Log.Debug(this,"Zurückspielen einer Sicherungsdatei:\nZiel: " + store, true);
                     FileDirectoryHandler.deleteTree(olddb);
 //                int z =path.getCanonicalPath().lastIndexOf(File.separator);
 //                store =store.substring(0, z);
-                    Log.Debug("Rücksichern nach: " + store, true);
+                    Log.Debug(this,"Rücksichern nach: " + store, true);
                     UnZip.deflate(((String[])list.get(id))[2], store);
                     mainframe.setMessage("Sicherungsdatei '" + ((String[])list.get(id))[2] + "' wiederhergestellt.");
                     new Popup("Starten Sie das Programm neu.", Popup.NOTICE);
                     System.exit(0);
 
                 } catch (IOException ex) {
-                    Log.Debug(ex.getMessage(), true);
+                    Log.Debug(this,ex.getMessage(), true);
                 }
             }
         }
@@ -331,14 +331,14 @@ public class backupView extends mp4.panels.misc.commonPanel{
         try {
             this.lstFiles = new ArrayList();
             this.src = new File(this.savepath);
-            Log.Debug("Backup Verzeichnis: " + src, true);
+            Log.Debug(this,"Backup Verzeichnis: " + src, true);
             File[] files = src.listFiles();
-            Log.Debug("Dateien analysieren...", true);
+            Log.Debug(this,"Dateien analysieren...", true);
 //            str = new String[files.length][3];
             list = new ArrayList();
 
             for (int i = 0,   k = 0; i < files.length; i++) {
-//                Log.Debug("Datei analysieren: " + files[i].getName());
+//                Log.Debug(this,"Datei analysieren: " + files[i].getName());
                 if (files[i].isFile() && files[i].toString().contains("mpsavefile-40")) {
                     try {
                         String[] fileinfo = new String[3];
@@ -346,11 +346,11 @@ public class backupView extends mp4.panels.misc.commonPanel{
                         fileinfo[1] = df2.format(df.parse(files[i].getName().substring(0, 18)));
                         fileinfo[2] = files[i].getCanonicalPath();
                         list.add(fileinfo);
-                        Log.Debug("Sicherungsdatei gefunden: " + files[i].getName(), true);
+                        Log.Debug(this,"Sicherungsdatei gefunden: " + files[i].getName(), true);
                         k++;
                     } catch (Exception ex) {
-//                        Log.Debug(ex);
-                        Log.Debug(ex.getMessage(), true);
+//                        Log.Debug(this,ex);
+                        Log.Debug(this,ex.getMessage(), true);
                     }
                 }
             }
@@ -360,8 +360,8 @@ public class backupView extends mp4.panels.misc.commonPanel{
                 list.add(fileinfo);
             }
         } catch (Exception exception) {
-            Log.Debug(exception);
-            Log.Debug(exception.getMessage(), true);
+            Log.Debug(this,exception);
+            Log.Debug(this,exception.getMessage(), true);
         }
 
         jTable1.setModel(new DefaultTableModel(ListenDataUtils.listToTableArray(list), header));

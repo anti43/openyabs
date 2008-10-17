@@ -85,7 +85,7 @@ public class Angebot extends mp4.items.Things implements mp4.datenbank.installat
         try {
             this.explode(this.selectLast(Strings.ALL, Strings.ID, id.toString(), true));
         } catch (Exception ex) {
-            Log.Debug(ex);
+            Log.Debug(this,ex);
         }
         this.query = ConnectionHandler.instanceOf();
         nfh = new NumberFormatHandler(this, getDatum());
@@ -141,7 +141,7 @@ public class Angebot extends mp4.items.Things implements mp4.datenbank.installat
                 }
             }
         } catch (Exception exception) {
-            Log.Debug(exception);
+            Log.Debug(this,exception);
         }
         return nstr;
     }
@@ -151,7 +151,7 @@ public class Angebot extends mp4.items.Things implements mp4.datenbank.installat
         try {
             in = this.selectLast("id", "rechnungid", rechnungid.toString(), true);
         } catch (Exception ex) {
-            Log.Debug(ex);
+            Log.Debug(this,ex);
         }
         if (in != null && in.length > 0) {
             return Integer.valueOf(in[0]);
@@ -311,7 +311,7 @@ public class Angebot extends mp4.items.Things implements mp4.datenbank.installat
                     }
                 }
             } catch (Exception exception) {
-                Log.Debug(exception);
+                Log.Debug(this,exception);
             }
             return new PostenTableModel(nstr);
         } else {
@@ -324,7 +324,7 @@ public class Angebot extends mp4.items.Things implements mp4.datenbank.installat
         try {
             str = this.selectLast("id", "Angebotnummer", this.getAngebotnummer(), false);
         } catch (Exception ex) {
-             Log.Debug(ex);
+             Log.Debug(this,ex);
         }
         return Integer.valueOf(str[0]);
     }

@@ -41,7 +41,7 @@ public class FormatNumber {
             return n.parse(number).doubleValue();
         } catch (ParseException ex) {
 //            Popup.notice("Ungültiger Wert: " + number);
-            Log.Debug(ex.getMessage());
+            Log.Debug(FormatNumber.class,ex.getMessage());
             return null;
         }
     }

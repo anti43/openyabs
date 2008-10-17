@@ -78,7 +78,7 @@ public class DefaultDataMonths implements Waitable {
             }
 
         } catch (NumberFormatException numberFormatException) {
-            Log.Debug(numberFormatException);
+            Log.Debug(this,numberFormatException);
         }
     }
 
@@ -86,7 +86,7 @@ public class DefaultDataMonths implements Waitable {
         try {
             data = ListenDataUtils.substract(ListenDataUtils.add(einnahmenVal, rechnungenVal), ausgabenVal);
         } catch (Exception ex) {
-            Log.Debug(ex.getMessage());
+            Log.Debug(this,ex.getMessage());
         }
         return data;
     }
@@ -95,7 +95,7 @@ public class DefaultDataMonths implements Waitable {
         try {
             data = ListenDataUtils.add(rechnungenVal, ListenDataUtils.add(einnahmenVal, ausgabenVal));
         } catch (Exception ex) {
-            Log.Debug(ex);
+            Log.Debug(this,ex);
         }
         return data;
     }
@@ -104,7 +104,7 @@ public class DefaultDataMonths implements Waitable {
         try {
             data = ListenDataUtils.add(rechnungenVal, einnahmenVal);
         } catch (Exception ex) {
-            Log.Debug(ex);
+            Log.Debug(this,ex);
         }
         return data;
     }
@@ -113,7 +113,7 @@ public class DefaultDataMonths implements Waitable {
         try {
             data = ausgabenVal;
         } catch (Exception ex) {
-            Log.Debug(ex);
+            Log.Debug(this,ex);
         }
         return data;
     }

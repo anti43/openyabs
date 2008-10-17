@@ -147,7 +147,7 @@ public javax.swing.JScrollPane jScrollPane1;
                 update();
                 Thread.sleep(10000);
             } catch (Exception ex) {
-              Log.Debug(ex);
+              Log.Debug(this,ex);
             }
         }
     }

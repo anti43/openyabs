@@ -105,7 +105,7 @@ public class Einnahme extends mp4.items.Things implements mp4.datenbank.installa
         try {
             this.explode(this.selectLast("*", "id", id.toString(), true));
         } catch (Exception ex) {
-             Log.Debug(ex);
+             Log.Debug(this,ex);
         }
     }
 
@@ -121,7 +121,7 @@ public class Einnahme extends mp4.items.Things implements mp4.datenbank.installa
             this.explode(this.selectLast("*", "id", id, true));
             readonly = !lock();
         } catch (Exception ex) {
-             Log.Debug(ex);
+             Log.Debug(this,ex);
         }
     }
 
@@ -147,7 +147,7 @@ public class Einnahme extends mp4.items.Things implements mp4.datenbank.installa
             this.setDatum(DateConverter.getDate(select[5]));
 
         } catch (Exception numberFormatException) {
-            Log.Debug(numberFormatException);
+            Log.Debug(this,numberFormatException);
         }
     }
 

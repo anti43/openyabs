@@ -213,7 +213,7 @@ public class eurEURPanel extends mp4.panels.misc.commonPanel implements panelInt
             jTable1.doLayout();
         } catch (Exception ex) {   
                 Popup.notice("Sie müssen ein Jahr angeben."); 
-                Log.Debug(ex);
+                Log.Debug(this,ex);
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -234,7 +234,7 @@ public class eurEURPanel extends mp4.panels.misc.commonPanel implements panelInt
                 new Browser(dialog.getFile());
                 
             } catch (Exception ex) {
-                Log.Debug(ex);
+                Log.Debug(this,ex);
             }
         }
     }//GEN-LAST:event_jButton2ActionPerformed

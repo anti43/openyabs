@@ -95,7 +95,7 @@ public class EURTableModel implements Constants, Strings, mp4.datenbank.installa
                 break;
         }
 
-        Log.Debug(timeframe, true);
+        Log.Debug(this,timeframe, true);
 
 
         Query q = ConnectionHandler.instanceOf().clone(TABLE_DUES);
@@ -120,7 +120,7 @@ public class EURTableModel implements Constants, Strings, mp4.datenbank.installa
 
                 kontoID = 0;
                 nettobetrag = 0d;
-                Log.Debug(ex);
+                Log.Debug(this,ex);
                 Popup.error(ex.getMessage(), "Überprüfen Sie die angebenen Beträge.");
             }
 
@@ -244,7 +244,7 @@ public class EURTableModel implements Constants, Strings, mp4.datenbank.installa
 
                 kontoID = 0;
                 nettobetrag = 0d;
-                Log.Debug(ex);
+                Log.Debug(this,ex);
                 Popup.error(ex.getMessage(), "Überprüfen Sie die angebenen Beträge. ");
             }
 
@@ -303,7 +303,7 @@ public class EURTableModel implements Constants, Strings, mp4.datenbank.installa
 
                 kontoID = 0;
                 nettobetrag = 0d;
-                Log.Debug(ex);
+                Log.Debug(this,ex);
                 Popup.error(ex.getMessage(), "Überprüfen Sie die angebenen Beträge.");
             }
 

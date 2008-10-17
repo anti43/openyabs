@@ -344,7 +344,7 @@ public class konten extends javax.swing.JFrame {
             try {
                 this.setKonto(new SKRKonto(ConnectionHandler.instanceOf(), id));
             } catch (Exception exception) {
-                Log.Debug(exception);
+                Log.Debug(this,exception);
             }
         }
         if (einnahme != null || ausgabe != null) {
@@ -362,7 +362,7 @@ public class konten extends javax.swing.JFrame {
                     }
                     this.dispose();
                 } catch (Exception exception) {
-                    Log.Debug(exception);
+                    Log.Debug(this,exception);
                 }
             }
             idOk = true;
@@ -420,7 +420,7 @@ public class konten extends javax.swing.JFrame {
 
             this.dispose();
         } catch (Exception exception) {
-            Log.Debug(exception);
+            Log.Debug(this,exception);
         }
 
     }//GEN-LAST:event_jButton5ActionPerformed

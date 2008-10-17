@@ -320,7 +320,7 @@ public javax.swing.JTextField jTextField1;
                         thisa.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                     } catch (Exception exception) {
                         thisa.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-                        Log.Debug("Drucken fehlgeschlagen. Drucker eingeschaltet?");
+                        Log.Debug(this,"Drucken fehlgeschlagen. Drucker eingeschaltet?");
                         Popup.notice("Drucken fehlgeschlagen. Drucker eingeschaltet?");
                     }
             } else {
@@ -336,7 +336,7 @@ public javax.swing.JTextField jTextField1;
                     thisa.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                 } catch (Exception exception) {
                     thisa.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-                    Log.Debug("Drucken fehlgeschlagen. Drucker eingeschaltet?");
+                    Log.Debug(this,"Drucken fehlgeschlagen. Drucker eingeschaltet?");
                     Popup.notice("Drucken fehlgeschlagen. Drucker eingeschaltet?");
                 }
             }
@@ -351,7 +351,7 @@ public javax.swing.JTextField jTextField1;
         @Override
         public void done() {
             Toolkit.getDefaultToolkit().beep();
-            Log.Debug("Printing finished.",true);
+            Log.Debug(this,"Printing finished.",true);
             thisa.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 
         }

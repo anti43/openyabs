@@ -94,7 +94,7 @@ public class TextDatFile extends File implements Waitable, Printable {
                 line += string + getFieldSeparator();
             }  
             line = (line.substring(0, line.length() - getFieldSeparator().length())).replaceAll("[\\r\\n]","");
-            Log.Debug(line);
+            Log.Debug(this,line);
             rw.write(line);
         }
     }
@@ -110,7 +110,7 @@ public class TextDatFile extends File implements Waitable, Printable {
         for (int i = 0; i > line.length; i++) {
             arr.add(line[i].split(getFieldSeparator()));
             line = rw.readLines();
-            Log.Debug(line);
+            Log.Debug(this,line);
         }
         data = ListenDataUtils.listToStringArrayArray(arr);
         return data;

@@ -98,7 +98,7 @@ public class billsView extends mp4.panels.misc.commonPanel implements panelInter
             fetchBillsOfTheMonth();
         } catch (Exception e) {
             e.printStackTrace();
-            Log.Debug(e.getMessage());
+            Log.Debug(this,e.getMessage());
         }
 
         renewTableModel(true);
@@ -1354,7 +1354,7 @@ public class billsView extends mp4.panels.misc.commonPanel implements panelInter
             try {
                 this.setBill(new Rechnung(selection.getId()));
             } catch (Exception exception) {
-                Log.Debug(exception);
+                Log.Debug(this,exception);
             }
         }
     }//GEN-LAST:event_jTable3MouseClicked

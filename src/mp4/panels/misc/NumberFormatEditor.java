@@ -39,7 +39,7 @@ public class NumberFormatEditor extends javax.swing.JFrame {
             this.jTextField1.setText(str[0] + "&!" + str[1]);
             jComboBox1.setSelectedIndex(Integer.valueOf(str[2]));
         } catch (Exception e) {
-            Log.Debug(e);
+            Log.Debug(this,e);
         }
     }
 
@@ -201,7 +201,7 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     try {
         jTextField2.setText(nfh.getNextNumber());
     } catch (Exception e) {
-        Log.Debug(e, rootPaneCheckingEnabled);
+        Log.Debug(this,e, rootPaneCheckingEnabled);
         Popup.notice("Format nicht möglich.");
     }
 
@@ -225,7 +225,7 @@ private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             nfh.save(fstring);
             this.dispose();
         } catch (Exception e) {
-            Log.Debug(e, rootPaneCheckingEnabled);
+            Log.Debug(this,e, rootPaneCheckingEnabled);
             Popup.notice("Format nicht möglich.");
         }
     }
@@ -255,7 +255,7 @@ private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 nfh.setStartWert(jTextField2.getText());
                 this.dispose();
             } catch (Exception e) {
-                Log.Debug(e, rootPaneCheckingEnabled);
+                Log.Debug(this,e, rootPaneCheckingEnabled);
                 Popup.notice("Format nicht möglich.");
             }
         }

@@ -28,9 +28,9 @@ import mp4.logs.*;
 public class ImageFormat {
 
     public static Image ResizeImage(Image image, int width) {
-        Log.Debug("Resize image..");
+        Log.Debug(ImageFormat.class,"Resize image..");
         if (width > 1000) {
-            Log.Debug("Image will not be resized > 1000!");
+            Log.Debug(ImageFormat.class,"Image will not be resized > 1000!");
             width = 1000;
         }
         return image.getScaledInstance(width, -1, Image.SCALE_SMOOTH);

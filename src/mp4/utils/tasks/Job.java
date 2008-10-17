@@ -48,7 +48,7 @@ public class Job extends SwingWorker<Object, Object> {
             if (bar != null) {
                 bar.setIndeterminate(false);
             }
-            Log.Debug(e);
+            Log.Debug(this,e);
         } finally {
         }
         return object;

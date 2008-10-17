@@ -52,7 +52,7 @@ public class Steuersatz extends mp4.items.Things implements mp4.datenbank.instal
         try {
             this.explode(this.selectLast("name, wert", "id", id.toString(), true));
         } catch (Exception ex) {
-             Log.Debug(ex);
+             Log.Debug(this,ex);
         }
     }
 
@@ -68,7 +68,7 @@ public class Steuersatz extends mp4.items.Things implements mp4.datenbank.instal
             this.setWert(Double.valueOf(select[1]));
 
         } catch (Exception ex) {
-            Log.Debug(ex);
+            Log.Debug(this,ex);
         }
     }
 

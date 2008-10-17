@@ -67,7 +67,7 @@ public class ProductImage extends mp4.items.Things implements mp4.datenbank.inst
         try {
             this.explode(this.selectLast("productid,url,datum", "id", id.toString(), true));
         } catch (Exception ex) {
-             Log.Debug(ex);
+             Log.Debug(this,ex);
         }
     }
 
@@ -86,7 +86,7 @@ public class ProductImage extends mp4.items.Things implements mp4.datenbank.inst
         try {
             data = this.selectLast("productid,url,datum", "productid", id.toString(), true);
         } catch (Exception ex) {
-            Log.Debug(ex);
+            Log.Debug(this,ex);
         }
         if (data != null && data.length > 0) {
             image = new ProductImage();
@@ -95,7 +95,7 @@ public class ProductImage extends mp4.items.Things implements mp4.datenbank.inst
                 image.setPath(new File(data[1]).toURI());//.getPath().replaceAll(" ", "%20")
             } catch (Exception ex) {
                 image.setPath(null);
-                Log.Debug(ex);
+                Log.Debug(this,ex);
             }
             image.setDatum(DateConverter.getDate(data[2]));
         }
@@ -108,7 +108,7 @@ public class ProductImage extends mp4.items.Things implements mp4.datenbank.inst
                 return new URI(Path.replaceAll(" ", "%20"));
             }
         } catch (Exception ex) {
-            Log.Debug(ex);
+            Log.Debug(this,ex);
         }
         return null;
     }
@@ -119,7 +119,7 @@ public class ProductImage extends mp4.items.Things implements mp4.datenbank.inst
             this.setPath(new File(select[1]).toURI());
             this.setDatum(DateConverter.getDate(select[2]));
         } catch (Exception ex) {
-            Log.Debug(ex);
+            Log.Debug(this,ex);
         }
     }
 
@@ -181,7 +181,7 @@ public class ProductImage extends mp4.items.Things implements mp4.datenbank.inst
         
         try {
             if (getPath() != null) {
-                Log.Debug("Loading Image ..: " + getURI().getPath());
+                Log.Debug(this,"Loading Image ..: " + getURI().getPath());
                 coverImg = Toolkit.getDefaultToolkit().createImage(getURI().getPath());
                 return coverImg;
             }
@@ -195,7 +195,7 @@ public class ProductImage extends mp4.items.Things implements mp4.datenbank.inst
         Image coverImg;
         try {
             if (getPath() != null) {
-                Log.Debug("Loading ImageIcon ..: " + getURI().getPath());
+                Log.Debug(this,"Loading ImageIcon ..: " + getURI().getPath());
                 coverImg = Toolkit.getDefaultToolkit().createImage(getURI().getPath());
                 return new ImageIcon(coverImg);
             }

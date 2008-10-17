@@ -205,10 +205,10 @@ public class mp2Importer extends javax.swing.JFrame {
             compat.mp2.rechnung rechn = new compat.mp2.rechnung(mainf);
 
 
-            Log.Debug("Kundendaten einlesen..");
+            Log.Debug(this,"Kundendaten einlesen..");
             kund = kunde.askForNamesAnd();
             jTable1.setModel(new DefaultTableModel(kund, mainf.initialColumnNames));
-            Log.Debug("Rechnungsdaten einlesen..");
+            Log.Debug(this,"Rechnungsdaten einlesen..");
             rechngs = rechn.askForNumbersAnd();
             jTable2.setModel(new DefaultTableModel(rechngs, mainf.initialRColumnNames));
 
@@ -273,7 +273,7 @@ public class mp2Importer extends javax.swing.JFrame {
 
                             c.save();
                         } catch (Exception ex) {
-                            Log.Debug(ex);
+                            Log.Debug(this,ex);
                         }
                         c = null;
                         this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -290,14 +290,14 @@ public class mp2Importer extends javax.swing.JFrame {
 //                            "preis5", "posten6", "preis6", "posten7", "preis7", 
 //                            "posten8", "preis8", "posten9", "preis9", "posten10", 
 //                            "preis10", "datum", "gesamtpreis", "mwst"};
-                        Log.Debug("MP2 Rechnung instanzieren : id:" + rechngs[i][0]);
+                        Log.Debug(this,"MP2 Rechnung instanzieren : id:" + rechngs[i][0]);
                         compat.mp2.rechnung r = new rechnung(mainf, rechngs[i][0]);
-                        Log.Debug("MP2 Kunde Instanzieren : id:" + r.kundenID);
+                        Log.Debug(this,"MP2 Kunde Instanzieren : id:" + r.kundenID);
 
                         compat.mp2.kunde k = new compat.mp2.kunde(mainf, r.kundenID);
-                        Log.Debug("MP3 Kunde Instanzieren : Nummer:" + k.Kundennummer);
+                        Log.Debug(this,"MP3 Kunde Instanzieren : Nummer:" + k.Kundennummer);
                         Customer c = null;
-//     Log.Debug(rechngs);
+//     Log.Debug(this,rechngs);
                         Rechnung b = new Rechnung(ConnectionHandler.instanceOf());
                         try {
                             c = new Customer( k.Kundennummer);
@@ -332,10 +332,10 @@ public class mp2Importer extends javax.swing.JFrame {
                                 taxcount = taxcount + 100;
 
                                 allovertax = allovertax + ((Double.valueOf(rechngs[i][25].toString().replaceAll(",", "."))) + 100);
-                                Log.Debug(allovertax);
+                                Log.Debug(this,allovertax);
                             }
                         } catch (Exception exception) {
-                            Log.Debug(exception);
+                            Log.Debug(this,exception);
                         }
 
 

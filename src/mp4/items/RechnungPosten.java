@@ -57,7 +57,7 @@ public class RechnungPosten extends mp4.items.Things implements mp4.datenbank.in
         try {
             this.explode(this.selectLast("*", "id", id, true));
         } catch (Exception ex) {
-             Log.Debug(ex);
+             Log.Debug(this,ex);
         }
     }
 
@@ -74,7 +74,7 @@ public class RechnungPosten extends mp4.items.Things implements mp4.datenbank.in
             this.setPreis(Double.valueOf( select[4]));
             this.setSteuersatz(Double.valueOf( select[5]));
         } catch (NumberFormatException numberFormatException) {
-            Log.Debug(numberFormatException);
+            Log.Debug(this,numberFormatException);
         }
     }
 

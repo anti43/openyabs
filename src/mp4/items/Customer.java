@@ -56,7 +56,7 @@ public class Customer extends mp4.items.People implements mp4.datenbank.installa
         try {
             this.explode(this.selectLast("*", "id", id.toString(), true));
         } catch (Exception ex) {
-            Log.Debug(ex);
+            Log.Debug(this,ex);
         }
         this.query = ConnectionHandler.instanceOf();
         nfh = new NumberFormatHandler(this, new Date());
@@ -120,7 +120,7 @@ public class Customer extends mp4.items.People implements mp4.datenbank.installa
                 this.setDeleted(true);
             }
         } catch (Exception exception) {
-            Log.Debug(exception);
+            Log.Debug(this,exception);
         }
     }
 
@@ -147,7 +147,7 @@ public class Customer extends mp4.items.People implements mp4.datenbank.installa
             }
 
         } catch (Exception exception) {
-            Log.Debug(exception);
+            Log.Debug(this,exception);
         }
 
     }

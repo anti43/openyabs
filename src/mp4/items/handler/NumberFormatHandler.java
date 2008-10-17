@@ -204,8 +204,8 @@ public class NumberFormatHandler {
             }
             Integer count = 0;
 
-            Log.Debug("Number Parser mode: " + this.getMode());
-            Log.Debug("Number Parser format: " + this.getFormatter().format(1d));
+            Log.Debug(this,"Number Parser mode: " + this.getMode());
+            Log.Debug(this,"Number Parser format: " + this.getFormatter().format(1d));
 
             switch (this.getMode()) {
 
@@ -238,7 +238,7 @@ public class NumberFormatHandler {
 
             return this.getFormatter().format(count + 1);
         } else {
-            Log.Debug("Number Parser uses: " + startwert);
+            Log.Debug(this,"Number Parser uses: " + startwert);
             startwert = checkValue(startwert);
             String tmp = startwert;
             startwert = null;

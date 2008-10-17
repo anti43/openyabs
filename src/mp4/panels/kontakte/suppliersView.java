@@ -1102,7 +1102,7 @@ public class suppliersView extends mp4.panels.misc.commonPanel implements mp4.da
             try {
                 this.setContact(new Lieferant(selection.getId()));
             } catch (Exception exception) {
-                Log.Debug(exception);
+                Log.Debug(this,exception);
             }
         }
     }//GEN-LAST:event_jTable3MouseClicked
@@ -1150,7 +1150,7 @@ public class suppliersView extends mp4.panels.misc.commonPanel implements mp4.da
             try {
                 mainframe.addProductPanel(new Product(selection.getId()));
             } catch (Exception ex) {
-                Log.Debug(ex);
+                Log.Debug(this,ex);
                 Popup.warn(ex.getMessage(), Popup.ERROR);
             }
         }

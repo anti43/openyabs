@@ -1071,7 +1071,7 @@ private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 //            if (jTextField4.getText().equals("")) {
 //                Integer tz = current.getNextIndex("produktnummer");
 //                jTextField4.setText(tz.toString());
-//                Log.Debug("Setting 'Dienstleistungnumber' to " + tz);
+//                Log.Debug(this,"Setting 'Dienstleistungnumber' to " + tz);
 //            } else {
 //                try {
 //                    Integer i = Integer.valueOf(jTextField4.getText());
@@ -1079,7 +1079,7 @@ private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 //                } catch (NumberFormatException numberFormatException) {
 //                    Integer tz = current.getNextIndex("produktnummer");
 //                    jTextField4.setText(tz.toString());
-//                    Log.Debug("Setting 'Dienstleistungnumber' to " + tz);
+//                    Log.Debug(this,"Setting 'Dienstleistungnumber' to " + tz);
 //                }
 //            }
             try {

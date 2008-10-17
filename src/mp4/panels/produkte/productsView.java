@@ -144,14 +144,14 @@ public class productsView extends commonPanel implements panelInterface, mp4.dat
         try {
             currentImageURI = FileDirectoryHandler.copyFile(f,
                     new File(Programmdaten.instanceOf().getIMAGE_CACHE_FOLDER()), new RandomText().getString() + f.getName());
-            Log.Debug("Image: " + currentImageURI);
+            Log.Debug(this,"Image: " + currentImageURI);
             image.setDatum(new Date());
             image.setProduktid(product.getId());
             image.setPath(currentImageURI);
             image.save();
         } catch (Exception ex) {
             ex.printStackTrace();
-            Log.Debug("CopyImage:" + ex.getMessage());
+            Log.Debug(this,"CopyImage:" + ex.getMessage());
         }
     }
 
@@ -186,7 +186,7 @@ public class productsView extends commonPanel implements panelInterface, mp4.dat
             Programmdaten.instanceOf().setPRODUCTPANEL_CHECKBOX_SCALEIMAGE(jCheckBox1.isSelected());
             Programmdaten.instanceOf().setPRODUCTPANEL_CHECKBOX_SCALEIMAGE_SIZE(Integer.valueOf(jTextField23.getText()));
         } catch (NumberFormatException numberFormatException) {
-            Log.Debug(numberFormatException);
+            Log.Debug(this,numberFormatException);
         }
     }
 
@@ -1596,7 +1596,7 @@ numberfieldedited = true;
 //            if (jTextField4.getText().equals("")) {
 //                Integer tz = current.getNextIndex("produktnummer");
 //                jTextField4.setText(tz.toString());
-//                Log.Debug("Setting 'Productnumber' to " + tz);
+//                Log.Debug(this,"Setting 'Productnumber' to " + tz);
 //            } else {
 //                try {
 //                    Integer i = Integer.valueOf(jTextField4.getText());
@@ -1604,7 +1604,7 @@ numberfieldedited = true;
 //                } catch (NumberFormatException numberFormatException) {
 //                    Integer tz = current.getNextIndex("produktnummer");
 //                    jTextField4.setText(tz.toString());
-//                    Log.Debug("Setting 'Productnumber' to " + tz);
+//                    Log.Debug(this,"Setting 'Productnumber' to " + tz);
 //                }
 //            }
             try {
@@ -1730,7 +1730,7 @@ class GetProductImage extends SwingWorker<Void, Void> {
                 view.validate();
             }
         } catch (Exception ex) {
-            Log.Debug(ex);
+            Log.Debug(this,ex);
         }
         return null;
     }
@@ -1766,7 +1766,7 @@ class GetAnyImage extends SwingWorker<Void, Void> {
             view.setCurrentImage(file);
         } catch (Exception ex) {
             view.imgLabel.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-            Log.Debug(ex);
+            Log.Debug(this,ex);
         }
         return null;
     }

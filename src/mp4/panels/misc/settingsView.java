@@ -572,7 +572,7 @@ private void jButton4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:ev
             }
         }
     } catch (Exception e) {
-        Log.Debug(e);
+        Log.Debug(this,e);
     }
 }//GEN-LAST:event_jButton4MouseClicked
 
@@ -598,7 +598,7 @@ private void jButton7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:ev
             }
         }
     } catch (Exception e) {
-        Log.Debug(e);
+        Log.Debug(this,e);
     }
 }//GEN-LAST:event_jButton7MouseClicked
 
@@ -617,7 +617,7 @@ private void jButton8MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:ev
             }
         }
     } catch (Exception e) {
-        Log.Debug(e);
+        Log.Debug(this,e);
     }
 }//GEN-LAST:event_jButton8MouseClicked
 

@@ -99,7 +99,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
                 this.file = this.getSelectedFile();
                 return true;
             } catch (Exception ex) {
-                Log.Debug(ex);
+                Log.Debug(this,ex);
             }
         }
         return false;
@@ -176,7 +176,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
                 this.file = this.getSelectedFile();
                 return true;
             } catch (IOException ex) {
-                Log.Debug(ex);
+                Log.Debug(this,ex);
             }
         }
         return false;

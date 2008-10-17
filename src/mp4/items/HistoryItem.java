@@ -107,7 +107,7 @@ public class HistoryItem extends mp4.items.Things implements mp4.datenbank.insta
         try {
             this.explode(this.selectLast("*", "id", id, true));
         } catch (Exception ex) {
-             Log.Debug(ex);
+             Log.Debug(this,ex);
         }
         
        
