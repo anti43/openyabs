@@ -16,7 +16,7 @@ import mp4.utils.tabellen.TableFormat;
  *
  * @author  anti43
  */
-public class historyView extends mp4.panels.misc.commonPanel implements Runnable{
+public class historyView extends mp4.items.visual.CommonPanel implements Runnable{
     private static final long serialVersionUID = 7605611553087473038L;
 
     private String[][] liste;

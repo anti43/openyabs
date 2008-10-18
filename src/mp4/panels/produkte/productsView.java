@@ -6,6 +6,7 @@
 package mp4.panels.produkte;
 
 
+import mp4.items.visual.CommonPanel;
 import mp4.frames.PdfVorschauWindow;
 import mp4.panels.*;
 import mp4.utils.export.pdf.PDF_Produkt;
@@ -64,7 +65,7 @@ import mp4.utils.zahlen.NumberCheck;
  *
  * @author  anti43
  */
-public class productsView extends commonPanel implements panelInterface, mp4.datenbank.installation.Tabellen{
+public class productsView extends CommonPanel implements panelInterface, mp4.datenbank.installation.Tabellen{
 
     private mainframe mainframe;
     private Product current;

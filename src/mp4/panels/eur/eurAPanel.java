@@ -42,7 +42,7 @@ import mp4.utils.zahlen.vDouble;
  *
  * @author  anti43
  */
-public class eurAPanel extends mp4.panels.misc.commonPanel implements panelInterface {
+public class eurAPanel extends mp4.items.visual.CommonPanel implements panelInterface {
 
     private Ausgabe curAusgabe;
     private SKRKonto curKonto;

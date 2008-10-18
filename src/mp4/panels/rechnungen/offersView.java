@@ -67,7 +67,7 @@ import mp4.utils.tasks.Job;
  *
  * @author  anti43
  */
-public class offersView extends mp4.panels.misc.commonPanel implements panelInterface, mp4.datenbank.installation.Tabellen {
+public class offersView extends mp4.items.visual.CommonPanel implements panelInterface, mp4.datenbank.installation.Tabellen {
 
     private Angebot currentOffer;
     private String[][] liste;

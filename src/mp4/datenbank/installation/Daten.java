@@ -83,7 +83,7 @@ public abstract class Daten {
         "INSERT INTO einstellungen (name, wert) VALUES ('Produkt Verzeichnis', '" + Setup.instanceOf().getInstall_dirs().getPathpdf_produkt_dir()+ "')",
         "INSERT INTO einstellungen (name, wert) VALUES ('Lieferschein Verzeichnis', '" + Setup.instanceOf().getInstall_dirs().getPathpdf_lieferschein_dir()+ "')",
 
-        "INSERT INTO einstellungen (name, wert) VALUES ('Rechnung Template', '" + Setup.instanceOf().getInstall_dirs().getPathtemplates_dir() + File.separator + "rechnung.pdf')",
+        "INSERT INTO einstellungen (name, wert) VALUES ('Rechnung Template', '" + Setup.instanceOf().getInstall_dirs().getPathtemplates_dir() + File.separator + "rechnung_mwst.pdf')",
         "INSERT INTO einstellungen (name, wert) VALUES ('Angebot Template', '" + Setup.instanceOf().getInstall_dirs().getPathtemplates_dir() + File.separator + "angebot.pdf')",
         "INSERT INTO einstellungen (name, wert) VALUES ('Mahnung Template', '" + Setup.instanceOf().getInstall_dirs().getPathtemplates_dir() + File.separator + "mahnung.pdf')",
         "INSERT INTO einstellungen (name, wert) VALUES ('Serienbrief Template', '" + Setup.instanceOf().getInstall_dirs().getPathtemplates_dir() + File.separator + "serienbrief.pdf')",

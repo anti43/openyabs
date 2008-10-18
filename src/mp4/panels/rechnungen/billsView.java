@@ -69,7 +69,7 @@ import mp4.utils.zahlen.FormatNumber;
  *
  * @author  anti43
  */
-public class billsView extends mp4.panels.misc.commonPanel implements panelInterface, mp4.datenbank.installation.Tabellen {
+public class billsView extends mp4.items.visual.CommonPanel implements panelInterface, mp4.datenbank.installation.Tabellen {
 
     private Rechnung currentBill;
     private Customer customer;

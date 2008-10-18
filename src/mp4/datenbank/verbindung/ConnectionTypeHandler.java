@@ -41,7 +41,6 @@ public class ConnectionTypeHandler {
      * Use custom database driver
      */
     public static final int CUSTOM = 2;    //Available Drivers
-    
     /**
      * Use single user database
      */
@@ -50,37 +49,42 @@ public class ConnectionTypeHandler {
      * Use multi user database
      */
     public static final int MULTI_USER = 1;
-    
-    
     public static String DERBY_DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
     public static String MYSQL_DRIVER = "com.mysql.jdbc.Driver";
-    public static String CUSTOM_DRIVER = "";   
-    
-    //Available SQL Files
+    public static String CUSTOM_DRIVER = "";    //Available SQL Files
     public static File DERBY_FILE = new File("ext/sql/derby.sql");
     public static File MYSQL_FILE = new File("ext/sql/mysql.sql");
-    public static File CUSTOM_FILE = new File("ext/sql/custom.sql");    
-    
-    //Connection string
-    private String CONNECTION_STRING = null;
-    
+    public static File CUSTOM_FILE = new File("ext/sql/custom.sql");
+
+    public static boolean isInSingleUserMode() {
+        if (MODE == ConnectionTypeHandler.SINGLE_USER) {
+            return true;
+        } else {
+            return false;
+        }
+    }  
+
+    static String getDriverName() {
+        return CONNECTION_STRING;
+    }
+    private static String CONNECTION_STRING = null;
     private String URL = Main.settings.getDBPath();
-    private Integer PREDEFINED_DRVER = 2;
-    private Integer MODE = 0;
+    private static Integer PREDEFINED_DRVER = 2;
+    private static Integer MODE = 0;
 
     /**
      * Constructs a new ConnHandler
      */
     public ConnectionTypeHandler() {
         if (Main.settings.getDBDriver().equals(DERBY_DRIVER)) {
-            this.PREDEFINED_DRVER = ConnectionTypeHandler.DERBY;
-            this.MODE = ConnectionTypeHandler.SINGLE_USER;
-        } else if (Main.settings.getDBDriver().equals(MYSQL_DRIVER) ) {
-            this.PREDEFINED_DRVER = ConnectionTypeHandler.MYSQL;
-            this.MODE = ConnectionTypeHandler.MULTI_USER;
+            ConnectionTypeHandler.PREDEFINED_DRVER = ConnectionTypeHandler.DERBY;
+            ConnectionTypeHandler.MODE = ConnectionTypeHandler.SINGLE_USER;
+        } else if (Main.settings.getDBDriver().equals(MYSQL_DRIVER)) {
+            ConnectionTypeHandler.PREDEFINED_DRVER = ConnectionTypeHandler.MYSQL;
+            ConnectionTypeHandler.MODE = ConnectionTypeHandler.MULTI_USER;
         } else {
-            this.PREDEFINED_DRVER = ConnectionTypeHandler.CUSTOM;
-            this.MODE = ConnectionTypeHandler.MULTI_USER;
+            ConnectionTypeHandler.PREDEFINED_DRVER = ConnectionTypeHandler.CUSTOM;
+            ConnectionTypeHandler.MODE = ConnectionTypeHandler.MULTI_USER;
         }
     }
 
@@ -89,7 +93,7 @@ public class ConnectionTypeHandler {
      * @param driverset 
      */
     public ConnectionTypeHandler(int driverset) {
-        this.PREDEFINED_DRVER = driverset;
+        ConnectionTypeHandler.PREDEFINED_DRVER = driverset;
     }
 
     /**
@@ -108,14 +112,14 @@ public class ConnectionTypeHandler {
                 setConnectionString(cstring);
                 break;
             case MYSQL:
-                setConnectionString("jdbc:mysql://" + getURL() + "/" +  Constants.DATABASENAME);
+                setConnectionString("jdbc:mysql://" + getURL() + "/" + Constants.DATABASENAME);
                 if (withCreate) {
-                    Log.Debug(this,"Sie müssen die MYSQL Datenbank manuell anlegen.", true);
+                    Log.Debug(this, "Sie müssen die MYSQL Datenbank manuell anlegen.", true);
                 }
                 break;
             case CUSTOM:
                 if (withCreate) {
-                    Log.Debug(this,"Sie müssen die SQL Datenbank manuell anlegen.", true);
+                    Log.Debug(this, "Sie müssen die SQL Datenbank manuell anlegen.", true);
                 }
                 break;
         }
@@ -127,7 +131,7 @@ public class ConnectionTypeHandler {
      * @return The SQL command for creating the tables
      */
     public String[] getTableCreating_SQLCommand() {
-       File filen = null;
+        File filen = null;
         switch (PREDEFINED_DRVER) {
             case DERBY:
                 filen = DERBY_FILE;
@@ -141,9 +145,9 @@ public class ConnectionTypeHandler {
         }
         try {
 
-            Log.Debug(this,"SQL Datei: " + filen.getCanonicalPath(), true);
+            Log.Debug(this, "SQL Datei: " + filen.getCanonicalPath(), true);
         } catch (IOException ex) {
-            Log.Debug(this,ex);
+            Log.Debug(this, ex);
         }
         return new FileReaderWriter(filen).readLines();
     }
@@ -153,7 +157,7 @@ public class ConnectionTypeHandler {
      * @param conn_string
      */
     public void setConnectionString(String conn_string) {
-        this.CONNECTION_STRING = conn_string;
+        ConnectionTypeHandler.CONNECTION_STRING = conn_string;
     }
 
     /**
@@ -177,7 +181,7 @@ public class ConnectionTypeHandler {
      * @param predefinedDriver
      */
     public void setDRIVER(int predefinedDriver) {
-        this.PREDEFINED_DRVER = predefinedDriver;
+        ConnectionTypeHandler.PREDEFINED_DRVER = predefinedDriver;
     }
 
     /**

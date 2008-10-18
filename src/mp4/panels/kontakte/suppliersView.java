@@ -39,7 +39,7 @@ import mp4.utils.tabellen.models.LProduktListTableModel;
  *
  * @author  anti43
  */
-public class suppliersView extends mp4.panels.misc.commonPanel implements mp4.datenbank.installation.Tabellen, panelInterface {
+public class suppliersView extends mp4.items.visual.CommonPanel implements mp4.datenbank.installation.Tabellen, panelInterface {
 
     public Lieferant current;
     private String[][] liste;

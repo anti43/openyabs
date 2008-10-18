@@ -1364,7 +1364,7 @@ private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 private void jMenuItem24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem24ActionPerformed
 
     dialog = new DialogForFile(DialogForFile.FILES_ONLY, "Kontaktliste.csv");
-    TextDatFile file = new TextDatFile(ArrayUtils.ObjectToStringArray(new Kontaktliste(new Customer().getClass()).getData()));
+    TextDatFile file = new TextDatFile(ArrayUtils.ObjectToStringArray(new Kontaktliste(new Customer().getClass()).getData()), Kontaktliste.header);
     new Job(file, dialog, mainProgressBar).execute();
 
 

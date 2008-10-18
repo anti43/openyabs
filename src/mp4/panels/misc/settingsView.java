@@ -31,7 +31,7 @@ import mp4.utils.zahlen.FormatNumber;
  *
  * @author  Andreas
  */
-public class settingsView extends mp4.panels.misc.commonPanel {
+public class settingsView extends mp4.items.visual.CommonPanel {
 
     private Einstellungen data;
     private mainframe mainframe;
@@ -561,18 +561,20 @@ private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:ev
 }//GEN-LAST:event_jButton2MouseClicked
 
 private void jButton4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton4MouseClicked
-    try {
-        JFileChooser fc = new JFileChooser("null");
-        fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+      if (jTable1.getSelectedRow() != -1) {
+        try {
+            JFileChooser fc = new JFileChooser("null");
+            fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
-        if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-            try {
-                jTable1.setValueAt(fc.getSelectedFile().toString(), jTable1.getSelectedRow(), 1);
-            } catch (Exception exception) {
+            if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+                try {
+                    jTable1.setValueAt(fc.getSelectedFile().toString(), jTable1.getSelectedRow(), 1);
+                } catch (Exception exception) {
+                }
             }
+        } catch (Exception e) {
+            Log.Debug(this, e);
         }
-    } catch (Exception e) {
-        Log.Debug(this,e);
     }
 }//GEN-LAST:event_jButton4MouseClicked
 
@@ -587,18 +589,20 @@ private void jTable2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
 }//GEN-LAST:event_jTable2MouseClicked
 
 private void jButton7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton7MouseClicked
-    try {
-        JFileChooser fc = new JFileChooser(Main.APP_DIR);
-        fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+     if (jTable2.getSelectedRow() != -1) {
+        try {
+            JFileChooser fc = new JFileChooser(Main.APP_DIR);
+            fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
-        if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-            try {
-                jTable2.setValueAt(fc.getSelectedFile().toString(), jTable2.getSelectedRow(), 1);
-            } catch (Exception exception) {
+            if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+                try {
+                    jTable2.setValueAt(fc.getSelectedFile().toString(), jTable2.getSelectedRow(), 1);
+                } catch (Exception exception) {
+                }
             }
+        } catch (Exception e) {
+            Log.Debug(this, e);
         }
-    } catch (Exception e) {
-        Log.Debug(this,e);
     }
 }//GEN-LAST:event_jButton7MouseClicked
 
@@ -606,18 +610,20 @@ private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 }//GEN-LAST:event_jButton7ActionPerformed
 
 private void jButton8MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton8MouseClicked
-    try {
-        JFileChooser fc = new JFileChooser(Main.APP_DIR);
-        fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+    if (jTable3.getSelectedRow() != -1) {
+        try {
+            JFileChooser fc = new JFileChooser(Main.APP_DIR);
+            fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
-        if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-            try {
-                jTable3.setValueAt(fc.getSelectedFile().toString(), jTable3.getSelectedRow(), 1);
-            } catch (Exception exception) {
+            if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+                try {
+                    jTable3.setValueAt(fc.getSelectedFile().toString(), jTable3.getSelectedRow(), 1);
+                } catch (Exception exception) {
+                }
             }
+        } catch (Exception e) {
+            Log.Debug(this, e);
         }
-    } catch (Exception e) {
-        Log.Debug(this,e);
     }
 }//GEN-LAST:event_jButton8MouseClicked
 

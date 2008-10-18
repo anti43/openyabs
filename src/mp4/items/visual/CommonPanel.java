@@ -14,7 +14,7 @@
  *      You should have received a copy of the GNU General Public License
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mp4.panels.misc;
+package mp4.items.visual;
 
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -24,7 +24,7 @@ import mp4.interfaces.Lockable;
  *
  * @author Andreas
  */
-public abstract class commonPanel extends JPanel {
+public abstract class CommonPanel extends JPanel {
 
     private static final long serialVersionUID = 1L;
     private boolean edited;

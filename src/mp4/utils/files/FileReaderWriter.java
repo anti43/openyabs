@@ -143,9 +143,11 @@ public class FileReaderWriter {
      * @return true is writing successful
      */
     public boolean write(String text) {
+        FileWriter out;
         try {
             text = zeilenumbruch + text;
-            FileWriter out = new FileWriter(filer, true);
+
+            out = new FileWriter(filer, true);
             BufferedWriter writer = new BufferedWriter(out);
             writer.write(text);
             writer.close();
@@ -209,5 +211,21 @@ public class FileReaderWriter {
             Logger.getLogger(FileReaderWriter.class.getName()).log(Level.SEVERE, null, ex);
         }
         return new String(charArray);
+    }
+
+    public void deleteFile() {
+        filer.delete();
+    }
+
+    public boolean writeLine(String[] text, String sep) {
+        String string = "";
+        for (int i = 0; i < text.length; i++) {
+            string += text[i] + sep;
+
+        }
+        if (!writeOnce(string)) {
+            return false;
+        }
+        return true;
     }
 }

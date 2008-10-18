@@ -47,7 +47,7 @@ import mp4.utils.ui.inputfields.InputVerifiers;
  *
  * @author  anti43
  */
-public class servicesView extends mp4.panels.misc.commonPanel implements mp4.datenbank.installation.Tabellen, panelInterface{
+public class servicesView extends mp4.items.visual.CommonPanel implements mp4.datenbank.installation.Tabellen, panelInterface{
 
     private mainframe mainframe;
     private Dienstleistung current;

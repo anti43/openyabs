@@ -41,7 +41,7 @@ import mp4.utils.zahlen.vDouble;
  *
  * @author  anti43
  */
-public class eurEPanel extends mp4.panels.misc.commonPanel implements panelInterface {
+public class eurEPanel extends mp4.items.visual.CommonPanel implements panelInterface {
 
     private Einnahme curEinnahme;
     private SKRKonto curKonto;

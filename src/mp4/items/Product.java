@@ -16,8 +16,6 @@
  */
 package mp4.items;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mp4.items.handler.ProductGroupHandler;
 import java.net.URI;
 import java.net.URL;

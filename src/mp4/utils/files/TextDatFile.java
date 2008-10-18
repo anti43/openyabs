@@ -23,8 +23,6 @@ import mp4.globals.Constants;
 import mp4.interfaces.Printable;
 import mp4.interfaces.Waitable;
 import mp4.logs.Log;
-import mp4.utils.files.FileDirectoryHandler;
-import mp4.utils.files.FileReaderWriter;
 import mp4.utils.listen.ListenDataUtils;
 
 /**
@@ -32,32 +30,38 @@ import mp4.utils.listen.ListenDataUtils;
  * @author anti43
  */
 public class TextDatFile extends File implements Waitable, Printable {
+    private static final long serialVersionUID = 2059941918698508985L;
 
     private FileReaderWriter rw;
     private String fieldSeparator = Constants.FELDTRENNER;
     private String[][] data;
+    private String[] header;
     private int mode;
 
     /**
      * Constructs a new temporary text file
      * @param data The data to write to the file
+     * @param header 
      */
-    public TextDatFile(String[][] data) {
+    public TextDatFile(String[][] data, String[] header) {
         super(FileDirectoryHandler.getTempFile().getPath());
         rw = new FileReaderWriter(this);
         this.data = data;
+        this.header = header;
         mode = 0;
         this.deleteOnExit();
     }
     /**
      * Constructs a new text file
      * @param data The data to write to the file
+     * @param header 
      * @param name The name/path of the file
      */
-    public TextDatFile(String[][] data, String name) {
+    public TextDatFile(String[][] data, String[] header, String name) {
         super(name);
         rw = new FileReaderWriter(this);
         this.data = data;
+        this.header = header;
         mode = 0;
     }
     /**
@@ -86,6 +90,10 @@ public class TextDatFile extends File implements Waitable, Printable {
      */
     public void print() {
 
+        if(header != null){
+            rw.writeLine(header, ";");
+        }
+        
         for (int i = 0; i < getData().length; i++) {
             String[] strings = getData()[i];
             String line = "";
@@ -156,5 +164,13 @@ public class TextDatFile extends File implements Waitable, Printable {
      */
     public void setData(String[][] data) {
         this.data = data;
+    }
+
+    public String[] getHeader() {
+        return header;
+    }
+
+    public void setHeader(String[] header) {
+        this.header = header;
     }
 }

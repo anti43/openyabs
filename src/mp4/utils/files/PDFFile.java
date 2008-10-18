@@ -29,8 +29,6 @@ import com.lowagie.text.Rectangle;
 import java.io.*;
 import java.util.*;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.print.DocFlavor;
 import mp4.interfaces.Template;
 import mp4.interfaces.Waitable;
@@ -66,35 +64,16 @@ public class PDFFile extends File implements Waitable, Printable {
     }
 
     public void start() {
-        try {
-            PdfReader template = new PdfReader(object.getTemplate());
-            if (this.exists()) {
-                this.delete();
+
+        if (this.exists()) {
+            if (Popup.Y_N_dialog(this.getPath() + "\nexistiert bereits. Überschreiben?")) {
+                if (!this.delete()) {
+                    Popup.error("Datei konnte nicht gelöscht werden.", "Es ist ein Fehler aufgetreten.");
+                }
+                work();
             }
-            Log.Debug(this,"Creating PDF File: " + this.getPath());
-            pdfStamper = new PdfStamper(template, new FileOutputStream(this.getPath()));
-            acroFields = pdfStamper.getAcroFields();
-            HashMap PDFFields = acroFields.getFields();
-            fieldNameKeys = PDFFields.keySet();
-            Log.Debug(this,"Set field values..");
-            setFields();
-            Log.Debug(this,"Set image (if exists)..");
-            setImage();
-        } catch (DocumentException ex) {
-            Logger.getLogger(PDFFile.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException e) {
-            Popup.error("Bitte geben Sie unter \nBearbeiten-> Einstellungen ein PDF-Template an.\n" + e.getMessage(), Popup.ERROR);
-            Log.Debug(this,e);
-        } finally {
-            Log.Debug(this,"Finishing..");
-            pdfStamper.setFormFlattening(true);
-            try {
-                pdfStamper.close();
-            } catch (DocumentException ex) {
-                Log.Debug(this,ex);
-            } catch (IOException ex) {
-                Log.Debug(this,ex);
-            }
+        } else {
+            work();
         }
     }
 
@@ -103,10 +82,10 @@ public class PDFFile extends File implements Waitable, Printable {
         for (Iterator fieldNames = fieldNameKeys.iterator(); fieldNames.hasNext();) {
             fieldnames += ", " + (String) fieldNames.next();
         }
-        Log.Debug(this,"Template: " + fieldnames);
-        Log.Debug(this,"Objekt: ");
+        Log.Debug(this, "Template: " + fieldnames);
+        Log.Debug(this, "Objekt: ");
         for (int i = 0; i < fields.length; i++) {
-            Log.Debug(this,fields[i][0] + "= " + fields[i][1]);
+            Log.Debug(this, fields[i][0] + "= " + fields[i][1]);
         }
     }
 
@@ -118,7 +97,7 @@ public class PDFFile extends File implements Waitable, Printable {
                 Process proc = Runtime.getRuntime().exec(settings.getPDF_Programm() + "  " + this.getPath());
             }
         } catch (IOException ex) {
-            Log.Debug(this,"Es ist ein Fehler aufgetreten: " + "\n" + ex);
+            Log.Debug(this, "Es ist ein Fehler aufgetreten: " + "\n" + ex);
         }
     }
 
@@ -126,9 +105,9 @@ public class PDFFile extends File implements Waitable, Printable {
         try {
             return Image.getInstance(image, null);
         } catch (BadElementException ex) {
-            Log.Debug(this,ex);
+            Log.Debug(this, ex);
         } catch (IOException ex) {
-            Log.Debug(this,ex);
+            Log.Debug(this, ex);
         }
 
         return null;
@@ -144,16 +123,16 @@ public class PDFFile extends File implements Waitable, Printable {
             try {
                 acroFields.setField(fields[i][0], fields[i][1]);
             } catch (IOException e) {
-                Log.Debug(this,e);
+                Log.Debug(this, e);
             } catch (DocumentException ex) {
-                Log.Debug(this,ex);
+                Log.Debug(this, ex);
             }
         }
     }
 
     private void setImage() throws DocumentException {
         if (object.getImage() != null) {
-            Log.Debug(this,"Write Image..");
+            Log.Debug(this, "Write Image..");
             float[] photograph = acroFields.getFieldPositions("abbildung");
             Rectangle rect = new Rectangle(photograph[1], photograph[2], photograph[3], photograph[4]);
             Image img = parseImage(object.getImage());
@@ -185,7 +164,7 @@ public class PDFFile extends File implements Waitable, Printable {
             file = File.createTempFile("mpTempPdf", ".pdf", Programmdaten.instanceOf().getDIR_CACHE());
             file.deleteOnExit();
         } catch (IOException ex) {
-            Log.Debug(PDFFile.class,ex);
+            Log.Debug(PDFFile.class, ex);
         }
         return file.getPath();
     }
@@ -198,6 +177,40 @@ public class PDFFile extends File implements Waitable, Printable {
     @Override
     public File getFile() {
         return this;
+    }
+
+    private void work() {
+        if (new File(object.getTemplate()).exists()) {
+            try {
+                PdfReader template = new PdfReader(object.getTemplate());
+                Log.Debug(this, "Creating PDF File: " + this.getPath());
+                pdfStamper = new PdfStamper(template, new FileOutputStream(this.getPath()));
+                acroFields = pdfStamper.getAcroFields();
+                HashMap PDFFields = acroFields.getFields();
+                fieldNameKeys = PDFFields.keySet();
+                Log.Debug(this, "Set field values..");
+                setFields();
+                Log.Debug(this, "Set image (if exists)..");
+                setImage();
+            } catch (DocumentException ex) {
+                Log.Debug(this, ex);
+            } catch (IOException e) {
+                Log.Debug(this, e);
+            } finally {
+                Log.Debug(this, "Finishing..");
+                pdfStamper.setFormFlattening(true);
+                try {
+                    pdfStamper.close();
+                } catch (DocumentException ex) {
+                    Log.Debug(this, ex);
+                } catch (IOException ex) {
+                    Log.Debug(this, ex);
+                }
+            }
+        } else {
+            Popup.error("Bitte geben Sie unter \nBearbeiten-> Einstellungen ein PDF-Template an." +
+                    "\nTemplate: " + object.getTemplate() + "\nexistiert nicht.", Popup.ERROR);
+        }
     }
 }
 

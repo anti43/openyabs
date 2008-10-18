@@ -23,7 +23,7 @@ import mp4.utils.tabellen.TableFormat;
  *
  * @author  anti43
  */
-public class eurOPanel extends mp4.panels.misc.commonPanel implements panelInterface {
+public class eurOPanel extends mp4.items.visual.CommonPanel implements panelInterface {
 
     private String[][] data;
     private Rechnung current;

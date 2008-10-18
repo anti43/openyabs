@@ -6,6 +6,7 @@
 
 package mp4.panels.misc;
 
+import mp4.items.visual.CommonPanel;
 import java.io.File;
 import java.util.Currency;
 import java.util.Vector;
@@ -24,7 +25,7 @@ import mp4.utils.zahlen.FormatNumber;
  *
  * @author  Andreas
  */
-public class diagrammView extends commonPanel implements Waiter{
+public class diagrammView extends CommonPanel implements Waiter{
     private Diagramme d;
 
     /** Creates new form diagrammView */

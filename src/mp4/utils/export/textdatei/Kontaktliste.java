@@ -20,7 +20,6 @@ import mp4.datenbank.installation.Tabellen;
 import mp4.datenbank.verbindung.Query;
 import mp4.interfaces.TableData;
 import mp4.utils.datum.DateConverter;
-import mp4.utils.listen.ArrayUtils;
 
 
 /**
@@ -30,6 +29,8 @@ import mp4.utils.listen.ArrayUtils;
 public class Kontaktliste implements TableData, Tabellen{
     private Query queryhandler;
     private String[] where = null;
+    public static String header[] = new String[]{"Name","E-mail Address","Notes","Mobile Phone",
+                "Company","Business Phone", "Business Fax","Business Address"};
 
     /**
      * 
@@ -65,13 +66,15 @@ public class Kontaktliste implements TableData, Tabellen{
 																																																																																																																																																																																																																																											
     @Override
     public Object[][] getData() {
-        return ArrayUtils.merge(new String[][]{{"Name","E-mail Address","Notes","Mobile Phone",
-                "Company","Business Phone", "Business Fax","Business Address"}
-        }, queryhandler.select("vorname||' '||name,mail,notizen,mobil,firma,tel,fax,str||' '||plz||' '||ort", where));
+        return queryhandler.select("vorname||' '||name,mail,notizen,mobil,firma,tel,fax,str||' '||plz||' '||ort", where);
     }
 
     @Override
     public String getTitle() {
         return "Kontakte " + DateConverter.getTodayDefDate();
+    }
+
+    public String[] getHeader() {
+        return header;
     }
 }

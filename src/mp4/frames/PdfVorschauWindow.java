@@ -91,7 +91,7 @@ jButton1ActionPerformed(evt);
 }
 });
 
-jButton2.setText("Beenden");
+jButton2.setText("Schlieﬂen");
 jButton2.addActionListener(new java.awt.event.ActionListener() {
 public void actionPerformed(java.awt.event.ActionEvent evt) {
 jButton2ActionPerformed(evt);
@@ -103,7 +103,7 @@ getContentPane().setLayout(layout);
 layout.setHorizontalGroup(
 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-.addContainerGap(202, Short.MAX_VALUE)
+.addContainerGap(200, Short.MAX_VALUE)
 .addComponent(jButton2)
 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
 .addComponent(jButton1)

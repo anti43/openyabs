@@ -27,6 +27,7 @@ import mp4.items.visual.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
 //import mp3.classes.objects.ungrouped.History;
 //import mp3.classes.objects.ungrouped.MyData;
+import mp4.datenbank.verbindung.ConnectionTypeHandler;
 import mp4.utils.files.FileDirectoryHandler;
 
 import mp4.utils.files.UnZip;
@@ -43,7 +44,7 @@ import mp4.utils.tabellen.TableFormat;
  *
  * @author  anti43
  */
-public class backupView extends mp4.panels.misc.commonPanel{
+public class backupView extends mp4.items.visual.CommonPanel{
 
     private String[][] liste;
     private String[] header;
@@ -219,28 +220,32 @@ public class backupView extends mp4.panels.misc.commonPanel{
     }// </editor-fold>//GEN-END:initComponents
 
     public void saving() {
-        String store, path;
-        String savefile;
+        if (ConnectionTypeHandler.isInSingleUserMode()) {
+            String store, path;
+            String savefile;
 
-        try {
-            path = Main.MPPATH + File.separator + Constants.DATABASENAME;
-            store = l.getBackup_Verzeichnis();
-            savefile = store + File.separator + df.format(new Date()) + ".mpsavefile-40.zip";
+            try {
+                path = Main.MPPATH + File.separator + Constants.DATABASENAME;
+                store = l.getBackup_Verzeichnis();
+                savefile = store + File.separator + df.format(new Date()) + ".mpsavefile-40.zip";
 
-            if (store.equals("")) {
-                store = Main.MPPATH + File.separator + Constants.DATABASENAME;
+                if (store.equals("")) {
+                    store = Main.MPPATH + File.separator + Constants.DATABASENAME;
+                }
+
+                Log.Debug(this, "Anlegen einer Sicherungsdatei:\nZiel: " + savefile, true);
+                this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+                Zip.zip(path, savefile);
+                this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                mainframe.setMessage("Sicherungsdatei '" + savefile + "' angelegt.");
+                new HistoryItem(ConnectionHandler.instanceOf(), Strings.BACKUP, "Sicherungsdatei " + savefile + " angelegt.");
+            } catch (Exception ex) {
+                Log.Debug(this, ex.getMessage(), true);
             }
-
-            Log.Debug(this,"Anlegen einer Sicherungsdatei:\nZiel: " + savefile, true);
-            this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-            Zip.zip(path, savefile);
-            this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-            mainframe.setMessage("Sicherungsdatei '" + savefile + "' angelegt.");
-            new HistoryItem(ConnectionHandler.instanceOf(), Strings.BACKUP, "Sicherungsdatei " + savefile + " angelegt.");
-        } catch (Exception ex) {
-            Log.Debug(this,ex.getMessage(), true);
+            this.validateTable();
+        } else {
+            Popup.notice("Datenbackup ist nur mit lokaler Derby Datenbank möglich.");
         }
-        this.validateTable();
     }
 
     private void setSavePath(String path) {

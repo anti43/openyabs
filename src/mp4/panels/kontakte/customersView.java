@@ -36,7 +36,7 @@ import mp4.utils.tabellen.models.ContactListTableModel;
  *
  * @author  anti43
  */
-public class customersView extends mp4.panels.misc.commonPanel implements mp4.datenbank.installation.Tabellen {
+public class customersView extends mp4.items.visual.CommonPanel implements mp4.datenbank.installation.Tabellen {
 
     public Customer current;
     private String[][] liste;

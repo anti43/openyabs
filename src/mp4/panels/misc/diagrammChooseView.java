@@ -6,6 +6,7 @@
 
 package mp4.panels.misc;
 
+import mp4.items.visual.CommonPanel;
 import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.util.Date;
@@ -20,7 +21,7 @@ import mp4.utils.ui.TabCloseIcon;
  *
  * @author  Andreas
  */
-public class diagrammChooseView extends commonPanel{
+public class diagrammChooseView extends CommonPanel{
     private mainframe frame;
     private diagrammView view;
 

@@ -32,7 +32,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JTabbedPane;
 import mp4.logs.Log;
-import mp4.panels.misc.commonPanel;
+import mp4.items.visual.CommonPanel;
 import mp4.plugin.mpplugin;
 
 /**
@@ -80,7 +80,7 @@ public class TabCloseIcon implements Icon {
                         } catch (Exception ej) {
                         }
                         
-                        ((commonPanel) mTabbedPane.getComponentAt(index)).close();
+                        ((CommonPanel) mTabbedPane.getComponentAt(index)).close();
                         e.consume();
                     }
                 }

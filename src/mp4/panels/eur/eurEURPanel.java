@@ -30,7 +30,7 @@ import mp4.utils.ui.inputfields.InputVerifiers;
  *
  * @author  anti43
  */
-public class eurEURPanel extends mp4.panels.misc.commonPanel implements panelInterface{
+public class eurEURPanel extends mp4.items.visual.CommonPanel implements panelInterface{
 
     private String year;
     private String month;
