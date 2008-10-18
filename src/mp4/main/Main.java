@@ -84,6 +84,7 @@ public class Main implements Strings {
         Option help = obuilder.withShortName("help").withShortName("h").withDescription("print this message").create();
         Option version = obuilder.withShortName("version").withDescription("print the version information and exit").create();
         Option verbose = obuilder.withShortName("verbose").withDescription("be extra verbose").create();
+        Option debug = obuilder.withShortName("debug").withDescription("debug logging").create();
         Option nodb = obuilder.withShortName("nodb").withDescription("force no database").create();
         Option nocopy = obuilder.withShortName("nocopy").withDescription("force no copy of files").create();
         Option forcedb = obuilder.withShortName("forcedb").withDescription("force database").create();
@@ -95,7 +96,7 @@ public class Main implements Strings {
         Option pdfdir = obuilder.withShortName("pdfdir").withShortName("p").withDescription("use pdfdir").withArgument(dirarg).create();
         Option backupdir = obuilder.withShortName("backupdir").withShortName("b").withDescription("use backupdir").withArgument(dirarg).create();
         Option templatedir = obuilder.withShortName("templatedir").withShortName("t").withDescription("use templatedir").withArgument(dirarg).create();
-        Group options = gbuilder.withName("options").withOption(help).withOption(version).withOption(verbose).withOption(nodb).withOption(nocopy).withOption(forcedb).withOption(forcecopy).withOption(dbpath).withOption(instpath).withOption(logfile).withOption(pdfdir).withOption(backupdir).withOption(templatedir).create();
+        Group options = gbuilder.withName("options").withOption(help).withOption(version).withOption(verbose).withOption(debug).withOption(nodb).withOption(nocopy).withOption(forcedb).withOption(forcecopy).withOption(dbpath).withOption(instpath).withOption(logfile).withOption(pdfdir).withOption(backupdir).withOption(templatedir).create();
 
         HelpFormatter hf = new HelpFormatter();
         Parser p = new Parser();
@@ -110,43 +111,74 @@ public class Main implements Strings {
             hf.print();
             System.exit(0);
 
-        } else if (cl.hasOption(version)) {
-            // TODO:
-        } else if (cl.hasOption(verbose)) {
+        } 
+        
+        if (cl.hasOption(version)) {
+            System.out.println("MP Version: " + Constants.VERSION);
+            System.exit(0);
+        } 
+        if (cl.hasOption(verbose)) {
+            Log.setLogLevel(Log.LOGLEVEL_HIGH);
+
+        } 
+        
+        if (cl.hasOption(debug)) {
             Log.setLogLevel(Log.LOGLEVEL_DEBUG);
 
-        } else if (cl.hasOption(forcecopy)) {
+        }
+        
+        if (cl.hasOption(forcecopy)) {
             FORCE_FILE_COPY = true;
 
-        } else if (cl.hasOption(forcedb)) {
+        } 
+        
+        if (cl.hasOption(forcedb)) {
             FORCE_CREATE_DATABASE = true;
 
-        } else if (cl.hasOption(nocopy)) {
+        } 
+        
+        if (cl.hasOption(nocopy)) {
             FORCE_NO_FILE_COPY = true;
 
-        } else if (cl.hasOption(nodb)) {
+        } 
+        
+        if (cl.hasOption(nodb)) {
             FORCE_NO_DATABASE = true;
 
-        } else if (cl.hasOption(templatedir)) {
+        } 
+        
+        if (cl.hasOption(templatedir)) {
             TEMPLATE_DIR = (String) cl.getValue("templatedir");
 
-        } else if (cl.hasOption(backupdir)) {
+        } 
+        
+        if (cl.hasOption(backupdir)) {
             BACKUP_DIR = (String) cl.getValue(backupdir);
 
-        } else if (cl.hasOption(pdfdir)) {
+        } 
+        
+        if (cl.hasOption(pdfdir)) {
             PDF_DIR = (String) cl.getValue(pdfdir);
 
-        } else if (cl.hasOption(logfile)) {
+        } 
+        
+        if (cl.hasOption(logfile)) {
             try {
                 Logger.setLogFile((String) cl.getValue(logfile));
             } catch (Exception e) {
                 Log.Debug(Main.class,"Fehler beim Schreiben der Logdatei: " + e.getMessage(), true);
             }
-        } else if (cl.hasOption(dbpath)) {
+        } 
+        
+        if (cl.hasOption(dbpath)) {
             settings.setDBPath((String) cl.getValue(dbpath));
-        } else if (cl.hasOption(instpath)) {
+        } 
+        
+        if (cl.hasOption(instpath)) {
             APP_DIR = (String) cl.getValue(instpath);
-        } else if (cl.hasOption(settingsfile)) {
+        } 
+        
+        if (cl.hasOption(settingsfile)) {
             SETTINGS_FILE = (String) cl.getValue(settingsfile);
         }
     }
