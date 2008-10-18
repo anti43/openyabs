@@ -48,6 +48,14 @@ public class Log {
         }
     }
 
+    public static void Debug(Class source, Object message, boolean alwaysToKonsole) {
+        if (loglevel == LOGLEVEL_DEBUG) {
+            Debug(source.getName() + ": " + message, alwaysToKonsole);
+        } else {
+            Debug(message, true);
+        }
+    }
+
     public static void Debug(Class source, Object message) {
         if (loglevel == LOGLEVEL_DEBUG) {
             Debug(source.getName() + ": " + message, true);
@@ -88,11 +96,9 @@ public class Log {
         for (int i = 0; i < array.length; i++) {
             for (int k = 0; k < array[i].length; k++) {
                 if (loglevel != LOGLEVEL_LOW) {
-                    try {
-                        logger.log("[" + i + "]" + " [" + k + "] " + array[i][k]);
-                    } catch (IOException ex) {
-                        java.util.logging.Logger.getLogger(Log.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+
+                    Debug("[" + i + "]" + " [" + k + "] " + array[i][k], true);
+
                 }
             }
         }
@@ -103,25 +109,19 @@ public class Log {
         for (int i = 0; i < string.length; i++) {
 
             if (loglevel != LOGLEVEL_LOW) {
-                try {
-                    logger.log(string[i]);
-                } catch (IOException ex) {
-                    java.util.logging.Logger.getLogger(Log.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                Debug(string[i], true);
             }
 
         }
     }
-    
-     public static void Debug(String[][] array) {
+
+    public static void Debug(String[][] array) {
         for (int i = 0; i < array.length; i++) {
             for (int k = 0; k < array[i].length; k++) {
                 if (loglevel != LOGLEVEL_LOW) {
-                    try {
-                        logger.log("[" + i + "]" + " [" + k + "] " + array[i][k]);
-                    } catch (IOException ex) {
-                        java.util.logging.Logger.getLogger(Log.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+
+                    Debug("[" + i + "]" + " [" + k + "] " + array[i][k], true);
+
                 }
             }
         }
@@ -173,7 +173,6 @@ public class Log {
     public static Logger getLogger() {
         return logger;
     }
-
 
     public static void setLogLevel(int level) {
         Log.loglevel = level;
