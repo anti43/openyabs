@@ -148,38 +148,38 @@ public class Main implements Strings {
         } 
         
         if (cl.hasOption(templatedir)) {
-            TEMPLATE_DIR = (String) cl.getValue("templatedir");
+            TEMPLATE_DIR = ((String) cl.getValue("templatedir")).split("=")[1];
 
         } 
         
         if (cl.hasOption(backupdir)) {
-            BACKUP_DIR = (String) cl.getValue(backupdir);
+            BACKUP_DIR = ((String) cl.getValue(backupdir)).split("=")[1];
 
         } 
         
         if (cl.hasOption(pdfdir)) {
-            PDF_DIR = (String) cl.getValue(pdfdir);
+            PDF_DIR = ((String) cl.getValue(pdfdir)).split("=")[1];
 
         } 
         
         if (cl.hasOption(logfile)) {
             try {
-                Logger.setLogFile((String) cl.getValue(logfile));
+                Logger.setLogFile(((String) cl.getValue(logfile)).split("=")[1]);
             } catch (Exception e) {
                 Log.Debug(Main.class,"Fehler beim Schreiben der Logdatei: " + e.getMessage(), true);
             }
         } 
         
         if (cl.hasOption(dbpath)) {
-            settings.setDBPath((String) cl.getValue(dbpath));
+            settings.setDBPath(((String) cl.getValue(dbpath)).split("=")[1]);
         } 
         
         if (cl.hasOption(instpath)) {
-            APP_DIR = (String) cl.getValue(instpath);
+            APP_DIR = ((String) cl.getValue(instpath)).split("=")[1];
         } 
         
         if (cl.hasOption(settingsfile)) {
-            SETTINGS_FILE = (String) cl.getValue(settingsfile);
+            SETTINGS_FILE = ((String) cl.getValue(settingsfile)).split("=")[1];
         }
     }
 
