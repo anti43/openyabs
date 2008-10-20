@@ -36,7 +36,6 @@ import mp4.utils.datum.DateConverter;
 public class Product extends mp4.items.Things implements mp4.datenbank.installation.Tabellen, Countable {
 
     private String Ean = "00000000";
-    private String Nummer = "";
     private String Name = "";
     private String Bestellnr = "";
     private String Herstellernr = "";
@@ -50,14 +49,13 @@ public class Product extends mp4.items.Things implements mp4.datenbank.installat
     private Double VK = 0d;
     private Double EK = 0d;
     private Integer SteuersatzId = 1;
-    private Integer HerstellerId = 1;
-    private Integer LieferantenId = 1;
     private Integer WarengruppenId = 0;
     private Query query;
     public boolean isvalid = false;
 
-    private Hersteller hersteller;
-    private Lieferant lieferant;
+    private Hersteller hersteller = new Hersteller(1);
+    private Lieferant lieferant = new Lieferant(1);
+    
     private ProductImage image = new ProductImage();
     private URL ProductImageURL = null;
 
@@ -103,14 +101,14 @@ public class Product extends mp4.items.Things implements mp4.datenbank.installat
         } catch (Exception ex) {
              Log.Debug(this,ex);
         }
-
-        if (!this.getLieferantenId().equals(0)) {
-            this.lieferant = new Lieferant(this.getLieferantenId());
-        }
-
-        if (!this.getHerstellerId().equals(0)) {
-            this.hersteller = new Hersteller(this.getHerstellerId());
-        }
+//
+//        if (!this.getLieferantenId().equals(0)) {
+//            this.lieferant = new Lieferant(this.getLieferantenId());
+//        }
+//
+//        if (!this.getHerstellerId().equals(0)) {
+//            this.hersteller = new Hersteller(this.getHerstellerId());
+//        }
 
         this.isvalid = true;
         this.query = ConnectionHandler.instanceOf();
@@ -162,7 +160,7 @@ public class Product extends mp4.items.Things implements mp4.datenbank.installat
 
     public void setHersteller(Hersteller hersteller) {
         this.hersteller = hersteller;
-        this.HerstellerId = hersteller.getId();
+//        this.HerstellerId = hersteller.getId();
     }
 
     private void explode(String[] select) {
@@ -175,8 +173,8 @@ public class Product extends mp4.items.Things implements mp4.datenbank.installat
         this.setEK(Double.valueOf(select[5]));
 
         this.setSteuersatzId(Integer.valueOf(select[6]));
-        this.setHerstellerId(Integer.valueOf(select[7]));
-        this.setLieferantenId(Integer.valueOf(select[8]));
+        this.setHersteller(new Hersteller(Integer.valueOf(select[7])));
+        this.setLieferant(new Lieferant(Integer.valueOf(select[8])));
         this.setWarengruppenId(Integer.valueOf(select[9]));
 
         this.setDatum(DateConverter.getDate(select[10]));
@@ -216,8 +214,8 @@ public class Product extends mp4.items.Things implements mp4.datenbank.installat
         str = str + this.getVK() + "(;;,;;)";
         str = str + this.getEK() + "(;;,;;)";
         str = str + this.getSteuersatzId() + "(;;,;;)";
-        str = str + this.getHerstellerId() + "(;;,;;)";
-        str = str + this.getLieferantenId() + "(;;,;;)";
+        str = str + this.getHersteller().getId() + "(;;,;;)";
+        str = str + this.getLieferant().getId() + "(;;,;;)";
         str = str + this.getWarengruppenId() + "(;;,;;)";
         str = str + "(;;2#4#1#1#8#0#;;)" + DateConverter.getSQLDateString(this.getDatum()) + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
         str = str + "(;;2#4#1#1#8#0#;;)" + this.getUrl() + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
@@ -263,60 +261,18 @@ public class Product extends mp4.items.Things implements mp4.datenbank.installat
         this.isSaved = false;
     }
 
-//    private ProductFile[] getFiles(Query query) {
-//        Query q = query.clone(TABLE_PRODUCTS_FILES);
-//
-//        String[] wher = {"productid", this.getId(), ""};
-//
-//        String[][] str = q.select("id", wher);
-//        ProductFile[] prof = null;
-//
-//        for (int t = 0; t < str.length; t++) {
-//
-//            prof[t] = new ProductFile(query, str[0][t]);
-//        }
-//        return prof;
-//    }
-    public Lieferant getSupplier() {
+
+    public Lieferant getLieferant() {
         return lieferant;
     }
 
-    public void setSupplier(mp4.items.Lieferant supplier) {
-
-        if (supplier != null) {
-            this.setLieferantenId(supplier.getId());
-        } else {
-            this.setLieferantenId(0);
-        }
+    public void setLieferant(mp4.items.Lieferant supplier) {
         this.lieferant = supplier;
-        this.LieferantenId = supplier.getId();
-
         this.isSaved = false;
     }
 
-//    public ProductFile[] getFiles() {
-//        return files;
-//    }
-    public Integer getHerstellerId() {
-        return HerstellerId;
-    }
-
-    public Integer getLieferantenId() {
-        return LieferantenId;
-    }
-
-    public void setLieferantenId(Integer LieferantenId) {
-        if(LieferantenId == 0)LieferantenId =1;
-        this.LieferantenId = LieferantenId;
-        this.lieferant =new Lieferant(LieferantenId);
-    }
-
     public String getProduktNummer() {
-        return Nummer;
-    }
-
-    public void setNummer(String Nummer) {
-        this.Nummer = Nummer;
+        return getNummer();
     }
 
     public String getName() {
@@ -410,10 +366,10 @@ public class Product extends mp4.items.Things implements mp4.datenbank.installat
     public void setSteuersatzId(Integer SteuersatzId) {
         this.SteuersatzId = SteuersatzId;
     }
-
-    private void setHerstellerId(Integer valueOf) {
-        this.HerstellerId = valueOf;
-    }
+//
+//    private void setHerstellerId(Integer valueOf) {
+//        this.HerstellerId = valueOf;
+//    }
 
     public Hersteller getHersteller() {
         return hersteller;

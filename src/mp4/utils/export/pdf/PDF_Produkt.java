@@ -55,8 +55,8 @@ public class PDF_Produkt implements Template {
     public PDF_Produkt(Product produkt, java.awt.Image image) {
         settings = Einstellungen.instanceOf();
         this.produkt = produkt;
-        this.lieferant = new Lieferant(produkt.getLieferantenId());
-        this.hersteller = new Hersteller(produkt.getHerstellerId());
+        this.lieferant = produkt.getLieferant();
+        this.hersteller = produkt.getHersteller();
         this.bild = image;
         Locale.setDefault(Einstellungen.instanceOf().getLocale());
     }

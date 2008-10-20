@@ -225,8 +225,8 @@ public abstract class People extends EasyQuery implements Queries, Tabellen, Loc
         return str;
     }
 
-    public void expose() {
-        System.out.println(collect());
+    public String expose() {
+        return (collect().replaceAll("(;;2#4#1#1#8#0#;;)", " ").replaceAll("(;;,;;)", "\n"));
     }
 
     public void explode(String[] str) {

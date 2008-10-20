@@ -10,7 +10,7 @@ import mp4.items.Rechnung;
 import mp4.benutzerverwaltung.User;
 import mp4.frames.mainframe;
 
-import mp4.interfaces.panelInterface;
+import mp4.interfaces.DataPanel;
 import mp4.utils.tabellen.DataModelUtils;
 import mp4.utils.tabellen.SelectionCheck;
 import mp4.utils.tabellen.TableFormat;
@@ -24,10 +24,10 @@ import mp4.utils.ui.Position;
 public class billsNotesEditor extends javax.swing.JFrame {
 
     private Rechnung rechnung;
-    private panelInterface panel;
+    private DataPanel panel;
 
 
-    public billsNotesEditor(Rechnung current, panelInterface panel) {
+    public billsNotesEditor(Rechnung current, DataPanel panel) {
         initComponents();
         jTable2.setModel(new BillNotesTableModel());
         jTable1.setModel(new BillNotesTableModel(current.getZeilenHandler().getOriginalListData(), new String[]{"id", "Name", "Text"}));

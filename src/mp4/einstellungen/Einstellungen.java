@@ -16,7 +16,6 @@
  */
 package mp4.einstellungen;
 
-
 import mp4.items.SKRKonto;
 import mp4.benutzerverwaltung.User;
 
@@ -60,7 +59,6 @@ public class Einstellungen extends MethodParser implements mp4.datenbank.install
         }
         return dat;
     }
-    
 ////////////////////////////////////////////////////////////////////////////////
     public Object[][] getExtProgs() {
         return getDaten("Programm");
@@ -74,7 +72,6 @@ public class Einstellungen extends MethodParser implements mp4.datenbank.install
         return getDaten("Verzeichnis");
     }
 ////////////////////////////////////////////////////////////////////////////////
-    
     public User getUser() {
         return user;
     }
@@ -99,7 +96,6 @@ public class Einstellungen extends MethodParser implements mp4.datenbank.install
 //        Main.settings.setDBPath(pfad);
 //        Main.settings.save();
 //    }
-
     public String getBackup_Verzeichnis() {
         return datahandler.getString("Backup Verzeichnis");
     }
@@ -139,14 +135,14 @@ public class Einstellungen extends MethodParser implements mp4.datenbank.install
     public void setProdukt_Verzeichnis(String Produktverzeichnis) {
         datahandler.setString("Produkt Verzeichnis", Produktverzeichnis);
     }
-    
+
     public String getLieferschein_Verzeichnis() {
         return datahandler.getString("Lieferschein Verzeichnis");
     }
 
     public void setLieferschein_Verzeichnis(String Lieferscheinverzeichnis) {
         datahandler.setString("Lieferschein Verzeichnis", Lieferscheinverzeichnis);
-    
+
     }
 ////////////////////////////////////////////////////////////////////////////////  
     public String getLieferschein_Template() {
@@ -219,6 +215,14 @@ public class Einstellungen extends MethodParser implements mp4.datenbank.install
 
     public void setHauptsteuersatz(Double Hauptsteuersatz) {
         datahandler.setDouble("Hauptsteuersatz", Hauptsteuersatz);
+    }
+
+    public Integer getRechnung_TageBisVerzug() {
+        return datahandler.getInteger("TageBisVerzug");
+    }
+
+    public void setRechnung_TageBisVerzug(int TageBisVerzug) {
+        datahandler.setInteger("TageBisVerzug", TageBisVerzug);
     }
 
     public Locale getLocale() {

@@ -12,7 +12,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import mp4.einstellungen.Programmdaten;
-import mp4.interfaces.panelInterface;
+import mp4.interfaces.DataPanel;
 import mp4.items.Product;
 import mp4.utils.tabellen.SelectionCheck;
 import mp4.utils.tabellen.TableFormat;
@@ -32,7 +32,7 @@ public class ProductPicker extends javax.swing.JFrame {
     private static void setListe(String[][] list) {
         ProductPicker.liste = list;
     }
-    private panelInterface frame;
+    private DataPanel frame;
     private Product p;
     private static String[][] liste;
     private String[][] list;
@@ -43,7 +43,7 @@ public class ProductPicker extends javax.swing.JFrame {
         ProductPicker.setListe(n.select("id,produktnummer,name", "produktnummer", "", "produktnummer", true));
     }
 
-    public ProductPicker(panelInterface panel) {
+    public ProductPicker(DataPanel panel) {
         initComponents();
         this.frame = panel;
         p = new Product(ConnectionHandler.instanceOf());
@@ -313,7 +313,7 @@ private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
     SelectionCheck selection = new SelectionCheck(jTable1);
     if (selection.checkID()) {
         try {    
-            frame.addProduct(new Product(selection.getId())); 
+            frame.setProduct(new Product(selection.getId())); 
             this.dispose();
         } catch (Exception exception) {
        }

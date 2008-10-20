@@ -19,7 +19,7 @@ import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableModel;
 import mp4.globals.Strings;
 
-import mp4.interfaces.panelInterface;
+import mp4.interfaces.ContactPanel;
 import mp4.items.People;
 
 import mp4.items.Steuersatz;
@@ -27,6 +27,7 @@ import mp4.items.visual.Help;
 import mp4.logs.*;
 import mp4.items.visual.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
+import mp4.interfaces.DataPanel;
 import mp4.items.visual.SupplierPicker;
 
 import mp4.items.ProductImporteur;
@@ -50,7 +51,7 @@ import org.supercsv.prefs.CsvPreference;
  *
  * @author  anti43
  */
-public class csvProductImporter extends javax.swing.JFrame implements panelInterface {
+public class csvProductImporter extends javax.swing.JFrame implements ContactPanel, DataPanel{
 
     private static csvProductImporter frame;
 
@@ -571,15 +572,13 @@ public class csvProductImporter extends javax.swing.JFrame implements panelInter
             this.thisa = thisa;
         }
 
+        @Override
         public Void doInBackground() {
             int h = 0;
             SimpleDateFormat df = new SimpleDateFormat();
             Date datum = new Date();
             String cat;
             boolean news = false;
-
-
-
 
             if ((JOptionPane.showConfirmDialog(thisa, "Wirklich alle Daten übernehmen? Dies wird möglicherweise einige Zeit dauern!", "Sicher?", JOptionPane.YES_NO_OPTION)) == JOptionPane.YES_OPTION) {
 
@@ -607,15 +606,7 @@ public class csvProductImporter extends javax.swing.JFrame implements panelInter
 //                        pg.setTAX(Double.valueOf(thisa.data[i].getTax()));
                         pg.setText(thisa.data[i].getText());
                         pg.setUrl(thisa.data[i].getUrl());
-                        pg.setLieferantenId(Integer.valueOf(thisa.data[i].getLieferantenid()));
-
-
-                        if (thisa.supplier != null && thisa.supplier.isValid()) {
-                            pg.setLieferantenId(thisa.supplier.getId());
-                        }
-//                        else {
-//                            pg.setLieferantenId(Integer.valueOf(thisa.data[i].getLieferantenid()));
-//                        }
+                        pg.setLieferant(new Lieferant(Integer.valueOf(thisa.data[i].getLieferantenid())));
 
                         cat = thisa.data[i].getWarengruppenkategorie();
                         fam = thisa.data[i].getWarengruppenfamilie();
@@ -730,7 +721,7 @@ public class csvProductImporter extends javax.swing.JFrame implements panelInter
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void addProduct(Product p) {
+    public void setProduct(Product p) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

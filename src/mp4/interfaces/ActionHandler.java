@@ -17,21 +17,13 @@
 
 package mp4.interfaces;
 
-import mp4.items.People;
-import mp4.items.Product;
-import mp4.items.Steuersatz;
+import mp4.items.visual.MenuItem;
 
 /**
  *
  * @author anti43
  */
-public interface panelInterface {
+public interface ActionHandler {
 
-    public void addProduct(Product product);
-
-    public void setContact(People people);
-
-    public void setTax(Steuersatz steuersatz);
-
-    public void update();
+    public void doAction(MenuItem item);
 }

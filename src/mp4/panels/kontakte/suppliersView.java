@@ -22,7 +22,7 @@ import mp4.utils.tabellen.SelectionCheck;
 import mp4.logs.*;
 import mp4.benutzerverwaltung.User;
 
-import mp4.interfaces.panelInterface;
+import mp4.interfaces.ContactPanel;
 import mp4.items.People;
 import mp4.items.Lieferant;
 import mp4.items.Product;
@@ -39,7 +39,7 @@ import mp4.utils.tabellen.models.LProduktListTableModel;
  *
  * @author  anti43
  */
-public class suppliersView extends mp4.items.visual.CommonPanel implements mp4.datenbank.installation.Tabellen, panelInterface {
+public class suppliersView extends mp4.items.visual.CommonPanel implements mp4.datenbank.installation.Tabellen, ContactPanel {
 
     public Lieferant current;
     private String[][] liste;
@@ -48,7 +48,7 @@ public class suppliersView extends mp4.items.visual.CommonPanel implements mp4.d
     private boolean numberfieldedited;
 
     /** Creates new form Lieferants
-     * @param aThis 
+     * @param frame 
      */
     public suppliersView(mainframe frame) {
 
@@ -805,7 +805,7 @@ public class suppliersView extends mp4.items.visual.CommonPanel implements mp4.d
         jToolBar2.add(jButton20);
 
         jButton14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/medium/new_window.png"))); // NOI18N
-        jButton14.setToolTipText("Als neue Rechnung anlegen");
+        jButton14.setToolTipText("Als neuer Lieferant anlegen");
         jButton14.setFocusable(false);
         jButton14.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton14.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -907,27 +907,29 @@ public class suppliersView extends mp4.items.visual.CommonPanel implements mp4.d
         }
         setLockable(c);
         
-        this.current = (Lieferant) c;
-        this.changeTabText("Lieferant: " + current.getName());
-        this.jTextField4.setText(current.getNummer());
-        this.jTextField5.setText(current.getFirma());
-        this.jTextField6.setText(current.getAnrede());
-        this.jTextField7.setText(current.getName());
-        this.jTextField8.setText(current.getVorname());
-        this.jTextField9.setText(current.getStr());
-        this.jTextField10.setText(current.getOrt());
-        this.jTextField11.setText(current.getTel());
-        this.jTextField12.setText(current.getFax());
-        this.jTextField13.setText(current.getMobil());
-        this.jTextField14.setText(current.getMail());
-        this.jTextField15.setText(current.getWebseite());
-        this.jTextField16.setText(current.getPLZ());
-        this.jTextArea1.setText(current.getNotizen());
-
-        this.jTable1.setModel(new LProduktListTableModel(current));
-        TableFormat.stripFirst(jTable1);
-        numberfieldedited = false;
-
+        try {
+            this.current = (Lieferant) c;
+            this.changeTabText("Lieferant: " + current.getName());
+            this.jTable1.setModel(new LProduktListTableModel(current));
+            TableFormat.stripFirst(jTable1);
+            numberfieldedited = false;
+        } catch (ClassCastException e) {}
+        
+        People contact = c;
+            this.jTextField4.setText(contact.getNummer());
+            this.jTextField5.setText(contact.getFirma());
+            this.jTextField6.setText(contact.getAnrede());
+            this.jTextField7.setText(contact.getName());
+            this.jTextField8.setText(contact.getVorname());
+            this.jTextField9.setText(contact.getStr());
+            this.jTextField10.setText(contact.getOrt());
+            this.jTextField11.setText(contact.getTel());
+            this.jTextField12.setText(contact.getFax());
+            this.jTextField13.setText(contact.getMobil());
+            this.jTextField14.setText(contact.getMail());
+            this.jTextField15.setText(contact.getWebseite());
+            this.jTextField16.setText(contact.getPLZ());
+            this.jTextArea1.setText(contact.getNotizen());
     }
 
     private void jTextField1ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
@@ -1138,7 +1140,7 @@ public class suppliersView extends mp4.items.visual.CommonPanel implements mp4.d
             save();
             if (current.isValid()) {
                 p = new Product();
-                p.setLieferantenId(current.getId());
+                p.setLieferant(current);
                 mainframe.addProductPanel(p);
             }
         }

@@ -19,9 +19,7 @@ import javax.swing.table.DefaultTableModel;
 import mp4.globals.Constants;
 
 import mp4.globals.Strings;
-import mp4.interfaces.panelInterface;
-import mp4.items.People;
-import mp4.items.Steuersatz;
+
 import mp4.logs.*;
 import mp4.items.visual.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;

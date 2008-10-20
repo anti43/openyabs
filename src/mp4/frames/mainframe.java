@@ -22,6 +22,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import mp4.benutzerverwaltung.visual.login;
 import mp4.datenbank.verbindung.Conn;
+import mp4.interfaces.Lockable;
 import mp4.items.visual.csvProductImporter;
 import mp4.items.visual.fastChoice;
 import mp4.items.visual.serialLetter;
@@ -36,6 +37,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
@@ -78,7 +80,13 @@ import mp4.items.HistoryItem;
 import mp4.items.Product;
 import mp4.benutzerverwaltung.User;
 import mp4.datenbank.verbindung.DataLock;
+import mp4.interfaces.ContactPanel;
 import mp4.items.Angebot;
+
+import mp4.items.ClipBoard;
+import mp4.items.People;
+import mp4.items.Things;
+import mp4.items.visual.CommonPanel;
 import mp4.panels.eur.eurAPanel;
 import mp4.panels.eur.eurEPanel;
 import mp4.panels.kontakte.manufacturerView;
@@ -117,16 +125,15 @@ public class mainframe extends javax.swing.JFrame {
     private static final long serialVersionUID = 518894730966031646L;
 
     public static void setErrorText(String string) {
-       ((FadeOnChangeLabel)nachricht).setFadeColor(Color.RED);
-       ((FadeOnChangeLabel)nachricht).setText(string);
-       
-    }
-    
-    public static void setInfoText(String string) { 
-       ((FadeOnChangeLabel)nachricht).reset();
-        nachricht.setText(string);
+        ((FadeOnChangeLabel) nachricht).setFadeColor(Color.RED);
+        ((FadeOnChangeLabel) nachricht).setText(string);
+
     }
 
+    public static void setInfoText(String string) {
+        ((FadeOnChangeLabel) nachricht).reset();
+        nachricht.setText(string);
+    }
     private startView i;
     private Main loader;
     private Position wt = new Position();
@@ -142,6 +149,8 @@ public class mainframe extends javax.swing.JFrame {
     private settingsView settingspanel;
     private diagrammChooseView diagrammpanel;
     private DialogForFile dialog;
+
+    private ClipBoard clipBoard = new ClipBoard(this);
 
     /** Creates new form mainframe
      * @param splash
@@ -183,7 +192,7 @@ public class mainframe extends javax.swing.JFrame {
                 this.setExtendedState(mainframe.MAXIMIZED_BOTH);
             }
         } catch (Exception exception) {
-            Log.Debug(this,exception.getMessage(), true);
+            Log.Debug(this, exception.getMessage(), true);
             this.setExtendedState(mainframe.NORMAL);
         }
 
@@ -202,7 +211,6 @@ public class mainframe extends javax.swing.JFrame {
             }
         });
 
-        setMessage("Anmerkungen, Bugs und Feedback zu MP bitte an mp-rechnungs-und-kundenverwaltung@googlegroups.com senden. Vielen Dank!");
         nachricht = messagePanel;
         new pluginHandler(this);
 
@@ -212,7 +220,11 @@ public class mainframe extends javax.swing.JFrame {
             new login(this);
         }
 
+        
         this.requestFocus();
+         
+        setMessage("Anmerkungen, Bugs und Feedback zu MP bitte an mp-rechnungs-und-kundenverwaltung@googlegroups.com senden. Vielen Dank!");
+        
 
     }
 
@@ -398,7 +410,9 @@ public class mainframe extends javax.swing.JFrame {
         jMenuItem13 = new javax.swing.JMenuItem();
         jMenuItem14 = new javax.swing.JMenuItem();
         jMenu5 = new javax.swing.JMenu();
-        jSeparator6 = new javax.swing.JSeparator();
+        jMenuItem16 = new javax.swing.JMenuItem();
+        clipboard = new javax.swing.JMenu();
+        jSeparator2 = new javax.swing.JSeparator();
         jMenuItem4 = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -950,7 +964,18 @@ public class mainframe extends javax.swing.JFrame {
         menuBar.add(jMenu4);
 
         jMenu5.setText("Bearbeiten");
-        jMenu5.add(jSeparator6);
+
+        jMenuItem16.setText("Kopieren");
+        jMenuItem16.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem16ActionPerformed(evt);
+            }
+        });
+        jMenu5.add(jMenuItem16);
+
+        clipboard.setText("Einfuegen");
+        jMenu5.add(clipboard);
+        jMenu5.add(jSeparator2);
 
         jMenuItem4.setText("Einstellungen");
         jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
@@ -1106,10 +1131,6 @@ public class mainframe extends javax.swing.JFrame {
         new ImportDaten();
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
-    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
-        jButton14ActionPerformed(evt);
-    }//GEN-LAST:event_jMenuItem4ActionPerformed
-
     private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
         license l = new license();
         wt.center(l);
@@ -1128,17 +1149,17 @@ public class mainframe extends javax.swing.JFrame {
         try {
             DataLock lockhandler = new mp4.datenbank.verbindung.DataLock();
             for (int i = 0; i < DataLock.locks.size(); i++) {
-            Integer id = DataLock.locks.get(i);
-            Log.Debug(this,"Rowlock: Late releasing .." + id, true);
-            lockhandler.delete(id);
+                Integer id = DataLock.locks.get(i);
+                Log.Debug(this, "Rowlock: Late releasing .." + id, true);
+                lockhandler.delete(id);
             }
-            
+
             Programmdaten.instanceOf().setMAINFRAME_WINDOW_STATE(this.getSize());
             Programmdaten.instanceOf().setMAINFRAME_TAB(mainTabPane.getSelectedIndex());
 
             System.exit(0);
         } catch (Exception exc) {
-            Log.Debug(this,exc, true);
+            Log.Debug(this, exc, true);
             System.exit(0);
         }
     }
@@ -1251,8 +1272,8 @@ private void jMenuItem1ActionPerformed1(java.awt.event.ActionEvent evt) {//GEN-F
                 Programmdaten.instanceOf().setUSE_AUTHENTIFICATION(!useauth);
                 this.setMessage("Benutzerauthentifizierung eingeschaltet");
                 new HistoryItem("Benutzerauthentifizierung", "Eingeschaltet", mainframe.getUser());
-                    Programmdaten.instanceOf().setBILLPANEL_MASK("MEDICAL");
-                    jMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/small/ok.png")));
+                Programmdaten.instanceOf().setBILLPANEL_MASK("MEDICAL");
+                jMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/small/ok.png")));
                 this.setEnabled(false);
                 new login(this);
             }
@@ -1372,48 +1393,76 @@ private void jMenuItem24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
 
 private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
 
-      try {
-            TableHtmlWriter writ = new TableHtmlWriter(new Customer().getPrintModel());
-            writ.setHeader(Strings.TABLE_CUSTOMER_PRINT_HEADER.split(","));
-            writ.createHtml(1, Color.LIGHT_GRAY);
-            
-            DialogForFile dialogd = new DialogForFile(DialogForFile.FILES_ONLY, "Kundenliste.html");
-            dialogd.saveFile(writ.getFile());
-            new Browser(dialogd.getFile());
-        } catch (Exception ex) {
-            Log.Debug(this,ex);
-        }
+    try {
+        TableHtmlWriter writ = new TableHtmlWriter(new Customer().getPrintModel());
+        writ.setHeader(Strings.TABLE_CUSTOMER_PRINT_HEADER.split(","));
+        writ.createHtml(1, Color.LIGHT_GRAY);
+
+        DialogForFile dialogd = new DialogForFile(DialogForFile.FILES_ONLY, "Kundenliste.html");
+        dialogd.saveFile(writ.getFile());
+        new Browser(dialogd.getFile());
+    } catch (Exception ex) {
+        Log.Debug(this, ex);
+    }
 }//GEN-LAST:event_jMenuItem9ActionPerformed
 
 private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem12ActionPerformed
 
-      try {
-            TableHtmlWriter writ = new TableHtmlWriter(new Product().getPrintModel());
-            writ.setHeader(Strings.TABLE_PRODUCTS_LIST_PRINT_HEADER.split(","));
-            writ.createHtml(1, Color.LIGHT_GRAY);
-            
-            DialogForFile dialogd = new DialogForFile(DialogForFile.FILES_ONLY, "Produktliste.html");
-            dialogd.saveFile(writ.getFile());
-            new Browser(dialogd.getFile());
-        } catch (Exception ex) {
-            Log.Debug(this,ex);
-        }
+    try {
+        TableHtmlWriter writ = new TableHtmlWriter(new Product().getPrintModel());
+        writ.setHeader(Strings.TABLE_PRODUCTS_LIST_PRINT_HEADER.split(","));
+        writ.createHtml(1, Color.LIGHT_GRAY);
+
+        DialogForFile dialogd = new DialogForFile(DialogForFile.FILES_ONLY, "Produktliste.html");
+        dialogd.saveFile(writ.getFile());
+        new Browser(dialogd.getFile());
+    } catch (Exception ex) {
+        Log.Debug(this, ex);
+    }
 }//GEN-LAST:event_jMenuItem12ActionPerformed
 
 private void jMenuItem19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem19ActionPerformed
 
-          try {
-            TableHtmlWriter writ = new TableHtmlWriter(new Lieferant().getPrintModel());
-            writ.setHeader(Strings.TABLE_SUPPLIER_PRINT_HEADER.split(","));
-            writ.createHtml(1, Color.LIGHT_GRAY);
-            
-            DialogForFile dialogd = new DialogForFile(DialogForFile.FILES_ONLY, "Lieferantenliste.html");
-            dialogd.saveFile(writ.getFile());
-            new Browser(dialogd.getFile());
-        } catch (Exception ex) {
-            Log.Debug(this,ex);
-        }
+    try {
+        TableHtmlWriter writ = new TableHtmlWriter(new Lieferant().getPrintModel());
+        writ.setHeader(Strings.TABLE_SUPPLIER_PRINT_HEADER.split(","));
+        writ.createHtml(1, Color.LIGHT_GRAY);
+
+        DialogForFile dialogd = new DialogForFile(DialogForFile.FILES_ONLY, "Lieferantenliste.html");
+        dialogd.saveFile(writ.getFile());
+        new Browser(dialogd.getFile());
+    } catch (Exception ex) {
+        Log.Debug(this, ex);
+    }
 }//GEN-LAST:event_jMenuItem19ActionPerformed
+
+private void jMenuItem16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem16ActionPerformed
+
+    try {
+        Lockable data = ((CommonPanel) mainTabPane.getSelectedComponent()).getLockable();
+        if (data != null) {
+            try {
+                try {
+                    clipBoard.add((People) data);
+                    setInfoText("Datensatz in die Zwischenablage kopiert: " + ((People) data).getNummer());
+                } catch (ClassCastException e) {
+                    clipBoard.add((Product) data);
+                    setInfoText("Datensatz in die Zwischenablage kopiert. " + ((Things) data).getNummer());
+                }
+            } catch (Exception e) {
+                Popup.notice("Kopieren von hier nicht moeglich.");
+//                Log.Debug(this, e.getMessage());
+            }
+        } else {
+            setErrorText("Keine Daten zum Kopieren vorhanden.");
+        }
+    } catch (Exception e) {
+    }
+}//GEN-LAST:event_jMenuItem16ActionPerformed
+
+private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+jButton14ActionPerformed(evt);
+}//GEN-LAST:event_jMenuItem4ActionPerformed
 
     @Override
     public void finalize() {
@@ -1422,6 +1471,7 @@ private void jMenuItem19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JPanel bottomPanel;
+    public javax.swing.JMenu clipboard;
     public javax.swing.JButton closeButton;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton10;
@@ -1458,6 +1508,7 @@ private void jMenuItem19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     private javax.swing.JMenuItem jMenuItem13;
     private javax.swing.JMenuItem jMenuItem14;
     private javax.swing.JMenuItem jMenuItem15;
+    private javax.swing.JMenuItem jMenuItem16;
     private javax.swing.JMenuItem jMenuItem18;
     private javax.swing.JMenuItem jMenuItem19;
     private javax.swing.JMenuItem jMenuItem2;
@@ -1478,10 +1529,10 @@ private void jMenuItem19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JSeparator jSeparator4;
     private javax.swing.JSeparator jSeparator5;
-    private javax.swing.JSeparator jSeparator6;
     public javax.swing.JPanel leftBar;
     public javax.swing.JButton logoutButton;
     public javax.swing.JProgressBar mainProgressBar;
@@ -1499,10 +1550,7 @@ private void jMenuItem19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     public javax.swing.JPanel getJPanel10() {
         return leftBar;
     }
-//
-//    public javax.swing.JPanel getJPanel11() {
-//        return jPanel11;
-//    }
+
     public javax.swing.JScrollPane getJScrollPane1() {
         return mainScrollPane;
     }
@@ -1520,7 +1568,7 @@ private void jMenuItem19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
      * @param message
      */
     public void setMessage(String message) {
-        this.getNachricht().setText(message);
+        setInfoText(message);
     }
 
     public javax.swing.JLabel getNachricht() {
@@ -1542,6 +1590,4 @@ private void jMenuItem19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
         setTitle(getTitle() + " (Angemeldet als: " + usern + ")");
         currentUser = usern;
     }
-    
-
 }

@@ -5,7 +5,6 @@
  */
 package mp4.panels.produkte;
 
-
 import mp4.items.visual.CommonPanel;
 import mp4.frames.PdfVorschauWindow;
 import mp4.panels.*;
@@ -34,11 +33,10 @@ import mp4.items.visual.DatePick;
 import mp4.items.visual.ManufacturerPicker;
 import mp4.items.visual.ProductPicker;
 import mp4.items.visual.TaxRatePicker;
-import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.benutzerverwaltung.User;
 import mp4.einstellungen.Programmdaten;
 import mp4.frames.mainframe;
-import mp4.interfaces.panelInterface;
+import mp4.interfaces.DataPanel;
 import mp4.items.Angebot;
 import mp4.items.Hersteller;
 import mp4.items.HistoryItem;
@@ -60,12 +58,11 @@ import mp4.utils.text.RandomText;
 import mp4.utils.zahlen.FormatNumber;
 import mp4.utils.zahlen.NumberCheck;
 
-
 /**
  *
  * @author  anti43
  */
-public class productsView extends CommonPanel implements panelInterface, mp4.datenbank.installation.Tabellen{
+public class productsView extends CommonPanel implements DataPanel, mp4.datenbank.installation.Tabellen {
 
     private mainframe mainframe;
     private Product current;
@@ -120,7 +117,7 @@ public class productsView extends CommonPanel implements panelInterface, mp4.dat
         this.hersteller = hersteller;
         if (hersteller != null && !hersteller.getId().equals("0")) {
             this.jTextField6.setText(hersteller.getFirma());
-            this.getProduct().setLieferantenId(hersteller.getId());
+            this.getProduct().setHersteller(hersteller);
         }
 
         super.setEdited(true);
@@ -145,14 +142,14 @@ public class productsView extends CommonPanel implements panelInterface, mp4.dat
         try {
             currentImageURI = FileDirectoryHandler.copyFile(f,
                     new File(Programmdaten.instanceOf().getIMAGE_CACHE_FOLDER()), new RandomText().getString() + f.getName());
-            Log.Debug(this,"Image: " + currentImageURI);
+            Log.Debug(this, "Image: " + currentImageURI);
             image.setDatum(new Date());
             image.setProduktid(product.getId());
             image.setPath(currentImageURI);
             image.save();
         } catch (Exception ex) {
             ex.printStackTrace();
-            Log.Debug(this,"CopyImage:" + ex.getMessage());
+            Log.Debug(this, "CopyImage:" + ex.getMessage());
         }
     }
 
@@ -187,14 +184,19 @@ public class productsView extends CommonPanel implements panelInterface, mp4.dat
             Programmdaten.instanceOf().setPRODUCTPANEL_CHECKBOX_SCALEIMAGE(jCheckBox1.isSelected());
             Programmdaten.instanceOf().setPRODUCTPANEL_CHECKBOX_SCALEIMAGE_SIZE(Integer.valueOf(jTextField23.getText()));
         } catch (NumberFormatException numberFormatException) {
-            Log.Debug(this,numberFormatException);
+            Log.Debug(this, numberFormatException);
         }
     }
 
     public void setProduct(Product product) {
 
+        if (getLockable() != null) {
+            getLockable().unlock();
+        }
+        setLockable(product);
+        
         this.current = product;
-        this.setSupplier(current.getSupplier());
+        this.setSupplier(current.getLieferant());
         this.setManufacturer(current.getHersteller());
         this.jTextField4.setText(current.getProduktNummer());
         this.jTextField5.setText(current.getName());
@@ -202,9 +204,9 @@ public class productsView extends CommonPanel implements panelInterface, mp4.dat
             this.jTextField6.setText(current.getHersteller().getFirma());
             this.hersteller = current.getHersteller();
         }
-        if (current.getSupplier() != null) {
-            this.jTextField10.setText(current.getSupplier().getFirma());
-            this.lieferant = current.getSupplier();
+        if (current.getLieferant() != null) {
+            this.jTextField10.setText(current.getLieferant().getFirma());
+            this.lieferant = current.getLieferant();
         }
         this.jTextField8.setText(current.getVK().toString());
         this.jTextField7.setText(current.getEK().toString());
@@ -231,7 +233,9 @@ public class productsView extends CommonPanel implements panelInterface, mp4.dat
         if (current.hasImage()) {
             GetProductImage t = new GetProductImage(this);
             t.execute();
-        } else imgLabel.setIcon(null);
+        } else {
+            imgLabel.setIcon(null);
+        }
     }
 
     /** This method is called from within the constructor to
@@ -245,8 +249,8 @@ public class productsView extends CommonPanel implements panelInterface, mp4.dat
         jPanel1 = new javax.swing.JPanel();
         jToolBar2 = new javax.swing.JToolBar();
         jButton20 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
         jSeparator2 = new javax.swing.JToolBar.Separator();
         jButton9 = new javax.swing.JButton();
         jButton10 = new javax.swing.JButton();
@@ -350,7 +354,7 @@ public class productsView extends CommonPanel implements panelInterface, mp4.dat
         jToolBar2.setFloatable(false);
         jToolBar2.setRollover(true);
 
-        jButton20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/medium/tab_remove.png"))); // NOI18N
+        jButton20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/3232/edittrash.png"))); // NOI18N
         jButton20.setToolTipText("Produkt deaktivieren und Tab schliessen");
         jButton20.setFocusable(false);
         jButton20.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -361,23 +365,6 @@ public class productsView extends CommonPanel implements panelInterface, mp4.dat
             }
         });
         jToolBar2.add(jButton20);
-
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/medium/filesave.png"))); // NOI18N
-        jButton3.setToolTipText("Speichern");
-        jButton3.setFocusable(false);
-        jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton3.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton3MouseClicked(evt);
-            }
-        });
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
-        jToolBar2.add(jButton3);
 
         jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/medium/new_window.png"))); // NOI18N
         jButton4.setToolTipText("Neu anlegen");
@@ -395,6 +382,23 @@ public class productsView extends CommonPanel implements panelInterface, mp4.dat
             }
         });
         jToolBar2.add(jButton4);
+
+        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/medium/filesave.png"))); // NOI18N
+        jButton3.setToolTipText("Speichern");
+        jButton3.setFocusable(false);
+        jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton3MouseClicked(evt);
+            }
+        });
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+        jToolBar2.add(jButton3);
         jToolBar2.add(jSeparator2);
 
         jButton9.setText("Neue Rechnung");
@@ -1294,14 +1298,14 @@ public class productsView extends CommonPanel implements panelInterface, mp4.dat
 
         if (current.getId() != 0) {
             getMainframe().addBillPanel(new Rechnung());
-            ((billsView) getMainframe().getTabPane().getSelectedComponent()).addProduct(current);
+            ((billsView) getMainframe().getTabPane().getSelectedComponent()).setProduct(current);
         }
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
         if (current.getId() != 0) {
             getMainframe().addAngebotPanel(new Angebot());
-            ((offersView) getMainframe().getTabPane().getSelectedComponent()).addProduct(current);
+            ((offersView) getMainframe().getTabPane().getSelectedComponent()).setProduct(current);
         }
     }//GEN-LAST:event_jButton10ActionPerformed
 
@@ -1312,8 +1316,9 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 }//GEN-LAST:event_jButton3ActionPerformed
 
 private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton20ActionPerformed
-   if (Popup.Y_N_dialog("Diesen Datensatz wirklich deaktivieren?") && mainframe.getUser().doAction(User.EDITOR)) {
+    if (Popup.Y_N_dialog("Diesen Datensatz wirklich deaktivieren?") && mainframe.getUser().doAction(User.EDITOR)) {
         deactivate();
+        new HistoryItem(Strings.PRODUCT, "Produkt Nummer "+ current.getProduktNummer() + "  gelöscht.");
         this.close();
     }
 }//GEN-LAST:event_jButton20ActionPerformed
@@ -1337,10 +1342,10 @@ private void jButton18MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
                 }
             }
 
-            Job job = new Job(new PDFFile(new PDF_Produkt(current, image)),new PdfVorschauWindow(), mainframe.getMainProgress());
+            Job job = new Job(new PDFFile(new PDF_Produkt(current, image)), new PdfVorschauWindow(), mainframe.getMainProgress());
             job.execute();
 
-        }else {
+        } else {
             Popup.notice("Sie müssen das Produkt erst anlegen.");
         }
     }
@@ -1365,11 +1370,10 @@ private void jButton21MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
 private void jButton22MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton22MouseClicked
 
     new TaxRatePicker(this);
-    
+
 }//GEN-LAST:event_jButton22MouseClicked
 
 private void jTextField22ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField22ActionPerformed
-
 }//GEN-LAST:event_jTextField22ActionPerformed
 
 private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -1424,7 +1428,6 @@ private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 }//GEN-LAST:event_jButton13ActionPerformed
 
 private void jButton13KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton13KeyPressed
-
 }//GEN-LAST:event_jButton13KeyPressed
 
 private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
@@ -1432,9 +1435,8 @@ private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 }//GEN-LAST:event_jButton16ActionPerformed
 
 private void jTextField4KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField4KeyTyped
-numberfieldedited = true;
+    numberfieldedited = true;
 }//GEN-LAST:event_jTextField4KeyTyped
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JLabel imgLabel;
     public javax.swing.JButton jButton1;
@@ -1525,23 +1527,25 @@ numberfieldedited = true;
     // End of variables declaration//GEN-END:variables
     private boolean createNew() {
         Product product = new Product();
-        
-        
-         if(!numberfieldedited && current.isValid())jTextField4.setText(null);
 
-            if (jTextField4.getText() == null || !(jTextField4.getText().length() > 0)) {
-                String s = product.getNfh().getNextNumber();
-                product.setNummer(s);
+
+        if (!numberfieldedited && current.isValid()) {
+            jTextField4.setText(null);
+        }
+
+        if (jTextField4.getText() == null || !(jTextField4.getText().length() > 0)) {
+            String s = product.getNfh().getNextNumber();
+            product.setNummer(s);
+        } else {
+            if (!product.getNfh().exists(jTextField4.getText())) {
+                product.setNummer(jTextField4.getText());
             } else {
-                if (!product.getNfh().exists(jTextField4.getText())) {
-                    product.setNummer(jTextField4.getText());
-                } else {
-                    Popup.notice("Angegebene Produktnummer existiert bereits.");
-                    return false;
-                }
+                Popup.notice("Angegebene Produktnummer existiert bereits.");
+                return false;
             }
-       
-        
+        }
+
+
         if (jTextField5.getText().equals("")) {
             jTextField5.setText(jTextField4.getText());
         }
@@ -1560,10 +1564,14 @@ numberfieldedited = true;
         } catch (NumberFormatException numberFormatException) {
             jTextField7.setText("0");
         }
-        
+
         product.setName(jTextField5.getText());
-        if(hersteller!=null&&hersteller.isValid())product.setHersteller(hersteller);
-        if(lieferant!=null&&lieferant.isValid())product.setSupplier(lieferant);
+        if (hersteller != null && hersteller.isValid()) {
+            product.setHersteller(hersteller);
+        }
+        if (lieferant != null && lieferant.isValid()) {
+            product.setLieferant(lieferant);
+        }
         product.setVK(Double.valueOf(jTextField8.getText()));
         product.setEK(Double.valueOf(jTextField7.getText()));
         product.setTaxID(taxID);
@@ -1594,20 +1602,7 @@ numberfieldedited = true;
 
     public void save() {
         if (current.getId() > 0) {
-//            if (jTextField4.getText().equals("")) {
-//                Integer tz = current.getNextIndex("produktnummer");
-//                jTextField4.setText(tz.toString());
-//                Log.Debug(this,"Setting 'Productnumber' to " + tz);
-//            } else {
-//                try {
-//                    Integer i = Integer.valueOf(jTextField4.getText());
-//                    jTextField4.setText(i.toString());
-//                } catch (NumberFormatException numberFormatException) {
-//                    Integer tz = current.getNextIndex("produktnummer");
-//                    jTextField4.setText(tz.toString());
-//                    Log.Debug(this,"Setting 'Productnumber' to " + tz);
-//                }
-//            }
+
             try {
                 Double.valueOf(jTextField8.getText());
             } catch (NumberFormatException numberFormatException) {
@@ -1625,8 +1620,12 @@ numberfieldedited = true;
             }
             current.setNummer(jTextField4.getText());
             current.setName(jTextField5.getText());
-            if(hersteller!=null&&hersteller.isValid())current.setHersteller(hersteller);
-            if(lieferant!=null&&lieferant.isValid())current.setSupplier(lieferant);
+            if (hersteller != null && hersteller.isValid()) {
+                current.setHersteller(hersteller);
+            }
+            if (lieferant != null && lieferant.isValid()) {
+                current.setLieferant(lieferant);
+            }
             current.setVK(Double.valueOf(jTextField8.getText()));
             current.setEK(Double.valueOf(jTextField7.getText()));
             current.setTaxID(taxID);
@@ -1643,7 +1642,7 @@ numberfieldedited = true;
             current.setLagermenge(NumberCheck.checkDoubleNN(jTextField21.getText()));
 
             current.save();
-            
+
             if ((current.getImagePath() == null && currentImageURI != null) || (currentImageURI != null && currentImageURI != current.getImagePath())) {
                 copyImage(current);
             }
@@ -1652,14 +1651,17 @@ numberfieldedited = true;
             new HistoryItem(Strings.PRODUCT, "Produkt Nummer: " + current.getProduktNummer() + " editiert.");
 
             setProduct(new Product(current.getId()));
-        } else createNew();
+        } else {
+            createNew();
+        }
     }
 
     public void setSupplier(Lieferant supplier) {
+
         this.lieferant = supplier;
         if (supplier != null && !supplier.getId().equals("0")) {
             this.jTextField10.setText(supplier.getFirma());
-            this.getProduct().setLieferantenId(supplier.getId());
+            this.getProduct().setLieferant(supplier);
         }
         super.setEdited(true);
     }
@@ -1692,14 +1694,6 @@ numberfieldedited = true;
         setSupplier((Lieferant) contact);
     }
 
-    public People getContact() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void switchTab(int i) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
     private void updateListTable() {
         liste = current.getAll();
         String k = "id, " + TABLE_PRODUCTS_LIST_COLUMNS;
@@ -1712,6 +1706,7 @@ numberfieldedited = true;
         jTextField16.setText(sts.getWert().toString());
     }
 }
+
 class GetProductImage extends SwingWorker<Void, Void> {
 
     private productsView view;
@@ -1731,7 +1726,7 @@ class GetProductImage extends SwingWorker<Void, Void> {
                 view.validate();
             }
         } catch (Exception ex) {
-            Log.Debug(this,ex);
+            Log.Debug(this, ex);
         }
         return null;
     }
@@ -1767,7 +1762,7 @@ class GetAnyImage extends SwingWorker<Void, Void> {
             view.setCurrentImage(file);
         } catch (Exception ex) {
             view.imgLabel.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-            Log.Debug(this,ex);
+            Log.Debug(this, ex);
         }
         return null;
     }

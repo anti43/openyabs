@@ -31,6 +31,8 @@ import mp4.utils.tabellen.models.PostenTableModel;
 
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.datenbank.verbindung.PrepareData;
+import mp4.einstellungen.Einstellungen;
+import mp4.einstellungen.Programmdaten;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.tabellen.DataModelUtils;
 import mp4.utils.zahlen.FormatNumber;
@@ -41,7 +43,6 @@ import mp4.utils.zahlen.FormatNumber;
  */
 public class Rechnung extends mp4.items.Things implements mp4.datenbank.installation.Tabellen, Countable {
 
-    private String Rechnungnummer = "";
     private String UnserZeichen = "";
     private String IhrZeichen = "";
     private Integer KundenId = 0;
@@ -212,8 +213,10 @@ public class Rechnung extends mp4.items.Things implements mp4.datenbank.installa
             Log.Debug(this,exception.getMessage());
         }
         if (!isBezahlt()) {
-            try {
-                Date date = DateConverter.addMonth(getDatum());
+            try {               
+                Date date = getDatum();    
+                date = DateConverter.addDays(date, Einstellungen.instanceOf().getRechnung_TageBisVerzug());         
+                Log.Debug(this, "Rechnung in Verzug am: " + date);
                 if (new Date().after(date)) {
                     this.setVerzug(true);
                 }
@@ -234,8 +237,6 @@ public class Rechnung extends mp4.items.Things implements mp4.datenbank.installa
         str = str + PrepareData.prepareString(DateConverter.getSQLDateString(this.getAusfuehrungsDatum()));
         str = str + PrepareData.prepareNumber(this.getMahnungen());
         return PrepareData.finalize(str);
-
-
     }
 
 
@@ -285,11 +286,11 @@ public class Rechnung extends mp4.items.Things implements mp4.datenbank.installa
     }
 
     public String getRechnungnummer() {
-        return Rechnungnummer;
+        return getNummer();
     }
 
     public void setRechnungnummer(String Rechnungnummer) {
-        this.Rechnungnummer = Rechnungnummer;
+        setNummer(Rechnungnummer);
         this.isSaved = false;
 
     }

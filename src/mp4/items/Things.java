@@ -36,6 +36,7 @@ public abstract class Things extends EasyQuery implements Queries, mp4.datenbank
     public NumberFormatHandler nfh;
     private Query query;
     private DataLock datalock;
+    private String Nummer = "UNDEFINED";
 
 
     /**
@@ -83,6 +84,14 @@ public abstract class Things extends EasyQuery implements Queries, mp4.datenbank
 
     public DataLock getDatalock() {
         return datalock;
+    }
+
+    public String getNummer() {
+        return Nummer;
+    }
+
+    public void setNummer(String Nummer) {
+        this.Nummer = Nummer;
     }
 
   

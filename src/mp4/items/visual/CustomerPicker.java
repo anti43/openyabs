@@ -10,8 +10,10 @@ package mp4.items.visual;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import mp4.items.Customer;
+import mp4.panels.rechnungen.offersView;
 import mp4.utils.tabellen.SelectionCheck;
-import mp4.interfaces.panelInterface;
+import mp4.interfaces.ContactPanel;
+import mp4.interfaces.DataPanel;
 import mp4.utils.tabellen.TableFormat;
 import mp4.utils.ui.Position;
 
@@ -21,7 +23,7 @@ import mp4.utils.ui.Position;
  */
 public class CustomerPicker extends javax.swing.JFrame {
 
-    private panelInterface frame;
+    private DataPanel frame;
     private boolean order = false;
     private Customer cust;
     private String k;
@@ -29,7 +31,7 @@ public class CustomerPicker extends javax.swing.JFrame {
     /** Creates new form CustomerPicker
      * @param frame 
      */
-    public CustomerPicker(panelInterface frame) {
+    public CustomerPicker(DataPanel frame) {
         initComponents();
         this.frame = frame;
         cust = new Customer();
@@ -43,6 +45,10 @@ public class CustomerPicker extends javax.swing.JFrame {
         this.jTable2.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         this.setVisible(rootPaneCheckingEnabled);
 
+    }
+
+    public CustomerPicker(offersView aThis) {
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     private void getData() {

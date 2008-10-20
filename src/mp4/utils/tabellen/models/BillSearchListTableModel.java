@@ -46,5 +46,13 @@ public class BillSearchListTableModel extends MPTableModel {
                 new Rechnung().select("rechnungen.id, rechnungen.rechnungnummer, rechnungen.datum ", key, searchtext, "rechnungen.datum,rechnungen.id  DESC ", true, "kunden", "kundenid"),
                 new Object[]{"id", "Nummer","Datum"});
     }
+    
+      public BillSearchListTableModel(String key, Integer value) {
+         super(new Class[]{java.lang.String.class, java.lang.String.class,
+                    java.lang.String.class
+                }, new boolean[]{false,false,false},
+                new Rechnung().select("rechnungen.id, rechnungen.rechnungnummer, rechnungen.datum ", key, value.toString(), true),
+                new Object[]{"id", "Nummer","Datum"});
+    }
 }
  

@@ -169,10 +169,11 @@ public interface Strings {
     public final String SUPPLIER = "Lieferant";
     public final String MANUFACTURER = "Hersteller";
     public final String PRODUCT = "Produkt";
-    public final String ORDER = "Angebot";
+    public final String OFFER = "Angebot";
     public final String SERVICE = "Dienstleistung";
     public final String BILL = "Rechnung";
     public final String BACKUP = "Datensicherung";
     public final String KONTEN = "Konten";
     public final String EINNAHME = "Einnahme";
+    public final String CONFIG = "Konfiguration";
 }

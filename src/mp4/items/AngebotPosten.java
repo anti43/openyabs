@@ -16,11 +16,7 @@
  */
 package mp4.items;
 
-import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mp4.datenbank.verbindung.Query;
-import mp4.items.visual.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.logs.*;
 
@@ -35,14 +31,11 @@ public class AngebotPosten extends mp4.items.Things implements mp4.datenbank.ins
     private String posten = "";
     private Double preis = 0d;
     private Double steuersatz = 0d;
-    public Integer id = 0;
 
     public AngebotPosten() {
         super(ConnectionHandler.instanceOf().clone(TABLE_OFFERS_DATA));
     }
-    public Integer getId() {
-        return id;
-    }
+
     public void destroy() {
         this.delete(this.id);
         this.id = 0;

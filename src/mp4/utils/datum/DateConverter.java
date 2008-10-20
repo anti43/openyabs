@@ -55,6 +55,13 @@ public class DateConverter {
     };
     public static final DateFormat  DE_FULL_DATE_FORMAT = new SimpleDateFormat("dd.MM.yyy - HH:mm:ss");
 
+    public static Date addDays(Date date, Integer add) {
+        cl.setTime(date);
+        cl.add(Calendar.DATE, add);
+
+        return cl.getTime();
+    }
+
     public static String getFullDefDateString(Date date) {
        return DE_FULL_DATE_FORMAT.format(new Date());
     }

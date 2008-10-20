@@ -35,7 +35,7 @@ import mp4.utils.datum.DateConverter;
  */
 public class Angebot extends mp4.items.Things implements mp4.datenbank.installation.Tabellen, Countable {
 
-    private String Angebotnummer = "";
+
     private Integer KundenId = 0;
     private Integer RechnungId = 0;
     private boolean isAuftrag = false;
@@ -260,11 +260,11 @@ public class Angebot extends mp4.items.Things implements mp4.datenbank.installat
     }
 
     public String getAngebotnummer() {
-        return Angebotnummer;
+        return getNummer();
     }
 
     public void setAngebotnummer(String Ordernummer) {
-        this.Angebotnummer = Ordernummer;
+        this.setNummer(Ordernummer);
         this.isSaved = false;
     }
 

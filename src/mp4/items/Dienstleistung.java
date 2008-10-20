@@ -35,7 +35,6 @@ import mp4.utils.datum.DateConverter;
 public class Dienstleistung extends mp4.items.Things implements mp4.datenbank.installation.Tabellen, Countable {
 
     
-    private String Nummer = "";
     private String Name = "";
     private String Beschreibung = "";
     private String Einheit = "";
@@ -175,9 +174,6 @@ public class Dienstleistung extends mp4.items.Things implements mp4.datenbank.in
         return getNummer();
     }
 
-    public void setNummer(String Nummer) {
-        this.Nummer = Nummer;
-    }
 
     public String getName() {
         return Name;
@@ -198,11 +194,6 @@ public class Dienstleistung extends mp4.items.Things implements mp4.datenbank.in
     public Double getTaxValue() {
         return Double.valueOf(ConnectionHandler.instanceOf().clone(TABLE_TAXES).select("wert", new String[]{"id", this.getSteuersatzId().toString(), ""})[0][0]);
     }
-//
-//
-//    public int delete(String id) {
-//        return delete(Integer.valueOf(id));
-//    }
 
     public Integer getSteuersatzId() {
         return SteuersatzId;
@@ -210,10 +201,6 @@ public class Dienstleistung extends mp4.items.Things implements mp4.datenbank.in
 
     public void setSteuersatzId(Integer SteuersatzId) {
         this.SteuersatzId = SteuersatzId;
-    }
-
-    public String getNummer() {
-        return Nummer;
     }
 
     public String getBeschreibung() {

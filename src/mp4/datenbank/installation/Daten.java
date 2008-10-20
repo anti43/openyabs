@@ -92,6 +92,7 @@ public abstract class Daten {
      
         
         "INSERT INTO einstellungen (name, wert) VALUES ('Hauptsteuersatz', '19')",
+        "INSERT INTO einstellungen (name, wert) VALUES ('TageBisVerzug', '30')",
         "INSERT INTO einstellungen (name, wert) VALUES ('PDF Programm', '/opt/kde3/bin/kpdf')",
         "INSERT INTO einstellungen (name, wert) VALUES ('Browser Programm', '/usr/bin/firefox')",
         

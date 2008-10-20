@@ -6,7 +6,7 @@
 package mp4.panels.produkte;
 
 import mp4.globals.Strings;
-import mp4.interfaces.panelInterface;
+import mp4.interfaces.DataPanel;
 import mp4.interfaces.Waitable;
 
 import mp4.items.People;
@@ -25,6 +25,7 @@ import mp4.einstellungen.Programmdaten;
 import mp4.utils.export.pdf.PDF_Produkt;
 import mp4.frames.PdfVorschauWindow;
 import mp4.frames.mainframe;
+import mp4.interfaces.DataPanel;
 import mp4.items.Angebot;
 import mp4.items.Dienstleistung;
 
@@ -42,12 +43,13 @@ import mp4.utils.tabellen.SelectionCheck;
 import mp4.utils.tabellen.TableFormat;
 import mp4.utils.tasks.Job;
 import mp4.utils.ui.inputfields.InputVerifiers;
+import mp4.utils.zahlen.FormatNumber;
 
 /**
  *
  * @author  anti43
  */
-public class servicesView extends mp4.items.visual.CommonPanel implements mp4.datenbank.installation.Tabellen, panelInterface{
+public class servicesView extends mp4.items.visual.CommonPanel implements mp4.datenbank.installation.Tabellen, DataPanel{
 
     private mainframe mainframe;
     private Dienstleistung current;
@@ -99,7 +101,7 @@ public class servicesView extends mp4.items.visual.CommonPanel implements mp4.da
             if ((JOptionPane.showConfirmDialog(this, "Wirklich löschen?", "Sicher?", JOptionPane.YES_NO_OPTION)) == JOptionPane.YES_OPTION) {
                 current.destroy();
                 current = new Dienstleistung();
-                getMainframe().setMessage("Produkt Nummer " + current.getProduktNummer() + " gelöscht.");
+                new HistoryItem(Strings.SERVICE, "Dienstleistung Nummer " + current.getProduktNummer() + " gelöscht.");
             }
 
             updateListTable();
@@ -116,11 +118,13 @@ public class servicesView extends mp4.items.visual.CommonPanel implements mp4.da
         TableFormat.stripFirst(jTable3);
     }
 
-    private void setPanelValues() {
-    }
 
     private void setDienstleistung(Dienstleistung product) {
-
+  
+        if (getLockable() != null) {
+            getLockable().unlock();
+        }
+        setLockable(product);
         this.current = product;
         this.jTextField4.setText(current.getProduktNummer());
         this.jTextField5.setText(current.getName());
@@ -155,8 +159,8 @@ public class servicesView extends mp4.items.visual.CommonPanel implements mp4.da
         jPanel1 = new javax.swing.JPanel();
         jToolBar2 = new javax.swing.JToolBar();
         jButton20 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
         jSeparator2 = new javax.swing.JToolBar.Separator();
         jButton9 = new javax.swing.JButton();
         jButton10 = new javax.swing.JButton();
@@ -223,7 +227,7 @@ public class servicesView extends mp4.items.visual.CommonPanel implements mp4.da
         jToolBar2.setFloatable(false);
         jToolBar2.setRollover(true);
 
-        jButton20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/medium/tab_remove.png"))); // NOI18N
+        jButton20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/3232/edittrash.png"))); // NOI18N
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("viewMasks/service"); // NOI18N
         jButton20.setToolTipText(bundle.getString("servicesView.jButton20.toolTipText")); // NOI18N
         jButton20.setFocusable(false);
@@ -235,23 +239,6 @@ public class servicesView extends mp4.items.visual.CommonPanel implements mp4.da
             }
         });
         jToolBar2.add(jButton20);
-
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/medium/filesave.png"))); // NOI18N
-        jButton3.setToolTipText(bundle.getString("servicesView.jButton3.toolTipText")); // NOI18N
-        jButton3.setFocusable(false);
-        jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton3.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton3MouseClicked(evt);
-            }
-        });
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
-        jToolBar2.add(jButton3);
 
         jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/medium/new_window.png"))); // NOI18N
         jButton4.setToolTipText(bundle.getString("servicesView.jButton4.toolTipText")); // NOI18N
@@ -269,6 +256,23 @@ public class servicesView extends mp4.items.visual.CommonPanel implements mp4.da
             }
         });
         jToolBar2.add(jButton4);
+
+        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/medium/filesave.png"))); // NOI18N
+        jButton3.setToolTipText(bundle.getString("servicesView.jButton3.toolTipText")); // NOI18N
+        jButton3.setFocusable(false);
+        jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton3MouseClicked(evt);
+            }
+        });
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+        jToolBar2.add(jButton3);
         jToolBar2.add(jSeparator2);
 
         jButton9.setText(bundle.getString("servicesView.jButton9.text")); // NOI18N
@@ -919,8 +923,6 @@ private void jButton18MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
         }
 
         if (current.isValid()) {
-            setPanelValues();
-
             Job job = new Job((Waitable) new PDF_Produkt(current),new PdfVorschauWindow(), mainframe.getMainProgress());
             job.execute();
 
@@ -1068,20 +1070,7 @@ private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 
     public void save() {
         if (current.getId() > 0) {
-//            if (jTextField4.getText().equals("")) {
-//                Integer tz = current.getNextIndex("produktnummer");
-//                jTextField4.setText(tz.toString());
-//                Log.Debug(this,"Setting 'Dienstleistungnumber' to " + tz);
-//            } else {
-//                try {
-//                    Integer i = Integer.valueOf(jTextField4.getText());
-//                    jTextField4.setText(i.toString());
-//                } catch (NumberFormatException numberFormatException) {
-//                    Integer tz = current.getNextIndex("produktnummer");
-//                    jTextField4.setText(tz.toString());
-//                    Log.Debug(this,"Setting 'Dienstleistungnumber' to " + tz);
-//                }
-//            }
+
             try {
                 Double.valueOf(jTextField8.getText());
             } catch (NumberFormatException numberFormatException) {
@@ -1126,25 +1115,29 @@ private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         this.currentDienstleistungGroupId = currentDienstleistungGroupId;
     }
 
+    @Override
     public void update() {
         this.updateListTable();
     }
 
-   public void addProduct(Product p) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    @Override
+   public void setProduct(Product p) {
+       jTextField8.setText(FormatNumber.formatDezimal(p.getVK()));
+       jTextField10.setText("St.");
+       jTextField5.setText(p.getName());
+       jTextField12.setText(p.getProductgroupPath());
+       current.setWarengruppenId(p.getWarengruppenId());
+       jEditorPane1.setText(p.getText());
+       setTax(new Steuersatz(p.getSteuersatzId()));
+       setEdited(true);
     }
  
 
+    @Override
     public void setContact(People contact) {
+        jEditorPane1.setText(contact.expose());
     }
 
-    public People getContact() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void switchTab(int i) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 
     private void updateListTable() {
         liste = current.getAll();
@@ -1153,8 +1146,10 @@ private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         TableFormat.stripFirst(jTable2);
     }
     
+    @Override
      public void setTax(Steuersatz sts) {
         this.taxID = sts.getId();
+        current.setTaxID(taxID);
         jTextField16.setText(sts.getWert().toString());
     }
 }

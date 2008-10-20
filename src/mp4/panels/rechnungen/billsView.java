@@ -5,8 +5,6 @@
  */
 package mp4.panels.rechnungen;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mp4.interfaces.Waitable;
 import mp4.interfaces.Waiter;
 import mp4.items.Steuersatz;
@@ -15,10 +13,8 @@ import mp4.items.RechnungPosten;
 import mp4.items.Rechnung;
 import java.awt.Color;
 import java.awt.event.MouseEvent;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableModel;
 import mp4.globals.Strings;
 
@@ -45,7 +41,7 @@ import mp4.einstellungen.Einstellungen;
 import mp4.einstellungen.Programmdaten;
 import mp4.items.Angebot;
 import mp4.benutzerverwaltung.User;
-import mp4.interfaces.panelInterface;
+import mp4.interfaces.DataPanel;
 import mp4.items.People;
 import mp4.frames.PdfVorschauWindow;
 import mp4.items.Dienstleistung;
@@ -63,13 +59,12 @@ import mp4.utils.tabellen.TableFormat;
 import mp4.utils.tabellen.models.BillListTableModel;
 import mp4.utils.tabellen.models.BillSearchListTableModel;
 import mp4.utils.tasks.Job;
-import mp4.utils.zahlen.FormatNumber;
 
 /**
  *
  * @author  anti43
  */
-public class billsView extends mp4.items.visual.CommonPanel implements panelInterface, mp4.datenbank.installation.Tabellen {
+public class billsView extends mp4.items.visual.CommonPanel implements DataPanel, mp4.datenbank.installation.Tabellen {
 
     private Rechnung currentBill;
     private Customer customer;
@@ -82,7 +77,7 @@ public class billsView extends mp4.items.visual.CommonPanel implements panelInte
     }
 
     public billsView(mainframe frame) {
-       
+
         Locale.setDefault(new Locale("de", "DE", Programmdaten.instanceOf().getBILLPANEL_MASK()));
         initComponents();
 
@@ -98,7 +93,7 @@ public class billsView extends mp4.items.visual.CommonPanel implements panelInte
             fetchBillsOfTheMonth();
         } catch (Exception e) {
             e.printStackTrace();
-            Log.Debug(this,e.getMessage());
+            Log.Debug(this, e.getMessage());
         }
 
         renewTableModel(true);
@@ -122,10 +117,12 @@ public class billsView extends mp4.items.visual.CommonPanel implements panelInte
         jCheckBox6.setSelected(Programmdaten.instanceOf().getBILLPANEL_CHECKBOX_MITFIRMENNAME_state());
         jCheckBox5.setSelected(Programmdaten.instanceOf().getBILLPANEL_CHECKBOX_MITANEGBOT_state());
         jCheckBox1.setSelected(Programmdaten.instanceOf().getBILLPANEL_CHECKBOX_NETTOPREISE_state());
-       
+
+        ampel(null);
+
     }
 
-    public void addProduct(Product product) {
+    public void setProduct(Product product) {
         ((PostenTableModel) jTable1.getModel()).addProduct(jTable1, product);
     }
 
@@ -140,22 +137,47 @@ public class billsView extends mp4.items.visual.CommonPanel implements panelInte
         this.angebot = angebot;
     }
 
+    private void ampel(Integer value) {
+        if (value != null) {
+            switch (value) {
+                case 0:
+                    ampel_bezahlt.setVisible(true);
+                    ampel_offen.setVisible(false);
+                    ampel_verzug.setVisible(false);
+                    ;
+                    break;
+
+                case 1:
+                    ampel_offen.setVisible(true);
+                    ampel_bezahlt.setVisible(false);
+                    ampel_verzug.setVisible(false);
+                    ;
+                    break;
+
+                case 2:
+                    ampel_verzug.setVisible(true);
+                    ampel_bezahlt.setVisible(false);
+                    ampel_offen.setVisible(true);
+                    ;
+                    break;
+            }
+        } else {
+            ampel_bezahlt.setVisible(false);
+            ampel_offen.setVisible(false);
+            ampel_verzug.setVisible(false);
+        }
+    }
+
     private void createNew() {
-////        CalculatedTableValues calculated;
-//        SelectionCheck selection = new SelectionCheck(jTable1);
-//  
+
         PostenTableModel m;
         calculator.setStopped(true);
 
         if (hasCustomer() && validDate()) {
-            
-//            calculated = DataModelUtils.calculateTableCols(jTable1, 0, 3, 4);
+
             m = (PostenTableModel) jTable1.getModel();
-
             Rechnung bill = new Rechnung();
-
             bill.setDatum(DateConverter.getDate(jTextField7.getText()));
-
             bill.setRechnungnummer(bill.getNfh().getNextNumber());
             if (DateConverter.getDate(jTextField11.getText()) != null) {
                 bill.setAusfuehrungsDatum(DateConverter.getDate(jTextField11.getText()));
@@ -183,10 +205,11 @@ public class billsView extends mp4.items.visual.CommonPanel implements panelInte
                         bill.getAngebot().save();
                     } else {
                         if (angebot != null) {
-                        bill.setAngebot(angebot);
-                        bill.getAngebot().setRechnungId(bill.getId());
-                        bill.getAngebot().setAuftragdatum(DateConverter.getDate(jTextField12.getText()));
-                        bill.getAngebot().save();}
+                            bill.setAngebot(angebot);
+                            bill.getAngebot().setRechnungId(bill.getId());
+                            bill.getAngebot().setAuftragdatum(DateConverter.getDate(jTextField12.getText()));
+                            bill.getAngebot().save();
+                        }
                     }
                 }
 
@@ -224,7 +247,6 @@ public class billsView extends mp4.items.visual.CommonPanel implements panelInte
         mainframe.getNachricht().setText(string);
     }
 
-
     private void renewTableModel(boolean empty) {
         if (empty) {
             getJTable1().setModel(new PostenTableModel());
@@ -248,8 +270,12 @@ public class billsView extends mp4.items.visual.CommonPanel implements panelInte
 
     public void setBill(Rechnung current) {
 
-        this.changeTabText("Rechnung: " + current.getRechnungnummer());
+        if (getLockable() != null) {
+            getLockable().unlock();
+        }
+        setLockable(current);
 
+        this.changeTabText("Rechnung: " + current.getRechnungnummer());
         this.currentBill = current;
         if (current.getKundenId() != 0) {
             this.setContact(new Customer(current.getKundenId()));
@@ -269,20 +295,17 @@ public class billsView extends mp4.items.visual.CommonPanel implements panelInte
 
         if (current.isBezahlt()) {
             this.jCheckBox2.setSelected(true);
+            ampel(0);
         } else {
             this.jCheckBox2.setSelected(false);
+            ampel(1);
         }
-
         if (current.isStorno()) {
             this.jCheckBox3.setSelected(true);
+            ampel(null);
         } else {
-
             if (current.isVerzug()) {
-                this.jCheckBox3.setSelected(false);
-                this.jCheckBox2.setBackground(Color.RED);
-            } else {
-                this.jCheckBox3.setSelected(false);
-                this.jCheckBox2.setBackground(new Color(212, 208, 200));
+                ampel(2);
             }
         }
 
@@ -302,14 +325,16 @@ public class billsView extends mp4.items.visual.CommonPanel implements panelInte
         resizeFields();
     }
 
+    @Override
     public void setContact(People c) {
 
-//        oldcustomer = this.customer;
         this.customer = (Customer) c;
 
         jLabel19.setText(customer.getNummer());
         jTextField5.setText(customer.getName());
         jTextField4.setText(customer.getFirma());
+        jButton2.setText(customer.getFirma());
+        jButton2.setEnabled(true);
 
         if (getCustomer().isDeleted()) {
             jLabel19.setForeground(Color.GRAY);
@@ -338,10 +363,9 @@ public class billsView extends mp4.items.visual.CommonPanel implements panelInte
 
         jPanel1 = new javax.swing.JPanel();
         jToolBar1 = new javax.swing.JToolBar();
-        jButton6 = new javax.swing.JButton();
         jButton20 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
         jSeparator2 = new javax.swing.JToolBar.Separator();
         jButton13 = new javax.swing.JButton();
         jButton14 = new javax.swing.JButton();
@@ -368,8 +392,8 @@ public class billsView extends mp4.items.visual.CommonPanel implements panelInte
         jTextField1 = new javax.swing.JTextField();
         jTextField2 = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
+        jButton2 = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
@@ -412,6 +436,10 @@ public class billsView extends mp4.items.visual.CommonPanel implements panelInte
         jLabel16 = new javax.swing.JLabel();
         jButton18 = new javax.swing.JButton();
         jButton17 = new javax.swing.JButton();
+        ampelpanel = new javax.swing.JPanel();
+        ampel_offen = new javax.swing.JLabel();
+        ampel_bezahlt = new javax.swing.JLabel();
+        ampel_verzug = new javax.swing.JLabel();
         jPanel11 = new javax.swing.JPanel();
         jLabel18 = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
@@ -440,32 +468,18 @@ public class billsView extends mp4.items.visual.CommonPanel implements panelInte
         jToolBar1.setFloatable(false);
         jToolBar1.setRollover(true);
 
-        jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/medium/undo.png"))); // NOI18N
+        jButton20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/3232/edittrash.png"))); // NOI18N
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("viewMasks/rechnung"); // NOI18N
-        jButton6.setToolTipText(bundle.getString("billsView.jButton6.toolTipText")); // NOI18N
-        jButton6.setFocusable(false);
-        jButton6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton6.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton6);
-
-        jButton20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/medium/tab_remove.png"))); // NOI18N
         jButton20.setToolTipText(bundle.getString("billsView.jButton20.toolTipText")); // NOI18N
         jButton20.setFocusable(false);
         jButton20.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton20.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton20);
-
-        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/medium/filesave.png"))); // NOI18N
-        jButton4.setToolTipText(bundle.getString("billsView.jButton4.toolTipText")); // NOI18N
-        jButton4.setFocusable(false);
-        jButton4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton4.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton4MouseClicked(evt);
+        jButton20.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton20ActionPerformed(evt);
             }
         });
-        jToolBar1.add(jButton4);
+        jToolBar1.add(jButton20);
 
         jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/medium/new_window.png"))); // NOI18N
         jButton3.setToolTipText(bundle.getString("billsView.jButton3.toolTipText")); // NOI18N
@@ -478,6 +492,18 @@ public class billsView extends mp4.items.visual.CommonPanel implements panelInte
             }
         });
         jToolBar1.add(jButton3);
+
+        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/medium/filesave.png"))); // NOI18N
+        jButton4.setToolTipText(bundle.getString("billsView.jButton4.toolTipText")); // NOI18N
+        jButton4.setFocusable(false);
+        jButton4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton4.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton4MouseClicked(evt);
+            }
+        });
+        jToolBar1.add(jButton4);
         jToolBar1.add(jSeparator2);
 
         jButton13.setText(bundle.getString("billsView.jButton13.text")); // NOI18N
@@ -619,7 +645,7 @@ public class billsView extends mp4.items.visual.CommonPanel implements panelInte
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 282, Short.MAX_VALUE)
+            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 291, Short.MAX_VALUE)
         );
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("billsView.jPanel4.border.title"))); // NOI18N
@@ -641,13 +667,15 @@ public class billsView extends mp4.items.visual.CommonPanel implements panelInte
 
         jLabel3.setText(bundle.getString("billsView.jLabel3.text")); // NOI18N
 
-        jTextField3.addActionListener(new java.awt.event.ActionListener() {
+        jLabel4.setText(bundle.getString("billsView.jLabel4.text")); // NOI18N
+
+        jButton2.setText(bundle.getString("billsView.jButton2.text")); // NOI18N
+        jButton2.setEnabled(false);
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField3ActionPerformed(evt);
+                jButton2ActionPerformed(evt);
             }
         });
-
-        jLabel4.setText(bundle.getString("billsView.jLabel4.text")); // NOI18N
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -659,10 +687,10 @@ public class billsView extends mp4.items.visual.CommonPanel implements panelInte
                     .addComponent(jLabel3)
                     .addComponent(jLabel4))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jTextField3)
-                    .addComponent(jTextField2)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jTextField2, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
+                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
@@ -676,9 +704,9 @@ public class billsView extends mp4.items.visual.CommonPanel implements panelInte
                     .addComponent(jLabel3)
                     .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -796,7 +824,7 @@ public class billsView extends mp4.items.visual.CommonPanel implements panelInte
             }
         });
 
-        jLabel19.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel19.setFont(new java.awt.Font("Tahoma", 1, 11));
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 11));
         jLabel5.setText(bundle.getString("billsView.jLabel5.text")); // NOI18N
@@ -865,6 +893,7 @@ public class billsView extends mp4.items.visual.CommonPanel implements panelInte
 
         jPanel10.setBackground(new java.awt.Color(227, 219, 202));
         jPanel10.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel10.setForeground(new java.awt.Color(51, 51, 51));
 
         jLabel8.setFont(new java.awt.Font("Tahoma", 1, 11));
         jLabel8.setText(bundle.getString("billsView.jLabel8.text")); // NOI18N
@@ -933,6 +962,32 @@ public class billsView extends mp4.items.visual.CommonPanel implements panelInte
             }
         });
 
+        ampelpanel.setOpaque(false);
+
+        ampel_offen.setBackground(new java.awt.Color(255, 255, 153));
+        ampel_offen.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        ampel_offen.setForeground(new java.awt.Color(51, 51, 51));
+        ampel_offen.setText(bundle.getString("billsView.ampel_offen.text")); // NOI18N
+        ampel_offen.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        ampel_offen.setOpaque(true);
+        ampelpanel.add(ampel_offen);
+
+        ampel_bezahlt.setBackground(new java.awt.Color(102, 255, 102));
+        ampel_bezahlt.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        ampel_bezahlt.setForeground(new java.awt.Color(51, 51, 51));
+        ampel_bezahlt.setText(bundle.getString("billsView.ampel_bezahlt.text")); // NOI18N
+        ampel_bezahlt.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        ampel_bezahlt.setOpaque(true);
+        ampelpanel.add(ampel_bezahlt);
+
+        ampel_verzug.setBackground(new java.awt.Color(204, 0, 0));
+        ampel_verzug.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        ampel_verzug.setForeground(new java.awt.Color(51, 51, 51));
+        ampel_verzug.setText(bundle.getString("billsView.ampel_verzug.text")); // NOI18N
+        ampel_verzug.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        ampel_verzug.setOpaque(true);
+        ampelpanel.add(ampel_verzug);
+
         javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
         jPanel10.setLayout(jPanel10Layout);
         jPanel10Layout.setHorizontalGroup(
@@ -951,29 +1006,34 @@ public class billsView extends mp4.items.visual.CommonPanel implements panelInte
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jButton10, 0, 0, Short.MAX_VALUE)
-                            .addComponent(jButton16, javax.swing.GroupLayout.PREFERRED_SIZE, 35, Short.MAX_VALUE))
-                        .addGap(14, 14, 14)
-                        .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel15)
-                            .addComponent(jLabel16))
+                            .addComponent(jButton16, javax.swing.GroupLayout.PREFERRED_SIZE, 35, Short.MAX_VALUE)))
+                    .addGroup(jPanel10Layout.createSequentialGroup()
+                        .addComponent(jLabel8)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jComboBox1, 0, 139, Short.MAX_VALUE)
-                            .addComponent(jTextField11, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jButton17, 0, 0, Short.MAX_VALUE)
-                            .addComponent(jButton18, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jLabel8))
+                        .addComponent(ampelpanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(14, 14, 14)
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel15)
+                    .addComponent(jLabel16))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jComboBox1, 0, 139, Short.MAX_VALUE)
+                    .addComponent(jTextField11, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jButton17, 0, 0, Short.MAX_VALUE)
+                    .addComponent(jButton18, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         jPanel10Layout.setVerticalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel10Layout.createSequentialGroup()
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel10Layout.createSequentialGroup()
-                        .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(ampelpanel, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
+                    .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
                         .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                             .addComponent(jLabel9)
                             .addComponent(jButton16)
@@ -984,7 +1044,6 @@ public class billsView extends mp4.items.visual.CommonPanel implements panelInte
                             .addComponent(jButton10, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
-                        .addContainerGap(37, Short.MAX_VALUE)
                         .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                             .addComponent(jLabel16)
                             .addComponent(jButton18)
@@ -1086,8 +1145,8 @@ public class billsView extends mp4.items.visual.CommonPanel implements panelInte
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
-                    .addComponent(jPanel11, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE))
+                    .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, 112, Short.MAX_VALUE)
+                    .addComponent(jPanel11, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 112, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -1130,7 +1189,7 @@ public class billsView extends mp4.items.visual.CommonPanel implements panelInte
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 77, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 91, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel6Layout.createSequentialGroup()
@@ -1203,7 +1262,7 @@ public class billsView extends mp4.items.visual.CommonPanel implements panelInte
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 421, Short.MAX_VALUE)
+            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 434, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab(bundle.getString("billsView.jPanel3.TabConstraints.tabTitle"), jPanel3); // NOI18N
@@ -1220,7 +1279,7 @@ public class billsView extends mp4.items.visual.CommonPanel implements panelInte
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 446, Short.MAX_VALUE))
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 459, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -1229,12 +1288,12 @@ public class billsView extends mp4.items.visual.CommonPanel implements panelInte
 
         ActionListener[] list = jComboBox1.getActionListeners();
         ActionListener l;
-               
+
         for (int i = 0; i < list.length; i++) {
-             l = list[i];
+            l = list[i];
             jComboBox1.removeActionListener(l);
         }
-       
+
         jComboBox1.addActionListener(new CheckComboListener());
         jComboBox1.setRenderer(new CheckComboRenderer());
     }
@@ -1248,12 +1307,6 @@ public class billsView extends mp4.items.visual.CommonPanel implements panelInte
         this.jTable3.setModel(new BillSearchListTableModel("datum", jTextField2.getText()));
         TableFormat.stripFirst(jTable3);
     }//GEN-LAST:event_jTextField2ActionPerformed
-
-    private void jTextField3ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
-
-        this.jTable3.setModel(new BillSearchListTableModel("firma", jTextField3.getText()));
-        TableFormat.stripFirst(jTable3);
-    }//GEN-LAST:event_jTextField3ActionPerformed
 
     private void jButton3MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
 
@@ -1304,14 +1357,14 @@ public class billsView extends mp4.items.visual.CommonPanel implements panelInte
                     if (jTextField12.getText() != null && DateConverter.getDate(jTextField12.getText()) != null) {
                         if (bill.getAngebot() != null && angebot == null) {
                             bill.getAngebot().setAuftragdatum(DateConverter.getDate(jTextField12.getText()));
-                        bill.getAngebot().save();
+                            bill.getAngebot().save();
                         } else {
                             if (angebot == null) {
                                 angebot = new Angebot();
                             }
                             bill.setAngebot(angebot);
                             bill.getAngebot().setAuftragdatum(DateConverter.getDate(jTextField12.getText()));
-                        bill.getAngebot().save();
+                            bill.getAngebot().save();
                         }
                     }
 
@@ -1354,7 +1407,7 @@ public class billsView extends mp4.items.visual.CommonPanel implements panelInte
             try {
                 this.setBill(new Rechnung(selection.getId()));
             } catch (Exception exception) {
-                Log.Debug(this,exception);
+                Log.Debug(this, exception);
             }
         }
     }//GEN-LAST:event_jTable3MouseClicked
@@ -1392,9 +1445,9 @@ public class billsView extends mp4.items.visual.CommonPanel implements panelInte
 
     private void jCheckBox1ItemStateChanged (java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBox1ItemStateChanged
 
-    
-            calculator.setNettoprices(jCheckBox1.isSelected());
-            Programmdaten.instanceOf().setBILLPANEL_CHECKBOX_NETTOPREISE(jCheckBox1.isSelected());
+
+        calculator.setNettoprices(jCheckBox1.isSelected());
+        Programmdaten.instanceOf().setBILLPANEL_CHECKBOX_NETTOPREISE(jCheckBox1.isSelected());
 
     }//GEN-LAST:event_jCheckBox1ItemStateChanged
 
@@ -1517,11 +1570,11 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         Job job = new Job(new PDFFile(new PDF_Rechnung(currentBill)), new PdfVorschauWindow(), mainframe.getMainProgress());
         job.execute();
     } else {
-        Popup.notice("Sie müssen die Rechnung erst anlegen.");}
+        Popup.notice("Sie müssen die Rechnung erst anlegen.");
+    }
 }//GEN-LAST:event_jButton1ActionPerformed
 
 private void jButton12KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton12KeyTyped
-
 }//GEN-LAST:event_jButton12KeyTyped
 
 private void jButton12MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton12MouseClicked
@@ -1529,7 +1582,8 @@ private void jButton12MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
         Job job = new Job((Waitable) new PDFFile(new PDF_Rechnung(currentBill)), (Waiter) new DruckJob(), mainframe.getMainProgress());
         job.execute();
     } else {
-        Popup.notice("Sie müssen die Rechnung erst anlegen.");}
+        Popup.notice("Sie müssen die Rechnung erst anlegen.");
+    }
 }//GEN-LAST:event_jButton12MouseClicked
 
 private void jCheckBox6ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBox6ItemStateChanged
@@ -1538,11 +1592,37 @@ private void jCheckBox6ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIR
 }//GEN-LAST:event_jCheckBox6ItemStateChanged
 
 private void jCheckBox5ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBox5ItemStateChanged
-   
+
     Programmdaten.instanceOf().setBILLPANEL_CHECKBOX_MITANGEBOT(jCheckBox5.isSelected());
 }//GEN-LAST:event_jCheckBox5ItemStateChanged
 
+private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+
+
+    if (jButton2.isEnabled()) {
+        this.jTable3.setModel(new BillSearchListTableModel("kundenid", customer.getId()));
+        TableFormat.stripFirst(jTable3);
+    }
+}//GEN-LAST:event_jButton2ActionPerformed
+
+private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton20ActionPerformed
+if (Popup.Y_N_dialog("Diesen Datensatz wirklich stornieren?") && mainframe.getUser().doAction(User.EDITOR)) {
+        if (mainframe.getUser().doAction(User.ADMIN)) {
+           if (currentBill.hasId()) {
+                this.currentBill.setStorno(true);
+                currentBill.save();
+                new HistoryItem(Strings.BILL, "Rechnung Nummer " + currentBill.getRechnungnummer() + " storniert.");
+                this.close();
+           } 
+        }
+}  
+}//GEN-LAST:event_jButton20ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public javax.swing.JLabel ampel_bezahlt;
+    public javax.swing.JLabel ampel_offen;
+    public javax.swing.JLabel ampel_verzug;
+    public javax.swing.JPanel ampelpanel;
     public javax.swing.JButton jButton1;
     public javax.swing.JButton jButton10;
     public javax.swing.JButton jButton11;
@@ -1554,11 +1634,11 @@ private void jCheckBox5ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIR
     public javax.swing.JButton jButton17;
     public javax.swing.JButton jButton18;
     public javax.swing.JButton jButton19;
+    public javax.swing.JButton jButton2;
     public javax.swing.JButton jButton20;
     public javax.swing.JButton jButton3;
     public javax.swing.JButton jButton4;
     public javax.swing.JButton jButton5;
-    public javax.swing.JButton jButton6;
     public javax.swing.JButton jButton7;
     public javax.swing.JButton jButton8;
     public javax.swing.JButton jButton9;
@@ -1614,7 +1694,6 @@ private void jCheckBox5ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIR
     public javax.swing.JTextField jTextField12;
     public javax.swing.JTextField jTextField13;
     public javax.swing.JTextField jTextField2;
-    public javax.swing.JTextField jTextField3;
     public javax.swing.JTextField jTextField4;
     public javax.swing.JTextField jTextField5;
     public javax.swing.JTextField jTextField6;

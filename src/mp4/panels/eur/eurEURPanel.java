@@ -9,7 +9,7 @@ import java.awt.Color;
 import java.io.File;
 import javax.swing.table.DefaultTableModel;
 import mp4.globals.Constants;
-import mp4.interfaces.panelInterface;
+import mp4.interfaces.DataPanel;
 
 import mp4.items.People;
 import mp4.items.Steuersatz;
@@ -30,7 +30,7 @@ import mp4.utils.ui.inputfields.InputVerifiers;
  *
  * @author  anti43
  */
-public class eurEURPanel extends mp4.items.visual.CommonPanel implements panelInterface{
+public class eurEURPanel extends mp4.items.visual.CommonPanel{
 
     private String year;
     private String month;
@@ -257,31 +257,5 @@ public class eurEURPanel extends mp4.items.visual.CommonPanel implements panelIn
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
 
-    public void update() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 
-    public void save() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void addProduct(Product p) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void setContact(People contact) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public People getContact() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void switchTab(int i) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void setTax(Steuersatz steuersatz) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 }

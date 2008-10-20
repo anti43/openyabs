@@ -7,7 +7,7 @@ package mp4.panels.eur;
 
 import java.awt.Font;
 import javax.swing.JTabbedPane;
-import mp4.interfaces.panelInterface;
+import mp4.interfaces.DataPanel;
 import mp4.items.People;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.items.Rechnung;
@@ -23,7 +23,7 @@ import mp4.utils.tabellen.TableFormat;
  *
  * @author  anti43
  */
-public class eurOPanel extends mp4.items.visual.CommonPanel implements panelInterface {
+public class eurOPanel extends mp4.items.visual.CommonPanel{
 
     private String[][] data;
     private Rechnung current;
@@ -265,31 +265,4 @@ private javax.swing.JToolBar jToolBar4;
         return jTable3;
     }
 
-    public void update() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void save() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void addProduct(Product p) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void setContact(People contact) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public People getContact() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void switchTab(int i) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void setTax(Steuersatz steuersatz) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 }

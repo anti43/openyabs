@@ -11,7 +11,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import mp4.items.Customer;
 import mp4.utils.tabellen.SelectionCheck;
-import mp4.interfaces.panelInterface;
+import mp4.interfaces.DataPanel;
 import mp4.items.Lieferant;
 import mp4.utils.tabellen.TableFormat;
 import mp4.utils.ui.Position;
@@ -22,7 +22,7 @@ import mp4.utils.ui.Position;
  */
 public class SupplierPicker extends javax.swing.JFrame {
 
-    private panelInterface frame;
+    private DataPanel frame;
     private boolean order = false;
     private Lieferant contact;
     private String k;
@@ -30,7 +30,7 @@ public class SupplierPicker extends javax.swing.JFrame {
     /** Creates new form CustomerPicker
      * @param frame 
      */
-    public SupplierPicker(panelInterface frame) {
+    public SupplierPicker(DataPanel frame) {
         initComponents();
         this.frame = frame;
         contact = new Lieferant();
