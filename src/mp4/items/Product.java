@@ -234,6 +234,10 @@ public class Product extends mp4.items.Things implements mp4.datenbank.installat
 
     public boolean save() {
 
+        if(getNummer() == null || getNummer().length() == 0) {
+            setNummer(getNfh().getNextNumber());
+        }
+        
         if (id > 0 && !readonly) {
             this.update(TABLE_PRODUCTS_FIELDS, this.collect(), id);
             isSaved = true;
@@ -283,6 +287,7 @@ public class Product extends mp4.items.Things implements mp4.datenbank.installat
         this.Name = Name;
     }
 
+    @Override
     public Date getDatum() {
         return Datum;
     }

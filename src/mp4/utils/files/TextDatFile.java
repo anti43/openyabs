@@ -19,6 +19,8 @@ package mp4.utils.files;
 import java.io.File;
 import java.util.ArrayList;
 import javax.print.DocFlavor;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 import mp4.globals.Constants;
 import mp4.interfaces.Printable;
 import mp4.interfaces.Waitable;
@@ -30,13 +32,15 @@ import mp4.utils.listen.ListenDataUtils;
  * @author anti43
  */
 public class TextDatFile extends File implements Waitable, Printable {
-    private static final long serialVersionUID = 2059941918698508985L;
 
+    private static final long serialVersionUID = 2059941918698508985L;
     private FileReaderWriter rw;
     private String fieldSeparator = Constants.FELDTRENNER;
     private String[][] data;
     private String[] header;
     private int mode;
+    private DefaultTableModel model;
+    private JTable table;
 
     /**
      * Constructs a new temporary text file
@@ -51,6 +55,7 @@ public class TextDatFile extends File implements Waitable, Printable {
         mode = 0;
         this.deleteOnExit();
     }
+
     /**
      * Constructs a new text file
      * @param data The data to write to the file
@@ -64,6 +69,7 @@ public class TextDatFile extends File implements Waitable, Printable {
         this.header = header;
         mode = 0;
     }
+
     /**
      * Constructs a new file and sets 'read' mode
      * @param file The file (to read from)
@@ -74,6 +80,18 @@ public class TextDatFile extends File implements Waitable, Printable {
         mode = 1;
     }
 
+    /**
+     * Constructs a new file and sets 'read' mode
+     * @param file The file (to read from)
+     * @param table The table to retrieve the data
+     */
+    public TextDatFile(File file, JTable table) {
+        super(file.getPath());
+        rw = new FileReaderWriter(this);
+        this.table = table;
+        mode = 2;
+    }
+
     @Override
     public void waitFor() {
         switch (mode) {
@@ -82,6 +100,10 @@ public class TextDatFile extends File implements Waitable, Printable {
                 break;
             case 1:
                 read();
+                break;
+            case 2:
+                readToTable();
+                break;
         }
     }
 
@@ -90,38 +112,62 @@ public class TextDatFile extends File implements Waitable, Printable {
      */
     public void print() {
 
-        if(header != null){
+        if (header != null) {
             rw.writeLine(header, ";");
         }
-        
+
         for (int i = 0; i < getData().length; i++) {
             String[] strings = getData()[i];
             String line = "";
             for (int j = 0; j < strings.length; j++) {
                 String string = strings[j];
                 line += string + getFieldSeparator();
-            }  
-            line = (line.substring(0, line.length() - getFieldSeparator().length())).replaceAll("[\\r\\n]","");
-            Log.Debug(this,line);
+            }
+            line = (line.substring(0, line.length() - getFieldSeparator().length())).replaceAll("[\\r\\n]", "");
+            Log.Debug(this, line);
             rw.write(line);
         }
     }
 
     /**
-     * Reads the file
+     * Reads the file, no headers given
      * @return The data from file
      */
     public String[][] read() {
         @SuppressWarnings("unchecked")
         ArrayList<String[]> arr = new ArrayList();
         String[] line = rw.readLines();
-        for (int i = 0; i > line.length; i++) {
+        Log.Debug(this, "Reading file: " + this.getPath() + " (" + line.length + " lines)");
+        for (int i = 0; i < line.length; i++) {
             arr.add(line[i].split(getFieldSeparator()));
             line = rw.readLines();
-            Log.Debug(this,line);
+            Log.Debug(this, "Line.. " + i);
         }
         data = ListenDataUtils.listToStringArrayArray(arr);
+        model = new DefaultTableModel(data, header);
         return data;
+    }
+
+    /**
+     * Reads the file, assuming the first line contains the header
+     * @return The data from file
+     */
+    public DefaultTableModel readToTable() {
+        @SuppressWarnings("unchecked")
+        ArrayList<String[]> arr = new ArrayList();
+        String[] line = rw.readLines();
+        Log.Debug(this, "Reading file: " + this.getPath() + " (" + line.length + " lines)");
+        header = line[0].split(getFieldSeparator());
+        for (int i = 1; i < line.length; i++) {
+            arr.add(line[i].split(getFieldSeparator()));
+            Log.Debug(this, "Line.. " + arr.get(i-1));
+        }
+        data = ListenDataUtils.listToStringArrayArray(arr);
+        model = new DefaultTableModel(data, header);
+        if(table != null) {
+            this.table.setModel(model);
+        }
+        return model;
     }
 
     @Override
@@ -172,5 +218,9 @@ public class TextDatFile extends File implements Waitable, Printable {
 
     public void setHeader(String[] header) {
         this.header = header;
+    }
+
+    public DefaultTableModel getModel() {
+        return model;
     }
 }

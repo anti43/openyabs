@@ -36,7 +36,7 @@ public abstract class Things extends EasyQuery implements Queries, mp4.datenbank
     public NumberFormatHandler nfh;
     private Query query;
     private DataLock datalock;
-    private String Nummer = "UNDEFINED";
+    private String Nummer = null;
 
 
     /**

@@ -38,6 +38,7 @@ public class Job extends SwingWorker<Object, Object> {
         this.bar = bar;
     }
 
+    @Override
     public Object doInBackground() {
         if (bar != null) {
             bar.setIndeterminate(true);
@@ -48,7 +49,8 @@ public class Job extends SwingWorker<Object, Object> {
             if (bar != null) {
                 bar.setIndeterminate(false);
             }
-            Log.Debug(this,e);
+            Log.Debug(this, e);
+            e.printStackTrace();
         } finally {
         }
         return object;

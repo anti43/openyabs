@@ -68,6 +68,7 @@ public class Hersteller extends mp4.items.People implements mp4.datenbank.instal
     }
 
 
+    @Override
     public boolean save() throws Exception {
         
             if (id > 0) {

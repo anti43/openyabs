@@ -29,8 +29,8 @@ import mp4.utils.datum.DateConverter;
 public class Kontaktliste implements TableData, Tabellen{
     private Query queryhandler;
     private String[] where = null;
-    public static String header[] = new String[]{"Name","E-mail Address","Notes","Mobile Phone",
-                "Company","Business Phone", "Business Fax","Business Address"};
+    public static String header[] = new String[]{"Name","Mail","Notizen","Mobil",
+                "Firma","Telefon", "Fax","Adresse"};
 
     /**
      * 
@@ -66,7 +66,7 @@ public class Kontaktliste implements TableData, Tabellen{
 																																																																																																																																																																																																																																											
     @Override
     public Object[][] getData() {
-        return queryhandler.select("vorname||' '||name,mail,notizen,mobil,firma,tel,fax,str||' '||plz||' '||ort", where);
+        return queryhandler.select("vorname||' '||name,mail,notizen,mobil,firma,tel,fax,str||','||plz||','||ort", where);
     }
 
     @Override

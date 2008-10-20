@@ -97,6 +97,10 @@ public class FileReaderWriter {
         return s;
     }
 
+    /**
+     * 
+     * @return
+     */
     public String[] readLines() {
 
         BufferedReader in = null;

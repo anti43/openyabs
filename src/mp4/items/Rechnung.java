@@ -241,6 +241,11 @@ public class Rechnung extends mp4.items.Things implements mp4.datenbank.installa
 
 
     public boolean save() {
+    
+         if(getNummer() == null || getNummer().length() == 0) {
+            setNummer(getNfh().getNextNumber());
+        }
+        
         int result = -1;
         if (id > 0 && !readonly && !isSaved ) {
             result = this.update(TABLE_BILLS_FIELDS, this.collect(), id);

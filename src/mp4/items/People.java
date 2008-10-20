@@ -263,5 +263,7 @@ public abstract class People extends EasyQuery implements Queries, Tabellen, Loc
     public DataLock getDatalock() {
         return datalock;
     }
+    
+    public abstract boolean save() throws Exception ;
 
 }

@@ -146,6 +146,10 @@ public class Dienstleistung extends mp4.items.Things implements mp4.datenbank.in
 
     public void save() {
 
+        if(getNummer() == null || getNummer().length() == 0) {
+            setNummer(getNfh().getNextNumber());
+        }
+        
         if (id > 0 && !readonly) {
             this.update(TABLE_SERVICES_FIELDS, this.collect(), id);
             isSaved = true;

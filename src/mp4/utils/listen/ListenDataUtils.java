@@ -71,7 +71,7 @@ public class ListenDataUtils {
         String[][] str = new String[list.size()][];
 
         for (int i = 0; i < list.size(); i++) {
-            str[i] = (String[]) list.get(i);
+            str[i] = list.get(i);
         }
 
         return str;

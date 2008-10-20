@@ -16,6 +16,8 @@
  */
 package mp4.items;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mp4.logs.*;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.datenbank.verbindung.PrepareData;
@@ -56,10 +58,26 @@ public class Steuersatz extends mp4.items.Things implements mp4.datenbank.instal
         }
     }
 
-    public String[][] getAll() {
-    
+    public Steuersatz findIDWithOrCreate(Double valueOf) {
+        try {
+            String[] data = this.selectLast("name, wert", "wert", valueOf.toString(), true);
+            if(data != null && data.length>0){
+                explode(data); 
+                return this;
+            } else {          
+                setWert(valueOf);
+                setName("Autom. erstellter Steuersatz");
+                save();
+                return this;
+            }
+        } catch (Exception ex) {
+            Log.Debug(ex);
+            return new Steuersatz(1);
+        }
+    }
+
+    public String[][] getAll() {  
         return this.select("id, name, wert", null, null, false);
-    
     }
 
     private void explode(String[] select) {
