@@ -24,33 +24,34 @@ import mp4.items.handler.NumberFormatHandler;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.datenbank.verbindung.PrepareData;
 import mp4.logs.*;
+import mp4.utils.tabellen.DataModelUtils;
 
 /**
  *
  * @author anti
  */
-public class Customer extends mp4.items.People implements mp4.datenbank.installation.Tabellen, Countable {
+public class Kunde extends mp4.items.People implements mp4.datenbank.installation.Tabellen, Countable {
 
     private String Kundensteuernummer = "";
     private Query query;
     private boolean deleted = false;
     private NumberFormatHandler nfh;
 
-    public Customer() {
-        super(ConnectionHandler.instanceOf().clone(TABLE_CUSTOMERS));
+    public Kunde() {
+        super(ConnectionHandler.instanceOf().clone(TABLE_KundeS));
         this.query = ConnectionHandler.instanceOf();
         nfh = new NumberFormatHandler(this, new Date());
     }
 
-    public Customer(Query query) {
-        super(query.clone(TABLE_CUSTOMERS));
+    public Kunde(Query query) {
+        super(query.clone(TABLE_KundeS));
         this.query = query;
         nfh = new NumberFormatHandler(this, new Date());
 
     }
 
-    public Customer(Integer id) {
-        super(ConnectionHandler.instanceOf().clone(TABLE_CUSTOMERS));
+    public Kunde(Integer id) {
+        super(ConnectionHandler.instanceOf().clone(TABLE_KundeS));
         this.id = id;
         readonly = !lock();
         try {
@@ -62,8 +63,8 @@ public class Customer extends mp4.items.People implements mp4.datenbank.installa
         nfh = new NumberFormatHandler(this, new Date());
     }
 
-    public Customer(String nummer) throws Exception {
-        super(ConnectionHandler.instanceOf().clone(TABLE_CUSTOMERS));
+    public Kunde(String nummer) throws Exception {
+        super(ConnectionHandler.instanceOf().clone(TABLE_KundeS));
         String[] vals = this.selectLast("*", "nummer", nummer, false);
         if (vals != null && vals.length > 0) {
             this.explode(vals);
@@ -77,14 +78,14 @@ public class Customer extends mp4.items.People implements mp4.datenbank.installa
     }
 
     @SuppressWarnings("unchecked")
-    public ArrayList getAllCustomers() {
+    public ArrayList getAllKundes() {
         ArrayList arr = new ArrayList();
 
-        Query q = query.clone(TABLE_CUSTOMERS);
+        Query q = query.clone(TABLE_KundeS);
         String[][] str = q.select("id", null);
 
         for (int i = 0; i < str.length; i++) {
-            arr.add(new Customer(Integer.valueOf(str[i][0])));
+            arr.add(new Kunde(Integer.valueOf(str[i][0])));
         }
 
         return arr;
@@ -156,12 +157,12 @@ public class Customer extends mp4.items.People implements mp4.datenbank.installa
         
             if (id > 0) {
                 if (!readonly) {
-                this.update(TABLE_CUSTOMER_FIELDS, this.collect(), id);
+                this.update(TABLE_Kunde_FIELDS, this.collect(), id);
                 isSaved = true;
                 return true;
                 } 
             } else if (id == 0) {
-                this.id = this.insert(TABLE_CUSTOMER_FIELDS, this.collect());
+                this.id = this.insert(TABLE_Kunde_FIELDS, this.collect());
                 lock();
                 return true;
             }
@@ -169,34 +170,29 @@ public class Customer extends mp4.items.People implements mp4.datenbank.installa
     }
 
     public String[][] getBills() {
-
         Query q = query.clone(TABLE_BILLS);
-
         String[] wher = {"kundenid", this.getId().toString(), ""};
-
         String[][] str = q.select("id,rechnungnummer,datum", wher);
-
         return str;
-
     }
 
     public String[][] getPrintModel() {
-
-        Query q = query.clone(TABLE_CUSTOMERS);
-
-        String[][] str = q.select(TABLE_CUSTOMER_PRINT_FIELDS, null);
-
+        Query q = query.clone(TABLE_KundeS);
+        String[][] str = q.select(TABLE_Kunde_PRINT_FIELDS, null);
         return str;
     }
 
     public String[][] getAll(boolean withDeleted) {
-
-        Query q = query.clone(TABLE_CUSTOMERS);
-
-
+        Query q = query.clone(TABLE_KundeS);
         String[][] str = q.select("*", null, withDeleted);
-
         return str;
+    }
+    
+     public Object[][] getAllSerialLetter() {
+//"id", "K-Nummer", "Firma", "Senden an"
+        Query q = query.clone(TABLE_KundeS);
+        Object[][] str = q.select("id, nummer, firma", null, false);
+        return DataModelUtils.inserValue(str, this.getClass().getSimpleName(), 3);
     }
 
     public void export() {
@@ -208,7 +204,7 @@ public class Customer extends mp4.items.People implements mp4.datenbank.installa
 
     /**
      * 
-     * @return the satus of this customer
+     * @return the satus of this Kunde
      */
     public boolean isDeleted() {
         return this.deleted;
@@ -216,11 +212,11 @@ public class Customer extends mp4.items.People implements mp4.datenbank.installa
 
     public Object[][] countBills() {
 
-        Query q = query.clone(TABLE_CUSTOMERS);
+        Query q = query.clone(TABLE_KundeS);
 
 
 
-        String[][] str = q.select("firma,", null, TABLE_CUSTOMERS, "kundenid", "datum");
+        String[][] str = q.select("firma,", null, TABLE_KundeS, "kundenid", "datum");
 
 
         return str;
@@ -242,7 +238,7 @@ public class Customer extends mp4.items.People implements mp4.datenbank.installa
 
     @Override
     public String getTable() {
-        return TABLE_CUSTOMERS;
+        return TABLE_KundeS;
     }
 
     @Override

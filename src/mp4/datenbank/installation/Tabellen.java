@@ -33,7 +33,7 @@ public interface Tabellen {
     /**
      * Kundendaten
      */
-    public final String TABLE_CUSTOMERS = "kunden";
+    public final String TABLE_KundeS = "kunden";
     /**
      * Kundendaten
      */
@@ -116,14 +116,14 @@ public interface Tabellen {
     public final String TABLE_BILL_TEXTS = "rechnungbetreffz";
     public final String TABLE_BILL_TEXTS_TO_BILLS = "betreffz_zu_rechnung";
     public final String TABLE_TAXES = "steuersaetze";
-    public final String TABLE_CUSTOMER_PRINT_FIELDS =
+    public final String TABLE_Kunde_PRINT_FIELDS =
             "Nummer" + "," + "Firma" + "," + "Anrede" + "," + "Vorname" +
             "," + "Name" + "," + "Str" + "," + "PLZ" + "," + "Ort" + "," +
             "Tel" + "," + "Fax" + "," + "Mobil" + "," + "Mail" + "," + "Webseite";
     /**
-     * Fields in customer table
+     * Fields in Kunde table
      */
-    public final String TABLE_CUSTOMER_FIELDS =
+    public final String TABLE_Kunde_FIELDS =
             "nummer" + "," + "Firma" + "," + "Anrede" + "," + "Vorname" +
             "," + "Name" + "," + "Str" + "," + "PLZ" + "," + "Ort" + "," +
             "Tel" + "," + "Fax" + "," + "Mobil" + "," + "Mail" + "," + 

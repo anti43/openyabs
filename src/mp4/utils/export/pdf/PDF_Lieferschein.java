@@ -18,7 +18,7 @@ package mp4.utils.export.pdf;
 
 
 import java.awt.Image;
-import mp4.items.Customer;
+import mp4.items.Kunde;
 import mp4.items.Rechnung;
 
 
@@ -42,7 +42,7 @@ public class PDF_Lieferschein implements Template{
 
     private Einstellungen l;
     private Rechnung rechnung;
-    private Customer k;
+    private Kunde k;
     private Object[][] products;
     private Double netto = 0d;
     private Double brutto = 0d;
@@ -55,7 +55,7 @@ public class PDF_Lieferschein implements Template{
     public PDF_Lieferschein(Rechnung bill) {
         l = Einstellungen.instanceOf();
         this.rechnung = bill;
-        k = new Customer(bill.getKundenId());
+        k = new Kunde(bill.getKundenId());
         products = rechnung.getProductlistAsArray();
     }
 
@@ -90,8 +90,9 @@ public class PDF_Lieferschein implements Template{
         return ListenDataUtils.StringListToTableArray(fields);
     }
 
+    @Override
     public String getPath() {
-        return l.getRechnung_Verzeichnis() + File.separator +
+        return l.getLieferschein_Verzeichnis() + File.separator +
                     "Lieferschein-" + rechnung.getRechnungnummer().replaceAll(" ", "_") + "_" + k.getFirma().replaceAll(" ", "_") + "_" + k.getName().replaceAll(" ", "_") + ".pdf";
     }
 

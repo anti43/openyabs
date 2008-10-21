@@ -1,5 +1,5 @@
 /*
- * CustomerPicker.java
+ * KundePicker.java
  *
  * Created on 15. Januar 2008, 07:02
  */
@@ -9,7 +9,7 @@ package mp4.items.visual;
 
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
-import mp4.items.Customer;
+import mp4.items.Kunde;
 import mp4.utils.tabellen.SelectionCheck;
 import mp4.interfaces.DataPanel;
 import mp4.items.Lieferant;
@@ -27,7 +27,7 @@ public class SupplierPicker extends javax.swing.JFrame {
     private Lieferant contact;
     private String k;
 
-    /** Creates new form CustomerPicker
+    /** Creates new form KundePicker
      * @param frame 
      */
     public SupplierPicker(DataPanel frame) {

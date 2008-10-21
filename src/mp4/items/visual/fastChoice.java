@@ -9,7 +9,7 @@ import mp4.frames.mainframe;
 import mp4.panels.rechnungen.*;
 import mp4.panels.kontakte.*;
 import mp4.datenbank.verbindung.ConnectionHandler;
-import mp4.items.Customer;
+import mp4.items.Kunde;
 import mp4.items.Rechnung;
 import mp4.logs.Log;
 import mp4.utils.ui.Position;
@@ -193,12 +193,12 @@ public class fastChoice extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
     private void send() {
-        Customer kl;
+        Kunde kl;
         Rechnung kr;
         switch (mode) {
             case 0:
                 try {
-                    kl = new Customer(jTextField1.getText());            
+                    kl = new Kunde(jTextField1.getText());            
                     customersView panel = new customersView(frame);
                     frame.addPanel("Kunde", panel);
                     panel.setContact(kl);

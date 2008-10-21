@@ -900,8 +900,9 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
      * 
      * @param where : {value, comparison, "'"}
      * @return number of rows affected
+     * @throws Exception 
      */
-    public int delete(String[][] where) {
+    public int delete(String[][] where) throws Exception {
 
         start();
         String str = "";
@@ -926,8 +927,8 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
             Log.Debug(this,"Entries deleted: " + resultCount);
         } catch (SQLException ex) {
             Log.Debug(this,message + ex.getMessage());
-            Popup.error(message + ex.getMessage(), "Datenbankfehler");
-            return 0;
+            throw new Exception("Es ist ein Fehler aufgetreten :-(");
+//            Popup.error(message + ex.getMessage(), "Datenbankfehler");
         } finally {
             // Alle Ressourcen wieder freigeben
             if (resultSet != null) {
@@ -956,7 +957,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
      * @param where : {value, comparison, "'"}
      * @return number of rows affected
      */
-    public int delete(String[] where) {
+    public int delete(String[] where) throws Exception {
         return delete(new String[][]{where});
     }
 

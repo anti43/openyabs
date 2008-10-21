@@ -1,5 +1,5 @@
 /*
- * customers.java
+ * Kundes.java
  *
  * Created on 28. Dezember 2007, 19:17
  */
@@ -56,7 +56,7 @@ public class backupView extends mp4.items.visual.CommonPanel{
     private SimpleDateFormat df2;
     private ArrayList list;
 
-    /** Creates new form customers
+    /** Creates new form Kundes
      * @param aThis 
      */
     public backupView(mainframe aThis) {

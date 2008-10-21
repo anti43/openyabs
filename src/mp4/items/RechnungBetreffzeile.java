@@ -47,7 +47,7 @@ public class RechnungBetreffzeile extends mp4.items.Things implements mp4.datenb
         return id;
     }
 
-    public void destroy() {
+    public void destroy() throws Exception {
         ConnectionHandler.instanceOf().clone(TABLE_BILL_TEXTS_TO_BILLS).delete(new String[]{"id", this.getId().toString()});
         this.id = 0;
     }

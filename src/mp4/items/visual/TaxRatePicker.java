@@ -1,5 +1,5 @@
 /*
- * CustomerPicker.java
+ * KundePicker.java
  *
  * Created on 15. Januar 2008, 07:02
  */
@@ -8,7 +8,7 @@ package mp4.items.visual;
 
 import javax.swing.ListSelectionModel;
 import mp4.interfaces.DataPanel;
-import mp4.items.Customer;
+import mp4.items.Kunde;
 import mp4.utils.tabellen.SelectionCheck;
 import mp4.items.Steuersatz;
 import mp4.utils.tabellen.TableFormat;
@@ -26,7 +26,7 @@ public class TaxRatePicker extends javax.swing.JFrame {
     private String k;
     private Steuersatz tax;
 
-    /** Creates new form CustomerPicker
+    /** Creates new form KundePicker
      * @param frame 
      */
     public TaxRatePicker(DataPanel  frame) {

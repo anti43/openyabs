@@ -1,5 +1,5 @@
 /*
- * customers.java
+ * Kundes.java
  *
  * Created on 28. Dezember 2007, 19:17
  */
@@ -13,7 +13,7 @@ import javax.swing.table.DefaultTableModel;
 import mp4.globals.Strings;
 import mp4.items.visual.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
-import mp4.items.Customer;
+import mp4.items.Kunde;
 import mp4.items.HistoryItem;
 import mp4.frames.mainframe;
 import mp4.items.visual.serialLetter;
@@ -39,25 +39,25 @@ import mp4.utils.tabellen.models.ContactListTableModel;
  */
 public class customersView extends mp4.items.visual.CommonPanel implements mp4.datenbank.installation.Tabellen, ContactPanel {
 
-    public Customer current;
+    public Kunde current;
     private String[][] liste;
     private mainframe mainframe;
     private boolean edited = false;
     private boolean numberfieldedited;
 
-    /** Creates new form customers
+    /** Creates new form Kundes
      * @param frame 
      */
     public customersView(mainframe frame) {
 
         initComponents();
-        current = new Customer();
+        current = new Kunde();
         this.mainframe = frame;
         updateListTable();
         fillSearchTable();
     }
 
-    public customersView(Customer current, mainframe frame) {
+    public customersView(Kunde current, mainframe frame) {
         initComponents();
         this.current = current;
         this.mainframe = frame;
@@ -996,7 +996,7 @@ public class customersView extends mp4.items.visual.CommonPanel implements mp4.d
         jButton13.setEnabled(!c.readonly);
 
         try {
-            this.current = (Customer) c;
+            this.current = (Kunde) c;
             this.changeTabText("Kunde: " + current.getName());
             this.jTable1.setModel(new CustomerBAListTableModel(current));
             TableFormat.stripFirst(jTable1);
@@ -1097,7 +1097,7 @@ public class customersView extends mp4.items.visual.CommonPanel implements mp4.d
             if (!numberfieldedited && current.isValid()) {
                 jTextField4.setText(null);
             }
-            current = new Customer();
+            current = new Kunde();
 
             if (jTextField4.getText() == null || jTextField4.getText().length() == 0) {
                 String s = current.getNfh().getNextNumber();
@@ -1135,7 +1135,7 @@ public class customersView extends mp4.items.visual.CommonPanel implements mp4.d
                         Popup.warn(exception.getMessage(), Popup.ERROR);
                     }
                     try {
-                        new HistoryItem(ConnectionHandler.instanceOf(), Strings.CUSTOMER, "Kunde Nummer: " + current.getNummer() + " angelegt.");
+                        new HistoryItem(ConnectionHandler.instanceOf(), Strings.Kunde, "Kunde Nummer: " + current.getNummer() + " angelegt.");
                     } catch (Exception ex) {
                         Popup.warn(ex.getMessage(), Popup.ERROR);
                     }
@@ -1159,7 +1159,7 @@ public class customersView extends mp4.items.visual.CommonPanel implements mp4.d
 
         if (evt.getClickCount() >= 2 && selection.checkID() && evt.getButton() == MouseEvent.BUTTON1) {
             try {
-                this.setContact(new Customer(selection.getId()));
+                this.setContact(new Kunde(selection.getId()));
                 jTabbedPane1.setSelectedIndex(0);
             } catch (Exception exception) {
                 exception.printStackTrace();
@@ -1187,7 +1187,7 @@ public class customersView extends mp4.items.visual.CommonPanel implements mp4.d
                     current.setNotizen(jTextArea1.getText());
                     if (current.save()) {
                         setEdited(false);
-                        new HistoryItem(ConnectionHandler.instanceOf(), Strings.CUSTOMER, "Kunde Nummer: " + current.getNummer() + " gespeichert.");
+                        new HistoryItem(ConnectionHandler.instanceOf(), Strings.Kunde, "Kunde Nummer: " + current.getNummer() + " gespeichert.");
                         updateListTable();
                     }
                 } catch (Exception ex) {
@@ -1206,7 +1206,7 @@ public class customersView extends mp4.items.visual.CommonPanel implements mp4.d
         SelectionCheck selection = new SelectionCheck(jTable3);
         if (evt.getClickCount() >= 2 && selection.checkID() && evt.getButton() == MouseEvent.BUTTON1) {
             try {
-                this.setContact(new Customer(selection.getId()));
+                this.setContact(new Kunde(selection.getId()));
             } catch (Exception exception) {
                 Log.Debug(this,exception, true);
             }
@@ -1266,14 +1266,14 @@ public class customersView extends mp4.items.visual.CommonPanel implements mp4.d
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
         if (current.isValid()) {
-            serialLetter.instanceOf().addCustomer(current);
+            serialLetter.instanceOf().addContact(current);
         }
     }//GEN-LAST:event_jButton10ActionPerformed
 
 private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
 
     liste = current.getAll(true);
-    String k = "id, " + TABLE_CUSTOMER_FIELDS;
+    String k = "id, " + TABLE_Kunde_FIELDS;
     this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
     TableFormat.stripFirst(jTable2);
 }//GEN-LAST:event_jButton11ActionPerformed
@@ -1359,15 +1359,15 @@ private void deactivate() {
                 try {
                     current.deactivate(current.getId().toString());
 
-                    new HistoryItem(ConnectionHandler.instanceOf(), Strings.CUSTOMER, "Kunde Nummer: " + current.getNummer() + " gelöscht.");
+                    new HistoryItem(ConnectionHandler.instanceOf(), Strings.Kunde, "Kunde Nummer: " + current.getNummer() + " gelöscht.");
 
                     this.liste = current.getAll(false);
-                    String k = "id," + TABLE_CUSTOMER_FIELDS;
+                    String k = "id," + TABLE_Kunde_FIELDS;
 
                     this.jTable2.setModel(new DefaultTableModel(liste, k.split(",")));
                     TableFormat.stripFirst(jTable2);
 
-                    current = new Customer(ConnectionHandler.instanceOf());
+                    current = new Kunde(ConnectionHandler.instanceOf());
                 } catch (Exception ex) {
                     Popup.warn(ex.getMessage(), Popup.ERROR);
                 }

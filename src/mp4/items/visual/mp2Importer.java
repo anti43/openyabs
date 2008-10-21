@@ -21,7 +21,7 @@ import mp4.items.visual.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.items.Rechnung;
 import mp4.items.RechnungPosten;
-import mp4.items.Customer;
+import mp4.items.Kunde;
 import mp4.items.Product;
 import mp4.logs.*;
 import mp4.utils.datum.DateConverter;
@@ -254,7 +254,7 @@ public class mp2Importer extends javax.swing.JFrame {
                         //Kundennummer", "Firma", "Anrede", "Vorname", "Name", "Str", "PLZ", "Ort", 
                         //"Tel", "Mobil", "Mail", "Webseite", "Notizen", "nn", "deleted"
 
-                        Customer c = new Customer(ConnectionHandler.instanceOf());
+                        Kunde c = new Kunde(ConnectionHandler.instanceOf());
 
                         c.setNummer(kund[i][1]);
                         c.setFirma(kund[i][2]);
@@ -296,11 +296,11 @@ public class mp2Importer extends javax.swing.JFrame {
 
                         compat.mp2.kunde k = new compat.mp2.kunde(mainf, r.kundenID);
                         Log.Debug(this,"MP3 Kunde Instanzieren : Nummer:" + k.Kundennummer);
-                        Customer c = null;
+                        Kunde c = null;
 //     Log.Debug(this,rechngs);
                         Rechnung b = new Rechnung(ConnectionHandler.instanceOf());
                         try {
-                            c = new Customer( k.Kundennummer);
+                            c = new Kunde( k.Kundennummer);
                         } catch (Exception ex) {
                             Logger.getLogger(mp2Importer.class.getName()).log(Level.SEVERE, null, ex);
                         }

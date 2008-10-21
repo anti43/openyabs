@@ -1,5 +1,5 @@
 /*
- * CustomerPicker.java
+ * KundePicker.java
  *
  * Created on 15. Januar 2008, 07:02
  */
@@ -26,7 +26,7 @@ public class ManufacturerPicker extends javax.swing.JFrame {
     private Hersteller contact;
     private String k;
 
-    /** Creates new form CustomerPicker
+    /** Creates new form KundePicker
      * @param frame 
      */
     public ManufacturerPicker(productsView frame) {

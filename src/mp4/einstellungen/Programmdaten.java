@@ -115,8 +115,8 @@ public class Programmdaten implements mp4.datenbank.installation.Tabellen {
         return datahandler.getString("SERVICES_NUMMER_FORMAT");
     }
 
-    public void setCUSTOMER_NUMMER_FORMAT(String CUSTOMER_NUMMER_FORMAT) {
-        datahandler.setString("CUSTOMER_NUMMER_FORMAT", CUSTOMER_NUMMER_FORMAT);
+    public void setKunde_NUMMER_FORMAT(String Kunde_NUMMER_FORMAT) {
+        datahandler.setString("Kunde_NUMMER_FORMAT", Kunde_NUMMER_FORMAT);
     }
 
     public String getPRODUCT_NUMMER_FORMAT() {
@@ -127,8 +127,8 @@ public class Programmdaten implements mp4.datenbank.installation.Tabellen {
         datahandler.setString("PRODUCT_NUMMER_FORMAT", PRODUCT_NUMMER_FORMAT);
     }
 
-    public String getCUSTOMER_NUMMER_FORMAT() {
-        return datahandler.getString("CUSTOMER_NUMMER_FORMAT");
+    public String getKunde_NUMMER_FORMAT() {
+        return datahandler.getString("Kunde_NUMMER_FORMAT");
     }
 
     public void setSUPPLIER_NUMMER_FORMAT(String SUPPLIER_NUMMER_FORMAT) {

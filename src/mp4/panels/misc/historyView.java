@@ -1,5 +1,5 @@
 /*
- * customers.java
+ * Kundes.java
  *
  * Created on 28. Dezember 2007, 19:17
  */
@@ -25,7 +25,7 @@ public class historyView extends mp4.items.visual.CommonPanel implements Runnabl
     private Thread t;
 
     /** 
-     * Creates new form customers
+     * Creates new form Kundes
      * @param frame 
      */
     public historyView(mainframe frame) {

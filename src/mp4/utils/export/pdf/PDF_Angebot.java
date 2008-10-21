@@ -17,17 +17,16 @@
 package mp4.utils.export.pdf;
 
 import java.awt.Image;
-import javax.print.DocFlavor;
-import mp4.items.Customer;
+import mp4.items.Kunde;
 import mp4.items.Angebot;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Locale;
 import mp4.interfaces.Template;
-import mp4.utils.ui.inputfields.InputVerifiers;
 import mp4.logs.*;
 import mp4.einstellungen.Einstellungen;
 import mp4.einstellungen.Programmdaten;
+import mp4.utils.files.PDFFile;
 import mp4.utils.listen.ListenDataUtils;
 import mp4.utils.zahlen.FormatNumber;
 
@@ -35,15 +34,16 @@ import mp4.utils.zahlen.FormatNumber;
  *
  * @author anti43
  */
-public class PDF_Angebot implements Template{
+public class PDF_Angebot implements Template {
 
     private Einstellungen l;
     private Angebot r;
-    private Customer k;
+    private Kunde k;
     private Object[][] products;
     private Double netto = 0d;
     private Double brutto = 0d;
     private ArrayList fields = new ArrayList();
+    private String path;
 
     /**
      * 
@@ -52,16 +52,36 @@ public class PDF_Angebot implements Template{
     public PDF_Angebot(Angebot b) {
         l = Einstellungen.instanceOf();
         this.r = b;
-        k = new Customer(b.getKundenId());
+        k = new Kunde(b.getKundenId());
         products = r.getProductlistAsArray();
         Locale.setDefault(Einstellungen.instanceOf().getLocale());
+        path = l.getAngebot_Verzeichnis() + File.separator + r.getAngebotnummer().replaceAll(" ", "_") + "_" + k.getFirma().replaceAll(" ", "_") +
+                "_" + k.getName().replaceAll(" ", "_") + ".pdf".trim();
     }
 
-   
-    @SuppressWarnings("unchecked")
-    private String[][] buildFieldList(){
+    public PDF_Angebot(Angebot b, boolean persistent) {
+        if (persistent) {
+            l = Einstellungen.instanceOf();
+            this.r = b;
+            k = new Kunde(b.getKundenId());
+            products = r.getProductlistAsArray();
+            Locale.setDefault(Einstellungen.instanceOf().getLocale());
+            path = l.getAngebot_Verzeichnis() + File.separator + r.getAngebotnummer().replaceAll(" ", "_") + "_" + k.getFirma().replaceAll(" ", "_") +
+                    "_" + k.getName().replaceAll(" ", "_") + ".pdf".trim();
+        } else {
+            l = Einstellungen.instanceOf();
+            this.r = b;
+            k = new Kunde(b.getKundenId());
+            products = r.getProductlistAsArray();
+            Locale.setDefault(Einstellungen.instanceOf().getLocale());
+            path = PDFFile.getTempFilename() + ".pdf".trim();
+        }
+    }
 
-        if(Programmdaten.instanceOf().getBILLPANEL_CHECKBOX_MITFIRMENNAME_state()) {
+    @SuppressWarnings("unchecked")
+    private String[][] buildFieldList() {
+
+        if (Programmdaten.instanceOf().getBILLPANEL_CHECKBOX_MITFIRMENNAME_state()) {
             fields.add(new String[]{"company", k.getFirma()});
         }
         fields.add(new String[]{"name", k.getAnrede() + " " + k.getVorname() + " " + k.getName()});
@@ -79,7 +99,7 @@ public class PDF_Angebot implements Template{
                 if (products[i][2] != null && String.valueOf(products[i][2]).length() > 0) {
                     fields.add(new String[]{"quantity" + t, FormatNumber.formatDezimal((Double) products[i][1])});
                     fields.add(new String[]{"product" + t, String.valueOf(products[i][2])});
-                    fields.add(new String[]{"price" + t, FormatNumber.formatLokalCurrency((Double) products[i][5])});                  
+                    fields.add(new String[]{"price" + t, FormatNumber.formatLokalCurrency((Double) products[i][5])});
                     fields.add(new String[]{"price_net" + t, FormatNumber.formatLokalCurrency((Double) products[i][4])});
                     fields.add(new String[]{"price_tax" + t, FormatNumber.formatLokalCurrency((Double) products[i][3])});
                     fields.add(new String[]{"multipliedprice" + t, FormatNumber.formatLokalCurrency((Double) products[i][5] * (Double) products[i][1])});
@@ -87,19 +107,20 @@ public class PDF_Angebot implements Template{
                     brutto = brutto + ((Double) products[i][5] * (Double) products[i][1]);
                 }
             } catch (Exception exception) {
-                Log.Debug(this,exception);
+                Log.Debug(this, exception);
             }
         }
         Double tax = brutto - netto;
         fields.add(new String[]{"taxrate", l.getHauptsteuersatz().toString()});
         fields.add(new String[]{"tax", FormatNumber.formatLokalCurrency(tax)});
         fields.add(new String[]{"totalprice", FormatNumber.formatLokalCurrency(brutto)});
-        
+
         return ListenDataUtils.StringListToTableArray(fields);
     }
 
+    @Override
     public String getPath() {
-        return  l.getAngebot_Verzeichnis() + File.separator + r.getAngebotnummer().replaceAll(" ", "_") + "_" + k.getFirma().replaceAll(" ", "_") + "_" + k.getName().replaceAll(" ", "_") + ".pdf".trim();
+        return path;
     }
 
     public String[][] getFields() {
@@ -107,12 +128,10 @@ public class PDF_Angebot implements Template{
     }
 
     public Image getImage() {
-       return null;
+        return null;
     }
 
     public String getTemplate() {
         return l.getAngebot_Template();
     }
-
- 
 }

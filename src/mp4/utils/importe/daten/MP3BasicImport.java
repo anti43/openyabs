@@ -46,7 +46,7 @@ public class MP3BasicImport extends SwingWorker {
 
             String[] singleVals = data[i];
 
-            mp4.items.Customer kunde = new mp4.items.Customer();
+            mp4.items.Kunde kunde = new mp4.items.Kunde();
             String[][] bdata = bills.select("id", "kundenid", singleVals[0], true);
 
 

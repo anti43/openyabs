@@ -18,7 +18,7 @@ package mp4.utils.export.pdf;
 
 import java.awt.Image;
 import mp4.items.Rechnung;
-import mp4.items.Customer;
+import mp4.items.Kunde;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -41,7 +41,7 @@ public class PDF_Mahnung implements Template{
 
     private Einstellungen l;
     private Rechnung rechnung;
-    private Customer k;
+    private Kunde k;
     private Object[][] products;
     private Double netto = 0d;
     private Double brutto = 0d;
@@ -62,7 +62,7 @@ public class PDF_Mahnung implements Template{
     public PDF_Mahnung(Rechnung bill, String text,Double betrag, int nummer) {
         l = Einstellungen.instanceOf();
         this.rechnung = bill;
-        k = new Customer(bill.getKundenId());
+        k = new Kunde(bill.getKundenId());
         products = rechnung.getProductlistAsArray();
         this.betrag = betrag;
         this.nummer = nummer;

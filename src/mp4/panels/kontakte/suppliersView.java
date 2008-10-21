@@ -1163,7 +1163,7 @@ public class suppliersView extends mp4.items.visual.CommonPanel implements mp4.d
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
         if (current.isValid()) {
-            serialLetter.instanceOf().addLieferant(current);
+            serialLetter.instanceOf().addContact(current);
         }
     }//GEN-LAST:event_jButton10ActionPerformed
 

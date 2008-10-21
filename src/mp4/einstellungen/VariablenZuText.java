@@ -4,7 +4,7 @@
  */
 package mp4.einstellungen;
 
-import mp4.items.Customer;
+import mp4.items.People;
 import mp4.items.Rechnung;
 import mp4.utils.datum.DateConverter;
 
@@ -26,27 +26,33 @@ public class VariablenZuText {
 
         for (int i = 0; i < object.length; i++) {
             if (object[i].getClass().isInstance(new mp4.items.Rechnung())) {
-                if(object[i]!=null)text = parseRechnung(text, (mp4.items.Rechnung) object[i]);
-            } else if (object[i].getClass().isInstance(new mp4.items.Customer())) {
-                if(object[i]!=null)text = parseKunde(text, (mp4.items.Customer) object[i]);
+                if (object[i] != null) {
+                    text = parseRechnung(text, (mp4.items.Rechnung) object[i]);
+                }
+            } else if (object[i].getClass().isInstance(new mp4.items.Kunde()) ||
+                    object[i].getClass().isInstance(new mp4.items.Lieferant()) ||
+                    object[i].getClass().isInstance(new mp4.items.Hersteller())) {
+                if (object[i] != null) {
+                    text = parseKunde(text, (mp4.items.People) object[i]);
+                }
             }
         }
 
         return text;
     }
 
-    private static String parseKunde(String text, Customer customer) {
-          return text.replaceAll(VariablenZuText.KUNDE_NAME, customer.getName()).
-                replaceAll(VariablenZuText.KUNDE_NUMMER  , customer.getNummer()).
-                replaceAll(VariablenZuText.KUNDE_ANREDE  , customer.getAnrede()).
-                replaceAll(VariablenZuText.KUNDE_VORNAME , customer.getVorname());
-              
+    private static String parseKunde(String text, People kontakt) {
+        return text.replaceAll(VariablenZuText.KUNDE_NAME, kontakt.getName()).
+                replaceAll(VariablenZuText.KUNDE_NUMMER, kontakt.getNummer()).
+                replaceAll(VariablenZuText.KUNDE_ANREDE, kontakt.getAnrede()).
+                replaceAll(VariablenZuText.KUNDE_VORNAME, kontakt.getVorname());
+
     }
 
     private static String parseRechnung(String text, Rechnung rechnung) {
         return text.replaceAll(VariablenZuText.RECHNUNG_NUMMER, rechnung.getRechnungnummer()).
                 replaceAll(VariablenZuText.RECHNUNG_DATUM, DateConverter.getDefDateString(rechnung.getDatum())).
                 replaceAll(VariablenZuText.RECHNUNG_AF_DATUM, DateConverter.getDefDateString(rechnung.getAusfuehrungsDatum()));
-   
+
     }
 }

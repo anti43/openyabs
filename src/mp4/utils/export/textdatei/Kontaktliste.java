@@ -38,8 +38,8 @@ public class Kontaktliste implements TableData, Tabellen{
      */
     public Kontaktliste(Class clazz) {
     
-        if (clazz.isInstance(new mp4.items.Customer())) {
-           queryhandler = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(TABLE_CUSTOMERS);
+        if (clazz.isInstance(new mp4.items.Kunde())) {
+           queryhandler = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(TABLE_KundeS);
         } else if (clazz.isInstance(new mp4.items.Lieferant())) {
            queryhandler = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(TABLE_SUPPLIER);
         } else if (clazz.isInstance(new mp4.items.Hersteller())) {
@@ -53,8 +53,8 @@ public class Kontaktliste implements TableData, Tabellen{
      * @param kontakt_id The id of the contact
      */
     public Kontaktliste(Class clazz, Integer kontakt_id) {
-        if (clazz.isInstance(new mp4.items.Customer())) {
-           queryhandler = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(TABLE_CUSTOMERS);
+        if (clazz.isInstance(new mp4.items.Kunde())) {
+           queryhandler = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(TABLE_KundeS);
         } else if (clazz.isInstance(new mp4.items.Lieferant())) {
            queryhandler = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(TABLE_SUPPLIER);
         } else if (clazz.isInstance(new mp4.items.Hersteller())) {

@@ -25,7 +25,7 @@ import mp4.logs.*;
 import mp4.items.visual.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.interfaces.Waiter;
-import mp4.items.Customer;
+import mp4.items.Kunde;
 
 import mp4.items.Hersteller;
 import mp4.items.HistoryItem;
@@ -403,8 +403,8 @@ private javax.swing.JTextField jTextField1;
                     for (int i = 0; i < data.length; i++) {
                         People contact = null;
                         if (jRadioButton3.isSelected()) {
-                            contact = new Customer();
-                            contact.setNummer(((Customer)contact).getNfh().getNextNumber());
+                            contact = new Kunde();
+                            contact.setNummer(((Kunde)contact).getNfh().getNextNumber());
                         } else if (jRadioButton2.isSelected()) {
                             contact = new Lieferant();
                             contact.setNummer(((Lieferant)contact).getNfh().getNextNumber());

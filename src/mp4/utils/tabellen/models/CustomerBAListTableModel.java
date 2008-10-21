@@ -18,7 +18,7 @@
 package mp4.utils.tabellen.models;
 
 import mp4.items.Angebot;
-import mp4.items.Customer;
+import mp4.items.Kunde;
 import mp4.items.Rechnung;
 import mp4.utils.tabellen.DataModelUtils;
 
@@ -32,7 +32,7 @@ public class CustomerBAListTableModel extends MPTableModel {
     /**
      * 
      */
-    public CustomerBAListTableModel(Customer current){
+    public CustomerBAListTableModel(Kunde current){
         super(new Class[]{java.lang.String.class, java.lang.String.class,
                     java.lang.String.class, java.lang.Boolean.class
                 }, new boolean[]{false,false,false,false},
@@ -40,7 +40,7 @@ public class CustomerBAListTableModel extends MPTableModel {
                 new Object[]{"id", "Nummer","Datum","Bezahlt"});
     }
     
-    public CustomerBAListTableModel(Customer current, boolean ANGEBOT){
+    public CustomerBAListTableModel(Kunde current, boolean ANGEBOT){
         super(new Class[]{java.lang.String.class, java.lang.String.class,
                     java.lang.String.class, java.lang.String.class
                 }, new boolean[]{false,false,false,false},

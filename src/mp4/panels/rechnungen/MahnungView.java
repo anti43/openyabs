@@ -11,7 +11,7 @@ import mp4.logs.*;
 import mp4.items.Product;
 import mp4.items.Rechnung;
 
-import mp4.items.Customer;
+import mp4.items.Kunde;
 import mp4.utils.export.pdf.PDF_Mahnung;
 import mp4.benutzerverwaltung.User;
 import mp4.einstellungen.Einstellungen;
@@ -33,25 +33,25 @@ import mp4.utils.zahlen.FormatNumber;
  */
 public class MahnungView extends javax.swing.JFrame {
     private Rechnung bill;
-    private Customer c;
+    private Kunde c;
     private DataPanel view;
     
     /** Creates new form overdue
      * @param bill
-     * @param customer
+     * @param Kunde
      * @param view 
      */
-    public MahnungView(Rechnung bill, Customer customer, DataPanel  view) {
+    public MahnungView(Rechnung bill, Kunde Kunde, DataPanel  view) {
         initComponents();
         
         this.bill=bill;
         this.bill.setMahnungen(this.bill.getMahnungen()+1);
-        this.c=customer;
+        this.c=Kunde;
         this.view = view;   
         this.jTextArea1.setText(Programmdaten.instanceOf().getMAHNUNG_TEXT_DEFAULT());
         
         jLabel2.setText(bill.getRechnungnummer());
-        jLabel6.setText(customer.getFirma());
+        jLabel6.setText(Kunde.getFirma());
         jTextField1.setText(DateConverter.getTodayDefDate());
         
         jTextField2.setInputVerifier(InputVerifiers.getDoubleInputVerfier(jTextField2));
@@ -230,7 +230,7 @@ public class MahnungView extends javax.swing.JFrame {
        if(mainframe.getUser().doAction(User.EDITOR)) {
             try {
 
-//            new PDF_Mahnung(bill, VariablenZuText.parseText(jTextArea1.getText(), new Object[]{bill, customer}), bill.getMahnungen().toString(), FormatNumber.parseDezimal(jTextField2.getText()));
+//            new PDF_Mahnung(bill, VariablenZuText.parseText(jTextArea1.getText(), new Object[]{bill, Kunde}), bill.getMahnungen().toString(), FormatNumber.parseDezimal(jTextField2.getText()));
                 
                 view.setProduct(new Product("Mahnung vom " + DateConverter.getTodayDefDate(),
                         FormatNumber.parseDezimal(jTextField2.getText())));

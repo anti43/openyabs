@@ -122,28 +122,32 @@ public class Angebot extends mp4.items.Things implements mp4.datenbank.installat
      */
     public Object[][] getProductlistAsArray() {
 
-        Object[][] nstr = new Object[products.length][6];
-
         try {
-            for (int i = 0; i < nstr.length; i++) {
-                try {
-                    nstr[i][0] = Integer.valueOf(products[i][0]);
-                    nstr[i][1] = Double.valueOf(products[i][2]);
-                    nstr[i][2] = String.valueOf(products[i][3]);
-                    nstr[i][3] = Double.valueOf(products[i][5]);
-                    nstr[i][4] = Double.valueOf(products[i][4]);
-                    nstr[i][5] = Double.valueOf(
-                            (Double.valueOf(products[i][4]) *
-                            (((Double.valueOf(products[i][5])) / 100) + 1)));
-                } catch (NumberFormatException numberFormatException) {
-                    nstr[i][4] = Double.valueOf("0");
-                    nstr[i][5] = Double.valueOf("0");
+            Object[][] nstr = new Object[products.length][6];
+
+            try {
+                for (int i = 0; i < nstr.length; i++) {
+                    try {
+                        nstr[i][0] = Integer.valueOf(products[i][0]);
+                        nstr[i][1] = Double.valueOf(products[i][2]);
+                        nstr[i][2] = String.valueOf(products[i][3]);
+                        nstr[i][3] = Double.valueOf(products[i][5]);
+                        nstr[i][4] = Double.valueOf(products[i][4]);
+                        nstr[i][5] = Double.valueOf(
+                                (Double.valueOf(products[i][4]) *
+                                (((Double.valueOf(products[i][5])) / 100) + 1)));
+                    } catch (NumberFormatException numberFormatException) {
+                        nstr[i][4] = Double.valueOf("0");
+                        nstr[i][5] = Double.valueOf("0");
+                    }
                 }
+            } catch (Exception exception) {
+                Log.Debug(this, exception);
             }
-        } catch (Exception exception) {
-            Log.Debug(this,exception);
+            return nstr;
+        } catch (Exception e) {
+            return new Object[0][0];
         }
-        return nstr;
     }
 
     public int search(Integer rechnungid) {
@@ -353,7 +357,7 @@ public class Angebot extends mp4.items.Things implements mp4.datenbank.installat
      */
     public String[][] getAllWithDepencies() {
         Query q = query.clone(TABLE_OFFERS);
-        String[][] prods = q.select("angebote.id,angebotnummer,angebote.datum,name,firma, auftragdatum", null, TABLE_CUSTOMERS, "kundenid");
+        String[][] prods = q.select("angebote.id,angebotnummer,angebote.datum,name,firma, auftragdatum", null, TABLE_KundeS, "kundenid");
         return prods;
     }
 
@@ -364,7 +368,7 @@ public class Angebot extends mp4.items.Things implements mp4.datenbank.installat
      */
     public String[][] getWithDepencies(String table1fields) {
         Query q = query.clone(TABLE_OFFERS);
-        String[][] prods = q.select(table1fields, null, TABLE_CUSTOMERS, "kundenid");
+        String[][] prods = q.select(table1fields, null, TABLE_KundeS, "kundenid");
         return prods;
     }
 

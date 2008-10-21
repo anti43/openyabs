@@ -1,5 +1,5 @@
 /*
- * customers.java
+ * Kundes.java
  *
  * Created on 28. Dezember 2007, 19:17
  */
@@ -18,7 +18,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import mp4.globals.Strings;
 
-import mp4.items.visual.CustomerPicker;
+import mp4.items.visual.KundePicker;
 import mp4.items.visual.DatePick;
 import mp4.logs.*;
 import mp4.items.visual.Popup;
@@ -26,7 +26,7 @@ import mp4.utils.tabellen.models.PostenTableModel;
 import mp4.items.visual.ProductPicker;
 import mp4.datenbank.verbindung.ConnectionHandler;
 
-import mp4.items.Customer;
+import mp4.items.Kunde;
 import mp4.items.HistoryItem;
 import mp4.items.Product;
 import mp4.frames.mainframe;
@@ -50,6 +50,8 @@ import mp4.utils.combobox.CheckComboRenderer;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.datum.vDate;
 import mp4.utils.export.druck.DruckJob;
+import mp4.utils.export.pdf.PDF_Angebot;
+import mp4.utils.export.pdf.PDF_Lieferschein;
 import mp4.utils.files.PDFFile;
 import mp4.utils.tabellen.DataModelUtils;
 import mp4.utils.tabellen.SelectionCheck;
@@ -67,7 +69,7 @@ import mp4.utils.tasks.Job;
 public class billsView extends mp4.items.visual.CommonPanel implements DataPanel, mp4.datenbank.installation.Tabellen {
 
     private Rechnung currentBill;
-    private Customer customer;
+    private Kunde Kunde;
     private mainframe mainframe;
     private TableCalculator calculator;
     private Angebot angebot;
@@ -85,7 +87,7 @@ public class billsView extends mp4.items.visual.CommonPanel implements DataPanel
         settings = Einstellungen.instanceOf();
 
         currentBill = new Rechnung();
-        this.customer = new Customer(ConnectionHandler.instanceOf());
+        this.Kunde = new Kunde(ConnectionHandler.instanceOf());
         this.mainframe = frame;
 
         try {
@@ -173,7 +175,7 @@ public class billsView extends mp4.items.visual.CommonPanel implements DataPanel
         PostenTableModel m;
         calculator.setStopped(true);
 
-        if (hasCustomer() && validDate()) {
+        if (hasKunde() && validDate()) {
 
             m = (PostenTableModel) jTable1.getModel();
             Rechnung bill = new Rechnung();
@@ -184,7 +186,7 @@ public class billsView extends mp4.items.visual.CommonPanel implements DataPanel
             } else {
                 bill.setAusfuehrungsDatum(bill.getDatum());
             }
-            bill.setKundenId(getCustomer().getId());
+            bill.setKundenId(getKunde().getId());
             bill.setGesamtpreis(calculator.brutto);
             bill.setGesamttax(calculator.allovertax);
             bill.setBezahlt(jCheckBox2.isSelected());
@@ -278,7 +280,7 @@ public class billsView extends mp4.items.visual.CommonPanel implements DataPanel
         this.changeTabText("Rechnung: " + current.getRechnungnummer());
         this.currentBill = current;
         if (current.getKundenId() != 0) {
-            this.setContact(new Customer(current.getKundenId()));
+            this.setContact(new Kunde(current.getKundenId()));
         }
         if (current.getAngebot() != null) {
             setAngebot(current.getAngebot());
@@ -304,6 +306,7 @@ public class billsView extends mp4.items.visual.CommonPanel implements DataPanel
             this.jCheckBox3.setSelected(true);
             ampel(null);
         } else {
+            this.jCheckBox3.setSelected(false);
             if (current.isVerzug()) {
                 ampel(2);
             }
@@ -328,22 +331,22 @@ public class billsView extends mp4.items.visual.CommonPanel implements DataPanel
     @Override
     public void setContact(People c) {
 
-        this.customer = (Customer) c;
+        this.Kunde = (Kunde) c;
 
-        jLabel19.setText(customer.getNummer());
-        jTextField5.setText(customer.getName());
-        jTextField4.setText(customer.getFirma());
-        jButton2.setText(customer.getFirma());
+        jLabel19.setText(Kunde.getNummer());
+        jTextField5.setText(Kunde.getName());
+        jTextField4.setText(Kunde.getFirma());
+        jButton2.setText(Kunde.getFirma());
         jButton2.setEnabled(true);
 
-        if (getCustomer().isDeleted()) {
+        if (getKunde().isDeleted()) {
             jLabel19.setForeground(Color.GRAY);
         }
     }
 
-    private boolean hasCustomer() {
-        if (getCustomer() != null) {
-            if (getCustomer().getId() != null && customer.getId() > 0 && !customer.isDeleted()) {
+    private boolean hasKunde() {
+        if (getKunde() != null) {
+            if (getKunde().getId() != null && Kunde.getId() > 0 && !Kunde.isDeleted()) {
                 return true;
             } else {
                 return false;
@@ -1336,7 +1339,7 @@ public class billsView extends mp4.items.visual.CommonPanel implements DataPanel
         calculator.setStopped(true);
 
         if (hasValidCurrentBill()) {
-            if (hasCustomer() && validDate()) {
+            if (hasKunde() && validDate()) {
 
 //                calculated = DataModelUtils.calculateTableCols(jTable1, 0, 3, 4);
                 m = (PostenTableModel) jTable1.getModel();
@@ -1345,7 +1348,7 @@ public class billsView extends mp4.items.visual.CommonPanel implements DataPanel
 
                 bill.setDatum(DateConverter.getDate(jTextField7.getText()));
                 bill.setAusfuehrungsDatum(DateConverter.getDate(jTextField11.getText()));
-                bill.setKundenId(getCustomer().getId());
+                bill.setKundenId(getKunde().getId());
                 bill.setBezahlt(jCheckBox2.isSelected());
                 bill.setStorno(jCheckBox3.isSelected());
                 bill.setGesamtpreis(calculator.brutto);
@@ -1432,7 +1435,7 @@ public class billsView extends mp4.items.visual.CommonPanel implements DataPanel
 
     private void jButton9ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
 
-        new CustomerPicker(this);
+        new KundePicker(this);
         setEdited(true);
 
     }//GEN-LAST:event_jButton9ActionPerformed
@@ -1509,7 +1512,7 @@ public class billsView extends mp4.items.visual.CommonPanel implements DataPanel
 
     private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
         if (currentBill.hasId()) {
-            new MahnungView(currentBill, customer, this);
+            new MahnungView(currentBill, Kunde, this);
         }
         setEdited(true);
     }//GEN-LAST:event_jButton15ActionPerformed
@@ -1579,8 +1582,20 @@ private void jButton12KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_j
 
 private void jButton12MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton12MouseClicked
     if (currentBill.hasId()) {
-        Job job = new Job((Waitable) new PDFFile(new PDF_Rechnung(currentBill)), (Waiter) new DruckJob(), mainframe.getMainProgress());
+        Job job = new Job((Waitable) new PDFFile(new PDF_Rechnung(currentBill, false)), (Waiter) new DruckJob(), mainframe.getMainProgress());
         job.execute();
+        if(jCheckBox4.isSelected()){
+            Job job2 = new Job((Waitable) new PDFFile(new PDF_Lieferschein(currentBill)), (Waiter) new DruckJob(), mainframe.getMainProgress());
+            job2.execute();
+        }
+        if(jCheckBox5.isSelected()){
+            if (currentBill.getAngebot() != null) {
+                Job job3 = new Job((Waitable) new PDFFile(new PDF_Angebot(currentBill.getAngebot())), (Waiter) new DruckJob(), mainframe.getMainProgress());
+                job3.execute();
+            } else {
+                Popup.notice("Kein Angebot vorhanden.");       
+            }
+        }
     } else {
         Popup.notice("Sie müssen die Rechnung erst anlegen.");
     }
@@ -1600,7 +1615,7 @@ private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
 
     if (jButton2.isEnabled()) {
-        this.jTable3.setModel(new BillSearchListTableModel("kundenid", customer.getId()));
+        this.jTable3.setModel(new BillSearchListTableModel("kundenid", Kunde.getId()));
         TableFormat.stripFirst(jTable3);
     }
 }//GEN-LAST:event_jButton2ActionPerformed
@@ -1721,8 +1736,8 @@ if (Popup.Y_N_dialog("Diesen Datensatz wirklich stornieren?") && mainframe.getUs
         }
     }
 
-    public Customer getCustomer() {
-        return customer;
+    public Kunde getKunde() {
+        return Kunde;
     }
 
     public javax.swing.JTextField getJTextField4() {
@@ -1741,7 +1756,7 @@ if (Popup.Y_N_dialog("Diesen Datensatz wirklich stornieren?") && mainframe.getUs
     }
 
     public People getContact() {
-        return customer;
+        return Kunde;
     }
 
     public void switchTab(int i) {

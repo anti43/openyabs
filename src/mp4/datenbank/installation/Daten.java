@@ -35,8 +35,8 @@ public abstract class Daten {
     
 //        ******************************************************************************************************************************
         
-        "INSERT INTO steuersaetze (name, wert) VALUES ('Default', 0.0)",
-        "INSERT INTO steuersaetze (name, wert) VALUES ('Allgemein - DE', 19)",
+        "INSERT INTO steuersaetze (name, wert) VALUES ('Allgemein - KU', 0.0)",
+        "INSERT INTO steuersaetze (name, wert) VALUES ('Allgemein - DE', 19.0)",
         "INSERT INTO hersteller (nummer,Firma,Anrede,Vorname,Name,Str,PLZ,Ort,Tel,Fax,Mobil,Mail,Webseite,Notizen ) VALUES ('HS-00000','Default','','','Default','','','','','','','','','') ",
         "INSERT INTO lieferanten (nummer,Firma,Anrede,Vorname,Name,Str,PLZ,Ort,Tel,Fax,Mobil,Mail,Webseite,Notizen ) VALUES ('LF-00000','Default','','','Default','','','','','','','','','') ",
 
@@ -55,7 +55,7 @@ public abstract class Daten {
         "INSERT INTO programmdaten(name, wert) VALUES ('ANGEBOT_NUMMER_FORMAT',  '{JAHR}-&!00000&!1')", 
         "INSERT INTO programmdaten(name, wert) VALUES ('MANUFACTURER_NUMMER_FORMAT',  'HS-&!00000&!0')",
         "INSERT INTO programmdaten(name, wert) VALUES ('SUPPLIER_NUMMER_FORMAT',  'LF-&!00000&!0')", 
-        "INSERT INTO programmdaten(name, wert) VALUES ('CUSTOMER_NUMMER_FORMAT',  'KU-&!00000&!0')",
+        "INSERT INTO programmdaten(name, wert) VALUES ('Kunde_NUMMER_FORMAT',  'KU-&!00000&!0')",
         "INSERT INTO programmdaten(name, wert) VALUES ('SERVICES_NUMMER_FORMAT',  'DL-&!00000&!0')", 
         "INSERT INTO programmdaten(name, wert) VALUES ('PRODUCT_NUMMER_FORMAT',   'PR-&!00000&!0')", 
         "INSERT INTO programmdaten(name, wert) VALUES ('BILLPANEL_MASK',   'Default')",

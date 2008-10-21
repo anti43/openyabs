@@ -1,5 +1,5 @@
 /*
- * customers.java
+ * Kundes.java
  *
  * Created on 28. Dezember 2007, 19:17
  */
@@ -77,7 +77,7 @@ public class productsView extends CommonPanel implements DataPanel, mp4.datenban
     private DialogForFile dialog = null;
     private boolean numberfieldedited;
 
-    /** Creates new form customers
+    /** Creates new form Kundes
      * @param frame 
      */
     public productsView(mainframe frame) {

@@ -69,8 +69,8 @@ public class NumberFormatHandler {
              return Programmdaten.instanceOf().getANGEBOT_NUMMER_FORMAT().split("&!");
         } else if (type.getClass().isInstance(new mp4.items.Dienstleistung())) {
              return Programmdaten.instanceOf().getSERVICES_NUMMER_FORMAT().split("&!");
-        } else if (type.getClass().isInstance(new mp4.items.Customer())) {
-             return Programmdaten.instanceOf().getCUSTOMER_NUMMER_FORMAT().split("&!");
+        } else if (type.getClass().isInstance(new mp4.items.Kunde())) {
+             return Programmdaten.instanceOf().getKunde_NUMMER_FORMAT().split("&!");
         } else if (type.getClass().isInstance(new mp4.items.Lieferant())) {
              return Programmdaten.instanceOf().getSUPPLIER_NUMMER_FORMAT().split("&!");
         } else if (type.getClass().isInstance(new mp4.items.Hersteller())) {
@@ -88,8 +88,8 @@ public class NumberFormatHandler {
             Programmdaten.instanceOf().setANGEBOT_NUMMER_FORMAT(formatString);
         } else if (type.getClass().isInstance(new mp4.items.Dienstleistung())) {
             Programmdaten.instanceOf().setSERVICES_NUMMER_FORMAT(formatString);
-        } else if (type.getClass().isInstance(new mp4.items.Customer())) {
-            Programmdaten.instanceOf().setCUSTOMER_NUMMER_FORMAT(formatString);
+        } else if (type.getClass().isInstance(new mp4.items.Kunde())) {
+            Programmdaten.instanceOf().setKunde_NUMMER_FORMAT(formatString);
         } else if (type.getClass().isInstance(new mp4.items.Lieferant())) {
             Programmdaten.instanceOf().setSUPPLIER_NUMMER_FORMAT(formatString);
         } else if (type.getClass().isInstance(new mp4.items.Hersteller())) {
@@ -137,8 +137,8 @@ public class NumberFormatHandler {
             processAngebotType();
         } else if (type.getClass().isInstance(new mp4.items.Dienstleistung())) {
             processServicesType();
-        } else if (type.getClass().isInstance(new mp4.items.Customer())) {
-            processCustomerType();
+        } else if (type.getClass().isInstance(new mp4.items.Kunde())) {
+            processKundeType();
         } else if (type.getClass().isInstance(new mp4.items.Lieferant())) {
             processSupplierType();
         } else if (type.getClass().isInstance(new mp4.items.Hersteller())) {
@@ -158,8 +158,8 @@ public class NumberFormatHandler {
         setFormatter(parseFormat(format));
     }
 
-    private void processCustomerType() {
-        format = Programmdaten.instanceOf().getCUSTOMER_NUMMER_FORMAT();
+    private void processKundeType() {
+        format = Programmdaten.instanceOf().getKunde_NUMMER_FORMAT();
         setFormatter(parseFormat(format));
     }
 

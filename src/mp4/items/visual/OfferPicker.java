@@ -1,5 +1,5 @@
 /*
- * CustomerPicker.java
+ * KundePicker.java
  *
  * Created on 15. Januar 2008, 07:02
  */
@@ -10,7 +10,7 @@ package mp4.items.visual;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import mp4.items.Angebot;
-import mp4.items.Customer;
+import mp4.items.Kunde;
 import mp4.utils.tabellen.SelectionCheck;
 import mp4.panels.rechnungen.billsView;
 import mp4.utils.tabellen.TableFormat;
@@ -25,13 +25,13 @@ public class OfferPicker extends javax.swing.JFrame {
     private billsView frame;
     private boolean order = false;
     private String k = "id, Datum, Nummer";
-    private Customer kunde;
+    private Kunde kunde;
 
-    /** Creates new form CustomerPicker
+    /** Creates new form KundePicker
      * @param frame
      * @param contact 
      */
-    public OfferPicker(billsView frame, Customer contact) {
+    public OfferPicker(billsView frame, Kunde contact) {
         initComponents();
         this.frame = frame;
         this.kunde = contact;

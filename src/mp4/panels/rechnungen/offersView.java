@@ -1,5 +1,5 @@
 /*
- * customers.java
+ * Kundes.java
  *
  * Created on 28. Dezember 2007, 19:17
  */
@@ -20,7 +20,7 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableModel;
 import mp4.globals.Strings;
 
-import mp4.items.visual.CustomerPicker;
+import mp4.items.visual.KundePicker;
 import mp4.items.visual.DatePick;
 import mp4.utils.ui.inputfields.InputVerifiers;
 import mp4.logs.*;
@@ -30,7 +30,7 @@ import mp4.utils.tabellen.models.PostenTableModel;
 import mp4.items.visual.ProductPicker;
 import mp4.datenbank.verbindung.ConnectionHandler;
 
-import mp4.items.Customer;
+import mp4.items.Kunde;
 import mp4.items.HistoryItem;
 import mp4.items.Product;
 import mp4.frames.mainframe;
@@ -48,10 +48,14 @@ import mp4.items.Angebot;
 import mp4.items.People;
 import mp4.frames.PdfVorschauWindow;
 import mp4.interfaces.DataPanel;
+import mp4.interfaces.Waiter;
 import mp4.items.Dienstleistung;
 import mp4.items.Rechnung;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.datum.vDate;
+import mp4.utils.export.druck.DruckJob;
+import mp4.utils.export.pdf.PDF_Rechnung;
+import mp4.utils.files.PDFFile;
 import mp4.utils.tabellen.DataModelUtils;
 import mp4.utils.tabellen.SelectionCheck;
 import mp4.utils.tabellen.TableCalculator;
@@ -71,11 +75,11 @@ public class offersView extends mp4.items.visual.CommonPanel implements DataPane
 
     private Angebot currentOffer;
     private String[][] liste;
-    private Customer customer;
+    private Kunde Kunde;
     private mainframe mainframe;
     private TableCellEditor editor;
     private SimpleDateFormat df;
-    private Customer oldcustomer;
+    private Kunde oldKunde;
     private double defaultTaxRate = 0d;
     private Einstellungen settings;
     private boolean pdf = false;
@@ -86,7 +90,7 @@ public class offersView extends mp4.items.visual.CommonPanel implements DataPane
     public offersView() {
     }
 
-    /** Creates new form customers
+    /** Creates new form Kundes
      * @param frame 
      */
     public offersView(mainframe frame) {
@@ -95,7 +99,7 @@ public class offersView extends mp4.items.visual.CommonPanel implements DataPane
         settings = Einstellungen.instanceOf();
         defaultTaxRate = settings.getHauptsteuersatz();
         currentOffer = new Angebot();
-        this.customer = new Customer(ConnectionHandler.instanceOf());
+        this.Kunde = new Kunde(ConnectionHandler.instanceOf());
         this.mainframe = frame;
 
         try {
@@ -135,7 +139,7 @@ public class offersView extends mp4.items.visual.CommonPanel implements DataPane
 //        CalculatedTableValues calculated;
         PostenTableModel m;
         SelectionCheck selection = new SelectionCheck(jTable1);
-        if (hasCustomer() && validDate()) {
+        if (hasKunde() && validDate()) {
 
 
 //            calculated = DataModelUtils.calculateTableCols(jTable1, 0, 3, 4);
@@ -146,7 +150,7 @@ public class offersView extends mp4.items.visual.CommonPanel implements DataPane
             offer.setDatum(DateConverter.getDate(jTextField7.getText()));
             offer.setBisDatum(DateConverter.getDate(jTextField11.getText()));
             offer.setValidVon(DateConverter.getDate(jTextField13.getText()));
-            offer.setKundenId(getCustomer().getId());
+            offer.setKundenId(getKunde().getId());
 
             offer.setAngebotnummer(offer.getNfh().getNextNumber());
 
@@ -228,7 +232,7 @@ public class offersView extends mp4.items.visual.CommonPanel implements DataPane
 
         this.currentOffer = current;
         if (current.getKundenId() != 0) {
-            this.setContact(new Customer(current.getKundenId()));
+            this.setContact(new Kunde(current.getKundenId()));
         }
 
         jTextField7.setText(DateConverter.getDefDateString(current.getDatum()));
@@ -256,21 +260,21 @@ public class offersView extends mp4.items.visual.CommonPanel implements DataPane
 
     public void setContact(People c) {
 
-        oldcustomer = this.customer;
-        this.customer = (Customer) c;
+        oldKunde = this.Kunde;
+        this.Kunde = (Kunde) c;
 
-        jLabel19.setText(customer.getNummer());
-        jTextField5.setText(customer.getName());
-        jTextField4.setText(customer.getFirma());
+        jLabel19.setText(Kunde.getNummer());
+        jTextField5.setText(Kunde.getName());
+        jTextField4.setText(Kunde.getFirma());
 
-        if (getCustomer().isDeleted()) {
+        if (getKunde().isDeleted()) {
             jLabel19.setForeground(Color.GRAY);
         }
     }
 
-    private boolean hasCustomer() {
-        if (getCustomer() != null) {
-            if (getCustomer().getId() != null && customer.getId() > 0 && !customer.isDeleted()) {
+    private boolean hasKunde() {
+        if (getKunde() != null) {
+            if (getKunde().getId() != null && Kunde.getId() > 0 && !Kunde.isDeleted()) {
                 return true;
             } else {
                 return false;
@@ -1101,7 +1105,7 @@ public class offersView extends mp4.items.visual.CommonPanel implements DataPane
         PostenTableModel m;
         SelectionCheck selection = new SelectionCheck(jTable1);
         if (hasValidCurrentBill()) {
-            if (hasCustomer() && validDate()) {
+            if (hasKunde() && validDate()) {
 
 //                calculated = DataModelUtils.calculateTableCols(jTable1, 0, 3, 4);
                 m = (PostenTableModel) jTable1.getModel();
@@ -1111,7 +1115,7 @@ public class offersView extends mp4.items.visual.CommonPanel implements DataPane
                 offer.setDatum(DateConverter.getDate(jTextField7.getText()));
                 offer.setBisDatum(DateConverter.getDate(jTextField11.getText()));
                 offer.setValidVon(DateConverter.getDate(jTextField13.getText()));
-                offer.setKundenId(getCustomer().getId());
+                offer.setKundenId(getKunde().getId());
 
                 offer.add(m);
 
@@ -1164,7 +1168,7 @@ public class offersView extends mp4.items.visual.CommonPanel implements DataPane
 
     private void clear() {
 //
-//        this.customer = new Customer();
+//        this.Kunde = new Kunde();
 //        this.currentOffer = new Angebot();
 //
 //        jTextField4.setText("");
@@ -1190,7 +1194,7 @@ public class offersView extends mp4.items.visual.CommonPanel implements DataPane
 
     private void jButton9ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
 
-        new CustomerPicker(this);
+        new KundePicker(this);
         setEdited(true);
     }//GEN-LAST:event_jButton9ActionPerformed
 
@@ -1238,14 +1242,12 @@ public class offersView extends mp4.items.visual.CommonPanel implements DataPane
     }//GEN-LAST:event_jButton5MouseClicked
 
     private void jButton12MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton12MouseClicked
-        jButton4MouseClicked(evt);
-
-        if (currentOffer != null && currentOffer.hasId()) {
-            new PDF_Angebot(currentOffer);
-            new HistoryItem(ConnectionHandler.instanceOf(), Strings.BILL, "Angebot Nummer: " + currentOffer.getAngebotnummer() + " als PDF erzeugt.");
-        } else {
-            Popup.notice("Sie müssen das Angebot erst anlegen.");
-        }
+         if (currentOffer.hasId()) {
+        Job job = new Job((Waitable) new PDFFile(new PDF_Angebot(currentOffer, false)), (Waiter) new DruckJob(), mainframe.getMainProgress());
+        job.execute();
+    } else {
+        Popup.notice("Sie müssen das Angebot erst anlegen.");
+    }
     }//GEN-LAST:event_jButton12MouseClicked
 
     private void jTextField6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextField6MouseClicked
@@ -1340,12 +1342,14 @@ private void jButton13MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
 }//GEN-LAST:event_jButton13MouseClicked
 
 private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-    if (currentOffer.hasId()) {
-        Job job = new Job((Waitable) new PDF_Angebot(currentOffer), new PdfVorschauWindow(), mainframe.getMainProgress());
+   
+     if (currentOffer.hasId()) {
+        Job job = new Job(new PDFFile(new PDF_Angebot(currentOffer)), new PdfVorschauWindow(), mainframe.getMainProgress());
         job.execute();
     } else {
         Popup.notice("Sie müssen das Angebot erst anlegen.");
     }
+    
 }//GEN-LAST:event_jButton1ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton jButton1;
@@ -1436,8 +1440,8 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         }
     }
 
-    public Customer getCustomer() {
-        return customer;
+    public Kunde getKunde() {
+        return Kunde;
     }
 
     public javax.swing.JTextField getJTextField4() {
@@ -1453,7 +1457,7 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     }
 
     public People getContact() {
-        return customer;
+        return Kunde;
     }
 
     public void switchTab(int i) {

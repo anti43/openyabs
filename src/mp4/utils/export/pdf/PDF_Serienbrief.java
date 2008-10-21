@@ -18,7 +18,7 @@ package mp4.utils.export.pdf;
 
 import mp4.utils.files.PDFFile;
 import java.awt.Image;
-import mp4.items.Customer;
+import mp4.items.Kunde;
 import mp4.einstellungen.Einstellungen;
 
 
@@ -31,6 +31,7 @@ import java.util.Date;
 import mp4.einstellungen.Programmdaten;
 import mp4.interfaces.Template;
 
+import mp4.items.People;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.listen.ListenDataUtils;
 /**
@@ -40,7 +41,7 @@ import mp4.utils.listen.ListenDataUtils;
 public class PDF_Serienbrief implements Template{
 
 
-    private Customer kontakt;
+    private People kontakt;
     private String text = "";
     private String pretext;
     private Einstellungen l;
@@ -55,7 +56,7 @@ public class PDF_Serienbrief implements Template{
      * @param text
      * @param named 
      */
-    public PDF_Serienbrief(Customer contact, String pretext, String text, boolean named) {
+    public PDF_Serienbrief(People contact, String pretext, String text, boolean named) {
             l = Einstellungen.instanceOf();
             kontakt = contact;
             this.text = text;

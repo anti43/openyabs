@@ -1,5 +1,5 @@
 /*
- * CustomerPicker.java
+ * KundePicker.java
  *
  * Created on 15. Januar 2008, 07:02
  */
@@ -9,7 +9,7 @@ package mp4.items.visual;
 
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
-import mp4.items.Customer;
+import mp4.items.Kunde;
 import mp4.panels.rechnungen.offersView;
 import mp4.utils.tabellen.SelectionCheck;
 import mp4.interfaces.ContactPanel;
@@ -21,20 +21,20 @@ import mp4.utils.ui.Position;
  *
  * @author  anti43
  */
-public class CustomerPicker extends javax.swing.JFrame {
+public class KundePicker extends javax.swing.JFrame {
 
     private DataPanel frame;
     private boolean order = false;
-    private Customer cust;
+    private Kunde cust;
     private String k;
 
-    /** Creates new form CustomerPicker
+    /** Creates new form KundePicker
      * @param frame 
      */
-    public CustomerPicker(DataPanel frame) {
+    public KundePicker(DataPanel frame) {
         initComponents();
         this.frame = frame;
-        cust = new Customer();
+        cust = new Kunde();
         new Position(this);
 
         String[][] list = cust.select("id, nummer, firma, name, ort", "nummer", "", "nummer", true);
@@ -47,14 +47,14 @@ public class CustomerPicker extends javax.swing.JFrame {
 
     }
 
-    public CustomerPicker(offersView aThis) {
+    public KundePicker(offersView aThis) {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
     private void getData() {
         SelectionCheck sel = new SelectionCheck(jTable2);
         if (sel.checkID()) {
-            frame.setContact(new Customer(sel.getId()));
+            frame.setContact(new Kunde(sel.getId()));
             this.dispose();
         }
     }
@@ -165,7 +165,7 @@ public class CustomerPicker extends javax.swing.JFrame {
             }
         });
 
-        jLabel5.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel5.setFont(new java.awt.Font("Tahoma", 1, 11));
         jLabel5.setText("Suche");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);

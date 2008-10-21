@@ -5,7 +5,6 @@
  */
 package mp4.panels.misc;
 
-
 import mp4.items.visual.Popup;
 
 import mp4.frames.mainframe;
@@ -208,10 +207,10 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         SelectionCheck selection = new SelectionCheck(jTable1);
 
         if (selection.checkID()) {
-            if (selection.getId() != 1) {
-                new Steuersatz().delete(selection.getId());
-            } else {
-                Popup.notice("Der Default -Steuersatz kann nicht entfernt werden!");
+            int del = new Steuersatz().delete(selection.getId());
+            if (del == 0) {
+                Popup.notice("Dieser Steuersatz kann nicht entfernt werden,\n" +
+                        "er ist einem Produkt /einer Dienstleistung zugewiesen.");
             }
         }
         jTable1.setModel(new TaxTableModel());

@@ -38,7 +38,7 @@ public interface Strings {
     public String ONE_INSTANCE = "Beenden Sie zuerst alle anderen Instanzen von MP!";
     public String SETTINGS_EXAMPLE = "#Beispiel:<version>;<dbpath>;<dbuser>;<dbpassword>;<dbdriver> [(DERBY)(MYSQL)(custom driver)]";
     
-    public String TABLE_CUSTOMER_PRINT_HEADER =
+    public String TABLE_Kunde_PRINT_HEADER =
             "K-Nr" + "," + "Firma" + "," + "Anrede" + "," + "Vorname" +
             "," + "Name" + "," + "Str" + "," + "PLZ" + "," + "Ort" + "," +
             "Tel" + "," + "Fax" + "," + "Mobil" + "," + "Mail" + "," + "Webseite";
@@ -165,7 +165,7 @@ public interface Strings {
     public final String NULL = "";
     public final String ID = "id";
     public final String NOTNULL = "NOT null";
-    public final String CUSTOMER = "Kunde";
+    public final String Kunde = "Kunde";
     public final String SUPPLIER = "Lieferant";
     public final String MANUFACTURER = "Hersteller";
     public final String PRODUCT = "Produkt";

@@ -211,7 +211,7 @@ public class DataModelUtils {
     public static Object[][] inserValue(Object[][] original_array, Object value, int place) {
         Object[][] array_formatiert = null;
         if (original_array.length > 0) {
-            array_formatiert = new String[original_array.length][original_array[0].length + 1];
+            array_formatiert = new Object[original_array.length][original_array[0].length + 1];
             for (int zeile = 0; zeile < array_formatiert.length; zeile++) {
                 int merker = 0;
                 for (int spalte = 0; spalte < array_formatiert[zeile].length; spalte++, merker++) {
@@ -261,5 +261,20 @@ public class DataModelUtils {
 
         return table;
 
+    }
+
+    public static Object[][] toObjectArray(String[][] originalarray) {
+        
+      
+            Object[][] data = new Object[originalarray.length][];
+
+            for (int idx = 0; idx < originalarray.length; idx++) {
+                for (int i = 0; i < originalarray[idx].length; i++) {
+                    data[idx]= (Object[])originalarray[idx];
+                }
+            }
+
+            return data;
+     
     }
 }

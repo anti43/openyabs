@@ -4,9 +4,9 @@ import java.io.File;
 import java.io.FileInputStream;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.print.Doc;
 import javax.print.DocFlavor;
 import javax.print.DocPrintJob;
@@ -19,7 +19,6 @@ import javax.print.attribute.Attribute;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.standard.MediaSizeName;
 import mp4.interfaces.Printable;
-import mp4.interfaces.Template;
 import mp4.interfaces.Waiter;
 import mp4.logs.*;
 import mp4.main.Main;
@@ -52,6 +51,59 @@ public class DruckJob implements Waiter {
         prservDflt = PrintServiceLookup.lookupDefaultPrintService();
         prservices = PrintServiceLookup.lookupPrintServices(flavor, aset);
 
+    }
+
+    public void print(ArrayList<File> filelist) {
+        if (null == prservices || 0 >= prservices.length) {
+            if (null != prservDflt) {
+                System.err.println("Nur Default-Printer, da lookupPrintServices fehlgeschlagen.");
+                prservices = new PrintService[]{prservDflt};
+            }
+        }
+        Log.Debug(this,"Print-Services:");
+        int i;
+        for (i = 0; i < prservices.length; i++) {
+            Log.Debug(this,"  " + i + ":  " + prservices[i] + ((prservDflt != prservices[i]) ? "" : " (Default)"));
+        }
+        PrintService prserv = null;
+        if (0 <= idxPrintService && idxPrintService < prservices.length) {
+            prserv = prservices[idxPrintService];
+        } else {
+            if (!Arrays.asList(prservices).contains(prservDflt)) {
+                prservDflt = null;
+            }
+            prserv = ServiceUI.printDialog(null, 50, 50, prservices, prservDflt, null, aset);
+        }
+        if (null != prserv) {
+            Log.Debug(this,"Ausgewaehlter Print-Service:");
+            Log.Debug(this,"      " + prserv);
+            printPrintServiceAttributesAndDocFlavors(prserv);
+            DocPrintJob pj = prserv.createPrintJob();
+            
+            
+            for (int j = 0; j < filelist.size(); j++) {
+                FileInputStream fis = null;
+                try {
+                    File file = filelist.get(j);
+                    fis = new FileInputStream(file);
+                    Doc doc = new SimpleDoc(fis, flavor, null);
+                    try {
+                        pj.print(doc, aset);
+                    } catch (PrintException ex) {
+                        Log.Debug(ex);
+                    }
+                } catch (FileNotFoundException ex) {
+                    Log.Debug(ex);
+                } finally {
+                    try {
+                        fis.close();
+                    } catch (IOException ex) {
+                        Log.Debug(ex);
+                    }
+                }
+            }
+        }
+        
     }
 
     /*
@@ -145,6 +197,7 @@ public class DruckJob implements Waiter {
     /*
      * Prints a File or mp4.interfaces.Printable Object
      */
+    @Override
     public void set(Object object) {
         try {
             try {

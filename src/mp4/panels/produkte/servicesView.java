@@ -1,5 +1,5 @@
 /*
- * customers.java
+ * Kundes.java
  *
  * Created on 28. Dezember 2007, 19:17
  */
@@ -61,7 +61,7 @@ public class servicesView extends mp4.items.visual.CommonPanel implements mp4.da
     private DialogForFile dialog = null;
     private boolean numberfieldedited;
 
-    /** Creates new form customers
+    /** Creates new form Kundes
      * @param frame 
      */
     public servicesView(mainframe frame) {

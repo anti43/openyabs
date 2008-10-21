@@ -16,6 +16,8 @@
  */
 package mp4.datenbank.verbindung;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mp4.interfaces.Queries;
 import mp4.items.visual.Popup;
 
@@ -177,7 +179,11 @@ public class EasyQuery implements Queries {
      */
     public int delete(Integer id) {
         String[] where = {"id", id.toString(), ""};
-        return q.delete(where);
+        try {
+            return q.delete(where);
+        } catch (Exception ex) {
+            return 0;
+        }
     }
 
     /**

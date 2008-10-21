@@ -16,7 +16,7 @@
 // */
 package mp4.cache;
 //
-//import mp4.items.Customer;
+//import mp4.items.Kunde;
 //import mp4.items.Ausgabe;
 //import mp4.items.Angebot;
 //import mp4.items.HistoryItem;
@@ -178,9 +178,9 @@ public class undoCache {
 //            
 //            new HistoryItem("Undo","Rückgängig: " + text);
 //            
-//        } else if (item.getClass().isInstance(new Customer())) {
+//        } else if (item.getClass().isInstance(new Kunde())) {
 //
-//            Customer it = (Customer) item;
+//            Kunde it = (Kunde) item;
 //
 //
 //            switch (aktion) {
@@ -277,9 +277,9 @@ public class undoCache {
 //            Ausgabe it = (Ausgabe) item;
 //            text = "Ausgabe Nummer " + it.getId() + text;
 //
-//        } else if (item.getClass().isInstance(new Customer())) {
+//        } else if (item.getClass().isInstance(new Kunde())) {
 //
-//            Customer it = (Customer) item;
+//            Kunde it = (Kunde) item;
 //            text = "Kunde Nummer " + it.getNummer() + text;
 //
 //        } else if (item.getClass().isInstance(new Lieferant())) {

@@ -72,7 +72,7 @@ import mp4.panels.misc.startView;
 
 import mp4.benutzerverwaltung.visual.Verwaltung;
 import mp4.datenbank.verbindung.Query;
-import mp4.items.Customer;
+import mp4.items.Kunde;
 import mp4.items.Lieferant;
 import mp4.einstellungen.Einstellungen;
 import mp4.einstellungen.Programmdaten;
@@ -1395,7 +1395,7 @@ private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 private void jMenuItem24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem24ActionPerformed
 
     dialog = new DialogForFile(DialogForFile.FILES_ONLY, "Kontaktliste.csv");
-    TextDatFile file = new TextDatFile(ArrayUtils.ObjectToStringArray(new Kontaktliste(new Customer().getClass()).getData()), Kontaktliste.header);
+    TextDatFile file = new TextDatFile(ArrayUtils.ObjectToStringArray(new Kontaktliste(new Kunde().getClass()).getData()), Kontaktliste.header);
     new Job(file, dialog, mainProgressBar).execute();
 
 
@@ -1404,8 +1404,8 @@ private void jMenuItem24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
 private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
 
     try {
-        TableHtmlWriter writ = new TableHtmlWriter(new Customer().getPrintModel());
-        writ.setHeader(Strings.TABLE_CUSTOMER_PRINT_HEADER.split(","));
+        TableHtmlWriter writ = new TableHtmlWriter(new Kunde().getPrintModel());
+        writ.setHeader(Strings.TABLE_Kunde_PRINT_HEADER.split(","));
         writ.createHtml(1, Color.LIGHT_GRAY);
 
         DialogForFile dialogd = new DialogForFile(DialogForFile.FILES_ONLY, "Kundenliste.html");
