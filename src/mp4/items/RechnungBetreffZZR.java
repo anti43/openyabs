@@ -28,7 +28,7 @@ import mp4.utils.combobox.CheckComboItem;
  */
 public class RechnungBetreffZZR extends Things {
 
-    private int id = 0;
+
     private String[][] values;
     private Integer rechnungid = 0;
     private ArrayList liste = new ArrayList();
@@ -137,6 +137,19 @@ public class RechnungBetreffZZR extends Things {
             data[i][1] = zeile.getName();
             data[i][2] = zeile.getText();
         }
+        return data;
+    }
+    
+    public String[] getPrintData(){
+    
+        String[] data = new String[liste.size()];
+        RechnungBetreffzeile zeile;
+
+        for (int i = 0; i < liste.size(); i++) {
+            zeile = (RechnungBetreffzeile) liste.get(i);
+            data[i] = zeile.getText();
+        }
+        
         return data;
     }
 

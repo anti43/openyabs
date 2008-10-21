@@ -21,13 +21,10 @@ import mp4.items.Kunde;
 import mp4.items.Rechnung;
 
 import java.io.*;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 
-import javax.print.DocFlavor;
 import mp4.interfaces.Template;
 import mp4.items.visual.Popup;
-import mp4.utils.ui.inputfields.InputVerifiers;
 
 import mp4.einstellungen.Einstellungen;
 
@@ -52,6 +49,7 @@ public class PDF_Rechnung implements Template {
     private Double brutto = 0d;
     private String path;
     private ArrayList fields = new ArrayList();
+    private String[] betreffzeilen;
 
     /**
      * 
@@ -62,6 +60,7 @@ public class PDF_Rechnung implements Template {
         this.r = b;
         k = new Kunde(b.getKundenId());
         products = r.getProductlistAsArray();
+        this.betreffzeilen = b.getZeilenHandler().getPrintData();
         path = l.getRechnung_Verzeichnis() + File.separator + r.getRechnungnummer().replaceAll(" ", "_") + "_" + k.getFirma().replaceAll(" ", "_") + "_" + k.getName().replaceAll(" ", "_") + ".pdf".trim();
 
     }
@@ -72,17 +71,19 @@ public class PDF_Rechnung implements Template {
             this.r = b;
             k = new Kunde(b.getKundenId());
             products = r.getProductlistAsArray();
+            this.betreffzeilen = b.getZeilenHandler().getPrintData();
             path = l.getRechnung_Verzeichnis() + File.separator + r.getRechnungnummer().replaceAll(" ", "_") + "_" + k.getFirma().replaceAll(" ", "_") + "_" + k.getName().replaceAll(" ", "_") + ".pdf".trim();
         } else {
             l = Einstellungen.instanceOf();
             this.r = b;
             k = new Kunde(b.getKundenId());
             products = r.getProductlistAsArray();
+            this.betreffzeilen = b.getZeilenHandler().getPrintData();
             path = PDFFile.getTempFilename() + ".pdf".trim();
         }
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "unchecked"})
     private String[][] buildFieldList() {
 
         if (Programmdaten.instanceOf().getBILLPANEL_CHECKBOX_MITFIRMENNAME_state()) {
@@ -117,6 +118,10 @@ public class PDF_Rechnung implements Template {
         fields.add(new String[]{"taxrate", l.getHauptsteuersatz().toString()});
         fields.add(new String[]{"tax", FormatNumber.formatLokalCurrency(tax)});
         fields.add(new String[]{"totalprice", FormatNumber.formatLokalCurrency(brutto)});
+        
+        for(int o=0;o<betreffzeilen.length;o++){
+            fields.add(new String[]{"line" + o, betreffzeilen[o]});
+        }
 
         return (String[][]) ListenDataUtils.StringListToTableArray(fields);
     }

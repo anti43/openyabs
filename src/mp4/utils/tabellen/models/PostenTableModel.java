@@ -10,7 +10,6 @@ import mp4.einstellungen.Programmdaten;
 import mp4.items.Dienstleistung;
 import mp4.items.Product;
 import mp4.utils.tabellen.DataModelUtils;
-import mp4.utils.zahlen.FormatNumber;
 import mp4.utils.text.*;
 
 /**
@@ -20,6 +19,7 @@ import mp4.utils.text.*;
 public class PostenTableModel extends MPTableModel {
 
     private static final long serialVersionUID = -2651695142723361873L;
+    private double stst =  Einstellungen.instanceOf().getHauptsteuersatz();
 
     public PostenTableModel() {
         super(new Class[]{java.lang.Integer.class, java.lang.Double.class,
@@ -31,15 +31,15 @@ public class PostenTableModel extends MPTableModel {
                 },
                 new Object[][]{
                     {null, 1.0, null, Einstellungen.instanceOf().getHauptsteuersatz(), null, null},
-                    {null, 1.0, null, Einstellungen.instanceOf().getHauptsteuersatz(), null, null},
-                    {null, 1.0, null, Einstellungen.instanceOf().getHauptsteuersatz(), null, null},
-                    {null, 1.0, null, Einstellungen.instanceOf().getHauptsteuersatz(), null, null},
-                    {null, 1.0, null, Einstellungen.instanceOf().getHauptsteuersatz(), null, null},
-                    {null, 1.0, null, Einstellungen.instanceOf().getHauptsteuersatz(), null, null},
-                    {null, 1.0, null, Einstellungen.instanceOf().getHauptsteuersatz(), null, null},
-                    {null, 1.0, null, Einstellungen.instanceOf().getHauptsteuersatz(), null, null},
-                    {null, 1.0, null, Einstellungen.instanceOf().getHauptsteuersatz(), null, null},
-                    {null, 1.0, null, Einstellungen.instanceOf().getHauptsteuersatz(), null, null}
+                    {null, 1.0, null, Einstellungen.cachedHauptsteuersatz, null, null},
+                    {null, 1.0, null, Einstellungen.cachedHauptsteuersatz, null, null},
+                    {null, 1.0, null, Einstellungen.cachedHauptsteuersatz, null, null},
+                    {null, 1.0, null, Einstellungen.cachedHauptsteuersatz, null, null},
+                    {null, 1.0, null, Einstellungen.cachedHauptsteuersatz, null, null},
+                    {null, 1.0, null, Einstellungen.cachedHauptsteuersatz, null, null},
+                    {null, 1.0, null, Einstellungen.cachedHauptsteuersatz, null, null},
+                    {null, 1.0, null, Einstellungen.cachedHauptsteuersatz, null, null},
+                    {null, 1.0, null, Einstellungen.cachedHauptsteuersatz, null, null}
                 },
                 new Object[]{"id", "Anzahl", "Bezeichnung", "Steuersatz", "Nettopreis", "Bruttopreis"});
         

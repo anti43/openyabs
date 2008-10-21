@@ -25,11 +25,8 @@ import mp4.globals.Constants;
 
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.frames.mainframe;
-import mp4.globals.Strings;
 import mp4.items.visual.Popup;
 
-import mp4.logs.*;
-import mp4.main.Main;
 import mp4.utils.datum.DateConverter;
 
 /**
@@ -44,6 +41,7 @@ import mp4.utils.datum.DateConverter;
 public class Einstellungen extends MethodParser implements mp4.datenbank.installation.Tabellen {
 
     private static Einstellungen dat;
+    public static Double cachedHauptsteuersatz;
     private DataHandler datahandler;
     private User user = new User();
 
@@ -59,6 +57,8 @@ public class Einstellungen extends MethodParser implements mp4.datenbank.install
         }
         return dat;
     }
+
+    
 ////////////////////////////////////////////////////////////////////////////////
     public Object[][] getExtProgs() {
         return getDaten("Programm");
@@ -210,7 +210,8 @@ public class Einstellungen extends MethodParser implements mp4.datenbank.install
     }
 ////////////////////////////////////////////////////////////////////////////////
     public Double getHauptsteuersatz() {
-        return datahandler.getDouble("Hauptsteuersatz");
+        Einstellungen.cachedHauptsteuersatz = datahandler.getDouble("Hauptsteuersatz");
+        return cachedHauptsteuersatz;
     }
 
     public void setHauptsteuersatz(Double Hauptsteuersatz) {

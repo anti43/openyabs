@@ -253,7 +253,9 @@ public class offersView extends mp4.items.visual.CommonPanel implements DataPane
             jCheckBox2.setText("Keine Rechnung");
         }
 
-        this.getJTable1().setModel(current.getProductlistAsTableModel());
+        if(current.getProductlistAsTableModel()!=null) {
+            this.getJTable1().setModel(current.getProductlistAsTableModel());
+        }
         renewTableModel(false);
         resizeFields();
     }
