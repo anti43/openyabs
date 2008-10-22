@@ -30,8 +30,9 @@ public interface Constants {
      * Version info
      */
     public static String VERSION = "4.00";
+     public static String REVISION = "N/A";
     public static String RELEASE_VERSION = "4";
-    public static String TITLE = "[Vermont - in development -]";
+    public static String TITLE = "[Vermont]";
     public static String VERSION_URL = "Not Used";
     public static String JAR_NAME = "MPV4.jar";
     public static String PROG_NAME = "MP-" + Constants.VERSION + "";
@@ -68,4 +69,5 @@ public interface Constants {
     public static String ICON_NAME_WIN = "MP-Rechnungs-Kundenverwaltung.url";
     public static String DESKTOP = USER_HOME + SEP + "Desktop";
     public static String FELDTRENNER = ";";
+   
 }

@@ -18,6 +18,8 @@
  */
 package mp4.globals;
 
+import mp4.utils.files.FileReaderWriter;
+
 /**
  *
  * @author anti43
@@ -176,4 +178,20 @@ public interface Strings {
     public final String KONTEN = "Konten";
     public final String EINNAHME = "Einnahme";
     public final String CONFIG = "Konfiguration";
+    
+    
+    //GPL
+    
+    public final String START_MESSAGE = 
+        "\n"+
+        "\n  MP " + Constants.VERSION + " Copyright (C) 2006-2008  Andreas Weber\n"+
+        "\n  This program comes with ABSOLUTELY NO WARRANTY."+
+        "\n  MP is free software, and you are welcome to redistribute it under certain conditions;" +
+        "\n  Start with -license for details.\n" +
+        "\n  Start with -help for command line options.\n" +
+        "*****************************************************************************************\n\n";
+
+    public final String GPL = new FileReaderWriter("license.txt").read();
+
+    
 }

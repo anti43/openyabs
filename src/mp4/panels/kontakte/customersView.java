@@ -1000,6 +1000,7 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
      * 
      * @param c 
      */
+    @Override
     public void setContact(People c) {
 
         if (getLockable() != null) {
@@ -1279,6 +1280,7 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
     }//GEN-LAST:event_jTable2MouseEntered
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
+        save();
         if (current.isValid()) {
             serialLetter.instanceOf().addContact(current);
         }

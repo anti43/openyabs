@@ -31,6 +31,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import mp4.logs.Log;
 import mp4.utils.listen.ListenDataUtils;
 
 public class FileReaderWriter {
@@ -211,8 +212,10 @@ public class FileReaderWriter {
                 System.out.println(e.toString());
             }
             datenstrom.close();
-        } catch (IOException ex) {
-            Logger.getLogger(FileReaderWriter.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Log.Debug(ex);
+            return "\n" + filer.getPath() + " not found :-( \n";
+            
         }
         return new String(charArray);
     }

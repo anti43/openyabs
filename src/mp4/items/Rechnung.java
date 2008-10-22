@@ -448,7 +448,7 @@ public class Rechnung extends mp4.items.Things implements mp4.datenbank.installa
      */
     public Object[][] getWithDependencies() {
         Query q = query.clone(TABLE_BILLS);
-        String[][] prods = q.select("rechnungen.id,rechnungen.rechnungnummer,rechnungen.datum,nummer,firma, bezahlt, storno", null, TABLE_KundeS, "kundenid", "rechnungen.datum");
+        String[][] prods = q.select("rechnungen.id,rechnungen.rechnungnummer,rechnungen.datum,nummer,firma, bezahlt, storno", null, TABLE_CUSTOMERS, "kundenid", "rechnungen.datum");
         if (prods == null || prods.length < 1) {
             prods = new String[][]{{null, null, null, null, null, "0", "0"}};
         }

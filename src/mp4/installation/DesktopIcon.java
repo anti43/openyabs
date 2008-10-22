@@ -23,6 +23,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import mp4.frames.mainframe;
 import mp4.globals.Constants;
 import mp4.main.Main;
 
@@ -37,7 +38,7 @@ public class DesktopIcon implements Constants{
         File fol = new File(USER_HOME + File.separator + PROG_NAME + File.separator + LIB_DIR);
 
         try {
-            out = new BufferedWriter(new FileWriter(USER_HOME + File.separator + DESKTOP + File.separator + ICON_NAME_LIN, false));
+            out = new BufferedWriter(new FileWriter(DESKTOP + File.separator + ICON_NAME_LIN, false));
 
 
             out.write("[Desktop Entry]");
@@ -69,9 +70,10 @@ public class DesktopIcon implements Constants{
 
             out.write("Categories=Office;X-SuSE-Core-Office;");
             out.newLine();
-
-
+            
             out.close();
+         
+            mainframe.setInfoText(DESKTOP + File.separator + ICON_NAME_LIN+  " angelegt.");
         } catch (IOException ex) {
            ex.printStackTrace();
         } finally {
@@ -88,15 +90,19 @@ public class DesktopIcon implements Constants{
         public static void createWindowsDesktopIcon(){
     
         BufferedWriter out = null;
-        File fol = new File(USER_HOME + File.separator + PROG_NAME + File.separator + LIB_DIR);
 
         try {
-            out = new BufferedWriter(new FileWriter(USER_HOME + File.separator + ICON_NAME_WIN, false));
+            out = new BufferedWriter(new FileWriter(DESKTOP + File.separator + ICON_NAME_WIN, false));
             out.write("[InternetShortcut]");
             out.newLine();
             out.write("URL=file://" + Main.APP_DIR + File.separator + Constants.JAR_NAME);
             out.newLine();
+            out.write("IconIndex=0");
+            out.newLine();
+            out.write("IconFile=" + Main.APP_DIR + File.separator +"lib" + File.separator + "mpd.ico");
+            out.newLine();
             out.close();
+            mainframe.setInfoText(DESKTOP + File.separator + ICON_NAME_WIN +  " angelegt.");
         } catch (IOException ex) {
            ex.printStackTrace();
         } finally {

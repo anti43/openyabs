@@ -33,7 +33,7 @@ import mp4.utils.ui.Position;
 import mp4.items.visual.Popup;
 import mp4.installation.DesktopIcon;
 import mp4.logs.*;
-import mp4.frames.license;
+import mp4.frames.LicenseWindow;
 import mp4.installation.Verzeichnisse;
 
 import mp4.main.Main;
@@ -539,16 +539,18 @@ pack();
                 this.dispose();
             } else {
                 this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                jButton2.setText("Beenden");
+                jButton1.setEnabled(false);
                 Popup.error("Datenbankfehler", "Fehler bei der Installation der Tabellen.");
                 Main.settings.destroy();
-                Log.getLogger().setVisible(true);
             }
         } catch (Exception ex) {
+            jButton2.setText("Beenden");
+            jButton1.setEnabled(false);
             Popup.error(ex.getMessage(), "Fehler bei der Installation.");
             Log.Debug(this,ex);
         } finally {
             this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-
         }
     }
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -569,7 +571,7 @@ pack();
     }//GEN-LAST:event_jButton1ActionPerformed
 
 private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-    license l = new license();
+    LicenseWindow l = new LicenseWindow();
     new Position(l);
     l.setVisible(rootPaneCheckingEnabled);
 }//GEN-LAST:event_jButton3ActionPerformed

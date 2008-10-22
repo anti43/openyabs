@@ -357,7 +357,7 @@ public class Angebot extends mp4.items.Things implements mp4.datenbank.installat
      */
     public String[][] getAllWithDepencies() {
         Query q = query.clone(TABLE_OFFERS);
-        String[][] prods = q.select("angebote.id,angebotnummer,angebote.datum,name,firma, auftragdatum", null, TABLE_KundeS, "kundenid");
+        String[][] prods = q.select("angebote.id,angebotnummer,angebote.datum,name,firma, auftragdatum", null, TABLE_CUSTOMERS, "kundenid");
         return prods;
     }
 
@@ -368,7 +368,7 @@ public class Angebot extends mp4.items.Things implements mp4.datenbank.installat
      */
     public String[][] getWithDepencies(String table1fields) {
         Query q = query.clone(TABLE_OFFERS);
-        String[][] prods = q.select(table1fields, null, TABLE_KundeS, "kundenid");
+        String[][] prods = q.select(table1fields, null, TABLE_CUSTOMERS, "kundenid");
         return prods;
     }
 

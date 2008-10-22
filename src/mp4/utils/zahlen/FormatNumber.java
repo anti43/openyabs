@@ -18,31 +18,35 @@ public class FormatNumber {
 
     public static NumberFormat getDefaultDecimalFormat() {
 
-        return new java.text.DecimalFormat("#,##0.00;(#,##0.00)");
+        return new java.text.DecimalFormat("#,##0.00;");
     }
 
     public static String formatDezimal(Double number) {
-        java.text.DecimalFormat n = new java.text.DecimalFormat("#,##0.00;(#,##0.00)");
+        java.text.DecimalFormat n = new java.text.DecimalFormat("#,##0.00;");
         n.setMaximumFractionDigits(2);
         return n.format(round(number));
     }
 
     public static Double round(double number) {
-//        System.out.print(number);
         BigDecimal b = BigDecimal.valueOf(number);
         b = b.setScale(2, BigDecimal.ROUND_HALF_UP);
         return b.doubleValue();
     }
 
     public static Double parseDezimal(String number) {
-        java.text.DecimalFormat n = new java.text.DecimalFormat("#,##0.00;(#,##0.00)");
+        java.text.DecimalFormat n = new java.text.DecimalFormat("#,##0.00;");
         n.setMaximumFractionDigits(2);
         try {
             return n.parse(number).doubleValue();
         } catch (ParseException ex) {
-//            Popup.notice("Ungültiger Wert: " + number);
-            Log.Debug(FormatNumber.class,ex.getMessage());
-            return null;
+            Log.Debug(FormatNumber.class, ex.getMessage());
+            try {
+                n.applyPattern("###,##0.00;");
+                return n.parse(number).doubleValue();
+            } catch (ParseException parseException) {
+                 Log.Debug(FormatNumber.class, parseException.getMessage());
+                 return null;
+            }
         }
     }
 

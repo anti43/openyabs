@@ -38,20 +38,20 @@ public class Kunde extends mp4.items.People implements mp4.datenbank.installatio
     private NumberFormatHandler nfh;
 
     public Kunde() {
-        super(ConnectionHandler.instanceOf().clone(TABLE_KundeS));
+        super(ConnectionHandler.instanceOf().clone(TABLE_CUSTOMERS));
         this.query = ConnectionHandler.instanceOf();
         nfh = new NumberFormatHandler(this, new Date());
     }
 
     public Kunde(Query query) {
-        super(query.clone(TABLE_KundeS));
+        super(query.clone(TABLE_CUSTOMERS));
         this.query = query;
         nfh = new NumberFormatHandler(this, new Date());
 
     }
 
     public Kunde(Integer id) {
-        super(ConnectionHandler.instanceOf().clone(TABLE_KundeS));
+        super(ConnectionHandler.instanceOf().clone(TABLE_CUSTOMERS));
         this.id = id;
         readonly = !lock();
         try {
@@ -64,7 +64,7 @@ public class Kunde extends mp4.items.People implements mp4.datenbank.installatio
     }
 
     public Kunde(String nummer) throws Exception {
-        super(ConnectionHandler.instanceOf().clone(TABLE_KundeS));
+        super(ConnectionHandler.instanceOf().clone(TABLE_CUSTOMERS));
         String[] vals = this.selectLast("*", "nummer", nummer, false);
         if (vals != null && vals.length > 0) {
             this.explode(vals);
@@ -81,7 +81,7 @@ public class Kunde extends mp4.items.People implements mp4.datenbank.installatio
     public ArrayList getAllKundes() {
         ArrayList arr = new ArrayList();
 
-        Query q = query.clone(TABLE_KundeS);
+        Query q = query.clone(TABLE_CUSTOMERS);
         String[][] str = q.select("id", null);
 
         for (int i = 0; i < str.length; i++) {
@@ -177,20 +177,20 @@ public class Kunde extends mp4.items.People implements mp4.datenbank.installatio
     }
 
     public String[][] getPrintModel() {
-        Query q = query.clone(TABLE_KundeS);
+        Query q = query.clone(TABLE_CUSTOMERS);
         String[][] str = q.select(TABLE_Kunde_PRINT_FIELDS, null);
         return str;
     }
 
     public String[][] getAll(boolean withDeleted) {
-        Query q = query.clone(TABLE_KundeS);
+        Query q = query.clone(TABLE_CUSTOMERS);
         String[][] str = q.select("*", null, withDeleted);
         return str;
     }
     
      public Object[][] getAllSerialLetter() {
 //"id", "K-Nummer", "Firma", "Senden an"
-        Query q = query.clone(TABLE_KundeS);
+        Query q = query.clone(TABLE_CUSTOMERS);
         Object[][] str = q.select("id, nummer, firma", null, false);
         return DataModelUtils.inserValue(str, this.getClass().getSimpleName(), 3);
     }
@@ -212,11 +212,11 @@ public class Kunde extends mp4.items.People implements mp4.datenbank.installatio
 
     public Object[][] countBills() {
 
-        Query q = query.clone(TABLE_KundeS);
+        Query q = query.clone(TABLE_CUSTOMERS);
 
 
 
-        String[][] str = q.select("firma,", null, TABLE_KundeS, "kundenid", "datum");
+        String[][] str = q.select("firma,", null, TABLE_CUSTOMERS, "kundenid", "datum");
 
 
         return str;
@@ -238,7 +238,7 @@ public class Kunde extends mp4.items.People implements mp4.datenbank.installatio
 
     @Override
     public String getTable() {
-        return TABLE_KundeS;
+        return TABLE_CUSTOMERS;
     }
 
     @Override

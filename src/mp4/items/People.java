@@ -182,6 +182,7 @@ public abstract class People extends EasyQuery implements Queries, Tabellen, Loc
     }
 
     public String getNotizen() {
+        if(Notizen.equals("null"))Notizen=null;
         return Notizen;
     }
 

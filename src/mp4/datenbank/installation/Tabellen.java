@@ -33,7 +33,7 @@ public interface Tabellen {
     /**
      * Kundendaten
      */
-    public final String TABLE_KundeS = "kunden";
+    public final String TABLE_CUSTOMERS = "kunden";
     /**
      * Kundendaten
      */

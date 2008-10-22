@@ -18,7 +18,7 @@ package mp4.logs;
 
 import java.io.IOException;
 import java.util.logging.Level;
-import mp4.frames.Logger;
+import mp4.frames.LoggerWindow;
 
 /**
  *
@@ -30,7 +30,7 @@ public class Log {
     public static final int LOGLEVEL_HIGH = 1;
     public static final int LOGLEVEL_DEBUG = 2;
     private static int loglevel = 0;
-    private static Logger logger = new Logger();
+    private static LoggerWindow logger = new LoggerWindow();
 
     public static void Debug(Object source, Object message, boolean alwaysToKonsole) {
         if (loglevel == LOGLEVEL_DEBUG) {
@@ -175,7 +175,7 @@ public class Log {
         }
     }
 
-    public static Logger getLogger() {
+    public static LoggerWindow getLogger() {
         return logger;
     }
 

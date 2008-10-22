@@ -25,19 +25,20 @@ import java.text.ParseException;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JFormattedTextField;
 import javax.swing.SwingConstants;
+import mp4.logs.Log;
+import mp4.utils.zahlen.FormatNumber;
 
 /**
  *
  * @author anti43
  */
 public class TableCellEditorForDezimal extends DefaultCellEditor {
-    private static final long serialVersionUID = 1L;
 
-    private NumberFormat format = new java.text.DecimalFormat("#,##0.00;(#,##0.00)");
+    private static final long serialVersionUID = 1L;
 
     public TableCellEditorForDezimal(final JFormattedTextField tf) {
         super(tf);
-        
+
         tf.setFocusLostBehavior(JFormattedTextField.COMMIT);
         tf.setHorizontalAlignment(SwingConstants.RIGHT);
         tf.setBorder(null);
@@ -48,10 +49,10 @@ public class TableCellEditorForDezimal extends DefaultCellEditor {
             public void setValue(Object param) {
                 Double _value = (Double) param;
                 if (_value == null) {
-                    tf.setValue(format.format(0.0));
+                    tf.setValue(FormatNumber.formatDezimal(0.0));
                 } else {
                     double _d = _value.doubleValue();
-                    String _format = format.format(_d);
+                    String _format = FormatNumber.formatDezimal(_d);
                     tf.setValue(_format);
                 }
             }
@@ -60,12 +61,19 @@ public class TableCellEditorForDezimal extends DefaultCellEditor {
             public Object getCellEditorValue() {
                 try {
                     String _field = tf.getText();
-                    Number _number = format.parse(_field);
-                    double _parsed = _number.doubleValue();
-                    Double d = new Double(_parsed);
-                    tf.setBackground(Color.white);
-                    return d;
-                } catch (ParseException e) {
+                    Number _number = FormatNumber.parseDezimal(_field);
+
+                    if (_number != null) {
+                        double _parsed = _number.doubleValue();
+                        Double d = new Double(_parsed);
+                        tf.setBackground(Color.white);
+                        return d;
+                    } else {
+                        tf.setBackground(Color.red);
+                        return new Double(0.0);
+                    }
+                } catch (Exception e) {
+                    Log.Debug(this, e.getMessage());
                     tf.setBackground(Color.red);
                     return new Double(0.0);
                 }

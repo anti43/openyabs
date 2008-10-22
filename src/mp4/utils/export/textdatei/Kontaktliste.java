@@ -21,30 +21,31 @@ import mp4.datenbank.verbindung.Query;
 import mp4.interfaces.TableData;
 import mp4.utils.datum.DateConverter;
 
-
 /**
  *
  * @author anti43
  */
-public class Kontaktliste implements TableData, Tabellen{
+public class Kontaktliste implements TableData, Tabellen {
+
     private Query queryhandler;
     private String[] where = null;
-    public static String header[] = new String[]{"Name","Mail","Notizen","Mobil",
-                "Firma","Telefon", "Fax","Adresse"};
+    public static String header[] = new String[]{"Name", "Vorname", "Mail", "Mobil",
+        "Telefon", "Fax", "PLZ", "Strasse", "Ort", "Firma", "Notizen"
+    };
 
     /**
      * 
      * @param clazz The contact type
      */
     public Kontaktliste(Class clazz) {
-    
+
         if (clazz.isInstance(new mp4.items.Kunde())) {
-           queryhandler = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(TABLE_KundeS);
+            queryhandler = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(TABLE_CUSTOMERS);
         } else if (clazz.isInstance(new mp4.items.Lieferant())) {
-           queryhandler = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(TABLE_SUPPLIER);
+            queryhandler = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(TABLE_SUPPLIER);
         } else if (clazz.isInstance(new mp4.items.Hersteller())) {
-           queryhandler = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(TABLE_MANUFACTURER); 
-        } 
+            queryhandler = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(TABLE_MANUFACTURER);
+        }
     }
 
     /**
@@ -54,19 +55,24 @@ public class Kontaktliste implements TableData, Tabellen{
      */
     public Kontaktliste(Class clazz, Integer kontakt_id) {
         if (clazz.isInstance(new mp4.items.Kunde())) {
-           queryhandler = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(TABLE_KundeS);
+            queryhandler = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(TABLE_CUSTOMERS);
         } else if (clazz.isInstance(new mp4.items.Lieferant())) {
-           queryhandler = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(TABLE_SUPPLIER);
+            queryhandler = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(TABLE_SUPPLIER);
         } else if (clazz.isInstance(new mp4.items.Hersteller())) {
-           queryhandler = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(TABLE_MANUFACTURER); 
-        } 
-        
+            queryhandler = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(TABLE_MANUFACTURER);
+        }
+
         where = new String[]{"id", kontakt_id.toString(), ""};
     }
-																																																																																																																																																																																																																																											
+
     @Override
     public Object[][] getData() {
-        return queryhandler.select("vorname||' '||name,mail,notizen,mobil,firma,tel,fax,str||','||plz||','||ort", where);
+        String[][] data = queryhandler.select("name,vorname,mail,mobil,tel,fax,plz,str,ort,firma,notizen", where);
+        if (data != null) {
+            return data;
+        } else {
+            return new Object[][]{{null},{null}};
+        }
     }
 
     @Override

@@ -7,16 +7,10 @@ package mp4.items.visual;
 
 import java.awt.Cursor;
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
-import javax.swing.table.DefaultTableModel;
-import mp4.globals.Strings;
 
 
 import mp4.items.People;
@@ -29,14 +23,9 @@ import mp4.items.Kunde;
 
 import mp4.items.Hersteller;
 import mp4.items.HistoryItem;
-import mp4.items.ProductGroupCategory;
-import mp4.items.ProductGroupFamily;
-import mp4.items.ProductGroupGroup;
 import mp4.items.Lieferant;
 import mp4.utils.export.textdatei.Kontaktliste;
-import mp4.utils.files.FileReaderWriter;
 import mp4.utils.files.TextDatFile;
-import mp4.utils.listen.ListenDataUtils;
 import mp4.utils.tabellen.DataModelUtils;
 import mp4.utils.tabellen.models.DefaultHelpModel;
 import mp4.utils.tasks.Job;
@@ -290,6 +279,7 @@ pack();
         try {
             TextDatFile dat = new TextDatFile(new File(jTextField1.getText()), jTable1);
             dat.setFieldSeparator(trenner);
+            dat.setHeader(new String[]{"Name","Vorname","Mail","Mobil","Telefon", "Fax","PLZ", "Strasse", "Ort", "Firma","Notizen"});
 
             job = new Job(dat, this, jProgressBar1);
             job.execute();
@@ -345,7 +335,7 @@ pack();
         new Help(new DefaultHelpModel("CSV Import",
                 "<P><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3>Die zu " +
                 "importierenden Daten m&uuml;ssen in dieser Form vorliegen:</FONT></FONT></P>" +
-                "<P><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3><B>Name,E-mail,Notizen,Mobil, Firma,Telefon, Fax, Adresse</FONT></P>"));
+                "<P><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3><B>Name,Vorname,Mail,Mobil,Telefon,Fax,PLZ,Strasse,Ort,Firma,Notizen</FONT></P>"));
     }//GEN-LAST:event_jButton6ActionPerformed
 // Variables declaration - do not modify//GEN-BEGIN:variables
 private javax.swing.ButtonGroup buttonGroup1;
@@ -413,18 +403,21 @@ private javax.swing.JTextField jTextField1;
                             contact.setNummer(((Hersteller)contact).getNfh().getNextNumber());
                         }
                         try {
-                            //{"Name","E-mail","Notizen","Mobil", "Firma","Telefon", "Fax", "Adresse"};
-                            
+//"Name","Vorname","Mail","Mobil","Telefon", "Fax","PLZ", "Strasse", "Ort", "Firma","Notizen"	
                             contact.setName((String) data[i][0]);
-                            contact.setMail((String) data[i][1]);
-                            contact.setNotizen((String) data[i][2]);
+                            contact.setVorname((String) data[i][1]);
+                            contact.setMail((String) data[i][2]);
+                            
                             contact.setMobil((String) data[i][3]);
-                            contact.setFirma((String) data[i][4]);
-                            contact.setTel((String) data[i][5]);
-                            contact.setFax((String) data[i][6]);
-                            contact.setPLZ(((String) data[i][7]).split(",")[0]);
-                            contact.setStr(((String) data[i][7]).split(",")[1]);
-                            contact.setOrt(((String) data[i][7]).split(",")[2]);
+                            contact.setTel((String) data[i][4]);
+                            contact.setFax((String) data[i][5]);
+                            
+                            contact.setPLZ(((String) data[i][6]));
+                            contact.setStr(((String) data[i][7]));
+                            contact.setOrt(((String) data[i][8]));
+                            
+                            contact.setFirma(((String) data[i][9]));
+                            contact.setNotizen(((String) data[i][10]));           
                         } catch (Exception e) {
                             Log.Debug(e);
                         }

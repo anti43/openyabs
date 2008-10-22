@@ -36,7 +36,7 @@ import mp4.items.visual.Popup;
 
 import mp4.logs.*;
 import mp4.panels.misc.SplashScreen;
-import mp4.frames.Logger;
+import mp4.frames.LoggerWindow;
 import mp4.frames.mainframe;
 import mp4.installation.Verzeichnisse;
 import mp4.utils.export.druck.DruckJob;
@@ -86,6 +86,7 @@ public class Main implements Strings {
         Argument dirarg = abuilder.withName("=directory").withMinimum(1).withMaximum(1).create();
         
         Option help = obuilder.withShortName("help").withShortName("h").withDescription("print this message").create();
+        Option license = obuilder.withShortName("license").withShortName("li").withDescription("print license").create();
         Option version = obuilder.withShortName("version").withDescription("print the version information and exit").create();
         Option verbose = obuilder.withShortName("verbose").withDescription("be extra verbose").create();
         Option dbtype = obuilder.withShortName("dbdriver").withShortName("r").withDescription("DB Driver: derby (default), mysql, custom").withArgument(option).create();
@@ -103,7 +104,7 @@ public class Main implements Strings {
         Option templatedir = obuilder.withShortName("templatedir").withShortName("t").withDescription("use templatedir").withArgument(dirarg).create();
         
         Group options = gbuilder.withName("options").withOption(help).withOption(version).withOption(verbose).withOption(debug).withOption(nodb).
-                withOption(nocopy).
+                withOption(nocopy).withOption(license).
                 withOption(forcedb).withOption(forcecopy).withOption(dbpath).withOption(dbtype).withOption(instpath).
                 withOption(logfile).withOption(pdfdir).withOption(backupdir).withOption(templatedir).create();
 
@@ -120,6 +121,10 @@ public class Main implements Strings {
         if (cl.hasOption(help)) {
             hf.print();
             System.exit(0);
+        }
+        
+        if (cl.hasOption(license)) {
+            System.out.print(Strings.GPL);
         }
 
         if (cl.hasOption(version)) {
@@ -173,7 +178,7 @@ public class Main implements Strings {
 
         if (cl.hasOption(logfile)) {
             try {
-                Logger.setLogFile(((String) cl.getValue(logfile)).split("=")[1]);
+                LoggerWindow.setLogFile(((String) cl.getValue(logfile)).split("=")[1]);
             } catch (Exception e) {
                 Log.Debug(Main.class, "Fehler beim Schreiben der Logdatei: " + e.getMessage(), true);
             }
@@ -280,6 +285,8 @@ public class Main implements Strings {
 
     public static void main(String[] args) {
 
+        System.out.print(Strings.START_MESSAGE);
+        
         getOS();
         parseArgs(args);
 
