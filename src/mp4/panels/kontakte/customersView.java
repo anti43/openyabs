@@ -1018,23 +1018,24 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             this.jTable4.setModel(new CustomerBAListTableModel(current, true));
             numberfieldedited = false;
             TableFormat.stripFirst(jTable4);
-        } catch (ClassCastException e) {}   
-        
-            People contact = c;
-            this.jTextField4.setText(contact.getNummer());
-            this.jTextField5.setText(contact.getFirma());
-            this.jTextField6.setText(contact.getAnrede());
-            this.jTextField7.setText(contact.getName());
-            this.jTextField8.setText(contact.getVorname());
-            this.jTextField9.setText(contact.getStr());
-            this.jTextField10.setText(contact.getOrt());
-            this.jTextField11.setText(contact.getTel());
-            this.jTextField12.setText(contact.getFax());
-            this.jTextField13.setText(contact.getMobil());
-            this.jTextField14.setText(contact.getMail());
-            this.jTextField15.setText(contact.getWebseite());
-            this.jTextField16.setText(contact.getPLZ());
-            this.jTextArea1.setText(contact.getNotizen());
+        } catch (ClassCastException e) {
+        }
+
+        People contact = c;
+        this.jTextField4.setText(contact.getNummer());
+        this.jTextField5.setText(contact.getFirma());
+        this.jTextField6.setText(contact.getAnrede());
+        this.jTextField7.setText(contact.getName());
+        this.jTextField8.setText(contact.getVorname());
+        this.jTextField9.setText(contact.getStr());
+        this.jTextField10.setText(contact.getOrt());
+        this.jTextField11.setText(contact.getTel());
+        this.jTextField12.setText(contact.getFax());
+        this.jTextField13.setText(contact.getMobil());
+        this.jTextField14.setText(contact.getMail());
+        this.jTextField15.setText(contact.getWebseite());
+        this.jTextField16.setText(contact.getPLZ());
+        this.jTextArea1.setText(contact.getNotizen());
     }
 
     private void jTextField1ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
@@ -1206,7 +1207,7 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         updateListTable();
                     }
                 } catch (Exception ex) {
-                    Log.Debug(this,ex, true);
+                    Log.Debug(this, ex, true);
                     Popup.warn(ex.getMessage(), Popup.ERROR);
                 }
             } else {
@@ -1223,7 +1224,7 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             try {
                 this.setContact(new Kunde(selection.getId()));
             } catch (Exception exception) {
-                Log.Debug(this,exception, true);
+                Log.Debug(this, exception, true);
             }
         }
     }//GEN-LAST:event_jTable3MouseClicked
@@ -1270,7 +1271,7 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             try {
                 mainframe.addBillPanel(new Rechnung(selection.getId()));
             } catch (Exception ex) {
-                Log.Debug(this,ex);
+                Log.Debug(this, ex);
                 Popup.warn(ex.getMessage(), Popup.ERROR);
             }
         }
@@ -1309,12 +1310,13 @@ private void jButton14MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
 }//GEN-LAST:event_jButton14MouseClicked
 
 private void jButton18MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton18MouseClicked
-    if (current.isValid()) {//GEN-LAST:event_jButton18MouseClicked
+   save();
+ if (current.isValid()) {//GEN-LAST:event_jButton18MouseClicked
             DialogForFile dialog = new DialogForFile(DialogForFile.FILES_ONLY, current.getName() + ".vcf");
             if (dialog.chooseFile()) {
                 new FileReaderWriter(dialog.getFile()).write(new VCard(current).getVCard());
             }
-        }
+        } 
     }
 
 private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton20ActionPerformed
@@ -1331,7 +1333,7 @@ private void jTable4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
         try {
             mainframe.addAngebotPanel(new Angebot(selection.getId()));
         } catch (Exception ex) {
-            Log.Debug(this,ex);
+            Log.Debug(this, ex);
             Popup.warn(ex.getMessage(), Popup.ERROR);
         }
     }
@@ -1370,18 +1372,17 @@ private void jTextField4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST
 
 private void jButton9MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton9MouseClicked
 
-      if (mainframe.getUser().doAction(User.EDITOR)) {
-            save();
-            if (current.isValid()) {
-                Angebot r = new Angebot();
-                r.setKundenId(current.getId());
-                mainframe.addAngebotPanel(r);
-            }
+    if (mainframe.getUser().doAction(User.EDITOR)) {
+        save();
+        if (current.isValid()) {
+            Angebot r = new Angebot();
+            r.setKundenId(current.getId());
+            mainframe.addAngebotPanel(r);
         }
+    }
 }//GEN-LAST:event_jButton9MouseClicked
 
-    
-private void deactivate() {
+    private void deactivate() {
         if (current.getId() > 0) {
             if ((JOptionPane.showConfirmDialog(this, "Wirklich löschen?", "Sicher?", JOptionPane.YES_NO_OPTION)) == JOptionPane.YES_OPTION) {
                 try {

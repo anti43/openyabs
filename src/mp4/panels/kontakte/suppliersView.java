@@ -7,7 +7,6 @@ package mp4.panels.kontakte;
 
 import java.awt.event.MouseEvent;
 import javax.swing.JOptionPane;
-import javax.swing.JTabbedPane;
 import javax.swing.table.DefaultTableModel;
 
 
@@ -26,7 +25,6 @@ import mp4.interfaces.ContactPanel;
 import mp4.items.People;
 import mp4.items.Lieferant;
 import mp4.items.Product;
-import mp4.items.Rechnung;
 import mp4.panels.misc.NumberFormatEditor;
 import mp4.utils.export.textdatei.VCard;
 import mp4.utils.files.DialogForFile;
@@ -1218,7 +1216,9 @@ private void jTextField4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST
 }//GEN-LAST:event_jTextField4MouseClicked
 
 private void jButton18MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton18MouseClicked
-if (current.isValid()) {
+
+    save();
+    if (current.isValid()) {
         DialogForFile dialog = new DialogForFile(DialogForFile.FILES_ONLY, current.getName() + ".vcf");
         if (dialog.chooseFile()) {
             new FileReaderWriter(dialog.getFile()).write(new VCard(current).getVCard());

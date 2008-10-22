@@ -1223,6 +1223,7 @@ private void jTextField4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST
 }//GEN-LAST:event_jTextField4MouseClicked
 
 private void jButton18MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton18MouseClicked
+   save();
     if (current.isValid()) {
         DialogForFile dialog = new DialogForFile(DialogForFile.FILES_ONLY, current.getName() + ".vcf");
         if (dialog.chooseFile()) {
