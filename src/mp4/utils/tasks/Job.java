@@ -18,6 +18,7 @@ package mp4.utils.tasks;
 
 import javax.swing.JProgressBar;
 import javax.swing.SwingWorker;
+import mp4.frames.mainframe;
 import mp4.interfaces.Waitable;
 import mp4.interfaces.Waiter;
 import mp4.logs.*;
@@ -41,17 +42,21 @@ public class Job extends SwingWorker<Object, Object> {
     @Override
     public Object doInBackground() {
         if (bar != null) {
+            mainframe.setWaiting(true);
             bar.setIndeterminate(true);
         }
         try {
             object.waitFor();
         } catch (Exception e) {
             if (bar != null) {
+                mainframe.setWaiting(false);
                 bar.setIndeterminate(false);
             }
             Log.Debug(this, e);
             e.printStackTrace();
         } finally {
+            mainframe.setWaiting(false);
+            bar.setIndeterminate(false);
         }
         return object;
     }
@@ -60,7 +65,7 @@ public class Job extends SwingWorker<Object, Object> {
     public void done() {
         recipient.set(object);
         if (bar != null) {
-            bar.setIndeterminate(false);
+            mainframe.setWaiting(false);
         }
     }
 }

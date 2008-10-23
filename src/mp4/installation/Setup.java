@@ -37,6 +37,7 @@ import mp4.frames.LicenseWindow;
 import mp4.installation.Verzeichnisse;
 
 import mp4.main.Main;
+import mp4.utils.files.FileDirectoryHandler;
 import mp4.utils.ui.inputfields.PAnelUtils;
 
 /**
@@ -108,6 +109,23 @@ public class Setup extends javax.swing.JFrame implements Constants, Strings {
             }
         } else {
             new Setup();
+        }
+    }
+
+    public String getBrowser() {
+        if (Main.IS_WINDOWS) {
+            return "C:\\Programme\\Internet Explorer\\iexplore.exe";
+        } else {
+            return "/usr/bin/firefox";
+        }
+    }
+    
+
+    public String getPdfProgramm() {   
+        if (Main.IS_WINDOWS) {
+            return "C:\\Program Files\\Adobe\\Reader 9.0\\Reader\\AcroRd32.exe";
+        } else {
+            return "/opt/kde3/bin/kpdf";
         }
     }
 

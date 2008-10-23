@@ -32,6 +32,7 @@ import mp4.main.Main;
 
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.event.ItemListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -135,6 +136,16 @@ public class mainframe extends javax.swing.JFrame {
         ((FadeOnChangeLabel) nachricht).reset();
         nachricht.setText(string);
     }
+
+    public static void setWaiting(boolean b) {
+        if(b) {
+            identifier.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+        }
+        else {
+            identifier.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+        }
+    }
+    
     private startView i;
     private Main loader;
     private Position wt = new Position();

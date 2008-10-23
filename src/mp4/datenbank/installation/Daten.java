@@ -93,9 +93,9 @@ public abstract class Daten {
         
         "INSERT INTO einstellungen (name, wert) VALUES ('Hauptsteuersatz', '19')",
         "INSERT INTO einstellungen (name, wert) VALUES ('TageBisVerzug', '30')",
-        "INSERT INTO einstellungen (name, wert) VALUES ('PDF Programm', '/opt/kde3/bin/kpdf')",
-        "INSERT INTO einstellungen (name, wert) VALUES ('Browser Programm', '/usr/bin/firefox')",
-        
+        "INSERT INTO einstellungen (name, wert) VALUES ('PDF Programm', '" + Setup.instanceOf().getPdfProgramm() + "')",
+        "INSERT INTO einstellungen (name, wert) VALUES ('Browser Programm', '" + Setup.instanceOf().getBrowser() + "')",
+//      
         "INSERT INTO einstellungen (name, wert) VALUES ('Konto Einnahme', '2112')",
         "INSERT INTO einstellungen (name, wert) VALUES ('Konto Ausgabe', '1111')",
         "INSERT INTO einstellungen (name, wert) VALUES ('Locale', 'de_DE')",
