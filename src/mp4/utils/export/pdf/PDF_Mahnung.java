@@ -17,6 +17,7 @@
 package mp4.utils.export.pdf;
 
 import java.awt.Image;
+import java.io.File;
 import mp4.items.Rechnung;
 import mp4.items.Kunde;
 
@@ -118,6 +119,11 @@ public class PDF_Mahnung implements Template{
 
     public String getTemplate() {
        return l.getRechnung_Template();
+    }
+
+    @Override
+    public File getTargetFile() {
+        return new File(rechnung.getRechnungnummer().replaceAll(" ", "_") + "_" + k.getFirma().replaceAll(" ", "_") + k.getName().replaceAll(" ", "_").trim());
     }
     
   

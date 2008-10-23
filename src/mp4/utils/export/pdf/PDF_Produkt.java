@@ -112,6 +112,11 @@ public class PDF_Produkt implements Template {
     public String getTemplate() {
         return settings.getProdukt_Template();
     }
+
+    @Override
+    public File getTargetFile() {
+        return new File(settings.getProdukt_Verzeichnis() + File.separator + produkt.getProduktNummer().replaceAll(" ", "_") + ".pdf".trim());
+    }
     
 
 }

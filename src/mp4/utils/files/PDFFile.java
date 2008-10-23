@@ -68,6 +68,7 @@ public class PDFFile extends File implements Waitable, Printable {
 
         if (this.exists()) {
             if (Popup.Y_N_dialog(this.getPath() + "\nexistiert bereits. Überschreiben?")) {
+               
                 if (!this.delete()) {
                     Popup.error("Datei konnte nicht gelöscht werden.", "Es ist ein Fehler aufgetreten.");
                 }
@@ -76,6 +77,10 @@ public class PDFFile extends File implements Waitable, Printable {
         } else {
             work();
         }
+    }
+    
+    public File getTargetFile(){
+        return object.getTargetFile();
     }
 
     public void printOutFieldNames() {

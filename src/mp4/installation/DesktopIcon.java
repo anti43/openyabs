@@ -102,7 +102,7 @@ public class DesktopIcon implements Constants{
             out.write("IconFile=" + Main.APP_DIR + File.separator +"lib" + File.separator + "mpd.ico");
             out.newLine();
             out.close();
-            mainframe.setInfoText(DESKTOP + File.separator + ICON_NAME_WIN +  " angelegt.");
+            if(mainframe.identifier!=null)mainframe.setInfoText(DESKTOP + File.separator + ICON_NAME_WIN +  " angelegt.");
         } catch (IOException ex) {
            ex.printStackTrace();
         } finally {

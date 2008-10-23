@@ -164,6 +164,7 @@ public class DruckJob implements Waiter {
 
     public void printWIN(File file) {
         try {
+            Log.Debug("Forcing WINPrint through Adobe Reader, because Java is not able to print a PDF directly in Windows :-(");
             if (file.getName().contains("pdf")) {
                 Runtime.getRuntime().exec("cmd.exe /C start acrord32 /P /h" + file.getPath());
             } else {

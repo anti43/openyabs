@@ -6,6 +6,9 @@
 
 package mp4.frames;
 
+import mp4.datenbank.verbindung.ConnectionHandler;
+import mp4.utils.ui.Position;
+
 /**
  *
  * @author  Andreas
@@ -15,6 +18,8 @@ public class DatabaseToolWindow extends javax.swing.JFrame {
     /** Creates new form DatabaseToolWindow */
     public DatabaseToolWindow() {
         initComponents();
+        new Position(this);
+        setVisible(rootPaneCheckingEnabled);
     }
 
     /** This method is called from within the constructor to
@@ -43,7 +48,10 @@ jButton7 = new javax.swing.JButton();
 jLabel4 = new javax.swing.JLabel();
 jButton8 = new javax.swing.JButton();
 jButton9 = new javax.swing.JButton();
+jButton10 = new javax.swing.JButton();
 jLabel2 = new javax.swing.JLabel();
+jScrollPane1 = new javax.swing.JScrollPane();
+jTextArea1 = new javax.swing.JTextArea();
 
 setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 setTitle("MP Datenbank Werkzeug");
@@ -52,6 +60,11 @@ jLabel1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
 jLabel1.setText("Hier müssen Sie wissen, was Sie tun.. :-)");
 
 jButton1.setText("Ausführen");
+jButton1.addActionListener(new java.awt.event.ActionListener() {
+public void actionPerformed(java.awt.event.ActionEvent evt) {
+jButton1ActionPerformed(evt);
+}
+});
 
 jPanel2.setBackground(new java.awt.Color(153, 153, 153));
 jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -59,14 +72,14 @@ jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 jPanel3.setBackground(new java.awt.Color(204, 204, 204));
 jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-jButton2.setText("Kunde");
+jButton2.setText("Kunden");
 jButton2.addActionListener(new java.awt.event.ActionListener() {
 public void actionPerformed(java.awt.event.ActionEvent evt) {
 jButton2ActionPerformed(evt);
 }
 });
 
-jButton3.setText("Lieferant");
+jButton3.setText("Lieferanten");
 jButton3.addActionListener(new java.awt.event.ActionListener() {
 public void actionPerformed(java.awt.event.ActionEvent evt) {
 jButton3ActionPerformed(evt);
@@ -90,17 +103,14 @@ jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 .addContainerGap()
 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 .addGroup(jPanel3Layout.createSequentialGroup()
-.addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+.addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE)
 .addContainerGap())
 .addGroup(jPanel3Layout.createSequentialGroup()
-.addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 81, Short.MAX_VALUE)
-.addGap(40, 40, 40))
-.addGroup(jPanel3Layout.createSequentialGroup()
-.addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, 81, Short.MAX_VALUE)
-.addGap(40, 40, 40))
-.addGroup(jPanel3Layout.createSequentialGroup()
-.addComponent(jButton4)
-.addContainerGap(40, Short.MAX_VALUE))))
+.addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+.addComponent(jButton4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+.addComponent(jButton3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+.addComponent(jButton2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE))
+.addContainerGap())))
 );
 jPanel3Layout.setVerticalGroup(
 jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -127,14 +137,41 @@ jButton5ActionPerformed(evt);
 });
 
 jButton6.setText("Alle Dienstleist.");
+jButton6.addActionListener(new java.awt.event.ActionListener() {
+public void actionPerformed(java.awt.event.ActionEvent evt) {
+jButton6ActionPerformed(evt);
+}
+});
 
 jButton7.setText("Alle Rechnungen");
+jButton7.addActionListener(new java.awt.event.ActionListener() {
+public void actionPerformed(java.awt.event.ActionEvent evt) {
+jButton7ActionPerformed(evt);
+}
+});
 
 jLabel4.setText("Permanent löschen:");
 
 jButton8.setText("Alle Einnahmen");
+jButton8.addActionListener(new java.awt.event.ActionListener() {
+public void actionPerformed(java.awt.event.ActionEvent evt) {
+jButton8ActionPerformed(evt);
+}
+});
 
 jButton9.setText("Alle Ausgaben");
+jButton9.addActionListener(new java.awt.event.ActionListener() {
+public void actionPerformed(java.awt.event.ActionEvent evt) {
+jButton9ActionPerformed(evt);
+}
+});
+
+jButton10.setText("Alle Angebote");
+jButton10.addActionListener(new java.awt.event.ActionListener() {
+public void actionPerformed(java.awt.event.ActionEvent evt) {
+jButton10ActionPerformed(evt);
+}
+});
 
 javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
 jPanel4.setLayout(jPanel4Layout);
@@ -151,8 +188,10 @@ jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 .addComponent(jButton5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+.addComponent(jButton10, 0, 0, Short.MAX_VALUE)
 .addComponent(jButton9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-.addComponent(jButton8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+.addComponent(jButton8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)))
 .addContainerGap())
 );
 jPanel4Layout.setVerticalGroup(
@@ -169,7 +208,9 @@ jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 .addComponent(jButton6)
 .addComponent(jButton9))
 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+.addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
 .addComponent(jButton7)
+.addComponent(jButton10))
 .addContainerGap(26, Short.MAX_VALUE))
 );
 
@@ -182,7 +223,7 @@ jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+.addContainerGap(12, Short.MAX_VALUE))
 );
 jPanel2Layout.setVerticalGroup(
 jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -196,6 +237,18 @@ jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 
 jLabel2.setText("Vorlagen");
 
+jScrollPane1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+jTextArea1.setBackground(new java.awt.Color(51, 51, 51));
+jTextArea1.setColumns(20);
+jTextArea1.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
+jTextArea1.setForeground(new java.awt.Color(255, 255, 255));
+jTextArea1.setLineWrap(true);
+jTextArea1.setRows(5);
+jTextArea1.setWrapStyleWord(true);
+jScrollPane1.setViewportView(jTextArea1);
+
 javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
 jPanel1.setLayout(jPanel1Layout);
 jPanel1Layout.setHorizontalGroup(
@@ -203,13 +256,14 @@ jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
 .addContainerGap()
 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+.addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 466, Short.MAX_VALUE)
+.addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING)
+.addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING)
+.addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 .addGroup(jPanel1Layout.createSequentialGroup()
 .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 375, Short.MAX_VALUE)
 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-.addComponent(jButton1))
-.addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING)
-.addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING)
-.addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+.addComponent(jButton1)))
 .addContainerGap())
 );
 jPanel1Layout.setVerticalGroup(
@@ -221,10 +275,12 @@ jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 .addComponent(jLabel2)
 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 104, Short.MAX_VALUE)
+.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
 .addComponent(jButton1)
 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+.addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 96, Short.MAX_VALUE)
 .addContainerGap())
 );
 
@@ -244,23 +300,53 @@ pack();
 
 private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
-    jTextField1.setText("UPDATE kunden SET deleted = 0 WHERE 'nummer' = ");
+    jTextField1.setText("UPDATE kunden SET deleted = 0");
 }//GEN-LAST:event_jButton2ActionPerformed
 
 private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
 
-     jTextField1.setText("UPDATE lieferanten SET deleted = 0 WHERE 'nummer' = ");
+     jTextField1.setText("UPDATE lieferanten SET deleted = 0");
 }//GEN-LAST:event_jButton3ActionPerformed
 
 private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
 
-     jTextField1.setText("UPDATE hersteller SET deleted = 0 WHERE 'nummer' = ");
+     jTextField1.setText("UPDATE hersteller SET deleted = 0");
 }//GEN-LAST:event_jButton4ActionPerformed
 
 private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
 
      jTextField1.setText("DELETE FROM produkte");
 }//GEN-LAST:event_jButton5ActionPerformed
+
+private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+
+     jTextField1.setText("DELETE FROM dienstleistungen");
+}//GEN-LAST:event_jButton6ActionPerformed
+
+private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+
+     jTextField1.setText("DELETE FROM rechnungen");
+}//GEN-LAST:event_jButton7ActionPerformed
+
+private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+
+     jTextField1.setText("DELETE FROM einnahmen");
+}//GEN-LAST:event_jButton8ActionPerformed
+
+private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+
+     jTextField1.setText("DELETE FROM ausgaben");
+}//GEN-LAST:event_jButton9ActionPerformed
+
+private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+
+    ConnectionHandler.instanceOf().freeQuery(jTextField1.getText(), jTextArea1);
+}//GEN-LAST:event_jButton1ActionPerformed
+
+private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
+
+    jTextField1.setText("DELETE FROM angebote");
+}//GEN-LAST:event_jButton10ActionPerformed
 
     /**
     * @param args the command line arguments
@@ -275,6 +361,7 @@ private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
 // Variables declaration - do not modify//GEN-BEGIN:variables
 private javax.swing.JButton jButton1;
+private javax.swing.JButton jButton10;
 private javax.swing.JButton jButton2;
 private javax.swing.JButton jButton3;
 private javax.swing.JButton jButton4;
@@ -291,6 +378,8 @@ private javax.swing.JPanel jPanel1;
 private javax.swing.JPanel jPanel2;
 private javax.swing.JPanel jPanel3;
 private javax.swing.JPanel jPanel4;
+private javax.swing.JScrollPane jScrollPane1;
+private javax.swing.JTextArea jTextArea1;
 private javax.swing.JTextField jTextField1;
 // End of variables declaration//GEN-END:variables
 

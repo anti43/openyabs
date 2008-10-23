@@ -134,4 +134,10 @@ public class PDF_Angebot implements Template {
     public String getTemplate() {
         return l.getAngebot_Template();
     }
+
+    @Override
+    public File getTargetFile() {
+        return new File(l.getAngebot_Verzeichnis() + File.separator + r.getAngebotnummer().replaceAll(" ", "_") + "_" + k.getFirma().replaceAll(" ", "_") +
+                "_" + k.getName().replaceAll(" ", "_") + ".pdf".trim());
+    }
 }

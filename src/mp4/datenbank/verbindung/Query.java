@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 
+import javax.swing.JTextArea;
 import mp4.items.visual.Popup;
 import mp4.logs.*;
 import mp4.utils.datum.DateConverter;
@@ -103,6 +104,52 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
         }
         stop();
         return false;
+    }
+    
+    public boolean freeQuery(String string, JTextArea log) {
+         start();
+        query = string;
+        message = "Database Error (freeQuery) :";
+        stm = null;
+        resultSet = null;
+        boolean bool;
+        try {
+            // Select-Anweisung ausführen
+            stm = conn.createStatement();
+            Log.Debug(this,query, true);
+            log.append("\n " + query);
+            bool  = stm.execute(query);
+            log.append("\n " + stm.getUpdateCount() + " Reihen betroffen.");
+            stop();
+            return bool;
+        } catch (SQLException ex) {
+            stop();
+            Log.Debug(this,message + ex.getMessage());
+            log.append("\n " + ex.getMessage());
+        } finally {
+            // Alle Ressourcen wieder freigeben
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException ex) {
+                    stop();
+                    Log.Debug(this,message + ex.getMessage());
+                    log.append(" \n" + ex.getMessage());
+                }
+            }
+            if (stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException ex) {
+                    stop();
+                    Log.Debug(this,message + ex.getMessage());
+                    log.append(" \n" + ex.getMessage());
+                }
+            }
+        }
+        stop();
+        return false;
+        
     }
  
     /**

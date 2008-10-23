@@ -141,4 +141,9 @@ public class PDF_Rechnung implements Template {
     public String getTemplate() {
         return l.getRechnung_Template();
     }
+
+    @Override
+    public File getTargetFile() {
+        return new File(l.getRechnung_Verzeichnis() + File.separator + r.getRechnungnummer().replaceAll(" ", "_") + "_" + k.getFirma().replaceAll(" ", "_") + "_" + k.getName().replaceAll(" ", "_") + ".pdf".trim());
+    }
 }

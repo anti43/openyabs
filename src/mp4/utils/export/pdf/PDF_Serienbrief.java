@@ -16,6 +16,7 @@
  */
 package mp4.utils.export.pdf;
 
+import java.io.File;
 import mp4.utils.files.PDFFile;
 import java.awt.Image;
 import mp4.items.Kunde;
@@ -102,6 +103,11 @@ public class PDF_Serienbrief implements Template{
 
     public String getTemplate() {
        return l.getSerienbrief_Template();
+    }
+
+    @Override
+    public File getTargetFile() {
+       return new File(PDFFile.getTempFilename());
     }
  
 }

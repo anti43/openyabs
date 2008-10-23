@@ -17,6 +17,7 @@
 package mp4.interfaces;
 
 import java.awt.Image;
+import java.io.File;
 import javax.print.DocFlavor;
 
 /**
@@ -43,6 +44,11 @@ public interface Template {
      * return the image, else null
      */
     public Image getImage();
+    /*
+     * 
+     * Returns the path to this printable objects target file
+     */
+    public File getTargetFile();
     
     /*
      * If this is a PDF Template,

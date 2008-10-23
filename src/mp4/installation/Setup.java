@@ -21,12 +21,15 @@
  */
 package mp4.installation;
 
+
 import mp4.datenbank.verbindung.Conn;
 import java.io.IOException;
 import java.awt.Cursor;
 import java.io.File;
 import javax.swing.JFileChooser;
 import mp4.datenbank.verbindung.ConnectionTypeHandler;
+import mp4.einstellungen.Einstellungen;
+import mp4.einstellungen.Programmdaten;
 import mp4.globals.Constants;
 import mp4.globals.Strings;
 import mp4.utils.ui.Position;
@@ -544,6 +547,7 @@ pack();
             this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 
             if (createDatabase()) {
+                setStartValues();
                 if (jCheckBox1.isSelected()) {
                     Setup.writeDesktopIcon();
                 }
@@ -704,5 +708,10 @@ javax.swing.JTextField pdfpathtf;
         } else {
             DesktopIcon.createLinuxDesktopIcon();
         }
+    }
+
+    private void setStartValues() {
+       Programmdaten.instanceOf().setBILLPANEL_CHECKBOX_NETTOPREISE(true);
+       Programmdaten.instanceOf().setBILLPANEL_CHECKBOX_MITFIRMENNAME(true);
     }
 }

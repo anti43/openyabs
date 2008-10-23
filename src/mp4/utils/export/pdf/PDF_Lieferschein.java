@@ -107,6 +107,12 @@ public class PDF_Lieferschein implements Template{
     public String getTemplate() {
         return l.getLieferschein_Template();
     }
+
+    @Override
+    public File getTargetFile() {
+        return new File(l.getLieferschein_Verzeichnis() + File.separator +
+                    "Lieferschein-" + rechnung.getRechnungnummer().replaceAll(" ", "_") + "_" + k.getFirma().replaceAll(" ", "_") + "_" + k.getName().replaceAll(" ", "_") + ".pdf");
+    }
     
  
 }

@@ -595,7 +595,6 @@
                 </Component>
                 <Component class="javax.swing.JTextField" name="jTextField10">
                   <Properties>
-                    <Property name="editable" type="boolean" value="false"/>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                       <ResourceString bundle="viewMasks/rechnung.properties" key="billsView.jTextField10.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
@@ -695,7 +694,7 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="jPanel9" max="32767" attributes="1"/>
+                                  <Component id="jPanel9" pref="112" max="32767" attributes="1"/>
                                   <Component id="jPanel11" alignment="1" pref="112" max="32767" attributes="1"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
