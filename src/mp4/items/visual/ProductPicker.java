@@ -171,6 +171,7 @@ jCheckBox1ItemStateChanged(evt);
 jCheckBox2.setBackground(new java.awt.Color(227, 219, 202));
 jCheckBox2.setSelected(true);
 jCheckBox2.setText("Name");
+jCheckBox2.setEnabled(false);
 jCheckBox2.addItemListener(new java.awt.event.ItemListener() {
 public void itemStateChanged(java.awt.event.ItemEvent evt) {
 jCheckBox2ItemStateChanged(evt);

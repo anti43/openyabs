@@ -22,6 +22,8 @@ import mp4.frames.mainframe;
 import mp4.interfaces.Waitable;
 import mp4.interfaces.Waiter;
 import mp4.logs.*;
+import mp4.utils.export.druck.DruckJob;
+import mp4.utils.files.PDFFile;
 
 /**
  *
@@ -33,6 +35,11 @@ public class Job extends SwingWorker<Object, Object> {
     private Waiter recipient;
     private JProgressBar bar;
 
+    public Job(Waitable object, Waiter rec) {
+        this.object = object;
+        this.recipient = rec;
+    }
+
     public Job(Waitable object, Waiter rec, JProgressBar bar) {
         this.object = object;
         this.recipient = rec;
@@ -41,22 +48,22 @@ public class Job extends SwingWorker<Object, Object> {
 
     @Override
     public Object doInBackground() {
-        if (bar != null) {
-            mainframe.setWaiting(true);
+        mainframe.setWaiting(true);
+        if (bar != null) {  
             bar.setIndeterminate(true);
         }
         try {
             object.waitFor();
         } catch (Exception e) {
+            mainframe.setWaiting(false);
             if (bar != null) {
-                mainframe.setWaiting(false);
                 bar.setIndeterminate(false);
             }
             Log.Debug(this, e);
             e.printStackTrace();
         } finally {
             mainframe.setWaiting(false);
-            bar.setIndeterminate(false);
+            if (bar != null)bar.setIndeterminate(false);
         }
         return object;
     }
@@ -64,8 +71,9 @@ public class Job extends SwingWorker<Object, Object> {
     @Override
     public void done() {
         recipient.set(object);
+        mainframe.setWaiting(false);
         if (bar != null) {
-            mainframe.setWaiting(false);
+            bar.setIndeterminate(false);
         }
     }
 }
