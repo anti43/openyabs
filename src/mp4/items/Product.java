@@ -119,7 +119,7 @@ public class Product extends mp4.items.Things implements mp4.datenbank.installat
     }
 
     public boolean hasImage() {
-        if (getImage() != null) {
+        if (getImage() != null && getImage().hasImage()) {
             return true;
         } else {
             return false;
@@ -139,7 +139,7 @@ public class Product extends mp4.items.Things implements mp4.datenbank.installat
         if (image != null) {
             return image;
         } else {
-            return null;
+            return new ProductImage();
         }
     }
 

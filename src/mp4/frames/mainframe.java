@@ -1743,8 +1743,9 @@ private javax.swing.JMenu pluginMenu;
         try {
             ArrayList<LockableContainer> sessiondata = Programmdaten.instanceOf().getSESSIONDATA();
 
-            for (int i = 0; i < sessiondata.size(); i++) {
-                addPanel(sessiondata.get(i));
+            for (int ifh = 0; ifh < sessiondata.size(); ifh++) {
+                Log.Debug(this, "Restoring session: " + sessiondata.get(ifh).getClazz() + " | " + sessiondata.get(ifh).getID());
+                addPanel(sessiondata.get(ifh));
             }
         } catch (Exception e) {
             Log.Debug(this, "RestoreSession: " + e.getMessage());
@@ -1783,8 +1784,13 @@ private javax.swing.JMenu pluginMenu;
             addPanel("Hersteller", panel);
             panel.setContact(new Hersteller(data.getID()));
 
+        } else if (data.getClazz().isInstance(new Product())) {
+            productsView panel = new productsView(this);
+            addPanel("Produkt", panel);
+            panel.setProduct(new Product(data.getID()));
+
         } else {
-            Log.Debug("Nothing to restore.");
+            Log.Debug(this,"RestoreSession: " +  "Nothing to restore.");
         }
     }
 

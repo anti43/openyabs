@@ -42,11 +42,6 @@ public class ProductImage extends mp4.items.Things implements mp4.datenbank.inst
     private Integer Produktid = null;
     private String Path = null;
     private Date Datum = new Date();
-    public Integer id = 0;
-
-    public Integer getId() {
-        return id;
-    }
 
     public void destroy() {
         this.delete(this.id);
@@ -133,12 +128,9 @@ public class ProductImage extends mp4.items.Things implements mp4.datenbank.inst
 
     public void save() {
 
-        if (id > 0) {
-            this.update(TABLE_PRODUCTS_FILES_FIELDS, this.collect(), id);
-            isSaved = true;
-        } else if (id == 0) {
-            this.id = this.insert(TABLE_PRODUCTS_FILES_FIELDS, this.collect(),new int[]{0});
-        }
+        destroy();
+        this.id = this.insert(TABLE_PRODUCTS_FILES_FIELDS, this.collect());
+        
     }
 
     public Integer getProduktid() {
