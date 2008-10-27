@@ -1,12 +1,30 @@
 package mp4.utils.export.druck;
 
+import com.sun.pdfview.PDFFile;
+import com.sun.pdfview.PDFPage;
+import com.sun.pdfview.PDFRenderer;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
+import java.awt.print.PageFormat;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.io.File;
 import java.io.FileInputStream;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.print.Doc;
 import javax.print.DocFlavor;
 import javax.print.DocPrintJob;
@@ -18,10 +36,12 @@ import javax.print.SimpleDoc;
 import javax.print.attribute.Attribute;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.standard.MediaSizeName;
+import javax.swing.RepaintManager;
 import mp4.interfaces.Printable;
 import mp4.interfaces.Waiter;
 import mp4.logs.*;
 import mp4.main.Main;
+
 
 /**
  *
@@ -216,4 +236,84 @@ public class DruckJob implements Waiter {
             Log.Debug(this,printException);
         }
     }
+    
+    public void printPDF(File file){
+        try {
+
+            RandomAccessFile raf = new RandomAccessFile(file, "r");
+            FileChannel channel = raf.getChannel();
+            ByteBuffer buf = channel.map(FileChannel.MapMode.READ_ONLY, 0, channel.size());
+            PDFFile pdffile = new PDFFile(buf);
+
+            // get the first page
+            PDFPage page = pdffile.getPage(0);
+
+
+            // create and configure a graphics object
+            BufferedImage img = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g2 = img.createGraphics();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+            // do the actual drawing
+            PDFRenderer renderer = new PDFRenderer(page, g2, new Rectangle(0, 0, 500, 500), null, Color.RED);
+            page.waitForFinish();
+            renderer.run();
+          
+            
+        } catch (Exception ex) {
+            Log.Debug(ex);
+        }
+
+    }
+    
+    
 }
+
+class PrintUtilities implements java.awt.print.Printable {
+  private Component componentToBePrinted;
+
+  public static void printComponent(Component c) {
+    new PrintUtilities(c).print();
+  }
+  
+  public PrintUtilities(Component componentToBePrinted) {
+    this.componentToBePrinted = componentToBePrinted;
+  }
+  
+  public void print() {
+    PrinterJob printJob = PrinterJob.getPrinterJob();
+    printJob.setPrintable((java.awt.print.Printable) this);
+    if (printJob.printDialog()) {
+            try {
+                printJob.print();
+            } catch (PrinterException pe) {
+                System.out.println("Error printing: " + pe);
+            }
+        }
+  }
+
+  public int print(Graphics g, PageFormat pageFormat, int pageIndex) {
+    if (pageIndex > 0) {
+      return(1);
+    } else {
+      Graphics2D g2d = (Graphics2D)g;
+      g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
+      disableDoubleBuffering(componentToBePrinted);
+      componentToBePrinted.paint(g2d);
+      enableDoubleBuffering(componentToBePrinted);
+      return(0);
+    }
+  }
+
+  public static void disableDoubleBuffering(Component c) {
+    RepaintManager currentManager = RepaintManager.currentManager(c);
+    currentManager.setDoubleBufferingEnabled(false);
+  }
+
+  public static void enableDoubleBuffering(Component c) {
+    RepaintManager currentManager = RepaintManager.currentManager(c);
+    currentManager.setDoubleBufferingEnabled(true);
+  }
+
+}
+

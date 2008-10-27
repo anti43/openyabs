@@ -249,5 +249,7 @@ public class Kunde extends mp4.items.People implements mp4.datenbank.installatio
     public NumberFormatHandler getNfh() {
         return nfh;
     }
+    
+
 
 }

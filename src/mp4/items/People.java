@@ -265,6 +265,12 @@ public abstract class People extends EasyQuery implements Queries, Tabellen, Loc
         return datalock;
     }
     
+    
+    @Override
+    public LockableContainer getLockableContainer() {
+       return new LockableContainer(this.getClass(), this.getId());
+    }
+    
     public abstract boolean save() throws Exception ;
 
 }

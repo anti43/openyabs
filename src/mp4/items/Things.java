@@ -95,5 +95,9 @@ public abstract class Things extends EasyQuery implements Queries, mp4.datenbank
     }
 
   
+    @Override
+    public LockableContainer getLockableContainer() {
+       return new LockableContainer(this.getClass(), this.getId());
+    }
 
 }

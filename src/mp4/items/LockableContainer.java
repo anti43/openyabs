@@ -15,28 +15,36 @@
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mp4.interfaces;
-
-import mp4.items.LockableContainer;
+package mp4.items;
 
 /**
- * This interface shall be implemented for items which may be opened multiple 
- * times in multiuser environments, to prevent cross-changes
+ *
  * @author anti43
  */
-public interface Lockable {
+public class LockableContainer {
 
-    /**
-     * Lock the dataset 
-     * @return True if lock was sucessfull
-     */
-    public abstract boolean lock();
+    private int ID;
+    private Class clazz;
     
-    /**
-     * Unlock the dataset
-     */
-    public abstract void unlock();
+    public LockableContainer(Class clazz, int id){
     
-    public abstract LockableContainer getLockableContainer();
-    
+        this.clazz=clazz;
+        this.ID=id; 
+    }
+
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
+    }
+
+    public Class getClazz() {
+        return clazz;
+    }
+
+    public void setClazz(Class clazz) {
+        this.clazz = clazz;
+    }
 }

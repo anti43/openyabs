@@ -25,6 +25,8 @@ import mp4.utils.files.FileReaderWriter;
  * @author anti43
  */
 public interface Strings {
+    
+    public static String WELCOME_MESSAGE = "Anmerkungen, Bugs und Feedback zu MP bitte an mp-rechnungs-und-kundenverwaltung@googlegroups.com senden. Vielen Dank!";
 
     public String NO = "Nein";
     public String YES = "Ja";

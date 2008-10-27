@@ -30,6 +30,8 @@ import mp4.logs.Log;
  */
 public class DataLock extends mp4.datenbank.verbindung.EasyQuery {
 
+  
+
     private Integer itemid;
     private String itemtable;
     private Integer ID = 0;
@@ -64,7 +66,15 @@ public class DataLock extends mp4.datenbank.verbindung.EasyQuery {
         freeQuery("DELETE FROM " + Tabellen.TABLE_ROWLOCK);
         Popup.notice(count + " Objekte released.");
     }
-
+  
+    public static void lateRelease() {
+       DataLock lockhandler = new mp4.datenbank.verbindung.DataLock();
+            for (int ix = 0; ix < DataLock.locks.size(); ix++) {
+                Integer id = DataLock.locks.get(ix);
+                Log.Debug(lockhandler, "Rowlock: Late releasing .." + id, true);
+                lockhandler.delete(id);
+            }
+    }
     /**
      * Try to lock the dataset
      * @return True if this was possible

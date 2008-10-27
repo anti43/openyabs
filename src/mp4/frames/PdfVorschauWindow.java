@@ -137,25 +137,7 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     DruckJob djob = new DruckJob(DocFlavor.INPUT_STREAM.PDF);
 
     djob.set(FileDirectoryHandler.tempFileClone(file, "pdf"));
-//    RandomAccessFile raf = new RandomAccessFile(file, "r");
-//FileChannel channel = raf.getChannel();
-//ByteBuffer buf = channel.map(FileChannel.MapMode.READ_ONLY, 0, channel.size());
-//PDFFile pdffile = new PDFFile(buf);
-//
-//// get the first page
-//PDFPage page = pdffile.getPage(0);
-//
-//
-//// create and configure a graphics object
-//BufferedImage img = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
-//Graphics2D g2 = img.createGraphics();
-//g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-//
-//// do the actual drawing
-//PDFRenderer renderer = new PDFRenderer(page, g2, 
-//    new Rectangle(0, 0, 500, 500), null, Color.RED);
-//page.waitForFinish();
-//renderer.run();
+
 
 }//GEN-LAST:event_jButton1ActionPerformed
 

@@ -458,5 +458,6 @@ public class Angebot extends mp4.items.Things implements mp4.datenbank.installat
     public String getCountColumn() {
         return "angebotnummer";
     }
+
 }
 

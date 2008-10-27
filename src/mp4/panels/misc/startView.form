@@ -73,21 +73,19 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
+                      <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jScrollPane2" alignment="0" pref="566" max="32767" attributes="0"/>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jScrollPane1" pref="562" max="32767" attributes="0"/>
-                          </Group>
+                          <Component id="jScrollPane2" alignment="0" pref="698" max="32767" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="jLabel7" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace pref="193" max="32767" attributes="0"/>
+                              <EmptySpace pref="325" max="32767" attributes="0"/>
                               <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <Component id="jLabel3" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="jScrollPane1" alignment="0" pref="698" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -106,14 +104,14 @@
                       <Component id="jScrollPane2" min="-2" pref="174" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="1" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" attributes="0">
                               <EmptySpace min="-2" pref="35" max="-2" attributes="0"/>
                               <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jScrollPane1" pref="121" max="32767" attributes="0"/>
+                              <Component id="jScrollPane1" pref="315" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -140,10 +138,12 @@
             <Container class="javax.swing.JScrollPane" name="jScrollPane1">
               <Properties>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="33" green="33" red="0" type="rgb"/>
+                  <Color blue="ff" green="ff" red="ff" type="rgb"/>
                 </Property>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-                  <Border info="null"/>
+                  <Border info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
+                    <EtchetBorder/>
+                  </Border>
                 </Property>
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="33" green="33" red="0" type="rgb"/>
@@ -160,6 +160,9 @@
               <SubComponents>
                 <Component class="javax.swing.JTextArea" name="jTextArea1">
                   <Properties>
+                    <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                      <Color blue="ff" green="cc" red="cc" type="rgb"/>
+                    </Property>
                     <Property name="columns" type="int" value="20"/>
                     <Property name="editable" type="boolean" value="false"/>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
@@ -173,7 +176,9 @@
                     <Property name="text" type="java.lang.String" value="Apache Derby&#xa;&#xa9;  2004-2007 The Apache Software Foundation&#xa;&#xa;Microba &#xa;&#xa9; 2005-2006, Michael Baranov&#xa;&#xa;iText&#xa;Portions created by the Initial Developer are &#xa;&#xa9; 1999, 2000, 2001, 2002 by Bruno Lowagie.&#xa;All Rights Reserved.&#xa;Portions created by the Co-Developer&#xa;are &#xa9;  2000, 2001, 2002 by Paulo Soares. &#xa;&#xa;OstermillerUtils&#xa;&#xa9;  2002-2004 Stephen Ostermiller&#xa;&#xa;PDF Renderer&#xa;&#xa9;  2003-2008 SUN/SwingLabs&#xa;&#xa;SuperCsv&#xa;&#xa9; 2007, Kasper B. Graversen&#xa;&#xa;TinyLaF&#xa;&#xa9; 2000 - 2007 Hans Bickel &#xa;&#xa;L2FProd Common Components&#xa;&#xa9; 2004-2007 L2FProd.com&#xa;&#xa;KDE Crystal Diamond Icons&#xa;&#xa9; by Paolino&#xa;&#xa;Other Icons &#xa;&#xa9; by Everaldo, KDE-Looks.org&#xa;&#xa;JFreeChart&#xa;&#xa9; 2000-2008, by Object Refinery Limited and Contributors.&#xa;&#xa;The JCommon Class Library&#xa;&#xa9; 2000-2006, by Object Refinery Limited and Contributors.&#xa;&#xa;Commons-CLI&#xa;&#xa9; 2002-2007 Apache Software Foundation&#xa;&#xa;JDBC MySQL Connector&#xa;&#xa9; 1995-2008 MySQL AB, 2008 Sun Microsystems, Inc."/>
                     <Property name="wrapStyleWord" type="boolean" value="true"/>
                     <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-                      <Border info="null"/>
+                      <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
+                        <EmptyBorder/>
+                      </Border>
                     </Property>
                     <Property name="disabledTextColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="33" green="33" red="0" type="rgb"/>
@@ -203,8 +208,8 @@
             <Container class="javax.swing.JScrollPane" name="jScrollPane2">
               <Properties>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-                  <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
-                    <EmptyBorder/>
+                  <Border info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
+                    <EtchetBorder/>
                   </Border>
                 </Property>
                 <Property name="autoscrolls" type="boolean" value="true"/>
@@ -217,6 +222,9 @@
               <SubComponents>
                 <Component class="javax.swing.JTextArea" name="jTextArea2">
                   <Properties>
+                    <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                      <Color blue="cc" green="cc" red="cc" type="rgb"/>
+                    </Property>
                     <Property name="columns" type="int" value="20"/>
                     <Property name="editable" type="boolean" value="false"/>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">

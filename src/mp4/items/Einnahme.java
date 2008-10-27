@@ -231,4 +231,5 @@ public class Einnahme extends mp4.items.Things implements mp4.datenbank.installa
     public void setDatum(Date datum) {
         this.Datum = datum;
     }
+ 
 }

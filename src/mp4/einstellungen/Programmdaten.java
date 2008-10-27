@@ -18,7 +18,13 @@ package mp4.einstellungen;
 
 import java.awt.Dimension;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import mp4.items.LockableContainer;
+import mp4.logs.Log;
 import mp4.plugin.mpplugin;
+import mp4.utils.listen.ListenDataUtils;
 
 /**
  *
@@ -129,6 +135,33 @@ public class Programmdaten implements mp4.datenbank.installation.Tabellen {
 
     public String getKunde_NUMMER_FORMAT() {
         return datahandler.getString("Kunde_NUMMER_FORMAT");
+    }
+
+
+    public void setSESSIONDATA(LockableContainer[] lockableContainer) {
+        String data = "";
+        
+        for (int i = 0; i < lockableContainer.length; i++) {
+            data += lockableContainer[i].getClazz().getName() + "," + lockableContainer[i].getID() + ";";
+        }
+        
+        datahandler.setString("SESSIONDATA", data);
+    }
+    
+    public ArrayList<LockableContainer> getSESSIONDATA() {
+        String[] data = datahandler.getString("SESSIONDATA").split(";");
+        
+        ArrayList<LockableContainer> list = new ArrayList<LockableContainer>();
+        
+        for (int i = 0; i < data.length; i++) {   
+            try {
+                list.add(new LockableContainer(Class.forName(data[i].split(",")[0]), new Integer(data[i].split(",")[1])));
+            } catch (ClassNotFoundException ex) {
+                Log.Debug(this, ex.getMessage());
+            }
+        }
+
+        return list;
     }
 
     public void setSUPPLIER_NUMMER_FORMAT(String SUPPLIER_NUMMER_FORMAT) {

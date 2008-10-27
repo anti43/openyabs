@@ -23,6 +23,7 @@ import java.awt.event.ItemEvent;
 import mp4.benutzerverwaltung.visual.login;
 import mp4.datenbank.verbindung.Conn;
 import mp4.interfaces.Lockable;
+import mp4.items.LockableContainer;
 import mp4.items.visual.csvProductImporter;
 import mp4.items.visual.fastChoice;
 import mp4.items.visual.serialLetter;
@@ -85,6 +86,7 @@ import mp4.interfaces.ContactPanel;
 import mp4.items.Angebot;
 
 import mp4.items.ClipBoard;
+import mp4.items.Hersteller;
 import mp4.items.People;
 import mp4.items.Things;
 import mp4.items.visual.CommonPanel;
@@ -146,14 +148,12 @@ public class mainframe extends javax.swing.JFrame {
     }
 
     public static void setWaiting(boolean b) {
-        if(b) {
+        if (b) {
             identifier.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-        }
-        else {
+        } else {
             identifier.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
         }
     }
-    
     private startView i;
     private Main loader;
     private Position wt = new Position();
@@ -169,7 +169,6 @@ public class mainframe extends javax.swing.JFrame {
     private settingsView settingspanel;
     private diagrammChooseView diagrammpanel;
     private DialogForFile dialog;
-
     private ClipBoard clipBoard = new ClipBoard(this);
 
     /** Creates new form mainframe
@@ -177,8 +176,6 @@ public class mainframe extends javax.swing.JFrame {
      * @param mainclass 
      */
     public mainframe(SplashScreen splash, Main mainclass) {
-
-
 
         this.loader = mainclass;
         mainframe.identifier = this;
@@ -233,6 +230,8 @@ public class mainframe extends javax.swing.JFrame {
 
         nachricht = messagePanel;
         new pluginHandler(this);
+        splash.setMessage("Sitzungswiederherstellung...");
+        restoreSession();
 
         this.setVisible(rootPaneCheckingEnabled);
         if (Programmdaten.instanceOf().getUSE_AUTHENTIFICATION()) {
@@ -242,10 +241,7 @@ public class mainframe extends javax.swing.JFrame {
 
         
         this.requestFocus();
-         
-        setMessage("Anmerkungen, Bugs und Feedback zu MP bitte an mp-rechnungs-und-kundenverwaltung@googlegroups.com senden. Vielen Dank!");
-        
-
+        setMessage(Strings.WELCOME_MESSAGE);
     }
 
     public void addAngebotPanel(Angebot offer) {
@@ -1181,21 +1177,22 @@ pack();
     }//GEN-LAST:event_jMenuItem8ActionPerformed
 
     private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
-        try {
-            Process proc = Runtime.getRuntime().exec(Einstellungen.instanceOf().getBrowser_Programm() + " http://groups.google.com/group/mp-rechnungs-und-kundenverwaltung");
-        } catch (IOException ex) {
-            new Popup("Kein Browser angegeben. Wählen Sie Ihren Internetbrowser unter 'Programmeinstellungen'.");
-        }
+
+        new Browser("http://groups.google.com/group/mp-rechnungs-und-kundenverwaltung");
+
     }//GEN-LAST:event_jMenuItem6ActionPerformed
 
     private void close() {
+
+
         try {
-            DataLock lockhandler = new mp4.datenbank.verbindung.DataLock();
-            for (int i = 0; i < DataLock.locks.size(); i++) {
-                Integer id = DataLock.locks.get(i);
-                Log.Debug(this, "Rowlock: Late releasing .." + id, true);
-                lockhandler.delete(id);
-            }
+            Programmdaten.instanceOf().setSESSIONDATA(new LockableContainer[]{((CommonPanel) mainTabPane.getSelectedComponent()).getLockable().getLockableContainer()});
+        } catch (Exception e) {
+            Log.Debug("Could not save session. No saveable data selected.");
+        }
+
+        try {
+            DataLock.lateRelease();
 
             Programmdaten.instanceOf().setMAINFRAME_WINDOW_STATE(this.getSize());
             Programmdaten.instanceOf().setMAINFRAME_TAB(mainTabPane.getSelectedIndex());
@@ -1432,7 +1429,7 @@ private void jMenuItem24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
         TextDatFile file = new TextDatFile(ArrayUtils.ObjectToStringArray(new Kontaktliste(new Kunde().getClass()).getData()), Kontaktliste.header);
         new Job(file, dialog, mainProgressBar).execute();
     } catch (Exception e) {
-        Popup.notice("Keine Kunden vorhanden.");     
+        Popup.notice("Keine Kunden vorhanden.");
     }
 }//GEN-LAST:event_jMenuItem24ActionPerformed
 
@@ -1506,7 +1503,7 @@ private void jMenuItem16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
 }//GEN-LAST:event_jMenuItem16ActionPerformed
 
 private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
-jButton14ActionPerformed(evt);
+    jButton14ActionPerformed(evt);
 }//GEN-LAST:event_jMenuItem4ActionPerformed
 
 private void jMenuItem17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem17ActionPerformed
@@ -1521,7 +1518,7 @@ private void jMenuItem15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
 
 private void jMenuItem25ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem25ActionPerformed
 
-    if(getUser().isIsAdmin()){
+    if (getUser().isIsAdmin()) {
         new DatabaseToolWindow();
     } else {
         Popup.notice("Das Datenbankwerkzeug kann nur von einem Administrator gestarted werden!");
@@ -1650,6 +1647,56 @@ private javax.swing.JMenu pluginMenu;
         Log.getLogger().flush();
 
         super.dispose();
+    }
+
+    private void restoreSession() {
+        try {
+            ArrayList<LockableContainer> sessiondata = Programmdaten.instanceOf().getSESSIONDATA();
+
+            for (int i = 0; i < sessiondata.size(); i++) {
+                addPanel(sessiondata.get(i));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.Debug(this, "RestoreSession: " + e.getMessage());
+        }
+    }
+
+    public void addPanel(LockableContainer data) {
+
+        if (data.getClazz().isInstance(new Kunde())) {
+            customersView panel = new customersView(this);
+            addPanel("Kunde", panel);
+
+            panel.setContact(new Kunde(data.getID()));
+
+
+        } else if (data.getClazz().isInstance(new Rechnung())) {
+            billsView panel = new billsView(this);
+            addPanel("Rechnung", panel);
+            panel.setBill(new Rechnung(data.getID()));
+
+
+        } else if (data.getClazz().isInstance(new Angebot())) {
+            offersView panel = new offersView(this);
+            addPanel("Angebot", panel);
+            panel.setAngebot(new Angebot(data.getID()));
+
+
+        } else if (data.getClazz().isInstance(new Lieferant())) {
+            suppliersView panel = new suppliersView(this);
+            addPanel("Lieferant", panel);
+            panel.setContact(new Lieferant(data.getID()));
+
+
+        } else if (data.getClazz().isInstance(new Hersteller())) {
+            manufacturerView panel = new manufacturerView(this);
+            addPanel("Hersteller", panel);
+            panel.setContact(new Hersteller(data.getID()));
+
+        } else {
+            Log.Debug("Nothing to restore.");
+        }
     }
 
     private void setUser(User usern) {
