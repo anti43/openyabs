@@ -157,11 +157,12 @@ public class productsView extends CommonPanel implements DataPanel, mp4.datenban
 
         if (current.getId() > 0) {
             if ((JOptionPane.showConfirmDialog(this, "Wirklich löschen?", "Sicher?", JOptionPane.YES_NO_OPTION)) == JOptionPane.YES_OPTION) {
+                getMainframe().setMessage("Produkt Nummer " + current.getProduktNummer() + " gelöscht.");
                 current.destroy();
                 current = new Product();
                 lieferant = new Lieferant(1);
                 hersteller = new Hersteller(1);
-                getMainframe().setMessage("Produkt Nummer " + current.getProduktNummer() + " gelöscht.");
+                
             }
 
             updateListTable();
@@ -194,7 +195,7 @@ public class productsView extends CommonPanel implements DataPanel, mp4.datenban
             getLockable().unlock();
         }
         setLockable(product);
-        
+
         this.current = product;
         this.setSupplier(current.getLieferant());
         this.setManufacturer(current.getHersteller());
@@ -227,6 +228,7 @@ public class productsView extends CommonPanel implements DataPanel, mp4.datenban
         this.jTextField19.setText(current.getBestelldatum());
         this.jTextField20.setText(FormatNumber.formatDezimal(current.getBestellmenge()));
         this.jTextField21.setText(FormatNumber.formatDezimal(current.getLagermenge()));
+        this.jTextField22.setText(current.getEan());
 
         jTextField4.setEditable(false);
 
@@ -1318,8 +1320,8 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton20ActionPerformed
     if (Popup.Y_N_dialog("Diesen Datensatz wirklich deaktivieren?") && mainframe.getUser().doAction(User.EDITOR)) {
         deactivate();
-        new HistoryItem(Strings.PRODUCT, "Produkt Nummer "+ current.getProduktNummer() + "  gelöscht.");
-        this.close();
+        new HistoryItem(Strings.PRODUCT, "Produkt Nummer " + current.getProduktNummer() + "  gelöscht.");
+//        this.close();
     }
 }//GEN-LAST:event_jButton20ActionPerformed
 
@@ -1549,10 +1551,16 @@ private void jTextField4KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
         if (jTextField5.getText().equals("")) {
             jTextField5.setText(jTextField4.getText());
         }
+
+        try {
+            Double.valueOf(jTextField7.getText());
+        } catch (NumberFormatException numberFormatException) {
+            jTextField7.setText("0");
+        }
         try {
             Double.valueOf(jTextField20.getText());
         } catch (NumberFormatException numberFormatException) {
-            jTextField13.setText("0");
+            jTextField20.setText("0");
         }
         try {
             Double.valueOf(jTextField8.getText());
@@ -1562,7 +1570,7 @@ private void jTextField4KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
         try {
             Double.valueOf(jTextField21.getText());
         } catch (NumberFormatException numberFormatException) {
-            jTextField7.setText("0");
+            jTextField21.setText("0");
         }
 
         product.setName(jTextField5.getText());
@@ -1613,11 +1621,20 @@ private void jTextField4KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
             } catch (NumberFormatException numberFormatException) {
                 jTextField7.setText("0");
             }
+
+
             try {
-                Double.valueOf(jTextField16.getText());
+                Double.valueOf(jTextField20.getText());
             } catch (NumberFormatException numberFormatException) {
-                jTextField16.setText("0");
+                jTextField20.setText("0");
             }
+
+            try {
+                Double.valueOf(jTextField21.getText());
+            } catch (NumberFormatException numberFormatException) {
+                jTextField21.setText("0");
+            }
+
             current.setNummer(jTextField4.getText());
             current.setName(jTextField5.getText());
             if (hersteller != null && hersteller.isValid()) {

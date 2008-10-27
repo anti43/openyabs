@@ -6,12 +6,9 @@
 package mp4.items.visual;
 
 import java.io.File;
-import javax.swing.text.html.HTMLDocument;
-import javax.swing.text.html.HTMLDocument.HTMLReader;
-import mp4.items.*;
+import mp4.logs.Log;
 import mp4.utils.ui.Position;
 import mp4.utils.files.FileToString;
-import mp4.einstellungen.Programmdaten;
 import mp4.utils.tabellen.models.DefaultHelpModel;
 
 /**
@@ -41,7 +38,8 @@ public class Help extends javax.swing.JFrame {
         initComponents();
         new Position(this);
 
-        File file = new File(helpfile);
+        File file = new File(getClass().getResource(helpfile).getFile());
+        
 
         if (file.exists()) {
             FileToString  t = new FileToString(file);
@@ -54,6 +52,8 @@ public class Help extends javax.swing.JFrame {
 
         this.setModel(new DefaultHelpModel(htitle, t.getContent()));
         this.setVisible(rootPaneCheckingEnabled);
+        } else {
+            Log.Debug(this, "Helpfile not found: " + file);
         }
     }
 

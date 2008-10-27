@@ -99,9 +99,10 @@ public class servicesView extends mp4.items.visual.CommonPanel implements mp4.da
 
         if (current.getId() > 0) {
             if ((JOptionPane.showConfirmDialog(this, "Wirklich löschen?", "Sicher?", JOptionPane.YES_NO_OPTION)) == JOptionPane.YES_OPTION) {
-                current.destroy();
-                current = new Dienstleistung();
-                new HistoryItem(Strings.SERVICE, "Dienstleistung Nummer " + current.getProduktNummer() + " gelöscht.");
+               new HistoryItem(Strings.SERVICE, "Dienstleistung Nummer " + current.getProduktNummer() + " gelöscht."); 
+               current.destroy();
+               current = new Dienstleistung();
+                
             }
 
             updateListTable();
@@ -913,7 +914,7 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton20ActionPerformed
     if (Popup.Y_N_dialog("Diesen Datensatz wirklich deaktivieren?") && mainframe.getUser().doAction(User.EDITOR)) {
         deactivate();
-        this.close();
+//        this.close();
     }
 }//GEN-LAST:event_jButton20ActionPerformed
 

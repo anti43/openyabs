@@ -1633,7 +1633,7 @@ if (Popup.Y_N_dialog("Diesen Datensatz wirklich stornieren?") && mainframe.getUs
                 this.currentBill.setStorno(true);
                 currentBill.save();
                 new HistoryItem(Strings.BILL, "Rechnung Nummer " + currentBill.getRechnungnummer() + " storniert.");
-                this.close();
+//                this.close();
            } 
         }
 }  

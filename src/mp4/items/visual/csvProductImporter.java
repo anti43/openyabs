@@ -8,6 +8,7 @@ package mp4.items.visual;
 import com.Ostermiller.util.CSVParser;
 import java.awt.Cursor;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -28,6 +29,7 @@ import mp4.logs.*;
 import mp4.items.visual.Popup;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.interfaces.DataPanel;
+import mp4.items.Hersteller;
 import mp4.items.visual.SupplierPicker;
 
 import mp4.items.ProductImporteur;
@@ -51,7 +53,7 @@ import org.supercsv.prefs.CsvPreference;
  *
  * @author  anti43
  */
-public class csvProductImporter extends javax.swing.JFrame implements ContactPanel, DataPanel{
+public class csvProductImporter extends javax.swing.JFrame implements ContactPanel, DataPanel {
 
     private static csvProductImporter frame;
 
@@ -70,6 +72,7 @@ public class csvProductImporter extends javax.swing.JFrame implements ContactPan
     public ProductImporteur[] data;
     public Lieferant supplier = null;
     private Task task;
+    private Hersteller hersteller = null;
 
     /** Creates new form productImporter */
     public csvProductImporter() {
@@ -88,7 +91,7 @@ public class csvProductImporter extends javax.swing.JFrame implements ContactPan
         ProductImporteur user = new ProductImporteur();
         liste = new ArrayList();
         header = new String[]{"produktnummer", "name", "text", "vk",
-                    "ek", "tax", "hersteller", "warengruppenkategorie", "warengruppenfamilie",
+                    "ek", "tax", "herstellerid", "warengruppenkategorie", "warengruppenfamilie",
                     "warengruppe", "url", "ean", "lieferantenid"
                 };
 
@@ -152,7 +155,7 @@ public class csvProductImporter extends javax.swing.JFrame implements ContactPan
         try {
             this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
             user = new ProductImporteur();
-            data = ProductImporteur.listToImporteurArray(liste, this.supplier);
+            data = ProductImporteur.listToImporteurArray(liste, this.supplier, this.hersteller);
             datstr = user.getData(data);
 
             Thread.sleep(5000);//Wait for the data..
@@ -176,6 +179,11 @@ public class csvProductImporter extends javax.swing.JFrame implements ContactPan
     public void setSupplier(Lieferant supplier) {
         this.jTextField2.setText(supplier.getFirma());
         this.supplier = supplier;
+    }
+
+    public void setContact2(Hersteller hersteller) {
+        this.jTextField3.setText(hersteller.getFirma());
+        this.hersteller = hersteller;
     }
 
     /** This method is called from within the constructor to
@@ -204,6 +212,10 @@ jLabel3 = new javax.swing.JLabel();
 jTextField2 = new javax.swing.JTextField();
 jButton5 = new javax.swing.JButton();
 jButton6 = new javax.swing.JButton();
+jLabel4 = new javax.swing.JLabel();
+jTextField3 = new javax.swing.JTextField();
+jButton7 = new javax.swing.JButton();
+jCheckBox3 = new javax.swing.JCheckBox();
 
 setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 setTitle("MP CSV Import");
@@ -243,13 +255,13 @@ jLabel2.setText("Trennzeichen:");
 jTable1.setAutoCreateRowSorter(true);
 jTable1.setModel(new javax.swing.table.DefaultTableModel(
 	new Object [][] {
-		{null, null, null, null, null, null, null, null, null, null, null, null},
-		{null, null, null, null, null, null, null, null, null, null, null, null},
-		{null, null, null, null, null, null, null, null, null, null, null, null},
-		{null, null, null, null, null, null, null, null, null, null, null, null}
+		{null, null, null, null, null, null, null, null, null, null, null},
+		{null, null, null, null, null, null, null, null, null, null, null},
+		{null, null, null, null, null, null, null, null, null, null, null},
+		{null, null, null, null, null, null, null, null, null, null, null}
 	},
 	new String [] {
-		"Produknummer", "Produktname", "Langtext", "VK", "EK", "Mehrwertsteuer", "Herstellername", "Warengruppenkategorie", "Warengruppenfamilie", "Warengruppe", "Produktbild-URL", "EAN"
+		"Produknummer", "Produktname", "Langtext", "VK", "EK", "Mehrwertsteuer", "Warengruppenkategorie", "Warengruppenfamilie", "Warengruppe", "Produktbild-URL", "EAN"
 	}
 ));
 jScrollPane1.setViewportView(jTable1);
@@ -279,7 +291,7 @@ jLabel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
 jProgressBar1.setStringPainted(true);
 
-jLabel3.setFont(new java.awt.Font("Dialog", 1, 11));
+jLabel3.setFont(new java.awt.Font("Dialog", 1, 11)); // NOI18N
 jLabel3.setText("Lieferant: ");
 
 jTextField2.addActionListener(new java.awt.event.ActionListener() {
@@ -302,15 +314,34 @@ jButton6ActionPerformed(evt);
 }
 });
 
+jLabel4.setFont(new java.awt.Font("Dialog", 1, 11)); // NOI18N
+jLabel4.setText("Hersteller:");
+
+jTextField3.addActionListener(new java.awt.event.ActionListener() {
+public void actionPerformed(java.awt.event.ActionEvent evt) {
+jTextField3ActionPerformed(evt);
+}
+});
+
+jButton7.setText("Wählen");
+jButton7.addActionListener(new java.awt.event.ActionListener() {
+public void actionPerformed(java.awt.event.ActionEvent evt) {
+jButton7ActionPerformed(evt);
+}
+});
+
+jCheckBox3.setSelected(true);
+jCheckBox3.setText("Ohne 1. Zeile");
+
 javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
 jPanel1.setLayout(jPanel1Layout);
 jPanel1Layout.setHorizontalGroup(
 jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-.addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 725, Short.MAX_VALUE)
+.addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 774, Short.MAX_VALUE)
 .addGroup(jPanel1Layout.createSequentialGroup()
 .addComponent(jLabel1)
 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-.addComponent(jProgressBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 512, Short.MAX_VALUE))
+.addComponent(jProgressBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 561, Short.MAX_VALUE))
 .addGroup(jPanel1Layout.createSequentialGroup()
 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 308, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -321,23 +352,34 @@ jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
 .addComponent(jCheckBox2)
 .addGap(18, 18, 18)
-.addComponent(jLabel3)))
+.addComponent(jCheckBox3)))
 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 .addGroup(jPanel1Layout.createSequentialGroup()
+.addComponent(jLabel3)
+.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+.addComponent(jTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 82, Short.MAX_VALUE))
+.addGroup(jPanel1Layout.createSequentialGroup()
 .addComponent(jButton3)
 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-.addComponent(jButton6)
-.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+.addComponent(jButton6)))
+.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+.addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+.addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
 .addComponent(jButton2)
 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 .addComponent(jButton1)
 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 .addComponent(jButton4))
-.addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-.addComponent(jTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE)
+.addGroup(jPanel1Layout.createSequentialGroup()
+.addComponent(jButton5)
 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-.addComponent(jButton5))))
+.addComponent(jLabel4)
+.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+.addComponent(jTextField3, javax.swing.GroupLayout.DEFAULT_SIZE, 87, Short.MAX_VALUE)
+.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+.addComponent(jButton7)
+.addContainerGap())))
 );
 jPanel1Layout.setVerticalGroup(
 jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -349,16 +391,20 @@ jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 .addComponent(jLabel2)
 .addComponent(jCheckBox1)
 .addComponent(jCheckBox2)
-.addComponent(jLabel3)
 .addComponent(jButton5)
+.addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+.addComponent(jButton7)
+.addComponent(jLabel4)
+.addComponent(jCheckBox3)
+.addComponent(jLabel3)
 .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-.addComponent(jButton3)
 .addComponent(jButton2)
 .addComponent(jButton1)
 .addComponent(jButton4)
+.addComponent(jButton3)
 .addComponent(jButton6))
 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -384,14 +430,14 @@ pack();
         this.dispose();
     }//GEN-LAST:event_jButton2MouseClicked
 
-    @SuppressWarnings({"unchecked", "unchecked"})
+    @SuppressWarnings({"unchecked", "unchecked", "unchecked"})
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
         boolean succ = true;
         ProductImporteur importeur = new ProductImporteur();
         liste = new ArrayList();
         header = new String[]{"produktnummer", "name", "text", "vk",
-                    "ek", "tax", "hersteller", "warengruppenkategorie", "warengruppenfamilie",
-                    "warengruppe", "url", "ean", "lieferantenid"
+                    "ek", "tax", "warengruppenkategorie", "warengruppenfamilie",
+                    "warengruppe", "url", "ean"
                 };
 
         try {
@@ -407,9 +453,7 @@ pack();
                 new StrMinMax(0, 99),
                 new StrMinMax(0, 99),
                 new StrMinMax(0, 99),
-                new StrMinMax(0, 135),
-                new StrMinMax(0, 19),
-                new StrMinMax(0, 19)
+                new StrMinMax(0, 135)
             };
 
 
@@ -420,11 +464,15 @@ pack();
 
             this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 
-            ICsvBeanReader inFile = new CsvBeanReader(new FileReader(jTextField1.getText()), pref);
+            ICsvBeanReader inFile = null;
+            try {
+                inFile = new CsvBeanReader(new FileReader(jTextField1.getText()), pref);
+            } catch (FileNotFoundException fileNotFoundException) {
+                Popup.notice("Bitte Datei auswählen!");
+            }
             try {
 //                final String[] header = inFile.getCSVHeader(true);
-
-
+                if(jCheckBox3.isSelected())inFile.read(ProductImporteur.class, header, processors);
                 while ((importeur = inFile.read(ProductImporteur.class, header, processors)) != null) {
                     liste.add(importeur);
                 }
@@ -453,13 +501,9 @@ pack();
 
         try {
             importeur = new ProductImporteur();
-            data = ProductImporteur.listToImporteurArray(liste, this.supplier);
+            data = ProductImporteur.listToImporteurArray(liste, this.supplier, this.hersteller);
             datstr = importeur.getData(data);
-
-
             jTable1.setModel(new DefaultTableModel(datstr, header));
-
-
         } catch (Exception ex) {
             succ = false;
             new Popup(ex.getMessage(), Popup.ERROR);
@@ -502,36 +546,24 @@ pack();
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
 
-        new Help(new DefaultHelpModel("CSV Import",
-                "<P><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3>Die zu " +
-                "importierenden Daten m&uuml;ssen in dieser Form vorliegen:</FONT></FONT></P>" +
-                "<P><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3><B>&lt;produktnummer&gt;;" +
-                "&lt;name&gt;;&lt;text&gt;;&lt;vk&gt;;&lt;ek&gt;;&lt;tax&gt;" +
-                ";&lt;hersteller&gt;;&lt;warengruppenkategorie&gt;;&lt;warengruppenfamilie&gt;;&lt;warengruppe&gt;;&lt;url&gt;;&lt;ean&gt;</B></FONT></FONT></P>" +
-                "<P><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3>Zum Beispiel:</FONT></FONT></P>" +
-                "<P><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3>1000143;&quot;NPPSU023&quot;;&quot;INTEL&nbsp;NPPSU023&nbsp;POWERSUPPLY&nbsp;UK&quot;;;07.01.08;19;&quot;INTEL&quot;;;;;&quot;http://www.google.de/logo.gif&quot;;675900307711" +
-                "<BR>1000144;&quot;NPPSU023&quot;;&quot;INTEL&nbsp;NPPSU023&nbsp;POWERSUPPLY&nbsp;UK&quot;;;07.01.08;19;&quot;INTEL&quot;;;;;&quot;http://www.google.de/logo.gif&quot;;675900307711" +
-                "<BR>1000145;&quot;NPPSU023&quot;;&quot;INTEL&nbsp;NPPSU023&nbsp;POWERSUPPLY&nbsp;UK&quot;;;07.01.08;19;&quot;INTEL&quot;;;;;&quot;http://www.google.de/logo.gif&quot;;675900307711</FONT></FONT></P>" +
-                "<P><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3>Kontrollieren " +
-                "Sie die Korrektheit ihrer Daten in der Vorschautabelle.<BR></FONT></FONT><BR><BR>" +
-                "</P>" +
-                "<P><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3>Das Importieren " +
-                "kann abh&auml;ngig von der Dtenstruktur und der verwendeten Hardware " +
-                "sehr lange dauern (</FONT></FONT><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3><B>~1.5" +
-                "h f&uuml;r 32000</B></FONT></FONT><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3>" +
-                "</FONT></FONT><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3><B>Produkte" +
-                "</B></FONT></FONT><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3>(Dual-Core" +
-                "2 Ghz mit Sata2-Festplatte)).</FONT></FONT></P>"));
+        new Help("/helpfiles/produktimport1");
     }//GEN-LAST:event_jButton6ActionPerformed
 
 private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-new SupplierPicker(this);
+    new SupplierPicker(this);
 }//GEN-LAST:event_jButton5ActionPerformed
 
 private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
-
 }//GEN-LAST:event_jTextField2ActionPerformed
 
+private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
+// TODO add your handling code here:
+}//GEN-LAST:event_jTextField3ActionPerformed
+
+private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+
+    new ManufacturerPicker(this);
+}//GEN-LAST:event_jButton7ActionPerformed
 // Variables declaration - do not modify//GEN-BEGIN:variables
 private javax.swing.ButtonGroup buttonGroup1;
 private javax.swing.JButton jButton1;
@@ -540,17 +572,21 @@ private javax.swing.JButton jButton3;
 private javax.swing.JButton jButton4;
 private javax.swing.JButton jButton5;
 private javax.swing.JButton jButton6;
+private javax.swing.JButton jButton7;
 private javax.swing.JCheckBox jCheckBox1;
 private javax.swing.JCheckBox jCheckBox2;
+private javax.swing.JCheckBox jCheckBox3;
 public javax.swing.JLabel jLabel1;
 private javax.swing.JLabel jLabel2;
 private javax.swing.JLabel jLabel3;
+private javax.swing.JLabel jLabel4;
 private javax.swing.JPanel jPanel1;
 public javax.swing.JProgressBar jProgressBar1;
 private javax.swing.JScrollPane jScrollPane1;
 private javax.swing.JTable jTable1;
 private javax.swing.JTextField jTextField1;
 private javax.swing.JTextField jTextField2;
+private javax.swing.JTextField jTextField3;
 // End of variables declaration//GEN-END:variables
     public javax.swing.JButton getJButton4() {
         return jButton4;
@@ -581,43 +617,62 @@ private javax.swing.JTextField jTextField2;
             String cat;
             boolean news = false;
 
-            if ((JOptionPane.showConfirmDialog(thisa, "Wirklich alle Daten ï¿½bernehmen? Dies wird mï¿½glicherweise einige Zeit dauern!", "Sicher?", JOptionPane.YES_NO_OPTION)) == JOptionPane.YES_OPTION) {
+            if ((JOptionPane.showConfirmDialog(thisa, "Wirklich alle Daten übernehmen? Dies wird möglicherweise einige Zeit dauern!", "Sicher?", JOptionPane.YES_NO_OPTION)) == JOptionPane.YES_OPTION) {
 
                 if (thisa.data != null) {
                     Date d = new Date();
-//                Log.setLogLevel(Log.LOGLEVEL_HIGH);
-                    Log.Debug(this,"Einlesen gestartet: " + d, true);
+//                    Log.setLogLevel(Log.LOGLEVEL_DEBUG);
+                    Log.Debug(this, "Einlesen gestartet: " + d, true);
                     thisa.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 
+                    Log.Debug(this, "Expected data: " + thisa.data.length);
                     thisa.jProgressBar1.setMaximum(thisa.data.length);
                     thisa.jProgressBar1.setMinimum(0);
 
                     for (int i = 0; i < thisa.data.length; i++) {
 
+                        Log.Debug(this, "Getting grouphandler...");
                         Product pg = new Product(ConnectionHandler.instanceOf());
                         ProductGroupHandler handler = ProductGroupHandler.instanceOf();
 
-                        pg.setNummer(thisa.data[i].getProduktnummer());
-                        pg.setName(thisa.data[i].getName());
-                        pg.setDatum(datum);
-                        pg.setEK(Double.valueOf(thisa.data[i].getEk()));
-                        pg.setVK(Double.valueOf(thisa.data[i].getVk()));
-                        pg.setEan(thisa.data[i].getEan());
-                        pg.setHerstellernr(thisa.data[i].getHersteller());
-                        pg.setTaxID(new Steuersatz().findIDWithOrCreate(Double.valueOf(thisa.data[i].getTax())).getId());
-                        pg.setText(thisa.data[i].getText());
-                        pg.setUrl(thisa.data[i].getUrl());
-                        pg.setLieferant(new Lieferant(Integer.valueOf(thisa.data[i].getLieferantenid())));
+                        try {
+                            Log.Debug(this, "Try: " + (i + 1));
+                            Log.Debug(this, "Step " + 1 + ": ");
+                            pg.setNummer(thisa.data[i].getProduktnummer());
+                            Log.Debug(this, "Step " + 2 + ": ");
+                            pg.setName(thisa.data[i].getName());
+                            Log.Debug(this, "Step " + 3 + ": ");
+                            pg.setDatum(datum);
+                            Log.Debug(this, "Step " + 4 + ": ");
+                            pg.setEK(Double.valueOf(thisa.data[i].getEk()));
+                            Log.Debug(this, "Step " + 5 + ": ");
+                            pg.setVK(Double.valueOf(thisa.data[i].getVk()));
+                            Log.Debug(this, "Step " + 6 + ": ");
+                            pg.setEan(thisa.data[i].getEan());
+                            Log.Debug(this, "Step " + 7 + ": ");
+                            pg.setHersteller(new Hersteller(thisa.data[i].getHersteller()));
+                            Log.Debug(this, "Step " + 8 + ": ");
+                            pg.setTaxID(new Steuersatz().findIDWithOrCreate(Double.valueOf(thisa.data[i].getTax())).getId());
+                            Log.Debug(this, "Step " + 9 + ": ");
+                            pg.setText(thisa.data[i].getText());
+                            Log.Debug(this, "Step " + 10 + ": ");
+                            pg.setUrl(thisa.data[i].getUrl());
+                            Log.Debug(this, "Step " + 11 + ": ");
+                            pg.setLieferant(new Lieferant(Integer.valueOf(thisa.data[i].getLieferantenid())));
+                        } catch (NumberFormatException numberFormatException) {
+                            Log.Debug(numberFormatException);
+                        }
 
+                        Log.Debug(this, "Getting groups...");
                         cat = thisa.data[i].getWarengruppenkategorie();
                         fam = thisa.data[i].getWarengruppenfamilie();
                         grp = thisa.data[i].getWarengruppe();
 
-                        Log.Debug(this,pg.getName() + ":Produkt \n" + cat, true);
-                        Log.Debug(this,fam, true);
-                        Log.Debug(this,grp, true);
+                        Log.Debug(this, pg.getName() + ":Produkt \n" + cat, true);
+                        Log.Debug(this, fam, true);
+                        Log.Debug(this, grp, true);
 
-                        Log.Debug(this,"---------------------------", true);
+                        Log.Debug(this, "---------------------------", true);
 
 
                         if (!cat.equals("null") && !fam.equals("null") && !grp.equals("null")) {
@@ -631,12 +686,13 @@ private javax.swing.JTextField jTextField2;
                                 newcat.save();
                                 z = newcat.getID();
                                 news = true;
-                            } else {//                            newcat = handler.getCategory(z);
+                            } else {//                            
+                                newcat = handler.getCategory(z);
                             }
 
                             int f = handler.existFam(fam);
                             if (f == 0) {
-                                Log.Debug(this,"creating fam: " + fam + " " + f, true);
+                                Log.Debug(this, "Creating Productfamily: " + fam + " " + f, true);
                                 newfam = new ProductGroupFamily(ConnectionHandler.instanceOf());
                                 newfam.setName(fam);
                                 newfam.setKategorieid(z);
@@ -644,8 +700,8 @@ private javax.swing.JTextField jTextField2;
                                 f = newfam.getID();
                                 news = true;
                             } else {
-//                          Log.Debug(this,"existing fam: "+fam + " " + f,true);
-//                               newfam = handler.getFamily(f);
+                                Log.Debug(this, "Existing Productfamily: " + fam + " " + f, true);
+                                newfam = handler.getFamily(f);
                             }
 
 
@@ -689,7 +745,7 @@ private javax.swing.JTextField jTextField2;
                         pg = null;
                     }
                     d = new Date();
-           
+
                     Popup.notice("Einlesen beendet: " + d + " Produkte: " + h);
                     new HistoryItem(ConnectionHandler.instanceOf(), "Datenimport", h + " Produkte importiert.");
 
@@ -730,6 +786,7 @@ private javax.swing.JTextField jTextField2;
 
     @Override
     public void setContact(People contact) {
+        jTextField2.setText(contact.getFirma());
         this.supplier = (Lieferant) contact;
     }
 

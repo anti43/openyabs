@@ -11,6 +11,7 @@ import mp4.datenbank.verbindung.Query;
 
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.einstellungen.Programmdaten;
+import mp4.logs.Log;
 
 /**
  *
@@ -64,7 +65,7 @@ public class ProductGroupHandler extends mp4.items.Things implements mp4.datenba
         
          for (int b = 0; b < getFamilies().length; b++) {
                     
-                     //Log.Debug(this,"matching?: "+getFamilies()[b].getName() + " : " + fam,true);
+                     Log.Debug(this,"matching?: "+getFamilies()[b].getName() + " : " + fam,true);
                     if (getFamilies()[b].getName().matches(fam)) {
                        
                         return getFamilies()[b].getID();
@@ -126,7 +127,7 @@ public class ProductGroupHandler extends mp4.items.Things implements mp4.datenba
 
     private void fillCategories() {
         String[][] tmp = this.select("*", null, null, false, false);
-        //Log.Debug(this,"fillcats: " + tmp.length);
+        Log.Debug(this,"fillcats: " + tmp.length);
         categories =
                 new ProductGroupCategory[tmp.length];
 
@@ -144,7 +145,7 @@ public class ProductGroupHandler extends mp4.items.Things implements mp4.datenba
 
             category.setKategorienummer(tmp[i][1]);
             category.setName(tmp[i][2]);
-//            //Log.Debug(this,category.getName());
+            Log.Debug(this,category.getName());
 
             categories[i] = category;
         }
@@ -167,7 +168,7 @@ public class ProductGroupHandler extends mp4.items.Things implements mp4.datenba
 
             try {
                 family.setId(Integer.valueOf(tmp[i][0]));
-                //Log.Debug(this,"fillfam" + Integer.valueOf(tmp[i][0]));
+                Log.Debug(this,"fillfam" + Integer.valueOf(tmp[i][0]));
 
             } catch (NumberFormatException numberFormatException) {
                 family.setId(0);
@@ -206,7 +207,7 @@ public class ProductGroupHandler extends mp4.items.Things implements mp4.datenba
             group.setGruppennummer(tmp[i][1]);
             group.setFamilienid(Integer.valueOf(tmp[i][2]));
             group.setName(tmp[i][3]);
-            //Log.Debug(this,group.getName());
+            Log.Debug(this,group.getName());
 
             groups[i] = group;
         }

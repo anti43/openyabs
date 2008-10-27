@@ -60,9 +60,11 @@ public class Steuersatz extends mp4.items.Things implements mp4.datenbank.instal
 
     public Steuersatz findIDWithOrCreate(Double valueOf) {
         try {
-            String[] data = this.selectLast("name, wert", "wert", valueOf.toString(), true);
+            String[] data = this.selectLast("id", "wert", valueOf.toString(), true);
             if(data != null && data.length>0){
-                explode(data); 
+                
+                this.id = Integer.valueOf(data[0]);
+                this.explode(this.selectLast("name, wert", "id", id.toString(), true));
                 return this;
             } else {          
                 setWert(valueOf);

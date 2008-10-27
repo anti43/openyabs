@@ -1300,7 +1300,7 @@ private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         if (currentOffer.hasId()) {
             this.currentOffer.deactivate(currentOffer.getid());
             new HistoryItem(Strings.OFFER, "Angebot Nummer " + currentOffer.getAngebotnummer() + " deaktiviert.");
-            this.close();
+//            this.close();
         }
     }}
 }//GEN-LAST:event_jButton20ActionPerformed

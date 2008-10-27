@@ -1,0 +1,12 @@
+<title>CSV Import</title>
+<p><font face="DejaVu Sans, sans-serif"><font
+ size="3">Die zu importierenden Daten m&uuml;ssen in
+dieser Form vorliegen:</font></font></p>
+<p><font face="DejaVu Sans, sans-serif"><font
+ size="3"><b>&lt;produktnummer&gt;;
+&lt;name&gt;;&lt;text&gt;;&lt;vk&gt;;&lt;ek&gt;;&lt;tax&gt;;&lt;warengruppenkategorie&gt;;&lt;warengruppenfamilie&gt;;&lt;warengruppe&gt;;&lt;url&gt;;&lt;ean&gt;</b></font></font></p>
+<p></p>
+<p><font face="DejaVu Sans, sans-serif"><font
+ size="3">Kontrollieren Sie die Korrektheit ihrer Daten in
+der Vorschautabelle.</font></font><br>
+</p>

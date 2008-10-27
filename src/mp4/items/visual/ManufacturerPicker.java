@@ -25,6 +25,7 @@ public class ManufacturerPicker extends javax.swing.JFrame {
     private boolean order = false;
     private Hersteller contact;
     private String k;
+    private csvProductImporter frame2;
 
     /** Creates new form KundePicker
      * @param frame 
@@ -45,12 +46,31 @@ public class ManufacturerPicker extends javax.swing.JFrame {
 
     }
 
+    public ManufacturerPicker(csvProductImporter imp) {
+        initComponents();
+        this.frame2 = imp;
+        contact = new Hersteller();
+        new Position(this);
+
+        String[][] list = contact.select("id, nummer, firma, name, ort", null, null, "nummer", true);
+        k = "id, " + "Nummer,Firma, Name, Ort";
+
+        this.jTable2.setModel(new DefaultTableModel(list, k.split(",")));
+        TableFormat.stripFirst(jTable2);
+        this.jTable2.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        this.setVisible(rootPaneCheckingEnabled);
+    }
+
 
 
     private void getData() {
         SelectionCheck sel = new SelectionCheck(jTable2);
         if (sel.checkID()) {
-            frame.setManufacturer(new Hersteller(sel.getId()));
+            if(frame != null){
+            frame.setManufacturer(new Hersteller(sel.getId()));}
+            else if (frame2!=null){
+            frame2.setContact2(new Hersteller(sel.getId()));
+            }
             this.dispose();
         }
     }

@@ -234,7 +234,7 @@ private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
 private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
 
-    new Help("resource/helpfiles/nummernformat1");
+    new Help("/helpfiles/nummernformat1");
 
 }//GEN-LAST:event_jButton4ActionPerformed
 
