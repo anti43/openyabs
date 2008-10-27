@@ -1185,11 +1185,7 @@ pack();
     private void close() {
 
 
-        try {
-            Programmdaten.instanceOf().setSESSIONDATA(new LockableContainer[]{((CommonPanel) mainTabPane.getSelectedComponent()).getLockable().getLockableContainer()});
-        } catch (Exception e) {
-            Log.Debug("Could not save session. No saveable data selected.");
-        }
+        saveSession();
 
         try {
             DataLock.lateRelease();
@@ -1696,6 +1692,14 @@ private javax.swing.JMenu pluginMenu;
 
         } else {
             Log.Debug("Nothing to restore.");
+        }
+    }
+
+    private void saveSession() {
+        try {
+            Programmdaten.instanceOf().setSESSIONDATA(new LockableContainer[]{((CommonPanel) mainTabPane.getSelectedComponent()).getLockable().getLockableContainer()});
+        } catch (Exception e) {
+            Log.Debug("Could not save session. No saveable data selected.");
         }
     }
 
