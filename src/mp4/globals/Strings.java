@@ -27,6 +27,7 @@ import mp4.utils.files.FileReaderWriter;
 public interface Strings {
     
     public static String WELCOME_MESSAGE = "Anmerkungen, Bugs und Feedback zu MP bitte an mp-rechnungs-und-kundenverwaltung@googlegroups.com senden. Vielen Dank!";
+    
 
     public String NO = "Nein";
     public String YES = "Ja";
@@ -49,6 +50,11 @@ public interface Strings {
     public String TABLE_SUPPLIER_PRINT_HEADER =
             "L-Nr" + "," + "Firma" + "," + "Str" + "," + "PLZ" + "," + "Ort" + "," +
             "Tel" + "," + "Fax" + "," + "Mobil" + "," + "Mail" + "," + "Webseite";
+    
+    public String TABLE_MANUFACTURER_PRINT_HEADER =
+            "H-Nr" + "," + "Firma" + "," + "Str" + "," + "PLZ" + "," + "Ort" + "," +
+            "Tel" + "," + "Fax" + "," + "Mobil" + "," + "Mail" + "," + "Webseite";
+    
     public String TABLE_PRODUCTS_LIST_PRINT_HEADER =
             "P-Nr" + "," + "Name" + "," + "Text" + "," + "VK" + "," + "EK" +
             "," + "Tax" + "," + "Hersteller" + "," + "Lieferant" + "," + "Warengruppennr" + "," +

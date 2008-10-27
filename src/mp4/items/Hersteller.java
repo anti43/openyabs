@@ -21,6 +21,7 @@ import java.util.Date;
 import mp4.interfaces.Countable;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.datenbank.verbindung.PrepareData;
+import mp4.datenbank.verbindung.Query;
 import mp4.items.handler.NumberFormatHandler;
 import mp4.logs.Log;
 /**
@@ -114,5 +115,12 @@ public class Hersteller extends mp4.items.People implements mp4.datenbank.instal
         return nfh;
     }
 
+    public String[][] getPrintModel(){
+    
+        Query q = ConnectionHandler.instanceOf().clone(TABLE_MANUFACTURER);
 
+        String[][] str = q.select(TABLE_MANUFACTURER_PRINT_FIELDS, null);
+   
+        return str;  
+    }
 }

@@ -139,7 +139,12 @@ public interface Tabellen {
      * Fields in supplier table
      */
     public final String TABLE_SUPPLIER_PRINT_FIELDS =
-            "nummer" + "," + "Firma" + "," + "Anrede" + "," + "Vorname" +
+            "Nummer" + "," + "Firma" + "," + "Anrede" + "," + "Vorname" +
+            "," + "Name" + "," + "Str" + "," + "PLZ" + "," + "Ort" + "," +
+            "Tel" + "," + "Fax" + "," + "Mobil" + "," + "Mail" + "," + "Webseite";
+    
+    public final String TABLE_MANUFACTURER_PRINT_FIELDS =
+            "Nummer" + "," + "Firma" + "," + "Anrede" + "," + "Vorname" +
             "," + "Name" + "," + "Str" + "," + "PLZ" + "," + "Ort" + "," +
             "Tel" + "," + "Fax" + "," + "Mobil" + "," + "Mail" + "," + "Webseite";
     /**
