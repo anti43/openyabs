@@ -274,7 +274,9 @@ public class Main implements Strings {
     }
 
     private boolean findDatabase() {
+        settings.read();
         String db = settings.getDBPath() + File.separator + Constants.DATABASENAME;
+        Log.Debug(this, "Lookinh for " + db);
         File test = new File(db);
         return test.exists();
     }
