@@ -1,4 +1,0 @@
-<title>Einstellungen</title>
-<P><FONT FACE="Arial, sans-serif">Sie m&uuml;ssen den Pfad zu Ihrem PDF-Programm angeben, <BR>um erstellte Rechnungen sofort anzusehen und auszudrucken.<BR>Unter  <B>KDE 3.5</B> ist dies z.B.  <B>KPdf </B>  ( /opt/kde3/bin/kpdf ).</FONT></P>" +
-            "<P><FONT FACE='DejaVu Sans, sans-serif'>Sie m&uuml;ssen den Pfad zu Ihrem Internet Browser-Programm angeben, <BR>um direkt zum Hilfeforum zu gelangen.</FONT></P>" +
-            "<P><FONT FACE='DejaVu Sans, sans-serif'>Der Internetbrowser <B>Firefox 2</B> befindet sich unter <B>OpenSuse 10.x</B> unter: /usr/bin/firefox</FONT></P>
