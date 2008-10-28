@@ -243,6 +243,7 @@ public class productsView extends CommonPanel implements DataPanel, mp4.datenban
             t.execute();
         } else {
             imgLabel.setIcon(null);
+            jTextField11.setText("");
         }
     }
 
@@ -1823,13 +1824,20 @@ class GetAnyImage extends SwingWorker<Void, Void> {
         view.imgLabel.setCursor(new Cursor(Cursor.WAIT_CURSOR));
         try {
             coverImg = Toolkit.getDefaultToolkit().createImage(file.toURI().toURL());
-//            Image smallCoverImg = coverImg.getScaledInstance(view.jLabel13.getWidth()-3, view.jLabel13.getHeight()-3, java.awt.Image.SCALE_FAST);
+
+            if(coverImg.getWidth(null)<0) {         
+                    Log.Debug(this,"Replacing ImageIcon with default image. ");
+                    coverImg = new javax.swing.ImageIcon(getClass().getResource("/bilder/noimage.png")).getImage();
+                }
+            
+            //            Image smallCoverImg = coverImg.getScaledInstance(view.jLabel13.getWidth()-3, view.jLabel13.getHeight()-3, java.awt.Image.SCALE_FAST);
             ImageIcon coverImgIcon = new ImageIcon(coverImg);
             view.imgLabel.setSize(new Dimension(coverImgIcon.getIconWidth(), coverImgIcon.getIconHeight()));
             view.imgLabel.setIcon(coverImgIcon);
             view.setCurrentImage(file);
         } catch (Exception ex) {
             view.imgLabel.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            Popup.notice("Die Datei konnte nicht gecached werden: " + file);
             Log.Debug(this, ex);
         }
         return null;

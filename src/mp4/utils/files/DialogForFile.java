@@ -45,7 +45,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
     public DialogForFile() {
         super();
         this.setFileSelectionMode(DialogForFile.FILES_AND_DIRECTORIES);
-        this.setSelectedFile(new File(""));
+//        this.setSelectedFile(new File(""));
     }
 
     /**
@@ -55,7 +55,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
     public DialogForFile(int mode) {
         super();
         this.setFileSelectionMode(mode);
-        this.setSelectedFile(new File(""));
+//        this.setSelectedFile(new File(""));
     }
 
     /**

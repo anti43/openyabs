@@ -18,14 +18,9 @@ package mp4.items;
 
 import java.awt.Image;
 import java.awt.Toolkit;
-import java.awt.image.ImageObserver;
 import java.io.File;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Date;
-import java.util.Observer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 
 import mp4.items.visual.Popup;
@@ -167,6 +162,11 @@ public class ProductImage extends mp4.items.Things implements mp4.datenbank.inst
             if (getPath() != null) {
                 Log.Debug(this,"Loading Image ..: " + getURI().getPath());
                 coverImg = Toolkit.getDefaultToolkit().createImage(getURI().getPath());
+                if(coverImg.getWidth(null)<0) {
+                    Log.Debug(this,"Not an Image ..: " + getURI().getPath());
+                    coverImg = new javax.swing.ImageIcon(getClass().getResource("/bilder/noimage.png")).getImage();
+                }
+                
                 return coverImg;
             }
         } catch (Exception ex) {
@@ -181,6 +181,10 @@ public class ProductImage extends mp4.items.Things implements mp4.datenbank.inst
             if (getPath() != null) {
                 Log.Debug(this,"Loading ImageIcon ..: " + getURI().getPath());
                 coverImg = Toolkit.getDefaultToolkit().createImage(getURI().getPath());
+                if(coverImg.getWidth(null)<0) {         
+                    Log.Debug(this,"Replacing ImageIcon with default image. ");
+                    coverImg = new javax.swing.ImageIcon(getClass().getResource("/bilder/noimage.png")).getImage();
+                }
                 return new ImageIcon(coverImg);
             }
         } catch (Exception ex) {
