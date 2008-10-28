@@ -124,7 +124,7 @@ public class TextDatFile extends File implements Waitable, Printable {
                 line += string + getFieldSeparator();
             }
             line = (line.substring(0, line.length() - getFieldSeparator().length())).replaceAll("[\\r\\n]", "");
-            Log.Debug(this, line);
+//            Log.Debug(this, line);
             rw.write(line);
         }
     }
@@ -141,7 +141,7 @@ public class TextDatFile extends File implements Waitable, Printable {
         for (int i = 0; i < line.length; i++) {
             arr.add(line[i].split(getFieldSeparator()));
             line = rw.readLines();
-            Log.Debug(this, "Line.. " + i);
+//            Log.Debug(this, "Line.. " + i);
         }
         data = ListenDataUtils.listToStringArrayArray(arr);
         model = new DefaultTableModel(data, header);
@@ -160,7 +160,7 @@ public class TextDatFile extends File implements Waitable, Printable {
         header = line[0].split(getFieldSeparator());
         for (int i = 1; i < line.length; i++) {
             arr.add(line[i].split(getFieldSeparator()));
-            Log.Debug(this, "Line.. " + arr.get(i-1));
+//            Log.Debug(this, "Line.. " + arr.get(i-1));
         }
         data = ListenDataUtils.listToStringArrayArray(arr);
         model = new DefaultTableModel(data, header);

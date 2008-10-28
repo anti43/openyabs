@@ -16,6 +16,7 @@
  */
 package mp4.utils.files;
 
+import java.awt.HeadlessException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -94,13 +95,17 @@ public class DialogForFile extends JFileChooser implements Waiter {
      * @return true if a file/dir was selected
      */
     public boolean chooseFile() {
-        if (this.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
-            try {
-                this.file = this.getSelectedFile();
-                return true;
-            } catch (Exception ex) {
-                Log.Debug(this,ex);
+        try {
+            if (this.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+                try {
+                    this.file = this.getSelectedFile();
+                    return true;
+                } catch (Exception ex) {
+                    Log.Debug(this, ex);
+                }
             }
+        } catch (Exception n) {
+             Log.Debug(this, n.getMessage());
         }
         return false;
     }

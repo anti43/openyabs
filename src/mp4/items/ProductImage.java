@@ -79,20 +79,12 @@ public class ProductImage extends mp4.items.Things implements mp4.datenbank.inst
         ProductImage image = null;
         String[] data = null;
         try {
-            data = this.selectLast("productid,url,datum", "productid", id.toString(), true);
+            data = this.selectLast("id", "productid", id.toString(), true);
         } catch (Exception ex) {
             Log.Debug(this,ex);
         }
         if (data != null && data.length > 0) {
-            image = new ProductImage();
-            image.setProduktid(Integer.valueOf(data[0]));
-            try {
-                image.setPath(new File(data[1]).toURI());//.getPath().replaceAll(" ", "%20")
-            } catch (Exception ex) {
-                image.setPath(null);
-                Log.Debug(this,ex);
-            }
-            image.setDatum(DateConverter.getDate(data[2]));
+            image = new ProductImage(Integer.valueOf(data[0]));
         }
         return image;
     }
