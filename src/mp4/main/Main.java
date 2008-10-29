@@ -243,6 +243,7 @@ public class Main implements Strings {
                 System.exit(1);
             }
             new Main();
+            splash.dispose();
 
         //Falls Datenbank und mpsettings nicht vorhanden, Installer starten
         } else if (createSettingsFile()) {

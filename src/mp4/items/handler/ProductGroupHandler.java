@@ -54,18 +54,13 @@ public class ProductGroupHandler extends mp4.items.Things implements mp4.datenba
         fillGroups();
     }
 
-    public void deleteAll() {
-        
-        super.freeQuery("DELETE from " + TABLE_PRODUCTS_GROUPS_CATEGORIES);
-        super.freeQuery("DELETE from " + TABLE_PRODUCTS_GROUPS_FAMILIES);
-        super.freeQuery("DELETE from " + TABLE_PRODUCTS_GROUPS_GROUPS);
-    }
+ 
 
     public int existFam(String fam) {
         
          for (int b = 0; b < getFamilies().length; b++) {
                     
-                     Log.Debug(this,"matching?: "+getFamilies()[b].getName() + " : " + fam,true);
+//                     Log.Debug(this,"matching?: "+getFamilies()[b].getName() + " : " + fam,true);
                     if (getFamilies()[b].getName().matches(fam)) {
                        
                         return getFamilies()[b].getID();

@@ -126,7 +126,7 @@ public class Setup extends javax.swing.JFrame implements Constants, Strings {
 
     public String getPdfProgramm() {   
         if (Main.IS_WINDOWS) {
-            return "C:\\Program Files\\Adobe\\Reader 9.0\\Reader\\AcroRd32.exe";
+            return "C:\\Programme\\Adobe\\Reader 9.0\\Reader\\AcroRd32.exe";
         } else {
             return "/opt/kde3/bin/kpdf";
         }

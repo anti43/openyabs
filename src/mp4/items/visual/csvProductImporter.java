@@ -18,7 +18,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableModel;
-import mp4.globals.Strings;
 
 import mp4.interfaces.ContactPanel;
 import mp4.items.People;
@@ -40,7 +39,6 @@ import mp4.items.ProductGroupFamily;
 import mp4.items.ProductGroupGroup;
 import mp4.items.handler.ProductGroupHandler;
 import mp4.items.Lieferant;
-import mp4.utils.tabellen.models.DefaultHelpModel;
 import mp4.utils.ui.Position;
 import org.supercsv.cellprocessor.constraint.StrMinMax;
 import org.supercsv.cellprocessor.ift.CellProcessor;
@@ -98,19 +96,19 @@ public class csvProductImporter extends javax.swing.JFrame implements ContactPan
         try {
 
             final CellProcessor[] processors = new CellProcessor[]{
-                new StrMinMax(0, 49),
-                new StrMinMax(0, 49),
                 new StrMinMax(0, 499),
-                new StrMinMax(0, 99),
-                new StrMinMax(0, 99),
-                new StrMinMax(0, 99),
-                new StrMinMax(0, 99),
-                new StrMinMax(0, 99),
-                new StrMinMax(0, 99),
-                new StrMinMax(0, 99),
-                new StrMinMax(0, 135),
-                new StrMinMax(0, 19),
-                new StrMinMax(0, 19)
+                new StrMinMax(0, 499),
+                new StrMinMax(0, 499),
+                new StrMinMax(0, 999),
+                new StrMinMax(0, 999),
+                new StrMinMax(0, 999),
+                new StrMinMax(0, 999),
+                new StrMinMax(0, 999),
+                new StrMinMax(0, 999),
+                new StrMinMax(0, 999),
+                new StrMinMax(0, 999),
+                new StrMinMax(0, 999),
+                new StrMinMax(0, 999)
             };
 
 
@@ -443,17 +441,17 @@ pack();
         try {
 
             final CellProcessor[] processors = new CellProcessor[]{
-                new StrMinMax(0, 49),
-                new StrMinMax(0, 49),
-                new StrMinMax(0, 499),
-                new StrMinMax(0, 99),
-                new StrMinMax(0, 99),
-                new StrMinMax(0, 99),
-                new StrMinMax(0, 99),
-                new StrMinMax(0, 99),
-                new StrMinMax(0, 99),
-                new StrMinMax(0, 99),
-                new StrMinMax(0, 135)
+                new StrMinMax(0, 999),
+                new StrMinMax(0, 999),
+                new StrMinMax(0, 999),
+                new StrMinMax(0, 999),
+                new StrMinMax(0, 999),
+                new StrMinMax(0, 999),
+                new StrMinMax(0, 999),
+                new StrMinMax(0, 999),
+                new StrMinMax(0, 999),
+                new StrMinMax(0, 999),
+                new StrMinMax(0, 999)
             };
 
 

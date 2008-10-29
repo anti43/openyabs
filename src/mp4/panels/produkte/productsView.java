@@ -219,7 +219,7 @@ public class productsView extends CommonPanel implements DataPanel, mp4.datenban
         this.jTextField7.setText(current.getEK().toString());
         this.jTextField16.setText(current.getTaxValue().toString());
         this.jTextField9.setText(DateConverter.getDefDateString(current.getDatum()));
-        this.jTextField13.setText(current.getUrl());
+        this.urltf.setText(current.getUrl());
         if (!current.getWarengruppenId().equals("0")) {
             this.getJTextField12().setText(current.getProductgroupPath());
         } else {
@@ -314,13 +314,14 @@ public class productsView extends CommonPanel implements DataPanel, mp4.datenban
         jLabel15 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
-        jTextField13 = new javax.swing.JTextField();
+        urltf = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         jEditorPane1 = new javax.swing.JEditorPane();
         jTextField12 = new javax.swing.JTextField();
         jButton21 = new javax.swing.JButton();
         jTextField22 = new javax.swing.JTextField();
         jLabel25 = new javax.swing.JLabel();
+        jButton8 = new javax.swing.JButton();
         jPanel10 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         imgLabel = new javax.swing.JLabel();
@@ -501,7 +502,7 @@ public class productsView extends CommonPanel implements DataPanel, mp4.datenban
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 356, Short.MAX_VALUE)
+            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 361, Short.MAX_VALUE)
         );
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Suche"));
@@ -821,9 +822,9 @@ public class productsView extends CommonPanel implements DataPanel, mp4.datenban
 
         jLabel16.setText("Info Url");
 
-        jTextField13.addActionListener(new java.awt.event.ActionListener() {
+        urltf.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField13ActionPerformed(evt);
+                urltfActionPerformed(evt);
             }
         });
 
@@ -856,6 +857,14 @@ public class productsView extends CommonPanel implements DataPanel, mp4.datenban
 
         jLabel25.setText("EAN");
 
+        jButton8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/small/down.png"))); // NOI18N
+        jButton8.setToolTipText("Download");
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
         jPanel9Layout.setHorizontalGroup(
@@ -875,7 +884,10 @@ public class productsView extends CommonPanel implements DataPanel, mp4.datenban
                         .addComponent(jButton21, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
                     .addComponent(jTextField22, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
-                    .addComponent(jTextField13, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
+                        .addComponent(urltf, javax.swing.GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel9Layout.setVerticalGroup(
@@ -891,9 +903,11 @@ public class productsView extends CommonPanel implements DataPanel, mp4.datenban
                     .addComponent(jLabel10)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel16)
-                    .addComponent(jTextField13, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel16)
+                        .addComponent(urltf, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jButton8))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel25)
@@ -973,7 +987,7 @@ public class productsView extends CommonPanel implements DataPanel, mp4.datenban
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jCheckBox1)
@@ -1075,7 +1089,7 @@ public class productsView extends CommonPanel implements DataPanel, mp4.datenban
                 .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel23)
                     .addComponent(jTextField20, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(63, Short.MAX_VALUE))
+                .addContainerGap(64, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
@@ -1182,7 +1196,7 @@ public class productsView extends CommonPanel implements DataPanel, mp4.datenban
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 501, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 508, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton6))
         );
@@ -1303,8 +1317,8 @@ public class productsView extends CommonPanel implements DataPanel, mp4.datenban
     private void jTextField12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField12ActionPerformed
     }//GEN-LAST:event_jTextField12ActionPerformed
 
-    private void jTextField13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField13ActionPerformed
-    }//GEN-LAST:event_jTextField13ActionPerformed
+    private void urltfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_urltfActionPerformed
+}//GEN-LAST:event_urltfActionPerformed
 
     private void jButton4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton4MouseClicked
         if (mainframe.getUser().doAction(User.EDITOR)) {
@@ -1479,6 +1493,15 @@ private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     jTextField11.setText(null);
 
 }//GEN-LAST:event_jButton7ActionPerformed
+
+private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+
+    if (urltf.getText() != null) {
+        new GetAnyImage(this, urltf.getText()).execute();
+    }
+    super.setEdited(true);
+}//GEN-LAST:event_jButton8ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JLabel imgLabel;
     public javax.swing.JButton jButton1;
@@ -1497,6 +1520,7 @@ private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     public javax.swing.JButton jButton5;
     public javax.swing.JButton jButton6;
     public javax.swing.JButton jButton7;
+    public javax.swing.JButton jButton8;
     public javax.swing.JButton jButton9;
     public javax.swing.JCheckBox jCheckBox1;
     public javax.swing.JEditorPane jEditorPane1;
@@ -1547,7 +1571,6 @@ private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     public javax.swing.JTextField jTextField10;
     public javax.swing.JTextField jTextField11;
     public javax.swing.JTextField jTextField12;
-    public javax.swing.JTextField jTextField13;
     public javax.swing.JTextField jTextField14;
     public javax.swing.JTextField jTextField15;
     public javax.swing.JTextField jTextField16;
@@ -1566,6 +1589,7 @@ private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     public javax.swing.JTextField jTextField8;
     public javax.swing.JTextField jTextField9;
     public javax.swing.JToolBar jToolBar2;
+    public javax.swing.JTextField urltf;
     // End of variables declaration//GEN-END:variables
     private boolean createNew() {
         Product product = new Product();
@@ -1624,7 +1648,7 @@ private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         product.setEK(Double.valueOf(jTextField7.getText()));
         product.setTaxID(taxID);
         product.setDatum(DateConverter.getDate(jTextField9.getText()));
-        product.setUrl(jTextField13.getText());
+        product.setUrl(urltf.getText());
         product.setEan(jTextField22.getText());
         product.setText(jEditorPane1.getText());
         product.setWarengruppenId(current.getWarengruppenId());
@@ -1687,7 +1711,7 @@ private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             current.setEK(Double.valueOf(jTextField7.getText()));
             current.setTaxID(taxID);
             current.setDatum(DateConverter.getDate(jTextField9.getText()));
-            current.setUrl(jTextField13.getText());
+            current.setUrl(urltf.getText());
             current.setEan(jTextField22.getText());
             current.setText(jEditorPane1.getText());
 

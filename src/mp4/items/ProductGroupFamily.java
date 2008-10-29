@@ -35,12 +35,9 @@ public class ProductGroupFamily extends mp4.items.Things implements mp4.datenban
       
     private String[][] data;
     private Query query;
-   public Integer id = 0;
-    public Integer getId() {
-        return id;
-    }
+ 
     public void destroy() {
-        this.delete(this.id);
+        this.deactivate(this.id.toString());
         this.id = 0;
     }
     public ProductGroupFamily(Query query) {
