@@ -162,10 +162,10 @@ public class ProductImage extends mp4.items.Things implements mp4.datenbank.inst
             if (getPath() != null) {
                 Log.Debug(this,"Loading Image ..: " + getURI().getPath());
                 coverImg = Toolkit.getDefaultToolkit().createImage(getURI().getPath());
-                if(coverImg.getWidth(null)<0) {
-                    Log.Debug(this,"Not an Image ..: " + getURI().getPath());
-                    coverImg = new javax.swing.ImageIcon(getClass().getResource("/bilder/noimage.png")).getImage();
-                }
+//                if(coverImg.getWidth(null)<0) {
+//                    Log.Debug(this,"Not an Image ..: " + getURI().getPath());
+//                    coverImg = new javax.swing.ImageIcon(getClass().getResource("/bilder/noimage.png")).getImage();
+//                }
                 
                 return coverImg;
             }
@@ -181,10 +181,10 @@ public class ProductImage extends mp4.items.Things implements mp4.datenbank.inst
             if (getPath() != null) {
                 Log.Debug(this,"Loading ImageIcon ..: " + getURI().getPath());
                 coverImg = Toolkit.getDefaultToolkit().createImage(getURI().getPath());
-                if(coverImg.getWidth(null)<0) {         
-                    Log.Debug(this,"Replacing ImageIcon with default image. ");
-                    coverImg = new javax.swing.ImageIcon(getClass().getResource("/bilder/noimage.png")).getImage();
-                }
+//                if(coverImg.getWidth(null)<0) {         
+//                    Log.Debug(this,"Replacing ImageIcon with default image. ");
+//                    coverImg = new javax.swing.ImageIcon(getClass().getResource("/bilder/noimage.png")).getImage();
+//                }
                 return new ImageIcon(coverImg);
             }
         } catch (Exception ex) {

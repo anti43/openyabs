@@ -55,7 +55,7 @@ public class DataLock extends mp4.datenbank.verbindung.EasyQuery {
         super(ConnectionHandler.instanceOf().clone(Tabellen.TABLE_ROWLOCK));
         this.itemid = id;
         this.itemtable = query.getTable();
-        Log.Debug(this, "Rowlock: New lock for: " + itemid + " : " + itemtable, true);
+//        Log.Debug(this, "Rowlock: New lock for: " + itemid + " : " + itemtable, true);
     }
 
     /**
@@ -81,7 +81,7 @@ public class DataLock extends mp4.datenbank.verbindung.EasyQuery {
      */
     public boolean lockRow() {
         if (!ConnectionTypeHandler.isInSingleUserMode()) {
-            Log.Debug(this, "Rowlock: Lock an item: " + itemid, true);
+//            Log.Debug(this, "Rowlock: Lock an item: " + itemid, true);
             String[][] tabledata = select("rowid, userid", "tablename", getItemtable(), false);
             for (int i = 0; i < tabledata.length; i++) {
                 String[] strings = tabledata[i];
@@ -89,14 +89,14 @@ public class DataLock extends mp4.datenbank.verbindung.EasyQuery {
                     try {
                         this.lockowner = new User(Integer.valueOf(strings[1]));
                         if (lockowner.getId().intValue() == mainframe.getUser().getId().intValue()) {
-                            Log.Debug(this, "Rowlock: Item already locked by you!", true);
+//                            Log.Debug(this, "Rowlock: Item already locked by you!", true);
                             return true;
                         }
                     } catch (Exception numberFormatException) {
                         lockowner = null;
                         Log.Debug(this, numberFormatException, true);
                     }
-                    Log.Debug(this, "Rowlock: Already locked by: " + lockowner, true);
+//                    Log.Debug(this, "Rowlock: Already locked by: " + lockowner, true);
                     mainframe.setErrorText("Datensatz ist zur Zeit gesperrt von: " + lockowner + " und kann nicht editiert werden.");
                     return false;
                 }
@@ -106,11 +106,11 @@ public class DataLock extends mp4.datenbank.verbindung.EasyQuery {
                     PrepareData.prepareNumber(getItemid()) +
                     PrepareData.prepareNumber(mainframe.getUser().getId())));
             locks.add(ID);
-            Log.Debug(this, "Rowlock: Lock successfull: " + ID, true);
+//            Log.Debug(this, "Rowlock: Lock successfull: " + ID, true);
             mainframe.setInfoText("Datensatz ist nun reserviert und kann editiert werden.");
             return true;
         } else {
-            Log.Debug(this, "Rowlock: Lock not enabled for:" + ConnectionTypeHandler.getDriverName(), true);
+//            Log.Debug(this, "Rowlock: Lock not enabled for:" + ConnectionTypeHandler.getDriverName(), true);
             return true;
         }
     }
@@ -120,12 +120,12 @@ public class DataLock extends mp4.datenbank.verbindung.EasyQuery {
      */
     public void unLockRow() {
         if (ID.intValue() != 0) {
-            Log.Debug(this, "Rowlock: Unlocking .." + ID, true);
+//            Log.Debug(this, "Rowlock: Unlocking .." + ID, true);
             try {
                 delete(getID());
                 locks.remove(ID);
             } catch (Exception e) {
-                Log.Debug(this, "Rowlock: Nothing to release..");
+//                Log.Debug(this, "Rowlock: Nothing to release..");
             }
         }
     }

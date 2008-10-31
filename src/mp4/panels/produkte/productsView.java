@@ -1806,6 +1806,7 @@ class GetProductImage extends SwingWorker<Void, Void> {
             if (view.getCurrent().getImage() != null && view.getCurrent().getImage().getImage() != null) {
                 view.jTextField11.setText(view.getCurrent().getImage().getPath());
                 view.imgLabel.setIcon(view.getCurrent().getImage().getImageIcon());
+                view.setCurrentImage(new File(view.getCurrent().getImage().getPath()));
                 view.validate();
             }
         } catch (Exception ex) {
@@ -1849,10 +1850,10 @@ class GetAnyImage extends SwingWorker<Void, Void> {
         try {
             coverImg = Toolkit.getDefaultToolkit().createImage(file.toURI().toURL());
 
-            if(coverImg.getWidth(null)<0) {         
-                    Log.Debug(this,"Replacing ImageIcon with default image. ");
-                    coverImg = new javax.swing.ImageIcon(getClass().getResource("/bilder/noimage.png")).getImage();
-                }
+//            if(coverImg.getWidth(null)<0) {         
+//                    Log.Debug(this,"Replacing ImageIcon with default image. ");
+//                    coverImg = new javax.swing.ImageIcon(getClass().getResource("/bilder/noimage.png")).getImage();
+//                }
             
             //            Image smallCoverImg = coverImg.getScaledInstance(view.jLabel13.getWidth()-3, view.jLabel13.getHeight()-3, java.awt.Image.SCALE_FAST);
             ImageIcon coverImgIcon = new ImageIcon(coverImg);
