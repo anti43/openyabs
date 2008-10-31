@@ -37,9 +37,9 @@ import mp4.items.visual.Popup;
 import mp4.logs.*;
 import mp4.einstellungen.Einstellungen;
 import mp4.einstellungen.Programmdaten;
+import mp4.frames.mainframe;
 import mp4.interfaces.Printable;
 import mp4.main.Main;
-import mp4.utils.export.pdf.PDF_Rechnung;
 
 /**
  *
@@ -63,6 +63,7 @@ public class PDFFile extends File implements Waitable, Printable {
         this.fields = object.getFields();
         settings = Einstellungen.instanceOf();
     }
+
 
     public void start() {
 
@@ -205,6 +206,7 @@ public class PDFFile extends File implements Waitable, Printable {
             } finally {
                 Log.Debug(this, "Finishing..");
                 pdfStamper.setFormFlattening(true);
+                mainframe.setInfoText("PDF erstellt: " + this.getPath());
                 try {
                     pdfStamper.close();
                 } catch (DocumentException ex) {
@@ -213,6 +215,8 @@ public class PDFFile extends File implements Waitable, Printable {
                     Log.Debug(this, ex);
                 }
             }
+            
+            
         } else {
             Popup.error("Bitte geben Sie unter \nBearbeiten-> Einstellungen ein PDF-Template an." +
                     "\nTemplate: " + object.getTemplate() + "\nexistiert nicht.", Popup.ERROR);

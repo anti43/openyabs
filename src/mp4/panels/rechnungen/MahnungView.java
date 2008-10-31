@@ -285,7 +285,7 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
    new PdfVorschauWindow(new PDFFile(new PDF_Mahnung(bill, 
            VariablenZuText.parseText(jTextArea1.getText(), new Object[]{bill, c}), 
-           FormatNumber.parseDezimal(jTextField2.getText()), bill.getMahnungen())));
+           FormatNumber.parseDezimal(jTextField2.getText()), bill.getMahnungen(), false)));
 
 }//GEN-LAST:event_jButton3ActionPerformed
 
@@ -293,7 +293,7 @@ private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
     Job job = new Job(new PDFFile(new PDF_Mahnung(bill, 
            VariablenZuText.parseText(jTextArea1.getText(), new Object[]{bill, c}), 
-           FormatNumber.parseDezimal(jTextField2.getText()), bill.getMahnungen())), new mp4.utils.export.druck.DruckJob());
+           FormatNumber.parseDezimal(jTextField2.getText()), bill.getMahnungen(), false)), new mp4.utils.export.druck.DruckJob());
 }//GEN-LAST:event_jButton4ActionPerformed
     
 

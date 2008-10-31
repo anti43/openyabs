@@ -18,7 +18,6 @@ package mp4.interfaces;
 
 import java.awt.Image;
 import java.io.File;
-import javax.print.DocFlavor;
 
 /**
  *

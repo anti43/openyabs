@@ -1346,7 +1346,7 @@ private void jButton13MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
 private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
    
      if (currentOffer.hasId()) {
-        Job job = new Job(new PDFFile(new PDF_Angebot(currentOffer)), new PdfVorschauWindow(), mainframe.getMainProgress());
+        Job job = new Job(new PDFFile(new PDF_Angebot(currentOffer, false)), new PdfVorschauWindow(), mainframe.getMainProgress());
         job.execute();
     } else {
         Popup.notice("Sie müssen das Angebot erst anlegen.");

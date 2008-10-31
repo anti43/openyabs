@@ -1591,12 +1591,12 @@ private void jButton12MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
         Job job = new Job((Waitable) new PDFFile(new PDF_Rechnung(currentBill, false)), (Waiter) new DruckJob(), mainframe.getMainProgress());
         job.execute();
         if(jCheckBox4.isSelected()){
-            Job job2 = new Job((Waitable) new PDFFile(new PDF_Lieferschein(currentBill)), (Waiter) new DruckJob(), mainframe.getMainProgress());
+            Job job2 = new Job((Waitable) new PDFFile(new PDF_Lieferschein(currentBill, false)), (Waiter) new DruckJob(), mainframe.getMainProgress());
             job2.execute();
         }
         if(jCheckBox5.isSelected()){
             if (currentBill.getAngebot() != null) {
-                Job job3 = new Job((Waitable) new PDFFile(new PDF_Angebot(currentBill.getAngebot())), (Waiter) new DruckJob(), mainframe.getMainProgress());
+                Job job3 = new Job((Waitable) new PDFFile(new PDF_Angebot(currentBill.getAngebot(), false)), (Waiter) new DruckJob(), mainframe.getMainProgress());
                 job3.execute();
             } else {
                 Popup.notice("Kein Angebot vorhanden.");       

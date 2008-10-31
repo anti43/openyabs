@@ -31,6 +31,7 @@ import mp4.utils.ui.inputfields.InputVerifiers;
 import mp4.einstellungen.Einstellungen;
 import mp4.einstellungen.Programmdaten;
 import mp4.utils.datum.DateConverter;
+import mp4.utils.files.PDFFile;
 import mp4.utils.listen.ListenDataUtils;
 import mp4.utils.zahlen.FormatNumber;
 
@@ -50,6 +51,7 @@ public class PDF_Mahnung implements Template{
     private Double betrag;
     private int nummer;
     private String text;
+    private String path;
 
 
 
@@ -60,7 +62,7 @@ public class PDF_Mahnung implements Template{
      * @param betrag
      * @param nummer 
      */
-    public PDF_Mahnung(Rechnung bill, String text,Double betrag, int nummer) {
+    public PDF_Mahnung(Rechnung bill, String text,Double betrag, int nummer, boolean persistent) {
         l = Einstellungen.instanceOf();
         this.rechnung = bill;
         k = new Kunde(bill.getKundenId());
@@ -70,6 +72,12 @@ public class PDF_Mahnung implements Template{
         this.text = text;
  
         Locale.setDefault(Einstellungen.instanceOf().getLocale());
+        
+        if (persistent) {
+            path = getTargetFile().getPath();
+        } else {
+            path = PDFFile.getTempFilename() + ".pdf".trim();
+        }
     }
 
 
@@ -106,7 +114,7 @@ public class PDF_Mahnung implements Template{
     }
 
     public String getPath() {
-        return rechnung.getRechnungnummer().replaceAll(" ", "_") + "_" + k.getFirma().replaceAll(" ", "_") + k.getName().replaceAll(" ", "_").trim();
+        return path;
     }
 
     public String[][] getFields() {

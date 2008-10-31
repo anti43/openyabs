@@ -16,7 +16,6 @@
  */
 package mp4.utils.export.pdf;
 
-
 import java.awt.Image;
 import mp4.items.Kunde;
 import mp4.items.Rechnung;
@@ -31,6 +30,7 @@ import mp4.items.visual.Popup;
 import mp4.utils.ui.inputfields.InputVerifiers;
 import mp4.einstellungen.Einstellungen;
 import mp4.einstellungen.Programmdaten;
+import mp4.utils.files.PDFFile;
 import mp4.utils.listen.ListenDataUtils;
 import mp4.utils.zahlen.FormatNumber;
 
@@ -38,7 +38,7 @@ import mp4.utils.zahlen.FormatNumber;
  *
  * @author anti43
  */
-public class PDF_Lieferschein implements Template{
+public class PDF_Lieferschein implements Template {
 
     private Einstellungen l;
     private Rechnung rechnung;
@@ -47,23 +47,29 @@ public class PDF_Lieferschein implements Template{
     private Double netto = 0d;
     private Double brutto = 0d;
     private ArrayList fields = new ArrayList();
+    private String path;
 
     /**
      * 
      * @param bill 
      */
-    public PDF_Lieferschein(Rechnung bill) {
+    public PDF_Lieferschein(Rechnung bill, boolean persistent) {
         l = Einstellungen.instanceOf();
         this.rechnung = bill;
         k = new Kunde(bill.getKundenId());
         products = rechnung.getProductlistAsArray();
+
+        if (persistent) {
+            path = getTargetFile().getPath();
+        } else {
+            path = PDFFile.getTempFilename() + ".pdf".trim();
+        }
     }
 
-    
     @SuppressWarnings("unchecked")
-    private String[][] buildFieldList(){
+    private String[][] buildFieldList() {
 
-        if(Programmdaten.instanceOf().getBILLPANEL_CHECKBOX_MITFIRMENNAME_state()) {
+        if (Programmdaten.instanceOf().getBILLPANEL_CHECKBOX_MITFIRMENNAME_state()) {
             fields.add(new String[]{"company", k.getFirma()});
         }
         fields.add(new String[]{"name", k.getAnrede() + " " + k.getVorname() + " " + k.getName()});
@@ -86,22 +92,21 @@ public class PDF_Lieferschein implements Template{
             }
         }
 
-        
+
         return ListenDataUtils.StringListToTableArray(fields);
     }
 
     @Override
     public String getPath() {
-        return l.getLieferschein_Verzeichnis() + File.separator +
-                    "Lieferschein-" + rechnung.getRechnungnummer().replaceAll(" ", "_") + "_" + k.getFirma().replaceAll(" ", "_") + "_" + k.getName().replaceAll(" ", "_") + ".pdf";
+        return path;
     }
 
     public String[][] getFields() {
-       return buildFieldList();
+        return buildFieldList();
     }
 
     public Image getImage() {
-       return null;
+        return null;
     }
 
     public String getTemplate() {
@@ -111,8 +116,6 @@ public class PDF_Lieferschein implements Template{
     @Override
     public File getTargetFile() {
         return new File(l.getLieferschein_Verzeichnis() + File.separator +
-                    "Lieferschein-" + rechnung.getRechnungnummer().replaceAll(" ", "_") + "_" + k.getFirma().replaceAll(" ", "_") + "_" + k.getName().replaceAll(" ", "_") + ".pdf");
+                "Lieferschein-" + rechnung.getRechnungnummer().replaceAll(" ", "_") + "_" + k.getFirma().replaceAll(" ", "_") + "_" + k.getName().replaceAll(" ", "_") + ".pdf");
     }
-    
- 
 }

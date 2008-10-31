@@ -1380,7 +1380,7 @@ private void jButton18MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
                 }
             }
 
-            Job job = new Job(new PDFFile(new PDF_Produkt(current, image)), new PdfVorschauWindow(), mainframe.getMainProgress());
+            Job job = new Job(new PDFFile(new PDF_Produkt(current, image, false)), new PdfVorschauWindow(), mainframe.getMainProgress());
             job.execute();
 
         } else {

@@ -66,19 +66,17 @@ public class PDF_Rechnung implements Template {
     }
 
     public PDF_Rechnung(Rechnung b, boolean persistent) {
+       
+            l = Einstellungen.instanceOf();
+            this.r = b;
+            k = new Kunde(b.getKundenId());
+            products = r.getProductlistAsArray();
+            this.betreffzeilen = b.getZeilenHandler().getPrintData();
+        
+        
         if (persistent) {
-            l = Einstellungen.instanceOf();
-            this.r = b;
-            k = new Kunde(b.getKundenId());
-            products = r.getProductlistAsArray();
-            this.betreffzeilen = b.getZeilenHandler().getPrintData();
-            path = l.getRechnung_Verzeichnis() + File.separator + r.getRechnungnummer().replaceAll(" ", "_") + "_" + k.getFirma().replaceAll(" ", "_") + "_" + k.getName().replaceAll(" ", "_") + ".pdf".trim();
+            path = getTargetFile().getPath();
         } else {
-            l = Einstellungen.instanceOf();
-            this.r = b;
-            k = new Kunde(b.getKundenId());
-            products = r.getProductlistAsArray();
-            this.betreffzeilen = b.getZeilenHandler().getPrintData();
             path = PDFFile.getTempFilename() + ".pdf".trim();
         }
     }

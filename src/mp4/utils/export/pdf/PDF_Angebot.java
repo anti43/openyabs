@@ -45,35 +45,19 @@ public class PDF_Angebot implements Template {
     private ArrayList fields = new ArrayList();
     private String path;
 
-    /**
-     * 
-     * @param b
-     */
-    public PDF_Angebot(Angebot b) {
-        l = Einstellungen.instanceOf();
-        this.r = b;
-        k = new Kunde(b.getKundenId());
-        products = r.getProductlistAsArray();
-        Locale.setDefault(Einstellungen.instanceOf().getLocale());
-        path = l.getAngebot_Verzeichnis() + File.separator + r.getAngebotnummer().replaceAll(" ", "_") + "_" + k.getFirma().replaceAll(" ", "_") +
-                "_" + k.getName().replaceAll(" ", "_") + ".pdf".trim();
-    }
 
     public PDF_Angebot(Angebot b, boolean persistent) {
+      
+            l = Einstellungen.instanceOf();
+            this.r = b;
+            k = new Kunde(b.getKundenId());
+            products = r.getProductlistAsArray();
+            Locale.setDefault(Einstellungen.instanceOf().getLocale());
+        
+        
         if (persistent) {
-            l = Einstellungen.instanceOf();
-            this.r = b;
-            k = new Kunde(b.getKundenId());
-            products = r.getProductlistAsArray();
-            Locale.setDefault(Einstellungen.instanceOf().getLocale());
-            path = l.getAngebot_Verzeichnis() + File.separator + r.getAngebotnummer().replaceAll(" ", "_") + "_" + k.getFirma().replaceAll(" ", "_") +
-                    "_" + k.getName().replaceAll(" ", "_") + ".pdf".trim();
+            path = getTargetFile().getPath();
         } else {
-            l = Einstellungen.instanceOf();
-            this.r = b;
-            k = new Kunde(b.getKundenId());
-            products = r.getProductlistAsArray();
-            Locale.setDefault(Einstellungen.instanceOf().getLocale());
             path = PDFFile.getTempFilename() + ".pdf".trim();
         }
     }
