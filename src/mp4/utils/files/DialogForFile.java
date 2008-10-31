@@ -195,4 +195,14 @@ public class DialogForFile extends JFileChooser implements Waiter {
     public void set(Object object) {
         saveFile((File) object);
     }
+
+    public void writeFile(File file) {
+        if (chooseFile()) {
+        try {
+            FileDirectoryHandler.copyFile(file, this.file);
+            mainframe.setInfoText("Datei gespeichert: " + this.file);
+        } catch (IOException ex) {
+            Log.Debug(this,ex);
+        }
+    }}
 }

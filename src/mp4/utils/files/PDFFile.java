@@ -45,7 +45,7 @@ import mp4.main.Main;
  *
  * @author anti43
  */
-public class PDFFile extends File implements Waitable, Printable {
+public class PDFFile extends File implements Waitable, Printable{
 
     private static final long serialVersionUID = 7455276510000739261L;
     private AcroFields acroFields;
@@ -221,6 +221,11 @@ public class PDFFile extends File implements Waitable, Printable {
             Popup.error("Bitte geben Sie unter \nBearbeiten-> Einstellungen ein PDF-Template an." +
                     "\nTemplate: " + object.getTemplate() + "\nexistiert nicht.", Popup.ERROR);
         }
+    }
+    
+    @Override
+    public File clone(){
+        return FileDirectoryHandler.tempFileClone(this);
     }
 }
 

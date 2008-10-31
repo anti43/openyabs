@@ -9,6 +9,7 @@ package mp4.utils.files;
  * @author Galileo Computing
  */
 import java.io.BufferedOutputStream;
+import java.io.FileNotFoundException;
 import mp4.logs.*;
 
 import java.io.File;
@@ -207,6 +208,23 @@ public class FileDirectoryHandler {
                     address);
         }
         return null;
+    }
+
+    public static URI copyFile(File sourceFile, File outp) throws FileNotFoundException, IOException {
+        InputStream in = new FileInputStream(sourceFile);
+        
+        OutputStream out = new FileOutputStream(outp);
+
+        // Copy the bits from instream to outstream
+        byte[] buf = new byte[1024];
+        int len;
+        while ((len = in.read(buf)) > 0) {
+            out.write(buf, 0, len);
+        }
+        in.close();
+        out.close();
+
+        return outp.toURI();
     }
 }
     
