@@ -104,7 +104,9 @@ public class AboutWindow extends javax.swing.JFrame {
 
         jLabel4.setText("Ideen & Entwicklung:");
 
-        jLabel5.setText("Beratung & Tests: ");
+        jLabel5.setText("Beratung: ");
+
+        jLabel6.setText("Daniel Kulesz");
 
         jLabel7.setText("Andreas Weber");
 
@@ -155,8 +157,7 @@ public class AboutWindow extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel8)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 56, Short.MAX_VALUE))
-                .addContainerGap())
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());

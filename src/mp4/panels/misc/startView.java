@@ -63,7 +63,7 @@ public class startView extends javax.swing.JPanel {
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
         jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jLabel2.setFont(new java.awt.Font("Arial", 1, 14));
+        jLabel2.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         jLabel2.setText("MP Rechnungs und Kundenverwaltung");
 
         jLabel5.setForeground(new java.awt.Color(0, 51, 51));
@@ -75,14 +75,13 @@ public class startView extends javax.swing.JPanel {
         jScrollPane1.setFocusCycleRoot(true);
         jScrollPane1.setOpaque(false);
 
-        jTextArea1.setBackground(new java.awt.Color(204, 204, 255));
         jTextArea1.setColumns(20);
         jTextArea1.setEditable(false);
         jTextArea1.setFont(new java.awt.Font("Monospaced", 0, 11)); // NOI18N
         jTextArea1.setForeground(new java.awt.Color(0, 51, 51));
         jTextArea1.setLineWrap(true);
         jTextArea1.setRows(5);
-        jTextArea1.setText("Apache Derby\n©  2004-2007 The Apache Software Foundation\n\nMicroba \n© 2005-2006, Michael Baranov\n\niText\nPortions created by the Initial Developer are \n© 1999, 2000, 2001, 2002 by Bruno Lowagie.\nAll Rights Reserved.\nPortions created by the Co-Developer\nare ©  2000, 2001, 2002 by Paulo Soares. \n\nOstermillerUtils\n©  2002-2004 Stephen Ostermiller\n\nPDF Renderer\n©  2003-2008 SUN/SwingLabs\n\nSuperCsv\n© 2007, Kasper B. Graversen\n\nTinyLaF\n© 2000 - 2007 Hans Bickel \n\nL2FProd Common Components\n© 2004-2007 L2FProd.com\n\nKDE Crystal Diamond Icons\n© by Paolino\n\nOther Icons \n© by Everaldo, KDE-Looks.org\n\nJFreeChart\n© 2000-2008, by Object Refinery Limited and Contributors.\n\nThe JCommon Class Library\n© 2000-2006, by Object Refinery Limited and Contributors.\n\nCommons-CLI\n© 2002-2007 Apache Software Foundation\n\nJDBC MySQL Connector\n© 1995-2008 MySQL AB, 2008 Sun Microsystems, Inc.");
+        jTextArea1.setText("Apache Derby\n© 2004-2007 The Apache Software Foundation\n\nMicroba \n© 2005-2006, Michael Baranov\n\niText\nPortions created by the Initial Developer are \n© 1999, 2000, 2001, 2002 by Bruno Lowagie.\nAll Rights Reserved.\nPortions created by the Co-Developer\nare © 2000, 2001, 2002 by Paulo Soares. \n\nOstermillerUtils\n© 2002-2004 Stephen Ostermiller\n\nPDF Renderer\n© 2003-2008 SUN/SwingLabs\n\nSuperCsv\n© 2007, Kasper B. Graversen\n\nTinyLaF\n© 2000 - 2007 Hans Bickel \n\nL2FProd Common Components\n© 2004-2007 L2FProd.com\n\nKDE Crystal Diamond Icons\n© by Paolino\n\nOther Icons \n© by Everaldo, KDE-Looks.org\n\nJFreeChart\n© 2000-2008, by Object Refinery Limited and Contributors.\n\nThe JCommon Class Library\n© 2000-2006, by Object Refinery Limited and Contributors.\n\nCommons-CLI\n© 2002-2007 Apache Software Foundation\n\nJDBC MySQL Connector\n© 1995-2008 MySQL AB, 2008 Sun Microsystems, Inc.");
         jTextArea1.setWrapStyleWord(true);
         jTextArea1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         jTextArea1.setDisabledTextColor(new java.awt.Color(0, 51, 51));
@@ -90,10 +89,10 @@ public class startView extends javax.swing.JPanel {
         jTextArea1.setFocusable(false);
         jScrollPane1.setViewportView(jTextArea1);
 
-        jLabel7.setFont(new java.awt.Font("Arial", 0, 14));
+        jLabel7.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         jLabel7.setText("Version:");
 
-        jLabel3.setFont(new java.awt.Font("Arial", 1, 12));
+        jLabel3.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         jLabel3.setText("MP enthält folgende Programme/Bibliotheken:");
 
         jScrollPane2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -122,15 +121,15 @@ public class startView extends javax.swing.JPanel {
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 698, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel7)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 325, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 191, Short.MAX_VALUE)
                         .addComponent(jLabel4))
                     .addComponent(jLabel3)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 698, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -151,7 +150,7 @@ public class startView extends javax.swing.JPanel {
                         .addComponent(jLabel5))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 315, Short.MAX_VALUE)))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
