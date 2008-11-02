@@ -27,6 +27,16 @@ public class MPTableModel extends DefaultTableModel {
     private Class[] types;
     private boolean[] canEdits;
 
+    public MPTableModel(String[][] datstr, String[] header) {
+       super(datstr, header);
+       setTypes(new Class[]{Object.class,Object.class,Object.class,Object.class,Object.class,Object.class,Object.class,
+       Object.class,Object.class,Object.class,Object.class,Object.class,Object.class,Object.class,Object.class,
+       Object.class,Object.class,Object.class,Object.class,Object.class,Object.class,Object.class,Object.class});
+       setCanEdits(new boolean[]{false,false,false,false,false,false,false,false,false,false,false,false,false,false,
+       false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,
+       false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,});
+    }
+
     public MPTableModel(Class[] types, boolean[] canEdits, Object[][] data, Object[] columnNames) {
         super(data, columnNames);
         setTypes(types);

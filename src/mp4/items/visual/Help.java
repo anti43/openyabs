@@ -38,8 +38,7 @@ public class Help extends javax.swing.JFrame {
         initComponents();
         new Position(this);
 
-        File file = new File(getClass().getResource(helpfile).getFile());
-        
+        File file = new File(helpfile);
 
         if (file.exists()) {
             FileToString  t = new FileToString(file);

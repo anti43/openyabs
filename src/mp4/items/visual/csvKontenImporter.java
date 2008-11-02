@@ -362,8 +362,8 @@ public class csvKontenImporter extends javax.swing.JFrame {
        
         new Help(new DefaultHelpModel("CSV Import", 
                 "<P><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3>Die zu "+
-"importierenden Daten m&uuml;ssen in dieser Form vorliegen:</FONT></FONT></P>"+
-"<P><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3>" +
+                "importierenden Daten m&uuml;ssen in dieser Form vorliegen:</FONT></FONT></P>"+
+                "<P><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3>" +
                 "Nummer, Kontenklasse, Kontengruppe, Kontenart</FONT></FONT></P>"
                 
                 ));

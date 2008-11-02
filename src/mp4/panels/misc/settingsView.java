@@ -19,7 +19,7 @@ import mp4.globals.Strings;
 import mp4.installation.Setup;
 import mp4.items.HistoryItem;
 import mp4.items.SKRKonto;
-import mp4.items.visual.Help;
+
 import mp4.items.visual.Popup;
 import mp4.items.visual.konten;
 import mp4.logs.Log;

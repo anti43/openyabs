@@ -7,13 +7,46 @@ package mp4.utils.listen;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import mp4.items.ProductImporteur;
 import mp4.logs.*;
 
 /**
  *
  * @author anti43
  */
+ @SuppressWarnings("unchecked")
 public class ListenDataUtils {
+
+    public static ArrayList StringArrayToList(String[][] array) {
+        ArrayList list = new ArrayList();
+        
+        for (int i = 0; i < array.length; i++) {
+          
+            list.add(array[i]);
+        }
+        
+        return list;
+    }
+
+    public static ArrayList TableModelToList(JTable mode) {
+        ArrayList list = new ArrayList();
+        DefaultTableModel model = (DefaultTableModel) mode.getModel();
+        String[] str = null;
+        
+        for (int i = 0; i < model.getRowCount(); i++) {
+            for (int j = 0; j < model.getColumnCount(); j++) {
+                str = new String[model.getColumnCount()];
+                str[j] = model.getValueAt(i, j).toString();
+            }
+            list.add(str);
+        }
+        
+        return list;
+    }
+
+   
     /**
      * 
      * @param list

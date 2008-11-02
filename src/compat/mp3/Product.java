@@ -113,6 +113,9 @@ public class Product extends compat.mp3.Things implements compat.mp3.Structure {
 //    "produktnummer", "name", "text", "vk",
 //                    "ek", "tax", "hersteller", "warengruppenkategorie", "warengruppenfamilie",
 //                    "warengruppe", "url", "ean", "lieferantenid"
+// neu:
+//<produktnummer>;<name>;<text>;<vk>;<ek>;<tax>;<warengruppenkategorie>;<warengruppenfamilie>;<warengruppe>;<url>;<ean>
+
         Query q = query.clone(TABLE_PRODUCTS);
 
         String[][] str = q.selectFreeQuery("SELECT produkte.Produktnummer,produkte.Name,produkte.Text," +
@@ -126,8 +129,11 @@ public class Product extends compat.mp3.Things implements compat.mp3.Structure {
 
         String string = "";
         for (int i = 0; i < str.length; i++) {
+            //Defaultlieferant 1
+            if( str[i][12].equals("0")) str[i][12] = "1";
+            
             string += str[i][0] + ";" + str[i][1] + ";" + str[i][2] + ";" + str[i][3] + ";" + str[i][4] 
-                    + ";" + str[i][5] + ";" + str[i][6] + ";" + str[i][7] + ";" + str[i][8] + ";" + str[i][9] + ";" 
+                    + ";" + str[i][5] + ";" + "1" + ";" + str[i][7] + ";" + str[i][8] + ";" + str[i][9] + ";" 
                     + str[i][10] + ";" + str[i][11] + ";" + str[i][12] +"\r\n";
         }
         

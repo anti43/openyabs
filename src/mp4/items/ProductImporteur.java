@@ -5,6 +5,7 @@
 package mp4.items;
 
 import java.util.ArrayList;
+import mp4.logs.Log;
 import mp4.utils.text.RandomText;
 
 /**
@@ -12,6 +13,7 @@ import mp4.utils.text.RandomText;
  * @author anti43
  */
 public class ProductImporteur {
+
 
  
 
@@ -118,13 +120,16 @@ public class ProductImporteur {
         this.LieferantenId = Integer.valueOf(LieferantenId);
     }
 
+    public void setHerstellerid(String id){
+        this.HerstellerId = Integer.valueOf(id);
+    }
 
 
     public String[][] getData(ProductImporteur[] imp) {
         /**
          *  ]{"produktnummer", "name", "text", "vk", 
-        "ek","tax", "hersteller", "warengruppenkategorie", "warengruppenfamilie", 
-        "warengruppe", "url", "ean"
+        "ek","tax", "herstellerid", "warengruppenkategorie", "warengruppenfamilie", 
+        "warengruppe", "url", "ean", "lieferantenid"
          */
         String[][] str = new String[imp.length][12+1];
 
@@ -138,24 +143,25 @@ public class ProductImporteur {
             str[i][3] = imp[i].getVk();
             str[i][4] = imp[i].getEk();
             str[i][5] = imp[i].getTax();
-//            str[i][6] = imp[i].getHerstellerid();
-//            str[i][7] = imp[i].getLieferantenid();
+            str[i][6] = imp[i].getHerstellerid();
+            
 
-            str[i][6] = imp[i].getWarengruppenkategorie();
-            str[i][7] = imp[i].getWarengruppenfamilie();
-            str[i][8] = imp[i].getWarengruppe();
+            str[i][7] = imp[i].getWarengruppenkategorie();
+            str[i][8] = imp[i].getWarengruppenfamilie();
+            str[i][9] = imp[i].getWarengruppe();
          
-            str[i][9] = imp[i].getUrl();
-            str[i][10] = imp[i].getEan();
-           
+            str[i][10] = imp[i].getUrl();
+            str[i][11] = imp[i].getEan();
+            str[i][12] = imp[i].getLieferantenid();
         }
 
         return str;
     }
 
-    public static ProductImporteur[] listToImporteurArray(ArrayList list, Lieferant sup, Hersteller herst) {
+    public static ProductImporteur[] listToImporteurArray(ArrayList<ProductImporteur> list, Lieferant sup, Hersteller herst) {
 
         ProductImporteur[] str = new ProductImporteur[list.size()];
+        Log.Debug(ProductImporteur.class, "Tabelle: " + list.size() + " Produkte.");
         ProductImporteur imp = null;
         for (int i = 0; i < list.size(); i++) {
 
@@ -178,12 +184,18 @@ public class ProductImporteur {
             if(imp.getWarengruppe().equals(""))imp.setWarengruppe("1");
             
             if(sup!=null)imp.setLieferantenid(sup.getId().toString());
+            else if(imp.getLieferantenid().equals("0"))imp.setLieferantenid("1");
+            
             if(herst!=null)imp.setHersteller(herst.getId().toString());
+            else if(imp.getLieferantenid().equals("0"))imp.setLieferantenid("1");
+            
             
             str[i] = imp;
         }
         return str;
     }
+        
+
 
     public String getWarengruppenkategorie() {
         return Warengruppenkategorie;

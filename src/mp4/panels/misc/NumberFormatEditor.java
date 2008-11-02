@@ -8,15 +8,13 @@ package mp4.panels.misc;
 import java.util.Date;
 import mp4.items.visual.Popup;
 import mp4.logs.*;
-import mp4.einstellungen.Programmdaten;
-import mp4.items.Angebot;
 import mp4.items.handler.NumberFormatHandler;
 import mp4.interfaces.Countable;
 import mp4.items.visual.Help;
 import mp4.benutzerverwaltung.User;
 import mp4.frames.mainframe;
+import mp4.utils.tabellen.models.DefaultHelpModel;
 import mp4.utils.ui.Position;
-
 
 /**
  *
@@ -39,7 +37,7 @@ public class NumberFormatEditor extends javax.swing.JFrame {
             this.jTextField1.setText(str[0] + "&!" + str[1]);
             jComboBox1.setSelectedIndex(Integer.valueOf(str[2]));
         } catch (Exception e) {
-            Log.Debug(this,e);
+            Log.Debug(this, e);
         }
     }
 
@@ -201,7 +199,7 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     try {
         jTextField2.setText(nfh.getNextNumber());
     } catch (Exception e) {
-        Log.Debug(this,e, rootPaneCheckingEnabled);
+        Log.Debug(this, e, rootPaneCheckingEnabled);
         Popup.notice("Format nicht möglich.");
     }
 
@@ -225,7 +223,7 @@ private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             nfh.save(fstring);
             this.dispose();
         } catch (Exception e) {
-            Log.Debug(this,e, rootPaneCheckingEnabled);
+            Log.Debug(this, e, rootPaneCheckingEnabled);
             Popup.notice("Format nicht möglich.");
         }
     }
@@ -234,7 +232,21 @@ private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
 private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
 
-    new Help("/helpfiles/nummernformat1");
+    new Help(new DefaultHelpModel("Nummernformat", "<span style='font-family: Helvetica,Arial,sans-serif;font-size:12'>" +
+            "<b>Das MP Nummernformat kann folgende Variablen enthalten:</b></span><br style='font-family: " +
+            "Helvetica,Arial,sans-serif;font-size:12'><br style='font-family: Helvetica,Arial,sans-serif;font-size:12'>" +
+            "<span style='font-family: Helvetica,Arial,sans-serif;font-size:12'>{MONAT}</span><br style='font-family: " +
+            "Helvetica,Arial,sans-serif;font-size:12'><span style='font-family: Helvetica,Arial,sans-serif;font-size:12'>{MONAT_NAME}" +
+            "</span><br style='font-family: Helvetica,Arial,sans-serif;font-size:12'><span style='font-family: Helvetica," +
+            "Arial,sans-serif;font-size:12'>{JAHR}</span><br style='font-family: Helvetica,Arial,sans-serif;font-size:12'><span style='" +
+            "font-family: Helvetica,Arial,sans-serif;font-size:12'>{TAG}</span><br style='font-family: Helvetica,Arial,sans-" +
+            "serif;'><br style='font-family: Helvetica,Arial,sans-serif;font-size:12'><span style='font-family: Helvetica," +
+            "Arial,sans-serif;font-size:12'>Diese werden dynamisch durch Werte ersetzt.</span><br style='font-family: Helvetica," +
+            "Arial,sans-serif;font-size:12'><br style='font-family: Helvetica,Arial,sans-serif;font-size:12'><span style='font-family: Helvetica," +
+            "Arial,sans-serif;font-size:12'>Mit'&amp;!', gefolgt von Nullen, k&ouml;nnen Sie die L&auml;nge des Zahlenteils definieren. " +
+            "</span><br style='font-family: Helvetica,Arial,sans-serif;font-size:12'><br style='font-family: Helvetica,Arial,sans-serif;font-size:12'>" +
+            "<span style='font-family: Helvetica,Arial,sans-serif;font-size:12'>Beispiel: ' test-&amp;!00000' w&uuml;rde eine Nummer in der Form' " +
+            "test-00043' erzeugen.</span>"));
 
 }//GEN-LAST:event_jButton4ActionPerformed
 
@@ -255,7 +267,7 @@ private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 nfh.setStartWert(jTextField2.getText());
                 this.dispose();
             } catch (Exception e) {
-                Log.Debug(this,e, rootPaneCheckingEnabled);
+                Log.Debug(this, e, rootPaneCheckingEnabled);
                 Popup.notice("Format nicht möglich.");
             }
         }

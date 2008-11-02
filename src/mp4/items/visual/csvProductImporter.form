@@ -308,7 +308,6 @@
         </Component>
         <Component class="javax.swing.JCheckBox" name="jCheckBox3">
           <Properties>
-            <Property name="selected" type="boolean" value="true"/>
             <Property name="text" type="java.lang.String" value="Ohne 1. Zeile"/>
           </Properties>
         </Component>

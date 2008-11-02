@@ -333,9 +333,10 @@ pack();
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
 
         new Help(new DefaultHelpModel("CSV Import",
-                "<P><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3>Die zu " +
-                "importierenden Daten m&uuml;ssen in dieser Form vorliegen:</FONT></FONT></P>" +
-                "<P><FONT FACE='DejaVu Sans, sans-serif'><FONT SIZE=3><B>Name,Vorname,Mail,Mobil,Telefon,Fax,PLZ,Strasse,Ort,Firma,Notizen</FONT></P>"));
+                "<P><FONT SIZE='3' FACE='DejaVu Sans, sans-serif'>Die zu " +
+                "importierenden Daten m&uuml;ssen in dieser Form vorliegen:</P>" +
+                "<P><FONT  SIZE='3' FACE='DejaVu Sans, sans-serif'>" +
+                "<B>Name,Vorname,Mail,Mobil,Telefon,Fax,PLZ,Strasse,Ort,Firma,Notizen</P>"));
     }//GEN-LAST:event_jButton6ActionPerformed
 // Variables declaration - do not modify//GEN-BEGIN:variables
 private javax.swing.ButtonGroup buttonGroup1;

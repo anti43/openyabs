@@ -86,7 +86,7 @@ public class MP3ProductImport extends SwingWorker {
             file = File.createTempFile("MP3EXP", ".txt");
             FileReaderWriter rw = new FileReaderWriter(file.getPath());
             rw.write(new compat.mp3.Product(compat.mp3.QueryClass.instanceOf(compat.mp3.ImportHelper.dbURL)).getAll());
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             Log.Debug(this,ex);            
         }
        textarea.append("Starte Importmodul..");
