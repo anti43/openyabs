@@ -26,6 +26,7 @@ import java.io.File;
 import java.util.Map;
 
 import java.io.IOException;
+import java.util.Properties;
 import javax.swing.UIManager;
 import mp4.datenbank.verbindung.ConnectionTypeHandler;
 import mp4.einstellungen.SettingsFile;
@@ -210,6 +211,7 @@ public class Main implements Strings {
     }
 
     public Main() throws Exception {
+        setDerbyLog();
         setLaF();
         splash = new SplashScreen(TEST_CONF);
         doArgCommands();
@@ -300,6 +302,11 @@ public class Main implements Strings {
             e.printStackTrace();
             System.exit(1);
         }
+    }
+
+    private void setDerbyLog() {
+       Properties p = System.getProperties();
+       p.put("derby.stream.error.file", MPPATH + File.separator + "derby.log");
     }
 
     private void setLaF() {

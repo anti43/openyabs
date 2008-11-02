@@ -52,6 +52,7 @@ public class Conn implements Strings {
      */
     public static Conn instanceOf() throws Exception {
         if (connector == null) {
+          
             connector = new Conn();
         }
         return connector;
