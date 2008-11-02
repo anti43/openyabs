@@ -104,16 +104,18 @@ public class AboutWindow extends javax.swing.JFrame {
 
         jLabel4.setText("Ideen & Entwicklung:");
 
-        jLabel5.setText("Beratung & Ideen: ");
+        jLabel5.setText("Beratung & Tests: ");
 
         jLabel7.setText("Andreas Weber");
 
-        jLabel8.setText("Danke:");
+        jLabel8.setText("Danke an:");
 
         jScrollPane1.setBorder(null);
+        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 
         jEditorPane1.setBorder(null);
-        jEditorPane1.setText("Sandra, Nina, Aal, alle Benutzer von MP, Google");
+        jEditorPane1.setText("Sandra, Nina, Aal, alle Benutzer von MP\nund Google fürs Hosting, SUN für Java & Novell für OpenSUSE!\n");
         jScrollPane1.setViewportView(jEditorPane1);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -135,7 +137,7 @@ public class AboutWindow extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel8)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 319, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(

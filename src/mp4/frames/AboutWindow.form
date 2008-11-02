@@ -60,7 +60,7 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jLabel8" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jScrollPane1" pref="334" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" pref="319" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -193,7 +193,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel5">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Beratung &amp; Ideen: "/>
+            <Property name="text" type="java.lang.String" value="Beratung &amp; Tests: "/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel6">
@@ -205,7 +205,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel8">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Danke:"/>
+            <Property name="text" type="java.lang.String" value="Danke an:"/>
           </Properties>
         </Component>
         <Container class="javax.swing.JScrollPane" name="jScrollPane1">
@@ -213,6 +213,8 @@
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="null"/>
             </Property>
+            <Property name="horizontalScrollBarPolicy" type="int" value="31"/>
+            <Property name="verticalScrollBarPolicy" type="int" value="21"/>
           </Properties>
           <AuxValues>
             <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
@@ -225,7 +227,7 @@
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="null"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Sandra, Nina, Aal, alle Benutzer von MP, Google"/>
+                <Property name="text" type="java.lang.String" value="Sandra, Nina, Aal, alle Benutzer von MP&#xa;und Google f&#xfc;rs Hosting, SUN f&#xfc;r Java &amp; Novell f&#xfc;r OpenSUSE!&#xa;"/>
               </Properties>
             </Component>
           </SubComponents>
