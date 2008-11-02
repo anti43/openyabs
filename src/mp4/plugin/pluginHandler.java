@@ -5,8 +5,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mp4.einstellungen.Programmdaten;
 import mp4.frames.mainframe;
 import mp4.globals.Constants;

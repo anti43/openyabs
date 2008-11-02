@@ -386,7 +386,7 @@
     <Property name="defaultCloseOperation" type="int" value="0"/>
     <Property name="title" type="java.lang.String" value="MP"/>
     <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
-      <Color id="Default Cursor"/>
+      <Color id="Standardcursor"/>
     </Property>
     <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
       <Dimension value="[800, 600]"/>
@@ -450,7 +450,7 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
-                  <Component id="messagePanel" pref="371" max="32767" attributes="0"/>
+                  <Component id="messagePanel" pref="375" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="mainProgressBar" min="-2" max="-2" attributes="0"/>
               </Group>
@@ -726,7 +726,7 @@
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="1" attributes="0">
-                              <Component id="jButton10" alignment="0" pref="77" max="32767" attributes="1"/>
+                              <Component id="jButton10" alignment="0" pref="75" max="32767" attributes="1"/>
                               <Component id="jButton9" alignment="0" max="32767" attributes="1"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
@@ -802,11 +802,11 @@
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="1" attributes="0">
-                              <Component id="jButton11" alignment="0" pref="85" max="32767" attributes="1"/>
-                              <Component id="jButton6" alignment="0" pref="85" max="32767" attributes="1"/>
+                              <Component id="jButton11" alignment="0" pref="83" max="32767" attributes="1"/>
+                              <Component id="jButton6" alignment="0" pref="83" max="32767" attributes="1"/>
                               <Component id="jButton5" alignment="0" max="32767" attributes="1"/>
-                              <Component id="jButton7" alignment="0" pref="85" max="32767" attributes="1"/>
-                              <Component id="jButton8" alignment="0" pref="85" max="32767" attributes="1"/>
+                              <Component id="jButton7" alignment="0" pref="83" max="32767" attributes="1"/>
+                              <Component id="jButton8" alignment="0" pref="83" max="32767" attributes="1"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
@@ -939,10 +939,10 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="jButton14" alignment="0" max="32767" attributes="1"/>
-                              <Component id="jButton15" alignment="0" pref="83" max="32767" attributes="1"/>
-                              <Component id="jButton13" alignment="0" pref="83" max="32767" attributes="1"/>
-                              <Component id="jButton16" alignment="0" pref="83" max="32767" attributes="1"/>
-                              <Component id="jButton12" alignment="0" pref="83" max="32767" attributes="1"/>
+                              <Component id="jButton15" alignment="0" pref="81" max="32767" attributes="1"/>
+                              <Component id="jButton13" alignment="0" pref="81" max="32767" attributes="1"/>
+                              <Component id="jButton16" alignment="0" pref="81" max="32767" attributes="1"/>
+                              <Component id="jButton12" alignment="0" pref="81" max="32767" attributes="1"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
