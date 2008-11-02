@@ -30,9 +30,9 @@ public interface Constants {
      * Version info
      */
     public static String VERSION = "4.00";
-     public static String REVISION = "N/A";
+    public static String REVISION = "337";
     public static String RELEASE_VERSION = "4";
-    public static String TITLE = "[Vermont]";
+    public static String TITLE = "[Vienna]";
     public static String VERSION_URL = "Not Used";
     public static String JAR_NAME = "MPV4.jar";
     public static String PROG_NAME = "MP-" + Constants.VERSION + "";

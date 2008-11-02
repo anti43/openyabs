@@ -215,7 +215,7 @@
             </MenuItem>
             <Menu class="javax.swing.JMenu" name="clipboard">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Einfuegen"/>
+                <Property name="text" type="java.lang.String" value="Einf&#xfc;gen"/>
               </Properties>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
@@ -328,7 +328,7 @@
             </Menu>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem30">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Alle Tabs schliessen"/>
+                <Property name="text" type="java.lang.String" value="Alle Tabs schlie&#xdf;en"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem30ActionPerformed"/>
@@ -361,7 +361,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem15">
               <Properties>
-                <Property name="text" type="java.lang.String" value="MP..."/>
+                <Property name="text" type="java.lang.String" value="&#xdc;ber.."/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem15ActionPerformed"/>
