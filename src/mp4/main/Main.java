@@ -239,14 +239,13 @@ public class Main implements Strings {
             if (new Setup(true).createDatabase()) {
                 Popup.notice("Datenbank angelegt in\n" + db);
                 splash.setMessage("Starte MP");
+                splash.dispose();
+                new Main();
             } else {
-
                 Popup.notice("Es ist ein Fehler aufgetreten, Programm wird beendet.");
                 System.exit(1);
             }
-            new Main();
-            splash.dispose();
-
+            
         //Falls Datenbank und mpsettings nicht vorhanden, Installer starten
         } else if (createSettingsFile()) {
             checkDB_Location();

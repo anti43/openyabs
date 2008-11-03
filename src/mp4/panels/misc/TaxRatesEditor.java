@@ -16,6 +16,7 @@ import mp4.utils.zahlen.NumberCheck;
 import mp4.benutzerverwaltung.User;
 import mp4.utils.ui.Position;
 import mp4.utils.ui.inputfields.InputVerifiers;
+import mp4.utils.zahlen.FormatNumber;
 
 /**
  *
@@ -228,7 +229,7 @@ private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
     if (selection.checkID()) {
         taxr = new Steuersatz(selection.getId());
         this.jTextField1.setText(taxr.getName());
-        this.jTextField2.setText(taxr.getWert().toString());
+        this.jTextField2.setText(FormatNumber.formatDezimal(taxr.getWert()));
     }
 }//GEN-LAST:event_jTable1MouseClicked
 
@@ -239,15 +240,20 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
             Steuersatz tax;
 
-            if (jTextField1.getText() != null && jTextField1.getText().length() > 0 && NumberCheck.checkDouble(jTextField2.getText()) != null) {
-                tax = new Steuersatz();
-                tax.setName(jTextField1.getText());
-                tax.setWert(NumberCheck.checkDouble(jTextField2.getText()));
-                tax.save();
-                jTable1.setModel(new TaxTableModel());
-                Popup.notice("Steuersatz angelegt.");
+            if (jTextField1.getText() != null && jTextField1.getText().length() > 0 && NumberCheck.checkDouble(FormatNumber.parseDezimal(jTextField2.getText())) != null) {
+                double newtax = FormatNumber.parseDezimal(jTextField2.getText());
+                if (newtax > 0 && newtax < 99) {
+                    tax = new Steuersatz();
+                    tax.setName(jTextField1.getText());
+                    tax.setWert(newtax);
+                    tax.save();
+                    jTable1.setModel(new TaxTableModel());
+                    Popup.notice("Steuersatz angelegt.");
+                } else {
+                    Popup.notice("Der Steuersatz muss einen Wert zwischen 0 und 99 haben.");
+                }
         } else {//GEN-LAST:event_jButton1ActionPerformed
-                Popup.notice("Name darf nicht leer sein!");
+                Popup.notice("Name, Wert darf nicht leer sein!");
             }
         }
     }
@@ -258,13 +264,25 @@ private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:ev
         SelectionCheck selection = new SelectionCheck(jTable1);
 
         if (selection.checkID()) {
-            tax = new Steuersatz(selection.getId());
-            tax.setName(jTextField1.getText());
-            try {
-                tax.setWert(Double.valueOf(jTextField2.getText()));
-                tax.save();
-            } catch (NumberFormatException numberFormatException) {
-                Popup.notice("Steuersatz nicht editiert.");
+            if (jTextField1.getText() != null && jTextField1.getText().length() > 0 && NumberCheck.checkDouble(FormatNumber.parseDezimal(jTextField2.getText())) != null) {
+                tax = new Steuersatz(selection.getId());
+                tax.setName(jTextField1.getText());
+
+                try {
+                    double newtax = FormatNumber.parseDezimal(jTextField2.getText());
+                    if (newtax > 0 && newtax < 99) {
+                        tax.setWert(newtax);
+                        tax.save();
+                        jTable1.setModel(new TaxTableModel());
+                        Popup.notice("Steuersatz editiert.");
+                    } else {
+                        Popup.notice("Der Steuersatz muss einen Wert zwischen 0 und 99 haben.");
+                    }
+                } catch (Exception numberFormatException) {
+                    Popup.notice("Steuersatz nicht gespeichert.");
+                }
+            } else {
+                Popup.notice("Name, Wert darf nicht leer sein!");
             }
         }
         jTable1.setModel(new TaxTableModel());

@@ -40,7 +40,6 @@ import mp4.frames.LicenseWindow;
 import mp4.installation.Verzeichnisse;
 
 import mp4.main.Main;
-import mp4.utils.files.FileDirectoryHandler;
 import mp4.utils.ui.inputfields.PAnelUtils;
 
 /**
