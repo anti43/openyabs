@@ -19,6 +19,7 @@ import mp4.utils.files.Browser;
 
 import mp4.logs.*;
 
+import mp4.main.Main;
 import mp4.utils.files.TableHtmlWriter;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.files.DialogForFile;
@@ -229,7 +230,7 @@ public class eurEURPanel extends mp4.items.visual.CommonPanel{
             try {
                 TableHtmlWriter writ = new TableHtmlWriter((DefaultTableModel) jTable1.getModel(), new File(month + "_" + year + ".html"), "Beschreibung,Daten".split(","), "Einnahmen / Ausgaben " + month + "/" + year);
                
-                dialog = new DialogForFile(new File(Constants.DESKTOP + File.separator + writ.getFile().getName()));
+                dialog = new DialogForFile(new File(Main.DESKTOP + File.separator + writ.getFile().getName()));
                 dialog.saveFile(writ.createHtml(1, Color.LIGHT_GRAY));
                 new Browser(dialog.getFile());
                 

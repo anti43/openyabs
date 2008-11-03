@@ -119,11 +119,11 @@ public class MyData extends People implements Structure {
     }
 
     public String getVersion() {
-        return Main.settings.getVersion();
+        return Main.settingsfile.getVersion();
     }
 
     public String getDbPath() {
-        return Main.settings.getDBPath();
+        return Main.settingsfile.getDBPath();
     }
 
     public void setModel(TableModel model) {

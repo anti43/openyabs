@@ -16,31 +16,29 @@
  */
 package mp4.main;
 
-import org.apache.commons.cli2.*;
-import org.apache.commons.cli2.builder.*;
-import org.apache.commons.cli2.commandline.*;
-import org.apache.commons.cli2.util.*;
 import com.l2fprod.common.swing.plaf.LookAndFeelAddons;
 import de.muntjak.tinylookandfeel.TinyLookAndFeel;
 import java.io.File;
-import java.util.Map;
-
 import java.io.IOException;
+import java.util.Map;
 import java.util.Properties;
 import javax.swing.UIManager;
 import mp4.datenbank.verbindung.ConnectionTypeHandler;
 import mp4.einstellungen.SettingsFile;
-import mp4.installation.Setup;
-import mp4.globals.Constants;
-import mp4.globals.Strings;
-import mp4.items.visual.Popup;
-
-import mp4.logs.*;
-import mp4.panels.misc.SplashScreen;
 import mp4.frames.LoggerWindow;
 import mp4.frames.mainframe;
+import mp4.globals.Constants;
+import mp4.globals.Strings;
+import mp4.installation.Setup;
 import mp4.installation.Verzeichnisse;
+import mp4.items.visual.Popup;
+import mp4.logs.Log;
+import mp4.panels.misc.SplashScreen;
 import mp4.utils.export.druck.DruckJob;
+import org.apache.commons.cli2.*;
+import org.apache.commons.cli2.builder.*;
+import org.apache.commons.cli2.commandline.Parser;
+import org.apache.commons.cli2.util.*;
 
 /**
  *
@@ -57,35 +55,54 @@ public class Main implements Strings {
     public static String PDF_DIR = null;
     public static String TEMPLATE_DIR = null;
     public static String BACKUP_DIR = null;
-    public static String MPPATH = Constants.USER_HOME + File.separator + ".mp";
-    /**
-     * Full path to settings file
-     */
-    public static String SETTINGS_FILE = Main.MPPATH + File.separator + "settings" + Constants.RELEASE_VERSION + ".mp";
-    public static String APP_DIR = Constants.USER_HOME + Constants.SEP + Constants.PROG_NAME;
-    public static SettingsFile settings = new SettingsFile();
+    public static String MPPATH = null;
+    public static String SETTINGS_FILE = null;
+    public static String APP_DIR = null;
+    public static String USER_HOME = null;
+    public static String DESKTOP = null;
+    public static SettingsFile settingsfile = null;
 
     private static void getOS() {
         if (System.getProperty("os.name").contains("Windows")) {
             IS_WINDOWS = true;
-            DruckJob.FORCE_WIN_PRINT = true;
         } else {
             IS_WINDOWS = false;
         }
     }
 
+    public static void setEnv() {
+
+        if (IS_WINDOWS) {
+            DruckJob.FORCE_WIN_PRINT = true;
+            USER_HOME = System.getenv("USERPROFILE");
+            DESKTOP = USER_HOME + File.separator + "Desktop";
+            MPPATH = USER_HOME + File.separator + ".mp";
+            SETTINGS_FILE = Main.MPPATH + File.separator + "settings" + Constants.RELEASE_VERSION + ".mp";
+            APP_DIR = USER_HOME + Constants.SEP + Constants.PROG_NAME;
+            settingsfile = new SettingsFile();
+        } else {
+            DruckJob.FORCE_WIN_PRINT = true;
+            USER_HOME = System.getProperty("user.home");
+            DESKTOP = USER_HOME + File.separator + "Desktop";
+            MPPATH = USER_HOME + File.separator + ".mp";
+            SETTINGS_FILE = Main.MPPATH + File.separator + "settings" + Constants.RELEASE_VERSION + ".mp";
+            APP_DIR = USER_HOME + Constants.SEP + Constants.PROG_NAME;
+            settingsfile = new SettingsFile();
+        }
+    }
+
     private static void parseArgs(String[] args) {
-        
+
         Log.PrintArray(args);
-        
+
         DefaultOptionBuilder obuilder = new DefaultOptionBuilder();
         ArgumentBuilder abuilder = new ArgumentBuilder();
         GroupBuilder gbuilder = new GroupBuilder();
-        
+
         Argument option = abuilder.withName("=option").withMinimum(1).withMaximum(1).create();
         Argument filearg = abuilder.withName("=file").withMinimum(1).withMaximum(1).create();
         Argument dirarg = abuilder.withName("=directory").withMinimum(1).withMaximum(1).create();
-        
+
         Option help = obuilder.withShortName("help").withShortName("h").withDescription("print this message").create();
         Option license = obuilder.withShortName("license").withShortName("li").withDescription("print license").create();
         Option version = obuilder.withShortName("version").withDescription("print the version information and exit").create();
@@ -99,17 +116,17 @@ public class Main implements Strings {
         Option dbpath = obuilder.withShortName("dbpath").withShortName("d").withDescription("use database path").withArgument(dirarg).create();
         Option instpath = obuilder.withShortName("instpath").withShortName("i").withDescription("use installation path").withArgument(dirarg).create();
         Option logfile = obuilder.withShortName("logfile").withShortName("l").withDescription("use file for log").withArgument(filearg).create();
-        Option settingsfile = obuilder.withShortName("settings").withShortName("s").withDescription("mp settings file").withArgument(filearg).create();
+//        Option settingsfileopt = obuilder.withShortName("settings").withShortName("s").withDescription("mp settings file").withArgument(filearg).create();
         Option pdfdir = obuilder.withShortName("pdfdir").withShortName("p").withDescription("use pdfdir").withArgument(dirarg).create();
         Option backupdir = obuilder.withShortName("backupdir").withShortName("b").withDescription("use backupdir").withArgument(dirarg).create();
         Option templatedir = obuilder.withShortName("templatedir").withShortName("t").withDescription("use templatedir").withArgument(dirarg).create();
-        
+
         Group options = gbuilder.withName("options").withOption(help).withOption(version).withOption(verbose).withOption(debug).withOption(nodb).
                 withOption(nocopy).withOption(license).
                 withOption(forcedb).withOption(forcecopy).withOption(dbpath).withOption(dbtype).withOption(instpath).
                 withOption(logfile).withOption(pdfdir).withOption(backupdir).withOption(templatedir).create();
 
-        
+
         HelpFormatter hf = new HelpFormatter();
         Parser p = new Parser();
         p.setGroup(options);
@@ -123,7 +140,7 @@ public class Main implements Strings {
             hf.print();
             System.exit(0);
         }
-        
+
         if (cl.hasOption(license)) {
             System.out.print(Strings.GPL);
         }
@@ -186,28 +203,26 @@ public class Main implements Strings {
         }
 
         if (cl.hasOption(dbpath)) {
-            settings.setDBPath(((String) cl.getValue(dbpath)).split("=")[1]);
+            Main.settingsfile.setDBPath(((String) cl.getValue(dbpath)).split("=")[1]);
         }
 
         if (cl.hasOption(dbtype)) {
             if (((String) cl.getValue(dbtype)).toLowerCase().endsWith("derby")) {
-                settings.setDBDriver(ConnectionTypeHandler.DERBY_DRIVER);
-            }
-            else if (((String) cl.getValue(dbtype)).toLowerCase().endsWith("mysql")) {
-                settings.setDBDriver(ConnectionTypeHandler.MYSQL_DRIVER);
-            }
-            else if (((String) cl.getValue(dbtype)).toLowerCase().endsWith("custom")) {
-                settings.setDBDriver(ConnectionTypeHandler.CUSTOM_DRIVER);
+                Main.settingsfile.setDBDriver(ConnectionTypeHandler.DERBY_DRIVER);
+            } else if (((String) cl.getValue(dbtype)).toLowerCase().endsWith("mysql")) {
+                Main.settingsfile.setDBDriver(ConnectionTypeHandler.MYSQL_DRIVER);
+            } else if (((String) cl.getValue(dbtype)).toLowerCase().endsWith("custom")) {
+                Main.settingsfile.setDBDriver(ConnectionTypeHandler.CUSTOM_DRIVER);
             }
         }
 
         if (cl.hasOption(instpath)) {
             APP_DIR = ((String) cl.getValue(instpath)).split("=")[1];
         }
-
-        if (cl.hasOption(settingsfile)) {
-            SETTINGS_FILE = ((String) cl.getValue(settingsfile)).split("=")[1];
-        }
+//
+//        if (cl.hasOption(settingsfileopt)) {
+//            SETTINGS_FILE = ((String) cl.getValue(settingsfileopt)).split("=")[1];
+//        }
     }
 
     public Main() throws Exception {
@@ -218,19 +233,19 @@ public class Main implements Strings {
 
         //Datenbank suchen
         Log.Debug(this, "MP Datei: " + SETTINGS_FILE, true);
-        if (settings.getFile().exists() && settings.getFile().canRead() && findDatabase()) {
+        if (settingsfile.getFile().exists() && settingsfile.getFile().canRead() && findDatabase()) {
             try {
-                settings.read();
+                settingsfile.read();
                 splash.setComp(new mainframe(splash, this));
             } catch (Exception exception) {
                 exception.printStackTrace();
                 System.exit(1);
             }
         //Falls Datenbank nicht vorhanden, aber mpsettings Datei:
-        } else if (settings.getFile().exists() && settings.getFile().canRead()) {
-            settings.read();
+        } else if (settingsfile.getFile().exists() && settingsfile.getFile().canRead()) {
+            settingsfile.read();
             checkDB_Location();
-            String db = settings.getDBPath() + File.separator + Constants.DATABASENAME;
+            String db = settingsfile.getDBPath() + File.separator + Constants.DATABASENAME;
             Log.Debug(this, db + " not found :-(", true);
             Popup.notice("Datenbank existiert nicht am angegebenen Ort.\n" + db);
 
@@ -245,7 +260,7 @@ public class Main implements Strings {
                 Popup.notice("Es ist ein Fehler aufgetreten, Programm wird beendet.");
                 System.exit(1);
             }
-            
+
         //Falls Datenbank und mpsettings nicht vorhanden, Installer starten
         } else if (createSettingsFile()) {
             checkDB_Location();
@@ -258,7 +273,7 @@ public class Main implements Strings {
     }
 
     private void checkDB_Location() {
-        new File(settings.getDBPath()).mkdirs();
+        new File(settingsfile.getDBPath()).mkdirs();
     }
 
     private void doArgCommands() {
@@ -276,22 +291,23 @@ public class Main implements Strings {
     }
 
     private boolean findDatabase() {
-        settings.read();
-        String db = settings.getDBPath() + File.separator + Constants.DATABASENAME;
+        settingsfile.read();
+        String db = settingsfile.getDBPath() + File.separator + Constants.DATABASENAME;
         Log.Debug(this, "Looking for Database: " + db);
         File test = new File(db);
         return test.exists();
     }
 
     private boolean createSettingsFile() throws IOException {
-        return settings.create();
+        return settingsfile.create();
     }
 
     public static void main(String[] args) {
 
         System.out.print(Strings.START_MESSAGE);
-        
+
         getOS();
+        setEnv();
         parseArgs(args);
 
         try {
@@ -304,8 +320,8 @@ public class Main implements Strings {
     }
 
     private void setDerbyLog() {
-       Properties p = System.getProperties();
-       p.put("derby.stream.error.file", MPPATH + File.separator + "derby.log");
+        Properties p = System.getProperties();
+        p.put("derby.stream.error.file", MPPATH + File.separator + "derby.log");
     }
 
     private void setLaF() {

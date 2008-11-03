@@ -87,8 +87,8 @@ public class Setup extends javax.swing.JFrame implements Constants, Strings {
             backuppathtf.setText(public_dir.getCanonicalPath() + File.separator + BACKUPS_SAVE_DIR);
             pdfpathtf.setText(public_dir.getCanonicalPath() + File.separator + PDF);
         } catch (Exception iOException) {
-            backuppathtf.setText(USER_HOME);
-            pdfpathtf.setText(USER_HOME);
+            backuppathtf.setText(Main.USER_HOME);
+            pdfpathtf.setText(Main.USER_HOME);
         }
 
         new Position(this);
@@ -533,16 +533,16 @@ public class Setup extends javax.swing.JFrame implements Constants, Strings {
 
         if (jCheckBox3.isSelected()) {
 
-            Main.settings.setDBPath(jTextField1.getText());
-            Main.settings.setDBUser(jTextField2.getText());
-            Main.settings.setDBPassword(jTextField3.getText());
+            Main.settingsfile.setDBPath(jTextField1.getText());
+            Main.settingsfile.setDBUser(jTextField2.getText());
+            Main.settingsfile.setDBPassword(jTextField3.getText());
 
             if (jRadioButton1.isSelected()) {
-                Main.settings.setDBDriver(ConnectionTypeHandler.DERBY_DRIVER);
+                Main.settingsfile.setDBDriver(ConnectionTypeHandler.DERBY_DRIVER);
             } else if (jRadioButton2.isSelected()) {
-                Main.settings.setDBDriver(ConnectionTypeHandler.MYSQL_DRIVER);
+                Main.settingsfile.setDBDriver(ConnectionTypeHandler.MYSQL_DRIVER);
             } else if (jRadioButton3.isSelected()) {
-                Main.settings.setDBDriver(jTextField4.getText());
+                Main.settingsfile.setDBDriver(jTextField4.getText());
             }
             
         }
@@ -571,7 +571,7 @@ public class Setup extends javax.swing.JFrame implements Constants, Strings {
                 jButton2.setText("Beenden");
                 jButton1.setEnabled(false);
                 Popup.error("Datenbankfehler", "Fehler bei der Installation der Tabellen.");
-                Main.settings.destroy();
+                Main.settingsfile.destroy();
             }
         } catch (Exception ex) {
             jButton2.setText("Beenden");

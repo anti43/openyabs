@@ -94,8 +94,8 @@ public class Conn implements Strings {
         try {
             Log.Debug(this,"Datenbanktreiber: " + ctype.getDriver(), true);
             Class.forName(ctype.getDriver()).newInstance();
-            user = Main.settings.getDBUser();
-            password = Main.settings.getDBPassword();
+            user = Main.settingsfile.getDBUser();
+            password = Main.settingsfile.getDBPassword();
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -109,7 +109,7 @@ public class Conn implements Strings {
             conn = DriverManager.getConnection(ctype.getConnectionString(create), user, password);
             // Benötige Ressourcen für eine SQL-Anweisung bereitstellen 
             statement = conn.createStatement();
-            new File(Constants.USER_HOME + File.separator + "derby.log").deleteOnExit();
+            
         } catch (SQLException ex) {
             System.out.println("Database Error:" + ex.getMessage());
 //            ex.printStackTrace();

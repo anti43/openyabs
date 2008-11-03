@@ -35,10 +35,10 @@ public class DesktopIcon implements Constants{
     public static void createLinuxDesktopIcon(){
     
         BufferedWriter out = null;
-        File fol = new File(USER_HOME + File.separator + PROG_NAME + File.separator + LIB_DIR);
+        File fol = new File(Main.USER_HOME + File.separator + PROG_NAME + File.separator + LIB_DIR);
 
         try {
-            out = new BufferedWriter(new FileWriter(DESKTOP + File.separator + ICON_NAME_LIN, false));
+            out = new BufferedWriter(new FileWriter(Main.DESKTOP + File.separator + ICON_NAME_LIN, false));
 
 
             out.write("[Desktop Entry]");
@@ -73,7 +73,7 @@ public class DesktopIcon implements Constants{
             
             out.close();
          
-            mainframe.setInfoText(DESKTOP + File.separator + ICON_NAME_LIN+  " angelegt.");
+            mainframe.setInfoText(Main.DESKTOP + File.separator + ICON_NAME_LIN+  " angelegt.");
         } catch (IOException ex) {
            ex.printStackTrace();
         } finally {
@@ -92,7 +92,7 @@ public class DesktopIcon implements Constants{
         BufferedWriter out = null;
 
         try {
-            out = new BufferedWriter(new FileWriter(DESKTOP + File.separator + ICON_NAME_WIN, false));
+            out = new BufferedWriter(new FileWriter(Main.DESKTOP + File.separator + ICON_NAME_WIN, false));
             out.write("[InternetShortcut]");
             out.newLine();
             out.write("URL=file://" + Main.APP_DIR + File.separator + Constants.JAR_NAME);
@@ -102,7 +102,7 @@ public class DesktopIcon implements Constants{
             out.write("IconFile=" + Main.APP_DIR + File.separator +"lib" + File.separator + "mpd.ico");
             out.newLine();
             out.close();
-            if(mainframe.identifier!=null)mainframe.setInfoText(DESKTOP + File.separator + ICON_NAME_WIN +  " angelegt.");
+            if(mainframe.identifier!=null)mainframe.setInfoText(Main.DESKTOP + File.separator + ICON_NAME_WIN +  " angelegt.");
         } catch (IOException ex) {
            ex.printStackTrace();
         } finally {

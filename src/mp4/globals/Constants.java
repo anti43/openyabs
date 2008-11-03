@@ -39,11 +39,7 @@ public interface Constants {
     public static String JAVA_VERSION = "Java Version: " + System.getProperty("java.version");
     public static String PLUGIN_IDENTIFIER = "MP4Plugin";
     public static String PLUGIN_LOAD_CLASS = "plugin.Main";
-    /**
-     * Home directory of user
-     */
-//    public static String USER_HOME = System.getProperty("user.home");
-    public static String USER_HOME = System.getenv("USERPROFILE");
+
     /**
      * Name of databasedir 
      */
@@ -67,7 +63,7 @@ public interface Constants {
     public static String BACKUPS_SAVE_DIR = "Backup";
     public static String ICON_NAME_LIN = "mp.desktop";
     public static String ICON_NAME_WIN = "MP-Rechnungs-Kundenverwaltung.url";
-    public static String DESKTOP = USER_HOME + SEP + "Desktop";
+
     public static String FELDTRENNER = ";";
    
 }

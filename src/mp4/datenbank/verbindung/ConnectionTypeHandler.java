@@ -68,7 +68,7 @@ public class ConnectionTypeHandler {
         return CONNECTION_STRING;
     }
     private static String CONNECTION_STRING = null;
-    private String URL = Main.settings.getDBPath();
+    private String URL = Main.settingsfile.getDBPath();
     private static Integer PREDEFINED_DRVER = 2;
     private static Integer MODE = 0;
 
@@ -76,10 +76,10 @@ public class ConnectionTypeHandler {
      * Constructs a new ConnHandler
      */
     public ConnectionTypeHandler() {
-        if (Main.settings.getDBDriver().equals(DERBY_DRIVER)) {
+        if (Main.settingsfile.getDBDriver().equals(DERBY_DRIVER)) {
             ConnectionTypeHandler.PREDEFINED_DRVER = ConnectionTypeHandler.DERBY;
             ConnectionTypeHandler.MODE = ConnectionTypeHandler.SINGLE_USER;
-        } else if (Main.settings.getDBDriver().equals(MYSQL_DRIVER)) {
+        } else if (Main.settingsfile.getDBDriver().equals(MYSQL_DRIVER)) {
             ConnectionTypeHandler.PREDEFINED_DRVER = ConnectionTypeHandler.MYSQL;
             ConnectionTypeHandler.MODE = ConnectionTypeHandler.MULTI_USER;
         } else {

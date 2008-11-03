@@ -9,6 +9,7 @@ package mp4.utils.importe.daten;
 import java.io.File;
 import mp4.globals.Constants;
 import mp4.items.visual.Popup;
+import mp4.main.Main;
 import mp4.utils.files.DialogForFile;
 import mp4.utils.ui.Position;
 
@@ -22,7 +23,7 @@ public class ImportDaten extends javax.swing.JFrame {
     /** Creates new form ImportDaten */
     public ImportDaten() {
         initComponents();
-        jTextField1.setText(Constants.USER_HOME + File.separator + ".mp" + File.separator + "mpv36Database");
+        jTextField1.setText(Main.USER_HOME + File.separator + ".mp" + File.separator + "mpv36Database");
         new Position(this);
         this.setVisible(rootPaneCheckingEnabled);
     }
