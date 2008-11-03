@@ -424,6 +424,9 @@
                         <Property name="fillsViewportHeight" type="boolean" value="true"/>
                         <Property name="surrendersFocusOnKeystroke" type="boolean" value="true"/>
                       </Properties>
+                      <Events>
+                        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jTable1MouseClicked"/>
+                      </Events>
                     </Component>
                   </SubComponents>
                 </Container>

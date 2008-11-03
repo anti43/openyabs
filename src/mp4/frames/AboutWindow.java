@@ -49,7 +49,7 @@ public class AboutWindow extends javax.swing.JFrame {
         jEditorPane1 = new javax.swing.JEditorPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("MP About..");
+        setTitle("About MP");
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -117,6 +117,7 @@ public class AboutWindow extends javax.swing.JFrame {
         jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 
         jEditorPane1.setBorder(null);
+        jEditorPane1.setEditable(false);
         jEditorPane1.setText("Sandra, Nina, Aal, alle Benutzer von MP\nund Google fürs Hosting, SUN für Java & Novell für OpenSUSE!\n");
         jScrollPane1.setViewportView(jEditorPane1);
 

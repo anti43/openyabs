@@ -477,6 +477,7 @@
                     </Component>
                     <Component class="javax.swing.JTextField" name="jTextField5">
                       <Events>
+                        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jTextField5MouseClicked"/>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextField5ActionPerformed"/>
                       </Events>
                     </Component>
@@ -603,6 +604,7 @@
                     </Component>
                     <Component class="javax.swing.JTextField" name="jTextField8">
                       <Events>
+                        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jTextField8MouseClicked"/>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextField8ActionPerformed"/>
                       </Events>
                     </Component>
@@ -636,6 +638,7 @@
                     </Component>
                     <Component class="javax.swing.JTextField" name="jTextField10">
                       <Events>
+                        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jTextField10MouseClicked"/>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextField10ActionPerformed"/>
                       </Events>
                     </Component>
@@ -738,6 +741,9 @@
                               </FontInfo>
                             </Property>
                           </Properties>
+                          <Events>
+                            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jEditorPane1MouseClicked"/>
+                          </Events>
                         </Component>
                       </SubComponents>
                     </Container>

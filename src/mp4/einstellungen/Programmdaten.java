@@ -87,6 +87,14 @@ public class Programmdaten implements mp4.datenbank.installation.Tabellen {
         return datahandler.getBoolean("BILLPANEL_CHECKBOX_MITFIRMENNAME");
     }
 
+    public void setMAINFRAME_OUTLOOKBAR_TAB(int MAINFRAME_OUTLOOKBAR_TAB) {
+       datahandler.setInteger("MAINFRAME_OUTLOOKBAR_TAB", MAINFRAME_OUTLOOKBAR_TAB);
+    }
+    
+    public Integer getMAINFRAME_OUTLOOKBAR_TAB() {
+        return datahandler.getInteger("MAINFRAME_OUTLOOKBAR_TAB");
+    }
+
     public void setPRODUCTPICKER_EAN(boolean PRODUCTPICKER_EAN) {
         datahandler.setBoolean("PRODUCTPICKER_EAN", PRODUCTPICKER_EAN);
     }

@@ -16,7 +16,6 @@
  */
 package mp4.datenbank.verbindung;
 
-import javax.swing.JTextArea;
 import mp4.items.visual.Popup;
 import java.io.File;
 import mp4.globals.Constants;

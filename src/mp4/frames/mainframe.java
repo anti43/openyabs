@@ -1241,21 +1241,20 @@ public class mainframe extends javax.swing.JFrame {
 
     private void close() {
 
+        mainframe.setWaiting(true);
+        
+        try {
         saveSession();
         
         if(Programmdaten.instanceOf().getSAVE_DB_ON_EXIT())new backupView(this).saving();
-
-        try {
             DataLock.lateRelease();
-
-            Programmdaten.instanceOf().setMAINFRAME_WINDOW_STATE(this.getSize());
-            Programmdaten.instanceOf().setMAINFRAME_TAB(mainTabPane.getSelectedIndex());
-            
-            closeTabs();
-
-            System.exit(0);
+            closeTabs();        
+            Conn.shutdown();
+            super.dispose();
         } catch (Exception exc) {
             Log.Debug(this, exc, true);
+        } finally {
+            System.out.println("So Long, and Thanks for All the Fish.");
             System.exit(0);
         }
     }
@@ -1751,16 +1750,13 @@ private void jMenuItem30ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
 
     @Override
     public void dispose() {
-        Programmdaten.instanceOf().setMAINFRAME_WINDOW_STATE(this.getSize());
-        Programmdaten.instanceOf().setMAINFRAME_TAB(mainTabPane.getSelectedIndex());
-
-        Conn.shutdown();
-        Log.getLogger().flush();
-
-        super.dispose();
+        close();
     }
 
     private void restoreSession() {
+        
+        outlookBar.setSelectedIndex(Programmdaten.instanceOf().getMAINFRAME_OUTLOOKBAR_TAB());
+        
         try {
             ArrayList<LockableContainer> sessiondata = Programmdaten.instanceOf().getSESSIONDATA();
 
@@ -1817,6 +1813,11 @@ private void jMenuItem30ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
 
     private void saveSession() {
         try {
+            
+            Programmdaten.instanceOf().setMAINFRAME_WINDOW_STATE(this.getSize());
+            Programmdaten.instanceOf().setMAINFRAME_TAB(mainTabPane.getSelectedIndex());
+            Programmdaten.instanceOf().instanceOf().setMAINFRAME_OUTLOOKBAR_TAB(outlookBar.getSelectedIndex());     
+            
             Programmdaten.instanceOf().setSESSIONDATA(new LockableContainer[]{((CommonPanel) mainTabPane.getSelectedComponent()).getLockable().getLockableContainer()});
         } catch (Exception e) {
             Log.Debug("Could not save session. No saveable data selected.");

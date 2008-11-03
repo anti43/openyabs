@@ -445,6 +445,11 @@ public class servicesView extends mp4.items.visual.CommonPanel implements mp4.da
             }
         });
 
+        jTextField5.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTextField5MouseClicked(evt);
+            }
+        });
         jTextField5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField5ActionPerformed(evt);
@@ -505,6 +510,11 @@ public class servicesView extends mp4.items.visual.CommonPanel implements mp4.da
 
         jLabel17.setText(bundle.getString("servicesView.jLabel17.text")); // NOI18N
 
+        jTextField8.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTextField8MouseClicked(evt);
+            }
+        });
         jTextField8.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField8ActionPerformed(evt);
@@ -530,6 +540,11 @@ public class servicesView extends mp4.items.visual.CommonPanel implements mp4.da
 
         jLabel11.setText(bundle.getString("servicesView.jLabel11.text")); // NOI18N
 
+        jTextField10.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTextField10MouseClicked(evt);
+            }
+        });
         jTextField10.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField10ActionPerformed(evt);
@@ -608,6 +623,11 @@ public class servicesView extends mp4.items.visual.CommonPanel implements mp4.da
         jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
         jEditorPane1.setFont(jEditorPane1.getFont());
+        jEditorPane1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jEditorPane1MouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(jEditorPane1);
 
         jTextField12.addActionListener(new java.awt.event.ActionListener() {
@@ -972,6 +992,22 @@ numberfieldedited = true;
 private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
 
 }//GEN-LAST:event_jButton18ActionPerformed
+
+private void jEditorPane1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jEditorPane1MouseClicked
+setEdited(true);
+}//GEN-LAST:event_jEditorPane1MouseClicked
+
+private void jTextField8MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextField8MouseClicked
+setEdited(true);
+}//GEN-LAST:event_jTextField8MouseClicked
+
+private void jTextField10MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextField10MouseClicked
+setEdited(true);
+}//GEN-LAST:event_jTextField10MouseClicked
+
+private void jTextField5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextField5MouseClicked
+setEdited(true);
+}//GEN-LAST:event_jTextField5MouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton jButton10;
