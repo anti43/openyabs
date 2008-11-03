@@ -19,6 +19,7 @@ package mp4.datenbank.verbindung;
 import java.io.File;
 import java.io.IOException;
 import mp4.globals.Constants;
+import mp4.installation.Verzeichnisse;
 import mp4.logs.Log;
 import mp4.main.Main;
 import mp4.utils.files.FileReaderWriter;
@@ -52,9 +53,9 @@ public class ConnectionTypeHandler {
     public static String DERBY_DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
     public static String MYSQL_DRIVER = "com.mysql.jdbc.Driver";
     public static String CUSTOM_DRIVER = "";    //Available SQL Files
-    public static File DERBY_FILE = new File("ext/sql/derby.sql");
-    public static File MYSQL_FILE = new File("ext/sql/mysql.sql");
-    public static File CUSTOM_FILE = new File("ext/sql/custom.sql");
+    public static File DERBY_FILE = new File(Verzeichnisse.getWorkDir() + "/ext/sql/derby.sql");
+    public static File MYSQL_FILE = new File(Verzeichnisse.getWorkDir() + "/ext/sql/mysql.sql");
+    public static File CUSTOM_FILE = new File(Verzeichnisse.getWorkDir() + "/ext/sql/custom.sql");
 
     public static boolean isInSingleUserMode() {
         if (MODE == ConnectionTypeHandler.SINGLE_USER) {

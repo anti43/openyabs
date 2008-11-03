@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.IOException;
 import mp4.globals.Constants;
 import mp4.globals.Strings;
-import mp4.items.visual.Popup;
 import mp4.utils.files.JarFinder;
 import mp4.logs.*;
 import mp4.main.Main;
@@ -44,6 +43,9 @@ public class Verzeichnisse implements Constants, Strings {
     public static void buildPath() throws IOException {
         try {
             workdir = JarFinder.getPathOfJar(JAR_NAME);
+            if(workdir == null){ 
+                Log.Debug(Verzeichnisse.class,"Arbeitsverzeichnis nicht ermittelbar :-(", true);
+                System.exit(1);}
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -239,6 +241,10 @@ public class Verzeichnisse implements Constants, Strings {
     
     public static String getPathpdf_lieferschein_dir() {
         return pdf_lieferschein_dir.getPath();
+    }
+
+    public static String getWorkDir() {
+        return workdir;
     }
 
     public static void setBackuppathtftext(String aBackuppathtftext) {
