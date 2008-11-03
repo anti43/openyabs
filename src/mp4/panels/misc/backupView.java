@@ -33,7 +33,6 @@ import mp4.utils.files.Zip;
 import mp4.frames.mainframe;
 import mp4.einstellungen.Einstellungen;
 import mp4.items.HistoryItem;
-import mp4.items.Product;
 import mp4.main.Main;
 import mp4.utils.listen.ListenDataUtils;
 import mp4.utils.tabellen.TableFormat;
@@ -242,7 +241,7 @@ public class backupView extends mp4.items.visual.CommonPanel{
             }
             this.validateTable();
         } else {
-            Popup.notice("Datenbackup ist nur mit lokaler Derby Datenbank möglich.");
+            Popup.notice("Datenbankbackup ist nur mit lokaler Derby Datenbank möglich.");
         }
     }
 
@@ -261,7 +260,6 @@ public class backupView extends mp4.items.visual.CommonPanel{
             setSavePath(fc.getSelectedFile().toString());
         }
         l.setBackup_Verzeichnis(jTextField1.getText());
-//        l.save();
         l = Einstellungen.instanceOf();
         mainframe.setMessage("Sicherungspfad '" + l.getBackup_Verzeichnis() + "' editiert.");
     }//GEN-LAST:event_jButton3ActionPerformed
@@ -294,16 +292,13 @@ public class backupView extends mp4.items.visual.CommonPanel{
                 jButton6MouseClicked(evt);
                 try {
                     File olddb = new File(Main.MPPATH + File.separator + Constants.DATABASENAME);
-//                    path = new File(dat[0]);
                     store = Main.MPPATH + File.separator + Constants.DATABASENAME;
                     Log.Debug(this,"Zurückspielen einer Sicherungsdatei:\nZiel: " + store, true);
                     FileDirectoryHandler.deleteTree(olddb);
-//                int z =path.getCanonicalPath().lastIndexOf(File.separator);
-//                store =store.substring(0, z);
                     Log.Debug(this,"Rücksichern nach: " + store, true);
                     UnZip.deflate(((String[])list.get(id))[2], store);
                     mainframe.setMessage("Sicherungsdatei '" + ((String[])list.get(id))[2] + "' wiederhergestellt.");
-                    new Popup("Starten Sie das Programm neu.", Popup.NOTICE);
+                    Popup.notice("Starten Sie das Programm neu.");
                     System.exit(0);
 
                 } catch (IOException ex) {
@@ -337,11 +332,9 @@ public class backupView extends mp4.items.visual.CommonPanel{
             Log.Debug(this,"Backup Verzeichnis: " + src, true);
             File[] files = src.listFiles();
             Log.Debug(this,"Dateien analysieren...", true);
-//            str = new String[files.length][3];
             list = new ArrayList();
 
             for (int i = 0,   k = 0; i < files.length; i++) {
-//                Log.Debug(this,"Datei analysieren: " + files[i].getName());
                 if (files[i].isFile() && files[i].toString().contains("mpsavefile-40")) {
                     try {
                         String[] fileinfo = new String[3];
@@ -352,7 +345,6 @@ public class backupView extends mp4.items.visual.CommonPanel{
                         Log.Debug(this,"Sicherungsdatei gefunden: " + files[i].getName(), true);
                         k++;
                     } catch (Exception ex) {
-//                        Log.Debug(this,ex);
                         Log.Debug(this,ex.getMessage(), true);
                     }
                 }

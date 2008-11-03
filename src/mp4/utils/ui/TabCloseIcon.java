@@ -62,6 +62,7 @@ public class TabCloseIcon implements Icon {
     /**
      * when painting, remember last position painted.
      */
+    @Override
     public void paintIcon(Component c, Graphics g, int x, int y) {
         if (null == mTabbedPane) {
             mTabbedPane = (JTabbedPane) c;
@@ -72,8 +73,7 @@ public class TabCloseIcon implements Icon {
                     // asking for isConsumed is *very* important, otherwise more than one tab might get closed!
                     if (!e.isConsumed() && mPosition.contains(e.getX(), e.getY())) {
                         final int index = mTabbedPane.getSelectedIndex();
-//						mTabbedPane.remove( index );    elem.unload();     
-                      
+          
                         try {
                             ((mpplugin) mTabbedPane.getComponentAt(index)).unload();
                             Log.Debug(this,"Unloaded a Plugin: " + ((mpplugin) mTabbedPane.getComponentAt(index)).getName());

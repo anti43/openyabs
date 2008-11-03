@@ -1553,6 +1553,7 @@ private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 
 private void jButton19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton19ActionPerformed
     new DatePick(jTextField12);
+    setEdited(true);
 }//GEN-LAST:event_jButton19ActionPerformed
 
 private void jButton19KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton19KeyPressed

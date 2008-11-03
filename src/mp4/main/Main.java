@@ -78,7 +78,7 @@ public class Main implements Strings {
             DESKTOP = USER_HOME + File.separator + "Desktop";
             MPPATH = USER_HOME + File.separator + ".mp";
             SETTINGS_FILE = Main.MPPATH + File.separator + "settings" + Constants.RELEASE_VERSION + ".mp";
-            APP_DIR = USER_HOME + Constants.SEP + Constants.PROG_NAME;
+            APP_DIR = USER_HOME + File.separator + Constants.PROG_NAME;
             settingsfile = new SettingsFile();
         } else {
             DruckJob.FORCE_WIN_PRINT = true;
@@ -86,7 +86,7 @@ public class Main implements Strings {
             DESKTOP = USER_HOME + File.separator + "Desktop";
             MPPATH = USER_HOME + File.separator + ".mp";
             SETTINGS_FILE = Main.MPPATH + File.separator + "settings" + Constants.RELEASE_VERSION + ".mp";
-            APP_DIR = USER_HOME + Constants.SEP + Constants.PROG_NAME;
+            APP_DIR = USER_HOME + File.separator + Constants.PROG_NAME;
             settingsfile = new SettingsFile();
         }
     }
@@ -115,8 +115,7 @@ public class Main implements Strings {
         Option forcecopy = obuilder.withShortName("forcecopy").withDescription("force copy of files").create();
         Option dbpath = obuilder.withShortName("dbpath").withShortName("d").withDescription("use database path").withArgument(dirarg).create();
         Option instpath = obuilder.withShortName("instpath").withShortName("i").withDescription("use installation path").withArgument(dirarg).create();
-        Option logfile = obuilder.withShortName("logfile").withShortName("l").withDescription("use file for log").withArgument(filearg).create();
-//        Option settingsfileopt = obuilder.withShortName("settings").withShortName("s").withDescription("mp settings file").withArgument(filearg).create();
+        Option logfile = obuilder.withShortName("logfile").withShortName("l").withDescription("use file for log").withArgument(filearg).create(); 
         Option pdfdir = obuilder.withShortName("pdfdir").withShortName("p").withDescription("use pdfdir").withArgument(dirarg).create();
         Option backupdir = obuilder.withShortName("backupdir").withShortName("b").withDescription("use backupdir").withArgument(dirarg).create();
         Option templatedir = obuilder.withShortName("templatedir").withShortName("t").withDescription("use templatedir").withArgument(dirarg).create();
@@ -219,10 +218,7 @@ public class Main implements Strings {
         if (cl.hasOption(instpath)) {
             APP_DIR = ((String) cl.getValue(instpath)).split("=")[1];
         }
-//
-//        if (cl.hasOption(settingsfileopt)) {
-//            SETTINGS_FILE = ((String) cl.getValue(settingsfileopt)).split("=")[1];
-//        }
+
     }
 
     public Main() throws Exception {

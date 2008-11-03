@@ -10,13 +10,14 @@ import mp4.globals.Constants;
 //import mp3.classes.objects.ungrouped.MyData;
 import mp4.frames.mainframe;
 import mp4.einstellungen.Einstellungen;
+import mp4.items.visual.CommonPanel;
 
 
 /**
  *
  * @author  anti43
  */
-public class startView extends javax.swing.JPanel {
+public class startView extends CommonPanel {
     private mainframe mainframe;
     
     /** Creates new form startView */
@@ -26,11 +27,10 @@ public class startView extends javax.swing.JPanel {
         jLabel7.setText(Einstellungen.instanceOf().getVersion());
     }
 
-    public startView(mainframe aThis) {
+    public startView(mainframe frame) {
          initComponents();
-//         jLabel8.setText(jLabel8.getText() + Constants.VERSION + " " + Constants.TITLE);
-         jLabel7.setText("Version: " + Einstellungen.instanceOf().getVersion());
-         mainframe= aThis;
+         jLabel7.setText("Version: " + Einstellungen.instanceOf().getVersion() + " " + Constants.TITLE);
+         mainframe= frame;
     }
     
     /** This method is called from within the constructor to

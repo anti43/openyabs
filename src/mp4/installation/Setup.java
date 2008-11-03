@@ -721,5 +721,6 @@ private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private void setStartValues() {
        Programmdaten.instanceOf().setBILLPANEL_CHECKBOX_NETTOPREISE(true);
        Programmdaten.instanceOf().setBILLPANEL_CHECKBOX_MITFIRMENNAME(true);
+       if(!jCheckBox3.isSelected())Programmdaten.instanceOf().setSAVE_DB_ON_EXIT(true);
     }
 }

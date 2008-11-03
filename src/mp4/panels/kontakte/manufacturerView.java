@@ -427,6 +427,11 @@ public class manufacturerView extends mp4.items.visual.CommonPanel implements mp
             }
         });
 
+        jTextField8.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTextField8MouseClicked(evt);
+            }
+        });
         jTextField8.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField8ActionPerformed(evt);
@@ -1232,6 +1237,10 @@ private void jButton18MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
     }
 }//GEN-LAST:event_jButton18MouseClicked
 
+private void jTextField8MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextField8MouseClicked
+
+}//GEN-LAST:event_jTextField8MouseClicked
+
     private void deactivate() {
         if (current.getId() > 0) {
             if ((JOptionPane.showConfirmDialog(this, "Wirklich löschen?", "Sicher?", JOptionPane.YES_NO_OPTION)) == JOptionPane.YES_OPTION) {
@@ -1322,6 +1331,7 @@ private void jButton18MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
     public javax.swing.JTextField jTextField9;
     public javax.swing.JToolBar jToolBar2;
     // End of variables declaration//GEN-END:variables
+    @Override
     public void update() {
         this.updateListTable();
     }

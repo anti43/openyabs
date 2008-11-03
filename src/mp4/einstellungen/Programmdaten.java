@@ -19,12 +19,9 @@ package mp4.einstellungen;
 import java.awt.Dimension;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mp4.items.LockableContainer;
 import mp4.logs.Log;
 import mp4.plugin.mpplugin;
-import mp4.utils.listen.ListenDataUtils;
 
 /**
  *
@@ -60,6 +57,7 @@ public class Programmdaten implements mp4.datenbank.installation.Tabellen {
             return false;
         }
     }
+
 
     public void removeONLOAD_PLUGIN(mpplugin elem) {
         pluginhandler.deleteRow(elem.getUID().toString());
@@ -136,7 +134,15 @@ public class Programmdaten implements mp4.datenbank.installation.Tabellen {
     public String getKunde_NUMMER_FORMAT() {
         return datahandler.getString("Kunde_NUMMER_FORMAT");
     }
-
+    
+    
+    public boolean getSAVE_DB_ON_EXIT() {
+        return datahandler.getBoolean("SAVE_DB_ON_EXIT");
+    }
+    
+    public void setSAVE_DB_ON_EXIT(boolean SAVE_DB_ON_EXIT) {
+        datahandler.setBoolean("SAVE_DB_ON_EXIT", SAVE_DB_ON_EXIT);
+    }
 
     public void setSESSIONDATA(LockableContainer[] lockableContainer) {
         String data = "";

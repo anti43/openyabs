@@ -167,6 +167,7 @@ public class mainframe extends javax.swing.JFrame {
     private diagrammChooseView diagrammpanel;
     private DialogForFile dialog;
     private ClipBoard clipBoard = new ClipBoard(this);
+    private pluginHandler pluginhandler;
 
     /** Creates new form mainframe
      * @param splash
@@ -226,7 +227,7 @@ public class mainframe extends javax.swing.JFrame {
         });
 
         nachricht = messagePanel;
-        new pluginHandler(this);
+        pluginhandler = new pluginHandler(this);
         splash.setMessage("Sitzungswiederherstellung...");
         restoreSession();
 
@@ -363,6 +364,15 @@ public class mainframe extends javax.swing.JFrame {
 
     public static User getUser() {
         return currentUser;
+    }
+
+    private void closeTabs() {
+        for (int ixd = 0; ixd < mainTabPane.getComponents().length; ixd++) {
+              try {
+                ((mpplugin) mainTabPane.getComponentAt(ixd)).unload();
+                Log.Debug(this,"Unloaded a Plugin: " + ((mpplugin) mainTabPane.getComponentAt(ixd)).getName());
+            } catch (Exception e) {}
+        }
     }
 
     /** This method is called from within the constructor to
@@ -618,7 +628,7 @@ public class mainframe extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton10, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 75, Short.MAX_VALUE)
+                    .addComponent(jButton10, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 77, Short.MAX_VALUE)
                     .addComponent(jButton9, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -703,11 +713,11 @@ public class mainframe extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton11, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE)
-                    .addComponent(jButton6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE)
+                    .addComponent(jButton11, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
+                    .addComponent(jButton6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
                     .addComponent(jButton5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE)
-                    .addComponent(jButton8, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE))
+                    .addComponent(jButton7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
+                    .addComponent(jButton8, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -798,10 +808,10 @@ public class mainframe extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton15, javax.swing.GroupLayout.DEFAULT_SIZE, 81, Short.MAX_VALUE)
-                    .addComponent(jButton13, javax.swing.GroupLayout.DEFAULT_SIZE, 81, Short.MAX_VALUE)
-                    .addComponent(jButton16, javax.swing.GroupLayout.DEFAULT_SIZE, 81, Short.MAX_VALUE)
-                    .addComponent(jButton12, javax.swing.GroupLayout.DEFAULT_SIZE, 81, Short.MAX_VALUE))
+                    .addComponent(jButton15, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE)
+                    .addComponent(jButton13, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE)
+                    .addComponent(jButton16, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE)
+                    .addComponent(jButton12, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
@@ -823,7 +833,7 @@ public class mainframe extends javax.swing.JFrame {
         outlookBar.addTab("Extras", jPanel6);
 
         closeButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/3232/endturn.png"))); // NOI18N
-        closeButton.setToolTipText("Programm beenden");
+        closeButton.setToolTipText("Datensicherung anlegen und Programm beenden");
         closeButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 closeButtonActionPerformed(evt);
@@ -1189,7 +1199,7 @@ public class mainframe extends javax.swing.JFrame {
                 .addGap(3, 3, 3)
                 .addComponent(leftBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(mainScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 406, Short.MAX_VALUE))
+                .addComponent(mainScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 410, Short.MAX_VALUE))
             .addComponent(bottomPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
@@ -1231,14 +1241,17 @@ public class mainframe extends javax.swing.JFrame {
 
     private void close() {
 
-
         saveSession();
+        
+        if(Programmdaten.instanceOf().getSAVE_DB_ON_EXIT())new backupView(this).saving();
 
         try {
             DataLock.lateRelease();
 
             Programmdaten.instanceOf().setMAINFRAME_WINDOW_STATE(this.getSize());
             Programmdaten.instanceOf().setMAINFRAME_TAB(mainTabPane.getSelectedIndex());
+            
+            closeTabs();
 
             System.exit(0);
         } catch (Exception exc) {
@@ -1261,10 +1274,7 @@ public class mainframe extends javax.swing.JFrame {
 
     private void jMenuItem14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem14ActionPerformed
 
-        Programmdaten.instanceOf().setMAINFRAME_WINDOW_STATE(this.getSize());
-        Programmdaten.instanceOf().setMAINFRAME_TAB(mainTabPane.getSelectedIndex());
-
-        System.exit(0);
+        close();
     }//GEN-LAST:event_jMenuItem14ActionPerformed
 
     private void jMenuItem18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem18ActionPerformed
@@ -1421,7 +1431,7 @@ private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 
     removePanel(backuppanel);
     backuppanel = new backupView(this);
-    addPanel("Datensicherung", backuppanel);
+    addPanel("Datensicherung (lokal)", backuppanel);
 }//GEN-LAST:event_jButton13ActionPerformed
 
 private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed

@@ -35,6 +35,7 @@ public class pluginHandler {
 
     }
 
+
     private mpplugin[] getPlugins() throws MalformedURLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         @SuppressWarnings("unchecked")
         ArrayList<mpplugin> list = new ArrayList();
