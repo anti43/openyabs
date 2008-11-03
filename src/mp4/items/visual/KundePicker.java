@@ -47,10 +47,6 @@ public class KundePicker extends javax.swing.JFrame {
 
     }
 
-    public KundePicker(offersView aThis) {
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
-
     private void getData() {
         SelectionCheck sel = new SelectionCheck(jTable2);
         if (sel.checkID()) {

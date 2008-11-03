@@ -260,6 +260,7 @@ public class offersView extends mp4.items.visual.CommonPanel implements DataPane
         resizeFields();
     }
 
+    @Override
     public void setContact(People c) {
 
         oldKunde = this.Kunde;
