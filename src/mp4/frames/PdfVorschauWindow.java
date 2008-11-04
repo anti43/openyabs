@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.print.DocFlavor;
 import mp4.interfaces.Waiter;
+import mp4.items.visual.Popup;
 import mp4.logs.*;
 import mp4.utils.export.druck.DruckJob;
 import mp4.utils.files.DialogForFile;
@@ -166,15 +167,16 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     }
 
     private void openPDF() throws Exception {
-          initComponents();
+         if (file.exists()) {
+            initComponents();
             PagePanel panel = new PagePanel();
             this.jPanel1.add(panel, BorderLayout.CENTER);
 
             raf = new RandomAccessFile(file, "r");
 
             FileChannel channel = raf.getChannel();
-           
-            ByteBuffer buf = 
+            
+            ByteBuffer buf =
                     channel.map(FileChannel.MapMode.READ_ONLY,
                     0, channel.size());
 //            
@@ -193,5 +195,6 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             page = pdffile.getPage(0);
             panel.showPage(page);
             panel.useZoomTool(true);
+        } 
     }
 }

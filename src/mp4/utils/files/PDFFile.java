@@ -188,6 +188,7 @@ public class PDFFile extends File implements Waitable, Printable{
 
     private void work() {
         if (new File(object.getTemplate()).exists()) {
+            Log.Debug(this, "Using PDF Template: " + object.getTemplate());
             try {
                 PdfReader template = new PdfReader(object.getTemplate());
                 Log.Debug(this, "Creating PDF File: " + this.getPath());
@@ -215,8 +216,6 @@ public class PDFFile extends File implements Waitable, Printable{
                     Log.Debug(this, ex);
                 }
             }
-            
-            
         } else {
             Popup.error("Bitte geben Sie unter \nBearbeiten-> Einstellungen ein PDF-Template an." +
                     "\nTemplate: " + object.getTemplate() + "\nexistiert nicht.", Popup.ERROR);

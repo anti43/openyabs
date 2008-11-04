@@ -24,10 +24,8 @@ import mp4.items.Rechnung;
 import java.io.*;
 import java.util.ArrayList;
 
-import javax.print.DocFlavor;
 import mp4.interfaces.Template;
 import mp4.items.visual.Popup;
-import mp4.utils.ui.inputfields.InputVerifiers;
 import mp4.einstellungen.Einstellungen;
 import mp4.einstellungen.Programmdaten;
 import mp4.utils.files.PDFFile;

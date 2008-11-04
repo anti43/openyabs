@@ -5,6 +5,7 @@
  */
 package mp4.panels.rechnungen;
 
+import java.awt.Color;
 import mp4.logs.*;
 import mp4.items.Product;
 import mp4.items.Rechnung;
@@ -18,10 +19,8 @@ import mp4.einstellungen.VariablenZuText;
 import mp4.frames.mainframe;
 import mp4.frames.PdfVorschauWindow;
 import mp4.interfaces.DataPanel;
-import mp4.items.RechnungPosten;
 import mp4.items.visual.Popup;
 import mp4.utils.datum.DateConverter;
-import mp4.utils.export.druck.DruckJob;
 import mp4.utils.files.PDFFile;
 import mp4.utils.tasks.Job;
 import mp4.utils.ui.Position;
@@ -38,14 +37,13 @@ public class MahnungView extends javax.swing.JFrame {
 
     private Rechnung bill;
     private Kunde c;
-    private DataPanel view;
     private boolean lone = false;
+    private billsView view;
 
     public MahnungView(Rechnung current) {
         initComponents();
 
         this.bill = current;
-        this.bill.setMahnungen(this.bill.getMahnungen() + 1);
         this.c = new Kunde(bill.getKundenId());
 
         this.jTextArea1.setText(Programmdaten.instanceOf().getMAHNUNG_TEXT_DEFAULT());
@@ -66,14 +64,14 @@ public class MahnungView extends javax.swing.JFrame {
      * @param Kunde
      * @param view 
      */
-    public MahnungView(Rechnung bill, Kunde Kunde, DataPanel view) {
+    public MahnungView(Rechnung bill, Kunde Kunde, billsView view) {
         initComponents();
 
         this.bill = bill;
-        this.bill.setMahnungen(this.bill.getMahnungen() + 1);
         this.c = Kunde;
         this.view = view;
         this.jTextArea1.setText(Programmdaten.instanceOf().getMAHNUNG_TEXT_DEFAULT());
+        jTextField2.setText(FormatNumber.formatDezimal(Programmdaten.instanceOf().getMAHNUNG_VALUE_DEFAULT()));
 
         jLabel2.setText(bill.getRechnungnummer());
         jLabel6.setText(Kunde.getFirma());
@@ -252,29 +250,35 @@ public class MahnungView extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
-        if (!lone) {
+        if (FormatNumber.checkDezimal(jTextField2.getText())) {
             if (mainframe.getUser().doAction(User.EDITOR)) {
-                try {
-
-                    view.setProduct(new Product("Mahnung vom " + DateConverter.getTodayDefDate(),
-                            FormatNumber.parseDezimal(jTextField2.getText())));
-                    Programmdaten.instanceOf().setMAHNUNG_TEXT_DEFAULT(jTextArea1.getText());
+                if (!lone) {
+                    try {
+                        view.setProduct(new Product((bill.getMahnungen()+1) + ". Mahnung vom " + DateConverter.getTodayDefDate(),
+                                FormatNumber.parseDezimal(jTextField2.getText()), Einstellungen.instanceOf().getHauptsteuersatz()));
+                        view.addMahnung();
+                        this.dispose();
+                    } catch (NumberFormatException numberFormatException) {
+                        Log.Debug(this, numberFormatException);
+                    }
+                } else {
+                    view = new billsView(mainframe.identifier);
+                    mainframe.identifier.mainTabPane.add("Rechnung", view);
+                    mainframe.identifier.mainTabPane.setSelectedComponent(view);
+                    mainframe.identifier.mainTabPane.setIconAt(mainframe.identifier.mainTabPane.getSelectedIndex(), new TabCloseIcon());
+                    view.setBill(bill);
+                    view.setProduct(new Product((bill.getMahnungen()+1) + ". Mahnung vom " + DateConverter.getTodayDefDate(),
+                            FormatNumber.parseDezimal(jTextField2.getText()), Einstellungen.instanceOf().getHauptsteuersatz()));
+                    view.addMahnung();
                     this.dispose();
-                } catch (NumberFormatException numberFormatException) {
-                    Log.Debug(this, numberFormatException);
                 }
             }
-        } else {
 
-            billsView view2 = new billsView(mainframe.identifier);
-            mainframe.identifier.mainTabPane.add("Rechnung", view2);
-            mainframe.identifier.mainTabPane.setSelectedComponent(view2);
-            mainframe.identifier.mainTabPane.setIconAt( mainframe.identifier.mainTabPane.getSelectedIndex(), new TabCloseIcon());
-            view2.setBill(bill);
-            view2.setProduct(new Product("Mahnung vom " + DateConverter.getTodayDefDate(),
-                    FormatNumber.parseDezimal(jTextField2.getText()), Einstellungen.instanceOf().getHauptsteuersatz()));
-            mainframe.identifier.mainTabPane.add(view2);
-            this.dispose();
+            Programmdaten.instanceOf().setMAHNUNG_TEXT_DEFAULT(jTextArea1.getText());
+            Programmdaten.instanceOf().setMAHNUNG_VALUE_DEFAULT(FormatNumber.parseDezimal(jTextField2.getText()));
+        } else {
+            jTextField2.setText("0,00");
+            jTextField2.setBackground(Color.red);
         }
 
     }//GEN-LAST:event_jButton1ActionPerformed
@@ -284,26 +288,48 @@ public class MahnungView extends javax.swing.JFrame {
 
 private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
 
-    if (lone && Popup.Y_N_dialog("Zur Rechnung addieren?")) {
+    if (mainframe.getUser().doAction(User.EDITOR)) {
+        if (FormatNumber.checkDezimal(jTextField2.getText())) {
+            if (lone) {
+                if (Popup.Y_N_dialog("Zur Rechnung addieren?")) {
+                    view = new billsView(mainframe.identifier);
+                    mainframe.identifier.mainTabPane.add("Rechnung", view);
+                    mainframe.identifier.mainTabPane.setSelectedComponent(view);
+                    mainframe.identifier.mainTabPane.setIconAt(mainframe.identifier.mainTabPane.getSelectedIndex(), new TabCloseIcon());
+                    view.setBill(bill);
+                    view.setProduct(new Product((bill.getMahnungen()+1) + ". Mahnung vom " + DateConverter.getTodayDefDate(),
+                            FormatNumber.parseDezimal(jTextField2.getText()), Einstellungen.instanceOf().getHauptsteuersatz()));
+                    view.addMahnung();
+                }
+            } else {
+                if (Popup.Y_N_dialog("Zur Rechnung addieren?")) {
+                    try {
+                        view.setProduct(new Product((bill.getMahnungen()+1) +". Mahnung vom " + DateConverter.getTodayDefDate(),
+                                FormatNumber.parseDezimal(jTextField2.getText()), Einstellungen.instanceOf().getHauptsteuersatz()));
+                        view.addMahnung();
+                        this.dispose();
+                    } catch (NumberFormatException numberFormatException) {
+                        Log.Debug(this, numberFormatException);
+                    }
+                }
+            }
+            Job job = new Job(new PDFFile(new PDF_Mahnung(bill,
+                    VariablenZuText.parseText(jTextArea1.getText(), new Object[]{bill, c}),
+                    FormatNumber.parseDezimal(jTextField2.getText()), bill.getMahnungen(), false)), new PdfVorschauWindow(), mainframe.identifier.getMainProgress());
+       
+            job.execute();
 
-            billsView view2 = new billsView(mainframe.identifier);
-            mainframe.identifier.mainTabPane.add("Rechnung", view2);
-            mainframe.identifier.mainTabPane.setSelectedComponent(view2);
-            mainframe.identifier.mainTabPane.setIconAt( mainframe.identifier.mainTabPane.getSelectedIndex(), new TabCloseIcon());
-            view2.setBill(bill);
-            view2.setProduct(new Product("Mahnung vom " + DateConverter.getTodayDefDate(),
-                    FormatNumber.parseDezimal(jTextField2.getText()), Einstellungen.instanceOf().getHauptsteuersatz()));
-//            
-//            view2.save();
-//            mainframe.identifier.mainTabPane.remove(view2);
+            Programmdaten.instanceOf().setMAHNUNG_TEXT_DEFAULT(jTextArea1.getText());
+            Programmdaten.instanceOf().setMAHNUNG_VALUE_DEFAULT(FormatNumber.parseDezimal(jTextField2.getText()));
+
+            this.dispose();
+
+        } else {
+            jTextField2.setText("0,00");
+            jTextField2.setBackground(Color.red);
+        }
     }
 
-    new PdfVorschauWindow(new PDFFile(new PDF_Mahnung(bill,
-            VariablenZuText.parseText(jTextArea1.getText(), new Object[]{bill, c}),
-            FormatNumber.parseDezimal(jTextField2.getText()), bill.getMahnungen(), false)));
-    
-    this.dispose();
-    
 //    Job job = new Job(new PDFFile(new PDF_Mahnung(bill,
 //            VariablenZuText.parseText(jTextArea1.getText(), new Object[]{bill, c}),
 //            FormatNumber.parseDezimal(jTextField2.getText()), bill.getMahnungen(), false)), new mp4.utils.export.druck.DruckJob());

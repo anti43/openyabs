@@ -16,8 +16,15 @@ import mp4.einstellungen.Einstellungen;
  */
 public class FormatNumber {
 
-    public static NumberFormat getDefaultDecimalFormat() {
+    public static boolean checkDezimal(String text) {
+        if (parseDezimal(text) == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 
+    public static NumberFormat getDefaultDecimalFormat() {
         return new java.text.DecimalFormat("#,##0.00;");
     }
 
@@ -44,8 +51,8 @@ public class FormatNumber {
                 n.applyPattern("###,##0.00;");
                 return n.parse(number).doubleValue();
             } catch (ParseException parseException) {
-                 Log.Debug(FormatNumber.class, parseException.getMessage());
-                 return null;
+                Log.Debug(FormatNumber.class, parseException.getMessage());
+                return null;
             }
         }
     }

@@ -125,8 +125,9 @@ public class PDF_Mahnung implements Template{
         return null;
     }
 
+    @Override
     public String getTemplate() {
-       return l.getRechnung_Template();
+       return l.getMahnung_Template();
     }
 
     @Override

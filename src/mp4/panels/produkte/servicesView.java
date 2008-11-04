@@ -39,6 +39,7 @@ import mp4.panels.rechnungen.billsView;
 import mp4.panels.rechnungen.offersView;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.files.DialogForFile;
+import mp4.utils.files.PDFFile;
 import mp4.utils.tabellen.SelectionCheck;
 import mp4.utils.tabellen.TableFormat;
 import mp4.utils.tasks.Job;
@@ -944,7 +945,7 @@ private void jButton18MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
         }
 
         if (current.isValid()) {
-            Job job = new Job((Waitable) new PDF_Produkt(current, false),new PdfVorschauWindow(), mainframe.getMainProgress());
+            Job job = new Job(new PDFFile(new PDF_Produkt(current, false)),new PdfVorschauWindow(), mainframe.getMainProgress());
             job.execute();
 
         } else {

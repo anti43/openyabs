@@ -50,6 +50,7 @@ public class Programmdaten implements mp4.datenbank.installation.Tabellen {
         pluginhandler.addRow(elem.getUID().toString(), null);
     }
 
+
     public boolean getONLOAD(mpplugin elem) {
         if (pluginhandler.getString(elem.getUID().toString()) != null) {
             return true;
@@ -316,5 +317,13 @@ public class Programmdaten implements mp4.datenbank.installation.Tabellen {
 
     public void setSERVICEPANEL_MASK(String SERVICEPANEL_MASK) {
         datahandler.setString("SERVICEPANEL_MASK", SERVICEPANEL_MASK);
+    }
+    
+    public void setMAHNUNG_VALUE_DEFAULT(Double MAHNUNG_VALUE_DEFAULT) {
+        datahandler.setDouble("MAHNUNG_VALUE_DEFAULT", MAHNUNG_VALUE_DEFAULT);
+    }
+    
+    public Double getMAHNUNG_VALUE_DEFAULT() {
+       return datahandler.getDouble("MAHNUNG_VALUE_DEFAULT");
     }
 }

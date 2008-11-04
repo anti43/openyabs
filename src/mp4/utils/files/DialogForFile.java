@@ -96,7 +96,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
      */
     public boolean chooseFile() {
         try {
-            if (this.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+            if (this.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
                 try {
                     this.file = this.getSelectedFile();
                     return true;

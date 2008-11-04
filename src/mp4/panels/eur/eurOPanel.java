@@ -276,7 +276,7 @@ private javax.swing.JToolBar jToolBar4;
                 c.getMail() + "\n Telefonnummer: " + c.getTel() + "\n\n" +
                 " Datum: " + DateConverter.getDefDateString(current.getDatum()) + "\n Rechnungnummer: " + current.getRechnungnummer());
 
-        jTextField14.setText(FormatNumber.formatDezimal(current.getGesamtpreis()));
+        jTextField14.setText(FormatNumber.formatLokalCurrency(current.getGesamtpreis()));
 
     }
    
