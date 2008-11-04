@@ -17,6 +17,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 
 import mp4.interfaces.ContactPanel;
+import mp4.items.Dienstleistung;
 import mp4.items.People;
 
 import mp4.items.Steuersatz;
@@ -859,6 +860,8 @@ private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     public void setProduct(Product p) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+    
+
 
     @Override
     public void setContact(People contact) {
@@ -867,6 +870,11 @@ private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     }
 
     public void setTax(Steuersatz steuersatz) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setProduct(Dienstleistung dienstleistung) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

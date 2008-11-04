@@ -103,6 +103,14 @@ public class Programmdaten implements mp4.datenbank.installation.Tabellen {
         datahandler.setBoolean("PRODUCTPICKER_NAME", PRODUCTPICKER_NAME);
     }
 
+    public void setPRODUCTPICKER_NUMMER(boolean PRODUCTPICKER_NUMMER) {
+        datahandler.setBoolean("PRODUCTPICKER_NUMMER", PRODUCTPICKER_NUMMER);
+    }
+    
+    public boolean getPRODUCTPICKER_NUMMER() {
+        return datahandler.getBoolean("PRODUCTPICKER_NUMMER");
+    }
+
     public void setPRODUCTPICKER_TEXT(boolean PRODUCTPICKER_TEXT) {
         datahandler.setBoolean("PRODUCTPICKER_TEXT", PRODUCTPICKER_TEXT);
     }

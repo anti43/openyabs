@@ -4,13 +4,16 @@
  */
 package mp4.installation;
 
+
 import java.io.File;
 import java.io.IOException;
 import mp4.globals.Constants;
 import mp4.globals.Strings;
+import mp4.items.visual.Popup;
 import mp4.utils.files.JarFinder;
 import mp4.logs.*;
 import mp4.main.Main;
+import mp4.utils.files.DialogForFile;
 import mp4.utils.files.FileDirectoryHandler;
 
 /**
@@ -19,8 +22,8 @@ import mp4.utils.files.FileDirectoryHandler;
  */
 public class Verzeichnisse implements Constants, Strings {
 
-    private static String url;
-    private static String workdir;
+    private static String url = "";
+    private static String workdir = "";
     private static File pdf_root_dir;
     private static File backup_dir;
     private static File public_dir;
@@ -38,18 +41,30 @@ public class Verzeichnisse implements Constants, Strings {
     private static File plugin_dir;
     private static String backuppathtftext = Main.APP_DIR + File.separator + "Backup";
     private static String pdfpathtftext = Main.APP_DIR + File.separator + "PDF";
-    
 
     public static void buildPath() throws IOException {
+        DialogForFile dialog;
         try {
-            workdir = JarFinder.getPathOfJar(JAR_NAME);
-            if(workdir == null){ 
-                Log.Debug(Verzeichnisse.class,"Arbeitsverzeichnis nicht ermittelbar :-(", true);
-                System.exit(1);}
+            if(workdir.equals(""))workdir = JarFinder.getPathOfJar(JAR_NAME);
+            if (workdir == null || workdir.equals("") || workdir.length() == 0 || !new File(workdir + File.separator + JAR_NAME).exists()) {
+                Log.Debug(Verzeichnisse.class, "Arbeitsverzeichnis nicht ermittelbar :-(", true);
+
+                dialog = new DialogForFile(DialogForFile.FILES_ONLY);
+                dialog.setSelectedFile(new File(JAR_NAME));
+
+                Popup.notice("Das Arbeitsverzeichnis ist nicht ermittelbar.\nBitte selektieren Sie manuell die Datei " + JAR_NAME + " auf Ihrem System.");
+                if (dialog.chooseFile()) {
+                    workdir = dialog.getFile().getParent();
+                     Log.Debug(Verzeichnisse.class, "Arbeitsverzeichnis (manuell): " + workdir, true);
+                } else {
+                    Popup.error("Programm wird beendet.", "Arbeitsverzeichnis nicht ermittelbar :-(");
+                    System.exit(1);
+                }
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        Log.Debug(Verzeichnisse.class,"Quellverzeichnis: " + workdir, true);
+        Log.Debug(Verzeichnisse.class, "Quellverzeichnis: " + workdir, true);
 
         public_dir = new File(Main.APP_DIR);
 
@@ -89,46 +104,45 @@ public class Verzeichnisse implements Constants, Strings {
 
     public static void createDirs() {
 
-            Log.Debug(Verzeichnisse.class,"Verzeichnisse anlegen..", true);
-            if (
-                    getPublic_dir().mkdirs() &
-                    getTemplates_dir().mkdirs() &
-                    getBackup_dir().mkdirs() &
-                    getPdf_root_dir().mkdirs() &
-                    getPdf_bill_dir().mkdirs() &
-                    getPdf_offer_dir().mkdirs() &
-                    getPdf_mahnung_dir().mkdirs() &
-                    getPdf_lieferschein_dir().mkdirs() &
-                    getPlugin_dir().mkdirs() &
-                    getCache_dir().mkdirs()) {
+        Log.Debug(Verzeichnisse.class, "Verzeichnisse anlegen..", true);
+        if (getPublic_dir().mkdirs() &
+                getTemplates_dir().mkdirs() &
+                getBackup_dir().mkdirs() &
+                getPdf_root_dir().mkdirs() &
+                getPdf_bill_dir().mkdirs() &
+                getPdf_offer_dir().mkdirs() &
+                getPdf_mahnung_dir().mkdirs() &
+                getPdf_lieferschein_dir().mkdirs() &
+                getPlugin_dir().mkdirs() &
+                getCache_dir().mkdirs()) {
 
-                Log.Debug(Verzeichnisse.class,"Erfolgreich!", true);
-            }  else {
-                Log.Debug(Verzeichnisse.class,"Es ist ein Fehler aufgetreten,\nüberprüfen Sie Ihre Berechtigungen!", true);
-            }
+            Log.Debug(Verzeichnisse.class, "Erfolgreich!", true);
+        } else {
+            Log.Debug(Verzeichnisse.class, "Es ist ein Fehler aufgetreten,\nüberprüfen Sie Ihre Berechtigungen!", true);
+        }
 
     }
 
     public static void copyFiles() throws Exception {
 
-        Log.Debug(Verzeichnisse.class,"Kopiere von: " + getInstall_lib_dir(), true);
+        Log.Debug(Verzeichnisse.class, "Kopiere von: " + getInstall_lib_dir(), true);
         if (public_dir.exists() && getInstall_lib_dir().exists()) {
-           
 
-                    if (!Main.FORCE_NO_FILE_COPY) {
-                        Log.Debug(Verzeichnisse.class,"Libraries kopieren..", true);
-                        FileDirectoryHandler.copyDirectory(getInstall_lib_dir(), getLib_dir());
-                        Log.Debug(Verzeichnisse.class,"Plugins kopieren..", true);
-                        FileDirectoryHandler.copyDirectory(getInstall_plugin_dir(), getPlugin_dir());
-                        Log.Debug(Verzeichnisse.class,"MP Jar kopieren..", true);
-                        FileDirectoryHandler.copyDirectory(new File(workdir + File.separator + Constants.JAR_NAME), new File(getPublic_dir().getAbsolutePath() + File.separator + Constants.JAR_NAME));
-                    }
 
-                    Log.Debug(Verzeichnisse.class,"Templates kopieren..", true);
-                    FileDirectoryHandler.copyDirectory(getInstall_templates_dir(), getTemplates_dir());
-                    Log.Debug(Verzeichnisse.class,"Installation abgeschlossen.", true);
+            if (!Main.FORCE_NO_FILE_COPY) {
+                Log.Debug(Verzeichnisse.class, "Libraries kopieren..", true);
+                FileDirectoryHandler.copyDirectory(getInstall_lib_dir(), getLib_dir());
+                Log.Debug(Verzeichnisse.class, "Plugins kopieren..", true);
+                FileDirectoryHandler.copyDirectory(getInstall_plugin_dir(), getPlugin_dir());
+                Log.Debug(Verzeichnisse.class, "MP Jar kopieren..", true);
+                FileDirectoryHandler.copyDirectory(new File(workdir + File.separator + Constants.JAR_NAME), new File(getPublic_dir().getAbsolutePath() + File.separator + Constants.JAR_NAME));
+            }
 
-            
+            Log.Debug(Verzeichnisse.class, "Templates kopieren..", true);
+            FileDirectoryHandler.copyDirectory(getInstall_templates_dir(), getTemplates_dir());
+            Log.Debug(Verzeichnisse.class, "Installation abgeschlossen.", true);
+
+
         } else {
             throw new Exception("Installationsdateien nicht gefunden:\n" + getInstall_lib_dir());
         }
@@ -170,7 +184,7 @@ public class Verzeichnisse implements Constants, Strings {
     public static File getPdf_offer_dir() {
         return pdf_offer_dir;
     }
-    
+
     public static File getPdf_lieferschein_dir() {
         return pdf_lieferschein_dir;
     }
@@ -238,7 +252,7 @@ public class Verzeichnisse implements Constants, Strings {
     public static String getPathpdf_produkt_dir() {
         return pdf_produkt_dir.getPath();
     }
-    
+
     public static String getPathpdf_lieferschein_dir() {
         return pdf_lieferschein_dir.getPath();
     }
@@ -264,6 +278,6 @@ public class Verzeichnisse implements Constants, Strings {
     }
 
     public String getPathplugin_dir() {
-       return plugin_dir.getPath();
+        return plugin_dir.getPath();
     }
 }

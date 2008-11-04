@@ -67,9 +67,10 @@ public class PostenTableModel extends MPTableModel {
 
         try {
             try {
-                end = TextFormat.verifyTextMaxLength(product.getText(), 60);
+                end = TextFormat.verifyTextMaxLength(product.getText(), 50);
                 String str = "";
                 str = product.getName() + " ";
+                if(Programmdaten.instanceOf().getPRODUCTPICKER_NUMMER())str = str + product.getNummer() + " ";
                 if(Programmdaten.instanceOf().getPRODUCTPICKER_TEXT())str = str + product.getText().substring(0, end) + " ";
                 if(Programmdaten.instanceOf().getPRODUCTPICKER_EAN())str = str + product.getEan();
                 m.setValueAt(str, selectedRow, 2);
@@ -110,7 +111,7 @@ public class PostenTableModel extends MPTableModel {
                 String str = "";
                 if(Programmdaten.instanceOf().getPRODUCTPICKER_NAME())str = product.getName() + " ";
                 if(Programmdaten.instanceOf().getPRODUCTPICKER_TEXT())str = str + product.getBeschreibung().substring(0, end) + " ";
-                if(Programmdaten.instanceOf().getPRODUCTPICKER_EAN())str = str + product.getProduktNummer();
+                if(Programmdaten.instanceOf().getPRODUCTPICKER_NUMMER())str = str + product.getProduktNummer();
                 m.setValueAt(str, selectedRow, 2);
             } catch (Exception exception) {
                 Log.Debug(this,exception);

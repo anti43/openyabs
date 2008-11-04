@@ -45,6 +45,7 @@ import mp4.interfaces.DataPanel;
 import mp4.items.People;
 import mp4.frames.PdfVorschauWindow;
 import mp4.items.Dienstleistung;
+import mp4.items.visual.ServicePicker;
 import mp4.utils.combobox.CheckComboListener;
 import mp4.utils.combobox.CheckComboRenderer;
 import mp4.utils.datum.DateConverter;
@@ -124,8 +125,14 @@ public class billsView extends mp4.items.visual.CommonPanel implements DataPanel
 
     }
 
+    @Override
     public void setProduct(Product product) {
         ((PostenTableModel) jTable1.getModel()).addProduct(jTable1, product);
+    }
+
+    @Override
+    public void setProduct(Dienstleistung dienstleistung) {
+        ((PostenTableModel) jTable1.getModel()).addService(jTable1, dienstleistung);
     }
 
     public void addService(Dienstleistung product) {
@@ -277,7 +284,11 @@ public class billsView extends mp4.items.visual.CommonPanel implements DataPanel
         }
         setLockable(current);
 
-        this.changeTabText("Rechnung: " + current.getRechnungnummer());
+        if (current.getRechnungnummer() != null) {
+            this.changeTabText("Rechnung: " + current.getRechnungnummer());
+        } else {
+            this.changeTabText("Rechnung: (neu)");
+        }
         this.currentBill = current;
         if (current.getKundenId() != 0) {
             this.setContact(new Kunde(current.getKundenId()));
@@ -415,6 +426,7 @@ public class billsView extends mp4.items.visual.CommonPanel implements DataPanel
         jButton7 = new javax.swing.JButton();
         jSeparator3 = new javax.swing.JToolBar.Separator();
         jButton5 = new javax.swing.JButton();
+        jButton6 = new javax.swing.JButton();
         jPanel7 = new javax.swing.JPanel();
         jPanel9 = new javax.swing.JPanel();
         jTextField4 = new javax.swing.JTextField();
@@ -817,6 +829,22 @@ public class billsView extends mp4.items.visual.CommonPanel implements DataPanel
         });
         jToolBar2.add(jButton5);
 
+        jButton6.setText(bundle.getString("billsView.jButton6.text")); // NOI18N
+        jButton6.setFocusable(false);
+        jButton6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton6.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton6.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton6MouseClicked(evt);
+            }
+        });
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
+        jToolBar2.add(jButton6);
+
         jPanel9.setBackground(new java.awt.Color(227, 219, 202));
         jPanel9.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -1152,7 +1180,7 @@ public class billsView extends mp4.items.visual.CommonPanel implements DataPanel
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, 112, Short.MAX_VALUE)
                     .addComponent(jPanel11, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 112, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1594,16 +1622,16 @@ private void jButton12MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
     if (currentBill.hasId()) {
         Job job = new Job((Waitable) new PDFFile(new PDF_Rechnung(currentBill, false)), (Waiter) new DruckJob(), mainframe.getMainProgress());
         job.execute();
-        if(jCheckBox4.isSelected()){
+        if (jCheckBox4.isSelected()) {
             Job job2 = new Job((Waitable) new PDFFile(new PDF_Lieferschein(currentBill, false)), (Waiter) new DruckJob(), mainframe.getMainProgress());
             job2.execute();
         }
-        if(jCheckBox5.isSelected()){
+        if (jCheckBox5.isSelected()) {
             if (currentBill.getAngebot() != null) {
                 Job job3 = new Job((Waitable) new PDFFile(new PDF_Angebot(currentBill.getAngebot(), false)), (Waiter) new DruckJob(), mainframe.getMainProgress());
                 job3.execute();
             } else {
-                Popup.notice("Kein Angebot vorhanden.");       
+                Popup.notice("Kein Angebot vorhanden.");
             }
         }
     } else {
@@ -1631,22 +1659,31 @@ private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 }//GEN-LAST:event_jButton2ActionPerformed
 
 private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton20ActionPerformed
-if (Popup.Y_N_dialog("Diesen Datensatz wirklich stornieren?") && mainframe.getUser().doAction(User.EDITOR)) {
+    if (Popup.Y_N_dialog("Diesen Datensatz wirklich stornieren?") && mainframe.getUser().doAction(User.EDITOR)) {
         if (mainframe.getUser().doAction(User.ADMIN)) {
-           if (currentBill.hasId()) {
+            if (currentBill.hasId()) {
                 this.currentBill.setStorno(true);
                 currentBill.save();
                 new HistoryItem(Strings.BILL, "Rechnung Nummer " + currentBill.getRechnungnummer() + " storniert.");
 //                this.close();
-           } 
+            }
         }
-}  
+    }
 }//GEN-LAST:event_jButton20ActionPerformed
 
 private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
-setEdited(true);
+    setEdited(true);
 }//GEN-LAST:event_jTable1MouseClicked
 
+private void jButton6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton6MouseClicked
+
+    new ServicePicker(this);
+    setEdited(true);
+}//GEN-LAST:event_jButton6MouseClicked
+
+private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+// TODO add your handling code here:
+}//GEN-LAST:event_jButton6ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JLabel ampel_bezahlt;
     public javax.swing.JLabel ampel_offen;
@@ -1668,6 +1705,7 @@ setEdited(true);
     public javax.swing.JButton jButton3;
     public javax.swing.JButton jButton4;
     public javax.swing.JButton jButton5;
+    public javax.swing.JButton jButton6;
     public javax.swing.JButton jButton7;
     public javax.swing.JButton jButton8;
     public javax.swing.JButton jButton9;

@@ -1170,6 +1170,13 @@ setEdited(true);
        setTax(new Steuersatz(p.getSteuersatzId()));
        setEdited(true);
     }
+    
+        
+    
+    @Override
+    public void setProduct(Dienstleistung dienstleistung) {
+       
+    }
  
 
     @Override

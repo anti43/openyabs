@@ -13,7 +13,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import mp4.einstellungen.Programmdaten;
 import mp4.interfaces.DataPanel;
-import mp4.items.Product;
+import mp4.items.Dienstleistung;
 import mp4.utils.tabellen.SelectionCheck;
 import mp4.utils.tabellen.TableFormat;
 import mp4.utils.ui.Position;
@@ -23,38 +23,38 @@ import mp4.utils.ui.Position;
  *
  * @author  anti43
  */
-public class ProductPicker extends javax.swing.JFrame {
+public class ServicePicker extends javax.swing.JFrame {
 
     private static String[][] getListe() {
         return liste;
     }
 
     private static void setListe(String[][] list) {
-        ProductPicker.liste = list;
+        ServicePicker.liste = list;
     }
     private DataPanel frame;
-    private Product p;
+    private Dienstleistung p;
     private static String[][] liste;
     private String[][] list;
     private Position pos = new Position();
 
     public static void update() {
-        Product n = new Product(ConnectionHandler.instanceOf());
-        ProductPicker.setListe(n.select("id,produktnummer,name", "produktnummer", "", "produktnummer", true));
+        Dienstleistung n = new Dienstleistung();
+        ServicePicker.setListe(n.select("id,produktnummer,name", "produktnummer", "", "produktnummer", true));
     }
 
-    public ProductPicker(DataPanel panel) {
+    public ServicePicker(DataPanel panel) {
         initComponents();
         this.frame = panel;
-        p = new Product(ConnectionHandler.instanceOf());
+        p = new Dienstleistung();
 
 
-        if (ProductPicker.getListe() == null) {
+        if (ServicePicker.getListe() == null) {
             list = p.select("id,produktnummer,name", "produktnummer", "", "produktnummer", true);
-            ProductPicker.setListe(list);
+            ServicePicker.setListe(list);
         } else {
 
-            list = ProductPicker.getListe();
+            list = ServicePicker.getListe();
         }
 
         String k = "id, " + "Nummer,Name";
@@ -62,10 +62,9 @@ public class ProductPicker extends javax.swing.JFrame {
         this.jTable1.setModel(new DefaultTableModel(list, k.split(",")));
         TableFormat.stripFirst(jTable1);
 
-        jCheckBox1.setSelected(Programmdaten.instanceOf().getPRODUCTPICKER_EAN());
+        jCheckBox4.setSelected(Programmdaten.instanceOf().getPRODUCTPICKER_NUMMER());
         jCheckBox2.setSelected(Programmdaten.instanceOf().getPRODUCTPICKER_NAME());
         jCheckBox3.setSelected(Programmdaten.instanceOf().getPRODUCTPICKER_TEXT());
-        jCheckBox4.setSelected(Programmdaten.instanceOf().getPRODUCTPICKER_NUMMER());
 
         this.jTable1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
@@ -91,19 +90,18 @@ public class ProductPicker extends javax.swing.JFrame {
         jTextField2 = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
-        jCheckBox1 = new javax.swing.JCheckBox();
         jCheckBox2 = new javax.swing.JCheckBox();
         jCheckBox3 = new javax.swing.JCheckBox();
         jLabel3 = new javax.swing.JLabel();
         jCheckBox4 = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("MP Produkt Auswahl ");
+        setTitle("MP Dienstleistung Auswahl ");
         setAlwaysOnTop(true);
         setBackground(new java.awt.Color(255, 255, 255));
 
         jPanel1.setBackground(new java.awt.Color(227, 219, 202));
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Wählen Sie ein Produkt"));
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Wählen Sie eine Dienstleistung"));
 
         jLabel1.setText("Nummer");
 
@@ -156,20 +154,6 @@ public class ProductPicker extends javax.swing.JFrame {
             }
         });
 
-        jCheckBox1.setBackground(new java.awt.Color(227, 219, 202));
-        jCheckBox1.setSelected(true);
-        jCheckBox1.setText("EAN");
-        jCheckBox1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jCheckBox1MouseClicked(evt);
-            }
-        });
-        jCheckBox1.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                jCheckBox1ItemStateChanged(evt);
-            }
-        });
-
         jCheckBox2.setBackground(new java.awt.Color(227, 219, 202));
         jCheckBox2.setSelected(true);
         jCheckBox2.setText("Nummer");
@@ -210,25 +194,21 @@ public class ProductPicker extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(229, Short.MAX_VALUE)
+                .addContainerGap(258, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel3)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addComponent(jCheckBox4)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jCheckBox2)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jCheckBox3)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jButton2)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton1)
-                        .addGap(21, 21, 21))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jCheckBox4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jCheckBox2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jCheckBox3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jCheckBox1)))
-                        .addGap(5, 5, 5))))
+                        .addComponent(jButton1)))
+                .addGap(21, 21, 21))
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
                     .addContainerGap()
@@ -255,7 +235,6 @@ public class ProductPicker extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jCheckBox2)
                     .addComponent(jCheckBox3)
-                    .addComponent(jCheckBox1)
                     .addComponent(jCheckBox4))
                 .addGap(10, 10, 10)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE)
@@ -327,15 +306,12 @@ private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
     SelectionCheck selection = new SelectionCheck(jTable1);
     if (selection.checkID()) {
         try {    
-            frame.setProduct(new Product(selection.getId())); 
+            frame.setProduct(new Dienstleistung(selection.getId())); 
             this.dispose();
         } catch (Exception exception) {
        }
     }
 }//GEN-LAST:event_jTable1MouseClicked
-
-private void jCheckBox1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jCheckBox1MouseClicked
-}//GEN-LAST:event_jCheckBox1MouseClicked
 
 private void jCheckBox3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jCheckBox3MouseClicked
 }//GEN-LAST:event_jCheckBox3MouseClicked
@@ -348,10 +324,6 @@ private void jCheckBox3ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIR
     Programmdaten.instanceOf().setPRODUCTPICKER_TEXT(jCheckBox3.isSelected());
 }//GEN-LAST:event_jCheckBox3ItemStateChanged
 
-private void jCheckBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBox1ItemStateChanged
-    Programmdaten.instanceOf().setPRODUCTPICKER_EAN(jCheckBox1.isSelected());
-}//GEN-LAST:event_jCheckBox1ItemStateChanged
-
 private void jCheckBox4ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBox4ItemStateChanged
     Programmdaten.instanceOf().setPRODUCTPICKER_NAME(jCheckBox4.isSelected());
 }//GEN-LAST:event_jCheckBox4ItemStateChanged
@@ -359,7 +331,6 @@ private void jCheckBox4ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIR
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton jButton1;
     public javax.swing.JButton jButton2;
-    public javax.swing.JCheckBox jCheckBox1;
     public javax.swing.JCheckBox jCheckBox2;
     public javax.swing.JCheckBox jCheckBox3;
     public javax.swing.JCheckBox jCheckBox4;

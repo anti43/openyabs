@@ -8,6 +8,7 @@ package mp4.panels.produkte;
 import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import mp4.items.Dienstleistung;
 import mp4.items.visual.CommonPanel;
 import mp4.frames.PdfVorschauWindow;
 import mp4.panels.*;
@@ -60,6 +61,7 @@ import mp4.utils.tasks.Job;
 import mp4.utils.text.RandomText;
 import mp4.utils.zahlen.FormatNumber;
 import mp4.utils.zahlen.NumberCheck;
+
 
 /**
  *
@@ -246,6 +248,8 @@ public class productsView extends CommonPanel implements DataPanel, mp4.datenban
             jTextField11.setText("");
         }
     }
+    
+    
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -1788,8 +1792,12 @@ private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         this.taxID = sts.getId();
         jTextField16.setText(sts.getWert().toString());
     }
-}
 
+    @Override
+    public void setProduct(Dienstleistung dienstleistung) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+}
 class GetProductImage extends SwingWorker<Void, Void> {
 
     private productsView view;

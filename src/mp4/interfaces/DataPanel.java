@@ -17,6 +17,7 @@
 
 package mp4.interfaces;
 
+import mp4.items.Dienstleistung;
 import mp4.items.People;
 import mp4.items.Product;
 import mp4.items.Steuersatz;
@@ -27,6 +28,8 @@ import mp4.items.Steuersatz;
  * @author anti43
  */
 public interface DataPanel {
+
+    public void setProduct(Dienstleistung dienstleistung);
 
     public void setProduct(Product product);
     
