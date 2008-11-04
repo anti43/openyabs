@@ -30,7 +30,7 @@ public interface Constants {
      * Version info
      */
     public static String VERSION = "4.00";
-    public static String REVISION = "351";
+    public static String REVISION = "354";
     public static String RELEASE_VERSION = "4";
     public static String TITLE = "[Vienna]";
     public static String VERSION_URL = "Not Used";
