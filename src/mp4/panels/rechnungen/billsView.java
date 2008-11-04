@@ -1553,11 +1553,7 @@ public class billsView extends mp4.items.visual.CommonPanel implements DataPanel
     private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
         if (currentBill.hasId()) {
             new MahnungView(currentBill, Kunde, this);
-            try {
-                jTextField10.setText(String.valueOf(Integer.valueOf(jTextField10.getText()) + 1));
-            } catch (NumberFormatException numberFormatException) {
-                jTextField10.setText("0");
-            }
+            
         }
         setEdited(true);
     }//GEN-LAST:event_jButton15ActionPerformed
