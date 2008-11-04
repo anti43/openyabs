@@ -315,7 +315,7 @@ public class Setup extends javax.swing.JFrame implements Constants, Strings {
                             .add(jRadioButton2)
                             .add(jRadioButton1)))
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .add(jTextField1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE)
+                        .add(jTextField1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 369, Short.MAX_VALUE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jButton6)))
                 .addContainerGap())
@@ -402,8 +402,8 @@ public class Setup extends javax.swing.JFrame implements Constants, Strings {
                             .add(jLabel5))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(backuppathtf, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE)
-                            .add(pdfpathtf, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE))
+                            .add(backuppathtf, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 236, Short.MAX_VALUE)
+                            .add(pdfpathtf, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 236, Short.MAX_VALUE))
                         .add(6, 6, 6)
                         .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                             .add(jButton5)
@@ -429,10 +429,11 @@ public class Setup extends javax.swing.JFrame implements Constants, Strings {
                 .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jLabel6.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel6.setFont(new java.awt.Font("Tahoma", 1, 11));
         jLabel6.setText("Voreinstellungen:");
 
         jCheckBox4.setText("Existierende Daten verwenden");
+        jCheckBox4.setEnabled(false);
 
         jScrollPane2.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
 
@@ -468,7 +469,7 @@ public class Setup extends javax.swing.JFrame implements Constants, Strings {
                         .add(jButton3)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jCheckBox2)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 96, Short.MAX_VALUE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 102, Short.MAX_VALUE)
                         .add(jButton2)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                         .add(jButton1)))
@@ -592,7 +593,7 @@ public class Setup extends javax.swing.JFrame implements Constants, Strings {
         }
     }
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-//       Main.settings.destroy();
+       Main.settingsfile.destroy();
        System.exit(0);
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -642,6 +643,9 @@ private void jCheckBox3ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIR
     } else {
         PAnelUtils.disableSubComponents(jPanel3);
     }
+    
+    jCheckBox4.setEnabled(jCheckBox3.isSelected());
+    
 }//GEN-LAST:event_jCheckBox3ItemStateChanged
 
 private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed

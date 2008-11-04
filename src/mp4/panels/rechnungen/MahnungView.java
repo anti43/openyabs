@@ -250,35 +250,37 @@ public class MahnungView extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
-        if (FormatNumber.checkDezimal(jTextField2.getText())) {
-            if (mainframe.getUser().doAction(User.EDITOR)) {
-                if (!lone) {
-                    try {
-                        view.setProduct(new Product((bill.getMahnungen()+1) + ". Mahnung vom " + DateConverter.getTodayDefDate(),
+         if (mainframe.getUser().doAction(User.EDITOR)) {
+            if (FormatNumber.checkDezimal(jTextField2.getText())) {
+                if (mainframe.getUser().doAction(User.EDITOR)) {
+                    if (!lone) {
+                        try {
+                            view.setProduct(new Product((bill.getMahnungen() + 1) + ". Mahnung vom " + DateConverter.getTodayDefDate(),
+                                    FormatNumber.parseDezimal(jTextField2.getText()), Einstellungen.instanceOf().getHauptsteuersatz()));
+                            view.addMahnung();
+                            this.dispose();
+                        } catch (NumberFormatException numberFormatException) {
+                            Log.Debug(this, numberFormatException);
+                        }
+                    } else {
+                        view = new billsView(mainframe.identifier);
+                        mainframe.identifier.mainTabPane.add("Rechnung", view);
+                        mainframe.identifier.mainTabPane.setSelectedComponent(view);
+                        mainframe.identifier.mainTabPane.setIconAt(mainframe.identifier.mainTabPane.getSelectedIndex(), new TabCloseIcon());
+                        view.setBill(bill);
+                        view.setProduct(new Product((bill.getMahnungen() + 1) + ". Mahnung vom " + DateConverter.getTodayDefDate(),
                                 FormatNumber.parseDezimal(jTextField2.getText()), Einstellungen.instanceOf().getHauptsteuersatz()));
                         view.addMahnung();
                         this.dispose();
-                    } catch (NumberFormatException numberFormatException) {
-                        Log.Debug(this, numberFormatException);
                     }
-                } else {
-                    view = new billsView(mainframe.identifier);
-                    mainframe.identifier.mainTabPane.add("Rechnung", view);
-                    mainframe.identifier.mainTabPane.setSelectedComponent(view);
-                    mainframe.identifier.mainTabPane.setIconAt(mainframe.identifier.mainTabPane.getSelectedIndex(), new TabCloseIcon());
-                    view.setBill(bill);
-                    view.setProduct(new Product((bill.getMahnungen()+1) + ". Mahnung vom " + DateConverter.getTodayDefDate(),
-                            FormatNumber.parseDezimal(jTextField2.getText()), Einstellungen.instanceOf().getHauptsteuersatz()));
-                    view.addMahnung();
-                    this.dispose();
                 }
-            }
 
-            Programmdaten.instanceOf().setMAHNUNG_TEXT_DEFAULT(jTextArea1.getText());
-            Programmdaten.instanceOf().setMAHNUNG_VALUE_DEFAULT(FormatNumber.parseDezimal(jTextField2.getText()));
-        } else {
-            jTextField2.setText("0,00");
-            jTextField2.setBackground(Color.red);
+                Programmdaten.instanceOf().setMAHNUNG_TEXT_DEFAULT(jTextArea1.getText());
+                Programmdaten.instanceOf().setMAHNUNG_VALUE_DEFAULT(FormatNumber.parseDezimal(jTextField2.getText()));
+            } else {
+                jTextField2.setText("0,00");
+                jTextField2.setBackground(Color.red);
+            }
         }
 
     }//GEN-LAST:event_jButton1ActionPerformed

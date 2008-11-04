@@ -18,8 +18,6 @@ package mp4.benutzerverwaltung;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mp4.items.visual.Popup;
 import mp4.items.Things;
 import mp4.logs.*;
@@ -49,7 +47,7 @@ public class User extends Things {
         try {
             md = md5hash.getInstance();
         } catch (NoSuchAlgorithmException ex) {
-            Log.Debug(this,ex);
+            Log.Debug(this, ex);
         }
 
     }
@@ -60,7 +58,7 @@ public class User extends Things {
         try {
             t = this.selectLast("*", "id", id.toString(), true);
         } catch (Exception ex) {
-            Log.Debug(this,ex);
+            Log.Debug(this, ex);
         }
 
         if (t != null && t.length > 0) {
@@ -78,14 +76,13 @@ public class User extends Things {
 
     }
 
-
     public User(String username, String password, boolean isEditor, boolean isAdmin, User user) {
         super(ConnectionHandler.instanceOf().clone(TABLE_USER));
 
         try {
             md = md5hash.getInstance();
         } catch (NoSuchAlgorithmException ex) {
-            Log.Debug(this,ex);
+            Log.Debug(this, ex);
         }
 
         this.name = username;
@@ -133,6 +130,16 @@ public class User extends Things {
 
     }
 
+    public void setPassword(String pw) {
+        try {
+            md = md5hash.getInstance();
+            passwordHash = md.hashData(pw.getBytes());
+        } catch (NoSuchAlgorithmException ex) {
+            Log.Debug(this, ex);
+        }
+
+    }
+
     private String collect() {
         String str = PrepareData.prepareString(this.getName());
         str = str + PrepareData.prepareString(this.getPasswordHash());
@@ -144,11 +151,19 @@ public class User extends Things {
     }
 
     public boolean save() {
-        id = this.insert(TABLE_USER_FIELDS, this.collect(),new int[]{0});
-        if (id > 0) {
-            return true;
+        if (id == 0) {
+            id = this.insert(TABLE_USER_FIELDS, this.collect(), new int[]{0});
+            if (id > 0) {
+                return true;
+            } else {
+                return false;
+            }
         } else {
-            return false;
+            if (this.update(TABLE_USER_FIELDS, this.collect(), id) == 1) {
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 
@@ -228,7 +243,7 @@ public class User extends Things {
                     return true;
                 }
             default:
-                Popup.notice("Sie haben keine Berechtigung,\ndiese Aktion auszufuehren.");
+                Popup.notice("Sie haben keine Berechtigung,\ndiese Aktion auszuführen.");
                 return false;
         }
     }

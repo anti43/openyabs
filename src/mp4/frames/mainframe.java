@@ -355,6 +355,8 @@ public class mainframe extends javax.swing.JFrame {
             usern.setUseAuth(true);
             this.setUser(usern);
             Einstellungen.instanceOf().setUser(usern);
+            new HistoryItem("Benutzerverwaltung", 
+                    user + " hat sich angemeldet (" + DateConverter.getFullDefDateString(new Date()) + ")");
             return true;
         } else {
             setEnabled(false);
@@ -1217,6 +1219,7 @@ public class mainframe extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+      if (mainframe.getUser().doAction(User.ADMIN)) 
         csvProductImporter.instanceOf();
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
@@ -1224,6 +1227,7 @@ public class mainframe extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem3MouseClicked
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+       if (mainframe.getUser().doAction(User.ADMIN)) 
         new ImportDaten();
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
@@ -1245,7 +1249,7 @@ public class mainframe extends javax.swing.JFrame {
         
         try {
         saveSession();
-        
+                
         if(Programmdaten.instanceOf().getSAVE_DB_ON_EXIT())new backupView(this).saving();
             DataLock.lateRelease();
             closeTabs();        
@@ -1360,11 +1364,11 @@ private void jMenuItem1ActionPerformed1(java.awt.event.ActionEvent evt) {//GEN-F
 
     if (!useauth || getUser().isIsAdmin()) {
         if (!useauth) {
-            if (Popup.Y_N_dialog("Wenn Sie die Benutzerauthentifizierung einschalten,\nmuessen Sie sich sofort anmelden.\nWollen Sie dies wirklich,\nbzw. kennen Sie das default Passwort (im Handbuch)?")) {
+            if (Popup.Y_N_dialog("Wenn Sie die Benutzerauthentifizierung einschalten,\nmüssen Sie sich sofort anmelden.\nWollen Sie dies wirklich?")) {
                 Programmdaten.instanceOf().setUSE_AUTHENTIFICATION(!useauth);
                 this.setMessage("Benutzerauthentifizierung eingeschaltet");
                 new HistoryItem("Benutzerauthentifizierung", "Eingeschaltet", mainframe.getUser());
-                Programmdaten.instanceOf().setBILLPANEL_MASK("MEDICAL");
+    
                 jMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/small/ok.png")));
                 this.setEnabled(false);
                 new login(this);
@@ -1385,13 +1389,12 @@ private void jMenuItem1ActionPerformed1(java.awt.event.ActionEvent evt) {//GEN-F
 
 private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
 
-    boolean useauth = Programmdaten.instanceOf().getUSE_AUTHENTIFICATION();
-    if (!useauth || getUser().isIsAdmin()) {
-
+    if (getUser().isIsAdmin()) {
         new Verwaltung(this);
     } else {
-        Popup.notice("Die Benutzerverwaltung kann nur von einem Administrator geöffnet werden!");
+       Popup.notice("Die Benutzerverwaltung kann nur von einem Administrator geöffnet werden!");
     }
+
 }//GEN-LAST:event_jMenuItem5ActionPerformed
 
 private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
@@ -1559,7 +1562,7 @@ private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 }//GEN-LAST:event_jMenuItem4ActionPerformed
 
 private void jMenuItem17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem17ActionPerformed
-
+if (mainframe.getUser().doAction(User.ADMIN)) 
     csvKontaktImporter.instanceOf();
 }//GEN-LAST:event_jMenuItem17ActionPerformed
 
@@ -1573,7 +1576,7 @@ private void jMenuItem25ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     if (getUser().isIsAdmin()) {
         new DatabaseToolWindow();
     } else {
-        Popup.notice("Das Datenbankwerkzeug kann nur von einem Administrator gestarted werden!");
+        Popup.notice("Das Datenbankwerkzeug kann nur von einem Administrator gestartet werden!");
     }
 }//GEN-LAST:event_jMenuItem25ActionPerformed
 

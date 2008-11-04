@@ -6,6 +6,7 @@
 package mp4.benutzerverwaltung.visual;
 
 import mp4.frames.*;
+import mp4.items.HistoryItem;
 import mp4.utils.ui.Position;
 
 /**
@@ -124,6 +125,7 @@ public class login extends javax.swing.JFrame {
 private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
     if (frame.checkAuth(jTextField1.getText(), new String(jPasswordField1.getPassword()))) {
+       
         this.dispose();
     }
 }//GEN-LAST:event_jButton1ActionPerformed

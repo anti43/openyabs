@@ -7,6 +7,7 @@ package mp4.panels.eur;
 
 import java.awt.Font;
 import javax.swing.JTabbedPane;
+import mp4.benutzerverwaltung.User;
 import mp4.items.People;
 import mp4.items.HistoryItem;
 import mp4.items.Rechnung;
@@ -27,6 +28,7 @@ import mp4.logs.*;
 import mp4.cache.ObjectCopy;
 import mp4.cache.undoCache;
 import mp4.einstellungen.Programmdaten;
+import mp4.frames.mainframe;
 import mp4.items.Product;
 import mp4.items.visual.konten;
 import mp4.utils.datum.DateConverter;
@@ -348,54 +350,56 @@ public class eurEPanel extends mp4.items.visual.CommonPanel {
 
     private void jButton3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
 
-        if (jButton3.isEnabled() && !curEinnahme.readonly) {
+        if (mainframe.getUser().doAction(User.EDITOR)) {
+            if (jButton3.isEnabled() && !curEinnahme.readonly) {
 
-            vDouble betrag = new vDouble(FormatNumber.parseDezimal(jTextField4.getText()));
-            vDouble steuer = new vDouble(FormatNumber.parseDezimal(jTextField3.getText()));
-            vDate datum = new vDate(jTextField6.getText());
+                vDouble betrag = new vDouble(FormatNumber.parseDezimal(jTextField4.getText()));
+                vDouble steuer = new vDouble(FormatNumber.parseDezimal(jTextField3.getText()));
+                vDate datum = new vDate(jTextField6.getText());
 
-            if (betrag.isVerified && betrag.isPositive && steuer.isVerified && steuer.isPositive && datum.isVerified) {
-                if (this.curEinnahme != null && curEinnahme.id > 0) {
+                if (betrag.isVerified && betrag.isPositive && steuer.isVerified && steuer.isPositive && datum.isVerified) {
+                    if (this.curEinnahme != null && curEinnahme.id > 0) {
 
 //                    undoCache.instanceOf().addItem(ObjectCopy.copy(this.curEinnahme), undoCache.EDIT);
-                    curEinnahme.setKontenid(curKonto.getId());
-                    curEinnahme.setDatum(datum.date);
-                    curEinnahme.setBeschreibung(jEditorPane1.getText());
-                    curEinnahme.setPreis(betrag.value);
-                    curEinnahme.setTax(steuer.value);
-                    if(curEinnahme.save()){
-                    updateTableData();
+                        curEinnahme.setKontenid(curKonto.getId());
+                        curEinnahme.setDatum(datum.date);
+                        curEinnahme.setBeschreibung(jEditorPane1.getText());
+                        curEinnahme.setPreis(betrag.value);
+                        curEinnahme.setTax(steuer.value);
+                        if (curEinnahme.save()) {
+                            updateTableData();
 
-                    new HistoryItem(Strings.EINNAHME, "Einnahme Nummer: " + curEinnahme.getId() + " editiert.");
-                }}
-            } else {
-               
-                String text = "";
-            if (!betrag.isVerified) {
-                text += "Betrag: " + betrag.ovalue + "\n";
-            }
-            if (!steuer.isVerified || !steuer.isPositive) {
-                text += "Steuer: " + steuer.ovalue + "\n";
-            }
-            if (!datum.isVerified) {
-                text += "Datum: " + datum.ovalue;
-            }
-            Popup.error(text, "Überprüfen Sie Ihre Angaben.");
+                            new HistoryItem(Strings.EINNAHME, "Einnahme Nummer: " + curEinnahme.getId() + " editiert.");
+                        }
+                    }
+                } else {
+                    
+                    String text = "";
+                    if (!betrag.isVerified) {
+                        text += "Betrag: " + betrag.ovalue + "\n";
+                    }
+                    if (!steuer.isVerified || !steuer.isPositive) {
+                        text += "Steuer: " + steuer.ovalue + "\n";
+                    }
+                    if (!datum.isVerified) {
+                        text += "Datum: " + datum.ovalue;
+                    }
+                    Popup.error(text, "Überprüfen Sie Ihre Angaben.");
+                }
             }
         }
     }//GEN-LAST:event_jButton3MouseClicked
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
 
-  
-            
+         if (mainframe.getUser().doAction(User.EDITOR)) {
             vDouble betrag = new vDouble(FormatNumber.parseDezimal(jTextField4.getText()));
             vDouble steuer = new vDouble(FormatNumber.parseDezimal(jTextField3.getText()));
             vDate datum = new vDate(jTextField6.getText());
 
-             if (!steuer.isVerified || !steuer.isPositive) {
-                    steuer = new vDouble(Einstellungen.instanceOf().getHauptsteuersatz());
-                }
+            if (!steuer.isVerified || !steuer.isPositive) {
+                steuer = new vDouble(Einstellungen.instanceOf().getHauptsteuersatz());
+            }
 
             if (betrag.isVerified && steuer.isVerified && steuer.isPositive && datum.isVerified) {
                 this.setEinnahme(new Einnahme(curKonto.getId(), jEditorPane1.getText(), betrag.value, steuer.value, datum.date));
@@ -417,17 +421,19 @@ public class eurEPanel extends mp4.items.visual.CommonPanel {
                 }
                 Popup.error(text, "Überprüfen Sie Ihre Angaben.");
             }
-        
+        }
 
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        SelectionCheck sel  =new SelectionCheck(jTable1);
+         if (mainframe.getUser().doAction(User.EDITOR)) {
+            SelectionCheck sel = new SelectionCheck(jTable1);
 
-        if(sel.checkID()){
-            new Einnahme(sel.getId()).disable();
-            new HistoryItem(Strings.EINNAHME, "Einnahme Nummer: " + sel.getId() + " gelöscht.");   
-            updateTableData();
+            if (sel.checkID()) {
+                new Einnahme(sel.getId()).disable();
+                new HistoryItem(Strings.EINNAHME, "Einnahme Nummer: " + sel.getId() + " gelöscht.");                
+                updateTableData();
+            }
         }
     }//GEN-LAST:event_jButton5ActionPerformed
 

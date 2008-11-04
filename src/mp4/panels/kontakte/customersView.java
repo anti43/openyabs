@@ -1320,9 +1320,11 @@ private void jButton18MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
     }
 
 private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton20ActionPerformed
-    if (Popup.Y_N_dialog("Diesen Kontakt wirklich deaktivieren?") && mainframe.getUser().doAction(User.EDITOR)) {
-        deactivate();
+     if (mainframe.getUser().doAction(User.EDITOR)) {
+        if (Popup.Y_N_dialog("Diesen Kontakt wirklich deaktivieren?") && mainframe.getUser().doAction(User.EDITOR)) {
+            deactivate();
 //        this.close();
+        }
     }
 }//GEN-LAST:event_jButton20ActionPerformed
 

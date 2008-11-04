@@ -1358,10 +1358,12 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 }//GEN-LAST:event_jButton3ActionPerformed
 
 private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton20ActionPerformed
-    if (Popup.Y_N_dialog("Diesen Datensatz wirklich deaktivieren?") && mainframe.getUser().doAction(User.EDITOR)) {
-        deactivate();
-        new HistoryItem(Strings.PRODUCT, "Produkt Nummer " + current.getProduktNummer() + "  gelöscht.");
+     if (mainframe.getUser().doAction(User.EDITOR)) {
+        if (Popup.Y_N_dialog("Diesen Datensatz wirklich deaktivieren?") && mainframe.getUser().doAction(User.EDITOR)) {
+            deactivate();
+            new HistoryItem(Strings.PRODUCT, "Produkt Nummer " + current.getProduktNummer() + "  gelöscht.");
 //        this.close();
+        }
     }
 }//GEN-LAST:event_jButton20ActionPerformed
 

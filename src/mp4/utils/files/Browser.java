@@ -35,8 +35,8 @@ public class Browser {
     public Browser(File file) {
         try {
             try {
-                Log.Debug(this,Einstellungen.instanceOf().getBrowser_Programm() + " " + file.getAbsolutePath());
-                Process proc = Runtime.getRuntime().exec(Einstellungen.instanceOf().getBrowser_Programm() + " " + file.getAbsolutePath());
+                Log.Debug(this,Einstellungen.instanceOf().getBrowser_Programm() + " " + file.getPath());
+                Process proc = Runtime.getRuntime().exec(Einstellungen.instanceOf().getBrowser_Programm() + " " + file.getPath());
             } catch (IOException ex) {
                 new Popup(Strings.NO_BROWSER);
                 Log.Debug(ex);

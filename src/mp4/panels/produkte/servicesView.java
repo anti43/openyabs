@@ -933,10 +933,11 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 }//GEN-LAST:event_jButton3ActionPerformed
 
 private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton20ActionPerformed
+  if (mainframe.getUser().doAction(User.EDITOR)) {
     if (Popup.Y_N_dialog("Diesen Datensatz wirklich deaktivieren?") && mainframe.getUser().doAction(User.EDITOR)) {
         deactivate();
 //        this.close();
-    }
+    }}
 }//GEN-LAST:event_jButton20ActionPerformed
 
 private void jButton18MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton18MouseClicked

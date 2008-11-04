@@ -1595,8 +1595,10 @@ private void jButton19KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
 }//GEN-LAST:event_jButton19KeyPressed
 
 private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
-    new billsNotesEditor(currentBill, this);
-    setEdited(true);
+     if (mainframe.getUser().doAction(User.EDITOR)) {
+        new billsNotesEditor(currentBill, this);
+        setEdited(true);
+    }
 }//GEN-LAST:event_jButton18ActionPerformed
 
 private void jCheckBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox2ActionPerformed

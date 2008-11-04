@@ -6,7 +6,9 @@
 package mp4.panels.eur;
 
 import java.awt.Font;
+import mp4.benutzerverwaltung.User;
 import mp4.datenbank.verbindung.ConnectionHandler;
+import mp4.frames.mainframe;
 import mp4.items.Rechnung;
 import mp4.items.Kunde;
 
@@ -213,22 +215,26 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 }// </editor-fold>//GEN-END:initComponents
     private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
   
-        if (current != null) {
-            current.setStorno(true);
-            current.save();  
+        if (mainframe.getUser().doAction(User.EDITOR)) {
+            if (current != null) {
+                current.setStorno(true);
+                current.save();                
+            }
+            updateTable();
+            clear();
         }
-        updateTable();
-        clear();
     }//GEN-LAST:event_jButton12ActionPerformed
 
     private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
 
-        if (current != null) {
-            current.setBezahlt(true);
-            current.save();
+         if (mainframe.getUser().doAction(User.EDITOR)) {
+            if (current != null) {
+                current.setBezahlt(true);
+                current.save();
+            }
+            updateTable();
+            clear();
         }
-        updateTable();
-        clear();
     }//GEN-LAST:event_jButton14ActionPerformed
 
     private void jTable3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable3MouseClicked
@@ -243,9 +249,11 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 
 private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
 
-       if (current != null) {
-           new MahnungView(current);
+     if (mainframe.getUser().doAction(User.EDITOR)) {
+        if (current != null) {
+            new MahnungView(current);
         }
+    }
 }//GEN-LAST:event_jButton15ActionPerformed
 
 // Variables declaration - do not modify//GEN-BEGIN:variables

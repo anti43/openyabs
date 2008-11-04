@@ -7,6 +7,7 @@ package mp4.panels.eur;
 
 import java.awt.Font;
 import javax.swing.JTabbedPane;
+import mp4.benutzerverwaltung.User;
 import mp4.globals.Strings;
 import mp4.interfaces.DataPanel;
 import mp4.items.People;
@@ -27,6 +28,7 @@ import mp4.cache.undoCache;
 import mp4.items.Ausgabe;
 import mp4.items.HistoryItem;
 import mp4.einstellungen.Einstellungen;
+import mp4.frames.mainframe;
 import mp4.items.Product;
 import mp4.items.SKRKonto;
 import mp4.items.visual.konten;
@@ -332,26 +334,60 @@ public class eurAPanel extends mp4.items.visual.CommonPanel{
 
     private void jButton3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
 
+        if (mainframe.getUser().doAction(User.EDITOR)) {
+            if (jButton3.isEnabled() && !curAusgabe.readonly) {
 
-        if (jButton3.isEnabled() && !curAusgabe.readonly) {
+                vDouble betrag = new vDouble(FormatNumber.parseDezimal(jTextField4.getText()));
+                vDouble steuer = new vDouble(FormatNumber.parseDezimal(jTextField3.getText()));
+                vDate datum = new vDate(jTextField6.getText());
 
+                if (betrag.isVerified && betrag.isPositive && steuer.isVerified && steuer.isPositive && datum.isVerified) {
+
+                    if (this.curAusgabe != null && curAusgabe.id > 0) {
+                        curAusgabe.setKontenid(curKonto.getId());
+                        curAusgabe.setDatum(datum.date);
+                        curAusgabe.setBeschreibung(jEditorPane1.getText());
+                        curAusgabe.setPreis(betrag.value);
+                        curAusgabe.setTax(steuer.value);
+                        if (curAusgabe.save()) {
+                            updateTableData();                            
+                            new HistoryItem(Strings.EINNAHME, "Einnahme Nummer: " + curAusgabe.getId() + " editiert.");
+                        }
+                    }
+
+
+                } else {
+                    String text = "";
+                    if (!betrag.isVerified) {
+                        text += "Betrag: " + betrag.ovalue + "\n";
+                    }
+                    if (!steuer.isVerified || !steuer.isPositive) {
+                        text += "Steuer: " + steuer.ovalue + "\n";
+                    }
+                    if (!datum.isVerified) {
+                        text += "Datum: " + datum.ovalue;
+                    }
+                    Popup.error(text, "Überprüfen Sie Ihre Angaben.");
+                }
+            }
+        }
+    }//GEN-LAST:event_jButton3MouseClicked
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+         if (mainframe.getUser().doAction(User.EDITOR)) {
             vDouble betrag = new vDouble(FormatNumber.parseDezimal(jTextField4.getText()));
             vDouble steuer = new vDouble(FormatNumber.parseDezimal(jTextField3.getText()));
             vDate datum = new vDate(jTextField6.getText());
 
+            if (!steuer.isVerified || !steuer.isPositive) {
+                steuer = new vDouble(Einstellungen.instanceOf().getHauptsteuersatz());
+            }
+
             if (betrag.isVerified && betrag.isPositive && steuer.isVerified && steuer.isPositive && datum.isVerified) {
 
-                if (this.curAusgabe != null && curAusgabe.id > 0) {
-                    curAusgabe.setKontenid(curKonto.getId());
-                    curAusgabe.setDatum(datum.date);
-                    curAusgabe.setBeschreibung(jEditorPane1.getText());
-                    curAusgabe.setPreis(betrag.value);
-                    curAusgabe.setTax(steuer.value);
-                    if(curAusgabe.save()){
-                    updateTableData();  
-                    new HistoryItem(Strings.EINNAHME, "Einnahme Nummer: " + curAusgabe.getId() + " editiert.");
-                }}
-
+                this.setAusgabe(new Ausgabe(curKonto.getId(), jEditorPane1.getText(), betrag.value, steuer.value, datum.date));
+                updateTableData();
+                new HistoryItem(Strings.EINNAHME, "Einnahme Nummer: " + curAusgabe.getId() + " angelegt.");
 
             } else {
                 String text = "";
@@ -367,48 +403,17 @@ public class eurAPanel extends mp4.items.visual.CommonPanel{
                 Popup.error(text, "Überprüfen Sie Ihre Angaben.");
             }
         }
-
-    }//GEN-LAST:event_jButton3MouseClicked
-
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-
-        vDouble betrag = new vDouble(FormatNumber.parseDezimal(jTextField4.getText()));
-        vDouble steuer = new vDouble(FormatNumber.parseDezimal(jTextField3.getText()));
-        vDate datum = new vDate(jTextField6.getText());
-
-        if (!steuer.isVerified || !steuer.isPositive) {
-            steuer = new vDouble(Einstellungen.instanceOf().getHauptsteuersatz());
-        }
-
-        if (betrag.isVerified && betrag.isPositive && steuer.isVerified && steuer.isPositive && datum.isVerified) {
-
-            this.setAusgabe(new Ausgabe(curKonto.getId(), jEditorPane1.getText(), betrag.value, steuer.value, datum.date));
-            updateTableData();
-            new HistoryItem(Strings.EINNAHME, "Einnahme Nummer: " + curAusgabe.getId() + " angelegt.");
-
-        } else {
-            String text = "";
-            if (!betrag.isVerified) {
-                text += "Betrag: " + betrag.ovalue + "\n";
-            }
-            if (!steuer.isVerified || !steuer.isPositive) {
-                text += "Steuer: " + steuer.ovalue + "\n";
-            }
-            if (!datum.isVerified) {
-                text += "Datum: " + datum.ovalue;
-            }
-            Popup.error(text, "Überprüfen Sie Ihre Angaben.");
-        }
-
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        SelectionCheck sel  =new SelectionCheck(jTable1);
+        if (mainframe.getUser().doAction(User.EDITOR)) {
+            SelectionCheck sel = new SelectionCheck(jTable1);
 
-        if(sel.checkID()){
-            new HistoryItem(Strings.EINNAHME, "Einnahme Nummer: " + sel.getId() + " gelöscht.");
-            new Ausgabe(sel.getId()).disable();
-            updateTableData();
+            if (sel.checkID()) {
+                new HistoryItem(Strings.EINNAHME, "Einnahme Nummer: " + sel.getId() + " gelöscht.");
+                new Ausgabe(sel.getId()).disable();
+                updateTableData();
+            }
         }
     }//GEN-LAST:event_jButton5ActionPerformed
 
