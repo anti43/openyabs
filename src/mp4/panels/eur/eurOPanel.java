@@ -6,19 +6,15 @@
 package mp4.panels.eur;
 
 import java.awt.Font;
-import javax.swing.JTabbedPane;
-import mp4.interfaces.DataPanel;
-import mp4.items.People;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.items.Rechnung;
 import mp4.items.Kunde;
 
-import mp4.items.Product;
-import mp4.items.Steuersatz;
 import mp4.panels.rechnungen.MahnungView;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.tabellen.SelectionCheck;
 import mp4.utils.tabellen.TableFormat;
+import mp4.utils.zahlen.FormatNumber;
 
 /**
  *
@@ -280,7 +276,7 @@ private javax.swing.JToolBar jToolBar4;
                 c.getMail() + "\n Telefonnummer: " + c.getTel() + "\n\n" +
                 " Datum: " + DateConverter.getDefDateString(current.getDatum()) + "\n Rechnungnummer: " + current.getRechnungnummer());
 
-        jTextField14.setText(current.getGesamtpreis().toString());
+        jTextField14.setText(FormatNumber.formatDezimal(current.getGesamtpreis()));
 
     }
    

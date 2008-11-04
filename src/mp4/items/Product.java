@@ -59,6 +59,7 @@ public class Product extends mp4.items.Things implements mp4.datenbank.installat
     private ProductImage image = new ProductImage();
     private URL ProductImageURL = null;
 
+ 
 
     public void destroy() {
         if (!readonly) {
@@ -72,6 +73,14 @@ public class Product extends mp4.items.Things implements mp4.datenbank.installat
         this.query = ConnectionHandler.instanceOf();
         nfh = new NumberFormatHandler(this, new Date());
 
+    }
+    
+    public Product(String text, Double parseDezimal, Double steuersatz) {
+        super(ConnectionHandler.instanceOf().clone(TABLE_PRODUCTS));
+        this.setName(text);
+        this.setVK(parseDezimal);
+        this.setTaxID(new Steuersatz().findIDWithOrCreate(steuersatz).getId());
+        nfh = new NumberFormatHandler(this, new Date());
     }
 
     public Product(String text, Double parseDezimal) {
