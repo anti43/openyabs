@@ -28,7 +28,6 @@ import java.awt.Cursor;
 import java.io.File;
 import javax.swing.JFileChooser;
 import mp4.datenbank.verbindung.ConnectionTypeHandler;
-import mp4.einstellungen.Einstellungen;
 import mp4.einstellungen.Programmdaten;
 import mp4.globals.Constants;
 import mp4.globals.Strings;
@@ -79,6 +78,7 @@ public class Setup extends javax.swing.JFrame implements Constants, Strings {
         fc = new JFileChooser();
         fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         fc.setSelectedFile(new File(Main.APP_DIR));
+        fc.setFileHidingEnabled(false);
 
         File public_dir;
 
