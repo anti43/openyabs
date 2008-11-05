@@ -121,34 +121,6 @@ public class servicesView extends mp4.items.visual.CommonPanel implements mp4.da
     }
 
 
-    private void setDienstleistung(Dienstleistung product) {
-  
-        if (getLockable() != null) {
-            getLockable().unlock();
-        }
-        setLockable(product);
-        this.current = product;
-        this.jTextField4.setText(current.getProduktNummer());
-        this.jTextField5.setText(current.getName());
-
-        this.jTextField8.setText(current.getPreis().toString());
-
-        this.jTextField16.setText(current.getTaxValue().toString());
-        this.jTextField9.setText(DateConverter.getDefDateString(current.getDatum()));
-        this.jTextField10.setText(current.getEinheit());
-
-        if (!current.getWarengruppenId().equals("0")) {
-            this.getJTextField12().setText(current.getProductgroupPath());
-        } else {
-            this.getJTextField12().setText("Keine Warengruppe");
-        }
-
-        this.jEditorPane1.setText(current.getBeschreibung());
-
-
-        jTextField4.setEditable(false);
-
-    }
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -877,7 +849,7 @@ public class servicesView extends mp4.items.visual.CommonPanel implements mp4.da
         SelectionCheck selection = new SelectionCheck(jTable2);
 
         if (evt.getClickCount() >= 2 && selection.checkID()) {
-            this.setDienstleistung(new Dienstleistung(selection.getId()));
+            this.setProduct(new Dienstleistung(selection.getId()));
             jTabbedPane1.setSelectedIndex(0);
         }
     }//GEN-LAST:event_jTable2MouseClicked
@@ -887,7 +859,7 @@ public class servicesView extends mp4.items.visual.CommonPanel implements mp4.da
         SelectionCheck selection = new SelectionCheck(jTable3);
 
         if (evt.getClickCount() >= 2 && selection.checkID()) {
-            this.setDienstleistung(new Dienstleistung(selection.getId()));
+            this.setProduct(new Dienstleistung(selection.getId()));
         }
     }//GEN-LAST:event_jTable3MouseClicked
 
@@ -1104,7 +1076,7 @@ setEdited(true);
 
         new HistoryItem(Strings.SERVICE, "Dienstleistung Nummer: " + service.getProduktNummer() + " angelegt.");
 
-        setDienstleistung(new Dienstleistung(service.getId()));
+        setProduct(new Dienstleistung(service.getId()));
         
         return true;
     }
@@ -1136,7 +1108,7 @@ setEdited(true);
             getMainframe().setMessage("Dienstleistung Nummer " + current.getProduktNummer() + " editiert.");
             new HistoryItem(Strings.SERVICE, "Dienstleistung Nummer: " + current.getProduktNummer() + " editiert.");
 
-            setDienstleistung(new Dienstleistung(current.getId()));
+            setProduct(new Dienstleistung(current.getId()));
         } else createNew();
     }
 
@@ -1163,6 +1135,8 @@ setEdited(true);
 
     @Override
    public void setProduct(Product p) {
+
+        
        jTextField8.setText(FormatNumber.formatDezimal(p.getVK()));
        jTextField10.setText("St.");
        jTextField5.setText(p.getName());
@@ -1176,8 +1150,39 @@ setEdited(true);
         
     
     @Override
-    public void setProduct(Dienstleistung dienstleistung) {
-       
+    public void setProduct(Dienstleistung product) {
+        if (getLockable() != null) {
+            getLockable().unlock();
+        }
+        setLockable(product);
+        this.current = product;
+        
+                
+        if (current.getNummer() != null) {
+            this.changeTabText("Dienstleistung: " + current.getNummer());
+        } else {
+            this.changeTabText("Dienstleistung: (neu)");
+        }
+        
+        this.jTextField4.setText(current.getProduktNummer());
+        this.jTextField5.setText(current.getName());
+
+        this.jTextField8.setText(current.getPreis().toString());
+
+        this.jTextField16.setText(current.getTaxValue().toString());
+        this.jTextField9.setText(DateConverter.getDefDateString(current.getDatum()));
+        this.jTextField10.setText(current.getEinheit());
+
+        if (!current.getWarengruppenId().equals("0")) {
+            this.getJTextField12().setText(current.getProductgroupPath());
+        } else {
+            this.getJTextField12().setText("Keine Warengruppe");
+        }
+
+        this.jEditorPane1.setText(current.getBeschreibung());
+
+
+        jTextField4.setEditable(false);
     }
  
 

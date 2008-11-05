@@ -205,6 +205,13 @@ public class productsView extends CommonPanel implements DataPanel, mp4.datenban
         setLockable(product);
 
         this.current = product;
+        
+        if (current.getNummer() != null) {
+            this.changeTabText("Produkt: " + current.getNummer());
+        } else {
+            this.changeTabText("Produkt: (neu)");
+        }
+        
         this.setSupplier(current.getLieferant());
         this.setManufacturer(current.getHersteller());
         this.jTextField4.setText(current.getProduktNummer());
