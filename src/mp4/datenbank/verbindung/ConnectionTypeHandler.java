@@ -18,6 +18,7 @@ package mp4.datenbank.verbindung;
 
 import java.io.File;
 import java.io.IOException;
+import mp4.datenbank.installation.Struktur;
 import mp4.globals.Constants;
 import mp4.installation.Setup;
 import mp4.installation.Verzeichnisse;
@@ -64,7 +65,7 @@ public class ConnectionTypeHandler {
         } else {
             return false;
         }
-    }  
+    }
 
     static String getDriverName() {
         return CONNECTION_STRING;
@@ -151,7 +152,12 @@ public class ConnectionTypeHandler {
         } catch (IOException ex) {
             Log.Debug(this, ex);
         }
-        return new FileReaderWriter(filen).readLines();
+        if (filen.exists()) {
+            return new FileReaderWriter(filen).readLines();
+        } else {
+            Log.Debug(this, "SQL Datei " + filen.getName() + " not found. Trying in-build SQL Script.");
+            return Struktur.SQL_COMMAND;
+        }
     }
 
     /**

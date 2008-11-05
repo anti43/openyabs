@@ -109,7 +109,8 @@ public class PostenTableModel extends MPTableModel {
             try {
                 end = TextFormat.verifyTextMaxLength(product.getBeschreibung(), 60);
                 String str = "";
-                if(Programmdaten.instanceOf().getPRODUCTPICKER_NAME())str = product.getName() + " ";
+                
+                str = product.getName() + " ";
                 if(Programmdaten.instanceOf().getPRODUCTPICKER_TEXT())str = str + product.getBeschreibung().substring(0, end) + " ";
                 if(Programmdaten.instanceOf().getPRODUCTPICKER_NUMMER())str = str + product.getProduktNummer();
                 m.setValueAt(str, selectedRow, 2);

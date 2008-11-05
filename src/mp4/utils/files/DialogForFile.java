@@ -16,7 +16,6 @@
  */
 package mp4.utils.files;
 
-import java.awt.HeadlessException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -116,7 +115,8 @@ public class DialogForFile extends JFileChooser implements Waiter {
      */
     public void saveFile(File fileToSave) {
 
-        if (chooseFile()) {
+        if (this.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+            this.file = this.getSelectedFile();
             if (!fileToSave.exists()) {
                 try {
                     fileToSave.createNewFile();

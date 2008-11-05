@@ -63,9 +63,8 @@ public class ProductPicker extends javax.swing.JFrame {
         TableFormat.stripFirst(jTable1);
 
         jCheckBox1.setSelected(Programmdaten.instanceOf().getPRODUCTPICKER_EAN());
-        jCheckBox2.setSelected(Programmdaten.instanceOf().getPRODUCTPICKER_NAME());
         jCheckBox3.setSelected(Programmdaten.instanceOf().getPRODUCTPICKER_TEXT());
-        jCheckBox4.setSelected(Programmdaten.instanceOf().getPRODUCTPICKER_NUMMER());
+        jCheckBox2.setSelected(Programmdaten.instanceOf().getPRODUCTPICKER_NUMMER());
 
         this.jTable1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 

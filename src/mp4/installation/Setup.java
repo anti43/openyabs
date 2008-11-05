@@ -75,10 +75,13 @@ public class Setup extends javax.swing.JFrame implements Constants, Strings {
         install_dirs = new Verzeichnisse();
         initComponents();
 
-        fc = new JFileChooser();
-        fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        fc.setSelectedFile(new File(Main.APP_DIR));
-        fc.setFileHidingEnabled(false);
+        try {
+            fc = new JFileChooser();
+            fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            fc.setSelectedFile(new File(Main.APP_DIR));
+            fc.setFileHidingEnabled(false);
+        } catch (Exception e) {
+        }
 
         File public_dir;
 
@@ -734,6 +737,8 @@ private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
     private void setStartValues() {
        Programmdaten.instanceOf().setBILLPANEL_CHECKBOX_NETTOPREISE(true);
+       Programmdaten.instanceOf().setBILLPANEL_CHECKBOX_MITFIRMENNAME(true);
+       Programmdaten.instanceOf().setPRODUCTPICKER_NUMMER(true);
        Programmdaten.instanceOf().setBILLPANEL_CHECKBOX_MITFIRMENNAME(true);
        if(!jCheckBox3.isSelected())Programmdaten.instanceOf().setSAVE_DB_ON_EXIT(true);
     }

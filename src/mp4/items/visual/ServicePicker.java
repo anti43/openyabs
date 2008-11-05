@@ -5,7 +5,6 @@
  */
 package mp4.items.visual;
 
-import mp4.datenbank.verbindung.ConnectionHandler;
 
 
 import java.awt.event.MouseEvent;
@@ -62,8 +61,7 @@ public class ServicePicker extends javax.swing.JFrame {
         this.jTable1.setModel(new DefaultTableModel(list, k.split(",")));
         TableFormat.stripFirst(jTable1);
 
-        jCheckBox4.setSelected(Programmdaten.instanceOf().getPRODUCTPICKER_NUMMER());
-        jCheckBox2.setSelected(Programmdaten.instanceOf().getPRODUCTPICKER_NAME());
+        jCheckBox2.setSelected(Programmdaten.instanceOf().getPRODUCTPICKER_NUMMER());
         jCheckBox3.setSelected(Programmdaten.instanceOf().getPRODUCTPICKER_TEXT());
 
         this.jTable1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
