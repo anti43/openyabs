@@ -740,6 +740,7 @@ private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
        Programmdaten.instanceOf().setBILLPANEL_CHECKBOX_MITFIRMENNAME(true);
        Programmdaten.instanceOf().setPRODUCTPICKER_NUMMER(true);
        Programmdaten.instanceOf().setBILLPANEL_CHECKBOX_MITFIRMENNAME(true);
+       Programmdaten.instanceOf().setMAHNUNG_VALUE_DEFAULT(0d);
        if(!jCheckBox3.isSelected())Programmdaten.instanceOf().setSAVE_DB_ON_EXIT(true);
     }
 }
