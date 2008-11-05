@@ -36,7 +36,7 @@ public class Zip {
 		try		{						
 			File cpFile = new File (source);									
 			if (!cpFile.isFile() && !cpFile.isDirectory() ) {							
-				System.out.println("\nSource file/directory Not Found!");							
+				Log.Debug(Zip.class,"\nSource file/directory Not Found!");							
 				return;					
 			}								
 			FileOutputStream fos = new FileOutputStream(target);			
@@ -45,9 +45,9 @@ public class Zip {
 			zipFiles( cpFile);					
 			cpZipOutputStream.finish();					
 			cpZipOutputStream.close();					
-			System.out.println("\n Finished creating zip file " + target + " from source " + source);					
-			System.out.println("\n Total of  " + numOfFiles +" files are Zipped " );			
-			System.out.println("\n Total of  " + size  + " bytes are Zipped  ");		
+			Log.Debug(Zip.class,"\n Finished creating zip file " + target + " from source " + source);					
+			Log.Debug(Zip.class,"\n Total of  " + numOfFiles +" files are Zipped " );			
+			Log.Debug(Zip.class,"\n Total of  " + size  + " bytes are Zipped  ");		
 		}	catch (Exception e){							
 			Log.Debug(Zip.class,e);				
 		}		
@@ -77,7 +77,7 @@ public class Zip {
 				if(cpFile.getAbsolutePath().equalsIgnoreCase(strTarget)){
 					return;
 				}								
-				System.out.println("Zipping "+cpFile);				
+				Log.Debug(Zip.class,"Zipping "+cpFile);				
 				size += cpFile.length();				
 				//String strAbsPath = cpFile.getAbsolutePath();								
 				numOfFiles++;				

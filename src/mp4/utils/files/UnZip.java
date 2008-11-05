@@ -17,6 +17,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import mp4.logs.Log;
 
 /**
  * UnZip -- print or unzip a JAR or PKZIP file using java.util.zip. Command-line
@@ -58,11 +59,11 @@ public class UnZip {
             u.setMode(EXTRACT);
            
             String candidate = zipfiles;
-            // System.err.println("Trying path " + candidate);
+            Log.Debug(UnZip.class,"Trying path " + candidate);
             if (candidate.endsWith(".zip") || candidate.endsWith(".jar")) {
                 u.unZip(candidate);
             } else {
-                System.err.println("Not a zip file? " + candidate);
+                Log.Debug(UnZip.class,"Not a zip file? " + candidate);
             }
         
         
@@ -97,7 +98,7 @@ public class UnZip {
                 getFile((ZipEntry) all.nextElement());
             }
         } catch (IOException err) {
-            System.err.println("IO Error: " + err);
+            Log.Debug(UnZip.class,"IO Error: " + err);
             return;
         }
     }
@@ -137,15 +138,15 @@ public class UnZip {
                         // If it already exists as a dir, don't do anything
                         if (!(d.exists() && d.isDirectory())) {
                             // Try to create the directory, warn if it fails
-                            System.out.println("Creating Directory: " + dirName);
+                            Log.Debug(UnZip.class,"Creating Directory: " + dirName);
                             if (!d.mkdirs()) {
-                                System.err.println("Warning: unable to mkdir " + dirName);
+                                Log.Debug(UnZip.class,"Warning: unable to mkdir " + dirName);
                             }
                             dirsMade.add(dirName);
                         }
                     }
                 }
-                System.err.println("Creating " + zipName);
+                Log.Debug(UnZip.class,"Creating " + zipName);
                 FileOutputStream os = new FileOutputStream(zipName);
                 InputStream is = zippy.getInputStream(e);
                 int n = 0;
@@ -158,9 +159,9 @@ public class UnZip {
             case LIST:
                 // Not extracting, just list
                 if (e.isDirectory()) {
-                    System.out.println("Directory " + zipName);
+                    Log.Debug(UnZip.class,"Directory " + zipName);
                 } else {
-                    System.out.println("File " + zipName);
+                    Log.Debug(UnZip.class,"File " + zipName);
                 }
                 break;
             default:

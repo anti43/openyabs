@@ -57,10 +57,12 @@ public class Main implements Strings {
     public static String BACKUP_DIR = null;
     public static String MPPATH = null;
     public static String SETTINGS_FILE = null;
+    public static String LOCAL_LOGIN_FILE = null;
     public static String APP_DIR = null;
     public static String USER_HOME = null;
     public static String DESKTOP = null;
     public static SettingsFile settingsfile = null;
+    
 
     private static void getOS() {
         if (System.getProperty("os.name").contains("Windows")) {
@@ -78,6 +80,7 @@ public class Main implements Strings {
             DESKTOP = USER_HOME + File.separator + "Desktop";
             MPPATH = USER_HOME + File.separator + ".mp";
             SETTINGS_FILE = Main.MPPATH + File.separator + "settings" + Constants.RELEASE_VERSION + ".mp";
+            LOCAL_LOGIN_FILE = Main.MPPATH + File.separator + "login.mp";
             APP_DIR = USER_HOME + File.separator + Constants.PROG_NAME;
             settingsfile = new SettingsFile();
         } else {
@@ -86,6 +89,7 @@ public class Main implements Strings {
             DESKTOP = USER_HOME + File.separator + "Desktop";
             MPPATH = USER_HOME + File.separator + ".mp";
             SETTINGS_FILE = Main.MPPATH + File.separator + "settings" + Constants.RELEASE_VERSION + ".mp";
+            LOCAL_LOGIN_FILE = Main.MPPATH + File.separator + "login.mp";
             APP_DIR = USER_HOME + File.separator + Constants.PROG_NAME;
             settingsfile = new SettingsFile();
         }

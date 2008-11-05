@@ -5,8 +5,12 @@
  */
 package mp4.benutzerverwaltung.visual;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import mp4.benutzerverwaltung.User;
+import mp4.einstellungen.LocalSettingsFile;
 import mp4.frames.*;
-import mp4.items.HistoryItem;
+import mp4.items.visual.Popup;
 import mp4.utils.ui.Position;
 
 /**
@@ -23,9 +27,28 @@ public class login extends javax.swing.JFrame {
     public login(mainframe frame) {
         this.frame = frame;
         initComponents();
+        LocalSettingsFile set = new LocalSettingsFile();
+        if (set.read()) {
+            jCheckBox1.setSelected(true);
+            jTextField1.setText(new User(set.getLastUserID()).getName());
+            jPasswordField1.requestFocus();
+        }
+
+        this.addWindowListener(new WindowAdapter() {
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+                close();
+            }
+
+            private void close() {
+                if (Popup.Y_N_dialog("Wollen Sie wirklich das Programm beenden?\nNicht gespeicherte Änderungen werden verloren gehen.")) {
+                    System.exit(0);
+                }
+            }
+        });
 
         new Position(this);
-
         this.setVisible(rootPaneCheckingEnabled);
     }
 
@@ -45,8 +68,9 @@ public class login extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jPasswordField1 = new javax.swing.JPasswordField();
         jLabel3 = new javax.swing.JLabel();
+        jCheckBox1 = new javax.swing.JCheckBox();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("MP Benutzer Authentifizierung");
         setFocusTraversalPolicyProvider(true);
         setResizable(false);
@@ -72,6 +96,8 @@ public class login extends javax.swing.JFrame {
 
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/3232/lock.png"))); // NOI18N
 
+        jCheckBox1.setText("Benutzer merken");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -79,16 +105,17 @@ public class login extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 222, Short.MAX_VALUE)
-                        .addComponent(jLabel1)
-                        .addComponent(jLabel2))
-                    .addComponent(jPasswordField1, javax.swing.GroupLayout.DEFAULT_SIZE, 222, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 131, Short.MAX_VALUE)
-                        .addComponent(jButton1)))
-                .addContainerGap())
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jCheckBox1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
+                        .addComponent(jButton1))
+                    .addComponent(jPasswordField1, javax.swing.GroupLayout.DEFAULT_SIZE, 222, Short.MAX_VALUE)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 222, Short.MAX_VALUE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -102,9 +129,10 @@ public class login extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel3)
-                    .addComponent(jButton1))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jCheckBox1, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -124,20 +152,16 @@ public class login extends javax.swing.JFrame {
 
 private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
-    if (frame.checkAuth(jTextField1.getText(), new String(jPasswordField1.getPassword()))) {
-       
-        this.dispose();
-    }
+    login();
 }//GEN-LAST:event_jButton1ActionPerformed
 
 private void jPasswordField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasswordField1ActionPerformed
-    if (frame.checkAuth(jTextField1.getText(), new String(jPasswordField1.getPassword()))) {
-        this.dispose();
-    }
+    login();
 
 }//GEN-LAST:event_jPasswordField1ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -145,4 +169,14 @@ private void jPasswordField1ActionPerformed(java.awt.event.ActionEvent evt) {//G
     private javax.swing.JPasswordField jPasswordField1;
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
+    private void login() {
+        if (frame.checkAuth(jTextField1.getText(), new String(jPasswordField1.getPassword()))) {
+            if (jCheckBox1.isSelected()) {
+                LocalSettingsFile set = new LocalSettingsFile();
+                set.setLastUserID(mainframe.getUser().getId());
+                set.save();
+            }
+            this.dispose();
+        }
+    }
 }
