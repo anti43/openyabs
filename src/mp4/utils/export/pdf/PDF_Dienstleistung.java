@@ -25,7 +25,6 @@ import mp4.einstellungen.Einstellungen;
 import mp4.items.Dienstleistung;
 import mp4.items.Hersteller;
 import mp4.items.Lieferant;
-import mp4.items.Product;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.files.PDFFile;
 import mp4.utils.listen.ListenDataUtils;
@@ -36,31 +35,28 @@ import mp4.utils.zahlen.FormatTax;
  *
  * @author anti43
  */
-public class PDF_Produkt implements Template {
+public class PDF_Dienstleistung implements Template {
 
     private Einstellungen settings;
-    private Product produkt;
     private Lieferant lieferant;
     private Hersteller hersteller;
+    private Dienstleistung produkt;
     private Image bild;
     private ArrayList fields = new ArrayList();
     private String path;
 
-
-    public PDF_Produkt(Product produkt, java.awt.Image image, boolean persistent) {
+    public PDF_Dienstleistung(Dienstleistung produkt, boolean persistent) {
         settings = Einstellungen.instanceOf();
         this.produkt = produkt;
-        this.lieferant = produkt.getLieferant();
-        this.hersteller = produkt.getHersteller();
-        this.bild = image;
         Locale.setDefault(Einstellungen.instanceOf().getLocale());
-          
+
         if (persistent) {
-            path = getTargetFile().getPath();
+            path = settings.getProdukt_Verzeichnis() + File.separator + produkt.getProduktNummer().replaceAll(" ", "_") + ".pdf".trim();
         } else {
             path = PDFFile.getTempFilename() + ".pdf".trim();
         }
     }
+
 
     @SuppressWarnings("unchecked")
     private String[][] buildFieldsList() {
@@ -81,12 +77,11 @@ public class PDF_Produkt implements Template {
 
         fields.add(new String[]{"date", DateConverter.getDefDateString(produkt.getDatum())});
         fields.add(new String[]{"name", produkt.getName()});
-        fields.add(new String[]{"ean", produkt.getEan()});
+        fields.add(new String[]{"type", produkt.getEinheit()});
         fields.add(new String[]{"number", produkt.getProduktNummer()});
         fields.add(new String[]{"group", produkt.getProductgroupPath()});
-        fields.add(new String[]{"text", produkt.getText()});
-        fields.add(new String[]{"url", produkt.getUrl()});
-        fields.add(new String[]{"price", FormatNumber.formatLokalCurrency(produkt.getVK())});
+        fields.add(new String[]{"text", produkt.getBeschreibung()});
+        fields.add(new String[]{"price", FormatNumber.formatLokalCurrency(produkt.getPreis())});
         fields.add(new String[]{"taxrate", FormatTax.formatLokal(produkt.getTaxValue())});
 
         return ListenDataUtils.StringListToTableArray(fields);
@@ -110,7 +105,7 @@ public class PDF_Produkt implements Template {
 
     @Override
     public String getTemplate() {
-        return settings.getProdukt_Template();
+        return settings.getDienstleistung_Template();
     }
 
     @Override

@@ -130,12 +130,27 @@ public class Verzeichnisse implements Constants, Strings {
 
 
             if (!Main.FORCE_NO_FILE_COPY) {
-                Log.Debug(Verzeichnisse.class, "Libraries kopieren..", true);
-                FileDirectoryHandler.copyDirectory(getInstall_lib_dir(), getLib_dir());
-                Log.Debug(Verzeichnisse.class, "Plugins kopieren..", true);
-                FileDirectoryHandler.copyDirectory(getInstall_plugin_dir(), getPlugin_dir());
-                Log.Debug(Verzeichnisse.class, "MP Jar kopieren..", true);
-                FileDirectoryHandler.copyDirectory(new File(workdir + File.separator + Constants.JAR_NAME), new File(getPublic_dir().getAbsolutePath() + File.separator + Constants.JAR_NAME));
+                try {
+                    Log.Debug(Verzeichnisse.class, "Libraries kopieren..", true);
+                    FileDirectoryHandler.copyDirectory(getInstall_lib_dir(), getLib_dir());
+                    Log.Debug(Verzeichnisse.class, "Erfolgreich.", true);
+                } catch (IOException iOException) {
+                    Log.Debug(Verzeichnisse.class, iOException);
+                }
+                try {
+                    Log.Debug(Verzeichnisse.class, "Plugins kopieren..", true);
+                    FileDirectoryHandler.copyDirectory(getInstall_plugin_dir(), getPlugin_dir());
+                    Log.Debug(Verzeichnisse.class, "Erfolgreich.", true);
+                } catch (IOException iOException) {
+                     Log.Debug(Verzeichnisse.class, iOException);
+                }
+                try {
+                    Log.Debug(Verzeichnisse.class, "MP Jar kopieren..", true);
+                    FileDirectoryHandler.copyDirectory(new File(workdir + File.separator + Constants.JAR_NAME), new File(getPublic_dir().getAbsolutePath() + File.separator + Constants.JAR_NAME));
+                    Log.Debug(Verzeichnisse.class, "Erfolgreich.", true);
+                } catch (IOException iOException) {
+                     Log.Debug(Verzeichnisse.class, iOException);
+                }
             }
 
             Log.Debug(Verzeichnisse.class, "Templates kopieren..", true);

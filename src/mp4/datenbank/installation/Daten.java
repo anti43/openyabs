@@ -89,6 +89,7 @@ public abstract class Daten {
         "INSERT INTO einstellungen (name, wert) VALUES ('Serienbrief Template', '" + Setup.instanceOf().getInstall_dirs().getPathtemplates_dir() + File.separator + "serienbrief.pdf')",
         "INSERT INTO einstellungen (name, wert) VALUES ('Produkt Template', '" + Setup.instanceOf().getInstall_dirs().getPathtemplates_dir() + File.separator + "produkt.pdf')",
         "INSERT INTO einstellungen (name, wert) VALUES ('Lieferschein Template', '" + Setup.instanceOf().getInstall_dirs().getPathtemplates_dir() + File.separator + "lieferschein.pdf')",
+        "INSERT INTO einstellungen (name, wert) VALUES ('Dienstleistung Template', '" + Setup.instanceOf().getInstall_dirs().getPathtemplates_dir() + File.separator + "dienstleistung.pdf')",
      
         
         "INSERT INTO einstellungen (name, wert) VALUES ('Hauptsteuersatz', '19')",

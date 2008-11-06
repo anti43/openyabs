@@ -16,6 +16,7 @@
  */
 package mp4.items.visual;
 
+import java.awt.Component;
 import javax.swing.JOptionPane;
 import mp4.logs.*;
 import mp4.utils.text.TextFormat;
@@ -30,6 +31,7 @@ public class Popup {
     public static String ERROR = "Fehler";
     public static String NOTICE = "Hinweis";
     public static String GENERAL_ERROR = "Es ist ein Fehler aufgetreten.";
+    public static Component identifier = null;
 
     /**
      * 
@@ -37,7 +39,7 @@ public class Popup {
      * @return
      */
     public static boolean Y_N_dialog(String text) {
-        if (JOptionPane.showConfirmDialog(null, text, "Sind Sie sicher?",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE , new javax.swing.ImageIcon(new Popup().getClass().getResource("/bilder/medium/messagebox_warning.png"))) == JOptionPane.YES_OPTION) {
+        if (JOptionPane.showConfirmDialog(identifier, text, "Sind Sie sicher?",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE , new javax.swing.ImageIcon(new Popup().getClass().getResource("/bilder/medium/messagebox_warning.png"))) == JOptionPane.YES_OPTION) {
             return true;
         } else {
             return false;
@@ -52,7 +54,7 @@ public class Popup {
     public static void warn(String text, String label) {
 
         text = TextFormat.maxLineLength(text, 120);
-        JOptionPane.showMessageDialog(null, text, label, JOptionPane.WARNING_MESSAGE);
+        JOptionPane.showMessageDialog(identifier, text, label, JOptionPane.WARNING_MESSAGE);
     }
 
     /**
@@ -64,7 +66,7 @@ public class Popup {
 
         Log.Debug(Popup.class,text, true);
         text = TextFormat.maxLineLength(text, 120);
-        JOptionPane.showMessageDialog(null, text, label, JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(identifier, text, label, JOptionPane.ERROR_MESSAGE);
     }
 
     /**
@@ -75,7 +77,7 @@ public class Popup {
     public static void notice(String text, String label) {
 
         text = TextFormat.maxLineLength(text, 120);
-        JOptionPane.showMessageDialog(null, text, label, JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(identifier, text, label, JOptionPane.INFORMATION_MESSAGE);
     }
 
     /**
@@ -85,12 +87,12 @@ public class Popup {
     public static void notice(String text) {
         
         text = TextFormat.maxLineLength(text, 120);
-        JOptionPane.showMessageDialog(null, text, Popup.NOTICE, JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(identifier, text, Popup.NOTICE, JOptionPane.INFORMATION_MESSAGE);
     }
 
     public Popup(String text) {
         text = TextFormat.maxLineLength(text, 120);
-        JOptionPane.showMessageDialog(null, text, Popup.NOTICE, JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(identifier, text, Popup.NOTICE, JOptionPane.INFORMATION_MESSAGE);
     }
 
     /**
@@ -100,7 +102,7 @@ public class Popup {
      */
     public Popup(String text, String label) {
         text = TextFormat.maxLineLength(text, 120);
-        JOptionPane.showMessageDialog(null, text, label, JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(identifier, text, label, JOptionPane.INFORMATION_MESSAGE);
     }
 
     private Popup() {

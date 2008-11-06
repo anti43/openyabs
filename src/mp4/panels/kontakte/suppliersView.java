@@ -1230,7 +1230,7 @@ private void jButton18MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
 
     private void deactivate() {
         if (current.getId() > 0) {
-            if ((JOptionPane.showConfirmDialog(this, "Wirklich löschen?", "Sicher?", JOptionPane.YES_NO_OPTION)) == JOptionPane.YES_OPTION) {
+            
                 try {
                     current.deactivate(current.getId().toString());
 
@@ -1242,7 +1242,7 @@ private void jButton18MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
                 } catch (Exception ex) {
                     Popup.warn(ex.getMessage(), Popup.ERROR);
                 }
-            }
+            
         } else {
             mainframe.setMessage("Kein Kontakt gewählt.");
         }

@@ -303,18 +303,8 @@ private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                             FormatNumber.parseDezimal(jTextField2.getText()), Einstellungen.instanceOf().getHauptsteuersatz()));
                     view.addMahnung();
                 }
-            } else {
-                if (Popup.Y_N_dialog("Zur Rechnung addieren?")) {
-                    try {
-                        view.setProduct(new Product((bill.getMahnungen()+1) +". Mahnung vom " + DateConverter.getTodayDefDate(),
-                                FormatNumber.parseDezimal(jTextField2.getText()), Einstellungen.instanceOf().getHauptsteuersatz()));
-                        view.addMahnung();
-                        this.dispose();
-                    } catch (NumberFormatException numberFormatException) {
-                        Log.Debug(this, numberFormatException);
-                    }
-                }
-            }
+            } 
+            
             Job job = new Job(new PDFFile(new PDF_Mahnung(bill,
                     VariablenZuText.parseText(jTextArea1.getText(), new Object[]{bill, c}),
                     FormatNumber.parseDezimal(jTextField2.getText()), bill.getMahnungen(), false)), new PdfVorschauWindow(), mainframe.identifier.getMainProgress());
@@ -324,7 +314,7 @@ private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             Programmdaten.instanceOf().setMAHNUNG_TEXT_DEFAULT(jTextArea1.getText());
             Programmdaten.instanceOf().setMAHNUNG_VALUE_DEFAULT(FormatNumber.parseDezimal(jTextField2.getText()));
 
-            this.dispose();
+            if(lone)this.dispose();
 
         } else {
             jTextField2.setText("0,00");

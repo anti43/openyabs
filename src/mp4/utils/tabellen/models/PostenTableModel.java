@@ -70,9 +70,9 @@ public class PostenTableModel extends MPTableModel {
                 end = TextFormat.verifyTextMaxLength(product.getText(), 50);
                 String str = "";
                 str = product.getName() + " ";
-                if(Programmdaten.instanceOf().getPRODUCTPICKER_NUMMER())str = str + product.getNummer() + " ";
-                if(Programmdaten.instanceOf().getPRODUCTPICKER_TEXT())str = str + product.getText().substring(0, end) + " ";
-                if(Programmdaten.instanceOf().getPRODUCTPICKER_EAN())str = str + product.getEan();
+                if(Programmdaten.instanceOf().getPRODUCTPICKER_NUMMER() && product.getNummer()!= null)str = str + product.getNummer() + " ";
+                if(Programmdaten.instanceOf().getPRODUCTPICKER_TEXT() && product.getText()!= null)str = str + product.getText().substring(0, end) + " ";
+                if(Programmdaten.instanceOf().getPRODUCTPICKER_EAN() && product.getEan()!= null)str = str + product.getEan();
                 m.setValueAt(str, selectedRow, 2);
             } catch (Exception exception) {
                 Log.Debug(this,exception);
@@ -111,8 +111,8 @@ public class PostenTableModel extends MPTableModel {
                 String str = "";
                 
                 str = product.getName() + " ";
-                if(Programmdaten.instanceOf().getPRODUCTPICKER_TEXT())str = str + product.getBeschreibung().substring(0, end) + " ";
-                if(Programmdaten.instanceOf().getPRODUCTPICKER_NUMMER())str = str + product.getProduktNummer();
+                if(Programmdaten.instanceOf().getPRODUCTPICKER_TEXT() && product.getBeschreibung()!= null)str = str + product.getBeschreibung().substring(0, end) + " ";
+                if(Programmdaten.instanceOf().getPRODUCTPICKER_NUMMER() && product.getNummer()!= null)str = str + product.getProduktNummer();
                 m.setValueAt(str, selectedRow, 2);
             } catch (Exception exception) {
                 Log.Debug(this,exception);

@@ -108,19 +108,22 @@ public class PDF_Mahnung implements Template{
 
         fields.add(new String[]{"originalprice", FormatNumber.formatLokalCurrency(brutto)});
         fields.add(new String[]{"arrearsfee", FormatNumber.formatLokalCurrency(betrag)});
-        fields.add(new String[]{"totalprice", FormatNumber.formatLokalCurrency(brutto)});
+        fields.add(new String[]{"totalprice", FormatNumber.formatLokalCurrency(brutto +  betrag)});
 
         return ListenDataUtils.StringListToTableArray(fields);
     }
 
+    @Override
     public String getPath() {
         return path;
     }
 
+    @Override
     public String[][] getFields() {
         return buildFieldList();
     }
 
+    @Override
     public Image getImage() {
         return null;
     }

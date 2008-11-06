@@ -164,15 +164,12 @@ public class productsView extends CommonPanel implements DataPanel, mp4.datenban
     private void deactivate() {
 
         if (current.getId() > 0) {
-            if ((JOptionPane.showConfirmDialog(this, "Wirklich löschen?", "Sicher?", JOptionPane.YES_NO_OPTION)) == JOptionPane.YES_OPTION) {
+            
                 getMainframe().setMessage("Produkt Nummer " + current.getProduktNummer() + " gelöscht.");
                 current.destroy();
                 current = new Product();
                 lieferant = new Lieferant(1);
                 hersteller = new Hersteller(1);
-
-            }
-
             updateListTable();
 
         } else {

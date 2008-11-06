@@ -1245,7 +1245,7 @@ private void jTextField8MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST
 
     private void deactivate() {
         if (current.getId() > 0) {
-            if ((JOptionPane.showConfirmDialog(this, "Wirklich löschen?", "Sicher?", JOptionPane.YES_NO_OPTION)) == JOptionPane.YES_OPTION) {
+            
                 try {
                     current.deactivate(current.getId().toString());
 
@@ -1257,7 +1257,7 @@ private void jTextField8MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST
                 } catch (Exception ex) {
                     Popup.warn(ex.getMessage(), Popup.ERROR);
                 }
-            }
+            
         } else {
             mainframe.setMessage("Kein Kontakt gewählt.");
         }

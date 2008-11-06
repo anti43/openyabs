@@ -169,6 +169,9 @@ public class mainframe extends javax.swing.JFrame {
     private ClipBoard clipBoard = new ClipBoard(this);
     private pluginHandler pluginhandler;
 
+    
+    
+    
     /** Creates new form mainframe
      * @param splash
      * @param mainclass 
@@ -237,10 +240,11 @@ public class mainframe extends javax.swing.JFrame {
             new login(this);
         }
 
-        
+        Popup.identifier = this;
         this.requestFocus();
         setMessage(Strings.WELCOME_MESSAGE);
     }
+
 
     public void addAngebotPanel(Angebot offer) {
 

@@ -192,6 +192,16 @@ public class Einstellungen extends MethodParser implements mp4.datenbank.install
     public void setProdukt_Template(String Produkttemplate) {
         datahandler.setString("Produkt Template", Produkttemplate);
     }
+    
+    
+    public String getDienstleistung_Template() {
+         return datahandler.getString("Dienstleistung Template");
+    }
+    
+    public void setDienstleistung_Template(String Dienstleistungtemplate) {
+        datahandler.setString("Dienstleistung Template", Dienstleistungtemplate);
+    }
+
 ////////////////////////////////////////////////////////////////////////////////  
     public String getPDF_Programm() {
         return datahandler.getString("PDF Programm");
