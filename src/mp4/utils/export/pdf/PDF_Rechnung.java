@@ -124,18 +124,22 @@ public class PDF_Rechnung implements Template {
         return (String[][]) ListenDataUtils.StringListToTableArray(fields);
     }
 
+    @Override
     public String getPath() {
         return path;
     }
 
+    @Override
     public String[][] getFields() {
         return buildFieldList();
     }
 
+    @Override
     public Image getImage() {
         return null;
     }
 
+    @Override
     public String getTemplate() {
         return l.getRechnung_Template();
     }
