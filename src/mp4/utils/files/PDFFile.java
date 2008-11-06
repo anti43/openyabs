@@ -57,11 +57,17 @@ public class PDFFile extends File implements Waitable, Printable{
     private Template object;
     private String[][] fields;
 
-    public PDFFile(Template object) {
+    public PDFFile(Template object) throws Exception {
         super(object.getPath());
-        this.object = object;
-        this.fields = object.getFields();
-        settings = Einstellungen.instanceOf();
+        
+        if (object != null) {
+            this.object = object;
+            this.fields = object.getFields();
+            settings = Einstellungen.instanceOf();
+        } else {
+            notemplaterror();
+            throw new Exception("Template not found.");
+        }
     }
 
 
@@ -106,6 +112,11 @@ public class PDFFile extends File implements Waitable, Printable{
         } catch (IOException ex) {
             Log.Debug(this, "Es ist ein Fehler aufgetreten: " + "\n" + ex);
         }
+    }
+
+    private void notemplaterror() {
+       Popup.error("Bitte geben Sie unter \nBearbeiten-> Einstellungen ein PDF-Template an." +
+                    "\nTemplate: " + object.getTemplate() + "\nexistiert nicht.", Popup.ERROR);
     }
 
     private Image parseImage(java.awt.Image image) {
@@ -217,8 +228,7 @@ public class PDFFile extends File implements Waitable, Printable{
                 }
             }
         } else {
-            Popup.error("Bitte geben Sie unter \nBearbeiten-> Einstellungen ein PDF-Template an." +
-                    "\nTemplate: " + object.getTemplate() + "\nexistiert nicht.", Popup.ERROR);
+            notemplaterror();
         }
     }
     

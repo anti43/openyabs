@@ -5,6 +5,8 @@
  */
 package mp4.panels.rechnungen;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mp4.interfaces.Waitable;
 import mp4.interfaces.Waiter;
 import mp4.items.Steuersatz;
@@ -1628,8 +1630,12 @@ private void jCheckBox3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 
 private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
     if (currentBill.hasId()) {
+      try{
         Job job = new Job(new PDFFile(new PDF_Rechnung(currentBill, false)), new PdfVorschauWindow(), mainframe.getMainProgress());
         job.execute();
+        } catch (Exception ex) {
+                Log.Debug(this,ex);
+            }
     } else {
         Popup.notice("Sie müssen die Rechnung erst anlegen.");
     }
@@ -1640,20 +1646,24 @@ private void jButton12KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_j
 
 private void jButton12MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton12MouseClicked
     if (currentBill.hasId()) {
-        Job job = new Job((Waitable) new PDFFile(new PDF_Rechnung(currentBill, false)), (Waiter) new DruckJob(), mainframe.getMainProgress());
-        job.execute();
-        if (jCheckBox4.isSelected()) {
-            Job job2 = new Job((Waitable) new PDFFile(new PDF_Lieferschein(currentBill, false)), (Waiter) new DruckJob(), mainframe.getMainProgress());
-            job2.execute();
-        }
-        if (jCheckBox5.isSelected()) {
-            if (currentBill.getAngebot() != null) {
-                Job job3 = new Job((Waitable) new PDFFile(new PDF_Angebot(currentBill.getAngebot(), false)), (Waiter) new DruckJob(), mainframe.getMainProgress());
-                job3.execute();
-            } else {
-                Popup.notice("Kein Angebot vorhanden.");
+            try {
+                Job job = new Job((Waitable) new PDFFile(new PDF_Rechnung(currentBill, false)), (Waiter) new DruckJob(), mainframe.getMainProgress());
+                job.execute();
+                if (jCheckBox4.isSelected()) {
+                    Job job2 = new Job((Waitable) new PDFFile(new PDF_Lieferschein(currentBill, false)), (Waiter) new DruckJob(), mainframe.getMainProgress());
+                    job2.execute();
+                }
+                if (jCheckBox5.isSelected()) {
+                    if (currentBill.getAngebot() != null) {
+                        Job job3 = new Job((Waitable) new PDFFile(new PDF_Angebot(currentBill.getAngebot(), false)), (Waiter) new DruckJob(), mainframe.getMainProgress());
+                        job3.execute();
+                    } else {
+                        Popup.notice("Kein Angebot vorhanden.");
+                    }
+                }
+            } catch (Exception ex) {
+                Log.Debug(this,ex);
             }
-        }
     } else {
         Popup.notice("Sie müssen die Rechnung erst anlegen.");
     }

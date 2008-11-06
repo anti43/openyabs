@@ -1267,8 +1267,12 @@ public class offersView extends mp4.items.visual.CommonPanel implements DataPane
 
     private void jButton12MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton12MouseClicked
         if (currentOffer.hasId()) {
-            Job job = new Job((Waitable) new PDFFile(new PDF_Angebot(currentOffer, false)), (Waiter) new DruckJob(), mainframe.getMainProgress());
-            job.execute();
+            try {
+                Job job = new Job((Waitable) new PDFFile(new PDF_Angebot(currentOffer, false)), (Waiter) new DruckJob(), mainframe.getMainProgress());
+                job.execute();
+           } catch (Exception ex) {
+                Log.Debug(this,ex);
+            }
         } else {
             Popup.notice("Sie müssen das Angebot erst anlegen.");
         }
@@ -1366,8 +1370,12 @@ private void jButton13MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
 private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
     if (currentOffer.hasId()) {
-        Job job = new Job(new PDFFile(new PDF_Angebot(currentOffer, false)), new PdfVorschauWindow(), mainframe.getMainProgress());
-        job.execute();
+        try {
+            Job job = new Job(new PDFFile(new PDF_Angebot(currentOffer, false)), new PdfVorschauWindow(), mainframe.getMainProgress());
+            job.execute();
+        } catch (Exception ex) {
+                Log.Debug(this,ex);
+            }
     } else {
         Popup.notice("Sie müssen das Angebot erst anlegen.");
     }

@@ -7,6 +7,8 @@ package mp4.items.visual;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.print.DocFlavor;
 import javax.swing.table.DefaultTableModel;
 import mp4.einstellungen.VariablenZuText;
@@ -18,6 +20,7 @@ import mp4.items.Kunde;
 import mp4.items.Hersteller;
 import mp4.items.Lieferant;
 import mp4.items.People;
+import mp4.logs.Log;
 import mp4.utils.export.druck.DruckJob;
 import mp4.utils.export.pdf.PDF_Serienbrief;
 import mp4.utils.files.PDFFile;
@@ -31,7 +34,6 @@ import mp4.utils.ui.Position;
  */
 public class serialLetter extends javax.swing.JFrame implements Constants {
 
-    
     private static serialLetter f;
 
     /** Creates new form serialLetter */
@@ -56,7 +58,7 @@ public class serialLetter extends javax.swing.JFrame implements Constants {
         Object[] o = new Object[]{c.getId(), c.getNummer(), c.getFirma(), c.getClass().getSimpleName(), true};
         DefaultTableModel m = (DefaultTableModel) jTable1.getModel();
         m.addRow(o);
-  
+
     }
 
     /** This method is called from within the constructor to
@@ -260,7 +262,7 @@ public class serialLetter extends javax.swing.JFrame implements Constants {
                 return canEdit[columnIndex];
             }
         });
-        
+
         TableFormat.stripFirst(jTable1);
 
     }
@@ -279,11 +281,23 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
         if (((Boolean) data[i][4])) {
             if (((String) data[i][3]).contains("Kunde")) {
-                filelist.add(new PDFFile(new PDF_Serienbrief(new Kunde(Integer.valueOf((String)data[i][0])), VariablenZuText.parseText(jTextField1.getText(), new Object[]{new Kunde()}), jTextArea1.getText(), true)));
+                try {
+                    filelist.add(new PDFFile(new PDF_Serienbrief(new Kunde(Integer.valueOf((String) data[i][0])), VariablenZuText.parseText(jTextField1.getText(), new Object[]{new Kunde()}), jTextArea1.getText(), true)));
+                } catch (Exception ex) {
+                    Log.Debug(this, ex);
+                }
             } else if (((String) data[i][3]).contains("Lieferant")) {
-                filelist.add(new PDFFile(new PDF_Serienbrief(new Lieferant(Integer.valueOf((String)data[i][0])), VariablenZuText.parseText(jTextField1.getText(), new Object[]{new Lieferant()}), jTextArea1.getText(), true)));
+                try {
+                    filelist.add(new PDFFile(new PDF_Serienbrief(new Lieferant(Integer.valueOf((String) data[i][0])), VariablenZuText.parseText(jTextField1.getText(), new Object[]{new Lieferant()}), jTextArea1.getText(), true)));
+                } catch (Exception ex) {
+                    Log.Debug(this, ex);
+                }
             } else if (((String) data[i][3]).contains("Hersteller")) {
-                filelist.add(new PDFFile(new PDF_Serienbrief(new Hersteller(Integer.valueOf((String)data[i][0])), VariablenZuText.parseText(jTextField1.getText(), new Object[]{new Hersteller()}), jTextArea1.getText(), true)));
+                try {
+                    filelist.add(new PDFFile(new PDF_Serienbrief(new Hersteller(Integer.valueOf((String) data[i][0])), VariablenZuText.parseText(jTextField1.getText(), new Object[]{new Hersteller()}), jTextArea1.getText(), true)));
+                } catch (Exception ex) {
+                    Log.Debug(this, ex);
+                }
             }
         }
     }
@@ -325,7 +339,6 @@ private void jCheckBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIR
 private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
 // TODO add your handling code here:
 }//GEN-LAST:event_jTextField1ActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;

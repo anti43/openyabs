@@ -305,11 +305,16 @@ private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 }
             } 
             
-            Job job = new Job(new PDFFile(new PDF_Mahnung(bill,
-                    VariablenZuText.parseText(jTextArea1.getText(), new Object[]{bill, c}),
-                    FormatNumber.parseDezimal(jTextField2.getText()), bill.getMahnungen(), false)), new PdfVorschauWindow(), mainframe.identifier.getMainProgress());
-       
-            job.execute();
+            
+            try {
+                Job job = new Job(new PDFFile(new PDF_Mahnung(bill,
+                        VariablenZuText.parseText(jTextArea1.getText(), new Object[]{bill, c}),
+                        FormatNumber.parseDezimal(jTextField2.getText()), bill.getMahnungen(), false)), new PdfVorschauWindow(), mainframe.identifier.getMainProgress());
+                
+                job.execute();
+            } catch (Exception ex) {
+                Log.Debug(this,ex);
+            }
 
             Programmdaten.instanceOf().setMAHNUNG_TEXT_DEFAULT(jTextArea1.getText());
             Programmdaten.instanceOf().setMAHNUNG_VALUE_DEFAULT(FormatNumber.parseDezimal(jTextField2.getText()));

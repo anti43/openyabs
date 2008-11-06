@@ -5,6 +5,8 @@
  */
 package mp4.panels.produkte;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mp4.globals.Strings;
 import mp4.interfaces.DataPanel;
 import mp4.interfaces.Waitable;
@@ -33,6 +35,7 @@ import mp4.items.HistoryItem;
 import mp4.items.Product;
 import mp4.items.Rechnung;
 import mp4.items.Steuersatz;
+import mp4.logs.Log;
 import mp4.panels.misc.NumberFormatEditor;
 import mp4.panels.misc.groupsView;
 import mp4.panels.rechnungen.billsView;
@@ -914,8 +917,12 @@ private void jButton18MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
         }
 
         if (current.isValid()) {
-            Job job = new Job(new PDFFile(new PDF_Dienstleistung(current, false)),new PdfVorschauWindow(), mainframe.getMainProgress());
-            job.execute();
+            try {
+                Job job = new Job(new PDFFile(new PDF_Dienstleistung(current, false)), new PdfVorschauWindow(), mainframe.getMainProgress());
+                job.execute();
+            } catch (Exception ex) {
+                Log.Debug(this,ex);
+            }
 
         } else {
             Popup.notice("Sie müssen das Produkt erst anlegen.");
