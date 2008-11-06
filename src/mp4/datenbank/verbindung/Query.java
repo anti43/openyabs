@@ -73,13 +73,13 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
         try {
             // Select-Anweisung ausführen
             stm = conn.createStatement();
-            Log.Debug(this,query, true);
-            bool  = stm.execute(query);
+            Log.Debug(this, query, true);
+            bool = stm.execute(query);
             stop();
             return bool;
         } catch (SQLException ex) {
             stop();
-            Log.Debug(this,message + ex.getMessage());
+            Log.Debug(this, message + ex.getMessage());
             Popup.error(message + ex.getMessage(), "Datenbankfehler");
         } finally {
             // Alle Ressourcen wieder freigeben
@@ -88,7 +88,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
                     resultSet.close();
                 } catch (SQLException ex) {
                     stop();
-                    Log.Debug(this,message + ex.getMessage());
+                    Log.Debug(this, message + ex.getMessage());
                     Popup.error(message + ex.getMessage(), "Datenbankfehler");
                 }
             }
@@ -97,7 +97,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
                     stm.close();
                 } catch (SQLException ex) {
                     stop();
-                    Log.Debug(this,message + ex.getMessage());
+                    Log.Debug(this, message + ex.getMessage());
                     Popup.error(message + ex.getMessage(), "Datenbankfehler");
                 }
             }
@@ -105,26 +105,55 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
         stop();
         return false;
     }
-    
+
     public boolean freeQuery(String string, JTextArea log) {
-         start();
+        start();
         query = string;
         message = "Database Error (freeQuery) :";
         stm = null;
         resultSet = null;
         boolean bool;
+        ResultSetMetaData rsmd;
+        String[][] p;
+        ArrayList z;
         try {
             // Select-Anweisung ausführen
             stm = conn.createStatement();
-            Log.Debug(this,query, true);
+            Log.Debug(this, query, true);
             log.append("\n " + query);
-            bool  = stm.execute(query);
+            bool = stm.execute(query);
             log.append("\n " + stm.getUpdateCount() + " Reihen betroffen.");
             stop();
+
+            if (bool) {
+
+                resultSet = stm.getResultSet();
+                ArrayList spalten = new ArrayList();
+                ArrayList zeilen = new ArrayList();
+                rsmd = resultSet.getMetaData();
+
+                while (resultSet.next()) {
+                    spalten = new ArrayList();
+                    for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+                        spalten.add(resultSet.getObject(i));
+                    }
+                    zeilen.add(spalten);
+                }
+                p = new String[zeilen.size()][spalten.size()];
+
+                for (int h = 0; h < zeilen.size(); h++) {
+                   log.append("\n");
+                    z = (ArrayList) zeilen.get(h);
+                    for (int i = 0; i < spalten.size(); i++) {
+                       log.append(String.valueOf(z.get(i)) + "\t"); 
+                    }
+                }
+            }
+
             return bool;
         } catch (SQLException ex) {
             stop();
-            Log.Debug(this,message + ex.getMessage());
+            Log.Debug(this, message + ex.getMessage());
             log.append("\n " + ex.getMessage());
         } finally {
             // Alle Ressourcen wieder freigeben
@@ -133,7 +162,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
                     resultSet.close();
                 } catch (SQLException ex) {
                     stop();
-                    Log.Debug(this,message + ex.getMessage());
+                    Log.Debug(this, message + ex.getMessage());
                     log.append(" \n" + ex.getMessage());
                 }
             }
@@ -142,16 +171,16 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
                     stm.close();
                 } catch (SQLException ex) {
                     stop();
-                    Log.Debug(this,message + ex.getMessage());
+                    Log.Debug(this, message + ex.getMessage());
                     log.append(" \n" + ex.getMessage());
                 }
             }
         }
         stop();
         return false;
-        
+
     }
- 
+
     /**
      * 
      * @param what
@@ -172,7 +201,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
 
         return selectFreeQuery(query, message);
     }
-    
+
     public ArrayList<Double> selectYearlySums(String what, String[] where, vTimeframe zeitraum, String additionalCondition) {
 
         Date temdate = zeitraum.getStart();
@@ -189,10 +218,10 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
 
             String[][] o = selectFreeQuery(query, message);
             if (o != null && o[0][0] != null && !o[0][0].equals("null")) {
-                Log.Debug(this,"Summe: " + o[0][0]);
+                Log.Debug(this, "Summe: " + o[0][0]);
                 values.add(Double.valueOf(o[0][0]));
             } else {
-                Log.Debug(this,"Summe: " + 0);
+                Log.Debug(this, "Summe: " + 0);
                 values.add(0d);
             }
             temdate = DateConverter.addMonth(temdate);
@@ -201,6 +230,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
         return values;
 
     }
+
     public ArrayList<Double> selectMonthlySums(String what, String[] where, vTimeframe zeitraum, String additionalCondition) {
 
         Date temdate = zeitraum.getStart();
@@ -217,10 +247,10 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
 
             String[][] o = selectFreeQuery(query, message);
             if (o != null && o[0][0] != null && !o[0][0].equals("null")) {
-                Log.Debug(this,"Summe: " + o[0][0]);
+                Log.Debug(this, "Summe: " + o[0][0]);
                 values.add(Double.valueOf(o[0][0]));
             } else {
-                Log.Debug(this,"Summe: " + 0);
+                Log.Debug(this, "Summe: " + 0);
                 values.add(0d);
             }
             temdate = DateConverter.addMonth(temdate);
@@ -251,7 +281,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
         try {
             // Select-Anweisung ausführen
             stm = conn.createStatement();
-            Log.Debug(this,query, true);
+            Log.Debug(this, query, true);
             resultSet = stm.executeQuery(query);
             ArrayList spalten = new ArrayList();
             ArrayList zeilen = new ArrayList();
@@ -273,8 +303,8 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
                 }
             }
         } catch (SQLException ex) {
-            Log.Debug(this,"Datenbankfehler: " + query, true);
-            Log.Debug(this,message + ex.getMessage());
+            Log.Debug(this, "Datenbankfehler: " + query, true);
+            Log.Debug(this, message + ex.getMessage());
             Popup.error(message + ex.getMessage(), "Datenbankfehler");
         } finally {
             // Alle Ressourcen wieder freigeben
@@ -282,7 +312,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
                 try {
                     resultSet.close();
                 } catch (SQLException ex) {
-                    Log.Debug(this,message + ex.getMessage());
+                    Log.Debug(this, message + ex.getMessage());
                     Popup.error(message + ex.getMessage(), "Datenbankfehler");
                 }
             }
@@ -290,7 +320,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
                 try {
                     stm.close();
                 } catch (SQLException ex) {
-                    Log.Debug(this,message + ex.getMessage());
+                    Log.Debug(this, message + ex.getMessage());
                     Popup.error(message + ex.getMessage(), "Datenbankfehler");
                 }
             }
@@ -407,7 +437,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
         Integer i = null;
 
 
-        Log.Debug(this,query, true);
+        Log.Debug(this, query, true);
 
         try {
             // Select-Anweisung ausführen
@@ -436,7 +466,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
                     message = "Database Error (getNextIndex:COUNT):";
                     stm = null;
                     resultSet = null;
-                    Log.Debug(this,query, true);
+                    Log.Debug(this, query, true);
                     // Select-Anweisung ausführen
                     stm = conn.createStatement(resultSet.TYPE_SCROLL_INSENSITIVE, resultSet.CONCUR_READ_ONLY);
                     resultSet = stm.executeQuery(query);
@@ -447,7 +477,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
                 i = 0;
             }
         } catch (SQLException ex) {
-            Log.Debug(this,message + ex.getMessage());
+            Log.Debug(this, message + ex.getMessage());
             Popup.error(message + ex.getMessage(), "Datenbankfehler");
             stop();
 
@@ -459,7 +489,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
                 try {
                     resultSet.close();
                 } catch (SQLException ex) {
-                    Log.Debug(this,message + ex.getMessage());
+                    Log.Debug(this, message + ex.getMessage());
                     Popup.error(message + ex.getMessage(), "Datenbankfehler");
                 }
             }
@@ -467,7 +497,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
                 try {
                     stm.close();
                 } catch (SQLException ex) {
-                    Log.Debug(this,message + ex.getMessage());
+                    Log.Debug(this, message + ex.getMessage());
                     Popup.error(message + ex.getMessage(), "Datenbankfehler");
                 }
             }
@@ -497,7 +527,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
         String integer = "0";
         Integer i = 0;
         Integer oldi = 0;
-        Log.Debug(this,query, true);
+        Log.Debug(this, query, true);
         try {
             // Select-Anweisung ausführen
             stm = conn.createStatement(resultSet.TYPE_SCROLL_INSENSITIVE, resultSet.CONCUR_READ_ONLY);
@@ -515,7 +545,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
                     message = "Database Error (getNextIndex:COUNT):";
                     stm = null;
                     resultSet = null;
-                    Log.Debug(this,query, true);
+                    Log.Debug(this, query, true);
                     // Select-Anweisung ausführen
                     stm = conn.createStatement(resultSet.TYPE_SCROLL_INSENSITIVE, resultSet.CONCUR_READ_ONLY);
                     resultSet = stm.executeQuery(query);
@@ -529,7 +559,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
                 }
             }
         } catch (SQLException ex) {
-            Log.Debug(this,message + ex.getMessage());
+            Log.Debug(this, message + ex.getMessage());
             Popup.error(message + ex.getMessage(), "Datenbankfehler");
             stop();
             return null;
@@ -539,7 +569,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
                 try {
                     resultSet.close();
                 } catch (SQLException ex) {
-                    Log.Debug(this,message + ex.getMessage());
+                    Log.Debug(this, message + ex.getMessage());
                     Popup.error(message + ex.getMessage(), "Datenbankfehler");
                 }
             }
@@ -547,7 +577,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
                 try {
                     stm.close();
                 } catch (SQLException ex) {
-                    Log.Debug(this,message + ex.getMessage());
+                    Log.Debug(this, message + ex.getMessage());
                     Popup.error(message + ex.getMessage(), "Datenbankfehler");
                 }
             }
@@ -557,7 +587,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
             stop();
             return oldi;
         } catch (NumberFormatException numberFormatException) {
-            Log.Debug(this,numberFormatException);
+            Log.Debug(this, numberFormatException);
         }
         stop();
         return null;
@@ -570,8 +600,8 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
 
         start();
 
-       
-           if (uniquecols!=null) {
+
+        if (uniquecols != null) {
             for (int i = 0; i < uniquecols.length; i++) {
                 int j = uniquecols[i];
                 String[][] val = select(what[0].split(",")[j], new String[]{what[0].split(",")[j], what[1].split(",")[j], what[2]});
@@ -579,14 +609,14 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
                     Popup.error("Wert für `" + what[0].split(",")[j] + "´ existiert bereits: " + val[0][0] +
                             ",\nund kann nicht mehrfach eingetragen werden.",
                             "Fehler beim Überprüfen der Datenkonsistenz");
-                    
+
                     return -1;
                 }
             }
         }
 
         query = "INSERT INTO " + table + " (" + what[0] + " ) VALUES (" + what[1] + ") ";
-        Log.Debug(this,query, true);
+        Log.Debug(this, query, true);
         message = "Database Error:";
         stm = null;
         resultSet = null;
@@ -598,7 +628,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
             resultCount = stm.executeUpdate(query);
             id = getCurrentIndex();
         } catch (SQLException ex) {
-            Log.Debug(this,message + ex.getMessage());
+            Log.Debug(this, message + ex.getMessage());
             Popup.error(message + ex.getMessage(), "Datenbankfehler");
             return 0;
         } finally {
@@ -607,7 +637,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
                 try {
                     resultSet.close();
                 } catch (SQLException ex) {
-                    Log.Debug(this,message + ex.getMessage());
+                    Log.Debug(this, message + ex.getMessage());
                     Popup.error(message + ex.getMessage(), "Datenbankfehler");
                 }
             }
@@ -615,7 +645,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
                 try {
                     stm.close();
                 } catch (SQLException ex) {
-                    Log.Debug(this,message + ex.getMessage());
+                    Log.Debug(this, message + ex.getMessage());
                     Popup.error(message + ex.getMessage(), "Datenbankfehler");
                 }
             }
@@ -630,7 +660,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
      *   this.insert("name,wert", "'Sprache (Waehrung, z.B. Schweiz:  de_CH' ,'de_DE'");
      * @return id of inserted row
      */
-    public int insert(String[] what) {        
+    public int insert(String[] what) {
         return insert(what, null);
     }
 
@@ -646,7 +676,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
         what[1] = what[1].replaceAll("'", "`");
         what[1] = what[1].replaceAll("\\(;;2#4#1#1#8#0#;;\\)", "'");
 
-        Log.Debug(this,what);
+        Log.Debug(this, what);
 
         String[] a = what[0].split(",");
         String[] b = what[1].split("\\(;;\\,;;\\)");
@@ -662,13 +692,13 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
         message = "Database Error:";
         stm = null;
         resultSet = null;
-        Log.Debug(this,query, true);
+        Log.Debug(this, query, true);
         try {
             // Select-Anweisung ausführenconn.createStatement(rs.TYPE_SCROLL_INSENSITIVE,rs.CONCUR_READ_ONLY);
             stm = conn.createStatement(resultSet.TYPE_SCROLL_INSENSITIVE, resultSet.CONCUR_READ_ONLY);
             resultCount = stm.executeUpdate(query);
         } catch (SQLException ex) {
-            Log.Debug(this,message + ex.getMessage());
+            Log.Debug(this, message + ex.getMessage());
             Popup.error(message + ex.getMessage(), "Datenbankfehler");
         } finally {
             // Alle Ressourcen wieder freigeben
@@ -676,7 +706,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
                 try {
                     resultSet.close();
                 } catch (SQLException ex) {
-                    Log.Debug(this,message + ex.getMessage());
+                    Log.Debug(this, message + ex.getMessage());
                     Popup.error(message + ex.getMessage(), "Datenbankfehler");
                 }
             }
@@ -684,7 +714,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
                 try {
                     stm.close();
                 } catch (SQLException ex) {
-                    Log.Debug(this,message + ex.getMessage());
+                    Log.Debug(this, message + ex.getMessage());
                     Popup.error(message + ex.getMessage(), "Datenbankfehler");
                 }
             }
@@ -706,7 +736,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
         String l = "";
         String k = " = ";
         String deleted = " ";
-      
+
 
         start();
         query = "SELECT " + what + " FROM " + table + " WHERE " + where[0] + k + where[2] + l + where[1] + l + where[2] + deleted;
@@ -715,7 +745,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
         resultSet = null;
         ResultSetMetaData rsmd;
         String[] pax = null;
-        Log.Debug(this,query, true);
+        Log.Debug(this, query, true);
 
         try {
             // Select-Anweisung ausführen
@@ -735,7 +765,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
                 pax[i] = String.valueOf(spalten.get(i));
             }
         } catch (SQLException ex) {
-            Log.Debug(this,message + ex.getMessage());
+            Log.Debug(this, message + ex.getMessage());
             Popup.error(message + ex.getMessage(), "Datenbankfehler");
         } finally {
             // Alle Ressourcen wieder freigeben
@@ -743,7 +773,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
                 try {
                     resultSet.close();
                 } catch (SQLException ex) {
-                    Log.Debug(this,message + ex.getMessage());
+                    Log.Debug(this, message + ex.getMessage());
                     Popup.error(message + ex.getMessage(), "Datenbankfehler");
                 }
             }
@@ -751,7 +781,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
                 try {
                     stm.close();
                 } catch (SQLException ex) {
-                    Log.Debug(this,message + ex.getMessage());
+                    Log.Debug(this, message + ex.getMessage());
                     Popup.error(message + ex.getMessage(), "Datenbankfehler");
                 }
             }
@@ -801,7 +831,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
                 pax[i] = String.valueOf(spalten.get(i));
             }
         } catch (SQLException ex) {
-            Log.Debug(this,message + ex.getMessage());
+            Log.Debug(this, message + ex.getMessage());
             Popup.error(message + ex.getMessage(), "Datenbankfehler");
         } finally {
             // Alle Ressourcen wieder freigeben
@@ -809,7 +839,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
                 try {
                     resultSet.close();
                 } catch (SQLException ex) {
-                    Log.Debug(this,message + ex.getMessage());
+                    Log.Debug(this, message + ex.getMessage());
                     Popup.error(message + ex.getMessage(), "Datenbankfehler");
                 }
             }
@@ -817,7 +847,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
                 try {
                     stm.close();
                 } catch (SQLException ex) {
-                    Log.Debug(this,message + ex.getMessage());
+                    Log.Debug(this, message + ex.getMessage());
                     Popup.error(message + ex.getMessage(), "Datenbankfehler");
                 }
             }
@@ -966,14 +996,14 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
         message = "Database Error:";
         stm = null;
         resultSet = null;
-        Log.Debug(this,query, true);
+        Log.Debug(this, query, true);
         try {
             // Select-Anweisung ausführen
             stm = conn.createStatement();
             resultCount = stm.executeUpdate(query);
-            Log.Debug(this,"Entries deleted: " + resultCount);
+            Log.Debug(this, "Entries deleted: " + resultCount);
         } catch (SQLException ex) {
-            Log.Debug(this,message + ex.getMessage());
+            Log.Debug(this, message + ex.getMessage());
             throw new Exception("Es ist ein Fehler aufgetreten :-(");
 //            Popup.error(message + ex.getMessage(), "Datenbankfehler");
         } finally {
@@ -982,7 +1012,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
                 try {
                     resultSet.close();
                 } catch (SQLException ex) {
-                    Log.Debug(this,message + ex.getMessage());
+                    Log.Debug(this, message + ex.getMessage());
                     Popup.error(message + ex.getMessage(), "Datenbankfehler");
                 }
             }
@@ -990,7 +1020,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
                 try {
                     stm.close();
                 } catch (SQLException ex) {
-                    Log.Debug(this,message + ex.getMessage());
+                    Log.Debug(this, message + ex.getMessage());
                     Popup.error(message + ex.getMessage(), "Datenbankfehler");
                 }
             }
@@ -1095,21 +1125,21 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
         stm = null;
         resultSet = null;
 
-        Log.Debug(this,query, true);
+        Log.Debug(this, query, true);
         try {
             // Select-Anweisung ausführen
             stm = conn.createStatement(resultSet.TYPE_SCROLL_INSENSITIVE, resultSet.CONCUR_READ_ONLY);
             resultSet = stm.executeQuery(query);
 
             if (resultSet.first()) {
-                Log.Debug(this,"Count " + resultSet.getInt("rowcount"));
+                Log.Debug(this, "Count " + resultSet.getInt("rowcount"));
                 return resultSet.getInt("rowcount");
             } else {
                 stop();
                 return 0;
             }
         } catch (SQLException ex) {
-            Log.Debug(this,message + ex.getMessage());
+            Log.Debug(this, message + ex.getMessage());
             Popup.error(message + ex.getMessage(), "Datenbankfehler");
             stop();
             return 0;
@@ -1119,7 +1149,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
                 try {
                     resultSet.close();
                 } catch (SQLException ex) {
-                    Log.Debug(this,message + ex.getMessage());
+                    Log.Debug(this, message + ex.getMessage());
                     Popup.error(message + ex.getMessage(), "Datenbankfehler");
                 }
             }
@@ -1127,7 +1157,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
                 try {
                     stm.close();
                 } catch (SQLException ex) {
-                    Log.Debug(this,message + ex.getMessage());
+                    Log.Debug(this, message + ex.getMessage());
                     Popup.error(message + ex.getMessage(), "Datenbankfehler");
                 }
             }

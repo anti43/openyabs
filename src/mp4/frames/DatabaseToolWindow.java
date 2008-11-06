@@ -3,7 +3,6 @@
  *
  * Created on 22. Oktober 2008, 20:35
  */
-
 package mp4.frames;
 
 import mp4.datenbank.installation.Tabellen;
@@ -366,44 +365,47 @@ private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
 private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
 
-     jTextField1.setText("UPDATE lieferanten SET deleted = 0");
+    jTextField1.setText("UPDATE lieferanten SET deleted = 0");
 }//GEN-LAST:event_jButton3ActionPerformed
 
 private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
 
-     jTextField1.setText("UPDATE hersteller SET deleted = 0");
+    jTextField1.setText("UPDATE hersteller SET deleted = 0");
 }//GEN-LAST:event_jButton4ActionPerformed
 
 private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
 
-     jTextField1.setText("DELETE FROM produkte");
+    jTextField1.setText("DELETE FROM produkte");
 }//GEN-LAST:event_jButton5ActionPerformed
 
 private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
 
-     jTextField1.setText("DELETE FROM dienstleistungen");
+    jTextField1.setText("DELETE FROM dienstleistungen");
 }//GEN-LAST:event_jButton6ActionPerformed
 
 private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
 
-     jTextField1.setText("DELETE FROM rechnungen");
+    jTextField1.setText("DELETE FROM rechnungen");
 }//GEN-LAST:event_jButton7ActionPerformed
 
 private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
 
-     jTextField1.setText("DELETE FROM einnahmen");
+    jTextField1.setText("DELETE FROM einnahmen");
 }//GEN-LAST:event_jButton8ActionPerformed
 
 private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
 
-     jTextField1.setText("DELETE FROM ausgaben");
+    jTextField1.setText("DELETE FROM ausgaben");
 }//GEN-LAST:event_jButton9ActionPerformed
 
 private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-if(Popup.Y_N_dialog("Diese Aktion kann nicht rueckgaengig gemacht werden\n" +
-        "und moeglicherweise wird das Programm nicht mehr funktionieren.\n" +
-        "Ihre Daten werden u.U. unwiederrufliche geloescht. Wollen Sie das?."))
-    ConnectionHandler.instanceOf().freeQuery(jTextField1.getText(), jTextArea1);
+    
+    if (Popup.Y_N_dialog("Diese Aktion kann nicht rückgängig gemacht werden\n" +
+            "und möglicherweise wird das Programm nicht mehr funktionieren.\n" +
+            "Ihre Daten werden u.U. unwiederruflich gelöscht. Wollen Sie das?.")) {
+        ConnectionHandler.instanceOf().freeQuery(jTextField1.getText(), jTextArea1);
+    }
+
 }//GEN-LAST:event_jButton1ActionPerformed
 
 private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
@@ -413,23 +415,23 @@ private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 
 private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
 
-    jTextField1.setText("DELETE FROM "  + Tabellen.TABLE_PRODUCTS_GROUPS_CATEGORIES);
+    jTextField1.setText("DELETE FROM " + Tabellen.TABLE_PRODUCTS_GROUPS_CATEGORIES);
 
 }//GEN-LAST:event_jButton11ActionPerformed
 
 private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
 
-     jTextField1.setText("UPDATE "  + Tabellen.TABLE_PRODUCTS_GROUPS_CATEGORIES  + " SET deleted = 0");
+    jTextField1.setText("UPDATE " + Tabellen.TABLE_PRODUCTS_GROUPS_CATEGORIES + " SET deleted = 0");
 }//GEN-LAST:event_jButton12ActionPerformed
 
 private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
 
-     jTextField1.setText("UPDATE "  + Tabellen.TABLE_PRODUCTS_GROUPS_FAMILIES  + " SET deleted = 0");
+    jTextField1.setText("UPDATE " + Tabellen.TABLE_PRODUCTS_GROUPS_FAMILIES + " SET deleted = 0");
 }//GEN-LAST:event_jButton13ActionPerformed
 
 private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
 
-     jTextField1.setText("UPDATE "  + Tabellen.TABLE_PRODUCTS_GROUPS_GROUPS  + " SET deleted = 0");
+    jTextField1.setText("UPDATE " + Tabellen.TABLE_PRODUCTS_GROUPS_GROUPS + " SET deleted = 0");
 }//GEN-LAST:event_jButton14ActionPerformed
 
 private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed

@@ -66,6 +66,7 @@ public class Setup extends javax.swing.JFrame implements Constants, Strings {
         }
     }
     private boolean finished = false;
+    private boolean dbcreated = false;
 
     /** Creates new form mpInstaller
      */
@@ -578,6 +579,7 @@ public class Setup extends javax.swing.JFrame implements Constants, Strings {
             this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 
             if (jCheckBox4.isSelected() || createDatabase()) {
+                dbcreated = true;
                 if(!jCheckBox4.isSelected())setStartValues();
                 if (jCheckBox1.isSelected()) {
                     Setup.writeDesktopIcon();
@@ -607,7 +609,7 @@ public class Setup extends javax.swing.JFrame implements Constants, Strings {
         }
     }
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-       Main.settingsfile.destroy();
+       if (!dbcreated)Main.settingsfile.destroy();
        System.exit(0);
     }//GEN-LAST:event_jButton2ActionPerformed
 
