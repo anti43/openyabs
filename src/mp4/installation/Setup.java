@@ -93,6 +93,8 @@ public class Setup extends javax.swing.JFrame implements Constants, Strings {
             backuppathtf.setText(Main.USER_HOME);
             pdfpathtf.setText(Main.USER_HOME);
         }
+        
+        jTextField1.setText(Main.MPPATH);
 
         new Position(this);
         this.setVisible(true);
@@ -266,11 +268,21 @@ public class Setup extends javax.swing.JFrame implements Constants, Strings {
         jRadioButton1.setSelected(true);
         jRadioButton1.setText("Embedded Derby");
         jRadioButton1.setEnabled(false);
+        jRadioButton1.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jRadioButton1ItemStateChanged(evt);
+            }
+        });
 
         jRadioButton2.setBackground(new java.awt.Color(204, 204, 204));
         buttonGroup1.add(jRadioButton2);
         jRadioButton2.setText("MySQL");
         jRadioButton2.setEnabled(false);
+        jRadioButton2.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jRadioButton2ItemStateChanged(evt);
+            }
+        });
 
         jRadioButton3.setBackground(new java.awt.Color(204, 204, 204));
         buttonGroup1.add(jRadioButton3);
@@ -314,11 +326,11 @@ public class Setup extends javax.swing.JFrame implements Constants, Strings {
                             .add(jPanel3Layout.createSequentialGroup()
                                 .add(jRadioButton3)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(jTextField4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 219, Short.MAX_VALUE))
+                                .add(jTextField4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE))
                             .add(jRadioButton2)
                             .add(jRadioButton1)))
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .add(jTextField1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 369, Short.MAX_VALUE)
+                        .add(jTextField1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 373, Short.MAX_VALUE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jButton6)))
                 .addContainerGap())
@@ -405,8 +417,8 @@ public class Setup extends javax.swing.JFrame implements Constants, Strings {
                             .add(jLabel5))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(backuppathtf, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 236, Short.MAX_VALUE)
-                            .add(pdfpathtf, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 236, Short.MAX_VALUE))
+                            .add(backuppathtf, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)
+                            .add(pdfpathtf, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE))
                         .add(6, 6, 6)
                         .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                             .add(jButton5)
@@ -457,17 +469,17 @@ public class Setup extends javax.swing.JFrame implements Constants, Strings {
                 .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(jPanel4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .add(jPanel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 550, Short.MAX_VALUE)
+                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 556, Short.MAX_VALUE)
                     .add(jPanel2Layout.createSequentialGroup()
                         .add(jCheckBox3)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                         .add(jCheckBox4))
                     .add(jPanel2Layout.createSequentialGroup()
                         .add(jLabel2)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 184, Short.MAX_VALUE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 190, Short.MAX_VALUE)
                         .add(jLabel3))
                     .add(jLabel6)
-                    .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 550, Short.MAX_VALUE)
+                    .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 556, Short.MAX_VALUE)
                     .add(jPanel2Layout.createSequentialGroup()
                         .add(jButton3)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -660,6 +672,16 @@ private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         }
     }
 }//GEN-LAST:event_jButton6ActionPerformed
+
+private void jRadioButton1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jRadioButton1ItemStateChanged
+
+    if(jRadioButton1.isSelected())jTextField1.setText(Main.MPPATH);
+}//GEN-LAST:event_jRadioButton1ItemStateChanged
+
+private void jRadioButton2ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jRadioButton2ItemStateChanged
+
+    if(jRadioButton2.isSelected())jTextField1.setText("localhost:3306");
+}//GEN-LAST:event_jRadioButton2ItemStateChanged
     /**
      * @param args the command line arguments
      */
