@@ -41,7 +41,7 @@ import mp4.utils.tabellen.TableFormat;
  *
  * @author  anti43
  */
-public class backupView extends mp4.items.visual.CommonPanel{
+public class backupView extends mp4.items.visual.CommonPanel {
 
     private String[][] liste;
     private String[] header;
@@ -221,23 +221,35 @@ public class backupView extends mp4.items.visual.CommonPanel{
             String store, path;
             String savefile;
 
+            Main.settingsfile.read();
             try {
-                path = Main.MPPATH + File.separator + Constants.DATABASENAME;
+//                path = Main.MPPATH + File.separator + Constants.DATABASENAME;
+                path = Main.settingsfile.getDBPath() + File.separator + Constants.DATABASENAME;
+                
                 store = l.getBackup_Verzeichnis();
                 savefile = store + File.separator + df.format(new Date()) + ".mpsavefile-40.zip";
 
                 if (store.equals("")) {
-                    store = Main.MPPATH + File.separator + Constants.DATABASENAME;
+                    store = Main.MPPATH + File.separator + Constants.BACKUPS_SAVE_DIR;
                 }
 
-                Log.Debug(this, "Anlegen einer Sicherungsdatei:\nZiel: " + savefile, true);
+                Log.Debug(this, "Anlegen einer Sicherungsdatei:\n" +
+                        "\nDatenbank: " + path +
+                        "\nZiel: " + savefile, true);
                 this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
                 Zip.zip(path, savefile);
                 this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-                mainframe.setMessage("Sicherungsdatei '" + savefile + "' angelegt.");
-                new HistoryItem(ConnectionHandler.instanceOf(), Strings.BACKUP, "Sicherungsdatei " + savefile + " angelegt.");
+
+                if (new File(savefile).exists()) {
+                    mainframe.setMessage("Sicherungsdatei '" + savefile + "' angelegt.");
+                    new HistoryItem(ConnectionHandler.instanceOf(), Strings.BACKUP, "Sicherungsdatei " + savefile + " angelegt.");
+                } else {
+                    Log.Debug(this, "Sicherung fehlgeschlagen: " + savefile, true);
+                    mainframe.setMessage("Fehler beim Anlegen der Sicherungsdatei '" + savefile + "'");
+                }
             } catch (Exception ex) {
                 Log.Debug(this, ex.getMessage(), true);
+                Log.Debug(this, "Sicherung fehlgeschlagen.", true);
             }
             this.validateTable();
         } else {
@@ -287,22 +299,22 @@ public class backupView extends mp4.items.visual.CommonPanel{
             if ((JOptionPane.showConfirmDialog(this, "Möglicherweise vorhandene neuere Daten,\n " +
                     "die Sie seit der Sicherung angelegt haben, werden gelöscht!\n " +
                     "Vor dem Ersetzen wird eine Sicherheitskopie des aktuellen Datenbestandes angelegt.\n " +
-                    "Wollen Sie wirklich die Sicherungsdatei vom * " + ((String[])list.get(id))[1] + " * zurückspielen?",
+                    "Wollen Sie wirklich die Sicherungsdatei vom * " + ((String[]) list.get(id))[1] + " * zurückspielen?",
                     "Sicher?", JOptionPane.YES_NO_OPTION)) == JOptionPane.YES_OPTION) {
                 jButton6MouseClicked(evt);
                 try {
                     File olddb = new File(Main.MPPATH + File.separator + Constants.DATABASENAME);
                     store = Main.MPPATH + File.separator + Constants.DATABASENAME;
-                    Log.Debug(this,"Zurückspielen einer Sicherungsdatei:\nZiel: " + store, true);
+                    Log.Debug(this, "Zurückspielen einer Sicherungsdatei:\nZiel: " + store, true);
                     FileDirectoryHandler.deleteTree(olddb);
-                    Log.Debug(this,"Rücksichern nach: " + store, true);
-                    UnZip.deflate(((String[])list.get(id))[2], store);
-                    mainframe.setMessage("Sicherungsdatei '" + ((String[])list.get(id))[2] + "' wiederhergestellt.");
+                    Log.Debug(this, "Rücksichern nach: " + store, true);
+                    UnZip.deflate(((String[]) list.get(id))[2], store);
+                    mainframe.setMessage("Sicherungsdatei '" + ((String[]) list.get(id))[2] + "' wiederhergestellt.");
                     Popup.notice(this, "Starten Sie das Programm neu.");
                     System.exit(0);
 
                 } catch (IOException ex) {
-                    Log.Debug(this,ex.getMessage(), true);
+                    Log.Debug(this, ex.getMessage(), true);
                 }
             }
         }
@@ -329,12 +341,12 @@ public class backupView extends mp4.items.visual.CommonPanel{
         try {
             this.lstFiles = new ArrayList();
             this.src = new File(this.savepath);
-            Log.Debug(this,"Backup Verzeichnis: " + src, true);
+            Log.Debug(this, "Backup Verzeichnis: " + src, true);
             File[] files = src.listFiles();
-            Log.Debug(this,"Dateien analysieren...", true);
+            Log.Debug(this, "Dateien analysieren...", true);
             list = new ArrayList();
 
-            for (int i = 0,   k = 0; i < files.length; i++) {
+            for (int i = 0, k = 0; i < files.length; i++) {
                 if (files[i].isFile() && files[i].toString().contains("mpsavefile-40")) {
                     try {
                         String[] fileinfo = new String[3];
@@ -342,26 +354,25 @@ public class backupView extends mp4.items.visual.CommonPanel{
                         fileinfo[1] = df2.format(df.parse(files[i].getName().substring(0, 18)));
                         fileinfo[2] = files[i].getCanonicalPath();
                         list.add(fileinfo);
-                        Log.Debug(this,"Sicherungsdatei gefunden: " + files[i].getName(), true);
+                        Log.Debug(this, "Sicherungsdatei gefunden: " + files[i].getName(), true);
                         k++;
                     } catch (Exception ex) {
-                        Log.Debug(this,ex.getMessage(), true);
+                        Log.Debug(this, ex.getMessage(), true);
                     }
                 }
             }
             if (files.length == 0) {
                 String[] fileinfo = new String[3];
-                fileinfo [2] = "Keine Datei vorhanden";
+                fileinfo[2] = "Keine Datei vorhanden";
                 list.add(fileinfo);
             }
         } catch (Exception exception) {
-            Log.Debug(this,exception);
-            Log.Debug(this,exception.getMessage(), true);
+            Log.Debug(this, exception);
+            Log.Debug(this, exception.getMessage(), true);
         }
 
         jTable1.setModel(new DefaultTableModel(ListenDataUtils.listToTableArray(list), header));
         TableFormat.stripFirst(jTable1);
         TableFormat.format(jTable1, 1, 180);
     }
-        
 }
