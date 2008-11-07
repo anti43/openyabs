@@ -90,6 +90,7 @@ public class DruckJob implements Waiter {
             if (!Arrays.asList(prservices).contains(prservDflt)) {
                 prservDflt = null;
             }
+            if(prservices == null)prservices = new PrintService[]{PrintServiceLookup.lookupDefaultPrintService()};
             prserv = ServiceUI.printDialog(null, 50, 50, prservices, prservDflt, null, aset);
         }
         if (null != prserv) {
