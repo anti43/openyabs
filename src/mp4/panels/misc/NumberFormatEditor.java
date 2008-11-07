@@ -211,16 +211,16 @@ private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
     if (mainframe.getUser().doAction(User.ADMIN)) {
-        NumberFormatHandler nfh = new NumberFormatHandler(mode, new Date());
+        NumberFormatHandler kl = new NumberFormatHandler(mode, new Date());
 
         String fstring = jTextField1.getText() + "&!" + jComboBox1.getSelectedIndex();
-        nfh.setFormatter(nfh.parseFormat(jTextField1.getText() + "&!" + jComboBox1.getSelectedIndex()));
+        kl.setFormatter(kl.parseFormat(jTextField1.getText() + "&!" + jComboBox1.getSelectedIndex()));
 
         String formatString = "&!&!00000";
 
         try {
-            nfh.getNextNumber();
-            nfh.save(fstring);
+            kl.getNextNumber();
+            kl.save(fstring);
             this.dispose();
         } catch (Exception e) {
             Log.Debug(this, e, rootPaneCheckingEnabled);

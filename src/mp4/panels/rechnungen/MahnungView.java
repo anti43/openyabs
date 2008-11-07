@@ -6,6 +6,7 @@
 package mp4.panels.rechnungen;
 
 import java.awt.Color;
+import java.util.Date;
 import mp4.logs.*;
 import mp4.items.Product;
 import mp4.items.Rechnung;
@@ -54,6 +55,7 @@ public class MahnungView extends javax.swing.JFrame {
         lone = true;
 
         jTextField2.setInputVerifier(InputVerifiers.getDoubleInputVerfier(jTextField2));
+        jTextField1.setInputVerifier(InputVerifiers.getDateInputVerfier(jTextField1));
 
         new Position(this);
         this.setVisible(rootPaneCheckingEnabled);
@@ -76,6 +78,7 @@ public class MahnungView extends javax.swing.JFrame {
         jLabel2.setText(bill.getRechnungnummer());
         jLabel6.setText(Kunde.getFirma());
         jTextField1.setText(DateConverter.getTodayDefDate());
+        jTextField1.setInputVerifier(InputVerifiers.getDateInputVerfier(jTextField2));
 
         jTextField2.setInputVerifier(InputVerifiers.getDoubleInputVerfier(jTextField2));
 
@@ -255,7 +258,7 @@ public class MahnungView extends javax.swing.JFrame {
                 if (mainframe.getUser().doAction(User.EDITOR)) {
                     if (!lone) {
                         try {
-                            view.setProduct(new Product((bill.getMahnungen() + 1) + ". Mahnung vom " + DateConverter.getTodayDefDate(),
+                            view.setProduct(new Product((bill.getMahnungen() + 1) + ". Mahnung vom " + DateConverter.getDefDateString(DateConverter.getDate(jTextField1.getText())),
                                     FormatNumber.parseDezimal(jTextField2.getText()), Einstellungen.instanceOf().getHauptsteuersatz()));
                             view.addMahnung();
                             this.dispose();
@@ -268,7 +271,7 @@ public class MahnungView extends javax.swing.JFrame {
                         mainframe.identifier.mainTabPane.setSelectedComponent(view);
                         mainframe.identifier.mainTabPane.setIconAt(mainframe.identifier.mainTabPane.getSelectedIndex(), new TabCloseIcon());
                         view.setBill(bill);
-                        view.setProduct(new Product((bill.getMahnungen() + 1) + ". Mahnung vom " + DateConverter.getTodayDefDate(),
+                        view.setProduct(new Product((bill.getMahnungen() + 1) + ". Mahnung vom " + DateConverter.getDefDateString(DateConverter.getDate(jTextField1.getText())),
                                 FormatNumber.parseDezimal(jTextField2.getText()), Einstellungen.instanceOf().getHauptsteuersatz()));
                         view.addMahnung();
                         this.dispose();
@@ -299,16 +302,15 @@ private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     mainframe.identifier.mainTabPane.setSelectedComponent(view);
                     mainframe.identifier.mainTabPane.setIconAt(mainframe.identifier.mainTabPane.getSelectedIndex(), new TabCloseIcon());
                     view.setBill(bill);
-                    view.setProduct(new Product((bill.getMahnungen()+1) + ". Mahnung vom " + DateConverter.getTodayDefDate(),
+                    view.setProduct(new Product((bill.getMahnungen()+1) + ". Mahnung vom " + DateConverter.getDefDateString(DateConverter.getDate(jTextField1.getText())),
                             FormatNumber.parseDezimal(jTextField2.getText()), Einstellungen.instanceOf().getHauptsteuersatz()));
                     view.addMahnung();
                 }
             } 
             
-            
             try {
                 Job job = new Job(new PDFFile(new PDF_Mahnung(bill,
-                        VariablenZuText.parseText(jTextArea1.getText(), new Object[]{bill, c}),
+                        VariablenZuText.parseText(jTextArea1.getText(), new Object[]{bill, c, DateConverter.getDate(jTextField1.getText())}),
                         FormatNumber.parseDezimal(jTextField2.getText()), bill.getMahnungen(), false)), new PdfVorschauWindow(), mainframe.identifier.getMainProgress());
                 
                 job.execute();

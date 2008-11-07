@@ -22,6 +22,7 @@ import java.util.Date;
 
 import mp4.logs.*;
 import mp4.einstellungen.Programmdaten;
+import mp4.einstellungen.VariablenZuText;
 import mp4.interfaces.Countable;
 import mp4.utils.datum.DateConverter;
 
@@ -31,10 +32,7 @@ import mp4.utils.datum.DateConverter;
  */
 public class NumberFormatHandler {
 
-    public final String MONTH = "\\{MONAT\\}";
-    public final String MONTH_NAME = "\\{MONAT_NAME\\}";
-    public final String YEAR = "\\{JAHR\\}";
-    public final String DAY = "\\{TAG\\}";
+
     public final String COUNT = "00000";
     public final String SEP = "&!";
     private NumberFormat formatter;
@@ -268,12 +266,6 @@ public class NumberFormatHandler {
     }
 
     public String replace(String format) {
-       
-        format = format.replaceAll(YEAR, DateConverter.getYear(date));
-        format = format.replaceAll(MONTH, DateConverter.getMonth(date));
-        format = format.replaceAll(MONTH_NAME, DateConverter.getMonthName(date));
-        format = format.replaceAll(DAY, DateConverter.getDayOfMonth(date));
-        
-        return format;
+        return VariablenZuText.parseText(format, new Object[]{date});
     }
 }

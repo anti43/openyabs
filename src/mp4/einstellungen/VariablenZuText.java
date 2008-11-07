@@ -4,6 +4,7 @@
  */
 package mp4.einstellungen;
 
+import java.util.Date;
 import mp4.items.People;
 import mp4.items.Rechnung;
 import mp4.utils.datum.DateConverter;
@@ -21,6 +22,10 @@ public class VariablenZuText {
     public static final String KUNDE_NAME = "\\{KUNDE_NAME\\}";
     public static final String KUNDE_ANREDE = "\\{KUNDE_ANREDE\\}";
     public static final String KUNDE_VORNAME = "\\{KUNDE_VORNAME\\}";
+    public static final String MONTH = "\\{MONAT\\}";
+    public static final String MONTH_NAME = "\\{MONAT_NAME\\}";
+    public static final String YEAR = "\\{JAHR\\}";
+    public static final String DAY = "\\{TAG\\}";
 
     public static String parseText(String text, Object[] object) {
 
@@ -35,6 +40,8 @@ public class VariablenZuText {
                 if (object[i] != null) {
                     text = parseKunde(text, (mp4.items.People) object[i]);
                 }
+            } else if(object[i].getClass().isInstance(new Date()) ){
+                text =  parseDatum(text,(Date) object[i] );
             }
         }
 
@@ -54,5 +61,15 @@ public class VariablenZuText {
                 replaceAll(VariablenZuText.RECHNUNG_DATUM, DateConverter.getDefDateString(rechnung.getDatum())).
                 replaceAll(VariablenZuText.RECHNUNG_AF_DATUM, DateConverter.getDefDateString(rechnung.getAusfuehrungsDatum()));
 
+    }
+    
+    private static String parseDatum(String text, Date datum){
+    
+        text = text.replaceAll(YEAR, DateConverter.getYear(datum));
+        text = text.replaceAll(MONTH, DateConverter.getMonth(datum));
+        text = text.replaceAll(MONTH_NAME, DateConverter.getMonthName(datum));
+        text = text.replaceAll(DAY, DateConverter.getDayOfMonth(datum));
+    
+        return text;
     }
 }
