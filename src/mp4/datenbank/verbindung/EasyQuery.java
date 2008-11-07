@@ -282,7 +282,7 @@ public class EasyQuery implements Queries {
     }
 
     public Integer getNextIndex(String of) {
-        return q.getNextIndexOfStringCol(of);
+        return q.getNextIndexOfStringCol(of, null);
     }
 
     /**

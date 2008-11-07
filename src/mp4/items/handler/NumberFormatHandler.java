@@ -100,10 +100,8 @@ public class NumberFormatHandler {
     }
 
     public NumberFormat parseFormat(String format) {
-        format = format.replaceAll(YEAR, DateConverter.getYear(date));
-        format = format.replaceAll(MONTH, DateConverter.getMonth(date));
-        format = format.replaceAll(MONTH_NAME, DateConverter.getMonthName(date));
-        format = format.replaceAll(DAY, DateConverter.getDayOfMonth(date));
+        
+        format = replace(format);
 
         String[] string = format.split(SEP);
 
@@ -224,8 +222,8 @@ public class NumberFormatHandler {
                             DateConverter.addDay(DateConverter.getDate(DateConverter.getDay(type.getDatum()))));
                     break;
 
-                case 4:
-                    count = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(type.getTable()).getNextIndexOfStringCol(type.getCountColumn()) - 1;
+                case 4:                    
+                    count = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(type.getTable()).getNextIndexOfStringCol(type.getCountColumn(), this) - 1;
                     break;
 
                 case 0:
@@ -267,5 +265,15 @@ public class NumberFormatHandler {
         } else {
             return value;
         }
+    }
+
+    public String replace(String format) {
+       
+        format = format.replaceAll(YEAR, DateConverter.getYear(date));
+        format = format.replaceAll(MONTH, DateConverter.getMonth(date));
+        format = format.replaceAll(MONTH_NAME, DateConverter.getMonthName(date));
+        format = format.replaceAll(DAY, DateConverter.getDayOfMonth(date));
+        
+        return format;
     }
 }

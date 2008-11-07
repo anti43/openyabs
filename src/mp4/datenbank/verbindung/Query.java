@@ -19,6 +19,8 @@ package mp4.datenbank.verbindung;
 import java.awt.Cursor;
 
 import java.sql.*;
+import java.text.NumberFormat;
+import java.text.ParsePosition;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -26,6 +28,7 @@ import java.util.logging.Logger;
 import javax.swing.JFrame;
 
 import javax.swing.JTextArea;
+import mp4.items.handler.NumberFormatHandler;
 import mp4.items.visual.Popup;
 import mp4.logs.*;
 import mp4.utils.datum.DateConverter;
@@ -105,7 +108,8 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
         stop();
         return false;
     }
-
+ 
+    @SuppressWarnings("unchecked")
     public boolean freeQuery(String string, JTextArea log) {
         start();
         query = string;
@@ -180,6 +184,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
         return false;
 
     }
+
 
     /**
      * 
@@ -403,7 +408,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
     }
 
     public String getNextStringNumber(String colName) {
-        Integer s = getNextIndexOfStringCol(colName);
+        Integer s = getNextIndexOfStringCol(colName, null);
         return originalvalue.substring(0, substringcount) + s;
     }
 
@@ -425,7 +430,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
      * @param colName 
      * @return the next 
      */
-    public Integer getNextIndexOfStringCol(String colName) {
+    public Integer getNextIndexOfStringCol(String colName, NumberFormatHandler  formatter) {
 
         start();
         query = "SELECT " + colName + " FROM " + table + " ORDER BY ID ASC";
@@ -448,6 +453,16 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
             if (resultSet.last()) {
                 index = resultSet.getString(colName);
                 originalvalue = index;
+                
+                if(formatter != null){
+                    try {
+                        Log.Debug(this, "Sub-format value: " + index + " Format: " + formatter.replace(formatter.getCurrentFormat()[0]));
+                        index = index.substring(formatter.replace(formatter.getCurrentFormat()[0]).length());
+                        Log.Debug(this, "New value: " + index);
+                    } catch (Exception e) {
+                        Log.Debug(this, "Can not sub-format value: " + index);
+                    }
+                }
 
                 while (i == null && index.length() > 0) {
                     try {
