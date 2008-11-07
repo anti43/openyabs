@@ -64,7 +64,7 @@ public class DataLock extends mp4.datenbank.verbindung.EasyQuery {
     public void flush() {
         int count = ConnectionHandler.instanceOf().clone(Tabellen.TABLE_ROWLOCK).selectCount(null, null);
         freeQuery("DELETE FROM " + Tabellen.TABLE_ROWLOCK);
-        Popup.notice(count + " Objekte released.");
+        Popup.notice(this, count + " Objekte released.");
     }
   
     public static void lateRelease() {

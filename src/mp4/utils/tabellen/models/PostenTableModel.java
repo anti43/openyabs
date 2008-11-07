@@ -81,13 +81,13 @@ public class PostenTableModel extends MPTableModel {
             try {
                 m.setValueAt(product.getTaxValue(), selectedRow, 3);
             } catch (NumberFormatException numberFormatException) {
-                Popup.notice("Wert 'Steuer' unzulässig: Produkt " + product.getProduktNummer());
+                Popup.notice(this, "Wert 'Steuer' unzulässig: Produkt " + product.getProduktNummer());
                 m.setValueAt(Einstellungen.instanceOf().getHauptsteuersatz(), selectedRow, 3);
             }
             try {
                 m.setValueAt(new Double(product.getVK()), selectedRow, 4);
             } catch (NumberFormatException numberFormatException) {
-                Popup.notice("Wert 'Preis' unzulässig: Produkt " + product.getProduktNummer());
+                Popup.notice(this, "Wert 'Preis' unzulässig: Produkt " + product.getProduktNummer());
                 m.setValueAt(product.getVK(), selectedRow, 4);
             }
         } catch (Exception exception) {
@@ -121,13 +121,13 @@ public class PostenTableModel extends MPTableModel {
             try {
                 m.setValueAt(product.getTaxValue(), selectedRow, 3);
             } catch (NumberFormatException numberFormatException) {
-                Popup.notice("Wert 'Steuer' unzulässig: Produkt " + product.getProduktNummer());
+                Popup.notice(this, "Wert 'Steuer' unzulässig: Produkt " + product.getProduktNummer());
                 m.setValueAt(Einstellungen.instanceOf().getHauptsteuersatz(), selectedRow, 3);
             }
             try {
                 m.setValueAt(new Double(product.getPreis()), selectedRow, 4);
             } catch (NumberFormatException numberFormatException) {
-                Popup.notice("Wert 'Preis' unzulässig: Produkt " + product.getProduktNummer());
+                Popup.notice(this, "Wert 'Preis' unzulässig: Produkt " + product.getProduktNummer());
                 m.setValueAt(product.getPreis(), selectedRow, 4);
             }
         } catch (Exception exception) {

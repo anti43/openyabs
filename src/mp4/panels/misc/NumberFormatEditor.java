@@ -200,7 +200,7 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         jTextField2.setText(nfh.getNextNumber());
     } catch (Exception e) {
         Log.Debug(this, e, rootPaneCheckingEnabled);
-        Popup.notice("Format nicht möglich.");
+        Popup.notice(this, "Format nicht möglich.");
     }
 
 }//GEN-LAST:event_jButton1ActionPerformed
@@ -224,7 +224,7 @@ private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             this.dispose();
         } catch (Exception e) {
             Log.Debug(this, e, rootPaneCheckingEnabled);
-            Popup.notice("Format nicht möglich.");
+            Popup.notice(this, "Format nicht möglich.");
         }
     }
 
@@ -268,7 +268,7 @@ private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 this.dispose();
             } catch (Exception e) {
                 Log.Debug(this, e, rootPaneCheckingEnabled);
-                Popup.notice("Format nicht möglich.");
+                Popup.notice(this, "Format nicht möglich.");
             }
         }
     }

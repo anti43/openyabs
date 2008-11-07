@@ -1274,7 +1274,7 @@ public class offersView extends mp4.items.visual.CommonPanel implements DataPane
                 Log.Debug(this,ex);
             }
         } else {
-            Popup.notice("Sie müssen das Angebot erst anlegen.");
+            Popup.notice(this, "Sie müssen das Angebot erst anlegen.");
         }
     }//GEN-LAST:event_jButton12MouseClicked
 
@@ -1358,12 +1358,12 @@ private void jButton13MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
 //            currentOffer.setRechnungId(r.getId());
         } else {
             r = new Rechnung(currentOffer.getRechnungId());
-            Popup.notice("Diesem Angebot ist bereits eine Rechnung zugewiesen: " + r.getRechnungnummer());
+            Popup.notice(this, "Diesem Angebot ist bereits eine Rechnung zugewiesen: " + r.getRechnungnummer());
         }
 
         mainframe.addBillPanel(r);
     } else {
-        Popup.notice("Sie müssen das Angebot erst anlegen.");
+        Popup.notice(this, "Sie müssen das Angebot erst anlegen.");
     }
 }//GEN-LAST:event_jButton13MouseClicked
 
@@ -1377,7 +1377,7 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 Log.Debug(this,ex);
             }
     } else {
-        Popup.notice("Sie müssen das Angebot erst anlegen.");
+        Popup.notice(this, "Sie müssen das Angebot erst anlegen.");
     }
 
 }//GEN-LAST:event_jButton1ActionPerformed

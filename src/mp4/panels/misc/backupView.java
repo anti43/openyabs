@@ -241,7 +241,7 @@ public class backupView extends mp4.items.visual.CommonPanel{
             }
             this.validateTable();
         } else {
-            Popup.notice("Datenbankbackup ist nur mit lokaler Derby Datenbank möglich.");
+            Popup.notice(this, "Datenbankbackup ist nur mit lokaler Derby Datenbank möglich.");
         }
     }
 
@@ -279,7 +279,7 @@ public class backupView extends mp4.items.visual.CommonPanel{
             id = Integer.valueOf((String) jTable1.getValueAt(jTable1.getSelectedRow(), 0));
         } catch (Exception numberFormatException) {
             idOk = false;
-            Popup.notice("Sie müssen eine Sicherungsdatei auswählen.");
+            Popup.notice(this, "Sie müssen eine Sicherungsdatei auswählen.");
         }
         File path;
         String store = "";
@@ -298,7 +298,7 @@ public class backupView extends mp4.items.visual.CommonPanel{
                     Log.Debug(this,"Rücksichern nach: " + store, true);
                     UnZip.deflate(((String[])list.get(id))[2], store);
                     mainframe.setMessage("Sicherungsdatei '" + ((String[])list.get(id))[2] + "' wiederhergestellt.");
-                    Popup.notice("Starten Sie das Programm neu.");
+                    Popup.notice(this, "Starten Sie das Programm neu.");
                     System.exit(0);
 
                 } catch (IOException ex) {

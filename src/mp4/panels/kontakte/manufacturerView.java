@@ -1020,7 +1020,7 @@ public class manufacturerView extends mp4.items.visual.CommonPanel implements mp
                 if (!current.getNfh().exists(jTextField4.getText())) {
                     current.setHerstellernummer(jTextField4.getText());
                 } else {
-                    Popup.notice("Angegebene nummer existiert bereits.");
+                    Popup.notice(this, "Angegebene nummer existiert bereits.");
                     return false;
                 }
             }

@@ -86,7 +86,7 @@ public class PDF_Lieferschein implements Template {
                     fields.add(new String[]{"product" + t, String.valueOf(products[i][2])});
                 }
             } catch (Exception exception) {
-                Popup.notice(exception.getMessage());
+                Popup.notice(this, exception.getMessage());
             }
         }
 

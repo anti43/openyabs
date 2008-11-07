@@ -1122,7 +1122,7 @@ layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 if (!current.getNfh().exists(jTextField4.getText())) {
                     current.setNummer(jTextField4.getText());
                 } else {
-                    Popup.notice("Angegebene Kundennummer existiert bereits.");
+                    Popup.notice(this, "Angegebene Kundennummer existiert bereits.");
                     return false;
                 }
             }

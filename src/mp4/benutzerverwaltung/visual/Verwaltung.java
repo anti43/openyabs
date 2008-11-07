@@ -242,7 +242,7 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         if (selection.getId() != 1) {
             new User().deactivate(selection.getId());
         } else {
-            Popup.notice("Benutzer 'Administrator' kann nicht entfernt werden!");
+            Popup.notice(this, "Benutzer 'Administrator' kann nicht entfernt werden!");
         }
     }
     jTable1.setModel(new UserTableModel());
@@ -280,9 +280,9 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 new User(jTextField1.getText(), jPasswordField1.getSelectedText().toString(),
                         jCheckBox2.isSelected(), jCheckBox1.isSelected(), mainframe.getUser());
                 jTable1.setModel(new UserTableModel());
-                Popup.notice("Benutzer angelegt.");
+                Popup.notice(this, "Benutzer angelegt.");
             } else {
-                Popup.notice("Passwörter stimmen nicht überein!");
+                Popup.notice(this, "Passwörter stimmen nicht überein!");
             }
         }
     }//GEN-LAST:event_jButton1ActionPerformed
@@ -316,11 +316,11 @@ private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     jTable1.setModel(new UserTableModel());
                     
                     new HistoryItem("Benutzerverwaltung", "Benutzerdaten von " + n + " geändert.", mainframe.getUser());
-                    Popup.notice("Benutzerdaten gespeichert.");
+                    Popup.notice(this, "Benutzerdaten gespeichert.");
                 }
             }
         } else {
-            Popup.notice("Passwörter stimmen nicht überein!");
+            Popup.notice(this, "Passwörter stimmen nicht überein!");
         }
     }
 }//GEN-LAST:event_jButton5ActionPerformed

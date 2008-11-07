@@ -1637,7 +1637,7 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 Log.Debug(this,ex);
             }
     } else {
-        Popup.notice("Sie müssen die Rechnung erst anlegen.");
+        Popup.notice(this, "Sie müssen die Rechnung erst anlegen.");
     }
 }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -1658,14 +1658,14 @@ private void jButton12MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
                         Job job3 = new Job((Waitable) new PDFFile(new PDF_Angebot(currentBill.getAngebot(), false)), (Waiter) new DruckJob(), mainframe.getMainProgress());
                         job3.execute();
                     } else {
-                        Popup.notice("Kein Angebot vorhanden.");
+                        Popup.notice(this, "Kein Angebot vorhanden.");
                     }
                 }
             } catch (Exception ex) {
                 Log.Debug(this,ex);
             }
     } else {
-        Popup.notice("Sie müssen die Rechnung erst anlegen.");
+        Popup.notice(this, "Sie müssen die Rechnung erst anlegen.");
     }
 }//GEN-LAST:event_jButton12MouseClicked
 

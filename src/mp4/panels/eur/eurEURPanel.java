@@ -213,7 +213,7 @@ public class eurEURPanel extends mp4.items.visual.CommonPanel{
 
             jTable1.doLayout();
         } catch (Exception ex) {   
-                Popup.notice("Sie müssen ein Jahr angeben."); 
+                Popup.notice(this, "Sie müssen ein Jahr angeben."); 
                 Log.Debug(this,ex);
         }
     }//GEN-LAST:event_jButton1ActionPerformed

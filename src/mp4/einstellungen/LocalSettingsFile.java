@@ -83,7 +83,7 @@ public class LocalSettingsFile {
         if (workfile.getParentFile().canWrite()) {
             file.writeOnce(String.valueOf(getLastUserID()));
         } else {
-            Popup.notice(Strings.PERMISSION_DENIED);
+            Popup.notice(this, Strings.PERMISSION_DENIED);
             System.err.println(Strings.PERMISSION_DENIED);
         }
         return workfile.canRead();
@@ -100,7 +100,7 @@ public class LocalSettingsFile {
         if (workfile.getParentFile().canWrite()) {
             file.writeOnce(String.valueOf(getLastUserID()));
         } else {
-            Popup.notice(Strings.PERMISSION_DENIED);
+            Popup.notice(this, Strings.PERMISSION_DENIED);
             System.err.println(Strings.PERMISSION_DENIED);
         }
 

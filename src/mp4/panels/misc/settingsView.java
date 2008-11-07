@@ -587,35 +587,35 @@ private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:ev
         try {
             data.setEinnahme_Standard_Konto(new SKRKonto(jTextField1.getText()));
         } catch (Exception e) {
-            Popup.notice("Konto existiert nicht: " + jTextField1.getText());
+            Popup.notice(this, "Konto existiert nicht: " + jTextField1.getText());
             data.setEinnahme_Standard_Konto(new SKRKonto("2112"));
         }
 
         try {
             data.setAusgabeDefKonto(new SKRKonto(jTextField2.getText()));
         } catch (Exception e) {
-            Popup.notice("Konto existiert nicht: " + jTextField2.getText());
+            Popup.notice(this, "Konto existiert nicht: " + jTextField2.getText());
             data.setAusgabeDefKonto(new SKRKonto("1111"));
         }
 
         try {
             data.setLocale(new Locale(jTextField3.getText()));
         } catch (Exception e) {
-            Popup.notice("Locale existiert nicht: " + jTextField3.getText());
+            Popup.notice(this, "Locale existiert nicht: " + jTextField3.getText());
             data.setLocale(new Locale("de_DE"));
         }
         
         try {
             data.setHauptsteuersatz(FormatNumber.parseDezimal(jTextField4.getText()));
         } catch (NumberFormatException numberFormatException) {
-            Popup.notice("Ungueltiger Wert fuer den Steuersatz: " + jTextField4.getText());
+            Popup.notice(this, "Ungueltiger Wert fuer den Steuersatz: " + jTextField4.getText());
             data.setHauptsteuersatz(19.0d);
         }
         
         try {
             data.setRechnung_TageBisVerzug(Integer.valueOf(jTextField5.getText()));
         } catch (NumberFormatException numberFormatException) {
-            Popup.notice("Ungueltiger Wert fuer Tage in Verzug: " + jTextField5.getText());
+            Popup.notice(this, "Ungueltiger Wert fuer Tage in Verzug: " + jTextField5.getText());
             data.setRechnung_TageBisVerzug(30);
         }
         

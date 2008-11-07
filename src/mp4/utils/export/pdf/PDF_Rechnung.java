@@ -109,7 +109,7 @@ public class PDF_Rechnung implements Template {
                     fields.add(new String[]{"count" + t, t + "."});
                 }
             } catch (Exception exception) {
-                Popup.notice(exception.getMessage());
+                Popup.notice(this, exception.getMessage());
             }
         }
         Double tax = brutto - netto;

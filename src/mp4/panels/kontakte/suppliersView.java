@@ -1013,7 +1013,7 @@ public class suppliersView extends mp4.items.visual.CommonPanel implements mp4.d
                 if (!current.getNfh().exists(jTextField4.getText())) {
                     current.setNummer(jTextField4.getText());
                 } else {
-                    Popup.notice("Angegebene Nummer existiert bereits.");
+                    Popup.notice(this, "Angegebene Nummer existiert bereits.");
                     return false;
                 }
             }

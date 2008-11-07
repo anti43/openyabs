@@ -18,7 +18,10 @@ package mp4.items.visual;
 
 import java.awt.Component;
 import javax.swing.JOptionPane;
+import mp4.frames.mainframe;
 import mp4.logs.*;
+import mp4.panels.misc.NumberFormatEditor;
+import mp4.utils.export.pdf.PDF_Rechnung;
 import mp4.utils.text.TextFormat;
 
 /**
@@ -45,6 +48,17 @@ public class Popup {
             return false;
         }
     }
+
+    public static void notice(Component parent, String text) {
+        text = TextFormat.maxLineLength(text, 120);
+        JOptionPane.showMessageDialog(parent, text, Popup.NOTICE, JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public static void notice(Object initiator, String text) {
+        text = TextFormat.maxLineLength(text, 120);
+        JOptionPane.showMessageDialog(mainframe.identifier, text, Popup.NOTICE, JOptionPane.INFORMATION_MESSAGE);
+    }
+
 
     /**
      * A popup..

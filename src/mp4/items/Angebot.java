@@ -311,7 +311,7 @@ public class Angebot extends mp4.items.Things implements mp4.datenbank.installat
                     } catch (NumberFormatException numberFormatException) {
                         nstr[i][4] = Double.valueOf("0");
                         nstr[i][5] = Double.valueOf("0");
-                        Popup.notice(Popup.GENERAL_ERROR);
+                        Popup.notice(this, Popup.GENERAL_ERROR);
                     }
                 }
             } catch (Exception exception) {

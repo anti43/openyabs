@@ -1384,7 +1384,7 @@ private void jMenuItem1ActionPerformed1(java.awt.event.ActionEvent evt) {//GEN-F
 
         }
     } else {
-        Popup.notice("Die Benutzerauthentifizierung kann nur von einem Administrator ausgeschaltet werden!");
+        Popup.notice(this, "Die Benutzerauthentifizierung kann nur von einem Administrator ausgeschaltet werden!");
     }
 
 
@@ -1395,7 +1395,7 @@ private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     if (getUser().isIsAdmin()) {
         new Verwaltung(this);
     } else {
-       Popup.notice("Die Benutzerverwaltung kann nur von einem Administrator geöffnet werden!");
+       Popup.notice(this, "Die Benutzerverwaltung kann nur von einem Administrator geöffnet werden!");
     }
 
 }//GEN-LAST:event_jMenuItem5ActionPerformed
@@ -1412,7 +1412,7 @@ private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     if (!useauth || getUser().isIsAdmin()) {
         new TaxRatesEditor(this);
     } else {
-        Popup.notice("Die Steuersatzverwaltung kann nur von einem Administrator geöffnet werden!");
+        Popup.notice(this, "Die Steuersatzverwaltung kann nur von einem Administrator geöffnet werden!");
     }
 }//GEN-LAST:event_jMenuItem7ActionPerformed
 
@@ -1487,7 +1487,7 @@ private void jMenuItem24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
         TextDatFile file = new TextDatFile(ArrayUtils.ObjectToStringArray(new Kontaktliste(new Kunde().getClass()).getData()), Kontaktliste.header);
         new Job(file, dialog, mainProgressBar).execute();
     } catch (Exception e) {
-        Popup.notice("Keine Kunden vorhanden.");
+        Popup.notice(this, "Keine Kunden vorhanden.");
     }
 }//GEN-LAST:event_jMenuItem24ActionPerformed
 
@@ -1550,7 +1550,7 @@ private void jMenuItem16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
                     setInfoText("Datensatz in die Zwischenablage kopiert. " + ((Things) data).getNummer());
                 }
             } catch (Exception e) {
-                Popup.notice("Kopieren von hier nicht moeglich.");
+                Popup.notice(this, "Kopieren von hier nicht moeglich.");
 //                Log.Debug(this, e.getMessage());
             }
         } else {
@@ -1579,7 +1579,7 @@ private void jMenuItem25ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     if (getUser().isIsAdmin()) {
         new DatabaseToolWindow();
     } else {
-        Popup.notice("Das Datenbankwerkzeug kann nur von einem Administrator gestartet werden!");
+        Popup.notice(this, "Das Datenbankwerkzeug kann nur von einem Administrator gestartet werden!");
     }
 }//GEN-LAST:event_jMenuItem25ActionPerformed
 
@@ -1605,7 +1605,7 @@ private void jMenuItem27ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
         TextDatFile file = new TextDatFile(ArrayUtils.ObjectToStringArray(new Kontaktliste(new Lieferant().getClass()).getData()), Kontaktliste.header);
         new Job(file, dialog, mainProgressBar).execute();
     } catch (Exception e) {
-        Popup.notice("Keine Lieferanten vorhanden.");
+        Popup.notice(this, "Keine Lieferanten vorhanden.");
     }
 }//GEN-LAST:event_jMenuItem27ActionPerformed
 
@@ -1615,7 +1615,7 @@ private void jMenuItem28ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
         TextDatFile file = new TextDatFile(ArrayUtils.ObjectToStringArray(new Kontaktliste(new Hersteller().getClass()).getData()), Kontaktliste.header);
         new Job(file, dialog, mainProgressBar).execute();
     } catch (Exception e) {
-        Popup.notice("Keine Hersteller vorhanden.");
+        Popup.notice(this, "Keine Hersteller vorhanden.");
     }
 }//GEN-LAST:event_jMenuItem28ActionPerformed
 
@@ -1626,7 +1626,7 @@ private void jMenuItem29ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
         TextDatFile file = new TextDatFile(ArrayUtils.ObjectToStringArray(new Produktliste(new Product().getClass()).getData()), Produktliste.header);
         new Job(file, dialog, mainProgressBar).execute();
     } catch (Exception e) {
-        Popup.notice("Keine Produkte vorhanden.");
+        Popup.notice(this, "Keine Produkte vorhanden.");
     }
 }//GEN-LAST:event_jMenuItem29ActionPerformed
 

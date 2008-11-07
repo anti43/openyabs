@@ -828,7 +828,7 @@ private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 }
                 d = new Date();
 
-                Popup.notice("Einlesen beendet: " + d + " Produkte versucht: " + h);
+                Popup.notice(this, "Einlesen beendet: " + d + " Produkte versucht: " + h);
                 new HistoryItem(ConnectionHandler.instanceOf(), "Datenimport", "Produkte importiert.");
 
                 setCursor(new Cursor(Cursor.DEFAULT_CURSOR));

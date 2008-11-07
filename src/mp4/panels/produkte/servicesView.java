@@ -925,7 +925,7 @@ private void jButton18MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
             }
 
         } else {
-            Popup.notice("Sie müssen das Produkt erst anlegen.");
+            Popup.notice(this, "Sie müssen das Produkt erst anlegen.");
         }
     }
 
@@ -1049,7 +1049,7 @@ setEdited(true);
                 if (!service.getNfh().exists(jTextField4.getText())) {
                     service.setNummer(jTextField4.getText());
                 } else {
-                    Popup.notice("Angegebene Produktnummer existiert bereits.");
+                    Popup.notice(this, "Angegebene Produktnummer existiert bereits.");
                     return false;
                 }
             }

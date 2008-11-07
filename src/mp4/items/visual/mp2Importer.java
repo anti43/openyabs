@@ -371,7 +371,7 @@ public class mp2Importer extends javax.swing.JFrame {
                 }
 
                 this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-                Popup.notice("Import erfolgreich, \n" + kund.length + " Kunden und " + rechngs.length + " Rechnungen importiert.");
+                Popup.notice(this, "Import erfolgreich, \n" + kund.length + " Kunden und " + rechngs.length + " Rechnungen importiert.");
                 this.dispose();
 
                 schliessen = true;

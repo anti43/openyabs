@@ -71,7 +71,7 @@ public class User extends Things {
             this.setIsAdmin(PrepareData.parseBoolean(t[6]));
 
         } else {
-            Popup.notice("Benutzername existiert nicht!");
+            Popup.notice(this, "Benutzername existiert nicht!");
         }
 
     }
@@ -112,10 +112,10 @@ public class User extends Things {
                 }
             }
             if (!isValidUser()) {
-                Popup.notice("Falsches Passwort!");
+                Popup.notice(this, "Falsches Passwort!");
             }
         } else {
-            Popup.notice("Benutzername existiert nicht!");
+            Popup.notice(this, "Benutzername existiert nicht!");
         }
         return isValidUser();
     }
@@ -243,7 +243,7 @@ public class User extends Things {
                     return true;
                 }
             default:
-                Popup.notice("Sie haben keine Berechtigung,\ndiese Aktion auszuführen.");
+                Popup.notice(this, "Sie haben keine Berechtigung,\ndiese Aktion auszuführen.");
                 return false;
         }
     }

@@ -247,17 +247,17 @@ public class Main implements Strings {
             checkDB_Location();
             String db = settingsfile.getDBPath() + File.separator + Constants.DATABASENAME;
             Log.Debug(this, db + " not found :-(", true);
-            Popup.notice("Datenbank existiert nicht am angegebenen Ort.\n" + db);
+            Popup.notice(this, "Datenbank existiert nicht am angegebenen Ort.\n" + db);
 
             splash.setMessage("Versuche, Datenbank anzulegen");
 
             if (new Setup(true).createDatabase()) {
-                Popup.notice("Datenbank angelegt in\n" + db);
+                Popup.notice(this, "Datenbank angelegt in\n" + db);
                 splash.setMessage("Starte MP");
                 splash.dispose();
                 new Main();
             } else {
-                Popup.notice("Es ist ein Fehler aufgetreten, Programm wird beendet.");
+                Popup.notice(this, "Es ist ein Fehler aufgetreten, Programm wird beendet.");
                 System.exit(1);
             }
 
@@ -266,7 +266,7 @@ public class Main implements Strings {
             checkDB_Location();
             splash.setComp(new Setup());
         } else {
-            Popup.notice(PERMISSION_DENIED);
+            Popup.notice(this, PERMISSION_DENIED);
             System.err.println(PERMISSION_DENIED);
             System.exit(1);
         }

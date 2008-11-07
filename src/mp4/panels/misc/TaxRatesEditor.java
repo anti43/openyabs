@@ -208,7 +208,7 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         if (selection.checkID()) {
             int del = new Steuersatz().delete(selection.getId());
             if (del == 0) {
-                Popup.notice("Dieser Steuersatz kann nicht entfernt werden,\n" +
+                Popup.notice(this, "Dieser Steuersatz kann nicht entfernt werden,\n" +
                         "er ist einem Produkt /einer Dienstleistung zugewiesen.");
             }
         }
@@ -246,12 +246,12 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     tax.setWert(newtax);
                     tax.save();
                     jTable1.setModel(new TaxTableModel());
-                    Popup.notice("Steuersatz angelegt.");
+                    Popup.notice(this, "Steuersatz angelegt.");
                 } else {
-                    Popup.notice("Der Steuersatz muss einen Wert zwischen 0 und 99 haben.");
+                    Popup.notice(this, "Der Steuersatz muss einen Wert zwischen 0 und 99 haben.");
                 }
         } else {//GEN-LAST:event_jButton1ActionPerformed
-                Popup.notice("Name, Wert darf nicht leer sein!");
+                Popup.notice(this, "Name, Wert darf nicht leer sein!");
             }
         }
     }
@@ -272,15 +272,15 @@ private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:ev
                         tax.setWert(newtax);
                         tax.save();
                         jTable1.setModel(new TaxTableModel());
-                        Popup.notice("Steuersatz editiert.");
+                        Popup.notice(this, "Steuersatz editiert.");
                     } else {
-                        Popup.notice("Der Steuersatz muss einen Wert zwischen 0 und 99 haben.");
+                        Popup.notice(this, "Der Steuersatz muss einen Wert zwischen 0 und 99 haben.");
                     }
                 } catch (Exception numberFormatException) {
-                    Popup.notice("Steuersatz nicht gespeichert.");
+                    Popup.notice(this, "Steuersatz nicht gespeichert.");
                 }
             } else {
-                Popup.notice("Name, Wert darf nicht leer sein!");
+                Popup.notice(this, "Name, Wert darf nicht leer sein!");
             }
         }
         jTable1.setModel(new TaxTableModel());

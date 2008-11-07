@@ -1399,7 +1399,7 @@ private void jButton18MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
             }
 
         } else {
-            Popup.notice("Sie müssen das Produkt erst anlegen.");
+            Popup.notice(this, "Sie müssen das Produkt erst anlegen.");
         }
     }
 
@@ -1621,7 +1621,7 @@ private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             if (!product.getNfh().exists(jTextField4.getText())) {
                 product.setNummer(jTextField4.getText());
             } else {
-                Popup.notice("Angegebene Produktnummer existiert bereits.");
+                Popup.notice(this, "Angegebene Produktnummer existiert bereits.");
                 return false;
             }
         }
@@ -1881,7 +1881,7 @@ class GetAnyImage extends SwingWorker<Void, Void> {
             view.setCurrentImage(file);
         } catch (Exception ex) {
             view.imgLabel.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-            Popup.notice("Die Datei konnte nicht gecached werden: " + file);
+            Popup.notice(this, "Die Datei konnte nicht gecached werden: " + file);
             Log.Debug(this, ex);
         }
         return null;

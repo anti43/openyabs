@@ -314,7 +314,7 @@ public class Diagramme {
       
         try {
             ChartUtilities.saveChartAsPNG(file, chart, 1000, 800);
-            if(notify)Popup.notice("Diagramm gespeichert:\n" + file.getCanonicalPath());
+            if(notify)Popup.notice(this, "Diagramm gespeichert:\n" + file.getCanonicalPath());
             Log.Debug(this,"Schreibe Datei:" + file.getCanonicalPath());
         } catch (IOException e) {
             Log.Debug(this,e);
@@ -327,7 +327,7 @@ public class Diagramme {
 //       File file = new File(stDateiPfad);
 //        try {
 //            ChartUtilities.saveChartAsPNG(file, chart, 1000, 800);
-//            Popup.notice("Diagramm gespeichert:\n" + file.getCanonicalPath());
+//            Popup.notice(this, "Diagramm gespeichert:\n" + file.getCanonicalPath());
 //            Log.Debug(this,"Schreibe Datei:" + file.getCanonicalPath());
 //        } catch (IOException e) {
 //            Log.Debug(this,e);

@@ -270,7 +270,7 @@ public class Einstellungen extends MethodParser implements mp4.datenbank.install
         try {
             return new SKRKonto(ConnectionHandler.instanceOf(), getEkDefaultKonto(), true);
         } catch (Exception e) {
-            Popup.notice("Einnahmenkonto nicht vorhanden.\nBeachten Sie die genaue Schreibweise (z.B. '3000' anstatt '3 000')");
+            Popup.notice(this, "Einnahmenkonto nicht vorhanden.\nBeachten Sie die genaue Schreibweise (z.B. '3000' anstatt '3 000')");
             this.setEkDefaultKonto("2100");
             return new SKRKonto(ConnectionHandler.instanceOf(), getEkDefaultKonto(), true);
         }
@@ -284,7 +284,7 @@ public class Einstellungen extends MethodParser implements mp4.datenbank.install
         try {
             return new SKRKonto(ConnectionHandler.instanceOf(), getAgDefaultKonto(), true);
         } catch (Exception e) {
-            Popup.notice("Ausgabenkonto nicht vorhanden.\nBeachten Sie die genaue Schreibweise (z.B. '3 000' anstatt '3000')");
+            Popup.notice(this, "Ausgabenkonto nicht vorhanden.\nBeachten Sie die genaue Schreibweise (z.B. '3 000' anstatt '3000')");
             this.setAgDefaultKonto("1111");
             return new SKRKonto(ConnectionHandler.instanceOf(), getAgDefaultKonto(), true);
         }

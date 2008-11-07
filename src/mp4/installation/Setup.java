@@ -588,7 +588,7 @@ public class Setup extends javax.swing.JFrame implements Constants, Strings {
                     Verzeichnisse.copyFiles();
                 }
                 this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-                new Popup("Sie können das Programm nun starten.", Popup.NOTICE);
+                Popup.notice(this, "Sie können das Programm nun starten.");
                 finished = true;
                 new Main();
                 this.dispose();
@@ -618,7 +618,7 @@ public class Setup extends javax.swing.JFrame implements Constants, Strings {
             if (jCheckBox2.isSelected()) {
                 install();
             } else {
-                Popup.notice("Sie muessen die Lizenzbedingungen akzeptieren,\num das Programm zu installieren.");
+                Popup.notice(this, "Sie muessen die Lizenzbedingungen akzeptieren,\num das Programm zu installieren.");
             }
         } else {
             System.exit(0);

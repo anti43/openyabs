@@ -401,7 +401,7 @@ public class groupsView extends javax.swing.JFrame implements TreeSelectionListe
             }
             this.dispose();
         } else {
-            Popup.notice("Sie müssen eine Produktgruppe auswählen");
+            Popup.notice(this, "Sie müssen eine Produktgruppe auswählen");
         }
     }//GEN-LAST:event_jButton5MouseClicked
 
@@ -463,7 +463,7 @@ public class groupsView extends javax.swing.JFrame implements TreeSelectionListe
                 setTreeData(true);
             }
         } else {
-            Popup.notice("Sie müssen eine Kategorie wählen");
+            Popup.notice(this, "Sie müssen eine Kategorie wählen");
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -478,7 +478,7 @@ public class groupsView extends javax.swing.JFrame implements TreeSelectionListe
             }
 
         } else {
-            Popup.notice("Sie müssen eine Produktfamilie wählen");
+            Popup.notice(this, "Sie müssen eine Produktfamilie wählen");
         }
     }//GEN-LAST:event_jButton3ActionPerformed
 
