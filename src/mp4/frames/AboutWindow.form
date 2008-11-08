@@ -51,8 +51,8 @@
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jLabel6" pref="265" max="32767" attributes="0"/>
-                      <Component id="jLabel7" pref="265" max="32767" attributes="0"/>
+                      <Component id="jLabel6" pref="262" max="32767" attributes="0"/>
+                      <Component id="jLabel7" pref="262" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -192,12 +192,12 @@
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel5">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Beratung: "/>
+            <Property name="text" type="java.lang.String" value="Beratung, Templates:"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel6">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Daniel Kulesz"/>
+            <Property name="text" type="java.lang.String" value="Daniel Kulesz, Jan Hahnisch"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel7">

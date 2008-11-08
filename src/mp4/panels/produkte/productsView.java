@@ -81,6 +81,7 @@ public class productsView extends CommonPanel implements DataPanel, mp4.datenban
     private int taxID = 1;
     private DialogForFile dialog = null;
     private boolean numberfieldedited;
+    private boolean localimage = false;
 
     /** Creates new form Kundes
      * @param frame 
@@ -149,7 +150,7 @@ public class productsView extends CommonPanel implements DataPanel, mp4.datenban
         ProductImage image = product.getImage();
         File f = new File(currentImageURI);
         try {
-            currentImageURI = FileDirectoryHandler.copyFile(f,
+            if(!localimage)currentImageURI = FileDirectoryHandler.copyFile(f,
                     new File(Programmdaten.instanceOf().getIMAGE_CACHE_FOLDER()), f.getName().substring(0, f.getName().lastIndexOf(".")) + "_" + new RandomText().getString() + f.getName().substring(f.getName().lastIndexOf("."), f.getName().length()));
             Log.Debug(this, "Image: " + currentImageURI);
             image.setDatum(new Date());
@@ -510,7 +511,7 @@ public class productsView extends CommonPanel implements DataPanel, mp4.datenban
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 361, Short.MAX_VALUE)
+            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 363, Short.MAX_VALUE)
         );
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Suche"));
@@ -818,7 +819,7 @@ public class productsView extends CommonPanel implements DataPanel, mp4.datenban
                         .addComponent(jLabel17)
                         .addComponent(jTextField9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jButton13, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
 
         jPanel9.setBackground(new java.awt.Color(227, 219, 202));
@@ -887,13 +888,13 @@ public class productsView extends CommonPanel implements DataPanel, mp4.datenban
                 .addGap(4, 4, 4)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
-                        .addComponent(jTextField12, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
+                        .addComponent(jTextField12, javax.swing.GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton21, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
-                    .addComponent(jTextField22, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jTextField22, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
-                        .addComponent(urltf, javax.swing.GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE)
+                        .addComponent(urltf, javax.swing.GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
@@ -974,11 +975,11 @@ public class productsView extends CommonPanel implements DataPanel, mp4.datenban
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 232, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel10Layout.createSequentialGroup()
                         .addComponent(jLabel14)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jTextField11, javax.swing.GroupLayout.DEFAULT_SIZE, 91, Short.MAX_VALUE)
+                        .addComponent(jTextField11, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -995,7 +996,7 @@ public class productsView extends CommonPanel implements DataPanel, mp4.datenban
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jCheckBox1)
@@ -1097,7 +1098,7 @@ public class productsView extends CommonPanel implements DataPanel, mp4.datenban
                 .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel23)
                     .addComponent(jTextField20, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(64, Short.MAX_VALUE))
+                .addContainerGap(69, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
@@ -1106,10 +1107,10 @@ public class productsView extends CommonPanel implements DataPanel, mp4.datenban
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1204,7 +1205,7 @@ public class productsView extends CommonPanel implements DataPanel, mp4.datenban
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 508, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 516, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton6))
         );
@@ -1438,6 +1439,7 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
     if (dialog.getFilePath(jTextField11)) {
         new GetAnyImage(this, dialog.getFile()).execute();
+        localimage = true;
     }
     super.setEdited(true);
 }//GEN-LAST:event_jButton1ActionPerformed
@@ -1494,9 +1496,8 @@ private void jTextField4KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
 private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
     if (jTextField11.getText() != null) {
-
         new GetAnyImage(this, jTextField11.getText()).execute();
-
+        localimage = false;
     }
     super.setEdited(true);
 }//GEN-LAST:event_jButton2ActionPerformed
@@ -1513,6 +1514,7 @@ private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
     if (urltf.getText() != null) {
         new GetAnyImage(this, urltf.getText()).execute();
+        localimage = false;
     }
     super.setEdited(true);
 }//GEN-LAST:event_jButton8ActionPerformed

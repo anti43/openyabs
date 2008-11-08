@@ -104,9 +104,9 @@ public class AboutWindow extends javax.swing.JFrame {
 
         jLabel4.setText("Ideen & Entwicklung:");
 
-        jLabel5.setText("Beratung: ");
+        jLabel5.setText("Beratung, Templates:");
 
-        jLabel6.setText("Daniel Kulesz");
+        jLabel6.setText("Daniel Kulesz, Jan Hahnisch");
 
         jLabel7.setText("Andreas Weber");
 
@@ -133,8 +133,8 @@ public class AboutWindow extends javax.swing.JFrame {
                     .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)
-                    .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE))
+                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
+                    .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE))
                 .addContainerGap())
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
