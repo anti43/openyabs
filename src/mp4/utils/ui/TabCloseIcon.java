@@ -63,17 +63,27 @@ public class TabCloseIcon implements Icon {
      * when painting, remember last position painted.
      */
     @Override
-    public void paintIcon(Component c, Graphics g, int x, int y) {
+    public void paintIcon(Component c, Graphics g, final int x, final int y) {
         if (null == mTabbedPane) {
+            final int xw = x + 14;
+            final int yw = y + 14;
+            
             mTabbedPane = (JTabbedPane) c;
             mTabbedPane.addMouseListener(new MouseAdapter() {
 
                 @Override
-                public void mouseReleased(MouseEvent e) {
+                public void mouseClicked(MouseEvent e) {
+                    
                     // asking for isConsumed is *very* important, otherwise more than one tab might get closed!
-                    if (!e.isConsumed() && mPosition.contains(e.getX(), e.getY())) {
+                  
+//                    if (!e.isConsumed() && mPosition.contains(e.getX(), e.getY())) {
+                        if (!e.isConsumed() && e.getX()>x&&e.getX()<xw && e.getY()>y&&e.getY()<yw) {
+                        Log.Debug(this,"Initiate unload event..");
+                        Log.Debug(this,"Click x:" +e.getX() +" y:"+e.getY());
+                        Log.Debug(this,"Icon x:" +xw +" y:"+yw + " width: " +getIconWidth());
                         final int index = mTabbedPane.getSelectedIndex();
           
+                        Log.Debug(this,"Unload Tab at Index " + index);
                         try {
                             ((mpplugin) mTabbedPane.getComponentAt(index)).unload();
                             Log.Debug(this,"Unloaded a Plugin: " + ((mpplugin) mTabbedPane.getComponentAt(index)).getName());
@@ -81,13 +91,16 @@ public class TabCloseIcon implements Icon {
                         }
                         
                         ((CommonPanel) mTabbedPane.getComponentAt(index)).close();
+                        Log.Debug(this,"Unload finished: " + index);
                         e.consume();
-                    }
+                        mTabbedPane.removeMouseListener(this);
+                    } 
+//                        else Log.Debug(this,"Unload event already consumed.");
                 }
             });
         }
 
-        mPosition = new Rectangle(x, y, getIconWidth(), getIconHeight());
+        mPosition = new Rectangle(x, y, 14, 14);
         mIcon.paintIcon(c, g, x, y);
     }
 
