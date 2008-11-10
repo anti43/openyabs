@@ -206,10 +206,14 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         SelectionCheck selection = new SelectionCheck(jTable1);
 
         if (selection.checkID()) {
-            int del = new Steuersatz().delete(selection.getId());
-            if (del == 0) {
-                Popup.notice(this, "Dieser Steuersatz kann nicht entfernt werden,\n" +
-                        "er ist einem Produkt /einer Dienstleistung zugewiesen.");
+            if (selection.getId() != 1) {
+                int del = new Steuersatz().delete(selection.getId());
+                if (del == 0) {
+                    Popup.notice(this, "Dieser Steuersatz kann nicht entfernt werden,\n" +
+                            "er ist einem Produkt /einer Dienstleistung zugewiesen.");
+                }
+            } else {
+                Popup.notice(this, "Dieser Steuersatz kann nicht entfernt werden.");
             }
         }
         jTable1.setModel(new TaxTableModel());
@@ -240,7 +244,7 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
             if (jTextField1.getText() != null && jTextField1.getText().length() > 0 && NumberCheck.checkDouble(FormatNumber.parseDezimal(jTextField2.getText())) != null) {
                 double newtax = FormatNumber.parseDezimal(jTextField2.getText());
-                if (newtax > 0 && newtax < 99) {
+                if (newtax >= 0 && newtax <= 99) {
                     tax = new Steuersatz();
                     tax.setName(jTextField1.getText());
                     tax.setWert(newtax);
