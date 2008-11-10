@@ -84,7 +84,7 @@ public class Main implements Strings {
             APP_DIR = USER_HOME + File.separator + Constants.PROG_NAME;
             settingsfile = new SettingsFile();
         } else {
-            DruckJob.FORCE_WIN_PRINT = true;
+            DruckJob.FORCE_WIN_PRINT = false;
             USER_HOME = System.getProperty("user.home");
             DESKTOP = USER_HOME + File.separator + "Desktop";
             MPPATH = USER_HOME + File.separator + ".mp";
