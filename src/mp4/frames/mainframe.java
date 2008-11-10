@@ -169,9 +169,6 @@ public class mainframe extends javax.swing.JFrame {
     private ClipBoard clipBoard = new ClipBoard(this);
     private pluginHandler pluginhandler;
 
-    
-    
-    
     /** Creates new form mainframe
      * @param splash
      * @param mainclass 
@@ -243,7 +240,6 @@ public class mainframe extends javax.swing.JFrame {
         this.requestFocus();
         setMessage(Strings.WELCOME_MESSAGE);
     }
-
 
     public void addAngebotPanel(Angebot offer) {
 
@@ -358,7 +354,7 @@ public class mainframe extends javax.swing.JFrame {
             usern.setUseAuth(true);
             this.setUser(usern);
             Einstellungen.instanceOf().setUser(usern);
-            new HistoryItem("Benutzerverwaltung", 
+            new HistoryItem("Benutzerverwaltung",
                     user + " hat sich angemeldet (" + DateConverter.getFullDefDateString(new Date()) + ")");
             return true;
         } else {
@@ -373,10 +369,11 @@ public class mainframe extends javax.swing.JFrame {
 
     private void closeTabs() {
         for (int ixd = 0; ixd < mainTabPane.getComponents().length; ixd++) {
-              try {
+            try {
                 ((mpplugin) mainTabPane.getComponentAt(ixd)).unload();
-                Log.Debug(this,"Unloaded a Plugin: " + ((mpplugin) mainTabPane.getComponentAt(ixd)).getName());
-            } catch (Exception e) {}
+                Log.Debug(this, "Unloaded a Plugin: " + ((mpplugin) mainTabPane.getComponentAt(ixd)).getName());
+            } catch (Exception e) {
+            }
         }
     }
 
@@ -460,6 +457,7 @@ public class mainframe extends javax.swing.JFrame {
         jMenu3 = new javax.swing.JMenu();
         jMenuItem22 = new javax.swing.JMenuItem();
         jMenuItem23 = new javax.swing.JMenuItem();
+        jMenuItem31 = new javax.swing.JMenuItem();
         jMenuItem30 = new javax.swing.JMenuItem();
         jMenu7 = new javax.swing.JMenu();
         jMenuItem6 = new javax.swing.JMenuItem();
@@ -483,7 +481,7 @@ public class mainframe extends javax.swing.JFrame {
         bottomPanelLayout.setHorizontalGroup(
             bottomPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bottomPanelLayout.createSequentialGroup()
-                .addComponent(messagePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 375, Short.MAX_VALUE)
+                .addComponent(messagePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 379, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(mainProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -514,7 +512,7 @@ public class mainframe extends javax.swing.JFrame {
 
         jPanel2.setBackground(new java.awt.Color(153, 153, 153));
 
-        jButton4.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton4.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/3232/agt_family.png"))); // NOI18N
         jButton4.setText("Kunden");
         jButton4.setToolTipText("Kunden");
@@ -1146,6 +1144,14 @@ public class mainframe extends javax.swing.JFrame {
 
         jMenu2.add(jMenu3);
 
+        jMenuItem31.setText("Tab schließen");
+        jMenuItem31.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem31ActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jMenuItem31);
+
         jMenuItem30.setText("Alle Tabs schließen");
         jMenuItem30.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1204,7 +1210,7 @@ public class mainframe extends javax.swing.JFrame {
                 .addGap(3, 3, 3)
                 .addComponent(leftBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(mainScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 410, Short.MAX_VALUE))
+                .addComponent(mainScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE))
             .addComponent(bottomPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
@@ -1222,16 +1228,18 @@ public class mainframe extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-      if (mainframe.getUser().doAction(User.ADMIN)) 
-        csvProductImporter.instanceOf();
+        if (mainframe.getUser().doAction(User.ADMIN)) {
+            csvProductImporter.instanceOf();}
+        
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuItem3MouseClicked
     }//GEN-LAST:event_jMenuItem3MouseClicked
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
-       if (mainframe.getUser().doAction(User.ADMIN)) 
-        new ImportDaten();
+        if (mainframe.getUser().doAction(User.ADMIN)) {
+            new ImportDaten();}
+        
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
@@ -1249,13 +1257,15 @@ public class mainframe extends javax.swing.JFrame {
     private void close() {
 
         mainframe.setWaiting(true);
-        
+
         try {
-        saveSession();
-                
-        if(Programmdaten.instanceOf().getSAVE_DB_ON_EXIT())new backupView(this).saving();
+            saveSession();
+
+            if (Programmdaten.instanceOf().getSAVE_DB_ON_EXIT()) {
+                new backupView(this).saving();
+            }
             DataLock.lateRelease();
-            closeTabs();        
+            closeTabs();
             Conn.shutdown();
             super.dispose();
         } catch (Exception exc) {
@@ -1371,7 +1381,7 @@ private void jMenuItem1ActionPerformed1(java.awt.event.ActionEvent evt) {//GEN-F
                 Programmdaten.instanceOf().setUSE_AUTHENTIFICATION(!useauth);
                 this.setMessage("Benutzerauthentifizierung eingeschaltet");
                 new HistoryItem("Benutzerauthentifizierung", "Eingeschaltet", mainframe.getUser());
-    
+
                 jMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/small/ok.png")));
                 this.setEnabled(false);
                 new login(this);
@@ -1395,7 +1405,7 @@ private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     if (getUser().isIsAdmin()) {
         new Verwaltung(this);
     } else {
-       Popup.notice(this, "Die Benutzerverwaltung kann nur von einem Administrator geöffnet werden!");
+        Popup.notice(this, "Die Benutzerverwaltung kann nur von einem Administrator geöffnet werden!");
     }
 
 }//GEN-LAST:event_jMenuItem5ActionPerformed
@@ -1565,8 +1575,9 @@ private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 }//GEN-LAST:event_jMenuItem4ActionPerformed
 
 private void jMenuItem17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem17ActionPerformed
-if (mainframe.getUser().doAction(User.ADMIN)) 
-    csvKontaktImporter.instanceOf();
+    if (mainframe.getUser().doAction(User.ADMIN)) {
+        csvKontaktImporter.instanceOf();}
+    
 }//GEN-LAST:event_jMenuItem17ActionPerformed
 
 private void jMenuItem15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem15ActionPerformed
@@ -1585,7 +1596,7 @@ private void jMenuItem25ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
 
 private void jMenuItem26ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem26ActionPerformed
 
-    
+
     try {
         TableHtmlWriter writ = new TableHtmlWriter(new Hersteller().getPrintModel());
         writ.setHeader(Strings.TABLE_MANUFACTURER_PRINT_HEADER.split(","));
@@ -1600,7 +1611,7 @@ private void jMenuItem26ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
 }//GEN-LAST:event_jMenuItem26ActionPerformed
 
 private void jMenuItem27ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem27ActionPerformed
-  try {
+    try {
         dialog = new DialogForFile(DialogForFile.FILES_ONLY, "Lieferantenliste.csv");
         TextDatFile file = new TextDatFile(ArrayUtils.ObjectToStringArray(new Kontaktliste(new Lieferant().getClass()).getData()), Kontaktliste.header);
         new Job(file, dialog, mainProgressBar).execute();
@@ -1610,7 +1621,7 @@ private void jMenuItem27ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
 }//GEN-LAST:event_jMenuItem27ActionPerformed
 
 private void jMenuItem28ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem28ActionPerformed
-  try {
+    try {
         dialog = new DialogForFile(DialogForFile.FILES_ONLY, "Herstellerliste.csv");
         TextDatFile file = new TextDatFile(ArrayUtils.ObjectToStringArray(new Kontaktliste(new Hersteller().getClass()).getData()), Kontaktliste.header);
         new Job(file, dialog, mainProgressBar).execute();
@@ -1633,7 +1644,16 @@ private void jMenuItem29ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
 private void jMenuItem30ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem30ActionPerformed
 
     mainTabPane.removeAll();
+    i = new startView(this);
+    mainTabPane.add("Start", i);
 }//GEN-LAST:event_jMenuItem30ActionPerformed
+
+private void jMenuItem31ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem31ActionPerformed
+
+    if (mainTabPane.getSelectedIndex() != 0) {
+        mainTabPane.removeTabAt(mainTabPane.getSelectedIndex());}
+    
+}//GEN-LAST:event_jMenuItem31ActionPerformed
 
     @Override
     public void finalize() {
@@ -1697,6 +1717,7 @@ private void jMenuItem30ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     private javax.swing.JMenuItem jMenuItem29;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem30;
+    private javax.swing.JMenuItem jMenuItem31;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem6;
@@ -1760,9 +1781,9 @@ private void jMenuItem30ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     }
 
     private void restoreSession() {
-        
+
         outlookBar.setSelectedIndex(Programmdaten.instanceOf().getMAINFRAME_OUTLOOKBAR_TAB());
-        
+
         try {
             ArrayList<LockableContainer> sessiondata = Programmdaten.instanceOf().getSESSIONDATA();
 
@@ -1813,17 +1834,17 @@ private void jMenuItem30ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
             panel.setProduct(new Product(data.getID()));
 
         } else {
-            Log.Debug(this,"RestoreSession: " +  "Nothing to restore.");
+            Log.Debug(this, "RestoreSession: " + "Nothing to restore.");
         }
     }
 
     private void saveSession() {
         try {
-            
+
             Programmdaten.instanceOf().setMAINFRAME_WINDOW_STATE(this.getSize());
             Programmdaten.instanceOf().setMAINFRAME_TAB(mainTabPane.getSelectedIndex());
-            Programmdaten.instanceOf().instanceOf().setMAINFRAME_OUTLOOKBAR_TAB(outlookBar.getSelectedIndex());     
-            
+            Programmdaten.instanceOf().instanceOf().setMAINFRAME_OUTLOOKBAR_TAB(outlookBar.getSelectedIndex());
+
             Programmdaten.instanceOf().setSESSIONDATA(new LockableContainer[]{((CommonPanel) mainTabPane.getSelectedComponent()).getLockable().getLockableContainer()});
         } catch (Exception e) {
             Log.Debug("Could not save session. No saveable data selected.");

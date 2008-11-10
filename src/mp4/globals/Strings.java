@@ -31,6 +31,7 @@ public interface Strings {
 
     public String NO = "Nein";
     public String YES = "Ja";
+    public String NO_PDF_PROG = "Bitte geben Sie unter \nBearbeiten-> Einstellungen ein PDF-Programm an.\n";
     public String NO_PDF = "Bitte geben Sie unter \nBearbeiten-> Einstellungen ein PDF-Template an.\n";
     public String NO_BROWSER = "Kein Browser angegeben. Wählen Sie Ihren Internetbrowser unter 'Programmeinstellungen'.";
     public String TEST_CONF = "Teste Konfiguration";

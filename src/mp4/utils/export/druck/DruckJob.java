@@ -40,7 +40,6 @@ import mp4.interfaces.Waiter;
 import mp4.logs.*;
 import mp4.main.Main;
 
-
 /**
  *
  * @author anti43
@@ -78,10 +77,10 @@ public class DruckJob implements Waiter {
                 prservices = new PrintService[]{prservDflt};
             }
         }
-        Log.Debug(this,"Print-Services:");
+        Log.Debug(this, "Print-Services:");
         int i;
         for (i = 0; i < prservices.length; i++) {
-            Log.Debug(this,"  " + i + ":  " + prservices[i] + ((prservDflt != prservices[i]) ? "" : " (Default)"));
+            Log.Debug(this, "  " + i + ":  " + prservices[i] + ((prservDflt != prservices[i]) ? "" : " (Default)"));
         }
         PrintService prserv = null;
         if (0 <= idxPrintService && idxPrintService < prservices.length) {
@@ -90,16 +89,18 @@ public class DruckJob implements Waiter {
             if (!Arrays.asList(prservices).contains(prservDflt)) {
                 prservDflt = null;
             }
-            if(prservices == null)prservices = new PrintService[]{PrintServiceLookup.lookupDefaultPrintService()};
+            if (prservices == null) {
+                prservices = new PrintService[]{PrintServiceLookup.lookupDefaultPrintService()};
+            }
             prserv = ServiceUI.printDialog(null, 50, 50, prservices, prservDflt, null, aset);
         }
         if (null != prserv) {
-            Log.Debug(this,"Ausgewaehlter Print-Service:");
-            Log.Debug(this,"      " + prserv);
+            Log.Debug(this, "Ausgewaehlter Print-Service:");
+            Log.Debug(this, "      " + prserv);
             printPrintServiceAttributesAndDocFlavors(prserv);
             DocPrintJob pj = prserv.createPrintJob();
-            
-            
+
+
             for (int j = 0; j < filelist.size(); j++) {
                 FileInputStream fis = null;
                 try {
@@ -122,7 +123,7 @@ public class DruckJob implements Waiter {
                 }
             }
         }
-        
+
     }
 
     /*
@@ -136,10 +137,10 @@ public class DruckJob implements Waiter {
                 prservices = new PrintService[]{prservDflt};
             }
         }
-        Log.Debug(this,"Print-Services:");
+        Log.Debug(this, "Print-Services:");
         int i;
         for (i = 0; i < prservices.length; i++) {
-            Log.Debug(this,"  " + i + ":  " + prservices[i] + ((prservDflt != prservices[i]) ? "" : " (Default)"));
+            Log.Debug(this, "  " + i + ":  " + prservices[i] + ((prservDflt != prservices[i]) ? "" : " (Default)"));
         }
         PrintService prserv = null;
         if (0 <= idxPrintService && idxPrintService < prservices.length) {
@@ -148,12 +149,14 @@ public class DruckJob implements Waiter {
             if (!Arrays.asList(prservices).contains(prservDflt)) {
                 prservDflt = null;
             }
-            if(prservices == null)prservices = new PrintService[]{PrintServiceLookup.lookupDefaultPrintService()};
+            if (prservices == null) {
+                prservices = new PrintService[]{PrintServiceLookup.lookupDefaultPrintService()};
+            }
             prserv = ServiceUI.printDialog(null, 50, 50, prservices, prservDflt, null, aset);
         }
         if (null != prserv) {
-            Log.Debug(this,"Ausgewaehlter Print-Service:");
-            Log.Debug(this,"      " + prserv);
+            Log.Debug(this, "Ausgewaehlter Print-Service:");
+            Log.Debug(this, "      " + prserv);
             printPrintServiceAttributesAndDocFlavors(prserv);
             DocPrintJob pj = prserv.createPrintJob();
             FileInputStream fis = new FileInputStream(file);
@@ -175,9 +178,9 @@ public class DruckJob implements Waiter {
                 print(printable.getFile());
             }
         } catch (FileNotFoundException fileNotFoundException) {
-            Log.Debug(this,fileNotFoundException);
+            Log.Debug(this, fileNotFoundException);
         } catch (PrintException printException) {
-            Log.Debug(this,printException);
+            Log.Debug(this, printException);
         }
 
     }
@@ -201,14 +204,14 @@ public class DruckJob implements Waiter {
         DocFlavor[] prdfl = prserv.getSupportedDocFlavors();
         if (null != prattr && 0 < prattr.length) {
             for (int i = 0; i < prattr.length; i++) {
-                Log.Debug(this,"      PrintService-Attribute[" + i + "]: " + prattr[i].getName() + " = " + prattr[i]);
+                Log.Debug(this, "      PrintService-Attribute[" + i + "]: " + prattr[i].getName() + " = " + prattr[i]);
             }
         }
         if (null != prdfl && 0 < prdfl.length) {
             for (int i = 0; i < prdfl.length; i++) {
                 s2 = prdfl[i].getMimeType();
                 if (null != s2 && !s2.equals(s1)) {
-                    Log.Debug(this,"      PrintService-DocFlavor-Mime[" + i + "]: " + s2);
+                    Log.Debug(this, "      PrintService-DocFlavor-Mime[" + i + "]: " + s2);
                 }
                 s1 = s2;
             }
@@ -231,13 +234,13 @@ public class DruckJob implements Waiter {
                 }
             }
         } catch (FileNotFoundException fileNotFoundException) {
-            Log.Debug(this,fileNotFoundException);
+            Log.Debug(this, fileNotFoundException);
         } catch (PrintException printException) {
-            Log.Debug(this,printException);
+            Log.Debug(this, printException);
         }
     }
-    
-    public void printPDF(File file){
+
+    public void printPDF(File file) {
         try {
 
             RandomAccessFile raf = new RandomAccessFile(file, "r");
@@ -258,62 +261,60 @@ public class DruckJob implements Waiter {
             PDFRenderer renderer = new PDFRenderer(page, g2, new Rectangle(0, 0, 500, 500), null, Color.RED);
             page.waitForFinish();
             renderer.run();
-          
-            
+
+
         } catch (Exception ex) {
             Log.Debug(ex);
         }
 
     }
-    
-    
 }
 
 class PrintUtilities implements java.awt.print.Printable {
-  private Component componentToBePrinted;
 
-  public static void printComponent(Component c) {
-    new PrintUtilities(c).print();
-  }
-  
-  public PrintUtilities(Component componentToBePrinted) {
-    this.componentToBePrinted = componentToBePrinted;
-  }
-  
-  public void print() {
-    PrinterJob printJob = PrinterJob.getPrinterJob();
-    printJob.setPrintable((java.awt.print.Printable) this);
-    if (printJob.printDialog()) {
+    private Component componentToBePrinted;
+
+    public static void printComponent(Component c) {
+        new PrintUtilities(c).print();
+    }
+
+    public PrintUtilities(Component componentToBePrinted) {
+        this.componentToBePrinted = componentToBePrinted;
+    }
+
+    public void print() {
+        PrinterJob printJob = PrinterJob.getPrinterJob();
+        printJob.setPrintable((java.awt.print.Printable) this);
+        if (printJob.printDialog()) {
             try {
                 printJob.print();
             } catch (PrinterException pe) {
                 System.out.println("Error printing: " + pe);
             }
         }
-  }
-
-  public int print(Graphics g, PageFormat pageFormat, int pageIndex) {
-    if (pageIndex > 0) {
-      return(1);
-    } else {
-      Graphics2D g2d = (Graphics2D)g;
-      g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
-      disableDoubleBuffering(componentToBePrinted);
-      componentToBePrinted.paint(g2d);
-      enableDoubleBuffering(componentToBePrinted);
-      return(0);
     }
-  }
 
-  public static void disableDoubleBuffering(Component c) {
-    RepaintManager currentManager = RepaintManager.currentManager(c);
-    currentManager.setDoubleBufferingEnabled(false);
-  }
+    public int print(Graphics g, PageFormat pageFormat, int pageIndex) {
+        if (pageIndex > 0) {
+            return (1);
+        } else {
+            Graphics2D g2d = (Graphics2D) g;
+            g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
+            disableDoubleBuffering(componentToBePrinted);
+            componentToBePrinted.paint(g2d);
+            enableDoubleBuffering(componentToBePrinted);
+            return (0);
+        }
+    }
 
-  public static void enableDoubleBuffering(Component c) {
-    RepaintManager currentManager = RepaintManager.currentManager(c);
-    currentManager.setDoubleBufferingEnabled(true);
-  }
+    public static void disableDoubleBuffering(Component c) {
+        RepaintManager currentManager = RepaintManager.currentManager(c);
+        currentManager.setDoubleBufferingEnabled(false);
+    }
 
+    public static void enableDoubleBuffering(Component c) {
+        RepaintManager currentManager = RepaintManager.currentManager(c);
+        currentManager.setDoubleBufferingEnabled(true);
+    }
 }
 

@@ -204,7 +204,7 @@ public class Einstellungen extends MethodParser implements mp4.datenbank.install
 
 ////////////////////////////////////////////////////////////////////////////////  
     public String getPDF_Programm() {
-        return datahandler.getString("PDF Programm");
+        return "\"" + datahandler.getString("PDF Programm") + "\"";
     }
 
     public void setPDF_Programm(String Pdfprogramm) {
@@ -212,7 +212,7 @@ public class Einstellungen extends MethodParser implements mp4.datenbank.install
     }
 
     public String getBrowser_Programm() {
-        return datahandler.getString("Browser Programm");
+        return "\"" + datahandler.getString("Browser Programm") + "\"";
     }
 
     public void setBrowser_Programm(String Browser) {

@@ -396,7 +396,9 @@ public class billsView extends mp4.items.visual.CommonPanel implements DataPanel
         jButton1 = new javax.swing.JButton();
         jButton12 = new javax.swing.JButton();
         jCheckBox4 = new javax.swing.JCheckBox();
+        jButton22 = new javax.swing.JButton();
         jCheckBox5 = new javax.swing.JCheckBox();
+        jButton23 = new javax.swing.JButton();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel2 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
@@ -604,6 +606,28 @@ public class billsView extends mp4.items.visual.CommonPanel implements DataPanel
         });
         jToolBar1.add(jCheckBox4);
 
+        jButton22.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/small/search.png"))); // NOI18N
+        jButton22.setToolTipText(bundle.getString("billsView.jButton22.toolTipText")); // NOI18N
+        jButton22.setFocusable(false);
+        jButton22.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton22.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton22.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton22MouseClicked(evt);
+            }
+        });
+        jButton22.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton22ActionPerformed(evt);
+            }
+        });
+        jButton22.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jButton22KeyTyped(evt);
+            }
+        });
+        jToolBar1.add(jButton22);
+
         jCheckBox5.setText(bundle.getString("billsView.jCheckBox5.text")); // NOI18N
         jCheckBox5.setFocusable(false);
         jCheckBox5.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
@@ -613,6 +637,28 @@ public class billsView extends mp4.items.visual.CommonPanel implements DataPanel
             }
         });
         jToolBar1.add(jCheckBox5);
+
+        jButton23.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/small/search.png"))); // NOI18N
+        jButton23.setToolTipText(bundle.getString("billsView.jButton23.toolTipText")); // NOI18N
+        jButton23.setFocusable(false);
+        jButton23.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton23.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton23.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton23MouseClicked(evt);
+            }
+        });
+        jButton23.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton23ActionPerformed(evt);
+            }
+        });
+        jButton23.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jButton23KeyTyped(evt);
+            }
+        });
+        jToolBar1.add(jButton23);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -1695,7 +1741,7 @@ private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                 this.currentBill.setStorno(true);
                 currentBill.save();
                 new HistoryItem(Strings.BILL, "Rechnung Nummer " + currentBill.getRechnungnummer() + " storniert.");
-//                this.close();
+                setBill(currentBill);
             }
         }
     }
@@ -1721,6 +1767,55 @@ private void jButton21ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     jTextField10.setText("0");
 }//GEN-LAST:event_jButton21ActionPerformed
 
+private void jButton22MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton22MouseClicked
+// TODO add your handling code here:
+}//GEN-LAST:event_jButton22MouseClicked
+
+private void jButton22KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton22KeyTyped
+// TODO add your handling code here:
+}//GEN-LAST:event_jButton22KeyTyped
+
+private void jButton22ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton22ActionPerformed
+
+      if (currentBill.hasId()) {
+      try{
+        Job job = new Job(new PDFFile(new PDF_Lieferschein(currentBill, false)), new PdfVorschauWindow(), mainframe.getMainProgress());
+        job.execute();
+        } catch (Exception ex) {
+                Log.Debug(this,ex);
+            }
+    } else {
+        Popup.notice(this, "Sie müssen die Rechnung erst anlegen.");
+    }
+}//GEN-LAST:event_jButton22ActionPerformed
+
+private void jButton23MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton23MouseClicked
+
+    if (currentBill.hasId()) {
+        if(currentBill.getAngebot()!=null){
+      try{
+        Job job = new Job(new PDFFile(new PDF_Angebot(currentBill.getAngebot(), false)), new PdfVorschauWindow(), mainframe.getMainProgress());
+        job.execute();
+        } catch (Exception ex) {
+                Log.Debug(this,ex);
+            }
+        
+        }else {
+        Popup.notice(this, "Dieser Rechnung ist kein Angebot zugewiesen.");
+    }
+    } else {
+        Popup.notice(this, "Sie müssen die Rechnung erst anlegen.");
+    }
+}//GEN-LAST:event_jButton23MouseClicked
+
+private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton23ActionPerformed
+// TODO add your handling code here:
+}//GEN-LAST:event_jButton23ActionPerformed
+
+private void jButton23KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton23KeyTyped
+// TODO add your handling code here:
+}//GEN-LAST:event_jButton23KeyTyped
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JLabel ampel_bezahlt;
     public javax.swing.JLabel ampel_offen;
@@ -1740,6 +1835,8 @@ private void jButton21ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     public javax.swing.JButton jButton2;
     public javax.swing.JButton jButton20;
     public javax.swing.JButton jButton21;
+    public javax.swing.JButton jButton22;
+    public javax.swing.JButton jButton23;
     public javax.swing.JButton jButton3;
     public javax.swing.JButton jButton4;
     public javax.swing.JButton jButton5;

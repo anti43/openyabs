@@ -15,6 +15,7 @@ import java.nio.channels.FileChannel;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.print.DocFlavor;
+import mp4.globals.Strings;
 import mp4.interfaces.Waiter;
 import mp4.items.visual.Popup;
 import mp4.logs.*;
@@ -42,10 +43,10 @@ public class PdfVorschauWindow extends javax.swing.JFrame implements Waiter {
 
         this.file = pdfFile;
 
-        try { 
+        try {
             openPDF();
         } catch (Exception ex) {
-            Log.Debug(this,ex);
+            Log.Debug(this, ex);
         }
     }
 
@@ -65,6 +66,7 @@ public class PdfVorschauWindow extends javax.swing.JFrame implements Waiter {
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("PDF Vorschau");
@@ -93,6 +95,13 @@ public class PdfVorschauWindow extends javax.swing.JFrame implements Waiter {
             }
         });
 
+        jButton4.setText("Externes Prog.");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -100,12 +109,14 @@ public class PdfVorschauWindow extends javax.swing.JFrame implements Waiter {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jButton2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 119, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
+                .addComponent(jButton4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1)
                 .addContainerGap())
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 372, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 403, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -115,7 +126,8 @@ public class PdfVorschauWindow extends javax.swing.JFrame implements Waiter {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton3)
-                    .addComponent(jButton2))
+                    .addComponent(jButton2)
+                    .addComponent(jButton4))
                 .addContainerGap())
         );
 
@@ -123,13 +135,13 @@ public class PdfVorschauWindow extends javax.swing.JFrame implements Waiter {
     }// </editor-fold>//GEN-END:initComponents
 
 private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        try {
-            page = null;
-            pdffile = null;
-            raf.close();
-        } catch (IOException ex) {
-            Logger.getLogger(PdfVorschauWindow.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    try {
+        page = null;
+        pdffile = null;
+        raf.close();
+    } catch (IOException ex) {
+        Logger.getLogger(PdfVorschauWindow.class.getName()).log(Level.SEVERE, null, ex);
+    }
     this.dispose();
 }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -137,20 +149,32 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
     DruckJob djob = new DruckJob(DocFlavor.INPUT_STREAM.PDF);
 
-    djob.set(FileDirectoryHandler.tempFileClone(file, "pdf"));
+    djob.set(FileDirectoryHandler.tempFileClone(file));
 
 
 }//GEN-LAST:event_jButton1ActionPerformed
 
 private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
 
-    new DialogForFile(DialogForFile.FILES_ONLY, ((mp4.utils.files.PDFFile)file).getTargetFile()).writeFile(((mp4.utils.files.PDFFile)file));
+    new DialogForFile(DialogForFile.FILES_ONLY, ((mp4.utils.files.PDFFile) file).getTargetFile()).writeFile(((mp4.utils.files.PDFFile) file));
 }//GEN-LAST:event_jButton3ActionPerformed
 
+private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+
+    try {
+        Log.Debug(this, mp4.einstellungen.Einstellungen.instanceOf().getPDF_Programm() + " " + file.getPath());
+        Process proc = Runtime.getRuntime().exec(mp4.einstellungen.Einstellungen.instanceOf().getPDF_Programm()+ " " + file.getPath());
+    } catch (IOException ex) {
+        new Popup(Strings.NO_PDF_PROG);
+        Log.Debug(ex);
+    }
+
+}//GEN-LAST:event_jButton4ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
     @Override
@@ -159,15 +183,15 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         file = ((mp4.utils.files.PDFFile) object);
 
         try {
-         openPDF();
+            openPDF();
 
         } catch (Exception ex) {
-            Log.Debug(this,ex);
+            Log.Debug(this, ex);
         }
     }
 
     private void openPDF() throws Exception {
-         if (file.exists()) {
+        if (file.exists()) {
             initComponents();
             PagePanel panel = new PagePanel();
             this.jPanel1.add(panel, BorderLayout.CENTER);
@@ -175,14 +199,14 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             raf = new RandomAccessFile(file, "r");
 
             FileChannel channel = raf.getChannel();
-            
+
             ByteBuffer buf =
                     channel.map(FileChannel.MapMode.READ_ONLY,
                     0, channel.size());
 //            
             pdffile = new PDFFile(buf);
-            
-            
+
+
             buf.clear();
             channel.close();
             raf.close();
@@ -195,6 +219,6 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             page = pdffile.getPage(0);
             panel.showPage(page);
             panel.useZoomTool(true);
-        } 
+        }
     }
 }

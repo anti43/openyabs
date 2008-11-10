@@ -391,7 +391,7 @@ public class offersView extends mp4.items.visual.CommonPanel implements DataPane
         jToolBar1.setRollover(true);
 
         jButton20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/3232/edittrash.png"))); // NOI18N
-        jButton20.setToolTipText("Angebot deaktivieren und Tab schliessen");
+        jButton20.setToolTipText("Angebot deaktivieren");
         jButton20.setFocusable(false);
         jButton20.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton20.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
