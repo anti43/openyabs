@@ -512,7 +512,7 @@ public class mainframe extends javax.swing.JFrame {
 
         jPanel2.setBackground(new java.awt.Color(153, 153, 153));
 
-        jButton4.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton4.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/3232/agt_family.png"))); // NOI18N
         jButton4.setText("Kunden");
         jButton4.setToolTipText("Kunden");
@@ -1111,7 +1111,7 @@ public class mainframe extends javax.swing.JFrame {
 
         jMenu1.add(pluginMenu);
 
-        jMenuItem18.setText("Serienbrief (Default Drucker)");
+        jMenuItem18.setText("Serienbrief");
         jMenuItem18.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem18ActionPerformed(evt);

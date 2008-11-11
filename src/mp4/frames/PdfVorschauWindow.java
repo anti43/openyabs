@@ -19,6 +19,7 @@ import mp4.globals.Strings;
 import mp4.interfaces.Waiter;
 import mp4.items.visual.Popup;
 import mp4.logs.*;
+import mp4.main.Main;
 import mp4.utils.export.druck.DruckJob;
 import mp4.utils.files.DialogForFile;
 import mp4.utils.files.FileDirectoryHandler;
@@ -163,7 +164,12 @@ private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
     try {
         Log.Debug(this, mp4.einstellungen.Einstellungen.instanceOf().getPDF_Programm() + " " + file.getPath());
-        Process proc = Runtime.getRuntime().exec(mp4.einstellungen.Einstellungen.instanceOf().getPDF_Programm()+ " " + file.getPath());
+        if (Main.IS_WINDOWS) {
+            Process proc = Runtime.getRuntime().exec("\"" + mp4.einstellungen.Einstellungen.instanceOf().getPDF_Programm() + "\"" + " " + file.getPath());
+        } else {
+            Process proc = Runtime.getRuntime().exec(mp4.einstellungen.Einstellungen.instanceOf().getPDF_Programm() + " " + file.getPath());
+        }
+
     } catch (IOException ex) {
         new Popup(Strings.NO_PDF_PROG);
         Log.Debug(ex);

@@ -24,7 +24,7 @@ import mp4.globals.Strings;
 import mp4.items.visual.Popup;
 import mp4.einstellungen.Einstellungen;
 import mp4.logs.Log;
-
+import mp4.main.Main;
 
 /**
  *
@@ -35,14 +35,19 @@ public class Browser {
     public Browser(File file) {
         try {
             try {
-                Log.Debug(this,Einstellungen.instanceOf().getBrowser_Programm() + " " + file.getPath());
-                Process proc = Runtime.getRuntime().exec(Einstellungen.instanceOf().getBrowser_Programm() + " " + file.getPath());
+                Log.Debug(this, Einstellungen.instanceOf().getBrowser_Programm() + " " + file.getPath());
+
+                if (Main.IS_WINDOWS) {
+                    Process proc = Runtime.getRuntime().exec("\"" + Einstellungen.instanceOf().getBrowser_Programm() + "\"" + " " + file.getPath());
+                } else {
+                    Process proc = Runtime.getRuntime().exec(Einstellungen.instanceOf().getBrowser_Programm() + " " + file.getPath());
+                }
             } catch (IOException ex) {
                 new Popup(Strings.NO_BROWSER);
                 Log.Debug(ex);
             }
         } catch (Exception e) {
-            Log.Debug(this,e);
+            Log.Debug(this, e);
         }
     }
 
