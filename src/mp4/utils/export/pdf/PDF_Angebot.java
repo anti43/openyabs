@@ -84,8 +84,8 @@ public class PDF_Angebot implements Template {
                     fields.add(new String[]{"quantity" + t, FormatNumber.formatDezimal((Double) products[i][1])});
                     fields.add(new String[]{"product" + t, String.valueOf(products[i][2])});
                     fields.add(new String[]{"price" + t, FormatNumber.formatLokalCurrency((Double) products[i][5])});
-                    fields.add(new String[]{"price_net" + t, FormatNumber.formatLokalCurrency((Double) products[i][4])});
-                    fields.add(new String[]{"price_tax" + t, FormatNumber.formatLokalCurrency((Double) products[i][3])});
+                    fields.add(new String[]{"pricenet" + t, FormatNumber.formatLokalCurrency((Double) products[i][4])});
+                    fields.add(new String[]{"pricetax" + t, FormatNumber.formatLokalCurrency((Double) products[i][3])});
                     fields.add(new String[]{"multipliedprice" + t, FormatNumber.formatLokalCurrency((Double) products[i][5] * (Double) products[i][1])});
                     netto = netto + ((Double) products[i][4] * (Double) products[i][1]);
                     brutto = brutto + ((Double) products[i][5] * (Double) products[i][1]);
