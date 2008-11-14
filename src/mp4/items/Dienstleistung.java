@@ -121,9 +121,9 @@ public class Dienstleistung extends mp4.items.Things implements mp4.datenbank.in
 
         Query q = query.clone(TABLE_SERVICES);
 
-        String[][] str = q.selectFreeQuery("SELECT dienstleistungen.id, dienstleistungen.Produktnummer AS Nummer,dienstleistungen.Name,dienstleistungen.beschreibung," +
+        String[][] str = q.selectFreeQuery("SELECT dienstleistungen.id, dienstleistungen.produktnummer AS Nummer,dienstleistungen.Name,dienstleistungen.beschreibung," +
                 "dienstleistungen.preis," + "dienstleistungen.einheit," +
-                "Warengruppenid,dienstleistungen.Datum FROM dienstleistungen " +
+                "Warengruppenid,dienstleistungen.datum FROM dienstleistungen " +
                 "LEFT OUTER JOIN  steuersaetze ON dienstleistungen.steuersatzid = steuersaetze.id " +
                 "LEFT OUTER JOIN  warengruppengruppen ON dienstleistungen.warengruppenid = warengruppengruppen.id " +
                 "WHERE dienstleistungen.deleted = 0", null);

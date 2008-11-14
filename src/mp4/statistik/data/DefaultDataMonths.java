@@ -7,6 +7,7 @@ package mp4.statistik.data;
 import java.util.ArrayList;
 import java.util.Date;
 
+import mp4.datenbank.installation.Tabellen;
 import mp4.logs.*;
 import mp4.datenbank.verbindung.ConnectionHandler;
 import mp4.datenbank.verbindung.Query;
@@ -126,16 +127,17 @@ public class DefaultDataMonths implements Waitable {
         return columns;
     }
 
+    @Override
     public void waitFor() {
         query = ConnectionHandler.instanceOf().clone(null);
 
-        query.setTable("Rechnungen");
+        query.setTable(Tabellen.TABLE_BILLS);
         rechnungenVal = query.selectMonthlySums("gesamtpreis", new String[]{"storno", "0", ""}, zeitraum, " AND bezahlt = 1 ");
 
-        query.setTable("Einnahmen");
+        query.setTable(Tabellen.TABLE_INCOME);
         einnahmenVal = query.selectMonthlySums("Preis", null, zeitraum, "");
 
-        query.setTable("Ausgaben");
+        query.setTable(Tabellen.TABLE_DUES);
         ausgabenVal = query.selectMonthlySums("Preis", null, zeitraum, "");
 
         if (rechnungenVal.isEmpty()) {

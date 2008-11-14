@@ -24,6 +24,7 @@ package mp4.datenbank.installation;
  * @author anti43
  */
 public interface Tabellen {
+    
 
     /**
      * Eigene Daten
@@ -117,7 +118,7 @@ public interface Tabellen {
     public final String TABLE_BILL_TEXTS_TO_BILLS = "betreffz_zu_rechnung";
     public final String TABLE_TAXES = "steuersaetze";
     public final String TABLE_Kunde_PRINT_FIELDS =
-            "Nummer" + "," + "Firma" + "," + "Anrede" + "," + "Vorname" +
+            "nummer" + "," + "firma" + "," + "anrede" + "," + "Vorname" +
             "," + "Name" + "," + "Str" + "," + "PLZ" + "," + "Ort" + "," +
             "Tel" + "," + "Fax" + "," + "Mobil" + "," + "Mail" + "," + "Webseite";
     /**

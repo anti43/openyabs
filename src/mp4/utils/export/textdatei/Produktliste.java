@@ -67,9 +67,9 @@ public class Produktliste implements TableData, Tabellen {
 
     @Override
     public Object[][] getData() {
-        String[][] data = queryhandler.selectFreeQuery("SELECT produkte.Produktnummer AS Nummer,produkte.Name,produkte.Text," +
-                "produkte.VK,produkte.EK,steuersaetze.wert,Hersteller.firma AS Hersteller,lieferanten.firma AS Lieferant," +
-                "warengruppenkategorien.name, warengruppenfamilien.name, warengruppengruppen.name, produkte.url,produkte.EAN FROM produkte " +
+        String[][] data = queryhandler.selectFreeQuery("SELECT produkte.produktnummer AS Nummer,produkte.name,produkte.text," +
+                "produkte.vk,produkte.ek,steuersaetze.wert,hersteller.firma AS Hersteller,lieferanten.firma AS Lieferant," +
+                "warengruppenkategorien.name, warengruppenfamilien.name, warengruppengruppen.name, produkte.url,produkte.ean FROM produkte " +
                 "LEFT OUTER JOIN  lieferanten ON produkte.lieferantenid = lieferanten.id " +
                 "LEFT OUTER JOIN  steuersaetze ON produkte.steuersatzid = steuersaetze.id " +
                 "LEFT OUTER JOIN  hersteller ON produkte.herstellerid = hersteller.id " +

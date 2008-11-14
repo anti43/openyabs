@@ -203,9 +203,9 @@ public class Product extends mp4.items.Things implements mp4.datenbank.installat
 
         Query q = query.clone(TABLE_PRODUCTS);
 
-        String[][] str = q.selectFreeQuery("SELECT produkte.id, produkte.Produktnummer AS Nummer,produkte.Name,produkte.text," +
-                "produkte.VK,produkte.EK,steuersaetze.wert,hersteller.firma AS Hersteller,lieferanten.firma AS Lieferant," +
-                "Warengruppenid,produkte.Datum,produkte.Url,produkte.EAN FROM produkte " +
+        String[][] str = q.selectFreeQuery("SELECT produkte.id, produkte.produktnummer AS Nummer,produkte.Name,produkte.text," +
+                "produkte.vk,produkte.ek,steuersaetze.wert,hersteller.firma AS Hersteller,lieferanten.firma AS Lieferant," +
+                "warengruppenid,produkte.datum,produkte.Url,produkte.ean FROM produkte " +
                 "LEFT OUTER JOIN  steuersaetze ON produkte.steuersatzid = steuersaetze.id " +
                 "LEFT OUTER JOIN  lieferanten ON produkte.lieferantenid = lieferanten.id " +
                 "LEFT OUTER JOIN  hersteller ON produkte.herstellerid = hersteller.id " +
@@ -361,9 +361,9 @@ public class Product extends mp4.items.Things implements mp4.datenbank.installat
 
         Query q = query.clone(TABLE_PRODUCTS);
 
-        String[][] str = q.selectFreeQuery("SELECT produkte.Produktnummer AS Nummer,produkte.Name,produkte.Text," +
-                "produkte.VK,produkte.EK,steuersaetze.wert,Hersteller.name,lieferanten.firma AS Lieferant," +
-                "Warengruppenid,produkte.Datum,produkte.EAN FROM produkte " +
+        String[][] str = q.selectFreeQuery("SELECT produkte.produktnummer AS Nummer,produkte.name,produkte.text," +
+                "produkte.vk,produkte.ek,steuersaetze.wert,hersteller.name,lieferanten.firma AS Lieferant," +
+                "warengruppenid,produkte.datum,produkte.ean FROM produkte " +
                 "LEFT OUTER JOIN  lieferanten ON produkte.lieferantenid = lieferanten.id " +
                 "LEFT OUTER JOIN  steuersaetze ON produkte.steuersatzid = steuersaetze.id " +
                 "LEFT OUTER JOIN  hersteller ON produkte.herstellerid = hersteller.id " +
