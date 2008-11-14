@@ -76,8 +76,8 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
         try {
             // Select-Anweisung ausführen
             stm = conn.createStatement();
-            Log.Debug(this, query, true);
-            bool = stm.execute(query);
+            Log.Debug(this, query.toLowerCase(), true);
+            bool = stm.execute(query.toLowerCase());
             stop();
             return bool;
         } catch (SQLException ex) {
@@ -123,9 +123,9 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
         try {
             // Select-Anweisung ausführen
             stm = conn.createStatement();
-            Log.Debug(this, query, true);
-            log.append("\n " + query);
-            bool = stm.execute(query);
+            Log.Debug(this, query.toLowerCase(), true);
+            log.append("\n " + query.toLowerCase());
+            bool = stm.execute(query.toLowerCase());
             log.append("\n " + stm.getUpdateCount() + " Reihen betroffen.");
             stop();
 
@@ -286,8 +286,8 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
         try {
             // Select-Anweisung ausführen
             stm = conn.createStatement();
-            Log.Debug(this, query, true);
-            resultSet = stm.executeQuery(query);
+            Log.Debug(this, query.toLowerCase(), true);
+            resultSet = stm.executeQuery(query.toLowerCase());
             ArrayList spalten = new ArrayList();
             ArrayList zeilen = new ArrayList();
             rsmd = resultSet.getMetaData();
@@ -447,7 +447,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
         try {
             // Select-Anweisung ausführen
             stm = conn.createStatement(resultSet.TYPE_SCROLL_INSENSITIVE, resultSet.CONCUR_READ_ONLY);
-            resultSet = stm.executeQuery(query);
+            resultSet = stm.executeQuery(query.toLowerCase());
             rsmd = resultSet.getMetaData();
 
             if (resultSet.last()) {
@@ -481,10 +481,10 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
                     message = "Database Error (getNextIndex:COUNT):";
                     stm = null;
                     resultSet = null;
-                    Log.Debug(this, query, true);
+                    Log.Debug(this, query.toLowerCase(), true);
                     // Select-Anweisung ausführen
                     stm = conn.createStatement(resultSet.TYPE_SCROLL_INSENSITIVE, resultSet.CONCUR_READ_ONLY);
-                    resultSet = stm.executeQuery(query);
+                    resultSet = stm.executeQuery(query.toLowerCase());
                     resultSet.first();
                     i = resultSet.getInt(1);
                 }
@@ -542,11 +542,11 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
         String integer = "0";
         Integer i = 0;
         Integer oldi = 0;
-        Log.Debug(this, query, true);
+        Log.Debug(this, query.toLowerCase(), true);
         try {
             // Select-Anweisung ausführen
             stm = conn.createStatement(resultSet.TYPE_SCROLL_INSENSITIVE, resultSet.CONCUR_READ_ONLY);
-            resultSet = stm.executeQuery(query);
+            resultSet = stm.executeQuery(query.toLowerCase());
             rsmd = resultSet.getMetaData();
             while (resultSet.next()) {
                 integer = resultSet.getString(colName);
@@ -560,10 +560,10 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
                     message = "Database Error (getNextIndex:COUNT):";
                     stm = null;
                     resultSet = null;
-                    Log.Debug(this, query, true);
+                    Log.Debug(this, query.toLowerCase(), true);
                     // Select-Anweisung ausführen
                     stm = conn.createStatement(resultSet.TYPE_SCROLL_INSENSITIVE, resultSet.CONCUR_READ_ONLY);
-                    resultSet = stm.executeQuery(query);
+                    resultSet = stm.executeQuery(query.toLowerCase());
 
                     if (resultSet.next()) {
                         oldi = resultSet.getInt(1);
@@ -631,7 +631,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
         }
 
         query = "INSERT INTO " + table + " (" + what[0] + " ) VALUES (" + what[1] + ") ";
-        Log.Debug(this, query, true);
+        Log.Debug(this, query.toLowerCase(), true);
         message = "Database Error:";
         stm = null;
         resultSet = null;
@@ -640,7 +640,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
 
         try {
             stm = conn.createStatement(resultSet.TYPE_SCROLL_INSENSITIVE, resultSet.CONCUR_READ_ONLY);
-            resultCount = stm.executeUpdate(query);
+            resultCount = stm.executeUpdate(query.toLowerCase());
             id = getCurrentIndex();
         } catch (SQLException ex) {
             Log.Debug(this, message + ex.getMessage());
@@ -707,11 +707,11 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
         message = "Database Error:";
         stm = null;
         resultSet = null;
-        Log.Debug(this, query, true);
+        Log.Debug(this, query.toLowerCase(), true);
         try {
             // Select-Anweisung ausführenconn.createStatement(rs.TYPE_SCROLL_INSENSITIVE,rs.CONCUR_READ_ONLY);
             stm = conn.createStatement(resultSet.TYPE_SCROLL_INSENSITIVE, resultSet.CONCUR_READ_ONLY);
-            resultCount = stm.executeUpdate(query);
+            resultCount = stm.executeUpdate(query.toLowerCase());
         } catch (SQLException ex) {
             Log.Debug(this, message + ex.getMessage());
             Popup.error(message + ex.getMessage(), "Datenbankfehler");
@@ -760,12 +760,12 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
         resultSet = null;
         ResultSetMetaData rsmd;
         String[] pax = null;
-        Log.Debug(this, query, true);
+        Log.Debug(this, query.toLowerCase(), true);
 
         try {
             // Select-Anweisung ausführen
             stm = conn.createStatement(resultSet.TYPE_SCROLL_INSENSITIVE, resultSet.CONCUR_READ_ONLY);
-            resultSet = stm.executeQuery(query);
+            resultSet = stm.executeQuery(query.toLowerCase());
 
             ArrayList spalten = new ArrayList();
             rsmd = resultSet.getMetaData();
@@ -829,7 +829,7 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
         try {
             // Select-Anweisung ausführen
             stm = conn.createStatement(resultSet.TYPE_SCROLL_INSENSITIVE, resultSet.CONCUR_READ_ONLY);
-            resultSet = stm.executeQuery(query);
+            resultSet = stm.executeQuery(query.toLowerCase());
             ArrayList spalten = new ArrayList();
             rsmd = resultSet.getMetaData();
 
@@ -1011,11 +1011,11 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
         message = "Database Error:";
         stm = null;
         resultSet = null;
-        Log.Debug(this, query, true);
+        Log.Debug(this, query.toLowerCase(), true);
         try {
             // Select-Anweisung ausführen
             stm = conn.createStatement();
-            resultCount = stm.executeUpdate(query);
+            resultCount = stm.executeUpdate(query.toLowerCase());
             Log.Debug(this, "Entries deleted: " + resultCount);
         } catch (SQLException ex) {
             Log.Debug(this, message + ex.getMessage());
@@ -1140,11 +1140,11 @@ public abstract class Query implements mp4.datenbank.installation.Tabellen {
         stm = null;
         resultSet = null;
 
-        Log.Debug(this, query, true);
+        Log.Debug(this, query.toLowerCase(), true);
         try {
             // Select-Anweisung ausführen
             stm = conn.createStatement(resultSet.TYPE_SCROLL_INSENSITIVE, resultSet.CONCUR_READ_ONLY);
-            resultSet = stm.executeQuery(query);
+            resultSet = stm.executeQuery(query.toLowerCase());
 
             if (resultSet.first()) {
                 Log.Debug(this, "Count " + resultSet.getInt("rowcount"));

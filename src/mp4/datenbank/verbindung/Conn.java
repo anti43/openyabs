@@ -16,7 +16,6 @@
  */
 package mp4.datenbank.verbindung;
 
-import java.io.File;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -24,7 +23,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import mp4.datenbank.installation.*;
-import mp4.globals.Constants;
 import mp4.globals.Strings;
 import mp4.items.visual.Popup;
 import mp4.logs.*;
@@ -244,8 +242,8 @@ public class Conn implements Strings {
             for (int i = 0; i < querys.length; i++) {
 
                 try {
-                    Log.Debug(this,querys[i]);
-                    statement.execute(querys[i]);
+                    Log.Debug(this,querys[i].toLowerCase());
+                    statement.execute(querys[i].toLowerCase());
                 } catch (SQLException e) {
                     System.err.println(message + e.getMessage());
                     Log.Debug(this,e);
