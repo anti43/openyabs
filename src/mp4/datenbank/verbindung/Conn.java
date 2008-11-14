@@ -242,8 +242,8 @@ public class Conn implements Strings {
             for (int i = 0; i < querys.length; i++) {
 
                 try {
-                    Log.Debug(this,querys[i].toLowerCase());
-                    statement.execute(querys[i].toLowerCase());
+                    Log.Debug(this,querys[i]);
+                    statement.execute(querys[i]);
                 } catch (SQLException e) {
                     System.err.println(message + e.getMessage());
                     Log.Debug(this,e);
