@@ -54,7 +54,7 @@ public class ConnectionTypeHandler {
     public static final int MULTI_USER = 1;
     public static String DERBY_DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
     public static String MYSQL_DRIVER = "com.mysql.jdbc.Driver";
-    public static String CUSTOM_DRIVER = "";    //Available SQL Files
+    public static String CUSTOM_DRIVER = "custom.driver";    //Available SQL Files
     public static File DERBY_FILE = new File(Setup.instanceOf().getInstall_dirs().getWorkDir() + "/ext/sql/derby.sql");
     public static File MYSQL_FILE = new File(Setup.instanceOf().getInstall_dirs().getWorkDir() + "/ext/sql/mysql.sql");
     public static File CUSTOM_FILE = new File(Setup.instanceOf().getInstall_dirs().getWorkDir() + "/ext/sql/custom.sql");
@@ -72,17 +72,18 @@ public class ConnectionTypeHandler {
     }
     private static String CONNECTION_STRING = null;
     private String URL = Main.settingsfile.getDBPath();
-    private static Integer PREDEFINED_DRVER = 2;
+    private static Integer PREDEFINED_DRVER = null;
     private static Integer MODE = 0;
 
     /**
      * Constructs a new ConnHandler
      */
     public ConnectionTypeHandler() {
-        if (Main.settingsfile.getDBDriver().equals(DERBY_DRIVER)) {
+              
+        if (Main.settingsfile.getDBDriver().equalsIgnoreCase(DERBY_DRIVER)) {
             ConnectionTypeHandler.PREDEFINED_DRVER = ConnectionTypeHandler.DERBY;
             ConnectionTypeHandler.MODE = ConnectionTypeHandler.SINGLE_USER;
-        } else if (Main.settingsfile.getDBDriver().equals(MYSQL_DRIVER)) {
+        } else if (Main.settingsfile.getDBDriver().equalsIgnoreCase(MYSQL_DRIVER)) {
             ConnectionTypeHandler.PREDEFINED_DRVER = ConnectionTypeHandler.MYSQL;
             ConnectionTypeHandler.MODE = ConnectionTypeHandler.MULTI_USER;
         } else {

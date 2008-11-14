@@ -204,7 +204,7 @@ public class Product extends mp4.items.Things implements mp4.datenbank.installat
         Query q = query.clone(TABLE_PRODUCTS);
 
         String[][] str = q.selectFreeQuery("SELECT produkte.id, produkte.Produktnummer AS Nummer,produkte.Name,produkte.text," +
-                "produkte.VK,produkte.EK,steuersaetze.wert,hersteller.firma AS Hersteller,Lieferanten.firma AS Lieferant," +
+                "produkte.VK,produkte.EK,steuersaetze.wert,hersteller.firma AS Hersteller,lieferanten.firma AS Lieferant," +
                 "Warengruppenid,produkte.Datum,produkte.Url,produkte.EAN FROM produkte " +
                 "LEFT OUTER JOIN  steuersaetze ON produkte.steuersatzid = steuersaetze.id " +
                 "LEFT OUTER JOIN  lieferanten ON produkte.lieferantenid = lieferanten.id " +
@@ -362,7 +362,7 @@ public class Product extends mp4.items.Things implements mp4.datenbank.installat
         Query q = query.clone(TABLE_PRODUCTS);
 
         String[][] str = q.selectFreeQuery("SELECT produkte.Produktnummer AS Nummer,produkte.Name,produkte.Text," +
-                "produkte.VK,produkte.EK,steuersaetze.wert,Hersteller.name,Lieferanten.firma AS Lieferant," +
+                "produkte.VK,produkte.EK,steuersaetze.wert,Hersteller.name,lieferanten.firma AS Lieferant," +
                 "Warengruppenid,produkte.Datum,produkte.EAN FROM produkte " +
                 "LEFT OUTER JOIN  lieferanten ON produkte.lieferantenid = lieferanten.id " +
                 "LEFT OUTER JOIN  steuersaetze ON produkte.steuersatzid = steuersaetze.id " +

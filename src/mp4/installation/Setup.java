@@ -570,6 +570,8 @@ public class Setup extends javax.swing.JFrame implements Constants, Strings {
             } else if (jRadioButton3.isSelected()) {
                 Main.settingsfile.setDBDriver(jTextField4.getText());
             }
+            
+         
         }
 
         try {

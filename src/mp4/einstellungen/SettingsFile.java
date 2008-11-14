@@ -160,6 +160,7 @@ public class SettingsFile {
 
     public void setDBPassword(String DBPassword) {
         this.DBPassword = DBPassword;
+        save();
     }
 
     public String getDBDriver() {
@@ -168,5 +169,6 @@ public class SettingsFile {
 
     public void setDBDriver(String DBDriver) {
         this.DBDriver = DBDriver;
+        save();
     }
 }

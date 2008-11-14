@@ -233,7 +233,7 @@ public class Main implements Strings {
 
         //Datenbank suchen
         Log.Debug(this, "MP Datei: " + SETTINGS_FILE, true);
-        if (settingsfile.getFile().exists() && settingsfile.getFile().canRead() && findDatabase()) {
+        if (settingsfile.getFile().exists() && settingsfile.getFile().canRead()) {
             try {
                 settingsfile.read();
                 splash.setComp(new mainframe(splash, this));
@@ -242,24 +242,25 @@ public class Main implements Strings {
                 System.exit(1);
             }
         //Falls Datenbank nicht vorhanden, aber mpsettings Datei:
-        } else if (settingsfile.getFile().exists() && settingsfile.getFile().canRead()) {
-            settingsfile.read();
-            checkDB_Location();
-            String db = settingsfile.getDBPath() + File.separator + Constants.DATABASENAME;
-            Log.Debug(this, db + " not found :-(", true);
-            Popup.notice(this, "Datenbank existiert nicht am angegebenen Ort.\n" + db);
-
-            splash.setMessage("Versuche, Datenbank anzulegen");
-
-            if (new Setup(true).createDatabase()) {
-                Popup.notice(this, "Datenbank angelegt in\n" + db);
-                splash.setMessage("Starte MP");
-                splash.dispose();
-                new Main();
-            } else {
-                Popup.notice(this, "Es ist ein Fehler aufgetreten, Programm wird beendet.");
-                System.exit(1);
-            }
+//        } 
+//        else if (settingsfile.getFile().exists() && settingsfile.getFile().canRead()) {
+//            settingsfile.read();
+//            checkDB_Location();
+//            String db = settingsfile.getDBPath() + File.separator + Constants.DATABASENAME;
+//            Log.Debug(this, db + " not found :-(", true);
+//            Popup.notice(this, "Datenbank existiert nicht am angegebenen Ort.\n" + db);
+//
+//            splash.setMessage("Versuche, Datenbank anzulegen");
+//
+//            if (new Setup(true).createDatabase()) {
+//                Popup.notice(this, "Datenbank angelegt in\n" + db);
+//                splash.setMessage("Starte MP");
+//                splash.dispose();
+//                new Main();
+//            } else {
+//                Popup.notice(this, "Es ist ein Fehler aufgetreten, Programm wird beendet.");
+//                System.exit(1);
+//            }
 
         //Falls Datenbank und mpsettings nicht vorhanden, Installer starten
         } else if (createSettingsFile()) {
@@ -289,14 +290,16 @@ public class Main implements Strings {
             new Setup().createDatabase();
         }
     }
-
-    private boolean findDatabase() {
-        settingsfile.read();
-        String db = settingsfile.getDBPath() + File.separator + Constants.DATABASENAME;
-        Log.Debug(this, "Looking for Database: " + db);
-        File test = new File(db);
-        return test.exists();
-    }
+//
+//    private boolean findDatabase() {
+//        settingsfile.read();
+//        if (settingsfile.getDBDriver().contains("derby")) {
+//            String db = settingsfile.getDBPath() + File.separator + Constants.DATABASENAME;
+//            Log.Debug(this, "Looking for Database: " + db);
+//            File test = new File(db);
+//            return test.exists();
+//        } else return true;
+//    }
 
     private boolean createSettingsFile() throws IOException {
         return settingsfile.create();
