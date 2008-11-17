@@ -3,36 +3,45 @@
  *
  * Created on 8. Februar 2008, 16:49
  */
-
 package mp4.panels.misc;
 
+import mp4.datenbank.verbindung.ConnectionTypeHandler;
 import mp4.globals.Constants;
 //import mp3.classes.objects.ungrouped.MyData;
 import mp4.frames.mainframe;
 import mp4.einstellungen.Einstellungen;
 import mp4.items.visual.CommonPanel;
-
+import mp4.main.Main;
 
 /**
  *
  * @author  anti43
  */
 public class startView extends CommonPanel {
+
     private mainframe mainframe;
-    
+
     /** Creates new form startView */
     public startView() {
-        initComponents(); 
-        
+        initComponents();
+
         jLabel7.setText(Einstellungen.instanceOf().getVersion());
     }
 
     public startView(mainframe frame) {
-         initComponents();
-         jLabel7.setText("Version: " + Einstellungen.instanceOf().getVersion() + " " + Constants.TITLE);
-         mainframe= frame;
+        initComponents();
+        mainframe = frame;
+        jLabel7.setText("Version: " + Einstellungen.instanceOf().getVersion() + " " + Constants.TITLE);
+        jTextArea3.setText(
+                "Benutzer: " + mainframe.getUser() +
+                "\nVersion: " + Constants.VERSION + "." + Constants.REVISION +
+                "\nDatenbank: " + ConnectionTypeHandler.getDriverName()+ 
+                "\nDatenbanktreiber: " + Main.settingsfile.getDBDriver()
+                );
+        
+        jTextArea3.setSelectionStart(0);
     }
-    
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -53,6 +62,9 @@ public class startView extends CommonPanel {
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea2 = new javax.swing.JTextArea();
         jLabel4 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTextArea3 = new javax.swing.JTextArea();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -63,7 +75,7 @@ public class startView extends CommonPanel {
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
         jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jLabel2.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Arial", 1, 12));
         jLabel2.setText("MP Rechnungs und Kundenverwaltung");
 
         jLabel5.setForeground(new java.awt.Color(0, 51, 51));
@@ -89,10 +101,10 @@ public class startView extends CommonPanel {
         jTextArea1.setFocusable(false);
         jScrollPane1.setViewportView(jTextArea1);
 
-        jLabel7.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        jLabel7.setFont(new java.awt.Font("Arial", 0, 12));
         jLabel7.setText("Version:");
 
-        jLabel3.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Arial", 1, 12));
         jLabel3.setText("MP enthält folgende Programme/Bibliotheken:");
 
         jScrollPane2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -112,6 +124,17 @@ public class startView extends CommonPanel {
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/mp.png"))); // NOI18N
         jLabel4.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
+        jLabel6.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel6.setText("Systeminfo:");
+
+        jScrollPane3.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        jScrollPane3.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        jTextArea3.setColumns(20);
+        jTextArea3.setRows(5);
+        jTextArea3.setText("Benutzer:\nVersion:\nDatenbank:\nDatenbanktreiber:");
+        jScrollPane3.setViewportView(jTextArea3);
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -121,6 +144,8 @@ public class startView extends CommonPanel {
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel2)
@@ -129,7 +154,7 @@ public class startView extends CommonPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 191, Short.MAX_VALUE)
                         .addComponent(jLabel4))
                     .addComponent(jLabel3)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE))
+                    .addComponent(jLabel6))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -150,7 +175,11 @@ public class startView extends CommonPanel {
                         .addComponent(jLabel5))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE)))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 64, Short.MAX_VALUE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -173,21 +202,21 @@ public class startView extends CommonPanel {
 
         add(jPanel2, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
-    
-    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextArea jTextArea2;
+    private javax.swing.JTextArea jTextArea3;
     // End of variables declaration//GEN-END:variables
-    
 }

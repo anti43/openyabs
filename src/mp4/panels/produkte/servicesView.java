@@ -857,7 +857,7 @@ public class servicesView extends mp4.items.visual.CommonPanel implements mp4.da
 
         SelectionCheck selection = new SelectionCheck(jTable3);
 
-        if (evt.getClickCount() >= 2 && selection.checkID()) {
+        if (evt.getClickCount() >= 1 && selection.checkID()) {
             this.setProduct(new Dienstleistung(selection.getId()));
         }
     }//GEN-LAST:event_jTable3MouseClicked

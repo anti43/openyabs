@@ -16,6 +16,7 @@
  */
 package mp4.utils.files;
 
+import mp4.items.visual.Popup;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -104,7 +105,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
                 }
             }
         } catch (Exception n) {
-             Log.Debug(this, n.getMessage());
+            Log.Debug(this, n.getMessage());
         }
         return false;
     }
@@ -122,6 +123,10 @@ public class DialogForFile extends JFileChooser implements Waiter {
                     fileToSave.createNewFile();
                 } catch (IOException ex) {
                     Logger.getLogger(DialogForFile.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else {
+                if (!Popup.Y_N_dialog("Datei existiert bereits, überschreiben?")) {
+                    saveFile(fileToSave);
                 }
             }
             FileReader in = null;
@@ -181,7 +186,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
                 this.file = this.getSelectedFile();
                 return true;
             } catch (IOException ex) {
-                Log.Debug(this,ex);
+                Log.Debug(this, ex);
             }
         }
         return false;
@@ -198,11 +203,12 @@ public class DialogForFile extends JFileChooser implements Waiter {
 
     public void writeFile(File file) {
         if (chooseFile()) {
-        try {
-            FileDirectoryHandler.copyFile(file, this.file);
-            mainframe.setInfoText("Datei gespeichert: " + this.file);
-        } catch (IOException ex) {
-            Log.Debug(this,ex);
+            try {
+                FileDirectoryHandler.copyFile(file, this.file);
+                mainframe.setInfoText("Datei gespeichert: " + this.file);
+            } catch (IOException ex) {
+                Log.Debug(this, ex);
+            }
         }
-    }}
+    }
 }

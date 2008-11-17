@@ -162,8 +162,6 @@ public class csvProductImporter extends javax.swing.JFrame implements ContactPan
         jLabel2 = new javax.swing.JLabel();
         jCheckBox1 = new javax.swing.JCheckBox();
         jCheckBox2 = new javax.swing.JCheckBox();
-        jCheckBox3 = new javax.swing.JCheckBox();
-        jLabel8 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -208,7 +206,7 @@ public class csvProductImporter extends javax.swing.JFrame implements ContactPan
         jPanel2.setBackground(new java.awt.Color(153, 153, 153));
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jLabel5.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel5.setFont(new java.awt.Font("Tahoma", 1, 11));
         jLabel5.setText("Einstellungen");
 
         jLabel2.setText("Trennzeichen:");
@@ -227,11 +225,6 @@ public class csvProductImporter extends javax.swing.JFrame implements ContactPan
         jCheckBox2.setSelected(true);
         jCheckBox2.setText("Semikolon");
 
-        jCheckBox3.setBackground(new java.awt.Color(153, 153, 153));
-        jCheckBox3.setText("Ohne 1. Zeile");
-
-        jLabel8.setText("Header:");
-
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -241,16 +234,11 @@ public class csvProductImporter extends javax.swing.JFrame implements ContactPan
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel5)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel8))
+                        .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jCheckBox3)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jCheckBox1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jCheckBox2)))))
+                        .addComponent(jCheckBox1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jCheckBox2)))
                 .addContainerGap(138, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -263,20 +251,16 @@ public class csvProductImporter extends javax.swing.JFrame implements ContactPan
                     .addComponent(jLabel2)
                     .addComponent(jCheckBox1)
                     .addComponent(jCheckBox2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jCheckBox3)
-                    .addComponent(jLabel8))
-                .addContainerGap(27, Short.MAX_VALUE))
+                .addContainerGap(38, Short.MAX_VALUE))
         );
 
         jPanel3.setBackground(new java.awt.Color(153, 153, 153));
         jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jLabel6.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel6.setFont(new java.awt.Font("Tahoma", 1, 11));
         jLabel6.setText("Optionale Angaben (wird auf alle Produkte angewendet) ");
 
-        jLabel3.setFont(new java.awt.Font("Dialog", 0, 11)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Dialog", 0, 11));
         jLabel3.setText("Lieferant: ");
 
         jTextField2.addActionListener(new java.awt.event.ActionListener() {
@@ -291,7 +275,7 @@ public class csvProductImporter extends javax.swing.JFrame implements ContactPan
             }
         });
 
-        jLabel4.setFont(new java.awt.Font("Dialog", 0, 11)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Dialog", 0, 11));
         jLabel4.setText("Hersteller:");
 
         jButton7.setText("Wählen");
@@ -347,13 +331,13 @@ public class csvProductImporter extends javax.swing.JFrame implements ContactPan
                     .addComponent(jLabel4)
                     .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton7))
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addContainerGap(5, Short.MAX_VALUE))
         );
 
         jPanel4.setBackground(new java.awt.Color(153, 153, 153));
         jPanel4.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jLabel7.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel7.setFont(new java.awt.Font("Tahoma", 1, 11));
         jLabel7.setText("Datei");
 
         jTextField1.setText("Datei wählen!");
@@ -455,11 +439,11 @@ public class csvProductImporter extends javax.swing.JFrame implements ContactPan
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 156, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -563,7 +547,6 @@ private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private javax.swing.JButton jButton7;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox jCheckBox2;
-    private javax.swing.JCheckBox jCheckBox3;
     public javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -571,7 +554,6 @@ private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -626,8 +608,7 @@ private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
             ICsvBeanReader inFile = new CsvBeanReader(new FileReader(jTextField1.getText()), pref);
             try {
-//                final String[] header = inFile.getCSVHeader(true);
-
+                final String[] headerf = inFile.getCSVHeader(true);
                 while ((user = inFile.read(ProductImporteur.class, header, processors)) != null) {
                     liste.add(user);
                 }

@@ -232,7 +232,7 @@ public class mainframe extends javax.swing.JFrame {
         restoreSession();
 
         this.setVisible(rootPaneCheckingEnabled);
-        if (Programmdaten.instanceOf().getUSE_AUTHENTIFICATION()) {
+        if (Programmdaten.instanceOf().getUSE_AUTHENTICATION()) {
             this.setEnabled(false);
             new login(this);
         }
@@ -436,6 +436,7 @@ public class mainframe extends javax.swing.JFrame {
         jMenuItem26 = new javax.swing.JMenuItem();
         jMenu8 = new javax.swing.JMenu();
         jMenuItem29 = new javax.swing.JMenuItem();
+        jMenuItem32 = new javax.swing.JMenuItem();
         jMenuItem12 = new javax.swing.JMenuItem();
         jSeparator3 = new javax.swing.JSeparator();
         jMenuItem13 = new javax.swing.JMenuItem();
@@ -1000,13 +1001,23 @@ public class mainframe extends javax.swing.JFrame {
 
         jMenu8.setText("Produkte");
 
-        jMenuItem29.setText("CSV");
+        jMenuItem29.setText("CSV-Info");
+        jMenuItem29.setToolTipText("Export mit Hersteller un Lieferanten Namen");
         jMenuItem29.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem29ActionPerformed(evt);
             }
         });
         jMenu8.add(jMenuItem29);
+
+        jMenuItem32.setText("CSV-Reimport");
+        jMenuItem32.setToolTipText("Export in MP Format");
+        jMenuItem32.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem32ActionPerformed(evt);
+            }
+        });
+        jMenu8.add(jMenuItem32);
 
         jMenuItem12.setText("HTML");
         jMenuItem12.addActionListener(new java.awt.event.ActionListener() {
@@ -1373,12 +1384,12 @@ private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
 
 private void jMenuItem1ActionPerformed1(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed1
 
-    boolean useauth = Programmdaten.instanceOf().getUSE_AUTHENTIFICATION();
+    boolean useauth = Programmdaten.instanceOf().getUSE_AUTHENTICATION();
 
     if (!useauth || getUser().isIsAdmin()) {
         if (!useauth) {
             if (Popup.Y_N_dialog("Wenn Sie die Benutzerauthentifizierung einschalten,\nmüssen Sie sich sofort anmelden.\nWollen Sie dies wirklich?")) {
-                Programmdaten.instanceOf().setUSE_AUTHENTIFICATION(!useauth);
+                Programmdaten.instanceOf().setUSE_AUTHENTICATION(!useauth);
                 this.setMessage("Benutzerauthentifizierung eingeschaltet");
                 new HistoryItem("Benutzerauthentifizierung", "Eingeschaltet", mainframe.getUser());
 
@@ -1387,7 +1398,7 @@ private void jMenuItem1ActionPerformed1(java.awt.event.ActionEvent evt) {//GEN-F
                 new login(this);
             }
         } else {
-            Programmdaten.instanceOf().setUSE_AUTHENTIFICATION(!useauth);
+            Programmdaten.instanceOf().setUSE_AUTHENTICATION(!useauth);
             this.setMessage("Benutzerauthentifizierung ausgeschaltet");
             new HistoryItem("Benutzerauthentifizierung", "Ausgeschaltet", mainframe.getUser());
             jMenuItem1.setIcon(null);
@@ -1417,7 +1428,7 @@ private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 }//GEN-LAST:event_jButton10ActionPerformed
 
 private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
-    boolean useauth = Programmdaten.instanceOf().getUSE_AUTHENTIFICATION();
+    boolean useauth = Programmdaten.instanceOf().getUSE_AUTHENTICATION();
 
     if (!useauth || getUser().isIsAdmin()) {
         new TaxRatesEditor(this);
@@ -1655,6 +1666,20 @@ private void jMenuItem31ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     
 }//GEN-LAST:event_jMenuItem31ActionPerformed
 
+private void jMenuItem32ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem32ActionPerformed
+
+     try {
+        dialog = new DialogForFile(DialogForFile.FILES_ONLY, "MP_Import_Produktliste.csv");
+        Produktliste liste = new Produktliste(new Product().getClass());
+        liste.setForimport(true);
+        
+        TextDatFile file = new TextDatFile(ArrayUtils.ObjectToStringArray(liste.getData()), Produktliste.header_reimport);
+        new Job(file, dialog, mainProgressBar).execute();
+    } catch (Exception e) {
+        Popup.notice(this, "Keine Produkte vorhanden.");
+    }
+}//GEN-LAST:event_jMenuItem32ActionPerformed
+
     @Override
     public void finalize() {
         Conn.shutdown();
@@ -1718,6 +1743,7 @@ private void jMenuItem31ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem30;
     private javax.swing.JMenuItem jMenuItem31;
+    private javax.swing.JMenuItem jMenuItem32;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem6;

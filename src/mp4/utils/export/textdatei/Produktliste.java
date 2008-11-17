@@ -27,24 +27,26 @@ import mp4.utils.datum.DateConverter;
  */
 public class Produktliste implements TableData, Tabellen {
 
-    private Query queryhandler;
+    private Query queryhandler = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(TABLE_PRODUCTS);
     private String[] where = null;
+    private boolean forimport = false;
     //* <produktnummer>; <name>;<text>;<vk>;<ek>;<tax>;<warengruppenkategorie>;<warengruppenfamilie>;<warengruppe>;<url>;<ean>
     public static String[] header = new String[]{"produktnummer", "name", "text", "vk",
                     "ek", "tax", "hersteller","lieferant","warengruppenkategorie", "warengruppenfamilie",
                     "warengruppe", "url", "ean"
                 };
-   
+   public static String[] header_reimport = new String[]{"produktnummer", "name", "text", "vk",
+                    "ek", "tax", "herstellerid","warengruppenkategorie", "warengruppenfamilie",
+                    "warengruppe", "url", "ean", "lieferantid"
+                };
 
     /**
      * @param clazz The product type
      */
     public Produktliste(Class clazz) {
-
         if (clazz.isInstance(new mp4.items.Product())) {
             queryhandler = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(TABLE_PRODUCTS);
-        } 
-        
+        }   
     }
 
     /**
@@ -55,9 +57,10 @@ public class Produktliste implements TableData, Tabellen {
     public Produktliste(Class clazz, Integer produkt_id) {
         if (clazz.isInstance(new mp4.items.Product())) {
             queryhandler = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(TABLE_PRODUCTS);
-        } else if (clazz.isInstance(new mp4.items.Dienstleistung())) {
-            queryhandler = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(TABLE_SERVICES);
         } 
+//        else if (clazz.isInstance(new mp4.items.Dienstleistung())) {
+//            queryhandler = mp4.datenbank.verbindung.ConnectionHandler.instanceOf().clone(TABLE_SERVICES);
+//        } 
         where = new String[]{"id", produkt_id.toString(), ""};
     }
 //* <produktnummer>; <name>;<text>;<vk>;<ek>;<tax>;<warengruppenkategorie>;<warengruppenfamilie>;<warengruppe>;<url>;<ean>
@@ -67,16 +70,26 @@ public class Produktliste implements TableData, Tabellen {
 
     @Override
     public Object[][] getData() {
-        String[][] data = queryhandler.selectFreeQuery("SELECT produkte.produktnummer AS Nummer,produkte.name,produkte.text," +
-                "produkte.vk,produkte.ek,steuersaetze.wert,hersteller.firma AS Hersteller,lieferanten.firma AS Lieferant," +
-                "warengruppenkategorien.name, warengruppenfamilien.name, warengruppengruppen.name, produkte.url,produkte.ean FROM produkte " +
-                "LEFT OUTER JOIN  lieferanten ON produkte.lieferantenid = lieferanten.id " +
-                "LEFT OUTER JOIN  steuersaetze ON produkte.steuersatzid = steuersaetze.id " +
-                "LEFT OUTER JOIN  hersteller ON produkte.herstellerid = hersteller.id " +
-                "LEFT OUTER JOIN  warengruppengruppen ON produkte.warengruppenid = warengruppengruppen.id "+
-                "LEFT OUTER JOIN  warengruppenfamilien ON  warengruppengruppen.familienid = warengruppenfamilien.id "+
-                "LEFT OUTER JOIN  warengruppenkategorien ON warengruppenfamilien.kategorieid = warengruppenkategorien.id "
-                , null);
+        String[][] data = null;
+        if (forimport) {
+            data = queryhandler.selectFreeQuery("SELECT produkte.produktnummer AS Nummer,produkte.name,produkte.text," +
+                    "produkte.vk,produkte.ek,steuersaetze.wert,produkte.herstellerid," +
+                    "warengruppenkategorien.name, warengruppenfamilien.name, warengruppengruppen.name, produkte.url, produkte.ean, produkte.lieferantenid FROM produkte " +
+                    "LEFT OUTER JOIN  steuersaetze ON produkte.steuersatzid = steuersaetze.id " +
+                    "LEFT OUTER JOIN  warengruppengruppen ON produkte.warengruppenid = warengruppengruppen.id " +
+                    "LEFT OUTER JOIN  warengruppenfamilien ON  warengruppengruppen.familienid = warengruppenfamilien.id " +
+                    "LEFT OUTER JOIN  warengruppenkategorien ON warengruppenfamilien.kategorieid = warengruppenkategorien.id ", null);
+        } else {
+        data = queryhandler.selectFreeQuery("SELECT produkte.produktnummer AS Nummer,produkte.name,produkte.text," +
+                    "produkte.vk,produkte.ek,steuersaetze.wert,hersteller.firma AS Hersteller,lieferanten.firma AS Lieferant," +
+                    "warengruppenkategorien.name, warengruppenfamilien.name, warengruppengruppen.name, produkte.url,produkte.ean FROM produkte " +
+                    "LEFT OUTER JOIN  lieferanten ON produkte.lieferantenid = lieferanten.id " +
+                    "LEFT OUTER JOIN  steuersaetze ON produkte.steuersatzid = steuersaetze.id " +
+                    "LEFT OUTER JOIN  hersteller ON produkte.herstellerid = hersteller.id " +
+                    "LEFT OUTER JOIN  warengruppengruppen ON produkte.warengruppenid = warengruppengruppen.id " +
+                    "LEFT OUTER JOIN  warengruppenfamilien ON  warengruppengruppen.familienid = warengruppenfamilien.id " +
+                    "LEFT OUTER JOIN  warengruppenkategorien ON warengruppenfamilien.kategorieid = warengruppenkategorien.id ", null);
+        }
         if (data != null) {
             return data;
         } else {
@@ -91,5 +104,9 @@ public class Produktliste implements TableData, Tabellen {
 
     public String[] getHeader() {
         return header;
+    }
+
+    public void setForimport(boolean forimport) {
+        this.forimport = forimport;
     }
 }

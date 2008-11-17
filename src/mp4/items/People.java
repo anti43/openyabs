@@ -83,7 +83,7 @@ public abstract class People extends EasyQuery implements Queries, Tabellen, Loc
     }
 
     public String getFirma() {
-        return Firma;
+        return Firma.equals("null") ? "" : Firma;
     }
 
     public void setFirma(String Firma) {
@@ -92,7 +92,7 @@ public abstract class People extends EasyQuery implements Queries, Tabellen, Loc
     }
 
     public String getAnrede() {
-        return Anrede;
+        return Anrede.equals("null") ? "" : Anrede;
     }
 
     public void setAnrede(String Anrede) {
@@ -101,7 +101,7 @@ public abstract class People extends EasyQuery implements Queries, Tabellen, Loc
     }
 
     public String getVorname() {
-        return Vorname;
+        return Vorname.equals("null") ? "" : Vorname ;
     }
 
     public void setVorname(String Vorname) {
@@ -110,7 +110,7 @@ public abstract class People extends EasyQuery implements Queries, Tabellen, Loc
     }
 
     public String getName() {
-        return Name;
+        return Name.equals("null") ? "" : Name;
     }
 
     public void setName(String Name) {
@@ -119,7 +119,7 @@ public abstract class People extends EasyQuery implements Queries, Tabellen, Loc
     }
 
     public String getStr() {
-        return Str;
+        return Str.equals("null") ? "" : Str ;
     }
 
     public void setStr(String Str) {
@@ -128,7 +128,7 @@ public abstract class People extends EasyQuery implements Queries, Tabellen, Loc
     }
 
     public String getPLZ() {
-        return PLZ;
+        return PLZ.equals("null") ? "" : PLZ;
     }
 
     public void setPLZ(String PLZ) {
@@ -137,7 +137,7 @@ public abstract class People extends EasyQuery implements Queries, Tabellen, Loc
     }
 
     public String getOrt() {
-        return Ort;
+        return Ort.equals("null") ? "" : Ort;
     }
 
     public void setOrt(String Ort) {
@@ -146,7 +146,7 @@ public abstract class People extends EasyQuery implements Queries, Tabellen, Loc
     }
 
     public String getTel() {
-        return Tel;
+        return Tel.equals("null") ? "" : Tel;
     }
 
     public void setTel(String Tel) {
@@ -155,7 +155,7 @@ public abstract class People extends EasyQuery implements Queries, Tabellen, Loc
     }
 
     public String getMobil() {
-        return Mobil;
+        return Mobil.equals("null") ? "" : Mobil;
     }
 
     public void setMobil(String Mobil) {
@@ -164,7 +164,7 @@ public abstract class People extends EasyQuery implements Queries, Tabellen, Loc
     }
 
     public String getMail() {
-        return Mail;
+        return Mail.equals("null") ? "" : Mail;
     }
 
     public void setMail(String Mail) {
@@ -173,7 +173,7 @@ public abstract class People extends EasyQuery implements Queries, Tabellen, Loc
     }
 
     public String getWebseite() {
-        return Webseite;
+        return Webseite.equals("null") ? "" : Webseite;
     }
 
     public void setWebseite(String Webseite) {
@@ -182,7 +182,7 @@ public abstract class People extends EasyQuery implements Queries, Tabellen, Loc
     }
 
     public String getNotizen() {
-        if(Notizen.equals("null"))Notizen=null;
+        if(Notizen == null || Notizen.equals("null"))Notizen = "";
         return Notizen;
     }
 
@@ -196,7 +196,7 @@ public abstract class People extends EasyQuery implements Queries, Tabellen, Loc
     }
 
     public String getFax() {
-        return Fax;
+        return Fax.equals("null") ? "" : Fax;
     }
 
     public void setFax(String Fax) {

@@ -19,8 +19,6 @@ package mp4.datenbank.verbindung;
 import java.awt.Cursor;
 
 import java.sql.*;
-import java.text.NumberFormat;
-import java.text.ParsePosition;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.logging.Level;

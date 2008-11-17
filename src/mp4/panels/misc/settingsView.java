@@ -230,7 +230,7 @@ public class settingsView extends mp4.items.visual.CommonPanel {
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 11));
         jLabel5.setText("Speicherorte");
 
-        jLabel6.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel6.setFont(new java.awt.Font("Tahoma", 1, 11));
         jLabel6.setText("Berechnung");
 
         jPanel2.setBackground(new java.awt.Color(204, 204, 204));
@@ -436,7 +436,7 @@ public class settingsView extends mp4.items.visual.CommonPanel {
             }
         });
 
-        jButton3.setText("Blockierte Datensaetze freigeben");
+        jButton3.setText("Blockierte Datensätze freigeben");
         jButton3.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -458,9 +458,8 @@ public class settingsView extends mp4.items.visual.CommonPanel {
                         .addComponent(jButton5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButton3))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jCheckBox1)
-                        .addContainerGap(284, Short.MAX_VALUE))))
+                    .addComponent(jCheckBox1))
+                .addContainerGap(284, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -473,7 +472,7 @@ public class settingsView extends mp4.items.visual.CommonPanel {
                 .addComponent(jCheckBox1))
         );
 
-        jLabel12.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel12.setFont(new java.awt.Font("Tahoma", 1, 11));
         jLabel12.setText("Tools");
 
         jButton2.setText("Alles Speichern");
@@ -607,14 +606,14 @@ private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:ev
         try {
             data.setHauptsteuersatz(FormatNumber.parseDezimal(jTextField4.getText()));
         } catch (NumberFormatException numberFormatException) {
-            Popup.notice(this, "Ungueltiger Wert fuer den Steuersatz: " + jTextField4.getText());
+            Popup.notice(this, "Ungültiger Wert fuer den Steuersatz: " + jTextField4.getText());
             data.setHauptsteuersatz(19.0d);
         }
         
         try {
             data.setRechnung_TageBisVerzug(Integer.valueOf(jTextField5.getText()));
         } catch (NumberFormatException numberFormatException) {
-            Popup.notice(this, "Ungueltiger Wert fuer Tage in Verzug: " + jTextField5.getText());
+            Popup.notice(this, "Ungültiger Wert fuer Tage in Verzug: " + jTextField5.getText());
             data.setRechnung_TageBisVerzug(30);
         }
         
@@ -729,7 +728,7 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
 private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
      if (mainframe.getUser().doAction(User.ADMIN)) {
-        if (Popup.Y_N_dialog("Alle blockierten Datesaetze freigeben?")) {
+        if (Popup.Y_N_dialog("Alle blockierten Datesätze freigeben?")) {
             DataLock lockhandler = new mp4.datenbank.verbindung.DataLock();
             lockhandler.flush();
         }

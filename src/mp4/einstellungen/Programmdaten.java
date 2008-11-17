@@ -51,6 +51,7 @@ public class Programmdaten implements mp4.datenbank.installation.Tabellen {
     }
 
 
+
     public boolean getONLOAD(mpplugin elem) {
         if (pluginhandler.getString(elem.getUID().toString()) != null) {
             return true;
@@ -215,11 +216,11 @@ public class Programmdaten implements mp4.datenbank.installation.Tabellen {
         datahandler.setInteger("PRODUCTPANEL_CHECKBOX_SCALEIMAGE_SIZE", PRODUCTPANEL_CHECKBOX_SCALEIMAGE_SIZE);
     }
 
-    public boolean getUSE_AUTHENTIFICATION() {
+    public boolean getUSE_AUTHENTICATION() {
         return datahandler.getBoolean("USE_AUTHENTIFICATION");
     }
 
-    public void setUSE_AUTHENTIFICATION(boolean USE_AUTHENTIFICATION) {
+    public void setUSE_AUTHENTICATION(boolean USE_AUTHENTIFICATION) {
         datahandler.setBoolean("USE_AUTHENTIFICATION", USE_AUTHENTIFICATION);
     }
 
@@ -326,4 +327,13 @@ public class Programmdaten implements mp4.datenbank.installation.Tabellen {
     public Double getMAHNUNG_VALUE_DEFAULT() {
        return datahandler.getDouble("MAHNUNG_VALUE_DEFAULT");
     }
+    
+    public Integer getOFFERPANEL_VALID_DAYS() {
+         return datahandler.getInteger("OFFERPANEL_VALID_DAYS");
+    }
+    
+    public void setOFFERPANEL_VALID_DAYS(Integer OFFERPANEL_VALID_DAYS) {
+        datahandler.setInteger("OFFERPANEL_VALID_DAYS", OFFERPANEL_VALID_DAYS);
+    }
+
 }

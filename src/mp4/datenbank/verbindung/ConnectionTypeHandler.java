@@ -21,7 +21,6 @@ import java.io.IOException;
 import mp4.datenbank.installation.Struktur;
 import mp4.globals.Constants;
 import mp4.installation.Setup;
-import mp4.installation.Verzeichnisse;
 import mp4.logs.Log;
 import mp4.main.Main;
 import mp4.utils.files.FileReaderWriter;
@@ -67,9 +66,15 @@ public class ConnectionTypeHandler {
         }
     }
 
-    static String getDriverName() {
+    public static String getDriverName() {
         return CONNECTION_STRING;
     }
+    
+    public static int getDriverType() {
+        return PREDEFINED_DRVER;
+    }
+    
+    
     private static String CONNECTION_STRING = null;
     private String URL = Main.settingsfile.getDBPath();
     private static Integer PREDEFINED_DRVER = null;

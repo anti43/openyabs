@@ -53,7 +53,7 @@ public class DateConverter {
         DE_DATE_FORMAT, DE_DATE_FORMAT_SHORTYEAR, DE_DATE_FORMAT_SHORTMONTH, DE_DATE_FORMAT_NODAY_SHORTMONTH_SHORTYEAR,
         DE_DATE_FORMAT_SHORTMONTH_SHORTYEAR, DE_DATE_FORMAT_NODAY_MONTH_YEAR, DE_DATE_FORMAT_YEAR, DE_DATE_FORMAT_NODAY_SHORTMONTH_YEAR
     };
-    public static final DateFormat  DE_FULL_DATE_FORMAT = new SimpleDateFormat("dd.MM.yyy - HH:mm:ss");
+    public static final DateFormat DE_FULL_DATE_FORMAT = new SimpleDateFormat("dd.MM.yyy - HH:mm:ss");
 
     public static Date addDays(Date date, Integer add) {
         cl.setTime(date);
@@ -62,12 +62,40 @@ public class DateConverter {
         return cl.getTime();
     }
 
+    public static Integer getDifferenceBetween(Date date1, Date date2) {
+
+        if (date1.after(date2)) {
+            Date swap = date1;
+            date1 = date2;
+            date2 = swap;
+        }
+
+        Calendar d1 = Calendar.getInstance();
+        d1.setTime(date1);
+        
+        Calendar d2 = Calendar.getInstance();
+        d2.setTime(date2);
+
+        int days = d2.get(java.util.Calendar.DAY_OF_YEAR) -
+                d1.get(java.util.Calendar.DAY_OF_YEAR);
+        int y2 = d2.get(java.util.Calendar.YEAR);
+        if (d1.get(java.util.Calendar.YEAR) != y2) {
+            d1 = (java.util.Calendar) d1.clone();
+            do {
+                days += d1.getActualMaximum(java.util.Calendar.DAY_OF_YEAR);
+                d1.add(java.util.Calendar.YEAR, 1);
+            } while (d1.get(java.util.Calendar.YEAR) != y2);
+        }
+        return days;
+
+    }
+
     public static String getFullDefDateString(Date date) {
-       return DE_FULL_DATE_FORMAT.format(new Date());
+        return DE_FULL_DATE_FORMAT.format(new Date());
     }
 
     public static Date getSylvesterOf(Date date) {
-      return DateConverter.getDate(DE_DATE_FORMAT_YEAR.format(date));   
+        return DateConverter.getDate(DE_DATE_FORMAT_YEAR.format(date));
     }
 
     public static String getTodayDefDate() {

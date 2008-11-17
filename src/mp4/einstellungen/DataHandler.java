@@ -17,6 +17,8 @@
 package mp4.einstellungen;
 
 import mp4.datenbank.verbindung.ConnectionHandler;
+import mp4.datenbank.verbindung.ConnectionTypeHandler;
+import mp4.datenbank.verbindung.PrepareData;
 import mp4.logs.*;
 import mp4.utils.zahlen.FormatNumber;
 
@@ -127,6 +129,10 @@ public class DataHandler extends mp4.items.Things implements mp4.datenbank.insta
     
     private boolean setString(String key, String value, boolean newKey) {
 
+        if (ConnectionTypeHandler.getDriverType() == ConnectionTypeHandler.MYSQL) {
+           value = PrepareData.maskBackslashes(value);
+        }
+        
         if (newKey) {
             Log.Debug(this,"Creating new key: " + key);
             if (this.insert("name, wert", "(;;2#4#1#1#8#0#;;)" + key + "(;;2#4#1#1#8#0#;;)" + ",(;;2#4#1#1#8#0#;;)" + value + "(;;2#4#1#1#8#0#;;)", null) == 1) {

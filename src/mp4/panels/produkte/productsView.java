@@ -1312,7 +1312,7 @@ public class productsView extends CommonPanel implements DataPanel, mp4.datenban
 
         SelectionCheck selection = new SelectionCheck(jTable3);
 
-        if (evt.getClickCount() >= 2 && selection.checkID()) {
+        if (evt.getClickCount() >= 1 && selection.checkID()) {
             this.setProduct(new Product(selection.getId()));
         }
     }//GEN-LAST:event_jTable3MouseClicked

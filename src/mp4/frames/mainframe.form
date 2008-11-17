@@ -156,10 +156,20 @@
                   <SubComponents>
                     <MenuItem class="javax.swing.JMenuItem" name="jMenuItem29">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="CSV"/>
+                        <Property name="text" type="java.lang.String" value="CSV-Info"/>
+                        <Property name="toolTipText" type="java.lang.String" value="Export mit Hersteller un Lieferanten Namen"/>
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem29ActionPerformed"/>
+                      </Events>
+                    </MenuItem>
+                    <MenuItem class="javax.swing.JMenuItem" name="jMenuItem32">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="CSV-Reimport"/>
+                        <Property name="toolTipText" type="java.lang.String" value="Export in MP Format"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem32ActionPerformed"/>
                       </Events>
                     </MenuItem>
                     <MenuItem class="javax.swing.JMenuItem" name="jMenuItem12">

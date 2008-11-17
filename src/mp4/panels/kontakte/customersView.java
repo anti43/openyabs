@@ -1218,7 +1218,7 @@ public class customersView extends mp4.items.visual.CommonPanel implements mp4.d
 
     private void jTable3MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable3MouseClicked
         SelectionCheck selection = new SelectionCheck(jTable3);
-        if (evt.getClickCount() >= 2 && selection.checkID() && evt.getButton() == MouseEvent.BUTTON1) {
+        if (evt.getClickCount() >= 1 && selection.checkID() && evt.getButton() == MouseEvent.BUTTON1) {
             try {
                 this.setContact(new Kunde(selection.getId()));
             } catch (Exception exception) {

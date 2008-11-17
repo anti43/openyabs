@@ -16,7 +16,6 @@
  */
 package mp4.datenbank.verbindung;
 
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -50,12 +49,11 @@ public class Conn implements Strings {
      */
     public static Conn instanceOf() throws Exception {
         if (connector == null) {
-          
+
             connector = new Conn();
         }
         return connector;
     }
-
     private static Statement statement;
     private static java.sql.Connection conn;
     private static boolean tablesCreated = false;
@@ -86,11 +84,11 @@ public class Conn implements Strings {
      * @return Connection
      */
     private Connection connect(boolean create) throws Exception {
-        
+
         ctype = new ConnectionTypeHandler();
         // Treiber laden
         try {
-            Log.Debug(this,"Datenbanktreiber: " + ctype.getDriver(), true);
+            Log.Debug(this, "Datenbanktreiber: " + ctype.getDriver(), true);
             Class.forName(ctype.getDriver()).newInstance();
             user = Main.settingsfile.getDBUser();
             password = Main.settingsfile.getDBPassword();
@@ -103,15 +101,15 @@ public class Conn implements Strings {
 
         // Verbindung herstellen
         try {
-            Log.Debug(this,"Datenbankverbindung: " + ctype.getConnectionString(create), true);
+            Log.Debug(this, "Datenbankverbindung: " + ctype.getConnectionString(create), true);
             conn = DriverManager.getConnection(ctype.getConnectionString(create), user, password);
             // Benötige Ressourcen für eine SQL-Anweisung bereitstellen 
             statement = conn.createStatement();
-            
+
         } catch (SQLException ex) {
             System.out.println("Database Error:" + ex.getMessage());
 //            ex.printStackTrace();
-            Log.Debug(this,ex);
+            Log.Debug(this, ex);
             Popup.warn(ex.getMessage(), Popup.ERROR);
             Conn.shutdown();
 //            System.exit(1);
@@ -235,18 +233,25 @@ public class Conn implements Strings {
         statement = null;
         ResultSet resultSet = null;
         boolean error = false;
+        String query;
 
         try {
 
             statement = conn.createStatement();
             for (int i = 0; i < querys.length; i++) {
 
+                query = querys[i];
+
+                if (ConnectionTypeHandler.getDriverType() == ConnectionTypeHandler.MYSQL) {
+                    query = PrepareData.maskBackslashes(query);
+                }
+
                 try {
-                    Log.Debug(this,querys[i]);
-                    statement.execute(querys[i]);
+                    Log.Debug(this, query);
+                    statement.execute(query);
                 } catch (SQLException e) {
                     System.err.println(message + e.getMessage());
-                    Log.Debug(this,e);
+                    Log.Debug(this, e);
                     error = true;
                 }
 

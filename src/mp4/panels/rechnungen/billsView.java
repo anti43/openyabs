@@ -1507,7 +1507,7 @@ public class billsView extends mp4.items.visual.CommonPanel implements DataPanel
 
         SelectionCheck selection = new SelectionCheck(jTable3);
 
-        if (evt.getClickCount() >= 2 && selection.checkID()) {
+        if (evt.getClickCount() >= 1 && selection.checkID()) {
 
             try {
                 this.setBill(new Rechnung(selection.getId()));

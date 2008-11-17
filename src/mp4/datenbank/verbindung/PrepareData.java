@@ -4,6 +4,8 @@
  */
 package mp4.datenbank.verbindung;
 
+import mp4.logs.Log;
+
 /**
  *
  * @author anti43
@@ -11,6 +13,9 @@ package mp4.datenbank.verbindung;
 public class PrepareData {
 
     public static String prepareString(String string) {
+        if (ConnectionTypeHandler.getDriverType() == ConnectionTypeHandler.MYSQL) {
+           string = maskBackslashes(string);
+        }
         return "(;;2#4#1#1#8#0#;;)" + string + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
     }
 
@@ -39,10 +44,15 @@ public class PrepareData {
     }
 
     public static boolean parseBoolean(String bool) {
-        if (bool.matches("1")) {
+        if (bool.matches("1") || bool.matches("true")) {
             return true;
         } else {
             return false;
         }
     }
+
+    public static String maskBackslashes(String string) {
+        Log.Debug(PrepareData.class, "Masking Backslashes!");
+        return string.replaceAll("\\\\","\\\\\\\\");
+     }
 }

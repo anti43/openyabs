@@ -22,10 +22,8 @@ import mp4.globals.Strings;
 
 import mp4.items.visual.KundePicker;
 import mp4.items.visual.DatePick;
-import mp4.utils.ui.inputfields.InputVerifiers;
 import mp4.logs.*;
 import mp4.items.visual.Popup;
-import mp4.utils.tabellen.CalculatedTableValues;
 import mp4.utils.tabellen.models.PostenTableModel;
 import mp4.items.visual.ProductPicker;
 import mp4.datenbank.verbindung.ConnectionHandler;
@@ -43,6 +41,7 @@ import mp4.interfaces.Waitable;
 import mp4.benutzerverwaltung.User;
 import mp4.einstellungen.Einstellungen;
 
+import mp4.einstellungen.Programmdaten;
 import mp4.items.Angebot;
 
 import mp4.items.People;
@@ -55,7 +54,6 @@ import mp4.items.visual.ServicePicker;
 import mp4.utils.datum.DateConverter;
 import mp4.utils.datum.vDate;
 import mp4.utils.export.druck.DruckJob;
-import mp4.utils.export.pdf.PDF_Rechnung;
 import mp4.utils.files.PDFFile;
 import mp4.utils.tabellen.DataModelUtils;
 import mp4.utils.tabellen.SelectionCheck;
@@ -63,7 +61,6 @@ import mp4.utils.tabellen.TableCalculator;
 import mp4.utils.tabellen.TableCellEditorForDezimal;
 import mp4.utils.tabellen.TableFormat;
 
-import mp4.utils.tabellen.TablePopupMenu;
 import mp4.utils.tabellen.models.OfferListTableModel;
 import mp4.utils.tabellen.models.OfferSearchListTableModel;
 import mp4.utils.tasks.Job;
@@ -115,7 +112,7 @@ public class offersView extends mp4.items.visual.CommonPanel implements DataPane
         TableFormat.stripFirst(jTable1);
 
         jTextField7.setText(DateConverter.getDefDateString(new Date()));
-        jTextField11.setText(DateConverter.getDefDateString(new Date()));
+        jTextField11.setText(DateConverter.getDefDateString(DateConverter.addDays(new Date(), Programmdaten.instanceOf().getOFFERPANEL_VALID_DAYS())));
         jTextField13.setText(DateConverter.getDefDateString(new Date()));
 
         jTextField6.setEnabled(false);
@@ -174,6 +171,7 @@ public class offersView extends mp4.items.visual.CommonPanel implements DataPane
 
                 updateListTable();
                 resizeFields();
+                setValidDays();
             } else {
                 new Popup(Popup.GENERAL_ERROR);
             }
@@ -792,6 +790,11 @@ public class offersView extends mp4.items.visual.CommonPanel implements DataPane
         jLabel1.setText("Gültig");
 
         jButton14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/small/cal.png"))); // NOI18N
+        jButton14.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton14MouseClicked(evt);
+            }
+        });
         jButton14.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton14ActionPerformed(evt);
@@ -974,7 +977,7 @@ public class offersView extends mp4.items.visual.CommonPanel implements DataPane
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, 112, Short.MAX_VALUE))
+                    .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -1163,6 +1166,7 @@ public class offersView extends mp4.items.visual.CommonPanel implements DataPane
 
             updateListTable();
             resizeFields();
+            setValidDays();
         } else {
             if (Popup.Y_N_dialog("Möchten Sie das Angebot anlegen?")) {
                 createNew();
@@ -1180,7 +1184,7 @@ public class offersView extends mp4.items.visual.CommonPanel implements DataPane
 
         SelectionCheck selection = new SelectionCheck(jTable3);
 
-        if (evt.getClickCount() >= 2 && selection.checkID()) {
+        if (evt.getClickCount() >= 1 && selection.checkID()) {
 
             try {
                 this.setAngebot(new Angebot(selection.getId()));
@@ -1395,6 +1399,12 @@ private void jButton6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:ev
 
 private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
 }//GEN-LAST:event_jButton6ActionPerformed
+
+private void jButton14MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton14MouseClicked
+
+      new DatePick(jTextField11);
+}//GEN-LAST:event_jButton14MouseClicked
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton jButton1;
     public javax.swing.JButton jButton10;
@@ -1467,6 +1477,12 @@ private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     public javax.swing.JToolBar jToolBar1;
     public javax.swing.JToolBar jToolBar2;
     // End of variables declaration//GEN-END:variables
+
+    private void setValidDays() {
+      Programmdaten.instanceOf().setOFFERPANEL_VALID_DAYS(DateConverter.getDifferenceBetween(DateConverter.getDate(jTextField7.getText()), DateConverter.getDate(jTextField11.getText())));
+        
+    }
+    // End of variables declaration
     private boolean validDate() {
         vDate val = new vDate(jTextField7.getText());
         if (val.isVerified) {

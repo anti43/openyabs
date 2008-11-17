@@ -228,9 +228,8 @@ public class FileReaderWriter {
         String string = "";
         for (int i = 0; i < text.length; i++) {
             string += text[i] + sep;
-
         }
-        if (!writeOnce(string)) {
+        if (!writeOnce(string.substring(0, string.length()-sep.length()))) {
             return false;
         }
         return true;

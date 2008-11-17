@@ -192,12 +192,12 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
 private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
-    NumberFormatHandler nfh = new NumberFormatHandler(mode, new Date());
+    NumberFormatHandler nfh2 = new NumberFormatHandler(mode, new Date());
 
-    nfh.setFormatter(nfh.parseFormat(jTextField1.getText() + "&!" + jComboBox1.getSelectedIndex()));
+    nfh2.setFormatter(nfh2.parseFormat(jTextField1.getText() + "&!" + jComboBox1.getSelectedIndex()));
 
     try {
-        jTextField2.setText(nfh.getNextNumber());
+        jTextField2.setText(nfh2.getNextNumber());
     } catch (Exception e) {
         Log.Debug(this, e, rootPaneCheckingEnabled);
         Popup.notice(this, "Format nicht möglich.");
@@ -221,6 +221,7 @@ private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         try {
             kl.getNextNumber();
             kl.save(fstring);
+            new mp4.items.HistoryItem("Nummernformat", "Format  für " + mode.getTable().toUpperCase() + " : "+ mode.getCountColumn().toUpperCase() + " editiert.");
             this.dispose();
         } catch (Exception e) {
             Log.Debug(this, e, rootPaneCheckingEnabled);
@@ -253,18 +254,19 @@ private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
 
     if (mainframe.getUser().doAction(User.ADMIN)) {
-        NumberFormatHandler nfh = new NumberFormatHandler(mode, new Date());
+        NumberFormatHandler nfh3 = new NumberFormatHandler(mode, new Date());
 
         String fstring = jTextField1.getText() + "&!" + jComboBox1.getSelectedIndex();
-        nfh.setFormatter(nfh.parseFormat(jTextField1.getText() + "&!" + jComboBox1.getSelectedIndex()));
+        nfh3.setFormatter(nfh3.parseFormat(jTextField1.getText() + "&!" + jComboBox1.getSelectedIndex()));
 
         String formatString = "&!&!00000";
 
         if (Popup.Y_N_dialog("Wollen Sie wirklich " + jTextField2.getText() + " als Startwert festlegen?")) {
             try {
-                nfh.getNextNumber();
-                nfh.save(fstring);
-                nfh.setStartWert(jTextField2.getText());
+                nfh3.getNextNumber();
+                nfh3.save(fstring);
+                nfh3.setStartWert(jTextField2.getText());
+                new mp4.items.HistoryItem("Nummernformat", "Format  für " + mode.getTable() + " : "+ mode.getCountColumn() + " geändert.");
                 this.dispose();
             } catch (Exception e) {
                 Log.Debug(this, e, rootPaneCheckingEnabled);
