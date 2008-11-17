@@ -5,6 +5,7 @@
  */
 package mp4.panels.misc;
 
+import java.util.Date;
 import mp4.datenbank.verbindung.ConnectionTypeHandler;
 import mp4.globals.Constants;
 //import mp3.classes.objects.ungrouped.MyData;
@@ -12,6 +13,7 @@ import mp4.frames.mainframe;
 import mp4.einstellungen.Einstellungen;
 import mp4.items.visual.CommonPanel;
 import mp4.main.Main;
+import mp4.utils.datum.DateConverter;
 
 /**
  *
@@ -33,10 +35,12 @@ public class startView extends CommonPanel {
         mainframe = frame;
         jLabel7.setText("Version: " + Einstellungen.instanceOf().getVersion() + " " + Constants.TITLE);
         jTextArea3.setText(
-                "Benutzer: " + mainframe.getUser() +
-                "\nVersion: " + Constants.VERSION + "." + Constants.REVISION +
-                "\nDatenbank: " + ConnectionTypeHandler.getDriverName()+ 
-                "\nDatenbanktreiber: " + Main.settingsfile.getDBDriver()
+                "MP Version:\t\t" + Constants.VERSION + "." + Constants.REVISION + 
+                "\nJava Version:\t" + System.getProperty("java.version") +
+                "\nDatenbank:\t\t" + ConnectionTypeHandler.getDriverName() + 
+                "\nDatenbanktreiber:\t" + Main.settingsfile.getDBDriver() +
+                "\nDatenbankbenutzer:\t" + Main.settingsfile.getDBUser() +
+                "\nProgrammstart:\t" + DateConverter.getFullDefDateString(new Date())
                 );
         
         jTextArea3.setSelectionStart(0);
