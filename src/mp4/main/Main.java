@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Properties;
+import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
 import mp4.datenbank.verbindung.ConnectionTypeHandler;
 import mp4.einstellungen.SettingsFile;
@@ -62,7 +63,6 @@ public class Main implements Strings {
     public static String USER_HOME = null;
     public static String DESKTOP = null;
     public static SettingsFile settingsfile = null;
-    
 
     private static void getOS() {
         if (System.getProperty("os.name").contains("Windows")) {
@@ -111,6 +111,7 @@ public class Main implements Strings {
         Option license = obuilder.withShortName("license").withShortName("li").withDescription("print license").create();
         Option version = obuilder.withShortName("version").withDescription("print the version information and exit").create();
         Option verbose = obuilder.withShortName("verbose").withDescription("be extra verbose").create();
+        Option nolf = obuilder.withShortName("nolf").withDescription("use system L&F instead of Tiny L&F").create();
         Option dbtype = obuilder.withShortName("dbdriver").withShortName("r").withDescription("DB Driver: derby (default), mysql, custom").withArgument(option).create();
         Option debug = obuilder.withShortName("debug").withDescription("debug logging").create();
         Option nodb = obuilder.withShortName("nodb").withDescription("force no database").create();
@@ -119,13 +120,13 @@ public class Main implements Strings {
         Option forcecopy = obuilder.withShortName("forcecopy").withDescription("force copy of files").create();
         Option dbpath = obuilder.withShortName("dbpath").withShortName("d").withDescription("use database path").withArgument(dirarg).create();
         Option instpath = obuilder.withShortName("instpath").withShortName("i").withDescription("use installation path").withArgument(dirarg).create();
-        Option logfile = obuilder.withShortName("logfile").withShortName("l").withDescription("use file for log").withArgument(filearg).create(); 
+        Option logfile = obuilder.withShortName("logfile").withShortName("l").withDescription("use file for log").withArgument(filearg).create();
         Option pdfdir = obuilder.withShortName("pdfdir").withShortName("p").withDescription("use pdfdir").withArgument(dirarg).create();
         Option backupdir = obuilder.withShortName("backupdir").withShortName("b").withDescription("use backupdir").withArgument(dirarg).create();
         Option templatedir = obuilder.withShortName("templatedir").withShortName("t").withDescription("use templatedir").withArgument(dirarg).create();
 
         Group options = gbuilder.withName("options").withOption(help).withOption(version).withOption(verbose).withOption(debug).withOption(nodb).
-                withOption(nocopy).withOption(license).
+                withOption(nocopy).withOption(license).withOption(nolf).
                 withOption(forcedb).withOption(forcecopy).withOption(dbpath).withOption(dbtype).withOption(instpath).
                 withOption(logfile).withOption(pdfdir).withOption(backupdir).withOption(templatedir).create();
 
@@ -223,11 +224,13 @@ public class Main implements Strings {
             APP_DIR = ((String) cl.getValue(instpath)).split("=")[1];
         }
 
+        if (!cl.hasOption(nolf)) {
+            setLaF(null);
+        }
     }
 
     public Main() throws Exception {
         setDerbyLog();
-        setLaF();
         splash = new SplashScreen(TEST_CONF);
         doArgCommands();
 
@@ -315,17 +318,21 @@ public class Main implements Strings {
         p.put("derby.stream.error.file", MPPATH + File.separator + "derby.log");
     }
 
-    private void setLaF() {
+    public static void setLaF(LookAndFeel lf) {
         try {
-            UIManager.setLookAndFeel(new TinyLookAndFeel());
+            if (lf != null) {
+                UIManager.setLookAndFeel(lf);
+            } else {
+                UIManager.setLookAndFeel(new TinyLookAndFeel());
+            }
             LookAndFeelAddons.setAddon(LookAndFeelAddons.getBestMatchAddonClassName());
         } catch (Exception exe) {
             try {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             } catch (Exception ex) {
-                Log.Debug(this, ex.getMessage());
+                Log.Debug(Main.class, ex.getMessage());
             }
-            Log.Debug(this, exe.getMessage());
+            Log.Debug(Main.class, exe.getMessage());
         }
     }
 
