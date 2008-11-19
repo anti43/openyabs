@@ -118,7 +118,7 @@ public class AboutWindow extends javax.swing.JFrame {
 
         jEditorPane1.setBorder(null);
         jEditorPane1.setEditable(false);
-        jEditorPane1.setText("Sandra, Nina, Aal, alle Benutzer von MP\nund Google fürs Hosting, SUN für Java & NetBeans IDE!\n");
+        jEditorPane1.setText("Sandra, Nina, Aal, Benjamin Fleckenstein, alle Benutzer von MP\nund Google fürs Hosting, SUN für Java & NetBeans IDE!\n");
         jScrollPane1.setViewportView(jEditorPane1);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);

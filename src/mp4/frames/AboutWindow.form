@@ -230,7 +230,7 @@
                   <Border info="null"/>
                 </Property>
                 <Property name="editable" type="boolean" value="false"/>
-                <Property name="text" type="java.lang.String" value="Sandra, Nina, Aal, alle Benutzer von MP&#xa;und Google f&#xfc;rs Hosting, SUN f&#xfc;r Java &amp; NetBeans IDE!&#xa;"/>
+                <Property name="text" type="java.lang.String" value="Sandra, Nina, Aal, Benjamin Fleckenstein, alle Benutzer von MP&#xa;und Google f&#xfc;rs Hosting, SUN f&#xfc;r Java &amp; NetBeans IDE!&#xa;"/>
               </Properties>
             </Component>
           </SubComponents>
