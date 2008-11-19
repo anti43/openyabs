@@ -113,7 +113,7 @@ public class PDF_Rechnung implements Template {
             }
         }
         Double tax = brutto - netto;
-        fields.add(new String[]{"taxrate", l.getHauptsteuersatz().toString()});
+        fields.add(new String[]{"taxrate", FormatNumber.formatLokalTax(l.getHauptsteuersatz())});
         fields.add(new String[]{"tax", FormatNumber.formatLokalCurrency(tax)});
         fields.add(new String[]{"totalprice", FormatNumber.formatLokalCurrency(brutto)});
         

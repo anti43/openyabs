@@ -24,6 +24,10 @@ public class FormatNumber {
         }
     }
 
+    public static String formatLokalTax(double hauptsteuersatz) {
+        return String.valueOf(((int)hauptsteuersatz));
+    }
+
     public static NumberFormat getDefaultDecimalFormat() {
         return new java.text.DecimalFormat("#,##0.00;");
     }

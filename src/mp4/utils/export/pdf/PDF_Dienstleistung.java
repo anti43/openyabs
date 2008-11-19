@@ -82,7 +82,7 @@ public class PDF_Dienstleistung implements Template {
         fields.add(new String[]{"group", produkt.getProductgroupPath()});
         fields.add(new String[]{"text", produkt.getBeschreibung()});
         fields.add(new String[]{"price", FormatNumber.formatLokalCurrency(produkt.getPreis())});
-        fields.add(new String[]{"taxrate", FormatTax.formatLokal(produkt.getTaxValue())});
+        fields.add(new String[]{"taxrate", FormatNumber.formatLokalTax(produkt.getTaxValue())});
 
         return ListenDataUtils.StringListToTableArray(fields);
 

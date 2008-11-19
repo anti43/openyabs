@@ -19,7 +19,6 @@ package mp4.utils.export.pdf;
 import java.io.File;
 import mp4.utils.files.PDFFile;
 import java.awt.Image;
-import mp4.items.Kunde;
 import mp4.einstellungen.Einstellungen;
 
 

@@ -87,7 +87,7 @@ public class PDF_Produkt implements Template {
         fields.add(new String[]{"text", produkt.getText()});
         fields.add(new String[]{"url", produkt.getUrl()});
         fields.add(new String[]{"price", FormatNumber.formatLokalCurrency(produkt.getVK())});
-        fields.add(new String[]{"taxrate", FormatTax.formatLokal(produkt.getTaxValue())});
+        fields.add(new String[]{"taxrate", FormatNumber.formatLokalTax(produkt.getTaxValue())});
 
         return ListenDataUtils.StringListToTableArray(fields);
 
