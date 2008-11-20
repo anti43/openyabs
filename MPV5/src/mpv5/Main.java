@@ -1,21 +1,23 @@
 /*
- * MPV5App.java
+ * Main.java
  */
 
 package mpv5;
 
+import mpv5.ui.frames.MPV5View;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
 
 /**
  * The main class of the application.
  */
-public class MPV5App extends SingleFrameApplication {
+public class Main extends SingleFrameApplication {
 
     /**
      * At startup create and show the main frame of the application.
      */
     @Override protected void startup() {
+
         show(new MPV5View(this));
     }
 
@@ -29,16 +31,16 @@ public class MPV5App extends SingleFrameApplication {
 
     /**
      * A convenient static getter for the application instance.
-     * @return the instance of MPV5App
+     * @return the instance of Main
      */
-    public static MPV5App getApplication() {
-        return Application.getInstance(MPV5App.class);
+    public static Main getApplication() {
+        return Application.getInstance(Main.class);
     }
 
     /**
      * Main method launching the application.
      */
     public static void main(String[] args) {
-        launch(MPV5App.class, args);
+        launch(Main.class, args);
     }
 }

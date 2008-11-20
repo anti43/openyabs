@@ -13,7 +13,7 @@
             </test-roots>
         </data>
         <swingapp xmlns="http://www.netbeans.org/ns/form-swingapp/1">
-            <application-class name="mpv5.MPV5App"/>
+            <application-class name="mpv5.Main"/>
         </swingapp>
     </configuration>
 </project>
