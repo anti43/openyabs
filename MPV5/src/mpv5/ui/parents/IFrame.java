@@ -16,6 +16,7 @@ public class IFrame extends JInternalFrame {
     public IFrame(String title) {
         super(title, true, true, true, true);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        setResizable(false);
         addInternalFrameListener(new InternalFrameListener() {
 
             public void internalFrameOpened(InternalFrameEvent e) {

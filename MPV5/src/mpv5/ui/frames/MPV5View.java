@@ -1,9 +1,10 @@
 /*
  * MPV5View.java
  */
-
 package mpv5.ui.frames;
 
+import java.awt.Dimension;
+import javax.swing.JInternalFrame;
 import mpv5.ui.panels.ContactPanel;
 import mpv5.ui.parents.IFrame;
 import org.jdesktop.application.SingleFrameApplication;
@@ -17,10 +18,8 @@ public class MPV5View extends FrameView {
     public MPV5View(SingleFrameApplication app) {
         super(app);
         initComponents();
+
     }
-    
-
-
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -36,6 +35,8 @@ public class MPV5View extends FrameView {
         menuBar = new javax.swing.JMenuBar();
         javax.swing.JMenu fileMenu = new javax.swing.JMenu();
         javax.swing.JMenuItem exitMenuItem = new javax.swing.JMenuItem();
+        jMenu1 = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
         statusPanel = new javax.swing.JPanel();
         javax.swing.JSeparator statusPanelSeparator = new javax.swing.JSeparator();
         statusMessageLabel = new javax.swing.JLabel();
@@ -63,6 +64,20 @@ public class MPV5View extends FrameView {
         fileMenu.add(exitMenuItem);
 
         menuBar.add(fileMenu);
+
+        jMenu1.setText(bundle.getString("MPV5View.jMenu1.text")); // NOI18N
+        jMenu1.setName("jMenu1"); // NOI18N
+
+        jMenuItem1.setText(bundle.getString("MPV5View.jMenuItem1.text")); // NOI18N
+        jMenuItem1.setName("jMenuItem1"); // NOI18N
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem1);
+
+        menuBar.add(jMenu1);
 
         statusPanel.setName("statusPanel"); // NOI18N
 
@@ -102,12 +117,19 @@ public class MPV5View extends FrameView {
     private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
         IFrame fram = new IFrame("dfg");
         fram.setContent(new ContactPanel());
+//        fram.setSize(fram.getWidth(), desk.getHeight());
 
         desk.add(fram);
     }//GEN-LAST:event_exitMenuItemActionPerformed
 
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        cascadeWin();
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDesktopPane desk;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JProgressBar progressBar;
@@ -150,5 +172,35 @@ public class MPV5View extends FrameView {
         return statusPanel;
     }
 
+    public void tileWin() {
+        JInternalFrame sub[];
+        int n = 0, i = 0;
+        Dimension dSize = new Dimension();
 
+        desk.getSize(dSize);
+        sub = desk.getAllFrames();
+        n = (int) dSize.height / sub.length;
+        for (i = 0; i < sub.length; i++) {
+            sub[i].setSize(dSize.width, n);
+            sub[i].setLocation(0, i * n);
+        }
+    }
+
+    public void cascadeWin() {
+        JInternalFrame sub[];
+        int n = 0, i = 0;
+        Dimension dSize = new Dimension();
+
+        desk.getSize(dSize);
+        sub = desk.getAllFrames();
+        n = (int) (dSize.width / 50);
+        for (i = 0; i < sub.length;i++) {
+            sub[i].setLocation(i * n, i * n);
+            try {
+                sub[i].setSelected(true);
+            } catch (java.beans.PropertyVetoException ev) {
+            }
+        }
+
+    }
 }
