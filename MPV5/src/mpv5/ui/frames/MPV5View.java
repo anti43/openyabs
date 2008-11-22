@@ -44,6 +44,7 @@ public class MPV5View extends FrameView {
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton18 = new javax.swing.JButton();
+        jButton20 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jButton6 = new javax.swing.JButton();
         jButton7 = new javax.swing.JButton();
@@ -59,7 +60,7 @@ public class MPV5View extends FrameView {
         jButton15 = new javax.swing.JButton();
         jButton16 = new javax.swing.JButton();
         jButton17 = new javax.swing.JButton();
-        logoutButton = new javax.swing.JButton();
+        jButton19 = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         javax.swing.JMenu fileMenu = new javax.swing.JMenu();
         javax.swing.JMenuItem exitMenuItem = new javax.swing.JMenuItem();
@@ -73,24 +74,30 @@ public class MPV5View extends FrameView {
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
 
-        mainPanel.setMinimumSize(new java.awt.Dimension(800, 600));
+        mainPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         mainPanel.setName("mainPanel"); // NOI18N
 
         jScrollPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
+        tabpanePanel.setBackground(new java.awt.Color(255, 255, 255));
+        tabpanePanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         tabpanePanel.setName("tabpanePanel"); // NOI18N
         tabpanePanel.setLayout(new java.awt.BorderLayout());
         jScrollPane1.setViewportView(tabpanePanel);
 
+        naviPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         naviPanel.setName("naviPanel"); // NOI18N
 
+        jOutlookBar1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         jOutlookBar1.setName("jOutlookBar1"); // NOI18N
 
         jPanel2.setBackground(new java.awt.Color(153, 153, 153));
         jPanel2.setName("jPanel2"); // NOI18N
+        jPanel2.setPreferredSize(new java.awt.Dimension(110, 400));
 
-        jButton5.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton5.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/agt_family.png"))); // NOI18N
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Bundle"); // NOI18N
         jButton5.setText(bundle.getString("MPV5View.jButton5.text")); // NOI18N
         jButton5.setToolTipText(bundle.getString("MPV5View.jButton5.toolTipText")); // NOI18N
@@ -103,7 +110,8 @@ public class MPV5View extends FrameView {
             }
         });
 
-        jButton1.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton1.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/edit_group.png"))); // NOI18N
         jButton1.setText(bundle.getString("MPV5View.jButton1.text")); // NOI18N
         jButton1.setToolTipText(bundle.getString("MPV5View.jButton1.toolTipText")); // NOI18N
         jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -115,7 +123,8 @@ public class MPV5View extends FrameView {
             }
         });
 
-        jButton2.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton2.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/edit_user.png"))); // NOI18N
         jButton2.setText(bundle.getString("MPV5View.jButton2.text")); // NOI18N
         jButton2.setToolTipText(bundle.getString("MPV5View.jButton2.toolTipText")); // NOI18N
         jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -127,12 +136,26 @@ public class MPV5View extends FrameView {
             }
         });
 
-        jButton18.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton18.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/edit_group.png"))); // NOI18N
         jButton18.setText(bundle.getString("MPV5View.jButton18.text")); // NOI18N
         jButton18.setToolTipText(bundle.getString("MPV5View.jButton18.toolTipText")); // NOI18N
         jButton18.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton18.setName("jButton18"); // NOI18N
         jButton18.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+
+        jButton20.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/agt_internet.png"))); // NOI18N
+        jButton20.setText(bundle.getString("MPV5View.jButton20.text")); // NOI18N
+        jButton20.setToolTipText(bundle.getString("MPV5View.jButton20.toolTipText")); // NOI18N
+        jButton20.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton20.setName("jButton20"); // NOI18N
+        jButton20.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton20.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton20ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -140,7 +163,7 @@ public class MPV5View extends FrameView {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE)
+                .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addGap(11, 11, 11)
@@ -152,7 +175,11 @@ public class MPV5View extends FrameView {
                 .addGap(11, 11, 11))
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE)
+                .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 89, Short.MAX_VALUE)
+                .addGap(11, 11, 11))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jButton20, javax.swing.GroupLayout.DEFAULT_SIZE, 89, Short.MAX_VALUE)
                 .addGap(11, 11, 11))
         );
         jPanel2Layout.setVerticalGroup(
@@ -164,17 +191,20 @@ public class MPV5View extends FrameView {
                 .addComponent(jButton1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton18)
-                .addGap(58, 58, 58)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton2)
-                .addGap(235, 235, 235))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton20)
+                .addGap(103, 103, 103))
         );
 
-        jOutlookBar1.addTab("Kontakte", jPanel2);
+        jOutlookBar1.addTab(bundle.getString("MPV5View.jPanel2.TabConstraints.tabTitle"), jPanel2); // NOI18N
 
         jPanel3.setBackground(new java.awt.Color(153, 153, 153));
         jPanel3.setName("jPanel3"); // NOI18N
+        jPanel3.setPreferredSize(new java.awt.Dimension(110, 400));
 
-        jButton6.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton6.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton6.setText(bundle.getString("MPV5View.jButton6.text")); // NOI18N
         jButton6.setToolTipText(bundle.getString("MPV5View.jButton6.toolTipText")); // NOI18N
         jButton6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -186,7 +216,7 @@ public class MPV5View extends FrameView {
             }
         });
 
-        jButton7.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton7.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton7.setText(bundle.getString("MPV5View.jButton7.text")); // NOI18N
         jButton7.setToolTipText(bundle.getString("MPV5View.jButton7.toolTipText")); // NOI18N
         jButton7.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -198,7 +228,7 @@ public class MPV5View extends FrameView {
             }
         });
 
-        jButton8.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton8.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton8.setText(bundle.getString("MPV5View.jButton8.text")); // NOI18N
         jButton8.setToolTipText(bundle.getString("MPV5View.jButton8.toolTipText")); // NOI18N
         jButton8.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -210,14 +240,14 @@ public class MPV5View extends FrameView {
             }
         });
 
-        jButton11.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton11.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton11.setText(bundle.getString("MPV5View.jButton11.text")); // NOI18N
         jButton11.setToolTipText(bundle.getString("MPV5View.jButton11.toolTipText")); // NOI18N
         jButton11.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton11.setName("jButton11"); // NOI18N
         jButton11.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
 
-        jButton9.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton9.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton9.setText(bundle.getString("MPV5View.jButton9.text")); // NOI18N
         jButton9.setToolTipText(bundle.getString("MPV5View.jButton9.toolTipText")); // NOI18N
         jButton9.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -236,11 +266,11 @@ public class MPV5View extends FrameView {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jButton9, javax.swing.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE)
-                    .addComponent(jButton8, javax.swing.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE)
-                    .addComponent(jButton11, javax.swing.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE)
-                    .addComponent(jButton7, javax.swing.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE)
-                    .addComponent(jButton6, javax.swing.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE))
+                    .addComponent(jButton9, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
+                    .addComponent(jButton8, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
+                    .addComponent(jButton11, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
+                    .addComponent(jButton7, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
+                    .addComponent(jButton6, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -256,13 +286,14 @@ public class MPV5View extends FrameView {
                 .addComponent(jButton8)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton9)
-                .addContainerGap(320, Short.MAX_VALUE))
+                .addContainerGap(303, Short.MAX_VALUE))
         );
 
-        jOutlookBar1.addTab("Buchhaltung", jPanel3);
+        jOutlookBar1.addTab(bundle.getString("MPV5View.jPanel3.TabConstraints.tabTitle"), jPanel3); // NOI18N
 
         jPanel4.setBackground(new java.awt.Color(153, 153, 153));
         jPanel4.setName("jPanel4"); // NOI18N
+        jPanel4.setPreferredSize(new java.awt.Dimension(110, 400));
 
         jButton10.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton10.setText(bundle.getString("MPV5View.jButton10.text")); // NOI18N
@@ -290,8 +321,8 @@ public class MPV5View extends FrameView {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton12, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 78, Short.MAX_VALUE)
-                    .addComponent(jButton10, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 78, Short.MAX_VALUE))
+                    .addComponent(jButton12, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 75, Short.MAX_VALUE)
+                    .addComponent(jButton10, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -301,15 +332,16 @@ public class MPV5View extends FrameView {
                 .addComponent(jButton12)
                 .addGap(11, 11, 11)
                 .addComponent(jButton10)
-                .addContainerGap(346, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jOutlookBar1.addTab("Produkte", jPanel4);
+        jOutlookBar1.addTab(bundle.getString("MPV5View.jPanel4.TabConstraints.tabTitle"), jPanel4); // NOI18N
 
         jPanel6.setBackground(new java.awt.Color(153, 153, 153));
         jPanel6.setName("jPanel6"); // NOI18N
+        jPanel6.setPreferredSize(new java.awt.Dimension(110, 400));
 
-        jButton13.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton13.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton13.setText(bundle.getString("MPV5View.jButton13.text")); // NOI18N
         jButton13.setToolTipText(bundle.getString("MPV5View.jButton13.toolTipText")); // NOI18N
         jButton13.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -321,7 +353,7 @@ public class MPV5View extends FrameView {
             }
         });
 
-        jButton14.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton14.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton14.setText(bundle.getString("MPV5View.jButton14.text")); // NOI18N
         jButton14.setToolTipText(bundle.getString("MPV5View.jButton14.toolTipText")); // NOI18N
         jButton14.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -333,7 +365,7 @@ public class MPV5View extends FrameView {
             }
         });
 
-        jButton15.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton15.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton15.setText(bundle.getString("MPV5View.jButton15.text")); // NOI18N
         jButton15.setToolTipText(bundle.getString("MPV5View.jButton15.toolTipText")); // NOI18N
         jButton15.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -371,11 +403,11 @@ public class MPV5View extends FrameView {
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton15, javax.swing.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE)
-                    .addComponent(jButton16, javax.swing.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE)
-                    .addComponent(jButton14, javax.swing.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE)
-                    .addComponent(jButton17, javax.swing.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE)
-                    .addComponent(jButton13, javax.swing.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE))
+                    .addComponent(jButton15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton16, javax.swing.GroupLayout.DEFAULT_SIZE, 81, Short.MAX_VALUE)
+                    .addComponent(jButton14, javax.swing.GroupLayout.DEFAULT_SIZE, 81, Short.MAX_VALUE)
+                    .addComponent(jButton17, javax.swing.GroupLayout.DEFAULT_SIZE, 81, Short.MAX_VALUE)
+                    .addComponent(jButton13, javax.swing.GroupLayout.DEFAULT_SIZE, 81, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
@@ -391,42 +423,35 @@ public class MPV5View extends FrameView {
                 .addComponent(jButton16)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton17)
-                .addContainerGap(250, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jOutlookBar1.addTab("Extras", jPanel6);
 
-        logoutButton.setToolTipText(bundle.getString("MPV5View.logoutButton.toolTipText")); // NOI18N
-        logoutButton.setName("logoutButton"); // NOI18N
-        logoutButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                logoutButtonActionPerformed(evt);
-            }
-        });
+        jButton19.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/lock.png"))); // NOI18N
+        jButton19.setText(bundle.getString("MPV5View.jButton19.text")); // NOI18N
+        jButton19.setToolTipText(bundle.getString("MPV5View.jButton19.toolTipText")); // NOI18N
+        jButton19.setName("jButton19"); // NOI18N
 
         javax.swing.GroupLayout naviPanelLayout = new javax.swing.GroupLayout(naviPanel);
         naviPanel.setLayout(naviPanelLayout);
         naviPanelLayout.setHorizontalGroup(
             naviPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, naviPanelLayout.createSequentialGroup()
-                .addContainerGap(20, Short.MAX_VALUE)
-                .addComponent(logoutButton, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(naviPanelLayout.createSequentialGroup()
+                .addGap(2, 2, 2)
+                .addComponent(jOutlookBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(naviPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jButton19, javax.swing.GroupLayout.DEFAULT_SIZE, 94, Short.MAX_VALUE)
                 .addContainerGap())
-            .addGroup(naviPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(naviPanelLayout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(jOutlookBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)))
         );
         naviPanelLayout.setVerticalGroup(
             naviPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, naviPanelLayout.createSequentialGroup()
-                .addContainerGap(582, Short.MAX_VALUE)
-                .addComponent(logoutButton, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(naviPanelLayout.createSequentialGroup()
+                .addComponent(jOutlookBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 533, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
+                .addComponent(jButton19)
                 .addContainerGap())
-            .addGroup(naviPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, naviPanelLayout.createSequentialGroup()
-                    .addComponent(jOutlookBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 550, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(90, Short.MAX_VALUE)))
         );
 
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
@@ -435,16 +460,13 @@ public class MPV5View extends FrameView {
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainPanelLayout.createSequentialGroup()
                 .addComponent(naviPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 674, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 336, Short.MAX_VALUE))
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainPanelLayout.createSequentialGroup()
-                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(naviPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 640, Short.MAX_VALUE))
-                .addContainerGap())
+            .addComponent(naviPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 610, Short.MAX_VALUE)
         );
 
         menuBar.setName("menuBar"); // NOI18N
@@ -477,7 +499,9 @@ public class MPV5View extends FrameView {
 
         menuBar.add(jMenu1);
 
+        statusPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         statusPanel.setName("statusPanel"); // NOI18N
+        statusPanel.setPreferredSize(new java.awt.Dimension(800, 20));
 
         statusPanelSeparator.setName("statusPanelSeparator"); // NOI18N
 
@@ -489,22 +513,20 @@ public class MPV5View extends FrameView {
         statusPanel.setLayout(statusPanelLayout);
         statusPanelLayout.setHorizontalGroup(
             statusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(statusPanelSeparator, javax.swing.GroupLayout.DEFAULT_SIZE, 800, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, statusPanelLayout.createSequentialGroup()
-                .addComponent(statusMessageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 630, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(14, 14, 14))
+            .addGroup(statusPanelLayout.createSequentialGroup()
+                .addGroup(statusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(statusPanelSeparator, javax.swing.GroupLayout.DEFAULT_SIZE, 282, Short.MAX_VALUE)
+                    .addComponent(statusMessageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 282, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         statusPanelLayout.setVerticalGroup(
             statusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(statusPanelLayout.createSequentialGroup()
                 .addComponent(statusPanelSeparator, javax.swing.GroupLayout.PREFERRED_SIZE, 2, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(statusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(statusMessageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(3, 3, 3))
+                .addGap(1, 1, 1)
+                .addComponent(statusMessageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 13, Short.MAX_VALUE))
+            .addComponent(progressBar, javax.swing.GroupLayout.DEFAULT_SIZE, 16, Short.MAX_VALUE)
         );
 
         mainToolbar.setRollover(true);
@@ -607,10 +629,9 @@ public class MPV5View extends FrameView {
         System.out.println(this.getRootPane().getSize());
     }//GEN-LAST:event_jButton4ActionPerformed
 
-    private void logoutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutButtonActionPerformed
-
-   
-}//GEN-LAST:event_logoutButtonActionPerformed
+    private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton20ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton20ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
@@ -623,7 +644,9 @@ public class MPV5View extends FrameView {
     private javax.swing.JButton jButton16;
     private javax.swing.JButton jButton17;
     private javax.swing.JButton jButton18;
+    private javax.swing.JButton jButton19;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton20;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
@@ -639,7 +662,6 @@ public class MPV5View extends FrameView {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
-    public javax.swing.JButton logoutButton;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JToolBar mainToolbar;
     private javax.swing.JMenuBar menuBar;
