@@ -56,6 +56,8 @@ public class MPV5View extends FrameView {
 
         jSplitPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         jSplitPane1.setDividerSize(1);
+        jSplitPane1.setForeground(new java.awt.Color(0, 102, 102));
+        jSplitPane1.setContinuousLayout(true);
         jSplitPane1.setName("jSplitPane1"); // NOI18N
 
         jScrollPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
@@ -197,7 +199,6 @@ public class MPV5View extends FrameView {
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSplitPane jSplitPane1;
-    private javax.swing.JPanel leftBar;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JToolBar mainToolbar;
     private javax.swing.JMenuBar menuBar;

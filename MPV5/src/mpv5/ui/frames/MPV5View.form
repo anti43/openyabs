@@ -28,6 +28,10 @@
               </Border>
             </Property>
             <Property name="dividerSize" type="int" value="1"/>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="66" green="66" red="0" type="rgb"/>
+            </Property>
+            <Property name="continuousLayout" type="boolean" value="true"/>
             <Property name="name" type="java.lang.String" value="jSplitPane1" noResource="true"/>
           </Properties>
 

@@ -90,6 +90,10 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseListener,
     setCloseIcons(new ImageIcon(CloseableTabbedPane.class.getResource("/mpv5/resources/images/close.png")),
                 new ImageIcon(CloseableTabbedPane.class.getResource("/mpv5/resources/images/closehoover.png")),
                 new ImageIcon(CloseableTabbedPane.class.getResource("/mpv5/resources/images/closeclick.png")));
+
+
+
+
   }
 
   /**
