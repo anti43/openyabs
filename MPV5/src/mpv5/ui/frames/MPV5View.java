@@ -3,9 +3,9 @@
  */
 package mpv5.ui.frames;
 
-import java.awt.Dimension;
-import javax.swing.JInternalFrame;
+import java.awt.BorderLayout;
 import mpv5.ui.panels.ContactPanel;
+import mpv5.ui.parents.CloseableTabbedPane;
 import mpv5.ui.parents.IFrame;
 import org.jdesktop.application.SingleFrameApplication;
 import org.jdesktop.application.FrameView;
@@ -14,10 +14,14 @@ import org.jdesktop.application.FrameView;
  * The application's main frame.
  */
 public class MPV5View extends FrameView {
+    private CloseableTabbedPane tab;
 
     public MPV5View(SingleFrameApplication app) {
         super(app);
         initComponents();
+        tab = new CloseableTabbedPane();
+
+        tabpanePanel.add(tab,BorderLayout.CENTER);
 
     }
 
@@ -31,7 +35,10 @@ public class MPV5View extends FrameView {
     private void initComponents() {
 
         mainPanel = new javax.swing.JPanel();
-        desk = new javax.swing.JDesktopPane();
+        jSplitPane1 = new javax.swing.JSplitPane();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tabpanePanel = new javax.swing.JPanel();
+        naviPanel = new javax.swing.JPanel();
         menuBar = new javax.swing.JMenuBar();
         javax.swing.JMenu fileMenu = new javax.swing.JMenu();
         javax.swing.JMenuItem exitMenuItem = new javax.swing.JMenuItem();
@@ -41,12 +48,50 @@ public class MPV5View extends FrameView {
         javax.swing.JSeparator statusPanelSeparator = new javax.swing.JSeparator();
         statusMessageLabel = new javax.swing.JLabel();
         progressBar = new javax.swing.JProgressBar();
+        mainToolbar = new javax.swing.JToolBar();
+        jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
 
         mainPanel.setName("mainPanel"); // NOI18N
-        mainPanel.setLayout(new java.awt.BorderLayout());
 
-        desk.setName("desk"); // NOI18N
-        mainPanel.add(desk, java.awt.BorderLayout.CENTER);
+        jSplitPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        jSplitPane1.setDividerSize(1);
+        jSplitPane1.setName("jSplitPane1"); // NOI18N
+
+        jScrollPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        jScrollPane1.setName("jScrollPane1"); // NOI18N
+
+        tabpanePanel.setName("tabpanePanel"); // NOI18N
+        tabpanePanel.setLayout(new java.awt.BorderLayout());
+        jScrollPane1.setViewportView(tabpanePanel);
+
+        jSplitPane1.setRightComponent(jScrollPane1);
+
+        naviPanel.setName("naviPanel"); // NOI18N
+
+        javax.swing.GroupLayout naviPanelLayout = new javax.swing.GroupLayout(naviPanel);
+        naviPanel.setLayout(naviPanelLayout);
+        naviPanelLayout.setHorizontalGroup(
+            naviPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        naviPanelLayout.setVerticalGroup(
+            naviPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 470, Short.MAX_VALUE)
+        );
+
+        jSplitPane1.setLeftComponent(naviPanel);
+
+        javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
+        mainPanel.setLayout(mainPanelLayout);
+        mainPanelLayout.setHorizontalGroup(
+            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 677, Short.MAX_VALUE)
+        );
+        mainPanelLayout.setVerticalGroup(
+            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 472, Short.MAX_VALUE)
+        );
 
         menuBar.setName("menuBar"); // NOI18N
 
@@ -91,9 +136,9 @@ public class MPV5View extends FrameView {
         statusPanel.setLayout(statusPanelLayout);
         statusPanelLayout.setHorizontalGroup(
             statusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(statusPanelSeparator, javax.swing.GroupLayout.DEFAULT_SIZE, 416, Short.MAX_VALUE)
+            .addComponent(statusPanelSeparator, javax.swing.GroupLayout.DEFAULT_SIZE, 677, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, statusPanelLayout.createSequentialGroup()
-                .addComponent(statusMessageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 242, Short.MAX_VALUE)
+                .addComponent(statusMessageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 507, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(14, 14, 14))
@@ -109,9 +154,27 @@ public class MPV5View extends FrameView {
                 .addGap(3, 3, 3))
         );
 
+        mainToolbar.setRollover(true);
+        mainToolbar.setName("mainToolbar"); // NOI18N
+
+        jButton3.setText(bundle.getString("MPV5View.jButton3.text")); // NOI18N
+        jButton3.setFocusable(false);
+        jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton3.setName("jButton3"); // NOI18N
+        jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        mainToolbar.add(jButton3);
+
+        jButton4.setText(bundle.getString("MPV5View.jButton4.text")); // NOI18N
+        jButton4.setFocusable(false);
+        jButton4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton4.setName("jButton4"); // NOI18N
+        jButton4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        mainToolbar.add(jButton4);
+
         setComponent(mainPanel);
         setMenuBar(menuBar);
         setStatusBar(statusPanel);
+        setToolBar(mainToolbar);
     }// </editor-fold>//GEN-END:initComponents
 
     private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
@@ -119,7 +182,8 @@ public class MPV5View extends FrameView {
         fram.setContent(new ContactPanel());
 //        fram.setSize(fram.getWidth(), desk.getHeight());
 
-        desk.add(fram);
+      
+        tab.addTab("wwww", new ContactPanel());
     }//GEN-LAST:event_exitMenuItemActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
@@ -127,22 +191,24 @@ public class MPV5View extends FrameView {
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JDesktopPane desk;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSplitPane jSplitPane1;
+    private javax.swing.JPanel leftBar;
     private javax.swing.JPanel mainPanel;
+    private javax.swing.JToolBar mainToolbar;
     private javax.swing.JMenuBar menuBar;
+    private javax.swing.JPanel naviPanel;
     private javax.swing.JProgressBar progressBar;
     private javax.swing.JLabel statusMessageLabel;
     private javax.swing.JPanel statusPanel;
+    private javax.swing.JPanel tabpanePanel;
     // End of variables declaration//GEN-END:variables
 
-    /**
-     * @return the desk
-     */
-    public javax.swing.JDesktopPane getDesk() {
-        return desk;
-    }
+ 
 
     /**
      * @return the mainPanel
@@ -173,34 +239,34 @@ public class MPV5View extends FrameView {
     }
 
     public void tileWin() {
-        JInternalFrame sub[];
-        int n = 0, i = 0;
-        Dimension dSize = new Dimension();
-
-        desk.getSize(dSize);
-        sub = desk.getAllFrames();
-        n = (int) dSize.height / sub.length;
-        for (i = 0; i < sub.length; i++) {
-            sub[i].setSize(dSize.width, n);
-            sub[i].setLocation(0, i * n);
-        }
+//        JInternalFrame sub[];
+//        int n = 0, i = 0;
+//        Dimension dSize = new Dimension();
+//
+//        desk.getSize(dSize);
+//        sub = desk.getAllFrames();
+//        n = (int) dSize.height / sub.length;
+//        for (i = 0; i < sub.length; i++) {
+//            sub[i].setSize(dSize.width, n);
+//            sub[i].setLocation(0, i * n);
+//        }
     }
 
     public void cascadeWin() {
-        JInternalFrame sub[];
-        int n = 0, i = 0;
-        Dimension dSize = new Dimension();
-
-        desk.getSize(dSize);
-        sub = desk.getAllFrames();
-        n = (int) (dSize.width / 50);
-        for (i = 0; i < sub.length;i++) {
-            sub[i].setLocation(i * n, i * n);
-            try {
-                sub[i].setSelected(true);
-            } catch (java.beans.PropertyVetoException ev) {
-            }
-        }
+//        JInternalFrame sub[];
+//        int n = 0, i = 0;
+//        Dimension dSize = new Dimension();
+//
+//        desk.getSize(dSize);
+//        sub = desk.getAllFrames();
+//        n = (int) (dSize.width / 50);
+//        for (i = 0; i < sub.length;i++) {
+//            sub[i].setLocation(i * n, i * n);
+//            try {
+//                sub[i].setSelected(true);
+//            } catch (java.beans.PropertyVetoException ev) {
+//            }
+//        }
 
     }
 }

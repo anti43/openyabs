@@ -36,6 +36,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
+import javax.swing.ImageIcon;
 import javax.swing.event.EventListenerList;
 
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
@@ -86,6 +87,9 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseListener,
   public CloseableTabbedPane() {
     super();
     init(SwingUtilities.LEFT);
+    setCloseIcons(new ImageIcon(CloseableTabbedPane.class.getResource("/mpv5/resources/images/close.png")),
+                new ImageIcon(CloseableTabbedPane.class.getResource("/mpv5/resources/images/closehoover.png")),
+                new ImageIcon(CloseableTabbedPane.class.getResource("/mpv5/resources/images/closeclick.png")));
   }
 
   /**
