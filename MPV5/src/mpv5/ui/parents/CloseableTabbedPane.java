@@ -37,6 +37,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
 import javax.swing.ImageIcon;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.EventListenerList;
 
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
@@ -92,6 +93,7 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseListener,
                 new ImageIcon(CloseableTabbedPane.class.getResource("/mpv5/resources/images/closeclick.png")));
 
 
+    setBorder(new EmptyBorder(1, 1, 1, 1));
 
 
   }
