@@ -15,6 +15,7 @@
    along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+
 /*
  * ContactPanel.java
  *
@@ -22,6 +23,7 @@
  */
 
 package mpv5.ui.panels;
+
 
 /**
  *
@@ -50,43 +52,43 @@ public class ContactPanel extends javax.swing.JPanel {
         rightpane = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jCheckBox1 = new javax.swing.JCheckBox();
+        enabled = new javax.swing.JCheckBox();
         jLabel2 = new javax.swing.JLabel();
-        jCheckBox2 = new javax.swing.JCheckBox();
-        jCheckBox3 = new javax.swing.JCheckBox();
-        jCheckBox4 = new javax.swing.JCheckBox();
-        labeledTextField1 = new mpv5.ui.beans.LabeledTextField();
+        customer = new javax.swing.JCheckBox();
+        supplier = new javax.swing.JCheckBox();
+        manufacturer = new javax.swing.JCheckBox();
+        number = new mpv5.ui.beans.LabeledTextField();
         jLabel5 = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextPane1 = new javax.swing.JTextPane();
+        notes = new javax.swing.JTextPane();
         jPanel2 = new javax.swing.JPanel();
-        labeledTextField2 = new mpv5.ui.beans.LabeledTextField();
-        labeledTextField4 = new mpv5.ui.beans.LabeledTextField();
-        labeledTextField5 = new mpv5.ui.beans.LabeledTextField();
-        labeledTextField6 = new mpv5.ui.beans.LabeledTextField();
-        labeledTextField7 = new mpv5.ui.beans.LabeledTextField();
-        jComboBox1 = new javax.swing.JComboBox();
+        title = new mpv5.ui.beans.LabeledTextField();
+        street = new mpv5.ui.beans.LabeledTextField();
+        lastname = new mpv5.ui.beans.LabeledTextField();
+        prename = new mpv5.ui.beans.LabeledTextField();
+        city = new mpv5.ui.beans.LabeledTextField();
+        companyselect = new javax.swing.JComboBox();
         jLabel3 = new javax.swing.JLabel();
-        labeledTextField8 = new mpv5.ui.beans.LabeledTextField();
-        jRadioButton1 = new javax.swing.JRadioButton();
-        jRadioButton2 = new javax.swing.JRadioButton();
+        zip = new mpv5.ui.beans.LabeledTextField();
+        male = new javax.swing.JRadioButton();
+        female = new javax.swing.JRadioButton();
         jPanel3 = new javax.swing.JPanel();
-        labeledTextField9 = new mpv5.ui.beans.LabeledTextField();
-        labeledTextField10 = new mpv5.ui.beans.LabeledTextField();
-        labeledTextField11 = new mpv5.ui.beans.LabeledTextField();
-        labeledTextField12 = new mpv5.ui.beans.LabeledTextField();
-        labeledTextField13 = new mpv5.ui.beans.LabeledTextField();
-        labeledTextField14 = new mpv5.ui.beans.LabeledTextField();
+        mobilephone = new mpv5.ui.beans.LabeledTextField();
+        phone = new mpv5.ui.beans.LabeledTextField();
+        workphone = new mpv5.ui.beans.LabeledTextField();
+        mailaddress = new mpv5.ui.beans.LabeledTextField();
+        website = new mpv5.ui.beans.LabeledTextField();
+        fax = new mpv5.ui.beans.LabeledTextField();
         jLabel9 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jPanel9 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        billsTable = new javax.swing.JTable();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        offersTable = new javax.swing.JTable();
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ContactPanel.border.title"))); // NOI18N
@@ -106,29 +108,29 @@ public class ContactPanel extends javax.swing.JPanel {
         jLabel1.setText(bundle.getString("ContactPanel.jLabel1.text")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
 
-        jCheckBox1.setText(bundle.getString("ContactPanel.jCheckBox1.text")); // NOI18N
-        jCheckBox1.setName("jCheckBox1"); // NOI18N
-        jCheckBox1.setOpaque(false);
+        enabled.setText(bundle.getString("ContactPanel.enabled.text")); // NOI18N
+        enabled.setName("enabled"); // NOI18N
+        enabled.setOpaque(false);
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 11));
         jLabel2.setText(bundle.getString("ContactPanel.jLabel2.text")); // NOI18N
         jLabel2.setName("jLabel2"); // NOI18N
 
-        jCheckBox2.setText(bundle.getString("ContactPanel.jCheckBox2.text")); // NOI18N
-        jCheckBox2.setName("jCheckBox2"); // NOI18N
-        jCheckBox2.setOpaque(false);
+        customer.setText(bundle.getString("ContactPanel.customer.text")); // NOI18N
+        customer.setName("customer"); // NOI18N
+        customer.setOpaque(false);
 
-        jCheckBox3.setText(bundle.getString("ContactPanel.jCheckBox3.text")); // NOI18N
-        jCheckBox3.setName("jCheckBox3"); // NOI18N
-        jCheckBox3.setOpaque(false);
+        supplier.setText(bundle.getString("ContactPanel.supplier.text")); // NOI18N
+        supplier.setName("supplier"); // NOI18N
+        supplier.setOpaque(false);
 
-        jCheckBox4.setText(bundle.getString("ContactPanel.jCheckBox4.text")); // NOI18N
-        jCheckBox4.setName("jCheckBox4"); // NOI18N
-        jCheckBox4.setOpaque(false);
+        manufacturer.setText(bundle.getString("ContactPanel.manufacturer.text")); // NOI18N
+        manufacturer.setName("manufacturer"); // NOI18N
+        manufacturer.setOpaque(false);
 
-        labeledTextField1.set_Label(bundle.getString("ContactPanel.labeledTextField1._Label")); // NOI18N
-        labeledTextField1.set_LabelFont(new java.awt.Font("Tahoma", 1, 11));
-        labeledTextField1.setName("labeledTextField1"); // NOI18N
+        number.set_Label(bundle.getString("ContactPanel.number._Label")); // NOI18N
+        number.set_LabelFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        number.setName("number"); // NOI18N
 
         jLabel5.setText(bundle.getString("ContactPanel.jLabel5.text")); // NOI18N
         jLabel5.setToolTipText(bundle.getString("ContactPanel.jLabel5.toolTipText")); // NOI18N
@@ -145,16 +147,16 @@ public class ContactPanel extends javax.swing.JPanel {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jCheckBox1))
+                        .addComponent(enabled))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addGap(18, 18, 18)
-                        .addComponent(jCheckBox2)
+                        .addComponent(customer)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jCheckBox3)
+                        .addComponent(supplier)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jCheckBox4))
-                    .addComponent(labeledTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(manufacturer))
+                    .addComponent(number, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
                 .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -167,16 +169,16 @@ public class ContactPanel extends javax.swing.JPanel {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel1)
-                            .addComponent(jCheckBox1))
+                            .addComponent(enabled))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel2)
-                            .addComponent(jCheckBox2)
-                            .addComponent(jCheckBox3)
-                            .addComponent(jCheckBox4)))
+                            .addComponent(customer)
+                            .addComponent(supplier)
+                            .addComponent(manufacturer)))
                     .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(labeledTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(number, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -189,9 +191,9 @@ public class ContactPanel extends javax.swing.JPanel {
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
-        jTextPane1.setDragEnabled(true);
-        jTextPane1.setName("jTextPane1"); // NOI18N
-        jScrollPane1.setViewportView(jTextPane1);
+        notes.setDragEnabled(true);
+        notes.setName("notes"); // NOI18N
+        jScrollPane1.setViewportView(notes);
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -218,40 +220,40 @@ public class ContactPanel extends javax.swing.JPanel {
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel2.setName("jPanel2"); // NOI18N
 
-        labeledTextField2.set_Label(bundle.getString("ContactPanel.labeledTextField2._Label")); // NOI18N
-        labeledTextField2.setName("labeledTextField2"); // NOI18N
+        title.set_Label(bundle.getString("ContactPanel.title._Label")); // NOI18N
+        title.setName("title"); // NOI18N
 
-        labeledTextField4.set_Label(bundle.getString("ContactPanel.labeledTextField4._Label")); // NOI18N
-        labeledTextField4.setName("labeledTextField4"); // NOI18N
+        street.set_Label(bundle.getString("ContactPanel.street._Label")); // NOI18N
+        street.setName("street"); // NOI18N
 
-        labeledTextField5.set_Label(bundle.getString("ContactPanel.labeledTextField5._Label")); // NOI18N
-        labeledTextField5.setName("labeledTextField5"); // NOI18N
+        lastname.set_Label(bundle.getString("ContactPanel.lastname._Label")); // NOI18N
+        lastname.setName("lastname"); // NOI18N
 
-        labeledTextField6.set_Label(bundle.getString("ContactPanel.labeledTextField6._Label")); // NOI18N
-        labeledTextField6.setName("labeledTextField6"); // NOI18N
+        prename.set_Label(bundle.getString("ContactPanel.prename._Label")); // NOI18N
+        prename.setName("prename"); // NOI18N
 
-        labeledTextField7.set_Label(bundle.getString("ContactPanel.labeledTextField7._Label")); // NOI18N
-        labeledTextField7.setName("labeledTextField7"); // NOI18N
+        city.set_Label(bundle.getString("ContactPanel.city._Label")); // NOI18N
+        city.setName("city"); // NOI18N
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jComboBox1.setName("jComboBox1"); // NOI18N
+        companyselect.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        companyselect.setName("companyselect"); // NOI18N
 
         jLabel3.setText(bundle.getString("ContactPanel.jLabel3.text")); // NOI18N
         jLabel3.setName("jLabel3"); // NOI18N
 
-        labeledTextField8.set_Label(bundle.getString("ContactPanel.labeledTextField8._Label")); // NOI18N
-        labeledTextField8.setName("labeledTextField8"); // NOI18N
+        zip.set_Label(bundle.getString("ContactPanel.zip._Label")); // NOI18N
+        zip.setName("zip"); // NOI18N
 
-        buttonGroup1.add(jRadioButton1);
-        jRadioButton1.setSelected(true);
-        jRadioButton1.setText(bundle.getString("ContactPanel.jRadioButton1.text")); // NOI18N
-        jRadioButton1.setName("jRadioButton1"); // NOI18N
-        jRadioButton1.setOpaque(false);
+        buttonGroup1.add(male);
+        male.setSelected(true);
+        male.setText(bundle.getString("ContactPanel.male.text")); // NOI18N
+        male.setName("male"); // NOI18N
+        male.setOpaque(false);
 
-        buttonGroup1.add(jRadioButton2);
-        jRadioButton2.setText(bundle.getString("ContactPanel.jRadioButton2.text")); // NOI18N
-        jRadioButton2.setName("jRadioButton2"); // NOI18N
-        jRadioButton2.setOpaque(false);
+        buttonGroup1.add(female);
+        female.setText(bundle.getString("ContactPanel.female.text")); // NOI18N
+        female.setName("female"); // NOI18N
+        female.setOpaque(false);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -263,23 +265,23 @@ public class ContactPanel extends javax.swing.JPanel {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(companyselect, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(labeledTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(title, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jRadioButton1)
+                        .addComponent(male)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jRadioButton2))
+                        .addComponent(female))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(labeledTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lastname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(labeledTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(prename, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(labeledTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(street, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(labeledTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(city, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(labeledTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(zip, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(20, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -288,22 +290,22 @@ public class ContactPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(companyselect, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(3, 3, 3)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(labeledTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(title, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jRadioButton1)
-                        .addComponent(jRadioButton2)))
+                        .addComponent(male)
+                        .addComponent(female)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(labeledTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(labeledTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lastname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(prename, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(labeledTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(labeledTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(labeledTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(zip, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(street, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(city, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -311,23 +313,23 @@ public class ContactPanel extends javax.swing.JPanel {
         jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel3.setName("jPanel3"); // NOI18N
 
-        labeledTextField9.set_Label(bundle.getString("ContactPanel.labeledTextField9._Label")); // NOI18N
-        labeledTextField9.setName("labeledTextField9"); // NOI18N
+        mobilephone.set_Label(bundle.getString("ContactPanel.mobilephone._Label")); // NOI18N
+        mobilephone.setName("mobilephone"); // NOI18N
 
-        labeledTextField10.set_Label(bundle.getString("ContactPanel.labeledTextField10._Label")); // NOI18N
-        labeledTextField10.setName("labeledTextField10"); // NOI18N
+        phone.set_Label(bundle.getString("ContactPanel.phone._Label")); // NOI18N
+        phone.setName("phone"); // NOI18N
 
-        labeledTextField11.set_Label(bundle.getString("ContactPanel.labeledTextField11._Label")); // NOI18N
-        labeledTextField11.setName("labeledTextField11"); // NOI18N
+        workphone.set_Label(bundle.getString("ContactPanel.workphone._Label")); // NOI18N
+        workphone.setName("workphone"); // NOI18N
 
-        labeledTextField12.set_Label(bundle.getString("ContactPanel.labeledTextField12._Label")); // NOI18N
-        labeledTextField12.setName("labeledTextField12"); // NOI18N
+        mailaddress.set_Label(bundle.getString("ContactPanel.mailaddress._Label")); // NOI18N
+        mailaddress.setName("mailaddress"); // NOI18N
 
-        labeledTextField13.set_Label(bundle.getString("ContactPanel.labeledTextField13._Label")); // NOI18N
-        labeledTextField13.setName("labeledTextField13"); // NOI18N
+        website.set_Label(bundle.getString("ContactPanel.website._Label")); // NOI18N
+        website.setName("website"); // NOI18N
 
-        labeledTextField14.set_Label(bundle.getString("ContactPanel.labeledTextField14._Label")); // NOI18N
-        labeledTextField14.setName("labeledTextField14"); // NOI18N
+        fax.set_Label(bundle.getString("ContactPanel.fax._Label")); // NOI18N
+        fax.setName("fax"); // NOI18N
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -336,15 +338,15 @@ public class ContactPanel extends javax.swing.JPanel {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(labeledTextField10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(phone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(labeledTextField14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(labeledTextField9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(fax, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(mobilephone, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(labeledTextField11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(labeledTextField13, javax.swing.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE)
-                    .addComponent(labeledTextField12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(workphone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(website, javax.swing.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE)
+                    .addComponent(mailaddress, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -352,19 +354,19 @@ public class ContactPanel extends javax.swing.JPanel {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(labeledTextField11, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(labeledTextField10, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(workphone, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(phone, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(labeledTextField9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(mobilephone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(labeledTextField14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(fax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(labeledTextField12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(mailaddress, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(labeledTextField13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(website, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -386,7 +388,7 @@ public class ContactPanel extends javax.swing.JPanel {
 
         jScrollPane3.setName("jScrollPane3"); // NOI18N
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        billsTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -397,26 +399,15 @@ public class ContactPanel extends javax.swing.JPanel {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jTable2.setDragEnabled(true);
-        jTable2.setName("jTable2"); // NOI18N
-        jScrollPane3.setViewportView(jTable2);
+        billsTable.setDragEnabled(true);
+        billsTable.setName("billsTable"); // NOI18N
+        jScrollPane3.setViewportView(billsTable);
 
         jScrollPane2.setName("jScrollPane2"); // NOI18N
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jTable1.setDragEnabled(true);
-        jTable1.setName("jTable1"); // NOI18N
-        jScrollPane2.setViewportView(jTable1);
+        offersTable.setDragEnabled(true);
+        offersTable.setName("offersTable"); // NOI18N
+        jScrollPane2.setViewportView(offersTable);
 
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
@@ -507,12 +498,14 @@ public class ContactPanel extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTable billsTable;
     private javax.swing.ButtonGroup buttonGroup1;
-    private javax.swing.JCheckBox jCheckBox1;
-    private javax.swing.JCheckBox jCheckBox2;
-    private javax.swing.JCheckBox jCheckBox3;
-    private javax.swing.JCheckBox jCheckBox4;
-    private javax.swing.JComboBox jComboBox1;
+    private mpv5.ui.beans.LabeledTextField city;
+    private javax.swing.JComboBox companyselect;
+    private javax.swing.JCheckBox customer;
+    private javax.swing.JCheckBox enabled;
+    private mpv5.ui.beans.LabeledTextField fax;
+    private javax.swing.JRadioButton female;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -526,29 +519,236 @@ public class ContactPanel extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel9;
-    private javax.swing.JRadioButton jRadioButton1;
-    private javax.swing.JRadioButton jRadioButton2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
-    private javax.swing.JTextPane jTextPane1;
-    private mpv5.ui.beans.LabeledTextField labeledTextField1;
-    private mpv5.ui.beans.LabeledTextField labeledTextField10;
-    private mpv5.ui.beans.LabeledTextField labeledTextField11;
-    private mpv5.ui.beans.LabeledTextField labeledTextField12;
-    private mpv5.ui.beans.LabeledTextField labeledTextField13;
-    private mpv5.ui.beans.LabeledTextField labeledTextField14;
-    private mpv5.ui.beans.LabeledTextField labeledTextField2;
-    private mpv5.ui.beans.LabeledTextField labeledTextField4;
-    private mpv5.ui.beans.LabeledTextField labeledTextField5;
-    private mpv5.ui.beans.LabeledTextField labeledTextField6;
-    private mpv5.ui.beans.LabeledTextField labeledTextField7;
-    private mpv5.ui.beans.LabeledTextField labeledTextField8;
-    private mpv5.ui.beans.LabeledTextField labeledTextField9;
+    private mpv5.ui.beans.LabeledTextField lastname;
     private javax.swing.JPanel leftpane;
+    private mpv5.ui.beans.LabeledTextField mailaddress;
+    private javax.swing.JRadioButton male;
+    private javax.swing.JCheckBox manufacturer;
+    private mpv5.ui.beans.LabeledTextField mobilephone;
+    private javax.swing.JTextPane notes;
+    private mpv5.ui.beans.LabeledTextField number;
+    private javax.swing.JTable offersTable;
+    private mpv5.ui.beans.LabeledTextField phone;
+    private mpv5.ui.beans.LabeledTextField prename;
     private javax.swing.JPanel rightpane;
+    private mpv5.ui.beans.LabeledTextField street;
+    private javax.swing.JCheckBox supplier;
+    private mpv5.ui.beans.LabeledTextField title;
+    private mpv5.ui.beans.LabeledTextField website;
+    private mpv5.ui.beans.LabeledTextField workphone;
+    private mpv5.ui.beans.LabeledTextField zip;
     // End of variables declaration//GEN-END:variables
 
+    private javax.swing.table.DefaultTableModel offersTableModel = null;
+    private javax.swing.table.DefaultTableModel billsTableModel = null;
+
+    /**
+     * @return the billsTable
+     */
+    public javax.swing.JTable getBillsTable() {
+        return billsTable;
+    }
+
+    /**
+     * @return the city
+     */
+    public mpv5.ui.beans.LabeledTextField getCity() {
+        return city;
+    }
+
+    /**
+     * @return the companyselect
+     */
+    public javax.swing.JComboBox getCompanyselect() {
+        return companyselect;
+    }
+
+    /**
+     * @return the customer
+     */
+    public javax.swing.JCheckBox getCustomer() {
+        return customer;
+    }
+
+    /**
+     * @return the enabled
+     */
+    public javax.swing.JCheckBox getEnabled() {
+        return enabled;
+    }
+
+    /**
+     * @return the fax
+     */
+    public mpv5.ui.beans.LabeledTextField getFax() {
+        return fax;
+    }
+
+    /**
+     * @return the female
+     */
+    public javax.swing.JRadioButton getFemale() {
+        return female;
+    }
+
+    /**
+     * @return the lastname
+     */
+    public mpv5.ui.beans.LabeledTextField getLastname() {
+        return lastname;
+    }
+
+    /**
+     * @return the leftpane
+     */
+    public javax.swing.JPanel getLeftpane() {
+        return leftpane;
+    }
+
+    /**
+     * @return the mailaddress
+     */
+    public mpv5.ui.beans.LabeledTextField getMailaddress() {
+        return mailaddress;
+    }
+
+    /**
+     * @return the male
+     */
+    public javax.swing.JRadioButton getMale() {
+        return male;
+    }
+
+    /**
+     * @return the manufacturer
+     */
+    public javax.swing.JCheckBox getManufacturer() {
+        return manufacturer;
+    }
+
+    /**
+     * @return the mobilephone
+     */
+    public mpv5.ui.beans.LabeledTextField getMobilephone() {
+        return mobilephone;
+    }
+
+    /**
+     * @return the notes
+     */
+    public javax.swing.JTextPane getNotes() {
+        return notes;
+    }
+
+    /**
+     * @return the number
+     */
+    public mpv5.ui.beans.LabeledTextField getNumber() {
+        return number;
+    }
+
+    /**
+     * @return the offersTable
+     */
+    public javax.swing.JTable getOffersTable() {
+        return offersTable;
+    }
+
+    /**
+     * @return the phone
+     */
+    public mpv5.ui.beans.LabeledTextField getPhone() {
+        return phone;
+    }
+
+    /**
+     * @return the prename
+     */
+    public mpv5.ui.beans.LabeledTextField getPrename() {
+        return prename;
+    }
+
+    /**
+     * @return the rightpane
+     */
+    public javax.swing.JPanel getRightpane() {
+        return rightpane;
+    }
+
+    /**
+     * @return the street
+     */
+    public mpv5.ui.beans.LabeledTextField getStreet() {
+        return street;
+    }
+
+    /**
+     * @return the supplier
+     */
+    public javax.swing.JCheckBox getSupplier() {
+        return supplier;
+    }
+
+    /**
+     * @return the title
+     */
+    public mpv5.ui.beans.LabeledTextField getTitle() {
+        return title;
+    }
+
+    /**
+     * @return the website
+     */
+    public mpv5.ui.beans.LabeledTextField getWebsite() {
+        return website;
+    }
+
+    /**
+     * @return the workphone
+     */
+    public mpv5.ui.beans.LabeledTextField getWorkphone() {
+        return workphone;
+    }
+
+    /**
+     * @return the zip
+     */
+    public mpv5.ui.beans.LabeledTextField getZip() {
+        return zip;
+    }
+
+    /**
+     * @return the offersTableModel
+     */
+    public javax.swing.table.DefaultTableModel getOffersTableModel() {
+        return offersTableModel;
+    }
+
+    /**
+     * @param offersTableModel the offersTableModel to set
+     */
+    public void setOffersTableModel(javax.swing.table.DefaultTableModel offersTableModel) {
+        this.offersTableModel = offersTableModel;
+        offersTable.setModel(billsTableModel);
+    }
+
+    /**
+     * @return the billsTableModel
+     */
+    public javax.swing.table.DefaultTableModel getBillsTableModel() {
+        return billsTableModel;
+    }
+
+    /**
+     * @param billsTableModel the billsTableModel to set
+     */
+    public void setBillsTableModel(javax.swing.table.DefaultTableModel billsTableModel) {
+        this.billsTableModel = billsTableModel;
+        billsTable.setModel(billsTableModel);
+    }
+
+  
 }
