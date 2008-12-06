@@ -10,7 +10,7 @@
  */
 package mpv5.ui.panels;
 
-import mpv5.handling.Context;
+import mpv5.db.Context;
 import mpv5.handling.Search;
 
 /**

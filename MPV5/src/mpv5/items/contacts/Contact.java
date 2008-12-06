@@ -6,7 +6,7 @@ package mpv5.items.contacts;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import mpv5.handling.DatabaseObject;
+import mpv5.db.DatabaseObject;
 
 /**
  *
@@ -290,13 +290,5 @@ public class Contact extends DatabaseObject {
         this.role = role;
     }
 
-    public ArrayList<Method> getVars() {
-        ArrayList<Method> list = new ArrayList<Method>();
-        for (int i = 0; i < this.getClass().getMethods().length; i++) {
-            if (this.getClass().getMethods()[i].getName().startsWith("get") || this.getClass().getMethods()[i].getName().startsWith("is")) {
-                list.add(this.getClass().getMethods()[i]);
-            }
-        }
-        return list;
-    }
+
 }

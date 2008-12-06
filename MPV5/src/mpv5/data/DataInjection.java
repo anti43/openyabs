@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package mpv5.handling;
+package mpv5.data;
 
+import mpv5.db.DatabaseObject;
 import java.awt.Component;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
