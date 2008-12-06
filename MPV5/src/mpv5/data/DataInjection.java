@@ -4,7 +4,7 @@
  */
 package mpv5.data;
 
-import mpv5.db.DatabaseObject;
+import mpv5.db.common.DatabaseObject;
 import java.awt.Component;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

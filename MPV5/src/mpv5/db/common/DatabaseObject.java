@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package mpv5.db;
+package mpv5.db.common;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;

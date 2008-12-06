@@ -3,9 +3,9 @@
  * and open the template in the editor.
  */
 
-package mpv5.handling;
+package mpv5.data;
 
-import mpv5.db.Context;
+import mpv5.db.common.Context;
 import javax.swing.table.TableModel;
 
 /**

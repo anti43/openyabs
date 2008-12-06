@@ -10,8 +10,8 @@
  */
 package mpv5.ui.panels;
 
-import mpv5.db.Context;
-import mpv5.handling.Search;
+import mpv5.db.common.Context;
+import mpv5.data.Search;
 
 /**
  *
