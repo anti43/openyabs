@@ -311,11 +311,11 @@
                           <Group type="102" alignment="1" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="2" attributes="0">
-                                  <Component id="jButton9" alignment="2" pref="90" max="32767" attributes="1"/>
-                                  <Component id="jButton8" alignment="2" pref="90" max="32767" attributes="1"/>
-                                  <Component id="jButton11" alignment="2" pref="90" max="32767" attributes="1"/>
-                                  <Component id="jButton7" alignment="2" pref="90" max="32767" attributes="1"/>
-                                  <Component id="jButton6" alignment="2" pref="90" max="32767" attributes="1"/>
+                                  <Component id="jButton9" alignment="2" pref="83" max="32767" attributes="1"/>
+                                  <Component id="jButton8" alignment="2" pref="83" max="32767" attributes="1"/>
+                                  <Component id="jButton11" alignment="2" pref="83" max="32767" attributes="1"/>
+                                  <Component id="jButton7" alignment="2" pref="83" max="32767" attributes="1"/>
+                                  <Component id="jButton6" alignment="2" max="32767" attributes="1"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                           </Group>
@@ -334,7 +334,7 @@
                               <Component id="jButton8" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jButton9" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace pref="303" max="32767" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>

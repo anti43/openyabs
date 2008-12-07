@@ -14,6 +14,10 @@ import org.jdesktop.application.FrameView;
  * The application's main frame.
  */
 public class MPV5View extends FrameView {
+
+    public static void setWaiting(boolean b) {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
     private CloseableTabbedPane tab;
 
     public MPV5View(SingleFrameApplication app) {
