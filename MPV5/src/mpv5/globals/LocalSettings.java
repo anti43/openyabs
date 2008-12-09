@@ -5,6 +5,7 @@
 package mpv5.globals;
 
 import java.util.Locale;
+import mpv5.db.common.ConnectionTypeHandler;
 
 /**
  *
@@ -15,15 +16,15 @@ public class LocalSettings {
     private static LocalSettings cookie;
 
     public static String getDBDriver() {
-        throw new UnsupportedOperationException("Not yet implemented");
+       return ConnectionTypeHandler.DERBY_DRIVER;
     }
 
     public static String getDBPassword() {
-        throw new UnsupportedOperationException("Not yet implemented");
+        return null;
     }
 
     public static String getDBUser() {
-        throw new UnsupportedOperationException("Not yet implemented");
+         return null;
     }
 
     public static LocalSettings instanceOf() {

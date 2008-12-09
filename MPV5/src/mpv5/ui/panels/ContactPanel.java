@@ -42,7 +42,7 @@ public class ContactPanel extends javax.swing.JPanel {
     public ContactPanel() {
         initComponents();
         leftpane.add(new SearchPanel(), BorderLayout.CENTER);
-        companyselect.setModel(new DefaultComboBoxModel(ListenDataUtils.listToStringArray(new DatabaseSearch(Context.COMPANIES).searchFor(null))));
+        companyselect.setModel(new DefaultComboBoxModel(new DatabaseSearch(Context.COMPANIES).searchFor("name", null)));
 
     }
 

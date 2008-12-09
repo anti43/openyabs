@@ -49,6 +49,13 @@ public class QueryHandler {
     }
 
     private QueryHandler() {
+        try {
+            conn = DatabaseConnection.instanceOf();
+            sqlConn = conn.getConnection();
+        } catch (Exception ex) {
+            Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+       
     }
 
     /**
@@ -58,12 +65,16 @@ public class QueryHandler {
      */
     public QueryHandler setContext(Context context) {
         table = context.getDbIdentity();
-        this.sqlConn = conn.getConnection();
+
         return this;
     }
 
-    public ArrayList<String> getValuesFor(String needle) {
-        throw new UnsupportedOperationException("Not yet implemented");
+    public Object[] getValuesFor(String what, String needle) {
+        if (needle == null) {
+            return freeSelectQuery("SELECT " + what + " FROM " + table).getData();
+        } else {
+            return freeSelectQuery("SELECT " + what + " FROM " + table + "  WHERE name = " + needle).getData();
+        }
     }
 
     /**
@@ -363,7 +374,7 @@ public class QueryHandler {
         if (freeQuery(query)) {
             query = "SELECT id FROM " + table + "  ";
             return freeSelectQuery(query).getId();
-            } else {
+        } else {
             return -1;
         }
     }
@@ -421,7 +432,7 @@ public class QueryHandler {
         String query;
         start();
         query = "SELECT " + what + " FROM " + table + " WHERE " + where[0] + k + where[2] + l + where[1] + l + where[2];
-        
+
         return freeSelectQuery(query).getData()[0];
 
     }
@@ -439,7 +450,7 @@ public class QueryHandler {
         start();
         String query = "SELECT " + what + " FROM " + table + " WHERE " + where[0] + " = " + where[2] + where[1] + where[2] + " ";
         Object[][] data = freeSelectQuery(query).getData();
-        return data[data.length-1];
+        return data[data.length - 1];
     }
 
     /**
@@ -548,10 +559,8 @@ public class QueryHandler {
             }
             query = "DELETE FROM " + table + " WHERE " + str;
             freeQuery(query);
-        } 
+        }
     }
-
-
 
     /**
      * 
@@ -803,8 +812,9 @@ public class QueryHandler {
             ArrayList spalten = new ArrayList();
             ArrayList zeilen = new ArrayList();
             rsmd = resultSet.getMetaData();
-            if(stm.getGeneratedKeys().first())
+            if (stm.getGeneratedKeys().first()) {
                 id = stm.getGeneratedKeys().getInt(1);
+            }
 
             while (resultSet.next()) {
                 spalten = new ArrayList();
@@ -848,18 +858,16 @@ public class QueryHandler {
         return new returnvalue(id, data);
     }
 
-   public class returnvalue{
-        
+    public class returnvalue {
+
         private int id;
         private Object[][] data;
-    
-        public returnvalue(int idOfIt, Object[][] data){
-       
-        this.id =idOfIt;
-        this.data = data;
-        }
 
-        
+        public returnvalue(int idOfIt, Object[][] data) {
+
+            this.id = idOfIt;
+            this.data = data;
+        }
 
         /**
          * @return the id

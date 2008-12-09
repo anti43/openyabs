@@ -77,7 +77,7 @@ public class ConnectionTypeHandler {
     private static String CONNECTION_STRING = null;
     private static Integer PREDEFINED_DRVER = null;
     private static Integer MODE = 0;
-    private static String URL;
+    private static String URL = "mp";
 
     /**
      * Constructs a new ConnHandler

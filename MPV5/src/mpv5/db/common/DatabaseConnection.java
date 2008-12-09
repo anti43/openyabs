@@ -32,8 +32,8 @@ public class DatabaseConnection {
      */
     public static DatabaseConnection instanceOf() throws Exception {
         if (connector == null) {
-
             connector = new DatabaseConnection();
+            connector.connect(true);
         }
         return connector;
     }

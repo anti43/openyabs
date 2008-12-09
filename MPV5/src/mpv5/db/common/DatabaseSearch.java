@@ -24,7 +24,7 @@ public class DatabaseSearch {
         context.setSubID(Context.DEFAULT_SUBID);
     }
 
-    public ArrayList<String> searchFor(String needle){
-       return QueryHandler.instanceOf().setContext(context).getValuesFor(needle);
+    public String[] searchFor(String what, String needle){
+       return (String[]) QueryHandler.instanceOf().setContext(context).getValuesFor(what,needle);
     }
 }

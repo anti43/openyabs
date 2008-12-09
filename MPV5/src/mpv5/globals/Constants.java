@@ -43,7 +43,7 @@ public interface Constants {
     /**
      * Name of databasedir 
      */
-    public static final String DATABASENAME = "mpv" + Constants.RELEASE_VERSION  + "Database";
+    public static final String DATABASENAME = "mpv" + Constants.RELEASE_VERSION;
     /**
      * Full path to database dir 
      */
