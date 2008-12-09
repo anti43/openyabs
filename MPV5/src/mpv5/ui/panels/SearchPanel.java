@@ -54,14 +54,13 @@ public class SearchPanel extends javax.swing.JPanel {
 
         setName("Form"); // NOI18N
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Bundle"); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         searchfields.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("SearchPanel.searchfields.border.title"))); // NOI18N
         searchfields.setName("searchfields"); // NOI18N
 
         label1.setText(bundle.getString("SearchPanel.label1.text")); // NOI18N
         label1.setName("label1"); // NOI18N
 
-        searchfield1.setText(bundle.getString("SearchPanel.searchfield1.text")); // NOI18N
         searchfield1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         searchfield1.setName("searchfield1"); // NOI18N
         searchfield1.addActionListener(new java.awt.event.ActionListener() {
@@ -70,7 +69,6 @@ public class SearchPanel extends javax.swing.JPanel {
             }
         });
 
-        searchfield2.setText(bundle.getString("SearchPanel.searchfield2.text")); // NOI18N
         searchfield2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         searchfield2.setName("searchfield2"); // NOI18N
         searchfield2.addActionListener(new java.awt.event.ActionListener() {
@@ -82,7 +80,6 @@ public class SearchPanel extends javax.swing.JPanel {
         label2.setText(bundle.getString("SearchPanel.label2.text")); // NOI18N
         label2.setName("label2"); // NOI18N
 
-        searchfield3.setText(bundle.getString("SearchPanel.searchfield3.text")); // NOI18N
         searchfield3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         searchfield3.setName("searchfield3"); // NOI18N
         searchfield3.addActionListener(new java.awt.event.ActionListener() {
