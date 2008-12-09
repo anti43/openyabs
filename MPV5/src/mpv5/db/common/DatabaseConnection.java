@@ -4,6 +4,8 @@
  */
 
 package mpv5.db.common;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mpv5.logging.Log;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -36,6 +38,14 @@ public class DatabaseConnection {
         return connector;
     }
     private Statement statement;
+
+    public java.sql.Connection getConnection() {
+        try {
+            return conn;
+        } catch (Exception ex) {
+           return null;
+        }
+    }
 
 
     /**

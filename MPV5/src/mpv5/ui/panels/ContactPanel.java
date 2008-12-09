@@ -1,29 +1,31 @@
 /*
-   This file is part of MP by anti43 /GPL.
+This file is part of MP by anti43 /GPL.
 
-   MP is free software: you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation, either version 3 of the License, or
-   (at your option) any later version.
+MP is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-   MP is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
+MP is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-   You should have received a copy of the GNU General Public License
-   along with MP.  If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU General Public License
+along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-
 /*
  * ContactPanel.java
  *
  * Created on Nov 20, 2008, 8:17:28 AM
  */
-
 package mpv5.ui.panels;
 
+import java.awt.BorderLayout;
+import javax.swing.DefaultComboBoxModel;
+import mpv5.db.common.Context;
+import mpv5.db.common.DatabaseSearch;
+import mpv5.utils.arrays.ListenDataUtils;
 
 /**
  *
@@ -31,12 +33,36 @@ package mpv5.ui.panels;
  */
 public class ContactPanel extends javax.swing.JPanel {
 
+    public static final int CONTACT = 0;
+    public static final int CUSTOMER = 1;
+    public static final int SUPPLIER = 2;
+    public static final int MANUFACTURER = 3;
+
     /** Creates new form ContactPanel */
     public ContactPanel() {
         initComponents();
-    
+        leftpane.add(new SearchPanel(), BorderLayout.CENTER);
+        companyselect.setModel(new DefaultComboBoxModel(ListenDataUtils.listToStringArray(new DatabaseSearch(Context.COMPANIES).searchFor(null))));
+
     }
 
+    public void setType(int type) {
+        switch (type) {
+            case 0:
+                break;
+            case 1:
+                isCustomer(true);
+                break;
+            case 2:
+                isSupplier(true);
+                break;
+            case 3:
+                isManufacturer(true);
+                break;
+            default:
+                ;
+        }
+    }
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -59,8 +85,8 @@ public class ContactPanel extends javax.swing.JPanel {
         manufacturer = new javax.swing.JCheckBox();
         number = new mpv5.ui.beans.LabeledTextField();
         jLabel5 = new javax.swing.JLabel();
+        company = new javax.swing.JCheckBox();
         jPanel4 = new javax.swing.JPanel();
-        jLabel6 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         notes = new javax.swing.JTextPane();
         jPanel2 = new javax.swing.JPanel();
@@ -85,10 +111,18 @@ public class ContactPanel extends javax.swing.JPanel {
         jLabel8 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jPanel9 = new javax.swing.JPanel();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        billsTable = new javax.swing.JTable();
         jScrollPane2 = new javax.swing.JScrollPane();
-        offersTable = new javax.swing.JTable();
+        dataTable = new javax.swing.JTable();
+        button_bills = new javax.swing.JButton();
+        button_offers = new javax.swing.JButton();
+        button_products = new javax.swing.JButton();
+        button_orders = new javax.swing.JButton();
+        jToolBar1 = new javax.swing.JToolBar();
+        button_offer = new javax.swing.JButton();
+        button_bill = new javax.swing.JButton();
+        jSeparator1 = new javax.swing.JToolBar.Separator();
+        button_product = new javax.swing.JButton();
+        button_order = new javax.swing.JButton();
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ContactPanel.border.title"))); // NOI18N
@@ -108,9 +142,15 @@ public class ContactPanel extends javax.swing.JPanel {
         jLabel1.setText(bundle.getString("ContactPanel.jLabel1.text")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
 
+        enabled.setSelected(true);
         enabled.setText(bundle.getString("ContactPanel.enabled.text")); // NOI18N
         enabled.setName("enabled"); // NOI18N
         enabled.setOpaque(false);
+        enabled.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                enabledItemStateChanged(evt);
+            }
+        });
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 11));
         jLabel2.setText(bundle.getString("ContactPanel.jLabel2.text")); // NOI18N
@@ -119,14 +159,29 @@ public class ContactPanel extends javax.swing.JPanel {
         customer.setText(bundle.getString("ContactPanel.customer.text")); // NOI18N
         customer.setName("customer"); // NOI18N
         customer.setOpaque(false);
+        customer.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                customerItemStateChanged(evt);
+            }
+        });
 
         supplier.setText(bundle.getString("ContactPanel.supplier.text")); // NOI18N
         supplier.setName("supplier"); // NOI18N
         supplier.setOpaque(false);
+        supplier.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                supplierItemStateChanged(evt);
+            }
+        });
 
         manufacturer.setText(bundle.getString("ContactPanel.manufacturer.text")); // NOI18N
         manufacturer.setName("manufacturer"); // NOI18N
         manufacturer.setOpaque(false);
+        manufacturer.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                manufacturerItemStateChanged(evt);
+            }
+        });
 
         number.set_Label(bundle.getString("ContactPanel.number._Label")); // NOI18N
         number.set_LabelFont(new java.awt.Font("Tahoma", 1, 11));
@@ -137,6 +192,15 @@ public class ContactPanel extends javax.swing.JPanel {
         jLabel5.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jLabel5.setName("jLabel5"); // NOI18N
 
+        company.setText(bundle.getString("ContactPanel.company.text")); // NOI18N
+        company.setName("company"); // NOI18N
+        company.setOpaque(false);
+        company.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                companyItemStateChanged(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -144,22 +208,30 @@ public class ContactPanel extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(number, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(enabled))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addGap(18, 18, 18)
-                        .addComponent(customer)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addGap(18, 18, 18)
+                                .addComponent(customer))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(enabled)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(supplier)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(manufacturer))
-                    .addComponent(number, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 43, Short.MAX_VALUE)
-                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                        .addComponent(manufacturer)))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
+                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(company)
+                        .addContainerGap())))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -175,7 +247,8 @@ public class ContactPanel extends javax.swing.JPanel {
                             .addComponent(jLabel2)
                             .addComponent(customer)
                             .addComponent(supplier)
-                            .addComponent(manufacturer)))
+                            .addComponent(manufacturer)
+                            .addComponent(company)))
                     .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(number, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -185,9 +258,6 @@ public class ContactPanel extends javax.swing.JPanel {
         jPanel4.setBackground(new java.awt.Color(204, 204, 204));
         jPanel4.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel4.setName("jPanel4"); // NOI18N
-
-        jLabel6.setText(bundle.getString("ContactPanel.jLabel6.text")); // NOI18N
-        jLabel6.setName("jLabel6"); // NOI18N
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
@@ -201,18 +271,14 @@ public class ContactPanel extends javax.swing.JPanel {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 413, Short.MAX_VALUE)
-                    .addComponent(jLabel6))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 416, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 43, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -282,7 +348,7 @@ public class ContactPanel extends javax.swing.JPanel {
                         .addComponent(city, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(zip, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(27, Short.MAX_VALUE))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -386,81 +452,136 @@ public class ContactPanel extends javax.swing.JPanel {
         jPanel9.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel9.setName("jPanel9"); // NOI18N
 
-        jScrollPane3.setName("jScrollPane3"); // NOI18N
-
-        billsTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-
-            }
-        ));
-        billsTable.setDragEnabled(true);
-        billsTable.setName("billsTable"); // NOI18N
-        jScrollPane3.setViewportView(billsTable);
-
         jScrollPane2.setName("jScrollPane2"); // NOI18N
 
-        offersTable.setDragEnabled(true);
-        offersTable.setName("offersTable"); // NOI18N
-        jScrollPane2.setViewportView(offersTable);
+        dataTable.setDragEnabled(true);
+        dataTable.setName("dataTable"); // NOI18N
+        jScrollPane2.setViewportView(dataTable);
+
+        button_bills.setText(bundle.getString("ContactPanel.button_bills.text")); // NOI18N
+        button_bills.setEnabled(false);
+        button_bills.setName("button_bills"); // NOI18N
+
+        button_offers.setText(bundle.getString("ContactPanel.button_offers.text")); // NOI18N
+        button_offers.setEnabled(false);
+        button_offers.setName("button_offers"); // NOI18N
+
+        button_products.setText(bundle.getString("ContactPanel.button_products.text")); // NOI18N
+        button_products.setEnabled(false);
+        button_products.setName("button_products"); // NOI18N
+
+        button_orders.setText(bundle.getString("ContactPanel.button_orders.text")); // NOI18N
+        button_orders.setEnabled(false);
+        button_orders.setName("button_orders"); // NOI18N
 
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
         jPanel9Layout.setHorizontalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 433, Short.MAX_VALUE)
-            .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel9Layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE)
-                    .addContainerGap()))
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 416, Short.MAX_VALUE)
+                    .addGroup(jPanel9Layout.createSequentialGroup()
+                        .addComponent(button_bills)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(button_offers)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(button_products)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(button_orders)))
+                .addContainerGap())
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 72, Short.MAX_VALUE)
-            .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE))
-                    .addContainerGap()))
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(button_bills)
+                    .addComponent(button_offers)
+                    .addComponent(button_products)
+                    .addComponent(button_orders))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE)
+                .addContainerGap())
         );
+
+        jToolBar1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jToolBar1.setFloatable(false);
+        jToolBar1.setRollover(true);
+        jToolBar1.setName("jToolBar1"); // NOI18N
+
+        button_offer.setText(bundle.getString("ContactPanel.button_offer.text")); // NOI18N
+        button_offer.setEnabled(false);
+        button_offer.setFocusable(false);
+        button_offer.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        button_offer.setName("button_offer"); // NOI18N
+        button_offer.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(button_offer);
+
+        button_bill.setText(bundle.getString("ContactPanel.button_bill.text")); // NOI18N
+        button_bill.setEnabled(false);
+        button_bill.setFocusable(false);
+        button_bill.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        button_bill.setName("button_bill"); // NOI18N
+        button_bill.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(button_bill);
+
+        jSeparator1.setName("jSeparator1"); // NOI18N
+        jToolBar1.add(jSeparator1);
+
+        button_product.setText(bundle.getString("ContactPanel.button_product.text")); // NOI18N
+        button_product.setEnabled(false);
+        button_product.setFocusable(false);
+        button_product.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        button_product.setName("button_product"); // NOI18N
+        button_product.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(button_product);
+
+        button_order.setText(bundle.getString("ContactPanel.button_order.text")); // NOI18N
+        button_order.setEnabled(false);
+        button_order.setFocusable(false);
+        button_order.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        button_order.setName("button_order"); // NOI18N
+        button_order.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(button_order);
 
         javax.swing.GroupLayout rightpaneLayout = new javax.swing.GroupLayout(rightpane);
         rightpane.setLayout(rightpaneLayout);
         rightpaneLayout.setHorizontalGroup(
             rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(rightpaneLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 437, Short.MAX_VALUE)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel9, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-            .addGroup(rightpaneLayout.createSequentialGroup()
                 .addGap(10, 10, 10)
                 .addComponent(jLabel7)
-                .addContainerGap(415, Short.MAX_VALUE))
+                .addContainerGap(418, Short.MAX_VALUE))
             .addGroup(rightpaneLayout.createSequentialGroup()
                 .addGap(10, 10, 10)
                 .addComponent(jLabel8)
-                .addContainerGap(359, Short.MAX_VALUE))
+                .addContainerGap(362, Short.MAX_VALUE))
             .addGroup(rightpaneLayout.createSequentialGroup()
                 .addGap(10, 10, 10)
                 .addComponent(jLabel9)
                 .addGap(401, 401, 401))
+            .addGroup(rightpaneLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 440, Short.MAX_VALUE)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel9, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+            .addGroup(rightpaneLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 440, Short.MAX_VALUE)
+                .addContainerGap())
         );
         rightpaneLayout.setVerticalGroup(
             rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(rightpaneLayout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel9)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -488,18 +609,50 @@ public class ContactPanel extends javax.swing.JPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(leftpane, javax.swing.GroupLayout.DEFAULT_SIZE, 580, Short.MAX_VALUE)
+            .addComponent(leftpane, javax.swing.GroupLayout.DEFAULT_SIZE, 624, Short.MAX_VALUE)
             .addComponent(rightpane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void enabledItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_enabledItemStateChanged
+       isCustomer(enabled.isSelected());
+       isManufacturer(enabled.isSelected());
+       isSupplier(enabled.isSelected());
+    }//GEN-LAST:event_enabledItemStateChanged
+
+    private void customerItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_customerItemStateChanged
+       isCustomer(customer.isSelected());
+    }//GEN-LAST:event_customerItemStateChanged
+
+
+
+    private void supplierItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_supplierItemStateChanged
+       isSupplier(supplier.isSelected());
+    }//GEN-LAST:event_supplierItemStateChanged
+
+    private void manufacturerItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_manufacturerItemStateChanged
+       isManufacturer(manufacturer.isSelected());
+    }//GEN-LAST:event_manufacturerItemStateChanged
+
+    private void companyItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_companyItemStateChanged
+       isCompany(company.isSelected());
+}//GEN-LAST:event_companyItemStateChanged
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTable billsTable;
     private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JButton button_bill;
+    private javax.swing.JButton button_bills;
+    private javax.swing.JButton button_offer;
+    private javax.swing.JButton button_offers;
+    private javax.swing.JButton button_order;
+    private javax.swing.JButton button_orders;
+    private javax.swing.JButton button_product;
+    private javax.swing.JButton button_products;
     private mpv5.ui.beans.LabeledTextField city;
+    private javax.swing.JCheckBox company;
     private javax.swing.JComboBox companyselect;
     private javax.swing.JCheckBox customer;
+    private javax.swing.JTable dataTable;
     private javax.swing.JCheckBox enabled;
     private mpv5.ui.beans.LabeledTextField fax;
     private javax.swing.JRadioButton female;
@@ -507,7 +660,6 @@ public class ContactPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
@@ -518,7 +670,8 @@ public class ContactPanel extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JToolBar.Separator jSeparator1;
+    private javax.swing.JToolBar jToolBar1;
     private mpv5.ui.beans.LabeledTextField lastname;
     private javax.swing.JPanel leftpane;
     private mpv5.ui.beans.LabeledTextField mailaddress;
@@ -527,7 +680,6 @@ public class ContactPanel extends javax.swing.JPanel {
     private mpv5.ui.beans.LabeledTextField mobilephone;
     private javax.swing.JTextPane notes;
     private mpv5.ui.beans.LabeledTextField number;
-    private javax.swing.JTable offersTable;
     private mpv5.ui.beans.LabeledTextField phone;
     private mpv5.ui.beans.LabeledTextField prename;
     private javax.swing.JPanel rightpane;
@@ -538,16 +690,7 @@ public class ContactPanel extends javax.swing.JPanel {
     private mpv5.ui.beans.LabeledTextField workphone;
     private mpv5.ui.beans.LabeledTextField zip;
     // End of variables declaration//GEN-END:variables
-
-    private javax.swing.table.DefaultTableModel offersTableModel = null;
-    private javax.swing.table.DefaultTableModel billsTableModel = null;
-
-    /**
-     * @return the billsTable
-     */
-    public javax.swing.JTable getBillsTable() {
-        return billsTable;
-    }
+    private javax.swing.table.DefaultTableModel tableModel = null;
 
     /**
      * @return the city
@@ -651,7 +794,7 @@ public class ContactPanel extends javax.swing.JPanel {
      * @return the offersTable
      */
     public javax.swing.JTable getOffersTable() {
-        return offersTable;
+        return dataTable;
     }
 
     /**
@@ -721,31 +864,47 @@ public class ContactPanel extends javax.swing.JPanel {
      * @return the offersTableModel
      */
     public javax.swing.table.DefaultTableModel getOffersTableModel() {
-        return offersTableModel;
+        return tableModel;
     }
 
     /**
      * @param offersTableModel the offersTableModel to set
      */
-    public void setOffersTableModel(javax.swing.table.DefaultTableModel offersTableModel) {
-        this.offersTableModel = offersTableModel;
-        offersTable.setModel(billsTableModel);
+    public void setOffersTableModel(javax.swing.table.DefaultTableModel tableModel) {
+        this.tableModel = tableModel;
+        dataTable.setModel(tableModel);
     }
 
-    /**
-     * @return the billsTableModel
-     */
-    public javax.swing.table.DefaultTableModel getBillsTableModel() {
-        return billsTableModel;
+    private void isCustomer(boolean b) {
+        customer.setSelected(b);
+        button_offers.setEnabled(b);
+        button_offer.setEnabled(b);
+        button_bill.setEnabled(b);
+        button_bills.setEnabled(b);
     }
 
-    /**
-     * @param billsTableModel the billsTableModel to set
-     */
-    public void setBillsTableModel(javax.swing.table.DefaultTableModel billsTableModel) {
-        this.billsTableModel = billsTableModel;
-        billsTable.setModel(billsTableModel);
+    private void isManufacturer(boolean b) {
+        manufacturer.setSelected(b);
+        button_product.setEnabled(b);
+        button_products.setEnabled(b);
+        button_order.setEnabled(b);
+        button_orders.setEnabled(b);
     }
 
-  
+    private void isSupplier(boolean b) {
+        supplier.setSelected(b);
+        button_product.setEnabled(b);
+        button_products.setEnabled(b);
+        button_order.setEnabled(b);
+        button_orders.setEnabled(b);
+    }
+
+    private void isCompany(boolean selected) {
+        company.setSelected(selected);
+        companyselect.setEnabled(!selected);
+        title.setEnabled(!selected);
+        male.setEnabled(!selected);
+        female.setEnabled(!selected);
+        prename.setEnabled(!selected);
+    }
 }

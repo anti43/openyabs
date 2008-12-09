@@ -100,9 +100,11 @@ public class LabeledTextField extends javax.swing.JPanel {
     }
 
     public void set_LabelFont(Font font) {
-       jLabel1.setFont(font);
+        jLabel1.setFont(font);
     }
 
-
-
+    public void setEnabled(boolean enabled) {
+        jLabel1.setEnabled(enabled);
+        jTextField1.setEnabled(enabled);
+    }
 }

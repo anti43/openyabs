@@ -52,6 +52,12 @@ public class Main extends SingleFrameApplication {
         return Application.getInstance(Main.class);
     }
 
+    @Override protected void shutdown(){
+    System.out.println(Main.getApplication().getMainFrame().getSize());
+
+        super.shutdown();
+    }
+
     /**
      * Main method launching the application.
      */
@@ -65,12 +71,14 @@ public class Main extends SingleFrameApplication {
         setDerbyLog(); 
 
         launch(Main.class, args);
+
     }
 
 
 
 
     public static boolean IS_WINDOWS = false;
+
     public static boolean FORCE_NO_DATABASE = false;
     public static boolean FORCE_NO_FILE_COPY = false;
     public static boolean FORCE_CREATE_DATABASE = false;

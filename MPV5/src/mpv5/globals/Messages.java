@@ -24,4 +24,13 @@ public class Messages {
         "*****************************************************************\n\n";
 
     public static final String GPL = new FileReaderWriter("license.txt").read();
+
+
+    public static String NEW_CONTACT = "New Contact";
+    public static String NEW_CUSTOMER = "New Customer";
+    public static String NEW_SUPPLIER = "New Supplier";
+    public static String NEW_MANUFACTURER = "New Manufacturer";
+    public static String NEW_OFFER = "New Offer";
+    public static String NEW_BILL = "New Bill";
+
 }
