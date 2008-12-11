@@ -23,16 +23,16 @@ package mpv5.ui.panels;
 
 import java.awt.BorderLayout;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JPanel;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseSearch;
 import mpv5.logging.Log;
-import mpv5.utils.arrays.ListenDataUtils;
 
 /**
  *
  * @author Administrator
  */
-public class ContactPanel extends javax.swing.JPanel{
+public class ContactPanel extends javax.swing.JPanel implements DataPanel{
 
     public static final int CONTACT = 0;
     public static final int CUSTOMER = 1;
@@ -50,6 +50,15 @@ public class ContactPanel extends javax.swing.JPanel{
         } catch (Exception e) {
             Log.Debug(this, e);
         }
+    }
+
+    /**
+     *
+     * @return
+     */
+    public JPanel[] getDataPanel(){
+
+        return new JPanel[]{jPanel1,jPanel2,jPanel3,jPanel4};
     }
 
     public void setType(int type) {
@@ -98,7 +107,7 @@ public class ContactPanel extends javax.swing.JPanel{
         jPanel2 = new javax.swing.JPanel();
         title = new mpv5.ui.beans.LabeledTextField();
         street = new mpv5.ui.beans.LabeledTextField();
-        lastname = new mpv5.ui.beans.LabeledTextField();
+        cname = new mpv5.ui.beans.LabeledTextField();
         prename = new mpv5.ui.beans.LabeledTextField();
         city = new mpv5.ui.beans.LabeledTextField();
         companyselect = new javax.swing.JComboBox();
@@ -298,8 +307,8 @@ public class ContactPanel extends javax.swing.JPanel{
         street.set_Label(bundle.getString("ContactPanel.street._Label")); // NOI18N
         street.setName("street"); // NOI18N
 
-        lastname.set_Label(bundle.getString("ContactPanel.lastname._Label")); // NOI18N
-        lastname.setName("lastname"); // NOI18N
+        cname.set_Label(bundle.getString("ContactPanel.cname._Label")); // NOI18N
+        cname.setName("cname"); // NOI18N
 
         prename.set_Label(bundle.getString("ContactPanel.prename._Label")); // NOI18N
         prename.setName("prename"); // NOI18N
@@ -345,7 +354,7 @@ public class ContactPanel extends javax.swing.JPanel{
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(female))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(lastname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(prename, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
@@ -371,7 +380,7 @@ public class ContactPanel extends javax.swing.JPanel{
                         .addComponent(female)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lastname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(prename, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -655,6 +664,7 @@ public class ContactPanel extends javax.swing.JPanel{
     private javax.swing.JButton button_product;
     private javax.swing.JButton button_products;
     private mpv5.ui.beans.LabeledTextField city;
+    private mpv5.ui.beans.LabeledTextField cname;
     private javax.swing.JCheckBox company;
     private javax.swing.JComboBox companyselect;
     private javax.swing.JCheckBox customer;
@@ -678,7 +688,6 @@ public class ContactPanel extends javax.swing.JPanel{
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JToolBar jToolBar1;
-    private mpv5.ui.beans.LabeledTextField lastname;
     private javax.swing.JPanel leftpane;
     private mpv5.ui.beans.LabeledTextField mailaddress;
     private javax.swing.JRadioButton male;
@@ -743,8 +752,8 @@ public class ContactPanel extends javax.swing.JPanel{
     /**
      * @return the lastname
      */
-    public mpv5.ui.beans.LabeledTextField getLastname() {
-        return lastname;
+    public mpv5.ui.beans.LabeledTextField getCName() {
+        return cname;
     }
 
     /**

@@ -35,12 +35,41 @@ public class DataHandler {
         parse(source, target);
     }
 
+    public DatabaseObject parse(JPanel[] dataPanel, DatabaseObject target) {
+
+        for (int i = 0; i < dataPanel.length; i++) {
+            JPanel source = dataPanel[i];
+            ArrayList<Method> dat = target._setVars();
+            for (int method = 0; method < dat.size(); method++) {
+                for (int component = 0; component < source.getComponents().length; component++) {
+                    
+                    if (dat.get(method).getName().toLowerCase().endsWith(source.getComponents()[component].getName().toLowerCase())) {
+                       
+                        try {
+                            getValue(source.getComponents()[component], dat.get(method), target);
+                        } catch (IllegalAccessException ex) {
+                            Logger.getLogger(DataHandler.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (IllegalArgumentException ex) {
+                            Logger.getLogger(DataHandler.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (InvocationTargetException ex) {
+                            Logger.getLogger(DataHandler.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                }
+            }
+        }
+        System.out.println(target.getCName());
+        return target;
+    }
+
     private JPanel inject(JPanel target, DatabaseObject source) {
-        ArrayList<Method> dat = source._getVars();
+        ArrayList<Method> dat = source._setVars();
         for (int method = 0; method < dat.size(); method++) {
             for (int component = 0; component < target.getComponents().length; component++) {
+
                 if (dat.get(method).getName().toLowerCase().endsWith(target.getComponents()[component].getName().toLowerCase())) {
                     try {
+                        
                         setValue(target.getComponents()[component], dat.get(method), source);
                     } catch (IllegalAccessException ex) {
                         Logger.getLogger(DataHandler.class.getName()).log(Level.SEVERE, null, ex);
@@ -60,8 +89,11 @@ public class DataHandler {
         ArrayList<Method> dat = target._getVars();
         for (int method = 0; method < dat.size(); method++) {
             for (int component = 0; component < source.getComponents().length; component++) {
+              
+
                 if (dat.get(method).getName().toLowerCase().endsWith(source.getComponents()[component].getName().toLowerCase())) {
                     try {
+                        
                         getValue(source.getComponents()[component], dat.get(method), target);
                     } catch (IllegalAccessException ex) {
                         Logger.getLogger(DataHandler.class.getName()).log(Level.SEVERE, null, ex);
@@ -94,19 +126,22 @@ public class DataHandler {
     }
 
     private void getValue(Component component, Method set, DatabaseObject data) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        
+        if (component.getClass().isInstance(new JRadioButton()) && set.getParameterTypes().length==1 && set.getParameterTypes()[0].isInstance(boolean.class)) {
+        set.invoke(data, ((JRadioButton) component).isSelected());
+        } else if (component.getClass().isInstance(new JCheckBox()) && set.getParameterTypes().length==1  && set.getParameterTypes()[0].isInstance(boolean.class)) {
+        set.invoke(data, ((JCheckBox) component).isSelected());
+        } else if (component.getClass().getName().endsWith("TextField")) {
+        set.invoke(data, ((LabeledTextField) component).get_Text());
+//        }
+//        else if (component.getClass().isInstance(new LabeledTextField()) && set.getParameterTypes().length==1  && set.getParameterTypes()[0].isInstance(String.class)) {
+//        set.invoke(data, ((LabeledTextField) component).get_Text());
+//        } else if (component.getClass().isInstance(new JTextArea())  && set.getParameterTypes().length==1 && set.getParameterTypes()[0].isInstance(String.class)) {
+//        set.invoke(data, ((JTextArea) component).getText());
+//        } else if (component.getClass().isInstance(new JEditorPane())  && set.getParameterTypes().length==1 && set.getParameterTypes()[0].isInstance(String.class)) {
+//        set.invoke(data, ((JEditorPane) component).getText());
+//
+        } else {System.out.println(component.getClass() + " "+set.getParameterTypes()[0].getName()+" " +set.getName());}
 
-        if (component.getClass().isInstance(new JRadioButton()) && set.getParameterTypes()[0].isInstance(boolean.class)) {
-            set.invoke(data, ((JRadioButton) component).isSelected());
-        } else if (component.getClass().isInstance(new JCheckBox()) && set.getParameterTypes()[0].isInstance(boolean.class)) {
-            set.invoke(data, ((JCheckBox) component).isSelected());
-        } else if (component.getClass().isInstance(new JTextField()) && set.getParameterTypes()[0].isInstance(String.class)) {
-            set.invoke(data, ((JTextField) component).getText());
-        } else if (component.getClass().isInstance(new LabeledTextField()) && set.getParameterTypes()[0].isInstance(String.class)) {
-            set.invoke(data, ((LabeledTextField) component).get_Text());
-        } else if (component.getClass().isInstance(new JTextArea()) && set.getParameterTypes()[0].isInstance(String.class)) {
-            set.invoke(data, ((JTextArea) component).getText());
-        } else if (component.getClass().isInstance(new JEditorPane()) && set.getParameterTypes()[0].isInstance(String.class)) {
-            set.invoke(data, ((JEditorPane) component).getText());
-        }
     }
 }

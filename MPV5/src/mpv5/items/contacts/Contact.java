@@ -84,7 +84,7 @@ public class Contact extends DatabaseObject {
     /**
      * @return the name
      */
-    public String getName() {
+    public String getCName() {
         return name;
     }
 
@@ -276,6 +276,8 @@ public class Contact extends DatabaseObject {
     public void setCompany(Company company) {
         this.company = company;
     }
+
+
 
 //    /**
 //     * @return the role

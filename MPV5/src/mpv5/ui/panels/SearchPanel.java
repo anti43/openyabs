@@ -213,7 +213,7 @@ public class SearchPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_searchfield2ActionPerformed
 
     private void searchbutton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchbutton1ActionPerformed
-        search(4, context.getParent().getName());
+        search(4, context.getParent().getCName());
     }//GEN-LAST:event_searchbutton1ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel label1;

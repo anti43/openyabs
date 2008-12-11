@@ -407,7 +407,7 @@
                               <Component id="female" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="lastname" min="-2" max="-2" attributes="1"/>
+                              <Component id="cname" min="-2" max="-2" attributes="1"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="prename" min="-2" max="-2" attributes="0"/>
                           </Group>
@@ -441,7 +441,7 @@
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="lastname" min="-2" max="-2" attributes="0"/>
+                          <Component id="cname" min="-2" max="-2" attributes="0"/>
                           <Component id="prename" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace pref="14" max="32767" attributes="0"/>
@@ -472,12 +472,12 @@
                 <Property name="name" type="java.lang.String" value="street" noResource="true"/>
               </Properties>
             </Component>
-            <Component class="mpv5.ui.beans.LabeledTextField" name="lastname">
+            <Component class="mpv5.ui.beans.LabeledTextField" name="cname">
               <Properties>
                 <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                  <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.lastname._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                  <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.cname._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                 </Property>
-                <Property name="name" type="java.lang.String" value="lastname" noResource="true"/>
+                <Property name="name" type="java.lang.String" value="cname" noResource="true"/>
               </Properties>
             </Component>
             <Component class="mpv5.ui.beans.LabeledTextField" name="prename">

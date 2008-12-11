@@ -141,6 +141,7 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseListener,
    * @param title the title to be displayed in this tab
    * @param component the component to be displayed when this tab is clicked
    */
+    @Override
   public void addTab(String title, Component component) {
     addTab(title, component, null);
   }

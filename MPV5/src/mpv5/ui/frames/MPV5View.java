@@ -10,6 +10,7 @@ import mpv5.db.common.Context;
 import mpv5.globals.Messages;
 import mpv5.items.contacts.Contact;
 import mpv5.ui.panels.ContactPanel;
+import mpv5.ui.panels.DataPanel;
 import mpv5.ui.parents.CloseableTabbedPane;
 import mpv5.ui.parents.IFrame;
 import org.jdesktop.application.SingleFrameApplication;
@@ -533,8 +534,7 @@ public class MPV5View extends FrameView {
     }//GEN-LAST:event_jButton24ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-
-        new DataHandler().parse((JPanel) tabPane.getSelectedComponent(),new Contact())._save();
+        boolean _save = new DataHandler().parse(((DataPanel) tabPane.getSelectedComponent()).getDataPanel(), new Contact())._save();
 }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton25ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton25ActionPerformed

@@ -23,10 +23,22 @@ public abstract class DatabaseObject {
     public boolean readonly = false;
     public boolean active = true;
 
-    public abstract String getName();
+
+
+    public abstract String getCName();
 
     public Integer _getID() {
         return id;
+    }
+
+    public ArrayList<Method> _setVars() {
+         ArrayList<Method> list = new ArrayList<Method>();
+        for (int i = 0; i < this.getClass().getMethods().length; i++) {
+            if (this.getClass().getMethods()[i].getName().startsWith("set")) {
+                list.add(this.getClass().getMethods()[i]);
+            }
+        }
+        return list;
     }
 
     public ArrayList<Method> _getVars() {
