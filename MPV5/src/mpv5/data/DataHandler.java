@@ -36,7 +36,7 @@ public class DataHandler {
     }
 
     private JPanel inject(JPanel target, DatabaseObject source) {
-        ArrayList<Method> dat = source.getVars();
+        ArrayList<Method> dat = source._getVars();
         for (int method = 0; method < dat.size(); method++) {
             for (int component = 0; component < target.getComponents().length; component++) {
                 if (dat.get(method).getName().toLowerCase().endsWith(target.getComponents()[component].getName().toLowerCase())) {
@@ -57,7 +57,7 @@ public class DataHandler {
     }
 
     public DatabaseObject parse(JPanel source, DatabaseObject target) {
-        ArrayList<Method> dat = target.getVars();
+        ArrayList<Method> dat = target._getVars();
         for (int method = 0; method < dat.size(); method++) {
             for (int component = 0; component < source.getComponents().length; component++) {
                 if (dat.get(method).getName().toLowerCase().endsWith(source.getComponents()[component].getName().toLowerCase())) {

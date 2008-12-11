@@ -25,11 +25,11 @@ public abstract class DatabaseObject {
 
     public abstract String getName();
 
-    public Integer getID() {
+    public Integer _getID() {
         return id;
     }
 
-    public ArrayList<Method> getVars() {
+    public ArrayList<Method> _getVars() {
         ArrayList<Method> list = new ArrayList<Method>();
         for (int i = 0; i < this.getClass().getMethods().length; i++) {
             if (this.getClass().getMethods()[i].getName().startsWith("get") || this.getClass().getMethods()[i].getName().startsWith("is")) {
@@ -39,13 +39,13 @@ public abstract class DatabaseObject {
         return list;
     }
 
-    public boolean save() {
+    public boolean _save() {
 
         try {
             if (id <= 0) {
-                id = QueryHandler.instanceOf().clone(context).insert(collect());
+                id = QueryHandler.instanceOf().clone(context).insert(_collect());
             } else {
-                QueryHandler.instanceOf().clone(context).update(collect(), new String[]{"id", String.valueOf(id), ""});
+                QueryHandler.instanceOf().clone(context).update(_collect(), new String[]{"id", String.valueOf(id), ""});
             }
             return true;
         } catch (Exception e) {
@@ -55,7 +55,7 @@ public abstract class DatabaseObject {
         }
     }
 
-    public boolean reset() {
+    public boolean _reset() {
         return false;
     }
 
@@ -63,11 +63,11 @@ public abstract class DatabaseObject {
         return false;
     }
 
-    public String getDbID() {
+    public String _getDbID() {
         return context.getDbIdentity();
     }
 
-    private String[] collect() {
+    private String[] _collect() {
 
         String left = "";
         String right = "";
@@ -111,6 +111,6 @@ public abstract class DatabaseObject {
             }
         }
 
-        return new String[]{left.substring(0, left.length()-1), right.substring(0, right.length()-7), ""};
+        return new String[]{left.substring(0, left.length() - 1), right.substring(0, right.length() - 7), ""};
     }
 }
