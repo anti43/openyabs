@@ -4,6 +4,7 @@
  */
 package mpv5.items.contacts;
 
+import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 
 /**
@@ -34,6 +35,8 @@ public class Contact extends DatabaseObject {
     public Contact() {
         this.company = new Company();
         this.role = new Roles();
+
+        context.setDbIdentity(Context.IDENTITY_CONTACTS);
     }
 
     /**
@@ -274,19 +277,19 @@ public class Contact extends DatabaseObject {
         this.company = company;
     }
 
-    /**
-     * @return the role
-     */
-    public Roles getRole() {
-        return role;
-    }
-
-    /**
-     * @param role the role to set
-     */
-    public void setRole(Roles role) {
-        this.role = role;
-    }
+//    /**
+//     * @return the role
+//     */
+//    public Roles getRole() {
+//        return role;
+//    }
+//
+//    /**
+//     * @param role the role to set
+//     */
+//    public void setRole(Roles role) {
+//        this.role = role;
+//    }
 
 
 }

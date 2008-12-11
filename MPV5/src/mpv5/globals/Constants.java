@@ -29,21 +29,21 @@ public interface Constants {
     /**
      * Version info
      */
-    public static String VERSION = "4.00";
-    public static String REVISION = "450";
-    public static String RELEASE_VERSION = "4";
+    public static String VERSION = "5.00";
+    public static String REVISION = "000";
+    public static String RELEASE_VERSION = "5";
     public static String TITLE = "[Vienna]";
     public static String VERSION_URL = "Not Used";
-    public static String JAR_NAME = "MPV4.jar";
+    public static String JAR_NAME = "MPV5.jar";
     public static String PROG_NAME = "MP-" + Constants.VERSION + "";
     public static String JAVA_VERSION = "Java Version: " + System.getProperty("java.version");
-    public static String PLUGIN_IDENTIFIER = "MP4Plugin";
+    public static String PLUGIN_IDENTIFIER = "MP5Plugin";
     public static String PLUGIN_LOAD_CLASS = "plugin.Main";
 
     /**
      * Name of databasedir 
      */
-    public static final String DATABASENAME = "mpv" + Constants.RELEASE_VERSION;
+    public static final String DATABASENAME = "mpv" + Constants.RELEASE_VERSION +"db";
     /**
      * Full path to database dir 
      */

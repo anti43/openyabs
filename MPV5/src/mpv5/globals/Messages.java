@@ -23,7 +23,7 @@ public class Messages {
         "\n  Start with -help for command line options.\n" +
         "*****************************************************************\n\n";
 
-    public static final String GPL = new FileReaderWriter("license.txt").read();
+//    public static final String GPL = new FileReaderWriter("license.txt").read();
 
 
     public static String NEW_CONTACT = "New Contact";

@@ -33,7 +33,7 @@ public class DatabaseConnection {
     public static DatabaseConnection instanceOf() throws Exception {
         if (connector == null) {
             connector = new DatabaseConnection();
-            connector.connect(true);
+            connector.connect(false);
         }
         return connector;
     }
@@ -55,7 +55,6 @@ public class DatabaseConnection {
     private Connection connect(boolean create) throws Exception {
 
         ctype = new ConnectionTypeHandler();
-        // Treiber laden
         try {
             Log.Debug(this, "Datenbanktreiber: " + ctype.getDriver(), true);
             Class.forName(ctype.getDriver()).newInstance();
@@ -68,23 +67,18 @@ public class DatabaseConnection {
             DatabaseConnection.shutdown();
         }
 
-        // Verbindung herstellen
         try {
             Log.Debug(this, "Datenbankverbindung: " + ctype.getConnectionString(create), true);
             conn = DriverManager.getConnection(ctype.getConnectionString(create), user, password);
-            // Benötige Ressourcen für eine SQL-Anweisung bereitstellen
-            statement = conn.createStatement();
 
         } catch (SQLException ex) {
-            System.out.println("Database Error:" + ex.getMessage());
-//            ex.printStackTrace();
+            System.out.println("Database Error: " + ex.getMessage());
             Log.Debug(this, ex);
+            Log.Debug(this, ex.getNextException());
             Popup.warn(ex.getMessage(), Popup.ERROR);
             DatabaseConnection.shutdown();
-//            System.exit(1);
 
             throw new Exception("Datenbank konnte nicht gestartet werden.");
-
         }
         return conn;
     }

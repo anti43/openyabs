@@ -25,7 +25,7 @@ import mpv5.utils.date.vTimeframe;
  *
  * @author Andreas
  */
-public class QueryHandler {
+public class QueryHandler implements Cloneable {
 
     private static QueryHandler instance;
     private DatabaseConnection conn = null;
@@ -36,6 +36,7 @@ public class QueryHandler {
     private String table = null;
     public String resultString = null;
     private static JFrame comp = new JFrame();
+    private Context context;
 
     /**
      *
@@ -55,7 +56,7 @@ public class QueryHandler {
         } catch (Exception ex) {
             Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
-       
+
     }
 
     /**
@@ -65,15 +66,21 @@ public class QueryHandler {
      */
     public QueryHandler setContext(Context context) {
         table = context.getDbIdentity();
-
         return this;
     }
 
-    public Object[] getValuesFor(String what, String needle) {
-        if (needle == null) {
-            return freeSelectQuery("SELECT " + what + " FROM " + table).getData();
+    public Object[] getValuesFor(String needle, String value) {
+        if (context != null) {
+
+            if (value == null) {
+                return freeSelectQuery("SELECT " + needle + " FROM " + table + " " + context.getConditions()).getData();
+            } else {
+                return freeSelectQuery("SELECT " + needle + " FROM " + table + " WHERE " + needle + " LIKE %" + value + "% AND " + context.getConditions()).getData();
+            }
+        } else if (value == null) {
+            return freeSelectQuery("SELECT " + needle + " FROM " + table).getData();
         } else {
-            return freeSelectQuery("SELECT " + what + " FROM " + table + "  WHERE name = " + needle).getData();
+            return freeSelectQuery("SELECT " + needle + " FROM " + table + "  WHERE " + needle + " LIKE %" + value + "%").getData();
         }
     }
 
@@ -351,6 +358,7 @@ public class QueryHandler {
         what[1] = what[1].replaceAll("'", "`");
         what[1] = what[1].replaceAll("\\(;;2#4#1#1#8#0#;;\\)", "'");
         what[1] = what[1].replaceAll("\\(;;\\,;;\\)", ",");
+        what[2] = what[2].replaceAll("\\(;;\\,;;\\)", ",");
         String query;
         start();
 
@@ -514,6 +522,10 @@ public class QueryHandler {
         String k = " = ";
         String j = "";
 
+        if (order == null) {
+            order = "id ASC ";
+        }
+
         String ord = " ORDER BY " + order;
         String wher = "";
         java.util.Date date;
@@ -572,6 +584,18 @@ public class QueryHandler {
         try {
             theClone = (QueryHandler) this.clone();
             theClone.setTable(newTable);
+        } catch (CloneNotSupportedException ex) {
+            Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return theClone;
+    }
+
+    public QueryHandler clone(Context context) {
+        QueryHandler theClone = null;
+        this.context = context;
+        try {
+            theClone = (QueryHandler) this.clone();
+            theClone.setTable(context.getDbIdentity());
         } catch (CloneNotSupportedException ex) {
             Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -812,7 +836,7 @@ public class QueryHandler {
             ArrayList spalten = new ArrayList();
             ArrayList zeilen = new ArrayList();
             rsmd = resultSet.getMetaData();
-            if (stm.getGeneratedKeys().first()) {
+            if (stm.getGeneratedKeys() != null && stm.getGeneratedKeys().first()) {
                 id = stm.getGeneratedKeys().getInt(1);
             }
 

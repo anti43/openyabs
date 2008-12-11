@@ -25,25 +25,31 @@ import java.awt.BorderLayout;
 import javax.swing.DefaultComboBoxModel;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseSearch;
+import mpv5.logging.Log;
 import mpv5.utils.arrays.ListenDataUtils;
 
 /**
  *
  * @author Administrator
  */
-public class ContactPanel extends javax.swing.JPanel {
+public class ContactPanel extends javax.swing.JPanel{
 
     public static final int CONTACT = 0;
     public static final int CUSTOMER = 1;
     public static final int SUPPLIER = 2;
     public static final int MANUFACTURER = 3;
 
-    /** Creates new form ContactPanel */
-    public ContactPanel() {
+    /** Creates new form ContactPanel
+     * @param context
+     */
+    public ContactPanel(Context context) {
         initComponents();
-        leftpane.add(new SearchPanel(), BorderLayout.CENTER);
-        companyselect.setModel(new DefaultComboBoxModel(new DatabaseSearch(Context.COMPANIES).searchFor("name", null)));
-
+        leftpane.add(new SearchPanel(context), BorderLayout.CENTER);
+        try {
+            companyselect.setModel(new DefaultComboBoxModel(new DatabaseSearch(Context.getCompany()).searchFor(Context.getCompany().getSubID(), null)));
+        } catch (Exception e) {
+            Log.Debug(this, e);
+        }
     }
 
     public void setType(int type) {
@@ -868,7 +874,7 @@ public class ContactPanel extends javax.swing.JPanel {
     }
 
     /**
-     * @param offersTableModel the offersTableModel to set
+     * @param tableModel the tableModel to set
      */
     public void setOffersTableModel(javax.swing.table.DefaultTableModel tableModel) {
         this.tableModel = tableModel;

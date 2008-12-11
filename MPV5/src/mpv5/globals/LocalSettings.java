@@ -20,11 +20,11 @@ public class LocalSettings {
     }
 
     public static String getDBPassword() {
-        return null;
+        return "";
     }
 
     public static String getDBUser() {
-         return null;
+         return "";
     }
 
     public static LocalSettings instanceOf() {

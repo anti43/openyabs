@@ -5,8 +5,6 @@
 
 package mpv5.db.common;
 
-import java.util.ArrayList;
-
 /**
  *
  * @author Andreas
@@ -18,13 +16,21 @@ public class DatabaseSearch {
         this.context = context;
     }
 
-    public DatabaseSearch(String contextname) {
-        this.context = new Context();
-        context.setDbIdentity(contextname);
+    public DatabaseSearch(DatabaseObject obj) {
+        this.context = new Context(obj);
+        context.setDbIdentity(obj.getDbID());
         context.setSubID(Context.DEFAULT_SUBID);
     }
 
-    public String[] searchFor(String what, String needle){
-       return (String[]) QueryHandler.instanceOf().setContext(context).getValuesFor(what,needle);
+    public Object[][] getValuesFor(String resultingFieldNames, String what, String where) {
+       return QueryHandler.instanceOf().clone(context).select(resultingFieldNames, new String[]{what, where, "'"});
+    }
+
+    public Object[][] getValuesFor(String resultingFieldNames, String what, String where, boolean searchForLike) {
+        return QueryHandler.instanceOf().clone(context).select(resultingFieldNames, new String[]{what, where, "'"}, null, searchForLike);
+    }
+
+    public Object[] searchFor(String what, String needle){
+       return QueryHandler.instanceOf().clone(context).getValuesFor(what,needle);
     }
 }

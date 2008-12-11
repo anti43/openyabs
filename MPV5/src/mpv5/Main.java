@@ -174,7 +174,7 @@ public class Main extends SingleFrameApplication {
         }
 
         if (cl.hasOption(license)) {
-            System.out.print(Messages.GPL);
+//            System.out.print(Messages.GPL);
         }
 
         if (cl.hasOption(version)) {

@@ -85,4 +85,9 @@ public class Company {
     public void setMaincontact(Contact maincontact) {
         this.maincontact = maincontact;
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

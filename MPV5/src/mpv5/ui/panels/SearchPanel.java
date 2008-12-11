@@ -183,34 +183,37 @@ public class SearchPanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void search(int searchtype) {
+    private void search(int searchtype, String value) {
         switch (searchtype) {
 
             case 1:
-                resulttable.setModel(new Search(getContext(), Search.NUMBERSEARCH).getTableModel());
+                resulttable.setModel(new Search(getContext(), Search.NUMBERSEARCH).getTableModelFor(value));
+                break;
             case 2:
-                resulttable.setModel(new Search(getContext(), Search.NAMESEARCH).getTableModel());
+                resulttable.setModel(new Search(getContext(), Search.NAMESEARCH).getTableModelFor(value));
+                break;
             case 3:
-                resulttable.setModel(new Search(getContext(), Search.DETAILSSEARCH).getTableModel());
+                resulttable.setModel(new Search(getContext(), Search.DETAILSSEARCH).getTableModelFor(value));
+                break;
             case 4:
-                resulttable.setModel(new Search(getContext(), Search.CONTEXTSEARCH).getTableModel());
+                resulttable.setModel(new Search(getContext(), Search.CONTEXTSEARCH).getTableModelFor(value));
         }
     }
 
     private void searchfield3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchfield3ActionPerformed
-        search(3);
+        search(3, searchfield3.getText());
 }//GEN-LAST:event_searchfield3ActionPerformed
 
     private void searchfield1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchfield1ActionPerformed
-        search(1);
+        search(1, searchfield1.getText());
     }//GEN-LAST:event_searchfield1ActionPerformed
 
     private void searchfield2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchfield2ActionPerformed
-        search(4);
+        search(2, searchfield2.getText());
     }//GEN-LAST:event_searchfield2ActionPerformed
 
     private void searchbutton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchbutton1ActionPerformed
-        search(4);
+        search(4, context.getParent().getName());
     }//GEN-LAST:event_searchbutton1ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel label1;

@@ -4,7 +4,11 @@
 package mpv5.ui.frames;
 
 import java.awt.BorderLayout;
+import javax.swing.JPanel;
+import mpv5.data.DataHandler;
+import mpv5.db.common.Context;
 import mpv5.globals.Messages;
+import mpv5.items.contacts.Contact;
 import mpv5.ui.panels.ContactPanel;
 import mpv5.ui.parents.CloseableTabbedPane;
 import mpv5.ui.parents.IFrame;
@@ -488,27 +492,22 @@ public class MPV5View extends FrameView {
     }// </editor-fold>//GEN-END:initComponents
 
     private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
-        IFrame fram = new IFrame("dfg");
-        fram.setContent(new ContactPanel());
-//        fram.setSize(fram.getWidth(), desk.getHeight());
 
-
-        tabPane.addTab("wwww", new ContactPanel());
     }//GEN-LAST:event_exitMenuItemActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        cascadeWin();
+     
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        ContactPanel tab = new ContactPanel();
+        ContactPanel tab = new ContactPanel(Context.getCustomer());
         tab.setType(ContactPanel.CUSTOMER);
         tabPane.addTab(Messages.NEW_CUSTOMER, tab);
         tabPane.setSelectedComponent(tab);
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        ContactPanel tab = new ContactPanel();
+        ContactPanel tab = new ContactPanel(Context.getSupplier());
         tab.setType(ContactPanel.SUPPLIER);
         tabPane.addTab(Messages.NEW_SUPPLIER, tab);
         tabPane.setSelectedComponent(tab);
@@ -534,7 +533,8 @@ public class MPV5View extends FrameView {
     }//GEN-LAST:event_jButton24ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        System.out.println(this.getRootPane().getSize());
+
+        new DataHandler().parse((JPanel) tabPane.getSelectedComponent(),new Contact()).save();
 }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton25ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton25ActionPerformed
@@ -546,7 +546,7 @@ public class MPV5View extends FrameView {
 }//GEN-LAST:event_jButton22ActionPerformed
 
     private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
-        ContactPanel tab = new ContactPanel();
+        ContactPanel tab = new ContactPanel(Context.getManufacturer());
         tab.setType(ContactPanel.MANUFACTURER);
         tabPane.addTab(Messages.NEW_MANUFACTURER, tab);
         tabPane.setSelectedComponent(tab);

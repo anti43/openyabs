@@ -77,7 +77,7 @@ public class ConnectionTypeHandler {
     private static String CONNECTION_STRING = null;
     private static Integer PREDEFINED_DRVER = null;
     private static Integer MODE = 0;
-    private static String URL = "mp";
+    private static String URL = "C:\\Users\\Andreas\\.netbeans-derby";
 
     /**
      * Constructs a new ConnHandler
@@ -122,13 +122,13 @@ public class ConnectionTypeHandler {
             case MYSQL:
                 setConnectionString("jdbc:mysql://" + getURL() + "/" + Constants.DATABASENAME);
                 if (withCreate) {
-                    Log.Debug(this, "Sie m�ssen die MYSQL Datenbank " + Constants.DATABASENAME +" manuell anlegen.", true);
+                    Log.Debug(this, "Sie müssen die MYSQL Datenbank " + Constants.DATABASENAME +" manuell anlegen.", true);
                 }
                 break;
             case CUSTOM:
                 setConnectionString("jdbc:sql://" + getURL() + "/" + Constants.DATABASENAME);
                 if (withCreate) {
-                    Log.Debug(this, "Sie m�ssen die SQL Datenbank " + Constants.DATABASENAME +" manuell anlegen.", true);
+                    Log.Debug(this, "Sie müssen die SQL Datenbank " + Constants.DATABASENAME +" manuell anlegen.", true);
                 }
                 break;
         }
