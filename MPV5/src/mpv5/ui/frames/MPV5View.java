@@ -7,6 +7,7 @@ import java.awt.BorderLayout;
 import javax.swing.JPanel;
 import mpv5.data.DataHandler;
 import mpv5.db.common.Context;
+import mpv5.db.common.DatabaseObject;
 import mpv5.globals.Messages;
 import mpv5.items.contacts.Contact;
 import mpv5.ui.panels.ContactPanel;
@@ -534,7 +535,10 @@ public class MPV5View extends FrameView {
     }//GEN-LAST:event_jButton24ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-//        ((DataPanel) tabPane.getSelectedComponent()).save();
+        DatabaseObject dato = ((DataPanel) tabPane.getSelectedComponent()).getDataOwner();
+
+                dato.getPanelData(((DataPanel) tabPane.getSelectedComponent()));
+                dato.save();
 }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton25ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton25ActionPerformed

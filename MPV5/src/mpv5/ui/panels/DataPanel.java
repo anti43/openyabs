@@ -4,6 +4,8 @@
  */
 package mpv5.ui.panels;
 
+import mpv5.db.common.DatabaseObject;
+
 /**
  *
  * @author Andreas
@@ -11,6 +13,7 @@ package mpv5.ui.panels;
 public interface DataPanel {
 
     public void showList();
-//    public void getData();
     public void reset();
+    public void collectData();
+    public DatabaseObject getDataOwner();
 }

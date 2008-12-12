@@ -22,12 +22,9 @@ along with MP.  If not, see <http://www.gnu.org/licenses/>.
 package mpv5.ui.panels;
 
 import java.awt.BorderLayout;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JPanel;
-import mpv5.db.common.Context;
-import mpv5.db.common.DatabaseSearch;
+import mpv5.db.common.*;
+import mpv5.items.contacts.Contact;
 import mpv5.logging.Log;
 
 /**
@@ -54,13 +51,16 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         }
     }
 
+    public DatabaseObject getDataOwner() {
+
+        return new Contact();
+    }
+
     /**
      * 
      */
     public void showList() {
     }
-
-
 
     /**
      *
@@ -670,11 +670,11 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     private javax.swing.JButton button_products;
     private mpv5.ui.beans.LabeledTextField city;
     private mpv5.ui.beans.LabeledTextField cname;
-    public javax.swing.JCheckBox company;
+    private javax.swing.JCheckBox company;
     private javax.swing.JComboBox companyselect;
-    public javax.swing.JCheckBox customer;
+    private javax.swing.JCheckBox customer;
     private javax.swing.JTable dataTable;
-    public javax.swing.JCheckBox enabled;
+    private javax.swing.JCheckBox enabled;
     private mpv5.ui.beans.LabeledTextField fax;
     private javax.swing.JRadioButton female;
     private javax.swing.JLabel jLabel1;
@@ -696,203 +696,89 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     private javax.swing.JPanel leftpane;
     private mpv5.ui.beans.LabeledTextField mailaddress;
     private javax.swing.JRadioButton male;
-    public javax.swing.JCheckBox manufacturer;
+    private javax.swing.JCheckBox manufacturer;
     private mpv5.ui.beans.LabeledTextField mobilephone;
     private javax.swing.JTextPane notes;
-    public mpv5.ui.beans.LabeledTextField number;
+    private mpv5.ui.beans.LabeledTextField number;
     private mpv5.ui.beans.LabeledTextField phone;
     private mpv5.ui.beans.LabeledTextField prename;
     private javax.swing.JPanel rightpane;
     private mpv5.ui.beans.LabeledTextField street;
-    public javax.swing.JCheckBox supplier;
+    private javax.swing.JCheckBox supplier;
     private mpv5.ui.beans.LabeledTextField title;
     private mpv5.ui.beans.LabeledTextField website;
     private mpv5.ui.beans.LabeledTextField workphone;
     private mpv5.ui.beans.LabeledTextField zip;
     // End of variables declaration//GEN-END:variables
     private javax.swing.table.DefaultTableModel tableModel = null;
+    public String city_;
+    public String cname_;
+    public boolean iscompany_;
+    public int companyid_;
+    public boolean iscustomer_;
+    public boolean isenabled_;
+    public String fax_;
+    public String mailaddress_;
+    public boolean ismale_;
+    public boolean ismanufacturer_;
+    public String mobilephone_;
+    public String notes_;
+    public String number_;
+    public String phone_;
+    public String prename_;
+    public String street_;
+    public boolean issupplier_;
+    public String title_;
+    public String website_;
+    public String workphone_;
+    public String zip_;
 
-    /**
-     * @return the city
-     */
-    public mpv5.ui.beans.LabeledTextField getCity() {
-        return city;
+    public void collectData() {
+        city_ = city.get_Text();
+        cname_ = cname.get_Text();
+        iscompany_ = company.isSelected();
+//     companyid_=;
+        iscustomer_ = customer.isSelected();
+        isenabled_ = enabled.isSelected();
+        fax_ = fax.get_Text();
+        mailaddress_ = mailaddress.get_Text();
+        ismale_ = male.isSelected();
+        ismanufacturer_ = manufacturer.isSelected();
+        mobilephone_ = mobilephone.get_Text();
+        notes_ = notes.getText();
+        number_ = number.get_Text();
+        phone_ = phone.get_Text();
+        prename_ = prename.get_Text();
+        street_ = street.get_Text();
+        issupplier_ = supplier.isSelected();
+        title_ = title.get_Text();
+        website_ = website.get_Text();
+        workphone_ = workphone.get_Text();
+        zip_ = zip.get_Text();
     }
 
-    /**
-     * @return the companyselect
-     */
-    public javax.swing.JComboBox getCompanyselect() {
-        return companyselect;
-    }
-
-    /**
-     * @return the customer
-     */
-    public javax.swing.JCheckBox getCustomer() {
-        return customer;
-    }
-
-    /**
-     * @return the enabled
-     */
-    public javax.swing.JCheckBox getEnabled() {
-        return enabled;
-    }
-
-    /**
-     * @return the fax
-     */
-    public mpv5.ui.beans.LabeledTextField getFax() {
-        return fax;
-    }
-
-    /**
-     * @return the female
-     */
-    public javax.swing.JRadioButton getFemale() {
-        return female;
-    }
-
-    /**
-     * @return the lastname
-     */
-    public mpv5.ui.beans.LabeledTextField getCName() {
-        return cname;
-    }
-
-    /**
-     * @return the leftpane
-     */
-    public javax.swing.JPanel getLeftpane() {
-        return leftpane;
-    }
-
-    /**
-     * @return the mailaddress
-     */
-    public mpv5.ui.beans.LabeledTextField getMailaddress() {
-        return mailaddress;
-    }
-
-    /**
-     * @return the male
-     */
-    public javax.swing.JRadioButton getMale() {
-        return male;
-    }
-
-    /**
-     * @return the manufacturer
-     */
-    public javax.swing.JCheckBox getManufacturer() {
-        return manufacturer;
-    }
-
-    /**
-     * @return the mobilephone
-     */
-    public mpv5.ui.beans.LabeledTextField getMobilephone() {
-        return mobilephone;
-    }
-
-    /**
-     * @return the notes
-     */
-    public javax.swing.JTextPane getNotes() {
-        return notes;
-    }
-
-    /**
-     * @return the number
-     */
-    public mpv5.ui.beans.LabeledTextField getNumber() {
-        return number;
-    }
-
-    /**
-     * @return the offersTable
-     */
-    public javax.swing.JTable getOffersTable() {
-        return dataTable;
-    }
-
-    /**
-     * @return the phone
-     */
-    public mpv5.ui.beans.LabeledTextField getPhone() {
-        return phone;
-    }
-
-    /**
-     * @return the prename
-     */
-    public mpv5.ui.beans.LabeledTextField getPrename() {
-        return prename;
-    }
-
-    /**
-     * @return the rightpane
-     */
-    public javax.swing.JPanel getRightpane() {
-        return rightpane;
-    }
-
-    /**
-     * @return the street
-     */
-    public mpv5.ui.beans.LabeledTextField getStreet() {
-        return street;
-    }
-
-    /**
-     * @return the supplier
-     */
-    public javax.swing.JCheckBox getSupplier() {
-        return supplier;
-    }
-
-    /**
-     * @return the title
-     */
-    public mpv5.ui.beans.LabeledTextField getTitle() {
-        return title;
-    }
-
-    /**
-     * @return the website
-     */
-    public mpv5.ui.beans.LabeledTextField getWebsite() {
-        return website;
-    }
-
-    /**
-     * @return the workphone
-     */
-    public mpv5.ui.beans.LabeledTextField getWorkphone() {
-        return workphone;
-    }
-
-    /**
-     * @return the zip
-     */
-    public mpv5.ui.beans.LabeledTextField getZip() {
-        return zip;
-    }
-
-    /**
-     * @return the offersTableModel
-     */
-    public javax.swing.table.DefaultTableModel getOffersTableModel() {
-        return tableModel;
-    }
-
-    /**
-     * @param tableModel the tableModel to set
-     */
-    public void setOffersTableModel(javax.swing.table.DefaultTableModel tableModel) {
-        this.tableModel = tableModel;
-        dataTable.setModel(tableModel);
+    public void explodeData() {
+        city.set_Text(city_);
+        cname.set_Text(cname_);
+        company.setSelected(iscompany_);
+//     companyid_=;
+        customer.setSelected(iscustomer_);
+        enabled.setSelected(isenabled_);
+        fax.set_Text(fax_);
+        mailaddress.set_Text(mailaddress_);
+        male.setSelected(ismale_);
+        manufacturer.setSelected(ismanufacturer_);
+        mobilephone.set_Text(mobilephone_);
+        notes.setText(notes_);
+        number.set_Text(number_);
+        phone.set_Text(phone_);
+        prename.set_Text(prename_);
+        street.set_Text(street_);
+        supplier.setSelected(issupplier_);
+        title.set_Text(title_);
+        website.set_Text(website_);
+        workphone.set_Text(workphone_);
+        zip.set_Text(zip_);
     }
 
     private void isCustomer(boolean b) {

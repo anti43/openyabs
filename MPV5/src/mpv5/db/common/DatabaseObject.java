@@ -4,14 +4,13 @@
  */
 package mpv5.db.common;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JPanel;
 import mpv5.logging.Log;
+import mpv5.ui.panels.DataPanel;
 
 /**
  *
@@ -25,25 +24,24 @@ public abstract class DatabaseObject {
     public boolean readonly = false;
     public boolean active = true;
 
-
-
-    public abstract String getCName();
+    public abstract String __getCName();
+    public abstract void setCName(String name);
 
     public Integer _getID() {
         return id;
     }
 
-    public ArrayList<Method> _setVars() {
-         ArrayList<Method> list = new ArrayList<Method>();
+    public ArrayList<Method> setVars() {
+        ArrayList<Method> list = new ArrayList<Method>();
         for (int i = 0; i < this.getClass().getMethods().length; i++) {
-            if (this.getClass().getMethods()[i].getName().startsWith("set")) {
+            if (this.getClass().getMethods()[i].getName().startsWith("set") && !this.getClass().getMethods()[i].getName().startsWith("setVars")) {
                 list.add(this.getClass().getMethods()[i]);
             }
         }
         return list;
     }
 
-    public ArrayList<Method> _getVars() {
+    public ArrayList<Method> getVars() {
         ArrayList<Method> list = new ArrayList<Method>();
         for (int i = 0; i < this.getClass().getMethods().length; i++) {
             if (this.getClass().getMethods()[i].getName().startsWith("get") || this.getClass().getMethods()[i].getName().startsWith("is")) {
@@ -53,13 +51,13 @@ public abstract class DatabaseObject {
         return list;
     }
 
-    public boolean _save() {
+    public boolean save() {
 
         try {
             if (id <= 0) {
-                id = QueryHandler.instanceOf().clone(context).insert(_collect());
+                id = QueryHandler.instanceOf().clone(context).insert(collect());
             } else {
-                QueryHandler.instanceOf().clone(context).update(_collect(), new String[]{"id", String.valueOf(id), ""});
+                QueryHandler.instanceOf().clone(context).update(collect(), new String[]{"id", String.valueOf(id), ""});
             }
             return true;
         } catch (Exception e) {
@@ -69,7 +67,7 @@ public abstract class DatabaseObject {
         }
     }
 
-    public boolean _reset() {
+    public boolean reset() {
         return false;
     }
 
@@ -77,11 +75,11 @@ public abstract class DatabaseObject {
         return false;
     }
 
-    public String _getDbID() {
+    public String getDbID() {
         return context.getDbIdentity();
     }
 
-    private String[] _collect() {
+    private String[] collect() {
 
         String left = "";
         String right = "";
@@ -90,12 +88,17 @@ public abstract class DatabaseObject {
         String stringval = "";
 
         for (int i = 0; i < this.getClass().getMethods().length; i++) {
-            if (this.getClass().getMethods()[i].getName().startsWith("get") && !this.getClass().getMethods()[i].getName().endsWith("Class")) {
+            if (this.getClass().getMethods()[i].getName().startsWith("__get")) {
                 try {
-                    left += this.getClass().getMethods()[i].getName().substring(3, this.getClass().getMethods()[i].getName().length()) + ",";
+                    
+                    left += this.getClass().getMethods()[i].getName().toLowerCase().substring(5, this.getClass().getMethods()[i].getName().length()) + ",";
                     tempval = this.getClass().getMethods()[i].invoke(this, (Object[]) null);
-                    if (tempval.getClass().isInstance(String.class)) {
+                    System.out.println(tempval.getClass().getName() + " : " + this.getClass().getMethods()[i].getName());
+                    if (tempval.getClass().isInstance(new String())) {
                         stringval = (String) tempval;
+                    } else if (tempval.getClass().isInstance(true)) {
+                        boolean c = (Boolean) tempval;
+                        if(c)stringval = "1";else stringval="0";
                     }
                     right += "(;;2#4#1#1#8#0#;;)" + stringval + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
                 } catch (IllegalAccessException ex) {
@@ -127,17 +130,34 @@ public abstract class DatabaseObject {
 
         return new String[]{left.substring(0, left.length() - 1), right.substring(0, right.length() - 7), ""};
     }
-    
-    public void getPanelData(JPanel data){
-        ArrayList<Method> vars =_setVars();
-        
-         vars.get(id);
 
+    public void getPanelData(DataPanel data) {
+        data.collectData();
+        ArrayList<Method> vars = setVars();
+        for (int i = 0; i < vars.size(); i++) {
+            try {
+                System.out.println(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_ : " + data.getClass().getField(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_").getType().getName());  
+                vars.get(i).invoke(this, data.getClass().getField(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_").get(data));
+            } catch (Exception n) {
+                System.out.println(n.getCause());
+                n.printStackTrace();
+                
+            } 
+        }
+    }
 
-//        for (Field publicField : data.getClass().getFields()) {
-//            String fieldName = publicField.getName();
-//            Class typeClass = publicField.getType();
-//            String fieldType = typeClass.getName();
-//        }
+     public void setPanelData(DataPanel data) {
+        data.collectData();
+        ArrayList<Method> vars = getVars();
+        for (int i = 0; i < vars.size(); i++) {
+            try {
+                System.out.println(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_ : " + data.getClass().getField(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_").getType().getName());
+                data.getClass().getField(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_").set(data, vars.get(i).invoke(this,(Object)null));
+            } catch (Exception n) {
+                System.out.println(n.getCause());
+                n.printStackTrace();
+
+            }
+        }
     }
 }

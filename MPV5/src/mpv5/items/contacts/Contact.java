@@ -16,7 +16,7 @@ public class Contact extends DatabaseObject {
     private String number = "";
     private String title = "";
     private String prename = "";
-    private String name = "";
+    private String cname = "";
     private String street = "";
     private String zip = "";
     private String city = "";
@@ -27,22 +27,21 @@ public class Contact extends DatabaseObject {
     private String mailaddress = "";
     private String website = "";
     private String notes = "";
-    private boolean male = true;
-    private boolean enabled = true;
-    private Company company = null;
-    private Roles role = null;
+    private boolean ismale = true;
+    private boolean isenabled = true;
+    private boolean iscompany = false;
+    private boolean iscustomer = false;
+    private boolean ismanufacturer = false;
+    private boolean issupplier = false;
 
     public Contact() {
-        this.company = new Company();
-        this.role = new Roles();
-
         context.setDbIdentity(Context.IDENTITY_CONTACTS);
     }
 
     /**
      * @return the number
      */
-    public String getNumber() {
+    public String __getNumber() {
         return number;
     }
 
@@ -56,7 +55,7 @@ public class Contact extends DatabaseObject {
     /**
      * @return the title
      */
-    public String getTitle() {
+    public String __getTitle() {
         return title;
     }
 
@@ -70,7 +69,7 @@ public class Contact extends DatabaseObject {
     /**
      * @return the prename
      */
-    public String getPrename() {
+    public String __getPrename() {
         return prename;
     }
 
@@ -84,21 +83,21 @@ public class Contact extends DatabaseObject {
     /**
      * @return the name
      */
-    public String getCName() {
-        return name;
+    public String __getCName() {
+        return cname;
     }
 
     /**
      * @param name the name to set
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setCName(String name) {
+        this.cname = name;
     }
 
     /**
      * @return the street
      */
-    public String getStreet() {
+    public String __getStreet() {
         return street;
     }
 
@@ -112,7 +111,7 @@ public class Contact extends DatabaseObject {
     /**
      * @return the zip
      */
-    public String getZip() {
+    public String __getZip() {
         return zip;
     }
 
@@ -126,7 +125,7 @@ public class Contact extends DatabaseObject {
     /**
      * @return the city
      */
-    public String getCity() {
+    public String __getCity() {
         return city;
     }
 
@@ -140,7 +139,7 @@ public class Contact extends DatabaseObject {
     /**
      * @return the phone
      */
-    public String getPhone() {
+    public String __getPhone() {
         return phone;
     }
 
@@ -154,7 +153,7 @@ public class Contact extends DatabaseObject {
     /**
      * @return the workphone
      */
-    public String getWorkphone() {
+    public String __getWorkphone() {
         return workphone;
     }
 
@@ -168,7 +167,7 @@ public class Contact extends DatabaseObject {
     /**
      * @return the fax
      */
-    public String getFax() {
+    public String __getFax() {
         return fax;
     }
 
@@ -182,7 +181,7 @@ public class Contact extends DatabaseObject {
     /**
      * @return the mobilephone
      */
-    public String getMobilephone() {
+    public String __getMobilephone() {
         return mobilephone;
     }
 
@@ -196,7 +195,7 @@ public class Contact extends DatabaseObject {
     /**
      * @return the mailaddress
      */
-    public String getMailaddress() {
+    public String __getMailaddress() {
         return mailaddress;
     }
 
@@ -210,7 +209,7 @@ public class Contact extends DatabaseObject {
     /**
      * @return the website
      */
-    public String getWebsite() {
+    public String __getWebsite() {
         return website;
     }
 
@@ -224,7 +223,7 @@ public class Contact extends DatabaseObject {
     /**
      * @return the notes
      */
-    public String getNotes() {
+    public String __getNotes() {
         return notes;
     }
 
@@ -238,51 +237,90 @@ public class Contact extends DatabaseObject {
     /**
      * @return the male
      */
-    public boolean isMale() {
-        return male;
+    public boolean __isMale() {
+        return ismale;
     }
 
     /**
      * @param male the male to set
      */
-    public void setMale(boolean male) {
-        this.male = male;
+    public void setisMale(boolean male) {
+        this.ismale = male;
     }
 
     /**
      * @return the enabled
      */
-    public boolean isEnabled() {
-        return enabled;
+    public boolean __isEnabled() {
+        return isenabled;
     }
 
     /**
      * @param enabled the enabled to set
      */
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+    public void setisEnabled(boolean enabled) {
+        this.isenabled = enabled;
     }
 
     /**
      * @return the company
      */
-    public Company getCompany() {
-        return company;
+    public boolean __getCompany() {
+        return iscompany;
     }
 
     /**
      * @param company the company to set
      */
-    public void setCompany(Company company) {
-        this.company = company;
+    public void setisCompany(boolean company) {
+        this.iscompany = company;
     }
 
+    /**
+     * @return the iscustomer
+     */
+    public boolean __getIscustomer() {
+        return iscustomer;
+    }
 
+    /**
+     * @param iscustomer the iscustomer to set
+     */
+    public void setIscustomer(boolean iscustomer) {
+        this.iscustomer = iscustomer;
+    }
 
+    /**
+     * @return the ismanufacturer
+     */
+    public boolean __getIsmanufacturer() {
+        return ismanufacturer;
+    }
+
+    /**
+     * @param ismanufacturer the ismanufacturer to set
+     */
+    public void setIsmanufacturer(boolean ismanufacturer) {
+        this.ismanufacturer = ismanufacturer;
+    }
+
+    /**
+     * @return the issupplier
+     */
+    public boolean __getIssupplier() {
+        return issupplier;
+    }
+
+    /**
+     * @param issupplier the issupplier to set
+     */
+    public void setIssupplier(boolean issupplier) {
+        this.issupplier = issupplier;
+    }
 //    /**
 //     * @return the role
 //     */
-//    public Roles getRole() {
+//    public Roles __getRole() {
 //        return role;
 //    }
 //
@@ -292,6 +330,4 @@ public class Contact extends DatabaseObject {
 //    public void setRole(Roles role) {
 //        this.role = role;
 //    }
-
-
 }

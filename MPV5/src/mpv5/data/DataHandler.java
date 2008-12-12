@@ -42,7 +42,7 @@ public class DataHandler {
 
         for (int i = 0; i < dataPanel.length; i++) {
             JPanel source = dataPanel[i];
-            ArrayList<Method> dat = target._setVars();
+            ArrayList<Method> dat = target.setVars();
             for (int method = 0; method < dat.size(); method++) {
                 for (int component = 0; component < source.getComponents().length; component++) {
                     
@@ -61,12 +61,12 @@ public class DataHandler {
                 }
             }
         }
-        System.out.println(target.getCName());
+        System.out.println(target.__getCName());
         return target;
     }
 
     private JPanel inject(JPanel target, DatabaseObject source) {
-        ArrayList<Method> dat = source._setVars();
+        ArrayList<Method> dat = source.setVars();
         for (int method = 0; method < dat.size(); method++) {
             for (int component = 0; component < target.getComponents().length; component++) {
 
@@ -89,7 +89,7 @@ public class DataHandler {
     }
 
     public DatabaseObject parse(JPanel source, DatabaseObject target) {
-        ArrayList<Method> dat = target._getVars();
+        ArrayList<Method> dat = target.getVars();
         for (int method = 0; method < dat.size(); method++) {
             for (int component = 0; component < source.getComponents().length; component++) {
               
