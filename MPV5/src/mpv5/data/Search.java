@@ -66,6 +66,6 @@ public class Search {
         if (data == null) {
             searchFor(needle);
         }
-        return new DefaultTableModel(data, new Object[data.length]);
+        return new DefaultTableModel(data, context.getDefaultSearchHeaders());
     }
 }

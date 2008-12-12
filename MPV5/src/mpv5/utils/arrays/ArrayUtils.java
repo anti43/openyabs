@@ -2,17 +2,16 @@
  * 
  * 
  */
-
 package mpv5.utils.arrays;
 
 import java.util.ArrayList;
-
 
 /**
  *
  * @author anti43
  */
 public class ArrayUtils {
+
 //    @SuppressWarnings("unchecked")
 //  public static ArrayList ArrayToColumnList(Object[][] array, int column, Class aClass) {
 //
@@ -48,10 +47,7 @@ public class ArrayUtils {
 //
 //        return list;
 //    }
-
-
-      
-      public static Object[][] merge(Object[][] array1, Object[][] array2) {
+    public static Object[][] merge(Object[][] array1, Object[][] array2) {
         if (array1 == null) {
             array1 = new Object[0][0];
         }
@@ -98,8 +94,31 @@ public class ArrayUtils {
         return mergedArray;
 
     }
+
+    public static Object[] merge(Object[] array1, Object[] array2) {
+        if (array1 == null) {
+            array1 = new Object[0];
+        }
+        if (array2 == null) {
+            array2 = new Object[0];
+        }
+
+        Object[] mergedArray = new Object[array1.length + array2.length];
+        int i = 0;
+
+        for (i = 0; i < array1.length; i++) {
+                mergedArray[i] = array1[i];
+        }
+
+        for (int l = 0; l < array2.length; l++) {
+                mergedArray[i + l] = array2[l];
+        }
+
+        return mergedArray;
+    }
+
     public static String[] reverseArray(String[] str) {
-        int i = 0,  j = str.length - 1;
+        int i = 0, j = str.length - 1;
         while (i < j) {
             String h = str[i];
             str[i] = str[j];
@@ -112,7 +131,7 @@ public class ArrayUtils {
     }
 
     public static String[][] reverseArray(String[][] str) {
-        int i = 0,  j = str.length - 1;
+        int i = 0, j = str.length - 1;
         while (i < j) {
             String[] h = str[i];
             str[i] = str[j];
@@ -123,8 +142,7 @@ public class ArrayUtils {
         return str;
 
     }
-      
-      
+
     public static String[][] ObjectToStringArray(Object[][] array1) {
         if (array1 == null) {
             array1 = new Object[0][0];
@@ -140,5 +158,33 @@ public class ArrayUtils {
             }
         }
         return mergedArray;
+    }
+
+    public static String[] SmallObjectToStringArray(Object[] array1) {
+        if (array1 == null) {
+            array1 = new Object[0];
+        }
+
+        String[] mergedArray = new String[array1.length];
+        int i = 0;
+        for (i = 0; i < array1.length; i++) {
+
+            mergedArray[i] = array1[i].toString();
+        }
+        return mergedArray;
+    }
+
+    public static Object[] ObjectToSingleColumnArray(Object[][] array1) {
+        if (array1 == null) {
+            array1 = new Object[0][0];
+        }
+
+        Object[] mergedArray = new Object[array1.length];
+        int i = 0;
+        for (i = 0; i < array1.length; i++) {
+            mergedArray[i] = array1[i][0];
+        }
+        return mergedArray;
+
     }
 }

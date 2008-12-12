@@ -4,6 +4,8 @@
  */
 package mpv5.db.common;
 
+import mpv5.globals.Fields;
+import mpv5.globals.Headers;
 import mpv5.items.contacts.Contact;
 
 /**
@@ -12,10 +14,10 @@ import mpv5.items.contacts.Contact;
  */
 public class Context {
 
-    public static final String CONDITION_COMPANY = "company = 1";
-    public static final String CONDITION_CUSTOMER = "customer = 1";
-    public static final String CONDITION_MANUFACTURER = "manufacturer = 1";
-    public static final String CONDITION_SUPPLIER = "supplier = 1";
+    public static final String CONDITION_COMPANY = "iscompany = 1";
+    public static final String CONDITION_CUSTOMER = "iscustomer = 1";
+    public static final String CONDITION_MANUFACTURER = "ismanufacturer = 1";
+    public static final String CONDITION_SUPPLIER = "issupplier = 1";
 
     public static final String SEARCH_NAME = "cname";
     public static final String SEARCH_NUMBER = "cnumber";
@@ -28,6 +30,8 @@ public class Context {
     private boolean Customer = false;
     private boolean Manufacturer = false;
     private boolean Supplier = false;
+    private String[] searchHeaders;
+   
 
     
     public Context(DatabaseObject parentobject){
@@ -47,7 +51,9 @@ public class Context {
     /*
      * The search default result columns
      */
-    private String defResultFields = "*";
+    private String defResultFields = null;
+
+
     private DatabaseObject parent;
 
     /**
@@ -59,6 +65,10 @@ public class Context {
 
     public String getDefaultSearchFields() {
         return defResultFields;
+    }
+  
+    public String[] getDefaultSearchHeaders(){
+        return searchHeaders;
     }
 
     public DatabaseObject getParent() {
@@ -165,6 +175,8 @@ public class Context {
         c.setCompany(true);
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_CONTACTS);
+        c.setSearchFields(Fields.DEFAULT_CONTACT_SEARCH);
+        c.setSearchHeaders(Headers.DEFAULT_CONTACT_SEARCH);
         return c;
     }
 
@@ -173,6 +185,8 @@ public class Context {
         c.setCustomer(true);
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_CONTACTS);
+        c.setSearchFields(Fields.DEFAULT_CONTACT_SEARCH);
+        c.setSearchHeaders(Headers.DEFAULT_CONTACT_SEARCH);
         return c;
     }
 
@@ -181,6 +195,8 @@ public class Context {
         c.setManufacturer(true);
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_CONTACTS);
+        c.setSearchFields(Fields.DEFAULT_CONTACT_SEARCH);
+        c.setSearchHeaders(Headers.DEFAULT_CONTACT_SEARCH);
         return c;
     }
 
@@ -189,6 +205,16 @@ public class Context {
         c.setSupplier(true);
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_CONTACTS);
+        c.setSearchFields(Fields.DEFAULT_CONTACT_SEARCH);
+        c.setSearchHeaders(Headers.DEFAULT_CONTACT_SEARCH);
         return c;
+    }
+
+    private void setSearchFields(String fields) {
+        defResultFields = fields;
+    }
+
+    private void setSearchHeaders(String[] headers) {
+        searchHeaders = headers;
     }
 }

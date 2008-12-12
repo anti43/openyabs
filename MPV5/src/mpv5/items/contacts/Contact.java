@@ -13,7 +13,7 @@ import mpv5.db.common.DatabaseObject;
  */
 public class Contact extends DatabaseObject {
 
-    private String number = "";
+    private String cnumber = "";
     private String title = "";
     private String prename = "";
     private String cname = "";
@@ -41,15 +41,15 @@ public class Contact extends DatabaseObject {
     /**
      * @return the number
      */
-    public String __getNumber() {
-        return number;
+    public String __getCNumber() {
+        return cnumber;
     }
 
     /**
      * @param number the number to set
      */
-    public void setNumber(String number) {
-        this.number = number;
+    public void setCNumber(String number) {
+        this.cnumber = number;
     }
 
     /**
@@ -265,7 +265,7 @@ public class Contact extends DatabaseObject {
     /**
      * @return the company
      */
-    public boolean __getCompany() {
+    public boolean __getisCompany() {
         return iscompany;
     }
 

@@ -26,6 +26,7 @@ import javax.swing.DefaultComboBoxModel;
 import mpv5.db.common.*;
 import mpv5.items.contacts.Contact;
 import mpv5.logging.Log;
+import mpv5.utils.arrays.ArrayUtils;
 
 /**
  *
@@ -45,7 +46,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         initComponents();
         leftpane.add(new SearchPanel(context), BorderLayout.CENTER);
         try {
-            companyselect.setModel(new DefaultComboBoxModel(new DatabaseSearch(Context.getCompany()).searchFor(Context.getCompany().getSubID(), null)));
+            companyselect.setModel(new DefaultComboBoxModel(ArrayUtils.merge(new Object[]{null}, new DatabaseSearch(Context.getCompany()).searchFor(Context.getCompany().getSubID(), null))));
         } catch (Exception e) {
             Log.Debug(this, e);
         }
@@ -723,7 +724,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     public boolean ismanufacturer_;
     public String mobilephone_;
     public String notes_;
-    public String number_;
+    public String cnumber_;
     public String phone_;
     public String prename_;
     public String street_;
@@ -746,7 +747,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         ismanufacturer_ = manufacturer.isSelected();
         mobilephone_ = mobilephone.get_Text();
         notes_ = notes.getText();
-        number_ = number.get_Text();
+        cnumber_ = number.get_Text();
         phone_ = phone.get_Text();
         prename_ = prename.get_Text();
         street_ = street.get_Text();
@@ -770,7 +771,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         manufacturer.setSelected(ismanufacturer_);
         mobilephone.set_Text(mobilephone_);
         notes.setText(notes_);
-        number.set_Text(number_);
+        number.set_Text(cnumber_);
         phone.set_Text(phone_);
         prename.set_Text(prename_);
         street.set_Text(street_);

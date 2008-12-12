@@ -18,6 +18,7 @@ import javax.swing.JFrame;
 import javax.swing.JTextArea;
 import mpv5.logging.Log;
 import mpv5.ui.popups.Popup;
+import mpv5.utils.arrays.ArrayUtils;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.date.vTimeframe;
 
@@ -73,14 +74,14 @@ public class QueryHandler implements Cloneable {
         if (context != null) {
 
             if (value == null) {
-                return freeSelectQuery("SELECT " + needle + " FROM " + table + " " + context.getConditions()).getData();
+                return ArrayUtils.ObjectToSingleColumnArray(freeSelectQuery("SELECT " + needle + " FROM " + table + " " + context.getConditions()).getData());
             } else {
-                return freeSelectQuery("SELECT " + needle + " FROM " + table + " WHERE " + needle + " LIKE %" + value + "% AND " + context.getConditions()).getData();
+                return ArrayUtils.ObjectToSingleColumnArray(freeSelectQuery("SELECT " + needle + " FROM " + table + " WHERE " + needle + " LIKE %" + value + "% AND " + context.getConditions()).getData());
             }
         } else if (value == null) {
-            return freeSelectQuery("SELECT " + needle + " FROM " + table).getData();
+            return ArrayUtils.ObjectToSingleColumnArray(freeSelectQuery("SELECT " + needle + " FROM " + table).getData());
         } else {
-            return freeSelectQuery("SELECT " + needle + " FROM " + table + "  WHERE " + needle + " LIKE %" + value + "%").getData();
+            return ArrayUtils.ObjectToSingleColumnArray(freeSelectQuery("SELECT " + needle + " FROM " + table + "  WHERE " + needle + " LIKE %" + value + "%").getData());
         }
     }
 

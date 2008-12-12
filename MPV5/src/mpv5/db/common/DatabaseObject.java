@@ -34,7 +34,9 @@ public abstract class DatabaseObject {
     public ArrayList<Method> setVars() {
         ArrayList<Method> list = new ArrayList<Method>();
         for (int i = 0; i < this.getClass().getMethods().length; i++) {
-            if (this.getClass().getMethods()[i].getName().startsWith("set") && !this.getClass().getMethods()[i].getName().startsWith("setVars")) {
+            if (this.getClass().getMethods()[i].getName().startsWith("set") && 
+                    !this.getClass().getMethods()[i].getName().startsWith("setVars")&&
+                    !this.getClass().getMethods()[i].getName().startsWith("setPanelData")) {
                 list.add(this.getClass().getMethods()[i]);
             }
         }
@@ -44,7 +46,11 @@ public abstract class DatabaseObject {
     public ArrayList<Method> getVars() {
         ArrayList<Method> list = new ArrayList<Method>();
         for (int i = 0; i < this.getClass().getMethods().length; i++) {
-            if (this.getClass().getMethods()[i].getName().startsWith("get") || this.getClass().getMethods()[i].getName().startsWith("is")) {
+            if ((this.getClass().getMethods()[i].getName().startsWith("get") ||
+                    this.getClass().getMethods()[i].getName().startsWith("is")) &&
+                    !this.getClass().getMethods()[i].getName().startsWith("getVars") 
+                    &&this.getClass().getMethods()[i].getName().startsWith("getClass") 
+                    &&this.getClass().getMethods()[i].getName().startsWith("getPanelData") ) {
                 list.add(this.getClass().getMethods()[i]);
             }
         }
@@ -95,12 +101,12 @@ public abstract class DatabaseObject {
                     tempval = this.getClass().getMethods()[i].invoke(this, (Object[]) null);
                     System.out.println(tempval.getClass().getName() + " : " + this.getClass().getMethods()[i].getName());
                     if (tempval.getClass().isInstance(new String())) {
-                        stringval = (String) tempval;
+                        stringval = "(;;2#4#1#1#8#0#;;)" + tempval + "(;;2#4#1#1#8#0#;;)";
                     } else if (tempval.getClass().isInstance(true)) {
                         boolean c = (Boolean) tempval;
                         if(c)stringval = "1";else stringval="0";
                     }
-                    right += "(;;2#4#1#1#8#0#;;)" + stringval + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
+                    right += stringval + "(;;,;;)";
                 } catch (IllegalAccessException ex) {
                     Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (IllegalArgumentException ex) {
