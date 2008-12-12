@@ -534,7 +534,7 @@ public class MPV5View extends FrameView {
     }//GEN-LAST:event_jButton24ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        boolean _save = new DataHandler().parse(((DataPanel) tabPane.getSelectedComponent()).getDataPanel(), new Contact())._save();
+//        ((DataPanel) tabPane.getSelectedComponent()).save();
 }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton25ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton25ActionPerformed

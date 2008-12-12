@@ -4,13 +4,13 @@
  */
 package mpv5.ui.panels;
 
-import javax.swing.JPanel;
-
 /**
  *
  * @author Andreas
  */
 public interface DataPanel {
 
-    public JPanel[] getDataPanel();
+    public void showList();
+//    public void getData();
+    public void reset();
 }

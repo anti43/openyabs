@@ -22,6 +22,8 @@ along with MP.  If not, see <http://www.gnu.org/licenses/>.
 package mpv5.ui.panels;
 
 import java.awt.BorderLayout;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
 import mpv5.db.common.Context;
@@ -32,7 +34,7 @@ import mpv5.logging.Log;
  *
  * @author Administrator
  */
-public class ContactPanel extends javax.swing.JPanel implements DataPanel{
+public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
     public static final int CONTACT = 0;
     public static final int CUSTOMER = 1;
@@ -53,12 +55,17 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel{
     }
 
     /**
-     *
-     * @return
+     * 
      */
-    public JPanel[] getDataPanel(){
+    public void showList() {
+    }
 
-        return new JPanel[]{jPanel1,jPanel2,jPanel3,jPanel4};
+
+
+    /**
+     *
+     */
+    public void reset() {
     }
 
     public void setType(int type) {
@@ -199,7 +206,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel{
         });
 
         number.set_Label(bundle.getString("ContactPanel.number._Label")); // NOI18N
-        number.set_LabelFont(new java.awt.Font("Tahoma", 1, 11));
+        number.set_LabelFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         number.setName("number"); // NOI18N
 
         jLabel5.setText(bundle.getString("ContactPanel.jLabel5.text")); // NOI18N
@@ -630,27 +637,25 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel{
     }// </editor-fold>//GEN-END:initComponents
 
     private void enabledItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_enabledItemStateChanged
-       isCustomer(enabled.isSelected());
-       isManufacturer(enabled.isSelected());
-       isSupplier(enabled.isSelected());
+        isCustomer(enabled.isSelected());
+        isManufacturer(enabled.isSelected());
+        isSupplier(enabled.isSelected());
     }//GEN-LAST:event_enabledItemStateChanged
 
     private void customerItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_customerItemStateChanged
-       isCustomer(customer.isSelected());
+        isCustomer(customer.isSelected());
     }//GEN-LAST:event_customerItemStateChanged
 
-
-
     private void supplierItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_supplierItemStateChanged
-       isSupplier(supplier.isSelected());
+        isSupplier(supplier.isSelected());
     }//GEN-LAST:event_supplierItemStateChanged
 
     private void manufacturerItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_manufacturerItemStateChanged
-       isManufacturer(manufacturer.isSelected());
+        isManufacturer(manufacturer.isSelected());
     }//GEN-LAST:event_manufacturerItemStateChanged
 
     private void companyItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_companyItemStateChanged
-       isCompany(company.isSelected());
+        isCompany(company.isSelected());
 }//GEN-LAST:event_companyItemStateChanged
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -665,11 +670,11 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel{
     private javax.swing.JButton button_products;
     private mpv5.ui.beans.LabeledTextField city;
     private mpv5.ui.beans.LabeledTextField cname;
-    private javax.swing.JCheckBox company;
+    public javax.swing.JCheckBox company;
     private javax.swing.JComboBox companyselect;
-    private javax.swing.JCheckBox customer;
+    public javax.swing.JCheckBox customer;
     private javax.swing.JTable dataTable;
-    private javax.swing.JCheckBox enabled;
+    public javax.swing.JCheckBox enabled;
     private mpv5.ui.beans.LabeledTextField fax;
     private javax.swing.JRadioButton female;
     private javax.swing.JLabel jLabel1;
@@ -691,15 +696,15 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel{
     private javax.swing.JPanel leftpane;
     private mpv5.ui.beans.LabeledTextField mailaddress;
     private javax.swing.JRadioButton male;
-    private javax.swing.JCheckBox manufacturer;
+    public javax.swing.JCheckBox manufacturer;
     private mpv5.ui.beans.LabeledTextField mobilephone;
     private javax.swing.JTextPane notes;
-    private mpv5.ui.beans.LabeledTextField number;
+    public mpv5.ui.beans.LabeledTextField number;
     private mpv5.ui.beans.LabeledTextField phone;
     private mpv5.ui.beans.LabeledTextField prename;
     private javax.swing.JPanel rightpane;
     private mpv5.ui.beans.LabeledTextField street;
-    private javax.swing.JCheckBox supplier;
+    public javax.swing.JCheckBox supplier;
     private mpv5.ui.beans.LabeledTextField title;
     private mpv5.ui.beans.LabeledTextField website;
     private mpv5.ui.beans.LabeledTextField workphone;

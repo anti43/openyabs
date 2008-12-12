@@ -4,11 +4,13 @@
  */
 package mpv5.db.common;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JPanel;
 import mpv5.logging.Log;
 
 /**
@@ -124,5 +126,18 @@ public abstract class DatabaseObject {
         }
 
         return new String[]{left.substring(0, left.length() - 1), right.substring(0, right.length() - 7), ""};
+    }
+    
+    public void getPanelData(JPanel data){
+        ArrayList<Method> vars =_setVars();
+        
+         vars.get(id);
+
+
+//        for (Field publicField : data.getClass().getFields()) {
+//            String fieldName = publicField.getName();
+//            Class typeClass = publicField.getType();
+//            String fieldType = typeClass.getName();
+//        }
     }
 }

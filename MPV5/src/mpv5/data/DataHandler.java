@@ -18,6 +18,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import mpv5.ui.beans.LabeledTextField;
+import mpv5.ui.panels.DataPanel;
 
 /**
  *
@@ -34,6 +35,8 @@ public class DataHandler {
     public DataHandler(DatabaseObject target, javax.swing.JPanel source) {
         parse(source, target);
     }
+
+  
 
     public DatabaseObject parse(JPanel[] dataPanel, DatabaseObject target) {
 
