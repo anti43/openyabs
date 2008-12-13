@@ -25,6 +25,7 @@ public abstract class DatabaseObject {
     public boolean active = true;
 
     public abstract String __getCName();
+
     public abstract void setCName(String name);
 
     public Integer _getIDS() {
@@ -40,7 +41,9 @@ public abstract class DatabaseObject {
         for (int i = 0; i < this.getClass().getMethods().length; i++) {
             if (this.getClass().getMethods()[i].getName().startsWith("set") &&
                     !this.getClass().getMethods()[i].getName().startsWith("setVars") &&
-                    !this.getClass().getMethods()[i].getName().startsWith("setPanelData")) {
+                    !this.getClass().getMethods()[i].getName().startsWith("setPanelData") &&
+                    !this.getClass().getMethods()[i].getName().startsWith("getDbID") &&
+                    !this.getClass().getMethods()[i].getName().startsWith("getObject")) {
                 list.add(this.getClass().getMethods()[i]);
             }
         }
@@ -50,11 +53,7 @@ public abstract class DatabaseObject {
     public ArrayList<Method> getVars() {
         ArrayList<Method> list = new ArrayList<Method>();
         for (int i = 0; i < this.getClass().getMethods().length; i++) {
-            if ((this.getClass().getMethods()[i].getName().startsWith("get") ||
-                    this.getClass().getMethods()[i].getName().startsWith("is")) &&
-                    (!this.getClass().getMethods()[i].getName().startsWith("getVars") ||
-                    !this.getClass().getMethods()[i].getName().startsWith("getClass") &&
-                    !this.getClass().getMethods()[i].getName().startsWith("getPanelData")) ){
+            if (this.getClass().getMethods()[i].getName().startsWith("__get")){
                 list.add(this.getClass().getMethods()[i]);
             }
         }
@@ -161,36 +160,36 @@ public abstract class DatabaseObject {
     }
 
     public void setPanelData(DataPanel data) {
-        
+
         ArrayList<Method> vars = getVars();
+
         for (int i = 0; i < vars.size(); i++) {
             try {
-                System.out.println(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_ : " + data.getClass().getField(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_").getType().getName());
-                data.getClass().getField(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_").set(data, vars.get(i).invoke(this, (Object) null));
+                System.out.println(vars.get(i).getName());
+                data.getClass().getField(vars.get(i).getName().toLowerCase().substring(5, vars.get(i).getName().length()) + "_").set(data, vars.get(i).invoke(this,new Object[0]));
             } catch (Exception n) {
                 System.out.println(n.getCause());
                 n.printStackTrace();
-
             }
         }
     }
 
     public static DatabaseObject getObject(Context context, int id) {
-        DatabaseObject obj = null;
+     
         try {
-            obj = (DatabaseObject) context.getIdentityClass().newInstance();
-            obj.fetchDataOf(id);
+            Object obj = context.getIdentityClass().newInstance();
+            ((DatabaseObject) obj).fetchDataOf(id);
+            return (DatabaseObject) obj;
         } catch (InstantiationException ex) {
             Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
             Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return obj;
+       return null;
     }
 
     public void fetchDataOf(int id) {
         explode(QueryHandler.instanceOf().clone(context).select(id));
-
     }
 
     private void explode(ReturnValue select) {
@@ -213,7 +212,7 @@ public abstract class DatabaseObject {
                             } else if (name.endsWith("uid") || name.equals("ids")) {
                                 vars.get(k).invoke(this, new Object[]{Integer.valueOf(String.valueOf(select.getData()[i][j]))});
                             } else {
-                                
+
                                 vars.get(k).invoke(this, new Object[]{select.getData()[i][j]});
                             }
                         } catch (IllegalAccessException ex) {

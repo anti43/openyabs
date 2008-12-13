@@ -42,9 +42,10 @@ public class Selection {
 
     public boolean checkID() {
         try {
-            id = Integer.valueOf((String) table.getValueAt(table.getSelectedRow(), 0));
+            id = Integer.valueOf(String.valueOf( table.getValueAt(table.getSelectedRow(), 0)));
             return true;
         } catch (Exception numberFormatException) {
+            numberFormatException.printStackTrace();
             return false;
         }
     }

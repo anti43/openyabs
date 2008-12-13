@@ -238,7 +238,7 @@ public class Contact extends DatabaseObject {
     /**
      * @return the male
      */
-    public boolean __isMale() {
+    public boolean __getisMale() {
         return ismale;
     }
 

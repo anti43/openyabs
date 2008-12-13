@@ -13,7 +13,9 @@ package mpv5.ui.panels;
 import mpv5.db.common.Context;
 import mpv5.data.Search;
 import mpv5.db.common.DatabaseObject;
+import mpv5.logging.Log;
 import mpv5.utils.tables.Selection;
+import mpv5.utils.tables.TableFormat;
 
 /**
  *
@@ -158,6 +160,9 @@ public class SearchPanel extends javax.swing.JPanel {
             }
         ));
         resulttable.setName("resulttable"); // NOI18N
+        resulttable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        resulttable.setShowVerticalLines(false);
+        resulttable.setSurrendersFocusOnKeystroke(true);
         resulttable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 resulttableMouseClicked(evt);
@@ -197,6 +202,7 @@ public class SearchPanel extends javax.swing.JPanel {
 
             case 1:
                 resulttable.setModel(new Search(getContext(), Search.NUMBERSEARCH).getTableModelFor(value));
+
                 break;
             case 2:
                 resulttable.setModel(new Search(getContext(), Search.NAMESEARCH).getTableModelFor(value));
@@ -207,6 +213,7 @@ public class SearchPanel extends javax.swing.JPanel {
             case 4:
                 resulttable.setModel(new Search(getContext(), Search.CONTEXTSEARCH).getTableModelFor(value));
         }
+        TableFormat.makeUneditable(resulttable);
     }
 
     private void searchfield3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchfield3ActionPerformed
@@ -227,9 +234,7 @@ public class SearchPanel extends javax.swing.JPanel {
 
     private void resulttableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_resulttableMouseClicked
         Selection sel = new Selection(resulttable);
-
         if(sel.checkID()){panel.setDataOwner(DatabaseObject.getObject(context, sel.getId()));}
-
     }//GEN-LAST:event_resulttableMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

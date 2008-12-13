@@ -39,7 +39,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     public static final int SUPPLIER = 2;
     public static final int MANUFACTURER = 3;
 
-    private DatabaseObject dataOwner;
+    private Contact dataOwner;
 
 
     /** Creates new form ContactPanel
@@ -61,7 +61,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     }
 
     public void setDataOwner(DatabaseObject object){
-        dataOwner = object;
+        dataOwner = (Contact) object;
         dataOwner.setPanelData(this);
         this.exposeData();
     }
