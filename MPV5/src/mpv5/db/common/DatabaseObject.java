@@ -149,7 +149,7 @@ public abstract class DatabaseObject {
         ArrayList<Method> vars = setVars();
         for (int i = 0; i < vars.size(); i++) {
             try {
-                System.out.println(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_ : " + data.getClass().getField(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_").getType().getName());
+//                System.out.println(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_ : " + data.getClass().getField(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_").getType().getName());
                 vars.get(i).invoke(this, data.getClass().getField(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_").get(data));
             } catch (Exception n) {
                 System.out.println(n.getCause());
@@ -165,7 +165,7 @@ public abstract class DatabaseObject {
 
         for (int i = 0; i < vars.size(); i++) {
             try {
-                System.out.println(vars.get(i).getName());
+//                System.out.println(vars.get(i).getName());
                 data.getClass().getField(vars.get(i).getName().toLowerCase().substring(5, vars.get(i).getName().length()) + "_").set(data, vars.get(i).invoke(this,new Object[0]));
             } catch (Exception n) {
                 System.out.println(n.getCause());
@@ -201,7 +201,7 @@ public abstract class DatabaseObject {
 
                 for (int k = 0; k < vars.size(); k++) {
                     if (vars.get(k).getName().toLowerCase().substring(3).equals(name)) {
-                        Log.Debug(this, name + " ?? : " + vars.get(k).getName());
+                        Log.Debug(this, name + " ?? : " + vars.get(k).getName() +" = " + select.getData()[i][j]);
                         try {
                             if (name.startsWith("is")) {
                                 if (select.getData()[i][j].equals("1")) {

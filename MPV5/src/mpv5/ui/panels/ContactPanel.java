@@ -743,6 +743,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     public String workphone_;
     public String zip_;
     public int companyuid_;
+    public int ids_;
 
     public void collectData() {
         city_ = city.get_Text();
