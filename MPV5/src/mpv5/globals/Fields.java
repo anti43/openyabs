@@ -11,5 +11,5 @@ package mpv5.globals;
  */
 public class Fields {
 
-    public static String DEFAULT_CONTACT_SEARCH = "id, cname, city";
+    public static String DEFAULT_CONTACT_SEARCH = "ids, cname, city";
 }

@@ -77,7 +77,7 @@ public class QueryHandler implements Cloneable {
      * @return
      */
     public ReturnValue select(int id) {
-        return freeSelectQuery("SELECT * FROM " + table + " WHERE id = " + id);
+        return freeSelectQuery("SELECT * FROM " + table + " WHERE ids = " + id);
     }
 
     public Object[] getValuesFor(String needle, String value) {
@@ -535,7 +535,7 @@ public class QueryHandler implements Cloneable {
         String j = "";
 
         if (order == null) {
-            order = "id ASC ";
+            order = "ids DESC ";
         }
 
         String ord = " ORDER BY " + order;

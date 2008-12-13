@@ -19,17 +19,20 @@ import mpv5.ui.panels.DataPanel;
 public abstract class DatabaseObject {
 
     public Context context = new Context(this);
-    public Integer id = 0;
+    public Integer ids = 0;
     public boolean isSaved = false;
     public boolean readonly = false;
     public boolean active = true;
 
     public abstract String __getCName();
-
     public abstract void setCName(String name);
 
-    public Integer _getID() {
-        return id;
+    public Integer _getIDS() {
+        return ids;
+    }
+
+    public void setIDS(int ids) {
+        this.ids = ids;
     }
 
     public ArrayList<Method> setVars() {
@@ -49,7 +52,9 @@ public abstract class DatabaseObject {
         for (int i = 0; i < this.getClass().getMethods().length; i++) {
             if ((this.getClass().getMethods()[i].getName().startsWith("get") ||
                     this.getClass().getMethods()[i].getName().startsWith("is")) &&
-                    !this.getClass().getMethods()[i].getName().startsWith("getVars") && this.getClass().getMethods()[i].getName().startsWith("getClass") && this.getClass().getMethods()[i].getName().startsWith("getPanelData")) {
+                    (!this.getClass().getMethods()[i].getName().startsWith("getVars") ||
+                    !this.getClass().getMethods()[i].getName().startsWith("getClass") &&
+                    !this.getClass().getMethods()[i].getName().startsWith("getPanelData")) ){
                 list.add(this.getClass().getMethods()[i]);
             }
         }
@@ -59,10 +64,10 @@ public abstract class DatabaseObject {
     public boolean save() {
 
         try {
-            if (id <= 0) {
-                id = QueryHandler.instanceOf().clone(context).insert(collect());
+            if (ids <= 0) {
+                ids = QueryHandler.instanceOf().clone(context).insert(collect());
             } else {
-                QueryHandler.instanceOf().clone(context).update(collect(), new String[]{"id", String.valueOf(id), ""});
+                QueryHandler.instanceOf().clone(context).update(collect(), new String[]{"ids", String.valueOf(ids), ""});
             }
             return true;
         } catch (Exception e) {
@@ -156,7 +161,7 @@ public abstract class DatabaseObject {
     }
 
     public void setPanelData(DataPanel data) {
-        data.collectData();
+        
         ArrayList<Method> vars = getVars();
         for (int i = 0; i < vars.size(); i++) {
             try {
@@ -194,10 +199,10 @@ public abstract class DatabaseObject {
         for (int i = 0; i < select.getData().length; i++) {
             for (int j = 0; j < select.getData()[i].length; j++) {
                 String name = select.getColumnnames()[j].toLowerCase();
-                
+
                 for (int k = 0; k < vars.size(); k++) {
-                    if (vars.get(k).getName().toLowerCase().endsWith(name)) {
-                       
+                    if (vars.get(k).getName().toLowerCase().substring(3).equals(name)) {
+                        Log.Debug(this, name + " ?? : " + vars.get(k).getName());
                         try {
                             if (name.startsWith("is")) {
                                 if (select.getData()[i][j].equals("1")) {
@@ -205,10 +210,10 @@ public abstract class DatabaseObject {
                                 } else {
                                     vars.get(k).invoke(this, new Object[]{false});
                                 }
-                            } else if (name.endsWith("uid")) {
-                                    vars.get(k).invoke(this, new Object[]{Integer.valueOf(String.valueOf(select.getData()[i][j]))});
-                            }else {
-                                 Log.Debug(this, name + " ?? : " + vars.get(k).getName());
+                            } else if (name.endsWith("uid") || name.equals("ids")) {
+                                vars.get(k).invoke(this, new Object[]{Integer.valueOf(String.valueOf(select.getData()[i][j]))});
+                            } else {
+                                
                                 vars.get(k).invoke(this, new Object[]{select.getData()[i][j]});
                             }
                         } catch (IllegalAccessException ex) {
