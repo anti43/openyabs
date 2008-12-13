@@ -197,6 +197,7 @@ public abstract class DatabaseObject {
                 
                 for (int k = 0; k < vars.size(); k++) {
                     if (vars.get(k).getName().toLowerCase().endsWith(name)) {
+                       
                         try {
                             if (name.startsWith("is")) {
                                 if (select.getData()[i][j].equals("1")) {
@@ -204,7 +205,10 @@ public abstract class DatabaseObject {
                                 } else {
                                     vars.get(k).invoke(this, new Object[]{false});
                                 }
-                            } else {
+                            } else if (name.endsWith("uid")) {
+                                    vars.get(k).invoke(this, new Object[]{Integer.valueOf(String.valueOf(select.getData()[i][j]))});
+                            }else {
+                                 Log.Debug(this, name + " ?? : " + vars.get(k).getName());
                                 vars.get(k).invoke(this, new Object[]{select.getData()[i][j]});
                             }
                         } catch (IllegalAccessException ex) {
@@ -214,13 +218,9 @@ public abstract class DatabaseObject {
                         } catch (InvocationTargetException ex) {
                             Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
                         }
-
                     }
                 }
-
             }
-
-
         }
     }
 }

@@ -27,6 +27,7 @@ public class Contact extends DatabaseObject {
     private String mailaddress = "";
     private String website = "";
     private String notes = "";
+    private int companyuid = -1;
     private boolean ismale = true;
     private boolean isenabled = true;
     private boolean iscompany = false;
@@ -316,6 +317,20 @@ public class Contact extends DatabaseObject {
      */
     public void setIssupplier(boolean issupplier) {
         this.issupplier = issupplier;
+    }
+
+    /**
+     * @return the companyuid
+     */
+    public int __getCompanyuid() {
+        return companyuid;
+    }
+
+    /**
+     * @param companyuid the companyuid to set
+     */
+    public void setCompanyuid(int companyuid) {
+        this.companyuid = companyuid;
     }
 //    /**
 //     * @return the role

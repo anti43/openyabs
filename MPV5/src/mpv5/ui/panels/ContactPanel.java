@@ -41,6 +41,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
     private DatabaseObject dataOwner;
 
+
     /** Creates new form ContactPanel
      * @param context
      */
@@ -741,12 +742,13 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     public String website_;
     public String workphone_;
     public String zip_;
+    public int companyuid_;
 
     public void collectData() {
         city_ = city.get_Text();
         cname_ = cname.get_Text();
         iscompany_ = company.isSelected();
-//     companyid_=;
+        companyuid_= -1;
         iscustomer_ = customer.isSelected();
         isenabled_ = enabled.isSelected();
         fax_ = fax.get_Text();
@@ -770,7 +772,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         city.set_Text(city_);
         cname.set_Text(cname_);
         company.setSelected(iscompany_);
-//     companyid_=;
+//        companyid_=;
         customer.setSelected(iscustomer_);
         enabled.setSelected(isenabled_);
         fax.set_Text(fax_);
