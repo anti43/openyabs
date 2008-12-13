@@ -12,6 +12,8 @@ package mpv5.ui.panels;
 
 import mpv5.db.common.Context;
 import mpv5.data.Search;
+import mpv5.db.common.DatabaseObject;
+import mpv5.utils.tables.Selection;
 
 /**
  *
@@ -20,15 +22,17 @@ import mpv5.data.Search;
 public class SearchPanel extends javax.swing.JPanel {
 
     private Context context;
+    private DataPanel panel;
 
     /** Creates new form SearchPanel */
     public SearchPanel() {
         initComponents();
     }
 
-    public SearchPanel(Context context) {
+    public SearchPanel(Context context, DataPanel panel) {
         initComponents();
         this.context = context;
+        this.panel = panel;
     }
 
     /** This me4thod is called from within the constructor to
@@ -154,6 +158,11 @@ public class SearchPanel extends javax.swing.JPanel {
             }
         ));
         resulttable.setName("resulttable"); // NOI18N
+        resulttable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                resulttableMouseClicked(evt);
+            }
+        });
         resultsscrollpane.setViewportView(resulttable);
 
         javax.swing.GroupLayout resultsLayout = new javax.swing.GroupLayout(results);
@@ -215,6 +224,14 @@ public class SearchPanel extends javax.swing.JPanel {
     private void searchbutton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchbutton1ActionPerformed
         search(4, context.getParent().__getCName());
     }//GEN-LAST:event_searchbutton1ActionPerformed
+
+    private void resulttableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_resulttableMouseClicked
+        Selection sel = new Selection(resulttable);
+
+        if(sel.checkID()){panel.setDataOwner(DatabaseObject.getObject(context, sel.getId()));}
+
+    }//GEN-LAST:event_resulttableMouseClicked
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel label1;
     private javax.swing.JLabel label2;

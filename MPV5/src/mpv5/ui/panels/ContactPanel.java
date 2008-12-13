@@ -39,12 +39,15 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     public static final int SUPPLIER = 2;
     public static final int MANUFACTURER = 3;
 
+    private DatabaseObject dataOwner;
+
     /** Creates new form ContactPanel
      * @param context
      */
     public ContactPanel(Context context) {
         initComponents();
-        leftpane.add(new SearchPanel(context), BorderLayout.CENTER);
+        dataOwner = new Contact();
+        leftpane.add(new SearchPanel(context, this), BorderLayout.CENTER);
         try {
             companyselect.setModel(new DefaultComboBoxModel(ArrayUtils.merge(new Object[]{null}, new DatabaseSearch(Context.getCompany()).searchFor(Context.getCompany().getSubID(), null))));
         } catch (Exception e) {
@@ -53,8 +56,13 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     }
 
     public DatabaseObject getDataOwner() {
+        return dataOwner;
+    }
 
-        return new Contact();
+    public void setDataOwner(DatabaseObject object){
+        dataOwner = object;
+        dataOwner.setPanelData(this);
+        this.exposeData();
     }
 
     /**
@@ -758,7 +766,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         zip_ = zip.get_Text();
     }
 
-    public void explodeData() {
+    public void exposeData() {
         city.set_Text(city_);
         cname.set_Text(cname_);
         company.setSelected(iscompany_);

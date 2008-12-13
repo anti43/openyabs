@@ -11,5 +11,5 @@ package mpv5.globals;
  */
 public class Headers {
 
-    public static String[] DEFAULT_CONTACT_SEARCH = new String[]{"Name", "City"};
+    public static String[] DEFAULT_CONTACT_SEARCH = new String[]{"id", "Name", "City"};
 }

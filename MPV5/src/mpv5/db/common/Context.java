@@ -18,26 +18,26 @@ public class Context {
     public static final String CONDITION_CUSTOMER = "iscustomer = 1";
     public static final String CONDITION_MANUFACTURER = "ismanufacturer = 1";
     public static final String CONDITION_SUPPLIER = "issupplier = 1";
-
     public static final String SEARCH_NAME = "cname";
     public static final String SEARCH_NUMBER = "cnumber";
     public static final String SEARCH_DETAILS = "!%&";
     public static final String SEARCH_ALL = "!**!";
-
     public static String DEFAULT_SUBID = "cname";
     public static String IDENTITY_CONTACTS = "contacts";
+    private static Class IDENTITY_CONTACTS_CLASS = Contact.class;
+
+    
     private boolean Company = false;
     private boolean Customer = false;
     private boolean Manufacturer = false;
     private boolean Supplier = false;
     private String[] searchHeaders;
-   
 
-    
-    public Context(DatabaseObject parentobject){
-    this.parent = parentobject;
+    public Context(DatabaseObject parentobject) {
+        this.parent = parentobject;
     }
 
+    private Class identityClass = null;
     /*
      * The DB Identity name - usually the table
      */
@@ -52,8 +52,6 @@ public class Context {
      * The search default result columns
      */
     private String defResultFields = null;
-
-
     private DatabaseObject parent;
 
     /**
@@ -66,8 +64,8 @@ public class Context {
     public String getDefaultSearchFields() {
         return defResultFields;
     }
-  
-    public String[] getDefaultSearchHeaders(){
+
+    public String[] getDefaultSearchHeaders() {
         return searchHeaders;
     }
 
@@ -87,6 +85,13 @@ public class Context {
      */
     public String getSubID() {
         return subID;
+    }
+
+    /**
+     * @return the IDENTITY CLASS
+     */
+    public Class getIdentityClass() {
+        return identityClass;
     }
 
     /**
@@ -117,56 +122,56 @@ public class Context {
     /**
      * @return the Company
      */
-    public boolean isCompany() {
+    private boolean isCompany() {
         return Company;
     }
 
     /**
      * @param Company the Company to set
      */
-    public void setCompany(boolean Company) {
+    private void setCompany(boolean Company) {
         this.Company = Company;
     }
 
     /**
      * @return the Customer
      */
-    public boolean isCustomer() {
+    private boolean isCustomer() {
         return Customer;
     }
 
     /**
      * @param Customer the Customer to set
      */
-    public void setCustomer(boolean Customer) {
+    private void setCustomer(boolean Customer) {
         this.Customer = Customer;
     }
 
     /**
      * @return the Manufacturer
      */
-    public boolean isManufacturer() {
+    private boolean isManufacturer() {
         return Manufacturer;
     }
 
     /**
      * @param Manufacturer the Manufacturer to set
      */
-    public void setManufacturer(boolean Manufacturer) {
+    private void setManufacturer(boolean Manufacturer) {
         this.Manufacturer = Manufacturer;
     }
 
     /**
      * @return the Supplier
      */
-    public boolean isSupplier() {
+    private boolean isSupplier() {
         return Supplier;
     }
 
     /**
      * @param Supplier the Supplier to set
      */
-    public void setSupplier(boolean Supplier) {
+    private void setSupplier(boolean Supplier) {
         this.Supplier = Supplier;
     }
 
@@ -177,6 +182,7 @@ public class Context {
         c.setDbIdentity(IDENTITY_CONTACTS);
         c.setSearchFields(Fields.DEFAULT_CONTACT_SEARCH);
         c.setSearchHeaders(Headers.DEFAULT_CONTACT_SEARCH);
+        c.setIdentityClass(IDENTITY_CONTACTS_CLASS);
         return c;
     }
 
@@ -187,6 +193,7 @@ public class Context {
         c.setDbIdentity(IDENTITY_CONTACTS);
         c.setSearchFields(Fields.DEFAULT_CONTACT_SEARCH);
         c.setSearchHeaders(Headers.DEFAULT_CONTACT_SEARCH);
+        c.setIdentityClass(IDENTITY_CONTACTS_CLASS);
         return c;
     }
 
@@ -197,6 +204,7 @@ public class Context {
         c.setDbIdentity(IDENTITY_CONTACTS);
         c.setSearchFields(Fields.DEFAULT_CONTACT_SEARCH);
         c.setSearchHeaders(Headers.DEFAULT_CONTACT_SEARCH);
+        c.setIdentityClass(IDENTITY_CONTACTS_CLASS);
         return c;
     }
 
@@ -207,6 +215,7 @@ public class Context {
         c.setDbIdentity(IDENTITY_CONTACTS);
         c.setSearchFields(Fields.DEFAULT_CONTACT_SEARCH);
         c.setSearchHeaders(Headers.DEFAULT_CONTACT_SEARCH);
+        c.setIdentityClass(IDENTITY_CONTACTS_CLASS);
         return c;
     }
 
@@ -216,5 +225,12 @@ public class Context {
 
     private void setSearchHeaders(String[] headers) {
         searchHeaders = headers;
+    }
+
+    /**
+     * @param identityClass the identityClass to set
+     */
+    public void setIdentityClass(Class identityClass) {
+        this.identityClass = identityClass;
     }
 }

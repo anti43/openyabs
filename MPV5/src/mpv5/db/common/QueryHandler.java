@@ -70,6 +70,16 @@ public class QueryHandler implements Cloneable {
         return this;
     }
 
+
+    /**
+     *
+     * @param id
+     * @return
+     */
+    public ReturnValue select(int id) {
+        return freeSelectQuery("SELECT * FROM " + table + " WHERE id = " + id);
+    }
+
     public Object[] getValuesFor(String needle, String value) {
         if (context != null) {
 
@@ -228,6 +238,7 @@ public class QueryHandler implements Cloneable {
     public static void setWaitCursorFor(JFrame main) {
         comp = main;
     }
+
 
     private void stop() {
         comp.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -818,7 +829,7 @@ public class QueryHandler implements Cloneable {
      * @return Your Data
      */
     @SuppressWarnings({"unchecked"})
-    public returnvalue freeSelectQuery(String query) {
+    public ReturnValue freeSelectQuery(String query) {
         start();
         String message = "Database Error (selectFreeQuery) :";
 
@@ -828,6 +839,7 @@ public class QueryHandler implements Cloneable {
         Object[][] data = null;
         ArrayList z;
         int id = -1;
+        String[] columnnames = null;
 
         try {
             // Select-Anweisung ausführen
@@ -839,6 +851,11 @@ public class QueryHandler implements Cloneable {
             rsmd = resultSet.getMetaData();
             if (stm.getGeneratedKeys() != null && stm.getGeneratedKeys().first()) {
                 id = stm.getGeneratedKeys().getInt(1);
+            }
+
+            columnnames = new String[rsmd.getColumnCount()];
+            for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+                columnnames[i-1] = rsmd.getColumnName(i);
             }
 
             while (resultSet.next()) {
@@ -880,32 +897,8 @@ public class QueryHandler implements Cloneable {
             }
         }
         stop();
-        return new returnvalue(id, data);
+        return new ReturnValue(id, data, columnnames);
     }
 
-    public class returnvalue {
-
-        private int id;
-        private Object[][] data;
-
-        public returnvalue(int idOfIt, Object[][] data) {
-
-            this.id = idOfIt;
-            this.data = data;
-        }
-
-        /**
-         * @return the id
-         */
-        public int getId() {
-            return id;
-        }
-
-        /**
-         * @return the data
-         */
-        public Object[][] getData() {
-            return data;
-        }
-    }
+    
 }

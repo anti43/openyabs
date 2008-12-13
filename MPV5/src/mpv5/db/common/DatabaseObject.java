@@ -25,6 +25,7 @@ public abstract class DatabaseObject {
     public boolean active = true;
 
     public abstract String __getCName();
+
     public abstract void setCName(String name);
 
     public Integer _getID() {
@@ -34,8 +35,8 @@ public abstract class DatabaseObject {
     public ArrayList<Method> setVars() {
         ArrayList<Method> list = new ArrayList<Method>();
         for (int i = 0; i < this.getClass().getMethods().length; i++) {
-            if (this.getClass().getMethods()[i].getName().startsWith("set") && 
-                    !this.getClass().getMethods()[i].getName().startsWith("setVars")&&
+            if (this.getClass().getMethods()[i].getName().startsWith("set") &&
+                    !this.getClass().getMethods()[i].getName().startsWith("setVars") &&
                     !this.getClass().getMethods()[i].getName().startsWith("setPanelData")) {
                 list.add(this.getClass().getMethods()[i]);
             }
@@ -48,9 +49,7 @@ public abstract class DatabaseObject {
         for (int i = 0; i < this.getClass().getMethods().length; i++) {
             if ((this.getClass().getMethods()[i].getName().startsWith("get") ||
                     this.getClass().getMethods()[i].getName().startsWith("is")) &&
-                    !this.getClass().getMethods()[i].getName().startsWith("getVars") 
-                    &&this.getClass().getMethods()[i].getName().startsWith("getClass") 
-                    &&this.getClass().getMethods()[i].getName().startsWith("getPanelData") ) {
+                    !this.getClass().getMethods()[i].getName().startsWith("getVars") && this.getClass().getMethods()[i].getName().startsWith("getClass") && this.getClass().getMethods()[i].getName().startsWith("getPanelData")) {
                 list.add(this.getClass().getMethods()[i]);
             }
         }
@@ -96,7 +95,7 @@ public abstract class DatabaseObject {
         for (int i = 0; i < this.getClass().getMethods().length; i++) {
             if (this.getClass().getMethods()[i].getName().startsWith("__get")) {
                 try {
-                    
+
                     left += this.getClass().getMethods()[i].getName().toLowerCase().substring(5, this.getClass().getMethods()[i].getName().length()) + ",";
                     tempval = this.getClass().getMethods()[i].invoke(this, (Object[]) null);
                     System.out.println(tempval.getClass().getName() + " : " + this.getClass().getMethods()[i].getName());
@@ -104,7 +103,11 @@ public abstract class DatabaseObject {
                         stringval = "(;;2#4#1#1#8#0#;;)" + tempval + "(;;2#4#1#1#8#0#;;)";
                     } else if (tempval.getClass().isInstance(true)) {
                         boolean c = (Boolean) tempval;
-                        if(c)stringval = "1";else stringval="0";
+                        if (c) {
+                            stringval = "1";
+                        } else {
+                            stringval = "0";
+                        }
                     }
                     right += stringval + "(;;,;;)";
                 } catch (IllegalAccessException ex) {
@@ -142,28 +145,82 @@ public abstract class DatabaseObject {
         ArrayList<Method> vars = setVars();
         for (int i = 0; i < vars.size(); i++) {
             try {
-                System.out.println(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_ : " + data.getClass().getField(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_").getType().getName());  
-                vars.get(i).invoke(this, data.getClass().getField(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_").get(data));
-            } catch (Exception n) {
-                System.out.println(n.getCause());
-                n.printStackTrace();
-                
-            } 
-        }
-    }
-
-     public void setPanelData(DataPanel data) {
-        data.collectData();
-        ArrayList<Method> vars = getVars();
-        for (int i = 0; i < vars.size(); i++) {
-            try {
                 System.out.println(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_ : " + data.getClass().getField(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_").getType().getName());
-                data.getClass().getField(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_").set(data, vars.get(i).invoke(this,(Object)null));
+                vars.get(i).invoke(this, data.getClass().getField(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_").get(data));
             } catch (Exception n) {
                 System.out.println(n.getCause());
                 n.printStackTrace();
 
             }
+        }
+    }
+
+    public void setPanelData(DataPanel data) {
+        data.collectData();
+        ArrayList<Method> vars = getVars();
+        for (int i = 0; i < vars.size(); i++) {
+            try {
+                System.out.println(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_ : " + data.getClass().getField(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_").getType().getName());
+                data.getClass().getField(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_").set(data, vars.get(i).invoke(this, (Object) null));
+            } catch (Exception n) {
+                System.out.println(n.getCause());
+                n.printStackTrace();
+
+            }
+        }
+    }
+
+    public static DatabaseObject getObject(Context context, int id) {
+        DatabaseObject obj = null;
+        try {
+            obj = (DatabaseObject) context.getIdentityClass().newInstance();
+            obj.fetchDataOf(id);
+        } catch (InstantiationException ex) {
+            Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return obj;
+    }
+
+    public void fetchDataOf(int id) {
+        explode(QueryHandler.instanceOf().clone(context).select(id));
+
+    }
+
+    private void explode(ReturnValue select) {
+        ArrayList<Method> vars = setVars();
+
+        for (int i = 0; i < select.getData().length; i++) {
+            for (int j = 0; j < select.getData()[i].length; j++) {
+                String name = select.getColumnnames()[j].toLowerCase();
+                
+                for (int k = 0; k < vars.size(); k++) {
+                    if (vars.get(k).getName().toLowerCase().endsWith(name)) {
+                        try {
+                            if (name.startsWith("is")) {
+                                if (select.getData()[i][j].equals("1")) {
+                                    vars.get(k).invoke(this, new Object[]{true});
+                                } else {
+                                    vars.get(k).invoke(this, new Object[]{false});
+                                }
+                            } else {
+                                vars.get(k).invoke(this, new Object[]{select.getData()[i][j]});
+                            }
+                        } catch (IllegalAccessException ex) {
+                            Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (IllegalArgumentException ex) {
+                            Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (InvocationTargetException ex) {
+                            Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+
+                    }
+                }
+
+            }
+
+
         }
     }
 }
