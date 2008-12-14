@@ -4,16 +4,13 @@
 package mpv5.ui.frames;
 
 import java.awt.BorderLayout;
-import javax.swing.JPanel;
-import mpv5.data.DataHandler;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.globals.Messages;
-import mpv5.items.contacts.Contact;
 import mpv5.ui.panels.ContactPanel;
 import mpv5.ui.panels.DataPanel;
 import mpv5.ui.parents.CloseableTabbedPane;
-import mpv5.ui.parents.IFrame;
+import mpv5.usermanagement.User;
 import org.jdesktop.application.SingleFrameApplication;
 import org.jdesktop.application.FrameView;
 
@@ -21,6 +18,10 @@ import org.jdesktop.application.FrameView;
  * The application's main frame.
  */
 public class MPV5View extends FrameView {
+
+    public static User getUser() {
+       return new User();
+    }
 
     private CloseableTabbedPane tabPane;
 
