@@ -18,6 +18,7 @@ package mpv5.usermanagement;
 
 import java.util.ArrayList;
 import mpv5.db.common.Context;
+import mpv5.globals.Messages;
 import mpv5.ui.frames.MPV5View;
 
 /**
@@ -40,7 +41,7 @@ public class SecurityManager {
         for (Context item : securedContexts) {
             if (item.getDbIdentity().equals(context.getDbIdentity())) {
 
-                if (MPV5View.getUser().getHighestRight() >= action) {
+                if (MPV5View.getUser().getHighestRight() <= action) {
                     return true;
                 } else {
                     return false;
@@ -49,6 +50,26 @@ public class SecurityManager {
                 return true;
             }
         }
+        return null;
+    }
+
+    public static String getActionName(int action){
+
+        switch(action){
+
+            case CREATE:
+                return Messages.ACTION_CREATE;
+
+            case EDIT:
+                return Messages.ACTION_EDIT;
+
+            case EXPORT:
+                return Messages.ACTION_EXPORT;
+
+            case VIEW:
+                return Messages.ACTION_VIEW;
+        }
+
         return null;
     }
 }

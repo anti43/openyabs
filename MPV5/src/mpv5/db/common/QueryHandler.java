@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
+import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.popups.Popup;
 import mpv5.utils.arrays.ArrayUtils;
@@ -70,28 +71,26 @@ public class QueryHandler implements Cloneable {
         return this;
     }
 
-
     /**
      *
      * @param id
      * @return
      */
     public ReturnValue select(int id) {
-        return freeSelectQuery("SELECT * FROM " + table + " WHERE ids = " + id);
+        return freeReturnQuery("SELECT * FROM " + table + " WHERE ids = " + id, mpv5.usermanagement.SecurityManager.VIEW);
     }
 
     public Object[] getValuesFor(String needle, String value) {
         if (context != null) {
-
             if (value == null) {
-                return ArrayUtils.ObjectToSingleColumnArray(freeSelectQuery("SELECT " + needle + " FROM " + table + " " + context.getConditions()).getData());
+                return ArrayUtils.ObjectToSingleColumnArray(freeReturnQuery("SELECT " + needle + " FROM " + table + " " + context.getConditions(), mpv5.usermanagement.SecurityManager.VIEW).getData());
             } else {
-                return ArrayUtils.ObjectToSingleColumnArray(freeSelectQuery("SELECT " + needle + " FROM " + table + " WHERE " + needle + " LIKE %" + value + "% AND " + context.getConditions()).getData());
+                return ArrayUtils.ObjectToSingleColumnArray(freeReturnQuery("SELECT " + needle + " FROM " + table + " WHERE " + needle + " LIKE %" + value + "% AND " + context.getConditions(), mpv5.usermanagement.SecurityManager.VIEW).getData());
             }
         } else if (value == null) {
-            return ArrayUtils.ObjectToSingleColumnArray(freeSelectQuery("SELECT " + needle + " FROM " + table).getData());
+            return ArrayUtils.ObjectToSingleColumnArray(freeReturnQuery("SELECT " + needle + " FROM " + table, mpv5.usermanagement.SecurityManager.VIEW).getData());
         } else {
-            return ArrayUtils.ObjectToSingleColumnArray(freeSelectQuery("SELECT " + needle + " FROM " + table + "  WHERE " + needle + " LIKE %" + value + "%").getData());
+            return ArrayUtils.ObjectToSingleColumnArray(freeReturnQuery("SELECT " + needle + " FROM " + table + "  WHERE " + needle + " LIKE %" + value + "%", mpv5.usermanagement.SecurityManager.VIEW).getData());
         }
     }
 
@@ -111,7 +110,7 @@ public class QueryHandler implements Cloneable {
             query = "SELECT " + what + " FROM " + table + "  " + str;
         }
         String message = "Database Error (select) :";
-        return freeSelectQuery(query).getData();
+        return freeReturnQuery(query, mpv5.usermanagement.SecurityManager.VIEW).getData();
     }
 
     /**
@@ -136,7 +135,7 @@ public class QueryHandler implements Cloneable {
                 query = "SELECT SUM(" + what + ") FROM " + table + "  " + str + " " + additionalCondition;
             }
 
-            Object[][] o = freeSelectQuery(query).getData();
+            Object[][] o = freeReturnQuery(query, mpv5.usermanagement.SecurityManager.VIEW).getData();
             if (o != null && o[0][0] != null && !o[0][0].equals("null")) {
                 values.add(Double.valueOf(String.valueOf(o[0][0])));
             } else {
@@ -163,7 +162,7 @@ public class QueryHandler implements Cloneable {
                 query = "SELECT SUM(" + what + ") FROM " + table + "  " + str + " " + additionalCondition;
             }
 
-            Object[][] o = freeSelectQuery(query).getData();
+            Object[][] o = freeReturnQuery(query, mpv5.usermanagement.SecurityManager.VIEW).getData();
             if (o != null && o[0][0] != null && !o[0][0].equals("null")) {
                 Log.Debug(this, "Summe: " + o[0][0]);
                 values.add(Double.valueOf(String.valueOf(o[0][0])));
@@ -216,7 +215,7 @@ public class QueryHandler implements Cloneable {
                     "  ORDER BY " + order;
         }
 
-        return freeSelectQuery(query).getData();
+        return freeReturnQuery(query, mpv5.usermanagement.SecurityManager.VIEW).getData();
     }
 
     public int selectCountBetween(java.util.Date date1, java.util.Date date2) {
@@ -239,7 +238,6 @@ public class QueryHandler implements Cloneable {
         comp = main;
     }
 
-
     private void stop() {
         comp.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
     }
@@ -261,105 +259,6 @@ public class QueryHandler implements Cloneable {
         return i;
     }
 
-//    /**
-//     *
-//     * @param colName
-//     * @return the next
-//     */
-//    public Integer getNextIndexOfStringCol(String colName, NumberFormatHandler formatter) {
-//
-//        start();
-//        query = "SELECT " + colName + " FROM " + table + " ORDER BY ID ASC";
-//        message = "Database Error (getNextIndex):";
-//        stm = null;
-//        resultSet = null;
-//        ResultSetMetaData rsmd;
-//        String index = null;
-//        Integer i = null;
-//
-//
-//        Log.Debug(this, query, true);
-//
-//        try {
-//            // Select-Anweisung ausführen
-//            stm = sqlConn.createStatement(resultSet.TYPE_SCROLL_INSENSITIVE, resultSet.CONCUR_READ_ONLY);
-//            resultSet = stm.executeQuery(query);
-//            rsmd = resultSet.getMetaData();
-//
-//            if (resultSet.last()) {
-//                index = resultSet.getString(colName);
-//                originalvalue = index;
-//
-//                if (formatter != null) {
-//                    try {
-//                        Log.Debug(this, "Sub-format value: " + index + " Format: " + formatter.replace(formatter.getCurrentFormat()[0]));
-//                        index = index.substring(formatter.replace(formatter.getCurrentFormat()[0]).length());
-//                        Log.Debug(this, "New value: " + index);
-//                    } catch (Exception e) {
-//                        Log.Debug(this, "Can not sub-format value: " + index);
-//                    }
-//                }
-//
-//                while (i == null && index.length() > 0) {
-//                    try {
-//                        i = Integer.valueOf(index);
-//
-//                    } catch (NumberFormatException numberFormatException) {
-//                        substringcount++;
-//                        index = index.substring(1, index.length());
-//                        i = null;
-//                    }
-//                }
-//
-//                if (i == null) {
-//
-//                    query = "SELECT ALL COUNT(1) FROM " + table;
-//                    message = "Database Error (getNextIndex:COUNT):";
-//                    stm = null;
-//                    resultSet = null;
-//                    Log.Debug(this, query, true);
-//                    // Select-Anweisung ausführen
-//                    stm = sqlConn.createStatement(resultSet.TYPE_SCROLL_INSENSITIVE, resultSet.CONCUR_READ_ONLY);
-//                    resultSet = stm.executeQuery(query);
-//                    resultSet.first();
-//                    i = resultSet.getInt(1);
-//                }
-//            } else {
-//                i = 0;
-//            }
-//        } catch (SQLException ex) {
-//            Log.Debug(this, message + ex.getMessage());
-//            Popup.error(message + ex.getMessage(), "Datenbankfehler");
-//            stop();
-//
-//            return null;
-//
-//        } finally {
-//            // Alle Ressourcen wieder freigeben
-//            if (resultSet != null) {
-//                try {
-//                    resultSet.close();
-//                } catch (SQLException ex) {
-//                    Log.Debug(this, message + ex.getMessage());
-//                    Popup.error(message + ex.getMessage(), "Datenbankfehler");
-//                }
-//            }
-//            if (stm != null) {
-//                try {
-//                    stm.close();
-//                } catch (SQLException ex) {
-//                    Log.Debug(this, message + ex.getMessage());
-//                    Popup.error(message + ex.getMessage(), "Datenbankfehler");
-//                }
-//            }
-//        }
-//        stop();
-//
-//        i = (i < 0) ? -i : i;
-//        i += 1;
-//        return i;
-//
-//    }
     /**
      *
      * @param what
@@ -391,12 +290,7 @@ public class QueryHandler implements Cloneable {
 
         query = "INSERT INTO " + table + " (" + what[0] + " ) VALUES (" + what[1] + ") ";
 
-        if (freeQuery(query)) {
-            query = "SELECT id FROM " + table + "  ";
-            return freeSelectQuery(query).getId();
-        } else {
-            return -1;
-        }
+        return freeReturnQuery(query, mpv5.usermanagement.SecurityManager.CREATE).getId();
     }
 
     /**
@@ -433,7 +327,7 @@ public class QueryHandler implements Cloneable {
         c = c.substring(0, c.length() - 2);
 
         query = "UPDATE " + table + " SET " + c + " WHERE " + where[0] + " = " + where[2] + where[1] + where[2];
-        freeQuery(query);
+        freeQuery(query, mpv5.usermanagement.SecurityManager.EDIT);
         stop();
     }
 
@@ -453,7 +347,7 @@ public class QueryHandler implements Cloneable {
         start();
         query = "SELECT " + what + " FROM " + table + " WHERE " + where[0] + k + where[2] + l + where[1] + l + where[2];
 
-        return freeSelectQuery(query).getData()[0];
+        return freeReturnQuery(query, mpv5.usermanagement.SecurityManager.VIEW).getData()[0];
 
     }
 
@@ -469,7 +363,7 @@ public class QueryHandler implements Cloneable {
 
         start();
         String query = "SELECT " + what + " FROM " + table + " WHERE " + where[0] + " = " + where[2] + where[1] + where[2] + " ";
-        Object[][] data = freeSelectQuery(query).getData();
+        Object[][] data = freeReturnQuery(query, mpv5.usermanagement.SecurityManager.VIEW).getData();
         return data[data.length - 1];
     }
 
@@ -515,7 +409,7 @@ public class QueryHandler implements Cloneable {
         } else {
             query = "SELECT " + what + " FROM " + table;
         }
-        return freeSelectQuery(query).getData();
+        return freeReturnQuery(query, mpv5.usermanagement.SecurityManager.VIEW).getData();
     }
 
     /**
@@ -563,7 +457,7 @@ public class QueryHandler implements Cloneable {
         }
         String query = "SELECT " + what + " FROM " + table + wher + ord;
 
-        return freeSelectQuery(query).getData();
+        return freeReturnQuery(query, mpv5.usermanagement.SecurityManager.VIEW).getData();
     }
 
     /**
@@ -582,7 +476,7 @@ public class QueryHandler implements Cloneable {
                 str = str + where[i][0] + " = " + where[i][2] + where[i][1] + where[i][2];
             }
             query = "DELETE FROM " + table + " WHERE " + str;
-            freeQuery(query);
+            freeQuery(query, mpv5.usermanagement.SecurityManager.VIEW);
         }
     }
 
@@ -664,7 +558,7 @@ public class QueryHandler implements Cloneable {
         }
         String query = "SELECT " + what + " FROM " + table + " WHERE " + wher + ord;
 
-        return freeSelectQuery(query).getData();
+        return freeReturnQuery(query, mpv5.usermanagement.SecurityManager.VIEW).getData();
     }
 
     /**
@@ -729,12 +623,22 @@ public class QueryHandler implements Cloneable {
      * @return
      */
     @SuppressWarnings("unchecked")
-    public boolean freeQuery(String string) {
-        return freeQuery(string, null);
+    public boolean freeQuery(String string, int action) {
+        return freeQuery(string, null, action);
     }
 
     @SuppressWarnings("unchecked")
-    public boolean freeQuery(String string, JTextArea log) {
+    public boolean freeQuery(String string, JTextArea log, int action) {
+
+        if (!mpv5.usermanagement.SecurityManager.check(context, action)) {
+            Log.Debug(this, Messages.SECURITYMANAGER_DENIED +
+                    mpv5.usermanagement.SecurityManager.getActionName(action) + Messages.CONTEXT + context.getDbIdentity());
+            Popup.warn(Messages.SECURITYMANAGER_DENIED +
+                    mpv5.usermanagement.SecurityManager.getActionName(action) + Messages.CONTEXT + context.getDbIdentity(),
+                    Messages.ACCESS_DENIED);
+            return false;
+        }
+
         start();
         String query = string;
         String message = "Database Error (freeQuery) :";
@@ -829,7 +733,18 @@ public class QueryHandler implements Cloneable {
      * @return Your Data
      */
     @SuppressWarnings({"unchecked"})
-    public ReturnValue freeSelectQuery(String query) {
+    public ReturnValue freeReturnQuery(String query, int action) {
+
+        if (!mpv5.usermanagement.SecurityManager.check(context, action)) {
+
+            Log.Debug(this, Messages.SECURITYMANAGER_DENIED +
+                    mpv5.usermanagement.SecurityManager.getActionName(action) + Messages.CONTEXT + context.getDbIdentity());
+            Popup.warn(Messages.SECURITYMANAGER_DENIED +
+                    mpv5.usermanagement.SecurityManager.getActionName(action) + Messages.CONTEXT + context.getDbIdentity(),
+                    Messages.ACCESS_DENIED);
+            return new ReturnValue(-1, new Object[0][0], new String[0]);
+        }
+
         start();
         String message = "Database Error (selectFreeQuery) :";
 
@@ -855,7 +770,7 @@ public class QueryHandler implements Cloneable {
 
             columnnames = new String[rsmd.getColumnCount()];
             for (int i = 1; i <= rsmd.getColumnCount(); i++) {
-                columnnames[i-1] = rsmd.getColumnName(i);
+                columnnames[i - 1] = rsmd.getColumnName(i);
             }
 
             while (resultSet.next()) {
@@ -899,6 +814,4 @@ public class QueryHandler implements Cloneable {
         stop();
         return new ReturnValue(id, data, columnnames);
     }
-
-    
 }

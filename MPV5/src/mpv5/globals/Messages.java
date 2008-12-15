@@ -32,5 +32,12 @@ public class Messages {
     public static String NEW_MANUFACTURER = "New Manufacturer";
     public static String NEW_OFFER = "New Offer";
     public static String NEW_BILL = "New Bill";
+    public static String ACCESS_DENIED = "Access denied.";
+    public static String ACTION_CREATE = "Create";
+    public static String ACTION_EDIT = "Edit";
+    public static String ACTION_EXPORT = "Export";
+    public static String ACTION_VIEW = "View";
+    public static String SECURITYMANAGER_DENIED = "The Security Manager has your request denied.\nAction: ";
+    public static String CONTEXT = " in context: ";
 
 }
