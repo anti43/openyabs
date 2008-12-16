@@ -791,6 +791,8 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         website.set_Text(website_);
         workphone.set_Text(workphone_);
         zip.set_Text(zip_);
+
+
     }
 
     private void isCustomer(boolean b) {
