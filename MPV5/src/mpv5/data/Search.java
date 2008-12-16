@@ -9,7 +9,7 @@ import mpv5.db.common.Context;
 import javax.swing.table.TableModel;
 import mpv5.db.common.DatabaseSearch;
 import mpv5.logging.Log;
-import mpv5.utils.tables.models.MPTableModel;
+import mpv5.utils.models.MPTableModel;
 
 /**
  *

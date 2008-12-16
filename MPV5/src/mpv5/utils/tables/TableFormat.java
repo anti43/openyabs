@@ -21,7 +21,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableModel;
 import mpv5.logging.Log;
-import mpv5.utils.tables.models.MPTableModel;
+import mpv5.utils.models.MPTableModel;
 
 
 /**

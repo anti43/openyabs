@@ -27,4 +27,8 @@ public class User {
         return SecurityManager.RIGHT_TO_CREATE;
     }
 
+    public String getID() {
+        return "12345";
+    }
+
 }

@@ -39,5 +39,8 @@ public class Messages {
     public static String ACTION_VIEW = "View";
     public static String SECURITYMANAGER_DENIED = "The Security Manager has denied your request.\nAction ";
     public static String CONTEXT = ", in context: ";
+    public static String ROW_INSERTED = " successfull created";
+    public static String ROW_UPDATED = " successfull saved";
+    public static String CNAME_CANNOT_BE_NULL = "You must set a NAME for this item.";
 
 }

@@ -9,8 +9,10 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.panels.DataPanel;
+import mpv5.ui.popups.Popup;
 
 /**
  *
@@ -62,16 +64,21 @@ public abstract class DatabaseObject {
 
     public boolean save() {
 
-        try {
-            if (ids <= 0) {
-                ids = QueryHandler.instanceOf().clone(context).insert(collect());
-            } else {
-                QueryHandler.instanceOf().clone(context).update(collect(), new String[]{"ids", String.valueOf(ids), ""});
+        if (__getCName()!=null && __getCName().length()>0) {
+            try {
+                if (ids <= 0) {
+                    ids = QueryHandler.instanceOf().clone(context).insert(collect(), this.__getCName() + Messages.ROW_INSERTED);
+                } else {
+                    QueryHandler.instanceOf().clone(context).update(collect(), new String[]{"ids", String.valueOf(ids), ""}, this.__getCName() + Messages.ROW_UPDATED);
+                }
+                return true;
+            } catch (Exception e) {
+                Log.Debug(this, e);
+                e.printStackTrace();
+                return false;
             }
-            return true;
-        } catch (Exception e) {
-            Log.Debug(this, e);
-            e.printStackTrace();
+        } else {
+            Popup.notice(Messages.CNAME_CANNOT_BE_NULL);
             return false;
         }
     }
@@ -144,13 +151,13 @@ public abstract class DatabaseObject {
         return new String[]{left.substring(0, left.length() - 1), right.substring(0, right.length() - 7), ""};
     }
 
-    public void getPanelData(DataPanel data) {
-        data.collectData();
+    public void getPanelData(DataPanel source) {
+        source.collectData();
         ArrayList<Method> vars = setVars();
         for (int i = 0; i < vars.size(); i++) {
             try {
 //                System.out.println(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_ : " + data.getClass().getField(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_").getType().getName());
-                vars.get(i).invoke(this, data.getClass().getField(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_").get(data));
+                vars.get(i).invoke(this, source.getClass().getField(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_").get(source));
             } catch (Exception n) {
                 System.out.println(n.getCause());
                 n.printStackTrace();
@@ -159,19 +166,38 @@ public abstract class DatabaseObject {
         }
     }
 
-    public void setPanelData(DataPanel data) {
+    public void setPanelData(DataPanel target) {
 
         ArrayList<Method> vars = getVars();
 
         for (int i = 0; i < vars.size(); i++) {
             try {
 //                System.out.println(vars.get(i).getName());
-                data.getClass().getField(vars.get(i).getName().toLowerCase().substring(5, vars.get(i).getName().length()) + "_").set(data, vars.get(i).invoke(this,new Object[0]));
+                target.getClass().getField(vars.get(i).getName().toLowerCase().substring(5, vars.get(i).getName().length()) + "_").set(target, vars.get(i).invoke(this,new Object[0]));
             } catch (Exception n) {
                 System.out.println(n.getCause());
                 n.printStackTrace();
             }
         }
+    }
+    
+    
+    public ArrayList<String[]> getValues() {
+        ArrayList<Method> vars = getVars();
+        ArrayList<String[]> vals = new ArrayList<String[]>();
+
+        for (int i = 0; i < vars.size(); i++) {
+            try {
+                vals.add(new String[]{vars.get(i).getName().substring(5, vars.get(i).getName().length()),
+                String.valueOf(vars.get(i).invoke(this,new Object[0]))});
+               
+            } catch (Exception n) {
+                System.out.println(n.getCause());
+                n.printStackTrace();
+            }
+        }
+
+        return vals;
     }
 
     public static DatabaseObject getObject(Context context, int id) {

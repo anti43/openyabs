@@ -22,12 +22,15 @@ along with MP.  If not, see <http://www.gnu.org/licenses/>.
 package mpv5.ui.panels;
 
 import java.awt.BorderLayout;
+import java.awt.event.ItemEvent;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 import mpv5.db.common.*;
 import mpv5.items.contacts.Contact;
 import mpv5.logging.Log;
 import mpv5.utils.arrays.ArrayUtils;
-import mpv5.utils.tables.models.MPTableModel;
+import mpv5.utils.models.MPComboBoxModelItem;
+import mpv5.utils.print.Print;
 
 /**
  *
@@ -39,9 +42,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     public static final int CUSTOMER = 1;
     public static final int SUPPLIER = 2;
     public static final int MANUFACTURER = 3;
-
     private Contact dataOwner;
-
 
     /** Creates new form ContactPanel
      * @param context
@@ -55,13 +56,19 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         } catch (Exception e) {
             Log.Debug(this, e);
         }
+
+        jComboBox1.setModel(new DefaultComboBoxModel(new Object[]{new MPComboBoxModelItem(-1, ""),
+        new MPComboBoxModelItem(0, "Printer"),
+        new MPComboBoxModelItem(1, "VCF File"),
+        new MPComboBoxModelItem(2, "CSV File"),
+        new MPComboBoxModelItem(3, "XML File")}));
     }
 
     public DatabaseObject getDataOwner() {
         return dataOwner;
     }
 
-    public void setDataOwner(DatabaseObject object){
+    public void setDataOwner(DatabaseObject object) {
         dataOwner = (Contact) object;
         dataOwner.setPanelData(this);
         this.exposeData();
@@ -337,7 +344,6 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         city.set_Label(bundle.getString("ContactPanel.city._Label")); // NOI18N
         city.setName("city"); // NOI18N
 
-        companyselect.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         companyselect.setName("companyselect"); // NOI18N
 
         jLabel3.setText(bundle.getString("ContactPanel.jLabel3.text")); // NOI18N
@@ -589,8 +595,14 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jLabel4.setName("jLabel4"); // NOI18N
         jToolBar1.add(jLabel4);
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "select.." }));
+        jComboBox1.setMaximumSize(new java.awt.Dimension(100, 22));
         jComboBox1.setName("jComboBox1"); // NOI18N
+        jComboBox1.setPreferredSize(new java.awt.Dimension(100, 22));
+        jComboBox1.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jComboBox1ItemStateChanged(evt);
+            }
+        });
         jToolBar1.add(jComboBox1);
 
         javax.swing.GroupLayout rightpaneLayout = new javax.swing.GroupLayout(rightpane);
@@ -683,6 +695,33 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         isCompany(company.isSelected());
 }//GEN-LAST:event_companyItemStateChanged
 
+    private void jComboBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox1ItemStateChanged
+
+        JComboBox cb = (JComboBox) evt.getSource();
+
+        // Get the affected item
+        MPComboBoxModelItem item = (MPComboBoxModelItem) evt.getItem();
+
+        if (evt.getStateChange() == ItemEvent.SELECTED) {
+            switch (item.getId()) {
+                case 0:
+                    new Print(getDataOwner()).print();
+                    break;
+                case 1:
+                    new Print(getDataOwner()).toVCF();
+                    break;
+                case 2:
+                    new Print(getDataOwner()).toCSV();
+                    break;
+                case 3:
+                    new Print(getDataOwner()).toXML();
+                    break;
+            }
+        } else if (evt.getStateChange() == ItemEvent.DESELECTED) {
+            // Item is no longer selected
+        }
+    }//GEN-LAST:event_jComboBox1ItemStateChanged
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton button_bill;
@@ -767,7 +806,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         city_ = city.get_Text();
         cname_ = cname.get_Text();
         iscompany_ = company.isSelected();
-        companyuid_= -1;
+        companyuid_ = -1;
         iscustomer_ = customer.isSelected();
         isenabled_ = enabled.isSelected();
         fax_ = fax.get_Text();

@@ -4,12 +4,17 @@
 package mpv5.ui.frames;
 
 import java.awt.BorderLayout;
+import java.awt.Cursor;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.QueryHandler;
 import mpv5.globals.Messages;
 import mpv5.ui.panels.ContactPanel;
 import mpv5.ui.panels.DataPanel;
 import mpv5.ui.parents.CloseableTabbedPane;
+import mpv5.ui.parents.FadeOnChangeLabel;
 import mpv5.usermanagement.User;
 import org.jdesktop.application.SingleFrameApplication;
 import org.jdesktop.application.FrameView;
@@ -19,22 +24,36 @@ import org.jdesktop.application.FrameView;
  */
 public class MPV5View extends FrameView {
 
-    public static User getUser() {
-       return new User();
+    private static JFrame identifier;
+    private CloseableTabbedPane tabPane;
+    private static JLabel messagelabel;
+
+    public static void addMessage(String message) {
+        messagelabel.setText(message);
     }
 
-    private CloseableTabbedPane tabPane;
+    public static User getUser() {
+        return new User();
+    }
 
-    public static void setWaiting(boolean b) {
-        throw new UnsupportedOperationException("Not yet implemented");
+    public static void setWaiting(boolean tru) {
+        if (tru) {
+            identifier.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+        } else {
+            identifier.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+        }
     }
 
     public MPV5View(SingleFrameApplication app) {
         super(app);
         initComponents();
         tabPane = new CloseableTabbedPane();
+        identifier = this.getFrame();
 
+        messagelabel = this.getStatusMessageLabel();
         tabpanePanel.add(tabPane, BorderLayout.CENTER);
+
+        QueryHandler.setWaitCursorFor(identifier);
 
     }
 
@@ -69,7 +88,7 @@ public class MPV5View extends FrameView {
         jMenuItem1 = new javax.swing.JMenuItem();
         statusPanel = new javax.swing.JPanel();
         javax.swing.JSeparator statusPanelSeparator = new javax.swing.JSeparator();
-        statusMessageLabel = new javax.swing.JLabel();
+        statusMessageLabel = new FadeOnChangeLabel();
         progressBar = new javax.swing.JProgressBar();
         mainToolbar = new javax.swing.JToolBar();
         commonActionsToolbar = new javax.swing.JToolBar();
@@ -107,7 +126,7 @@ public class MPV5View extends FrameView {
         jPanel2.setName("jPanel2"); // NOI18N
         jPanel2.setPreferredSize(new java.awt.Dimension(110, 400));
 
-        jButton5.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton5.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/agt_family.png"))); // NOI18N
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Bundle"); // NOI18N
         jButton5.setText(bundle.getString("MPV5View.jButton5.text")); // NOI18N
@@ -121,7 +140,7 @@ public class MPV5View extends FrameView {
             }
         });
 
-        jButton1.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton1.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/edit_group.png"))); // NOI18N
         jButton1.setText(bundle.getString("MPV5View.jButton1.text")); // NOI18N
         jButton1.setToolTipText(bundle.getString("MPV5View.jButton1.toolTipText")); // NOI18N
@@ -134,7 +153,7 @@ public class MPV5View extends FrameView {
             }
         });
 
-        jButton2.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton2.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/edit_user.png"))); // NOI18N
         jButton2.setText(bundle.getString("MPV5View.jButton2.text")); // NOI18N
         jButton2.setToolTipText(bundle.getString("MPV5View.jButton2.toolTipText")); // NOI18N
@@ -147,7 +166,7 @@ public class MPV5View extends FrameView {
             }
         });
 
-        jButton18.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton18.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/edit_group.png"))); // NOI18N
         jButton18.setText(bundle.getString("MPV5View.jButton18.text")); // NOI18N
         jButton18.setToolTipText(bundle.getString("MPV5View.jButton18.toolTipText")); // NOI18N
@@ -160,7 +179,7 @@ public class MPV5View extends FrameView {
             }
         });
 
-        jButton20.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton20.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/agt_internet.png"))); // NOI18N
         jButton20.setText(bundle.getString("MPV5View.jButton20.text")); // NOI18N
         jButton20.setToolTipText(bundle.getString("MPV5View.jButton20.toolTipText")); // NOI18N
@@ -224,11 +243,11 @@ public class MPV5View extends FrameView {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 110, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 443, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         jOutlookBar1.addTab(bundle.getString("MPV5View.jPanel3.TabConstraints.tabTitle"), jPanel3); // NOI18N
@@ -241,11 +260,11 @@ public class MPV5View extends FrameView {
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 110, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 443, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         jOutlookBar1.addTab(bundle.getString("MPV5View.jPanel4.TabConstraints.tabTitle"), jPanel4); // NOI18N
@@ -258,11 +277,11 @@ public class MPV5View extends FrameView {
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 110, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 443, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         jOutlookBar1.addTab("Extras", jPanel6);
@@ -495,11 +514,9 @@ public class MPV5View extends FrameView {
     }// </editor-fold>//GEN-END:initComponents
 
     private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
-
     }//GEN-LAST:event_exitMenuItemActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-     
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
@@ -538,8 +555,8 @@ public class MPV5View extends FrameView {
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         DatabaseObject dato = ((DataPanel) tabPane.getSelectedComponent()).getDataOwner();
 
-                dato.getPanelData(((DataPanel) tabPane.getSelectedComponent()));
-                dato.save();
+        dato.getPanelData(((DataPanel) tabPane.getSelectedComponent()));
+        dato.save();
 }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton25ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton25ActionPerformed
