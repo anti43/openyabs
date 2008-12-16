@@ -27,6 +27,7 @@ import mpv5.db.common.*;
 import mpv5.items.contacts.Contact;
 import mpv5.logging.Log;
 import mpv5.utils.arrays.ArrayUtils;
+import mpv5.utils.tables.models.MPTableModel;
 
 /**
  *
@@ -155,6 +156,9 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jSeparator1 = new javax.swing.JToolBar.Separator();
         button_product = new javax.swing.JButton();
         button_order = new javax.swing.JButton();
+        jSeparator2 = new javax.swing.JToolBar.Separator();
+        jLabel4 = new javax.swing.JLabel();
+        jComboBox1 = new javax.swing.JComboBox();
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ContactPanel.border.title"))); // NOI18N
@@ -216,7 +220,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         });
 
         number.set_Label(bundle.getString("ContactPanel.number._Label")); // NOI18N
-        number.set_LabelFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        number.set_LabelFont(new java.awt.Font("Tahoma", 1, 11));
         number.setName("number"); // NOI18N
 
         jLabel5.setText(bundle.getString("ContactPanel.jLabel5.text")); // NOI18N
@@ -578,6 +582,17 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         button_order.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar1.add(button_order);
 
+        jSeparator2.setName("jSeparator2"); // NOI18N
+        jToolBar1.add(jSeparator2);
+
+        jLabel4.setText(bundle.getString("ContactPanel.jLabel4.text")); // NOI18N
+        jLabel4.setName("jLabel4"); // NOI18N
+        jToolBar1.add(jLabel4);
+
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "select.." }));
+        jComboBox1.setName("jComboBox1"); // NOI18N
+        jToolBar1.add(jComboBox1);
+
         javax.swing.GroupLayout rightpaneLayout = new javax.swing.GroupLayout(rightpane);
         rightpane.setLayout(rightpaneLayout);
         rightpaneLayout.setHorizontalGroup(
@@ -641,7 +656,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(leftpane, javax.swing.GroupLayout.DEFAULT_SIZE, 624, Short.MAX_VALUE)
+            .addComponent(leftpane, javax.swing.GroupLayout.DEFAULT_SIZE, 625, Short.MAX_VALUE)
             .addComponent(rightpane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -687,9 +702,11 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     private javax.swing.JCheckBox enabled;
     private mpv5.ui.beans.LabeledTextField fax;
     private javax.swing.JRadioButton female;
+    private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
@@ -702,6 +719,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JToolBar.Separator jSeparator1;
+    private javax.swing.JToolBar.Separator jSeparator2;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JPanel leftpane;
     private mpv5.ui.beans.LabeledTextField mailaddress;
@@ -792,6 +810,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         workphone.set_Text(workphone_);
         zip.set_Text(zip_);
 
+//        dataTable.setModel(new MPTableModel(new DatabaseSearch(Context.getCompany()).getValuesFor(prename_, fax_, phone_), header));
 
     }
 

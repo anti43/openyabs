@@ -35,7 +35,7 @@ public class SecurityManager {
     public static final int EXPORT = 2;
     public static final int EDIT = 1;
     public static final int CREATE = 0;
-    public static ArrayList<Context> securedContexts = new ArrayList<Context>();
+    public static ArrayList<Context> securedContexts = Context.getSecuredContexts();;
 
     public static Boolean check(Context context, int action) {
         for (Context item : securedContexts) {
@@ -50,7 +50,7 @@ public class SecurityManager {
                 return true;
             }
         }
-        return null;
+        return true;
     }
 
     public static String getActionName(int action){

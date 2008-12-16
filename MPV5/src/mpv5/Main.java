@@ -19,6 +19,7 @@ import mpv5.db.common.ConnectionTypeHandler;
 import mpv5.globals.Constants;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
+import mpv5.utils.files.FileDirectoryHandler;
 import org.apache.commons.cli2.*;
 import org.apache.commons.cli2.builder.*;
 import org.apache.commons.cli2.commandline.Parser;
@@ -260,7 +261,7 @@ public class Main extends SingleFrameApplication {
 
     public static void setDerbyLog() {
         Properties p = System.getProperties();
-        p.put("derby.stream.error.file", MPPATH + File.separator + "derby.log");
+        p.put("derby.stream.error.file", FileDirectoryHandler.getTempFile()+ "_derby.log");
     }
 
     public static void setLaF(LookAndFeel lf) {

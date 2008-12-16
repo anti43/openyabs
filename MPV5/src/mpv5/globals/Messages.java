@@ -37,7 +37,7 @@ public class Messages {
     public static String ACTION_EDIT = "Edit";
     public static String ACTION_EXPORT = "Export";
     public static String ACTION_VIEW = "View";
-    public static String SECURITYMANAGER_DENIED = "The Security Manager has your request denied.\nAction: ";
-    public static String CONTEXT = " in context: ";
+    public static String SECURITYMANAGER_DENIED = "The Security Manager has denied your request.\nAction ";
+    public static String CONTEXT = ", in context: ";
 
 }

@@ -4,6 +4,7 @@
  */
 package mpv5.db.common;
 
+import java.util.ArrayList;
 import mpv5.globals.Fields;
 import mpv5.globals.Headers;
 import mpv5.items.contacts.Contact;
@@ -25,6 +26,15 @@ public class Context {
     public static String DEFAULT_SUBID = "cname";
     public static String IDENTITY_CONTACTS = "contacts";
     private static Class IDENTITY_CONTACTS_CLASS = Contact.class;
+
+    public static ArrayList<Context> getSecuredContexts() {
+        ArrayList<Context> list = new ArrayList<Context>();
+        list.add(getCompany());
+        list.add(getCustomer());
+        list.add(getManufacturer());
+        list.add(getSupplier());
+        return list;
+    }
 
     
     private boolean Company = false;
