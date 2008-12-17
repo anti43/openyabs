@@ -23,8 +23,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.print.Doc;
 import javax.print.DocFlavor;
 import javax.print.DocPrintJob;
@@ -131,6 +129,10 @@ public class PrintJob implements Waiter {
 
     }
 
+    /**
+     *
+     * @param dbobjarr
+     */
     public void printl(List<DatabaseObject> dbobjarr) {
 
         File file = FileDirectoryHandler.getTempFile();
@@ -179,7 +181,7 @@ public class PrintJob implements Waiter {
     /*
      * Prints a mp4.interfaces.Printable Object
      */
-    private void print(Printable printable) {
+    public void print(Printable printable) {
         this.flavor = printable.getFlavor();
         try {
             print(printable.getFile());
