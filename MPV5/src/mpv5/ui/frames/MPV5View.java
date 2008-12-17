@@ -24,9 +24,9 @@ import org.jdesktop.application.FrameView;
  */
 public class MPV5View extends FrameView {
 
-    private static JFrame identifier;
-    private CloseableTabbedPane tabPane;
-    private static JLabel messagelabel;
+    public static JFrame identifier;
+    public CloseableTabbedPane tabPane;
+    public static JLabel messagelabel;
 
     public static void addMessage(String message) {
         messagelabel.setText(message);

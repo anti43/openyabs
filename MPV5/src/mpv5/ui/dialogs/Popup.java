@@ -14,10 +14,12 @@
  *      You should have received a copy of the GNU General Public License
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mpv5.ui.popups;
+package mpv5.ui.dialogs;
 
 import java.awt.Component;
+import java.io.IOException;
 import javax.swing.JOptionPane;
+import mpv5.globals.Messages;
 
 
 /**
@@ -26,10 +28,10 @@ import javax.swing.JOptionPane;
  */
 public class Popup {
 
-    public static String WARN = "Achtung!";
-    public static String ERROR = "Fehler";
-    public static String NOTICE = "Hinweis";
-    public static String GENERAL_ERROR = "Es ist ein Fehler aufgetreten.";
+    public static String WARN = Messages.WARNING;
+    public static String ERROR = Messages.ERROR_OCCURED;
+    public static String NOTICE = Messages.NOTICE;
+    public static String GENERAL_ERROR = Messages.ERROR_OCCURED;
     public static Component identifier = null;
 
     /**
@@ -38,7 +40,7 @@ public class Popup {
      * @return
      */
     public static boolean Y_N_dialog(String text) {
-        if (JOptionPane.showConfirmDialog(identifier, text, "Sind Sie sicher?",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE , new javax.swing.ImageIcon(new Popup().getClass().getResource("/bilder/medium/messagebox_warning.png"))) == JOptionPane.YES_OPTION) {
+        if (JOptionPane.showConfirmDialog(identifier, text, Messages.ARE_YOU_SURE,JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE , new javax.swing.ImageIcon(new Popup().getClass().getResource("/mpv5/resources/images/32/warning.png"))) == JOptionPane.YES_OPTION) {
             return true;
         } else {
             return false;
@@ -94,6 +96,11 @@ public class Popup {
         
    
         JOptionPane.showMessageDialog(identifier, text, Popup.NOTICE, JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public static void error(String string, Exception iOException) {
+        error(string + "\n" + iOException.getMessage()
+                        , Messages.ERROR_OCCURED);
     }
 
     public Popup(String text) {

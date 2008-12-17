@@ -19,7 +19,7 @@ import javax.swing.JTextArea;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPV5View;
-import mpv5.ui.popups.Popup;
+import mpv5.ui.dialogs.Popup;
 import mpv5.utils.arrays.ArrayUtils;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.date.vTimeframe;

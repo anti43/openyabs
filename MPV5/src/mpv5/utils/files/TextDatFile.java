@@ -17,21 +17,28 @@
 package mpv5.utils.files;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.print.DocFlavor;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+
 import mpv5.globals.Constants;
+import mpv5.globals.Messages;
 import mpv5.logging.Log;
+import mpv5.ui.dialogs.DialogForFile;
+import mpv5.ui.frames.MPV5View;
 import mpv5.utils.arrays.ListenDataUtils;
 import mpv5.utils.jobs.Waitable;
-
 
 /**
  * This is a helper class for reading and writing csv files
  * @author anti43
  */
-public class TextDatFile extends File implements Waitable{
+public class TextDatFile extends File implements Waitable {
 
     private static final long serialVersionUID = 2059941918698508985L;
     private FileReaderWriter rw;
@@ -41,6 +48,14 @@ public class TextDatFile extends File implements Waitable{
     private int mode;
     private DefaultTableModel model;
     private JTable table;
+
+    /**
+     * Constructs a new text file
+     */
+    public TextDatFile() {
+        super(FileDirectoryHandler.getTempFile().getPath());
+        rw = new FileReaderWriter(this);
+    }
 
     /**
      * Constructs a new temporary text file
@@ -92,6 +107,7 @@ public class TextDatFile extends File implements Waitable{
         mode = 2;
     }
 
+
     @Override
     public void waitFor() {
         switch (mode) {
@@ -113,7 +129,7 @@ public class TextDatFile extends File implements Waitable{
     public void print() {
 
         if (header != null) {
-            rw.writeLine(header, ";");
+            rw.writeLine(header, getFieldSeparator());
         }
 
         for (int i = 0; i < getData().length; i++) {
@@ -164,18 +180,16 @@ public class TextDatFile extends File implements Waitable{
         }
         data = ListenDataUtils.listToStringArrayArray(arr);
         model = new DefaultTableModel(data, header);
-        if(table != null) {
+        if (table != null) {
             this.table.setModel(model);
         }
         return model;
     }
 
-
     public DocFlavor getFlavor() {
         return DocFlavor.CHAR_ARRAY.TEXT_PLAIN;
     }
 
-  
     public File getFile() {
         return this;
     }
@@ -223,4 +237,26 @@ public class TextDatFile extends File implements Waitable{
     public DefaultTableModel getModel() {
         return model;
     }
+
+    /**
+     * Create a new file
+     * @param filename
+     */
+    public void createFile(String filename) {
+        DialogForFile dialof = new DialogForFile(DialogForFile.FILES_ONLY);
+        dialof.setSelectedFile(new File(filename + ".csv"));
+        if (dialof.saveFile()) {
+            try {
+                print();
+                FileDirectoryHandler.copyFile(this, dialof.getFile());
+                MPV5View.addMessage(Messages.FILE_SAVED + dialof.getFile().getPath());
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(TextDatFile.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(TextDatFile.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+
 }

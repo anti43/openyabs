@@ -20,7 +20,7 @@ public class Contact extends DatabaseObject {
     private String street = "";
     private String zip = "";
     private String city = "";
-    private String phone = "";
+    private String mainphone = "";
     private String workphone = "";
     private String fax = "";
     private String mobilephone = "";
@@ -140,15 +140,15 @@ public class Contact extends DatabaseObject {
     /**
      * @return the phone
      */
-    public String __getPhone() {
-        return phone;
+    public String __getMainphone() {
+        return mainphone;
     }
 
     /**
      * @param phone the phone to set
      */
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setMainphone(String phone) {
+        this.mainphone = phone;
     }
 
     /**

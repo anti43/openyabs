@@ -1,21 +1,20 @@
 /*
  *  This file is part of MP by anti43 /GPL.
- *  
+ *
  *      MP is free software: you can redistribute it and/or modify
  *      it under the terms of the GNU General Public License as published by
  *      the Free Software Foundation, either version 3 of the License, or
  *      (at your option) any later version.
- *  
+ *
  *      MP is distributed in the hope that it will be useful,
  *      but WITHOUT ANY WARRANTY; without even the implied warranty of
  *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *      GNU General Public License for more details.
- *  
+ *
  *      You should have received a copy of the GNU General Public License
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mpv5.utils.files;
-
+package mpv5.ui.dialogs;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -26,10 +25,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JTextField;
+import mpv5.globals.Messages;
 import mpv5.logging.Log;
-import mpv5.ui.popups.Popup;
+import mpv5.ui.frames.MPV5View;
+import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.jobs.Waiter;
-
 
 /**
  *  This class is useful for selecting files and directories
@@ -61,7 +61,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
 
     /**
      * Create a new dialog for files and dirs with the given file seleced
-     * @param file 
+     * @param file
      */
     public DialogForFile(File file) {
         super();
@@ -72,7 +72,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
     /**
      * Create a new dialog for the given selection mode with the given file seleced
      * @param mode
-     * @param filename 
+     * @param filename
      */
     public DialogForFile(int mode, String filename) {
         super();
@@ -83,7 +83,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
     /**
      * Create a new dialog for the given selection mode with the given file seleced
      * @param mode
-     * @param file 
+     * @param file
      */
     public DialogForFile(int mode, File file) {
         super();
@@ -97,7 +97,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
      */
     public boolean chooseFile() {
         try {
-            if (this.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+            if (this.showOpenDialog(MPV5View.identifier) == JFileChooser.APPROVE_OPTION) {
                 try {
                     this.file = this.getSelectedFile();
                     return true;
@@ -111,13 +111,42 @@ public class DialogForFile extends JFileChooser implements Waiter {
         return false;
     }
 
+     /**
+     * Show a file save dialog
+     * @return true if a file/dir was selected
+     */
+    public boolean saveFile() {
+        try {
+            if (this.showSaveDialog(MPV5View.identifier) == JFileChooser.APPROVE_OPTION) {
+                try {
+                    if (!this.getSelectedFile().exists()) {
+                        this.file = this.getSelectedFile();
+                        return true;
+                    } else {
+                        if (!Popup.Y_N_dialog(Messages.FILE_EXISTS + "\n" + getSelectedFile())) {
+                            saveFile();
+                        } else {
+                            this.file = this.getSelectedFile();
+                            return true;
+                        }
+                    }
+                } catch (Exception ex) {
+                    Log.Debug(this, ex);
+                }
+            }
+        } catch (Exception n) {
+            Log.Debug(this, n.getMessage());
+        }
+        return false;
+    }
+
     /**
      * Show a file save dialog
-     * @param fileToSave 
+     * @param fileToSave
      */
     public void saveFile(File fileToSave) {
 
-        if (this.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+        if (this.showSaveDialog(MPV5View.identifier) == JFileChooser.APPROVE_OPTION) {
             this.file = this.getSelectedFile();
             if (!fileToSave.exists()) {
                 try {
@@ -126,7 +155,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
                     Logger.getLogger(DialogForFile.class.getName()).log(Level.SEVERE, null, ex);
                 }
             } else {
-                if (!Popup.Y_N_dialog("Datei existiert bereits, �berschreiben?")) {
+                if (!Popup.Y_N_dialog(Messages.FILE_EXISTS + "\n" + fileToSave)) {
                     saveFile(fileToSave);
                 }
             }
@@ -148,9 +177,9 @@ public class DialogForFile extends JFileChooser implements Waiter {
                     out.write(c);
                 }
                 fileToSave.delete();
-              
+                MPV5View.addMessage(Messages.FILE_SAVED + file.getCanonicalPath());
             } catch (IOException iOException) {
-            
+                Popup.error(Messages.FILE_NOT_SAVED + file.getName(), iOException);
 
             } finally {
                 try {
@@ -168,7 +197,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
     }
 
     /**
-     * 
+     *
      * @return The selected file
      */
     public File getFile() {
@@ -181,7 +210,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
      * @return True if a file was selected
      */
     public boolean getFilePath(JTextField field) {
-        if (this.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+        if (this.showOpenDialog(MPV5View.identifier) == JFileChooser.APPROVE_OPTION) {
             try {
                 field.setText(this.getSelectedFile().getCanonicalPath());
                 this.file = this.getSelectedFile();
@@ -195,7 +224,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
 
     /**
      * Calls saveFile((File) object)
-     * @param object 
+     * @param object
      */
     @Override
     public void set(Object object) {
@@ -203,11 +232,12 @@ public class DialogForFile extends JFileChooser implements Waiter {
     }
 
     public void writeFile(File file) {
-        if (chooseFile()) {
+        if (saveFile()) {
             try {
                 FileDirectoryHandler.copyFile(file, this.file);
-               
-            } catch (IOException ex) {
+                MPV5View.addMessage(Messages.FILE_SAVED + this.file);
+            } catch (Exception ex) {
+                Popup.error(Messages.FILE_NOT_SAVED + file.getName(), ex);
                 Log.Debug(this, ex);
             }
         }

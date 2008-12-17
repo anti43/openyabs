@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.panels.DataPanel;
-import mpv5.ui.popups.Popup;
+import mpv5.ui.dialogs.Popup;
 
 /**
  *
@@ -182,6 +182,12 @@ public abstract class DatabaseObject {
     }
     
     
+    /**
+     *
+     * @return A list containing pairs of VARNAME and their VALUE of this Databaseobject,
+     * those which return in getVars(), as two-fields String-Array
+     * Example: new String[]{CName, Michael}
+     */
     public ArrayList<String[]> getValues() {
         ArrayList<Method> vars = getVars();
         ArrayList<String[]> vals = new ArrayList<String[]>();

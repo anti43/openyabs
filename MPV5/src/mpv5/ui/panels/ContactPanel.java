@@ -30,7 +30,8 @@ import mpv5.items.contacts.Contact;
 import mpv5.logging.Log;
 import mpv5.utils.arrays.ArrayUtils;
 import mpv5.utils.models.MPComboBoxModelItem;
-import mpv5.utils.print.Print;
+import mpv5.utils.print.FilePrintJob;
+import mpv5.utils.print.PrintJob;
 
 /**
  *
@@ -142,7 +143,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         female = new javax.swing.JRadioButton();
         jPanel3 = new javax.swing.JPanel();
         mobilephone = new mpv5.ui.beans.LabeledTextField();
-        phone = new mpv5.ui.beans.LabeledTextField();
+        mainphone = new mpv5.ui.beans.LabeledTextField();
         workphone = new mpv5.ui.beans.LabeledTextField();
         mailaddress = new mpv5.ui.beans.LabeledTextField();
         website = new mpv5.ui.beans.LabeledTextField();
@@ -424,8 +425,8 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         mobilephone.set_Label(bundle.getString("ContactPanel.mobilephone._Label")); // NOI18N
         mobilephone.setName("mobilephone"); // NOI18N
 
-        phone.set_Label(bundle.getString("ContactPanel.phone._Label")); // NOI18N
-        phone.setName("phone"); // NOI18N
+        mainphone.set_Label(bundle.getString("ContactPanel.mainphone._Label")); // NOI18N
+        mainphone.setName("mainphone"); // NOI18N
 
         workphone.set_Label(bundle.getString("ContactPanel.workphone._Label")); // NOI18N
         workphone.setName("workphone"); // NOI18N
@@ -446,7 +447,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(phone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(mainphone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(fax, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(mobilephone, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
@@ -463,7 +464,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(workphone, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(phone, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(mainphone, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -705,18 +706,20 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         if (evt.getStateChange() == ItemEvent.SELECTED) {
             switch (item.getId()) {
                 case 0:
-                    new Print(getDataOwner()).print();
+                    new PrintJob().print(getDataOwner());
                     break;
                 case 1:
-                    new Print(getDataOwner()).toVCF();
+                    new FilePrintJob(getDataOwner()).toVCF();
                     break;
                 case 2:
-                    new Print(getDataOwner()).toCSV();
+                    new FilePrintJob(getDataOwner()).toCSV();
                     break;
                 case 3:
-                    new Print(getDataOwner()).toXML();
+                    new FilePrintJob(getDataOwner()).toXML();
                     break;
             }
+
+            cb.setSelectedIndex(-1);
         } else if (evt.getStateChange() == ItemEvent.DESELECTED) {
             // Item is no longer selected
         }
@@ -762,12 +765,12 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JPanel leftpane;
     private mpv5.ui.beans.LabeledTextField mailaddress;
+    private mpv5.ui.beans.LabeledTextField mainphone;
     private javax.swing.JRadioButton male;
     private javax.swing.JCheckBox manufacturer;
     private mpv5.ui.beans.LabeledTextField mobilephone;
     private javax.swing.JTextPane notes;
     private mpv5.ui.beans.LabeledTextField number;
-    private mpv5.ui.beans.LabeledTextField phone;
     private mpv5.ui.beans.LabeledTextField prename;
     private javax.swing.JPanel rightpane;
     private mpv5.ui.beans.LabeledTextField street;
@@ -791,7 +794,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     public String mobilephone_;
     public String notes_;
     public String cnumber_;
-    public String phone_;
+    public String mainphone_;
     public String prename_;
     public String street_;
     public boolean issupplier_;
@@ -816,7 +819,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         mobilephone_ = mobilephone.get_Text();
         notes_ = notes.getText();
         cnumber_ = number.get_Text();
-        phone_ = phone.get_Text();
+        mainphone_ =  mainphone.get_Text();
         prename_ = prename.get_Text();
         street_ = street.get_Text();
         issupplier_ = supplier.isSelected();
@@ -840,7 +843,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         mobilephone.set_Text(mobilephone_);
         notes.setText(notes_);
         number.set_Text(cnumber_);
-        phone.set_Text(phone_);
+        mainphone.set_Text( mainphone_);
         prename.set_Text(prename_);
         street.set_Text(street_);
         supplier.setSelected(issupplier_);

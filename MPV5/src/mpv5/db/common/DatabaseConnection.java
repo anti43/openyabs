@@ -12,7 +12,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import mpv5.globals.LocalSettings;
-import mpv5.ui.popups.Popup;
+import mpv5.ui.dialogs.Popup;
 /**
  *
  * @author Andreas

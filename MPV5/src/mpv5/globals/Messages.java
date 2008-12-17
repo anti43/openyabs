@@ -42,5 +42,12 @@ public class Messages {
     public static String ROW_INSERTED = " successfull created";
     public static String ROW_UPDATED = " successfull saved";
     public static String CNAME_CANNOT_BE_NULL = "You must set a NAME for this item.";
+    public static String FILE_SAVED = "File saved: ";
+    public static String ERROR_OCCURED = "An error occurred";
+    public static String FILE_NOT_SAVED = "File NOT saved: ";
+    public static String WARNING = "Warning";
+    public static String NOTICE = "Notice";
+    public static String FILE_EXISTS = "The file already exists, overwrite?";
+    public static String ARE_YOU_SURE = "Are you sure?";
 
 }
