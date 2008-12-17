@@ -156,7 +156,7 @@ public class FileDirectoryHandler {
     }
 
     public static File getTempFile() {
-        return getTempFile("tmp");
+        return getTempFile("~mp");
     }
 
     /*

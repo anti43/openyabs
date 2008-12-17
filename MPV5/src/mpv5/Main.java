@@ -261,7 +261,7 @@ public class Main extends SingleFrameApplication {
 
     public static void setDerbyLog() {
         Properties p = System.getProperties();
-        p.put("derby.stream.error.file", FileDirectoryHandler.getTempFile()+ "_derby.log");
+        p.put("derby.stream.error.file", FileDirectoryHandler.getTempFile());
     }
 
     public static void setLaF(LookAndFeel lf) {
