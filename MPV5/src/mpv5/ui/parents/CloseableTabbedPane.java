@@ -527,6 +527,7 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseListener,
      * @param textRect the text boundaries
      * @param isSelected true whether the tab is selected, false otherwise
      */
+        @Override
     protected void layoutLabel(int tabPlacement, FontMetrics metrics,
                                int tabIndex, String title, Icon icon,
                                Rectangle tabRect, Rectangle iconRect,
