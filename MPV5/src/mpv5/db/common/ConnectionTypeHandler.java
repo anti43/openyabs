@@ -77,8 +77,8 @@ public class ConnectionTypeHandler {
     private static String CONNECTION_STRING = null;
     private static Integer PREDEFINED_DRVER = null;
     private static Integer MODE = 0;
-//    private static String URL = "D:\\Documents and Settings\\Administrator\\.netbeans-derby";
-    private static String URL = "C:\\Users\\Andreas\\.netbeans-derby";
+    private static String URL = "D:\\Documents and Settings\\Administrator\\.netbeans-derby";
+//    private static String URL = "C:\\Users\\Andreas\\.netbeans-derby";
 
     /**
      * Constructs a new ConnHandler

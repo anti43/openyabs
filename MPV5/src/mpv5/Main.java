@@ -1,7 +1,6 @@
 /*
  * Main.java
  */
-
 package mpv5;
 
 import mpv5.ui.frames.MPV5View;
@@ -16,9 +15,14 @@ import java.util.Properties;
 import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
 import mpv5.db.common.ConnectionTypeHandler;
+import mpv5.db.common.DatabaseConnection;
 import mpv5.globals.Constants;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
+import mpv5.ui.dialogs.Wizard;
+import mpv5.ui.dialogs.subcomponents.wizard_DBSettings_1;
+import mpv5.ui.dialogs.subcomponents.wizard_DBSettings_2;
+import mpv5.ui.dialogs.subcomponents.wizard_DBSettings_3;
 import mpv5.utils.files.FileDirectoryHandler;
 import org.apache.commons.cli2.*;
 import org.apache.commons.cli2.builder.*;
@@ -29,12 +33,22 @@ import org.apache.commons.cli2.util.*;
  * The main class of the application.
  */
 public class Main extends SingleFrameApplication {
-   
+
     /**
      * At startup create and show the main frame of the application.
      */
-    @Override protected void startup() {
-        show(new MPV5View(this));
+    @Override
+    protected void startup() {
+        if (probeDatabaseConnection()) {
+            show(new MPV5View(this));
+        } else {
+
+            Wizard w = new Wizard();
+            w.addPanel(new wizard_DBSettings_1());
+            w.addPanel(new wizard_DBSettings_2());
+            w.addPanel(new wizard_DBSettings_3());
+            w.setVisible(true);
+        }
     }
 
     /**
@@ -42,7 +56,8 @@ public class Main extends SingleFrameApplication {
      * Windows shown in our application come fully initialized from the GUI
      * builder, so this additional configuration is not needed.
      */
-    @Override protected void configureWindow(java.awt.Window root) {
+    @Override
+    protected void configureWindow(java.awt.Window root) {
     }
 
     /**
@@ -53,33 +68,30 @@ public class Main extends SingleFrameApplication {
         return Application.getInstance(Main.class);
     }
 
-    @Override protected void shutdown(){
-    System.out.println(Main.getApplication().getMainFrame().getSize());
+    @Override
+    protected void shutdown() {
+        System.out.println(Main.getApplication().getMainFrame().getSize());
 
         super.shutdown();
     }
 
     /**
      * Main method launching the application.
+     * @param args
      */
     public static void main(String[] args) {
-        
+
         System.out.print(Messages.START_MESSAGE);
 
         getOS();
         setEnv();
         parseArgs(args);
-        setDerbyLog(); 
+        setDerbyLog();
 
         launch(Main.class, args);
 
     }
-
-
-
-
     public static boolean IS_WINDOWS = false;
-
     public static boolean FORCE_NO_DATABASE = false;
     public static boolean FORCE_NO_FILE_COPY = false;
     public static boolean FORCE_CREATE_DATABASE = false;
@@ -93,7 +105,6 @@ public class Main extends SingleFrameApplication {
     public static String APP_DIR = null;
     public static String USER_HOME = null;
     public static String DESKTOP = null;
-  
 
     private static void getOS() {
         if (System.getProperty("os.name").contains("Windows")) {
@@ -106,23 +117,23 @@ public class Main extends SingleFrameApplication {
     public static void setEnv() {
 
         if (IS_WINDOWS) {
-          
+
             USER_HOME = System.getenv("USERPROFILE");
             DESKTOP = USER_HOME + File.separator + "Desktop";
             MPPATH = USER_HOME + File.separator + ".mp";
             SETTINGS_FILE = Main.MPPATH + File.separator + "settings" + Constants.RELEASE_VERSION + ".mp";
             LOCAL_LOGIN_FILE = Main.MPPATH + File.separator + "login.mp";
             APP_DIR = USER_HOME + File.separator + Constants.PROG_NAME;
-            
+
         } else {
-          
+
             USER_HOME = System.getProperty("user.home");
             DESKTOP = USER_HOME + File.separator + "Desktop";
             MPPATH = USER_HOME + File.separator + ".mp";
             SETTINGS_FILE = Main.MPPATH + File.separator + "settings" + Constants.RELEASE_VERSION + ".mp";
             LOCAL_LOGIN_FILE = Main.MPPATH + File.separator + "login.mp";
             APP_DIR = USER_HOME + File.separator + Constants.PROG_NAME;
-      
+
         }
     }
 
@@ -258,7 +269,6 @@ public class Main extends SingleFrameApplication {
         }
     }
 
-
     public static void setDerbyLog() {
         Properties p = System.getProperties();
         p.put("derby.stream.error.file", FileDirectoryHandler.getTempFile());
@@ -289,5 +299,14 @@ public class Main extends SingleFrameApplication {
         }
     }
 
-
+    private boolean probeDatabaseConnection() {
+        try {
+            DatabaseConnection.instanceOf();
+            return true;
+        } catch (Exception ex) {
+            Log.Debug(this, "Could not connect to database.");
+            Log.Debug(this, ex);
+            return false;
+        }
+    }
 }
