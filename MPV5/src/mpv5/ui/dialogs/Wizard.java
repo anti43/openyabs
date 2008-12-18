@@ -22,23 +22,38 @@
  */
 package mpv5.ui.dialogs;
 
-import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.util.ArrayList;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
+import mpv5.globals.Messages;
+import mpv5.ui.parents.Position;
 
 /**
  *
  * @author Administrator
  */
-public class Wizard extends javax.swing.JFrame {
+public class Wizard extends javax.swing.JFrame implements WizardMaster {
 
     public ArrayList<Object> actionVars = new ArrayList<Object>();
     private int index = 0;
+    private Component lastpanel;
+    private ArrayList<Component> oldcomponents = new ArrayList<Component>();
+    private boolean isEnded = false;
 
     /** Creates new form Wizard */
     public Wizard() {
         initComponents();
+        back.setEnabled(false);
+        new Position(this);
+        setVisible(true);
+    }
+
+    public void showWiz() {
+        back.setEnabled(false);
+        new Position(this);
+        setVisible(true);
     }
 
     /** This method is called from within the constructor to
@@ -50,11 +65,12 @@ public class Wizard extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
-        jButton3 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        content = new javax.swing.JPanel();
+        layer = new javax.swing.JLayeredPane();
+        control = new javax.swing.JPanel();
+        cancel = new javax.swing.JButton();
+        back = new javax.swing.JButton();
+        next = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
@@ -62,59 +78,71 @@ public class Wizard extends javax.swing.JFrame {
         setBackground(new java.awt.Color(255, 255, 255));
         setName("Form"); // NOI18N
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jPanel1.setName("jPanel1"); // NOI18N
-        jPanel1.setLayout(new java.awt.BorderLayout());
+        content.setBackground(new java.awt.Color(255, 255, 255));
+        content.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        content.setName("content"); // NOI18N
 
-        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel2.setName("jPanel2"); // NOI18N
+        layer.setName("layer"); // NOI18N
 
-        jButton3.setText(bundle.getString("Wizard.jButton3.text")); // NOI18N
-        jButton3.setName("jButton3"); // NOI18N
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        javax.swing.GroupLayout contentLayout = new javax.swing.GroupLayout(content);
+        content.setLayout(contentLayout);
+        contentLayout.setHorizontalGroup(
+            contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(layer, javax.swing.GroupLayout.PREFERRED_SIZE, 476, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
+        contentLayout.setVerticalGroup(
+            contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(layer, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
+
+        control.setBackground(new java.awt.Color(255, 255, 255));
+        control.setName("control"); // NOI18N
+
+        cancel.setText(bundle.getString("Wizard.cancel.text")); // NOI18N
+        cancel.setName("cancel"); // NOI18N
+        cancel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                cancelActionPerformed(evt);
             }
         });
 
-        jButton2.setText(bundle.getString("Wizard.jButton2.text")); // NOI18N
-        jButton2.setName("jButton2"); // NOI18N
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        back.setText(bundle.getString("Wizard.back.text")); // NOI18N
+        back.setName("back"); // NOI18N
+        back.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                backActionPerformed(evt);
             }
         });
 
-        jButton1.setText(bundle.getString("Wizard.jButton1.text")); // NOI18N
-        jButton1.setName("jButton1"); // NOI18N
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        next.setText(bundle.getString("Wizard.next.text")); // NOI18N
+        next.setName("next"); // NOI18N
+        next.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                nextActionPerformed(evt);
             }
         });
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+        javax.swing.GroupLayout controlLayout = new javax.swing.GroupLayout(control);
+        control.setLayout(controlLayout);
+        controlLayout.setHorizontalGroup(
+            controlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, controlLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton3)
+                .addComponent(cancel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 273, Short.MAX_VALUE)
-                .addComponent(jButton2)
+                .addComponent(back)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
+                .addComponent(next)
                 .addContainerGap())
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+        controlLayout.setVerticalGroup(
+            controlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, controlLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2)
-                    .addComponent(jButton3))
+                .addGroup(controlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(next)
+                    .addComponent(back)
+                    .addComponent(cancel))
                 .addContainerGap())
         );
 
@@ -122,52 +150,64 @@ public class Wizard extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 480, Short.MAX_VALUE)
+            .addComponent(control, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(content, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 341, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(content, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(control, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
         this.dispose();
-    }//GEN-LAST:event_jButton3ActionPerformed
+}//GEN-LAST:event_cancelActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void nextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextActionPerformed
 
-        jPanel1.removeAll();
-        jPanel1.validate();
-        jPanel1.getComponent(index).setVisible(false);
-        jPanel1.getComponent(index + 1).setVisible(true);
-        jPanel1.validate();
-        if (index < jPanel1.getComponentCount() - 1) {
-            index++;
+        if (!isEnded) {
+            lastpanel = layer.getComponent(0);
+            layer.moveToBack(lastpanel);
+            oldcomponents.add(lastpanel);
+            back.setEnabled(true);
+        } else {
+            this.dispose();
         }
+}//GEN-LAST:event_nextActionPerformed
 
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void backActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-
-        jPanel1.removeAll();
-        jPanel1.validate();
-        jPanel1.getComponent(index-1).setVisible(true);
-        jPanel1.getComponent(index).setVisible(false);
-        jPanel1.validate();
-        if (index > 0) {
-            index--;
+        try {
+            layer.moveToFront(layer.getComponent(layer.getIndexOf(oldcomponents.get(oldcomponents.size() - 1))));
+            oldcomponents.remove(oldcomponents.size() - 1);
+        } catch (Exception e) {
+            back.setEnabled(false);
         }
-    }//GEN-LAST:event_jButton2ActionPerformed
+}//GEN-LAST:event_backActionPerformed
 
-    public void addPanel(JPanel panel) {
-        panel.setVisible(false);
-        jPanel1.add(panel, BorderLayout.CENTER);
+    public void addPanel(Wizardable panel) {
+        ((JPanel) panel).setPreferredSize(content.getSize());
+        ((JPanel) panel).setBounds(0, 0, content.getWidth(), content.getHeight());
+        ((JPanel) panel).setOpaque(true);
+        layer.add(((JPanel) panel), JLayeredPane.DEFAULT_LAYER, index);
+        index++;
+        layer.validate();
+    }
+
+    public void isEnd(boolean end) {
+
+        this.isEnded = end;
+        if (end) {
+            next.setText(Messages.FINISH);
+        }
+        cancel.setEnabled(!end);
+        back.setEnabled(!end);
+
     }
 
     /**
@@ -183,10 +223,11 @@ public class Wizard extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
+    private javax.swing.JButton back;
+    private javax.swing.JButton cancel;
+    private javax.swing.JPanel content;
+    private javax.swing.JPanel control;
+    private javax.swing.JLayeredPane layer;
+    private javax.swing.JButton next;
     // End of variables declaration//GEN-END:variables
 }

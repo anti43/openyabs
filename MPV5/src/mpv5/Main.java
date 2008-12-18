@@ -47,7 +47,7 @@ public class Main extends SingleFrameApplication {
             w.addPanel(new wizard_DBSettings_1());
             w.addPanel(new wizard_DBSettings_2());
             w.addPanel(new wizard_DBSettings_3());
-            w.setVisible(true);
+            w.showWiz();
         }
     }
 

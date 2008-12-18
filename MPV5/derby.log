@@ -1,4 +1,4 @@
-2008-12-18 14:34:39.916 GMT Thread[AWT-EventQueue-0,6,main] Cleanup action starting
+2008-12-18 16:54:58.964 GMT Thread[AWT-EventQueue-0,6,main] Cleanup action starting
 java.sql.SQLException: Database 'D:\Documents and Settings\Administrator\.netbeans-derby\mpv5db' not found.
 	at org.apache.derby.impl.jdbc.SQLExceptionFactory40.getSQLException(Unknown Source)
 	at org.apache.derby.impl.jdbc.Util.newEmbedSQLException(Unknown Source)

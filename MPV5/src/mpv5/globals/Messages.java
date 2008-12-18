@@ -49,5 +49,6 @@ public class Messages {
     public static String NOTICE = "Notice";
     public static String FILE_EXISTS = "The file already exists, overwrite?";
     public static String ARE_YOU_SURE = "Are you sure?";
+    public static String FINISH = "Finish";
 
 }
