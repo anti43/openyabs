@@ -1,4 +1,4 @@
-2008-12-18 16:54:58.964 GMT Thread[AWT-EventQueue-0,6,main] Cleanup action starting
+2008-12-23 16:32:42.994 GMT Thread[AWT-EventQueue-0,6,main] Cleanup action starting
 java.sql.SQLException: Database 'D:\Documents and Settings\Administrator\.netbeans-derby\mpv5db' not found.
 	at org.apache.derby.impl.jdbc.SQLExceptionFactory40.getSQLException(Unknown Source)
 	at org.apache.derby.impl.jdbc.Util.newEmbedSQLException(Unknown Source)
@@ -14,8 +14,8 @@ java.sql.SQLException: Database 'D:\Documents and Settings\Administrator\.netbea
 	at org.apache.derby.jdbc.AutoloadedDriver.connect(Unknown Source)
 	at java.sql.DriverManager.getConnection(DriverManager.java:582)
 	at java.sql.DriverManager.getConnection(DriverManager.java:185)
-	at mpv5.db.common.DatabaseConnection.connect(DatabaseConnection.java:72)
-	at mpv5.db.common.DatabaseConnection.instanceOf(DatabaseConnection.java:36)
+	at mpv5.db.common.DatabaseConnection.connect(DatabaseConnection.java:120)
+	at mpv5.db.common.DatabaseConnection.instanceOf(DatabaseConnection.java:37)
 	at mpv5.Main.probeDatabaseConnection(Main.java:304)
 	at mpv5.Main.startup(Main.java:42)
 	at org.jdesktop.application.Application$1.run(Application.java:171)
@@ -49,8 +49,8 @@ java.sql.SQLException: Database 'D:\Documents and Settings\Administrator\.netbea
 	at org.apache.derby.jdbc.AutoloadedDriver.connect(Unknown Source)
 	at java.sql.DriverManager.getConnection(DriverManager.java:582)
 	at java.sql.DriverManager.getConnection(DriverManager.java:185)
-	at mpv5.db.common.DatabaseConnection.connect(DatabaseConnection.java:72)
-	at mpv5.db.common.DatabaseConnection.instanceOf(DatabaseConnection.java:36)
+	at mpv5.db.common.DatabaseConnection.connect(DatabaseConnection.java:120)
+	at mpv5.db.common.DatabaseConnection.instanceOf(DatabaseConnection.java:37)
 	at mpv5.Main.probeDatabaseConnection(Main.java:304)
 	at mpv5.Main.startup(Main.java:42)
 	at org.jdesktop.application.Application$1.run(Application.java:171)
@@ -64,3 +64,9 @@ java.sql.SQLException: Database 'D:\Documents and Settings\Administrator\.netbea
 	at java.awt.EventDispatchThread.run(EventDispatchThread.java:122)
 ============= end nested exception, level (1) ===========
 Cleanup action completed
+----------------------------------------------------------------
+2008-12-23 16:33:08.270 GMT:
+ Booting Derby version The Apache Software Foundation - Apache Derby - 10.4.2.0 - (689064): instance a816c00e-011e-64b0-eb85-0000003a3998
+on database directory D:\Documents and Settings\Administrator\My Documents\SQL Server Management Studio\mpv5db  
+
+Database Class Loader started - derby.database.classpath=''

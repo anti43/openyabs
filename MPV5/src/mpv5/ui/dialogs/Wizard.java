@@ -27,6 +27,7 @@ import java.awt.Component;
 import java.util.ArrayList;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
+import mpv5.data.PropertyStore;
 import mpv5.globals.Messages;
 import mpv5.ui.parents.Position;
 
@@ -36,7 +37,7 @@ import mpv5.ui.parents.Position;
  */
 public class Wizard extends javax.swing.JFrame implements WizardMaster {
 
-    public ArrayList<Object> actionVars = new ArrayList<Object>();
+    public PropertyStore actionVars = new PropertyStore();
     private int index = 0;
     private Component lastpanel;
     private ArrayList<Component> oldcomponents = new ArrayList<Component>();
@@ -71,6 +72,7 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
         cancel = new javax.swing.JButton();
         back = new javax.swing.JButton();
         next = new javax.swing.JButton();
+        message = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
@@ -122,6 +124,9 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
             }
         });
 
+        message.setText(bundle.getString("Wizard.message.text")); // NOI18N
+        message.setName("message"); // NOI18N
+
         javax.swing.GroupLayout controlLayout = new javax.swing.GroupLayout(control);
         control.setLayout(controlLayout);
         controlLayout.setHorizontalGroup(
@@ -129,7 +134,9 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, controlLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(cancel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 273, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(message, javax.swing.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(back)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(next)
@@ -142,7 +149,8 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
                 .addGroup(controlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(next)
                     .addComponent(back)
-                    .addComponent(cancel))
+                    .addComponent(cancel)
+                    .addComponent(message, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -170,21 +178,21 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
 
     private void nextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextActionPerformed
 
-        if (!isEnded) {
-            lastpanel = layer.getComponent(0);
+        lastpanel = layer.getComponent(0);
+        if (!isEnded && ((Wizardable) lastpanel).next()) { 
             layer.moveToBack(lastpanel);
             oldcomponents.add(lastpanel);
             back.setEnabled(true);
-        } else {
-            this.dispose();
         }
 }//GEN-LAST:event_nextActionPerformed
 
     private void backActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backActionPerformed
 
         try {
-            layer.moveToFront(layer.getComponent(layer.getIndexOf(oldcomponents.get(oldcomponents.size() - 1))));
-            oldcomponents.remove(oldcomponents.size() - 1);
+            if (((Wizardable) layer.getComponent(0)).back()) {
+                layer.moveToFront(layer.getComponent(layer.getIndexOf(oldcomponents.get(oldcomponents.size() - 1))));
+                oldcomponents.remove(oldcomponents.size() - 1);
+            }
         } catch (Exception e) {
             back.setEnabled(false);
         }
@@ -210,6 +218,14 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
 
     }
 
+    public PropertyStore getStore() {
+        return actionVars;
+    }
+
+    public void setMessage(String message){
+        this.message.setText(message);
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -228,6 +244,7 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
     private javax.swing.JPanel content;
     private javax.swing.JPanel control;
     private javax.swing.JLayeredPane layer;
+    private javax.swing.JLabel message;
     private javax.swing.JButton next;
     // End of variables declaration//GEN-END:variables
 }

@@ -5,6 +5,7 @@
  */
 package mpv5.ui.dialogs.subcomponents;
 
+import mpv5.ui.dialogs.WizardMaster;
 import mpv5.ui.dialogs.Wizardable;
 
 /**
@@ -13,11 +14,12 @@ import mpv5.ui.dialogs.Wizardable;
  */
 public class wizard_DBSettings_3 extends javax.swing.JPanel implements Wizardable {
 
-    /** Creates new form SearchPanel */
-    public wizard_DBSettings_3() {
-        initComponents();
-    }
+    private WizardMaster master;
 
+   
+    public wizard_DBSettings_3(WizardMaster w) {
+        this.master = w;initComponents();
+    }
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 

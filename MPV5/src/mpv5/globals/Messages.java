@@ -50,5 +50,8 @@ public class Messages {
     public static String FILE_EXISTS = "The file already exists, overwrite?";
     public static String ARE_YOU_SURE = "Are you sure?";
     public static String FINISH = "Finish";
+    public static String CONNECTION_VERIFIED = "The Database Connection has been verified.";
+    public static String CONNECTION_FAILED =  "The Database Connection failed.";
+    public static String CONNECTION_PROBE =  "Checking Database Connection: ";
 
 }

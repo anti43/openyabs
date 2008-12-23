@@ -34,17 +34,27 @@ import org.jdom.output.XMLOutputter;
  * @author Administrator
  */
 public class XMLWriter {
+
     private Element rootElement = new Element("defName");
     private Document myDocument = new Document();
 
 
+    /**
+     * Adds a node with the given name, and an additional attribute "ID" with the attribute value
+     * @param name The node name
+     * @param attribute The value for the attribute "ID"
+     */
     public void addNode(String name, String attribute) {
         Element elem = new Element(name);
         elem.setAttribute("id", attribute);
         rootElement.addContent(elem);
     }
-    
-    public void newDoc(String rootElementName){
+
+    /**
+     * Creates a ned XML document with  the given root element
+     * @param rootElementName
+     */
+    public void newDoc(String rootElementName) {
         // Create the root element
         rootElement = new Element(rootElementName);
         myDocument = new Document(rootElement);
@@ -53,34 +63,53 @@ public class XMLWriter {
         rootElement.addContent(new Comment("Make your changes only below this line"));
     }
 
+    /**
+     * Creates a new XML file with the given name
+     * and pops up a 'save file as..' dialog
+     * @param filename
+     */
     public void createFile(String filename) {
         DialogForFile dialog = new DialogForFile(DialogForFile.FILES_ONLY);
         dialog.setSelectedFile(new File(filename + ".xml"));
-        if(dialog.saveFile()){
-        try {
-            XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
-            outputter.output(myDocument, new FileWriter(dialog.getFile()));
-            MPV5View.addMessage(Messages.FILE_SAVED + dialog.getFile().getPath());
-        } catch (java.io.IOException e) {
-            e.printStackTrace();
-        }
+        if (dialog.saveFile()) {
+            try {
+                XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
+                outputter.output(myDocument, new FileWriter(dialog.getFile()));
+                MPV5View.addMessage(Messages.FILE_SAVED + dialog.getFile().getPath());
+            } catch (java.io.IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    public void addElement(String nodename, String attributevalue, String name, String value){
+    /**
+     * Adds an element
+     * @param nodename 
+     * @param attributevalue The ID of the node where this element shall be added
+     * @param name The name of the new element
+     * @param value The value of the element
+     */
+    public void addElement(String nodename, String attributevalue, String name, String value) {
         //add some child elements
         Element elem = new Element(name);
         elem.addContent(value);
         @SuppressWarnings("unchecked")
-        List<Element> list = (List<Element>)rootElement.getContent();
+        List<Element> list = (List<Element>) rootElement.getContent();
         for (int i = 0; i < list.size(); i++) {
-           if(list.get(i) instanceof Element) if(list.get(i).getAttribute("id")!=null
-                   && list.get(i).getAttribute("id").getValue().equals(attributevalue))list.get(i).addContent(elem);
+            if (list.get(i) instanceof Element) {
+                if (list.get(i).getName().equals(nodename) && list.get(i).getAttribute("id") != null && list.get(i).getAttribute("id").getValue().equals(attributevalue)) {
+                    list.get(i).addContent(elem);
+                }
+            }
         }
 
     }
 
-    public void addNode(String name){
+    /**
+     * Adds a node with the given name
+     * @param name
+     */
+    public void addNode(String name) {
         rootElement.addContent(new Element(name));
     }
 }

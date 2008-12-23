@@ -17,6 +17,10 @@
 
 package mpv5.ui.dialogs;
 
+import java.util.ArrayList;
+import mpv5.data.PropertyStore;
+
+
 /**
  *
  * @author Administrator
@@ -25,4 +29,6 @@ public interface WizardMaster {
 
     public void dispose();
     public void isEnd(boolean end);
+    public PropertyStore getStore();
+    public void setMessage(String message);
 }

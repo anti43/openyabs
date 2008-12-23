@@ -2,8 +2,8 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package mpv5.db.common;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mpv5.logging.Log;
@@ -13,18 +13,19 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import mpv5.globals.LocalSettings;
 import mpv5.ui.dialogs.Popup;
+
 /**
  *
  * @author Andreas
  */
 public class DatabaseConnection {
+
     private static java.sql.Connection conn;
     private static DatabaseConnection connector;
     private ConnectionTypeHandler ctype;
     private static String user;
     private static String password;
-    
-    
+
     /**
      * 
      * @return Database connector
@@ -43,10 +44,57 @@ public class DatabaseConnection {
         try {
             return conn;
         } catch (Exception ex) {
-           return null;
+            return null;
         }
     }
 
+    /**
+     * Test-Verbindung zur Datenbank herstellen.
+     * @param predefinedDriver
+     * @param user
+     * @param password
+     * @param location
+     * @param create
+     * @return Connection
+     * @throws Exception
+     */
+    public boolean connect(int predefinedDriver, String user, String password, String location, boolean create) throws Exception {
+
+        ctype = new ConnectionTypeHandler();
+        ctype.setDRIVER(predefinedDriver);
+        ctype.setURL(location);
+
+        try {
+            Log.Debug(this, "Datenbanktreiber: " + ctype.getDriver(), true);
+            Class.forName(ctype.getDriver()).newInstance();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Popup.warn(ex.getMessage(), Popup.ERROR);
+            DatabaseConnection.shutdown();
+        }
+
+        try {
+            Log.Debug(this, "Datenbankverbindung: " + ctype.getConnectionString(create), true);
+            conn = DriverManager.getConnection(ctype.getConnectionString(create), user, password);
+            if (conn != null && conn.isValid(10)) {
+                DatabaseConnection.shutdown();
+                return true;
+            } else {
+                return false;
+            }
+
+        } catch (SQLException ex) {
+            System.out.println("Database Error: " + ex.getMessage());
+            Log.Debug(this, ex);
+            Log.Debug(this, ex.getNextException());
+            Log.Debug(this, ex.getNextException().getNextException());
+            Log.Debug(this, ex.getNextException().getNextException().getNextException());
+            Popup.warn(ex.getMessage(), Popup.ERROR);
+            DatabaseConnection.shutdown();
+            return false;
+        }
+
+    }
 
     /**
      * Verbindung zur Datenbank herstellen.
@@ -75,6 +123,8 @@ public class DatabaseConnection {
             System.out.println("Database Error: " + ex.getMessage());
             Log.Debug(this, ex);
             Log.Debug(this, ex.getNextException());
+            Log.Debug(this, ex.getNextException().getNextException());
+            Log.Debug(this, ex.getNextException().getNextException().getNextException());
             Popup.warn(ex.getMessage(), Popup.ERROR);
             DatabaseConnection.shutdown();
 
@@ -92,12 +142,11 @@ public class DatabaseConnection {
                 conn.close();
                 conn = null;
             }
-            
+
         } catch (SQLException ex) {
 
             ex.printStackTrace();
             System.exit(1);
         }
     }
-
 }

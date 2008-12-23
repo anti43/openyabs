@@ -94,7 +94,9 @@
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="cancel" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="273" max="32767" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="message" pref="265" max="32767" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
                   <Component id="back" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="next" min="-2" max="-2" attributes="0"/>
@@ -110,6 +112,7 @@
                       <Component id="next" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="back" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="cancel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="message" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -149,6 +152,14 @@
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="nextActionPerformed"/>
           </Events>
+        </Component>
+        <Component class="javax.swing.JLabel" name="message">
+          <Properties>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="Wizard.message.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+            </Property>
+            <Property name="name" type="java.lang.String" value="message" noResource="true"/>
+          </Properties>
         </Component>
       </SubComponents>
     </Container>

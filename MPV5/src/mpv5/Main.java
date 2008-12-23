@@ -44,9 +44,9 @@ public class Main extends SingleFrameApplication {
         } else {
 
             Wizard w = new Wizard();
-            w.addPanel(new wizard_DBSettings_1());
-            w.addPanel(new wizard_DBSettings_2());
-            w.addPanel(new wizard_DBSettings_3());
+            w.addPanel(new wizard_DBSettings_1(w));
+            w.addPanel(new wizard_DBSettings_2(w));
+            w.addPanel(new wizard_DBSettings_3(w));
             w.showWiz();
         }
     }
