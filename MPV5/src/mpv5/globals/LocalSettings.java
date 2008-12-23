@@ -4,8 +4,11 @@
  */
 package mpv5.globals;
 
+import java.io.File;
 import java.util.Locale;
+import mpv5.data.PropertyStore;
 import mpv5.db.common.ConnectionTypeHandler;
+import mpv5.utils.xml.XMLWriter;
 
 /**
  *
@@ -13,36 +16,31 @@ import mpv5.db.common.ConnectionTypeHandler;
  */
 public class LocalSettings {
 
-    private static LocalSettings cookie;
+    private static PropertyStore cookie = new PropertyStore();
 
-    public static String getDBDriver() {
-       return ConnectionTypeHandler.DERBY_DRIVER;
-    }
-
-    public static String getDBPassword() {
-        return "";
-    }
-
-    public static String getDBUser() {
-         return "";
-    }
-
-    public static LocalSettings instanceOf() {
-        if (cookie == null) {
-            cookie = new LocalSettings();
+    public static String getProperty(String name) {
+        if (cookie.getProperty(name) != null) {
+            return cookie.getProperty(name);
+        } else {
+            cookie.addProperty(name, "NA");
         }
-        return cookie;
+        return cookie.getProperty(name);
     }
 
-    public static void setDBDriver(String DERBY_DRIVER) {
-        throw new UnsupportedOperationException("Not yet implemented");
+    public static void setProperty(String name, String value) {
+        cookie.changeProperty(name, value);
     }
 
-    public static void setDBPath(String string) {
-        throw new UnsupportedOperationException("Not yet implemented");
+    public static void save(){
+
+        XMLWriter x = new XMLWriter();
+        x.createOrReplace(new File(""));
     }
 
-    public Locale getLocale() {
-        throw new UnsupportedOperationException("Not yet implemented");
+    public static void read(){
+
+
     }
+
+
 }
