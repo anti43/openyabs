@@ -20,6 +20,7 @@ import java.awt.Component;
 import java.io.IOException;
 import javax.swing.JOptionPane;
 import mpv5.globals.Messages;
+import mpv5.logging.Log;
 
 
 /**
@@ -101,6 +102,7 @@ public class Popup {
     public static void error(String string, Exception iOException) {
         error(string + "\n" + iOException.getMessage()
                         , Messages.ERROR_OCCURED);
+        Log.Debug(iOException);
     }
 
     public Popup(String text) {

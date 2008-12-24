@@ -53,5 +53,6 @@ public class Messages {
     public static String CONNECTION_VERIFIED = "The Database Connection has been verified.";
     public static String CONNECTION_FAILED =  "The Database Connection failed.";
     public static String CONNECTION_PROBE =  "Checking Database Connection: ";
+    public static String ERROR_SAVING_LOCALSETTINGS = "Could not save local settings";
 
 }

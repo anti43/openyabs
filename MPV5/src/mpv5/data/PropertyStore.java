@@ -17,6 +17,7 @@
 package mpv5.data;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -33,6 +34,14 @@ public class PropertyStore {
      */
     public void addProperty(String name, String value) {
         list.add(new String[]{name, value});
+    }
+
+    /**
+     * 
+     * @return The complete list of properties and values
+     */
+    public ArrayList getList() {
+        return list;
     }
 
     /**

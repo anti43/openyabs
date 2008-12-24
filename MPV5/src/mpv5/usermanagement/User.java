@@ -31,4 +31,8 @@ public class User {
         return "12345";
     }
 
+     public String getName() {
+        return "Administrator";
+    }
+
 }

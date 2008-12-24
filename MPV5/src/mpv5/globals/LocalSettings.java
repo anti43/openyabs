@@ -5,9 +5,11 @@
 package mpv5.globals;
 
 import java.io.File;
-import java.util.Locale;
+import mpv5.Main;
 import mpv5.data.PropertyStore;
-import mpv5.db.common.ConnectionTypeHandler;
+import mpv5.ui.dialogs.Popup;
+import mpv5.ui.frames.MPV5View;
+import mpv5.utils.xml.XMLReader;
 import mpv5.utils.xml.XMLWriter;
 
 /**
@@ -32,14 +34,18 @@ public class LocalSettings {
     }
 
     public static void save(){
-
         XMLWriter x = new XMLWriter();
-        x.createOrReplace(new File(""));
+        try {
+            x.append(new File(Main.SETTINGS_FILE),MPV5View.getUser().getName(), MPV5View.getUser().getID(), "localsettings", cookie);
+            x.createOrReplace(new File(Main.SETTINGS_FILE));
+        } catch (Exception ex) {
+            Popup.error(Messages.ERROR_SAVING_LOCALSETTINGS, ex);
+        }
     }
 
     public static void read(){
-
-
+        XMLReader read = new XMLReader();
+        cookie = read.readInto(cookie);
     }
 
 

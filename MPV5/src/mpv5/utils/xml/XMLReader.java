@@ -19,6 +19,7 @@ package mpv5.utils.xml;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import mpv5.data.PropertyStore;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -59,16 +60,18 @@ public class XMLReader {
     }
 
     /**
-     * Creates a ned XML document
-     * @param doc
+     * Parses a XML document
+     * @param xmlfile
+     * @return The resulting xml document
      * @throws JDOMException
      * @throws IOException
      */
-    public void newDoc(File doc) throws JDOMException, IOException {
+    public Document newDoc(File xmlfile) throws JDOMException, IOException {
         // Create the root element
         SAXBuilder parser = new SAXBuilder();
-        myDocument = parser.build(doc);
+        myDocument = parser.build(xmlfile);
         rootElement = myDocument.getRootElement();
+        return myDocument;
     }
 
     /**
@@ -89,5 +92,10 @@ public class XMLReader {
             }
         }
         return null;
+    }
+
+    public PropertyStore readInto(PropertyStore cookie) {
+
+        cookie.addProperty(name, value);
     }
 }

@@ -18,14 +18,21 @@ package mpv5.utils.xml;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import mpv5.data.PropertyStore;
 import mpv5.globals.Messages;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.frames.MPV5View;
+import mpv5.utils.text.RandomText;
 import org.jdom.Attribute;
 import org.jdom.Comment;
 import org.jdom.Document;
 import org.jdom.Element;
+import org.jdom.JDOMException;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
@@ -38,7 +45,6 @@ public class XMLWriter {
     private Element rootElement = new Element("defName");
     private Document myDocument = new Document();
 
-
     /**
      * Adds a node with the given name, and an additional attribute "ID" with the attribute value
      * @param name The node name
@@ -48,6 +54,37 @@ public class XMLWriter {
         Element elem = new Element(name);
         elem.setAttribute("id", attribute);
         rootElement.addContent(elem);
+    }
+
+    /**
+     * Appends the PropertyStore's data to an existing XML file,
+     * or creates one if not existant
+     * 
+     * @param file
+     * @param nodename
+     * @param nodeid
+     * @param alternateRoot The root element if the file needs to be created
+     * @param cookie
+     */
+    public void append(File file, String nodename, String nodeid, String alternateRoot, PropertyStore cookie) {
+        XMLReader reader = new XMLReader();
+        try {
+            this.myDocument = reader.newDoc(file);
+        } catch (Exception ex) {
+            newDoc(alternateRoot);
+        }
+        parse(nodename, nodeid, cookie);
+    }
+
+    public void createOrReplace(File file) throws Exception {
+        if (file.exists()) {
+            if (!file.delete()) {
+                throw new Exception("Could not lock " + file);
+            }
+        }
+        XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
+        outputter.output(myDocument, new FileWriter(file));
+        MPV5View.addMessage(Messages.FILE_SAVED + file.getPath());
     }
 
     /**
@@ -111,5 +148,20 @@ public class XMLWriter {
      */
     public void addNode(String name) {
         rootElement.addContent(new Element(name));
+    }
+
+    /**
+     * Parses a PropertyStore object.
+     * Make sure to call newDoc() first!
+     * @param nodename
+     * @param nodeid
+     * @param cookie
+     */
+    public void parse(String nodename, String nodeid, PropertyStore cookie) {
+        addNode(nodename, nodeid);
+        Iterator list = cookie.getList().iterator();
+        while (list.hasNext()) {
+            addElement(nodename, nodeid, ((String[]) list.next())[0], ((String[]) list.next())[1]);
+        }
     }
 }
