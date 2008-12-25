@@ -85,10 +85,10 @@ public class ConnectionTypeHandler {
      */
     public ConnectionTypeHandler() {
               
-        if (LocalSettings.getDBDriver().equalsIgnoreCase(DERBY_DRIVER)) {
+        if (LocalSettings.getProperty("dbdriver").equalsIgnoreCase(DERBY_DRIVER)) {
             ConnectionTypeHandler.PREDEFINED_DRVER = ConnectionTypeHandler.DERBY;
             ConnectionTypeHandler.MODE = ConnectionTypeHandler.SINGLE_USER;
-        } else if (LocalSettings.getDBDriver().equalsIgnoreCase(MYSQL_DRIVER)) {
+        } else if (LocalSettings.getProperty("dbdriver").equalsIgnoreCase(MYSQL_DRIVER)) {
             ConnectionTypeHandler.PREDEFINED_DRVER = ConnectionTypeHandler.MYSQL;
             ConnectionTypeHandler.MODE = ConnectionTypeHandler.MULTI_USER;
         } else {

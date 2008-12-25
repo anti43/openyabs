@@ -106,8 +106,8 @@ public class DatabaseConnection {
         try {
             Log.Debug(this, "Datenbanktreiber: " + ctype.getDriver(), true);
             Class.forName(ctype.getDriver()).newInstance();
-            user = LocalSettings.getDBUser();
-            password = LocalSettings.getDBPassword();
+            user = LocalSettings.getProperty("dbuser");
+            password = LocalSettings.getProperty("dbpassword");
 
         } catch (Exception ex) {
             ex.printStackTrace();
