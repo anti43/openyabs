@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.List;
 
 import mpv5.data.PropertyStore;
+import mpv5.logging.Log;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -94,6 +95,19 @@ public class XMLReader {
             }
         }
         return null;
+    }
+
+    /**
+     * Prints a node to debug out
+     * @param nodename
+     */
+    public void print(String nodename) {
+        @SuppressWarnings("unchecked")
+        List<Element> list = (List<Element>) rootElement.getChild(nodename).getContent(new ElementFilter());
+        for (int i = 0; i < list.size(); i++) {
+            Element element = list.get(i);
+            Log.Debug(element.getName() + ": " + element.getValue());
+        }
     }
 
     /**

@@ -57,6 +57,7 @@ public class LocalSettings {
         XMLReader read = new XMLReader();
         read.newDoc(new File(Main.SETTINGS_FILE));
         cookie = read.readInto(MPV5View.getUser().getName(), cookie);
+        cookie.print();
         Log.Debug(LocalSettings.class, "Finished local settings.");
     }
 

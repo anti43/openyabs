@@ -17,7 +17,7 @@
 package mpv5.data;
 
 import java.util.ArrayList;
-import java.util.List;
+import mpv5.logging.Log;
 
 /**
  *
@@ -79,5 +79,16 @@ public class PropertyStore {
         if (!found) {
             addProperty(name, newvalue);
         }
+    }
+
+    public String print() {
+       String str = "";
+        if (list.size() > 0) {
+            for (int i = list.size(); i > 0; i--) {
+               str += list.get(i-1)[0] + ": " + list.get(i-1)[1] + "\n";
+            }
+        }
+        Log.Debug(this, str);
+        return str;
     }
 }
