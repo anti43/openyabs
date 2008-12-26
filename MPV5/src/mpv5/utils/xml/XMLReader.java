@@ -19,10 +19,12 @@ package mpv5.utils.xml;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+
 import mpv5.data.PropertyStore;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
+import org.jdom.filter.ElementFilter;
 import org.jdom.input.SAXBuilder;
 
 /**
@@ -94,9 +96,16 @@ public class XMLReader {
         return null;
     }
 
-    public PropertyStore readInto(PropertyStore store) {
+    /**
+     * Reads a node with the given name into a property store object
+     * @param nodename
+     * @param store
+     * @return
+     */
+    public PropertyStore readInto(String nodename, PropertyStore store) {
 
-        List<Element> list = (List<Element>) rootElement.getContent();
+        @SuppressWarnings("unchecked")
+        List<Element> list = (List<Element>) rootElement.getChild(nodename).getContent(new ElementFilter());
         for (int i = 0; i < list.size(); i++) {
             Element element = list.get(i);
             store.addProperty(element.getName(), element.getValue());

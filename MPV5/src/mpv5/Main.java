@@ -3,6 +3,8 @@
  */
 package mpv5;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mpv5.ui.frames.MPV5View;
 import mpv5.logging.*;
 import org.jdesktop.application.Application;
@@ -87,7 +89,12 @@ public class Main extends SingleFrameApplication {
         setEnv();
         parseArgs(args);
         setDerbyLog();
-
+        try {
+            LocalSettings.read();
+        } catch (Exception ex) {
+            Log.Debug(Main.class,ex);
+       
+        }
         launch(Main.class, args);
 
     }

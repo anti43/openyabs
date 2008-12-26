@@ -48,8 +48,7 @@ public class wizard_DBSettings_2 extends javax.swing.JPanel implements Wizardabl
 
     public boolean next() {
 
-        if (master.getStore().getProperty("driver").equals("Local (Derby)")) {
-            master.setMessage(Messages.CONNECTION_PROBE + "Local (Derby)");
+            master.setMessage(Messages.CONNECTION_PROBE + master.getStore().getProperty("driver"));
 
             try {
                 if (new DatabaseConnection().connect(ConnectionTypeHandler.DERBY,
@@ -69,7 +68,7 @@ public class wizard_DBSettings_2 extends javax.swing.JPanel implements Wizardabl
                 master.setMessage(Messages.CONNECTION_FAILED);
                 return false;
             }
-        }
+        
 
         return false;
 

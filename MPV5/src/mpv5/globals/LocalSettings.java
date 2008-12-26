@@ -5,6 +5,7 @@
 package mpv5.globals;
 
 import java.io.File;
+import java.io.IOException;
 import mpv5.Main;
 import mpv5.data.PropertyStore;
 import mpv5.logging.Log;
@@ -12,6 +13,7 @@ import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPV5View;
 import mpv5.utils.xml.XMLReader;
 import mpv5.utils.xml.XMLWriter;
+import org.jdom.JDOMException;
 
 /**
  *
@@ -49,9 +51,13 @@ public class LocalSettings {
         }
     }
 
-    public static void read(){
+    public static void read() throws Exception{
+
+        Log.Debug(LocalSettings.class, "Reading in local settings..");
         XMLReader read = new XMLReader();
-        cookie = read.readInto(cookie);
+        read.newDoc(new File(Main.SETTINGS_FILE));
+        cookie = read.readInto(MPV5View.getUser().getName(), cookie);
+        Log.Debug(LocalSettings.class, "Finished local settings.");
     }
 
 

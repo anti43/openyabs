@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import mpv5.data.PropertyStore;
 import mpv5.globals.Messages;
+import mpv5.logging.Log;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.frames.MPV5View;
 import mpv5.utils.text.RandomText;
@@ -163,7 +164,9 @@ public class XMLWriter {
         addNode(nodename, nodeid);
         Iterator list = cookie.getList().iterator();
         while (list.hasNext()) {
-            addElement(nodename, nodeid, ((String[]) list.next())[0], ((String[]) list.next())[1]);
+            Object o = list.next();
+//            Log.Debug(this,((String[]) o)[0]);
+            addElement(nodename, nodeid, ((String[]) o)[0], ((String[]) o)[1]);
         }
     }
 }

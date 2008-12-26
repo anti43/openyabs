@@ -74,7 +74,7 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
         jLabel1.setText(bundle.getString("wizard_DBSettings_1.jLabel1.text")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Local (Derby)" }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "org.apache.derby.jdbc.EmbeddedDriver" }));
         jComboBox1.setName("jComboBox1"); // NOI18N
 
         labeledTextChooser1.set_Label(bundle.getString("wizard_DBSettings_1.labeledTextChooser1._Label")); // NOI18N
