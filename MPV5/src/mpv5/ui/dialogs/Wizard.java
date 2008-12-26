@@ -184,6 +184,8 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
             oldcomponents.add(lastpanel);
             back.setEnabled(true);
         }
+
+        this.validate();
 }//GEN-LAST:event_nextActionPerformed
 
     private void backActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backActionPerformed
@@ -196,6 +198,8 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
         } catch (Exception e) {
             back.setEnabled(false);
         }
+
+          this.validate();
 }//GEN-LAST:event_backActionPerformed
 
     public void addPanel(Wizardable panel) {

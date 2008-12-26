@@ -7,6 +7,7 @@ package mpv5.utils.numbers;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.Locale;
 import mpv5.globals.LocalSettings;
 import mpv5.logging.Log;
 
@@ -69,7 +70,7 @@ public class FormatNumber {
     }
 
     public static String formatLokalCurrency(Double betrag) {
-        NumberFormat n = NumberFormat.getCurrencyInstance(LocalSettings.instanceOf().getLocale());
+        NumberFormat n = NumberFormat.getCurrencyInstance(new Locale(LocalSettings.getProperty("locale")));
         return n.format(round(betrag));
     }
 

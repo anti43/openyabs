@@ -9,6 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import mpv5.db.common.ConnectionTypeHandler;
 import mpv5.db.common.DatabaseConnection;
+import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.ui.dialogs.WizardMaster;
 import mpv5.ui.dialogs.Wizardable;
@@ -56,6 +57,11 @@ public class wizard_DBSettings_2 extends javax.swing.JPanel implements Wizardabl
                         master.getStore().getProperty("password"),
                         master.getStore().getProperty("url"), true)) {
                     master.setMessage(Messages.CONNECTION_VERIFIED);
+                    LocalSettings.setProperty(LocalSettings.DBPATH, master.getStore().getProperty("url"));
+                    LocalSettings.setProperty(LocalSettings.DBDRIVER, master.getStore().getProperty("driver"));
+                    LocalSettings.setProperty(LocalSettings.DBUSER, master.getStore().getProperty("user"));
+                    LocalSettings.setProperty(LocalSettings.DBPASSWORD, master.getStore().getProperty("password"));
+                    LocalSettings.save();
                 } else {
                     master.setMessage(Messages.CONNECTION_FAILED);
                 }

@@ -26,7 +26,7 @@ public class MPV5View extends FrameView {
 
     public static JFrame identifier;
     public CloseableTabbedPane tabPane;
-    public static JLabel messagelabel;
+    public static JLabel messagelabel = new JLabel();
 
     public static void addMessage(String message) {
         messagelabel.setText(message);
@@ -50,7 +50,7 @@ public class MPV5View extends FrameView {
         tabPane = new CloseableTabbedPane();
         identifier = this.getFrame();
 
-        messagelabel = this.getStatusMessageLabel();
+        messagelabel = statusMessageLabel;
         tabpanePanel.add(tabPane, BorderLayout.CENTER);
 
         QueryHandler.setWaitCursorFor(identifier);

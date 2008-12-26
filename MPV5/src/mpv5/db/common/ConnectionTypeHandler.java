@@ -19,7 +19,6 @@ package mpv5.db.common;
 import mpv5.logging.Log;
 import java.io.File;
 import java.io.IOException;
-import mpv5.Main;
 import mpv5.globals.Constants;
 import mpv5.globals.LocalSettings;
 
@@ -77,7 +76,7 @@ public class ConnectionTypeHandler {
     private static String CONNECTION_STRING = null;
     private static Integer PREDEFINED_DRVER = null;
     private static Integer MODE = 0;
-    private static String URL = "D:\\Documents and Settings\\Administrator\\.netbeans-derby";
+    private static String URL = LocalSettings.getProperty(LocalSettings.DBPATH);
 //    private static String URL = "C:\\Users\\Andreas\\.netbeans-derby";
 
     /**
@@ -85,10 +84,10 @@ public class ConnectionTypeHandler {
      */
     public ConnectionTypeHandler() {
               
-        if (LocalSettings.getProperty("dbdriver").equalsIgnoreCase(DERBY_DRIVER)) {
+        if (LocalSettings.getProperty(LocalSettings.DBDRIVER).equalsIgnoreCase(DERBY_DRIVER)) {
             ConnectionTypeHandler.PREDEFINED_DRVER = ConnectionTypeHandler.DERBY;
             ConnectionTypeHandler.MODE = ConnectionTypeHandler.SINGLE_USER;
-        } else if (LocalSettings.getProperty("dbdriver").equalsIgnoreCase(MYSQL_DRIVER)) {
+        } else if (LocalSettings.getProperty(LocalSettings.DBDRIVER).equalsIgnoreCase(MYSQL_DRIVER)) {
             ConnectionTypeHandler.PREDEFINED_DRVER = ConnectionTypeHandler.MYSQL;
             ConnectionTypeHandler.MODE = ConnectionTypeHandler.MULTI_USER;
         } else {

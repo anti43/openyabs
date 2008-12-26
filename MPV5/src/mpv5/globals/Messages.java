@@ -54,5 +54,6 @@ public class Messages {
     public static String CONNECTION_FAILED =  "The Database Connection failed.";
     public static String CONNECTION_PROBE =  "Checking Database Connection: ";
     public static String ERROR_SAVING_LOCALSETTINGS = "Could not save local settings";
+    public static String DB_DRIVER_INVALID = "The driver for the specified database type could not be loaded\n";
 
 }

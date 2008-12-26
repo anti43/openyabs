@@ -247,16 +247,16 @@ public class Main extends SingleFrameApplication {
         }
 
         if (cl.hasOption(dbpath)) {
-            LocalSettings.setDBPath(((String) cl.getValue(dbpath)).split("=")[1]);
+            LocalSettings.setProperty(LocalSettings.DBPATH,((String) cl.getValue(dbpath)).split("=")[1]);
         }
 
         if (cl.hasOption(dbtype)) {
             if (((String) cl.getValue(dbtype)).toLowerCase().endsWith("derby")) {
-                LocalSettings.setDBDriver(ConnectionTypeHandler.DERBY_DRIVER);
+                LocalSettings.setProperty(LocalSettings.DBDRIVER,ConnectionTypeHandler.DERBY_DRIVER);
             } else if (((String) cl.getValue(dbtype)).toLowerCase().endsWith("mysql")) {
-                LocalSettings.setDBDriver(ConnectionTypeHandler.MYSQL_DRIVER);
+                LocalSettings.setProperty(LocalSettings.DBDRIVER,ConnectionTypeHandler.MYSQL_DRIVER);
             } else if (((String) cl.getValue(dbtype)).toLowerCase().endsWith("custom")) {
-                LocalSettings.setDBDriver(ConnectionTypeHandler.CUSTOM_DRIVER);
+                LocalSettings.setProperty(LocalSettings.DBDRIVER,ConnectionTypeHandler.CUSTOM_DRIVER);
             }
         }
 

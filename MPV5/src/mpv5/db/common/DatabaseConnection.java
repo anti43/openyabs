@@ -12,6 +12,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import mpv5.globals.LocalSettings;
+import mpv5.globals.Messages;
 import mpv5.ui.dialogs.Popup;
 
 /**
@@ -105,7 +106,13 @@ public class DatabaseConnection {
         ctype = new ConnectionTypeHandler();
         try {
             Log.Debug(this, "Datenbanktreiber: " + ctype.getDriver(), true);
-            Class.forName(ctype.getDriver()).newInstance();
+            try {
+                Class.forName(ctype.getDriver()).newInstance();
+            } catch (ClassNotFoundException ex) {
+                Popup.warn(Messages.DB_DRIVER_INVALID + ex.getMessage(), Popup.ERROR);
+            DatabaseConnection.shutdown();
+
+            }
             user = LocalSettings.getProperty("dbuser");
             password = LocalSettings.getProperty("dbpassword");
 

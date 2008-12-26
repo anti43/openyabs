@@ -82,6 +82,8 @@ public class XMLWriter {
                 throw new Exception("Could not lock " + file);
             }
         }
+        file.getParentFile().mkdirs();
+        file.createNewFile();
         XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
         outputter.output(myDocument, new FileWriter(file));
         MPV5View.addMessage(Messages.FILE_SAVED + file.getPath());

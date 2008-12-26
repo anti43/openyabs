@@ -7,6 +7,7 @@ package mpv5.globals;
 import java.io.File;
 import mpv5.Main;
 import mpv5.data.PropertyStore;
+import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPV5View;
 import mpv5.utils.xml.XMLReader;
@@ -19,6 +20,10 @@ import mpv5.utils.xml.XMLWriter;
 public class LocalSettings {
 
     private static PropertyStore cookie = new PropertyStore();
+    public static final String DBPATH = "dbpath";
+    public static String DBDRIVER = "dbdriver";
+    public static String DBUSER = "dbuser";
+    public static String DBPASSWORD = "dbpassword";
 
     public static String getProperty(String name) {
         if (cookie.getProperty(name) != null) {
@@ -40,6 +45,7 @@ public class LocalSettings {
             x.createOrReplace(new File(Main.SETTINGS_FILE));
         } catch (Exception ex) {
             Popup.error(Messages.ERROR_SAVING_LOCALSETTINGS, ex);
+            Log.Debug(LocalSettings.class, ex);
         }
     }
 

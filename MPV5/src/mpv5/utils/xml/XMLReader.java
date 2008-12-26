@@ -94,8 +94,14 @@ public class XMLReader {
         return null;
     }
 
-    public PropertyStore readInto(PropertyStore cookie) {
+    public PropertyStore readInto(PropertyStore store) {
 
-        cookie.addProperty(name, value);
+        List<Element> list = (List<Element>) rootElement.getContent();
+        for (int i = 0; i < list.size(); i++) {
+            Element element = list.get(i);
+            store.addProperty(element.getName(), element.getValue());
+        }
+
+        return store;
     }
 }
