@@ -25,6 +25,7 @@ package mpv5.ui.dialogs;
 import java.awt.Color;
 import java.awt.Component;
 import java.util.ArrayList;
+import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import mpv5.data.PropertyStore;
@@ -42,13 +43,16 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
     private Component lastpanel;
     private ArrayList<Component> oldcomponents = new ArrayList<Component>();
     private boolean isEnded = false;
+    private boolean standalone;
 
     /** Creates new form Wizard */
-    public Wizard() {
+    public Wizard(boolean standalone) {
         initComponents();
         back.setEnabled(false);
         new Position(this);
         setVisible(true);
+        this.standalone = standalone;
+        if(standalone)this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     public void showWiz() {
@@ -173,7 +177,7 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
     }// </editor-fold>//GEN-END:initComponents
 
     private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
-        this.dispose();
+        if(!standalone)this.dispose();else System.exit(1);
 }//GEN-LAST:event_cancelActionPerformed
 
     private void nextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextActionPerformed
@@ -220,6 +224,8 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
         cancel.setEnabled(!end);
         back.setEnabled(!end);
 
+        if(standalone)System.exit(0);
+
     }
 
     public PropertyStore getStore() {
@@ -237,7 +243,7 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
         java.awt.EventQueue.invokeLater(new Runnable() {
 
             public void run() {
-                new Wizard().setVisible(true);
+                new Wizard(true).setVisible(true);
             }
         });
     }

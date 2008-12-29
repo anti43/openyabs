@@ -24,7 +24,7 @@ import mpv5.globals.Messages;
 import mpv5.ui.dialogs.Wizard;
 import mpv5.ui.dialogs.subcomponents.wizard_DBSettings_1;
 import mpv5.ui.dialogs.subcomponents.wizard_DBSettings_2;
-import mpv5.ui.dialogs.subcomponents.wizard_DBSettings_3;
+
 import mpv5.utils.files.FileDirectoryHandler;
 import org.apache.commons.cli2.*;
 import org.apache.commons.cli2.builder.*;
@@ -45,10 +45,9 @@ public class Main extends SingleFrameApplication {
             show(new MPV5View(this));
         } else {
 
-            Wizard w = new Wizard();
+            Wizard w = new Wizard(true);
             w.addPanel(new wizard_DBSettings_1(w));
             w.addPanel(new wizard_DBSettings_2(w));
-            w.addPanel(new wizard_DBSettings_3(w));
             w.showWiz();
         }
     }

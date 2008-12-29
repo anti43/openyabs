@@ -5,6 +5,10 @@
  */
 package mpv5.ui.dialogs.subcomponents;
 
+import mpv5.db.common.ConnectionTypeHandler;
+import mpv5.db.common.DatabaseConnection;
+import mpv5.globals.LocalSettings;
+import mpv5.globals.Messages;
 import mpv5.ui.dialogs.Wizard;
 import mpv5.ui.dialogs.WizardMaster;
 import mpv5.ui.dialogs.Wizardable;
@@ -14,12 +18,12 @@ import mpv5.ui.dialogs.Wizardable;
  * @author Administrator
  */
 public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardable {
+
     private WizardMaster master;
 
-  
-
     public wizard_DBSettings_1(WizardMaster w) {
-        this.master = w;initComponents();
+        this.master = w;
+        initComponents();
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -131,11 +135,31 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
     // End of variables declaration//GEN-END:variables
 
     public boolean next() {
-        if (labeledTextChooser1.get_Text() != null && labeledTextChooser1.get_Text().length()>0) {
-            master.getStore().changeProperty("driver",jComboBox1.getSelectedItem().toString());
-            master.getStore().changeProperty("url",labeledTextChooser1.get_Text());
-            master.getStore().changeProperty("user",labeledTextField2.get_Text());
-            master.getStore().changeProperty("password",labeledTextField1.get_Text());
+        if (labeledTextChooser1.get_Text() != null && labeledTextChooser1.get_Text().length() > 0) {
+            master.getStore().changeProperty("driver", jComboBox1.getSelectedItem().toString());
+            master.getStore().changeProperty("url", labeledTextChooser1.get_Text());
+            master.getStore().changeProperty("user", labeledTextField2.get_Text());
+            master.getStore().changeProperty("password", labeledTextField1.get_Text());
+            master.setMessage(Messages.CONNECTION_PROBE + master.getStore().getProperty("driver"));
+            try {
+                if (new DatabaseConnection().connect(ConnectionTypeHandler.DERBY,
+                        master.getStore().getProperty("user"),
+                        master.getStore().getProperty("password"),
+                        master.getStore().getProperty("url"), true)) {
+                    master.setMessage(Messages.CONNECTION_VERIFIED);
+                    LocalSettings.setProperty(LocalSettings.DBPATH, master.getStore().getProperty("url"));
+                    LocalSettings.setProperty(LocalSettings.DBDRIVER, master.getStore().getProperty("driver"));
+                    LocalSettings.setProperty(LocalSettings.DBUSER, master.getStore().getProperty("user"));
+                    LocalSettings.setProperty(LocalSettings.DBPASSWORD, master.getStore().getProperty("password"));
+                    LocalSettings.save();
+
+                } else {
+                    master.setMessage(Messages.CONNECTION_FAILED);
+                }
+            } catch (Exception ex) {
+                master.setMessage(Messages.CONNECTION_FAILED);
+                return false;
+            }
             return true;
         } else {
             return false;
