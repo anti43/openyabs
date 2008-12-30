@@ -1,6 +1,6 @@
 ----------------------------------------------------------------
-2008-12-29 19:03:43.105 GMT:
- Booting Derby version The Apache Software Foundation - Apache Derby - 10.4.2.0 - (689064): instance a816c00e-011e-8421-5249-000000334f30
-on database directory C:\Users\Andreas\.netbeans-derby\mpv5db  
+2008-12-30 11:40:11.121 GMT:
+ Booting Derby version The Apache Software Foundation - Apache Derby - 10.4.2.0 - (689064): instance a816c00e-011e-87b1-9cc8-000000369968
+on database directory D:\Documents and Settings\Administrator\My Documents\NetBeansProjects\mpv5db  
 
 Database Class Loader started - derby.database.classpath=''

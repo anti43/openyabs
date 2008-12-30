@@ -41,12 +41,9 @@ public class DatabaseConnection {
     }
     private Statement statement;
 
+
     public java.sql.Connection getConnection() {
-        try {
             return conn;
-        } catch (Exception ex) {
-            return null;
-        }
     }
 
     /**
@@ -59,7 +56,7 @@ public class DatabaseConnection {
      * @return Connection
      * @throws Exception
      */
-    public boolean connect(int predefinedDriver, String user, String password, String location, boolean create) throws Exception {
+    public boolean connect(String predefinedDriver, String user, String password, String location, boolean create) throws Exception {
 
         ctype = new ConnectionTypeHandler();
         ctype.setDRIVER(predefinedDriver);
@@ -78,7 +75,7 @@ public class DatabaseConnection {
             Log.Debug(this, "Datenbankverbindung: " + ctype.getConnectionString(create), true);
             conn = DriverManager.getConnection(ctype.getConnectionString(create), user, password);
             if (conn != null && conn.isValid(10)) {
-                DatabaseConnection.shutdown();
+                connector = this;
                 return true;
             } else {
                 return false;
@@ -154,6 +151,19 @@ public class DatabaseConnection {
 
             ex.printStackTrace();
             System.exit(1);
+        }
+    }
+    
+    public boolean runQueries(String[] queries) throws SQLException{
+        Statement stm = this.getConnection().createStatement();
+        for (int i = 0; i < queries.length; i++) {
+            stm.addBatch(queries[i]);
+        }
+        try {
+            stm.executeBatch();
+            return true;
+        } catch (SQLException sQLException) {
+            return false;
         }
     }
 }

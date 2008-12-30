@@ -5,6 +5,7 @@ package mpv5;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.UnsupportedLookAndFeelException;
 import mpv5.ui.frames.MPV5View;
 import mpv5.logging.*;
 import org.jdesktop.application.Application;
@@ -15,6 +16,7 @@ import java.io.File;
 import java.util.Map;
 import java.util.Properties;
 import javax.swing.LookAndFeel;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import mpv5.db.common.ConnectionTypeHandler;
 import mpv5.db.common.DatabaseConnection;
@@ -42,6 +44,7 @@ public class Main extends SingleFrameApplication {
     @Override
     protected void startup() {
         if (probeDatabaseConnection()) {
+            setLaF(LocalSettings.getProperty(LocalSettings.LAF));
             show(new MPV5View(this));
         } else {
 
@@ -91,8 +94,8 @@ public class Main extends SingleFrameApplication {
         try {
             LocalSettings.read();
         } catch (Exception ex) {
-            Log.Debug(Main.class,ex);
-       
+            Log.Debug(Main.class, ex);
+
         }
         launch(Main.class, args);
 
@@ -253,16 +256,16 @@ public class Main extends SingleFrameApplication {
         }
 
         if (cl.hasOption(dbpath)) {
-            LocalSettings.setProperty(LocalSettings.DBPATH,((String) cl.getValue(dbpath)).split("=")[1]);
+            LocalSettings.setProperty(LocalSettings.DBPATH, ((String) cl.getValue(dbpath)).split("=")[1]);
         }
 
         if (cl.hasOption(dbtype)) {
             if (((String) cl.getValue(dbtype)).toLowerCase().endsWith("derby")) {
-                LocalSettings.setProperty(LocalSettings.DBDRIVER,ConnectionTypeHandler.DERBY_DRIVER);
+                LocalSettings.setProperty(LocalSettings.DBDRIVER, ConnectionTypeHandler.DERBY_DRIVER);
             } else if (((String) cl.getValue(dbtype)).toLowerCase().endsWith("mysql")) {
-                LocalSettings.setProperty(LocalSettings.DBDRIVER,ConnectionTypeHandler.MYSQL_DRIVER);
+                LocalSettings.setProperty(LocalSettings.DBDRIVER, ConnectionTypeHandler.MYSQL_DRIVER);
             } else if (((String) cl.getValue(dbtype)).toLowerCase().endsWith("custom")) {
-                LocalSettings.setProperty(LocalSettings.DBDRIVER,ConnectionTypeHandler.CUSTOM_DRIVER);
+                LocalSettings.setProperty(LocalSettings.DBDRIVER, ConnectionTypeHandler.CUSTOM_DRIVER);
             }
         }
 
@@ -275,22 +278,35 @@ public class Main extends SingleFrameApplication {
         }
     }
 
+    /**
+     *
+     */
     public static void setDerbyLog() {
         Properties p = System.getProperties();
         p.put("derby.stream.error.file", FileDirectoryHandler.getTempFile());
     }
 
-    public static void setLaF(LookAndFeel lf) {
+    /**
+     * 
+     * @param lafname 
+     */
+    public static void setLaF(String lafname) {
         try {
-            if (lf != null) {
-                UIManager.setLookAndFeel(lf);
+            if (lafname != null) {
+                UIManager.setLookAndFeel(lafname);
             } else {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             }
             LookAndFeelAddons.setAddon(LookAndFeelAddons.getBestMatchAddonClassName());
+            if (MPV5View.identifier != null && MPV5View.identifier.isShowing()) {
+                MPV5View.identifier.setVisible(false);
+                SwingUtilities.updateComponentTreeUI(MPV5View.identifier);
+                MPV5View.identifier.pack();
+                MPV5View.identifier.setVisible(true);
+            }
         } catch (Exception exe) {
             try {
-                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
             } catch (Exception ex) {
                 Log.Debug(Main.class, ex.getMessage());
             }

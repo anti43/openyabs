@@ -3,10 +3,13 @@
  */
 package mpv5.ui.frames;
 
+import de.muntjak.tinylookandfeel.TinyLookAndFeel;
+import de.muntjak.tinylookandfeel.controlpanel.ControlPanel;
 import java.awt.BorderLayout;
 import java.awt.Cursor;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import mpv5.Main;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.QueryHandler;
@@ -16,6 +19,7 @@ import mpv5.ui.panels.DataPanel;
 import mpv5.ui.parents.CloseableTabbedPane;
 import mpv5.ui.parents.FadeOnChangeLabel;
 import mpv5.usermanagement.User;
+import mpv5.utils.programs.JavaProgram;
 import org.jdesktop.application.SingleFrameApplication;
 import org.jdesktop.application.FrameView;
 
@@ -85,7 +89,10 @@ public class MPV5View extends FrameView {
         javax.swing.JMenu fileMenu = new javax.swing.JMenu();
         javax.swing.JMenuItem exitMenuItem = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
+        jMenu2 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
+        jMenuItem3 = new javax.swing.JMenuItem();
         statusPanel = new javax.swing.JPanel();
         javax.swing.JSeparator statusPanelSeparator = new javax.swing.JSeparator();
         statusMessageLabel = new FadeOnChangeLabel();
@@ -346,6 +353,9 @@ public class MPV5View extends FrameView {
         jMenu1.setText(bundle.getString("MPV5View.jMenu1.text")); // NOI18N
         jMenu1.setName("jMenu1"); // NOI18N
 
+        jMenu2.setText(bundle.getString("MPV5View.jMenu2.text")); // NOI18N
+        jMenu2.setName("jMenu2"); // NOI18N
+
         jMenuItem1.setText(bundle.getString("MPV5View.jMenuItem1.text")); // NOI18N
         jMenuItem1.setName("jMenuItem1"); // NOI18N
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
@@ -353,7 +363,27 @@ public class MPV5View extends FrameView {
                 jMenuItem1ActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItem1);
+        jMenu2.add(jMenuItem1);
+
+        jMenuItem2.setText(bundle.getString("MPV5View.jMenuItem2.text")); // NOI18N
+        jMenuItem2.setName("jMenuItem2"); // NOI18N
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jMenuItem2);
+
+        jMenuItem3.setText(bundle.getString("MPV5View.jMenuItem3.text")); // NOI18N
+        jMenuItem3.setName("jMenuItem3"); // NOI18N
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem3ActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jMenuItem3);
+
+        jMenu1.add(jMenu2);
 
         menuBar.add(jMenu1);
 
@@ -516,9 +546,6 @@ public class MPV5View extends FrameView {
     private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
     }//GEN-LAST:event_exitMenuItemActionPerformed
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
-
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         ContactPanel tab = new ContactPanel(Context.getCustomer());
         tab.setType(ContactPanel.CUSTOMER);
@@ -574,6 +601,20 @@ public class MPV5View extends FrameView {
         tabPane.setSelectedComponent(tab);
     }//GEN-LAST:event_jButton18ActionPerformed
 
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+       Main.setLaF(null);
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+       Main.setLaF("de.muntjak.tinylookandfeel.TinyLookAndFeel");
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
+
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+      TinyLookAndFeel.controlPanelInstantiated = true;
+      Main.setLaF("de.muntjak.tinylookandfeel.TinyLookAndFeel");
+      new ControlPanel();
+    }//GEN-LAST:event_jMenuItem3ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToolBar commonActionsToolbar;
     private javax.swing.JButton jButton1;
@@ -591,7 +632,10 @@ public class MPV5View extends FrameView {
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
     private com.l2fprod.common.swing.JOutlookBar jOutlookBar1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;

@@ -22,7 +22,6 @@ import java.io.IOException;
 import mpv5.globals.Constants;
 import mpv5.globals.LocalSettings;
 
-
 /**
  * This class handles the different DB connection types (derby, mysql, custom)
  * @author Andreas
@@ -67,23 +66,20 @@ public class ConnectionTypeHandler {
     public static String getDriverName() {
         return CONNECTION_STRING;
     }
-    
+
     public static int getDriverType() {
         return PREDEFINED_DRVER;
     }
-    
-    
     private static String CONNECTION_STRING = null;
     private static Integer PREDEFINED_DRVER = null;
     private static Integer MODE = 0;
     private static String URL = LocalSettings.getProperty(LocalSettings.DBPATH);
-//    private static String URL = "C:\\Users\\Andreas\\.netbeans-derby";
 
     /**
      * Constructs a new ConnHandler
      */
     public ConnectionTypeHandler() {
-              
+
         if (LocalSettings.getProperty(LocalSettings.DBDRIVER).equalsIgnoreCase(DERBY_DRIVER)) {
             ConnectionTypeHandler.PREDEFINED_DRVER = ConnectionTypeHandler.DERBY;
             ConnectionTypeHandler.MODE = ConnectionTypeHandler.SINGLE_USER;
@@ -122,13 +118,13 @@ public class ConnectionTypeHandler {
             case MYSQL:
                 setConnectionString("jdbc:mysql://" + getURL() + "/" + Constants.DATABASENAME);
                 if (withCreate) {
-                    Log.Debug(this, "Sie müssen die MYSQL Datenbank " + Constants.DATABASENAME +" manuell anlegen.", true);
+                    Log.Debug(this, "Sie müssen die MYSQL Datenbank " + Constants.DATABASENAME + " manuell anlegen.", true);
                 }
                 break;
             case CUSTOM:
                 setConnectionString("jdbc:sql://" + getURL() + "/" + Constants.DATABASENAME);
                 if (withCreate) {
-                    Log.Debug(this, "Sie müssen die SQL Datenbank " + Constants.DATABASENAME +" manuell anlegen.", true);
+                    Log.Debug(this, "Sie müssen die SQL Datenbank " + Constants.DATABASENAME + " manuell anlegen.", true);
                 }
                 break;
         }
@@ -213,5 +209,20 @@ public class ConnectionTypeHandler {
                 return CUSTOM_DRIVER;
         }
         return null;
+    }
+
+    /**
+     *
+     * @param predefinedDriver
+     */
+    public void setDRIVER(String predefinedDriver) {
+        if (predefinedDriver.equals(DERBY_DRIVER)) {
+            PREDEFINED_DRVER = DERBY;
+        } else if (predefinedDriver.equals(MYSQL_DRIVER)) {
+            PREDEFINED_DRVER = MYSQL;
+        } else {
+            PREDEFINED_DRVER = CUSTOM;
+            CUSTOM_DRIVER = predefinedDriver;
+        }
     }
 }

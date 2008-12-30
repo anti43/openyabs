@@ -20,9 +20,9 @@ package mpv5.db.common;
  *
  * @author Administrator
  */
-public class DatabaseStructure {
+public class DatabaseInstallation {
 
-    public final static String[] DERBY = new String[]{"CREATE TABLE contacts (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
+    public final static String[] DERBY_STRUCTURE = new String[]{"CREATE TABLE contacts (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
         "cnumber VARCHAR(250),title VARCHAR(250) default NULL," +
         "prename VARCHAR(250) default NULL, cname VARCHAR(250) default NULL, street VARCHAR(250) default NULL," +
         "zip VARCHAR(50) default NULL,city VARCHAR(300) default NULL, mainphone VARCHAR(250) default NULL," +
@@ -34,4 +34,24 @@ public class DatabaseStructure {
         "ismale SMALLINT DEFAULT 0,isenabled SMALLINT DEFAULT 1," +
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
         "PRIMARY KEY  (ids))"};
+
+    private String[] MYSQL_STRUCTURE;
+    private String[] CUSTOM_STRUCTURE;
+
+    public String[] getStructure() {
+        if (ConnectionTypeHandler.getDriverType() == ConnectionTypeHandler.DERBY) {
+            return DERBY_STRUCTURE;
+        } else if (ConnectionTypeHandler.getDriverType() == ConnectionTypeHandler.DERBY) {
+            return MYSQL_STRUCTURE;
+        } else {
+            return CUSTOM_STRUCTURE;
+        }
+    }
+
+    /**
+     * @param CUSTOM_STRUCTURE the CUSTOM_STRUCTURE SQL commands to set
+     */
+    public void setCUSTOM(String[] CUSTOM_STRUCTURE) {
+        this.CUSTOM_STRUCTURE = CUSTOM_STRUCTURE;
+    }
 }

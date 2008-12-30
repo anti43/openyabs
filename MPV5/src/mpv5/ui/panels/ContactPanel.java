@@ -23,12 +23,14 @@ package mpv5.ui.panels;
 
 import java.awt.BorderLayout;
 import java.awt.event.ItemEvent;
+import java.util.Date;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import mpv5.db.common.*;
 import mpv5.items.contacts.Contact;
 import mpv5.logging.Log;
 import mpv5.utils.arrays.ArrayUtils;
+import mpv5.utils.date.DateConverter;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.print.FilePrintJob;
 import mpv5.utils.print.PrintJob;
@@ -63,6 +65,8 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         new MPComboBoxModelItem(1, "VCF File"),
         new MPComboBoxModelItem(2, "CSV File"),
         new MPComboBoxModelItem(3, "XML File")}));
+
+        dateadded.setText(DateConverter.getTodayDefDate());
     }
 
     public DatabaseObject getDataOwner() {
@@ -125,7 +129,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         supplier = new javax.swing.JCheckBox();
         manufacturer = new javax.swing.JCheckBox();
         number = new mpv5.ui.beans.LabeledTextField();
-        jLabel5 = new javax.swing.JLabel();
+        dateadded = new javax.swing.JLabel();
         company = new javax.swing.JCheckBox();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -231,10 +235,10 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         number.set_LabelFont(new java.awt.Font("Tahoma", 1, 11));
         number.setName("number"); // NOI18N
 
-        jLabel5.setText(bundle.getString("ContactPanel.jLabel5.text")); // NOI18N
-        jLabel5.setToolTipText(bundle.getString("ContactPanel.jLabel5.toolTipText")); // NOI18N
-        jLabel5.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jLabel5.setName("jLabel5"); // NOI18N
+        dateadded.setText(bundle.getString("ContactPanel.dateadded.text")); // NOI18N
+        dateadded.setToolTipText(bundle.getString("ContactPanel.dateadded.toolTipText")); // NOI18N
+        dateadded.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        dateadded.setName("dateadded"); // NOI18N
 
         company.setText(bundle.getString("ContactPanel.company.text")); // NOI18N
         company.setName("company"); // NOI18N
@@ -270,7 +274,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 235, Short.MAX_VALUE)
-                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(dateadded, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -293,7 +297,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                             .addComponent(supplier)
                             .addComponent(manufacturer)
                             .addComponent(company)))
-                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(dateadded, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(number, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -675,15 +679,15 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(leftpane, javax.swing.GroupLayout.DEFAULT_SIZE, 625, Short.MAX_VALUE)
+            .addComponent(leftpane, javax.swing.GroupLayout.DEFAULT_SIZE, 626, Short.MAX_VALUE)
             .addComponent(rightpane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void enabledItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_enabledItemStateChanged
-        isCustomer(enabled.isSelected());
-        isManufacturer(enabled.isSelected());
-        isSupplier(enabled.isSelected());
+//        isCustomer(enabled.isSelected());
+//        isManufacturer(enabled.isSelected());
+//        isSupplier(enabled.isSelected());
     }//GEN-LAST:event_enabledItemStateChanged
 
     private void customerItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_customerItemStateChanged
@@ -747,6 +751,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     private javax.swing.JComboBox companyselect;
     private javax.swing.JCheckBox customer;
     private javax.swing.JTable dataTable;
+    private javax.swing.JLabel dateadded;
     private javax.swing.JCheckBox enabled;
     private mpv5.ui.beans.LabeledTextField fax;
     private javax.swing.JRadioButton female;
@@ -755,7 +760,6 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
@@ -810,6 +814,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     public String zip_;
     public int companyuid_;
     public int ids_;
+    public Date dateadded_;
 
     public void collectData() {
         city_ = city.get_Text();
@@ -833,6 +838,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         website_ = website.get_Text();
         workphone_ = workphone.get_Text();
         zip_ = zip.get_Text();
+        dateadded_ = DateConverter.getDate(dateadded.getText());
     }
 
     public void exposeData() {
@@ -857,6 +863,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         website.set_Text(website_);
         workphone.set_Text(workphone_);
         zip.set_Text(zip_);
+        dateadded.setText(DateConverter.getDefDateString(dateadded_));
 
 //        dataTable.setModel(new MPTableModel(new DatabaseSearch(Context.getCompany()).getValuesFor(prename_, fax_, phone_), header));
 

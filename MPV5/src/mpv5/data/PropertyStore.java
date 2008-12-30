@@ -28,6 +28,22 @@ public class PropertyStore {
     public ArrayList<String[]> list = new ArrayList<String[]>();
 
     /**
+     * Creates a new empty property store
+     */
+    public PropertyStore() {
+    }
+
+    /**
+     * Creates a new property store and initially adds the given values
+     * @param string
+     */
+    public PropertyStore(String[][] string) {
+        for (int i = 0; i < string.length; i++) {
+            addProperty(string[i][0], string[i][1]);
+        }
+    }
+
+    /**
      * Adds a new Property
      * @param name
      * @param value

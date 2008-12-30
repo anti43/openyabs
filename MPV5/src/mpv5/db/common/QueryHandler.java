@@ -730,7 +730,9 @@ public class QueryHandler implements Cloneable {
             }
         }
         stop();
-        if(jobmessage!=null)MPV5View.addMessage(jobmessage);
+        if(jobmessage!=null) {
+            MPV5View.addMessage(jobmessage);
+        }
         return retval;
 
     }

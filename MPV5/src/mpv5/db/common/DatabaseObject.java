@@ -7,12 +7,14 @@ package mpv5.db.common;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.panels.DataPanel;
 import mpv5.ui.dialogs.Popup;
+import mpv5.utils.date.DateConverter;
 
 /**
  *
@@ -100,7 +102,7 @@ public abstract class DatabaseObject {
         String left = "";
         String right = "";
         Object tempval;
-        int intval = 0;
+//        int intval = 0;
         String stringval = "";
 
         for (int i = 0; i < this.getClass().getMethods().length; i++) {
@@ -119,6 +121,9 @@ public abstract class DatabaseObject {
                         } else {
                             stringval = "0";
                         }
+                    } else  if (tempval.getClass().isInstance(new Date())) {
+                    
+                          stringval = "(;;2#4#1#1#8#0#;;)" + DateConverter.getSQLDateString((Date)tempval) + "(;;2#4#1#1#8#0#;;)";
                     }
                     right += stringval + "(;;,;;)";
                 } catch (IllegalAccessException ex) {
@@ -128,24 +133,25 @@ public abstract class DatabaseObject {
                 } catch (InvocationTargetException ex) {
                     Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            } else if (this.getClass().getMethods()[i].getName().startsWith("is")) {
-                try {
-                    left += this.getClass().getMethods()[i].getName().substring(2, this.getClass().getMethods()[i].getName().length()) + ",";
-                    tempval = this.getClass().getMethods()[i].invoke(this, (Object[]) null);
-                    if (tempval.getClass().isInstance(boolean.class)) {
-                        if (((Boolean) tempval)) {
-                            intval = 1;
-                        }
-                    }
-                    right += "(;;2#4#1#1#8#0#;;)" + intval + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
-                } catch (IllegalAccessException ex) {
-                    Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (IllegalArgumentException ex) {
-                    Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (InvocationTargetException ex) {
-                    Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
-                }
             }
+//            else if (this.getClass().getMethods()[i].getName().startsWith("is")) {
+//                try {
+//                    left += this.getClass().getMethods()[i].getName().substring(2, this.getClass().getMethods()[i].getName().length()) + ",";
+//                    tempval = this.getClass().getMethods()[i].invoke(this, (Object[]) null);
+//                    if (tempval.getClass().isInstance(boolean.class)) {
+//                        if (((Boolean) tempval)) {
+//                            intval = 1;
+//                        }
+//                    }
+//                    right += "(;;2#4#1#1#8#0#;;)" + intval + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
+//                } catch (IllegalAccessException ex) {
+//                    Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+//                } catch (IllegalArgumentException ex) {
+//                    Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+//                } catch (InvocationTargetException ex) {
+//                    Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            }
         }
 
         return new String[]{left.substring(0, left.length() - 1), right.substring(0, right.length() - 7), ""};
@@ -236,16 +242,17 @@ public abstract class DatabaseObject {
                         Log.Debug(this, name + " ?? : " + vars.get(k).getName() +" = " + select.getData()[i][j]);
                         try {
                             if (name.startsWith("is")) {
-                                if (select.getData()[i][j].equals("1")) {
+                                if (String.valueOf(select.getData()[i][j]).equals("1")) {
                                     vars.get(k).invoke(this, new Object[]{true});
                                 } else {
                                     vars.get(k).invoke(this, new Object[]{false});
                                 }
                             } else if (name.endsWith("uid") || name.equals("ids")) {
                                 vars.get(k).invoke(this, new Object[]{Integer.valueOf(String.valueOf(select.getData()[i][j]))});
+                            } else if (name.startsWith("date")) {
+                                vars.get(k).invoke(this, new Object[]{DateConverter.getDate(String.valueOf(select.getData()[i][j]))});
                             } else {
-
-                                vars.get(k).invoke(this, new Object[]{select.getData()[i][j]});
+                                vars.get(k).invoke(this, new Object[]{String.valueOf(select.getData()[i][j])});
                             }
                         } catch (IllegalAccessException ex) {
                             Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);

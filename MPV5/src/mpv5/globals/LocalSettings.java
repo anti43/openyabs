@@ -5,6 +5,7 @@
 package mpv5.globals;
 
 import java.io.File;
+import javax.swing.UIManager;
 import mpv5.Main;
 import mpv5.data.PropertyStore;
 import mpv5.logging.Log;
@@ -24,10 +25,17 @@ public class LocalSettings {
     public static String DBDRIVER = "dbdriver";
     public static String DBUSER = "dbuser";
     public static String DBPASSWORD = "dbpassword";
+    public static String LAF = "laf";
+    private static PropertyStore predefinedSettings = new PropertyStore(new String[][]{
+                //        {LAF,UIManager.getSystemLookAndFeelClassName()}
+                {LAF, "de.muntjak.tinylookandfeel.TinyLookAndFeel"}
+            });
 
     public static String getProperty(String name) {
         if (cookie.getProperty(name) != null) {
             return cookie.getProperty(name);
+        } else if (predefinedSettings.getProperty(name) != null) {
+            cookie.addProperty(name, predefinedSettings.getProperty(name));
         } else {
             cookie.addProperty(name, "NA");
         }
@@ -38,10 +46,10 @@ public class LocalSettings {
         cookie.changeProperty(name, value);
     }
 
-    public static void save(){
+    public static void save() {
         XMLWriter x = new XMLWriter();
         try {
-            x.append(new File(Main.SETTINGS_FILE),MPV5View.getUser().getName(), MPV5View.getUser().getID(), "localsettings", cookie);
+            x.append(new File(Main.SETTINGS_FILE), MPV5View.getUser().getName(), MPV5View.getUser().getID(), "localsettings", cookie);
             x.createOrReplace(new File(Main.SETTINGS_FILE));
         } catch (Exception ex) {
             Popup.error(Messages.ERROR_SAVING_LOCALSETTINGS, ex);
@@ -49,7 +57,7 @@ public class LocalSettings {
         }
     }
 
-    public static void read() throws Exception{
+    public static void read() throws Exception {
 
         Log.Debug(LocalSettings.class, "Reading in local settings..");
         XMLReader read = new XMLReader();
@@ -58,6 +66,4 @@ public class LocalSettings {
         cookie.print();
         Log.Debug(LocalSettings.class, "Finished local settings.");
     }
-
-
 }

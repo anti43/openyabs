@@ -18,7 +18,6 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import mpv5.ui.beans.LabeledTextField;
-import mpv5.ui.panels.DataPanel;
 
 /**
  *
@@ -92,8 +91,6 @@ public class DataHandler {
         ArrayList<Method> dat = target.getVars();
         for (int method = 0; method < dat.size(); method++) {
             for (int component = 0; component < source.getComponents().length; component++) {
-              
-
                 if (dat.get(method).getName().toLowerCase().endsWith(source.getComponents()[component].getName().toLowerCase())) {
                     try {
                         
@@ -144,7 +141,7 @@ public class DataHandler {
 //        } else if (component.getClass().isInstance(new JEditorPane())  && set.getParameterTypes().length==1 && set.getParameterTypes()[0].isInstance(String.class)) {
 //        set.invoke(data, ((JEditorPane) component).getText());
 //
-        } else {System.out.println(component.getClass() + " "+set.getParameterTypes()[0].getName()+" " +set.getName());}
+        } else {System.err.println(component.getClass() + " "+set.getParameterTypes()[0].getName()+" " +set.getName());}
 
     }
 }

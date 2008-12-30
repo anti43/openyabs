@@ -4,6 +4,7 @@
  */
 package mpv5.items.contacts;
 
+import java.util.Date;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 
@@ -27,6 +28,7 @@ public class Contact extends DatabaseObject {
     private String mailaddress = "";
     private String website = "";
     private String notes = "";
+    private Date dateadded = new Date();
     private int companyuid = -1;
     private boolean ismale = true;
     private boolean isenabled = true;
@@ -252,7 +254,7 @@ public class Contact extends DatabaseObject {
     /**
      * @return the enabled
      */
-    public boolean __isEnabled() {
+    public boolean __getisEnabled() {
         return isenabled;
     }
 
@@ -287,7 +289,7 @@ public class Contact extends DatabaseObject {
     /**
      * @param iscustomer the iscustomer to set
      */
-    public void setIscustomer(boolean iscustomer) {
+    public void setisCustomer(boolean iscustomer) {
         this.iscustomer = iscustomer;
     }
 
@@ -301,7 +303,7 @@ public class Contact extends DatabaseObject {
     /**
      * @param ismanufacturer the ismanufacturer to set
      */
-    public void setIsmanufacturer(boolean ismanufacturer) {
+    public void setisManufacturer(boolean ismanufacturer) {
         this.ismanufacturer = ismanufacturer;
     }
 
@@ -315,7 +317,7 @@ public class Contact extends DatabaseObject {
     /**
      * @param issupplier the issupplier to set
      */
-    public void setIssupplier(boolean issupplier) {
+    public void setisSupplier(boolean issupplier) {
         this.issupplier = issupplier;
     }
 
@@ -331,6 +333,20 @@ public class Contact extends DatabaseObject {
      */
     public void setCompanyuid(int companyuid) {
         this.companyuid = companyuid;
+    }
+
+    /**
+     * @return the dateadded
+     */
+    public Date __getDateadded() {
+        return dateadded;
+    }
+
+    /**
+     * @param dateadded the dateadded to set
+     */
+    public void setDateadded(Date dateadded) {
+        this.dateadded = dateadded;
     }
 //    /**
 //     * @return the role
