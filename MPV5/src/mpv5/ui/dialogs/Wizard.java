@@ -52,7 +52,9 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
         new Position(this);
         setVisible(true);
         this.standalone = standalone;
-        if(standalone)this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        if (standalone) {
+            this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        }
     }
 
     public void showWiz() {
@@ -177,13 +179,21 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
     }// </editor-fold>//GEN-END:initComponents
 
     private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
-        if(!standalone)this.dispose();else System.exit(1);
+        if (!standalone) {
+            this.dispose();
+        } else {
+            System.exit(1);
+        }
 }//GEN-LAST:event_cancelActionPerformed
 
     private void nextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextActionPerformed
 
+        if (isEnded && standalone) {
+            System.exit(0);
+        }
+
         lastpanel = layer.getComponent(0);
-        if (!isEnded && ((Wizardable) lastpanel).next()) { 
+        if (!isEnded && ((Wizardable) lastpanel).next()) {
             layer.moveToBack(lastpanel);
             oldcomponents.add(lastpanel);
             back.setEnabled(true);
@@ -203,7 +213,7 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
             back.setEnabled(false);
         }
 
-          this.validate();
+        this.validate();
 }//GEN-LAST:event_backActionPerformed
 
     public void addPanel(Wizardable panel) {
@@ -216,23 +226,19 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
     }
 
     public void isEnd(boolean end) {
-
         this.isEnded = end;
         if (end) {
             next.setText(Messages.FINISH);
         }
         cancel.setEnabled(!end);
         back.setEnabled(!end);
-
-        if(standalone)System.exit(0);
-
     }
 
     public PropertyStore getStore() {
         return actionVars;
     }
 
-    public void setMessage(String message){
+    public void setMessage(String message) {
         this.message.setText(message);
     }
 

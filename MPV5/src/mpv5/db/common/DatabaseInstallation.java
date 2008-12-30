@@ -31,7 +31,7 @@ public class DatabaseInstallation {
         "website VARCHAR(350) default NULL,notes VARCHAR(10000),taxid VARCHAR(350) default NULL," +
         "dateadded DATE DEFAULT CURRENT_DATE,isactive SMALLINT DEFAULT 0,iscustomer SMALLINT DEFAULT 0," +
         "ismanufacturer SMALLINT DEFAULT 0,issupplier SMALLINT DEFAULT 0,iscompany SMALLINT DEFAULT 0," +
-        "ismale SMALLINT DEFAULT 0,isenabled SMALLINT DEFAULT 1," +
+        "ismale SMALLINT DEFAULT 0,isenabled SMALLINT DEFAULT 1,addedby VARCHAR(350) default NULL," +
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
         "PRIMARY KEY  (ids))"};
 

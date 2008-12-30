@@ -18,22 +18,16 @@ package mpv5.utils.xml;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mpv5.data.PropertyStore;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.frames.MPV5View;
-import mpv5.utils.text.RandomText;
 import org.jdom.Attribute;
-import org.jdom.Comment;
 import org.jdom.Document;
 import org.jdom.Element;
-import org.jdom.JDOMException;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
@@ -70,7 +64,9 @@ public class XMLWriter {
     public void append(File file, String nodename, String nodeid, String alternateRoot, PropertyStore cookie) {
         XMLReader reader = new XMLReader();
         try {
-            this.myDocument = reader.newDoc(file);
+            Log.Debug(this, "Reading in " + file);
+            myDocument = reader.newDoc(file);
+            rootElement = myDocument.getRootElement();
         } catch (Exception ex) {
             newDoc(alternateRoot);
         }
@@ -78,15 +74,17 @@ public class XMLWriter {
     }
 
     public void createOrReplace(File file) throws Exception {
+        FileWriter fw = null;
         if (file.exists()) {
-            if (!file.delete()) {
-                throw new Exception("Could not lock " + file);
-            }
+            Log.Debug(this, "Updating " + file);
+           fw = new FileWriter(file);
+        } else {
+            file.getParentFile().mkdirs();
+            file.createNewFile();
+            fw = new FileWriter(file);
         }
-        file.getParentFile().mkdirs();
-        file.createNewFile();
         XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
-        outputter.output(myDocument, new FileWriter(file));
+        outputter.output(myDocument, fw);
         MPV5View.addMessage(Messages.FILE_SAVED + file.getPath());
     }
 
@@ -99,8 +97,7 @@ public class XMLWriter {
         rootElement = new Element(rootElementName);
         myDocument = new Document(rootElement);
         //add an attribute to the root element
-        rootElement.setAttribute(new Attribute("userid", MPV5View.getUser().getID()));
-        rootElement.addContent(new Comment("Make your changes only below this line"));
+//        rootElement.setAttribute(new Attribute("userid", MPV5View.getUser().getID()));
     }
 
     /**
@@ -123,7 +120,7 @@ public class XMLWriter {
     }
 
     /**
-     * Adds an element
+     * Adds an element or replaces it if already existing
      * @param nodename 
      * @param attributevalue The ID of the node where this element shall be added
      * @param name The name of the new element
@@ -161,6 +158,7 @@ public class XMLWriter {
      * @param cookie
      */
     public void parse(String nodename, String nodeid, PropertyStore cookie) {
+        
         addNode(nodename, nodeid);
         Iterator list = cookie.getList().iterator();
         while (list.hasNext()) {

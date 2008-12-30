@@ -163,6 +163,7 @@ public class DatabaseConnection {
             stm.executeBatch();
             return true;
         } catch (SQLException sQLException) {
+            Log.Debug(sQLException);
             return false;
         }
     }

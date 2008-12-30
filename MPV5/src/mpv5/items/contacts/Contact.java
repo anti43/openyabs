@@ -29,6 +29,7 @@ public class Contact extends DatabaseObject {
     private String website = "";
     private String notes = "";
     private Date dateadded = new Date();
+    private String addedby = "";
     private int companyuid = -1;
     private boolean ismale = true;
     private boolean isenabled = true;
@@ -347,6 +348,20 @@ public class Contact extends DatabaseObject {
      */
     public void setDateadded(Date dateadded) {
         this.dateadded = dateadded;
+    }
+
+    /**
+     * @return the addedby
+     */
+    public String __getAddedby() {
+        return addedby;
+    }
+
+    /**
+     * @param addedby the addedby to set
+     */
+    public void setAddedby(String addedby) {
+        this.addedby = addedby;
     }
 //    /**
 //     * @return the role

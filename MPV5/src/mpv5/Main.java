@@ -5,7 +5,6 @@ package mpv5;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.UnsupportedLookAndFeelException;
 import mpv5.ui.frames.MPV5View;
 import mpv5.logging.*;
 import org.jdesktop.application.Application;
@@ -15,7 +14,6 @@ import com.l2fprod.common.swing.plaf.LookAndFeelAddons;
 import java.io.File;
 import java.util.Map;
 import java.util.Properties;
-import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import mpv5.db.common.ConnectionTypeHandler;
@@ -47,7 +45,12 @@ public class Main extends SingleFrameApplication {
             setLaF(LocalSettings.getProperty(LocalSettings.LAF));
             show(new MPV5View(this));
         } else {
-
+            try {
+                Log.setLogLevel(Log.LOGLEVEL_DEBUG);
+                LogConsole.setLogFile("install.log");
+            } catch (Exception ex) {
+                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            }
             Wizard w = new Wizard(true);
             w.addPanel(new wizard_DBSettings_1(w));
             w.addPanel(new wizard_DBSettings_2(w));
@@ -59,6 +62,7 @@ public class Main extends SingleFrameApplication {
      * This method is to initialize the specified window by injecting resources.
      * Windows shown in our application come fully initialized from the GUI
      * builder, so this additional configuration is not needed.
+     * @param root
      */
     @Override
     protected void configureWindow(java.awt.Window root) {
@@ -74,8 +78,7 @@ public class Main extends SingleFrameApplication {
 
     @Override
     protected void shutdown() {
-        System.out.println(Main.getApplication().getMainFrame().getSize());
-
+        LocalSettings.save();
         super.shutdown();
     }
 
@@ -101,16 +104,8 @@ public class Main extends SingleFrameApplication {
 
     }
     public static boolean IS_WINDOWS = false;
-    public static boolean FORCE_NO_DATABASE = false;
-    public static boolean FORCE_NO_FILE_COPY = false;
-    public static boolean FORCE_CREATE_DATABASE = false;
-    public static boolean FORCE_FILE_COPY = false;
-    public static String PDF_DIR = null;
-    public static String TEMPLATE_DIR = null;
-    public static String BACKUP_DIR = null;
     public static String MPPATH = null;
     public static String SETTINGS_FILE = null;
-    public static String LOCAL_LOGIN_FILE = null;
     public static String APP_DIR = null;
     public static String USER_HOME = null;
     public static String DESKTOP = null;
@@ -131,7 +126,6 @@ public class Main extends SingleFrameApplication {
             DESKTOP = USER_HOME + File.separator + "Desktop";
             MPPATH = USER_HOME + File.separator + ".mp";
             SETTINGS_FILE = Main.MPPATH + File.separator + "settings" + Constants.RELEASE_VERSION + ".mp";
-            LOCAL_LOGIN_FILE = Main.MPPATH + File.separator + "login.mp";
             APP_DIR = USER_HOME + File.separator + Constants.PROG_NAME;
 
         } else {
@@ -140,7 +134,6 @@ public class Main extends SingleFrameApplication {
             DESKTOP = USER_HOME + File.separator + "Desktop";
             MPPATH = USER_HOME + File.separator + ".mp";
             SETTINGS_FILE = Main.MPPATH + File.separator + "settings" + Constants.RELEASE_VERSION + ".mp";
-            LOCAL_LOGIN_FILE = Main.MPPATH + File.separator + "login.mp";
             APP_DIR = USER_HOME + File.separator + Constants.PROG_NAME;
 
         }
@@ -163,22 +156,15 @@ public class Main extends SingleFrameApplication {
         Option nolf = obuilder.withShortName("nolf").withDescription("use system L&F instead of Tiny L&F").create();
         Option dbtype = obuilder.withShortName("dbdriver").withShortName("r").withDescription("DB Driver: derby (default), mysql, custom").withArgument(option).create();
         Option debug = obuilder.withShortName("debug").withDescription("debug logging").create();
-        Option nodb = obuilder.withShortName("nodb").withDescription("force no database").create();
-        Option nocopy = obuilder.withShortName("nocopy").withDescription("force no copy of files").create();
-        Option forcedb = obuilder.withShortName("forcedb").withDescription("force database").create();
-        Option forcecopy = obuilder.withShortName("forcecopy").withDescription("force copy of files").create();
-        Option dbpath = obuilder.withShortName("dbpath").withShortName("d").withDescription("use database path").withArgument(dirarg).create();
-        Option instpath = obuilder.withShortName("instpath").withShortName("i").withDescription("use installation path").withArgument(dirarg).create();
         Option logfile = obuilder.withShortName("logfile").withShortName("l").withDescription("use file for log").withArgument(filearg).create();
-        Option pdfdir = obuilder.withShortName("pdfdir").withShortName("p").withDescription("use pdfdir").withArgument(dirarg).create();
-        Option backupdir = obuilder.withShortName("backupdir").withShortName("b").withDescription("use backupdir").withArgument(dirarg).create();
-        Option templatedir = obuilder.withShortName("templatedir").withShortName("t").withDescription("use templatedir").withArgument(dirarg).create();
-
-        Group options = gbuilder.withName("options").withOption(help).withOption(version).withOption(verbose).withOption(debug).withOption(nodb).
-                withOption(nocopy).withOption(license).withOption(nolf).
-                withOption(forcedb).withOption(forcecopy).withOption(dbpath).withOption(dbtype).withOption(instpath).
-                withOption(logfile).withOption(pdfdir).withOption(backupdir).withOption(templatedir).create();
-
+        Group options = gbuilder.withName("options").
+                withOption(help).
+                withOption(version).
+                withOption(verbose).
+                withOption(debug).
+                withOption(license).
+                withOption(nolf).
+                withOption(logfile).create();
 
         HelpFormatter hf = new HelpFormatter();
         Parser p = new Parser();
@@ -212,51 +198,12 @@ public class Main extends SingleFrameApplication {
 
         }
 
-        if (cl.hasOption(forcecopy)) {
-            FORCE_FILE_COPY = true;
-
-        }
-
-        if (cl.hasOption(forcedb)) {
-            FORCE_CREATE_DATABASE = true;
-
-        }
-
-        if (cl.hasOption(nocopy)) {
-            FORCE_NO_FILE_COPY = true;
-
-        }
-
-        if (cl.hasOption(nodb)) {
-            FORCE_NO_DATABASE = true;
-
-        }
-
-        if (cl.hasOption(templatedir)) {
-            TEMPLATE_DIR = ((String) cl.getValue("templatedir")).split("=")[1];
-
-        }
-
-        if (cl.hasOption(backupdir)) {
-            BACKUP_DIR = ((String) cl.getValue(backupdir)).split("=")[1];
-
-        }
-
-        if (cl.hasOption(pdfdir)) {
-            PDF_DIR = ((String) cl.getValue(pdfdir)).split("=")[1];
-
-        }
-
         if (cl.hasOption(logfile)) {
             try {
-                LoggerWindow.setLogFile(((String) cl.getValue(logfile)).split("=")[1]);
+                LogConsole.setLogFile(((String) cl.getValue(logfile)).split("=")[1]);
             } catch (Exception e) {
                 Log.Debug(Main.class, "Fehler beim Schreiben der Logdatei: " + e.getMessage(), true);
             }
-        }
-
-        if (cl.hasOption(dbpath)) {
-            LocalSettings.setProperty(LocalSettings.DBPATH, ((String) cl.getValue(dbpath)).split("=")[1]);
         }
 
         if (cl.hasOption(dbtype)) {
@@ -269,17 +216,13 @@ public class Main extends SingleFrameApplication {
             }
         }
 
-        if (cl.hasOption(instpath)) {
-            APP_DIR = ((String) cl.getValue(instpath)).split("=")[1];
-        }
-
-        if (!cl.hasOption(nolf)) {
+        if (cl.hasOption(nolf)) {
             setLaF(null);
         }
     }
 
     /**
-     *
+     * Redirect derby log file
      */
     public static void setDerbyLog() {
         Properties p = System.getProperties();
@@ -301,7 +244,7 @@ public class Main extends SingleFrameApplication {
             if (MPV5View.identifier != null && MPV5View.identifier.isShowing()) {
                 MPV5View.identifier.setVisible(false);
                 SwingUtilities.updateComponentTreeUI(MPV5View.identifier);
-                MPV5View.identifier.pack();
+//                MPV5View.identifier.pack();
                 MPV5View.identifier.setVisible(true);
             }
         } catch (Exception exe) {
@@ -312,6 +255,8 @@ public class Main extends SingleFrameApplication {
             }
             Log.Debug(Main.class, exe.getMessage());
         }
+
+        LocalSettings.setProperty(LocalSettings.LAF, UIManager.getLookAndFeel().getClass().getName());
     }
 
     public static void printEnv() {

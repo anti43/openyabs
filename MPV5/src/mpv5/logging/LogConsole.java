@@ -11,34 +11,33 @@ import java.io.IOException;
 import java.io.Writer;
 import javax.swing.text.BadLocationException;
 
-
 /**
  *
  * @author  anti43
  */
-public class LoggerWindow extends javax.swing.JFrame {
+public class LogConsole extends javax.swing.JFrame {
 
     private static File logfile = null;
     private static boolean FILE_LOG_ENABLED = false;
     private static FileReaderWriter logwriter;
 
     public static void setLogFile(String string) throws Exception {
-        LoggerWindow.logfile = new File(string);
+        LogConsole.logfile = new File(string);
 
         logfile.delete();
-        
+
         if (logfile.createNewFile() && !logfile.canWrite()) {
             throw new Exception("Fehler in " + logfile.getCanonicalPath());
         } else {
             FILE_LOG_ENABLED = true;
             logwriter = new FileReaderWriter(logfile);
-            Log.Debug(LoggerWindow.class,"Logging to File: " +  logfile.getPath(), true);
-            
+            Log.Debug(LogConsole.class, "Logging to File: " + logfile.getPath(), true);
+
         }
     }
 
     /** Creates new form Logger */
-    public LoggerWindow() {
+    public LogConsole() {
         initComponents();
 //        this.setExtendedState(ICONIFIED);
 
@@ -53,8 +52,9 @@ public class LoggerWindow extends javax.swing.JFrame {
     }
 
     public void log(Object object) throws IOException {
-        if (FILE_LOG_ENABLED)logwriter.write(object.toString()); 
-        else {
+        if (FILE_LOG_ENABLED) {
+            logwriter.write(object.toString());
+        } else {
             if (object != null) {
                 jTextArea1.append("\n" + object.toString());
             } else {
@@ -64,7 +64,9 @@ public class LoggerWindow extends javax.swing.JFrame {
     }
 
     public void log(String string) throws IOException {
-        if (FILE_LOG_ENABLED)logwriter.write(string); else {
+        if (FILE_LOG_ENABLED) {
+            logwriter.write(string);
+        } else {
             jTextArea1.append("\n" + string);
         }
     }
@@ -136,7 +138,7 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         java.awt.EventQueue.invokeLater(new Runnable() {
 
             public void run() {
-                new LoggerWindow().setVisible(true);
+                new LogConsole().setVisible(true);
             }
         });
     }
@@ -145,12 +147,11 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
         jTextArea1.append(e.getMessage());
     }
-    
-         
+
     public void flush() {
-       System.out.print(jTextArea1.getText());
-       jTextArea1.setText(null);
-       
+        System.out.print(jTextArea1.getText());
+        jTextArea1.setText(null);
+
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -160,6 +161,7 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
     // End of variables declaration
+
     static class DocumentWriter
             extends Writer {
 
@@ -186,6 +188,4 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             }
         }
     }
-    
-  
 }

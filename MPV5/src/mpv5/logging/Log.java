@@ -30,7 +30,7 @@ public class Log {
     public static final int LOGLEVEL_HIGH = 1;
     public static final int LOGLEVEL_DEBUG = 2;
     private static int loglevel = 0;
-    private static LoggerWindow logger = new LoggerWindow();
+    private static LogConsole logger = new LogConsole();
 
     public static void Debug(Object source, Object message, boolean alwaysToKonsole) {
         if (loglevel == LOGLEVEL_DEBUG) {
@@ -128,7 +128,7 @@ public class Log {
         }
     }
 
-    public static void Debug(Object obj) {
+    private static void Debug(Object obj) {
 
         if (loglevel != LOGLEVEL_NONE) {
             try {
@@ -143,7 +143,7 @@ public class Log {
         Debug(ex, true);
     }
 
-    public static void Debug(Exception ex, boolean konsole) {
+    private static void Debug(Exception ex, boolean konsole) {
         if (loglevel != LOGLEVEL_NONE) {
             if (konsole) {
                 try {
@@ -158,7 +158,7 @@ public class Log {
         }
     }
 
-    public static void Debug(Object string, boolean konsole) {
+    private static void Debug(Object string, boolean konsole) {
         if (loglevel != LOGLEVEL_NONE) {
             if (konsole) {
                 try {
@@ -175,7 +175,7 @@ public class Log {
         }
     }
 
-    public static LoggerWindow getLogger() {
+    public static LogConsole getLogger() {
         return logger;
     }
 

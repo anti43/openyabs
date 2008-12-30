@@ -106,7 +106,7 @@ public class XMLReader {
         List<Element> list = (List<Element>) rootElement.getChild(nodename).getContent(new ElementFilter());
         for (int i = 0; i < list.size(); i++) {
             Element element = list.get(i);
-            Log.Debug(element.getName() + ": " + element.getValue());
+            Log.Debug(this, element.getName() + ": " + element.getValue());
         }
     }
 

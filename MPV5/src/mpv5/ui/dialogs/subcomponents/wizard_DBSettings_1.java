@@ -6,8 +6,10 @@
 package mpv5.ui.dialogs.subcomponents;
 
 import java.awt.Cursor;
+import java.io.File;
 import mpv5.db.common.DatabaseConnection;
 import mpv5.db.common.DatabaseInstallation;
+import mpv5.globals.Constants;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 
@@ -29,7 +31,8 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
 
     private boolean DBVerification() {
         DatabaseConnection conn;
-        this.getParent().setCursor(new Cursor(Cursor.WAIT_CURSOR));
+        this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+        boolean existing = false;
         if (labeledTextChooser1.get_Text() != null && labeledTextChooser1.get_Text().length() > 0) {
             master.getStore().changeProperty("driver", jComboBox1.getSelectedItem().toString());
             master.getStore().changeProperty("url", labeledTextChooser1.get_Text());
@@ -38,6 +41,9 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
             master.setMessage(Messages.CONNECTION_PROBE + master.getStore().getProperty("driver"));
             conn = new DatabaseConnection();
             try {
+                if(new File(master.getStore().getProperty("url") + File.separator + Constants.DATABASENAME).exists()) {
+                    existing = true;
+                }
                 if (conn.connect(jComboBox1.getSelectedItem().toString(),
                         master.getStore().getProperty("user"),
                         master.getStore().getProperty("password"),
@@ -48,21 +54,27 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
                     LocalSettings.setProperty(LocalSettings.DBUSER, master.getStore().getProperty("user"));
                     LocalSettings.setProperty(LocalSettings.DBPASSWORD, master.getStore().getProperty("password"));
                     LocalSettings.save();
-                    master.setMessage(Messages.CREATING_DATABASE);
-                    conn.runQueries(new DatabaseInstallation().getStructure());
-                    master.setMessage(Messages.CONNECTION_VERIFIED);
+                    if (!existing) {
+                        master.setMessage(Messages.CREATING_DATABASE);
+                        if (conn.runQueries(new DatabaseInstallation().getStructure())) {
+                            master.setMessage(Messages.CONNECTION_VERIFIED);
+                        } else {
+                            master.setMessage(Messages.CREATING_DATABASE_FAILED);
+                        }
+                    }
+                    master.isEnd(true);
                 } else {
                     master.setMessage(Messages.CONNECTION_FAILED);
                 }
             } catch (Exception ex) {
                 master.setMessage(Messages.CONNECTION_FAILED);
-                this.getParent().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                 return false;
             }
-            this.getParent().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
             return true;
         } else {
-            this.getParent().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
             return false;
         }
     }
@@ -163,7 +175,7 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
         jTextArea1.setBackground(new java.awt.Color(212, 208, 200));
         jTextArea1.setColumns(20);
         jTextArea1.setEditable(false);
-        jTextArea1.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jTextArea1.setFont(new java.awt.Font("Tahoma", 0, 12));
         jTextArea1.setLineWrap(true);
         jTextArea1.setRows(5);
         jTextArea1.setText(bundle.getString("wizard_DBSettings_1.jTextArea1.text")); // NOI18N

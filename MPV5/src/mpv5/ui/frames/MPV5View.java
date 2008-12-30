@@ -611,8 +611,7 @@ public class MPV5View extends FrameView {
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
       TinyLookAndFeel.controlPanelInstantiated = true;
-      Main.setLaF("de.muntjak.tinylookandfeel.TinyLookAndFeel");
-      new ControlPanel();
+      new ControlPanel(Main.getApplication());
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
