@@ -51,9 +51,9 @@ public class LocalSettings {
 
     public static void save() {
         XMLWriter x = new XMLWriter();
-        
         try {
-            x.append( new File(Main.SETTINGS_FILE),MPV5View.getUser().getName(), MPV5View.getUser().getID(),"localsettings", cookie);
+            x.newDoc("localsettings");
+            x.parse( "connection","1", cookie);
             x.createOrReplace(new File(Main.SETTINGS_FILE));
         } catch (Exception ex) {
             Popup.error(Messages.ERROR_SAVING_LOCALSETTINGS, ex);
@@ -66,7 +66,7 @@ public class LocalSettings {
         Log.Debug(LocalSettings.class, "Reading in local settings..");
         XMLReader read = new XMLReader();
         read.newDoc(new File(Main.SETTINGS_FILE));
-        cookie = read.readInto(MPV5View.getUser().getName(), cookie);
+        cookie = read.readInto("connection", cookie);
         cookie.print();
         Log.Debug(LocalSettings.class, "Finished local settings.");
     }
