@@ -33,8 +33,16 @@ public class DatabaseInstallation {
         "ismanufacturer SMALLINT DEFAULT 0,issupplier SMALLINT DEFAULT 0,iscompany SMALLINT DEFAULT 0," +
         "ismale SMALLINT DEFAULT 0,isenabled SMALLINT DEFAULT 1,addedby VARCHAR(350) default NULL," +
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
-        "PRIMARY KEY  (ids))"};
+        "PRIMARY KEY  (ids))",
 
+        "CREATE TABLE users (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),"+
+        "cname VARCHAR(250) UNIQUE NOT NULL, password VARCHAR(250) NOT NULL,"+
+        "laf VARCHAR(50) default NULL, "+
+        "isenabled SMALLINT DEFAULT 1,"+
+        "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,"+
+        "PRIMARY KEY  (ids))"
+    };
+    
     private String[] MYSQL_STRUCTURE;
     private String[] CUSTOM_STRUCTURE;
 

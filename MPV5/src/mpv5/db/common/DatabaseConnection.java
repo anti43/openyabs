@@ -159,6 +159,7 @@ public class DatabaseConnection {
         for (int i = 0; i < queries.length; i++) {
             stm.addBatch(queries[i]);
         }
+        Log.PrintArray(queries);
         try {
             stm.executeBatch();
             return true;
