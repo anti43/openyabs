@@ -70,19 +70,6 @@ public class TableFormat {
         }
     }
 
-    /**
-     * Hides he first column of a table (usually "id")
-     * @param table
-     * 
-     */
-    public static void stripFirst(JTable table) {
-        try {
-            table.getColumn(table.getColumnName(0)).setMinWidth(0);
-            table.getColumn(table.getColumnName(0)).setMaxWidth(0);
-        } catch (Exception e) {
-            Log.Debug(TableFormat.class,e.getMessage());
-        }
-    }
 
     /**
      * Resizes a tables cols
@@ -122,36 +109,38 @@ public class TableFormat {
         });
 
         jTable1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        stripFirst(jTable1);
+        stripFirstColumn(jTable1);
     }
 
 
     /**
-     * 
+     * Hide a column of a table
      * @param table
+     * @param columnToHide
      */
-    public static void stripSecondColumn(JTable table) {
-        table.getColumn(table.getColumnName(1)).setWidth(0);
-        table.getColumn(table.getColumnName(1)).setPreferredWidth(0);
-        table.getColumn(table.getColumnName(1)).setMinWidth(0);
-        table.getColumn(table.getColumnName(1)).setMaxWidth(0);
+    public static void stripColumn(JTable table, int columnToHide) {
+        table.getColumn(table.getColumnName(columnToHide)).setWidth(0);
+        table.getColumn(table.getColumnName(columnToHide)).setPreferredWidth(0);
+        table.getColumn(table.getColumnName(columnToHide)).setMinWidth(0);
+        table.getColumn(table.getColumnName(columnToHide)).setMaxWidth(0);
 
         table.doLayout();
     }
 
     /**
-     * 
+     * Hide the first column of a table
      * @param table
      */
     public static void stripFirstColumn(JTable table) {
-        table.getColumn(table.getColumnName(0)).setWidth(0);
-        table.getColumn(table.getColumnName(0)).setPreferredWidth(0);
-        table.getColumn(table.getColumnName(0)).setMinWidth(0);
-        table.getColumn(table.getColumnName(0)).setMaxWidth(0);
-
-        table.doLayout();
+        stripColumn(table, 0);
     }
 
+    /**
+     *
+     * @param table
+     * @param column
+     * @param width
+     */
     public static void format(JTable table, int column, int width) {
         table.getColumn(table.getColumnName(column)).setWidth(width);
         table.getColumn(table.getColumnName(column)).setPreferredWidth(width);

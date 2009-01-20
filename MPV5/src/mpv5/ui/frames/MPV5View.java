@@ -15,6 +15,7 @@ import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.QueryHandler;
 import mpv5.globals.Messages;
 import mpv5.ui.panels.ContactPanel;
+import mpv5.ui.panels.ContactsList;
 import mpv5.ui.panels.DataPanel;
 import mpv5.ui.parents.CloseableTabbedPane;
 import mpv5.ui.parents.FadeOnChangeLabel;
@@ -561,10 +562,14 @@ public class MPV5View extends FrameView {
 }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+
+        ContactsList tab = new ContactsList(Context.getCompany());
+        tabPane.addTab(Messages.CONTACTS_LIST, tab);
+        tabPane.setSelectedComponent(tab);
 }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton20ActionPerformed
-        // TODO add your handling code here:
+
     }//GEN-LAST:event_jButton20ActionPerformed
 
     private void jButton21ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton21ActionPerformed
@@ -583,11 +588,18 @@ public class MPV5View extends FrameView {
         DatabaseObject dato = ((DataPanel) tabPane.getSelectedComponent()).getDataOwner();
 
         dato.getPanelData(((DataPanel) tabPane.getSelectedComponent()));
+        dato.setIDS(-1);
         dato.save();
+        ((DataPanel) tabPane.getSelectedComponent()).refresh();
 }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton25ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton25ActionPerformed
-        // TODO add your handling code here:
+        DatabaseObject dato = ((DataPanel) tabPane.getSelectedComponent()).getDataOwner();
+
+        dato.getPanelData(((DataPanel) tabPane.getSelectedComponent()));
+        dato.save();
+        ((DataPanel) tabPane.getSelectedComponent()).refresh();
+
 }//GEN-LAST:event_jButton25ActionPerformed
 
     private void jButton22ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton22ActionPerformed

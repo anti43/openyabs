@@ -19,7 +19,6 @@ package mpv5.logging;
 import java.io.IOException;
 import java.util.logging.Level;
 
-
 /**
  *
  * @author anti43
@@ -35,6 +34,12 @@ public class Log {
     public static void Debug(Object source, Object message, boolean alwaysToKonsole) {
         if (loglevel == LOGLEVEL_DEBUG) {
             Debug(source.getClass().getName() + ": " + message, alwaysToKonsole);
+            try {
+                if (message.toString().contains("Exception")) {
+                    ((Exception) message).printStackTrace();
+                }
+            } catch (Exception e) {
+            }
         } else {
             Debug(message, alwaysToKonsole);
         }
@@ -43,6 +48,12 @@ public class Log {
     public static void Debug(Object source, Object message) {
         if (loglevel == LOGLEVEL_DEBUG) {
             Debug(source.getClass().getName() + ": " + message, true);
+               try {
+                if (message.toString().contains("Exception")) {
+                    ((Exception) message).printStackTrace();
+                }
+            } catch (Exception e) {
+            }
         } else {
             Debug(message, true);
         }
@@ -51,6 +62,12 @@ public class Log {
     public static void Debug(Class source, Object message, boolean alwaysToKonsole) {
         if (loglevel == LOGLEVEL_DEBUG) {
             Debug(source.getName() + ": " + message, alwaysToKonsole);
+               try {
+                if (message.toString().contains("Exception")) {
+                    ((Exception) message).printStackTrace();
+                }
+            } catch (Exception e) {
+            }
         } else {
             Debug(message, true);
         }
@@ -59,6 +76,12 @@ public class Log {
     public static void Debug(Class source, Object message) {
         if (loglevel == LOGLEVEL_DEBUG) {
             Debug(source.getName() + ": " + message, true);
+               try {
+                if (message.toString().contains("Exception")) {
+                    ((Exception) message).printStackTrace();
+                }
+            } catch (Exception e) {
+            }
         } else {
             Debug(message, true);
         }

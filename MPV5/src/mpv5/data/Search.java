@@ -22,7 +22,7 @@ public class Search {
     public static final int DETAILSSEARCH = 2;
     public static final int CONTEXTSEARCH = 3;
     private Context context;
-    private int searchtype;
+    private Integer searchtype = null;
     private Object[][] data;
 
     public Search(Context context, int searchtype) {
@@ -30,28 +30,34 @@ public class Search {
         this.searchtype = searchtype;
     }
 
+    public Search(Context context) {
+        this.context = context;
+    }
+
     public Object[][] searchFor(String needle) {
         boolean like = false;
 
 
-        if(needle == null || needle.length()<1){like = true;}
+        if (needle == null || needle.length() < 1) {
+            like = true;
+        }
 
         switch (searchtype) {
 
             case NAMESEARCH:
-                data = new DatabaseSearch(context).getValuesFor(context.getDefaultSearchFields(), Context.SEARCH_NAME, needle, like);
+                data = new DatabaseSearch(context).getValuesFor(context.getSearchFields(), Context.SEARCH_NAME, needle, like);
                 break;
 
             case NUMBERSEARCH:
-                data = new DatabaseSearch(context).getValuesFor(context.getDefaultSearchFields(), Context.SEARCH_NUMBER, needle, like);
+                data = new DatabaseSearch(context).getValuesFor(context.getSearchFields(), Context.SEARCH_NUMBER, needle, like);
                 break;
 
             case DETAILSSEARCH:
-                data = new DatabaseSearch(context).getValuesFor(context.getDefaultSearchFields(), Context.SEARCH_DETAILS, needle, like);
+                data = new DatabaseSearch(context).getValuesFor(context.getSearchFields(), Context.SEARCH_DETAILS, needle, like);
                 break;
 
             case CONTEXTSEARCH:
-                data = new DatabaseSearch(context).getValuesFor(context.getDefaultSearchFields(), Context.SEARCH_NAME, needle, like);
+                data = new DatabaseSearch(context).getValuesFor(context.getSearchFields(), Context.SEARCH_NAME, needle, like);
                 break;
 
         }
@@ -68,7 +74,6 @@ public class Search {
         if (data == null) {
             searchFor(needle);
         }
-        Log.PrintArray(data);
-        return new MPTableModel(data, context.getDefaultSearchHeaders());
+        return new MPTableModel(data, context.getSearchHeaders());
     }
 }

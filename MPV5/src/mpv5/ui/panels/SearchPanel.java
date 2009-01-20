@@ -35,6 +35,7 @@ public class SearchPanel extends javax.swing.JPanel {
         initComponents();
         this.context = context;
         this.panel = panel;
+        search(4, context.getParent().__getCName());
     }
 
     /** This me4thod is called from within the constructor to
@@ -213,7 +214,9 @@ public class SearchPanel extends javax.swing.JPanel {
             case 4:
                 resulttable.setModel(new Search(getContext(), Search.CONTEXTSEARCH).getTableModelFor(value));
         }
+        TableFormat.stripFirstColumn(resulttable);
         TableFormat.makeUneditable(resulttable);
+
     }
 
     private void searchfield3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchfield3ActionPerformed

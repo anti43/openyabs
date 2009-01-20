@@ -57,5 +57,6 @@ public class Messages {
     public static String DB_DRIVER_INVALID = "The driver for the specified database type could not be loaded\n";
     public static String CREATING_DATABASE =  "Creating database structure..";
     public static String CREATING_DATABASE_FAILED =  "Creating database structure failed, see logs for details.";
+    public static String CONTACTS_LIST = "List of contacts";
 
 }

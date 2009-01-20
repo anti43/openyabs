@@ -14,21 +14,40 @@
  *  You should have received a copy of the GNU General Public License
  *  along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package mpv5.utils.models;
 
+import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
+import mpv5.logging.Log;
 
 /**
  *
  * @author Administrator
  */
-public class MPComboBoxModelItem extends DefaultComboBoxModel{
+public class MPComboBoxModelItem extends DefaultComboBoxModel {
 
+    public static int getItemID(int uid, ComboBoxModel model) {
+        for (int i = 0; i < model.getSize(); i++) {
+            Log.Debug(MPComboBoxModelItem.class,((MPComboBoxModelItem) model.getElementAt(i)).id + " comparing with: " + uid);
+            if (((MPComboBoxModelItem) model.getElementAt(i)).id.equals(Integer.valueOf(uid)) ) {
+                Log.Debug(MPComboBoxModelItem.class, "Found at Index:" + i);
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    public static MPComboBoxModelItem[] toItems(Object[][] items) {
+        MPComboBoxModelItem[] array = new MPComboBoxModelItem[items.length];
+        for (int i = 0; i < array.length; i++) {
+            array[i] = new MPComboBoxModelItem(Integer.valueOf(items[i][0].toString()), String.valueOf(items[i][1]));
+        }
+        return array;
+    }
     private Integer id;
     private String name;
 
-    public MPComboBoxModelItem(int id, String name){
+    public MPComboBoxModelItem(int id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -62,7 +81,7 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel{
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return name;
     }
 }

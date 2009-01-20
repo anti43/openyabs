@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package mpv5.globals;
 
 /**
@@ -11,5 +10,11 @@ package mpv5.globals;
  */
 public class Headers {
 
-    public static String[] DEFAULT_CONTACT_SEARCH = new String[]{"id", "Name", "City"};
+    public static String[] CONTACT_DEFAULT = new String[]{"Internal ID", "ID", "Name", "City"};
+    public static String[] CONTACT_DETAILS = new String[]{"Internal ID", "ID", "Title",
+        "Prename", "Name", "Street",
+        "Zip", "City", "Mainphone",
+        "Fax", "Mobilephone", "Workphone",
+        "Mailaddress", "Company",
+        "Website", "Notes", "Taxid"};
 }

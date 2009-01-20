@@ -17,4 +17,5 @@ public interface DataPanel {
     public void collectData();
     public DatabaseObject getDataOwner();
     public void setDataOwner(DatabaseObject object);
+    public void refresh();
 }

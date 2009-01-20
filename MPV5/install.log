@@ -1,8 +1,2 @@
 
 mpv5.logging.LogConsole: Logging to File: install.log
-mpv5.db.common.DatabaseConnection: Datenbanktreiber: org.apache.derby.jdbc.EmbeddedDriver
-mpv5.db.common.DatabaseConnection: Datenbankverbindung: jdbc:derby:D:\Documents and Settings\Administrator\My Documents\My Pictures\mpv5db;create=true;
-mpv5.globals.LocalSettings: Changing property 'dbpath' to: D:\Documents and Settings\Administrator\My Documents\My Pictures
-mpv5.globals.LocalSettings: Changing property 'dbdriver' to: org.apache.derby.jdbc.EmbeddedDriver
-mpv5.globals.LocalSettings: Changing property 'dbuser' to: 
-mpv5.globals.LocalSettings: Changing property 'dbpassword' to: 

@@ -32,7 +32,7 @@ public abstract class DatabaseObject {
 
     public abstract void setCName(String name);
 
-    public Integer _getIDS() {
+    public Integer __getIDS() {
         return ids;
     }
 
@@ -69,8 +69,10 @@ public abstract class DatabaseObject {
         if (__getCName()!=null && __getCName().length()>0) {
             try {
                 if (ids <= 0) {
+                    Log.Debug(this, "Inserting new dataset:");
                     ids = QueryHandler.instanceOf().clone(context).insert(collect(), this.__getCName() + Messages.ROW_INSERTED);
                 } else {
+                    Log.Debug(this, "Updating dataset: " + ids + " within context '" + context +"'");
                     QueryHandler.instanceOf().clone(context).update(collect(), new String[]{"ids", String.valueOf(ids), ""}, this.__getCName() + Messages.ROW_UPDATED);
                 }
                 return true;
@@ -106,12 +108,11 @@ public abstract class DatabaseObject {
         String stringval = "";
 
         for (int i = 0; i < this.getClass().getMethods().length; i++) {
-            if (this.getClass().getMethods()[i].getName().startsWith("__get")) {
+            if (this.getClass().getMethods()[i].getName().startsWith("__get") && !this.getClass().getMethods()[i].getName().endsWith("IDS")) {
                 try {
-
                     left += this.getClass().getMethods()[i].getName().toLowerCase().substring(5, this.getClass().getMethods()[i].getName().length()) + ",";
                     tempval = this.getClass().getMethods()[i].invoke(this, (Object[]) null);
-                    System.out.println(tempval.getClass().getName() + " : " + this.getClass().getMethods()[i].getName());
+                    System.out.println(tempval.getClass().getName() + " : " + this.getClass().getMethods()[i].getName() + " ? " +  tempval);
                     if (tempval.getClass().isInstance(new String())) {
                         stringval = "(;;2#4#1#1#8#0#;;)" + tempval + "(;;2#4#1#1#8#0#;;)";
                     } else if (tempval.getClass().isInstance(true)) {
@@ -122,8 +123,13 @@ public abstract class DatabaseObject {
                             stringval = "0";
                         }
                     } else  if (tempval.getClass().isInstance(new Date())) {
-                    
                           stringval = "(;;2#4#1#1#8#0#;;)" + DateConverter.getSQLDateString((Date)tempval) + "(;;2#4#1#1#8#0#;;)";
+                    } else  if (tempval.getClass().isInstance(new Integer(0))) {
+                          stringval = String.valueOf(tempval);
+                    } else  if (tempval.getClass().isInstance(new Float(0f))) {
+                          stringval = String.valueOf(tempval);
+                    } else  if (tempval.getClass().isInstance(new Double(0d))) {
+                          stringval = String.valueOf(tempval);
                     }
                     right += stringval + "(;;,;;)";
                 } catch (IllegalAccessException ex) {

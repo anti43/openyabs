@@ -78,20 +78,20 @@ public class QueryHandler implements Cloneable {
      * @return
      */
     public ReturnValue select(int id) {
-        return freeReturnQuery("SELECT * FROM " + table + " WHERE ids = " + id, mpv5.usermanagement.SecurityManager.VIEW, null);
+        return freeReturnQuery("SELECT * FROM " + table + " WHERE " + table + ".ids = " + id, mpv5.usermanagement.SecurityManager.VIEW, null);
     }
 
     public Object[] getValuesFor(String needle, String value) {
         if (context != null) {
             if (value == null) {
-                return ArrayUtils.ObjectToSingleColumnArray(freeReturnQuery("SELECT " + needle + " FROM " + table + " " + context.getConditions(), mpv5.usermanagement.SecurityManager.VIEW, null).getData());
+                return ArrayUtils.ObjectToSingleColumnArray(freeReturnQuery("SELECT " + needle + " FROM " + table + " " + context.getReferences() + " " +  table + "." + context.getConditions(), mpv5.usermanagement.SecurityManager.VIEW, null).getData());
             } else {
-                return ArrayUtils.ObjectToSingleColumnArray(freeReturnQuery("SELECT " + needle + " FROM " + table + " WHERE " + needle + " LIKE %" + value + "% AND " + context.getConditions(), mpv5.usermanagement.SecurityManager.VIEW, null).getData());
+                return ArrayUtils.ObjectToSingleColumnArray(freeReturnQuery("SELECT " + needle + " FROM " + table + " " + context.getReferences() + " WHERE " + needle + " LIKE %" + value + "% AND " +  table + "." + context.getConditions().substring(5, context.getConditions().length()), mpv5.usermanagement.SecurityManager.VIEW, null).getData());
             }
         } else if (value == null) {
-            return ArrayUtils.ObjectToSingleColumnArray(freeReturnQuery("SELECT " + needle + " FROM " + table, mpv5.usermanagement.SecurityManager.VIEW, null).getData());
+            return ArrayUtils.ObjectToSingleColumnArray(freeReturnQuery("SELECT " + needle + " FROM " + table + " " + context.getReferences(), mpv5.usermanagement.SecurityManager.VIEW, null).getData());
         } else {
-            return ArrayUtils.ObjectToSingleColumnArray(freeReturnQuery("SELECT " + needle + " FROM " + table + "  WHERE " + needle + " LIKE %" + value + "%", mpv5.usermanagement.SecurityManager.VIEW, null).getData());
+            return ArrayUtils.ObjectToSingleColumnArray(freeReturnQuery("SELECT " + needle + " FROM " + table + " " + context.getReferences() + "  WHERE " + needle + " LIKE %" + value + "%", mpv5.usermanagement.SecurityManager.VIEW, null).getData());
         }
     }
 
@@ -207,13 +207,13 @@ public class QueryHandler implements Cloneable {
         if (where != null) {
 
             query = "SELECT " + what + " FROM " + table +
-                    " LEFT OUTER JOIN " + leftJoinTable + " ON " + table + "." + leftJoinKey + " = " + leftJoinTable + ".id" +
-                    " WHERE " + table + "." + where[0] + " " + k + " " + where[2] + l1 + where[1] + l2 + where[2] + " ORDER BY " + order;
+                    " LEFT OUTER JOIN " + leftJoinTable + " ON " + table + "." + leftJoinKey + " = " + leftJoinTable + ".ids" +
+                    " WHERE " + table + "." + where[0] + " " + k + " " + where[2] + l1 + where[1] + l2 + where[2] + " ORDER BY " + table + "." + order;
         } else {
             query = "SELECT " + what + " FROM " + table +
                     " LEFT OUTER JOIN  " + leftJoinTable + " ON " +
-                    table + "." + leftJoinKey + " = " + leftJoinTable + ".id " +
-                    "  ORDER BY " + order;
+                    table + "." + leftJoinKey + " = " + leftJoinTable + ".ids " +
+                    "  ORDER BY "  + table + "." + order;
         }
 
         return freeReturnQuery(query, mpv5.usermanagement.SecurityManager.VIEW, null).getData();
@@ -301,7 +301,7 @@ public class QueryHandler implements Cloneable {
      * @return id of inserted row
      */
     public int insert(String[] what, String jobmessage) {
-        return insert(what,null,jobmessage);
+        return insert(what, null, jobmessage);
     }
 
     /**
@@ -327,7 +327,7 @@ public class QueryHandler implements Cloneable {
 
         c = c.substring(0, c.length() - 2);
 
-        query = "UPDATE " + table + " SET " + c + " WHERE " + where[0] + " = " + where[2] + where[1] + where[2];
+        query = "UPDATE " + table + " SET " + c + " WHERE " + table + "." + where[0] + " = " + where[2] + where[1] + where[2];
         freeQuery(query, mpv5.usermanagement.SecurityManager.EDIT, jobmessage);
         stop();
     }
@@ -346,7 +346,7 @@ public class QueryHandler implements Cloneable {
 
         String query;
         start();
-        query = "SELECT " + what + " FROM " + table + " WHERE " + where[0] + k + where[2] + l + where[1] + l + where[2];
+        query = "SELECT " + what + " FROM " + table + " WHERE " + table + "." +  where[0] + k + where[2] + l + where[1] + l + where[2];
 
         return freeReturnQuery(query, mpv5.usermanagement.SecurityManager.VIEW, null).getData()[0];
 
@@ -363,7 +363,7 @@ public class QueryHandler implements Cloneable {
     public Object[] selectFirst(String what, String[] where) {
 
         start();
-        String query = "SELECT " + what + " FROM " + table + " WHERE " + where[0] + " = " + where[2] + where[1] + where[2] + " ";
+        String query = "SELECT " + what + " FROM " + table + " WHERE " + table + "." + where[0] + " = " + where[2] + where[1] + where[2] + " ";
         Object[][] data = freeReturnQuery(query, mpv5.usermanagement.SecurityManager.VIEW, null).getData();
         return data[data.length - 1];
     }
@@ -405,10 +405,10 @@ public class QueryHandler implements Cloneable {
     public Object[][] select(String what, String[] where) {
         start();
         String query;
-        if (where != null) {
-            query = "SELECT " + what + " FROM " + table + " WHERE " + where[0] + " = " + where[2] + where[1] + where[2];
+        if (where != null && where[0] != null && where[1] != null) {
+            query = "SELECT " + what + " FROM " + table + " " + context.getReferences() + " WHERE " +  table + "." + where[0] + " = " + where[2] + where[1] + where[2]  + " AND " +  table + "." + context.getConditions().substring(5, context.getConditions().length());
         } else {
-            query = "SELECT " + what + " FROM " + table;
+            query = "SELECT " + what + " FROM " + table + " " + context.getReferences() + " " +  table + "." + context.getConditions();
         }
         return freeReturnQuery(query, mpv5.usermanagement.SecurityManager.VIEW, null).getData();
     }
@@ -433,7 +433,7 @@ public class QueryHandler implements Cloneable {
             order = "ids DESC ";
         }
 
-        String ord = " ORDER BY " + order;
+        String ord = " ORDER BY " + table + "." + order;
         String wher = "";
         java.util.Date date;
 
@@ -452,11 +452,11 @@ public class QueryHandler implements Cloneable {
         }
 
         if (where == null) {
-            wher = "  ";
+            wher = "  " +  table + "." + context.getConditions();
         } else {
-            wher = " WHERE " + where[0] + " " + k + " " + where[2] + l1 + where[1] + l2 + where[2] + " ";
+            wher = " WHERE " +  table + "." + where[0] + " " + k + " " + where[2] + l1 + where[1] + l2 + where[2] + " AND " +  table + "." + context.getConditions().substring(5, context.getConditions().length()) + " " ;
         }
-        String query = "SELECT " + what + " FROM " + table + wher + ord;
+        String query = "SELECT " + what + " FROM " + table + " " + context.getReferences() + wher + ord;
 
         return freeReturnQuery(query, mpv5.usermanagement.SecurityManager.VIEW, null).getData();
     }
@@ -474,7 +474,7 @@ public class QueryHandler implements Cloneable {
 
         if (where != null) {
             for (int i = 0; i < where.length; i++) {
-                str = str + where[i][0] + " = " + where[i][2] + where[i][1] + where[i][2];
+                str = str +  table + "." + where[i][0] + " = " + where[i][2] + where[i][1] + where[i][2];
             }
             query = "DELETE FROM " + table + " WHERE " + str;
             freeQuery(query, mpv5.usermanagement.SecurityManager.VIEW, null);
@@ -524,7 +524,7 @@ public class QueryHandler implements Cloneable {
         String l = "";
         String k = " = ";
         String j = "";
-        String ord = " ORDER BY " + order;
+        String ord = " ORDER BY " + table + "." + order;
         String wher = "";
         wher = "";
 
@@ -552,12 +552,12 @@ public class QueryHandler implements Cloneable {
 
         if (where == null) {
         } else {
-            wher = where[0] + " " + k + " " + where[2] + l + where[1] + l + where[2] + " AND " + wher;
+            wher = where[0] + " " + k + " " + where[2] + l + where[1] + l + where[2] + " AND " + wher + " AND " +  table + "." + context.getConditions().substring(5, context.getConditions().length());
             if (where.length > 3) {
-                wher = wher + " AND " + where[3] + " " + k + " " + where[5] + l + where[4] + l + where[5] + " ";
+                wher = wher + " AND " + where[3] + " " + k + " " + where[5] + l + where[4] + l + where[5] + " " +  table + "." + context.getConditions() + " ";
             }
         }
-        String query = "SELECT " + what + " FROM " + table + " WHERE " + wher + ord;
+        String query = "SELECT " + what + " FROM " + table + " " + context.getReferences() + " WHERE " + wher + ord;
 
         return freeReturnQuery(query, mpv5.usermanagement.SecurityManager.VIEW, null).getData();
     }
@@ -621,6 +621,8 @@ public class QueryHandler implements Cloneable {
     /**
      * Free SQL Statement!
      * @param string
+     * @param action
+     * @param jobmessage
      * @return
      */
     @SuppressWarnings("unchecked")
@@ -730,7 +732,7 @@ public class QueryHandler implements Cloneable {
             }
         }
         stop();
-        if(jobmessage!=null) {
+        if (jobmessage != null) {
             MPV5View.addMessage(jobmessage);
         }
         return retval;
@@ -740,6 +742,8 @@ public class QueryHandler implements Cloneable {
     /**
      * Free SQL Select Statement!
      * @param query
+     * @param action 
+     * @param jobmessage 
      * @return Your Data
      */
     @SuppressWarnings({"unchecked"})
@@ -781,7 +785,11 @@ public class QueryHandler implements Cloneable {
             columnnames = new String[rsmd.getColumnCount()];
             for (int i = 1; i <= rsmd.getColumnCount(); i++) {
                 columnnames[i - 1] = rsmd.getColumnName(i);
+
+//                System.out.print( rsmd.getColumnName(i) +",");
             }
+
+//            Log.PrintArray(columnnames);
 
             while (resultSet.next()) {
                 spalten = new ArrayList();
@@ -822,7 +830,10 @@ public class QueryHandler implements Cloneable {
             }
         }
         stop();
-        if(jobmessage!=null)MPV5View.addMessage(jobmessage);
+        if (jobmessage != null) {
+            MPV5View.addMessage(jobmessage);
+        }
+//        Log.PrintArray(data);
         return new ReturnValue(id, data, columnnames);
     }
 }

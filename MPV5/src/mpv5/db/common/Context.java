@@ -5,9 +5,9 @@
 package mpv5.db.common;
 
 import java.util.ArrayList;
-import mpv5.globals.Fields;
 import mpv5.globals.Headers;
 import mpv5.items.contacts.Contact;
+import mpv5.utils.text.RandomText;
 
 /**
  *
@@ -23,9 +23,29 @@ public class Context {
     public static final String SEARCH_NUMBER = "cnumber";
     public static final String SEARCH_DETAILS = "!%&";
     public static final String SEARCH_ALL = "!**!";
-    public static String DEFAULT_SUBID = "cname";
+    public static String DEFAULT_SUBID = "ids, cname";
     public static String IDENTITY_CONTACTS = "contacts";
     private static Class IDENTITY_CONTACTS_CLASS = Contact.class;
+    public static String DEFAULT_CONTACT_SEARCH = "ids, cnumber, cname, city";
+    public static String DETAILS_CONTACTS = IDENTITY_CONTACTS + "." + "IDS," + IDENTITY_CONTACTS + "." + "CNUMBER," +
+            IDENTITY_CONTACTS + "." + "TITLE," + IDENTITY_CONTACTS + "." + "PRENAME," + IDENTITY_CONTACTS + "." + "CNAME," +
+            IDENTITY_CONTACTS + "." + "STREET," + IDENTITY_CONTACTS + "." + "ZIP," + IDENTITY_CONTACTS + "." + "CITY," +
+            IDENTITY_CONTACTS + "." + "MAINPHONE," + IDENTITY_CONTACTS + "." + "FAX," + IDENTITY_CONTACTS + "." + "MOBILEPHONE," +
+            IDENTITY_CONTACTS + "." + "WORKPHONE," + IDENTITY_CONTACTS + "." + "MAILADDRESS," +
+            IDENTITY_CONTACTS + "0." + "CNAME," + IDENTITY_CONTACTS + "." + "WEBSITE," + IDENTITY_CONTACTS + "." + "NOTES," +
+            IDENTITY_CONTACTS + "." + "TAXID," + IDENTITY_CONTACTS + "." + "DATEADDED," + IDENTITY_CONTACTS + "." + "ISACTIVE," +
+            IDENTITY_CONTACTS + "." + "ISCUSTOMER," + IDENTITY_CONTACTS + "." + "ISMANUFACTURER," + IDENTITY_CONTACTS + "." + "ISSUPPLIER," +
+            IDENTITY_CONTACTS + "." + "ISCOMPANY," + IDENTITY_CONTACTS + "." + "ISMALE," + IDENTITY_CONTACTS + "." + "ISENABLED," +
+            IDENTITY_CONTACTS + "." + "ADDEDBY," + IDENTITY_CONTACTS + "." + "RESERVE1," + IDENTITY_CONTACTS + "." + "RESERVE2," +
+            IDENTITY_CONTACTS + "." + "IDS," + IDENTITY_CONTACTS + "." + "CNUMBER," + IDENTITY_CONTACTS + "." + "TITLE," +
+            IDENTITY_CONTACTS + "." + "PRENAME," + IDENTITY_CONTACTS + "." + "CNAME," + IDENTITY_CONTACTS + "." + "STREET," +
+            IDENTITY_CONTACTS + "." + "ZIP," + IDENTITY_CONTACTS + "." + "CITY," + IDENTITY_CONTACTS + "." + "MAINPHONE," +
+            IDENTITY_CONTACTS + "." + "FAX," + IDENTITY_CONTACTS + "." + "MOBILEPHONE," + IDENTITY_CONTACTS + "." + "WORKPHONE," +
+            IDENTITY_CONTACTS + "." + "MAILADDRESS," + IDENTITY_CONTACTS + "." + "COMPANYUID," + IDENTITY_CONTACTS + "." + "WEBSITE," +
+            IDENTITY_CONTACTS + "." + "NOTES," + IDENTITY_CONTACTS + "." + "TAXID," + IDENTITY_CONTACTS + "." + "DATEADDED," +
+            IDENTITY_CONTACTS + "." + "ISACTIVE," + IDENTITY_CONTACTS + "." + "ISCUSTOMER," + IDENTITY_CONTACTS + "." + "ISMANUFACTURER," +
+            IDENTITY_CONTACTS + "." + "ISSUPPLIER," + IDENTITY_CONTACTS + "." + "ISCOMPANY," + IDENTITY_CONTACTS + "." + "ISMALE," +
+            IDENTITY_CONTACTS + "." + "ISENABLED," + IDENTITY_CONTACTS + "." + "ADDEDBY";
 
     public static ArrayList<Context> getSecuredContexts() {
         ArrayList<Context> list = new ArrayList<Context>();
@@ -35,18 +55,16 @@ public class Context {
         list.add(getSupplier());
         return list;
     }
-
-    
     private boolean Company = false;
     private boolean Customer = false;
     private boolean Manufacturer = false;
     private boolean Supplier = false;
     private String[] searchHeaders;
+    private ArrayList<String[]> references = new ArrayList<String[]>();
 
     public Context(DatabaseObject parentobject) {
         this.parent = parentobject;
     }
-
     private Class identityClass = null;
     /*
      * The DB Identity name - usually the table
@@ -65,17 +83,28 @@ public class Context {
     private DatabaseObject parent;
 
     /**
+     * Add a reference to this context
+     * @param referencetable
+     * @param referencekey
+     * @param referenceidkey
+     */
+    public void addReference(String referencetable, String referencekey, String referenceidkey) {
+        String alias = referencetable;
+        references.add(new String[]{referencetable, referencekey, referenceidkey, alias});
+    }
+
+    /**
      * @return the dbIdentity
      */
     public String getDbIdentity() {
         return dbIdentity;
     }
 
-    public String getDefaultSearchFields() {
+    public String getSearchFields() {
         return defResultFields;
     }
 
-    public String[] getDefaultSearchHeaders() {
+    public String[] getSearchHeaders() {
         return searchHeaders;
     }
 
@@ -113,6 +142,7 @@ public class Context {
 
     public String getConditions() {
         String cond = "    ";
+
         if (isCompany()) {
             cond += "WHERE " + CONDITION_COMPANY + " AND ";
         }
@@ -126,7 +156,23 @@ public class Context {
             cond += "WHERE " + CONDITION_SUPPLIER + " AND ";
         }
 
-        return cond.substring(0, cond.length() - 4);
+        if (cond.length() > 4) {
+            cond = cond.substring(4, cond.length() - 4);
+        } else {
+            cond = "";
+        }
+
+        return cond;
+    }
+
+    public String getReferences() {
+        String cond = "";
+        if (references.size() > 0) {
+            for (int i = 0; i < references.size(); i++) {
+              cond += " LEFT OUTER JOIN " + references.get(i)[0] + " AS " + references.get(i)[3] + i + " ON " + references.get(i)[3] + i + "." + references.get(i)[1] + " = " + references.get(i)[3] + "." + references.get(i)[2];
+            }
+        }
+        return cond;
     }
 
     /**
@@ -190,8 +236,8 @@ public class Context {
         c.setCompany(true);
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_CONTACTS);
-        c.setSearchFields(Fields.DEFAULT_CONTACT_SEARCH);
-        c.setSearchHeaders(Headers.DEFAULT_CONTACT_SEARCH);
+        c.setSearchFields(DEFAULT_CONTACT_SEARCH);
+        c.setSearchHeaders(Headers.CONTACT_DEFAULT);
         c.setIdentityClass(IDENTITY_CONTACTS_CLASS);
         return c;
     }
@@ -201,8 +247,8 @@ public class Context {
         c.setCustomer(true);
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_CONTACTS);
-        c.setSearchFields(Fields.DEFAULT_CONTACT_SEARCH);
-        c.setSearchHeaders(Headers.DEFAULT_CONTACT_SEARCH);
+        c.setSearchFields(DEFAULT_CONTACT_SEARCH);
+        c.setSearchHeaders(Headers.CONTACT_DEFAULT);
         c.setIdentityClass(IDENTITY_CONTACTS_CLASS);
         return c;
     }
@@ -212,8 +258,8 @@ public class Context {
         c.setManufacturer(true);
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_CONTACTS);
-        c.setSearchFields(Fields.DEFAULT_CONTACT_SEARCH);
-        c.setSearchHeaders(Headers.DEFAULT_CONTACT_SEARCH);
+        c.setSearchFields(DEFAULT_CONTACT_SEARCH);
+        c.setSearchHeaders(Headers.CONTACT_DEFAULT);
         c.setIdentityClass(IDENTITY_CONTACTS_CLASS);
         return c;
     }
@@ -223,17 +269,17 @@ public class Context {
         c.setSupplier(true);
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_CONTACTS);
-        c.setSearchFields(Fields.DEFAULT_CONTACT_SEARCH);
-        c.setSearchHeaders(Headers.DEFAULT_CONTACT_SEARCH);
+        c.setSearchFields(DEFAULT_CONTACT_SEARCH);
+        c.setSearchHeaders(Headers.CONTACT_DEFAULT);
         c.setIdentityClass(IDENTITY_CONTACTS_CLASS);
         return c;
     }
 
-    private void setSearchFields(String fields) {
+    public void setSearchFields(String fields) {
         defResultFields = fields;
     }
 
-    private void setSearchHeaders(String[] headers) {
+    public void setSearchHeaders(String[] headers) {
         searchHeaders = headers;
     }
 
@@ -242,5 +288,10 @@ public class Context {
      */
     public void setIdentityClass(Class identityClass) {
         this.identityClass = identityClass;
+    }
+
+    @Override
+    public String toString() {
+        return dbIdentity;
     }
 }
