@@ -45,7 +45,9 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
     private boolean isEnded = false;
     private boolean standalone;
 
-    /** Creates new form Wizard */
+    /** Creates new form Wizard
+     * @param standalone
+     */
     public Wizard(boolean standalone) {
         initComponents();
         back.setEnabled(false);
@@ -253,6 +255,7 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
             }
         });
     }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton back;

@@ -31,7 +31,7 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
 
     private boolean DBVerification() {
         DatabaseConnection conn;
-        this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+        this.master.setCursor(new Cursor(Cursor.WAIT_CURSOR));
         boolean existing = false;
         if (labeledTextChooser1.get_Text() != null && labeledTextChooser1.get_Text().length() > 0) {
             master.getStore().changeProperty("driver", jComboBox1.getSelectedItem().toString());
@@ -68,13 +68,13 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
                 }
             } catch (Exception ex) {
                 master.setMessage(Messages.CONNECTION_FAILED);
-                this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                this.master.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                 return false;
             }
-            this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            this.master.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
             return true;
         } else {
-            this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            this.master.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
             return false;
         }
     }
