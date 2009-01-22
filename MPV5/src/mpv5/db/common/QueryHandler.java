@@ -84,7 +84,7 @@ public class QueryHandler implements Cloneable {
     public Object[] getValuesFor(String needle, String value) {
         if (context != null) {
             if (value == null) {
-                return ArrayUtils.ObjectToSingleColumnArray(freeReturnQuery("SELECT " + needle + " FROM " + table + " " + context.getReferences() + " " +  table + "." + context.getConditions(), mpv5.usermanagement.SecurityManager.VIEW, null).getData());
+                return ArrayUtils.ObjectToSingleColumnArray(freeReturnQuery("SELECT " + needle + " FROM " + table + " " + context.getReferences() + " WHERE " +  table + "." + context.getConditions().substring(5, context.getConditions().length()), mpv5.usermanagement.SecurityManager.VIEW, null).getData());
             } else {
                 return ArrayUtils.ObjectToSingleColumnArray(freeReturnQuery("SELECT " + needle + " FROM " + table + " " + context.getReferences() + " WHERE " + needle + " LIKE %" + value + "% AND " +  table + "." + context.getConditions().substring(5, context.getConditions().length()), mpv5.usermanagement.SecurityManager.VIEW, null).getData());
             }
@@ -408,7 +408,7 @@ public class QueryHandler implements Cloneable {
         if (where != null && where[0] != null && where[1] != null) {
             query = "SELECT " + what + " FROM " + table + " " + context.getReferences() + " WHERE " +  table + "." + where[0] + " = " + where[2] + where[1] + where[2]  + " AND " +  table + "." + context.getConditions().substring(5, context.getConditions().length());
         } else {
-            query = "SELECT " + what + " FROM " + table + " " + context.getReferences() + " " +  table + "." + context.getConditions();
+            query = "SELECT " + what + " FROM " + table + " " + context.getReferences() + " WHERE " +  table + "." + context.getConditions().substring(5, context.getConditions().length());
         }
         return freeReturnQuery(query, mpv5.usermanagement.SecurityManager.VIEW, null).getData();
     }
