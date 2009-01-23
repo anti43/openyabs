@@ -1,8 +1,16 @@
 package mpv5.ui.panels;
 
+import java.awt.Desktop;
+import java.io.File;
+import javax.swing.table.DefaultTableModel;
 import mpv5.data.Search;
 import mpv5.db.common.Context;
 import mpv5.globals.Headers;
+import mpv5.ui.dialogs.DialogForFile;
+import mpv5.utils.date.DateConverter;
+import mpv5.utils.html.TableHtmlWriter;
+import mpv5.utils.files.FileActionHandler;
+import mpv5.utils.print.PrintJob;
 
 /**
  *
@@ -23,6 +31,13 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
         context.setSearchFields(Context.DETAILS_CONTACTS);
         context.setSearchHeaders(Headers.CONTACT_DETAILS);
         context.addReference(Context.IDENTITY_CONTACTS, "ids", "companyuid");
+        fill(true, true, true, true, false);
+    }
+
+    private void fill(boolean customer, boolean supplier, boolean manufacturer, boolean company, boolean filtered) {
+        context.setConditions(customer, supplier, manufacturer, company);
+        context.setExclusiveConditions(customer, supplier, manufacturer, company);
+        context.useExclusiveConditions(filtered);
         listTable.setModel(new Search(getContext(), Search.NAMESEARCH).getTableModelFor(""));
     }
 
@@ -44,8 +59,8 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
         jCheckBox2 = new javax.swing.JCheckBox();
         jCheckBox3 = new javax.swing.JCheckBox();
         jCheckBox4 = new javax.swing.JCheckBox();
+        excButton = new javax.swing.JCheckBox();
         jPanel3 = new javax.swing.JPanel();
-        jButton3 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
 
         setName("Form"); // NOI18N
@@ -86,21 +101,43 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
         jCheckBox1.setSelected(true);
         jCheckBox1.setText(bundle.getString("ContactsList.jCheckBox1.text")); // NOI18N
         jCheckBox1.setName("jCheckBox1"); // NOI18N
+        jCheckBox1.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                ItemStateChanged(evt);
+            }
+        });
 
         jCheckBox2.setBackground(new java.awt.Color(255, 255, 255));
-        jCheckBox2.setSelected(true);
         jCheckBox2.setText(bundle.getString("ContactsList.jCheckBox2.text")); // NOI18N
         jCheckBox2.setName("jCheckBox2"); // NOI18N
+        jCheckBox2.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                ItemStateChanged(evt);
+            }
+        });
 
         jCheckBox3.setBackground(new java.awt.Color(255, 255, 255));
-        jCheckBox3.setSelected(true);
         jCheckBox3.setText(bundle.getString("ContactsList.jCheckBox3.text")); // NOI18N
         jCheckBox3.setName("jCheckBox3"); // NOI18N
+        jCheckBox3.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                ItemStateChanged(evt);
+            }
+        });
 
         jCheckBox4.setBackground(new java.awt.Color(255, 255, 255));
-        jCheckBox4.setSelected(true);
         jCheckBox4.setText(bundle.getString("ContactsList.jCheckBox4.text")); // NOI18N
         jCheckBox4.setName("jCheckBox4"); // NOI18N
+        jCheckBox4.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                ItemStateChanged(evt);
+            }
+        });
+
+        excButton.setBackground(new java.awt.Color(255, 255, 255));
+        excButton.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        excButton.setText(bundle.getString("ContactsList.excButton.text")); // NOI18N
+        excButton.setName("excButton"); // NOI18N
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -114,8 +151,11 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
                     .addComponent(jCheckBox1)
                     .addComponent(jCheckBox3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jCheckBox4)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jCheckBox4)
+                        .addGap(18, 18, 18)
+                        .addComponent(excButton))
                     .addComponent(jCheckBox2))
                 .addContainerGap())
         );
@@ -129,21 +169,14 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jCheckBox3)
-                    .addComponent(jCheckBox4))
-                .addContainerGap(5, Short.MAX_VALUE))
+                    .addComponent(jCheckBox4)
+                    .addComponent(excButton))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ContactsList.jPanel3.border.title"))); // NOI18N
         jPanel3.setName("jPanel3"); // NOI18N
-
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/print_printer.png"))); // NOI18N
-        jButton3.setText(bundle.getString("ContactsList.jButton3.text")); // NOI18N
-        jButton3.setToolTipText(bundle.getString("ContactsList.jButton3.toolTipText")); // NOI18N
-        jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton3.setName("jButton3"); // NOI18N
-        jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jPanel3.add(jButton3);
 
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/firefox2.png"))); // NOI18N
         jButton1.setText(bundle.getString("ContactsList.jButton1.text")); // NOI18N
@@ -151,6 +184,11 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
         jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton1.setName("jButton1"); // NOI18N
         jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
         jPanel3.add(jButton1);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -160,16 +198,16 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(73, Short.MAX_VALUE))
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(67, Short.MAX_VALUE))
             .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 496, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel2, 0, 77, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel3, 0, 0, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE))
         );
@@ -185,9 +223,23 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        DialogForFile dialog = new DialogForFile(DialogForFile.FILES_ONLY, "contacts-" + DateConverter.getTodayDefDate() + ".html");
+        if (dialog.saveFile()) {
+            File f = new TableHtmlWriter((DefaultTableModel) listTable.getModel(), dialog.getFile()).createHtml();
+            FileActionHandler.open(f);
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_ItemStateChanged
+
+          fill(jCheckBox1.isSelected(),jCheckBox2.isSelected(),jCheckBox3.isSelected(),jCheckBox4.isSelected(),excButton.isSelected());
+}//GEN-LAST:event_ItemStateChanged
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox excButton;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton3;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox jCheckBox2;
     private javax.swing.JCheckBox jCheckBox3;
