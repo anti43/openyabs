@@ -32,14 +32,13 @@ import mpv5.logging.Log;
 import mpv5.ui.frames.MPV5View;
 import mpv5.utils.arrays.ArrayUtils;
 import mpv5.utils.date.DateConverter;
-import mpv5.utils.jobs.Watcher;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.print.FilePrintJob;
 import mpv5.utils.print.PrintJob;
 
 /**
  *
- * @author Administrator
+ * @author anti43
  */
 public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
@@ -64,7 +63,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                     new MPComboBoxModelItem(3, "XML File")}));
 
         dateadded.setText(DateConverter.getTodayDefDate());
-        addedby.setText(MPV5View.getUser().getName());
+        addedby.setText(MPV5View.getUser().__getName());
 //        new Watcher(this, ids_);
     }
 

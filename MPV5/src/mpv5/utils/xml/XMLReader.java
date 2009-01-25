@@ -30,7 +30,7 @@ import org.jdom.input.SAXBuilder;
 
 /**
  *
- * @author Administrator
+ * @author anti43
  */
 public class XMLReader {
 

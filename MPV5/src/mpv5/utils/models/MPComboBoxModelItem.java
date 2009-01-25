@@ -22,7 +22,7 @@ import mpv5.logging.Log;
 
 /**
  *
- * @author Administrator
+ * @author anti43
  */
 public class MPComboBoxModelItem extends DefaultComboBoxModel {
 

@@ -34,7 +34,7 @@ import mpv5.ui.parents.Position;
 
 /**
  *
- * @author Administrator
+ * @author anti43
  */
 public class Wizard extends javax.swing.JFrame implements WizardMaster {
 

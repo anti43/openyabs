@@ -14,7 +14,7 @@ import mpv5.ui.dialogs.subcomponents.ControlPanel_Internet;
 
 /**
  *
- * @author Administrator
+ * @author anti43
  */
 public class MPControlPanel extends javax.swing.JPanel {
 

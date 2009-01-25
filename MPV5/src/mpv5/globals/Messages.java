@@ -59,5 +59,7 @@ public class Messages {
     public static String CREATING_DATABASE_FAILED =  "Creating database structure failed, see logs for details.";
     public static String CONTACTS_LIST = "List of contacts";
     public static String CONTROL_PANEL = "Control Panel";
+    public static String REALLY_CLOSE = "Do you really want to close the entire application?\nUnsaved data will be lost!";
+    public static String USER_NOT_FOUND = "User not found: ";
 
 }

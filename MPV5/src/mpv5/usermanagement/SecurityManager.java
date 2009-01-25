@@ -16,10 +16,17 @@
  */
 package mpv5.usermanagement;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mpv5.db.common.Context;
+import mpv5.db.common.DatabaseObject;
 import mpv5.globals.Messages;
+import mpv5.logging.Log;
+import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPV5View;
+import mpv5.utils.text.MD5HashGenerator;
 
 /**
  *
@@ -35,13 +42,21 @@ public class SecurityManager {
     public static final int EXPORT = 2;
     public static final int EDIT = 1;
     public static final int CREATE = 0;
-    public static ArrayList<Context> securedContexts = Context.getSecuredContexts();;
+    public static ArrayList<Context> securedContexts = Context.getSecuredContexts();
 
+    /**
+     * Checks whether the currently logged in user has to right to do this
+     * action in the given context
+     * @param context
+     * @param action
+     * @return True if the highest right of the user is equal or higher as
+     * the right to do requested action
+     */
     public static Boolean check(Context context, int action) {
         for (Context item : securedContexts) {
             if (item.getDbIdentity().equals(context.getDbIdentity())) {
 
-                if (MPV5View.getUser().getHighestRight() <= action) {
+                if (MPV5View.getUser().__getHighestRight() <= action) {
                     return true;
                 } else {
                     return false;
@@ -53,9 +68,31 @@ public class SecurityManager {
         return true;
     }
 
-    public static String getActionName(int action){
+    public static boolean checkAuth(String username, String password) {
 
-        switch(action){
+        User usern = new User();
+        if (usern.fetchDataOf(username)) {
+            try {
+                if (MD5HashGenerator.getInstance().hashData(password.getBytes()).contentEquals(usern.__getPassword())) {
+                    MPV5View.setUser(usern);
+                    return true;
+                } else {
+                    return false;
+                }
+            } catch (NoSuchAlgorithmException ex) {
+                Log.Debug(SecurityManager.class, ex);
+                return false;
+            }
+
+        } else {
+            Popup.notice(Messages.USER_NOT_FOUND + usern);
+            return false;
+        }
+    }
+
+    public static String getActionName(int action) {
+
+        switch (action) {
 
             case CREATE:
                 return Messages.ACTION_CREATE;

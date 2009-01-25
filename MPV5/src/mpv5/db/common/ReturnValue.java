@@ -10,7 +10,7 @@ package mpv5.db.common;
  */
 public class ReturnValue {
 
-    private int id;
+    private int id  = 0;
     private Object[][] data;
     private String[] columnnames;
 

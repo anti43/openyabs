@@ -11,7 +11,7 @@ import mpv5.ui.dialogs.Wizardable;
 
 /**
  *
- * @author Administrator
+ * @author anti43
  */
 public class wizard_DBSettings_2 extends javax.swing.JPanel implements Wizardable {
 

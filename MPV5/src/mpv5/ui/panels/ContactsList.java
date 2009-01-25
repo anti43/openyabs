@@ -14,7 +14,7 @@ import mpv5.utils.print.PrintJob;
 
 /**
  *
- * @author Administrator
+ * @author anti43
  */
 public class ContactsList extends javax.swing.JPanel implements ListPanel {
 
@@ -35,8 +35,8 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
     }
 
     private void fill(boolean customer, boolean supplier, boolean manufacturer, boolean company, boolean filtered) {
-        context.setConditions(customer, supplier, manufacturer, company);
-        context.setExclusiveConditions(customer, supplier, manufacturer, company);
+        context.setContactConditions(customer, supplier, manufacturer, company);
+        context.setExclusiveContactConditions(customer, supplier, manufacturer, company);
         context.useExclusiveConditions(filtered);
         listTable.setModel(new Search(getContext(), Search.NAMESEARCH).getTableModelFor(""));
         count.setText(String.valueOf(listTable.getModel().getRowCount()));

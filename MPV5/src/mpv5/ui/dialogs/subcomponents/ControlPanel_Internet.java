@@ -12,14 +12,15 @@ import mpv5.utils.ui.PanelUtils;
 
 /**
  *
- * @author Administrator
+ * @author anti43
  */
 public class ControlPanel_Internet extends javax.swing.JPanel implements ControlApplet {
 
     /**
-     * Thus unique name identifies this control applet
+     * This unique name identifies this control applet
      */
     public final String UNAME = "internet";
+    private PropertyStore oldvalues;
 
     public ControlPanel_Internet() {
         initComponents();
@@ -187,6 +188,7 @@ public class ControlPanel_Internet extends javax.swing.JPanel implements Control
     }
 
     public void setValues(PropertyStore values) {
+        oldvalues = values;
         proxy.setText(values.getProperty("proxy"));
         port.setText(values.getProperty("proxy"));
         auth.setSelected(TypeConversion.stringToBoolean(values.getProperty("authenticated")));
@@ -197,6 +199,12 @@ public class ControlPanel_Internet extends javax.swing.JPanel implements Control
     public String getUname() {
         return UNAME;
     }
+
+    public void reset() {
+        setValues(oldvalues);
+    }
+
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox auth;
     private javax.swing.JPanel authpanel;

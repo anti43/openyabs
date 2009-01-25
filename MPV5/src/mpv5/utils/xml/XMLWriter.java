@@ -33,7 +33,7 @@ import org.jdom.output.XMLOutputter;
 
 /**
  *
- * @author Administrator
+ * @author anti43
  */
 public class XMLWriter {
 

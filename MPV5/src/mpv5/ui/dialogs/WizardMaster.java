@@ -24,7 +24,7 @@ import mpv5.data.PropertyStore;
 
 /**
  *
- * @author Administrator
+ * @author anti43
  */
 public interface WizardMaster {
 

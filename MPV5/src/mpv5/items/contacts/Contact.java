@@ -10,7 +10,7 @@ import mpv5.db.common.DatabaseObject;
 
 /**
  *
- * @author Administrator
+ * @author anti43
  */
 public class Contact extends DatabaseObject {
 

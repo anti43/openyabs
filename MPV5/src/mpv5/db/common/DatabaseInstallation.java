@@ -18,7 +18,7 @@ package mpv5.db.common;
 
 /**
  *
- * @author Administrator
+ * @author anti43
  */
 public class DatabaseInstallation {
 
@@ -36,9 +36,15 @@ public class DatabaseInstallation {
         "PRIMARY KEY  (ids))",
 
         "CREATE TABLE users (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),"+
-        "cname VARCHAR(250) UNIQUE NOT NULL, password VARCHAR(250) NOT NULL,"+
+        "cname VARCHAR(250) UNIQUE NOT NULL, " +
+        "password VARCHAR(250) NOT NULL,"+
         "laf VARCHAR(50) default NULL, "+
+        "locale VARCHAR(50) default NULL, "+
+        "mail VARCHAR(50) default NULL, "+
+        "language VARCHAR(50) default NULL, "+
+        "highestright SMALLINT DEFAULT 3,"+
         "isenabled SMALLINT DEFAULT 1,"+
+        "lastlogdate DATE default NULL, "+
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,"+
         "PRIMARY KEY  (ids))"
     };

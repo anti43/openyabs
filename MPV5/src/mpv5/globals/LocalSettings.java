@@ -29,22 +29,35 @@ public class LocalSettings {
                 {LAF, "de.muntjak.tinylookandfeel.TinyLookAndFeel"}
             });
 
+    /**
+     * Get a properties value, or the String "null" of N/A
+     * @param name
+     * @return
+     */
     public static String getProperty(String name) {
         if (cookie.getProperty(name) != null) {
             return cookie.getProperty(name);
         } else if (predefinedSettings.getProperty(name) != null) {
             cookie.changeProperty(name, predefinedSettings.getProperty(name));
         } else {
-            cookie.changeProperty(name, "NA");
+            cookie.changeProperty(name, "null");
         }
         return cookie.getProperty(name);
     }
 
+    /**
+     * Add or change a property
+     * @param name
+     * @param value
+     */
     public static void setProperty(String name, String value) {
         Log.Debug(LocalSettings.class, "Changing property '" + name + "' to: " + value);
         cookie.changeProperty(name, value);
     }
 
+    /**
+     * Save the local settings to disk
+     */
     public static void save() {
         XMLWriter x = new XMLWriter();
         try {
@@ -57,6 +70,10 @@ public class LocalSettings {
         }
     }
 
+    /**
+     * Read the local settings from disk
+     * @throws java.lang.Exception
+     */
     public static void read() throws Exception {
 
         Log.Debug(LocalSettings.class, "Reading in local settings..");

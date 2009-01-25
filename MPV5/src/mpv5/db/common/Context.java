@@ -7,25 +7,28 @@ package mpv5.db.common;
 import java.util.ArrayList;
 import mpv5.globals.Headers;
 import mpv5.items.contacts.Contact;
+import mpv5.usermanagement.User;
 
 /**
  *
- * @author Administrator
+ * @author anti43
  */
 public class Context {
 
     //********** tablenames ****************************************************
     public static String IDENTITY_CONTACTS = "contacts";
+    public static String IDENTITY_USERS = "users";
 
     //********** identity classes **********************************************
     private static Class IDENTITY_CONTACTS_CLASS = Contact.class;
+    private static Class IDENTITY_USERS_CLASS = User.class;
 
     //********** conditions ****************************************************
     public static final String CONDITION_CONTACTS_DEFAULT = IDENTITY_CONTACTS + "." + "IDS";
-    public static final String CONDITION_COMPANY = IDENTITY_CONTACTS + "." + "iscompany";
-    public static final String CONDITION_CUSTOMER = IDENTITY_CONTACTS + "." + "iscustomer";
-    public static final String CONDITION_MANUFACTURER = IDENTITY_CONTACTS + "." + "ismanufacturer";
-    public static final String CONDITION_SUPPLIER = IDENTITY_CONTACTS + "." + "issupplier";
+    public static final String CONDITION_CONTACTS_COMPANY = IDENTITY_CONTACTS + "." + "iscompany";
+    public static final String CONDITION_CONTACTS_CUSTOMER = IDENTITY_CONTACTS + "." + "iscustomer";
+    public static final String CONDITION_CONTACTS_MANUFACTURER = IDENTITY_CONTACTS + "." + "ismanufacturer";
+    public static final String CONDITION_CONTACTS_SUPPLIER = IDENTITY_CONTACTS + "." + "issupplier";
 
     //********** searchfields **************************************************
     public static final String SEARCH_NAME = "cname";
@@ -36,6 +39,7 @@ public class Context {
     //********** defaults ******************************************************
     public static String DEFAULT_SUBID = "ids, cname";
     public static String DEFAULT_CONTACT_SEARCH = "ids, cnumber, cname, city";
+    public static String DEFAULT_USER_SEARCH = "ids, cname, mail, lastlogdate";
 
     //********** table fields ********************************************************
     public static String DETAILS_CONTACTS = IDENTITY_CONTACTS + "." + "IDS," + IDENTITY_CONTACTS + "." + "CNUMBER," +
@@ -58,6 +62,16 @@ public class Context {
             IDENTITY_CONTACTS + "." + "ISSUPPLIER," + IDENTITY_CONTACTS + "." + "ISCOMPANY," + IDENTITY_CONTACTS + "." + "ISMALE," +
             IDENTITY_CONTACTS + "." + "ISENABLED," + IDENTITY_CONTACTS + "." + "ADDEDBY";
 
+    public static String DETAILS_USERS = IDENTITY_USERS + "." + "IDS," + IDENTITY_USERS + "." + "CNAME" +
+            IDENTITY_USERS + "." + "password," +
+            IDENTITY_USERS + "." + "laf," +
+            IDENTITY_USERS + "." + "locale," +
+            IDENTITY_USERS + "." + "mail," +
+            IDENTITY_USERS + "." + "language," +
+            IDENTITY_USERS + "." + "highestright," +
+            IDENTITY_USERS + "." + "isenabled," +
+            IDENTITY_USERS + "." + "lastlogdate";
+
     //**************************************************************************
     public static ArrayList<Context> getSecuredContexts() {
         ArrayList<Context> list = new ArrayList<Context>();
@@ -75,7 +89,6 @@ public class Context {
     private ArrayList<String[]> references = new ArrayList<String[]>();
     private boolean exclusiveConditionsAvailable = false;
     private String exclusiveCondition;
-
 
     public Context(DatabaseObject parentobject) {
         this.parent = parentobject;
@@ -97,7 +110,7 @@ public class Context {
     private String defResultFields = null;
     private DatabaseObject parent;
 
-    public void setConditions(boolean customer, boolean supplier, boolean manufacturer, boolean company) {
+    public void setContactConditions(boolean customer, boolean supplier, boolean manufacturer, boolean company) {
         setCustomer(customer);
         setSupplier(supplier);
         setManufacturer(manufacturer);
@@ -111,7 +124,7 @@ public class Context {
      * @param manufacturer
      * @param company
      */
-    public void setExclusiveConditions(boolean customer, boolean supplier, boolean manufacturer, boolean company) {
+    public void setExclusiveContactConditions(boolean customer, boolean supplier, boolean manufacturer, boolean company) {
 
         String cond = "    ";
         boolean first = true;
@@ -121,52 +134,52 @@ public class Context {
                 cond += "WHERE ";
             }
             first = false;
-            cond += " " + CONDITION_CUSTOMER + "=1 AND ";
+            cond += " " + CONDITION_CONTACTS_CUSTOMER + "=1 AND ";
         } else {
             if (first) {
                 cond += "WHERE ";
             }
             first = false;
-            cond += " " + CONDITION_CUSTOMER + "=0 AND ";
+            cond += " " + CONDITION_CONTACTS_CUSTOMER + "=0 AND ";
         }
         if (supplier) {
             if (first) {
                 cond += "WHERE ";
             }
             first = false;
-            cond += " " + CONDITION_SUPPLIER + "=1 AND ";
+            cond += " " + CONDITION_CONTACTS_SUPPLIER + "=1 AND ";
         } else {
             if (first) {
                 cond += "WHERE ";
             }
             first = false;
-            cond += " " + CONDITION_SUPPLIER + "=0 AND ";
+            cond += " " + CONDITION_CONTACTS_SUPPLIER + "=0 AND ";
         }
         if (manufacturer) {
             if (first) {
                 cond += "WHERE ";
             }
             first = false;
-            cond += " " + CONDITION_MANUFACTURER + "=1 AND ";
+            cond += " " + CONDITION_CONTACTS_MANUFACTURER + "=1 AND ";
         } else {
             if (first) {
                 cond += "WHERE ";
             }
             first = false;
-            cond += " " + CONDITION_MANUFACTURER + "=0 AND ";
+            cond += " " + CONDITION_CONTACTS_MANUFACTURER + "=0 AND ";
         }
         if (company) {
             if (first) {
                 cond += "WHERE ";
             }
             first = false;
-            cond += " " + CONDITION_COMPANY + "=1 AND ";
+            cond += " " + CONDITION_CONTACTS_COMPANY + "=1 AND ";
         } else {
             if (first) {
                 cond += "WHERE ";
             }
             first = false;
-            cond += " " + CONDITION_COMPANY + "=0 AND ";
+            cond += " " + CONDITION_CONTACTS_COMPANY + "=0 AND ";
         }
 
         if (!first) {
@@ -191,28 +204,28 @@ public class Context {
                     cond += "WHERE ";
                 }
                 first = false;
-                cond += " " + CONDITION_COMPANY + "=1 OR ";
+                cond += " " + CONDITION_CONTACTS_COMPANY + "=1 OR ";
             }
             if (isCustomer()) {
                 if (first) {
                     cond += "WHERE ";
                 }
                 first = false;
-                cond += " " + CONDITION_CUSTOMER + "=1 OR ";
+                cond += " " + CONDITION_CONTACTS_CUSTOMER + "=1 OR ";
             }
             if (isManufacturer()) {
                 if (first) {
                     cond += "WHERE ";
                 }
                 first = false;
-                cond += " " + CONDITION_MANUFACTURER + "=1 OR ";
+                cond += " " + CONDITION_CONTACTS_MANUFACTURER + "=1 OR ";
             }
             if (isSupplier()) {
                 if (first) {
                     cond += "WHERE ";
                 }
                 first = false;
-                cond += " " + CONDITION_SUPPLIER + "=1 OR ";
+                cond += " " + CONDITION_CONTACTS_SUPPLIER + "=1 OR ";
             }
 
             if (!first) {
@@ -409,6 +422,16 @@ public class Context {
         c.setSearchFields(DEFAULT_CONTACT_SEARCH);
         c.setSearchHeaders(Headers.CONTACT_DEFAULT);
         c.setIdentityClass(IDENTITY_CONTACTS_CLASS);
+        return c;
+    }
+
+    public static Context getUser() {
+        Context c = new Context(new User());
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_USERS);
+        c.setSearchFields(DEFAULT_USER_SEARCH);
+        c.setSearchHeaders(Headers.USER_DEFAULT);
+        c.setIdentityClass(IDENTITY_USERS_CLASS);
         return c;
     }
 

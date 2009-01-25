@@ -14,20 +14,25 @@
  *      You should have received a copy of the GNU General Public License
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mpv5.ui.panels;
+package mpv5.usermanagement;
+
+import javax.swing.JComponent;
 
 /**
  *
- * @author Andreas
+ * @author anti43
  */
-public interface ListPanel {
+public class Lock {
 
     /**
-     * Reload the lists from db
+     * Locks the given component and brings up a login window which could unlock it again
+     * @param comp
      */
-    public void refresh();
-    /**
-     * Clear the lists in this view
-     */
-    public void flush();
+    public static void lock(JComponent comp) {
+        comp.setEnabled(false);
+        
+
+
+
+    }
 }
