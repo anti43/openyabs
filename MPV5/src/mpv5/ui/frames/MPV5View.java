@@ -3,8 +3,7 @@
  */
 package mpv5.ui.frames;
 
-import de.muntjak.tinylookandfeel.TinyLookAndFeel;
-import de.muntjak.tinylookandfeel.controlpanel.ControlPanel;
+
 import java.awt.BorderLayout;
 import java.awt.Cursor;
 import javax.swing.JFrame;
@@ -17,10 +16,10 @@ import mpv5.globals.Messages;
 import mpv5.ui.panels.ContactPanel;
 import mpv5.ui.panels.ContactsList;
 import mpv5.ui.panels.DataPanel;
+import mpv5.ui.panels.MPControlPanel;
 import mpv5.ui.parents.CloseableTabbedPane;
 import mpv5.ui.parents.FadeOnChangeLabel;
 import mpv5.usermanagement.User;
-import mpv5.utils.programs.JavaProgram;
 import org.jdesktop.application.SingleFrameApplication;
 import org.jdesktop.application.FrameView;
 
@@ -92,11 +91,11 @@ public class MPV5View extends FrameView {
         jButton19 = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         javax.swing.JMenu fileMenu = new javax.swing.JMenu();
-        javax.swing.JMenuItem exitMenuItem = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
+        jMenu3 = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
         statusPanel = new javax.swing.JPanel();
         javax.swing.JSeparator statusPanelSeparator = new javax.swing.JSeparator();
@@ -342,16 +341,6 @@ public class MPV5View extends FrameView {
 
         fileMenu.setText(bundle.getString("MPV5View.fileMenu.text")); // NOI18N
         fileMenu.setName("fileMenu"); // NOI18N
-
-        exitMenuItem.setText(bundle.getString("MPV5View.exitMenuItem.text")); // NOI18N
-        exitMenuItem.setName("exitMenuItem"); // NOI18N
-        exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                exitMenuItemActionPerformed(evt);
-            }
-        });
-        fileMenu.add(exitMenuItem);
-
         menuBar.add(fileMenu);
 
         jMenu1.setText(bundle.getString("MPV5View.jMenu1.text")); // NOI18N
@@ -378,6 +367,13 @@ public class MPV5View extends FrameView {
         });
         jMenu2.add(jMenuItem2);
 
+        jMenu1.add(jMenu2);
+
+        menuBar.add(jMenu1);
+
+        jMenu3.setText(bundle.getString("MPV5View.jMenu3.text")); // NOI18N
+        jMenu3.setName("jMenu3"); // NOI18N
+
         jMenuItem3.setText(bundle.getString("MPV5View.jMenuItem3.text")); // NOI18N
         jMenuItem3.setName("jMenuItem3"); // NOI18N
         jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
@@ -385,11 +381,9 @@ public class MPV5View extends FrameView {
                 jMenuItem3ActionPerformed(evt);
             }
         });
-        jMenu2.add(jMenuItem3);
+        jMenu3.add(jMenuItem3);
 
-        jMenu1.add(jMenu2);
-
-        menuBar.add(jMenu1);
+        menuBar.add(jMenu3);
 
         statusPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         statusPanel.setName("statusPanel"); // NOI18N
@@ -538,9 +532,6 @@ public class MPV5View extends FrameView {
         setToolBar(mainToolbar);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
-    }//GEN-LAST:event_exitMenuItemActionPerformed
-
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         ContactPanel tab = new ContactPanel(Context.getCustomer());
         tab.setType(ContactPanel.CUSTOMER);
@@ -611,14 +602,14 @@ public class MPV5View extends FrameView {
        Main.setLaF("de.muntjak.tinylookandfeel.TinyLookAndFeel");
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
-    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
-      TinyLookAndFeel.controlPanelInstantiated = true;
-      new ControlPanel(Main.getApplication());
-    }//GEN-LAST:event_jMenuItem3ActionPerformed
-
     private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton23ActionPerformed
         // TODO add your handling code here:
 }//GEN-LAST:event_jButton23ActionPerformed
+
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+        tabPane.addTab(Messages.CONTROL_PANEL, MPControlPanel.instanceOf());
+        tabPane.setSelectedComponent(MPControlPanel.instanceOf());
+    }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToolBar commonActionsToolbar;
@@ -637,6 +628,7 @@ public class MPV5View extends FrameView {
     private javax.swing.JButton jButton5;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;

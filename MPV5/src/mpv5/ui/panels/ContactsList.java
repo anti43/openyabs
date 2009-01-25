@@ -39,6 +39,7 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
         context.setExclusiveConditions(customer, supplier, manufacturer, company);
         context.useExclusiveConditions(filtered);
         listTable.setModel(new Search(getContext(), Search.NAMESEARCH).getTableModelFor(""));
+        count.setText(String.valueOf(listTable.getModel().getRowCount()));
     }
 
     /** This me4thod is called from within the constructor to
@@ -60,6 +61,8 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
         jCheckBox3 = new javax.swing.JCheckBox();
         jCheckBox4 = new javax.swing.JCheckBox();
         excButton = new javax.swing.JCheckBox();
+        jLabel2 = new javax.swing.JLabel();
+        count = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
 
@@ -137,7 +140,14 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
         excButton.setBackground(new java.awt.Color(255, 255, 255));
         excButton.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         excButton.setText(bundle.getString("ContactsList.excButton.text")); // NOI18N
+        excButton.setToolTipText(bundle.getString("ContactsList.excButton.toolTipText")); // NOI18N
         excButton.setName("excButton"); // NOI18N
+
+        jLabel2.setText(bundle.getString("ContactsList.jLabel2.text")); // NOI18N
+        jLabel2.setName("jLabel2"); // NOI18N
+
+        count.setText(bundle.getString("ContactsList.count.text")); // NOI18N
+        count.setName("count"); // NOI18N
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -145,18 +155,24 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jCheckBox1)
-                    .addComponent(jCheckBox3))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jCheckBox4)
-                        .addGap(18, 18, 18)
-                        .addComponent(excButton))
-                    .addComponent(jCheckBox2))
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jCheckBox1)
+                            .addComponent(jCheckBox3))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jCheckBox4)
+                                .addGap(18, 18, 18)
+                                .addComponent(excButton))
+                            .addComponent(jCheckBox2)))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(count, javax.swing.GroupLayout.DEFAULT_SIZE, 248, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -171,7 +187,10 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
                     .addComponent(jCheckBox3)
                     .addComponent(jCheckBox4)
                     .addComponent(excButton))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(count)))
         );
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
@@ -199,17 +218,17 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(67, Short.MAX_VALUE))
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 496, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 423, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel3, 0, 0, Short.MAX_VALUE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 52, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -238,6 +257,7 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
 }//GEN-LAST:event_ItemStateChanged
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel count;
     private javax.swing.JCheckBox excButton;
     private javax.swing.JButton jButton1;
     private javax.swing.JCheckBox jCheckBox1;
@@ -245,6 +265,7 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
     private javax.swing.JCheckBox jCheckBox3;
     private javax.swing.JCheckBox jCheckBox4;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;

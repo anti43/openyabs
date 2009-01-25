@@ -58,5 +58,6 @@ public class Messages {
     public static String CREATING_DATABASE =  "Creating database structure..";
     public static String CREATING_DATABASE_FAILED =  "Creating database structure failed, see logs for details.";
     public static String CONTACTS_LIST = "List of contacts";
+    public static String CONTROL_PANEL = "Control Panel";
 
 }

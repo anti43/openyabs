@@ -1,18 +1,36 @@
 package mpv5.ui.panels;
 
+import de.muntjak.tinylookandfeel.TinyLookAndFeel;
+import java.awt.BorderLayout;
+import java.awt.Component;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.JButton;
+import javax.swing.JPanel;
+import mpv5.Main;
+import mpv5.logging.Log;
+import mpv5.ui.dialogs.subcomponents.ControlPanel_Internet;
 
 /**
  *
  * @author Administrator
  */
-public class PropertiesPanel extends javax.swing.JPanel {
+public class MPControlPanel extends javax.swing.JPanel {
+
+    private static MPControlPanel cpanel;
+
+    public static Component instanceOf() {
+        if (cpanel != null) {
+            return cpanel;
+        } else {
+            cpanel = new MPControlPanel();
+            return cpanel;
+        }
+    }
 
     /** Creates new form ListPanel */
-    public PropertiesPanel() {
+    private MPControlPanel() {
         initComponents();
     }
 
@@ -25,7 +43,7 @@ public class PropertiesPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        panel = new javax.swing.JPanel();
+        buttons = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
@@ -33,18 +51,22 @@ public class PropertiesPanel extends javax.swing.JPanel {
         jButton5 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
         jButton7 = new javax.swing.JButton();
+        details = new javax.swing.JPanel();
 
         setName("Form"); // NOI18N
+        setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.Y_AXIS));
 
-        panel.setBackground(new java.awt.Color(255, 255, 255));
+        buttons.setBackground(new java.awt.Color(255, 255, 255));
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
-        panel.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("PropertiesPanel.panel.border.title"))); // NOI18N
-        panel.setName("panel"); // NOI18N
+        buttons.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("MPControlPanel.buttons.border.title"))); // NOI18N
+        buttons.setMinimumSize(new java.awt.Dimension(300, 117));
+        buttons.setName("buttons"); // NOI18N
+        buttons.setPreferredSize(new java.awt.Dimension(340, 240));
 
         jButton1.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/internet.png"))); // NOI18N
-        jButton1.setText(bundle.getString("PropertiesPanel.jButton1.text")); // NOI18N
-        jButton1.setToolTipText(bundle.getString("PropertiesPanel.jButton1.toolTipText")); // NOI18N
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/internet.png"))); // NOI18N
+        jButton1.setText(bundle.getString("MPControlPanel.jButton1.text")); // NOI18N
+        jButton1.setToolTipText(bundle.getString("MPControlPanel.jButton1.toolTipText")); // NOI18N
         jButton1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jButton1.setContentAreaFilled(false);
         jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -58,12 +80,12 @@ public class PropertiesPanel extends javax.swing.JPanel {
                 jButton1ActionPerformed(evt);
             }
         });
-        panel.add(jButton1);
+        buttons.add(jButton1);
 
         jButton2.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/locale.png"))); // NOI18N
-        jButton2.setText(bundle.getString("PropertiesPanel.jButton2.text")); // NOI18N
-        jButton2.setToolTipText(bundle.getString("PropertiesPanel.jButton2.toolTipText")); // NOI18N
+        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/locale.png"))); // NOI18N
+        jButton2.setText(bundle.getString("MPControlPanel.jButton2.text")); // NOI18N
+        jButton2.setToolTipText(bundle.getString("MPControlPanel.jButton2.toolTipText")); // NOI18N
         jButton2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jButton2.setContentAreaFilled(false);
         jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -72,12 +94,12 @@ public class PropertiesPanel extends javax.swing.JPanel {
         jButton2.setName("jButton2"); // NOI18N
         jButton2.setPreferredSize(new java.awt.Dimension(90, 80));
         jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        panel.add(jButton2);
+        buttons.add(jButton2);
 
         jButton3.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/looknfeel.png"))); // NOI18N
-        jButton3.setText(bundle.getString("PropertiesPanel.jButton3.text")); // NOI18N
-        jButton3.setToolTipText(bundle.getString("PropertiesPanel.jButton3.toolTipText")); // NOI18N
+        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/looknfeel.png"))); // NOI18N
+        jButton3.setText(bundle.getString("MPControlPanel.jButton3.text")); // NOI18N
+        jButton3.setToolTipText(bundle.getString("MPControlPanel.jButton3.toolTipText")); // NOI18N
         jButton3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jButton3.setContentAreaFilled(false);
         jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -86,12 +108,17 @@ public class PropertiesPanel extends javax.swing.JPanel {
         jButton3.setName("jButton3"); // NOI18N
         jButton3.setPreferredSize(new java.awt.Dimension(90, 80));
         jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        panel.add(jButton3);
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+        buttons.add(jButton3);
 
         jButton4.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
-        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/cal.png"))); // NOI18N
-        jButton4.setText(bundle.getString("PropertiesPanel.jButton4.text")); // NOI18N
-        jButton4.setToolTipText(bundle.getString("PropertiesPanel.jButton4.toolTipText")); // NOI18N
+        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/cal.png"))); // NOI18N
+        jButton4.setText(bundle.getString("MPControlPanel.jButton4.text")); // NOI18N
+        jButton4.setToolTipText(bundle.getString("MPControlPanel.jButton4.toolTipText")); // NOI18N
         jButton4.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jButton4.setContentAreaFilled(false);
         jButton4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -100,12 +127,12 @@ public class PropertiesPanel extends javax.swing.JPanel {
         jButton4.setName("jButton4"); // NOI18N
         jButton4.setPreferredSize(new java.awt.Dimension(90, 80));
         jButton4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        panel.add(jButton4);
+        buttons.add(jButton4);
 
         jButton5.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
-        jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/babelfish.png"))); // NOI18N
-        jButton5.setText(bundle.getString("PropertiesPanel.jButton5.text")); // NOI18N
-        jButton5.setToolTipText(bundle.getString("PropertiesPanel.jButton5.toolTipText")); // NOI18N
+        jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/babelfish.png"))); // NOI18N
+        jButton5.setText(bundle.getString("MPControlPanel.jButton5.text")); // NOI18N
+        jButton5.setToolTipText(bundle.getString("MPControlPanel.jButton5.toolTipText")); // NOI18N
         jButton5.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jButton5.setContentAreaFilled(false);
         jButton5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -114,12 +141,12 @@ public class PropertiesPanel extends javax.swing.JPanel {
         jButton5.setName("jButton5"); // NOI18N
         jButton5.setPreferredSize(new java.awt.Dimension(90, 80));
         jButton5.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        panel.add(jButton5);
+        buttons.add(jButton5);
 
         jButton6.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
-        jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/kontact_contacts.png"))); // NOI18N
-        jButton6.setText(bundle.getString("PropertiesPanel.jButton6.text")); // NOI18N
-        jButton6.setToolTipText(bundle.getString("PropertiesPanel.jButton6.toolTipText")); // NOI18N
+        jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/evolution-contacts.png"))); // NOI18N
+        jButton6.setText(bundle.getString("MPControlPanel.jButton6.text")); // NOI18N
+        jButton6.setToolTipText(bundle.getString("MPControlPanel.jButton6.toolTipText")); // NOI18N
         jButton6.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jButton6.setContentAreaFilled(false);
         jButton6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -128,12 +155,12 @@ public class PropertiesPanel extends javax.swing.JPanel {
         jButton6.setName("jButton6"); // NOI18N
         jButton6.setPreferredSize(new java.awt.Dimension(90, 80));
         jButton6.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        panel.add(jButton6);
+        buttons.add(jButton6);
 
         jButton7.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
-        jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/openofficeorg-20.png"))); // NOI18N
-        jButton7.setText(bundle.getString("PropertiesPanel.jButton7.text")); // NOI18N
-        jButton7.setToolTipText(bundle.getString("PropertiesPanel.jButton7.toolTipText")); // NOI18N
+        jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/openofficeorg-20.png"))); // NOI18N
+        jButton7.setText(bundle.getString("MPControlPanel.jButton7.text")); // NOI18N
+        jButton7.setToolTipText(bundle.getString("MPControlPanel.jButton7.toolTipText")); // NOI18N
         jButton7.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jButton7.setContentAreaFilled(false);
         jButton7.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -142,25 +169,31 @@ public class PropertiesPanel extends javax.swing.JPanel {
         jButton7.setName("jButton7"); // NOI18N
         jButton7.setPreferredSize(new java.awt.Dimension(90, 80));
         jButton7.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        panel.add(jButton7);
+        buttons.add(jButton7);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panel, javax.swing.GroupLayout.PREFERRED_SIZE, 392, javax.swing.GroupLayout.PREFERRED_SIZE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE, 336, Short.MAX_VALUE)
-        );
+        add(buttons);
+
+        details.setBackground(new java.awt.Color(255, 255, 255));
+        details.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("MPControlPanel.details.border.title"))); // NOI18N
+        details.setName("details"); // NOI18N
+        details.setLayout(new java.awt.BorderLayout());
+        add(details);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
+        openDetails(new ControlPanel_Internet());
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        TinyLookAndFeel.controlPanelInstantiated = true;
+        new de.muntjak.tinylookandfeel.controlpanel.ControlPanel(Main.getApplication());
+    }//GEN-LAST:event_jButton3ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel buttons;
+    private javax.swing.JPanel details;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
@@ -168,7 +201,6 @@ public class PropertiesPanel extends javax.swing.JPanel {
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
-    private javax.swing.JPanel panel;
     // End of variables declaration//GEN-END:variables
 
     /**
@@ -191,17 +223,59 @@ public class PropertiesPanel extends javax.swing.JPanel {
         button.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
 
         button.addActionListener(new java.awt.event.ActionListener() {
+
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 try {
                     clazz.newInstance();
                 } catch (InstantiationException ex) {
-                    Logger.getLogger(PropertiesPanel.class.getName()).log(Level.SEVERE, null, ex);
+                    Log.Debug(this, ex);
                 } catch (IllegalAccessException ex) {
-                    Logger.getLogger(PropertiesPanel.class.getName()).log(Level.SEVERE, null, ex);
+                    Log.Debug(this, ex);
                 }
             }
         });
 
-        panel.add(button);
+        buttons.add(button);
+    }
+
+    /**
+     * This method adds a button to the Properties panel, with given
+     * Icon and Text. A click on the generated button places the JPanel on the deatils pane.
+     * <b>Bring your own scrollpane!<b>
+     * @param icon
+     * @param text
+     * @param panel 
+     */
+    public void addShortcut(Icon icon, String text, final JPanel panel) {
+        JButton button = new JButton(text, icon);
+        button.setToolTipText(text); // NOI18N
+        button.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        button.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        button.setContentAreaFilled(false);
+        button.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        button.setMaximumSize(new java.awt.Dimension(90, 90));
+        button.setMinimumSize(new java.awt.Dimension(90, 80));
+        button.setPreferredSize(new java.awt.Dimension(90, 80));
+        button.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+
+        button.addActionListener(new java.awt.event.ActionListener() {
+
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                try {
+                    details.removeAll();
+                    details.add(panel, BorderLayout.CENTER);
+                } catch (Exception ex) {
+                    Log.Debug(this, ex);
+                }
+            }
+        });
+
+        buttons.add(button);
+    }
+
+    private void openDetails(ControlPanel_Internet panel) {
+        details.removeAll();
+        details.add(panel, BorderLayout.CENTER);
+        details.validate();
     }
 }
