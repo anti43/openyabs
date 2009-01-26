@@ -12,6 +12,7 @@ import org.jdesktop.application.SingleFrameApplication;
 
 import com.l2fprod.common.swing.plaf.LookAndFeelAddons;
 import java.io.File;
+import java.util.Date;
 import java.util.Map;
 import java.util.Properties;
 import javax.swing.SwingUtilities;
@@ -89,6 +90,7 @@ public class Main extends SingleFrameApplication {
     public static void main(String[] args) {
 
         System.out.print(Messages.START_MESSAGE);
+          System.out.print(new Date());
 
         getOS();
         setEnv();

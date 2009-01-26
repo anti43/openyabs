@@ -49,7 +49,7 @@ public class DatabaseInstallation {
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,"+
         "PRIMARY KEY  (ids))",
 
-        "INSERT INTO users (password,cname,laf,locale,mail,language,inthighestright,datelastlog ) VALUES ('5f4dcc3b5aa765d61d8327deb882cf99 ','admin','com.sun.java.swing.plaf.windows.WindowsLookAndFeel','de_DE','','EN',0,'2009-01-26 05:45:38')"
+        "INSERT INTO users (password,cname,laf,locale,mail,language,inthighestright,datelastlog ) VALUES ('5f4dcc3b5aa765d61d8327deb882cf99','admin','com.sun.java.swing.plaf.windows.WindowsLookAndFeel','de_DE','','EN',0,'2009-01-26 05:45:38')"
     };
     
     private String[] MYSQL_STRUCTURE;

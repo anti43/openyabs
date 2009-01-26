@@ -72,7 +72,9 @@ public class MPSecurityManager {
         try {
             if (usern1.fetchDataOf(username)) {
                 try {
-                    if (MD5HashGenerator.getInstance().hashData(password.getBytes()).contentEquals(usern1.__getPassword())) {
+                    
+                    System.out.println(usern1.__getPassword().toUpperCase());
+                    if (MD5HashGenerator.getInstance().hashData(password.getBytes()).equalsIgnoreCase(usern1.__getPassword())) {
                         MPV5View.setUser(usern1);
                         return true;
                     } else {
