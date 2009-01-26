@@ -17,7 +17,9 @@
 package mpv5.usermanagement;
 
 import java.util.Date;
+import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.NodataFoundException;
 
 /**
  *
@@ -30,25 +32,25 @@ public class User extends DatabaseObject {
     private String locale = "";
     private String mail = "";
     private String language = "";
-    private int highestright = 4;
+    private int inthighestright = 4;
     private boolean isenabled = true;
-    private Date lastlogdate = new Date();
+    private boolean isloggedin = true;
+    private Date datelastlog = new Date();
 
-    public User(int userid) {
+    public User(int userid) throws NodataFoundException {
+         context.setDbIdentity(Context.IDENTITY_USERS);
+         this.fetchDataOf(userid);
     }
 
     public User() {
+          context.setDbIdentity(Context.IDENTITY_USERS);
     }
 
-    public int __getHighestRight() {
-        return SecurityManager.RIGHT_TO_CREATE;
-    }
-
-    public Integer __getID() {
+    public Integer getID() {
         return __getIDS();
     }
 
-    public String __getName() {
+    public String getName() {
         return cname;
     }
 
@@ -135,15 +137,15 @@ public class User extends DatabaseObject {
     /**
      * @return the highestright
      */
-    public int __getHighestright() {
-        return highestright;
+    public int __getINThighestright() {
+        return inthighestright;
     }
 
     /**
      * @param highestright the highestright to set
      */
-    public void setHighestright(int highestright) {
-        this.highestright = highestright;
+    public void setINThighestright(int highestright) {
+        this.inthighestright = highestright;
     }
 
     /**
@@ -168,14 +170,28 @@ public class User extends DatabaseObject {
     /**
      * @return the lastlogdate
      */
-    public Date __getLastlogdate() {
-        return lastlogdate;
+    public Date __getDatelastlog() {
+        return datelastlog;
     }
 
     /**
      * @param lastlogdate the lastlogdate to set
      */
-    public void setLastlogdate(Date lastlogdate) {
-        this.lastlogdate = lastlogdate;
+    public void setDatelastlog(Date lastlogdate) {
+        this.datelastlog = lastlogdate;
+    }
+
+    /**
+     * @return the isloggedin
+     */
+    public boolean isIsloggedin() {
+        return isloggedin;
+    }
+
+    /**
+     * @param isloggedin the isloggedin to set
+     */
+    public void setIsloggedin(boolean isloggedin) {
+        this.isloggedin = isloggedin;
     }
 }

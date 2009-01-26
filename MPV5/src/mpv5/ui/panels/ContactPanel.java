@@ -63,7 +63,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                     new MPComboBoxModelItem(3, "XML File")}));
 
         dateadded.setText(DateConverter.getTodayDefDate());
-        addedby.setText(MPV5View.getUser().__getName());
+        addedby.setText(MPV5View.getUser().getName());
 //        new Watcher(this, ids_);
     }
 

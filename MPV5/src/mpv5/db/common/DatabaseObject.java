@@ -301,8 +301,9 @@ public abstract class DatabaseObject {
      * @param context The context to search under
      * @param id The id of the object
      * @return A database object with data, or null if none found
+     * @throws NodataFoundException 
      */
-    public static DatabaseObject getObject(Context context, int id) {
+    public static DatabaseObject getObject(Context context, int id) throws NodataFoundException {
 
         try {
             Object obj = context.getIdentityClass().newInstance();
@@ -319,8 +320,9 @@ public abstract class DatabaseObject {
     /**
      * Fills this do with the data of the given dataset id
      * @param id
+     * @throws NodataFoundException 
      */
-    public void fetchDataOf(int id) {
+    public void fetchDataOf(int id) throws NodataFoundException {
         explode(QueryHandler.instanceOf().clone(context).select(id));
     }
 
@@ -328,24 +330,29 @@ public abstract class DatabaseObject {
      * Tries to get the id of the last do with the given cname
      * @param cname
      * @return The id, or 0 if none found
+     * @throws NodataFoundException
      */
-    public Integer getIdOf(String cname) {
-        Object[] data = QueryHandler.instanceOf().clone(context).selectLast("ids", new String[]{"cname", cname, "'"});
-        if (data.length > 0) {
-            return Integer.getInteger(String.valueOf(data[0]));
-        } else {
-            return 0;
-        }
+    public Integer getIdOf(String cname) throws NodataFoundException {
+            cname=cname.replaceAll("'", "`");
+            Object[] data = QueryHandler.instanceOf().clone(context).selectLast("ids", new String[]{"cname", cname, "'"});
+            if (data !=null && data.length > 0) {
+                return Integer.valueOf(String.valueOf(data[0]));
+            } else {
+                return 0;
+            }
     }
 
     /**
      * Fills this do with the data of the given dataset cname
      * @param cname
      * @return True if data was found
+     * @throws NodataFoundException
      */
-    public boolean fetchDataOf(String cname) {
-        ReturnValue data = QueryHandler.instanceOf().clone(context).select(getIdOf(cname));
-        if (data.getId() > 0) {
+    public boolean fetchDataOf(String cname) throws NodataFoundException {
+        cname=cname.replaceAll("'", "`");
+        Integer id = this.getIdOf(cname);
+        ReturnValue data = QueryHandler.instanceOf().clone(context).select(id);
+        if (data.getData() != null && data.getData().length > 0) {
             explode(data);
             return true;
         } else {
@@ -367,15 +374,15 @@ public abstract class DatabaseObject {
                     if (vars.get(k).getName().toLowerCase().substring(3).equals(name)) {
                         Log.Debug(this, name + " ?? : " + vars.get(k).getName() + " = " + select.getData()[i][j]);
                         try {
-                            if (name.startsWith("is")) {
+                            if (name.startsWith("is") || name.toUpperCase().startsWith("BOOL")) {
                                 if (String.valueOf(select.getData()[i][j]).equals("1")) {
                                     vars.get(k).invoke(this, new Object[]{true});
                                 } else {
                                     vars.get(k).invoke(this, new Object[]{false});
                                 }
-                            } else if (name.endsWith("uid") || name.equals("ids")) {
+                            } else if (name.toUpperCase().startsWith("INT") || name.endsWith("uid") || name.equals("ids")) {
                                 vars.get(k).invoke(this, new Object[]{Integer.valueOf(String.valueOf(select.getData()[i][j]))});
-                            } else if (name.startsWith("date")) {
+                            } else if (name.toUpperCase().startsWith("DATE")) {
                                 vars.get(k).invoke(this, new Object[]{DateConverter.getDate(String.valueOf(select.getData()[i][j]))});
                             } else {
                                 vars.get(k).invoke(this, new Object[]{String.valueOf(select.getData()[i][j])});

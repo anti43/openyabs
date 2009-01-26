@@ -5,11 +5,17 @@
  */
 package mpv5.ui.dialogs;
 
+import java.awt.Component;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
+import mpv5.db.common.NodataFoundException;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
+import mpv5.logging.Log;
 import mpv5.ui.frames.MPV5View;
 import mpv5.ui.parents.Position;
 import mpv5.usermanagement.User;
@@ -21,18 +27,22 @@ import mpv5.usermanagement.User;
  */
 public class LoginScreen extends javax.swing.JFrame {
 
-    private JComponent frame;
+    private Component frame;
 
     /** Creates new form login
      * @param frame 
      */
-    public LoginScreen(JComponent frame) {
+    public LoginScreen(Component frame) {
         this.frame = frame;
         initComponents();
 
         if (!LocalSettings.getProperty("lastuser").equals("null")) {
             jCheckBox1.setSelected(true);
-            jTextField1.setText(new User(Integer.getInteger(LocalSettings.getProperty("lastuser"))).__getName());
+            try {
+                jTextField1.setText(new User(Integer.getInteger(LocalSettings.getProperty("lastuser"))).getName());
+            } catch (NodataFoundException ex) {
+                Log.Debug(this, ex);
+            }
             jPasswordField1.requestFocus();
         }
 
@@ -53,6 +63,7 @@ public class LoginScreen extends javax.swing.JFrame {
         new Position(this);
         this.setVisible(rootPaneCheckingEnabled);
     }
+
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -97,7 +108,7 @@ public class LoginScreen extends javax.swing.JFrame {
             }
         });
 
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bilder/3232/lock.png"))); // NOI18N
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/lock.png"))); // NOI18N
 
         jCheckBox1.setText(bundle.getString("LoginScreen.jCheckBox1.text")); // NOI18N
 
@@ -114,8 +125,8 @@ public class LoginScreen extends javax.swing.JFrame {
                         .addComponent(jCheckBox1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 80, Short.MAX_VALUE)
                         .addComponent(jButton1))
-                    .addComponent(jPasswordField1, javax.swing.GroupLayout.DEFAULT_SIZE, 230, Short.MAX_VALUE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 230, Short.MAX_VALUE)
+                    .addComponent(jPasswordField1, javax.swing.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)
                     .addComponent(jLabel1)
                     .addComponent(jLabel2))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -173,12 +184,14 @@ private void jPasswordField1ActionPerformed(java.awt.event.ActionEvent evt) {//G
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
     private void login() {
-        if (mpv5.usermanagement.SecurityManager.checkAuth(jTextField1.getText(), new String(jPasswordField1.getPassword()))) {
+        if (mpv5.usermanagement.MPSecurityManager.checkAuth(jTextField1.getText(), new String(jPasswordField1.getPassword()))) {
             if (jCheckBox1.isSelected()) {
                 LocalSettings.setProperty("lastuser", MPV5View.getUser().__getIDS().toString());
                 LocalSettings.save();
             }
             this.dispose();
+        } else {
+            Popup.notice(Messages.ACCESS_DENIED);
         }
     }
 }

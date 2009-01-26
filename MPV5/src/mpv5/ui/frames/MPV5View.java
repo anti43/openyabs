@@ -5,20 +5,25 @@ package mpv5.ui.frames;
 
 import java.awt.BorderLayout;
 import java.awt.Cursor;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import mpv5.Main;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryHandler;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
+import mpv5.ui.dialogs.Popup;
 import mpv5.ui.panels.ContactPanel;
 import mpv5.ui.panels.ContactsList;
 import mpv5.ui.panels.DataPanel;
 import mpv5.ui.panels.MPControlPanel;
 import mpv5.ui.parents.CloseableTabbedPane;
 import mpv5.ui.parents.FadeOnChangeLabel;
+import mpv5.usermanagement.MPSecurityManager;
 import mpv5.usermanagement.User;
 import org.jdesktop.application.SingleFrameApplication;
 import org.jdesktop.application.FrameView;
@@ -40,7 +45,12 @@ public class MPV5View extends FrameView {
     public static User getUser() {
         if (currentUser == null) {
             Log.Debug(MPV5View.class, "There is no user logged in here, using default user.");
-            return new User(1);
+            try {
+                return new User(1);
+            } catch (NodataFoundException ex) {
+                Log.Debug(MPV5View.class, "Default user is missing.");
+                return new User();
+            }
         } else {
             return currentUser;
         }
@@ -524,10 +534,14 @@ public class MPV5View extends FrameView {
 
     private void jButton26ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton26ActionPerformed
 
+        mpv5.usermanagement.Lock.lock(this.getFrame());
+        
 }//GEN-LAST:event_jButton26ActionPerformed
 
     private void jButton24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton24ActionPerformed
-        Main.getApplication().exit();
+        if (Popup.Y_N_dialog(Messages.REALLY_CLOSE)) {
+            Main.getApplication().exit();
+        }
 }//GEN-LAST:event_jButton24ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -591,34 +605,4 @@ public class MPV5View extends FrameView {
         return statusPanel;
     }
 
-    public void tileWin() {
-//        JInternalFrame sub[];
-//        int n = 0, i = 0;
-//        Dimension dSize = new Dimension();
-//
-//        desk.getSize(dSize);
-//        sub = desk.getAllFrames();
-//        n = (int) dSize.height / sub.length;
-//        for (i = 0; i < sub.length; i++) {
-//            sub[i].setSize(dSize.width, n);
-//            sub[i].setLocation(0, i * n);
-//        }
-    }
-
-    public void cascadeWin() {
-//        JInternalFrame sub[];
-//        int n = 0, i = 0;
-//        Dimension dSize = new Dimension();
-//
-//        desk.getSize(dSize);
-//        sub = desk.getAllFrames();
-//        n = (int) (dSize.width / 50);
-//        for (i = 0; i < sub.length;i++) {
-//            sub[i].setLocation(i * n, i * n);
-//            try {
-//                sub[i].setSelected(true);
-//            } catch (java.beans.PropertyVetoException ev) {
-//            }
-//        }
-    }
 }

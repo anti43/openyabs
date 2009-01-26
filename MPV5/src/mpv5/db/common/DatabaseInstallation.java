@@ -42,11 +42,14 @@ public class DatabaseInstallation {
         "locale VARCHAR(50) default NULL, "+
         "mail VARCHAR(50) default NULL, "+
         "language VARCHAR(50) default NULL, "+
-        "highestright SMALLINT DEFAULT 3,"+
+        "inthighestright SMALLINT DEFAULT 3,"+
         "isenabled SMALLINT DEFAULT 1,"+
-        "lastlogdate DATE default NULL, "+
+        "isloggedin SMALLINT DEFAULT 1,"+
+        "datelastlog DATE default NULL, "+
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,"+
-        "PRIMARY KEY  (ids))"
+        "PRIMARY KEY  (ids))",
+
+        "INSERT INTO users (password,cname,laf,locale,mail,language,highestright,datelastlog ) VALUES ('5f4dcc3b5aa765d61d8327deb882cf99 ','admin','com.sun.java.swing.plaf.windows.WindowsLookAndFeel','de_DE','','EN',0,'2009-01-26 05:45:38')"
     };
     
     private String[] MYSQL_STRUCTURE;

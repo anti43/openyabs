@@ -18,10 +18,9 @@ package mpv5.usermanagement;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.swing.UIManager;
 import mpv5.db.common.Context;
-import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.NodataFoundException;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
@@ -32,7 +31,7 @@ import mpv5.utils.text.MD5HashGenerator;
  *
  * @author Andreas
  */
-public class SecurityManager {
+public class MPSecurityManager {
 
     public static final int RIGHT_TO_VIEW = 3;
     public static final int RIGHT_TO_EXPORT = 2;
@@ -43,6 +42,7 @@ public class SecurityManager {
     public static final int EDIT = 1;
     public static final int CREATE = 0;
     public static ArrayList<Context> securedContexts = Context.getSecuredContexts();
+    private static String usern;
 
     /**
      * Checks whether the currently logged in user has to right to do this
@@ -55,8 +55,7 @@ public class SecurityManager {
     public static Boolean check(Context context, int action) {
         for (Context item : securedContexts) {
             if (item.getDbIdentity().equals(context.getDbIdentity())) {
-
-                if (MPV5View.getUser().__getHighestRight() <= action) {
+                if (MPV5View.getUser().__getINThighestright() <= action) {
                     return true;
                 } else {
                     return false;
@@ -69,23 +68,25 @@ public class SecurityManager {
     }
 
     public static boolean checkAuth(String username, String password) {
-
-        User usern = new User();
-        if (usern.fetchDataOf(username)) {
-            try {
-                if (MD5HashGenerator.getInstance().hashData(password.getBytes()).contentEquals(usern.__getPassword())) {
-                    MPV5View.setUser(usern);
-                    return true;
-                } else {
+        User usern1 = new User();
+        try {
+            if (usern1.fetchDataOf(username)) {
+                try {
+                    if (MD5HashGenerator.getInstance().hashData(password.getBytes()).contentEquals(usern1.__getPassword())) {
+                        MPV5View.setUser(usern1);
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } catch (NoSuchAlgorithmException ex) {
+                    Log.Debug(MPSecurityManager.class, ex);
                     return false;
                 }
-            } catch (NoSuchAlgorithmException ex) {
-                Log.Debug(SecurityManager.class, ex);
+            } else {
                 return false;
             }
-
-        } else {
-            Popup.notice(Messages.USER_NOT_FOUND + usern);
+        } catch (NodataFoundException ex) {
+            Popup.notice(Messages.USER_NOT_FOUND + username);
             return false;
         }
     }

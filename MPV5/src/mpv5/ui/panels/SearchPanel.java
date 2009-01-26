@@ -10,9 +10,12 @@
  */
 package mpv5.ui.panels;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mpv5.db.common.Context;
 import mpv5.data.Search;
 import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.NodataFoundException;
 import mpv5.logging.Log;
 import mpv5.utils.tables.Selection;
 import mpv5.utils.tables.TableFormat;
@@ -237,7 +240,12 @@ public class SearchPanel extends javax.swing.JPanel {
 
     private void resulttableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_resulttableMouseClicked
         Selection sel = new Selection(resulttable);
-        if(sel.checkID()){panel.setDataOwner(DatabaseObject.getObject(context, sel.getId()));}
+        if(sel.checkID()){try {
+                panel.setDataOwner(DatabaseObject.getObject(context, sel.getId()));
+            } catch (NodataFoundException ex) {
+                Log.Debug(ex);
+            }
+}
     }//GEN-LAST:event_resulttableMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

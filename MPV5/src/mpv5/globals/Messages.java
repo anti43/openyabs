@@ -61,5 +61,6 @@ public class Messages {
     public static String CONTROL_PANEL = "Control Panel";
     public static String REALLY_CLOSE = "Do you really want to close the entire application?\nUnsaved data will be lost!";
     public static String USER_NOT_FOUND = "User not found: ";
+    public static String NO_DATA_FOUND = "Sorry, but there was no matching data in the database.";
 
 }
