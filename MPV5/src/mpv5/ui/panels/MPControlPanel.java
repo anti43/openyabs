@@ -9,8 +9,12 @@ import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import mpv5.Main;
+import mpv5.globals.LocalSettings;
+import mpv5.globals.Messages;
 import mpv5.logging.Log;
+import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Internet;
+import mpv5.utils.files.FileDirectoryHandler;
 
 /**
  *
@@ -51,6 +55,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton5 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
         jButton7 = new javax.swing.JButton();
+        jButton8 = new javax.swing.JButton();
         details = new javax.swing.JPanel();
 
         setName("Form"); // NOI18N
@@ -63,7 +68,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         buttons.setName("buttons"); // NOI18N
         buttons.setPreferredSize(new java.awt.Dimension(340, 240));
 
-        jButton1.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton1.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/internet.png"))); // NOI18N
         jButton1.setText(bundle.getString("MPControlPanel.jButton1.text")); // NOI18N
         jButton1.setToolTipText(bundle.getString("MPControlPanel.jButton1.toolTipText")); // NOI18N
@@ -82,7 +87,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton1);
 
-        jButton2.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton2.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/locale.png"))); // NOI18N
         jButton2.setText(bundle.getString("MPControlPanel.jButton2.text")); // NOI18N
         jButton2.setToolTipText(bundle.getString("MPControlPanel.jButton2.toolTipText")); // NOI18N
@@ -96,7 +101,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         buttons.add(jButton2);
 
-        jButton3.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton3.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/looknfeel.png"))); // NOI18N
         jButton3.setText(bundle.getString("MPControlPanel.jButton3.text")); // NOI18N
         jButton3.setToolTipText(bundle.getString("MPControlPanel.jButton3.toolTipText")); // NOI18N
@@ -115,7 +120,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton3);
 
-        jButton4.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton4.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/cal.png"))); // NOI18N
         jButton4.setText(bundle.getString("MPControlPanel.jButton4.text")); // NOI18N
         jButton4.setToolTipText(bundle.getString("MPControlPanel.jButton4.toolTipText")); // NOI18N
@@ -129,7 +134,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         buttons.add(jButton4);
 
-        jButton5.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton5.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/babelfish.png"))); // NOI18N
         jButton5.setText(bundle.getString("MPControlPanel.jButton5.text")); // NOI18N
         jButton5.setToolTipText(bundle.getString("MPControlPanel.jButton5.toolTipText")); // NOI18N
@@ -143,7 +148,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton5.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         buttons.add(jButton5);
 
-        jButton6.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton6.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/evolution-contacts.png"))); // NOI18N
         jButton6.setText(bundle.getString("MPControlPanel.jButton6.text")); // NOI18N
         jButton6.setToolTipText(bundle.getString("MPControlPanel.jButton6.toolTipText")); // NOI18N
@@ -171,6 +176,25 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton7.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         buttons.add(jButton7);
 
+        jButton8.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/draw-eraser.png"))); // NOI18N
+        jButton8.setText(bundle.getString("MPControlPanel.jButton8.text")); // NOI18N
+        jButton8.setToolTipText(bundle.getString("MPControlPanel.jButton8.toolTipText")); // NOI18N
+        jButton8.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jButton8.setContentAreaFilled(false);
+        jButton8.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton8.setMaximumSize(new java.awt.Dimension(90, 90));
+        jButton8.setMinimumSize(new java.awt.Dimension(90, 80));
+        jButton8.setName("jButton8"); // NOI18N
+        jButton8.setPreferredSize(new java.awt.Dimension(90, 80));
+        jButton8.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
+        buttons.add(jButton8);
+
         add(buttons);
 
         details.setBackground(new java.awt.Color(255, 255, 255));
@@ -191,6 +215,14 @@ public class MPControlPanel extends javax.swing.JPanel {
         new de.muntjak.tinylookandfeel.controlpanel.ControlPanel(Main.getApplication());
     }//GEN-LAST:event_jButton3ActionPerformed
 
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+
+        if (Popup.Y_N_dialog(Messages.REALLY_WIPE)) {
+            FileDirectoryHandler.deleteFile(LocalSettings.getLocalFile(), false);
+            Popup.notice(Messages.WIPED_LOCALSETTINGS);
+        }
+    }//GEN-LAST:event_jButton8ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel buttons;
     private javax.swing.JPanel details;
@@ -201,6 +233,7 @@ public class MPControlPanel extends javax.swing.JPanel {
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
+    private javax.swing.JButton jButton8;
     // End of variables declaration//GEN-END:variables
 
     /**

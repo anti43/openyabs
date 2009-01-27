@@ -62,5 +62,7 @@ public class Messages {
     public static String REALLY_CLOSE = "Do you really want to close the entire application?\nUnsaved data will be lost!";
     public static String USER_NOT_FOUND = "User not found: ";
     public static String NO_DATA_FOUND = "Sorry, but there was no matching data in the database.";
+    public static String REALLY_WIPE = "Do you really want to wipe all local MP settings?\nYou will have to restart the application before changes take place.";
+    public static String WIPED_LOCALSETTINGS = "Local settings have been marked for deletion. Please close MP now.";
 
 }

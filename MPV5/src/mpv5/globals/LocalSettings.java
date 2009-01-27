@@ -30,8 +30,7 @@ public class LocalSettings {
     public static final String PROXYPORT = "proxyport";
     public static final String PROXYUSER = "proxyuser";
     public static final String PROXYPASSWORD = "proxypassword";
-    private static PropertyStore predefinedSettings = new PropertyStore(new String[][]{
-    //        {LAF,UIManager.getSystemLookAndFeelClassName()}
+    private static PropertyStore predefinedSettings = new PropertyStore(new String[][]{ //        {LAF,UIManager.getSystemLookAndFeelClassName()}
             });
 
     /**
@@ -46,6 +45,7 @@ public class LocalSettings {
             systemSettings.put("http.proxyPort", getProperty(PROXYPORT));
             if (!getProperty(PROXYUSER).equals("null")) {
                 Authenticator.setDefault(new Authenticator() {
+
                     @Override
                     protected PasswordAuthentication getPasswordAuthentication() {
                         return new PasswordAuthentication(getProperty(PROXYUSER), getProperty(PROXYPASSWORD).toCharArray());
@@ -108,5 +108,13 @@ public class LocalSettings {
         cookie = read.readInto("connection", cookie);
         cookie.print();
         Log.Debug(LocalSettings.class, "Finished local settings.");
+    }
+
+    /**
+     *
+     * @return The local settings file
+     */
+    public static File getLocalFile() {
+        return new File(Main.SETTINGS_FILE);
     }
 }

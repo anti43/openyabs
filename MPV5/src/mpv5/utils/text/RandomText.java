@@ -36,6 +36,8 @@ public class RandomText {
     /**
      * Constructs a random text generator 
      * with the given length and source text
+     * @param source 
+     * @param length
      */
     public RandomText(String source, int length) {
         this.length = length;
@@ -44,6 +46,7 @@ public class RandomText {
 
     /**
      * Constructs a random text generator with the given length
+     * @param length
      */
     public RandomText(int length) {
         this.length = length;
@@ -56,7 +59,7 @@ public class RandomText {
     }
 
     /**
-     * @return The random text
+     * @return The random text with default length (5)
      */
     public String getString() {
         StringBuffer sb = new StringBuffer();

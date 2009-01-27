@@ -26,6 +26,28 @@ import mpv5.utils.text.RandomText;
 
 public class FileDirectoryHandler {
 
+    /**
+     * Deletes a file now or later
+     * @param localFile
+     * @param now
+     */
+    public static void deleteFile(File localFile, boolean now) {
+        if (now) {
+            try {
+                deleteTree(localFile);
+            } catch (IOException ex) {
+                Log.Debug(ex);
+            }
+        } else {
+            localFile.deleteOnExit();
+        }
+    }
+
+    /**
+     * Deletes a whole directory tree and files in it
+     * @param path
+     * @throws java.io.IOException
+     */
     public static void deleteTree(File path) throws IOException {
         for (File file : path.listFiles()) {
             if (file.isDirectory()) {
@@ -74,6 +96,14 @@ public class FileDirectoryHandler {
         return targetLocation.toURI();
     }
 
+    /**
+     * Copies a file via stream
+     * @param sourceFile
+     * @param targetDirectory
+     * @param targetFilename
+     * @return
+     * @throws java.io.IOException
+     */
     public static URI copyFile(File sourceFile, File targetDirectory, String targetFilename)
             throws IOException {
 
@@ -93,6 +123,12 @@ public class FileDirectoryHandler {
         return outp.toURI();
     }
 
+    /**
+     *
+     * @param directory
+     * @param identifier
+     * @return A File array with the files (not directories) within the given directory
+     */
     @SuppressWarnings("unchecked")
     public static File[] getFilesOfDirectory(String directory, String identifier) {
         File src;
@@ -130,14 +166,29 @@ public class FileDirectoryHandler {
             Log.Debug(FileDirectoryHandler.class, exception);
             Log.Debug(FileDirectoryHandler.class, exception.getMessage(), true);
         }
-        return (File[]) lstFiles.toArray(new File[0]);
+        return lstFiles.toArray(new File[0]);
     }
     private static ArrayList<File> lstFiles;
 
+    /**
+     * Copies a file to a temporary file. The resulting file is NOT linked
+     * to the original one and even the original file is locked,
+     * the resulting file is not
+     * @param file
+     * @return The file with a randomly generated suffix
+     */
     public static File tempFileClone(File file) {
-        return tempFileClone(file, new RandomText().getString());
+        return tempFileClone(file, new RandomText(3).getString());
     }
 
+    /**
+     * Copies a file to a temporary file. The resulting file is NOT linked
+     * to the original one and even the original file is locked,
+     * the resulting file is not
+     * @param file
+     * @param suffix
+     * @return
+     */
     public static File tempFileClone(File file, String suffix) {
         try {
             File fil = new File(copyFile(file, new File(System.getProperty("java.io.tmpdir")), new RandomText().getString() + "." + suffix));
@@ -149,17 +200,30 @@ public class FileDirectoryHandler {
         return null;
     }
 
+    /**
+     * Returns a completely random named temporay file
+     * @param suffix
+     * @return
+     */
     public static File getTempFile(String suffix) {
         File fil = new File(System.getProperty("java.io.tmpdir") + File.separator + new RandomText().getString() + "." + suffix);
         fil.deleteOnExit();
         return fil;
     }
 
+    /**
+     *
+     * @return A temporary file with MP suffix (~mp)
+     */
     public static File getTempFile() {
         return getTempFile("~mp");
     }
 
-    /*
+    /**
+     * Downloads a file
+     * @param address
+     * @param localFileName
+     * @return
      * @author Marco Schmidt
      */
     public static File download(String address, String localFileName) {
@@ -198,6 +262,11 @@ public class FileDirectoryHandler {
         return file;
     }
 
+    /**
+     * Downloads a file
+     * @param address
+     * @return
+     */
     public static File download(String address) {
         int lastSlashIndex = address.lastIndexOf('/');
         if (lastSlashIndex >= 0 &&
@@ -210,9 +279,17 @@ public class FileDirectoryHandler {
         return null;
     }
 
+    /**
+     * Copies a file via streaming
+     * @param sourceFile
+     * @param outp
+     * @return
+     * @throws java.io.FileNotFoundException
+     * @throws java.io.IOException
+     */
     public static URI copyFile(File sourceFile, File outp) throws FileNotFoundException, IOException {
         InputStream in = new FileInputStream(sourceFile);
-        
+
         OutputStream out = new FileOutputStream(outp);
 
         // Copy the bits from instream to outstream
