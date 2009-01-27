@@ -5,13 +5,11 @@ package mpv5.ui.frames;
 
 import java.awt.BorderLayout;
 import java.awt.Cursor;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.UIManager;
 import mpv5.Main;
 import mpv5.db.common.Context;
-import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryHandler;
 import mpv5.globals.Messages;
@@ -19,11 +17,9 @@ import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.panels.ContactPanel;
 import mpv5.ui.panels.ContactsList;
-import mpv5.ui.panels.DataPanel;
 import mpv5.ui.panels.MPControlPanel;
 import mpv5.ui.parents.CloseableTabbedPane;
 import mpv5.ui.parents.FadeOnChangeLabel;
-import mpv5.usermanagement.MPSecurityManager;
 import mpv5.usermanagement.User;
 import org.jdesktop.application.SingleFrameApplication;
 import org.jdesktop.application.FrameView;
@@ -58,6 +54,7 @@ public class MPV5View extends FrameView {
 
     public static void setUser(User usern) {
         currentUser = usern;
+        Main.setLaF(usern.__getLaf());
     }
 
     public static void setWaiting(boolean tru) {
@@ -124,7 +121,6 @@ public class MPV5View extends FrameView {
         jButton26 = new javax.swing.JButton();
         jSeparator2 = new javax.swing.JToolBar.Separator();
         jButton25 = new javax.swing.JButton();
-        jButton23 = new javax.swing.JButton();
 
         mainPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         mainPanel.setName("mainPanel"); // NOI18N
@@ -316,7 +312,7 @@ public class MPV5View extends FrameView {
         );
         naviPanelLayout.setVerticalGroup(
             naviPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jOutlookBar1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 586, Short.MAX_VALUE)
+            .addComponent(jOutlookBar1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 582, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
@@ -331,7 +327,7 @@ public class MPV5View extends FrameView {
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(naviPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 590, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 586, Short.MAX_VALUE)
         );
 
         menuBar.setName("menuBar"); // NOI18N
@@ -460,20 +456,6 @@ public class MPV5View extends FrameView {
         });
         mainToolbar.add(jButton25);
 
-        jButton23.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/printer.png"))); // NOI18N
-        jButton23.setText(bundle.getString("MPV5View.jButton23.text")); // NOI18N
-        jButton23.setToolTipText(bundle.getString("MPV5View.jButton23.toolTipText")); // NOI18N
-        jButton23.setFocusable(false);
-        jButton23.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton23.setName("jButton23"); // NOI18N
-        jButton23.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton23.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton23ActionPerformed(evt);
-            }
-        });
-        mainToolbar.add(jButton23);
-
         setComponent(mainPanel);
         setMenuBar(menuBar);
         setStatusBar(statusPanel);
@@ -513,15 +495,15 @@ public class MPV5View extends FrameView {
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         Main.setLaF(null);
+        getUser().setLaf(UIManager.getSystemLookAndFeelClassName());
+        getUser().save();
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
         Main.setLaF("de.muntjak.tinylookandfeel.TinyLookAndFeel");
+        getUser().setLaf("de.muntjak.tinylookandfeel.TinyLookAndFeel");
+        getUser().save();
     }//GEN-LAST:event_jMenuItem2ActionPerformed
-
-    private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton23ActionPerformed
-        // TODO add your handling code here:
-}//GEN-LAST:event_jButton23ActionPerformed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
         tabPane.addTab(Messages.CONTROL_PANEL, MPControlPanel.instanceOf());
@@ -529,7 +511,7 @@ public class MPV5View extends FrameView {
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void jButton25ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton25ActionPerformed
-        // TODO add your handling code here:
+       MPCalculator.instanceOf().setVisible(true);
     }//GEN-LAST:event_jButton25ActionPerformed
 
     private void jButton26ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton26ActionPerformed
@@ -549,7 +531,6 @@ public class MPV5View extends FrameView {
     private javax.swing.JButton jButton18;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton20;
-    private javax.swing.JButton jButton23;
     private javax.swing.JButton jButton24;
     private javax.swing.JButton jButton25;
     private javax.swing.JButton jButton26;

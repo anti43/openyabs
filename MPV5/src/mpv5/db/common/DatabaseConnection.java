@@ -125,12 +125,16 @@ public class DatabaseConnection {
 
         } catch (SQLException ex) {
             System.out.println("Database Error: " + ex.getMessage());
-            Log.Debug(this, ex);
-            Log.Debug(this, ex.getNextException());
-            Log.Debug(this, ex.getNextException().getNextException());
-            Log.Debug(this, ex.getNextException().getNextException().getNextException());
-            Popup.warn(ex.getMessage(), Popup.ERROR);
-            DatabaseConnection.shutdown();
+            Log.Debug(this, ex.getMessage());
+            try {
+                Log.Debug(this, ex.getNextException());
+                Log.Debug(this, ex.getNextException().getNextException());
+                Log.Debug(this, ex.getNextException().getNextException().getNextException());
+                Popup.warn(ex.getMessage(), Popup.ERROR);
+                DatabaseConnection.shutdown();
+            } catch (Exception e) {
+                Log.Debug(this, ex.getMessage());
+            }
 
             throw new Exception("Datenbank konnte nicht gestartet werden.");
         }

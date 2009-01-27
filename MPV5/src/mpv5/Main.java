@@ -43,12 +43,13 @@ public class Main extends SingleFrameApplication {
     @Override
     protected void startup() {
         if (probeDatabaseConnection()) {
-            setLaF(LocalSettings.getProperty(LocalSettings.LAF));
+            setLaF(null);
             show(new MPV5View(this));
         } else {
             try {
                 Log.setLogLevel(Log.LOGLEVEL_DEBUG);
                 LogConsole.setLogFile("install.log");
+                Log.Debug(this, new Date());
             } catch (Exception ex) {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -80,6 +81,7 @@ public class Main extends SingleFrameApplication {
     @Override
     protected void shutdown() {
         LocalSettings.save();
+        MPV5View.getUser().save();
         super.shutdown();
     }
 
@@ -90,7 +92,6 @@ public class Main extends SingleFrameApplication {
     public static void main(String[] args) {
 
         System.out.print(Messages.START_MESSAGE);
-          System.out.print(new Date());
 
         getOS();
         setEnv();
@@ -98,6 +99,7 @@ public class Main extends SingleFrameApplication {
         setDerbyLog();
         try {
             LocalSettings.read();
+            LocalSettings.apply();
         } catch (Exception ex) {
             Log.Debug(Main.class, ex);
 
@@ -257,8 +259,6 @@ public class Main extends SingleFrameApplication {
             }
             Log.Debug(Main.class, exe.getMessage());
         }
-
-        LocalSettings.setProperty(LocalSettings.LAF, UIManager.getLookAndFeel().getClass().getName());
     }
 
     public static void printEnv() {

@@ -5,6 +5,9 @@
 package mpv5.globals;
 
 import java.io.File;
+import java.net.Authenticator;
+import java.net.PasswordAuthentication;
+import java.util.Properties;
 import mpv5.Main;
 import mpv5.data.PropertyStore;
 import mpv5.logging.Log;
@@ -20,14 +23,37 @@ public class LocalSettings {
 
     private static PropertyStore cookie = new PropertyStore();
     public static final String DBPATH = "dbpath";
-    public static String DBDRIVER = "dbdriver";
-    public static String DBUSER = "dbuser";
-    public static String DBPASSWORD = "dbpassword";
-    public static String LAF = "laf";
+    public static final String DBDRIVER = "dbdriver";
+    public static final String DBUSER = "dbuser";
+    public static final String DBPASSWORD = "dbpassword";
+    public static final String PROXYHOST = "proxyhost";
+    public static final String PROXYPORT = "proxyport";
+    public static final String PROXYUSER = "proxyuser";
+    public static final String PROXYPASSWORD = "proxypassword";
     private static PropertyStore predefinedSettings = new PropertyStore(new String[][]{
-                //        {LAF,UIManager.getSystemLookAndFeelClassName()}
-                {LAF, "de.muntjak.tinylookandfeel.TinyLookAndFeel"}
+    //        {LAF,UIManager.getSystemLookAndFeelClassName()}
             });
+
+    /**
+     * Applies the environmental settings
+     */
+    public static void apply() {
+        Properties systemSettings = System.getProperties();
+
+        //Proxy settings
+        if (!getProperty(PROXYHOST).equals("null")) {
+            systemSettings.put("http.proxyHost", getProperty(PROXYHOST));
+            systemSettings.put("http.proxyPort", getProperty(PROXYPORT));
+            if (!getProperty(PROXYUSER).equals("null")) {
+                Authenticator.setDefault(new Authenticator() {
+                    @Override
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(getProperty(PROXYUSER), getProperty(PROXYPASSWORD).toCharArray());
+                    }
+                });
+            }
+        }//End proxy settings
+    }
 
     /**
      * Get a properties value, or the String "null" of N/A
@@ -62,7 +88,7 @@ public class LocalSettings {
         XMLWriter x = new XMLWriter();
         try {
             x.newDoc("localsettings");
-            x.parse( "connection","1", cookie);
+            x.parse("connection", "1", cookie);
             x.createOrReplace(new File(Main.SETTINGS_FILE));
         } catch (Exception ex) {
             Popup.error(Messages.ERROR_SAVING_LOCALSETTINGS, ex);

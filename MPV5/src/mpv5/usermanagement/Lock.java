@@ -16,6 +16,7 @@
  */
 package mpv5.usermanagement;
 
+import java.awt.Component;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 
@@ -29,17 +30,25 @@ public class Lock {
      * Locks the given component and brings up a login window which could unlock it again
      * @param comp
      */
-    public static void lock(JComponent comp) {
+    public static void lock(Component comp) {
         comp.setEnabled(false);
         new mpv5.ui.dialogs.LoginScreen(comp);
     }
 
+//    /**
+//     * Locks the given JFRAME and brings up a login window which could unlock it again
+//     * @param frame
+//     */
+//    public static void lock(JFrame frame) {
+//        frame.setEnabled(false);
+//        new mpv5.ui.dialogs.LoginScreen(frame);
+//    }
+
     /**
-     * Locks the given FRAME and brings up a login window which could unlock it again
+     * Unlocks the given component
      * @param frame
      */
-    public static void lock(JFrame frame) {
-        frame.setEnabled(false);
-        new mpv5.ui.dialogs.LoginScreen(frame);
+    public static void unlock(Component frame) {
+        frame.setEnabled(true);
     }
 }

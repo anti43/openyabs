@@ -67,29 +67,26 @@ public class MPSecurityManager {
         return true;
     }
 
-    public static boolean checkAuth(String username, String password) {
+    public static User checkAuth(String username, String password) {
         User usern1 = new User();
         try {
             if (usern1.fetchDataOf(username)) {
                 try {
-                    
-                    System.out.println(usern1.__getPassword().toUpperCase());
-                    if (MD5HashGenerator.getInstance().hashData(password.getBytes()).equalsIgnoreCase(usern1.__getPassword())) {
-                        MPV5View.setUser(usern1);
-                        return true;
+                    if (MD5HashGenerator.getInstance().hashData(password.getBytes()).equalsIgnoreCase(usern1.__getPassword())) { 
+                        return usern1;
                     } else {
-                        return false;
+                        return null;
                     }
                 } catch (NoSuchAlgorithmException ex) {
                     Log.Debug(MPSecurityManager.class, ex);
-                    return false;
+                    return null;
                 }
             } else {
-                return false;
+                return null;
             }
         } catch (NodataFoundException ex) {
             Popup.notice(Messages.USER_NOT_FOUND + username);
-            return false;
+            return null;
         }
     }
 

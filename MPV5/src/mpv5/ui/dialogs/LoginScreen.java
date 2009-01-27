@@ -18,6 +18,7 @@ import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPV5View;
 import mpv5.ui.parents.Position;
+import mpv5.usermanagement.Lock;
 import mpv5.usermanagement.User;
 
 
@@ -39,7 +40,7 @@ public class LoginScreen extends javax.swing.JFrame {
         if (!LocalSettings.getProperty("lastuser").equals("null")) {
             jCheckBox1.setSelected(true);
             try {
-                jTextField1.setText(new User(Integer.getInteger(LocalSettings.getProperty("lastuser"))).getName());
+                jTextField1.setText(new User(Integer.valueOf(LocalSettings.getProperty("lastuser"))).getName());
             } catch (NodataFoundException ex) {
                 Log.Debug(this, ex);
             }
@@ -184,7 +185,10 @@ private void jPasswordField1ActionPerformed(java.awt.event.ActionEvent evt) {//G
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
     private void login() {
-        if (mpv5.usermanagement.MPSecurityManager.checkAuth(jTextField1.getText(), new String(jPasswordField1.getPassword()))) {
+        User user = mpv5.usermanagement.MPSecurityManager.checkAuth(jTextField1.getText(), new String(jPasswordField1.getPassword()));
+        if (user != null) {
+           Lock.unlock(frame);
+           MPV5View.setUser(user);
             if (jCheckBox1.isSelected()) {
                 LocalSettings.setProperty("lastuser", MPV5View.getUser().__getIDS().toString());
                 LocalSettings.save();
