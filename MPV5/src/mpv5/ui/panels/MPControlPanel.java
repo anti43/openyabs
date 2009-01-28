@@ -70,7 +70,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         buttons.setName("buttons"); // NOI18N
         buttons.setPreferredSize(new java.awt.Dimension(340, 240));
 
-        jButton1.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton1.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 0, 10));
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/internet.png"))); // NOI18N
         jButton1.setText(bundle.getString("MPControlPanel.jButton1.text")); // NOI18N
         jButton1.setToolTipText(bundle.getString("MPControlPanel.jButton1.toolTipText")); // NOI18N
@@ -89,7 +89,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton1);
 
-        jButton2.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton2.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 0, 10)); // NOI18N
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/locale.png"))); // NOI18N
         jButton2.setText(bundle.getString("MPControlPanel.jButton2.text")); // NOI18N
         jButton2.setToolTipText(bundle.getString("MPControlPanel.jButton2.toolTipText")); // NOI18N
@@ -108,7 +108,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton2);
 
-        jButton3.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton3.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 0, 10));
         jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/looknfeel.png"))); // NOI18N
         jButton3.setText(bundle.getString("MPControlPanel.jButton3.text")); // NOI18N
         jButton3.setToolTipText(bundle.getString("MPControlPanel.jButton3.toolTipText")); // NOI18N
@@ -127,7 +127,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton3);
 
-        jButton4.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton4.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 0, 10));
         jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/cal.png"))); // NOI18N
         jButton4.setText(bundle.getString("MPControlPanel.jButton4.text")); // NOI18N
         jButton4.setToolTipText(bundle.getString("MPControlPanel.jButton4.toolTipText")); // NOI18N
@@ -141,7 +141,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         buttons.add(jButton4);
 
-        jButton5.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton5.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 0, 10));
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/babelfish.png"))); // NOI18N
         jButton5.setText(bundle.getString("MPControlPanel.jButton5.text")); // NOI18N
         jButton5.setToolTipText(bundle.getString("MPControlPanel.jButton5.toolTipText")); // NOI18N
@@ -155,7 +155,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton5.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         buttons.add(jButton5);
 
-        jButton6.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton6.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 0, 10));
         jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/evolution-contacts.png"))); // NOI18N
         jButton6.setText(bundle.getString("MPControlPanel.jButton6.text")); // NOI18N
         jButton6.setToolTipText(bundle.getString("MPControlPanel.jButton6.toolTipText")); // NOI18N
@@ -169,7 +169,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton6.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         buttons.add(jButton6);
 
-        jButton7.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton7.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 0, 10));
         jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/openofficeorg-20.png"))); // NOI18N
         jButton7.setText(bundle.getString("MPControlPanel.jButton7.text")); // NOI18N
         jButton7.setToolTipText(bundle.getString("MPControlPanel.jButton7.toolTipText")); // NOI18N
@@ -183,7 +183,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton7.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         buttons.add(jButton7);
 
-        jButton8.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton8.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 0, 10));
         jButton8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/draw-eraser.png"))); // NOI18N
         jButton8.setText(bundle.getString("MPControlPanel.jButton8.text")); // NOI18N
         jButton8.setToolTipText(bundle.getString("MPControlPanel.jButton8.toolTipText")); // NOI18N
@@ -257,7 +257,7 @@ public class MPControlPanel extends javax.swing.JPanel {
     public void addShortcut(Icon icon, String text, final Class clazz) {
         JButton button = new JButton(text, icon);
         button.setToolTipText(text); // NOI18N
-        button.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        button.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 0, 10)); // NOI18N
         button.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         button.setContentAreaFilled(false);
         button.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -293,7 +293,7 @@ public class MPControlPanel extends javax.swing.JPanel {
     public void addShortcut(Icon icon, String text, final JPanel panel) {
         JButton button = new JButton(text, icon);
         button.setToolTipText(text); // NOI18N
-        button.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        button.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 0, 10)); // NOI18N
         button.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         button.setContentAreaFilled(false);
         button.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);

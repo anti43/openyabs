@@ -6,6 +6,7 @@
 package mpv5.ui.dialogs.subcomponents;
 
 import mpv5.Main;
+import mpv5.globals.LocalSettings;
 import mpv5.ui.dialogs.WizardMaster;
 import mpv5.ui.dialogs.Wizardable;
 
@@ -39,7 +40,7 @@ public class wizard_DBSettings_2 extends javax.swing.JPanel implements Wizardabl
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
         jTextArea1.setColumns(20);
-        jTextArea1.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jTextArea1.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 0, 12)); // NOI18N
         jTextArea1.setLineWrap(true);
         jTextArea1.setRows(5);
         jTextArea1.setText(bundle.getString("wizard_DBSettings_2.jTextArea1.text")); // NOI18N

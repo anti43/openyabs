@@ -26,10 +26,26 @@ import mpv5.logging.Log;
  */
 public class MPComboBoxModelItem extends DefaultComboBoxModel implements Comparable<MPComboBoxModelItem> {
 
+    /**
+     * Returns the index of the item with the given id
+     * @param uid
+     * @param model
+     * @return
+     */
     public static int getItemID(int uid, ComboBoxModel model) {
+        return getItemID(String.valueOf(uid), model);
+    }
+     
+    /**
+     * Returns the index of the item with the given id
+     * @param uid
+     * @param model
+     * @return
+     */
+    public static int getItemID(String uid, ComboBoxModel model) {
         for (int i = 0; i < model.getSize(); i++) {
             Log.Debug(MPComboBoxModelItem.class, ((MPComboBoxModelItem) model.getElementAt(i)).id + " comparing with: " + uid);
-            if (((MPComboBoxModelItem) model.getElementAt(i)).id.equals(String.valueOf(uid))) {
+            if (((MPComboBoxModelItem) model.getElementAt(i)).id.equals(uid)) {
                 Log.Debug(MPComboBoxModelItem.class, "Found at Index:" + i);
                 return i;
             }
@@ -37,6 +53,12 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
         return 0;
     }
 
+
+    /**
+     * Converts an array to mp combo box items
+     * @param items
+     * @return
+     */
     public static MPComboBoxModelItem[] toItems(Object[][] items) {
         MPComboBoxModelItem[] array = new MPComboBoxModelItem[items.length];
         for (int i = 0; i < array.length; i++) {
@@ -47,11 +69,21 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
     private String id;
     private String name;
 
+    /**
+     *
+     * @param id
+     * @param name
+     */
     public MPComboBoxModelItem(int id, String name) {
         this.id = String.valueOf(id);
         this.name = name;
     }
 
+    /**
+     *
+     * @param id
+     * @param name
+     */
     public MPComboBoxModelItem(String id, String name) {
         this.id = id;
         this.name = name;

@@ -59,7 +59,7 @@ public class ControlPanel_Internet extends javax.swing.JPanel implements Control
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Internet.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 11));
+        jLabel1.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 1, 11));
         jLabel1.setText(bundle.getString("ControlPanel_Internet.jLabel1.text")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
 

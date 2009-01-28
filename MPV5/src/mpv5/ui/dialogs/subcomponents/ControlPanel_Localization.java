@@ -9,7 +9,9 @@ import java.util.Locale;
 import javax.swing.DefaultComboBoxModel;
 import mpv5.data.PropertyStore;
 import mpv5.globals.LocalSettings;
+import mpv5.logging.Log;
 import mpv5.ui.dialogs.ControlApplet;
+import mpv5.ui.frames.MPV5View;
 import mpv5.utils.arrays.ArrayUtils;
 import mpv5.utils.models.MPComboBoxModelItem;
 
@@ -28,6 +30,7 @@ public class ControlPanel_Localization extends javax.swing.JPanel implements Con
     public ControlPanel_Localization() {
         initComponents();
         locales.setModel(getLocales());
+        locales.setSelectedIndex(MPComboBoxModelItem.getItemID(Locale.getDefault().toString(), locales.getModel()));
         setVisible(true);
     }
 
@@ -70,7 +73,7 @@ public class ControlPanel_Localization extends javax.swing.JPanel implements Con
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel2.setName("jPanel2"); // NOI18N
 
-        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel2.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 1, 11)); // NOI18N
         jLabel2.setText(bundle.getString("ControlPanel_Localization.jLabel2.text")); // NOI18N
         jLabel2.setName("jLabel2"); // NOI18N
 
@@ -133,14 +136,13 @@ public class ControlPanel_Localization extends javax.swing.JPanel implements Con
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-
         setSettings();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-
         setSettings();
-        LocalSettings.save();
+        MPV5View.getUser().setLocale(Locale.getDefault().toString());
+        MPV5View.getUser().save();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     public void setValues(PropertyStore values) {
@@ -167,8 +169,22 @@ public class ControlPanel_Localization extends javax.swing.JPanel implements Con
 
     private void setSettings() {
 
+        String localestring = ((MPComboBoxModelItem) locales.getSelectedItem()).getId();
+        String[] data = localestring.split("_");
+        String language = localestring.substring(0, 2);
+        String country = null;
+        if (data!=null && data.length > 1) {
+            country = data[1];
+        }
 
-        LocalSettings.apply();
+        if (country != null) {
+            Locale.setDefault(new Locale(language.toLowerCase(), country.toUpperCase()));
+        } else {
+            Locale.setDefault(new Locale(language.toLowerCase()));
+        }
+
+        Log.Debug(this, "New default locale: " + Locale.getDefault());
+
     }
 
     private DefaultComboBoxModel getLocales() {
@@ -178,7 +194,7 @@ public class ControlPanel_Localization extends javax.swing.JPanel implements Con
             String language = o[i].getLanguage();
             String country = o[i].getCountry();
             String locale_name = o[i].getDisplayName();
-            items[i] = new MPComboBoxModelItem(o[i].toString(), 
+            items[i] = new MPComboBoxModelItem(language + "_" + country,
                     locale_name + "  [" + language + "_" + country + "]");
 //            items[i] = new MPComboBoxModelItem(o[i].toString(), o[i].getDisplayName());
         }

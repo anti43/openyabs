@@ -17,6 +17,7 @@
 
 package mpv5.ui.frames;
 
+import mpv5.globals.LocalSettings;
 import mpv5.ui.parents.Position;
 import mpv5.utils.ui.JCalc;
 
@@ -104,59 +105,59 @@ setResizable(false);
 
 jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Calculator"));
 
-jTextField1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+jTextField1.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 0, 18)); // NOI18N
 jTextField1.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
 jTextField1.setText("0");
 
 jPanel2.setBackground(new java.awt.Color(204, 204, 204));
 jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-jButton9.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+jButton9.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 1, 14)); // NOI18N
 jButton9.setText("7");
 
-jButton5.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+jButton5.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 1, 14)); // NOI18N
 jButton5.setText("4");
 
-jButton1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+jButton1.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 1, 14)); // NOI18N
 jButton1.setText("1");
 
-jButton13.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+jButton13.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 1, 14)); // NOI18N
 jButton13.setText("0");
 
-jButton14.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+jButton14.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 1, 14)); // NOI18N
 jButton14.setText(".");
 
-jButton10.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+jButton10.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 1, 14)); // NOI18N
 jButton10.setText("8");
 
-jButton6.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+jButton6.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 1, 14)); // NOI18N
 jButton6.setText("5");
 
-jButton2.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+jButton2.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 1, 14)); // NOI18N
 jButton2.setText("2");
 
-jButton3.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+jButton3.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 1, 14)); // NOI18N
 jButton3.setText("3");
 
-jButton7.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+jButton7.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 1, 14)); // NOI18N
 jButton7.setText("6");
 
-jButton11.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+jButton11.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 1, 14)); // NOI18N
 jButton11.setText("9");
 
-jButton15.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+jButton15.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 1, 14)); // NOI18N
 jButton15.setText("=");
 
-jButton16.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+jButton16.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 1, 14)); // NOI18N
 jButton16.setText("+");
 
-jButton12.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+jButton12.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 1, 14)); // NOI18N
 jButton12.setText("-");
 
-jButton8.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+jButton8.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 1, 14)); // NOI18N
 jButton8.setText("*");
 
-jButton4.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+jButton4.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 1, 14)); // NOI18N
 jButton4.setText("/");
 
 javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -233,7 +234,7 @@ jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 
 jButton17.setText("Clear");
 
-jLabel1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+jLabel1.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 0, 14)); // NOI18N
 jLabel1.setForeground(new java.awt.Color(102, 102, 102));
 jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 

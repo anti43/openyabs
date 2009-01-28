@@ -6,6 +6,7 @@ import javax.swing.table.DefaultTableModel;
 import mpv5.data.Search;
 import mpv5.db.common.Context;
 import mpv5.globals.Headers;
+import mpv5.globals.LocalSettings;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.html.TableHtmlWriter;
@@ -96,7 +97,7 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ContactsList.jPanel2.border.title"))); // NOI18N
         jPanel2.setName("jPanel2"); // NOI18N
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel1.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 1, 11)); // NOI18N
         jLabel1.setText(bundle.getString("ContactsList.jLabel1.text")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
 
@@ -138,7 +139,7 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
         });
 
         excButton.setBackground(new java.awt.Color(255, 255, 255));
-        excButton.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        excButton.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 1, 11)); // NOI18N
         excButton.setText(bundle.getString("ContactsList.excButton.text")); // NOI18N
         excButton.setToolTipText(bundle.getString("ContactsList.excButton.toolTipText")); // NOI18N
         excButton.setName("excButton"); // NOI18N

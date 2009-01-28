@@ -27,6 +27,7 @@ import java.util.Date;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import mpv5.db.common.*;
+import mpv5.globals.LocalSettings;
 import mpv5.items.contacts.Contact;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPV5View;
@@ -185,7 +186,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel1.setName("jPanel1"); // NOI18N
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 11));
+        jLabel1.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 1, 11));
         jLabel1.setText(bundle.getString("ContactPanel.jLabel1.text")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
 
@@ -199,7 +200,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             }
         });
 
-        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 11));
+        jLabel2.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 1, 11));
         jLabel2.setText(bundle.getString("ContactPanel.jLabel2.text")); // NOI18N
         jLabel2.setName("jLabel2"); // NOI18N
 
@@ -231,7 +232,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         });
 
         number.set_Label(bundle.getString("ContactPanel.number._Label")); // NOI18N
-        number.set_LabelFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        number.set_LabelFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 1, 11)); // NOI18N
         number.setName("number"); // NOI18N
 
         dateadded.setText(bundle.getString("ContactPanel.dateadded.text")); // NOI18N
@@ -494,15 +495,15 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jLabel9.setFont(new java.awt.Font("Tahoma", 1, 11));
+        jLabel9.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 1, 11));
         jLabel9.setText(bundle.getString("ContactPanel.jLabel9.text")); // NOI18N
         jLabel9.setName("jLabel9"); // NOI18N
 
-        jLabel8.setFont(new java.awt.Font("Tahoma", 1, 11));
+        jLabel8.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 1, 11));
         jLabel8.setText(bundle.getString("ContactPanel.jLabel8.text")); // NOI18N
         jLabel8.setName("jLabel8"); // NOI18N
 
-        jLabel7.setFont(new java.awt.Font("Tahoma", 1, 11));
+        jLabel7.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 1, 11));
         jLabel7.setText(bundle.getString("ContactPanel.jLabel7.text")); // NOI18N
         jLabel7.setName("jLabel7"); // NOI18N
 

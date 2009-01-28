@@ -31,7 +31,8 @@ public class LocalSettings {
     public static final String PROXYUSER = "proxyuser";
     public static final String PROXYPASSWORD = "proxypassword";
     private static PropertyStore predefinedSettings = new PropertyStore(new String[][]{ //        {LAF,UIManager.getSystemLookAndFeelClassName()}
-            });
+        {"defaultfont","Tahoma"}
+    });
 
     /**
      * Applies the environmental settings
