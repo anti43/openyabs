@@ -25,12 +25,6 @@ import mpv5.data.PropertyStore;
 public interface ControlApplet {
 
     /**
-     * Returns the view's data
-     * @return
-     */
-    public PropertyStore getValues();
-
-    /**
      * Fills the view with data
      * @param values
      */
@@ -47,16 +41,16 @@ public interface ControlApplet {
      */
     public void reset();
 
-    /**
-     * The local type for properties - gets stored in a local cockie
-     */
-    public final static int LOCAL = 0;
-    /**
-     * The user defined type - gets stored in the user's profile in db
-     */
-    public final static int USERDEFINED = 1;
-    /**
-     * The global type - changes to all users
-     */
-    public final static int GLOBAL = 2;
+//    /**
+//     * The local type for properties - gets stored in a local cockie
+//     */
+//    public final static int LOCAL = 0;
+//    /**
+//     * The user defined type - gets stored in the user's profile in db
+//     */
+//    public final static int USERDEFINED = 1;
+//    /**
+//     * The global type - changes to all users
+//     */
+//    public final static int GLOBAL = 2;
 }

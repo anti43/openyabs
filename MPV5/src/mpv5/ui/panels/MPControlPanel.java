@@ -12,8 +12,10 @@ import mpv5.Main;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
+import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Internet;
+import mpv5.ui.dialogs.subcomponents.ControlPanel_Localization;
 import mpv5.utils.files.FileDirectoryHandler;
 
 /**
@@ -87,7 +89,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton1);
 
-        jButton2.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton2.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/locale.png"))); // NOI18N
         jButton2.setText(bundle.getString("MPControlPanel.jButton2.text")); // NOI18N
         jButton2.setToolTipText(bundle.getString("MPControlPanel.jButton2.toolTipText")); // NOI18N
@@ -99,6 +101,11 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton2.setName("jButton2"); // NOI18N
         jButton2.setPreferredSize(new java.awt.Dimension(90, 80));
         jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
         buttons.add(jButton2);
 
         jButton3.setFont(new java.awt.Font("Tahoma", 0, 10));
@@ -162,7 +169,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton6.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         buttons.add(jButton6);
 
-        jButton7.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton7.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/openofficeorg-20.png"))); // NOI18N
         jButton7.setText(bundle.getString("MPControlPanel.jButton7.text")); // NOI18N
         jButton7.setToolTipText(bundle.getString("MPControlPanel.jButton7.toolTipText")); // NOI18N
@@ -176,7 +183,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton7.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         buttons.add(jButton7);
 
-        jButton8.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton8.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/draw-eraser.png"))); // NOI18N
         jButton8.setText(bundle.getString("MPControlPanel.jButton8.text")); // NOI18N
         jButton8.setToolTipText(bundle.getString("MPControlPanel.jButton8.toolTipText")); // NOI18N
@@ -222,6 +229,10 @@ public class MPControlPanel extends javax.swing.JPanel {
             Popup.notice(Messages.WIPED_LOCALSETTINGS);
         }
     }//GEN-LAST:event_jButton8ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+       openDetails(new ControlPanel_Localization());
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel buttons;
@@ -306,9 +317,9 @@ public class MPControlPanel extends javax.swing.JPanel {
         buttons.add(button);
     }
 
-    private void openDetails(ControlPanel_Internet panel) {
+    private void openDetails(ControlApplet panel) {
         details.removeAll();
-        details.add(panel, BorderLayout.CENTER);
+        details.add((Component) panel, BorderLayout.CENTER);
         details.validate();
     }
 }

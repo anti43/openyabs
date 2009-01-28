@@ -24,12 +24,12 @@ import mpv5.logging.Log;
  *
  * @author anti43
  */
-public class MPComboBoxModelItem extends DefaultComboBoxModel {
+public class MPComboBoxModelItem extends DefaultComboBoxModel implements Comparable<MPComboBoxModelItem> {
 
     public static int getItemID(int uid, ComboBoxModel model) {
         for (int i = 0; i < model.getSize(); i++) {
-            Log.Debug(MPComboBoxModelItem.class,((MPComboBoxModelItem) model.getElementAt(i)).id + " comparing with: " + uid);
-            if (((MPComboBoxModelItem) model.getElementAt(i)).id.equals(Integer.valueOf(uid)) ) {
+            Log.Debug(MPComboBoxModelItem.class, ((MPComboBoxModelItem) model.getElementAt(i)).id + " comparing with: " + uid);
+            if (((MPComboBoxModelItem) model.getElementAt(i)).id.equals(String.valueOf(uid))) {
                 Log.Debug(MPComboBoxModelItem.class, "Found at Index:" + i);
                 return i;
             }
@@ -44,10 +44,15 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel {
         }
         return array;
     }
-    private Integer id;
+    private String id;
     private String name;
 
     public MPComboBoxModelItem(int id, String name) {
+        this.id = String.valueOf(id);
+        this.name = name;
+    }
+
+    public MPComboBoxModelItem(String id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -55,7 +60,7 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel {
     /**
      * @return the id
      */
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
@@ -63,7 +68,7 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel {
      * @param id the id to set
      */
     public void setId(Integer id) {
-        this.id = id;
+        this.id = id.toString();
     }
 
     /**
@@ -83,5 +88,10 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel {
     @Override
     public String toString() {
         return name;
+    }
+
+    @Override
+    public int compareTo(MPComboBoxModelItem to) {
+        return name.compareTo(to.getName());
     }
 }

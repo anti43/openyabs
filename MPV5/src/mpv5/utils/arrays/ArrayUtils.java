@@ -5,6 +5,7 @@
 package mpv5.utils.arrays;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  *
@@ -107,11 +108,11 @@ public class ArrayUtils {
         int i = 0;
 
         for (i = 0; i < array1.length; i++) {
-                mergedArray[i] = array1[i];
+            mergedArray[i] = array1[i];
         }
 
         for (int l = 0; l < array2.length; l++) {
-                mergedArray[i + l] = array2[l];
+            mergedArray[i + l] = array2[l];
         }
 
         return mergedArray;
@@ -186,5 +187,10 @@ public class ArrayUtils {
         }
         return mergedArray;
 
+    }
+
+    public static Object[] sort(Object[] items) {
+        Arrays.sort(items);
+        return items;
     }
 }

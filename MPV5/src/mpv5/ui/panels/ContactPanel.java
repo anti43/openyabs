@@ -723,7 +723,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         MPComboBoxModelItem item = (MPComboBoxModelItem) evt.getItem();
 
         if (evt.getStateChange() == ItemEvent.SELECTED) {
-            switch (item.getId()) {
+            switch (Integer.valueOf(item.getId())) {
                 case 0:
                     new PrintJob().print(getDataOwner());
                     break;
@@ -834,7 +834,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         cname_ = cname.get_Text();
         iscompany_ = company.isSelected();
         if (companyselect.getSelectedItem() != null) {
-            companyuid_ = ((MPComboBoxModelItem) companyselect.getSelectedItem()).getId();
+            companyuid_ = Integer.valueOf(((MPComboBoxModelItem) companyselect.getSelectedItem()).getId());
         }
         iscustomer_ = customer.isSelected();
         isenabled_ = enabled.isSelected();
