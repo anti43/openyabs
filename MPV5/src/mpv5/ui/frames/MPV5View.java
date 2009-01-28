@@ -5,6 +5,7 @@ package mpv5.ui.frames;
 
 import java.awt.BorderLayout;
 import java.awt.Cursor;
+import java.util.Locale;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.UIManager;
@@ -22,6 +23,7 @@ import mpv5.ui.panels.MPControlPanel;
 import mpv5.ui.parents.CloseableTabbedPane;
 import mpv5.ui.parents.FadeOnChangeLabel;
 import mpv5.usermanagement.User;
+import mpv5.utils.text.TypeConversion;
 import org.jdesktop.application.SingleFrameApplication;
 import org.jdesktop.application.FrameView;
 
@@ -57,6 +59,7 @@ public class MPV5View extends FrameView {
     public static void setUser(User usern) {
         currentUser = usern;
         Main.setLaF(usern.__getLaf());
+        Locale.setDefault(TypeConversion.stringToLocale(usern.__getLocale()));
     }
 
     public static void setWaiting(boolean tru) {

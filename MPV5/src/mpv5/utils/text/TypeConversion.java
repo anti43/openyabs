@@ -16,6 +16,8 @@
  */
 package mpv5.utils.text;
 
+import java.util.Locale;
+
 /**
  *
  * @author Andreas
@@ -46,5 +48,25 @@ public class TypeConversion {
             val = true;
         }
         return val;
+    }
+
+
+    /**
+     * Converts a String into a Locale
+     * @param localestring In Format "de" or "de_DE"
+     * @return
+     */
+    public static Locale stringToLocale(String localestring) {
+        String[] data = localestring.split("_");
+        String lang = localestring.substring(0, 2);
+        String country = null;
+        if (data!=null && data.length > 1) {
+            country = data[1];
+        }
+        if (country != null) {
+            return new Locale(lang.toLowerCase(), country.toUpperCase());
+        } else {
+            return new Locale(lang.toLowerCase());
+        }
     }
 }

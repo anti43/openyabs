@@ -1,13 +1,6 @@
-/*
- * SearchPanel.java
- *
- * Created on Nov 30, 2008, 6:16:09 PM
- */
+
 package mpv5.ui.dialogs.subcomponents;
 
-import java.net.Authenticator;
-import java.net.PasswordAuthentication;
-import java.util.Properties;
 import mpv5.data.PropertyStore;
 import mpv5.globals.LocalSettings;
 import mpv5.ui.dialogs.ControlApplet;
