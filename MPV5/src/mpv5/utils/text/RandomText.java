@@ -24,12 +24,29 @@ import java.util.Random;
  */
 public class RandomText {
 
-    private String source = new String("QAa0bcLdUK2eHfJgTP8XhiFj61DOklNm9nBoI5pGqYVrs3" +
-            "CtSuMZvwWx4yEkjsdhgfkurewyhflkdsnfukhewlfkrelugflsdnfuiosefkkl" +
-            "kndgldslgfmlfdhiglklkjljliurdgouhkjgiuerhg0lndfvgbhorekngfdnvo" +
-            "nrejgrhgntroghrejglerhjgoijergkjerg7zRhhkjhsfdjnqkuweyljnlihlf" +
-            "loiuwyehflnoqwyld6poqoidandkiuqwhdjhdgiwqdnedgwefdutgddknwyqfi" +
-            "uhvljjdgiwejfnuigdifuqazwsxedcrfvtgbyhnujmikkklopq1234567894343");
+    private String source = new String("43Atowelitsaysisaboutthemostmassivelyusefu" +
+            "lthinganinterstellarhitchhikercanhavePartlyithasgreatpracticalvalue" +
+            "youcanwrapitaroundyouforwarmthasyouboundacrossthecoldmoonsofJaglanBet" +
+            "ayoucanlieonitonthebrilliantmarblesandedbeachesofSantraginusVinhalingt" +
+            "394060333188397074520172340739371965868498876592311755875219798318317206994017" +
+            "heheadyseavapoursyoucansleepunderitbeneaththestarswhichshinesoredlyont" +
+            "hedesertworldofKakrafoonuseittosailaminiraftdowntheslowheavyriverMothw" +
+            "etitforuseinhandtohandcombatwrapitroundyourheadtowardoffnoxiousfumesora" +
+            "voidthegazeoftheRavenousBugblatterBeastofTraalamindbogginglystupidanimali" +
+            "eckonedwith308399816614085306859704892269592775111711855313343669299238236306" +
+            "tassumesthatifyoucantseeititcantseeyoudaftasabrushbutveryveryravenousyouc" +
+            "anwaveyourtowelinemergenciesasadistresssignalandofcoursedryyourselfoffwithit" +
+            "ifitstillseemstobecleanenoughMoreimportantlyatowelhasimmensepsychologicalval" +
+            "ueForsomereasonifastragstragnonhitchhikerdiscoversthatahitchhikerhashistowel" +
+            "withhimhewillautomaticallyassumethatheisalsoinpossessionofatoothbrushfacefl" +
+            "386832922784929950232869659529615917138847v64003519483258392515302176217868694" +
+            "annelsoaptinofbiscuitsflaskcompassmapballofstringgnatspraywetweathergearspa" +
+            "cesuitetcetcFurthermorethestragwillthenhappilylendthehitchhikeranyoftheseor" +
+            "adozenotheritemsthatthehitchhikermightaccidentallyhavelostWhatthestragwillt" +
+            "hinkisthatanymanwhocanhitchthelengthandbreadthofthegalaxyroughitslumitstrugg" +
+            "leagainstterribleoddswinthroughandstillknowswherehistowelisisclearlyamantober" +
+            "2324989105969625913643");
+
     private String string;
     private int length = 5;
 
@@ -51,7 +68,7 @@ public class RandomText {
     public RandomText(int length) {
         this.length = length;
     }
-    
+
     /**
      * Constructs a random text generator with the default length (5)
      */
@@ -59,7 +76,7 @@ public class RandomText {
     }
 
     /**
-     * @return The random text with default length (5)
+     * @return The random text
      */
     public String getString() {
         StringBuffer sb = new StringBuffer();

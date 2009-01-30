@@ -26,6 +26,18 @@ public class LabeledTextField extends javax.swing.JPanel {
         initComponents();
     }
 
+    /**
+     * Determines if the field has some text
+     * @return
+     */
+    public boolean hasText() {
+        if (jTextField1.getText() != null && jTextField1.getText().length() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -38,13 +50,9 @@ public class LabeledTextField extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
 
-        setName("Form"); // NOI18N
         setOpaque(false);
 
         jLabel1.setText("text");
-        jLabel1.setName("jLabel1"); // NOI18N
-
-        jTextField1.setName("jTextField1"); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);

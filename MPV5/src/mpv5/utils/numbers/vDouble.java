@@ -16,6 +16,8 @@
  */
 package mpv5.utils.numbers;
 
+import mpv5.utils.numberformat.NumberCheck;
+
 
 
 /**

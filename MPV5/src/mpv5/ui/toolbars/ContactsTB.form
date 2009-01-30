@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <Form version="1.5" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
-  <Properties>
-    <Property name="name" type="java.lang.String" value="Form" noResource="true"/>
-  </Properties>
   <AuxValues>
-    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="2"/>
-    <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="true"/>
+    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true"/>
     <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="false"/>
@@ -19,7 +16,10 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="commonActionsToolbar" min="-2" pref="304" max="-2" attributes="0"/>
+          <Group type="102" attributes="0">
+              <Component id="commonActionsToolbar" min="-2" pref="304" max="-2" attributes="0"/>
+              <EmptySpace pref="61" max="32767" attributes="0"/>
+          </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
@@ -32,7 +32,6 @@
     <Container class="javax.swing.JToolBar" name="commonActionsToolbar">
       <Properties>
         <Property name="rollover" type="boolean" value="true"/>
-        <Property name="name" type="java.lang.String" value="commonActionsToolbar" noResource="true"/>
       </Properties>
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout"/>
@@ -43,14 +42,13 @@
               <Image iconType="3" name="/mpv5/resources/images/32/revert.png"/>
             </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="mpv5/resources/languages/Bundle.properties" key="MPV5View.jButton22.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+              <ResourceString bundle="mpv5/ui/toolbars/Bundle.properties" key="MPV5View.jButton22.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="mpv5/resources/languages/Bundle.properties" key="MPV5View.jButton22.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+              <ResourceString bundle="" key="MPV5View.jButton22.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
             <Property name="focusable" type="boolean" value="false"/>
             <Property name="horizontalTextPosition" type="int" value="0"/>
-            <Property name="name" type="java.lang.String" value="jButton22" noResource="true"/>
             <Property name="verticalTextPosition" type="int" value="3"/>
           </Properties>
           <Events>
@@ -63,14 +61,13 @@
               <Image iconType="3" name="/mpv5/resources/images/32/3floppy_unmount.png"/>
             </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="mpv5/resources/languages/Bundle.properties" key="MPV5View.jButton25.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+              <ResourceString bundle="mpv5/ui/toolbars/Bundle.properties" key="MPV5View.jButton25.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="mpv5/resources/languages/Bundle.properties" key="MPV5View.jButton25.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+              <ResourceString bundle="" key="MPV5View.jButton25.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
             <Property name="focusable" type="boolean" value="false"/>
             <Property name="horizontalTextPosition" type="int" value="0"/>
-            <Property name="name" type="java.lang.String" value="jButton25" noResource="true"/>
             <Property name="verticalTextPosition" type="int" value="3"/>
           </Properties>
           <Events>
@@ -83,14 +80,13 @@
               <Image iconType="3" name="/mpv5/resources/images/32/filenew.png"/>
             </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="mpv5/resources/languages/Bundle.properties" key="MPV5View.jButton4.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+              <ResourceString bundle="mpv5/ui/toolbars/Bundle.properties" key="MPV5View.jButton4.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="mpv5/resources/languages/Bundle.properties" key="MPV5View.jButton4.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+              <ResourceString bundle="" key="MPV5View.jButton4.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
             <Property name="focusable" type="boolean" value="false"/>
             <Property name="horizontalTextPosition" type="int" value="0"/>
-            <Property name="name" type="java.lang.String" value="jButton4" noResource="true"/>
             <Property name="verticalTextPosition" type="int" value="3"/>
           </Properties>
           <Events>
@@ -98,9 +94,6 @@
           </Events>
         </Component>
         <Component class="javax.swing.JToolBar$Separator" name="jSeparator1">
-          <Properties>
-            <Property name="name" type="java.lang.String" value="jSeparator1" noResource="true"/>
-          </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="jButton26">
           <Properties>
@@ -108,21 +101,17 @@
               <Image iconType="3" name="/mpv5/resources/images/32/edittrash.png"/>
             </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="mpv5/resources/languages/Bundle.properties" key="MPV5View.jButton26.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+              <ResourceString bundle="mpv5/ui/toolbars/Bundle.properties" key="MPV5View.jButton26.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="mpv5/resources/languages/Bundle.properties" key="MPV5View.jButton26.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+              <ResourceString bundle="" key="MPV5View.jButton26.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
             <Property name="focusable" type="boolean" value="false"/>
             <Property name="horizontalTextPosition" type="int" value="0"/>
-            <Property name="name" type="java.lang.String" value="jButton26" noResource="true"/>
             <Property name="verticalTextPosition" type="int" value="3"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JToolBar$Separator" name="jSeparator3">
-          <Properties>
-            <Property name="name" type="java.lang.String" value="jSeparator3" noResource="true"/>
-          </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="jButton21">
           <Properties>
@@ -130,14 +119,13 @@
               <Image iconType="3" name="/mpv5/resources/images/32/password.png"/>
             </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="mpv5/resources/languages/Bundle.properties" key="MPV5View.jButton21.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+              <ResourceString bundle="mpv5/ui/toolbars/Bundle.properties" key="MPV5View.jButton21.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="mpv5/resources/languages/Bundle.properties" key="MPV5View.jButton21.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+              <ResourceString bundle="" key="MPV5View.jButton21.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
             <Property name="focusable" type="boolean" value="false"/>
             <Property name="horizontalTextPosition" type="int" value="0"/>
-            <Property name="name" type="java.lang.String" value="jButton21" noResource="true"/>
             <Property name="verticalTextPosition" type="int" value="3"/>
           </Properties>
           <Events>
@@ -150,14 +138,13 @@
               <Image iconType="3" name="/mpv5/resources/images/32/bookmark_add.png"/>
             </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="mpv5/resources/languages/Bundle.properties" key="MPV5View.jButton24.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+              <ResourceString bundle="mpv5/ui/toolbars/Bundle.properties" key="MPV5View.jButton24.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="mpv5/resources/languages/Bundle.properties" key="MPV5View.jButton24.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+              <ResourceString bundle="" key="MPV5View.jButton24.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
             <Property name="focusable" type="boolean" value="false"/>
             <Property name="horizontalTextPosition" type="int" value="0"/>
-            <Property name="name" type="java.lang.String" value="jButton24" noResource="true"/>
             <Property name="verticalTextPosition" type="int" value="3"/>
           </Properties>
           <Events>
@@ -165,9 +152,6 @@
           </Events>
         </Component>
         <Component class="javax.swing.JToolBar$Separator" name="jSeparator2">
-          <Properties>
-            <Property name="name" type="java.lang.String" value="jSeparator2" noResource="true"/>
-          </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="jButton23">
           <Properties>
@@ -175,14 +159,13 @@
               <Image iconType="3" name="/mpv5/resources/images/32/printer.png"/>
             </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="mpv5/resources/languages/Bundle.properties" key="MPV5View.jButton23.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+              <ResourceString bundle="mpv5/ui/toolbars/Bundle.properties" key="MPV5View.jButton23.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="mpv5/resources/languages/Bundle.properties" key="MPV5View.jButton23.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+              <ResourceString bundle="" key="MPV5View.jButton23.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
             <Property name="focusable" type="boolean" value="false"/>
             <Property name="horizontalTextPosition" type="int" value="0"/>
-            <Property name="name" type="java.lang.String" value="jButton23" noResource="true"/>
             <Property name="verticalTextPosition" type="int" value="3"/>
           </Properties>
           <Events>

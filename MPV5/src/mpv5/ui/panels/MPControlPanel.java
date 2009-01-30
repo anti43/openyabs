@@ -64,7 +64,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.Y_AXIS));
 
         buttons.setBackground(new java.awt.Color(255, 255, 255));
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle(mpv5.resources.languages.LanguageManager.getBundle()); // NOI18N
         buttons.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("MPControlPanel.buttons.border.title"))); // NOI18N
         buttons.setMinimumSize(new java.awt.Dimension(300, 117));
         buttons.setName("buttons"); // NOI18N

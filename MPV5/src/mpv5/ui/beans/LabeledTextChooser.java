@@ -28,6 +28,18 @@ public class LabeledTextChooser extends javax.swing.JPanel {
         initComponents();
     }
 
+    /**
+     * Determines if the field has some text
+     * @return
+     */
+    public boolean hasText() {
+        if (jTextField1.getText() != null && jTextField1.getText().length() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -41,18 +53,13 @@ public class LabeledTextChooser extends javax.swing.JPanel {
         jTextField1 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
 
-        setName("Form"); // NOI18N
         setOpaque(false);
 
         jLabel1.setText("text");
-        jLabel1.setName("jLabel1"); // NOI18N
-
-        jTextField1.setName("jTextField1"); // NOI18N
 
         jButton1.setText("...");
         jButton1.setToolTipText("Choose");
         jButton1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jButton1.setName("jButton1"); // NOI18N
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -80,8 +87,8 @@ public class LabeledTextChooser extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-       DialogForFile dialog = new DialogForFile(getMode());
-       if(dialog.chooseFile()) {
+        DialogForFile dialog = new DialogForFile(getMode());
+        if (dialog.chooseFile()) {
             jTextField1.setText(dialog.getFile().getPath());
         }
     }//GEN-LAST:event_jButton1ActionPerformed

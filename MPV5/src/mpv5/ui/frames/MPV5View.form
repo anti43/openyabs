@@ -111,7 +111,7 @@
                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
                       <JTabbedPaneConstraints tabName="Contacts">
                         <Property name="tabTitle" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="mpv5/resources/languages/Bundle.properties" key="MPV5View.jPanel2.TabConstraints.tabTitle" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="MPV5View.jPanel2.TabConstraints.tabTitle_1" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
                       </JTabbedPaneConstraints>
                     </Constraint>
@@ -175,10 +175,10 @@
                           <Image iconType="3" name="/mpv5/resources/images/32/agt_family.png"/>
                         </Property>
                         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="mpv5/resources/languages/Bundle.properties" key="MPV5View.jButton5.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="MPV5View.jButton5.text_1" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
                         <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="mpv5/resources/languages/Bundle.properties" key="MPV5View.jButton5.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="MPV5View.jButton5.toolTipText_1" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
                         <Property name="horizontalTextPosition" type="int" value="0"/>
                         <Property name="name" type="java.lang.String" value="jButton5" noResource="true"/>
@@ -197,10 +197,10 @@
                           <Image iconType="3" name="/mpv5/resources/images/32/edit_group.png"/>
                         </Property>
                         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="mpv5/resources/languages/Bundle.properties" key="MPV5View.jButton1.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="MPV5View.jButton1.text_1" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
                         <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="mpv5/resources/languages/Bundle.properties" key="MPV5View.jButton1.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="MPV5View.jButton1.toolTipText_1" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
                         <Property name="horizontalTextPosition" type="int" value="0"/>
                         <Property name="name" type="java.lang.String" value="jButton1" noResource="true"/>
@@ -219,10 +219,10 @@
                           <Image iconType="3" name="/mpv5/resources/images/32/edit_user.png"/>
                         </Property>
                         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="mpv5/resources/languages/Bundle.properties" key="MPV5View.jButton2.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="MPV5View.jButton2.text_1" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
                         <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="mpv5/resources/languages/Bundle.properties" key="MPV5View.jButton2.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="MPV5View.jButton2.toolTipText_1" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
                         <Property name="horizontalTextPosition" type="int" value="0"/>
                         <Property name="name" type="java.lang.String" value="jButton2" noResource="true"/>
@@ -241,10 +241,10 @@
                           <Image iconType="3" name="/mpv5/resources/images/32/edit_group.png"/>
                         </Property>
                         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="mpv5/resources/languages/Bundle.properties" key="MPV5View.jButton18.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="MPV5View.jButton18.text_1" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
                         <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="mpv5/resources/languages/Bundle.properties" key="MPV5View.jButton18.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="MPV5View.jButton18.toolTipText_1" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
                         <Property name="horizontalTextPosition" type="int" value="0"/>
                         <Property name="name" type="java.lang.String" value="jButton18" noResource="true"/>
@@ -263,10 +263,10 @@
                           <Image iconType="3" name="/mpv5/resources/images/32/agt_internet.png"/>
                         </Property>
                         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="mpv5/resources/languages/Bundle.properties" key="MPV5View.jButton20.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="MPV5View.jButton20.text_1" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
                         <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="mpv5/resources/languages/Bundle.properties" key="MPV5View.jButton20.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="MPV5View.jButton20.toolTipText_1" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
                         <Property name="horizontalTextPosition" type="int" value="0"/>
                         <Property name="name" type="java.lang.String" value="jButton20" noResource="true"/>
@@ -292,7 +292,7 @@
                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
                       <JTabbedPaneConstraints tabName="Accounting">
                         <Property name="tabTitle" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="mpv5/resources/languages/Bundle.properties" key="MPV5View.jPanel3.TabConstraints.tabTitle" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="MPV5View.jPanel3.TabConstraints.tabTitle_1" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
                       </JTabbedPaneConstraints>
                     </Constraint>
@@ -301,12 +301,12 @@
                   <Layout>
                     <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <EmptySpace min="0" pref="110" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
                     </DimensionLayout>
                     <DimensionLayout dim="1">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <EmptySpace min="0" pref="492" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
                     </DimensionLayout>
                   </Layout>
@@ -325,7 +325,7 @@
                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
                       <JTabbedPaneConstraints tabName="Products">
                         <Property name="tabTitle" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="mpv5/resources/languages/Bundle.properties" key="MPV5View.jPanel4.TabConstraints.tabTitle" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="MPV5View.jPanel4.TabConstraints.tabTitle_1" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
                       </JTabbedPaneConstraints>
                     </Constraint>
@@ -334,12 +334,12 @@
                   <Layout>
                     <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <EmptySpace min="0" pref="110" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
                     </DimensionLayout>
                     <DimensionLayout dim="1">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <EmptySpace min="0" pref="492" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
                     </DimensionLayout>
                   </Layout>
@@ -357,7 +357,9 @@
                   <Constraints>
                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
                       <JTabbedPaneConstraints tabName="Extras">
-                        <Property name="tabTitle" type="java.lang.String" value="Extras"/>
+                        <Property name="tabTitle" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="MPV5View.jPanel6.TabConstraints.tabTitle" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                        </Property>
                       </JTabbedPaneConstraints>
                     </Constraint>
                   </Constraints>
@@ -365,12 +367,12 @@
                   <Layout>
                     <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <EmptySpace min="0" pref="110" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
                     </DimensionLayout>
                     <DimensionLayout dim="1">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <EmptySpace min="0" pref="492" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
                     </DimensionLayout>
                   </Layout>
@@ -393,7 +395,7 @@
         <Menu class="javax.swing.JMenu" name="fileMenu">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="mpv5/resources/languages/Bundle.properties" key="MPV5View.fileMenu.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="MPV5View.fileMenu.text_1" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
             <Property name="name" type="java.lang.String" value="fileMenu" noResource="true"/>
           </Properties>
@@ -405,7 +407,7 @@
         <Menu class="javax.swing.JMenu" name="jMenu1">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="mpv5/resources/languages/Bundle.properties" key="MPV5View.jMenu1.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="MPV5View.jMenu1.text_1" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
             <Property name="name" type="java.lang.String" value="jMenu1" noResource="true"/>
           </Properties>
@@ -413,7 +415,7 @@
             <Menu class="javax.swing.JMenu" name="jMenu2">
               <Properties>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                  <ResourceString bundle="mpv5/resources/languages/Bundle.properties" key="MPV5View.jMenu2.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                  <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="MPV5View.jMenu2.text_1" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="jMenu2" noResource="true"/>
               </Properties>
@@ -421,7 +423,7 @@
                 <MenuItem class="javax.swing.JMenuItem" name="jMenuItem1">
                   <Properties>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="mpv5/resources/languages/Bundle.properties" key="MPV5View.jMenuItem1.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                      <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="MPV5View.jMenuItem1.text_1" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                     <Property name="name" type="java.lang.String" value="jMenuItem1" noResource="true"/>
                   </Properties>
@@ -432,7 +434,7 @@
                 <MenuItem class="javax.swing.JMenuItem" name="jMenuItem2">
                   <Properties>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="mpv5/resources/languages/Bundle.properties" key="MPV5View.jMenuItem2.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                      <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="MPV5View.jMenuItem2.text_1" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                     <Property name="name" type="java.lang.String" value="jMenuItem2" noResource="true"/>
                   </Properties>
@@ -447,7 +449,7 @@
         <Menu class="javax.swing.JMenu" name="jMenu3">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="mpv5/resources/languages/Bundle.properties" key="MPV5View.jMenu3.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="MPV5View.jMenu3.text_1" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
             <Property name="name" type="java.lang.String" value="jMenu3" noResource="true"/>
           </Properties>
@@ -455,7 +457,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem3">
               <Properties>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                  <ResourceString bundle="mpv5/resources/languages/Bundle.properties" key="MPV5View.jMenuItem3.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                  <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="MPV5View.jMenuItem3.text_1" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="jMenuItem3" noResource="true"/>
               </Properties>
@@ -542,11 +544,8 @@
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/mpv5/resources/images/32/endturn.png"/>
             </Property>
-            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="mpv5/resources/languages/Bundle.properties" key="MPV5View.jButton24.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
-            </Property>
             <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="mpv5/resources/languages/Bundle.properties" key="MPV5View.jButton24.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="MPV5View.jButton24.toolTipText_1" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
             <Property name="focusable" type="boolean" value="false"/>
             <Property name="horizontalTextPosition" type="int" value="0"/>
@@ -562,11 +561,8 @@
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/mpv5/resources/images/32/lock.png"/>
             </Property>
-            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="mpv5/resources/languages/Bundle.properties" key="MPV5View.jButton26.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
-            </Property>
             <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="mpv5/resources/languages/Bundle.properties" key="MPV5View.jButton26.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="MPV5View.jButton26.toolTipText_1" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
             <Property name="focusable" type="boolean" value="false"/>
             <Property name="horizontalTextPosition" type="int" value="0"/>
@@ -587,11 +583,8 @@
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/mpv5/resources/images/32/kcalc.png"/>
             </Property>
-            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="mpv5/resources/languages/Bundle.properties" key="MPV5View.jButton25.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
-            </Property>
             <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="mpv5/resources/languages/Bundle.properties" key="MPV5View.jButton25.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="MPV5View.jButton25.toolTipText_1" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
             <Property name="focusable" type="boolean" value="false"/>
             <Property name="horizontalTextPosition" type="int" value="0"/>
@@ -622,7 +615,7 @@
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="1"/>
     <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="true"/>
-    <AuxValue name="FormSettings_formBundle" type="java.lang.String" value="mpv5/resources/languages/Bundle"/>
+    <AuxValue name="FormSettings_formBundle" type="java.lang.String" value="mpv5/resources/languages/Panels"/>
     <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true"/>
     <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="true"/>

@@ -48,7 +48,7 @@ public class ControlPanel_Internet extends javax.swing.JPanel implements Control
         setLayout(new java.awt.BorderLayout());
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle(mpv5.resources.languages.LanguageManager.getBundle()); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Internet.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 

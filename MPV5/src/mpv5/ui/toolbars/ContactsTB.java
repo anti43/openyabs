@@ -58,18 +58,14 @@ public class ContactsTB extends javax.swing.JPanel {
         jSeparator2 = new javax.swing.JToolBar.Separator();
         jButton23 = new javax.swing.JButton();
 
-        setName("Form"); // NOI18N
-
         commonActionsToolbar.setRollover(true);
-        commonActionsToolbar.setName("commonActionsToolbar"); // NOI18N
 
         jButton22.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/revert.png"))); // NOI18N
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Bundle"); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/ui/toolbars/Bundle"); // NOI18N
         jButton22.setText(bundle.getString("MPV5View.jButton22.text")); // NOI18N
-        jButton22.setToolTipText(bundle.getString("MPV5View.jButton22.toolTipText")); // NOI18N
+        jButton22.setToolTipText("null");
         jButton22.setFocusable(false);
         jButton22.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton22.setName("jButton22"); // NOI18N
         jButton22.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton22.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -80,10 +76,9 @@ public class ContactsTB extends javax.swing.JPanel {
 
         jButton25.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/3floppy_unmount.png"))); // NOI18N
         jButton25.setText(bundle.getString("MPV5View.jButton25.text")); // NOI18N
-        jButton25.setToolTipText(bundle.getString("MPV5View.jButton25.toolTipText")); // NOI18N
+        jButton25.setToolTipText("null");
         jButton25.setFocusable(false);
         jButton25.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton25.setName("jButton25"); // NOI18N
         jButton25.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton25.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -94,10 +89,9 @@ public class ContactsTB extends javax.swing.JPanel {
 
         jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/filenew.png"))); // NOI18N
         jButton4.setText(bundle.getString("MPV5View.jButton4.text")); // NOI18N
-        jButton4.setToolTipText(bundle.getString("MPV5View.jButton4.toolTipText")); // NOI18N
+        jButton4.setToolTipText("null");
         jButton4.setFocusable(false);
         jButton4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton4.setName("jButton4"); // NOI18N
         jButton4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -105,28 +99,22 @@ public class ContactsTB extends javax.swing.JPanel {
             }
         });
         commonActionsToolbar.add(jButton4);
-
-        jSeparator1.setName("jSeparator1"); // NOI18N
         commonActionsToolbar.add(jSeparator1);
 
         jButton26.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/edittrash.png"))); // NOI18N
         jButton26.setText(bundle.getString("MPV5View.jButton26.text")); // NOI18N
-        jButton26.setToolTipText(bundle.getString("MPV5View.jButton26.toolTipText")); // NOI18N
+        jButton26.setToolTipText("null");
         jButton26.setFocusable(false);
         jButton26.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton26.setName("jButton26"); // NOI18N
         jButton26.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         commonActionsToolbar.add(jButton26);
-
-        jSeparator3.setName("jSeparator3"); // NOI18N
         commonActionsToolbar.add(jSeparator3);
 
         jButton21.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/password.png"))); // NOI18N
         jButton21.setText(bundle.getString("MPV5View.jButton21.text")); // NOI18N
-        jButton21.setToolTipText(bundle.getString("MPV5View.jButton21.toolTipText")); // NOI18N
+        jButton21.setToolTipText("null");
         jButton21.setFocusable(false);
         jButton21.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton21.setName("jButton21"); // NOI18N
         jButton21.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton21.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -137,10 +125,9 @@ public class ContactsTB extends javax.swing.JPanel {
 
         jButton24.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/bookmark_add.png"))); // NOI18N
         jButton24.setText(bundle.getString("MPV5View.jButton24.text")); // NOI18N
-        jButton24.setToolTipText(bundle.getString("MPV5View.jButton24.toolTipText")); // NOI18N
+        jButton24.setToolTipText("null");
         jButton24.setFocusable(false);
         jButton24.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton24.setName("jButton24"); // NOI18N
         jButton24.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton24.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -148,16 +135,13 @@ public class ContactsTB extends javax.swing.JPanel {
             }
         });
         commonActionsToolbar.add(jButton24);
-
-        jSeparator2.setName("jSeparator2"); // NOI18N
         commonActionsToolbar.add(jSeparator2);
 
         jButton23.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/printer.png"))); // NOI18N
         jButton23.setText(bundle.getString("MPV5View.jButton23.text")); // NOI18N
-        jButton23.setToolTipText(bundle.getString("MPV5View.jButton23.toolTipText")); // NOI18N
+        jButton23.setToolTipText("null");
         jButton23.setFocusable(false);
         jButton23.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton23.setName("jButton23"); // NOI18N
         jButton23.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton23.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -170,7 +154,9 @@ public class ContactsTB extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(commonActionsToolbar, javax.swing.GroupLayout.PREFERRED_SIZE, 304, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(commonActionsToolbar, javax.swing.GroupLayout.PREFERRED_SIZE, 304, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(61, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

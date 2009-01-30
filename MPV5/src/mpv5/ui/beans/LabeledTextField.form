@@ -2,12 +2,12 @@
 
 <Form version="1.5" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
   <Properties>
-    <Property name="name" type="java.lang.String" value="Form" noResource="true"/>
     <Property name="opaque" type="boolean" value="false"/>
   </Properties>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
-    <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="true"/>
+    <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_formBundle" type="java.lang.String" value=""/>
     <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true"/>
     <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="false"/>
@@ -40,13 +40,9 @@
     <Component class="javax.swing.JLabel" name="jLabel1">
       <Properties>
         <Property name="text" type="java.lang.String" value="text"/>
-        <Property name="name" type="java.lang.String" value="jLabel1" noResource="true"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="jTextField1">
-      <Properties>
-        <Property name="name" type="java.lang.String" value="jTextField1" noResource="true"/>
-      </Properties>
     </Component>
   </SubComponents>
 </Form>

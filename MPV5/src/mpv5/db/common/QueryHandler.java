@@ -5,7 +5,13 @@
 package mpv5.db.common;
 
 import java.awt.Cursor;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -23,6 +29,8 @@ import mpv5.ui.dialogs.Popup;
 import mpv5.utils.arrays.ArrayUtils;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.date.vTimeframe;
+import mpv5.utils.files.FileDirectoryHandler;
+import mpv5.utils.text.RandomText;
 
 /**
  *
@@ -42,8 +50,8 @@ public class QueryHandler implements Cloneable {
     private Context context;
 
     /**
-     *
-     * @return
+     * !Use "Clone" method before actually do anything!
+     * @return The one and only instance of the database connection
      */
     public static QueryHandler instanceOf() {
         if (instance == null) {
@@ -78,12 +86,12 @@ public class QueryHandler implements Cloneable {
      * @return
      * @throws NodataFoundException
      */
-    public ReturnValue select(int id) throws NodataFoundException{
+    public ReturnValue select(int id) throws NodataFoundException {
         ReturnValue data = freeReturnQuery("SELECT * FROM " + table + " WHERE " + table + ".ids = " + id, mpv5.usermanagement.MPSecurityManager.VIEW, null);
-         if (data.getData().length == 0) {
+        if (data.getData().length == 0) {
             throw new NodataFoundException();
         } else {
-             return data;
+            return data;
         }
     }
 
@@ -280,13 +288,14 @@ public class QueryHandler implements Cloneable {
      * @return id (unique) of the inserted row
      */
     public int insert(String[] what, int[] uniquecols, String jobmessage) {
-        what[1] = what[1].replaceAll("'", "`");
+        what[1] = what[1].replace("'", "`");
         what[1] = what[1].replaceAll("\\(;;2#4#1#1#8#0#;;\\)", "'");
         what[1] = what[1].replaceAll("\\(;;\\,;;\\)", ",");
-        what[2] = what[2].replaceAll("\\(;;\\,;;\\)", ",");
+        if(what[2]==null) {
+            what[2] = "";
+        }
         String query;
         start();
-
 
         if (uniquecols != null) {
             for (int i = 0; i < uniquecols.length; i++) {
@@ -388,7 +397,7 @@ public class QueryHandler implements Cloneable {
         if (data == null || data.length == 0) {
             throw new NodataFoundException();
         } else {
-             return data[data.length - 1];
+            return data[data.length - 1];
         }
     }
 
@@ -521,6 +530,11 @@ public class QueryHandler implements Cloneable {
         return theClone;
     }
 
+    /**
+     *
+     * @param context
+     * @return clone of this ConnectionHandler (with database connection)
+     */
     public QueryHandler clone(Context context) {
         QueryHandler theClone = null;
         this.context = context;
@@ -655,7 +669,7 @@ public class QueryHandler implements Cloneable {
     }
 
     @SuppressWarnings("unchecked")
-    public ReturnValue freeQuery(String string, JTextArea log, int action, String jobmessage) {
+    public ReturnValue freeQuery(String query, JTextArea log, int action, String jobmessage) {
 
         if (!mpv5.usermanagement.MPSecurityManager.check(context, action)) {
             Log.Debug(this, Messages.SECURITYMANAGER_DENIED +
@@ -667,7 +681,7 @@ public class QueryHandler implements Cloneable {
         }
 
         start();
-        String query = string;
+        query = query.replace("%%tablename%%", table);
         ReturnValue retval = new ReturnValue(-1, new Object[0][0], new String[0]);
         String message = "Database Error (freeQuery) :";
         stm = null;
@@ -775,6 +789,8 @@ public class QueryHandler implements Cloneable {
     @SuppressWarnings({"unchecked"})
     public ReturnValue freeReturnQuery(String query, int action, String jobmessage) {
 
+        query = query.replace("%%tablename%%", table);
+
         if (!mpv5.usermanagement.MPSecurityManager.check(context, action)) {
 
             Log.Debug(this, Messages.SECURITYMANAGER_DENIED +
@@ -863,5 +879,143 @@ public class QueryHandler implements Cloneable {
         }
 //        Log.PrintArray(data);
         return new ReturnValue(id, data, columnnames);
+    }
+
+    /**
+     * This method inserts a file into a "filename<unique/>, filedata" table
+     * @param file
+     * @return The UNIQUE name of the inserted file in db
+     * @throws java.io.FileNotFoundException
+     */
+    public String insertFile(File file) throws FileNotFoundException{
+       start();
+        String name = null;
+        String query = "INSERT INTO " + table + "(cname, data) VALUES (?, ?)";
+        String jobmessage = null;
+        try {
+            int fileLength = (int) file.length();
+            name = new RandomText(23).getString();
+            java.io.InputStream fin = new java.io.FileInputStream(file);
+            PreparedStatement ps = sqlConn.prepareStatement(query);
+            ps.setString(1, name);
+            ps.setBinaryStream(2, fin, fileLength);
+            ps.execute();
+            sqlConn.commit();
+        } catch (SQLException ex) {
+            Log.Debug(this, "Datenbankfehler: " + query, true);
+            Log.Debug(this, ex);
+            Popup.error(ex.getMessage(), "Datenbankfehler");
+            jobmessage = Messages.ERROR_OCCURED;
+        } finally {
+            // Alle Ressourcen wieder freigeben
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException ex) {
+                    jobmessage = Messages.ERROR_OCCURED;
+                    Log.Debug(this, ex.getMessage());
+                    Popup.error(ex.getMessage(), "Datenbankfehler");
+                }
+            }
+            if (stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException ex) {
+                    Log.Debug(this, ex.getMessage());
+                    Popup.error(ex.getMessage(), "Datenbankfehler");
+                }
+            }
+        }
+        stop();
+        if (jobmessage != null) {
+            MPV5View.addMessage(jobmessage);
+        }
+        return name;
+    }
+
+    /**
+     * This method returns a list of files from a "filename, filedata" table
+     * @param filename The unique filename
+     * @return A list with temporary files
+     * @throws IOException
+     */
+    public ArrayList<File> retrieveFiles(String filename) throws IOException {
+        start();
+        String query = "SELECT * FROM " + table + " WHERE cname= '" + filename + "'";
+        String jobmessage = null;
+        ArrayList<File> list = null;
+        try {
+            stm = sqlConn.createStatement();
+            list = new ArrayList<File>();
+
+            ResultSet rs = stm.executeQuery(query);
+            Log.Debug(this, query);
+            while (rs.next()) {
+                byte[] buffer = new byte[1024];
+                File f = FileDirectoryHandler.getTempFile();
+                BufferedInputStream inputStream = new BufferedInputStream(rs.getBinaryStream(2), 1024);
+                FileOutputStream outputStream = new FileOutputStream(f);
+                int readBytes = 0;
+                while (readBytes != -1) {
+                    readBytes = inputStream.read(buffer, 0, buffer.length);
+                    if (readBytes != -1) {
+                        outputStream.write(buffer, 0, readBytes);
+                    }
+                }
+                inputStream.close();
+                outputStream.close();
+                list.add(f);
+            }
+
+        } catch (SQLException ex) {
+            Log.Debug(this, "Datenbankfehler: " + query, true);
+            Popup.error(ex.getMessage(), "Datenbankfehler");
+            jobmessage = Messages.ERROR_OCCURED;
+        } finally {
+            // Alle Ressourcen wieder freigeben
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException ex) {
+                    jobmessage = Messages.ERROR_OCCURED;
+                    Log.Debug(this, ex.getMessage());
+                    Popup.error(ex.getMessage(), "Datenbankfehler");
+                }
+            }
+            if (stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException ex) {
+                    Log.Debug(this, ex.getMessage());
+                    Popup.error(ex.getMessage(), "Datenbankfehler");
+                }
+            }
+        }
+        stop();
+        if (jobmessage != null) {
+            MPV5View.addMessage(jobmessage);
+        }
+        return list;
+    }
+
+    /**
+     * A convenience method to retrieve one file from db, or null of no file
+     * with the specified name is available.
+     * @param name
+     * @return A file or NULL
+     */
+    public File retrieveFile(String name) {
+        ArrayList<File> list;
+        try {
+            list = retrieveFiles(name);
+        } catch (Exception ex) {
+            Log.Debug(this, name + " not found in " + table);
+            return null;
+        }
+        if (list.size() == 0) {
+            return null;
+        } else {
+            return list.get(0);
+        }
     }
 }

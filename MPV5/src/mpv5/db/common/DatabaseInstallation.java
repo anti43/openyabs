@@ -49,6 +49,18 @@ public class DatabaseInstallation {
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,"+
         "PRIMARY KEY  (ids))",
 
+        "CREATE TABLE files (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),"+
+        "cname VARCHAR(25) UNIQUE NOT NULL, " +
+        "data BLOB(25M) NOT NULL,"+
+        "PRIMARY KEY  (ids))",
+
+        "CREATE TABLE languages(IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),"+
+        "cname VARCHAR(250) UNIQUE NOT NULL, " +
+        "longname VARCHAR(250) NOT NULL, " +
+        "filename VARCHAR(25) NOT NULL REFERENCES files(cname) ON DELETE CASCADE,"+
+        "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,"+
+        "PRIMARY KEY  (ids))",
+
         "INSERT INTO users (password,cname,laf,locale,mail,language,inthighestright,datelastlog ) VALUES ('5f4dcc3b5aa765d61d8327deb882cf99','admin','de.muntjak.tinylookandfeel.TinyLookAndFeel','de_DE','','en',0,'2009-01-26 05:45:38')"
     };
     

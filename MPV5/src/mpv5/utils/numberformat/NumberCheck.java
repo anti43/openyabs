@@ -16,6 +16,8 @@
  */
 package mpv5.utils.numberformat;
 
+import java.text.NumberFormat;
+
 /**
  *
  * @author anti
@@ -27,7 +29,7 @@ public class NumberCheck {
             return Float.valueOf(number.toString());
         } catch (NumberFormatException numberFormatException) {
             try {
-                return Float.valueOf(number.toString().replaceAll(",", "."));
+                return Float.valueOf(number.toString().replace(",", "").replace(".", ""));
             } catch (NumberFormatException numberFormatException1) {
                 try {
                     return Float.valueOf(removeCurrencySymbols(number));
@@ -51,7 +53,7 @@ public class NumberCheck {
             return Double.valueOf(number.toString());
         } catch (NumberFormatException numberFormatException) {
             try {
-                return Double.valueOf(number.toString().replaceAll(",", "."));
+                return Double.valueOf(number.toString().replace(",", "").replace(".", ""));
             } catch (NumberFormatException numberFormatException1) {
                 try {
                     return Double.valueOf(removeCurrencySymbols(number));
@@ -66,7 +68,7 @@ public class NumberCheck {
             return Float.valueOf(number.toString());
         } catch (NumberFormatException numberFormatException) {
             try {
-                return Float.valueOf(number.toString().replaceAll(",", "."));
+                return Float.valueOf(number.toString().replace(",", "").replace(".", ""));
             } catch (NumberFormatException numberFormatException1) {
                 try {
                     return Float.valueOf(removeCurrencySymbols(number));
@@ -90,7 +92,7 @@ public class NumberCheck {
             return Double.valueOf(number.toString());
         } catch (NumberFormatException numberFormatException) {
             try {
-                return Double.valueOf(number.toString().replaceAll(",", "."));
+                return Double.valueOf(number.toString().replace(",", "").replace(".", ""));
             } catch (NumberFormatException numberFormatException1) {
                 try {
                     return Double.valueOf(removeCurrencySymbols(number));
@@ -100,8 +102,7 @@ public class NumberCheck {
             }
         }
     }
-
-    public static String removeCurrencySymbols(Object number) {
-        return number.toString().replaceAll("�", "").replaceAll("SFr", "").replaceAll(",", ".").trim();
+  public static String removeCurrencySymbols(Object number) {
+        return number.toString().replaceAll(NumberFormat.getCurrencyInstance().getCurrency().getSymbol(), "").trim();
     }
 }
