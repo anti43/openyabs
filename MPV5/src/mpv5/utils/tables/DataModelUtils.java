@@ -21,6 +21,8 @@ package mpv5.utils.tables;
 
 import java.io.File;
 import java.util.Date;
+import java.util.Enumeration;
+import java.util.Vector;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -157,12 +159,43 @@ public class DataModelUtils {
         }
     }
 
-    public static void removeColumn(JTable table, int column) {
+//    public static MPTableModel getModelCopy(JTable data) {
+//
+//    }
+
+    public static void removeColumn(JTable table, int vColIndex) {
         MPTableModel model = (MPTableModel) table.getModel();
-        TableColumn tcol = table.getColumnModel().getColumn(column);
-        table.removeColumn(tcol);
-        table.validate();
+        TableColumn col = table.getColumnModel().getColumn(vColIndex);
+        int columnModelIndex = col.getModelIndex();
+        Vector data = model.getDataVector();
+        Vector colIds = model.getColumnIdentifiers();
+
+        // Remove the column from the table
+        table.removeColumn(col);
+
+        // Remove the column header from the table model
+        colIds.removeElementAt(columnModelIndex);
+
+        // Remove the column data
+        for (int r = 0; r < data.size(); r++) {
+            Vector row = (Vector) data.get(r);
+            row.removeElementAt(columnModelIndex);
+        }
+        model.setDataVector(data, colIds);
+
+        // Correct the model indices in the TableColumn objects
+        // by decrementing those indices that follow the deleted column
+        Enumeration enumd = table.getColumnModel().getColumns();
+        for (; enumd.hasMoreElements();) {
+            TableColumn c = (TableColumn) enumd.nextElement();
+            if (c.getModelIndex() >= columnModelIndex) {
+                c.setModelIndex(c.getModelIndex() - 1);
+            }
+        }
+        model.fireTableStructureChanged();
+
     }
+
 
     /**
      *
@@ -301,17 +334,12 @@ public class DataModelUtils {
     }
 
     public static Object[][] toObjectArray(String[][] originalarray) {
-
-
         Object[][] data = new Object[originalarray.length][];
-
         for (int idx = 0; idx < originalarray.length; idx++) {
             for (int i = 0; i < originalarray[idx].length; i++) {
                 data[idx] = (Object[]) originalarray[idx];
             }
         }
-
         return data;
-
     }
 }

@@ -16,6 +16,7 @@
  */
 package mpv5.utils.models;
 
+import java.util.Vector;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -69,4 +70,8 @@ public class MPTableModel extends DefaultTableModel {
     public void setCanEdits(boolean[] canEdits) {
         this.canEdits = canEdits;
     }
+
+    public Vector getColumnIdentifiers() {
+            return columnIdentifiers;
+        }
 }

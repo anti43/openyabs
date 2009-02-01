@@ -21,9 +21,11 @@
  */
 package mpv5.ui.frames;
 
+import javax.swing.table.TableModel;
 import mpv5.globals.Headers;
 import mpv5.globals.Messages;
 import mpv5.resources.languages.LanguageManager;
+import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.parents.Position;
 import mpv5.utils.models.MPComboBoxModelItem;
@@ -80,6 +82,7 @@ public class MPBabelFish extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
+        jMenuItem1 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
@@ -174,6 +177,15 @@ public class MPBabelFish extends javax.swing.JFrame {
         });
         jMenu1.add(jMenuItem2);
 
+        jMenuItem1.setText(bundle.getString("MPBabelFish.jMenuItem1.text_1")); // NOI18N
+        jMenuItem1.setName("jMenuItem1"); // NOI18N
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem1);
+
         jMenuBar1.add(jMenu1);
 
         setJMenuBar(jMenuBar1);
@@ -193,12 +205,25 @@ public class MPBabelFish extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-         if (langName.hasText()) {
+
+        if (langName.hasText()) {
+//            MPTableModel mpdel = DataModelUtils.getModelCopy(data);
             DataModelUtils.removeColumn(data, 1);
             LanguageManager.importLanguage(langName.get_Text(), DataModelUtils.tableModelToFile(data, "="));
+//            data.setModel(mpdel);
             setLanguageSelection();
         }
     }//GEN-LAST:event_jMenuItem2ActionPerformed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+
+        DialogForFile dialog = new DialogForFile(DialogForFile.FILES_ONLY, "language.mp");
+//        MPTableModel mpdel = DataModelUtils.getModelCopy(data);
+        DataModelUtils.removeColumn(data, 1);
+        dialog.writeFile(DataModelUtils.tableModelToFile(data, "="));
+//        data.setModel(mpdel);
+        setLanguageSelection();
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable data;
@@ -207,6 +232,7 @@ public class MPBabelFish extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;

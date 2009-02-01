@@ -135,6 +135,18 @@ public class FileDirectoryHandler {
         return outp.toURI();
     }
 
+    public static void deleteTreeOnExit(File path) throws IOException {
+        for (File file : path.listFiles()) {
+            if (file.isDirectory()) {
+                deleteTreeOnExit(file);
+            } else {
+                Log.Debug(FileDirectoryHandler.class, "Delete On Exit: " + file.getCanonicalPath(), true);
+                file.deleteOnExit();
+            }
+        }
+        path.deleteOnExit();
+    }
+
     /**
      *
      * @param directory

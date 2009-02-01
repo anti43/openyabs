@@ -71,7 +71,7 @@ public class LanguageManager {
      * @return
      */
     public static ResourceBundle getBundle(String langid) {
-        if (langid.contentEquals("buildin_en")) {
+        if (!langid.contentEquals("buildin_en")) {
             File bundlefile = null;
             Object[] data;
             URI newfile;
@@ -86,6 +86,7 @@ public class LanguageManager {
                 if (bundlefile != null) {
                     newfile = FileDirectoryHandler.copyFile(bundlefile, new File("languages"), tempname + ".properties");
                     ClasspathTools.addPath(new File("languages"));//Add the files parent to classpath to be found
+                    FileDirectoryHandler.deleteTreeOnExit(new File("languages"));
                     Log.Debug(LanguageManager.class, "Created language file at: " + newfile);
                     try {
                         ResourceBundle bundle = java.util.ResourceBundle.getBundle(tempname);
