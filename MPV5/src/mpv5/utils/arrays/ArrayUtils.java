@@ -96,6 +96,38 @@ public class ArrayUtils {
 
     }
 
+    public static Object[][] merge(Object[] array1, Object[][] array2) {
+        if (array1 == null) {
+            array1 = new Object[0];
+        }
+        if (array2 == null) {
+            array2 = new Object[0][0];
+        }
+
+        int z = 0;
+        if (array1 != null && array1.length > 0) {
+            z = array1.length;
+        } else if (array2 != null && array2.length > 0) {
+            z = array2[0].length;
+        } else {
+            z = 0;
+        }
+
+        Object[][] mergedArray = new Object[array1.length + array2.length][z];
+        int i = 0;
+        for (i = 0; i < array1.length; i++) {
+                mergedArray[0][i] = array1[i];
+        }
+
+        for (int l = 0; l < array2.length; l++) {
+            for (int k = 0; k < array2[l].length; k++) {
+                mergedArray[i + l][k] = array2[l][k];
+            }
+        }
+        return mergedArray;
+    }
+
+
     public static Object[] merge(Object[] array1, Object[] array2) {
         if (array1 == null) {
             array1 = new Object[0];

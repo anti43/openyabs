@@ -22,6 +22,7 @@ import mpv5.db.common.DatabaseConnection;
 import mpv5.globals.Constants;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
+import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.Wizard;
 import mpv5.ui.dialogs.subcomponents.wizard_DBSettings_1;
 import mpv5.ui.dialogs.subcomponents.wizard_DBSettings_2;
@@ -45,7 +46,7 @@ public class Main extends SingleFrameApplication {
         if (probeDatabaseConnection()) {
             setLaF(null);
             show(new MPV5View(this));
-        } else {
+        } else if (Popup.Y_N_dialog(Messages.NO_DB_CONNECTION)) {
             try {
                 Log.setLogLevel(Log.LOGLEVEL_DEBUG);
                 LogConsole.setLogFile("install.log");
@@ -57,6 +58,8 @@ public class Main extends SingleFrameApplication {
             w.addPanel(new wizard_DBSettings_1(w));
             w.addPanel(new wizard_DBSettings_2(w));
             w.showWiz();
+        } else {
+            System.exit(1);
         }
     }
 

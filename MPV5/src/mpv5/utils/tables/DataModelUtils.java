@@ -19,13 +19,17 @@ along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
 package mpv5.utils.tables;
 
+import java.io.File;
 import java.util.Date;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
+import mpv5.logging.Log;
 import mpv5.utils.date.DateConverter;
+import mpv5.utils.files.FileDirectoryHandler;
+import mpv5.utils.files.FileReaderWriter;
 import mpv5.utils.models.MPTableModel;
-
 
 /**
  *
@@ -116,6 +120,7 @@ public class DataModelUtils {
 //            return null;
 //        }
 //    }
+
     public static Object[][] changeToClassValue(Object[][] prods, Class aClass, int[] cols) {
 
         try {
@@ -150,6 +155,39 @@ public class DataModelUtils {
 //            Log.Debug(this,e);
             return new Object[0][0];
         }
+    }
+
+    public static void removeColumn(JTable table, int column) {
+        MPTableModel model = (MPTableModel) table.getModel();
+        TableColumn tcol = table.getColumnModel().getColumn(column);
+        table.removeColumn(tcol);
+        table.validate();
+    }
+
+    /**
+     *
+     * @param table
+     * @param separator
+     * @return
+     */
+    public static File tableModelToFile(JTable table, String separator) {
+        File file = FileDirectoryHandler.getTempFile();
+        FileReaderWriter rw = new FileReaderWriter(file);
+        TableModel model = table.getModel();
+        String[] data = new String[model.getRowCount()];
+        String line = "";
+
+        for (int idx = 0; idx < model.getRowCount(); idx++) {
+            line = "";
+            for (int i = 0; i < model.getColumnCount(); i++) {
+                line += model.getValueAt(idx, i) + separator;
+            }
+            data[idx] = line.substring(0, line.length() - separator.length());
+        }
+
+        rw.write(data);
+        Log.Debug(DataModelUtils.class, file);
+        return file;
     }
 
     public static Object[][] tableModelToArray(JTable table) {
@@ -263,17 +301,17 @@ public class DataModelUtils {
     }
 
     public static Object[][] toObjectArray(String[][] originalarray) {
-        
-      
-            Object[][] data = new Object[originalarray.length][];
 
-            for (int idx = 0; idx < originalarray.length; idx++) {
-                for (int i = 0; i < originalarray[idx].length; i++) {
-                    data[idx]= (Object[])originalarray[idx];
-                }
+
+        Object[][] data = new Object[originalarray.length][];
+
+        for (int idx = 0; idx < originalarray.length; idx++) {
+            for (int i = 0; i < originalarray[idx].length; i++) {
+                data[idx] = (Object[]) originalarray[idx];
             }
+        }
 
-            return data;
-     
+        return data;
+
     }
 }

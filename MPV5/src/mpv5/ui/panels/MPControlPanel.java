@@ -16,6 +16,8 @@ import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Internet;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Localization;
+import mpv5.ui.frames.MPBabelFish;
+import mpv5.ui.frames.MPV5View;
 import mpv5.utils.files.FileDirectoryHandler;
 
 /**
@@ -64,13 +66,13 @@ public class MPControlPanel extends javax.swing.JPanel {
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.Y_AXIS));
 
         buttons.setBackground(new java.awt.Color(255, 255, 255));
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle(mpv5.resources.languages.LanguageManager.getBundle()); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         buttons.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("MPControlPanel.buttons.border.title"))); // NOI18N
         buttons.setMinimumSize(new java.awt.Dimension(300, 117));
         buttons.setName("buttons"); // NOI18N
         buttons.setPreferredSize(new java.awt.Dimension(340, 240));
 
-        jButton1.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 0, 10));
+        jButton1.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/internet.png"))); // NOI18N
         jButton1.setText(bundle.getString("MPControlPanel.jButton1.text")); // NOI18N
         jButton1.setToolTipText(bundle.getString("MPControlPanel.jButton1.toolTipText")); // NOI18N
@@ -89,7 +91,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton1);
 
-        jButton2.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 0, 10)); // NOI18N
+        jButton2.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/locale.png"))); // NOI18N
         jButton2.setText(bundle.getString("MPControlPanel.jButton2.text")); // NOI18N
         jButton2.setToolTipText(bundle.getString("MPControlPanel.jButton2.toolTipText")); // NOI18N
@@ -108,7 +110,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton2);
 
-        jButton3.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 0, 10));
+        jButton3.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/looknfeel.png"))); // NOI18N
         jButton3.setText(bundle.getString("MPControlPanel.jButton3.text")); // NOI18N
         jButton3.setToolTipText(bundle.getString("MPControlPanel.jButton3.toolTipText")); // NOI18N
@@ -127,7 +129,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton3);
 
-        jButton4.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 0, 10));
+        jButton4.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/cal.png"))); // NOI18N
         jButton4.setText(bundle.getString("MPControlPanel.jButton4.text")); // NOI18N
         jButton4.setToolTipText(bundle.getString("MPControlPanel.jButton4.toolTipText")); // NOI18N
@@ -141,7 +143,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         buttons.add(jButton4);
 
-        jButton5.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 0, 10));
+        jButton5.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/babelfish.png"))); // NOI18N
         jButton5.setText(bundle.getString("MPControlPanel.jButton5.text")); // NOI18N
         jButton5.setToolTipText(bundle.getString("MPControlPanel.jButton5.toolTipText")); // NOI18N
@@ -153,9 +155,14 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton5.setName("jButton5"); // NOI18N
         jButton5.setPreferredSize(new java.awt.Dimension(90, 80));
         jButton5.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
         buttons.add(jButton5);
 
-        jButton6.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 0, 10));
+        jButton6.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/evolution-contacts.png"))); // NOI18N
         jButton6.setText(bundle.getString("MPControlPanel.jButton6.text")); // NOI18N
         jButton6.setToolTipText(bundle.getString("MPControlPanel.jButton6.toolTipText")); // NOI18N
@@ -169,7 +176,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton6.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         buttons.add(jButton6);
 
-        jButton7.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 0, 10));
+        jButton7.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/openofficeorg-20.png"))); // NOI18N
         jButton7.setText(bundle.getString("MPControlPanel.jButton7.text")); // NOI18N
         jButton7.setToolTipText(bundle.getString("MPControlPanel.jButton7.toolTipText")); // NOI18N
@@ -183,7 +190,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton7.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         buttons.add(jButton7);
 
-        jButton8.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 0, 10));
+        jButton8.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/draw-eraser.png"))); // NOI18N
         jButton8.setText(bundle.getString("MPControlPanel.jButton8.text")); // NOI18N
         jButton8.setToolTipText(bundle.getString("MPControlPanel.jButton8.toolTipText")); // NOI18N
@@ -218,8 +225,10 @@ public class MPControlPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        MPV5View.setWaiting(true);
         TinyLookAndFeel.controlPanelInstantiated = true;
         new de.muntjak.tinylookandfeel.controlpanel.ControlPanel(Main.getApplication());
+        MPV5View.setWaiting(false);
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
@@ -231,8 +240,15 @@ public class MPControlPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-       openDetails(new ControlPanel_Localization());
+        openDetails(new ControlPanel_Localization());
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        MPV5View.setWaiting(true);
+        new MPBabelFish();
+        MPV5View.setWaiting(false);
+
+    }//GEN-LAST:event_jButton5ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel buttons;
@@ -318,8 +334,10 @@ public class MPControlPanel extends javax.swing.JPanel {
     }
 
     private void openDetails(ControlApplet panel) {
+        MPV5View.setWaiting(true);
         details.removeAll();
         details.add((Component) panel, BorderLayout.CENTER);
         details.validate();
+        MPV5View.setWaiting(false);
     }
 }

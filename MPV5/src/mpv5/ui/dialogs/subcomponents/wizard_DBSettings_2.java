@@ -33,7 +33,7 @@ public class wizard_DBSettings_2 extends javax.swing.JPanel implements Wizardabl
         setBackground(new java.awt.Color(255, 255, 255));
         setName("Form"); // NOI18N
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle(mpv5.resources.languages.LanguageManager.getBundle()); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.resources.languages.LanguageManager.getBundle(); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("wizard_DBSettings_2.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 

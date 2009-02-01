@@ -106,10 +106,22 @@ public class FileDirectoryHandler {
      */
     public static URI copyFile(File sourceFile, File targetDirectory, String targetFilename)
             throws IOException {
-
+        FileOutputStream out = null;
         InputStream in = new FileInputStream(sourceFile);
-        File outp = new File(targetDirectory + File.separator + targetFilename);
-        OutputStream out = new FileOutputStream(targetDirectory + File.separator + targetFilename);
+        File outp = null;
+        if (targetDirectory != null) {
+            outp = new File(targetDirectory + File.separator + targetFilename);
+            if (!targetDirectory.exists()) {
+                targetDirectory.mkdirs();
+            }
+            outp.delete();
+            out = new FileOutputStream(targetDirectory + File.separator + targetFilename);
+        } else {
+            outp = new File(targetFilename);
+            outp.delete();
+            out = new FileOutputStream(targetFilename);
+        }
+       
 
         // Copy the bits from instream to outstream
         byte[] buf = new byte[1024];
@@ -206,7 +218,7 @@ public class FileDirectoryHandler {
      * @return
      */
     public static File getTempFile(String suffix) {
-        File fil = new File(System.getProperty("java.io.tmpdir") + File.separator + new RandomText().getString() + "." + suffix);
+        File fil = new File(System.getProperty("java.io.tmpdir") + File.separator + new RandomText(8).getString() + "." + suffix);
         fil.deleteOnExit();
         return fil;
     }

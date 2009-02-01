@@ -18,4 +18,5 @@ public class Headers {
         "Mailaddress", "Company",
         "Website", "Notes", "Taxid"};
     public static String[] USER_DEFAULT =  new String[]{"Internal ID", "ID", "User Name", "Mail", "Last logged in"};
+    public static String[] BABELFISH =  new String[]{"Component", "Language Value", "New Value"};
 }

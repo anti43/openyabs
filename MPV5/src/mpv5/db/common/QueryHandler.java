@@ -941,7 +941,7 @@ public class QueryHandler implements Cloneable {
      */
     public ArrayList<File> retrieveFiles(String filename) throws IOException {
         start();
-        String query = "SELECT * FROM " + table + " WHERE cname= '" + filename + "'";
+        String query = "SELECT data FROM " + table + " WHERE cname= '" + filename + "'";
         String jobmessage = null;
         ArrayList<File> list = null;
         try {
@@ -953,7 +953,7 @@ public class QueryHandler implements Cloneable {
             while (rs.next()) {
                 byte[] buffer = new byte[1024];
                 File f = FileDirectoryHandler.getTempFile();
-                BufferedInputStream inputStream = new BufferedInputStream(rs.getBinaryStream(2), 1024);
+                BufferedInputStream inputStream = new BufferedInputStream(rs.getBinaryStream(1), 1024);
                 FileOutputStream outputStream = new FileOutputStream(f);
                 int readBytes = 0;
                 while (readBytes != -1) {
@@ -968,7 +968,7 @@ public class QueryHandler implements Cloneable {
             }
 
         } catch (SQLException ex) {
-            Log.Debug(this, "Datenbankfehler: " + query, true);
+            Log.Debug(this, "Datenbankfehler: " + ex.getMessage(), true);
             Popup.error(ex.getMessage(), "Datenbankfehler");
             jobmessage = Messages.ERROR_OCCURED;
         } finally {
