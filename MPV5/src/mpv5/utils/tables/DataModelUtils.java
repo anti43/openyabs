@@ -159,10 +159,29 @@ public class DataModelUtils {
         }
     }
 
+    /**
+     * Returns a table column's data as array
+     * @param table
+     * @param column
+     * @return
+     */
+    public static Object[] getColumnAsArray(JTable table, int column) {
+        MPTableModel model = (MPTableModel) table.getModel();
+        Object[] data = new Object[model.getRowCount()];
+
+        for (int idx = 0; idx < model.getRowCount(); idx++) {
+            for (int i = 0; i < model.getColumnCount(); i++) {
+                if (i == column) {
+                    data[idx] = model.getValueAt(idx, i);
+                }
+            }
+        }
+        return data;
+    }
+
 //    public static MPTableModel getModelCopy(JTable data) {
 //
 //    }
-
     public static void removeColumn(JTable table, int vColIndex) {
         MPTableModel model = (MPTableModel) table.getModel();
         TableColumn col = table.getColumnModel().getColumn(vColIndex);
@@ -196,6 +215,33 @@ public class DataModelUtils {
 
     }
 
+    /**
+     * Replaces a columns data in a table
+     * @param table
+     * @param column
+     * @param columndata
+     */
+    public static void replaceColumn(JTable table, int column, Object[] columndata) {
+        TableModel model = table.getModel();
+        Object[][] data = new Object[model.getRowCount()][model.getColumnCount()];
+        String[] columnNames = new String[model.getColumnCount()];
+
+        for (int idx = 0; idx < columnNames.length; idx++) {
+            columnNames[idx] = model.getColumnName(idx);
+        }
+
+        for (int idx = 0; idx < model.getRowCount(); idx++) {
+            for (int i = 0; i < model.getColumnCount(); i++) {
+                if (i != column) {
+                    data[idx][i] = model.getValueAt(idx, i);
+                } else {
+                    data[idx][i] = columndata[idx];
+                }
+            }
+        }
+
+        table.setModel(new MPTableModel(data, columnNames));
+    }
 
     /**
      *

@@ -1,5 +1,6 @@
 package mpv5.ui.dialogs.subcomponents;
 
+import java.io.File;
 import java.util.Locale;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
@@ -270,7 +271,7 @@ public class ControlPanel_Localization extends javax.swing.JPanel implements Con
 
         if (labeledTextChooser1.hasText() &&
                 labeledTextField1.hasText()) {
-            LanguageManager.importLanguage(labeledTextField1.get_Text(), labeledTextChooser1.get_Text());
+            LanguageManager.importLanguage( labeledTextField1.get_Text(), new File(labeledTextChooser1.get_Text()));
             setLanguageSelection();
         }
     }//GEN-LAST:event_jButton3ActionPerformed

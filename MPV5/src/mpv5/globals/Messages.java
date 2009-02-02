@@ -66,5 +66,7 @@ public class Messages {
     public static String WIPED_LOCALSETTINGS = "Local settings have been marked for deletion. Please close MP now.";
     public static String NO_DB_CONNECTION = "Could not connect to database, start configuration wizard?";
     public static String REALLY_CHANGE = "Do you really want to alter the selected dataset? This will affect all users!";
+    public static String DONE = "Task finished successfully.";
+    public static String PROCESSING = "Processing: ";
 
 }

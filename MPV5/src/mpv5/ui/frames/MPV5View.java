@@ -8,6 +8,7 @@ import java.awt.Cursor;
 import java.util.Locale;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JProgressBar;
 import javax.swing.UIManager;
 import mpv5.Main;
 import mpv5.db.common.Context;
@@ -35,10 +36,19 @@ public class MPV5View extends FrameView {
     public static JFrame identifier;
     public static CloseableTabbedPane tabPane;
     public static JLabel messagelabel = new JLabel();
-    private static User currentUser;
+    public static User currentUser;
+    public static JProgressBar progressbar = new JProgressBar();
 
     public static void addMessage(String message) {
         messagelabel.setText(message);
+    }
+
+    public static void setProgressMaximumValue(int max){
+        progressbar.setMaximum(max);
+    }
+
+    public static void setProgressValue(int val){
+        progressbar.setValue(val);
     }
 
     public static User getUser() {
@@ -75,7 +85,8 @@ public class MPV5View extends FrameView {
         initComponents();
         tabPane = new CloseableTabbedPane(this);
         identifier = this.getFrame();
-
+        progressbar = this.progressBar;
+        progressbar.setMinimum(0);
         messagelabel = statusMessageLabel;
         tabpanePanel.add(tabPane, BorderLayout.CENTER);
 
