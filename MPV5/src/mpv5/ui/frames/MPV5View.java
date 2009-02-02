@@ -3,6 +3,7 @@
  */
 package mpv5.ui.frames;
 
+
 import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.util.Locale;
@@ -12,6 +13,7 @@ import javax.swing.JProgressBar;
 import javax.swing.UIManager;
 import mpv5.Main;
 import mpv5.db.common.Context;
+import mpv5.db.common.DatabaseConnection;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryHandler;
 import mpv5.globals.LocalSettings;
@@ -43,11 +45,11 @@ public class MPV5View extends FrameView {
         messagelabel.setText(message);
     }
 
-    public static void setProgressMaximumValue(int max){
+    public static void setProgressMaximumValue(int max) {
         progressbar.setMaximum(max);
     }
 
-    public static void setProgressValue(int val){
+    public static void setProgressValue(int val) {
         progressbar.setValue(val);
     }
 
@@ -162,7 +164,7 @@ public class MPV5View extends FrameView {
 
         jButton5.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/agt_family.png"))); // NOI18N
-        java.util.ResourceBundle bundle = mpv5.resources.languages.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jButton5.setText(bundle.getString("MPV5View.jButton5.text_1")); // NOI18N
         jButton5.setToolTipText(bundle.getString("MPV5View.jButton5.toolTipText_1")); // NOI18N
         jButton5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -328,7 +330,7 @@ public class MPV5View extends FrameView {
         );
         naviPanelLayout.setVerticalGroup(
             naviPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jOutlookBar1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 582, Short.MAX_VALUE)
+            .addComponent(jOutlookBar1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 586, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
@@ -343,7 +345,7 @@ public class MPV5View extends FrameView {
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(naviPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 586, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 590, Short.MAX_VALUE)
         );
 
         menuBar.setName("menuBar"); // NOI18N
@@ -524,13 +526,13 @@ public class MPV5View extends FrameView {
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void jButton25ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton25ActionPerformed
-       MPCalculator.instanceOf().setVisible(true);
+        MPCalculator.instanceOf().setVisible(true);
     }//GEN-LAST:event_jButton25ActionPerformed
 
     private void jButton26ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton26ActionPerformed
 
         mpv5.usermanagement.Lock.lock(this.getFrame());
-        
+
 }//GEN-LAST:event_jButton26ActionPerformed
 
     private void jButton24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton24ActionPerformed
@@ -598,5 +600,4 @@ public class MPV5View extends FrameView {
     public javax.swing.JPanel getStatusPanel() {
         return statusPanel;
     }
-
 }

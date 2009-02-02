@@ -39,6 +39,21 @@ import org.apache.commons.cli2.util.*;
 public class Main extends SingleFrameApplication {
 
     /**
+     *
+     */
+    public static void start() {
+        try {
+            LocalSettings.read();
+            LocalSettings.apply();
+        } catch (Exception ex) {
+            Log.Debug(Main.class, ex);
+
+        }
+        launch(Main.class, new String[]{});
+    }
+
+
+    /**
      * At startup create and show the main frame of the application.
      */
     @Override
@@ -100,15 +115,7 @@ public class Main extends SingleFrameApplication {
         setEnv();
         parseArgs(args);
         setDerbyLog();
-        try {
-            LocalSettings.read();
-            LocalSettings.apply();
-        } catch (Exception ex) {
-            Log.Debug(Main.class, ex);
-
-        }
-        launch(Main.class, args);
-
+        start();
     }
     public static boolean IS_WINDOWS = false;
     public static String MPPATH = null;

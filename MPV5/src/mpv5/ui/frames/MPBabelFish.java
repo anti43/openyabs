@@ -103,7 +103,7 @@ public class MPBabelFish extends javax.swing.JFrame {
         jMenuItem1 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle = LanguageManager.getBundle(); // NOI18N
         setTitle(bundle.getString("MPBabelFish.title_1")); // NOI18N
         setName("Form"); // NOI18N
 
