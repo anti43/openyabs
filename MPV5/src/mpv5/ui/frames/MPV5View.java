@@ -13,10 +13,7 @@ import javax.swing.JProgressBar;
 import javax.swing.UIManager;
 import mpv5.Main;
 import mpv5.db.common.Context;
-import mpv5.db.common.DatabaseConnection;
-import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryHandler;
-import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
@@ -41,18 +38,43 @@ public class MPV5View extends FrameView {
     public static User currentUser;
     public static JProgressBar progressbar = new JProgressBar();
 
+    /**
+     * Display a message at the bottom of the MP frame
+     * @param message
+     */
     public static void addMessage(String message) {
         messagelabel.setText(message);
     }
 
+    /**
+     * Sets the max value for the progressbar
+     * @param max
+     */
     public static void setProgressMaximumValue(int max) {
         progressbar.setMaximum(max);
     }
 
+    /**
+     *  Sets the current value for the progressbar
+     * @param val
+     */
     public static void setProgressValue(int val) {
         progressbar.setValue(val);
     }
 
+    /**
+     * Reset the progress bar
+     */
+    public static void setProgressReset() {
+        progressbar.setValue(0);
+        progressbar.setIndeterminate(false);
+    }
+
+
+    /**
+     *
+     * @return The currently logged in user
+     */
     public static User getUser() {
         if (currentUser == null) {
             Log.Debug(MPV5View.class, "There is no user logged in here, using default user.");
@@ -68,14 +90,22 @@ public class MPV5View extends FrameView {
         }
     }
 
+    /**
+     * Set the current logged in user
+     * @param usern
+     */
     public static void setUser(User usern) {
         currentUser = usern;
         Main.setLaF(usern.__getLaf());
         Locale.setDefault(TypeConversion.stringToLocale(usern.__getLocale()));
     }
 
-    public static void setWaiting(boolean tru) {
-        if (tru) {
+    /**
+     * Sets the curser to waiting state if true
+     * @param truee
+     */
+    public static void setWaiting(boolean truee) {
+        if (truee) {
             identifier.setCursor(new Cursor(Cursor.WAIT_CURSOR));
         } else {
             identifier.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
