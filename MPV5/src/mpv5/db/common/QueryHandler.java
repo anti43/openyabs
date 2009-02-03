@@ -291,7 +291,7 @@ public class QueryHandler implements Cloneable {
         what[1] = what[1].replace("'", "`");
         what[1] = what[1].replaceAll("\\(;;2#4#1#1#8#0#;;\\)", "'");
         what[1] = what[1].replaceAll("\\(;;\\,;;\\)", ",");
-        if(what[2]==null) {
+        if (what[2] == null) {
             what[2] = "";
         }
         String query;
@@ -313,13 +313,14 @@ public class QueryHandler implements Cloneable {
 
         query = "INSERT INTO " + table + " (" + what[0] + " ) VALUES (" + what[1] + ") ";
 
-        return freeQuery(query, mpv5.usermanagement.MPSecurityManager.CREATE, jobmessage).getId();
+        return freeUpdateQuery(query, mpv5.usermanagement.MPSecurityManager.CREATE, jobmessage).getId();
     }
 
     /**
      * 
      * @param what  : {set, value, "'"}
      *   this.insert("name,wert", "'Sprache (Waehrung, z.B. Schweiz:  de_CH' ,'de_DE'");
+     * @param jobmessage 
      * @return id of inserted row
      */
     public int insert(String[] what, String jobmessage) {
@@ -351,7 +352,7 @@ public class QueryHandler implements Cloneable {
         c = c.substring(0, c.length() - 2);
 
         query = "UPDATE " + table + " SET " + c + " WHERE " + table + "." + where[0] + " = " + where[2] + where[1] + where[2];
-        freeQuery(query, mpv5.usermanagement.MPSecurityManager.EDIT, jobmessage);
+        freeUpdateQuery(query, mpv5.usermanagement.MPSecurityManager.EDIT, jobmessage);
         stop();
     }
 
@@ -682,16 +683,16 @@ public class QueryHandler implements Cloneable {
 
         start();
         query = query.replace("%%tablename%%", table);
-        ReturnValue retval = new ReturnValue(-1, new Object[0][0], new String[0]);
+        ReturnValue retval = null;
         String message = "Database Error (freeQuery) :";
         stm = null;
         resultSet = null;
         boolean bool;
         ResultSetMetaData rsmd;
-        Object[][] data;
+        Object[][] data = null;
         ArrayList z;
         int id = -1;
-        String[] columnnames;
+        String[] columnnames = null;
         try {
             // Select-Anweisung ausführen
             stm = sqlConn.createStatement();
@@ -705,15 +706,16 @@ public class QueryHandler implements Cloneable {
             }
             stop();
 
-            if (bool) {
+            ResultSet keys = stm.getGeneratedKeys();
+            if (keys != null && keys.next()) {
+                id = keys.getInt(1);
+            }
 
+            if (bool) {
                 resultSet = stm.getResultSet();
                 ArrayList spalten = new ArrayList();
                 ArrayList zeilen = new ArrayList();
                 rsmd = resultSet.getMetaData();
-                if (stm.getGeneratedKeys() != null && stm.getGeneratedKeys().first()) {
-                    id = stm.getGeneratedKeys().getInt(1);
-                }
 
                 columnnames = new String[rsmd.getColumnCount()];
                 for (int i = 1; i <= rsmd.getColumnCount(); i++) {
@@ -735,8 +737,102 @@ public class QueryHandler implements Cloneable {
                         data[h][i] = z.get(i);
                     }
                 }
-                retval = new ReturnValue(id, data, columnnames);
             }
+            retval = new ReturnValue(id, data, columnnames);
+
+        } catch (SQLException ex) {
+            stop();
+            jobmessage = Messages.ERROR_OCCURED;
+            Log.Debug(this, message + ex.getMessage());
+            if (log != null) {
+                log.append("\n " + ex.getMessage());
+            }
+        } finally {
+            // Alle Ressourcen wieder freigeben
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException ex) {
+                    stop();
+                    jobmessage = Messages.ERROR_OCCURED;
+                    Log.Debug(this, message + ex.getMessage());
+                    if (log != null) {
+                        log.append(" \n" + ex.getMessage());
+                    }
+                }
+            }
+            if (stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException ex) {
+                    stop();
+                    Log.Debug(this, message + ex.getMessage());
+                    if (log != null) {
+                        log.append(" \n" + ex.getMessage());
+                    }
+                }
+            }
+        }
+        stop();
+        if (jobmessage != null) {
+            MPV5View.addMessage(jobmessage);
+        }
+        return retval;
+
+    }
+
+    /**
+     *
+     * @param query
+     * @param action
+     * @param jobmessage
+     * @return
+     */
+    public ReturnValue freeUpdateQuery(String query, int action, String jobmessage) {
+        return freeUpdateQuery(query, null, action, jobmessage);
+    }
+
+    @SuppressWarnings("unchecked")
+    public ReturnValue freeUpdateQuery(String query, JTextArea log, int action, String jobmessage) {
+
+        if (!mpv5.usermanagement.MPSecurityManager.check(context, action)) {
+            Log.Debug(this, Messages.SECURITYMANAGER_DENIED +
+                    mpv5.usermanagement.MPSecurityManager.getActionName(action) + Messages.CONTEXT + context.getDbIdentity());
+            Popup.warn(Messages.SECURITYMANAGER_DENIED +
+                    mpv5.usermanagement.MPSecurityManager.getActionName(action) + Messages.CONTEXT + context.getDbIdentity(),
+                    Messages.ACCESS_DENIED);
+            return new ReturnValue(-1, new Object[0][0], new String[0]);
+        }
+
+        start();
+        query = query.replace("%%tablename%%", table);
+        ReturnValue retval = null;
+        String message = "Database Error (freeQuery) :";
+        stm = null;
+        resultSet = null;
+        Integer id = -1;
+        ResultSet keys;
+
+        try {
+            // Select-Anweisung ausführen
+            stm = sqlConn.createStatement();
+            Log.Debug(this, query, true);
+            if (log != null) {
+                log.append("\n " + query);
+            }
+            stm.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
+            if (log != null) {
+                log.append("\n " + stm.getUpdateCount() + " rows affected.");
+            }
+            stop();
+
+            keys = stm.getGeneratedKeys();
+
+            if (keys != null && keys.next()) {
+                id = keys.getInt(1);
+            }
+
+            retval = new ReturnValue(id, null, null);
 
         } catch (SQLException ex) {
             stop();
@@ -820,8 +916,10 @@ public class QueryHandler implements Cloneable {
             ArrayList spalten = new ArrayList();
             ArrayList zeilen = new ArrayList();
             rsmd = resultSet.getMetaData();
-            if (stm.getGeneratedKeys() != null && stm.getGeneratedKeys().first()) {
-                id = stm.getGeneratedKeys().getInt(1);
+
+            ResultSet keys = stm.getGeneratedKeys();
+            if (keys != null && keys.next()) {
+                id = keys.getInt(1);
             }
 
             columnnames = new String[rsmd.getColumnCount()];
@@ -887,8 +985,8 @@ public class QueryHandler implements Cloneable {
      * @return The UNIQUE name of the inserted file in db
      * @throws java.io.FileNotFoundException
      */
-    public String insertFile(File file) throws FileNotFoundException{
-       start();
+    public String insertFile(File file) throws FileNotFoundException {
+        start();
         String name = null;
         String query = "INSERT INTO " + table + "(cname, data) VALUES (?, ?)";
         String jobmessage = null;

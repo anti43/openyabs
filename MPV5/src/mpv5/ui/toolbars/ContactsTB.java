@@ -61,9 +61,9 @@ public class ContactsTB extends javax.swing.JPanel {
         commonActionsToolbar.setRollover(true);
 
         jButton22.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/revert.png"))); // NOI18N
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/ui/toolbars/Bundle"); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jButton22.setText(bundle.getString("MPV5View.jButton22.text")); // NOI18N
-        jButton22.setToolTipText("null");
+        jButton22.setToolTipText(bundle.getString("MPV5View.jButton22.toolTipText")); // NOI18N
         jButton22.setFocusable(false);
         jButton22.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton22.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -76,7 +76,7 @@ public class ContactsTB extends javax.swing.JPanel {
 
         jButton25.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/3floppy_unmount.png"))); // NOI18N
         jButton25.setText(bundle.getString("MPV5View.jButton25.text")); // NOI18N
-        jButton25.setToolTipText("null");
+        jButton25.setToolTipText(bundle.getString("MPV5View.jButton25.toolTipText")); // NOI18N
         jButton25.setFocusable(false);
         jButton25.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton25.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -89,7 +89,7 @@ public class ContactsTB extends javax.swing.JPanel {
 
         jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/filenew.png"))); // NOI18N
         jButton4.setText(bundle.getString("MPV5View.jButton4.text")); // NOI18N
-        jButton4.setToolTipText("null");
+        jButton4.setToolTipText(bundle.getString("MPV5View.jButton4.toolTipText")); // NOI18N
         jButton4.setFocusable(false);
         jButton4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -103,7 +103,7 @@ public class ContactsTB extends javax.swing.JPanel {
 
         jButton26.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/edittrash.png"))); // NOI18N
         jButton26.setText(bundle.getString("MPV5View.jButton26.text")); // NOI18N
-        jButton26.setToolTipText("null");
+        jButton26.setToolTipText(bundle.getString("MPV5View.jButton26.toolTipText")); // NOI18N
         jButton26.setFocusable(false);
         jButton26.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton26.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -112,7 +112,7 @@ public class ContactsTB extends javax.swing.JPanel {
 
         jButton21.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/password.png"))); // NOI18N
         jButton21.setText(bundle.getString("MPV5View.jButton21.text")); // NOI18N
-        jButton21.setToolTipText("null");
+        jButton21.setToolTipText(bundle.getString("MPV5View.jButton21.toolTipText")); // NOI18N
         jButton21.setFocusable(false);
         jButton21.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton21.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -125,7 +125,7 @@ public class ContactsTB extends javax.swing.JPanel {
 
         jButton24.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/bookmark_add.png"))); // NOI18N
         jButton24.setText(bundle.getString("MPV5View.jButton24.text")); // NOI18N
-        jButton24.setToolTipText("null");
+        jButton24.setToolTipText(bundle.getString("MPV5View.jButton24.toolTipText")); // NOI18N
         jButton24.setFocusable(false);
         jButton24.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton24.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -139,7 +139,7 @@ public class ContactsTB extends javax.swing.JPanel {
 
         jButton23.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/printer.png"))); // NOI18N
         jButton23.setText(bundle.getString("MPV5View.jButton23.text")); // NOI18N
-        jButton23.setToolTipText("null");
+        jButton23.setToolTipText(bundle.getString("MPV5View.jButton23.toolTipText")); // NOI18N
         jButton23.setFocusable(false);
         jButton23.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton23.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -154,9 +154,7 @@ public class ContactsTB extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(commonActionsToolbar, javax.swing.GroupLayout.PREFERRED_SIZE, 304, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(61, Short.MAX_VALUE))
+            .addComponent(commonActionsToolbar, javax.swing.GroupLayout.DEFAULT_SIZE, 365, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -174,6 +172,7 @@ public class ContactsTB extends javax.swing.JPanel {
         dato.getPanelData(((DataPanel)  MPV5View.tabPane.getSelectedComponent()));
         dato.save();
         ((DataPanel)  MPV5View.tabPane.getSelectedComponent()).refresh();
+        ((DataPanel)  MPV5View.tabPane.getSelectedComponent()).setDataOwner(dato);
     }//GEN-LAST:event_jButton25ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
@@ -183,6 +182,7 @@ public class ContactsTB extends javax.swing.JPanel {
         dato.setIDS(-1);
         dato.save();
         ((DataPanel)  MPV5View.tabPane.getSelectedComponent()).refresh();
+        ((DataPanel)  MPV5View.tabPane.getSelectedComponent()).setDataOwner(dato);
 }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton21ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton21ActionPerformed

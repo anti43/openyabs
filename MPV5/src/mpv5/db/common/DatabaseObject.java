@@ -122,6 +122,7 @@ public abstract class DatabaseObject {
                 if (ids <= 0) {
                     Log.Debug(this, "Inserting new dataset:");
                     ids = QueryHandler.instanceOf().clone(context).insert(collect(), this.__getCName() + Messages.ROW_INSERTED);
+                    Log.Debug(this, "The inserted row has id: " + ids);
                 } else {
                     Log.Debug(this, "Updating dataset: " + ids + " within context '" + context + "'");
                     QueryHandler.instanceOf().clone(context).update(collect(), new String[]{"ids", String.valueOf(ids), ""}, this.__getCName() + Messages.ROW_UPDATED);

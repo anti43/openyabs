@@ -27,6 +27,12 @@ public class ReturnValue {
         this.data = data;
     }
 
+    public ReturnValue(Integer id) {
+        this.id = id;
+        this.columnnames = new String[0];
+        this.data = new Object[0][0];
+    }
+
     /**
      * @return the id
      */
