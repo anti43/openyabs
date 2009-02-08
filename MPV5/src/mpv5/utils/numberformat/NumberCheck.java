@@ -19,7 +19,14 @@ package mpv5.utils.numberformat;
 import java.text.NumberFormat;
 
 /**
- *
+ * DecimalFormat format =
+                    (DecimalFormat) NumberFormat.getInstance(Locale.GERMANY);
+            format.applyPattern("###0,00");
+            try {
+                return new Float(format.parse(number.toString()).floatValue());
+            } catch (ParseException ex) {
+                return null;
+            }
  * @author anti
  */
 public class NumberCheck {
