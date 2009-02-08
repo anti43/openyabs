@@ -63,7 +63,6 @@ public class Context {
             IDENTITY_CONTACTS + "." + "ISACTIVE," + IDENTITY_CONTACTS + "." + "ISCUSTOMER," + IDENTITY_CONTACTS + "." + "ISMANUFACTURER," +
             IDENTITY_CONTACTS + "." + "ISSUPPLIER," + IDENTITY_CONTACTS + "." + "ISCOMPANY," + IDENTITY_CONTACTS + "." + "ISMALE," +
             IDENTITY_CONTACTS + "." + "ISENABLED," + IDENTITY_CONTACTS + "." + "ADDEDBY";
-
     public static String DETAILS_USERS = IDENTITY_USERS + "." + "IDS," + IDENTITY_USERS + "." + "CNAME" +
             IDENTITY_USERS + "." + "password," +
             IDENTITY_USERS + "." + "laf," +
@@ -74,7 +73,6 @@ public class Context {
             IDENTITY_USERS + "." + "isenabled," +
             IDENTITY_USERS + "." + "lastlogdate";
 
-   
     //**************************************************************************
     public static ArrayList<Context> getSecuredContexts() {
         ArrayList<Context> list = new ArrayList<Context>();
@@ -114,7 +112,6 @@ public class Context {
     private DatabaseObject parent;
 
     private Context() {
-
     }
 
     public void setContactConditions(boolean customer, boolean supplier, boolean manufacturer, boolean company) {
@@ -255,7 +252,7 @@ public class Context {
     }
 
     /**
-     * Add a reference to this context
+     * Add a self-table reference to this context
      * @param referencetable
      * @param referencekey
      * @param referenceidkey
@@ -263,6 +260,18 @@ public class Context {
     public void addReference(String referencetable, String referencekey, String referenceidkey) {
         String alias = referencetable;
         references.add(new String[]{referencetable, referencekey, referenceidkey, alias});
+    }
+
+    /**
+     * Add a foreign table reference to this context
+     * @param referencetable
+     * @param referencekey
+     * @param referenceidkey
+     * @param calledtable
+     */
+    public void addReference(String referencetable, String referencekey, String referenceidkey, String calledtable) {
+        String alias = referencetable;
+        references.add(new String[]{referencetable, referencekey, referenceidkey, alias, calledtable});
     }
 
     /**
@@ -316,7 +325,11 @@ public class Context {
         String cond = "";
         if (references.size() > 0) {
             for (int i = 0; i < references.size(); i++) {
-                cond += " LEFT OUTER JOIN " + references.get(i)[0] + " AS " + references.get(i)[3] + i + " ON " + references.get(i)[3] + i + "." + references.get(i)[1] + " = " + references.get(i)[3] + "." + references.get(i)[2];
+                if (references.get(i).length == 4) {
+                    cond += " LEFT OUTER JOIN " + references.get(i)[0] + " AS " + references.get(i)[3] + i + " ON " + references.get(i)[3] + i + "." + references.get(i)[1] + " = " + references.get(i)[3] + "." + references.get(i)[2];
+                } else if (references.get(i).length == 5) {
+                    cond += " LEFT OUTER JOIN " + references.get(i)[0] + " AS " + references.get(i)[3] + i + " ON " + references.get(i)[3] + i + "." + references.get(i)[1] + " = " + references.get(i)[4] + "." + references.get(i)[2];
+                }
             }
         }
         return cond;
@@ -442,7 +455,6 @@ public class Context {
         return c;
     }
 
-
     public static Context getLanguage() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
@@ -450,14 +462,12 @@ public class Context {
         return c;
     }
 
-     public static Context getFiles() {
+    public static Context getFiles() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(SMALLIDENTITY_FILES);
         return c;
     }
-
-
 
     public void setSearchFields(String fields) {
         defResultFields = fields;
