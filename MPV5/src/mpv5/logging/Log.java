@@ -28,7 +28,7 @@ public class Log {
     public static final int LOGLEVEL_NONE = 0;
     public static final int LOGLEVEL_HIGH = 1;
     public static final int LOGLEVEL_DEBUG = 2;
-    private static int loglevel = 0;
+    private static int loglevel = 2;
     private static LogConsole logger = new LogConsole();
 
     public static void Debug(Object source, Object message, boolean alwaysToKonsole) {
