@@ -39,8 +39,9 @@ public class Messages {
     public static String ACTION_VIEW = "View";
     public static String SECURITYMANAGER_DENIED = "The Security Manager has denied your request.\nAction ";
     public static String CONTEXT = ", in context: ";
-    public static String ROW_INSERTED = " successfull created";
-    public static String ROW_UPDATED = " successfull saved";
+    public static String ROW_INSERTED = " successful created";
+    public static String ROW_UPDATED = " successful saved";
+    public static String ROW_DELETED = " successful removed from database";
     public static String CNAME_CANNOT_BE_NULL = "You must set a NAME for this item.";
     public static String FILE_SAVED = "File saved: ";
     public static String ERROR_OCCURED = "An error occurred";
@@ -68,5 +69,6 @@ public class Messages {
     public static String REALLY_CHANGE = "Do you really want to alter the selected dataset? This will affect all users!";
     public static String DONE = "Task finished successfully.";
     public static String PROCESSING = "Processing: ";
+   
 
 }

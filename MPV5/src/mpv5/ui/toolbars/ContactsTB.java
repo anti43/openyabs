@@ -31,6 +31,7 @@ import mpv5.ui.panels.DataPanel;
  * @author anti43
  */
 public class ContactsTB extends javax.swing.JPanel {
+    private static final long serialVersionUID = -8215471082724735228L;
 
     /** Creates new form ContactsTB */
     public ContactsTB() {
@@ -107,6 +108,11 @@ public class ContactsTB extends javax.swing.JPanel {
         jButton26.setFocusable(false);
         jButton26.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton26.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton26.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton26ActionPerformed(evt);
+            }
+        });
         commonActionsToolbar.add(jButton26);
         commonActionsToolbar.add(jSeparator3);
 
@@ -163,7 +169,13 @@ public class ContactsTB extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton22ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton22ActionPerformed
-        // TODO add your handling code here:
+       DatabaseObject dato = ((DataPanel) MPV5View.tabPane.getSelectedComponent()).getDataOwner();
+
+        dato.getPanelData(((DataPanel)  MPV5View.tabPane.getSelectedComponent()));
+        dato.reset();
+        ((DataPanel)  MPV5View.tabPane.getSelectedComponent()).refresh();
+        ((DataPanel)  MPV5View.tabPane.getSelectedComponent()).setDataOwner(dato);
+
 }//GEN-LAST:event_jButton22ActionPerformed
 
     private void jButton25ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton25ActionPerformed
@@ -186,7 +198,11 @@ public class ContactsTB extends javax.swing.JPanel {
 }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton21ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton21ActionPerformed
-        // TODO add your handling code here:
+         DatabaseObject dato = ((DataPanel) MPV5View.tabPane.getSelectedComponent()).getDataOwner();
+
+        dato.getPanelData(((DataPanel)  MPV5View.tabPane.getSelectedComponent()));
+        dato.lock();
+
 }//GEN-LAST:event_jButton21ActionPerformed
 
     private void jButton24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton24ActionPerformed
@@ -196,6 +212,17 @@ public class ContactsTB extends javax.swing.JPanel {
     private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton23ActionPerformed
         // TODO add your handling code here:
 }//GEN-LAST:event_jButton23ActionPerformed
+
+    private void jButton26ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton26ActionPerformed
+
+         DatabaseObject dato = ((DataPanel)  MPV5View.tabPane.getSelectedComponent()).getDataOwner();
+
+        dato.getPanelData(((DataPanel)  MPV5View.tabPane.getSelectedComponent()));
+        dato.delete();
+        ((DataPanel)  MPV5View.tabPane.getSelectedComponent()).refresh();
+        ((DataPanel)  MPV5View.tabPane.getSelectedComponent()).setDataOwner(dato);
+
+    }//GEN-LAST:event_jButton26ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

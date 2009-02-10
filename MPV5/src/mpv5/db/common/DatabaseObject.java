@@ -144,7 +144,16 @@ public abstract class DatabaseObject {
      * @return
      */
     public boolean reset() {
-        return false;
+        try {
+            if (ids > 0) {
+                Log.Debug(this, "Reloading dataset: " + ids);
+                fetchDataOf(ids);
+            }
+            return true;
+        } catch (NodataFoundException ex) {
+            Log.Debug(this, ex);
+            return false;
+        }
     }
 
     /**
@@ -153,7 +162,31 @@ public abstract class DatabaseObject {
      * @return
      */
     public boolean delete() {
-        return false;
+        if (ids > 0) {
+            Log.Debug(this, "Deleting dataset:");
+            QueryHandler.instanceOf().clone(context).delete(new String[][]{{"ids", ids.toString(), ""}}, this.__getCName() + Messages.ROW_DELETED);
+            Log.Debug(this, "The deleted row had id: " + ids);
+        }
+        setIDS(-1);
+        return true;
+    }
+
+    /**
+     * Locks the dataset represented by this do. The dataset can not be edited by someone else
+     * after locking it, until the locking user has logged-out.
+     * This does not prevent the data to be viewed by anyone.
+     * @return
+     */
+    public boolean lock() {
+//
+//        if (ids > 0) {
+//            Log.Debug(this, "Locking dataset:");
+//            QueryHandler.instanceOf().clone(context).delete(new String[][]{{"ids", ids.toString(), ""}}, this.__getCName() + Messages.ROW_DELETED);
+//            Log.Debug(this, "The locked row has id: " + ids);
+//        }
+xxx
+        return true;
+
     }
 
     /**
@@ -334,13 +367,13 @@ public abstract class DatabaseObject {
      * @throws NodataFoundException
      */
     public Integer getIdOf(String cname) throws NodataFoundException {
-            cname=cname.replaceAll("'", "`");
-            Object[] data = QueryHandler.instanceOf().clone(context).selectLast("ids", new String[]{"cname", cname, "'"});
-            if (data !=null && data.length > 0) {
-                return Integer.valueOf(String.valueOf(data[0]));
-            } else {
-                return 0;
-            }
+        cname = cname.replaceAll("'", "`");
+        Object[] data = QueryHandler.instanceOf().clone(context).selectLast("ids", new String[]{"cname", cname, "'"});
+        if (data != null && data.length > 0) {
+            return Integer.valueOf(String.valueOf(data[0]));
+        } else {
+            return 0;
+        }
     }
 
     /**
@@ -350,7 +383,7 @@ public abstract class DatabaseObject {
      * @throws NodataFoundException
      */
     public boolean fetchDataOf(String cname) throws NodataFoundException {
-        cname=cname.replaceAll("'", "`");
+        cname = cname.replaceAll("'", "`");
         Integer id = this.getIdOf(cname);
         ReturnValue data = QueryHandler.instanceOf().clone(context).select(id);
         if (data.getData() != null && data.getData().length > 0) {

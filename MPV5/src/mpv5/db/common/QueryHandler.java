@@ -259,6 +259,7 @@ public class QueryHandler implements Cloneable {
         comp = main;
     }
 
+
     private void stop() {
         comp.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
     }
@@ -496,12 +497,12 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
-     * 
+     * Deletes the given data permanently from the database
      * @param where : {value, comparison, "'"}
-     * @throws Exception 
+     *                eg new String[][]{{"ids", "8" , ""},{"ids", "9",""}}
+     * @param jobmessage
      */
-    public void delete(Object[][] where) throws Exception {
-
+    public void delete(String[][] where, String jobmessage) {
         start();
         String str = "";
         String query = null;
@@ -511,8 +512,17 @@ public class QueryHandler implements Cloneable {
                 str = str + table + "." + where[i][0] + " = " + where[i][2] + where[i][1] + where[i][2];
             }
             query = "DELETE FROM " + table + " WHERE " + str;
-            freeQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null);
+            freeQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, jobmessage);
         }
+    }
+
+    /**
+     * Convenience method for delete(where, null);
+     * @param where : {value, comparison, "'"}
+     * @throws Exception 
+     */
+    public void delete(String[][] where) throws Exception {
+        delete(where, null);
     }
 
     /**
