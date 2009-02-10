@@ -20,6 +20,7 @@ public class Context {
     public static String IDENTITY_USERS = "users";
     public static String SMALLIDENTITY_LANGUAGES = "languages";
     public static String SMALLIDENTITY_FILES = "files";
+    public static String SMALLIDENTITY_LOCK = "tablelock";
 
     //********** identity classes **********************************************
     private static Class IDENTITY_CONTACTS_CLASS = Contact.class;
@@ -72,6 +73,7 @@ public class Context {
             IDENTITY_USERS + "." + "highestright," +
             IDENTITY_USERS + "." + "isenabled," +
             IDENTITY_USERS + "." + "lastlogdate";
+
 
     //**************************************************************************
     public static ArrayList<Context> getSecuredContexts() {
@@ -466,6 +468,13 @@ public class Context {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(SMALLIDENTITY_FILES);
+        return c;
+    }
+
+     public static Context getLock() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(SMALLIDENTITY_LOCK);
         return c;
     }
 

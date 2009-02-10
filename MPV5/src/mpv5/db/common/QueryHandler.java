@@ -26,6 +26,7 @@ import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPV5View;
 import mpv5.ui.dialogs.Popup;
+import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.arrays.ArrayUtils;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.date.vTimeframe;
@@ -259,6 +260,15 @@ public class QueryHandler implements Cloneable {
         comp = main;
     }
 
+    /**
+     * This will flush the table of the current context, be careful!
+     * This should never be triggered by a user, the user right will not be checked!
+     * @param dbIdentity
+     */
+    public void truncate(String dbIdentity) {
+        freeQuery(table, MPSecurityManager.SYSTEM_RIGHT, "Truncating table: " + table);
+    }
+
 
     private void stop() {
         comp.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -314,7 +324,7 @@ public class QueryHandler implements Cloneable {
 
         query = "INSERT INTO " + table + " (" + what[0] + " ) VALUES (" + what[1] + ") ";
 
-        return freeUpdateQuery(query, mpv5.usermanagement.MPSecurityManager.CREATE, jobmessage).getId();
+        return freeUpdateQuery(query, mpv5.usermanagement.MPSecurityManager.CREATE_OR_DELETE, jobmessage).getId();
     }
 
     /**

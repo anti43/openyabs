@@ -69,6 +69,7 @@ public class Messages {
     public static String REALLY_CHANGE = "Do you really want to alter the selected dataset? This will affect all users!";
     public static String DONE = "Task finished successfully.";
     public static String PROCESSING = "Processing: ";
+    public static String LOCKED = " is now locked";
    
 
 }

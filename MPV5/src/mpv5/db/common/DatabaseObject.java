@@ -184,7 +184,8 @@ public abstract class DatabaseObject {
 //            QueryHandler.instanceOf().clone(context).delete(new String[][]{{"ids", ids.toString(), ""}}, this.__getCName() + Messages.ROW_DELETED);
 //            Log.Debug(this, "The locked row has id: " + ids);
 //        }
-xxx
+//  "cname VARCHAR(250), rowID BIGINT NOT NULL, userID
+
         return true;
 
     }

@@ -33,16 +33,18 @@ import mpv5.utils.text.MD5HashGenerator;
  */
 public class MPSecurityManager {
 
+    public static int SYSTEM_RIGHT = -1;
     public static final int RIGHT_TO_VIEW = 3;
     public static final int RIGHT_TO_EXPORT = 2;
     public static final int RIGHT_TO_EDIT = 1;
-    public static final int RIGHT_TO_CREATE = 0;
+    public static final int RIGHT_TO_CREATE_OR_DELETE = 0;
     public static final int VIEW = 3;
     public static final int EXPORT = 2;
     public static final int EDIT = 1;
-    public static final int CREATE = 0;
+    public static final int CREATE_OR_DELETE = 0;
     public static ArrayList<Context> securedContexts = Context.getSecuredContexts();
     private static String usern;
+   
 
     /**
      * Checks whether the currently logged in user has to right to do this
@@ -94,7 +96,7 @@ public class MPSecurityManager {
 
         switch (action) {
 
-            case CREATE:
+            case CREATE_OR_DELETE:
                 return Messages.ACTION_CREATE;
 
             case EDIT:

@@ -63,7 +63,6 @@ public class DatabaseInstallation {
 
         "CREATE TABLE tablelock (ID BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
         "cname VARCHAR(250), rowID BIGINT NOT NULL, userID BIGINT REFERENCES users (ids)  ON DELETE CASCADE," +
-        "deleted INTEGER DEFAULT 0, " +
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
         "PRIMARY KEY  (id))",
 
