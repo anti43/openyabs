@@ -34,6 +34,7 @@ public class LocalSettings {
     private static PropertyStore predefinedSettings = new PropertyStore(new String[][]{ //        {LAF,UIManager.getSystemLookAndFeelClassName()}
                 {"defaultfont", "Tahoma"}
             });
+    public static final String DEFAULT_FONT = "defaultfont";
 
     /**
      * Applies the environmental settings

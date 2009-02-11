@@ -70,6 +70,7 @@ public class Messages {
     public static String DONE = "Task finished successfully.";
     public static String PROCESSING = "Processing: ";
     public static String LOCKED = " is now locked";
+    public static String VALUE_NOT_VALID = "You have entered an invalid value: ";
    
 
 }
