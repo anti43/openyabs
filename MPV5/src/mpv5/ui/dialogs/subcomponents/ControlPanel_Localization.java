@@ -267,8 +267,6 @@ public class ControlPanel_Localization extends javax.swing.JPanel implements Con
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-
-
         if (labeledTextChooser1.hasText() &&
                 labeledTextField1.hasText()) {
             LanguageManager.importLanguage( labeledTextField1.get_Text(), new File(labeledTextChooser1.get_Text()));
@@ -278,7 +276,6 @@ public class ControlPanel_Localization extends javax.swing.JPanel implements Con
 
     public void setValues(PropertyStore values) {
         oldvalues = values;
-
     }
 
     public String getUname() {

@@ -556,7 +556,7 @@ public class MPV5View extends FrameView {
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void jButton25ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton25ActionPerformed
-        MPCalculator.instanceOf().setVisible(true);
+        MPCalculator2.instanceOf();
     }//GEN-LAST:event_jButton25ActionPerformed
 
     private void jButton26ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton26ActionPerformed

@@ -18,6 +18,8 @@ package mpv5.usermanagement;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.UIManager;
 import mpv5.db.common.Context;
 import mpv5.db.common.NodataFoundException;
@@ -25,6 +27,7 @@ import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPV5View;
+import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.text.MD5HashGenerator;
 
 /**
@@ -44,7 +47,12 @@ public class MPSecurityManager {
     public static final int CREATE_OR_DELETE = 0;
     public static ArrayList<Context> securedContexts = Context.getSecuredContexts();
     private static String usern;
-   
+    private static Object[][] availableRights = new Object[][]{
+        {"Administrator", RIGHT_TO_CREATE_OR_DELETE},
+        {"Editor", RIGHT_TO_EDIT},
+        {"Viewer", RIGHT_TO_VIEW},
+        {"Export", RIGHT_TO_EXPORT}
+    };
 
     /**
      * Checks whether the currently logged in user has to right to do this
@@ -74,7 +82,7 @@ public class MPSecurityManager {
         try {
             if (usern1.fetchDataOf(username)) {
                 try {
-                    if (MD5HashGenerator.getInstance().hashData(password.getBytes()).equalsIgnoreCase(usern1.__getPassword())) { 
+                    if (MD5HashGenerator.getInstance().hashData(password.getBytes()).equalsIgnoreCase(usern1.__getPassword())) {
                         return usern1;
                     } else {
                         return null;
@@ -110,5 +118,12 @@ public class MPSecurityManager {
         }
 
         return null;
+    }
+
+    public static ComboBoxModel getRolesAsComboBoxModel() {
+        Object[][] data = availableRights;
+        MPComboBoxModelItem[] t = null;
+        t = MPComboBoxModelItem.toItems(data);
+        return new DefaultComboBoxModel(t);
     }
 }

@@ -44,10 +44,19 @@ public class MD5HashGenerator {
 
         if (md5 == null) {
             md5 = new MD5HashGenerator();
-
         }
 
         return (md5);
+    }
+
+    public String hashData(char[] password) {
+        byte[] byteArray = new byte[password.length];
+
+        for (int i = 0; i < password.length; i++) {
+            byteArray[i] = (byte) password[i];
+        }
+
+        return hashData(byteArray);
     }
 
     public String hashData(byte[] dataToHash) {

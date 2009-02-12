@@ -4,6 +4,7 @@ import java.awt.Font;
 import mpv5.data.PropertyStore;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
+import mpv5.logging.Log;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.Popup;
 import mpv5.utils.text.TypeConversion;
@@ -15,15 +16,28 @@ import mpv5.utils.ui.PanelUtils;
  */
 public class ControlPanel_Fonts extends javax.swing.JPanel implements ControlApplet {
 
+    private static final long serialVersionUID = -8347532498124147821L;
     /**
      * This unique name identifies this control applet
      */
-    public final String UNAME = "internet";
+    public final String UNAME = "fonts";
     private PropertyStore oldvalues;
 
     public ControlPanel_Fonts() {
         initComponents();
-        setVisible(true);
+
+        font.setText(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT));
+        jFontChooser1.setSelectedFont(Font.decode(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT)));
+
+        validate();
+    }
+
+    private String getFontString(Font font) {
+        return font.getFontName() + " " + font.getSize();
+    }
+
+    private String getFontString(String string) {
+        return Font.decode(string).getFontName() + " " + Font.decode(string).getSize();
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -35,7 +49,6 @@ public class ControlPanel_Fonts extends javax.swing.JPanel implements ControlApp
         jLabel2 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
         jFontChooser1 = new com.l2fprod.common.swing.JFontChooser();
 
         setBackground(new java.awt.Color(255, 255, 255));
@@ -73,14 +86,7 @@ public class ControlPanel_Fonts extends javax.swing.JPanel implements ControlApp
             }
         });
 
-        jButton3.setText(bundle.getString("ControlPanel_Fonts.jButton3.text")); // NOI18N
-        jButton3.setName("jButton3"); // NOI18N
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
-
+        jFontChooser1.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createEtchedBorder(), javax.swing.BorderFactory.createEmptyBorder(2, 2, 2, 2)));
         jFontChooser1.setName("jFontChooser1"); // NOI18N
         jFontChooser1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -99,12 +105,10 @@ public class ControlPanel_Fonts extends javax.swing.JPanel implements ControlApp
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addGap(18, 18, 18)
-                        .addComponent(font, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(114, Short.MAX_VALUE))
+                        .addComponent(font, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(62, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(174, Short.MAX_VALUE)
-                .addComponent(jButton3)
-                .addGap(18, 18, 18)
+                .addContainerGap(293, Short.MAX_VALUE)
                 .addComponent(jButton2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1)
@@ -112,7 +116,7 @@ public class ControlPanel_Fonts extends javax.swing.JPanel implements ControlApp
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jFontChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(50, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -125,11 +129,10 @@ public class ControlPanel_Fonts extends javax.swing.JPanel implements ControlApp
                     .addComponent(font, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jFontChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
-                    .addComponent(jButton2)
-                    .addComponent(jButton3))
+                    .addComponent(jButton2))
                 .addContainerGap())
         );
 
@@ -137,7 +140,12 @@ public class ControlPanel_Fonts extends javax.swing.JPanel implements ControlApp
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        setSettings();
+
+        if (jFontChooser1.getSelectedFont() != null) {
+            font.setText(getFontString(jFontChooser1.getSelectedFont()));
+            setSettings();
+        }
+
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -145,12 +153,8 @@ public class ControlPanel_Fonts extends javax.swing.JPanel implements ControlApp
         LocalSettings.save();
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        reset();
-    }//GEN-LAST:event_jButton3ActionPerformed
-
     private void jFontChooser1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jFontChooser1MouseClicked
-        font.setText(jFontChooser1.getSelectedFont().toString());xxx
+        font.setText(getFontString(jFontChooser1.getSelectedFont()));
     }//GEN-LAST:event_jFontChooser1MouseClicked
 
     public void setValues(PropertyStore values) {
@@ -169,7 +173,6 @@ public class ControlPanel_Fonts extends javax.swing.JPanel implements ControlApp
     private javax.swing.JTextField font;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private com.l2fprod.common.swing.JFontChooser jFontChooser1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -177,10 +180,19 @@ public class ControlPanel_Fonts extends javax.swing.JPanel implements ControlApp
     // End of variables declaration//GEN-END:variables
 
     private void setSettings() {
-        if (font.getText() != null && font.getText().length() > 0 && Font.getFont(font.getText()) != null) {
-            LocalSettings.setProperty(LocalSettings.DEFAULT_FONT, font.getText());
+
+        if (font.getText().equalsIgnoreCase(getFontString(Font.decode(null)))) {
+            LocalSettings.setProperty(LocalSettings.DEFAULT_FONT, getFontString(jFontChooser1.getSelectedFont()));
+
+        } else if (font.getText() != null && font.getText().length() > 0 &&
+                !(getFontString(font.getText())).equalsIgnoreCase(getFontString(Font.decode(null)))) {
+            LocalSettings.setProperty(LocalSettings.DEFAULT_FONT, getFontString(font.getText()));
+
         } else {
             Popup.notice(Messages.VALUE_NOT_VALID + font.getText());
         }
+
+        jFontChooser1.setSelectedFont(Font.decode(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT)));
+        font.setText(getFontString(jFontChooser1.getSelectedFont()));
     }
 }

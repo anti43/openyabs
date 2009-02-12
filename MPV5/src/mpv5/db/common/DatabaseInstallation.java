@@ -37,6 +37,7 @@ public class DatabaseInstallation {
 
         "CREATE TABLE users (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),"+
         "cname VARCHAR(250) UNIQUE NOT NULL, " +
+        "fullname VARCHAR(250) UNIQUE NOT NULL, " +
         "password VARCHAR(250) NOT NULL,"+
         "laf VARCHAR(50) default NULL, "+
         "locale VARCHAR(50) default NULL, "+

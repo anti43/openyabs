@@ -34,4 +34,10 @@ public interface DataPanel {
      * Reload the view from database
      */
     public void refresh();
+
+
+    /**
+     * Populate the data to the view
+     */
+    public void exposeData() ;
 }
