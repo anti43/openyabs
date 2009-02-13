@@ -26,6 +26,10 @@ public class Context {
     private static Class IDENTITY_CONTACTS_CLASS = Contact.class;
     private static Class IDENTITY_USERS_CLASS = User.class;
 
+
+    //********** unique constraints *******************************************
+     public static String UNIQUECOLUMNS_USER = "cname";
+
     //********** conditions ****************************************************
     public static final String CONDITION_DEFAULT = "%%tablename%%" + "." + "IDS";
     public static final String CONDITION_CONTACTS_COMPANY = IDENTITY_CONTACTS + "." + "iscompany";
@@ -64,21 +68,27 @@ public class Context {
             IDENTITY_CONTACTS + "." + "ISACTIVE," + IDENTITY_CONTACTS + "." + "ISCUSTOMER," + IDENTITY_CONTACTS + "." + "ISMANUFACTURER," +
             IDENTITY_CONTACTS + "." + "ISSUPPLIER," + IDENTITY_CONTACTS + "." + "ISCOMPANY," + IDENTITY_CONTACTS + "." + "ISMALE," +
             IDENTITY_CONTACTS + "." + "ISENABLED," + IDENTITY_CONTACTS + "." + "ADDEDBY";
-    public static String DETAILS_USERS = IDENTITY_USERS + "." + "IDS," + IDENTITY_USERS + "." + "CNAME" +
-            IDENTITY_USERS + "." + "password," +
-            IDENTITY_USERS + "." + "laf," +
-            IDENTITY_USERS + "." + "locale," +
+
+
+    public static String DETAILS_USERS = IDENTITY_USERS + "." + "IDS," + IDENTITY_USERS + "." + "CNAME," +
+            IDENTITY_USERS + "." + "fullname," +
             IDENTITY_USERS + "." + "mail," +
-            IDENTITY_USERS + "." + "language," +
-            IDENTITY_USERS + "." + "highestright," +
             IDENTITY_USERS + "." + "isenabled," +
-            IDENTITY_USERS + "." + "lastlogdate";
+            IDENTITY_USERS + "." + "isloggedin," +
+            IDENTITY_USERS + "." + "locale," +
+            IDENTITY_USERS + "." + "language," +
+            IDENTITY_USERS + "." + "laf," +
+            IDENTITY_USERS + "." + "inthighestright," +
+            IDENTITY_USERS + "." + "datelastlog";
 
-
+///"Internal ID", "ID", "User Name", "Fullname", "L&F", "Locale", "Mail", "Language", "inthighestright", "Enabled", "Logged in", "Last Login Date"};
+//
     //**************************************************************************
+
     public static ArrayList<Context> getSecuredContexts() {
         ArrayList<Context> list = new ArrayList<Context>();
         list.add(getCompany());
+//        list.add(getUser()); Needs to be non-secure, to update user details on close
         list.add(getCustomer());
         list.add(getManufacturer());
         list.add(getSupplier());
@@ -92,6 +102,7 @@ public class Context {
     private ArrayList<String[]> references = new ArrayList<String[]>();
     private boolean exclusiveConditionsAvailable = false;
     private String exclusiveCondition;
+    private String uniqueColumns;
 
     public Context(DatabaseObject parentobject) {
         this.parent = parentobject;
@@ -114,6 +125,14 @@ public class Context {
     private DatabaseObject parent;
 
     private Context() {
+    }
+
+    /**
+     *
+     * @return The unique constraints
+     */
+    public String getUniqueColumns() {
+        return uniqueColumns;
     }
 
     public void setContactConditions(boolean customer, boolean supplier, boolean manufacturer, boolean company) {
@@ -454,6 +473,7 @@ public class Context {
         c.setSearchFields(DEFAULT_USER_SEARCH);
         c.setSearchHeaders(Headers.USER_DEFAULT);
         c.setIdentityClass(IDENTITY_USERS_CLASS);
+        c.uniqueColumns = UNIQUECOLUMNS_USER;
         return c;
     }
 
@@ -471,7 +491,7 @@ public class Context {
         return c;
     }
 
-     public static Context getLock() {
+    public static Context getLock() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(SMALLIDENTITY_LOCK);

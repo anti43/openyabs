@@ -1,29 +1,30 @@
 package mpv5.ui.dialogs.subcomponents;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComponent;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
 import mpv5.data.PropertyStore;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
-import mpv5.db.common.DatabaseSearch;
 import mpv5.db.common.NodataFoundException;
-import mpv5.globals.LocalSettings;
+import mpv5.db.common.QueryHandler;
+import mpv5.globals.Headers;
 import mpv5.logging.Log;
 import mpv5.resources.languages.LanguageManager;
 import mpv5.ui.dialogs.ControlApplet;
+import mpv5.ui.frames.MPV5View;
 import mpv5.ui.panels.DataPanel;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.usermanagement.User;
-import mpv5.utils.arrays.ArrayUtils;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.tables.Selection;
+import mpv5.utils.tables.TableFormat;
 import mpv5.utils.text.MD5HashGenerator;
-import mpv5.utils.text.TypeConversion;
-import mpv5.utils.ui.PanelUtils;
 
 /**
  *
@@ -38,11 +39,14 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
     public final String UNAME = "users";
     private PropertyStore oldvalues;
     private User dataOwner;
+    private static ControlPanel_Users ident;
 
     public ControlPanel_Users() {
-        initComponents();
-        refresh();
-        setVisible(true);
+        if (MPSecurityManager.checkAdminAccess()) {
+            initComponents();
+            refresh();
+            setVisible(true);
+        }
     }
 
 
@@ -60,6 +64,8 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         laf = new mpv5.ui.beans.LabeledTextField();
         language = new javax.swing.JComboBox();
         locale = new javax.swing.JComboBox();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         fullname = new mpv5.ui.beans.LabeledTextField();
         mail = new mpv5.ui.beans.LabeledTextField();
@@ -110,6 +116,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Users.jScrollPane1.border.title"))); // NOI18N
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
+        jTable1.setAutoCreateRowSorter(true);
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {},
@@ -121,6 +128,9 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
 
             }
         ));
+        jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
+        jTable1.setDragEnabled(true);
+        jTable1.setFillsViewportHeight(true);
         jTable1.setName("jTable1"); // NOI18N
         jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -143,6 +153,14 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
 
         locale.setName("locale"); // NOI18N
 
+        jLabel4.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel4.setText(bundle.getString("ControlPanel_Users.jLabel4.text")); // NOI18N
+        jLabel4.setName("jLabel4"); // NOI18N
+
+        jLabel5.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel5.setText(bundle.getString("ControlPanel_Users.jLabel5.text")); // NOI18N
+        jLabel5.setName("jLabel5"); // NOI18N
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -150,9 +168,15 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(locale, 0, 297, Short.MAX_VALUE)
-                    .addComponent(language, 0, 297, Short.MAX_VALUE)
-                    .addComponent(laf, javax.swing.GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE))
+                    .addComponent(laf, javax.swing.GroupLayout.DEFAULT_SIZE, 344, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel5))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(locale, 0, 277, Short.MAX_VALUE)
+                            .addComponent(language, javax.swing.GroupLayout.Alignment.LEADING, 0, 277, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -161,10 +185,14 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
                 .addContainerGap()
                 .addComponent(laf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(language, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(language, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(locale, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(14, Short.MAX_VALUE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(locale, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
 
         jPanel4.setBackground(new java.awt.Color(255, 255, 255));
@@ -183,6 +211,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         password.setText(bundle.getString("ControlPanel_Users.password.text")); // NOI18N
         password.setName("password"); // NOI18N
 
+        jLabel2.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
         jLabel2.setText(bundle.getString("ControlPanel_Users.jLabel2.text")); // NOI18N
         jLabel2.setName("jLabel2"); // NOI18N
 
@@ -192,6 +221,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
 
         inthighestright.setName("inthighestright"); // NOI18N
 
+        jLabel3.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
         jLabel3.setText(bundle.getString("ControlPanel_Users.jLabel3.text")); // NOI18N
         jLabel3.setName("jLabel3"); // NOI18N
 
@@ -237,7 +267,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
                                 .addComponent(password, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(2, 2, 2))))
                     .addComponent(enabled))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(inthighestright, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3))
@@ -271,29 +301,25 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(loggedin)
                     .addComponent(datelastlog, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(52, Short.MAX_VALUE))
+                .addContainerGap(99, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                        .addComponent(datelastlog, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(2, 2, 2)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(loggedin)
-                .addContainerGap(40, Short.MAX_VALUE))
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(datelastlog, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(loggedin))
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -302,8 +328,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(14, Short.MAX_VALUE))
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -311,29 +336,30 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 51, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 42, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jButton3)
                         .addGap(18, 18, 18)
                         .addComponent(jButton2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1))))
+                        .addComponent(jButton1)
+                        .addContainerGap())
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jButton1)
                             .addComponent(jButton2)
                             .addComponent(jButton3)))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 521, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 457, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -359,9 +385,11 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
             dataOwner = new User();
         }
         DatabaseObject dato = dataOwner;
-        dato.getPanelData(this);
-        dato.setIDS(-1);
-        dato.save();
+        if (QueryHandler.instanceOf().clone(Context.getUser()).checkUniqueness(Context.getUser().getUniqueColumns(), new JTextField[]{cname.getTextField()})) {
+            dato.getPanelData(this);
+            dato.setIDS(-1);
+            dato.save();
+        }
 }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
@@ -403,6 +431,8 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -424,10 +454,11 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
     public String mail_;
     public String cname_;
     public String password_;
-    public boolean enabled_;
-    public boolean loggedin_;
+    public boolean isenabled_;
+    public boolean isloggedin_;
     public int inthighestright_ = 9;
     public Date datelastlog_ = new Date();
+    public int ids_;
 
     public void collectData() {
 
@@ -445,12 +476,14 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         mail_ = mail.get_Text();
         cname_ = cname.get_Text();
 
-        try {
-            password_ = MD5HashGenerator.getInstance().hashData(password.getPassword());
-        } catch (NoSuchAlgorithmException ex) {
-            Log.Debug(ex);
+        if (password.getPassword().length>0 && !Arrays.equals(password.getPassword(),new JPasswordField().getPassword())) {
+            try {
+                password_ = MD5HashGenerator.getInstance().hashData(password.getPassword());
+            } catch (NoSuchAlgorithmException ex) {
+                Log.Debug(ex);
+            }
         }
-        enabled_ = enabled.isSelected();
+        isenabled_ = enabled.isSelected();
 
         if (inthighestright.getSelectedItem() != null) {
             inthighestright_ = Integer.valueOf(((MPComboBoxModelItem) inthighestright.getSelectedItem()).getId());
@@ -460,14 +493,15 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
     public void exposeData() {
 
         laf.set_Text(laf_);
-        language.setSelectedItem(MPComboBoxModelItem.getItemID(language_, language.getModel()));
-        locale.setSelectedItem(MPComboBoxModelItem.getItemID(locale_, locale.getModel()));
+        language.setSelectedIndex(MPComboBoxModelItem.getItemID(language_, language.getModel()));
+        locale.setSelectedIndex(MPComboBoxModelItem.getItemID(locale_, locale.getModel()));
         fullname.set_Text(fullname_);
+//        password.setText(password_);
         mail.set_Text(mail_);
         cname.set_Text(cname_);
-        enabled.setSelected(enabled_);
-        inthighestright.setSelectedItem(MPComboBoxModelItem.getItemID(inthighestright_, inthighestright.getModel()));
-        loggedin.setSelected(loggedin_);
+        enabled.setSelected(isenabled_);
+        inthighestright.setSelectedIndex(MPComboBoxModelItem.getItemID(inthighestright_, inthighestright.getModel()));
+        loggedin.setSelected(isloggedin_);
         datelastlog.setText(DateConverter.getDefDateString(datelastlog_));
     }
 
@@ -482,19 +516,27 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
     }
 
     public void refresh() {
+    
         try {
-            language.setModel(new DefaultComboBoxModel(
-                    MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getLanguage()).getValuesFor(Context.getLanguage().getSubID(), null, null))));
-        } catch (Exception e) {
-            Log.Debug(this, e);
-        }
-
-        try {
-            locale.setModel(LanguageManager.getLanguagesAsComboBoxModel());
+            language.setModel(LanguageManager.getLanguagesAsComboBoxModel());
+            locale.setModel(LanguageManager.getLocalesAsComboBoxModel());
         } catch (Exception e) {
             Log.Debug(this, e);
         }
 
         inthighestright.setModel(MPSecurityManager.getRolesAsComboBoxModel());
+        jTable1.setModel(new DefaultTableModel(QueryHandler.instanceOf().clone(Context.getUser()).select(Context.DETAILS_USERS, null), Headers.USER_DETAILS));
+    
+       TableFormat.stripFirstColumn(jTable1);
+       TableFormat.format(jTable1, 1,100);
+       TableFormat.format(jTable1, 2,100);
+       TableFormat.format(jTable1, 3,100);
+    }
+
+     public ControlApplet instanceOf() {
+        if (ident == null) {
+            ident = new ControlPanel_Users();
+        }
+        return ident;
     }
 }

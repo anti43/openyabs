@@ -373,10 +373,13 @@ public class MPControlPanel extends javax.swing.JPanel {
     }
 
     private void openDetails(ControlApplet panel) {
-        MPV5View.setWaiting(true);
-        details.removeAll();
-        details.add((Component) panel, BorderLayout.CENTER);
-        details.validate();
-        MPV5View.setWaiting(false);
+        if (panel !=null) {
+            MPV5View.setWaiting(true);
+            details.removeAll();
+            details.add((Component) panel, BorderLayout.CENTER);
+            details.validate();
+            MPV5View.setWaiting(false);
+            MPV5View.identifier.validate();
+        }
     }
 }

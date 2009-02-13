@@ -99,7 +99,10 @@ public class Main extends SingleFrameApplication {
     @Override
     protected void shutdown() {
         LocalSettings.save();
-        MPV5View.getUser().save();
+        try {
+            MPV5View.getUser().save();
+        } catch (Exception e) {
+        }
         super.shutdown();
     }
 

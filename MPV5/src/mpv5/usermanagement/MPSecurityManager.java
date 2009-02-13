@@ -36,7 +36,7 @@ import mpv5.utils.text.MD5HashGenerator;
  */
 public class MPSecurityManager {
 
-    public static int SYSTEM_RIGHT = -1;
+    public static final int SYSTEM_RIGHT = -1;
     public static final int RIGHT_TO_VIEW = 3;
     public static final int RIGHT_TO_EXPORT = 2;
     public static final int RIGHT_TO_EDIT = 1;
@@ -48,10 +48,10 @@ public class MPSecurityManager {
     public static ArrayList<Context> securedContexts = Context.getSecuredContexts();
     private static String usern;
     private static Object[][] availableRights = new Object[][]{
-        {"Administrator", RIGHT_TO_CREATE_OR_DELETE},
-        {"Editor", RIGHT_TO_EDIT},
-        {"Viewer", RIGHT_TO_VIEW},
-        {"Export", RIGHT_TO_EXPORT}
+        {RIGHT_TO_CREATE_OR_DELETE,"Administrator"},
+        {RIGHT_TO_EDIT,"Editor"},
+        {RIGHT_TO_VIEW,"Viewer"},
+        {RIGHT_TO_EXPORT,"Export"}
     };
 
     /**
@@ -64,17 +64,23 @@ public class MPSecurityManager {
      */
     public static Boolean check(Context context, int action) {
         for (Context item : securedContexts) {
-            if (item.getDbIdentity().equals(context.getDbIdentity())) {
+            if (item.getDbIdentity().equals(context.getDbIdentity())) { 
                 if (MPV5View.getUser().__getINThighestright() <= action) {
                     return true;
                 } else {
                     return false;
                 }
-            } else {
-                return true;
-            }
+            } 
         }
         return true;
+    }
+
+    public static boolean checkAdminAccess() {
+       if (MPV5View.getUser().__getINThighestright() <= RIGHT_TO_CREATE_OR_DELETE) {
+                    return true;
+                } else {
+                    return false;
+                }
     }
 
     public static User checkAuth(String username, String password) {

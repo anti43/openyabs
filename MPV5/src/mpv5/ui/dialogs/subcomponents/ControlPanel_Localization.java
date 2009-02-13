@@ -22,6 +22,7 @@ public class ControlPanel_Localization extends javax.swing.JPanel implements Con
      */
     public final String UNAME = "locale";
     private PropertyStore oldvalues;
+    private static ControlPanel_Localization ident;
 
     public ControlPanel_Localization() {
         initComponents();
@@ -324,20 +325,17 @@ public class ControlPanel_Localization extends javax.swing.JPanel implements Con
     }
 
     private DefaultComboBoxModel getLocales() {
-        Locale[] o = Locale.getAvailableLocales();
-        MPComboBoxModelItem[] items = new MPComboBoxModelItem[o.length];
-        for (int i = 0; i < items.length; i++) {
-            String language = o[i].getLanguage();
-            String country = o[i].getCountry();
-            String locale_name = o[i].getDisplayName();
-            items[i] = new MPComboBoxModelItem(language + "_" + country,
-                    locale_name + "  [" + language + "_" + country + "]");
-//            items[i] = new MPComboBoxModelItem(o[i].toString(), o[i].getDisplayName());
-        }
-        return new DefaultComboBoxModel(ArrayUtils.sort(items));
+       return LanguageManager.getLocalesAsComboBoxModel();
     }
 
     private ComboBoxModel getLanguages() {
         return LanguageManager.getLanguagesAsComboBoxModel();
+    }
+
+     public ControlApplet instanceOf() {
+        if (ident == null) {
+            ident = new ControlPanel_Localization();
+        }
+        return ident;
     }
 }

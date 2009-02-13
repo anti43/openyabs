@@ -11,6 +11,7 @@
 package mpv5.ui.beans;
 
 import java.awt.Font;
+import javax.swing.JTextField;
 import mpv5.globals.LocalSettings;
 
 /**
@@ -26,6 +27,10 @@ public class LabeledTextField extends javax.swing.JPanel {
     public LabeledTextField() {
         initComponents();
         jLabel1.setFont(Font.decode(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT)));
+    }
+
+    public JTextField getTextField() {
+        return jTextField1;
     }
 
     /**

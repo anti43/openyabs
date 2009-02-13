@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.logging.Level;
@@ -140,6 +141,20 @@ public class LanguageManager {
         ldata = ArrayUtils.merge(defLanguage, data);
         t = MPComboBoxModelItem.toItems(ldata);
         return new DefaultComboBoxModel(t);
+    }
+
+    public static DefaultComboBoxModel getLocalesAsComboBoxModel() {
+        Locale[] o = Locale.getAvailableLocales();
+        MPComboBoxModelItem[] items = new MPComboBoxModelItem[o.length];
+        for (int i = 0; i < items.length; i++) {
+            String language = o[i].getLanguage();
+            String country = o[i].getCountry();
+            String locale_name = o[i].getDisplayName();
+            items[i] = new MPComboBoxModelItem(language + "_" + country,
+                    locale_name + "  [" + language + "_" + country + "]");
+//            items[i] = new MPComboBoxModelItem(o[i].toString(), o[i].getDisplayName());
+        }
+        return new DefaultComboBoxModel(ArrayUtils.sort(items));
     }
 
     /**

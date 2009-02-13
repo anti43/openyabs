@@ -41,6 +41,12 @@ public interface ControlApplet {
      */
     public void reset();
 
+    /**
+     * Control panel applets should be singletons
+     * @return
+     */
+    public ControlApplet instanceOf();
+
 //    /**
 //     * The local type for properties - gets stored in a local cockie
 //     */

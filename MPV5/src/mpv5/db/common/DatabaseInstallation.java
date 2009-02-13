@@ -37,7 +37,7 @@ public class DatabaseInstallation {
 
         "CREATE TABLE users (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),"+
         "cname VARCHAR(250) UNIQUE NOT NULL, " +
-        "fullname VARCHAR(250) UNIQUE NOT NULL, " +
+        "fullname VARCHAR(250) NOT NULL, " +
         "password VARCHAR(250) NOT NULL,"+
         "laf VARCHAR(50) default NULL, "+
         "locale VARCHAR(50) default NULL, "+
@@ -45,7 +45,7 @@ public class DatabaseInstallation {
         "language VARCHAR(50) default NULL, "+
         "inthighestright SMALLINT DEFAULT 3,"+
         "isenabled SMALLINT DEFAULT 1,"+
-        "isloggedin SMALLINT DEFAULT 1,"+
+        "isloggedin SMALLINT DEFAULT 0,"+
         "datelastlog DATE default NULL, "+
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,"+
         "PRIMARY KEY  (ids))",
@@ -67,7 +67,7 @@ public class DatabaseInstallation {
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
         "PRIMARY KEY  (id))",
 
-        "INSERT INTO users (password,cname,laf,locale,mail,language,inthighestright,datelastlog ) VALUES ('5f4dcc3b5aa765d61d8327deb882cf99','admin','de.muntjak.tinylookandfeel.TinyLookAndFeel','de_DE','','buildin_en',0,'2009-01-26 05:45:38')"
+        "INSERT INTO users (fullname,password,cname,laf,locale,mail,language,inthighestright,datelastlog,isenabled ) VALUES ('Administrator','5f4dcc3b5aa765d61d8327deb882cf99','admin','de.muntjak.tinylookandfeel.TinyLookAndFeel','de_DE','','buildin_en',0,'2009-01-26 05:45:38',1)"
     };
     
     private String[] MYSQL_STRUCTURE;

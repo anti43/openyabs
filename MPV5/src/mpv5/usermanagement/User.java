@@ -28,22 +28,30 @@ import mpv5.db.common.NodataFoundException;
 public class User extends DatabaseObject {
 
     private String password = "";
+    private String fullname = "";
     private String laf = "";
-    private String locale = "";
+    private String locale = "en_UK";
     private String mail = "";
-    private String language = "";
+    private String language = "buildin_en";
     private int inthighestright = 4;
     private boolean isenabled = true;
     private boolean isloggedin = true;
     private Date datelastlog = new Date();
+    public static User DEFAULT = new User("Default User", "nobody", -1);
 
     public User(int userid) throws NodataFoundException {
-         context.setDbIdentity(Context.IDENTITY_USERS);
-         this.fetchDataOf(userid);
+        context.setDbIdentity(Context.IDENTITY_USERS);
+        this.fetchDataOf(userid);
     }
 
     public User() {
-          context.setDbIdentity(Context.IDENTITY_USERS);
+        context.setDbIdentity(Context.IDENTITY_USERS);
+    }
+
+    private User(String fullname, String userid, int highright) {
+        this.fullname = fullname;
+        this.cname = userid;
+        this.inthighestright = highright;
     }
 
     public Integer getID() {
@@ -151,7 +159,7 @@ public class User extends DatabaseObject {
     /**
      * @return the isenabled
      */
-    public boolean isIsenabled() {
+    public boolean __getIsenabled() {
         return isenabled;
     }
 
@@ -184,7 +192,7 @@ public class User extends DatabaseObject {
     /**
      * @return the isloggedin
      */
-    public boolean isIsloggedin() {
+    public boolean __getIsloggedin() {
         return isloggedin;
     }
 
@@ -193,5 +201,19 @@ public class User extends DatabaseObject {
      */
     public void setIsloggedin(boolean isloggedin) {
         this.isloggedin = isloggedin;
+    }
+
+    /**
+     * @return the fullname
+     */
+    public String __getFullname() {
+        return fullname;
+    }
+
+    /**
+     * @param fullname the fullname to set
+     */
+    public void setFullname(String fullname) {
+        this.fullname = fullname;
     }
 }

@@ -37,7 +37,8 @@ public class Messages {
     public static String ACTION_EDIT = "Edit";
     public static String ACTION_EXPORT = "Export";
     public static String ACTION_VIEW = "View";
-    public static String SECURITYMANAGER_DENIED = "The Security Manager has denied your request.\nAction ";
+    public static String SECURITYMANAGER_DENIED = "The Security Manager has DENIED your request.\nAction ";
+     public static String SECURITYMANAGER_ALLOWED= "The Security Manager has ALLOWED your request.\nAction ";
     public static String CONTEXT = ", in context: ";
     public static String ROW_INSERTED = " successful created";
     public static String ROW_UPDATED = " successful saved";
@@ -71,6 +72,8 @@ public class Messages {
     public static String PROCESSING = "Processing: ";
     public static String LOCKED = " is now locked";
     public static String VALUE_NOT_VALID = "You have entered an invalid value: ";
+    public static String VALUE_ALREADY_EXISTS = "The value already exists in the database and must not be duplicated: ";
+
    
 
 }

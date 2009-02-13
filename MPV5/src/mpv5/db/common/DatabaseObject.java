@@ -54,6 +54,8 @@ public abstract class DatabaseObject {
      */
     public abstract String __getCName();
 
+
+
     /**
      * Set the mandatory name
      * @param name
@@ -139,6 +141,7 @@ public abstract class DatabaseObject {
         }
     }
 
+ 
     /**
      * Reset the data of this do (reload from database and discard changes)
      * @return

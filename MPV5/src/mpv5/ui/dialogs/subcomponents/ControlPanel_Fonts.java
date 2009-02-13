@@ -4,11 +4,8 @@ import java.awt.Font;
 import mpv5.data.PropertyStore;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
-import mpv5.logging.Log;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.Popup;
-import mpv5.utils.text.TypeConversion;
-import mpv5.utils.ui.PanelUtils;
 
 /**
  *
@@ -22,6 +19,7 @@ public class ControlPanel_Fonts extends javax.swing.JPanel implements ControlApp
      */
     public final String UNAME = "fonts";
     private PropertyStore oldvalues;
+    private static ControlPanel_Fonts ident;
 
     public ControlPanel_Fonts() {
         initComponents();
@@ -194,5 +192,12 @@ public class ControlPanel_Fonts extends javax.swing.JPanel implements ControlApp
 
         jFontChooser1.setSelectedFont(Font.decode(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT)));
         font.setText(getFontString(jFontChooser1.getSelectedFont()));
+    }
+
+    public ControlApplet instanceOf() {
+        if (ident == null) {
+            ident = new ControlPanel_Fonts();
+        }
+        return ident;
     }
 }

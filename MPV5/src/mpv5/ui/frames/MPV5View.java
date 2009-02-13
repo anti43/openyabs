@@ -79,7 +79,7 @@ public class MPV5View extends FrameView {
         if (currentUser == null) {
             Log.Debug(MPV5View.class, "There is no user logged in here, using default user.");
             try {
-                currentUser = new User(1);
+                currentUser = User.DEFAULT;
                 return currentUser;
             } catch (Exception ex) {
                 Log.Debug(MPV5View.class, "Default user is missing.");
@@ -96,6 +96,7 @@ public class MPV5View extends FrameView {
      */
     public static void setUser(User usern) {
         currentUser = usern;
+        identifier.setTitle(identifier.getTitle() + " (" + usern.getName() + ")");
         Main.setLaF(usern.__getLaf());
         Locale.setDefault(TypeConversion.stringToLocale(usern.__getLocale()));
     }

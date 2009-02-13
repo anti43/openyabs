@@ -12,12 +12,14 @@ import mpv5.utils.ui.PanelUtils;
  * @author anti43
  */
 public class ControlPanel_Internet extends javax.swing.JPanel implements ControlApplet {
+    private static final long serialVersionUID = 1L;
 
     /**
      * This unique name identifies this control applet
      */
     public final String UNAME = "internet";
     private PropertyStore oldvalues;
+    private static ControlPanel_Internet  ident;
 
     public ControlPanel_Internet() {
         initComponents();
@@ -273,5 +275,11 @@ public class ControlPanel_Internet extends javax.swing.JPanel implements Control
         }
 
         LocalSettings.apply();
+    }
+     public ControlApplet instanceOf() {
+        if (ident == null) {
+            ident = new ControlPanel_Internet();
+        }
+        return ident;
     }
 }

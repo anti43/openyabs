@@ -22,6 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPV5View;
@@ -32,6 +33,7 @@ import mpv5.utils.date.DateConverter;
 import mpv5.utils.date.vTimeframe;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.text.RandomText;
+import mpv5.utils.ui.TextFieldUtils;
 
 /**
  *
@@ -68,7 +70,26 @@ public class QueryHandler implements Cloneable {
         } catch (Exception ex) {
             Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
 
+    /**
+     * This is a convenience bridge between views and unique constraint checks.
+     * If the given objects is from type JTextField or LabeledTextField, the TextFields background will flash red<br/>
+     * if the uniqueness check fails, nothing will happen otherwise
+     * @param uniqueColumns to be separated with a comma
+     * @param object An array of textfields
+     * @return true if no uniqueness failure has been hidden
+     */
+    public boolean checkUniqueness(String uniqueColumns, JTextField[] object) {
+        boolean returnv = true;
+        for (int i = 0; i < object.length; i++) {
+            if (!checkUniqueness(uniqueColumns.split(",")[i], (object[i]).getText())) {
+                TextFieldUtils.blinkerRed(object[i]);
+                returnv = false;
+            }
+        }
+
+        return returnv;
     }
 
     /**
@@ -269,6 +290,35 @@ public class QueryHandler implements Cloneable {
         freeQuery(table, MPSecurityManager.SYSTEM_RIGHT, "Truncating table: " + table);
     }
 
+    /**
+     * Checks the uniqueness of the data
+     * @param values
+     * @param uniquecols
+     * @return
+     */
+    public boolean checkUniqueness(String[] values, int[] uniquecols) {
+        if (uniquecols != null) {
+            for (int i = 0; i < uniquecols.length; i++) {
+                int j = uniquecols[i];
+                Object[][] val = select(values[0].split(",")[j], new String[]{values[0].split(",")[j], values[1].split(",")[j], values[2]});
+                if (val != null && val.length > 0) {
+                    MPV5View.addMessage(Messages.VALUE_ALREADY_EXISTS + values[1].split(",")[j]);
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Checks the uniqueness of STRING data
+     * @param column
+     * @param value
+     * @return
+     */
+    public boolean checkUniqueness(String column, String value) {
+        return checkUniqueness(new String[]{column, value, "'"}, new int[]{0});
+    }
 
     private void stop() {
         comp.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -305,24 +355,15 @@ public class QueryHandler implements Cloneable {
         if (what[2] == null) {
             what[2] = "";
         }
-        String query;
+        String query = null;
         start();
+        query = "INSERT INTO " + table + " (" + what[0] + " ) VALUES (" + what[1] + ") ";
 
         if (uniquecols != null) {
-            for (int i = 0; i < uniquecols.length; i++) {
-                int j = uniquecols[i];
-                Object[][] val = select(what[0].split(",")[j], new String[]{what[0].split(",")[j], what[1].split(",")[j], what[2]});
-                if (val != null && val.length > 0) {
-                    Popup.error("Wert für `" + what[0].split(",")[j] + "´ existiert bereits: " + val[0][0] +
-                            ",\nund kann nicht mehrfach eingetragen werden.",
-                            "Fehler beim Überprüfen der Datenkonsistenz");
-
-                    return -1;
-                }
+            if (!checkUniqueness(what, uniquecols)) {
+                return 0;
             }
         }
-
-        query = "INSERT INTO " + table + " (" + what[0] + " ) VALUES (" + what[1] + ") ";
 
         return freeUpdateQuery(query, mpv5.usermanagement.MPSecurityManager.CREATE_OR_DELETE, jobmessage).getId();
     }
@@ -335,7 +376,7 @@ public class QueryHandler implements Cloneable {
      * @return id of inserted row
      */
     public int insert(String[] what, String jobmessage) {
-        return insert(what, null, jobmessage);
+        return insert(what, (int[]) null, jobmessage);
     }
 
     /**
@@ -822,6 +863,9 @@ public class QueryHandler implements Cloneable {
                     mpv5.usermanagement.MPSecurityManager.getActionName(action) + Messages.CONTEXT + context.getDbIdentity(),
                     Messages.ACCESS_DENIED);
             return new ReturnValue(-1, new Object[0][0], new String[0]);
+        } else {
+//              Log.Debug(this, Messages.SECURITYMANAGER_ALLOWED+
+//                    mpv5.usermanagement.MPSecurityManager.getActionName(action) + Messages.CONTEXT + context.getDbIdentity());
         }
 
         start();
@@ -908,13 +952,16 @@ public class QueryHandler implements Cloneable {
         query = query.replace("%%tablename%%", table);
 
         if (!mpv5.usermanagement.MPSecurityManager.check(context, action)) {
-
             Log.Debug(this, Messages.SECURITYMANAGER_DENIED +
                     mpv5.usermanagement.MPSecurityManager.getActionName(action) + Messages.CONTEXT + context.getDbIdentity());
             Popup.warn(Messages.SECURITYMANAGER_DENIED +
                     mpv5.usermanagement.MPSecurityManager.getActionName(action) + Messages.CONTEXT + context.getDbIdentity(),
                     Messages.ACCESS_DENIED);
             return new ReturnValue(-1, new Object[0][0], new String[0]);
+        } else {
+//              Log.Debug(this, Messages.SECURITYMANAGER_ALLOWED+
+//                    mpv5.usermanagement.MPSecurityManager.getActionName(action) + Messages.CONTEXT + context.getDbIdentity()
+//                    );
         }
 
         start();
