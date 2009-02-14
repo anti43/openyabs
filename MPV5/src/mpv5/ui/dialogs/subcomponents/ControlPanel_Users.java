@@ -13,9 +13,11 @@ import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryHandler;
 import mpv5.globals.Headers;
+import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.resources.languages.LanguageManager;
 import mpv5.ui.dialogs.ControlApplet;
+import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPV5View;
 import mpv5.ui.panels.DataPanel;
 import mpv5.usermanagement.MPSecurityManager;
@@ -79,6 +81,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         jLabel1 = new javax.swing.JLabel();
         datelastlog = new javax.swing.JTextField();
         loggedin = new javax.swing.JCheckBox();
+        jButton4 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setName("Form"); // NOI18N
@@ -153,11 +156,11 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
 
         locale.setName("locale"); // NOI18N
 
-        jLabel4.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Dialog", 0, 12));
         jLabel4.setText(bundle.getString("ControlPanel_Users.jLabel4.text")); // NOI18N
         jLabel4.setName("jLabel4"); // NOI18N
 
-        jLabel5.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel5.setFont(new java.awt.Font("Dialog", 0, 12));
         jLabel5.setText(bundle.getString("ControlPanel_Users.jLabel5.text")); // NOI18N
         jLabel5.setName("jLabel5"); // NOI18N
 
@@ -175,8 +178,8 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
                             .addComponent(jLabel5))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(locale, 0, 277, Short.MAX_VALUE)
-                            .addComponent(language, javax.swing.GroupLayout.Alignment.LEADING, 0, 277, Short.MAX_VALUE))))
+                            .addComponent(locale, 0, 284, Short.MAX_VALUE)
+                            .addComponent(language, javax.swing.GroupLayout.Alignment.LEADING, 0, 284, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -211,7 +214,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         password.setText(bundle.getString("ControlPanel_Users.password.text")); // NOI18N
         password.setName("password"); // NOI18N
 
-        jLabel2.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Dialog", 0, 12));
         jLabel2.setText(bundle.getString("ControlPanel_Users.jLabel2.text")); // NOI18N
         jLabel2.setName("jLabel2"); // NOI18N
 
@@ -221,7 +224,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
 
         inthighestright.setName("inthighestright"); // NOI18N
 
-        jLabel3.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Dialog", 0, 12));
         jLabel3.setText(bundle.getString("ControlPanel_Users.jLabel3.text")); // NOI18N
         jLabel3.setName("jLabel3"); // NOI18N
 
@@ -331,15 +334,25 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
+        jButton4.setText(bundle.getString("ControlPanel_Users.jButton4.text")); // NOI18N
+        jButton4.setName("jButton4"); // NOI18N
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 42, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jButton4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButton3)
                         .addGap(18, 18, 18)
                         .addComponent(jButton2)
@@ -354,12 +367,13 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jButton1)
                             .addComponent(jButton2)
-                            .addComponent(jButton3)))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 457, Short.MAX_VALUE))
+                            .addComponent(jButton3)
+                            .addComponent(jButton4)))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 456, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -390,6 +404,8 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
             dato.setIDS(-1);
             dato.save();
         }
+
+        refresh();
 }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
@@ -404,6 +420,17 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
             }
         }
     }//GEN-LAST:event_jTable1MouseClicked
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        if (Popup.Y_N_dialog(Messages.REALLY_DELETE)) {
+            if (dataOwner != null) {
+                DatabaseObject dato = dataOwner;
+                dato.getPanelData(this);
+                dato.delete();
+            }
+            refresh();
+        }
+    }//GEN-LAST:event_jButton4ActionPerformed
 
     public void setValues(PropertyStore values) {
     }
@@ -428,6 +455,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -476,7 +504,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         mail_ = mail.get_Text();
         cname_ = cname.get_Text();
 
-        if (password.getPassword().length>0 && !Arrays.equals(password.getPassword(),new JPasswordField().getPassword())) {
+        if (password.getPassword().length > 0 && !Arrays.equals(password.getPassword(), new JPasswordField().getPassword())) {
             try {
                 password_ = MD5HashGenerator.getInstance().hashData(password.getPassword());
             } catch (NoSuchAlgorithmException ex) {
@@ -516,7 +544,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
     }
 
     public void refresh() {
-    
+
         try {
             language.setModel(LanguageManager.getLanguagesAsComboBoxModel());
             locale.setModel(LanguageManager.getLocalesAsComboBoxModel());
@@ -526,14 +554,14 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
 
         inthighestright.setModel(MPSecurityManager.getRolesAsComboBoxModel());
         jTable1.setModel(new DefaultTableModel(QueryHandler.instanceOf().clone(Context.getUser()).select(Context.DETAILS_USERS, null), Headers.USER_DETAILS));
-    
-       TableFormat.stripFirstColumn(jTable1);
-       TableFormat.format(jTable1, 1,100);
-       TableFormat.format(jTable1, 2,100);
-       TableFormat.format(jTable1, 3,100);
+
+        TableFormat.stripFirstColumn(jTable1);
+        TableFormat.format(jTable1, 1, 100);
+        TableFormat.format(jTable1, 2, 100);
+        TableFormat.format(jTable1, 3, 100);
     }
 
-     public ControlApplet instanceOf() {
+    public ControlApplet instanceOf() {
         if (ident == null) {
             ident = new ControlPanel_Users();
         }

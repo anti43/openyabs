@@ -20,6 +20,8 @@ import java.util.Date;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
+import mpv5.globals.Messages;
+import mpv5.ui.dialogs.Popup;
 
 /**
  *
@@ -68,9 +70,27 @@ public class User extends DatabaseObject {
         return cname;
     }
 
+    public boolean isDefault() {
+        if (getName().equals("nobody") && __getFullname().equals("Default User")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     @Override
     public void setCName(String name) {
         cname = name;
+    }
+
+    @Override
+    public boolean save() {
+        if (!isDefault()) {
+            return super.save();
+        } else {
+            Popup.notice(Messages.DEFAULT_USER);
+            return false;
+        }
     }
 
     /**

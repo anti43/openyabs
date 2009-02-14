@@ -62,7 +62,7 @@ public class ContactsTB extends javax.swing.JPanel {
         commonActionsToolbar.setRollover(true);
 
         jButton22.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/revert.png"))); // NOI18N
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.resources.languages.LanguageManager.getBundle();// NOI18N
         jButton22.setText(bundle.getString("MPV5View.jButton22.text")); // NOI18N
         jButton22.setToolTipText(bundle.getString("MPV5View.jButton22.toolTipText")); // NOI18N
         jButton22.setFocusable(false);

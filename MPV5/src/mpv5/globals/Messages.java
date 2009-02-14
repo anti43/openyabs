@@ -70,4 +70,6 @@ public class Messages {
     public static String VALUE_ALREADY_EXISTS = "The value already exists in the database and must not be duplicated: ";
     public static String ADMIN_ACCESS = "You need administrative rights to perform this action.";
     public static String NOT_POSSIBLE = "Requested action is not possible.";
+    public static String DEFAULT_USER = "Default user can`t be changed,\nlog in as real user to perform this action.";
+    public static String REALLY_DELETE = "Do you really want to delete this dataset?";
 }

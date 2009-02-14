@@ -100,7 +100,7 @@ public class Main extends SingleFrameApplication {
     protected void shutdown() {
         LocalSettings.save();
         try {
-            MPV5View.getUser().save();
+            if(!MPV5View.getUser().isDefault())MPV5View.getUser().save();
         } catch (Exception e) {
         }
         super.shutdown();
