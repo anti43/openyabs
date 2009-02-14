@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.table.TableModel;
+import mpv5.db.common.NodataFoundException;
 import mpv5.globals.Headers;
 import mpv5.globals.Messages;
 import mpv5.resources.languages.LanguageManager;
@@ -36,6 +37,7 @@ import javax.swing.SwingWorker;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.parents.Position;
+import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.arrays.ArrayUtils;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
@@ -58,11 +60,8 @@ public class MPBabelFish extends javax.swing.JFrame {
         setVisible(rootPaneCheckingEnabled);
     }
 
-    private void setLanguageSelection() {
-        languages.setModel(LanguageManager.getLanguagesAsComboBoxModel());
-        languages.setSelectedIndex(MPComboBoxModelItem.getItemID(MPV5View.getUser().__getLanguage(),
-                languages.getModel()));
-
+    private void setLanguage() {
+        this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
         data.setModel(new MPTableModel(
                 new Class[]{String.class, String.class, String.class},
                 new boolean[]{false, true, true},
@@ -70,6 +69,15 @@ public class MPBabelFish extends javax.swing.JFrame {
                 Headers.BABELFISH));
 
         langName.set_Text((((MPComboBoxModelItem) languages.getSelectedItem()).getName() + " (" + MPV5View.getUser().getName() + ")"));
+        this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+    }
+
+    private void setLanguageSelection() {
+        languages.setModel(LanguageManager.getLanguagesAsComboBoxModel());
+        languages.setSelectedIndex(MPComboBoxModelItem.getItemID(MPV5View.getUser().__getLanguage(),
+                languages.getModel()));
+
+        setLanguage();
     }
 
     /** This method is called from within the constructor to
@@ -101,9 +109,10 @@ public class MPBabelFish extends javax.swing.JFrame {
         jMenu1 = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem3 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        java.util.ResourceBundle bundle = LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setTitle(bundle.getString("MPBabelFish.title_1")); // NOI18N
         setName("Form"); // NOI18N
 
@@ -139,6 +148,14 @@ public class MPBabelFish extends javax.swing.JFrame {
         jLabel2.setName("jLabel2"); // NOI18N
 
         languages.setName("languages"); // NOI18N
+        languages.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                languagesMouseClicked(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                languagesMouseExited(evt);
+            }
+        });
 
         langName.set_Label(bundle.getString("MPBabelFish.langName._Label")); // NOI18N
         langName.setName("langName"); // NOI18N
@@ -149,7 +166,7 @@ public class MPBabelFish extends javax.swing.JFrame {
         GooogleTranslator.setRollover(true);
         GooogleTranslator.setName("GooogleTranslator"); // NOI18N
 
-        jLabel5.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel5.setFont(new java.awt.Font("Tahoma", 1, 11));
         jLabel5.setText(bundle.getString("MPBabelFish.jLabel5.text")); // NOI18N
         jLabel5.setName("jLabel5"); // NOI18N
         GooogleTranslator.add(jLabel5);
@@ -245,6 +262,15 @@ public class MPBabelFish extends javax.swing.JFrame {
         });
         jMenu1.add(jMenuItem1);
 
+        jMenuItem3.setText(bundle.getString("MPBabelFish.jMenuItem3.text_1")); // NOI18N
+        jMenuItem3.setName("jMenuItem3"); // NOI18N
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem3ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem3);
+
         jMenuBar1.add(jMenu1);
 
         setJMenuBar(jMenuBar1);
@@ -265,12 +291,14 @@ public class MPBabelFish extends javax.swing.JFrame {
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
 
-        if (langName.hasText()) {
+        if (MPSecurityManager.checkAdminAccess()) {
+            if (langName.hasText()) {
 //            MPTableModel mpdel = DataModelUtils.getModelCopy(data);
-            DataModelUtils.removeColumn(data, 1);
-            LanguageManager.importLanguage(langName.get_Text(), DataModelUtils.tableModelToFile(data, "="));
+                DataModelUtils.removeColumn(data, 1);
+                LanguageManager.importLanguage(langName.get_Text(), DataModelUtils.tableModelToFile(data, "="));
 //            data.setModel(mpdel);
-            setLanguageSelection();
+                setLanguageSelection();
+            }
         }
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
@@ -288,6 +316,27 @@ public class MPBabelFish extends javax.swing.JFrame {
         new Job(this).execute();
     }//GEN-LAST:event_translateActionPerformed
 
+    private void languagesMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_languagesMouseExited
+
+        
+    }//GEN-LAST:event_languagesMouseExited
+
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+        if (MPSecurityManager.checkAdminAccess()) {
+            if (Popup.Y_N_dialog(Messages.REALLY_WIPE + ": " + ((MPComboBoxModelItem) languages.getSelectedItem()).getName())) {
+                try {
+                    LanguageManager.removeLanguage(((MPComboBoxModelItem) languages.getSelectedItem()).getId());
+                } catch (NodataFoundException ex) {
+                    Log.Debug(this, ex);
+                }
+            }
+        }
+    }//GEN-LAST:event_jMenuItem3ActionPerformed
+
+    private void languagesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_languagesMouseClicked
+      setLanguage();
+    }//GEN-LAST:event_languagesMouseClicked
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToolBar GooogleTranslator;
     private javax.swing.JTable data;
@@ -302,6 +351,7 @@ public class MPBabelFish extends javax.swing.JFrame {
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JToolBar.Separator jSeparator1;

@@ -49,6 +49,7 @@ public class User extends DatabaseObject {
     }
 
     private User(String fullname, String userid, int highright) {
+        context.setDbIdentity(Context.IDENTITY_USERS);
         this.fullname = fullname;
         this.cname = userid;
         this.inthighestright = highright;

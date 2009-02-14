@@ -2,10 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package mpv5.globals;
-
-import mpv5.utils.files.FileReaderWriter;
 
 /**
  *
@@ -14,18 +11,16 @@ import mpv5.utils.files.FileReaderWriter;
 public class Messages {
 
     public static final String START_MESSAGE =
-        "\n"+
-        "\n  MP " + Constants.VERSION + " Copyright (C) 2006-2008 Andreas Weber\n"+
-        "\n  This program comes with ABSOLUTELY NO WARRANTY."+
-        "\n  MP is free software, and you are welcome to redistribute it " +
-        "\n  under certain conditions;" +
-        "\n  Start with -license for details.\n" +
-        "\n  Start with -help for command line options.\n" +
-        "*****************************************************************\n\n";
+            "\n" +
+            "\n  MP " + Constants.VERSION + " Copyright (C) 2006-2008 Andreas Weber\n" +
+            "\n  This program comes with ABSOLUTELY NO WARRANTY." +
+            "\n  MP is free software, and you are welcome to redistribute it " +
+            "\n  under certain conditions;" +
+            "\n  Start with -license for details.\n" +
+            "\n  Start with -help for command line options.\n" +
+            "*****************************************************************\n\n";
 
 //    public static final String GPL = new FileReaderWriter("license.txt").read();
-
-
     public static String NEW_CONTACT = "New Contact";
     public static String NEW_CUSTOMER = "New Customer";
     public static String NEW_SUPPLIER = "New Supplier";
@@ -38,7 +33,7 @@ public class Messages {
     public static String ACTION_EXPORT = "Export";
     public static String ACTION_VIEW = "View";
     public static String SECURITYMANAGER_DENIED = "The Security Manager has DENIED your request.\nAction ";
-     public static String SECURITYMANAGER_ALLOWED= "The Security Manager has ALLOWED your request.\nAction ";
+    public static String SECURITYMANAGER_ALLOWED = "The Security Manager has ALLOWED your request.\nAction ";
     public static String CONTEXT = ", in context: ";
     public static String ROW_INSERTED = " successful created";
     public static String ROW_UPDATED = " successful saved";
@@ -53,12 +48,12 @@ public class Messages {
     public static String ARE_YOU_SURE = "Are you sure?";
     public static String FINISH = "Finish";
     public static String CONNECTION_VERIFIED = "The Database Connection has been verified.";
-    public static String CONNECTION_FAILED =  "The Database Connection failed.";
-    public static String CONNECTION_PROBE =  "Checking Database Connection: ";
+    public static String CONNECTION_FAILED = "The Database Connection failed.";
+    public static String CONNECTION_PROBE = "Checking Database Connection: ";
     public static String ERROR_SAVING_LOCALSETTINGS = "Could not save local settings";
     public static String DB_DRIVER_INVALID = "The driver for the specified database type could not be loaded\n";
-    public static String CREATING_DATABASE =  "Creating database structure..";
-    public static String CREATING_DATABASE_FAILED =  "Creating database structure failed, see logs for details.";
+    public static String CREATING_DATABASE = "Creating database structure..";
+    public static String CREATING_DATABASE_FAILED = "Creating database structure failed, see logs for details.";
     public static String CONTACTS_LIST = "List of contacts";
     public static String CONTROL_PANEL = "Control Panel";
     public static String REALLY_CLOSE = "Do you really want to close the entire application?\nUnsaved data will be lost!";
@@ -73,7 +68,6 @@ public class Messages {
     public static String LOCKED = " is now locked";
     public static String VALUE_NOT_VALID = "You have entered an invalid value: ";
     public static String VALUE_ALREADY_EXISTS = "The value already exists in the database and must not be duplicated: ";
-
-   
-
+    public static String ADMIN_ACCESS = "You need administrative rights to perform this action.";
+    public static String NOT_POSSIBLE = "Requested action is not possible.";
 }

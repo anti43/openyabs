@@ -18,22 +18,21 @@ package mpv5.resources.languages;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.Locale;
 import java.util.ResourceBundle;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import mpv5.db.common.Context;
+import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.PrepareData;
 import mpv5.db.common.QueryHandler;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
+import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPV5View;
 import mpv5.utils.arrays.ArrayUtils;
 import mpv5.utils.arrays.ListenDataUtils;
@@ -51,6 +50,30 @@ public class LanguageManager {
 
     private static final String defLanguageBundle = "mpv5/resources/languages/Panels";
     private static String[][] defLanguage = new String[][]{{"buildin_en", "English"}};
+    private static Hashtable<String, ResourceBundle> cachedLanguages = new Hashtable<String, ResourceBundle>();
+
+    /**
+     * Flushes the Language Cache so that it contains no Languages.
+     */
+    public static void flushLanguageCache() {
+        cachedLanguages.clear();
+    }
+
+    private static boolean isCachedLanguage(String langid) {
+        return cachedLanguages.containsKey(langid);
+    }
+
+    private static void cachelanguage(String langid, ResourceBundle bundle) {
+        Log.Debug(LanguageManager.class, "Caching language with id " + langid);
+        if (cachedLanguages.containsKey(langid)) {
+            cachedLanguages.remove(langid);
+        }
+        cachedLanguages.put(langid,bundle);
+    }
+
+    private static ResourceBundle getCachedLanguage(String langid) {
+        return cachedLanguages.get(langid);
+    }
 
     /**
      * Checks the existance of a language in DB
@@ -73,34 +96,42 @@ public class LanguageManager {
      */
     public static ResourceBundle getBundle(String langid) {
         if (!langid.contentEquals("buildin_en")) {
-            File bundlefile = null;
-            Object[] data;
-            URI newfile;
-            String tempname = new RandomText(10).getString();
-            try {
-                data = QueryHandler.instanceOf().clone(Context.getLanguage()).
-                        selectFirst("filename", new String[]{Context.SEARCH_NAME, langid, "'"});
-                if (data != null && data.length > 0) {
-                    bundlefile = QueryHandler.instanceOf().clone(Context.getFiles()).retrieveFile(String.valueOf(
-                            data[0]));
-                }
-                if (bundlefile != null) {
-                    newfile = FileDirectoryHandler.copyFile(bundlefile, new File("languages"), tempname + ".properties");
-                    ClasspathTools.addPath(new File("languages"));//Add the files parent to classpath to be found
-                    FileDirectoryHandler.deleteTreeOnExit(new File("languages"));
-                    Log.Debug(LanguageManager.class, "Created language file at: " + newfile);
-                    try {
-                        ResourceBundle bundle = java.util.ResourceBundle.getBundle(tempname);
-                        return bundle;
-                    } catch (Exception e) {
-                        Log.Debug(LanguageManager.class, e);
+            if (!isCachedLanguage(langid)) {
+                File bundlefile = null;
+                Object[] data;
+                URI newfile;
+                String tempname = new RandomText(10).getString();
+                try {
+                    data = QueryHandler.instanceOf().clone(Context.getLanguage()).
+                            selectFirst("filename", new String[]{Context.SEARCH_NAME, langid, "'"});
+                    if (data != null && data.length > 0) {
+                        bundlefile = QueryHandler.instanceOf().clone(Context.getFiles()).retrieveFile(String.valueOf(
+                                data[0]));
                     }
+                    if (bundlefile != null) {
+                        newfile = FileDirectoryHandler.copyFile(bundlefile, new File("languages"), tempname + ".properties");
+                        if (hasNeededKeys(bundlefile)) {
+                            ClasspathTools.addPath(new File("languages"));//Add the files parent to classpath to be found
+                            FileDirectoryHandler.deleteTreeOnExit(new File("languages"));
+                            Log.Debug(LanguageManager.class, "Created language file at: " + newfile);
+                            try {
+                                ResourceBundle bundle = java.util.ResourceBundle.getBundle(tempname);
+                                cachelanguage(langid, bundle);
+                                return bundle;
+                            } catch (Exception e) {
+                                Log.Debug(LanguageManager.class, e);
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    Log.Debug(LanguageManager.class, e);
                 }
-            } catch (Exception e) {
-                Log.Debug(LanguageManager.class, e);
+                Log.Debug(LanguageManager.class, "Error loading additional languages. Using default now.");
+            } else {
+                return getCachedLanguage(langid);
             }
         }
-        Log.Debug(LanguageManager.class, "Error loading additional languages. Using default now.");
+
         return java.util.ResourceBundle.getBundle(defLanguageBundle);
     }
 
@@ -143,6 +174,10 @@ public class LanguageManager {
         return new DefaultComboBoxModel(t);
     }
 
+    /**
+     *
+     * @return A comboBoxModel reflecting the available locales
+     */
     public static DefaultComboBoxModel getLocalesAsComboBoxModel() {
         Locale[] o = Locale.getAvailableLocales();
         MPComboBoxModelItem[] items = new MPComboBoxModelItem[o.length];
@@ -163,7 +198,7 @@ public class LanguageManager {
      * @param file
      */
     public static void importLanguage(String langname, File file) {
-        String langid = new RandomText().getString();
+        String langid = new RandomText(10).getString();
         if (hasNeededKeys(file)) {
             try {
                 String dbname = QueryHandler.instanceOf().clone(Context.getFiles()).insertFile(file);
@@ -177,6 +212,28 @@ public class LanguageManager {
             } catch (FileNotFoundException ex) {
                 Log.Debug(LanguageManager.class, ex);
             }
+        }
+    }
+
+    /**
+     * Deletes a language from db
+     * @param langid
+     * @throws mpv5.db.common.NodataFoundException
+     */
+    public static void removeLanguage(String langid) throws NodataFoundException {
+        Object[] data;
+        if (!langid.contentEquals("buildin_en")) {
+            data = QueryHandler.instanceOf().clone(Context.getLanguage()).
+                    selectFirst("filename", new String[]{Context.SEARCH_NAME, langid, "'"});
+            if (data != null && data.length > 0) {
+                try {
+                    QueryHandler.instanceOf().clone(Context.getFiles()).removeFile(String.valueOf(data[0]));
+                } catch (Exception ex) {
+                    Log.Debug(ex);
+                }
+            }
+        } else {
+            Popup.notice(Messages.NOT_POSSIBLE);
         }
     }
 

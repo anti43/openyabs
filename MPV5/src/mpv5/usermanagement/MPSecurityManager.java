@@ -48,10 +48,10 @@ public class MPSecurityManager {
     public static ArrayList<Context> securedContexts = Context.getSecuredContexts();
     private static String usern;
     private static Object[][] availableRights = new Object[][]{
-        {RIGHT_TO_CREATE_OR_DELETE,"Administrator"},
-        {RIGHT_TO_EDIT,"Editor"},
-        {RIGHT_TO_VIEW,"Viewer"},
-        {RIGHT_TO_EXPORT,"Export"}
+        {RIGHT_TO_CREATE_OR_DELETE, "Administrator"},
+        {RIGHT_TO_EDIT, "Editor"},
+        {RIGHT_TO_VIEW, "Viewer"},
+        {RIGHT_TO_EXPORT, "Export"}
     };
 
     /**
@@ -64,23 +64,24 @@ public class MPSecurityManager {
      */
     public static Boolean check(Context context, int action) {
         for (Context item : securedContexts) {
-            if (item.getDbIdentity().equals(context.getDbIdentity())) { 
+            if (item.getDbIdentity().equals(context.getDbIdentity())) {
                 if (MPV5View.getUser().__getINThighestright() <= action) {
                     return true;
                 } else {
                     return false;
                 }
-            } 
+            }
         }
         return true;
     }
 
     public static boolean checkAdminAccess() {
-       if (MPV5View.getUser().__getINThighestright() <= RIGHT_TO_CREATE_OR_DELETE) {
-                    return true;
-                } else {
-                    return false;
-                }
+        if (MPV5View.getUser().__getINThighestright() <= RIGHT_TO_CREATE_OR_DELETE) {
+            return true;
+        } else {
+            Popup.notice(Messages.ADMIN_ACCESS);
+            return false;
+        }
     }
 
     public static User checkAuth(String username, String password) {

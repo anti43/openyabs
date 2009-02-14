@@ -47,7 +47,7 @@ public class QueryHandler implements Cloneable {
     private Statement stm = null;
     public String[] resultArray = null;
     private ResultSet resultSet = null;
-    private String table = null;
+    private String table = "NOTABLE";
     public String resultString = null;
     private static JFrame comp = new JFrame();
     private Context context;
@@ -91,6 +91,7 @@ public class QueryHandler implements Cloneable {
 
         return returnv;
     }
+
 
     /**
      *
@@ -869,7 +870,10 @@ public class QueryHandler implements Cloneable {
         }
 
         start();
-        query = query.replace("%%tablename%%", table);
+        try {
+            query = query.replace("%%tablename%%", table);
+        } catch (Exception e) {
+        }
         ReturnValue retval = null;
         String message = "Database Error (freeQuery) :";
         stm = null;
@@ -1182,5 +1186,15 @@ public class QueryHandler implements Cloneable {
         } else {
             return list.get(0);
         }
+    }
+
+
+    /**
+     * Remove a file from the db
+     * @param fileid
+     * @throws java.lang.Exception
+     */
+    public void removeFile(String fileid) throws Exception {
+        delete(new String[][]{{"cname", fileid,"'"}});
     }
 }
