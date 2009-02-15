@@ -5,6 +5,7 @@ package mpv5.ui.frames;
 
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Cursor;
 import java.util.Locale;
 import javax.swing.JFrame;
@@ -22,6 +23,7 @@ import mpv5.ui.panels.ContactsList;
 import mpv5.ui.panels.MPControlPanel;
 import mpv5.ui.parents.CloseableTabbedPane;
 import mpv5.ui.parents.FadeOnChangeLabel;
+import mpv5.ui.parents.Position;
 import mpv5.usermanagement.User;
 import mpv5.utils.text.TypeConversion;
 import org.jdesktop.application.SingleFrameApplication;
@@ -159,6 +161,7 @@ public class MPV5View extends FrameView {
         jMenu2 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
+        jMenuItem4 = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
         statusPanel = new javax.swing.JPanel();
@@ -195,7 +198,7 @@ public class MPV5View extends FrameView {
 
         jButton5.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/agt_family.png"))); // NOI18N
-        java.util.ResourceBundle bundle = mpv5.resources.languages.LanguageManager.getBundle();// NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jButton5.setText(bundle.getString("MPV5View.jButton5.text_1")); // NOI18N
         jButton5.setToolTipText(bundle.getString("MPV5View.jButton5.toolTipText_1")); // NOI18N
         jButton5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -411,6 +414,15 @@ public class MPV5View extends FrameView {
 
         jMenu1.add(jMenu2);
 
+        jMenuItem4.setText(bundle.getString("MPV5View.jMenuItem4.text")); // NOI18N
+        jMenuItem4.setName("jMenuItem4"); // NOI18N
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem4ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem4);
+
         menuBar.add(jMenu1);
 
         jMenu3.setText(bundle.getString("MPV5View.jMenu3.text_1")); // NOI18N
@@ -563,7 +575,6 @@ public class MPV5View extends FrameView {
     private void jButton26ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton26ActionPerformed
 
         mpv5.usermanagement.Lock.lock(this.getFrame());
-
 }//GEN-LAST:event_jButton26ActionPerformed
 
     private void jButton24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton24ActionPerformed
@@ -571,6 +582,18 @@ public class MPV5View extends FrameView {
             Main.getApplication().exit();
         }
 }//GEN-LAST:event_jButton24ActionPerformed
+
+    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+        Component pane = tabPane.getSelectedComponent();
+        if (pane !=null) {
+            JFrame fr = new JFrame(tabPane.getTitleAt(tabPane.getSelectedIndex()));
+            fr.add(pane, BorderLayout.CENTER);
+            fr.setSize(pane.getSize());
+            new Position(fr);
+            fr.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            fr.setVisible(true);
+        }
+    }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
@@ -587,6 +610,7 @@ public class MPV5View extends FrameView {
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem4;
     private com.l2fprod.common.swing.JOutlookBar jOutlookBar1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;

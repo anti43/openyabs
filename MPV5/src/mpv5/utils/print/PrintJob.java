@@ -16,6 +16,7 @@
  */
 package mpv5.utils.print;
 
+import java.awt.Desktop;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -23,6 +24,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.print.Doc;
 import javax.print.DocFlavor;
 import javax.print.DocPrintJob;
@@ -35,10 +38,12 @@ import javax.print.attribute.Attribute;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.standard.MediaSizeName;
 import mpv5.db.common.DatabaseObject;
+import mpv5.globals.LocalSettings;
 import mpv5.logging.Log;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.files.FileReaderWriter;
 import mpv5.utils.jobs.Waiter;
+import mpv5.utils.text.TypeConversion;
 
 /**
  *
@@ -74,59 +79,19 @@ public class PrintJob implements Waiter {
      * @param filelist
      */
     public void print(ArrayList<File> filelist) {
-        if (null == prservices || 0 >= prservices.length) {
-            if (null != prservDflt) {
-                System.err.println("Nur Default-Printer, da lookupPrintServices fehlgeschlagen.");
-                prservices = new PrintService[]{prservDflt};
+
+        if (TypeConversion.stringToBoolean(LocalSettings.getProperty(LocalSettings.PRINT_DEVAPP)) &&
+                Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.PRINT) &&
+                filelist.size() == 1) {
+            try {
+                Desktop.getDesktop().print(filelist.get(0));
+            } catch (IOException ex) {
+                Log.Debug(this, ex.getMessage());
+                printOldStyle(filelist);
             }
-        }
-        Log.Debug(this, "Print-Services:");
-        int i;
-        for (i = 0; i < prservices.length; i++) {
-            Log.Debug(this, "  " + i + ":  " + prservices[i] + ((prservDflt != prservices[i]) ? "" : " (Default)"));
-        }
-        PrintService prserv = null;
-        if (0 <= idxPrintService && idxPrintService < prservices.length) {
-            prserv = prservices[idxPrintService];
         } else {
-            if (!Arrays.asList(prservices).contains(prservDflt)) {
-                prservDflt = null;
-            }
-            if (prservices == null) {
-                prservices = new PrintService[]{PrintServiceLookup.lookupDefaultPrintService()};
-            }
-            prserv = ServiceUI.printDialog(null, 50, 50, prservices, prservDflt, null, aset);
+           printOldStyle(filelist);
         }
-        if (null != prserv) {
-            Log.Debug(this, "Ausgewaehlter Print-Service:");
-            Log.Debug(this, "      " + prserv);
-            printPrintServiceAttributesAndDocFlavors(prserv);
-            DocPrintJob pj = prserv.createPrintJob();
-
-
-            for (int j = 0; j < filelist.size(); j++) {
-                FileInputStream fis = null;
-                try {
-                    File file = filelist.get(j);
-                    fis = new FileInputStream(file);
-                    Doc doc = new SimpleDoc(fis, flavor, null);
-                    try {
-                        pj.print(doc, aset);
-                    } catch (PrintException ex) {
-                        Log.Debug(ex);
-                    }
-                } catch (FileNotFoundException ex) {
-                    Log.Debug(ex);
-                } finally {
-                    try {
-                        fis.close();
-                    } catch (IOException ex) {
-                        Log.Debug(ex);
-                    }
-                }
-            }
-        }
-
     }
 
     /**
@@ -135,11 +100,11 @@ public class PrintJob implements Waiter {
      */
     public void printl(List<DatabaseObject> dbobjarr) {
 
-        File file = FileDirectoryHandler.getTempFile();
+        File file = FileDirectoryHandler.getTempFile("txt");
         if (dbobjarr != null && dbobjarr.size() > 0) {
             FileReaderWriter rw = new FileReaderWriter(file);
 
-            rw.writeOnce(""+dbobjarr.get(0).getDbID().toUpperCase());
+            rw.writeOnce("" + dbobjarr.get(0).getDbID().toUpperCase());
             rw.write("");
             rw.write(dbobjarr.get(0).__getCName());
             rw.write("");
@@ -191,6 +156,61 @@ public class PrintJob implements Waiter {
             Log.Debug(this, printException);
         }
 
+    }
+
+    private void printOldStyle(ArrayList<File> filelist) {
+         if (null == prservices || 0 >= prservices.length) {
+                if (null != prservDflt) {
+                    System.err.println("Nur Default-Printer, da lookupPrintServices fehlgeschlagen.");
+                    prservices = new PrintService[]{prservDflt};
+                }
+            }
+            Log.Debug(this, "Print-Services:");
+            int i;
+            for (i = 0; i < prservices.length; i++) {
+                Log.Debug(this, "  " + i + ":  " + prservices[i] + ((prservDflt != prservices[i]) ? "" : " (Default)"));
+            }
+            PrintService prserv = null;
+            if (0 <= idxPrintService && idxPrintService < prservices.length) {
+                prserv = prservices[idxPrintService];
+            } else {
+                if (!Arrays.asList(prservices).contains(prservDflt)) {
+                    prservDflt = null;
+                }
+                if (prservices == null) {
+                    prservices = new PrintService[]{PrintServiceLookup.lookupDefaultPrintService()};
+                }
+                prserv = ServiceUI.printDialog(null, 50, 50, prservices, prservDflt, null, aset);
+            }
+            if (null != prserv) {
+                Log.Debug(this, "Ausgewaehlter Print-Service:");
+                Log.Debug(this, "      " + prserv);
+                printPrintServiceAttributesAndDocFlavors(prserv);
+                DocPrintJob pj = prserv.createPrintJob();
+
+
+                for (int j = 0; j < filelist.size(); j++) {
+                    FileInputStream fis = null;
+                    try {
+                        File file = filelist.get(j);
+                        fis = new FileInputStream(file);
+                        Doc doc = new SimpleDoc(fis, flavor, null);
+                        try {
+                            pj.print(doc, aset);
+                        } catch (PrintException ex) {
+                            Log.Debug(ex);
+                        }
+                    } catch (FileNotFoundException ex) {
+                        Log.Debug(ex);
+                    } finally {
+                        try {
+                            fis.close();
+                        } catch (IOException ex) {
+                            Log.Debug(ex);
+                        }
+                    }
+                }
+            }
     }
 
     private void printPrintServiceAttributesAndDocFlavors(PrintService prserv) {

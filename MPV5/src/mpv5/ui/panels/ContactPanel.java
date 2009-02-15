@@ -54,7 +54,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
      */
     public ContactPanel(Context context) {
         initComponents();
-        toolbarpane.add(new mpv5.ui.toolbars.ContactsTB(), BorderLayout.CENTER);
+        toolbarpane.add(new mpv5.ui.toolbars.ContactsTB(this), BorderLayout.CENTER);
         dataOwner = new Contact();
         leftpane.add(new SearchPanel(context, this), BorderLayout.CENTER);
         refresh();

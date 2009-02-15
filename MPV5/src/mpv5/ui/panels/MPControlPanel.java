@@ -16,7 +16,7 @@ import mpv5.resources.languages.LanguageManager;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Fonts;
-import mpv5.ui.dialogs.subcomponents.ControlPanel_Internet;
+import mpv5.ui.dialogs.subcomponents.ControlPanel_Local;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Localization;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Users;
 import mpv5.ui.frames.MPBabelFish;
@@ -67,14 +67,15 @@ public class MPControlPanel extends javax.swing.JPanel {
         details = new javax.swing.JPanel();
 
         setName("Form"); // NOI18N
-        setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.Y_AXIS));
+        setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.PAGE_AXIS));
 
         buttons.setBackground(new java.awt.Color(255, 255, 255));
-        java.util.ResourceBundle bundle = mpv5.resources.languages.LanguageManager.getBundle();// NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         buttons.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("MPControlPanel.buttons.border.title"))); // NOI18N
-        buttons.setMinimumSize(new java.awt.Dimension(300, 117));
+        buttons.setAutoscrolls(true);
+        buttons.setMinimumSize(new java.awt.Dimension(300, 10));
         buttons.setName("buttons"); // NOI18N
-        buttons.setPreferredSize(new java.awt.Dimension(340, 240));
+        buttons.setPreferredSize(new java.awt.Dimension(340, 200));
 
         jButton1.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/internet.png"))); // NOI18N
@@ -166,7 +167,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton5);
 
-        jButton6.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton6.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/evolution-contacts.png"))); // NOI18N
         jButton6.setText(bundle.getString("MPControlPanel.jButton6.text")); // NOI18N
         jButton6.setToolTipText(bundle.getString("MPControlPanel.jButton6.toolTipText")); // NOI18N
@@ -218,7 +219,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton8);
 
-        jButton9.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton9.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/fonts.png"))); // NOI18N
         jButton9.setText(bundle.getString("MPControlPanel.jButton9.text")); // NOI18N
         jButton9.setToolTipText(bundle.getString("MPControlPanel.jButton9.toolTipText")); // NOI18N
@@ -241,6 +242,7 @@ public class MPControlPanel extends javax.swing.JPanel {
 
         details.setBackground(new java.awt.Color(255, 255, 255));
         details.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("MPControlPanel.details.border.title"))); // NOI18N
+        details.setMinimumSize(new java.awt.Dimension(300, 200));
         details.setName("details"); // NOI18N
         details.setLayout(new java.awt.BorderLayout());
         add(details);
@@ -248,7 +250,7 @@ public class MPControlPanel extends javax.swing.JPanel {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
-        openDetails(new ControlPanel_Internet());
+        openDetails(new ControlPanel_Local());
 
     }//GEN-LAST:event_jButton1ActionPerformed
 

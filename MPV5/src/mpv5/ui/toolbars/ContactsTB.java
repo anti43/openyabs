@@ -22,9 +22,12 @@
 
 package mpv5.ui.toolbars;
 
+import java.awt.Desktop;
 import mpv5.db.common.DatabaseObject;
 import mpv5.ui.frames.MPV5View;
+import mpv5.ui.panels.ContactPanel;
 import mpv5.ui.panels.DataPanel;
+import mpv5.utils.print.PrintJob;
 
 /**
  *
@@ -32,10 +35,13 @@ import mpv5.ui.panels.DataPanel;
  */
 public class ContactsTB extends javax.swing.JPanel {
     private static final long serialVersionUID = -8215471082724735228L;
+    private ContactPanel parents;
 
-    /** Creates new form ContactsTB */
-    public ContactsTB() {
-        initComponents();
+
+
+    public ContactsTB(ContactPanel aThis) {
+       initComponents();
+       parents = aThis;
     }
 
     /** This method is called from within the constructor to
@@ -169,38 +175,38 @@ public class ContactsTB extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton22ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton22ActionPerformed
-       DatabaseObject dato = ((DataPanel) MPV5View.tabPane.getSelectedComponent()).getDataOwner();
+       DatabaseObject dato = parents.getDataOwner();
 
-        dato.getPanelData(((DataPanel)  MPV5View.tabPane.getSelectedComponent()));
+        dato.getPanelData((parents));
         dato.reset();
-        ((DataPanel)  MPV5View.tabPane.getSelectedComponent()).refresh();
-        ((DataPanel)  MPV5View.tabPane.getSelectedComponent()).setDataOwner(dato);
+        parents.refresh();
+        parents.setDataOwner(dato);
 
 }//GEN-LAST:event_jButton22ActionPerformed
 
     private void jButton25ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton25ActionPerformed
-        DatabaseObject dato = ((DataPanel) MPV5View.tabPane.getSelectedComponent()).getDataOwner();
+        DatabaseObject dato = parents.getDataOwner();
 
-        dato.getPanelData(((DataPanel)  MPV5View.tabPane.getSelectedComponent()));
+        dato.getPanelData(parents);
         dato.save();
-        ((DataPanel)  MPV5View.tabPane.getSelectedComponent()).refresh();
-        ((DataPanel)  MPV5View.tabPane.getSelectedComponent()).setDataOwner(dato);
+        parents.refresh();
+        parents.setDataOwner(dato);
     }//GEN-LAST:event_jButton25ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        DatabaseObject dato = ((DataPanel)  MPV5View.tabPane.getSelectedComponent()).getDataOwner();
+        DatabaseObject dato = parents.getDataOwner();
 
-        dato.getPanelData(((DataPanel)  MPV5View.tabPane.getSelectedComponent()));
+        dato.getPanelData(parents);
         dato.setIDS(-1);
         dato.save();
-        ((DataPanel)  MPV5View.tabPane.getSelectedComponent()).refresh();
-        ((DataPanel)  MPV5View.tabPane.getSelectedComponent()).setDataOwner(dato);
+        parents.refresh();
+        parents.setDataOwner(dato);
 }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton21ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton21ActionPerformed
-         DatabaseObject dato = ((DataPanel) MPV5View.tabPane.getSelectedComponent()).getDataOwner();
+         DatabaseObject dato = parents.getDataOwner();
 
-        dato.getPanelData(((DataPanel)  MPV5View.tabPane.getSelectedComponent()));
+        dato.getPanelData(parents);
         dato.lock();
 
 }//GEN-LAST:event_jButton21ActionPerformed
@@ -210,17 +216,18 @@ public class ContactsTB extends javax.swing.JPanel {
 }//GEN-LAST:event_jButton24ActionPerformed
 
     private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton23ActionPerformed
-        // TODO add your handling code here:
+        DatabaseObject dato = parents.getDataOwner();
+        new PrintJob().print(dato);
 }//GEN-LAST:event_jButton23ActionPerformed
 
     private void jButton26ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton26ActionPerformed
 
-         DatabaseObject dato = ((DataPanel)  MPV5View.tabPane.getSelectedComponent()).getDataOwner();
+         DatabaseObject dato = parents.getDataOwner();
 
-        dato.getPanelData(((DataPanel)  MPV5View.tabPane.getSelectedComponent()));
+        dato.getPanelData(parents);
         dato.delete();
-        ((DataPanel)  MPV5View.tabPane.getSelectedComponent()).refresh();
-        ((DataPanel)  MPV5View.tabPane.getSelectedComponent()).setDataOwner(dato);
+        parents.refresh();
+        parents.setDataOwner(dato);
 
     }//GEN-LAST:event_jButton26ActionPerformed
 

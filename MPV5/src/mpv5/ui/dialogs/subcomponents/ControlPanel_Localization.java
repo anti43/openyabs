@@ -10,6 +10,7 @@ import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.frames.MPV5View;
 import mpv5.utils.arrays.ArrayUtils;
 import mpv5.utils.models.MPComboBoxModelItem;
+import mpv5.utils.ui.TextFieldUtils;
 
 /**
  *
@@ -270,8 +271,10 @@ public class ControlPanel_Localization extends javax.swing.JPanel implements Con
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         if (labeledTextChooser1.hasText() &&
                 labeledTextField1.hasText()) {
-            LanguageManager.importLanguage( labeledTextField1.get_Text(), new File(labeledTextChooser1.get_Text()));
+            LanguageManager.importLanguage(labeledTextField1.get_Text(), new File(labeledTextChooser1.get_Text()));
             setLanguageSelection();
+        } else {
+            TextFieldUtils.blinkerRed(labeledTextField1.getTextField());
         }
     }//GEN-LAST:event_jButton3ActionPerformed
 
@@ -325,14 +328,14 @@ public class ControlPanel_Localization extends javax.swing.JPanel implements Con
     }
 
     private DefaultComboBoxModel getLocales() {
-       return LanguageManager.getLocalesAsComboBoxModel();
+        return LanguageManager.getLocalesAsComboBoxModel();
     }
 
     private ComboBoxModel getLanguages() {
         return LanguageManager.getLanguagesAsComboBoxModel();
     }
 
-     public ControlApplet instanceOf() {
+    public ControlApplet instanceOf() {
         if (ident == null) {
             ident = new ControlPanel_Localization();
         }

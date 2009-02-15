@@ -35,6 +35,8 @@ public class LocalSettings {
                 {"defaultfont", "Tahoma"}
             });
     public static final String DEFAULT_FONT = "defaultfont";
+    public static String PRINT_DEVAPP = "devappprint";
+    public static String PROXYUSE = "useproxy";
 
     /**
      * Applies the environmental settings
