@@ -3,7 +3,6 @@
  */
 package mpv5.ui.frames;
 
-
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -71,7 +70,6 @@ public class MPV5View extends FrameView {
         progressbar.setValue(0);
         progressbar.setIndeterminate(false);
     }
-
 
     /**
      *
@@ -584,9 +582,18 @@ public class MPV5View extends FrameView {
 }//GEN-LAST:event_jButton24ActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
-        Component pane = tabPane.getSelectedComponent();
-        if (pane !=null) {
-            JFrame fr = new JFrame(tabPane.getTitleAt(tabPane.getSelectedIndex()));
+        final Component pane = tabPane.getSelectedComponent();
+        final String title = tabPane.getTitleAt(tabPane.getSelectedIndex());
+        tabPane.remove(pane);
+        if (pane != null) {
+            JFrame fr = new JFrame(title) {
+                @Override
+                public void dispose() {
+                    tabPane.addTab(title, pane);
+                    tabPane.setSelectedComponent(pane);
+                    super.dispose();
+                }
+            };
             fr.add(pane, BorderLayout.CENTER);
             fr.setSize(pane.getSize());
             new Position(fr);

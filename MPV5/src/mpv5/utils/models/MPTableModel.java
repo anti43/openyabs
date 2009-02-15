@@ -72,6 +72,6 @@ public class MPTableModel extends DefaultTableModel {
     }
 
     public Vector getColumnIdentifiers() {
-            return columnIdentifiers;
-        }
+        return columnIdentifiers;
+    }
 }
