@@ -26,8 +26,10 @@ import java.awt.event.ItemEvent;
 import java.util.Date;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
+import javax.swing.JTabbedPane;
 import mpv5.db.common.*;
 import mpv5.globals.LocalSettings;
+import mpv5.globals.Messages;
 import mpv5.items.contacts.Contact;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPV5View;
@@ -77,7 +79,11 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         dataOwner = (Contact) object;
         dataOwner.setPanelData(this);
         this.exposeData();
-    }
+
+        if(this.getParent()instanceof JTabbedPane) {
+            JTabbedPane jTabbedPane = (JTabbedPane) this.getParent();
+            jTabbedPane.setTitleAt(jTabbedPane.getSelectedIndex(),Messages.CONTACT + cname_);
+        }}
 
     /**
      * 
@@ -894,6 +900,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         zip.set_Text(zip_);
         dateadded.setText(DateConverter.getDefDateString(dateadded_));
         addedby.setText(addedby_);
+
 
 //        dataTable.setModel(new MPTableModel(new DatabaseSearch(Context.getCompany()).getValuesFor(prename_, fax_, phone_), header));
 

@@ -44,7 +44,7 @@ public class TypeConversion {
      */
     public static boolean stringToBoolean(String string) {
         boolean val = false;
-        if (string.equals("1")) {
+        if (string != null&& string.equals("1")) {
             val = true;
         }
         return val;

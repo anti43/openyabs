@@ -24,6 +24,7 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
     public ControlPanel_Local() {
         initComponents();
         setVisible(true);
+        setValues(LocalSettings.getPropertyStore());
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

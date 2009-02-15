@@ -19,7 +19,7 @@ public class Messages {
             "\n  Start with -license for details.\n" +
             "\n  Start with -help for command line options.\n" +
             "*****************************************************************\n\n";
-
+    public static String CONTACT = "Contact: ";
 //    public static final String GPL = new FileReaderWriter("license.txt").read();
     public static String NEW_CONTACT = "New Contact";
     public static String NEW_CUSTOMER = "New Customer";

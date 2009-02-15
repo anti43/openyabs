@@ -76,6 +76,10 @@ public class LocalSettings {
         return cookie.getProperty(name);
     }
 
+    public static PropertyStore getPropertyStore() {
+        return cookie;
+    }
+
     /**
      * Add or change a property
      * @param name
