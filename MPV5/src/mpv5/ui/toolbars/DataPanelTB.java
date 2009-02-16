@@ -21,6 +21,7 @@
  */
 package mpv5.ui.toolbars;
 
+import java.awt.event.ActionListener;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.globals.Messages;
@@ -38,6 +39,18 @@ public class DataPanelTB extends javax.swing.JPanel {
 
     private static final long serialVersionUID = -8215471082724735228L;
     private ContactPanel parents;
+    private ActionListener action1 = new java.awt.event.ActionListener() {
+
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            jButton24ActionPerformed3(evt);
+        }
+    };
+    private ActionListener action2 = new java.awt.event.ActionListener() {
+
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            jButton24ActionPerformed2(evt);
+        }
+    };
 
     public DataPanelTB(ContactPanel aThis) {
         initComponents();
@@ -50,25 +63,16 @@ public class DataPanelTB extends javax.swing.JPanel {
             jButton24.setFocusable(false);
             jButton24.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
             jButton24.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-            jButton24.addActionListener(new java.awt.event.ActionListener() {
-
-                public void actionPerformed(java.awt.event.ActionEvent evt) {
-                    jButton24ActionPerformed(evt);
-                }
-            });
+            jButton24.removeActionListener(action2);
+            jButton24.addActionListener(action1);
         } else {
             jButton24.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/bookmark.png"))); // NOI18N
             jButton24.setFocusable(false);
             jButton24.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
             jButton24.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-            jButton24.addActionListener(new java.awt.event.ActionListener() {
-
-                public void actionPerformed(java.awt.event.ActionEvent evt) {
-                    jButton24ActionPerformed2(evt);
-                }
-            });
+            jButton24.removeActionListener(action1);
+            jButton24.addActionListener(action2);
         }
-
         this.validate();
     }
 
@@ -170,11 +174,6 @@ public class DataPanelTB extends javax.swing.JPanel {
         jButton24.setFocusable(false);
         jButton24.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton24.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton24.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton24ActionPerformed(evt);
-            }
-        });
         commonActionsToolbar.add(jButton24);
         commonActionsToolbar.add(jSeparator2);
 
@@ -244,21 +243,6 @@ public class DataPanelTB extends javax.swing.JPanel {
 
 }//GEN-LAST:event_jButton21ActionPerformed
 
-    private void jButton24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton24ActionPerformed
-
-        DatabaseObject dato = parents.getDataOwner();
-        Favourite fav = null;
-        if (!MPV5View.getUser().isDefault()) {
-            if (dato.isExisting()) {
-                fav = new Favourite(dato);
-                fav.save();
-                MPV5View.identifierView.refreshFavouritesMenu();
-            }
-        } else {
-            Popup.notice(Messages.DEFAULT_USER);
-        }
-}//GEN-LAST:event_jButton24ActionPerformed
-
     private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton23ActionPerformed
 
         DatabaseObject dato = parents.getDataOwner();
@@ -294,11 +278,26 @@ public class DataPanelTB extends javax.swing.JPanel {
     private void jButton24ActionPerformed2(java.awt.event.ActionEvent evt) {
 
         DatabaseObject dato = parents.getDataOwner();
-        Favourite fav = null;
         if (!MPV5View.getUser().isDefault() && dato.isExisting()) {
-            Favourite.removeFavourite(fav);
+            Favourite.removeFavourite(dato);
             MPV5View.identifierView.refreshFavouritesMenu();
 
+        }
+    }
+
+    private void jButton24ActionPerformed3(java.awt.event.ActionEvent evt) {
+
+        DatabaseObject dato = parents.getDataOwner();
+        Favourite fav = null;
+        if (!MPV5View.getUser().isDefault()) {
+            if (dato.isExisting()) {
+                fav = new Favourite(dato);
+                fav.save();
+                MPV5View.identifierView.refreshFavouritesMenu();
+                MPV5View.addMessage(Messages.ADDED_TO_FAVOURITES + fav.__getCName());
+            }
+        } else {
+            Popup.notice(Messages.DEFAULT_USER);
         }
     }
 }

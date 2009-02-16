@@ -35,9 +35,9 @@ public class Messages {
     public static String SECURITYMANAGER_DENIED = "The Security Manager has DENIED your request.\nAction ";
     public static String SECURITYMANAGER_ALLOWED = "The Security Manager has ALLOWED your request.\nAction ";
     public static String CONTEXT = ", in context: ";
-    public static String ROW_INSERTED = " successful created";
-    public static String ROW_UPDATED = " successful saved";
-    public static String ROW_DELETED = " successful removed from database";
+    public static String ROW_INSERTED = " created";
+    public static String ROW_UPDATED = " saved";
+    public static String ROW_DELETED = " removed from database";
     public static String CNAME_CANNOT_BE_NULL = "You must set a NAME for this item.";
     public static String FILE_SAVED = "File saved: ";
     public static String ERROR_OCCURED = "An error occurred";

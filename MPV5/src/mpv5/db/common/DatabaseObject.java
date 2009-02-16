@@ -150,7 +150,7 @@ public abstract class DatabaseObject {
             try {
                 if (ids <= 0) {
                     Log.Debug(this, "Inserting new dataset:");
-                    ids = QueryHandler.instanceOf().clone(context).insert(collect(), this.__getCName() + Messages.ROW_INSERTED);
+                    ids = QueryHandler.instanceOf().clone(context).insert(collect(), this.__getCName() + Messages.ROW_UPDATED);
                     Log.Debug(this, "The inserted row has id: " + ids);
                 } else {
                     Log.Debug(this, "Updating dataset: " + ids + " within context '" + context + "'");

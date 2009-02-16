@@ -75,20 +75,15 @@ public class QueryHandler implements Cloneable {
     /**
      * Checks the uniqueness of a unique constraint
      * Works only for columns with equal data type
-     * @param constraint  {"column1,column2","value1,value2","'"}
+     * @param constraint  {"column1","column2"}
+     * @param values {"value1",value2<any/>}
      * @return true if the key constraint is not existing yet
      */
-    public boolean checkConstraint(String[] constraint) {
-xx
-        Object[][] val = select(constraint[0], null);
+    public boolean checkConstraint(String[] constraint, Object[] values) {
+
+        Object[][] val = select("ids", constraint, values);
         if (val != null && val.length > 0) {
-            for (int i = 0; i < val.length; i++) {
-                for (int j = 0; j < constraint[1].split(",").length; j++) {
-                    if (constraint[1].split(",")[j].equals(val[i][j])) {
-                        return false;
-                    }
-                }
-            }
+            Log.Debug(this, "Uniqueness check failed!");
             return false;
         } else {
             return true;
@@ -523,6 +518,32 @@ xx
     }
 
     /**
+     *
+     * @param what
+     * @param whereColumns  {"column1","column2"}
+     * @param haveValues {"value1",value2<any/>}
+     * @return
+     */
+    public Object[][] select(String what, String[] whereColumns, Object[] haveValues) {
+        String query = "SELECT " + what + " FROM " + table + " WHERE ";
+        for (int i = 0; i < haveValues.length; i++) {
+
+            Object object = haveValues[i];
+            String column = whereColumns[i];
+            if (object instanceof Number) {
+                query += column + "=" + object.toString();
+            } else {
+                query += column + "='" + object.toString() + "'";
+            }
+
+            if ((i + 1) != haveValues.length) {
+                query += " AND ";
+            }
+        }
+        return freeReturnQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null).getData();
+    }
+
+    /**
      * 
      * @param what
      * @param where : {value, comparison, "'"}
@@ -586,8 +607,32 @@ xx
                 str = str + table + "." + where[i][0] + " = " + where[i][2] + where[i][1] + where[i][2];
             }
             query = "DELETE FROM " + table + " WHERE " + str;
-            freeQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, jobmessage);
+            freeQuery(query, mpv5.usermanagement.MPSecurityManager.CREATE_OR_DELETE, jobmessage);
         }
+    }
+
+    /**
+     * Deletes the given data permanently from the database
+     * @param whereColumns
+     * @param haveValues
+     * @param jobmessage
+     */
+    public void delete(String[] whereColumns, Object[] haveValues, String jobmessage) {
+        String query = "DELETE FROM " + table + " WHERE ";
+        for (int i = 0; i < haveValues.length; i++) {
+            Object object = haveValues[i];
+            String column = whereColumns[i];
+            if (object instanceof Number) {
+                query += column + "=" + object.toString();
+            } else {
+                query += column + "='" + object.toString() + "'";
+            }
+
+            if ((i + 1) != haveValues.length) {
+                query += " AND ";
+            }
+        }
+        freeQuery(query, mpv5.usermanagement.MPSecurityManager.CREATE_OR_DELETE, jobmessage);
     }
 
     /**

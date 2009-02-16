@@ -93,8 +93,8 @@ public class Favourite extends DatabaseObject {
      */
     public static boolean isFavourite(DatabaseObject dato) {
         if (!mpv5.db.common.QueryHandler.instanceOf().clone(Context.getFavourites()).
-                checkConstraint(new String[]{"cname, userid, itemid",
-                    dato.__getCName() + "," + MPV5View.getUser().__getIDS() + "." + dato.__getIDS(), "'"})) {
+                checkConstraint(new String[]{"cname", "userid", "itemid"},
+                    new Object[]{dato.getDbID(), MPV5View.getUser().__getIDS(),dato.__getIDS()})) {
             return true;
         } else {
             return false;
@@ -107,11 +107,11 @@ public class Favourite extends DatabaseObject {
      * @param dato
      */
     public static void removeFavourite(DatabaseObject dato) {
-        if (isFavourite(dato)) {
+        
             mpv5.db.common.QueryHandler.instanceOf().clone(Context.getFavourites()).
-                    delete(new String[][]{{"cname, userid, itemid",
-                            dato.__getCName() + "," + MPV5View.getUser().__getIDS() + "." + dato.__getIDS(), "'"}}, Messages.DONE);
-        }
+                    delete(new String[]{"cname", "userid", "itemid"},
+                    new Object[]{dato.getDbID(), MPV5View.getUser().__getIDS(),dato.__getIDS()}, Messages.DONE);
+        
     }
 
     /**
