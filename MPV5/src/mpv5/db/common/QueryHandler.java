@@ -79,7 +79,7 @@ public class QueryHandler implements Cloneable {
      * @return true if the key constraint is not existing yet
      */
     public boolean checkConstraint(String[] constraint) {
-
+xx
         Object[][] val = select(constraint[0], null);
         if (val != null && val.length > 0) {
             for (int i = 0; i < val.length; i++) {

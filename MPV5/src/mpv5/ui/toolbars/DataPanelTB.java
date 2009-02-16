@@ -298,6 +298,7 @@ public class DataPanelTB extends javax.swing.JPanel {
         if (!MPV5View.getUser().isDefault() && dato.isExisting()) {
             Favourite.removeFavourite(fav);
             MPV5View.identifierView.refreshFavouritesMenu();
+
         }
     }
 }
