@@ -39,7 +39,7 @@ public class User extends DatabaseObject {
     private boolean isenabled = true;
     private boolean isloggedin = true;
     private Date datelastlog = new Date();
-    public static User DEFAULT = new User("Default User", "nobody", -1);
+    public static User DEFAULT = new User("Default User", "nobody", -1, 4343);
 
     public User(int userid) throws NodataFoundException {
         context.setDbIdentity(Context.IDENTITY_USERS);
@@ -50,11 +50,12 @@ public class User extends DatabaseObject {
         context.setDbIdentity(Context.IDENTITY_USERS);
     }
 
-    private User(String fullname, String userid, int highright) {
+    private User(String fullname, String userid, int highright, int IDS) {
         context.setDbIdentity(Context.IDENTITY_USERS);
         this.fullname = fullname;
         this.cname = userid;
         this.inthighestright = highright;
+        this.setIDS(IDS);
     }
 
     public Integer getID() {

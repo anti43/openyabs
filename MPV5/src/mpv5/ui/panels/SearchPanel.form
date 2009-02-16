@@ -189,12 +189,12 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="resultsscrollpane" alignment="0" pref="155" max="32767" attributes="0"/>
+              <Component id="resultsscrollpane" alignment="0" pref="179" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="resultsscrollpane" alignment="0" pref="286" max="32767" attributes="0"/>
+              <Component id="resultsscrollpane" alignment="0" pref="288" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
       </Layout>

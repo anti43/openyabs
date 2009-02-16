@@ -22,6 +22,7 @@ along with MP.  If not, see <http://www.gnu.org/licenses/>.
 package mpv5.ui.panels;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.event.ItemEvent;
 import java.util.Date;
 import javax.swing.DefaultComboBoxModel;
@@ -31,8 +32,10 @@ import mpv5.db.common.*;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.items.contacts.Contact;
+import mpv5.items.handling.Favourite;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPV5View;
+import mpv5.ui.toolbars.DataPanelTB;
 import mpv5.utils.arrays.ArrayUtils;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.models.MPComboBoxModelItem;
@@ -49,14 +52,16 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     public static final int CUSTOMER = 1;
     public static final int SUPPLIER = 2;
     public static final int MANUFACTURER = 3;
+    private static final long serialVersionUID = 1L;
     private Contact dataOwner;
+    private DataPanelTB tb = new mpv5.ui.toolbars.DataPanelTB(this);
 
     /** Creates new form ContactPanel
      * @param context
      */
     public ContactPanel(Context context) {
         initComponents();
-        toolbarpane.add(new mpv5.ui.toolbars.ContactsTB(this), BorderLayout.CENTER);
+        toolbarpane.add(tb, BorderLayout.CENTER);
         dataOwner = new Contact();
         leftpane.add(new SearchPanel(context, this), BorderLayout.CENTER);
         refresh();
@@ -80,21 +85,13 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         dataOwner.setPanelData(this);
         this.exposeData();
 
-        if(this.getParent()instanceof JTabbedPane) {
+        if (this.getParent() instanceof JTabbedPane) {
             JTabbedPane jTabbedPane = (JTabbedPane) this.getParent();
-            jTabbedPane.setTitleAt(jTabbedPane.getSelectedIndex(),Messages.CONTACT + cname_);
-        }}
+            jTabbedPane.setTitleAt(jTabbedPane.getSelectedIndex(), Messages.CONTACT + cname_);
+        }
 
-    /**
-     * 
-     */
-    public void showList() {
-    }
+        tb.setFavourite(Favourite.isFavourite(object));
 
-    /**
-     *
-     */
-    public void reset() {
     }
 
     public void setType(int type) {
@@ -949,6 +946,6 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         male.setEnabled(!selected);
         female.setEnabled(!selected);
         prename.setEnabled(!selected);
-      
+
     }
 }

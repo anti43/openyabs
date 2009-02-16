@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.panels.DataPanel;
@@ -46,7 +48,7 @@ public abstract class DatabaseObject {
     /**
      * The mandatory name
      */
-    public String cname = null;
+    public String cname = "";
 
     /**
      *
@@ -54,8 +56,20 @@ public abstract class DatabaseObject {
      */
     public abstract String __getCName();
 
+    /**
+     * This can be used to graphically represent a do
+     * @return An Icon representing the type of this do
+     */
+    public Icon getTypeIcon() {
+        if (getDbID().equalsIgnoreCase(Context.getContact().getDbIdentity())) {
+            return ICON_CONTACT;
+        } else {
+            return null;
+        }
+    }
+    private Icon ICON_CONTACT = new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/22/evolution-contacts.png"));
 
-
+//    private Icon ICON_CONTACT = new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/agt_family.png"));
     /**
      * Set the mandatory name
      * @param name
@@ -77,6 +91,19 @@ public abstract class DatabaseObject {
      */
     public void setIDS(int ids) {
         this.ids = ids;
+    }
+
+    /**
+     * Checks whether this do represents an existing row in the db
+     * @return True if the do has been saved once
+     */
+    public boolean isExisting() {
+        if (ids <= 0) {
+            Popup.notice(Messages.NOT_POSSIBLE + "\n" + Messages.NOT_SAVED_YET);
+            return false;
+        } else {
+            return true;
+        }
     }
 
     /**
@@ -141,22 +168,16 @@ public abstract class DatabaseObject {
         }
     }
 
- 
     /**
      * Reset the data of this do (reload from database and discard changes)
      * @return
      */
     public boolean reset() {
-        try {
-            if (ids > 0) {
-                Log.Debug(this, "Reloading dataset: " + ids);
-                fetchDataOf(ids);
-            }
-            return true;
-        } catch (NodataFoundException ex) {
-            Log.Debug(this, ex);
-            return false;
+        if (ids > 0) {
+            Log.Debug(this, "Reloading dataset: " + ids);
+            return fetchDataOf(ids);
         }
+        return false;
     }
 
     /**
@@ -189,7 +210,7 @@ public abstract class DatabaseObject {
 //        }
 //  "cname VARCHAR(250), rowID BIGINT NOT NULL, userID
 
-        return true;
+        throw new UnsupportedOperationException("Not yet implemented");
 
     }
 
@@ -358,10 +379,15 @@ public abstract class DatabaseObject {
     /**
      * Fills this do with the data of the given dataset id
      * @param id
-     * @throws NodataFoundException 
+     * @return 
      */
-    public void fetchDataOf(int id) throws NodataFoundException {
-        explode(QueryHandler.instanceOf().clone(context).select(id));
+    public boolean fetchDataOf(int id) {
+        try {
+            explode(QueryHandler.instanceOf().clone(context).select(id));
+            return true;
+        } catch (NodataFoundException ex) {
+            return false;
+        }
     }
 
     /**
@@ -384,12 +410,17 @@ public abstract class DatabaseObject {
      * Fills this do with the data of the given dataset cname
      * @param cname
      * @return True if data was found
-     * @throws NodataFoundException
      */
-    public boolean fetchDataOf(String cname) throws NodataFoundException {
+    public boolean fetchDataOf(String cname) {
         cname = cname.replaceAll("'", "`");
-        Integer id = this.getIdOf(cname);
-        ReturnValue data = QueryHandler.instanceOf().clone(context).select(id);
+        Integer id;
+        ReturnValue data;
+        try {
+            id = this.getIdOf(cname);
+            data = QueryHandler.instanceOf().clone(context).select(id);
+        } catch (NodataFoundException ex) {
+            return false;
+        }
         if (data.getData() != null && data.getData().length > 0) {
             explode(data);
             return true;
@@ -410,7 +441,7 @@ public abstract class DatabaseObject {
 
                 for (int k = 0; k < vars.size(); k++) {
                     if (vars.get(k).getName().toLowerCase().substring(3).equals(name)) {
-                        Log.Debug(this, name + " ?? : " + vars.get(k).getName() + " = " + select.getData()[i][j]);
+//                        Log.Debug(this, name + " ?? : " + vars.get(k).getName() + " = " + select.getData()[i][j]);
                         try {
                             if (name.startsWith("is") || name.toUpperCase().startsWith("BOOL")) {
                                 if (String.valueOf(select.getData()[i][j]).equals("1")) {

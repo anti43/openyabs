@@ -62,12 +62,20 @@ public class DatabaseInstallation {
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,"+
         "PRIMARY KEY  (ids))",
 
-        "CREATE TABLE tablelock (ID BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
+        "CREATE TABLE tablelock (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
         "cname VARCHAR(250), rowID BIGINT NOT NULL, userID BIGINT REFERENCES users (ids)  ON DELETE CASCADE," +
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
-        "PRIMARY KEY  (id))",
+        "PRIMARY KEY  (ids))",
+
+        "CREATE TABLE favourites (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
+        "cname VARCHAR(250) NOT NULL, " +
+        "userID BIGINT REFERENCES users (ids)  ON DELETE CASCADE," +
+        "itemID BIGINT NOT NULL," +
+        "reserve1 VARCHAR(500) default NULL, reserve2 VARCHAR(500) default NULL," +
+        "PRIMARY KEY  (ids))",
 
         "INSERT INTO users (fullname,password,cname,laf,locale,mail,language,inthighestright,datelastlog,isenabled ) VALUES ('Administrator','5f4dcc3b5aa765d61d8327deb882cf99','admin','de.muntjak.tinylookandfeel.TinyLookAndFeel','de_DE','','buildin_en',0,'2009-01-26 05:45:38',1)"
+
     };
     
     private String[] MYSQL_STRUCTURE;

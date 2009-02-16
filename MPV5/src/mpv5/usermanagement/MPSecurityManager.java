@@ -86,7 +86,7 @@ public class MPSecurityManager {
 
     public static User checkAuth(String username, String password) {
         User usern1 = new User();
-        try {
+  
             if (usern1.fetchDataOf(username)) {
                 try {
                     if (MD5HashGenerator.getInstance().hashData(password.getBytes()).equalsIgnoreCase(usern1.__getPassword())) {
@@ -101,8 +101,19 @@ public class MPSecurityManager {
             } else {
                 return null;
             }
-        } catch (NodataFoundException ex) {
-            Popup.notice(Messages.USER_NOT_FOUND + username);
+    }
+
+    /**
+     * Checks the user credentials against the stored hash in cleartext, only for internal use!
+     * @param user
+     * @param passwordhash
+     * @return
+     */
+    public static User checkAuthInternal(User user, String passwordhash)
+    {
+        if (passwordhash.equalsIgnoreCase(user.__getPassword())) {
+            return user;
+        } else {
             return null;
         }
     }

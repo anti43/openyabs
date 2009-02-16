@@ -12,13 +12,6 @@ import mpv5.db.common.DatabaseObject;
  */
 public interface DataPanel {
 
-
-
-    /**
-     * Reset the view
-     */
-    public void reset();
-
     /**
      * Collect the view data
      */

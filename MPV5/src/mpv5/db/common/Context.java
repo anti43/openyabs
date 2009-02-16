@@ -21,14 +21,13 @@ public class Context {
     public static String SMALLIDENTITY_LANGUAGES = "languages";
     public static String SMALLIDENTITY_FILES = "files";
     public static String SMALLIDENTITY_LOCK = "tablelock";
+    public static String SMALLIDENTITY_FAVS = "favourites";
 
     //********** identity classes **********************************************
     private static Class IDENTITY_CONTACTS_CLASS = Contact.class;
     private static Class IDENTITY_USERS_CLASS = User.class;
-
-
     //********** unique constraints *******************************************
-     public static String UNIQUECOLUMNS_USER = "cname";
+    public static String UNIQUECOLUMNS_USER = "cname";
 
     //********** conditions ****************************************************
     public static final String CONDITION_DEFAULT = "%%tablename%%" + "." + "IDS";
@@ -68,8 +67,6 @@ public class Context {
             IDENTITY_CONTACTS + "." + "ISACTIVE," + IDENTITY_CONTACTS + "." + "ISCUSTOMER," + IDENTITY_CONTACTS + "." + "ISMANUFACTURER," +
             IDENTITY_CONTACTS + "." + "ISSUPPLIER," + IDENTITY_CONTACTS + "." + "ISCOMPANY," + IDENTITY_CONTACTS + "." + "ISMALE," +
             IDENTITY_CONTACTS + "." + "ISENABLED," + IDENTITY_CONTACTS + "." + "ADDEDBY";
-
-
     public static String DETAILS_USERS = IDENTITY_USERS + "." + "IDS," + IDENTITY_USERS + "." + "CNAME," +
             IDENTITY_USERS + "." + "fullname," +
             IDENTITY_USERS + "." + "mail," +
@@ -81,10 +78,10 @@ public class Context {
             IDENTITY_USERS + "." + "inthighestright," +
             IDENTITY_USERS + "." + "datelastlog";
 
+
 ///"Internal ID", "ID", "User Name", "Fullname", "L&F", "Locale", "Mail", "Language", "inthighestright", "Enabled", "Logged in", "Last Login Date"};
 //
     //**************************************************************************
-
     public static ArrayList<Context> getSecuredContexts() {
         ArrayList<Context> list = new ArrayList<Context>();
         list.add(getCompany());
@@ -94,6 +91,7 @@ public class Context {
         list.add(getSupplier());
         return list;
     }
+    public static ArrayList<Context> allContexts = new ArrayList<Context>();
     private boolean isCompany = false;
     private boolean isCustomer = false;
     private boolean isManufacturer = false;
@@ -420,6 +418,7 @@ public class Context {
         c.setSearchFields(DEFAULT_CONTACT_SEARCH);
         c.setSearchHeaders(Headers.CONTACT_DEFAULT);
         c.setIdentityClass(IDENTITY_CONTACTS_CLASS);
+        allContexts.add(c);
         return c;
     }
 
@@ -431,6 +430,7 @@ public class Context {
         c.setSearchFields(DEFAULT_CONTACT_SEARCH);
         c.setSearchHeaders(Headers.CONTACT_DEFAULT);
         c.setIdentityClass(IDENTITY_CONTACTS_CLASS);
+        allContexts.add(c);
         return c;
     }
 
@@ -442,6 +442,7 @@ public class Context {
         c.setSearchFields(DEFAULT_CONTACT_SEARCH);
         c.setSearchHeaders(Headers.CONTACT_DEFAULT);
         c.setIdentityClass(IDENTITY_CONTACTS_CLASS);
+        allContexts.add(c);
         return c;
     }
 
@@ -453,6 +454,7 @@ public class Context {
         c.setSearchFields(DEFAULT_CONTACT_SEARCH);
         c.setSearchHeaders(Headers.CONTACT_DEFAULT);
         c.setIdentityClass(IDENTITY_CONTACTS_CLASS);
+        allContexts.add(c);
         return c;
     }
 
@@ -463,6 +465,7 @@ public class Context {
         c.setSearchFields(DEFAULT_CONTACT_SEARCH);
         c.setSearchHeaders(Headers.CONTACT_DEFAULT);
         c.setIdentityClass(IDENTITY_CONTACTS_CLASS);
+        allContexts.add(c);
         return c;
     }
 
@@ -474,6 +477,7 @@ public class Context {
         c.setSearchHeaders(Headers.USER_DEFAULT);
         c.setIdentityClass(IDENTITY_USERS_CLASS);
         c.uniqueColumns = UNIQUECOLUMNS_USER;
+        allContexts.add(c);
         return c;
     }
 
@@ -481,6 +485,7 @@ public class Context {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(SMALLIDENTITY_LANGUAGES);
+        allContexts.add(c);
         return c;
     }
 
@@ -488,6 +493,7 @@ public class Context {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(SMALLIDENTITY_FILES);
+        allContexts.add(c);
         return c;
     }
 
@@ -495,7 +501,31 @@ public class Context {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(SMALLIDENTITY_LOCK);
+        allContexts.add(c);
         return c;
+    }
+
+    public static Context getFavourites() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(SMALLIDENTITY_FAVS);
+        allContexts.add(c);
+        return c;
+    }
+
+    /**
+     *
+     * @param contextdbidentity
+     * @return The matching context or null if not existing
+     */
+    public static Context getMatchingContext(String contextdbidentity) {
+        for (int i = 0; i < allContexts.size(); i++) {
+            Context context = allContexts.get(i);
+            if (context.getDbIdentity().equalsIgnoreCase(contextdbidentity)) {
+                return context;
+            }
+        }
+        return null;
     }
 
     public void setSearchFields(String fields) {

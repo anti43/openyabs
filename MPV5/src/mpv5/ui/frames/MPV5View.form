@@ -25,7 +25,7 @@
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Component id="naviPanel" alignment="0" max="32767" attributes="1"/>
-              <Component id="jScrollPane1" alignment="0" pref="513" max="32767" attributes="1"/>
+              <Component id="jScrollPane1" alignment="0" pref="506" max="32767" attributes="1"/>
           </Group>
         </DimensionLayout>
       </Layout>
@@ -80,7 +80,7 @@
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jOutlookBar1" alignment="1" pref="509" max="32767" attributes="0"/>
+                  <Component id="jOutlookBar1" alignment="1" pref="502" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
           </Layout>
@@ -122,7 +122,7 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jButton5" pref="90" max="32767" attributes="1"/>
+                              <Component id="jButton5" pref="88" max="32767" attributes="1"/>
                               <EmptySpace max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="1" attributes="0">
@@ -481,6 +481,30 @@
             </MenuItem>
           </SubComponents>
         </Menu>
+        <Menu class="javax.swing.JMenu" name="favouritesMenu">
+          <Properties>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="MPV5View.favouritesMenu.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+            </Property>
+            <Property name="name" type="java.lang.String" value="favouritesMenu" noResource="true"/>
+          </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
+          </AuxValues>
+          <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem5">
+              <Properties>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="MPV5View.jMenuItem5.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
+                <Property name="name" type="java.lang.String" value="jMenuItem5" noResource="true"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem5ActionPerformed"/>
+              </Events>
+            </MenuItem>
+          </SubComponents>
+        </Menu>
       </SubComponents>
     </Container>
     <Container class="javax.swing.JPanel" name="statusPanel">
@@ -501,8 +525,8 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="statusPanelSeparator" pref="279" max="32767" attributes="0"/>
-                      <Component id="statusMessageLabel" pref="279" max="32767" attributes="0"/>
+                      <Component id="statusPanelSeparator" pref="273" max="32767" attributes="0"/>
+                      <Component id="statusMessageLabel" pref="273" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="progressBar" min="-2" pref="170" max="-2" attributes="0"/>

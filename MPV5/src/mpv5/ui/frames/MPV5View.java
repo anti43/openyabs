@@ -7,16 +7,24 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
 import javax.swing.JProgressBar;
 import javax.swing.UIManager;
 import mpv5.Main;
 import mpv5.db.common.Context;
+import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryHandler;
+import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
+import mpv5.items.handling.Favourite;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
+import mpv5.ui.menus.FavouritesMenuItem;
 import mpv5.ui.panels.ContactPanel;
 import mpv5.ui.panels.ContactsList;
 import mpv5.ui.panels.MPControlPanel;
@@ -33,11 +41,14 @@ import org.jdesktop.application.FrameView;
  */
 public class MPV5View extends FrameView {
 
-    public static JFrame identifier;
+    public static MPV5View identifierView;
+    public static JFrame identifierFrame;
     public static CloseableTabbedPane tabPane;
     public static JLabel messagelabel = new JLabel();
     public static User currentUser;
     public static JProgressBar progressbar = new JProgressBar();
+    private static JMenu favMenu;
+    private static String predefTitle;
 
     /**
      * Display a message at the bottom of the MP frame
@@ -45,6 +56,27 @@ public class MPV5View extends FrameView {
      */
     public static void addMessage(String message) {
         messagelabel.setText(message);
+    }
+
+    /**
+     * Reloads fav menu
+     */
+    public  void refreshFavouritesMenu() {
+        if (favMenu != null) {
+            favMenu.removeAll();
+            java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+            jMenuItem5.setText(bundle.getString("MPV5View.jMenuItem5.text")); // NOI18N
+            jMenuItem5.setName("jMenuItem5"); // NOI18N
+            jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
+
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    jMenuItem5ActionPerformed(evt);
+                }
+            });
+            favouritesMenu.add(jMenuItem5);
+            fillFavouritesmenu();
+
+        }
     }
 
     /**
@@ -96,7 +128,7 @@ public class MPV5View extends FrameView {
      */
     public static void setUser(User usern) {
         currentUser = usern;
-        identifier.setTitle(identifier.getTitle() + " (" + usern.getName() + ")");
+        predefTitle = (" (" + usern.getName() + ")");
         Main.setLaF(usern.__getLaf());
         Locale.setDefault(TypeConversion.stringToLocale(usern.__getLocale()));
     }
@@ -107,28 +139,59 @@ public class MPV5View extends FrameView {
      */
     public static void setWaiting(boolean truee) {
         if (truee) {
-            identifier.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+            identifierFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
         } else {
-            identifier.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            identifierFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+        }
+    }
+
+    private static void fillFavouritesmenu() {
+        Favourite[] favs = Favourite.getUserFavourites();
+        for (int i = 0; i < favs.length; i++) {
+            Favourite fav = favs[i];
+            try {
+                favMenu.add(new FavouritesMenuItem(Favourite.getObject(fav.getFavContext(), fav.__getItemid())));
+            } catch (NodataFoundException ex) {
+                Log.Debug(ex);
+            }
         }
     }
 
     public MPV5View(SingleFrameApplication app) {
         super(app);
+
         initComponents();
         tabPane = new CloseableTabbedPane(this);
-        identifier = this.getFrame();
+        identifierFrame = this.getFrame();
         progressbar = this.progressBar;
         progressbar.setMinimum(0);
         messagelabel = statusMessageLabel;
         tabpanePanel.add(tabPane, BorderLayout.CENTER);
-
-        QueryHandler.setWaitCursorFor(identifier);
-
+        favMenu = favouritesMenu;
+        identifierView = this;
+        if (predefTitle != null) {
+            identifierFrame.setTitle(identifierFrame.getTitle() + predefTitle);
+        }
+        fillFavouritesmenu();
+        QueryHandler.setWaitCursorFor(identifierFrame);
     }
 
     public void enableToolBar(boolean enable) {
         mainToolbar.setEnabled(enable);
+    }
+
+    public void addTab(DatabaseObject item) {
+        if (item.getDbID().equalsIgnoreCase(Context.getContact().getDbIdentity())) {
+            addContactTab(item);
+        }
+    }
+
+    private void addContactTab(DatabaseObject item) {
+        ContactPanel tab = new ContactPanel(Context.getCustomer());
+        tab.setType(ContactPanel.CUSTOMER);
+        tabPane.addTab(item.__getCName(), tab);
+        tab.setDataOwner(item);
+        tabPane.setSelectedComponent(tab);
     }
 
     /** This method is called from within the constructor to
@@ -162,6 +225,8 @@ public class MPV5View extends FrameView {
         jMenuItem4 = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
+        favouritesMenu = new javax.swing.JMenu();
+        jMenuItem5 = new javax.swing.JMenuItem();
         statusPanel = new javax.swing.JPanel();
         javax.swing.JSeparator statusPanelSeparator = new javax.swing.JSeparator();
         statusMessageLabel = new FadeOnChangeLabel();
@@ -194,7 +259,7 @@ public class MPV5View extends FrameView {
         jPanel2.setName("jPanel2"); // NOI18N
         jPanel2.setPreferredSize(new java.awt.Dimension(110, 400));
 
-        jButton5.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton5.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/agt_family.png"))); // NOI18N
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jButton5.setText(bundle.getString("MPV5View.jButton5.text_1")); // NOI18N
@@ -208,7 +273,7 @@ public class MPV5View extends FrameView {
             }
         });
 
-        jButton1.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton1.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/edit_group.png"))); // NOI18N
         jButton1.setText(bundle.getString("MPV5View.jButton1.text_1")); // NOI18N
         jButton1.setToolTipText(bundle.getString("MPV5View.jButton1.toolTipText_1")); // NOI18N
@@ -221,7 +286,7 @@ public class MPV5View extends FrameView {
             }
         });
 
-        jButton2.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton2.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/edit_user.png"))); // NOI18N
         jButton2.setText(bundle.getString("MPV5View.jButton2.text_1")); // NOI18N
         jButton2.setToolTipText(bundle.getString("MPV5View.jButton2.toolTipText_1")); // NOI18N
@@ -266,7 +331,7 @@ public class MPV5View extends FrameView {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
+                .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, 88, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addGap(11, 11, 11)
@@ -278,7 +343,7 @@ public class MPV5View extends FrameView {
                 .addGap(11, 11, 11))
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 89, Short.MAX_VALUE)
+                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 89, Short.MAX_VALUE)
                 .addGap(11, 11, 11))
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
@@ -362,7 +427,7 @@ public class MPV5View extends FrameView {
         );
         naviPanelLayout.setVerticalGroup(
             naviPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jOutlookBar1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 509, Short.MAX_VALUE)
+            .addComponent(jOutlookBar1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 502, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
@@ -377,7 +442,7 @@ public class MPV5View extends FrameView {
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(naviPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 513, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 506, Short.MAX_VALUE)
         );
 
         menuBar.setName("menuBar"); // NOI18N
@@ -438,6 +503,20 @@ public class MPV5View extends FrameView {
 
         menuBar.add(jMenu3);
 
+        favouritesMenu.setText(bundle.getString("MPV5View.favouritesMenu.text")); // NOI18N
+        favouritesMenu.setName("favouritesMenu"); // NOI18N
+
+        jMenuItem5.setText(bundle.getString("MPV5View.jMenuItem5.text")); // NOI18N
+        jMenuItem5.setName("jMenuItem5"); // NOI18N
+        jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem5ActionPerformed(evt);
+            }
+        });
+        favouritesMenu.add(jMenuItem5);
+
+        menuBar.add(favouritesMenu);
+
         statusPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         statusPanel.setName("statusPanel"); // NOI18N
         statusPanel.setPreferredSize(new java.awt.Dimension(800, 20));
@@ -454,8 +533,8 @@ public class MPV5View extends FrameView {
             statusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(statusPanelLayout.createSequentialGroup()
                 .addGroup(statusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(statusPanelSeparator, javax.swing.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)
-                    .addComponent(statusMessageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE))
+                    .addComponent(statusPanelSeparator, javax.swing.GroupLayout.DEFAULT_SIZE, 273, Short.MAX_VALUE)
+                    .addComponent(statusMessageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 273, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -604,7 +683,14 @@ public class MPV5View extends FrameView {
         }
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
+    private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
+        Favourite.flush(getUser());
+        refreshFavouritesMenu();
+
+    }//GEN-LAST:event_jMenuItem5ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public javax.swing.JMenu favouritesMenu;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton18;
     private javax.swing.JButton jButton2;
@@ -620,6 +706,7 @@ public class MPV5View extends FrameView {
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
+    private javax.swing.JMenuItem jMenuItem5;
     private com.l2fprod.common.swing.JOutlookBar jOutlookBar1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -663,5 +750,12 @@ public class MPV5View extends FrameView {
      */
     public javax.swing.JPanel getStatusPanel() {
         return statusPanel;
+    }
+
+    /**
+     * @return the favouritesMenu
+     */
+    public javax.swing.JMenu getFavouritesMenu() {
+        return favouritesMenu;
     }
 }

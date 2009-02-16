@@ -17,7 +17,6 @@ public class Contact extends DatabaseObject {
     private String cnumber = "";
     private String title = "";
     private String prename = "";
-    private String cname = "";
     private String street = "";
     private String zip = "";
     private String city = "";

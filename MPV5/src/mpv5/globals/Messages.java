@@ -69,7 +69,9 @@ public class Messages {
     public static String VALUE_NOT_VALID = "You have entered an invalid value: ";
     public static String VALUE_ALREADY_EXISTS = "The value already exists in the database and must not be duplicated: ";
     public static String ADMIN_ACCESS = "You need administrative rights to perform this action.";
-    public static String NOT_POSSIBLE = "Requested action is not possible.";
-    public static String DEFAULT_USER = "Default user can`t be changed,\nlog in as real user to perform this action.";
+    public static String NOT_POSSIBLE = "Requested action is not possible. ";
+    public static String DEFAULT_USER = "Default user can`t do this,\nlog in as real user to perform this action.";
     public static String REALLY_DELETE = "Do you really want to delete this dataset?";
+    public static String NOT_SAVED_YET = "The data has not been saved yet.";
+    public static String ADDED_TO_FAVOURITES = "The item has been added to your favourites list: ";
 }

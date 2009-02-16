@@ -27,6 +27,7 @@ import mpv5.ui.dialogs.Wizard;
 import mpv5.ui.dialogs.subcomponents.wizard_DBSettings_1;
 import mpv5.ui.dialogs.subcomponents.wizard_DBSettings_2;
 
+import mpv5.usermanagement.User;
 import mpv5.utils.files.FileDirectoryHandler;
 import org.apache.commons.cli2.*;
 import org.apache.commons.cli2.builder.*;
@@ -52,7 +53,6 @@ public class Main extends SingleFrameApplication {
         launch(Main.class, new String[]{});
     }
 
-
     /**
      * At startup create and show the main frame of the application.
      */
@@ -60,6 +60,7 @@ public class Main extends SingleFrameApplication {
     protected void startup() {
         if (probeDatabaseConnection()) {
             setLaF(null);
+            login();
             show(new MPV5View(this));
         } else if (Popup.Y_N_dialog(Messages.NO_DB_CONNECTION)) {
             try {
@@ -100,7 +101,9 @@ public class Main extends SingleFrameApplication {
     protected void shutdown() {
         LocalSettings.save();
         try {
-            if(!MPV5View.getUser().isDefault())MPV5View.getUser().save();
+            if (!MPV5View.getUser().isDefault()) {
+                MPV5View.getUser().save();
+            }
         } catch (Exception e) {
         }
         super.shutdown();
@@ -258,11 +261,10 @@ public class Main extends SingleFrameApplication {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             }
             LookAndFeelAddons.setAddon(LookAndFeelAddons.getBestMatchAddonClassName());
-            if (MPV5View.identifier != null && MPV5View.identifier.isShowing()) {
-                MPV5View.identifier.setVisible(false);
-                SwingUtilities.updateComponentTreeUI(MPV5View.identifier);
-//                MPV5View.identifier.pack();
-                MPV5View.identifier.setVisible(true);
+            if (MPV5View.identifierFrame != null && MPV5View.identifierFrame.isShowing()) {
+                MPV5View.identifierFrame.setVisible(false);
+                SwingUtilities.updateComponentTreeUI(MPV5View.identifierFrame);
+                MPV5View.identifierFrame.setVisible(true);
             }
         } catch (Exception exe) {
             try {
@@ -278,6 +280,20 @@ public class Main extends SingleFrameApplication {
         Map<String, String> env = System.getenv();
         for (String envName : env.keySet()) {
             System.out.format("%s=%s%n", envName, env.get(envName));
+        }
+    }
+
+    private void login() {
+        if (!LocalSettings.getProperty("lastuser").equals("null") && !LocalSettings.getProperty("lastuserpw").equals("null")) {
+            User usern1 = new User();
+            Log.Debug(this, "Checking for auto login.. ");
+            if (usern1.fetchDataOf(Integer.valueOf(LocalSettings.getProperty("lastuser")))) {
+                Log.Debug(this, "Trying to login user: " + usern1);
+                User user = mpv5.usermanagement.MPSecurityManager.checkAuthInternal(usern1, LocalSettings.getProperty("lastuserpw"));
+                if (user != null) {
+                    MPV5View.setUser(user);
+                }
+            }
         }
     }
 

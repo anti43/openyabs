@@ -73,6 +73,29 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
+     * Checks the uniqueness of a unique constraint
+     * Works only for columns with equal data type
+     * @param constraint  {"column1,column2","value1,value2","'"}
+     * @return true if the key constraint is not existing yet
+     */
+    public boolean checkConstraint(String[] constraint) {
+
+        Object[][] val = select(constraint[0], null);
+        if (val != null && val.length > 0) {
+            for (int i = 0; i < val.length; i++) {
+                for (int j = 0; j < constraint[1].split(",").length; j++) {
+                    if (constraint[1].split(",")[j].equals(val[i][j])) {
+                        return false;
+                    }
+                }
+            }
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
      * This is a convenience bridge between views and unique constraint checks.
      * If the given objects is from type JTextField or LabeledTextField, the TextFields background will flash red<br/>
      * if the uniqueness check fails, nothing will happen otherwise
@@ -91,7 +114,6 @@ public class QueryHandler implements Cloneable {
 
         return returnv;
     }
-
 
     /**
      *
@@ -1188,13 +1210,12 @@ public class QueryHandler implements Cloneable {
         }
     }
 
-
     /**
      * Remove a file from the db
      * @param fileid
      * @throws java.lang.Exception
      */
     public void removeFile(String fileid) throws Exception {
-        delete(new String[][]{{"cname", fileid,"'"}});
+        delete(new String[][]{{"cname", fileid, "'"}});
     }
 }

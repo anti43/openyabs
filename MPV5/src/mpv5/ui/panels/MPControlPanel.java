@@ -382,7 +382,7 @@ public class MPControlPanel extends javax.swing.JPanel {
             details.validate();
             ((Component) panel).validate();
             MPV5View.setWaiting(false);
-            MPV5View.identifier.validate();
+            MPV5View.identifierFrame.validate();
 
         }
     }
