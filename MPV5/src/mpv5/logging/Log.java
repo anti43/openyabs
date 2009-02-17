@@ -16,8 +16,10 @@
  */
 package mpv5.logging;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
+import mpv5.utils.files.FileReaderWriter;
 
 /**
  *
@@ -30,6 +32,14 @@ public class Log {
     public static final int LOGLEVEL_DEBUG = 2;
     private static int loglevel = 2;
     private static LogConsole logger = new LogConsole();
+
+    /**
+     * Print out a text file
+     * @param file
+     */
+    public static void Debug(File file) {
+        PrintArray(new FileReaderWriter(file).readLines());
+    }
 
     public static void Debug(Object source, Object message, boolean alwaysToKonsole) {
         if (loglevel == LOGLEVEL_DEBUG) {
@@ -149,6 +159,10 @@ public class Log {
                 }
             }
         }
+    }
+
+    public static void show(String string) {
+        System.err.println(string);
     }
 
     private static void Debug(Object obj) {

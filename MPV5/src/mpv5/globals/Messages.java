@@ -74,4 +74,5 @@ public class Messages {
     public static String REALLY_DELETE = "Do you really want to delete this dataset?";
     public static String NOT_SAVED_YET = "The data has not been saved yet.";
     public static String ADDED_TO_FAVOURITES = "The item has been added to your favourites list: ";
+    public static String NO_PRINTER_FOUND = "No printer found on this system.";
 }

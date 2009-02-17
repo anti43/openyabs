@@ -1,26 +1,22 @@
 package mpv5.ui.panels;
 
-import java.awt.event.ItemEvent;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
 import mpv5.data.Search;
 import mpv5.db.common.Context;
 import mpv5.globals.Headers;
-import mpv5.utils.models.MPComboBoxModelItem;
-import mpv5.utils.print.PrintJob;
 
 /**
  *
  * @author anti43
  */
 public class ContactsList extends javax.swing.JPanel implements ListPanel {
+    private static final long serialVersionUID = 1L;
 
     private Context context;
 
     /** Creates new form ListPanel */
     public ContactsList() {
         initComponents();
- 
+        prinitingComboBox1.init(listTable);
     }
 
     public ContactsList(Context context) {
@@ -30,6 +26,7 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
         context.setSearchHeaders(Headers.CONTACT_DETAILS);
         context.addReference(Context.IDENTITY_CONTACTS, "ids", "companyuid");
         fill(true, true, true, true, false);
+        prinitingComboBox1.init(listTable);
     }
 
     private void fill(boolean customer, boolean supplier, boolean manufacturer, boolean company, boolean filtered) {
@@ -61,6 +58,7 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
         excButton = new javax.swing.JCheckBox();
         jLabel2 = new javax.swing.JLabel();
         count = new javax.swing.JLabel();
+        prinitingComboBox1 = new mpv5.ui.beans.PrinitingComboBox();
 
         setName("Form"); // NOI18N
 
@@ -134,10 +132,15 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
         });
 
         excButton.setBackground(new java.awt.Color(255, 255, 255));
-        excButton.setFont(new java.awt.Font("Tahoma", 1, 11));
+        excButton.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         excButton.setText(bundle.getString("ContactsList.excButton.text")); // NOI18N
         excButton.setToolTipText(bundle.getString("ContactsList.excButton.toolTipText")); // NOI18N
         excButton.setName("excButton"); // NOI18N
+        excButton.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                excButtonItemStateChanged(evt);
+            }
+        });
 
         jLabel2.setText(bundle.getString("ContactsList.jLabel2.text")); // NOI18N
         jLabel2.setName("jLabel2"); // NOI18N
@@ -189,21 +192,27 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
                     .addComponent(count)))
         );
 
+        prinitingComboBox1.setName("prinitingComboBox1"); // NOI18N
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(191, Short.MAX_VALUE))
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 556, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(prinitingComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 587, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(prinitingComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 54, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 56, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -223,6 +232,11 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
         fill(jCheckBox1.isSelected(), jCheckBox2.isSelected(), jCheckBox3.isSelected(), jCheckBox4.isSelected(), excButton.isSelected());
 }//GEN-LAST:event_ItemStateChanged
 
+    private void excButtonItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_excButtonItemStateChanged
+
+          fill(jCheckBox1.isSelected(), jCheckBox2.isSelected(), jCheckBox3.isSelected(), jCheckBox4.isSelected(), excButton.isSelected());
+    }//GEN-LAST:event_excButtonItemStateChanged
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel count;
     private javax.swing.JCheckBox excButton;
@@ -236,6 +250,7 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable listTable;
+    private mpv5.ui.beans.PrinitingComboBox prinitingComboBox1;
     // End of variables declaration//GEN-END:variables
 
     /**

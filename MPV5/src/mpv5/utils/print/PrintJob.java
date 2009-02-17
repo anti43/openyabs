@@ -39,6 +39,7 @@ import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.standard.MediaSizeName;
 import mpv5.db.common.DatabaseObject;
 import mpv5.globals.LocalSettings;
+import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.files.FileReaderWriter;
@@ -90,7 +91,7 @@ public class PrintJob implements Waiter {
                 printOldStyle(filelist);
             }
         } else {
-           printOldStyle(filelist);
+            printOldStyle(filelist);
         }
     }
 
@@ -118,6 +119,8 @@ public class PrintJob implements Waiter {
                 }
             }
         }
+
+        Log.Debug(file);
         try {
             print(file);
         } catch (FileNotFoundException fileNotFoundException) {
@@ -159,58 +162,62 @@ public class PrintJob implements Waiter {
     }
 
     private void printOldStyle(ArrayList<File> filelist) {
-         if (null == prservices || 0 >= prservices.length) {
-                if (null != prservDflt) {
-                    System.err.println("Nur Default-Printer, da lookupPrintServices fehlgeschlagen.");
-                    prservices = new PrintService[]{prservDflt};
-                }
+        if (null == prservices || 0 >= prservices.length) {
+            if (null != prservDflt) {
+                System.err.println("Nur Default-Printer, da lookupPrintServices fehlgeschlagen.");
+                prservices = new PrintService[]{prservDflt};
             }
-            Log.Debug(this, "Print-Services:");
-            int i;
-            for (i = 0; i < prservices.length; i++) {
-                Log.Debug(this, "  " + i + ":  " + prservices[i] + ((prservDflt != prservices[i]) ? "" : " (Default)"));
+        }
+        Log.Debug(this, "Print-Services:");
+        int i;
+        for (i = 0; i < prservices.length; i++) {
+            Log.Debug(this, "  " + i + ":  " + prservices[i] + ((prservDflt != prservices[i]) ? "" : " (Default)"));
+        }
+        PrintService prserv = null;
+        if (0 <= idxPrintService && idxPrintService < prservices.length) {
+            prserv = prservices[idxPrintService];
+        } else {
+            if (!Arrays.asList(prservices).contains(prservDflt)) {
+                prservDflt = null;
             }
-            PrintService prserv = null;
-            if (0 <= idxPrintService && idxPrintService < prservices.length) {
-                prserv = prservices[idxPrintService];
-            } else {
-                if (!Arrays.asList(prservices).contains(prservDflt)) {
-                    prservDflt = null;
-                }
-                if (prservices == null) {
-                    prservices = new PrintService[]{PrintServiceLookup.lookupDefaultPrintService()};
-                }
+            if (prservices == null) {
+                prservices = new PrintService[]{PrintServiceLookup.lookupDefaultPrintService()};
+            }
+            if (prservices != null && prservices.length > 0) {
                 prserv = ServiceUI.printDialog(null, 50, 50, prservices, prservDflt, null, aset);
+            } else {
+                mpv5.ui.dialogs.Popup.notice(Messages.NO_PRINTER_FOUND);
             }
-            if (null != prserv) {
-                Log.Debug(this, "Ausgewaehlter Print-Service:");
-                Log.Debug(this, "      " + prserv);
-                printPrintServiceAttributesAndDocFlavors(prserv);
-                DocPrintJob pj = prserv.createPrintJob();
+        }
+        if (null != prserv) {
+            Log.Debug(this, "Ausgewaehlter Print-Service:");
+            Log.Debug(this, "      " + prserv);
+            printPrintServiceAttributesAndDocFlavors(prserv);
+            DocPrintJob pj = prserv.createPrintJob();
 
 
-                for (int j = 0; j < filelist.size(); j++) {
-                    FileInputStream fis = null;
+            for (int j = 0; j < filelist.size(); j++) {
+                FileInputStream fis = null;
+                try {
+                    File file = filelist.get(j);
+                    fis = new FileInputStream(file);
+                    Doc doc = new SimpleDoc(fis, flavor, null);
                     try {
-                        File file = filelist.get(j);
-                        fis = new FileInputStream(file);
-                        Doc doc = new SimpleDoc(fis, flavor, null);
-                        try {
-                            pj.print(doc, aset);
-                        } catch (PrintException ex) {
-                            Log.Debug(ex);
-                        }
-                    } catch (FileNotFoundException ex) {
+                        pj.print(doc, aset);
+                    } catch (PrintException ex) {
                         Log.Debug(ex);
-                    } finally {
-                        try {
-                            fis.close();
-                        } catch (IOException ex) {
-                            Log.Debug(ex);
-                        }
+                    }
+                } catch (FileNotFoundException ex) {
+                    Log.Debug(ex);
+                } finally {
+                    try {
+                        fis.close();
+                    } catch (IOException ex) {
+                        Log.Debug(ex);
                     }
                 }
             }
+        }
     }
 
     private void printPrintServiceAttributesAndDocFlavors(PrintService prserv) {

@@ -27,11 +27,13 @@ import mpv5.ui.dialogs.Popup;
 import mpv5.ui.menus.FavouritesMenuItem;
 import mpv5.ui.panels.ContactPanel;
 import mpv5.ui.panels.ContactsList;
+import mpv5.ui.panels.DataPanel;
 import mpv5.ui.panels.MPControlPanel;
 import mpv5.ui.parents.CloseableTabbedPane;
 import mpv5.ui.parents.FadeOnChangeLabel;
 import mpv5.ui.parents.Position;
 import mpv5.usermanagement.User;
+import mpv5.utils.print.PrintJob;
 import mpv5.utils.text.TypeConversion;
 import org.jdesktop.application.SingleFrameApplication;
 import org.jdesktop.application.FrameView;
@@ -61,7 +63,7 @@ public class MPV5View extends FrameView {
     /**
      * Reloads fav menu
      */
-    public  void refreshFavouritesMenu() {
+    public void refreshFavouritesMenu() {
         if (favMenu != null) {
             favMenu.removeAll();
             favouritesMenu.add(jMenuItem5);
@@ -208,6 +210,7 @@ public class MPV5View extends FrameView {
         jPanel6 = new javax.swing.JPanel();
         menuBar = new javax.swing.JMenuBar();
         javax.swing.JMenu fileMenu = new javax.swing.JMenu();
+        jMenuItem6 = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -249,7 +252,7 @@ public class MPV5View extends FrameView {
         jPanel2.setName("jPanel2"); // NOI18N
         jPanel2.setPreferredSize(new java.awt.Dimension(110, 400));
 
-        jButton5.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton5.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/agt_family.png"))); // NOI18N
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jButton5.setText(bundle.getString("MPV5View.jButton5.text_1")); // NOI18N
@@ -276,7 +279,7 @@ public class MPV5View extends FrameView {
             }
         });
 
-        jButton2.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton2.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/edit_user.png"))); // NOI18N
         jButton2.setText(bundle.getString("MPV5View.jButton2.text_1")); // NOI18N
         jButton2.setToolTipText(bundle.getString("MPV5View.jButton2.toolTipText_1")); // NOI18N
@@ -439,6 +442,18 @@ public class MPV5View extends FrameView {
 
         fileMenu.setText(bundle.getString("MPV5View.fileMenu.text_1")); // NOI18N
         fileMenu.setName("fileMenu"); // NOI18N
+
+        jMenuItem6.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/22/printer1.png"))); // NOI18N
+        jMenuItem6.setText(bundle.getString("MPV5View.jMenuItem6.text")); // NOI18N
+        jMenuItem6.setName("jMenuItem6"); // NOI18N
+        jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem6ActionPerformed(evt);
+            }
+        });
+        fileMenu.add(jMenuItem6);
+
         menuBar.add(fileMenu);
 
         jMenu1.setText(bundle.getString("MPV5View.jMenu1.text_1")); // NOI18N
@@ -657,6 +672,7 @@ public class MPV5View extends FrameView {
             final String title = tabPane.getTitleAt(tabPane.getSelectedIndex());
             tabPane.remove(pane);
             JFrame fr = new JFrame(title) {
+
                 @Override
                 public void dispose() {
                     tabPane.addTab(title, pane);
@@ -678,6 +694,17 @@ public class MPV5View extends FrameView {
 
     }//GEN-LAST:event_jMenuItem5ActionPerformed
 
+    private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
+        Component pane = tabPane.getSelectedComponent();
+        if (pane instanceof DataPanel) {
+            try {
+                new PrintJob().print((((DataPanel) pane)).getDataOwner());
+            } catch (Exception e) {
+                Log.Debug(this, e);
+            }
+        }
+    }//GEN-LAST:event_jMenuItem6ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JMenu favouritesMenu;
     private javax.swing.JButton jButton1;
@@ -696,6 +723,7 @@ public class MPV5View extends FrameView {
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
+    private javax.swing.JMenuItem jMenuItem6;
     private com.l2fprod.common.swing.JOutlookBar jOutlookBar1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;

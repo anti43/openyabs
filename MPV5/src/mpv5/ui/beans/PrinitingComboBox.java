@@ -51,11 +51,16 @@ public class PrinitingComboBox extends javax.swing.JPanel {
     private Object dataowner;
 
     /** Creates new form PrinitingComboBox
-     * @param dataowner Table or DatabaseObject
      */
-    public PrinitingComboBox(Object dataowner) {
+    public PrinitingComboBox() {
         initComponents();
+    }
 
+    /**
+     *
+     * @param dataowner DatabaseObject or JTable
+     */
+    public void init(Object dataowner) {
         if (dataowner instanceof DatabaseObject) {
 
             jComboBox1.setModel(new DefaultComboBoxModel(new Object[]{new MPComboBoxModelItem(-1, ""),
@@ -65,13 +70,14 @@ public class PrinitingComboBox extends javax.swing.JPanel {
                         new MPComboBoxModelItem(3, "XML File")}));
             mode = MODE_DO;
         } else if (dataowner instanceof JTable) {
-
             jComboBox1.setModel(new DefaultComboBoxModel(new Object[]{new MPComboBoxModelItem(-1, ""),
                         new MPComboBoxModelItem(0, "Printer"),
                         new MPComboBoxModelItem(1, "HTML File")}));
             mode = MODE_TABLE;
         }
         this.dataowner = dataowner;
+
+
     }
 
     /** This method is called from within the constructor to
@@ -154,7 +160,7 @@ public class PrinitingComboBox extends javax.swing.JPanel {
                         case 1:
                             DialogForFile dialog = new DialogForFile(DialogForFile.FILES_ONLY, "contacts-" + DateConverter.getTodayDefDate() + ".html");
                             if (dialog.saveFile()) {
-                                File f = new TableHtmlWriter(((DefaultTableModel)((JTable) dataowner).getModel()), dialog.getFile()).createHtml();
+                                File f = new TableHtmlWriter(((DefaultTableModel) ((JTable) dataowner).getModel()), dialog.getFile()).createHtml();
                                 FileActionHandler.open(f);
                             }
                             break;
@@ -162,7 +168,7 @@ public class PrinitingComboBox extends javax.swing.JPanel {
                     break;
                 }
         }
-        cb.setSelectedIndex(-1);
+
     }//GEN-LAST:event_jComboBox1ItemStateChanged
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
