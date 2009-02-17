@@ -64,18 +64,8 @@ public class MPV5View extends FrameView {
     public  void refreshFavouritesMenu() {
         if (favMenu != null) {
             favMenu.removeAll();
-            java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
-            jMenuItem5.setText(bundle.getString("MPV5View.jMenuItem5.text")); // NOI18N
-            jMenuItem5.setName("jMenuItem5"); // NOI18N
-            jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
-
-                public void actionPerformed(java.awt.event.ActionEvent evt) {
-                    jMenuItem5ActionPerformed(evt);
-                }
-            });
             favouritesMenu.add(jMenuItem5);
             fillFavouritesmenu();
-
         }
     }
 
@@ -667,7 +657,6 @@ public class MPV5View extends FrameView {
             final String title = tabPane.getTitleAt(tabPane.getSelectedIndex());
             tabPane.remove(pane);
             JFrame fr = new JFrame(title) {
-
                 @Override
                 public void dispose() {
                     tabPane.addTab(title, pane);

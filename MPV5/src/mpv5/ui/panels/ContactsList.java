@@ -1,16 +1,12 @@
 package mpv5.ui.panels;
 
-import java.awt.Desktop;
-import java.io.File;
-import javax.swing.table.DefaultTableModel;
+import java.awt.event.ItemEvent;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 import mpv5.data.Search;
 import mpv5.db.common.Context;
 import mpv5.globals.Headers;
-import mpv5.globals.LocalSettings;
-import mpv5.ui.dialogs.DialogForFile;
-import mpv5.utils.date.DateConverter;
-import mpv5.utils.html.TableHtmlWriter;
-import mpv5.utils.files.FileActionHandler;
+import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.print.PrintJob;
 
 /**
@@ -24,6 +20,7 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
     /** Creates new form ListPanel */
     public ContactsList() {
         initComponents();
+ 
     }
 
     public ContactsList(Context context) {
@@ -64,12 +61,10 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
         excButton = new javax.swing.JCheckBox();
         jLabel2 = new javax.swing.JLabel();
         count = new javax.swing.JLabel();
-        jPanel3 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
 
         setName("Form"); // NOI18N
 
-        java.util.ResourceBundle bundle = mpv5.resources.languages.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ContactsList.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 
@@ -97,7 +92,7 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ContactsList.jPanel2.border.title"))); // NOI18N
         jPanel2.setName("jPanel2"); // NOI18N
 
-        jLabel1.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 1, 11)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 11));
         jLabel1.setText(bundle.getString("ContactsList.jLabel1.text")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
 
@@ -139,7 +134,7 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
         });
 
         excButton.setBackground(new java.awt.Color(255, 255, 255));
-        excButton.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 1, 11)); // NOI18N
+        excButton.setFont(new java.awt.Font("Tahoma", 1, 11));
         excButton.setText(bundle.getString("ContactsList.excButton.text")); // NOI18N
         excButton.setToolTipText(bundle.getString("ContactsList.excButton.toolTipText")); // NOI18N
         excButton.setName("excButton"); // NOI18N
@@ -173,7 +168,7 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(count, javax.swing.GroupLayout.DEFAULT_SIZE, 248, Short.MAX_VALUE)))
+                        .addComponent(count, javax.swing.GroupLayout.DEFAULT_SIZE, 283, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -188,28 +183,11 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
                     .addComponent(jCheckBox3)
                     .addComponent(jCheckBox4)
                     .addComponent(excButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(count)))
         );
-
-        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ContactsList.jPanel3.border.title"))); // NOI18N
-        jPanel3.setName("jPanel3"); // NOI18N
-
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/firefox2.png"))); // NOI18N
-        jButton1.setText(bundle.getString("ContactsList.jButton1.text")); // NOI18N
-        jButton1.setToolTipText(bundle.getString("ContactsList.jButton1.toolTipText")); // NOI18N
-        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton1.setName("jButton1"); // NOI18N
-        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-        jPanel3.add(jButton1);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -217,19 +195,15 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 423, Short.MAX_VALUE)
+                .addContainerGap(191, Short.MAX_VALUE))
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 556, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 52, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 54, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -244,23 +218,14 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        DialogForFile dialog = new DialogForFile(DialogForFile.FILES_ONLY, "contacts-" + DateConverter.getTodayDefDate() + ".html");
-        if (dialog.saveFile()) {
-            File f = new TableHtmlWriter((DefaultTableModel) listTable.getModel(), dialog.getFile()).createHtml();
-            FileActionHandler.open(f);
-        }
-    }//GEN-LAST:event_jButton1ActionPerformed
-
     private void ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_ItemStateChanged
 
-          fill(jCheckBox1.isSelected(),jCheckBox2.isSelected(),jCheckBox3.isSelected(),jCheckBox4.isSelected(),excButton.isSelected());
+        fill(jCheckBox1.isSelected(), jCheckBox2.isSelected(), jCheckBox3.isSelected(), jCheckBox4.isSelected(), excButton.isSelected());
 }//GEN-LAST:event_ItemStateChanged
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel count;
     private javax.swing.JCheckBox excButton;
-    private javax.swing.JButton jButton1;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox jCheckBox2;
     private javax.swing.JCheckBox jCheckBox3;
@@ -269,7 +234,6 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable listTable;
     // End of variables declaration//GEN-END:variables

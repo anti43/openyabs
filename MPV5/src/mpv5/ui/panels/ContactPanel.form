@@ -36,14 +36,14 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
                   <Component id="rightpane" max="32767" attributes="0"/>
-                  <Component id="toolbarpane" alignment="0" pref="788" max="32767" attributes="0"/>
+                  <Component id="toolbarpane" alignment="0" pref="700" max="32767" attributes="0"/>
               </Group>
           </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="leftpane" alignment="0" pref="724" max="32767" attributes="1"/>
+          <Component id="leftpane" alignment="0" pref="624" max="32767" attributes="1"/>
           <Group type="102" alignment="0" attributes="0">
               <Component id="toolbarpane" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
@@ -78,12 +78,12 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="10" pref="10" max="10" attributes="0"/>
                   <Component id="jLabel7" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="737" max="32767" attributes="0"/>
+                  <EmptySpace pref="649" max="32767" attributes="0"/>
               </Group>
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="10" pref="10" max="10" attributes="0"/>
                   <Component id="jLabel8" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="679" max="32767" attributes="0"/>
+                  <EmptySpace pref="591" max="32767" attributes="0"/>
               </Group>
               <Group type="102" attributes="0">
                   <EmptySpace min="10" pref="10" max="10" attributes="0"/>
@@ -95,7 +95,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="jPanel1" alignment="1" max="32767" attributes="2"/>
                       <Component id="jPanel2" alignment="1" max="32767" attributes="2"/>
-                      <Component id="jPanel3" alignment="1" pref="754" max="32767" attributes="2"/>
+                      <Component id="jPanel3" alignment="1" pref="666" max="32767" attributes="2"/>
                       <Component id="jPanel4" alignment="1" max="32767" attributes="2"/>
                       <Component id="jPanel9" alignment="1" max="32767" attributes="2"/>
                   </Group>
@@ -104,7 +104,7 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jToolBar1" min="-2" pref="435" max="-2" attributes="0"/>
-                  <EmptySpace pref="100" max="32767" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
                   <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="jComboBox1" min="-2" max="-2" attributes="0"/>
@@ -146,7 +146,7 @@
         <Container class="javax.swing.JPanel" name="jPanel1">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="cc" green="cc" red="cc" type="rgb"/>
+              <Color blue="ca" green="db" red="e3" type="rgb"/>
             </Property>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
@@ -183,7 +183,7 @@
                               <Component id="company" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
-                      <EmptySpace pref="194" max="32767" attributes="0"/>
+                      <EmptySpace pref="106" max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="1" attributes="0">
                           <Component id="dateadded" min="-2" pref="97" max="-2" attributes="0"/>
                           <Component id="addedby" alignment="1" min="-2" pref="97" max="-2" attributes="0"/>
@@ -373,7 +373,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane1" pref="726" max="32767" attributes="0"/>
+                      <Component id="jScrollPane1" pref="638" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -412,7 +412,7 @@
         <Container class="javax.swing.JPanel" name="jPanel2">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="cc" green="cc" red="cc" type="rgb"/>
+              <Color blue="ca" green="db" red="e3" type="rgb"/>
             </Property>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
@@ -453,7 +453,7 @@
                               <Component id="zip" min="-2" pref="101" max="-2" attributes="0"/>
                           </Group>
                       </Group>
-                      <EmptySpace pref="328" max="32767" attributes="0"/>
+                      <EmptySpace pref="240" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -587,7 +587,7 @@
         <Container class="javax.swing.JPanel" name="jPanel3">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="cc" green="cc" red="cc" type="rgb"/>
+              <Color blue="ca" green="db" red="e3" type="rgb"/>
             </Property>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
@@ -749,7 +749,7 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jScrollPane2" alignment="1" pref="726" max="32767" attributes="0"/>
+                          <Component id="jScrollPane2" alignment="1" pref="638" max="32767" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="button_bills" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
@@ -775,7 +775,7 @@
                           <Component id="button_orders" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane2" pref="126" max="32767" attributes="2"/>
+                      <Component id="jScrollPane2" pref="26" max="32767" attributes="2"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
