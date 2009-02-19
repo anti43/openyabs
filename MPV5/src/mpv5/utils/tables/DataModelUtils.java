@@ -20,13 +20,22 @@ along with MP.  If not, see <http://www.gnu.org/licenses/>.
 package mpv5.utils.tables;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 import javax.swing.JTable;
+import javax.swing.JTree;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
 import mpv5.logging.Log;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.files.FileDirectoryHandler;
@@ -269,11 +278,53 @@ public class DataModelUtils {
         return file;
     }
 
+    public static DefaultTableModel toTableModel(HashMap data) {
+
+        Object[] array = data.keySet().toArray();
+        Object[][] table = new Object[array.length][1];
+
+        for (int i = 0; i < array.length; i++) {
+            table[i][0] = array[i];
+        }
+
+        return new DefaultTableModel(table, new Object[]{"Devices"});
+    }
+
+    public static ArrayList<Ip> removeDuplicates(ArrayList<Ip> arlList) {
+        Set<Ip> set = new HashSet<Ip>();
+        List<Ip> newList = new ArrayList<Ip>();
+        for (Iterator<Ip> iter = arlList.iterator(); iter.hasNext();) {
+            Ip element = iter.next();
+            if (set.add(element)) {
+                newList.add(element);
+            }
+        }
+        arlList.clear();
+        arlList.addAll(newList);
+
+        return arlList;
+    }
+
+    public static ArrayList<String> getSelectionFromTree(JTree tree) {
+        ArrayList<String> list = new ArrayList<String>();
+        TreePath[] nodes = tree.getSelectionPaths();
+
+        for (int i = 0; i < nodes.length; i++) {
+            TreePath temp = nodes[i];
+            Object tempObj = temp.getLastPathComponent();
+            DefaultMutableTreeNode treNode = (DefaultMutableTreeNode) tempObj;
+            String device = String.valueOf(treNode.getUserObject());
+            list.add(device);
+        }
+
+        return list;
+    }
+
     public static Object[][] tableModelToArray(JTable table) {
         return tableModelToArray(table, false);
     }
-    
-        public static Object[][] tableModelToArray(JTable table, boolean onlyTheSelectedRows) {
+
+    public static Object[][] tableModelToArray(JTable table, boolean onlyTheSelectedRows) {
 
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         Object[][] data;
@@ -296,7 +347,7 @@ public class DataModelUtils {
                 for (int i = 0; i < model.getColumnCount(); i++) {
                     data[idx][i] = model.getValueAt(row, i);
                 }
-                
+
             }
         }
         return data;
