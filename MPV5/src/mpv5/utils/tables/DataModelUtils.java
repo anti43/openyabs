@@ -270,16 +270,35 @@ public class DataModelUtils {
     }
 
     public static Object[][] tableModelToArray(JTable table) {
+        return tableModelToArray(table, false);
+    }
+    
+        public static Object[][] tableModelToArray(JTable table, boolean onlyTheSelectedRows) {
 
-        TableModel model = table.getModel();
-        Object[][] data = new Object[model.getRowCount()][model.getColumnCount()];
-
-        for (int idx = 0; idx < model.getRowCount(); idx++) {
-            for (int i = 0; i < model.getColumnCount(); i++) {
-                data[idx][i] = model.getValueAt(idx, i);
-            }
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        Object[][] data;
+        int[] selections = table.getSelectedRows();
+        if (onlyTheSelectedRows) {
+            data = new Object[selections.length][model.getColumnCount()];
+        } else {
+            data = new Object[model.getRowCount()][model.getColumnCount()];
         }
 
+        if (!onlyTheSelectedRows) {
+            for (int idx = 0; idx < model.getRowCount(); idx++) {
+                for (int i = 0; i < model.getColumnCount(); i++) {
+                    data[idx][i] = model.getValueAt(idx, i);
+                }
+            }
+        } else {
+            for (int idx = 0; idx < selections.length; idx++) {
+                int row = selections[idx];
+                for (int i = 0; i < model.getColumnCount(); i++) {
+                    data[idx][i] = model.getValueAt(row, i);
+                }
+                
+            }
+        }
         return data;
     }
 
