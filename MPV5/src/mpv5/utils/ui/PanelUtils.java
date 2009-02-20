@@ -14,7 +14,7 @@ import mpv5.ui.beans.LabeledTextField;
 public class PanelUtils {
 
     /**
-     * 
+     * Cuts the text of a textfield to the given length
      * @param jTextField
      * @param length
      */
