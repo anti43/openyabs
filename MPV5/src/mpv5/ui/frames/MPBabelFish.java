@@ -35,10 +35,10 @@ import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.parents.Position;
 import mpv5.usermanagement.MPSecurityManager;
-import mpv5.utils.arrays.ArrayUtils;
+
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
-import mpv5.utils.tables.DataModelUtils;
+import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.tables.ExcelAdapter;
 import mpv5.utils.ui.TextFieldUtils;
 
@@ -290,8 +290,8 @@ public class MPBabelFish extends javax.swing.JFrame {
         if (MPSecurityManager.checkAdminAccess()) {
             if (langName.hasText()) {
 //            MPTableModel mpdel = DataModelUtils.getModelCopy(data);
-                DataModelUtils.removeColumn(data, 1);
-                LanguageManager.importLanguage(langName.get_Text(), DataModelUtils.tableModelToFile(data, "="));
+                ArrayUtilities.removeColumn(data, 1);
+                LanguageManager.importLanguage(langName.get_Text(), ArrayUtilities.tableModelToFile(data, "="));
 //            data.setModel(mpdel);
                 setLanguageSelection();
             } else {
@@ -304,8 +304,8 @@ public class MPBabelFish extends javax.swing.JFrame {
 
         DialogForFile dialog = new DialogForFile(DialogForFile.FILES_ONLY, "language.mp");
 //        MPTableModel mpdel = DataModelUtils.getModelCopy(data);
-        DataModelUtils.removeColumn(data, 1);
-        dialog.writeFile(DataModelUtils.tableModelToFile(data, "="));
+        ArrayUtilities.removeColumn(data, 1);
+        dialog.writeFile(ArrayUtilities.tableModelToFile(data, "="));
 //        data.setModel(mpdel);
         setLanguageSelection();
     }//GEN-LAST:event_jMenuItem1ActionPerformed
@@ -378,7 +378,7 @@ public class MPBabelFish extends javax.swing.JFrame {
         @Override
         public Object doInBackground() {
             parent.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-            String[] dat = ArrayUtils.SmallObjectToStringArray(DataModelUtils.getColumnAsArray(data, 1));
+            String[] dat = ArrayUtilities.SmallObjectToStringArray(ArrayUtilities.getColumnAsArray(data, 1));
             String[] translated = new String[dat.length];
             MPV5View.setProgressMaximumValue(dat.length);
             for (int i = 0; i < dat.length; i++) {
@@ -391,7 +391,7 @@ public class MPBabelFish extends javax.swing.JFrame {
                     Log.Debug(this, ex);
                 }
             }
-            DataModelUtils.replaceColumn(data, 2, translated);
+            ArrayUtilities.replaceColumn(data, 2, translated);
             return null;
         }
 

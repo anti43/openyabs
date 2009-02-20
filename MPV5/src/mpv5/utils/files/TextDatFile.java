@@ -31,7 +31,8 @@ import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.frames.MPV5View;
-import mpv5.utils.arrays.ListenDataUtils;
+
+import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.jobs.Waitable;
 
 /**
@@ -159,7 +160,7 @@ public class TextDatFile extends File implements Waitable {
             line = rw.readLines();
 //            Log.Debug(this, "Line.. " + i);
         }
-        data = ListenDataUtils.listToStringArrayArray(arr);
+        data = ArrayUtilities.listToStringArrayArray(arr);
         model = new DefaultTableModel(data, header);
         return data;
     }
@@ -178,7 +179,7 @@ public class TextDatFile extends File implements Waitable {
             arr.add(line[i].split(getFieldSeparator()));
 //            Log.Debug(this, "Line.. " + arr.get(i-1));
         }
-        data = ListenDataUtils.listToStringArrayArray(arr);
+        data = ArrayUtilities.listToStringArrayArray(arr);
         model = new DefaultTableModel(data, header);
         if (table != null) {
             this.table.setModel(model);

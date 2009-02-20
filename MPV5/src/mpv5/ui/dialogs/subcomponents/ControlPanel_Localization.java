@@ -8,7 +8,7 @@ import mpv5.data.PropertyStore;
 import mpv5.resources.languages.LanguageManager;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.frames.MPV5View;
-import mpv5.utils.arrays.ArrayUtils;
+
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.ui.TextFieldUtils;
 

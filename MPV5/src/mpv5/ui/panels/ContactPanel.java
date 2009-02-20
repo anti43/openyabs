@@ -36,7 +36,8 @@ import mpv5.items.handling.Favourite;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPV5View;
 import mpv5.ui.toolbars.DataPanelTB;
-import mpv5.utils.arrays.ArrayUtils;
+
+import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.print.FilePrintJob;
@@ -857,7 +858,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
     public void refresh() {
         try {
-            companyselect.setModel(new DefaultComboBoxModel(ArrayUtils.merge(new Object[]{new MPComboBoxModelItem(-1, "")},
+            companyselect.setModel(new DefaultComboBoxModel(ArrayUtilities.merge(new Object[]{new MPComboBoxModelItem(-1, "")},
                     MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getCompany()).getValuesFor(Context.getCompany().getSubID(), null, null)))));
         } catch (Exception e) {
             Log.Debug(this, e);

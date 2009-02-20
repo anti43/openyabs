@@ -18,7 +18,8 @@ package mpv5.data;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import mpv5.utils.arrays.ListenDataUtils;
+import mpv5.utils.arrays.ArrayUtilities;
+
 
 
 /**
@@ -52,9 +53,9 @@ public abstract class MethodParser {
                 }
             }
         } catch (Exception ex) {
-            return ListenDataUtils.listToTableArray(values);
+            return ArrayUtilities.listToTableArray(values);
         }
-        return ListenDataUtils.listToTableArray(values);
+        return ArrayUtilities.listToTableArray(values);
     }
 
     /**

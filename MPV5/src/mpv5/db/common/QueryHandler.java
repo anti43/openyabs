@@ -28,7 +28,8 @@ import mpv5.logging.Log;
 import mpv5.ui.frames.MPV5View;
 import mpv5.ui.dialogs.Popup;
 import mpv5.usermanagement.MPSecurityManager;
-import mpv5.utils.arrays.ArrayUtils;
+import mpv5.utils.arrays.ArrayUtilities;
+
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.date.vTimeframe;
 import mpv5.utils.files.FileDirectoryHandler;
@@ -144,14 +145,14 @@ public class QueryHandler implements Cloneable {
     public Object[] getValuesFor(String needle, String value) {
         if (context != null) {
             if (value == null) {
-                return ArrayUtils.ObjectToSingleColumnArray(freeReturnQuery("SELECT " + needle + " FROM " + table + " " + context.getReferences() + " WHERE " + context.getConditions().substring(5, context.getConditions().length()), mpv5.usermanagement.MPSecurityManager.VIEW, null).getData());
+                return ArrayUtilities.ObjectToSingleColumnArray(freeReturnQuery("SELECT " + needle + " FROM " + table + " " + context.getReferences() + " WHERE " + context.getConditions().substring(5, context.getConditions().length()), mpv5.usermanagement.MPSecurityManager.VIEW, null).getData());
             } else {
-                return ArrayUtils.ObjectToSingleColumnArray(freeReturnQuery("SELECT " + needle + " FROM " + table + " " + context.getReferences() + " WHERE " + needle + " LIKE %" + value + "% AND " + context.getConditions().substring(5, context.getConditions().length()), mpv5.usermanagement.MPSecurityManager.VIEW, null).getData());
+                return ArrayUtilities.ObjectToSingleColumnArray(freeReturnQuery("SELECT " + needle + " FROM " + table + " " + context.getReferences() + " WHERE " + needle + " LIKE %" + value + "% AND " + context.getConditions().substring(5, context.getConditions().length()), mpv5.usermanagement.MPSecurityManager.VIEW, null).getData());
             }
         } else if (value == null) {
-            return ArrayUtils.ObjectToSingleColumnArray(freeReturnQuery("SELECT " + needle + " FROM " + table + " " + context.getReferences(), mpv5.usermanagement.MPSecurityManager.VIEW, null).getData());
+            return ArrayUtilities.ObjectToSingleColumnArray(freeReturnQuery("SELECT " + needle + " FROM " + table + " " + context.getReferences(), mpv5.usermanagement.MPSecurityManager.VIEW, null).getData());
         } else {
-            return ArrayUtils.ObjectToSingleColumnArray(freeReturnQuery("SELECT " + needle + " FROM " + table + " " + context.getReferences() + "  WHERE " + needle + " LIKE %" + value + "%", mpv5.usermanagement.MPSecurityManager.VIEW, null).getData());
+            return ArrayUtilities.ObjectToSingleColumnArray(freeReturnQuery("SELECT " + needle + " FROM " + table + " " + context.getReferences() + "  WHERE " + needle + " LIKE %" + value + "%", mpv5.usermanagement.MPSecurityManager.VIEW, null).getData());
         }
     }
 

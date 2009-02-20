@@ -34,8 +34,8 @@ import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPV5View;
-import mpv5.utils.arrays.ArrayUtils;
-import mpv5.utils.arrays.ListenDataUtils;
+
+import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.files.FileReaderWriter;
 import mpv5.utils.models.MPComboBoxModelItem;
@@ -158,7 +158,7 @@ public class LanguageManager {
             list.add(new String[]{string, bundle.getString(string), null});
         }
 
-        return ListenDataUtils.listToStringArrayArray(list);
+        return ArrayUtilities.listToStringArrayArray(list);
     }
 
     /**
@@ -169,7 +169,7 @@ public class LanguageManager {
         Object[][] data = QueryHandler.instanceOf().clone(Context.getLanguage()).select("cname, longname", null);
         MPComboBoxModelItem[] t = null;
         Object[][] ldata;
-        ldata = ArrayUtils.merge(defLanguage, data);
+        ldata =ArrayUtilities.merge(defLanguage, data);
         t = MPComboBoxModelItem.toItems(ldata);
         return new DefaultComboBoxModel(t);
     }
@@ -189,7 +189,7 @@ public class LanguageManager {
                     locale_name + "  [" + language + "_" + country + "]");
 //            items[i] = new MPComboBoxModelItem(o[i].toString(), o[i].getDisplayName());
         }
-        return new DefaultComboBoxModel(ArrayUtils.sort(items));
+        return new DefaultComboBoxModel(ArrayUtilities.sort(items));
     }
 
     /**

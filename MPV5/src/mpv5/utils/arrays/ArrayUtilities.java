@@ -17,10 +17,12 @@ along with MP.  If not, see <http://www.gnu.org/licenses/>.
 
  * 
  */
-package mpv5.utils.tables;
+package mpv5.utils.arrays;
 
+import mpv5.utils.tables.*;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -46,7 +48,7 @@ import mpv5.utils.models.MPTableModel;
  *
  * @author Anti43
  */
-public class DataModelUtils {
+public class ArrayUtilities {
 
     public static void addToTable(JTable table, Object[] row) {
 
@@ -274,7 +276,7 @@ public class DataModelUtils {
         }
 
         rw.write(data);
-        Log.Debug(DataModelUtils.class, file);
+        Log.Debug(ArrayUtilities.class, file);
         return file;
     }
 
@@ -449,13 +451,400 @@ public class DataModelUtils {
 
     }
 
+    /**
+     * Copies an array to a new one
+     * @param originalarray
+     * @return
+     */
     public static Object[][] toObjectArray(String[][] originalarray) {
         Object[][] data = new Object[originalarray.length][];
         for (int idx = 0; idx < originalarray.length; idx++) {
             for (int i = 0; i < originalarray[idx].length; i++) {
-                data[idx] = (Object[]) originalarray[idx];
+                data[idx][i] = String.valueOf(originalarray[idx][i]);
             }
         }
         return data;
+    }
+
+    /**
+     * Converts a HashMap to a 2-column array {key, value}
+     * @param map
+     * @return
+     */
+    public Object[][] hashMapToArray(HashMap<String, String> map) {
+        Object[][] data = new Object[map.size()][2];
+        String[] arr = map.keySet().toArray(new String[]{});
+
+        for (int idx = 0; idx < arr.length; idx++) {
+            data[idx][0] = arr[idx];
+            data[idx][1] = map.get(arr[idx]);
+        }
+
+        return data;
+    }
+
+        public static Object[][] merge(Object[][] array1, Object[][] array2) {
+        if (array1 == null) {
+            array1 = new Object[0][0];
+        }
+        if (array2 == null) {
+            array2 = new Object[0][0];
+        }
+
+        int z = 0;
+        if (array1 != null && array1.length > 0) {
+            z = array1[0].length;
+        } else if (array2 != null && array2.length > 0) {
+            z = array2[0].length;
+        } else {
+
+            z = 0;
+        }
+
+
+        Object[][] mergedArray = new Object[array1.length + array2.length][z];
+        int i = 0;
+
+        for (i = 0; i < array1.length; i++) {
+
+            for (int k = 0; k < array1[i].length; k++) {
+
+                mergedArray[i][k] = array1[i][k];
+
+
+            }
+
+        }
+
+        for (int l = 0; l < array2.length; l++) {
+
+            for (int k = 0; k < array2[l].length; k++) {
+
+                mergedArray[i + l][k] = array2[l][k];
+
+
+            }
+
+        }
+
+        return mergedArray;
+
+    }
+
+    public static Object[][] merge(Object[] array1, Object[][] array2) {
+        if (array1 == null) {
+            array1 = new Object[0];
+        }
+        if (array2 == null) {
+            array2 = new Object[0][0];
+        }
+
+        int z = 0;
+        if (array1 != null && array1.length > 0) {
+            z = array1.length;
+        } else if (array2 != null && array2.length > 0) {
+            z = array2[0].length;
+        } else {
+            z = 0;
+        }
+
+        Object[][] mergedArray = new Object[array1.length + array2.length][z];
+        int i = 0;
+        for (i = 0; i < array1.length; i++) {
+                mergedArray[0][i] = array1[i];
+        }
+
+        for (int l = 0; l < array2.length; l++) {
+            for (int k = 0; k < array2[l].length; k++) {
+                mergedArray[i + l][k] = array2[l][k];
+            }
+        }
+        return mergedArray;
+    }
+
+
+    public static Object[] merge(Object[] array1, Object[] array2) {
+        if (array1 == null) {
+            array1 = new Object[0];
+        }
+        if (array2 == null) {
+            array2 = new Object[0];
+        }
+
+        Object[] mergedArray = new Object[array1.length + array2.length];
+        int i = 0;
+
+        for (i = 0; i < array1.length; i++) {
+            mergedArray[i] = array1[i];
+        }
+
+        for (int l = 0; l < array2.length; l++) {
+            mergedArray[i + l] = array2[l];
+        }
+
+        return mergedArray;
+    }
+
+    public static String[] reverseArray(String[] str) {
+        int i = 0, j = str.length - 1;
+        while (i < j) {
+            String h = str[i];
+            str[i] = str[j];
+            str[j] = h;
+            i++;
+            j--;
+        }
+        return str;
+
+    }
+
+    public static String[][] reverseArray(String[][] str) {
+        int i = 0, j = str.length - 1;
+        while (i < j) {
+            String[] h = str[i];
+            str[i] = str[j];
+            str[j] = h;
+            i++;
+            j--;
+        }
+        return str;
+
+    }
+
+    public static String[][] ObjectToStringArray(Object[][] array1) {
+        if (array1 == null) {
+            array1 = new Object[0][0];
+        }
+
+        String[][] mergedArray = new String[array1.length][array1[0].length];
+        int i = 0;
+        for (i = 0; i < array1.length; i++) {
+
+            for (int k = 0; k < array1[i].length; k++) {
+
+                mergedArray[i][k] = array1[i][k].toString();
+            }
+        }
+        return mergedArray;
+    }
+
+    public static String[] SmallObjectToStringArray(Object[] array1) {
+        if (array1 == null) {
+            array1 = new Object[0];
+        }
+
+        String[] mergedArray = new String[array1.length];
+        int i = 0;
+        for (i = 0; i < array1.length; i++) {
+
+            mergedArray[i] = array1[i].toString();
+        }
+        return mergedArray;
+    }
+
+    public static Object[] ObjectToSingleColumnArray(Object[][] array1) {
+        if (array1 == null) {
+            array1 = new Object[0][0];
+        }
+
+        Object[] mergedArray = new Object[array1.length];
+        int i = 0;
+        for (i = 0; i < array1.length; i++) {
+            mergedArray[i] = array1[i][0];
+        }
+        return mergedArray;
+
+    }
+
+    public static Object[] sort(Object[] items) {
+        Arrays.sort(items);
+        return items;
+    }
+
+
+    public static ArrayList StringArrayToList(String[][] array) {
+        ArrayList list = new ArrayList();
+
+        for (int i = 0; i < array.length; i++) {
+
+            list.add(array[i]);
+        }
+
+        return list;
+    }
+
+    public static ArrayList TableModelToList(JTable mode) {
+        ArrayList list = new ArrayList();
+        DefaultTableModel model = (DefaultTableModel) mode.getModel();
+        String[] str = null;
+
+        for (int i = 0; i < model.getRowCount(); i++) {
+            for (int j = 0; j < model.getColumnCount(); j++) {
+                str = new String[model.getColumnCount()];
+                str[j] = model.getValueAt(i, j).toString();
+            }
+            list.add(str);
+        }
+
+        return list;
+    }
+
+
+    /**
+     *
+     * @param list
+     * @return
+     */
+    public static Integer[][][] listToIntegerArray(ArrayList list) {
+
+        Integer[][][] str = new Integer[list.size()][][];
+
+        ArrayList a,b ;
+
+        for (int i = 0; i < list.size(); i++) {
+
+            a = (ArrayList) list.get(i);
+            str[i] = new Integer[a.size()][];
+
+            for (int m = 0; m < a.size(); m++) {
+
+                b = (ArrayList) a.get(m);
+
+                str[i][m] = new Integer[b.size()];
+
+                for (int k = 0; k < a.size(); k++) {
+
+                    str[i][m][k] = (Integer) b.get(k);
+                }
+
+
+            }
+
+        }
+
+        return str;
+    }
+
+    /**
+     *
+     * @param list
+     * @return
+     */
+    public static String[] listToStringArray(ArrayList list) {
+
+        String[] str = new String[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+
+            str[i] = (String) list.get(i);
+        }
+        return str;
+    }
+
+    public static String[][] listToStringArrayArray(ArrayList<String[]> list) {
+
+        String[][] str = new String[list.size()][];
+
+        for (int i = 0; i < list.size(); i++) {
+            str[i] = list.get(i);
+        }
+
+        return str;
+
+    }
+
+    public static Object[][] listToTableArray(ArrayList list) {
+
+        Object[][] str = new Object[list.size()][];
+
+        for (int i = 0; i < list.size(); i++) {
+            str[i] = (Object[]) list.get(i);
+        }
+
+        return str;
+    }
+
+    public static String[][] StringListToTableArray(ArrayList list) {
+
+        String[][] str = new String[list.size()][];
+
+        for (int i = 0; i < list.size(); i++) {
+            str[i] = (String[]) list.get(i);
+        }
+
+        return str;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static ArrayList merge(ArrayList list1, ArrayList list2) {
+        Iterator it1 = list1.iterator();
+        Iterator it2 = list2.iterator();
+
+        ArrayList<Double> list3 = new ArrayList();
+
+        while (it1.hasNext()) {
+            list3.add((Double) it1.next());
+        }
+
+        while (it2.hasNext()) {
+            list3.add((Double) it2.next());
+        }
+
+      return list3;
+   }
+
+
+    /**
+     * list 1 +2 must have same element count!
+     *
+     * @param list1
+     * @param list2
+     * @return list1.values(n) - list2.values(n)
+     * @throws Exception
+     */
+    @SuppressWarnings("unchecked")
+    public static ArrayList substract(ArrayList<Double> list1, ArrayList<Double> list2) throws Exception {
+        Iterator it1 = list1.iterator();
+        Iterator it2 = list2.iterator();
+
+        if(list1.size() != list2.size()) {
+            throw new Exception("list 1 + 2 must have same element count!");
+        }
+
+        ArrayList<Double> list3 = new ArrayList();
+
+        while (it1.hasNext() && it2.hasNext()) {
+            Double value = (Double)it1.next() - (Double)it2.next();
+            list3.add(value);
+        }
+
+      return list3;
+    }
+
+    /**
+     * list 1 + 2 must have same element count!
+     *
+     * @param list1
+     * @param list2
+     * @return list1.values(n) + list2.values(n)
+     * @throws Exception
+     */
+    public static ArrayList<Double> add(ArrayList<Double> list1, ArrayList<Double> list2) throws Exception {
+
+        Iterator it1 = list1.iterator();
+        Iterator it2 = list2.iterator();
+
+        if(list1.size() != list2.size()) {
+            throw new Exception("list 1 + 2 must have same element count!");
+        }
+
+        @SuppressWarnings("unchecked")
+        ArrayList<Double> list3 = new ArrayList();
+
+        while (it1.hasNext() && it2.hasNext()) {
+            Double value = (Double)it1.next() + (Double)it2.next();
+            list3.add(value);
+        }
+
+      return list3;
     }
 }
