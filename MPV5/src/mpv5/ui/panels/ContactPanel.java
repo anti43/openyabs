@@ -901,4 +901,10 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         prename.setEnabled(!selected);
 
     }
+
+    public void paste(DatabaseObject dbo) {
+        if (dbo.getDbIdentity().equals(Context.getContact().getDbIdentity())) {
+            setDataOwner(dbo);
+        } else MPV5View.addMessage(Messages.NOT_POSSIBLE + Messages.PASTE);
+    }
 }

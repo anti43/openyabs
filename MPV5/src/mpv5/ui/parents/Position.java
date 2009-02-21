@@ -19,21 +19,21 @@ package mpv5.ui.parents;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import javax.swing.JComponent;
 
 /**
  *
  * @author anti43
  */
 public class Position {
-
-    public Position() {
-    }
+    private Component comp;
 
     public Position(Component comp) {
-        center(comp);
+        this.comp = comp;
+        center();
     }
 
-    public void center(Component comp) {
+    public void center() {
         Dimension frameSize = new Dimension(comp.getSize());
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
@@ -44,7 +44,8 @@ public class Position {
         comp.setLocation(left, top);
     }
 
-    public boolean isNotMaximized(Component comp) {
+
+    public boolean isNotMaximized() {
         Dimension frameSize = new Dimension(comp.getSize());
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
@@ -55,8 +56,9 @@ public class Position {
         }
     }
 
-    public void topLeft(Component comp) {
+    public void topLeft() {
         comp.setLocation(0, 0);
     }
+
 }
 

@@ -61,7 +61,7 @@ public abstract class DatabaseObject {
      * @return An Icon representing the type of this do
      */
     public Icon getTypeIcon() {
-        if (getDbID().equalsIgnoreCase(Context.getContact().getDbIdentity())) {
+        if (getDbIdentity().equalsIgnoreCase(Context.getContact().getDbIdentity())) {
             return ICON_CONTACT;
         } else {
             return null;
@@ -218,7 +218,7 @@ public abstract class DatabaseObject {
      *
      * @return The tablename/view of this do
      */
-    public String getDbID() {
+    public String getDbIdentity() {
         return context.getDbIdentity();
     }
 

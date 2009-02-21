@@ -26,7 +26,7 @@ public class DatabaseSearch {
      */
     public DatabaseSearch(DatabaseObject obj) {
         this.context = new Context(obj);
-        context.setDbIdentity(obj.getDbID());
+        context.setDbIdentity(obj.getDbIdentity());
         context.setSubID(Context.DEFAULT_SUBID);
     }
 

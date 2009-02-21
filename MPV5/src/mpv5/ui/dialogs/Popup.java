@@ -49,15 +49,8 @@ public class Popup {
     }
 
     public static void notice(Component parent, String text) {
-
         JOptionPane.showMessageDialog(parent, text, Popup.NOTICE, JOptionPane.INFORMATION_MESSAGE);
     }
-
-    public static void notice(Object initiator, String text) {
-    
-        JOptionPane.showMessageDialog(null, text, Popup.NOTICE, JOptionPane.INFORMATION_MESSAGE);
-    }
-
 
     /**
      * A popup..
@@ -65,7 +58,6 @@ public class Popup {
      * @param label
      */
     public static void warn(String text, String label) {
-
         JOptionPane.showMessageDialog(identifier, text, label, JOptionPane.WARNING_MESSAGE);
     }
 
@@ -75,7 +67,6 @@ public class Popup {
      * @param label
      */
     public static void error(String text, String label) {
-
         JOptionPane.showMessageDialog(identifier, text, label, JOptionPane.ERROR_MESSAGE);
     }
 
@@ -85,7 +76,6 @@ public class Popup {
      * @param label
      */
     public static void notice(String text, String label) {
-
         JOptionPane.showMessageDialog(identifier, text, label, JOptionPane.INFORMATION_MESSAGE);
     }
 
@@ -94,8 +84,6 @@ public class Popup {
      * @param text
      */
     public static void notice(String text) {
-        
-   
         JOptionPane.showMessageDialog(identifier, text, Popup.NOTICE, JOptionPane.INFORMATION_MESSAGE);
     }
 
@@ -115,7 +103,6 @@ public class Popup {
      * @param label
      */
     public Popup(String text, String label) {
-  
         JOptionPane.showMessageDialog(identifier, text, label, JOptionPane.INFORMATION_MESSAGE);
     }
 

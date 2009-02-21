@@ -24,6 +24,7 @@ import mpv5.globals.Messages;
 import mpv5.items.handling.Favourite;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
+import mpv5.ui.menus.ClipboardMenuItem;
 import mpv5.ui.menus.FavouritesMenuItem;
 import mpv5.ui.panels.ContactPanel;
 import mpv5.ui.panels.ContactsList;
@@ -137,6 +138,10 @@ public class MPV5View extends FrameView {
         }
     }
 
+    public DataPanel getCurrentTab(){
+        return (DataPanel) tabPane.getTabComponentAt(tabPane.getSelectedIndex());
+    }
+
     private static void fillFavouritesmenu() {
         Favourite[] favs = Favourite.getUserFavourites();
         for (int i = 0; i < favs.length; i++) {
@@ -149,12 +154,18 @@ public class MPV5View extends FrameView {
         }
     }
 
+    public static void addToClipBoard(DatabaseObject obj){
+
+        clipboardMenu.add(new ClipboardMenuItem())
+    }
+
     public MPV5View(SingleFrameApplication app) {
         super(app);
 
         initComponents();
         tabPane = new CloseableTabbedPane(this);
         identifierFrame = this.getFrame();
+        Popup.identifier = identifierFrame;
         progressbar = this.progressBar;
         progressbar.setMinimum(0);
         messagelabel = statusMessageLabel;
@@ -173,7 +184,7 @@ public class MPV5View extends FrameView {
     }
 
     public void addTab(DatabaseObject item) {
-        if (item.getDbID().equalsIgnoreCase(Context.getContact().getDbIdentity())) {
+        if (item.getDbIdentity().equalsIgnoreCase(Context.getContact().getDbIdentity())) {
             addContactTab(item);
         }
     }
@@ -220,6 +231,8 @@ public class MPV5View extends FrameView {
         jMenuItem3 = new javax.swing.JMenuItem();
         favouritesMenu = new javax.swing.JMenu();
         jMenuItem5 = new javax.swing.JMenuItem();
+        clipboardMenu = new javax.swing.JMenu();
+        jMenuItem7 = new javax.swing.JMenuItem();
         statusPanel = new javax.swing.JPanel();
         javax.swing.JSeparator statusPanelSeparator = new javax.swing.JSeparator();
         statusMessageLabel = new FadeOnChangeLabel();
@@ -324,7 +337,7 @@ public class MPV5View extends FrameView {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, 88, Short.MAX_VALUE)
+                .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addGap(11, 11, 11)
@@ -336,7 +349,7 @@ public class MPV5View extends FrameView {
                 .addGap(11, 11, 11))
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 89, Short.MAX_VALUE)
+                .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 89, Short.MAX_VALUE)
                 .addGap(11, 11, 11))
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
@@ -420,7 +433,7 @@ public class MPV5View extends FrameView {
         );
         naviPanelLayout.setVerticalGroup(
             naviPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jOutlookBar1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 502, Short.MAX_VALUE)
+            .addComponent(jOutlookBar1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 509, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
@@ -435,7 +448,7 @@ public class MPV5View extends FrameView {
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(naviPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 506, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 513, Short.MAX_VALUE)
         );
 
         menuBar.setName("menuBar"); // NOI18N
@@ -522,6 +535,20 @@ public class MPV5View extends FrameView {
 
         menuBar.add(favouritesMenu);
 
+        clipboardMenu.setText(bundle.getString("MPV5View.clipboardMenu.text")); // NOI18N
+        clipboardMenu.setName("clipboardMenu"); // NOI18N
+
+        jMenuItem7.setText(bundle.getString("MPV5View.jMenuItem7.text")); // NOI18N
+        jMenuItem7.setName("jMenuItem7"); // NOI18N
+        jMenuItem7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem7ActionPerformed(evt);
+            }
+        });
+        clipboardMenu.add(jMenuItem7);
+
+        menuBar.add(clipboardMenu);
+
         statusPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         statusPanel.setName("statusPanel"); // NOI18N
         statusPanel.setPreferredSize(new java.awt.Dimension(800, 20));
@@ -538,8 +565,8 @@ public class MPV5View extends FrameView {
             statusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(statusPanelLayout.createSequentialGroup()
                 .addGroup(statusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(statusPanelSeparator, javax.swing.GroupLayout.DEFAULT_SIZE, 273, Short.MAX_VALUE)
-                    .addComponent(statusMessageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 273, Short.MAX_VALUE))
+                    .addComponent(statusPanelSeparator, javax.swing.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)
+                    .addComponent(statusMessageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -549,7 +576,7 @@ public class MPV5View extends FrameView {
                 .addComponent(statusPanelSeparator, javax.swing.GroupLayout.PREFERRED_SIZE, 2, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(1, 1, 1)
                 .addComponent(statusMessageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 13, Short.MAX_VALUE))
-            .addComponent(progressBar, javax.swing.GroupLayout.DEFAULT_SIZE, 16, Short.MAX_VALUE)
+            .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 16, Short.MAX_VALUE)
         );
 
         mainToolbar.setRollover(true);
@@ -705,7 +732,13 @@ public class MPV5View extends FrameView {
         }
     }//GEN-LAST:event_jMenuItem6ActionPerformed
 
+    private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
+
+
+    }//GEN-LAST:event_jMenuItem7ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public javax.swing.JMenu clipboardMenu;
     public javax.swing.JMenu favouritesMenu;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton18;
@@ -724,6 +757,7 @@ public class MPV5View extends FrameView {
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem6;
+    private javax.swing.JMenuItem jMenuItem7;
     private com.l2fprod.common.swing.JOutlookBar jOutlookBar1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;

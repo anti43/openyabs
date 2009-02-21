@@ -39,7 +39,7 @@ public class Favourite extends DatabaseObject {
     public Favourite(DatabaseObject dato) {
         context.setDbIdentity(Context.SMALLIDENTITY_FAVS);
         this.setUserid(MPV5View.getUser().__getIDS());
-        setCName(dato.getDbID());
+        setCName(dato.getDbIdentity());
         setItemid(dato.__getIDS());
     }
 
@@ -94,7 +94,7 @@ public class Favourite extends DatabaseObject {
     public static boolean isFavourite(DatabaseObject dato) {
         if (!mpv5.db.common.QueryHandler.instanceOf().clone(Context.getFavourites()).
                 checkConstraint(new String[]{"cname", "userid", "itemid"},
-                    new Object[]{dato.getDbID(), MPV5View.getUser().__getIDS(),dato.__getIDS()})) {
+                    new Object[]{dato.getDbIdentity(), MPV5View.getUser().__getIDS(),dato.__getIDS()})) {
             return true;
         } else {
             return false;
@@ -110,7 +110,7 @@ public class Favourite extends DatabaseObject {
         
             mpv5.db.common.QueryHandler.instanceOf().clone(Context.getFavourites()).
                     delete(new String[]{"cname", "userid", "itemid"},
-                    new Object[]{dato.getDbID(), MPV5View.getUser().__getIDS(),dato.__getIDS()}, Messages.DONE);
+                    new Object[]{dato.getDbIdentity(), MPV5View.getUser().__getIDS(),dato.__getIDS()}, Messages.DONE);
         
     }
 

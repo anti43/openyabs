@@ -105,7 +105,7 @@ public class PrintJob implements Waiter {
         if (dbobjarr != null && dbobjarr.size() > 0) {
             FileReaderWriter rw = new FileReaderWriter(file);
 
-            rw.writeOnce("" + dbobjarr.get(0).getDbID().toUpperCase());
+            rw.writeOnce("" + dbobjarr.get(0).getDbIdentity().toUpperCase());
             rw.write("");
             rw.write(dbobjarr.get(0).__getCName());
             rw.write("");

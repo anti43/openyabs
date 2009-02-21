@@ -38,4 +38,10 @@ public interface DataPanel {
      * Populate the data to the view
      */
     public void exposeData();
+
+    /**
+     * Paste a dbo into this panel and let the panel decide what to do with it
+     * @param dbo
+     */
+    public void paste(DatabaseObject dbo);
 }

@@ -59,7 +59,7 @@ public class FilePrintJob {
 
             ArrayList<String[]> data = dbobjarr.get(0).getValues();
             if (name == null) {
-                name = dbobjarr.get(0).getDbID();
+                name = dbobjarr.get(0).getDbIdentity();
             }
             head = new String[data.size()];
             for (int i = 0; i < data.size(); i++) {
@@ -111,7 +111,7 @@ public class FilePrintJob {
                     DatabaseObject databaseObject = dbobjarr.get(i);
                     ArrayList<String[]> data = databaseObject.getValues();
                     if (name == null) {
-                        name = databaseObject.getDbID();
+                        name = databaseObject.getDbIdentity();
                     }
                     for (int h = 0; h < data.size(); h++) {
                         for (int idx = 0; idx < specs.size(); idx++) {
@@ -136,7 +136,7 @@ public class FilePrintJob {
 
     public void toXML() {
         XMLWriter xmlw = new XMLWriter();
-        xmlw.newDoc(dbobj.getDbID());
+        xmlw.newDoc(dbobj.getDbIdentity());
         String name = null;
 
         if (dbobj != null) {
@@ -149,12 +149,12 @@ public class FilePrintJob {
             for (int i = 0; i < dbobjarr.size(); i++) {
                 DatabaseObject databaseObject = dbobjarr.get(i);
                 if (name == null) {
-                    name = databaseObject.getDbID();
+                    name = databaseObject.getDbIdentity();
                 }
                 ArrayList<String[]> data = databaseObject.getValues();
-                xmlw.addNode(dbobj.getDbID(), databaseObject.__getCName());
+                xmlw.addNode(dbobj.getDbIdentity(), databaseObject.__getCName());
                 for (int h = 0; h < data.size(); h++) {
-                    xmlw.addElement(databaseObject.getDbID(), databaseObject.__getCName(), data.get(h)[0], data.get(h)[1]);
+                    xmlw.addElement(databaseObject.getDbIdentity(), databaseObject.__getCName(), data.get(h)[0], data.get(h)[1]);
                 }
             }
         }
