@@ -4,7 +4,12 @@
  */
 package mpv5.items.contacts;
 
+import java.beans.IntrospectionException;
+import java.io.File;
+import java.io.IOException;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 
@@ -15,6 +20,7 @@ import mpv5.db.common.DatabaseObject;
 public class Contact extends DatabaseObject {
 
     private String cnumber = "";
+    private String taxid = "";
     private String title = "";
     private String prename = "";
     private String street = "";
@@ -53,6 +59,20 @@ public class Contact extends DatabaseObject {
      */
     public void setCNumber(String number) {
         this.cnumber = number;
+    }
+
+    /**
+     * @return the taxid
+     */
+    public String __getTaxid() {
+        return cnumber;
+    }
+
+    /**
+     * @param taxid
+     */
+    public void setTaxid(String taxid) {
+        this.taxid = taxid;
     }
 
     /**
@@ -375,4 +395,8 @@ public class Contact extends DatabaseObject {
 //    public void setRole(Roles role) {
 //        this.role = role;
 //    }
+
+    public void toXML(){
+      
+    }
 }

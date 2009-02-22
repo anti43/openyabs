@@ -567,4 +567,12 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         }
         return ident;
     }
+
+    public void paste(DatabaseObject dbo) {
+        if (dbo.getDbIdentity().equals(Context.getUser().getDbIdentity())) {
+            setDataOwner(dbo);
+        } else {
+            MPV5View.addMessage(Messages.NOT_POSSIBLE + Messages.PASTE);
+        }
+    }
 }

@@ -29,6 +29,7 @@ import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import mpv5.db.common.DatabaseObject;
+import mpv5.items.contacts.Contact;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.utils.date.DateConverter;
@@ -141,7 +142,8 @@ public class PrinitingComboBox extends javax.swing.JPanel {
                             new FilePrintJob((DatabaseObject) dataowner).toCSV();
                             break;
                         case 3:
-                            new FilePrintJob((DatabaseObject) dataowner).toXML();
+//                            new FilePrintJob((DatabaseObject) dataowner).toXML();
+                            ((Contact) dataowner).toXML();
                             break;
                     }
                 }

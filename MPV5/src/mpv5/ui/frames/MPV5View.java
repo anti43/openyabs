@@ -154,9 +154,12 @@ public class MPV5View extends FrameView {
         }
     }
 
-    public static void addToClipBoard(DatabaseObject obj){
-
-        clipboardMenu.add(new ClipboardMenuItem())
+    /**
+     * Add something to the clipboard menu
+     * @param obj
+     */
+    public void addToClipBoard(DatabaseObject obj){
+        clipboardMenu.add(new ClipboardMenuItem(obj));
     }
 
     public MPV5View(SingleFrameApplication app) {

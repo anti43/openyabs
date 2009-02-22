@@ -23,7 +23,7 @@ package mpv5.db.common;
 public class DatabaseInstallation {
 
     public final static String[] DERBY_STRUCTURE = new String[]{"CREATE TABLE contacts (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
-        "cnumber VARCHAR(250),title VARCHAR(250) default NULL," +
+        "cnumber VARCHAR(250),taxid VARCHAR(250),title VARCHAR(250) default NULL," +
         "prename VARCHAR(250) default NULL, cname VARCHAR(250) default NULL, street VARCHAR(250) default NULL," +
         "zip VARCHAR(50) default NULL,city VARCHAR(300) default NULL, mainphone VARCHAR(250) default NULL," +
         "fax VARCHAR(250) default NULL,mobilephone VARCHAR(250) default NULL,workphone VARCHAR(250) default NULL," +
