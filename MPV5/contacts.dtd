@@ -1,0 +1,37 @@
+<!--Root element of any MPv5 XML file-->
+<!ELEMENT mpv5 ( contacts* ) >
+
+<!ELEMENT Addedby ( #PCDATA ) >
+<!ELEMENT CName ( #PCDATA ) >
+<!ELEMENT CNumber ( #PCDATA ) >
+<!ELEMENT City ( #PCDATA ) >
+<!ELEMENT Company ( #PCDATA ) >
+<!ELEMENT Dateadded ( #PCDATA ) >
+<!ELEMENT Fax ( #PCDATA ) >
+<!--Must match a valid entry if existing-->
+<!ELEMENT IDS ( #PCDATA ) >
+<!-- default: 'false' -->
+<!ELEMENT Iscustomer ( #PCDATA ) >
+<!-- default: 'false' -->
+<!ELEMENT Ismanufacturer ( #PCDATA ) >
+<!-- default: 'false' -->
+<!ELEMENT Issupplier ( #PCDATA ) >
+<!-- default: 'false' -->
+<!ELEMENT isCompany ( #PCDATA ) >
+<!-- default: 'true' -->
+<!ELEMENT isEnabled ( #PCDATA ) >
+<!-- default: 'true' -->
+<!ELEMENT isMale ( #PCDATA ) >
+<!ELEMENT Mailaddress ( #PCDATA ) >
+<!ELEMENT Mainphone ( #PCDATA ) >
+<!ELEMENT Mobilephone ( #PCDATA ) >
+<!ELEMENT Notes ( #PCDATA ) >
+<!ELEMENT Prename ( #PCDATA ) >
+<!ELEMENT Street ( #PCDATA ) >
+<!ELEMENT Taxnumber ( #PCDATA ) >
+<!ELEMENT Title ( #PCDATA ) >
+<!ELEMENT Website ( #PCDATA ) >
+<!ELEMENT Workphone ( #PCDATA ) >
+<!ELEMENT Zip ( #PCDATA ) >
+<!ELEMENT contact ( CName, CNumber?, Taxnumber?, Title?, Prename?, Street?, Zip?, City?, Mainphone?, Workphone?, Fax?, Mobilephone?, Mailaddress?, Website?, Notes?, isMale?, isEnabled?, isCompany?, Iscustomer?, Ismanufacturer?, Issupplier?, Company?, Dateadded?, Addedby?, IDS? ) >
+<!ELEMENT contacts ( contact* ) >

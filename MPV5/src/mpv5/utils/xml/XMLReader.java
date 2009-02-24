@@ -70,12 +70,21 @@ public class XMLReader {
      * @throws IOException
      */
     public Document newDoc(File xmlfile) throws JDOMException, IOException {
-        // Create the root element
-        SAXBuilder parser = new SAXBuilder();
-        myDocument = parser.build(xmlfile);
-        rootElement = myDocument.getRootElement();
-        return myDocument;
+        return createDocument(xmlfile, false);
     }
+
+    /**
+     * Parses a XML document
+     * @param xmlfile
+     * @param validate
+     * @return The resulting xml document
+     * @throws JDOMException
+     * @throws IOException
+     */
+    public Document newDoc(File xmlfile, boolean validate) throws JDOMException, IOException {
+        return createDocument(xmlfile,validate);
+    }
+
 
     /**
      * Gets an element value
@@ -97,6 +106,8 @@ public class XMLReader {
         return null;
     }
 
+
+
     /**
      * Prints a node to debug out
      * @param nodename
@@ -117,7 +128,6 @@ public class XMLReader {
      * @return
      */
     public PropertyStore readInto(String nodename, PropertyStore store) {
-
         @SuppressWarnings("unchecked")
         List<Element> list = (List<Element>) rootElement.getChild(nodename).getContent(new ElementFilter());
         for (int i = 0; i < list.size(); i++) {
@@ -126,5 +136,17 @@ public class XMLReader {
         }
 
         return store;
+    }
+
+    private Document createDocument(File xmlfile, boolean validate) throws JDOMException, IOException {
+        //        SAXBuilder parser = new SAXBuilder("org.apache.xerces.parsers.SAXParser", true);
+//        parser.setFeature("http://apache.org/xml/features/validation/schema", true);
+//        parser.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation",
+//                                       "http://www.w3.org/2001/12/soap-envelope contacts.dtd");
+//        Document doc = builder.build(xml);
+        SAXBuilder parser = new SAXBuilder(validate);
+        myDocument = parser.build(xmlfile);
+        rootElement = myDocument.getRootElement();
+        return myDocument;
     }
 }

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mpv5 PUBLIC "-//http://code.google.com/p/mp-rechnungs-und-kundenverwaltung//DTD mpv5 V 1.0//EN"
+"http://mp-rechnungs-und-kundenverwaltung.googlecode.com/files/mpv5.dtd">
+<mpv5>
+<contacts>
+  <contact id="2">
+    <CName>uhik</CName>
+    <CNumber>tyu</CNumber>
+    <Taxnumber>tyu</Taxnumber>
+    <Title>tyu</Title>
+    <Prename>56u</Prename>
+    <Street>tyu</Street>
+    <Zip>768</Zip>
+    <City>uy</City>
+    <Mainphone>i768768</Mainphone>
+    <Workphone>76876</Workphone>
+    <Fax>8768</Fax>
+    <Mobilephone>867</Mobilephone>
+    <Mailaddress>867876</Mailaddress>
+    <Website>768yuikryui</Website>
+    <Notes>uyiiiiu 5fghjkryjghui6tyhgmry7uirtyjk67i</Notes>
+    <isMale>true</isMale>
+    <isEnabled>true</isEnabled>
+    <isCompany>false</isCompany>
+    <Iscustomer>true</Iscustomer>
+    <Ismanufacturer>false</Ismanufacturer>
+    <Issupplier>false</Issupplier>
+    <Company>3</Company>
+    <Dateadded>Mon Feb 16 00:00:00 CET 2009</Dateadded>
+    <Addedby>nobody</Addedby>
+    <IDS>2</IDS>
+  </contact>
+</contacts>
+</mpv5>
+
