@@ -22,14 +22,10 @@ along with MP.  If not, see <http://www.gnu.org/licenses/>.
 package mpv5.ui.panels;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.event.ItemEvent;
 import java.util.Date;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
 import javax.swing.JTabbedPane;
 import mpv5.db.common.*;
-import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.items.contacts.Contact;
 import mpv5.items.handling.Favourite;
@@ -40,8 +36,6 @@ import mpv5.ui.toolbars.DataPanelTB;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.models.MPComboBoxModelItem;
-import mpv5.utils.print.FilePrintJob;
-import mpv5.utils.print.PrintJob;
 
 /**
  *
@@ -66,8 +60,6 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         dataOwner = new Contact();
         leftpane.add(new SearchPanel(context, this), BorderLayout.CENTER);
         refresh();
-        prinitingComboBox1.init(dataOwner);
-
         dateadded.setText(DateConverter.getTodayDefDate());
         addedby.setText(MPV5View.getUser().getName());
 //        new Watcher(this, ids_);
@@ -87,8 +79,9 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             jTabbedPane.setTitleAt(jTabbedPane.getSelectedIndex(), Messages.CONTACT + cname_);
         }
 
-        tb.setFavourite(Favourite.isFavourite(object));
+        prinitingComboBox1.init(dataOwner);
 
+        tb.setFavourite(Favourite.isFavourite(object));
     }
 
     public void setType(int type) {
@@ -146,7 +139,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         zip = new mpv5.ui.beans.LabeledTextField();
         male = new javax.swing.JRadioButton();
         female = new javax.swing.JRadioButton();
-        taxid = new mpv5.ui.beans.LabeledTextField();
+        taxnumber = new mpv5.ui.beans.LabeledTextField();
         jPanel3 = new javax.swing.JPanel();
         mobilephone = new mpv5.ui.beans.LabeledTextField();
         mainphone = new mpv5.ui.beans.LabeledTextField();
@@ -377,8 +370,8 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         female.setName("female"); // NOI18N
         female.setOpaque(false);
 
-        taxid.set_Label(bundle.getString("ContactPanel.taxid._Label")); // NOI18N
-        taxid.setName("taxid"); // NOI18N
+        taxnumber.set_Label(bundle.getString("ContactPanel.taxnumber._Label")); // NOI18N
+        taxnumber.setName("taxnumber"); // NOI18N
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -392,7 +385,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(companyselect, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(taxid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(taxnumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(title, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
@@ -426,7 +419,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(male)
                                 .addComponent(female))))
-                    .addComponent(taxid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(taxnumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(cname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -774,7 +767,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     private javax.swing.JPanel rightpane;
     private mpv5.ui.beans.LabeledTextField street;
     private javax.swing.JCheckBox supplier;
-    private mpv5.ui.beans.LabeledTextField taxid;
+    private mpv5.ui.beans.LabeledTextField taxnumber;
     private mpv5.ui.beans.LabeledTextField title;
     private javax.swing.JPanel toolbarpane;
     private mpv5.ui.beans.LabeledTextField website;
@@ -784,7 +777,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     private javax.swing.table.DefaultTableModel tableModel = null;
     public String city_;
     public String cname_;
-    public String taxid_;
+    public String taxnumber_;
     public boolean iscompany_;
     public boolean iscustomer_;
     public boolean isenabled_;
@@ -804,17 +797,17 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     public String workphone_;
     public String zip_;
     public String addedby_;
-    public int companyuid_;
+    public String company_;
     public int ids_;
     public Date dateadded_;
 
     public void collectData() {
         city_ = city.get_Text();
         cname_ = cname.get_Text();
-        taxid_ = taxid.get_Text();
+        taxnumber_ = taxnumber.get_Text();
         iscompany_ = company.isSelected();
         if (companyselect.getSelectedItem() != null) {
-            companyuid_ = Integer.valueOf(((MPComboBoxModelItem) companyselect.getSelectedItem()).getId());
+            company_ = String.valueOf(((MPComboBoxModelItem) companyselect.getSelectedItem()).getName());
         }
         iscustomer_ = customer.isSelected();
         isenabled_ = enabled.isSelected();
@@ -841,9 +834,9 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     public void exposeData() {
         city.set_Text(city_);
         cname.set_Text(cname_);
-        taxid.set_Text(taxid_);
+        taxnumber.set_Text(taxnumber_);
         company.setSelected(iscompany_);
-        companyselect.setSelectedIndex(MPComboBoxModelItem.getItemID(companyuid_, companyselect.getModel()));
+        companyselect.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(company_, companyselect.getModel()));
         customer.setSelected(iscustomer_);
         enabled.setSelected(isenabled_);
         fax.set_Text(fax_);
@@ -871,7 +864,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
     public void refresh() {
         try {
-            companyselect.setModel(new DefaultComboBoxModel(ArrayUtilities.merge(new Object[]{new MPComboBoxModelItem(-1, "")},
+            companyselect.setModel(new DefaultComboBoxModel(ArrayUtilities.merge(new Object[]{new MPComboBoxModelItem("<no_value>", "")},
                     MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getCompany()).getValuesFor(Context.getCompany().getSubID(), null, null)))));
         } catch (Exception e) {
             Log.Debug(this, e);

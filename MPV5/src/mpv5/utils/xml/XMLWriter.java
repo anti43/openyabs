@@ -18,13 +18,16 @@ package mpv5.utils.xml;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import mpv5.data.PropertyStore;
+import mpv5.db.common.DatabaseObject;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.frames.MPV5View;
+import mpv5.utils.files.FileDirectoryHandler;
 import org.jdom.Attribute;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -39,6 +42,32 @@ public class XMLWriter {
 
     private Element rootElement = new Element("defName");
     private Document myDocument = new Document();
+
+    /**
+     * Adds all objects
+     * @param dbobjarr
+     */
+    public void add(ArrayList<DatabaseObject> dbobjarr) {
+
+        if (dbobjarr != null) {
+            for (int i = 0; i < dbobjarr.size(); i++) {
+                try {
+
+                    DatabaseObject databaseObject = dbobjarr.get(i);
+                    String ident = databaseObject.getDbIdentity().substring(0, databaseObject.getDbIdentity().length() - 1);
+
+                    ArrayList<String[]> data = databaseObject.getValues();
+                    this.addNode(ident, databaseObject.__getIDS().toString());
+
+                    for (int h = 0; h < data.size(); h++) {
+                        this.addElement(ident, databaseObject.__getIDS().toString(), data.get(h)[0], data.get(h)[1]);
+                    }
+                } catch (Exception e) {
+                    Log.Debug(this, e.getMessage());
+                }
+            }
+        }
+    }
 
     /**
      * Adds a node with the given name, and an additional attribute "ID" with the attribute value
@@ -77,7 +106,7 @@ public class XMLWriter {
         FileWriter fw = null;
         if (file.exists()) {
             Log.Debug(this, "Updating " + file);
-           fw = new FileWriter(file);
+            fw = new FileWriter(file);
         } else {
             file.getParentFile().mkdirs();
             file.createNewFile();
@@ -96,7 +125,7 @@ public class XMLWriter {
         // Create the root element
         rootElement = new Element(rootElementName);
         myDocument = new Document(rootElement);
-        //add an attribute to the root element
+    //add an attribute to the root element
 //        rootElement.setAttribute(new Attribute("userid", MPV5View.getUser().getID()));
     }
 
@@ -104,19 +133,19 @@ public class XMLWriter {
      * Creates a new XML file with the given name
      * and pops up a 'save file as..' dialog
      * @param filename
+     * @return
      */
-    public void createFile(String filename) {
-        DialogForFile dialog = new DialogForFile(DialogForFile.FILES_ONLY);
-        dialog.setSelectedFile(new File(filename + ".xml"));
-        if (dialog.saveFile()) {
-            try {
-                XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
-                outputter.output(myDocument, new FileWriter(dialog.getFile()));
-                MPV5View.addMessage(Messages.FILE_SAVED + dialog.getFile().getPath());
-            } catch (java.io.IOException e) {
-                e.printStackTrace();
-            }
+    public File createFile(String filename) {
+
+        try {
+            File f = FileDirectoryHandler.getTempFile(filename, "xml");
+            XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
+            outputter.output(myDocument, new FileWriter(f));
+            return f;
+        } catch (java.io.IOException e) {
+            e.printStackTrace();
         }
+        return null;
     }
 
     /**
@@ -158,7 +187,7 @@ public class XMLWriter {
      * @param cookie
      */
     public void parse(String nodename, String nodeid, PropertyStore cookie) {
-        
+
         addNode(nodename, nodeid);
         Iterator list = cookie.getList().iterator();
         while (list.hasNext()) {

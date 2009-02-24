@@ -4,12 +4,7 @@
  */
 package mpv5.items.contacts;
 
-import java.beans.IntrospectionException;
-import java.io.File;
-import java.io.IOException;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 
@@ -20,7 +15,7 @@ import mpv5.db.common.DatabaseObject;
 public class Contact extends DatabaseObject {
 
     private String cnumber = "";
-    private String taxid = "";
+    private String taxnumber = "";
     private String title = "";
     private String prename = "";
     private String street = "";
@@ -35,7 +30,7 @@ public class Contact extends DatabaseObject {
     private String notes = "";
     private Date dateadded = new Date();
     private String addedby = "";
-    private int companyuid = -1;
+    private String company = "";
     private boolean ismale = true;
     private boolean isenabled = true;
     private boolean iscompany = false;
@@ -62,17 +57,17 @@ public class Contact extends DatabaseObject {
     }
 
     /**
-     * @return the taxid
+     * @return the taxnumber
      */
-    public String __getTaxid() {
+    public String __gettaxnumber() {
         return cnumber;
     }
 
     /**
-     * @param taxid
+     * @param taxnumber
      */
-    public void setTaxid(String taxid) {
-        this.taxid = taxid;
+    public void settaxnumber(String taxnumber) {
+        this.taxnumber = taxnumber;
     }
 
     /**
@@ -342,17 +337,17 @@ public class Contact extends DatabaseObject {
     }
 
     /**
-     * @return the companyuid
+     * @return the company
      */
-    public int __getCompanyuid() {
-        return companyuid;
+    public String __getcompany() {
+        return company;
     }
 
     /**
-     * @param companyuid the companyuid to set
+     * @param company the company to set
      */
-    public void setCompanyuid(int companyuid) {
-        this.companyuid = companyuid;
+    public void setcompany(String company) {
+        this.company = company;
     }
 
     /**
@@ -395,8 +390,24 @@ public class Contact extends DatabaseObject {
 //    public void setRole(Roles role) {
 //        this.role = role;
 //    }
-
-    public void toXML(){
-      
-    }
+//
+//    public void toXML(){
+//        FileOutputStream fileOut = null;
+//
+//        try {
+//            fileOut = new FileOutputStream("bean.xml");
+//            JOXBeanOutputStream joxOut = new JOXBeanOutputStream(fileOut);
+//            joxOut.writeObject(this.getDbIdentity(), this);
+//            joxOut.close();
+//        } catch (IOException ex) {
+//            Logger.getLogger(Contact.class.getName()).log(Level.SEVERE, null, ex);
+//        } finally {
+//            try {
+//                fileOut.close();
+//            } catch (IOException ex) {
+//                Logger.getLogger(Contact.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        }
+//
+//    }
 }

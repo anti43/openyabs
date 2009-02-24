@@ -142,8 +142,8 @@ public class PrinitingComboBox extends javax.swing.JPanel {
                             new FilePrintJob((DatabaseObject) dataowner).toCSV();
                             break;
                         case 3:
-//                            new FilePrintJob((DatabaseObject) dataowner).toXML();
-                            ((Contact) dataowner).toXML();
+                            new FilePrintJob((DatabaseObject) dataowner).toXML();
+//                            ((Contact) dataowner).toXML();
                             break;
                     }
                 }

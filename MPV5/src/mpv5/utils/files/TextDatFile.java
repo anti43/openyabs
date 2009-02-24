@@ -108,7 +108,6 @@ public class TextDatFile extends File implements Waitable {
         mode = 2;
     }
 
-
     @Override
     public void waitFor() {
         switch (mode) {
@@ -242,22 +241,18 @@ public class TextDatFile extends File implements Waitable {
     /**
      * Create a new file
      * @param filename
+     * @return
      */
-    public void createFile(String filename) {
-        DialogForFile dialof = new DialogForFile(DialogForFile.FILES_ONLY);
-        dialof.setSelectedFile(new File(filename + ".csv"));
-        if (dialof.saveFile()) {
-            try {
-                print();
-                FileDirectoryHandler.copyFile(this, dialof.getFile());
-                MPV5View.addMessage(Messages.FILE_SAVED + dialof.getFile().getPath());
-            } catch (FileNotFoundException ex) {
-                Logger.getLogger(TextDatFile.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
-                Logger.getLogger(TextDatFile.class.getName()).log(Level.SEVERE, null, ex);
-            }
+    public File createFile(String filename) {
+        File f = FileDirectoryHandler.getTempFile(filename, "csv");
+        try {
+            print();
+            FileDirectoryHandler.copyFile(this, f);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(TextDatFile.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(TextDatFile.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return f;
     }
-
-
 }

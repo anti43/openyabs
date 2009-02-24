@@ -16,7 +16,7 @@ public class Headers {
         "Zip", "City", "Mainphone",
         "Fax", "Mobilephone", "Workphone",
         "Mailaddress", "Company",
-        "Website", "Notes", "Taxid"};
+        "Website", "Notes", "taxnumber"};
     public static String[] USER_DEFAULT = new String[]{"Internal ID", "ID", "User Name", "Mail", "Last logged in"};
     public static String[] USER_DETAILS = new String[]{"Internal ID", "User Name", "Fullname", "Mail", "Enabled", "Logged in", "Locale", "Language", "L&F", "inthighestright", "Last Login Date"};
 

@@ -18,6 +18,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
@@ -135,6 +136,35 @@ public class QueryHandler implements Cloneable {
             return data;
         }
     }
+
+     /**
+     * This is a convenience method to retrieve data such as "SELECT * FROM table"
+     * @return All rows in the current context
+     * @throws NodataFoundException
+     */
+    public ReturnValue select() throws NodataFoundException {
+        ReturnValue data = freeReturnQuery("SELECT * FROM " + table, mpv5.usermanagement.MPSecurityManager.VIEW, null);
+        if (data.getData().length == 0) {
+            throw new NodataFoundException();
+        } else {
+            return data;
+        }
+    }
+
+     /**
+     * This is a convenience method to retrieve all IDS such as "SELECT ids FROM table"
+     * @return All row IDs in the current context
+     * @throws NodataFoundException
+     */
+    public ReturnValue selectIndexes() throws NodataFoundException {
+        ReturnValue data = freeReturnQuery("SELECT ids FROM " + table, mpv5.usermanagement.MPSecurityManager.VIEW, null);
+        if (data.getData().length == 0) {
+            throw new NodataFoundException();
+        } else {
+            return data;
+        }
+    }
+
 
     /**
      *
@@ -338,6 +368,7 @@ public class QueryHandler implements Cloneable {
     public boolean checkUniqueness(String column, String value) {
         return checkUniqueness(new String[]{column, value, "'"}, new int[]{0});
     }
+
 
     private void stop() {
         comp.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));

@@ -53,6 +53,23 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
         return 0;
     }
 
+     /**
+     * Returns the index of the item with the given id
+      * @param value
+      * @param model
+     * @return
+     */
+    public static int getItemIDfromValue(String value, ComboBoxModel model) {
+        for (int i = 0; i < model.getSize(); i++) {
+//            Log.Debug(MPComboBoxModelItem.class, ((MPComboBoxModelItem) model.getElementAt(i)).id + " comparing with: " + uid);
+            if (((MPComboBoxModelItem) model.getElementAt(i)).name.equals(value)) {
+//                Log.Debug(MPComboBoxModelItem.class, "Found at Index:" + i);
+                return i;
+            }
+        }
+        return 0;
+    }
+
 
     /**
      * Converts an array to mp combo box items

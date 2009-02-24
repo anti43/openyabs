@@ -20,8 +20,10 @@ import java.io.File;
 import java.util.ArrayList;
 import mpv5.db.common.DatabaseObject;
 import mpv5.globals.Messages;
+import mpv5.logging.Log;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.frames.MPV5View;
+import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.files.FileReaderWriter;
 import mpv5.utils.files.TextDatFile;
 import mpv5.utils.xml.XMLWriter;
@@ -76,7 +78,7 @@ public class FilePrintJob {
 
         f.setHeader(head);
         f.setData(dat);
-        f.createFile(name);
+        MPV5View.showFilesaveDialogFor(f.createFile(name));
     }
 
     public void toVCF() {
@@ -94,70 +96,56 @@ public class FilePrintJob {
         specs.add(new String[]{"ADR;type=WORK:", ";;street;city;;zip;"});
         specs.add(new String[]{"NOTE;QUOTED-PRINTABLE:", "notes"});
 
-        DialogForFile dialog = new DialogForFile(DialogForFile.FILES_ONLY);
-
-        if (dbobj != null) {
-            dbobjarr = new ArrayList<DatabaseObject>();
-            dbobjarr.add(dbobj);
-            name = dbobj.__getCName() + ".vcf";
-        }
-
-        dialog.setSelectedFile(new File(name));
-        if (dialog.saveFile()) {
-            FileReaderWriter rw = new FileReaderWriter(dialog.getFile());
-
-            if (dbobjarr != null) {
-                for (int i = 0; i < dbobjarr.size(); i++) {
-                    DatabaseObject databaseObject = dbobjarr.get(i);
-                    ArrayList<String[]> data = databaseObject.getValues();
-                    if (name == null) {
-                        name = databaseObject.getDbIdentity();
-                    }
-                    for (int h = 0; h < data.size(); h++) {
-                        for (int idx = 0; idx < specs.size(); idx++) {
-                            String[] elem = specs.get(idx);
-                            if (elem[1].contains(data.get(h)[0].toLowerCase())) {
-                                elem[1] = elem[1].replace(data.get(h)[0].toLowerCase(), data.get(h)[1]).replaceAll("[\\r\\n]", " ");
-                            }
-                        }
-                    }
-                    String vCard = "BEGIN:VCARD\n";
-                    for (int j = 0; j < specs.size(); j++) {
-                        String[] strings = specs.get(j);
-                        vCard += strings[0] + strings[1] + "\n";
-                    }
-                    vCard += "VERSION:3.0\n" + "END:VCARD\n";
-                    rw.write(vCard);
-                }
-            }
-             MPV5View.addMessage(Messages.FILE_SAVED + dialog.getFile().getPath());
-        }
-    }
-
-    public void toXML() {
-        XMLWriter xmlw = new XMLWriter();
-        xmlw.newDoc(dbobj.getDbIdentity());
-        String name = null;
 
         if (dbobj != null) {
             dbobjarr = new ArrayList<DatabaseObject>();
             dbobjarr.add(dbobj);
             name = dbobj.__getCName();
         }
+        File f = FileDirectoryHandler.getTempFile(name, "vcf");
+        FileReaderWriter rw = new FileReaderWriter(f);
 
         if (dbobjarr != null) {
             for (int i = 0; i < dbobjarr.size(); i++) {
                 DatabaseObject databaseObject = dbobjarr.get(i);
+                ArrayList<String[]> data = databaseObject.getValues();
                 if (name == null) {
                     name = databaseObject.getDbIdentity();
                 }
-                ArrayList<String[]> data = databaseObject.getValues();
-                xmlw.addNode(dbobj.getDbIdentity(), databaseObject.__getCName());
                 for (int h = 0; h < data.size(); h++) {
-                    xmlw.addElement(databaseObject.getDbIdentity(), databaseObject.__getCName(), data.get(h)[0], data.get(h)[1]);
+                    for (int idx = 0; idx < specs.size(); idx++) {
+                        String[] elem = specs.get(idx);
+                        if (elem[1].contains(data.get(h)[0].toLowerCase())) {
+                            elem[1] = elem[1].replace(data.get(h)[0].toLowerCase(), data.get(h)[1]).replaceAll("[\\r\\n]", " ");
+                        }
+                    }
                 }
+                String vCard = "BEGIN:VCARD\n";
+                for (int j = 0; j < specs.size(); j++) {
+                    String[] strings = specs.get(j);
+                    vCard += strings[0] + strings[1] + "\n";
+                }
+                vCard += "VERSION:3.0\n" + "END:VCARD\n";
+                rw.write(vCard);
             }
         }
-        xmlw.createFile(name);
+
+        MPV5View.showFilesaveDialogFor(f);
+    }
+
+    public void toXML() {
+        XMLWriter xmlw = new XMLWriter();
+        xmlw.newDoc(dbobj.getDbIdentity());
+        String name = dbobj.__getCName();
+
+        if (dbobj != null) {
+            dbobjarr = new ArrayList<DatabaseObject>();
+            dbobjarr.add(dbobj);
+
+            xmlw.add(dbobjarr);
+        }
+
+       
+        MPV5View.showFilesaveDialogFor(xmlw.createFile(name));
     }
 }

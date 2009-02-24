@@ -23,12 +23,12 @@ package mpv5.db.common;
 public class DatabaseInstallation {
 
     public final static String[] DERBY_STRUCTURE = new String[]{"CREATE TABLE contacts (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
-        "cnumber VARCHAR(250),taxid VARCHAR(250),title VARCHAR(250) default NULL," +
+        "cnumber VARCHAR(250),taxnumber VARCHAR(250),title VARCHAR(250) default NULL," +
         "prename VARCHAR(250) default NULL, cname VARCHAR(250) default NULL, street VARCHAR(250) default NULL," +
         "zip VARCHAR(50) default NULL,city VARCHAR(300) default NULL, mainphone VARCHAR(250) default NULL," +
         "fax VARCHAR(250) default NULL,mobilephone VARCHAR(250) default NULL,workphone VARCHAR(250) default NULL," +
-        "mailaddress VARCHAR(350) default NULL,companyuid INTEGER default NULL," +
-        "website VARCHAR(350) default NULL,notes VARCHAR(10000),taxid VARCHAR(350) default NULL," +
+        "mailaddress VARCHAR(350) default NULL,company VARCHAR(250) DEFAULT NULL," +
+        "website VARCHAR(350) default NULL,notes VARCHAR(10000)," +
         "dateadded DATE DEFAULT CURRENT_DATE,isactive SMALLINT DEFAULT 0,iscustomer SMALLINT DEFAULT 0," +
         "ismanufacturer SMALLINT DEFAULT 0,issupplier SMALLINT DEFAULT 0,iscompany SMALLINT DEFAULT 0," +
         "ismale SMALLINT DEFAULT 0,isenabled SMALLINT DEFAULT 1,addedby VARCHAR(350) default NULL," +
@@ -77,7 +77,8 @@ public class DatabaseInstallation {
         "CREATE TABLE schedule (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
         "cname VARCHAR(250) NOT NULL, " +
         "userID BIGINT REFERENCES users (ids)  ON DELETE CASCADE," +
-        "itemID BIGINT REFERENCES items (ids)  ON DELETE CASCADE," +
+         "itemID BIGINT NOT NULL," +
+//        "itemID BIGINT REFERENCES items (ids)  ON DELETE CASCADE," +
         "nextdate DATE NOT NULL, " +
         "intervalmonth SMALLINT NOT NULL, " +
         "reserve1 VARCHAR(500) default NULL, reserve2 VARCHAR(500) default NULL," +

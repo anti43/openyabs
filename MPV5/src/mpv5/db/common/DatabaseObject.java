@@ -375,6 +375,23 @@ public abstract class DatabaseObject {
         }
         return null;
     }
+    
+    /**
+     * Returns all DBOs in the specific context
+     * @param context
+     * @return A list of DBOs
+     * @throws NodataFoundException
+     */
+    public static ArrayList<DatabaseObject> getObjects(Context context) throws NodataFoundException {
+        Object[][] allIds = QueryHandler.instanceOf().clone(context).selectIndexes().getData();
+        ArrayList<DatabaseObject> list = new ArrayList<DatabaseObject>();
+    
+        for (int i = 0; i < allIds.length; i++) {
+            int id  = Integer.valueOf(allIds[i][0].toString());
+            list.add(DatabaseObject.getObject(context, id));
+        }
+        return list;
+    }
 
     /**
      * Fills this do with the data of the given dataset id

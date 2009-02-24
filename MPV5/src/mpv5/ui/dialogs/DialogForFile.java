@@ -148,15 +148,15 @@ public class DialogForFile extends JFileChooser implements Waiter {
 
         if (this.showSaveDialog(MPV5View.identifierFrame) == JFileChooser.APPROVE_OPTION) {
             this.file = this.getSelectedFile();
-            if (!fileToSave.exists()) {
+            if (!file.exists()) {
                 try {
-                    fileToSave.createNewFile();
+                    file.createNewFile();
                 } catch (IOException ex) {
                     Logger.getLogger(DialogForFile.class.getName()).log(Level.SEVERE, null, ex);
                 }
             } else {
-                if (!Popup.Y_N_dialog(Messages.FILE_EXISTS + "\n" + fileToSave)) {
-                    saveFile(fileToSave);
+                if (!Popup.Y_N_dialog(Messages.FILE_EXISTS + "\n" + file)) {
+                    saveFile(file);
                 }
             }
             FileReader in = null;

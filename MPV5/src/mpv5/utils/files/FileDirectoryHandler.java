@@ -230,9 +230,7 @@ public class FileDirectoryHandler {
      * @return
      */
     public static File getTempFile(String suffix) {
-        File fil = new File(System.getProperty("java.io.tmpdir") + File.separator + new RandomText(8).getString() + "." + suffix);
-        fil.deleteOnExit();
-        return fil;
+        return getTempFile(new RandomText(8).getString() , suffix);
     }
 
     /**
@@ -241,6 +239,18 @@ public class FileDirectoryHandler {
      */
     public static File getTempFile() {
         return getTempFile("~mp");
+    }
+
+    /**
+     *
+     * @param filename
+     * @param suffix
+     * @return A temporay file with the given name
+     */
+    public static File getTempFile(String filename, String suffix) {
+        File fil = new File(System.getProperty("java.io.tmpdir") + File.separator +filename + "." + suffix);
+        fil.deleteOnExit();
+        return fil;
     }
 
     /**
@@ -327,6 +337,8 @@ public class FileDirectoryHandler {
 
         return outp.toURI();
     }
+
+    
 }
     
 

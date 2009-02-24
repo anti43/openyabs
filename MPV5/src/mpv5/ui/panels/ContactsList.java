@@ -24,7 +24,7 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
         this.context = context;
         context.setSearchFields(Context.DETAILS_CONTACTS);
         context.setSearchHeaders(Headers.CONTACT_DETAILS);
-        context.addReference(Context.IDENTITY_CONTACTS, "ids", "companyuid");
+        context.addReference(Context.IDENTITY_CONTACTS, "ids", "company");
         fill(true, true, true, true, false);
         prinitingComboBox1.init(listTable);
     }
