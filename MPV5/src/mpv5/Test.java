@@ -18,8 +18,11 @@ package mpv5;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import mpv5.db.common.DatabaseObject;
+import mpv5.items.contacts.Contact;
 import mpv5.utils.xml.XMLReader;
 import org.jdom.JDOMException;
 
@@ -29,16 +32,28 @@ import org.jdom.JDOMException;
  */
 public class Test {
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         try {
-            new XMLReader().newDoc(new File("contacts.xml"), true);
+//        try {
+//            new XMLReader().newDoc(new File("contacts.xml"), true);
+//
+//        } catch (JDOMException ex) {
+//            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (IOException ex) {
+//            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+            XMLReader r = new XMLReader();
+            r.newDoc(new File("contacts.xml"), true); 
+            ArrayList<DatabaseObject> l = r.getObjects(new Contact());
+           
+            for (int i = 0; i < l.size(); i++) {
 
-        } catch (JDOMException ex) {
-            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
-        }
+                DatabaseObject databaseObject = l.get(i);
+                System.out.println(databaseObject.__getCName());
+      
+            }
+        } catch (Exception ex) {
+           ex.printStackTrace();
+        } 
     }
-
-
 }

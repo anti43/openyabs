@@ -8,6 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Hashtable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Icon;
@@ -16,6 +17,7 @@ import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.panels.DataPanel;
 import mpv5.ui.dialogs.Popup;
+import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
 
 /**
@@ -84,13 +86,17 @@ public abstract class DatabaseObject {
      * @return An Icon representing the type of this do
      */
     public Icon getTypeIcon() {
-        if (getDbIdentity().equalsIgnoreCase(Context.getContact().getDbIdentity())) {
-            return ICON_CONTACT;
-        } else {
+        try {
+            if (getDbIdentity().equalsIgnoreCase(Context.getContact().getDbIdentity())) {
+                return new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/22/evolution-contacts.png"));
+            } else {
+                return null;
+            }
+        } catch (Exception e) {
             return null;
         }
     }
-    private Icon ICON_CONTACT = new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/22/evolution-contacts.png"));
+
 
 //    private Icon ICON_CONTACT = new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/agt_family.png"));
     /**
@@ -504,6 +510,50 @@ public abstract class DatabaseObject {
                             Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
+                }
+            }
+        }
+    }
+
+    /**
+     * Tries to reflect the hash table into this do.
+     * The hashtable's keys much match the methods retrieved by do.setVars()
+     * @param toHashTable
+     */
+    public void parse(Hashtable<String, Object> toHashTable) {
+        ArrayList<Method> vars = setVars();
+//        Log.Debug(this, " ?? : " +  toHashTable.size());
+        Object[][] data = ArrayUtilities.hashTableToArray(toHashTable);
+//        Log.Debug(this, " ?? : " +  data[0]);
+        for (int row = 0; row < data.length; row++) {
+            String name = data[row][0].toString().toLowerCase();
+// Log.Debug(this, name + " ?? : " + " = " + data[row][1]);
+            for (int k = 0; k < vars.size(); k++) {
+//                Log.Debug(this, name + " ?? : " + vars.get(k).getName() + " = " + data[row][1]);
+                if (vars.get(k).getName().toLowerCase().substring(3).equals(name)) {
+//                    Log.Debug(this, name + " ?? : " + vars.get(k).getName() + " = " + data[row][1]);
+                    try {
+                        if (name.startsWith("is") || name.toUpperCase().startsWith("BOOL")) {
+                            if (String.valueOf(data[row][1]).equals("1")) {
+                                vars.get(k).invoke(this, new Object[]{true});
+                            } else {
+                                vars.get(k).invoke(this, new Object[]{false});
+                            }
+                        } else if (name.toUpperCase().startsWith("INT") || name.endsWith("uid") || name.equals("ids")) {
+                            vars.get(k).invoke(this, new Object[]{Integer.valueOf(String.valueOf(data[row][1]))});
+                        } else if (name.toUpperCase().startsWith("DATE")) {
+                            vars.get(k).invoke(this, new Object[]{DateConverter.getDate(String.valueOf(data[row][1]))});
+                        } else {
+                            vars.get(k).invoke(this, new Object[]{String.valueOf(data[row][1])});
+                        }
+                    } catch (IllegalAccessException ex) {
+                        Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IllegalArgumentException ex) {
+                        Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (InvocationTargetException ex) {
+                        Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
                 }
             }
         }

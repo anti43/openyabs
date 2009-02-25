@@ -18,13 +18,10 @@ package mpv5.utils.xml;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mpv5.data.PropertyStore;
 import mpv5.db.common.DatabaseObject;
 import mpv5.logging.Log;
@@ -72,10 +69,8 @@ public class XMLReader {
      * Parses a XML document
      * @param xmlfile
      * @return The resulting xml document
-     * @throws JDOMException
-     * @throws IOException
      */
-    public Document newDoc(File xmlfile) throws JDOMException, IOException {
+    public Document newDoc(File xmlfile)  {
         return createDocument(xmlfile, false);
     }
 
@@ -84,10 +79,8 @@ public class XMLReader {
      * @param xmlfile
      * @param validate
      * @return The resulting xml document
-     * @throws JDOMException
-     * @throws IOException
      */
-    public Document newDoc(File xmlfile, boolean validate) throws JDOMException, IOException {
+    public Document newDoc(File xmlfile, boolean validate) {
         return createDocument(xmlfile, validate);
     }
 
@@ -119,38 +112,15 @@ public class XMLReader {
         List<Element> list = (List<Element>) rootElement.getChild(template.getDbIdentity()).getContent(new ElementFilter());
 
         for (int i = 0; i < list.size(); i++) {
-            if (list.get(i) instanceof Element) {
-
+            if (list.get(i) instanceof Element && list.get(i).getName().equalsIgnoreCase(template.getType())) {
                 if (list.get(i).getName().equals(ident) && list.get(i).getAttribute("id") != null) {
-                    @SuppressWarnings("unchecked")
-                    List<Element> liste = list.get(i).getChildren();
-
-                    for (int j = 0; j < liste.size(); j++) {
-                        Element element = liste.get(j);
-
+                        Element element = list.get(i);
                         DatabaseObject obj = template.clone();
-                        ArrayList<Method> vars = obj.setVars();
-
-                        for (int k = 0; k < vars.size(); k++) {
-                            Method method = vars.get(k);
-                            if (method.getName().substring(2).equalsIgnoreCase(element.getName())) {
-                                try {
-                                    method.invoke(obj, new Object[]{element.getValue()});
-                                } catch (IllegalAccessException ex) {
-                                    Logger.getLogger(XMLReader.class.getName()).log(Level.SEVERE, null, ex);
-                                } catch (IllegalArgumentException ex) {
-                                    Logger.getLogger(XMLReader.class.getName()).log(Level.SEVERE, null, ex);
-                                } catch (InvocationTargetException ex) {
-                                    Logger.getLogger(XMLReader.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-                            }
-                        }
+                        obj.parse(toHashTable(element));
                         arrlist.add(obj);
                     }
-                }
             }
         }
-
         return arrlist;
     }
 
@@ -184,15 +154,39 @@ public class XMLReader {
         return store;
     }
 
-    private Document createDocument(File xmlfile, boolean validate) throws JDOMException, IOException {
+    private Document createDocument(File xmlfile, boolean validate) {
         //        SAXBuilder parser = new SAXBuilder("org.apache.xerces.parsers.SAXParser", true);
 //        parser.setFeature("http://apache.org/xml/features/validation/schema", true);
 //        parser.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation",
 //                                       "http://www.w3.org/2001/12/soap-envelope contacts.dtd");
 //        Document doc = builder.build(xml);
         SAXBuilder parser = new SAXBuilder(validate);
-        myDocument = parser.build(xmlfile);
+        try {
+            myDocument = parser.build(xmlfile);
+        } catch (JDOMException jDOMException) {
+            Log.Debug(this, jDOMException.getMessage());
+        } catch (IOException iOException) {
+            Log.Debug(this, iOException.getMessage());
+        }
         rootElement = myDocument.getRootElement();
         return myDocument;
+    }
+
+    /**
+     * Converts a node into a hashtable
+     * @param node
+     * @return
+     */
+    public Hashtable<String, Object> toHashTable(Element node) {
+        @SuppressWarnings("unchecked")
+        List<Element> liste = node.getChildren();
+        Hashtable<String, Object> table = new Hashtable<String, Object>();
+
+        for (int i = 0; i < liste.size(); i++) {
+            Element element = liste.get(i);
+            table.put(element.getName(), element.getValue());
+        }
+
+        return table;
     }
 }

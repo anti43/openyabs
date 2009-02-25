@@ -19,6 +19,7 @@ along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
 package mpv5.utils.arrays;
 
+import java.util.Hashtable;
 import mpv5.utils.tables.*;
 import java.io.File;
 import java.util.ArrayList;
@@ -188,6 +189,27 @@ public class ArrayUtilities {
             }
         }
         return data;
+    }
+
+    /**
+     * Converts a Hashtable to an array of keys and values
+     * @param table
+     * @return
+     */
+    public static Object[][] hashTableToArray(Hashtable<String, Object> table) {
+        Object[][] n = new Object[table.size()][2];
+        String[] keys = hashTableKeysToArray(table);
+        int i = 0;
+        
+          for (int j = 0; j < keys.length; j++) {
+            String k = keys[j];
+            n[i][1] = table.get(k);
+            n[i][0] = k;
+            i++;
+        }
+//
+//        Log.PrintArray(n);
+        return n;
     }
 
 //    public static MPTableModel getModelCopy(JTable data) {
@@ -466,6 +488,17 @@ public class ArrayUtilities {
         return data;
     }
 
+    public static String[] hashTableKeysToArray(Hashtable<String, Object> data) {
+         Object[] array = data.keySet().toArray();
+         String[] keyz = new String[array.length];
+
+        for (int i = 0; i < array.length; i++) {
+            keyz[i] = (array[i]).toString();
+        }
+
+         return keyz;
+    }
+
     /**
      * Converts a HashMap to a 2-column array {key, value}
      * @param map
@@ -483,7 +516,7 @@ public class ArrayUtilities {
         return data;
     }
 
-        public static Object[][] merge(Object[][] array1, Object[][] array2) {
+    public static Object[][] merge(Object[][] array1, Object[][] array2) {
         if (array1 == null) {
             array1 = new Object[0][0];
         }
@@ -551,7 +584,7 @@ public class ArrayUtilities {
         Object[][] mergedArray = new Object[array1.length + array2.length][z];
         int i = 0;
         for (i = 0; i < array1.length; i++) {
-                mergedArray[0][i] = array1[i];
+            mergedArray[0][i] = array1[i];
         }
 
         for (int l = 0; l < array2.length; l++) {
@@ -561,7 +594,6 @@ public class ArrayUtilities {
         }
         return mergedArray;
     }
-
 
     public static Object[] merge(Object[] array1, Object[] array2) {
         if (array1 == null) {
@@ -661,7 +693,6 @@ public class ArrayUtilities {
         return items;
     }
 
-
     public static ArrayList StringArrayToList(String[][] array) {
         ArrayList list = new ArrayList();
 
@@ -689,7 +720,6 @@ public class ArrayUtilities {
         return list;
     }
 
-
     /**
      *
      * @param list
@@ -699,7 +729,7 @@ public class ArrayUtilities {
 
         Integer[][][] str = new Integer[list.size()][][];
 
-        ArrayList a,b ;
+        ArrayList a, b;
 
         for (int i = 0; i < list.size(); i++) {
 
@@ -789,9 +819,8 @@ public class ArrayUtilities {
             list3.add((Double) it2.next());
         }
 
-      return list3;
-   }
-
+        return list3;
+    }
 
     /**
      * list 1 +2 must have same element count!
@@ -806,18 +835,18 @@ public class ArrayUtilities {
         Iterator it1 = list1.iterator();
         Iterator it2 = list2.iterator();
 
-        if(list1.size() != list2.size()) {
+        if (list1.size() != list2.size()) {
             throw new Exception("list 1 + 2 must have same element count!");
         }
 
         ArrayList<Double> list3 = new ArrayList();
 
         while (it1.hasNext() && it2.hasNext()) {
-            Double value = (Double)it1.next() - (Double)it2.next();
+            Double value = (Double) it1.next() - (Double) it2.next();
             list3.add(value);
         }
 
-      return list3;
+        return list3;
     }
 
     /**
@@ -833,18 +862,17 @@ public class ArrayUtilities {
         Iterator it1 = list1.iterator();
         Iterator it2 = list2.iterator();
 
-        if(list1.size() != list2.size()) {
+        if (list1.size() != list2.size()) {
             throw new Exception("list 1 + 2 must have same element count!");
         }
-
         @SuppressWarnings("unchecked")
         ArrayList<Double> list3 = new ArrayList();
 
         while (it1.hasNext() && it2.hasNext()) {
-            Double value = (Double)it1.next() + (Double)it2.next();
+            Double value = (Double) it1.next() + (Double) it2.next();
             list3.add(value);
         }
 
-      return list3;
+        return list3;
     }
 }

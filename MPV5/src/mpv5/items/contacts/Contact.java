@@ -40,6 +40,7 @@ public class Contact extends DatabaseObject {
 
     public Contact() {
         context.setDbIdentity(Context.IDENTITY_CONTACTS);
+        context.setIdentityClass(this.getClass());
     }
 
     /**

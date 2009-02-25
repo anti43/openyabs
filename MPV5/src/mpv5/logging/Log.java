@@ -58,7 +58,7 @@ public class Log {
     public static void Debug(Object source, Object message) {
         if (loglevel == LOGLEVEL_DEBUG) {
             Debug(source.getClass().getName() + ": " + message, true);
-               try {
+            try {
                 if (message.toString().contains("Exception")) {
                     ((Exception) message).printStackTrace();
                 }
@@ -72,7 +72,7 @@ public class Log {
     public static void Debug(Class source, Object message, boolean alwaysToKonsole) {
         if (loglevel == LOGLEVEL_DEBUG) {
             Debug(source.getName() + ": " + message, alwaysToKonsole);
-               try {
+            try {
                 if (message.toString().contains("Exception")) {
                     ((Exception) message).printStackTrace();
                 }
@@ -86,7 +86,7 @@ public class Log {
     public static void Debug(Class source, Object message) {
         if (loglevel == LOGLEVEL_DEBUG) {
             Debug(source.getName() + ": " + message, true);
-               try {
+            try {
                 if (message.toString().contains("Exception")) {
                     ((Exception) message).printStackTrace();
                 }
@@ -98,6 +98,7 @@ public class Log {
     }
 
     public static void PrintArray(Object[][][] array) {
+        Debug("Print array: {");
         if (loglevel != LOGLEVEL_NONE) {
             for (int i = 0; i < array.length; i++) {
                 try {
@@ -123,10 +124,12 @@ public class Log {
                 }
             }
         }
+        Debug("}//End Print array");
     }
 
     public static void PrintArray(Object[][] array) {
 
+        Debug("Print array: {");
         for (int i = 0; i < array.length; i++) {
             for (int k = 0; k < array[i].length; k++) {
                 if (loglevel != LOGLEVEL_NONE) {
@@ -136,10 +139,11 @@ public class Log {
                 }
             }
         }
+        Debug("}//End Print array");
     }
 
     public static void PrintArray(Object[] string) {
-
+        Debug("Print array: {");
         for (int i = 0; i < string.length; i++) {
 
             if (loglevel != LOGLEVEL_NONE) {
@@ -147,6 +151,7 @@ public class Log {
             }
 
         }
+        Debug("}//End Print array");
     }
 
     public static void Debug(String[][] array) {

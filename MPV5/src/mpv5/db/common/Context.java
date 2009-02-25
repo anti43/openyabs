@@ -5,6 +5,7 @@
 package mpv5.db.common;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import mpv5.globals.Headers;
 import mpv5.items.contacts.Contact;
 import mpv5.usermanagement.User;
@@ -91,7 +92,21 @@ public class Context {
         list.add(getSupplier());
         return list;
     }
-    public static ArrayList<Context> allContexts = new ArrayList<Context>();
+    /**
+     * A list of all available contexts
+     */
+    public static ArrayList<Context> allContexts = new ArrayList<Context>(Arrays.asList(new Context[]{
+                getCompany(),
+                getContact(),
+                getCustomer(),
+                getFavourites(),
+                getFiles(),
+                getLanguage(),
+                getLock(),
+                getManufacturer(),
+                getSupplier(),
+                getUser()
+            }));
     private boolean isCompany = false;
     private boolean isCustomer = false;
     private boolean isManufacturer = false;
@@ -102,8 +117,12 @@ public class Context {
     private String exclusiveCondition;
     private String uniqueColumns;
 
+    /**
+     * Create a new Context instance with the given do as owner
+     * @param parentobject
+     */
     public Context(DatabaseObject parentobject) {
-        this.parent = parentobject;
+        setOwner(parentobject);
     }
     private Class identityClass = null;
     /*
@@ -263,6 +282,14 @@ public class Context {
     }
 
     /**
+     * Define the owner of this Context
+     * @param parentobject
+     */
+    public void setOwner(DatabaseObject parentobject) {
+        this.parent = parentobject;
+    }
+
+    /**
      * Remove all exclusive conditions or reuse them
      * @param bool
      */
@@ -418,7 +445,7 @@ public class Context {
         c.setSearchFields(DEFAULT_CONTACT_SEARCH);
         c.setSearchHeaders(Headers.CONTACT_DEFAULT);
         c.setIdentityClass(IDENTITY_CONTACTS_CLASS);
-        allContexts.add(c);
+
         return c;
     }
 
@@ -430,7 +457,7 @@ public class Context {
         c.setSearchFields(DEFAULT_CONTACT_SEARCH);
         c.setSearchHeaders(Headers.CONTACT_DEFAULT);
         c.setIdentityClass(IDENTITY_CONTACTS_CLASS);
-        allContexts.add(c);
+
         return c;
     }
 
@@ -442,7 +469,7 @@ public class Context {
         c.setSearchFields(DEFAULT_CONTACT_SEARCH);
         c.setSearchHeaders(Headers.CONTACT_DEFAULT);
         c.setIdentityClass(IDENTITY_CONTACTS_CLASS);
-        allContexts.add(c);
+
         return c;
     }
 
@@ -454,7 +481,7 @@ public class Context {
         c.setSearchFields(DEFAULT_CONTACT_SEARCH);
         c.setSearchHeaders(Headers.CONTACT_DEFAULT);
         c.setIdentityClass(IDENTITY_CONTACTS_CLASS);
-        allContexts.add(c);
+
         return c;
     }
 
@@ -465,7 +492,7 @@ public class Context {
         c.setSearchFields(DEFAULT_CONTACT_SEARCH);
         c.setSearchHeaders(Headers.CONTACT_DEFAULT);
         c.setIdentityClass(IDENTITY_CONTACTS_CLASS);
-        allContexts.add(c);
+
         return c;
     }
 
@@ -477,7 +504,7 @@ public class Context {
         c.setSearchHeaders(Headers.USER_DEFAULT);
         c.setIdentityClass(IDENTITY_USERS_CLASS);
         c.uniqueColumns = UNIQUECOLUMNS_USER;
-        allContexts.add(c);
+
         return c;
     }
 
@@ -485,7 +512,7 @@ public class Context {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(SMALLIDENTITY_LANGUAGES);
-        allContexts.add(c);
+
         return c;
     }
 
@@ -493,7 +520,7 @@ public class Context {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(SMALLIDENTITY_FILES);
-        allContexts.add(c);
+
         return c;
     }
 
@@ -501,7 +528,7 @@ public class Context {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(SMALLIDENTITY_LOCK);
-        allContexts.add(c);
+
         return c;
     }
 
@@ -509,7 +536,7 @@ public class Context {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(SMALLIDENTITY_FAVS);
-        allContexts.add(c);
+
         return c;
     }
 
