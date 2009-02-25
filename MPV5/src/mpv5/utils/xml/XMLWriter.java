@@ -40,8 +40,10 @@ import org.jdom.output.XMLOutputter;
  */
 public class XMLWriter {
 
-    private Element rootElement = new Element("defName");
+    private String root = "mpv5";
+    private Element rootElement = new Element(root);
     private Document myDocument = new Document();
+   
 
     /**
      * Adds all objects
@@ -54,7 +56,7 @@ public class XMLWriter {
                 try {
 
                     DatabaseObject databaseObject = dbobjarr.get(i);
-                    String ident = databaseObject.getDbIdentity().substring(0, databaseObject.getDbIdentity().length() - 1);
+                    String ident = databaseObject.getType();
 
                     ArrayList<String[]> data = databaseObject.getValues();
                     this.addNode(ident, databaseObject.__getIDS().toString());
@@ -87,17 +89,16 @@ public class XMLWriter {
      * @param file
      * @param nodename
      * @param nodeid
-     * @param alternateRoot The root element if the file needs to be created
      * @param cookie
      */
-    public void append(File file, String nodename, String nodeid, String alternateRoot, PropertyStore cookie) {
+    public void append(File file, String nodename, String nodeid, PropertyStore cookie) {
         XMLReader reader = new XMLReader();
         try {
             Log.Debug(this, "Reading in " + file);
             myDocument = reader.newDoc(file);
             rootElement = myDocument.getRootElement();
         } catch (Exception ex) {
-            newDoc(alternateRoot);
+            newDoc(root);
         }
         parse(nodename, nodeid, cookie);
     }

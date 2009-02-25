@@ -56,6 +56,29 @@ public abstract class DatabaseObject {
      */
     public abstract String __getCName();
 
+    @Override
+    public DatabaseObject clone() {
+        try {
+            Object obj = context.getIdentityClass().newInstance();
+            return (DatabaseObject) obj;
+        } catch (InstantiationException ex) {
+            Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return null;
+    }
+
+    /**
+     * The type of a database object should equal the dbidentity in singular form,
+     * but as the dbidentity can change over time, the type name must be consistent
+     * @return The type of this do, an unique type identifier
+     */
+    public String getType() {
+        return getDbIdentity().substring(0, getDbIdentity().length() - 1);
+    }
+
     /**
      * This can be used to graphically represent a do
      * @return An Icon representing the type of this do
@@ -375,7 +398,7 @@ public abstract class DatabaseObject {
         }
         return null;
     }
-    
+
     /**
      * Returns all DBOs in the specific context
      * @param context
@@ -385,9 +408,9 @@ public abstract class DatabaseObject {
     public static ArrayList<DatabaseObject> getObjects(Context context) throws NodataFoundException {
         Object[][] allIds = QueryHandler.instanceOf().clone(context).selectIndexes().getData();
         ArrayList<DatabaseObject> list = new ArrayList<DatabaseObject>();
-    
+
         for (int i = 0; i < allIds.length; i++) {
-            int id  = Integer.valueOf(allIds[i][0].toString());
+            int id = Integer.valueOf(allIds[i][0].toString());
             list.add(DatabaseObject.getObject(context, id));
         }
         return list;

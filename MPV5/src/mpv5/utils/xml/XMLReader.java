@@ -18,9 +18,15 @@ package mpv5.utils.xml;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mpv5.data.PropertyStore;
+import mpv5.db.common.DatabaseObject;
 import mpv5.logging.Log;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -34,7 +40,7 @@ import org.jdom.input.SAXBuilder;
  */
 public class XMLReader {
 
-    private Element rootElement = new Element("defName");
+    private Element rootElement = new Element("mpv5");
     private Document myDocument = new Document();
 
     /**
@@ -82,9 +88,8 @@ public class XMLReader {
      * @throws IOException
      */
     public Document newDoc(File xmlfile, boolean validate) throws JDOMException, IOException {
-        return createDocument(xmlfile,validate);
+        return createDocument(xmlfile, validate);
     }
-
 
     /**
      * Gets an element value
@@ -106,7 +111,48 @@ public class XMLReader {
         return null;
     }
 
+    public ArrayList<DatabaseObject> getObjects(DatabaseObject template) {
 
+        String ident = template.getType();
+        ArrayList<DatabaseObject> arrlist = new ArrayList<DatabaseObject>();
+        @SuppressWarnings("unchecked")
+        List<Element> list = (List<Element>) rootElement.getChild(template.getDbIdentity()).getContent(new ElementFilter());
+
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i) instanceof Element) {
+
+                if (list.get(i).getName().equals(ident) && list.get(i).getAttribute("id") != null) {
+                    @SuppressWarnings("unchecked")
+                    List<Element> liste = list.get(i).getChildren();
+
+                    for (int j = 0; j < liste.size(); j++) {
+                        Element element = liste.get(j);
+
+                        DatabaseObject obj = template.clone();
+                        ArrayList<Method> vars = obj.setVars();
+
+                        for (int k = 0; k < vars.size(); k++) {
+                            Method method = vars.get(k);
+                            if (method.getName().substring(2).equalsIgnoreCase(element.getName())) {
+                                try {
+                                    method.invoke(obj, new Object[]{element.getValue()});
+                                } catch (IllegalAccessException ex) {
+                                    Logger.getLogger(XMLReader.class.getName()).log(Level.SEVERE, null, ex);
+                                } catch (IllegalArgumentException ex) {
+                                    Logger.getLogger(XMLReader.class.getName()).log(Level.SEVERE, null, ex);
+                                } catch (InvocationTargetException ex) {
+                                    Logger.getLogger(XMLReader.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            }
+                        }
+                        arrlist.add(obj);
+                    }
+                }
+            }
+        }
+
+        return arrlist;
+    }
 
     /**
      * Prints a node to debug out
