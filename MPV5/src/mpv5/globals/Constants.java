@@ -29,26 +29,26 @@ public interface Constants {
     /**
      * Version info
      */
-    public static String VERSION = "5.00";
-    public static String REVISION = "000";
-    public static String RELEASE_VERSION = "5";
-    public static String TITLE = "[Vienna]";
-    public static String VERSION_URL = "Not Used";
-    public static String JAR_NAME = "MPV5.jar";
-    public static String PROG_NAME = "MP-" + Constants.VERSION + "";
+    public static final String VERSION = "5.00";
+    /**
+     * Will be dynamically changed by SVN
+     */
+    public static final String REVISION = "$Ref$";
+    public static final String RELEASE_VERSION = "5";
+    public static final String TITLE = "[Vienna]";
+    public static final String JAR_NAME = "MPV5.jar";
+    public static final String PROG_NAME = "MP-" + Constants.VERSION + "";
     public static String JAVA_VERSION = "Java Version: " + System.getProperty("java.version");
     public static String PLUGIN_IDENTIFIER = "MP5Plugin";
     public static String PLUGIN_LOAD_CLASS = "plugin.Main";
-
     /**
      * Name of databasedir 
      */
-    public static final String DATABASENAME = "mpv" + Constants.RELEASE_VERSION +"db";
+    public static final String DATABASENAME = "mpv" + Constants.RELEASE_VERSION + "db";
     /**
      * Full path to database dir 
      */
 //    public static final String MPPATH = Main.MPPATH;
-  
     public static String SEP = File.separator;
     public static String TEMPLATES_DIR = "Vorlagen";
     public static String LIB_DIR = "lib";
@@ -63,8 +63,5 @@ public interface Constants {
     public static String BACKUPS_SAVE_DIR = "Backup";
     public static String ICON_NAME_LIN = "mp.desktop";
     public static String ICON_NAME_WIN = "MP-Rechnungs-Kundenverwaltung.url";
-
     public static String FELDTRENNER = ";";
-    
-   
 }
