@@ -37,6 +37,7 @@ import mpv5.ui.parents.Position;
  * @author anti43
  */
 public class Wizard extends javax.swing.JFrame implements WizardMaster {
+    private static final long serialVersionUID = 1L;
 
     public PropertyStore actionVars = new PropertyStore();
     private int index = 0;
@@ -57,12 +58,16 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
         if (standalone) {
             this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         }
+        repaint();
     }
 
     public void showWiz() {
         back.setEnabled(false);
         new Position(this);
-        setVisible(true);
+        setVisible(true); 
+        pack();
+        setResizable(false);
+        repaint();
     }
 
     /** This method is called from within the constructor to
@@ -83,7 +88,7 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
         message = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        java.util.ResourceBundle bundle = mpv5.resources.languages.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setTitle(bundle.getString("Wizard.title")); // NOI18N
         setBackground(new java.awt.Color(255, 255, 255));
         setName("Form"); // NOI18N
@@ -91,19 +96,10 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
         content.setBackground(new java.awt.Color(255, 255, 255));
         content.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         content.setName("content"); // NOI18N
+        content.setLayout(new java.awt.BorderLayout());
 
         layer.setName("layer"); // NOI18N
-
-        javax.swing.GroupLayout contentLayout = new javax.swing.GroupLayout(content);
-        content.setLayout(contentLayout);
-        contentLayout.setHorizontalGroup(
-            contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(layer, javax.swing.GroupLayout.PREFERRED_SIZE, 476, javax.swing.GroupLayout.PREFERRED_SIZE)
-        );
-        contentLayout.setVerticalGroup(
-            contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(layer, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE)
-        );
+        content.add(layer, java.awt.BorderLayout.CENTER);
 
         control.setBackground(new java.awt.Color(255, 255, 255));
         control.setName("control"); // NOI18N
@@ -143,7 +139,7 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
                 .addContainerGap()
                 .addComponent(cancel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(message, javax.swing.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)
+                .addComponent(message, javax.swing.GroupLayout.DEFAULT_SIZE, 224, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(back)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -167,13 +163,13 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(control, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(content, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(content, javax.swing.GroupLayout.DEFAULT_SIZE, 478, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(content, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addComponent(content, javax.swing.GroupLayout.DEFAULT_SIZE, 353, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(control, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -218,6 +214,11 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
         this.validate();
 }//GEN-LAST:event_backActionPerformed
 
+    /**
+     * Add a apanel to this wizard. Panels will be shown in the order they are added here,
+     * while first panel is shown first.
+     * @param panel
+     */
     public void addPanel(Wizardable panel) {
         ((JPanel) panel).setPreferredSize(content.getSize());
         ((JPanel) panel).setBounds(0, 0, content.getWidth(), content.getHeight());
@@ -227,6 +228,10 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
         layer.validate();
     }
 
+    /**
+     * Notifies the wizard to show the "Finnish" button which closes the wizard
+     * @param end
+     */
     public void isEnd(boolean end) {
         this.isEnded = end;
         if (end) {
@@ -236,10 +241,18 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
         back.setEnabled(!end);
     }
 
+    /**
+     * ActionVars are temporay vars which are used between different panels of this wizrd.
+     * @return A PropertyStore which can be used to hold ActionVars
+     */
     public PropertyStore getStore() {
         return actionVars;
     }
 
+    /**
+     * Set the message shown on the bottom of the wizard
+     * @param message
+     */
     public void setMessage(String message) {
         this.message.setText(message);
     }

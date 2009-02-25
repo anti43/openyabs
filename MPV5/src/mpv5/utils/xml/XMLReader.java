@@ -163,13 +163,14 @@ public class XMLReader {
         SAXBuilder parser = new SAXBuilder(validate);
         try {
             myDocument = parser.build(xmlfile);
+            rootElement = myDocument.getRootElement();
+           return myDocument;
         } catch (JDOMException jDOMException) {
             Log.Debug(this, jDOMException.getMessage());
         } catch (IOException iOException) {
             Log.Debug(this, iOException.getMessage());
         }
-        rootElement = myDocument.getRootElement();
-        return myDocument;
+        return null;
     }
 
     /**

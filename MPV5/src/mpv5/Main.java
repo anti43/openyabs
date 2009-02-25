@@ -47,8 +47,7 @@ public class Main extends SingleFrameApplication {
             LocalSettings.read();
             LocalSettings.apply();
         } catch (Exception ex) {
-            Log.Debug(Main.class, ex);
-
+            Log.Debug(Main.class,"Local settings file not found: " + LocalSettings.getLocalFile());
         }
         launch(Main.class, new String[]{});
     }
@@ -303,7 +302,7 @@ public class Main extends SingleFrameApplication {
             return true;
         } catch (Exception ex) {
             Log.Debug(this, "Could not connect to database.");
-            Log.Debug(this, ex);
+//            Log.Debug(this, ex);
             return false;
         }
     }

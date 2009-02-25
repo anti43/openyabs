@@ -33,7 +33,7 @@ public interface Constants {
     /**
      * Will be dynamically changed by SVN,,
      */
-    public static final String REVISION = "$ $Rev$ $";
+    public static final String REVISION = "$Rev$";
     public static final String RELEASE_VERSION = "5";
     public static final String TITLE = "[Vienna]";
     public static final String JAR_NAME = "MPV5.jar";
