@@ -6,7 +6,6 @@
 package mpv5.ui.dialogs.subcomponents;
 
 import mpv5.Main;
-import mpv5.globals.LocalSettings;
 import mpv5.ui.dialogs.WizardMaster;
 import mpv5.ui.dialogs.Wizardable;
 
@@ -15,6 +14,7 @@ import mpv5.ui.dialogs.Wizardable;
  * @author anti43
  */
 public class wizard_DBSettings_2 extends javax.swing.JPanel implements Wizardable {
+    private static final long serialVersionUID = 1L;
 
     private WizardMaster master;
 
@@ -41,7 +41,7 @@ public class wizard_DBSettings_2 extends javax.swing.JPanel implements Wizardabl
 
         jTextArea1.setColumns(20);
         jTextArea1.setEditable(false);
-        jTextArea1.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jTextArea1.setFont(new java.awt.Font("Tahoma", 0, 12));
         jTextArea1.setLineWrap(true);
         jTextArea1.setRows(5);
         jTextArea1.setText(bundle.getString("wizard_DBSettings_2.jTextArea1.text")); // NOI18N
@@ -57,13 +57,13 @@ public class wizard_DBSettings_2 extends javax.swing.JPanel implements Wizardabl
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 319, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 422, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 242, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 322, Short.MAX_VALUE)
                 .addContainerGap())
         );
 

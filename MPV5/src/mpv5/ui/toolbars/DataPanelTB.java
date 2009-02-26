@@ -22,13 +22,13 @@
 package mpv5.ui.toolbars;
 
 import java.awt.event.ActionListener;
-import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.globals.Messages;
 import mpv5.items.handling.Favourite;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPV5View;
 import mpv5.ui.panels.ContactPanel;
+import mpv5.ui.panels.DataPanel;
 import mpv5.utils.print.PrintJob;
 
 /**
@@ -38,7 +38,7 @@ import mpv5.utils.print.PrintJob;
 public class DataPanelTB extends javax.swing.JPanel {
 
     private static final long serialVersionUID = -8215471082724735228L;
-    private ContactPanel parents;
+    private DataPanel parents;
     private ActionListener action1 = new java.awt.event.ActionListener() {
 
         public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -218,9 +218,12 @@ public class DataPanelTB extends javax.swing.JPanel {
         DatabaseObject dato = parents.getDataOwner();
 
         dato.getPanelData(parents);
-        dato.save();
-        parents.refresh();
-        parents.setDataOwner(dato);
+        if (dato.save()) {
+            parents.refresh();
+            parents.setDataOwner(dato);
+        } else {
+            parents.showRequiredFields();
+        }
     }//GEN-LAST:event_jButton25ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
@@ -228,9 +231,12 @@ public class DataPanelTB extends javax.swing.JPanel {
 
         dato.getPanelData(parents);
         dato.setIDS(-1);
-        dato.save();
-        parents.refresh();
-        parents.setDataOwner(dato);
+        if (dato.save()) {
+            parents.refresh();
+            parents.setDataOwner(dato);
+        } else {
+            parents.showRequiredFields();
+        }
 }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton21ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton21ActionPerformed
@@ -280,10 +286,13 @@ public class DataPanelTB extends javax.swing.JPanel {
         DatabaseObject dato = parents.getDataOwner();
         if (!MPV5View.getUser().isDefault() && dato.isExisting()) {
             dato.getPanelData(parents);
-            dato.save();
-            Favourite.removeFavourite(dato);
-            MPV5View.identifierView.refreshFavouritesMenu();
-            parents.setDataOwner(dato);
+            if (dato.save()) {
+                Favourite.removeFavourite(dato);
+                MPV5View.identifierView.refreshFavouritesMenu();
+                parents.setDataOwner(dato);
+            } else {
+                parents.showRequiredFields();
+            }
         }
     }
 
@@ -294,12 +303,15 @@ public class DataPanelTB extends javax.swing.JPanel {
         if (!MPV5View.getUser().isDefault()) {
             if (dato.isExisting()) {
                 dato.getPanelData(parents);
-                dato.save();
-                fav = new Favourite(dato);
-                fav.save();
-                MPV5View.identifierView.refreshFavouritesMenu();
-                MPV5View.addMessage(Messages.ADDED_TO_FAVOURITES + dato.__getCName());
-                parents.setDataOwner(dato);
+                if (dato.save()) {
+                    fav = new Favourite(dato);
+                    fav.save();
+                    MPV5View.identifierView.refreshFavouritesMenu();
+                    MPV5View.addMessage(Messages.ADDED_TO_FAVOURITES + dato.__getCName());
+                    parents.setDataOwner(dato);
+                } else {
+                    parents.showRequiredFields();
+                }
             }
         } else {
             Popup.notice(Messages.DEFAULT_USER);

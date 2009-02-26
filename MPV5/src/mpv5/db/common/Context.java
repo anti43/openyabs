@@ -7,6 +7,7 @@ package mpv5.db.common;
 import java.util.ArrayList;
 import java.util.Arrays;
 import mpv5.globals.Headers;
+import mpv5.items.contacts.Address;
 import mpv5.items.contacts.Contact;
 import mpv5.usermanagement.User;
 
@@ -23,9 +24,11 @@ public class Context {
     public static String SMALLIDENTITY_FILES = "files";
     public static String SMALLIDENTITY_LOCK = "tablelock";
     public static String SMALLIDENTITY_FAVS = "favourites";
+     public static String SMALLIDENTITY_ADDRESS = "addresses";
 
     //********** identity classes **********************************************
     private static Class IDENTITY_CONTACTS_CLASS = Contact.class;
+    private static Class IDENTITY_ADDRESS_CLASS = Address.class;
     private static Class IDENTITY_USERS_CLASS = User.class;
     //********** unique constraints *******************************************
     public static String UNIQUECOLUMNS_USER = "cname";
@@ -90,6 +93,7 @@ public class Context {
         list.add(getCustomer());
         list.add(getManufacturer());
         list.add(getSupplier());
+        list.add(getAddress());
         return list;
     }
     /**
@@ -105,7 +109,8 @@ public class Context {
                 getLock(),
                 getManufacturer(),
                 getSupplier(),
-                getUser()
+                getUser(),
+                getAddress()
             }));
     private boolean isCompany = false;
     private boolean isCustomer = false;
@@ -537,6 +542,14 @@ public class Context {
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(SMALLIDENTITY_FAVS);
 
+        return c;
+    }
+
+    public static Context getAddress() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(SMALLIDENTITY_ADDRESS);
+        c.setIdentityClass(IDENTITY_ADDRESS_CLASS);
         return c;
     }
 

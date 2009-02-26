@@ -31,6 +31,7 @@ public class Contact extends DatabaseObject {
     private Date dateadded = new Date();
     private String addedby = "";
     private String company = "";
+    private String department = "";
     private boolean ismale = true;
     private boolean isenabled = true;
     private boolean iscompany = false;
@@ -60,8 +61,8 @@ public class Contact extends DatabaseObject {
     /**
      * @return the taxnumber
      */
-    public String __gettaxnumber() {
-        return cnumber;
+    public String __getTaxnumber() {
+        return taxnumber;
     }
 
     /**
@@ -340,14 +341,14 @@ public class Contact extends DatabaseObject {
     /**
      * @return the company
      */
-    public String __getcompany() {
+    public String __getCompany() {
         return company;
     }
 
     /**
      * @param company the company to set
      */
-    public void setcompany(String company) {
+    public void setCompany(String company) {
         this.company = company;
     }
 
@@ -377,6 +378,20 @@ public class Contact extends DatabaseObject {
      */
     public void setAddedby(String addedby) {
         this.addedby = addedby;
+    }
+
+        /**
+     * @return the department
+     */
+    public String __getDepartment() {
+        return department;
+    }
+
+    /**
+     * @param dep
+     */
+    public void setDepartment(String dep) {
+        this.department = dep;
     }
 //    /**
 //     * @return the role

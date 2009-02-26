@@ -6,11 +6,13 @@ package mpv5.ui.panels;
 
 import mpv5.db.common.DatabaseObject;
 
+
 /**
  *
  * @author Andreas
  */
 public interface DataPanel {
+
 
     /**
      * Collect the view data
@@ -44,4 +46,9 @@ public interface DataPanel {
      * @param dbo
      */
     public void paste(DatabaseObject dbo);
+
+    /**
+     * Show the user the fields which are mandatory to fill in
+     */
+    public void showRequiredFields();
 }

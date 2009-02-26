@@ -170,7 +170,7 @@ public class Log {
         System.err.println(string);
     }
 
-    private static void Debug(Object obj) {
+    public static void Debug(Object obj) {
 
         if (loglevel != LOGLEVEL_NONE) {
             try {

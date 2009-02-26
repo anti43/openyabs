@@ -93,7 +93,7 @@ public class Favourite extends DatabaseObject {
      */
     public static boolean isFavourite(DatabaseObject dato) {
         if (!mpv5.db.common.QueryHandler.instanceOf().clone(Context.getFavourites()).
-                checkConstraint(new String[]{"cname", "userid", "itemid"},
+                checkConstraint(new String[]{"cname", "usersids", "itemsids"},
                     new Object[]{dato.getDbIdentity(), MPV5View.getUser().__getIDS(),dato.__getIDS()})) {
             return true;
         } else {
@@ -109,7 +109,7 @@ public class Favourite extends DatabaseObject {
     public static void removeFavourite(DatabaseObject dato) {
         
             mpv5.db.common.QueryHandler.instanceOf().clone(Context.getFavourites()).
-                    delete(new String[]{"cname", "userid", "itemid"},
+                    delete(new String[]{"cname", "usersids", "itemsids"},
                     new Object[]{dato.getDbIdentity(), MPV5View.getUser().__getIDS(),dato.__getIDS()}, Messages.DONE);
         
     }
@@ -120,7 +120,7 @@ public class Favourite extends DatabaseObject {
      */
     public static Favourite[] getUserFavourites() {
 
-        Object[][] data = mpv5.db.common.QueryHandler.instanceOf().clone(Context.getFavourites()).select("cname, userid, itemid", new String[]{"userid", MPV5View.getUser().__getIDS().toString(), ""});
+        Object[][] data = mpv5.db.common.QueryHandler.instanceOf().clone(Context.getFavourites()).select("cname, usersids, itemsids", new String[]{"usersids", MPV5View.getUser().__getIDS().toString(), ""});
         Favourite[] favs = new Favourite[data.length];
 
         for (int i = 0; i < favs.length; i++) {

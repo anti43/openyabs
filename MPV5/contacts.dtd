@@ -35,3 +35,5 @@
 <!ELEMENT Zip ( #PCDATA ) >
 <!ELEMENT contact ( CName, CNumber?, Taxnumber?, Title?, Prename?, Street?, Zip?, City?, Mainphone?, Workphone?, Fax?, Mobilephone?, Mailaddress?, Website?, Notes?, isMale?, isEnabled?, isCompany?, Iscustomer?, Ismanufacturer?, Issupplier?, Company?, Dateadded?, Addedby?, IDS? ) >
 <!ELEMENT contacts ( contact* ) >
+
+<!ATTLIST contact id CDATA #REQUIRED>

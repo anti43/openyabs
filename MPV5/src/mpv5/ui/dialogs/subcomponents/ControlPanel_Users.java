@@ -27,6 +27,7 @@ import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.tables.Selection;
 import mpv5.utils.tables.TableFormat;
 import mpv5.utils.text.MD5HashGenerator;
+import mpv5.utils.ui.TextFieldUtils;
 
 /**
  *
@@ -389,7 +390,10 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         if (dataOwner != null) {
             DatabaseObject dato = dataOwner;
             dato.getPanelData(this);
-            dato.save();
+            if (dato.save()) {
+            } else {
+                showRequiredFields();
+            }
         }
 }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -402,7 +406,10 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         if (QueryHandler.instanceOf().clone(Context.getUser()).checkUniqueness(Context.getUser().getUniqueColumns(), new JTextField[]{cname.getTextField()})) {
             dato.getPanelData(this);
             dato.setIDS(-1);
-            dato.save();
+             if (dato.save()) {
+            } else {
+                showRequiredFields();
+            }
         }
 
         refresh();
@@ -574,5 +581,9 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         } else {
             MPV5View.addMessage(Messages.NOT_POSSIBLE + Messages.PASTE);
         }
+    }
+
+    public void showRequiredFields() {
+        TextFieldUtils.blinkerRed(fullname);
     }
 }

@@ -27,6 +27,7 @@ public class Messages {
     public static String NEW_MANUFACTURER = "New Manufacturer";
     public static String NEW_OFFER = "New Offer";
     public static String NEW_BILL = "New Bill";
+    public static String NEW_VALUE= "New Value";
     public static String ACCESS_DENIED = "Access denied.";
     public static String ACTION_CREATE = "Create";
     public static String ACTION_EDIT = "Edit";
@@ -47,7 +48,7 @@ public class Messages {
     public static String FILE_EXISTS = "The file already exists, overwrite?";
     public static String ARE_YOU_SURE = "Are you sure?";
     public static String FINISH = "Finish";
-    public static String CONNECTION_VERIFIED = "The Database Connection has been verified.";
+    public static String CONNECTION_VERIFIED = "Database Connection established.";
     public static String CONNECTION_FAILED = "The Database Connection failed.";
     public static String CONNECTION_PROBE = "Checking Database Connection: ";
     public static String ERROR_SAVING_LOCALSETTINGS = "Could not save local settings";
@@ -78,4 +79,5 @@ public class Messages {
     public static String NOT_SAVED_YET = "The data has not been saved yet.";
     public static String ADDED_TO_FAVOURITES = "The item has been added to your favourites list: ";
     public static String NO_PRINTER_FOUND = "No printer found on this system.";
+
 }
