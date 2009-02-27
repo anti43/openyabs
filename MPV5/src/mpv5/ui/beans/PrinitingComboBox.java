@@ -29,7 +29,7 @@ import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import mpv5.db.common.DatabaseObject;
-import mpv5.items.contacts.Contact;
+import mpv5.items.div.Contact;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.utils.date.DateConverter;

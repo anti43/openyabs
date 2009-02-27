@@ -7,8 +7,10 @@ package mpv5.db.common;
 import java.util.ArrayList;
 import java.util.Arrays;
 import mpv5.globals.Headers;
-import mpv5.items.contacts.Address;
-import mpv5.items.contacts.Contact;
+import mpv5.items.div.Address;
+import mpv5.items.div.Contact;
+import mpv5.items.div.Item;
+import mpv5.items.div.SubItem;
 import mpv5.usermanagement.User;
 
 /**
@@ -20,6 +22,8 @@ public class Context {
     //********** tablenames ****************************************************
     public static String IDENTITY_CONTACTS = "contacts";
     public static String IDENTITY_USERS = "users";
+    public static String IDENTITY_ITEMS = "items";
+    public static String IDENTITY_SUBITEMS = "subitems";
     public static String SMALLIDENTITY_LANGUAGES = "languages";
     public static String SMALLIDENTITY_FILES = "files";
     public static String SMALLIDENTITY_LOCK = "tablelock";
@@ -30,6 +34,8 @@ public class Context {
     private static Class IDENTITY_CONTACTS_CLASS = Contact.class;
     private static Class IDENTITY_ADDRESS_CLASS = Address.class;
     private static Class IDENTITY_USERS_CLASS = User.class;
+    private static Class IDENTITY_ITEMS_CLASS = Item.class;
+    private static Class IDENTITY_SUBITEMS_CLASS = SubItem.class;
     //********** unique constraints *******************************************
     public static String UNIQUECOLUMNS_USER = "cname";
 

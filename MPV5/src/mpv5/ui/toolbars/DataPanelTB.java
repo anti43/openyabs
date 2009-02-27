@@ -24,7 +24,7 @@ package mpv5.ui.toolbars;
 import java.awt.event.ActionListener;
 import mpv5.db.common.DatabaseObject;
 import mpv5.globals.Messages;
-import mpv5.items.handling.Favourite;
+import mpv5.items.div.Favourite;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPV5View;
 import mpv5.ui.panels.ContactPanel;

@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mpv5.db.common.DatabaseObject;
-import mpv5.items.contacts.Contact;
+import mpv5.items.div.Contact;
 import mpv5.utils.xml.XMLReader;
 import org.jdom.JDOMException;
 

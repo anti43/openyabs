@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import mpv5.globals.Messages;
-import mpv5.items.contacts.Contact;
+import mpv5.items.div.Contact;
 import mpv5.logging.Log;
 import mpv5.ui.panels.DataPanel;
 import mpv5.ui.dialogs.Popup;
@@ -27,7 +27,6 @@ import mpv5.utils.date.DateConverter;
  * @author anti43
  */
 public abstract class DatabaseObject {
-
 
     /**
      * The db context of this do
@@ -268,7 +267,7 @@ public abstract class DatabaseObject {
                 try {
                     left += this.getClass().getMethods()[i].getName().toLowerCase().substring(5, this.getClass().getMethods()[i].getName().length()) + ",";
                     tempval = this.getClass().getMethods()[i].invoke(this, (Object[]) null);
-                    Log.Debug(this, "Collect: "+ tempval.getClass().getName() + " : " + this.getClass().getMethods()[i].getName() + " ? " + tempval);
+                    Log.Debug(this, "Collect: " + tempval.getClass().getName() + " : " + this.getClass().getMethods()[i].getName() + " ? " + tempval);
                     if (tempval.getClass().isInstance(new String())) {
                         stringval = "(;;2#4#1#1#8#0#;;)" + tempval + "(;;2#4#1#1#8#0#;;)";
                     } else if (tempval.getClass().isInstance(true)) {
@@ -330,11 +329,10 @@ public abstract class DatabaseObject {
         ArrayList<Method> vars = setVars();
         for (int i = 0; i < vars.size(); i++) {
             try {
-                Log.Debug(this, "GetPanelData: "+vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_ : " +
+                Log.Debug(this, "GetPanelData: " + vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_ : " +
                         source.getClass().getField(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_").
-                        getType().getName() +" [" +
-                        source.getClass().getField(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_").get(source)
-                         +"]");
+                        getType().getName() + " [" +
+                        source.getClass().getField(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_").get(source) + "]");
                 vars.get(i).invoke(this, source.getClass().getField(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_").get(source));
             } catch (Exception n) {
                 Log.Debug(this, n.getCause());
@@ -427,8 +425,7 @@ public abstract class DatabaseObject {
         return list;
     }
 
-
-    public static ArrayList<DatabaseObject>  getReferencedObjects(DatabaseObject dataOwner, Context inReference) throws NodataFoundException {
+    public static ArrayList<DatabaseObject> getReferencedObjects(DatabaseObject dataOwner, Context inReference) throws NodataFoundException {
 
         Object[][] allIds = QueryHandler.instanceOf().clone(inReference).select("ids", new String[]{dataOwner.getDbIdentity() + "ids", dataOwner.__getIDS().toString(), ""});
         ArrayList<DatabaseObject> list = new ArrayList<DatabaseObject>();
@@ -506,19 +503,21 @@ public abstract class DatabaseObject {
                 for (int k = 0; k < vars.size(); k++) {
                     if (vars.get(k).getName().toLowerCase().substring(3).equals(name)) {
 //                        Log.Debug(this, name + " ?? : " + vars.get(k).getName() + " = " + select.getData()[i][j]);
-                        Log.Debug("Explode: "+ vars.get(k).toGenericString() + " with "+ select.getData()[i][j] +
-                                  "[" +select.getData()[i][j].getClass().getName() + "]");
+                        Log.Debug("Explode: " + vars.get(k).toGenericString() + " with " + select.getData()[i][j] +
+                                "[" + select.getData()[i][j].getClass().getName() + "]");
                         try {
-                            if (name.startsWith("is") || name.toUpperCase().startsWith("BOOL")) {
+                            if (name.startsWith("is") || name.toUpperCase().startsWith("BOOL") || name.toUpperCase().endsWith("BOOL")) {
                                 if (String.valueOf(select.getData()[i][j]).equals("1")) {
                                     vars.get(k).invoke(this, new Object[]{true});
                                 } else {
                                     vars.get(k).invoke(this, new Object[]{false});
                                 }
-                            } else if (name.toUpperCase().startsWith("INT") || name.endsWith("uid")  || name.endsWith("ids") || name.equals("ids")) {
+                            } else if (name.toUpperCase().startsWith("INT") || name.endsWith("uid") || name.endsWith("ids") || name.equals("ids")) {
                                 vars.get(k).invoke(this, new Object[]{Integer.valueOf(String.valueOf(select.getData()[i][j]))});
-                            } else if (name.toUpperCase().startsWith("DATE")) {
+                            } else if (name.toUpperCase().startsWith("DATE") || name.toUpperCase().endsWith("DATE")) {
                                 vars.get(k).invoke(this, new Object[]{DateConverter.getDate(String.valueOf(select.getData()[i][j]))});
+                            } else if (name.toUpperCase().startsWith("VALUE") || name.toUpperCase().endsWith("VALUE")) {
+                                vars.get(k).invoke(this, new Object[]{Double.valueOf(String.valueOf(select.getData()[i][j]))});
                             } else {
                                 vars.get(k).invoke(this, new Object[]{String.valueOf(select.getData()[i][j])});
                             }

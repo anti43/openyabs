@@ -17,15 +17,6 @@
 package mpv5.db.common;
 
 /**
- *    private String taxnumber = "";
-    private String title = "";
-    private String prename = "";
-    private String street = "";
-    private String zip = "";
-    private String city = "";
-    private String company = "";
-    private String department = "";
-    private boolean ismale = true;
  * @author anti43
  */
 public class DatabaseInstallation {
@@ -129,15 +120,15 @@ public class DatabaseInstallation {
         "cname VARCHAR(250) UNIQUE NOT NULL, contactsids BIGINT REFERENCES contacts(ids)  ON DELETE CASCADE," +
         "dateadded DATE DEFAULT CURRENT_DATE, isactive SMALLINT DEFAULT 0, isfinished SMALLINT DEFAULT 0," +
         "value DOUBLE DEFAULT 0," +
-        "taxpercent DOUBLE DEFAULT 0, datetodo DATE DEFAULT CURRENT_DATE, reminders INTEGER DEFAULT 0," +
+        "taxvalue DOUBLE DEFAULT 0, datetodo DATE DEFAULT CURRENT_DATE, intreminders INTEGER DEFAULT 0," +
         "reserve1 VARCHAR(500) default NULL, reserve2 VARCHAR(500) default NULL, " +
         "PRIMARY KEY  (ids))",
                 
         "CREATE TABLE subitems (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
         "itemsids BIGINT REFERENCES items(ids)  ON DELETE CASCADE, " +
         "originalproductsids BIGINT DEFAULT NULL, " +
-        "count DOUBLE DEFAULT 0 NOT NULL, quantity DOUBLE DEFAULT 0 NOT NULL, measure VARCHAR(250) NOT NULL," +
-        "description VARCHAR(1000) default NULL,  value DOUBLE DEFAULT 0 NOT NULL, taxpercent DOUBLE DEFAULT 0 NOT NULL," +
+        "countvalue DOUBLE DEFAULT 0 NOT NULL, quantityvalue DOUBLE DEFAULT 0 NOT NULL, measure VARCHAR(250) NOT NULL," +
+        "description VARCHAR(1000) default NULL,  value DOUBLE DEFAULT 0 NOT NULL, taxpercentvalue DOUBLE DEFAULT 0 NOT NULL," +
         "datedelivery DATE DEFAULT CURRENT_DATE, reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (ids))",
 
         "CREATE TABLE schedule (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
