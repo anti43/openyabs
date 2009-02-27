@@ -52,9 +52,17 @@ public class DataPanelTB extends javax.swing.JPanel {
         }
     };
 
-    public DataPanelTB(ContactPanel aThis) {
+    public DataPanelTB(DataPanel aThis) {
         initComponents();
         parents = aThis;
+    }
+
+    public void setMinimalFunctionality(boolean on) {
+
+        jButton21.setEnabled(!on);
+        jButton23.setEnabled(!on);
+        jButton24.setEnabled(!on);
+
     }
 
     public void setFavourite(boolean favourite) {

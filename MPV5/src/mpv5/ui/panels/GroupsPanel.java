@@ -44,25 +44,24 @@ import mpv5.utils.ui.TextFieldUtils;
  *
  * @author anti43
  */
-public class ContactPanel extends javax.swing.JPanel implements DataPanel {
-   public static final int CONTACT = 0;
+public class GroupsPanel extends javax.swing.JPanel implements DataPanel {
+
+    public static final int CONTACT = 0;
     public static final int CUSTOMER = 1;
     public static final int SUPPLIER = 2;
     public static final int MANUFACTURER = 3;
     private static final long serialVersionUID = 1L;
     private Contact dataOwner;
     private DataPanelTB tb = new mpv5.ui.toolbars.DataPanelTB(this);
-    private SearchPanel sp;
 
     /** Creates new form ContactPanel
      * @param context
      */
-    public ContactPanel(Context context) {
+    public GroupsPanel(Context context) {
         initComponents();
-        sp =new SearchPanel(context, this);
         toolbarpane.add(tb, BorderLayout.CENTER);
         dataOwner = new Contact();
-        leftpane.add(sp, BorderLayout.CENTER);
+        leftpane.add(new SearchPanel(context, this), BorderLayout.CENTER);
         refresh();
         dateadded.setText(DateConverter.getTodayDefDate());
         addedby.setText(MPV5View.getUser().getName());
@@ -131,9 +130,6 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             Log.Debug(this, ex);
         }
     }
-
-
-   
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -205,13 +201,13 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         toolbarpane = new javax.swing.JPanel();
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
-        setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ContactPanel.border.title"))); // NOI18N
+        setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("GroupsPanel.border.title"))); // NOI18N
         setName("Form"); // NOI18N
 
         leftpane.setName("leftpane"); // NOI18N
         leftpane.setLayout(new java.awt.BorderLayout());
 
-        rightpane.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ContactPanel.rightpane.border.title"))); // NOI18N
+        rightpane.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("GroupsPanel.rightpane.border.title"))); // NOI18N
         rightpane.setName("rightpane"); // NOI18N
 
         jPanel1.setBackground(new java.awt.Color(227, 219, 202));
@@ -219,11 +215,11 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jPanel1.setName("jPanel1"); // NOI18N
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 11));
-        jLabel1.setText(bundle.getString("ContactPanel.jLabel1.text")); // NOI18N
+        jLabel1.setText(bundle.getString("GroupsPanel.jLabel1.text")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
 
         enabled.setSelected(true);
-        enabled.setText(bundle.getString("ContactPanel.enabled.text")); // NOI18N
+        enabled.setText(bundle.getString("GroupsPanel.enabled.text")); // NOI18N
         enabled.setName("enabled"); // NOI18N
         enabled.setOpaque(false);
         enabled.addItemListener(new java.awt.event.ItemListener() {
@@ -233,10 +229,10 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         });
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 11));
-        jLabel2.setText(bundle.getString("ContactPanel.jLabel2.text")); // NOI18N
+        jLabel2.setText(bundle.getString("GroupsPanel.jLabel2.text")); // NOI18N
         jLabel2.setName("jLabel2"); // NOI18N
 
-        customer.setText(bundle.getString("ContactPanel.customer.text")); // NOI18N
+        customer.setText(bundle.getString("GroupsPanel.customer.text")); // NOI18N
         customer.setName("customer"); // NOI18N
         customer.setOpaque(false);
         customer.addItemListener(new java.awt.event.ItemListener() {
@@ -245,7 +241,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             }
         });
 
-        supplier.setText(bundle.getString("ContactPanel.supplier.text")); // NOI18N
+        supplier.setText(bundle.getString("GroupsPanel.supplier.text")); // NOI18N
         supplier.setName("supplier"); // NOI18N
         supplier.setOpaque(false);
         supplier.addItemListener(new java.awt.event.ItemListener() {
@@ -254,7 +250,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             }
         });
 
-        manufacturer.setText(bundle.getString("ContactPanel.manufacturer.text")); // NOI18N
+        manufacturer.setText(bundle.getString("GroupsPanel.manufacturer.text")); // NOI18N
         manufacturer.setName("manufacturer"); // NOI18N
         manufacturer.setOpaque(false);
         manufacturer.addItemListener(new java.awt.event.ItemListener() {
@@ -263,17 +259,17 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             }
         });
 
-        number.set_Label(bundle.getString("ContactPanel.number._Label")); // NOI18N
+        number.set_Label(bundle.getString("GroupsPanel.number._Label")); // NOI18N
         number.set_LabelFont(new java.awt.Font("Tahoma", 1, 11));
         number.setName("number"); // NOI18N
 
-        dateadded.setText(bundle.getString("ContactPanel.dateadded.text")); // NOI18N
-        dateadded.setToolTipText(bundle.getString("ContactPanel.dateadded.toolTipText")); // NOI18N
+        dateadded.setText(bundle.getString("GroupsPanel.dateadded.text")); // NOI18N
+        dateadded.setToolTipText(bundle.getString("GroupsPanel.dateadded.toolTipText")); // NOI18N
         dateadded.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         dateadded.setEnabled(false);
         dateadded.setName("dateadded"); // NOI18N
 
-        company.setText(bundle.getString("ContactPanel.company.text")); // NOI18N
+        company.setText(bundle.getString("GroupsPanel.company.text")); // NOI18N
         company.setName("company"); // NOI18N
         company.setOpaque(false);
         company.addItemListener(new java.awt.event.ItemListener() {
@@ -282,8 +278,8 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             }
         });
 
-        addedby.setText(bundle.getString("ContactPanel.addedby.text")); // NOI18N
-        addedby.setToolTipText(bundle.getString("ContactPanel.addedby.toolTipText")); // NOI18N
+        addedby.setText(bundle.getString("GroupsPanel.addedby.text")); // NOI18N
+        addedby.setToolTipText(bundle.getString("GroupsPanel.addedby.toolTipText")); // NOI18N
         addedby.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         addedby.setEnabled(false);
         addedby.setName("addedby"); // NOI18N
@@ -368,22 +364,22 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel3.setName("jPanel3"); // NOI18N
 
-        mobilephone.set_Label(bundle.getString("ContactPanel.mobilephone._Label")); // NOI18N
+        mobilephone.set_Label(bundle.getString("GroupsPanel.mobilephone._Label")); // NOI18N
         mobilephone.setName("mobilephone"); // NOI18N
 
-        mainphone.set_Label(bundle.getString("ContactPanel.mainphone._Label")); // NOI18N
+        mainphone.set_Label(bundle.getString("GroupsPanel.mainphone._Label")); // NOI18N
         mainphone.setName("mainphone"); // NOI18N
 
-        workphone.set_Label(bundle.getString("ContactPanel.workphone._Label")); // NOI18N
+        workphone.set_Label(bundle.getString("GroupsPanel.workphone._Label")); // NOI18N
         workphone.setName("workphone"); // NOI18N
 
-        mailaddress.set_Label(bundle.getString("ContactPanel.mailaddress._Label")); // NOI18N
+        mailaddress.set_Label(bundle.getString("GroupsPanel.mailaddress._Label")); // NOI18N
         mailaddress.setName("mailaddress"); // NOI18N
 
-        website.set_Label(bundle.getString("ContactPanel.website._Label")); // NOI18N
+        website.set_Label(bundle.getString("GroupsPanel.website._Label")); // NOI18N
         website.setName("website"); // NOI18N
 
-        fax.set_Label(bundle.getString("ContactPanel.fax._Label")); // NOI18N
+        fax.set_Label(bundle.getString("GroupsPanel.fax._Label")); // NOI18N
         fax.setName("fax"); // NOI18N
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -421,16 +417,16 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                 .addContainerGap())
         );
 
-        jLabel9.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel9.setText(bundle.getString("ContactPanel.jLabel9.text")); // NOI18N
+        jLabel9.setFont(new java.awt.Font("Tahoma", 1, 11));
+        jLabel9.setText(bundle.getString("GroupsPanel.jLabel9.text")); // NOI18N
         jLabel9.setName("jLabel9"); // NOI18N
 
-        jLabel8.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel8.setText(bundle.getString("ContactPanel.jLabel8.text")); // NOI18N
+        jLabel8.setFont(new java.awt.Font("Tahoma", 1, 11));
+        jLabel8.setText(bundle.getString("GroupsPanel.jLabel8.text")); // NOI18N
         jLabel8.setName("jLabel8"); // NOI18N
 
-        jLabel7.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel7.setText(bundle.getString("ContactPanel.jLabel7.text")); // NOI18N
+        jLabel7.setFont(new java.awt.Font("Tahoma", 1, 11));
+        jLabel7.setText(bundle.getString("GroupsPanel.jLabel7.text")); // NOI18N
         jLabel7.setName("jLabel7"); // NOI18N
 
         jPanel9.setBackground(new java.awt.Color(204, 204, 204));
@@ -443,23 +439,23 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         dataTable.setName("dataTable"); // NOI18N
         jScrollPane2.setViewportView(dataTable);
 
-        button_bills.setText(bundle.getString("ContactPanel.button_bills.text")); // NOI18N
+        button_bills.setText(bundle.getString("GroupsPanel.button_bills.text")); // NOI18N
         button_bills.setEnabled(false);
         button_bills.setName("button_bills"); // NOI18N
 
-        button_offers.setText(bundle.getString("ContactPanel.button_offers.text")); // NOI18N
+        button_offers.setText(bundle.getString("GroupsPanel.button_offers.text")); // NOI18N
         button_offers.setEnabled(false);
         button_offers.setName("button_offers"); // NOI18N
 
-        button_products.setText(bundle.getString("ContactPanel.button_products.text")); // NOI18N
+        button_products.setText(bundle.getString("GroupsPanel.button_products.text")); // NOI18N
         button_products.setEnabled(false);
         button_products.setName("button_products"); // NOI18N
 
-        button_orders.setText(bundle.getString("ContactPanel.button_orders.text")); // NOI18N
+        button_orders.setText(bundle.getString("GroupsPanel.button_orders.text")); // NOI18N
         button_orders.setEnabled(false);
         button_orders.setName("button_orders"); // NOI18N
 
-        jButton1.setText(bundle.getString("ContactPanel.jButton1.text")); // NOI18N
+        jButton1.setText(bundle.getString("GroupsPanel.jButton1.text")); // NOI18N
         jButton1.setName("jButton1"); // NOI18N
 
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
@@ -502,7 +498,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jToolBar1.setRollover(true);
         jToolBar1.setName("jToolBar1"); // NOI18N
 
-        button_offer.setText(bundle.getString("ContactPanel.button_offer.text")); // NOI18N
+        button_offer.setText(bundle.getString("GroupsPanel.button_offer.text")); // NOI18N
         button_offer.setEnabled(false);
         button_offer.setFocusable(false);
         button_offer.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -510,7 +506,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         button_offer.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar1.add(button_offer);
 
-        button_bill.setText(bundle.getString("ContactPanel.button_bill.text")); // NOI18N
+        button_bill.setText(bundle.getString("GroupsPanel.button_bill.text")); // NOI18N
         button_bill.setEnabled(false);
         button_bill.setFocusable(false);
         button_bill.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -521,7 +517,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jSeparator1.setName("jSeparator1"); // NOI18N
         jToolBar1.add(jSeparator1);
 
-        button_product.setText(bundle.getString("ContactPanel.button_product.text")); // NOI18N
+        button_product.setText(bundle.getString("GroupsPanel.button_product.text")); // NOI18N
         button_product.setEnabled(false);
         button_product.setFocusable(false);
         button_product.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -529,7 +525,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         button_product.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar1.add(button_product);
 
-        button_order.setText(bundle.getString("ContactPanel.button_order.text")); // NOI18N
+        button_order.setText(bundle.getString("GroupsPanel.button_order.text")); // NOI18N
         button_order.setEnabled(false);
         button_order.setFocusable(false);
         button_order.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -551,19 +547,19 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         jPanel2.setName("jPanel2"); // NOI18N
 
-        title.set_Label(bundle.getString("ContactPanel.title._Label")); // NOI18N
+        title.set_Label(bundle.getString("GroupsPanel.title._Label")); // NOI18N
         title.setName("title"); // NOI18N
 
-        street.set_Label(bundle.getString("ContactPanel.street._Label")); // NOI18N
+        street.set_Label(bundle.getString("GroupsPanel.street._Label")); // NOI18N
         street.setName("street"); // NOI18N
 
-        cname.set_Label(bundle.getString("ContactPanel.cname._Label")); // NOI18N
+        cname.set_Label(bundle.getString("GroupsPanel.cname._Label")); // NOI18N
         cname.setName("cname"); // NOI18N
 
-        prename.set_Label(bundle.getString("ContactPanel.prename._Label")); // NOI18N
+        prename.set_Label(bundle.getString("GroupsPanel.prename._Label")); // NOI18N
         prename.setName("prename"); // NOI18N
 
-        city.set_Label(bundle.getString("ContactPanel.city._Label")); // NOI18N
+        city.set_Label(bundle.getString("GroupsPanel.city._Label")); // NOI18N
         city.setName("city"); // NOI18N
 
         companyselect.setName("companyselect"); // NOI18N
@@ -574,27 +570,27 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         });
 
         jLabel3.setFont(new java.awt.Font("Dialog", 0, 12));
-        jLabel3.setText(bundle.getString("ContactPanel.jLabel3.text")); // NOI18N
+        jLabel3.setText(bundle.getString("GroupsPanel.jLabel3.text")); // NOI18N
         jLabel3.setName("jLabel3"); // NOI18N
 
-        zip.set_Label(bundle.getString("ContactPanel.zip._Label")); // NOI18N
+        zip.set_Label(bundle.getString("GroupsPanel.zip._Label")); // NOI18N
         zip.setName("zip"); // NOI18N
 
         buttonGroup1.add(male);
         male.setSelected(true);
-        male.setText(bundle.getString("ContactPanel.male.text")); // NOI18N
+        male.setText(bundle.getString("GroupsPanel.male.text")); // NOI18N
         male.setName("male"); // NOI18N
         male.setOpaque(false);
 
         buttonGroup1.add(female);
-        female.setText(bundle.getString("ContactPanel.female.text")); // NOI18N
+        female.setText(bundle.getString("GroupsPanel.female.text")); // NOI18N
         female.setName("female"); // NOI18N
         female.setOpaque(false);
 
-        taxnumber.set_Label(bundle.getString("ContactPanel.taxnumber._Label")); // NOI18N
+        taxnumber.set_Label(bundle.getString("GroupsPanel.taxnumber._Label")); // NOI18N
         taxnumber.setName("taxnumber"); // NOI18N
 
-        department.set_Label(bundle.getString("ContactPanel.department._Label")); // NOI18N
+        department.set_Label(bundle.getString("GroupsPanel.department._Label")); // NOI18N
         department.setName("department"); // NOI18N
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -659,10 +655,10 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                 .addContainerGap())
         );
 
-        addresspanel.addTab(bundle.getString("ContactPanel.jPanel2.TabConstraints.tabTitle"), jPanel2); // NOI18N
+        addresspanel.addTab(bundle.getString("GroupsPanel.jPanel2.TabConstraints.tabTitle"), jPanel2); // NOI18N
 
-        button_order1.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
-        button_order1.setText(bundle.getString("ContactPanel.button_order1.text")); // NOI18N
+        button_order1.setFont(new java.awt.Font("Dialog", 0, 10));
+        button_order1.setText(bundle.getString("GroupsPanel.button_order1.text")); // NOI18N
         button_order1.setFocusable(false);
         button_order1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         button_order1.setName("button_order1"); // NOI18N
@@ -748,29 +744,32 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void companyItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_companyItemStateChanged
-        isCompany(company.isSelected());
-}//GEN-LAST:event_companyItemStateChanged
-
-    private void manufacturerItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_manufacturerItemStateChanged
-        if (!supplier.isSelected()) {
-            isManufacturer(manufacturer.isSelected());
-        }
-}//GEN-LAST:event_manufacturerItemStateChanged
-
-    private void supplierItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_supplierItemStateChanged
-        isSupplier(supplier.isSelected());
-}//GEN-LAST:event_supplierItemStateChanged
-
     private void enabledItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_enabledItemStateChanged
         isenabled_ = enabled.isSelected();
-}//GEN-LAST:event_enabledItemStateChanged
+    }//GEN-LAST:event_enabledItemStateChanged
 
     private void customerItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_customerItemStateChanged
         if (!manufacturer.isSelected()) {
             isCustomer(customer.isSelected());
         }
-}//GEN-LAST:event_customerItemStateChanged
+    }//GEN-LAST:event_customerItemStateChanged
+
+    private void supplierItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_supplierItemStateChanged
+        isSupplier(supplier.isSelected());
+    }//GEN-LAST:event_supplierItemStateChanged
+
+    private void manufacturerItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_manufacturerItemStateChanged
+        if (!supplier.isSelected()) {
+            isManufacturer(manufacturer.isSelected());
+        }
+    }//GEN-LAST:event_manufacturerItemStateChanged
+
+    private void companyItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_companyItemStateChanged
+        isCompany(company.isSelected());
+}//GEN-LAST:event_companyItemStateChanged
+
+    private void companyselectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_companyselectActionPerformed
+    }//GEN-LAST:event_companyselectActionPerformed
 
     private void button_order1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_order1ActionPerformed
         AddressPanel p = new AddressPanel();
@@ -781,11 +780,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         p.setDataOwner(p.getDataOwner());
         addresspanel.add(p);
         addresspanel.setSelectedComponent(p);
-}//GEN-LAST:event_button_order1ActionPerformed
-
-    private void companyselectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_companyselectActionPerformed
-
-}//GEN-LAST:event_companyselectActionPerformed
+    }//GEN-LAST:event_button_order1ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel addedby;
@@ -944,8 +939,6 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         try {
             companyselect.setModel(new DefaultComboBoxModel(ArrayUtilities.merge(new Object[]{new MPComboBoxModelItem("<no_value>", "")},
                     MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getCompany()).getValuesFor(Context.getCompany().getSubID(), null, null)))));
-    
-            sp.refresh();
         } catch (Exception e) {
             Log.Debug(this, e);
         }

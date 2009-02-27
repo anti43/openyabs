@@ -21,4 +21,5 @@ public class Headers {
     public static String[] USER_DETAILS = new String[]{"Internal ID", "User Name", "Fullname", "Mail", "Enabled", "Logged in", "Locale", "Language", "L&F", "inthighestright", "Last Login Date"};
 
     public static String[] BABELFISH = new String[]{"Component", "Language Value", "New Value"};
+    public static String[] ITEM_DEFAULT = new String[]{"Internal ID", "ID", "Date", "Value"};
 }

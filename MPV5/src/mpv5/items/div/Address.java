@@ -37,7 +37,7 @@ public class Address extends DatabaseObject {
     private int contactsids = 0;
 
     public Address(){
-        context.setDbIdentity(Context.SMALLIDENTITY_ADDRESS);
+        context.setDbIdentity(Context.IDENTITY_ADDRESS);
         context.setIdentityClass(this.getClass());
     }
 

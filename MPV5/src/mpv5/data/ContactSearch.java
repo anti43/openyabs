@@ -4,18 +4,16 @@
  */
 package mpv5.data;
 
-import javax.swing.table.DefaultTableModel;
 import mpv5.db.common.Context;
 import javax.swing.table.TableModel;
 import mpv5.db.common.DatabaseSearch;
-import mpv5.logging.Log;
 import mpv5.utils.models.MPTableModel;
 
 /**
  *
  * @author anti43
  */
-public class Search {
+public class ContactSearch {
 
     public static final int NAMESEARCH = 0;
     public static final int NUMBERSEARCH = 1;
@@ -25,12 +23,12 @@ public class Search {
     private Integer searchtype = null;
     private Object[][] data;
 
-    public Search(Context context, int searchtype) {
+    public ContactSearch(Context context, int searchtype) {
         this.context = context;
         this.searchtype = searchtype;
     }
 
-    public Search(Context context) {
+    public ContactSearch(Context context) {
         this.context = context;
     }
 
@@ -49,11 +47,11 @@ public class Search {
                 break;
 
             case NUMBERSEARCH:
-                data = new DatabaseSearch(context).getValuesFor(context.getSearchFields(), Context.SEARCH_NUMBER, needle, like);
+                data = new DatabaseSearch(context).getValuesFor(context.getSearchFields(), Context.SEARCH_CONTACT_NUMBER, needle, like);
                 break;
 
             case DETAILSSEARCH:
-                data = new DatabaseSearch(context).getValuesFor(context.getSearchFields(), Context.SEARCH_DETAILS, needle, like);
+                data = new DatabaseSearch(context).getValuesFor(context.getSearchFields(), Context.SEARCH_CONTACT_CITY, needle, like);
                 break;
 
             case CONTEXTSEARCH:

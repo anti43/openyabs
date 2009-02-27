@@ -41,7 +41,7 @@ public class wizard_DBSettings_2 extends javax.swing.JPanel implements Wizardabl
 
         jTextArea1.setColumns(20);
         jTextArea1.setEditable(false);
-        jTextArea1.setFont(new java.awt.Font("Tahoma", 0, 12));
+        jTextArea1.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jTextArea1.setLineWrap(true);
         jTextArea1.setRows(5);
         jTextArea1.setText(bundle.getString("wizard_DBSettings_2.jTextArea1.text")); // NOI18N

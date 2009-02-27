@@ -116,8 +116,17 @@ public class DatabaseInstallation {
         "reserve1 VARCHAR(500) default NULL, reserve2 VARCHAR(500) default NULL," +
         "PRIMARY KEY  (ids))",
 
+        "CREATE TABLE groups (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
+        "cname VARCHAR(250) UNIQUE NOT NULL," +
+        "description VARCHAR(750) DEFAULT NULL," +
+        "defaultvalue DOUBLE DEFAULT 0," +
+        "taxvalue DOUBLE DEFAULT 0," +
+        "reserve1 VARCHAR(500) default NULL, reserve2 VARCHAR(500) default NULL, " +
+        "PRIMARY KEY  (ids))",
+
         "CREATE TABLE items (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
-        "cname VARCHAR(250) UNIQUE NOT NULL, contactsids BIGINT REFERENCES contacts(ids)  ON DELETE CASCADE," +
+        "cname VARCHAR(250) UNIQUE NOT NULL, " +
+        "contactsids BIGINT REFERENCES contacts(ids)  ON DELETE CASCADE," +
         "dateadded DATE DEFAULT CURRENT_DATE, isactive SMALLINT DEFAULT 0, isfinished SMALLINT DEFAULT 0," +
         "value DOUBLE DEFAULT 0," +
         "taxvalue DOUBLE DEFAULT 0, datetodo DATE DEFAULT CURRENT_DATE, intreminders INTEGER DEFAULT 0," +
@@ -127,9 +136,16 @@ public class DatabaseInstallation {
         "CREATE TABLE subitems (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
         "itemsids BIGINT REFERENCES items(ids)  ON DELETE CASCADE, " +
         "originalproductsids BIGINT DEFAULT NULL, " +
+        "groupsids BIGINT REFERENCES groups(ids)," +
         "countvalue DOUBLE DEFAULT 0 NOT NULL, quantityvalue DOUBLE DEFAULT 0 NOT NULL, measure VARCHAR(250) NOT NULL," +
         "description VARCHAR(1000) default NULL,  value DOUBLE DEFAULT 0 NOT NULL, taxpercentvalue DOUBLE DEFAULT 0 NOT NULL," +
         "datedelivery DATE DEFAULT CURRENT_DATE, reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (ids))",
+
+        "CREATE TABLE groupstoparents (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
+        "parentids BIGINT REFERENCES groups(ids)  ON DELETE CASCADE, " +
+        "childids BIGINT REFERENCES groups(ids)  ON DELETE CASCADE, " +
+        "reserve1 VARCHAR(500) default NULL, reserve2 VARCHAR(500) default NULL, " +
+        "PRIMARY KEY  (ids))",
 
         "CREATE TABLE schedule (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
         "cname VARCHAR(250) NOT NULL, " +

@@ -24,11 +24,13 @@ public class Context {
     public static String IDENTITY_USERS = "users";
     public static String IDENTITY_ITEMS = "items";
     public static String IDENTITY_SUBITEMS = "subitems";
-    public static String SMALLIDENTITY_LANGUAGES = "languages";
-    public static String SMALLIDENTITY_FILES = "files";
-    public static String SMALLIDENTITY_LOCK = "tablelock";
-    public static String SMALLIDENTITY_FAVS = "favourites";
-     public static String SMALLIDENTITY_ADDRESS = "addresses";
+    public static String IDENTITY_LANGUAGES = "languages";
+    public static String IDENTITY_FILES = "files";
+    public static String IDENTITY_LOCK = "tablelock";
+    public static String IDENTITY_FAVS = "favourites";
+    public static String IDENTITY_ADDRESS = "addresses";
+    public static String IDENTITY_GROUPS = "groups";
+    public static String IDENTITY_GROUPS_TO_PARENTGROUP = "groupstoparents";
 
     //********** identity classes **********************************************
     private static Class IDENTITY_CONTACTS_CLASS = Contact.class;
@@ -36,26 +38,39 @@ public class Context {
     private static Class IDENTITY_USERS_CLASS = User.class;
     private static Class IDENTITY_ITEMS_CLASS = Item.class;
     private static Class IDENTITY_SUBITEMS_CLASS = SubItem.class;
+
     //********** unique constraints *******************************************
     public static String UNIQUECOLUMNS_USER = "cname";
+    public static String UNIQUECOLUMNS_ITEMS = "cname";
 
     //********** conditions ****************************************************
-    public static final String CONDITION_DEFAULT = "%%tablename%%" + "." + "IDS";
+
+    private boolean isCompany = false;
+    private boolean isCustomer = false;
+    private boolean isManufacturer = false;
+    private boolean isSupplier = false;
+    private boolean isDone = false;
+    private boolean isActive = false;
+
+    public static final String CONDITION_DEFAULT = "%%tablename%%" + "." + "IDS>0";
     public static final String CONDITION_CONTACTS_COMPANY = IDENTITY_CONTACTS + "." + "iscompany";
     public static final String CONDITION_CONTACTS_CUSTOMER = IDENTITY_CONTACTS + "." + "iscustomer";
     public static final String CONDITION_CONTACTS_MANUFACTURER = IDENTITY_CONTACTS + "." + "ismanufacturer";
     public static final String CONDITION_CONTACTS_SUPPLIER = IDENTITY_CONTACTS + "." + "issupplier";
+    public static final String CONDITION_ITEMS_DONE = IDENTITY_ITEMS + "." + "isfinished";
+    public static final String CONDITION_ITEMS_ACTIVE = IDENTITY_ITEMS + "." + "isactive";
 
     //********** searchfields **************************************************
     public static final String SEARCH_NAME = "cname";
-    public static final String SEARCH_NUMBER = "cnumber";
-    public static final String SEARCH_DETAILS = "!%&";
-    public static final String SEARCH_ALL = "!**!";
+    public static final String SEARCH_CONTACT_NUMBER = "cnumber";
+    public static final String SEARCH_CONTACT_CITY = "city";
+
 
     //********** defaults ******************************************************
     public static String DEFAULT_SUBID = "ids, cname";
     public static String DEFAULT_CONTACT_SEARCH = "ids, cnumber, cname, city";
     public static String DEFAULT_USER_SEARCH = "ids, cname, mail, lastlogdate";
+    public static String DEFAULT_ITEM_SEARCH = "ids, cname, dateadded, value";
 
     //********** table fields ********************************************************
     public static String DETAILS_CONTACTS = IDENTITY_CONTACTS + "." + "IDS," + IDENTITY_CONTACTS + "." + "CNUMBER," +
@@ -87,10 +102,13 @@ public class Context {
             IDENTITY_USERS + "." + "laf," +
             IDENTITY_USERS + "." + "inthighestright," +
             IDENTITY_USERS + "." + "datelastlog";
+  public static String DETAILS_ITEMS = IDENTITY_ITEMS + "." + "IDS," + IDENTITY_ITEMS + "." + "CNAME," +
+            IDENTITY_CONTACTS + "." + "CNAME," + IDENTITY_ITEMS + "."  + "dateadded," + IDENTITY_ITEMS + "." + "isactive," +
+            IDENTITY_ITEMS + "." + "value," +
+            IDENTITY_ITEMS + "." + "taxvalue, " +
+            IDENTITY_ITEMS + "." + "datetodo, " +
+            IDENTITY_ITEMS + "." + "intreminders";
 
-
-///"Internal ID", "ID", "User Name", "Fullname", "L&F", "Locale", "Mail", "Language", "inthighestright", "Enabled", "Logged in", "Last Login Date"};
-//
     //**************************************************************************
     public static ArrayList<Context> getSecuredContexts() {
         ArrayList<Context> list = new ArrayList<Context>();
@@ -100,6 +118,8 @@ public class Context {
         list.add(getManufacturer());
         list.add(getSupplier());
         list.add(getAddress());
+        list.add(getItem(true, false));
+        list.add(getSubItem());
         return list;
     }
     /**
@@ -116,12 +136,13 @@ public class Context {
                 getManufacturer(),
                 getSupplier(),
                 getUser(),
-                getAddress()
+                getAddress(),
+                getItem(true, false),
+                getSubItem(),
+                getGroup(),
+                getGroupToParentGroup()
             }));
-    private boolean isCompany = false;
-    private boolean isCustomer = false;
-    private boolean isManufacturer = false;
-    private boolean isSupplier = false;
+
     private String[] searchHeaders;
     private ArrayList<String[]> references = new ArrayList<String[]>();
     private boolean exclusiveConditionsAvailable = false;
@@ -168,6 +189,55 @@ public class Context {
         setSupplier(supplier);
         setManufacturer(manufacturer);
         setCompany(company);
+    }
+
+
+
+    /**
+     * Set conditions to get exclusive data
+     * @param done
+     * @param active
+     */
+    public void setExclusiveItemConditions(boolean done, boolean active) {
+
+        String cond = "    ";
+        boolean first = true;
+
+        if (done) {
+            if (first) {
+                cond += "WHERE ";
+            }
+            first = false;
+            cond += " " + CONDITION_ITEMS_DONE + "=1 AND ";
+        } else {
+            if (first) {
+                cond += "WHERE ";
+            }
+            first = false;
+            cond += " " + CONDITION_ITEMS_DONE + "=0 AND ";
+        }
+        if (active) {
+            if (first) {
+                cond += "WHERE ";
+            }
+            first = false;
+            cond += " " + CONDITION_ITEMS_ACTIVE + "=1 AND ";
+        } else {
+            if (first) {
+                cond += "WHERE ";
+            }
+            first = false;
+            cond += " " + CONDITION_ITEMS_ACTIVE+ "=0 AND ";
+        }
+
+
+        if (!first) {
+            cond = cond.substring(4, cond.length() - 4);
+        } else {
+            cond = "WHERE " + CONDITION_DEFAULT;
+        }
+
+        exclusiveCondition = cond;
     }
 
     /**
@@ -238,7 +308,7 @@ public class Context {
         if (!first) {
             cond = cond.substring(4, cond.length() - 4);
         } else {
-            cond = "WHERE " + CONDITION_DEFAULT + " > 0 ";
+            cond = "WHERE " + CONDITION_DEFAULT;
         }
 
         exclusiveCondition = cond;
@@ -280,11 +350,25 @@ public class Context {
                 first = false;
                 cond += " " + CONDITION_CONTACTS_SUPPLIER + "=1 OR ";
             }
+                if (isIsActive()) {
+                if (first) {
+                    cond += "WHERE ";
+                }
+                first = false;
+                cond += " " + CONDITION_ITEMS_ACTIVE + "=1 OR ";
+            }
+                if (isIsDone()) {
+                if (first) {
+                    cond += "WHERE ";
+                }
+                first = false;
+                cond += " " + CONDITION_ITEMS_DONE + "=1 OR ";
+            }
 
             if (!first) {
                 cond = cond.substring(4, cond.length() - 3);
             } else {
-                cond = "WHERE " + CONDITION_DEFAULT + " > 0 ";
+                cond = "WHERE " + CONDITION_DEFAULT;
             }
             return cond;
         } else {
@@ -448,6 +532,34 @@ public class Context {
         this.isSupplier = Supplier;
     }
 
+        /**
+     * @return the isDone
+     */
+    private boolean isIsDone() {
+        return isDone;
+    }
+
+    /**
+     * @param isDone the isDone to set
+     */
+    private void setIsDone(boolean isDone) {
+        this.isDone = isDone;
+    }
+
+    /**
+     * @return the isActive
+     */
+    private boolean isIsActive() {
+        return isActive;
+    }
+
+    /**
+     * @param isActive the isActive to set
+     */
+    private void setIsActive(boolean isActive) {
+        this.isActive = isActive;
+    }
+
     public static Context getCompany() {
         Context c = new Context(new Contact());
         c.setCompany(true);
@@ -456,6 +568,28 @@ public class Context {
         c.setSearchFields(DEFAULT_CONTACT_SEARCH);
         c.setSearchHeaders(Headers.CONTACT_DEFAULT);
         c.setIdentityClass(IDENTITY_CONTACTS_CLASS);
+
+        return c;
+    }
+
+     public static Context getItem(boolean active, boolean done) {
+        Context c = new Context(new Item());
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_ITEMS);
+        c.setSearchFields(DEFAULT_ITEM_SEARCH);
+        c.setSearchHeaders(Headers.ITEM_DEFAULT);
+        c.setIdentityClass(IDENTITY_ITEMS_CLASS);
+        c.setIsActive(active);
+        c.setIsDone(done);
+
+        return c;
+    }
+
+       public static Context getSubItem() {
+        Context c = new Context(new SubItem());
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_SUBITEMS);
+        c.setIdentityClass(IDENTITY_SUBITEMS_CLASS);
 
         return c;
     }
@@ -522,7 +656,7 @@ public class Context {
     public static Context getLanguage() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
-        c.setDbIdentity(SMALLIDENTITY_LANGUAGES);
+        c.setDbIdentity(IDENTITY_LANGUAGES);
 
         return c;
     }
@@ -530,7 +664,7 @@ public class Context {
     public static Context getFiles() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
-        c.setDbIdentity(SMALLIDENTITY_FILES);
+        c.setDbIdentity(IDENTITY_FILES);
 
         return c;
     }
@@ -538,7 +672,23 @@ public class Context {
     public static Context getLock() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
-        c.setDbIdentity(SMALLIDENTITY_LOCK);
+        c.setDbIdentity(IDENTITY_LOCK);
+
+        return c;
+    }
+
+     public static Context getGroupToParentGroup() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_GROUPS_TO_PARENTGROUP);
+
+        return c;
+    }
+
+    public static Context getGroup() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_GROUPS);
 
         return c;
     }
@@ -546,7 +696,7 @@ public class Context {
     public static Context getFavourites() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
-        c.setDbIdentity(SMALLIDENTITY_FAVS);
+        c.setDbIdentity(IDENTITY_FAVS);
 
         return c;
     }
@@ -554,7 +704,7 @@ public class Context {
     public static Context getAddress() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
-        c.setDbIdentity(SMALLIDENTITY_ADDRESS);
+        c.setDbIdentity(IDENTITY_ADDRESS);
         c.setIdentityClass(IDENTITY_ADDRESS_CLASS);
         return c;
     }
@@ -593,4 +743,6 @@ public class Context {
     public String toString() {
         return dbIdentity;
     }
+
+
 }

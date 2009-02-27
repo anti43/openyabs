@@ -33,11 +33,11 @@ public class Favourite extends DatabaseObject {
     private int itemid;
 
     public Favourite() {
-        context.setDbIdentity(Context.SMALLIDENTITY_FAVS);
+        context.setDbIdentity(Context.IDENTITY_FAVS);
     }
 
     public Favourite(DatabaseObject dato) {
-        context.setDbIdentity(Context.SMALLIDENTITY_FAVS);
+        context.setDbIdentity(Context.IDENTITY_FAVS);
         this.setUserid(MPV5View.getUser().__getIDS());
         setCName(dato.getDbIdentity());
         setItemid(dato.__getIDS());

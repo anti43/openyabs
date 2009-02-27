@@ -1,6 +1,6 @@
 package mpv5.ui.panels;
 
-import mpv5.data.Search;
+import mpv5.data.ContactSearch;
 import mpv5.db.common.Context;
 import mpv5.globals.Headers;
 
@@ -33,7 +33,7 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
         context.setContactConditions(customer, supplier, manufacturer, company);
         context.setExclusiveContactConditions(customer, supplier, manufacturer, company);
         context.useExclusiveConditions(filtered);
-        listTable.setModel(new Search(getContext(), Search.NAMESEARCH).getTableModelFor(""));
+        listTable.setModel(new ContactSearch(getContext(), ContactSearch.NAMESEARCH).getTableModelFor(""));
         count.setText(String.valueOf(listTable.getModel().getRowCount()));
     }
 

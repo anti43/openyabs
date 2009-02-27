@@ -10,10 +10,8 @@
  */
 package mpv5.ui.panels;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mpv5.db.common.Context;
-import mpv5.data.Search;
+import mpv5.data.ContactSearch;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.logging.Log;
@@ -26,8 +24,11 @@ import mpv5.utils.tables.TableFormat;
  */
 public class SearchPanel extends javax.swing.JPanel {
 
+    private static final long serialVersionUID = 1L;
     private Context context;
     private DataPanel panel;
+    private int lasttype = 4;
+    private String lastneedle = "";
 
     /** Creates new form SearchPanel */
     public SearchPanel() {
@@ -39,6 +40,13 @@ public class SearchPanel extends javax.swing.JPanel {
         this.context = context;
         this.panel = panel;
         search(4, context.getParent().__getCName());
+    }
+
+    /**
+     * Reload the search result
+     */
+    public void refresh() {
+        search(lasttype, lastneedle);
     }
 
     /** This me4thod is called from within the constructor to
@@ -64,7 +72,7 @@ public class SearchPanel extends javax.swing.JPanel {
 
         setName("Form"); // NOI18N
 
-        java.util.ResourceBundle bundle = mpv5.resources.languages.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         searchfields.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("SearchPanel.searchfields.border.title"))); // NOI18N
         searchfields.setName("searchfields"); // NOI18N
 
@@ -178,11 +186,11 @@ public class SearchPanel extends javax.swing.JPanel {
         results.setLayout(resultsLayout);
         resultsLayout.setHorizontalGroup(
             resultsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(resultsscrollpane, javax.swing.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE)
+            .addComponent(resultsscrollpane, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE)
         );
         resultsLayout.setVerticalGroup(
             resultsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(resultsscrollpane, javax.swing.GroupLayout.DEFAULT_SIZE, 286, Short.MAX_VALUE)
+            .addComponent(resultsscrollpane, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -202,20 +210,23 @@ public class SearchPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void search(int searchtype, String value) {
+
+        lasttype = searchtype;
+        lastneedle = value;
+
         switch (searchtype) {
 
             case 1:
-                resulttable.setModel(new Search(getContext(), Search.NUMBERSEARCH).getTableModelFor(value));
-
+                resulttable.setModel(new ContactSearch(getContext(), ContactSearch.NUMBERSEARCH).getTableModelFor(value));
                 break;
             case 2:
-                resulttable.setModel(new Search(getContext(), Search.NAMESEARCH).getTableModelFor(value));
+                resulttable.setModel(new ContactSearch(getContext(), ContactSearch.NAMESEARCH).getTableModelFor(value));
                 break;
             case 3:
-                resulttable.setModel(new Search(getContext(), Search.DETAILSSEARCH).getTableModelFor(value));
+                resulttable.setModel(new ContactSearch(getContext(), ContactSearch.DETAILSSEARCH).getTableModelFor(value));
                 break;
             case 4:
-                resulttable.setModel(new Search(getContext(), Search.CONTEXTSEARCH).getTableModelFor(value));
+                resulttable.setModel(new ContactSearch(getContext(), ContactSearch.CONTEXTSEARCH).getTableModelFor(value));
         }
         TableFormat.stripFirstColumn(resulttable);
         TableFormat.makeUneditable(resulttable);
@@ -240,12 +251,13 @@ public class SearchPanel extends javax.swing.JPanel {
 
     private void resulttableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_resulttableMouseClicked
         Selection sel = new Selection(resulttable);
-        if(sel.checkID()){try {
+        if (sel.checkID()) {
+            try {
                 panel.setDataOwner(DatabaseObject.getObject(context, sel.getId()));
             } catch (NodataFoundException ex) {
                 Log.Debug(ex);
             }
-}
+        }
     }//GEN-LAST:event_resulttableMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
