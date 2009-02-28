@@ -40,6 +40,7 @@ public class User extends DatabaseObject {
     private boolean isloggedin = true;
     private Date datelastlog = new Date();
     public static User DEFAULT = new User("Default User", "nobody", -1, 4343);
+    private String groupname = "";
 
     public User(int userid) throws NodataFoundException {
         context.setDbIdentity(Context.IDENTITY_USERS);
@@ -237,5 +238,19 @@ public class User extends DatabaseObject {
      */
     public void setFullname(String fullname) {
         this.fullname = fullname;
+    }
+
+    /**
+     * @return the groupname
+     */
+    public String __getGroupname() {
+        return groupname;
+    }
+
+    /**
+     * @param groupname the groupname to set
+     */
+    public void setGroupname(String groupname) {
+        this.groupname = groupname;
     }
 }

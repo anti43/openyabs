@@ -158,6 +158,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         dateadded = new javax.swing.JLabel();
         company = new javax.swing.JCheckBox();
         addedby = new javax.swing.JLabel();
+        groupnameselect = new javax.swing.JComboBox();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         notes = new javax.swing.JTextPane();
@@ -288,6 +289,8 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         addedby.setEnabled(false);
         addedby.setName("addedby"); // NOI18N
 
+        groupnameselect.setName("groupnameselect"); // NOI18N
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -311,17 +314,18 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                             .addComponent(enabled))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(company)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 114, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 54, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(dateadded, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(addedby, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(addedby, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(groupnameselect, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(enabled)
@@ -338,8 +342,10 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(dateadded, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(addedby, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(addedby, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(groupnameselect, 0, 0, Short.MAX_VALUE)))
+                .addContainerGap(4, Short.MAX_VALUE))
         );
 
         jPanel4.setBackground(new java.awt.Color(204, 204, 204));
@@ -357,7 +363,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 670, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 672, Short.MAX_VALUE)
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -421,15 +427,15 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                 .addContainerGap())
         );
 
-        jLabel9.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel9.setFont(new java.awt.Font("Tahoma", 1, 11));
         jLabel9.setText(bundle.getString("ContactPanel.jLabel9.text")); // NOI18N
         jLabel9.setName("jLabel9"); // NOI18N
 
-        jLabel8.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel8.setFont(new java.awt.Font("Tahoma", 1, 11));
         jLabel8.setText(bundle.getString("ContactPanel.jLabel8.text")); // NOI18N
         jLabel8.setName("jLabel8"); // NOI18N
 
-        jLabel7.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel7.setFont(new java.awt.Font("Tahoma", 1, 11));
         jLabel7.setText(bundle.getString("ContactPanel.jLabel7.text")); // NOI18N
         jLabel7.setName("jLabel7"); // NOI18N
 
@@ -469,7 +475,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 646, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 652, Short.MAX_VALUE)
                     .addGroup(jPanel9Layout.createSequentialGroup()
                         .addComponent(button_bills)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -478,7 +484,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                         .addComponent(button_products)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(button_orders)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 267, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 319, Short.MAX_VALUE)
                         .addComponent(jButton1)))
                 .addContainerGap())
         );
@@ -493,7 +499,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                     .addComponent(button_orders)
                     .addComponent(jButton1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -629,7 +635,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                                 .addComponent(companyselect, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(18, 18, 18)
                         .addComponent(taxnumber, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(125, Short.MAX_VALUE))
+                .addContainerGap(137, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -689,9 +695,9 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(prinitingComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jPanel9, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(addresspanel, javax.swing.GroupLayout.DEFAULT_SIZE, 674, Short.MAX_VALUE)
+                    .addComponent(addresspanel, javax.swing.GroupLayout.DEFAULT_SIZE, 676, Short.MAX_VALUE)
                     .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 674, Short.MAX_VALUE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 676, Short.MAX_VALUE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel8)
                     .addComponent(jLabel7))
@@ -775,10 +781,10 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     private void button_order1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_order1ActionPerformed
         AddressPanel p = new AddressPanel();
         p.setName(Messages.NEW_VALUE);
-        p.setDataParent(dataOwner);
         ((Address)p.getDataOwner()).setCompany(dataOwner.__getCompany());
         ((Address)p.getDataOwner()).setTaxnumber(dataOwner.__getTaxnumber());
         p.setDataOwner(p.getDataOwner());
+        p.setDataParent(dataOwner);
         addresspanel.add(p);
         addresspanel.setSelectedComponent(p);
 }//GEN-LAST:event_button_order1ActionPerformed
@@ -811,6 +817,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     private javax.swing.JCheckBox enabled;
     private mpv5.ui.beans.LabeledTextField fax;
     private javax.swing.JRadioButton female;
+    private javax.swing.JComboBox groupnameselect;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -875,6 +882,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     public String company_;
     public int ids_;
     public Date dateadded_;
+    public String groupname_;
 
     public void collectData() {
         city_ = city.get_Text();
@@ -885,6 +893,12 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             company_ = String.valueOf(((MPComboBoxModelItem) companyselect.getSelectedItem()).getName());
         } else {
             company_ = "";
+        }
+
+        if (groupnameselect.getSelectedItem() != null) {
+            groupname_ = String.valueOf(((MPComboBoxModelItem) groupnameselect.getSelectedItem()).getName());
+        } else {
+            groupname_ = "";
         }
         iscustomer_ = customer.isSelected();
         isenabled_ = enabled.isSelected();
@@ -915,6 +929,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         taxnumber.set_Text(taxnumber_);
         company.setSelected(iscompany_);
         companyselect.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(company_, companyselect.getModel()));
+        groupnameselect.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(groupname_, groupnameselect.getModel()));
         customer.setSelected(iscustomer_);
         enabled.setSelected(isenabled_);
         fax.set_Text(fax_);
@@ -945,6 +960,9 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             companyselect.setModel(new DefaultComboBoxModel(ArrayUtilities.merge(new Object[]{new MPComboBoxModelItem("<no_value>", "")},
                     MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getCompany()).getValuesFor(Context.getCompany().getSubID(), null, null)))));
     
+            groupnameselect.setModel(new DefaultComboBoxModel(
+                    MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID(), null, null))));
+
             sp.refresh();
         } catch (Exception e) {
             Log.Debug(this, e);

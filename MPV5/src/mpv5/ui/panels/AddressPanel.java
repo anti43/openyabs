@@ -115,7 +115,7 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
             }
         });
 
-        jLabel3.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Dialog", 0, 12));
         jLabel3.setText(bundle.getString("AddressPanel.jLabel3.text")); // NOI18N
         jLabel3.setName("jLabel3"); // NOI18N
 
@@ -187,7 +187,7 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel3)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(companyselect, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(companyselect, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(18, 18, 18)
                         .addComponent(taxnumber, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE))))
         );
@@ -371,9 +371,7 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
             if (!dataOwner.save()) {
                 showRequiredFields();
             }
-        } else {
-            Popup.notice(Messages.NOT_POSSIBLE);
-        }
+        } 
     }
 
     /**

@@ -16,6 +16,8 @@
  */
 package mpv5.db.common;
 
+import mpv5.globals.Messages;
+
 /**
  * @author anti43
  */
@@ -54,8 +56,19 @@ public class DatabaseInstallation {
        * "CREATE VIEW contacts AS SELECT * FROM contactdetails " +
        * "LEFT JOIN addresses ON addresses.contactid = contactdetails.ids",
      */
-    public final static String[] DERBY_STRUCTURE = new String[]{"CREATE TABLE contacts (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
+    public final static String[] DERBY_STRUCTURE = new String[]{
+
+        "CREATE TABLE groups (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
+        "cname VARCHAR(250) UNIQUE NOT NULL," +
+        "description VARCHAR(750) DEFAULT NULL," +
+        "defaultvalue DOUBLE DEFAULT 0," +
+        "taxvalue DOUBLE DEFAULT 0," +
+        "reserve1 VARCHAR(500) default NULL, reserve2 VARCHAR(500) default NULL, " +
+        "PRIMARY KEY  (ids))",
+
+        "CREATE TABLE contacts (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
         "cnumber VARCHAR(250),taxnumber VARCHAR(250),title VARCHAR(250) default NULL," +
+        "groupname VARCHAR(250) REFERENCES groups(cname) NOT NULL," +
         "prename VARCHAR(250) default NULL, cname VARCHAR(250) default NULL, street VARCHAR(250) default NULL," +
         "zip VARCHAR(50) default NULL,city VARCHAR(300) default NULL, mainphone VARCHAR(250) default NULL," +
         "fax VARCHAR(250) default NULL,mobilephone VARCHAR(250) default NULL,workphone VARCHAR(250) default NULL," +
@@ -79,6 +92,7 @@ public class DatabaseInstallation {
 
         "CREATE TABLE users (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),"+
         "cname VARCHAR(250) UNIQUE NOT NULL, " +
+        "groupname VARCHAR(250) REFERENCES groups(cname) NOT NULL," +
         "fullname VARCHAR(250) NOT NULL, " +
         "password VARCHAR(250) NOT NULL,"+
         "laf VARCHAR(50) default NULL, "+
@@ -116,16 +130,9 @@ public class DatabaseInstallation {
         "reserve1 VARCHAR(500) default NULL, reserve2 VARCHAR(500) default NULL," +
         "PRIMARY KEY  (ids))",
 
-        "CREATE TABLE groups (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
-        "cname VARCHAR(250) UNIQUE NOT NULL," +
-        "description VARCHAR(750) DEFAULT NULL," +
-        "defaultvalue DOUBLE DEFAULT 0," +
-        "taxvalue DOUBLE DEFAULT 0," +
-        "reserve1 VARCHAR(500) default NULL, reserve2 VARCHAR(500) default NULL, " +
-        "PRIMARY KEY  (ids))",
-
         "CREATE TABLE items (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
         "cname VARCHAR(250) UNIQUE NOT NULL, " +
+        "groupname VARCHAR(250) REFERENCES groups(cname) NOT NULL," +
         "contactsids BIGINT REFERENCES contacts(ids)  ON DELETE CASCADE," +
         "dateadded DATE DEFAULT CURRENT_DATE, isactive SMALLINT DEFAULT 0, isfinished SMALLINT DEFAULT 0," +
         "value DOUBLE DEFAULT 0," +
@@ -149,6 +156,7 @@ public class DatabaseInstallation {
 
         "CREATE TABLE schedule (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
         "cname VARCHAR(250) NOT NULL, " +
+        "groupname VARCHAR(250) REFERENCES groups(cname) NOT NULL," +
         "usersids BIGINT REFERENCES users (ids)  ON DELETE CASCADE," +
         "itemsids BIGINT REFERENCES items (ids)  ON DELETE CASCADE," +
         "nextdate DATE NOT NULL, " +
@@ -156,7 +164,9 @@ public class DatabaseInstallation {
         "reserve1 VARCHAR(500) default NULL, reserve2 VARCHAR(500) default NULL," +
         "PRIMARY KEY  (ids))",
 
-        "INSERT INTO users (fullname,password,cname,laf,locale,mail,language,inthighestright,datelastlog,isenabled ) VALUES ('Administrator','5f4dcc3b5aa765d61d8327deb882cf99','admin','de.muntjak.tinylookandfeel.TinyLookAndFeel','de_DE','','buildin_en',0,'2009-01-26 05:45:38',1)"
+        "INSERT INTO groups (cname) VALUES (' ')",
+        "INSERT INTO users (fullname,password,cname,laf,locale,mail,language,inthighestright,datelastlog,isenabled,groupname ) VALUES ('Administrator','5f4dcc3b5aa765d61d8327deb882cf99','admin','de.muntjak.tinylookandfeel.TinyLookAndFeel','de_DE','','buildin_en',0,'2009-01-26 05:45:38',1,' ')"
+        
 
     };
     

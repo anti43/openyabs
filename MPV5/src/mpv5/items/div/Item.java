@@ -34,6 +34,7 @@ public class Item extends DatabaseObject{
     private double taxvalue;
     private Date datetodo;
     private int intreminders;
+    private String groupname = "";
 
 
     @Override
@@ -156,6 +157,20 @@ public class Item extends DatabaseObject{
      */
     public void setIntreminders(int intreminders) {
         this.intreminders = intreminders;
+    }
+
+    /**
+     * @return the groupname
+     */
+    public String __getGroupname() {
+        return groupname;
+    }
+
+    /**
+     * @param groupname the groupname to set
+     */
+    public void setGroupname(String groupname) {
+        this.groupname = groupname;
     }
 
 }

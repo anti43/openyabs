@@ -130,6 +130,7 @@ public abstract class DatabaseObject {
     public boolean isExisting() {
         if (ids <= 0) {
             Popup.notice(Messages.NOT_POSSIBLE + "\n" + Messages.NOT_SAVED_YET);
+            Log.Debug(this, __getCName());
             return false;
         } else {
             return true;

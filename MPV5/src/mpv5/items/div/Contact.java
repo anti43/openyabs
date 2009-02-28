@@ -32,6 +32,7 @@ public class Contact extends DatabaseObject {
     private String addedby = "";
     private String company = "";
     private String department = "";
+    private String groupname = "";
     private boolean ismale = true;
     private boolean isenabled = true;
     private boolean iscompany = false;
@@ -392,6 +393,20 @@ public class Contact extends DatabaseObject {
      */
     public void setDepartment(String dep) {
         this.department = dep;
+    }
+
+    /**
+     * @return the groupname
+     */
+    public String __getGroupname() {
+        return groupname;
+    }
+
+    /**
+     * @param groupname the groupname to set
+     */
+    public void setGroupname(String groupname) {
+        this.groupname = groupname;
     }
 //    /**
 //     * @return the role
