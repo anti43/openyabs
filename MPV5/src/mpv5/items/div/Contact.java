@@ -32,7 +32,7 @@ public class Contact extends DatabaseObject {
     private String addedby = "";
     private String company = "";
     private String department = "";
-    private String groupname = "";
+    private int groupsids = 1;
     private boolean ismale = true;
     private boolean isenabled = true;
     private boolean iscompany = false;
@@ -396,17 +396,17 @@ public class Contact extends DatabaseObject {
     }
 
     /**
-     * @return the groupname
+     * @return the groupsids
      */
-    public String __getGroupname() {
-        return groupname;
+    public int __getGroupsids() {
+        return groupsids;
     }
 
     /**
-     * @param groupname the groupname to set
+     * @param groupsids the groupsids to set
      */
-    public void setGroupname(String groupname) {
-        this.groupname = groupname;
+    public void setGroupsids(int groupsids) {
+        this.groupsids = groupsids;
     }
 //    /**
 //     * @return the role

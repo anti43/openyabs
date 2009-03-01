@@ -882,7 +882,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     public String company_;
     public int ids_;
     public Date dateadded_;
-    public String groupname_;
+    public int groupsids_;
 
     public void collectData() {
         city_ = city.get_Text();
@@ -896,9 +896,9 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         }
 
         if (groupnameselect.getSelectedItem() != null) {
-            groupname_ = String.valueOf(((MPComboBoxModelItem) groupnameselect.getSelectedItem()).getName());
+            groupsids_ = Integer.valueOf(((MPComboBoxModelItem) groupnameselect.getSelectedItem()).getId());
         } else {
-            groupname_ = "";
+            groupsids_ = 1;
         }
         iscustomer_ = customer.isSelected();
         isenabled_ = enabled.isSelected();
@@ -929,7 +929,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         taxnumber.set_Text(taxnumber_);
         company.setSelected(iscompany_);
         companyselect.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(company_, companyselect.getModel()));
-        groupnameselect.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(groupname_, groupnameselect.getModel()));
+        groupnameselect.setSelectedIndex(MPComboBoxModelItem.getItemID(groupsids_, groupnameselect.getModel()));
         customer.setSelected(iscustomer_);
         enabled.setSelected(isenabled_);
         fax.set_Text(fax_);

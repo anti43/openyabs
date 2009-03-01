@@ -96,12 +96,12 @@ public class Context {
             IDENTITY_USERS + "." + "fullname," +
             IDENTITY_USERS + "." + "mail," +
             IDENTITY_USERS + "." + "isenabled," +
-            IDENTITY_USERS + "." + "isloggedin," +
-            IDENTITY_USERS + "." + "locale," +
-            IDENTITY_USERS + "." + "language," +
-            IDENTITY_USERS + "." + "laf," +
-            IDENTITY_USERS + "." + "inthighestright," +
-            IDENTITY_USERS + "." + "datelastlog";
+            IDENTITY_USERS + "." + "isloggedin";
+//            IDENTITY_USERS + "." + "locale," +
+//            IDENTITY_USERS + "." + "language," +
+//            IDENTITY_USERS + "." + "laf," +
+//            IDENTITY_USERS + "." + "inthighestright," +
+//            IDENTITY_USERS + "." + "datelastlog";
   public static String DETAILS_ITEMS = IDENTITY_ITEMS + "." + "IDS," + IDENTITY_ITEMS + "." + "CNAME," +
             IDENTITY_CONTACTS + "." + "CNAME," + IDENTITY_ITEMS + "."  + "dateadded," + IDENTITY_ITEMS + "." + "isactive," +
             IDENTITY_ITEMS + "." + "value," +
