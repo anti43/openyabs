@@ -19,11 +19,13 @@ along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
 package mpv5.utils.arrays;
 
+import mpv5.utils.numbers.Ip;
 import java.util.Hashtable;
 import mpv5.utils.tables.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -38,8 +40,12 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
+import mpv5.items.div.Group;
 import mpv5.logging.Log;
+import mpv5.ui.frames.MPV5View;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.files.FileReaderWriter;
@@ -135,7 +141,6 @@ public class ArrayUtilities {
 //        }
 //    }
 
-  
     /**
      * Returns a table column's data as array
      * @param table
@@ -165,8 +170,8 @@ public class ArrayUtilities {
         Object[][] n = new Object[table.size()][2];
         String[] keys = hashTableKeysToArray(table);
         int i = 0;
-        
-          for (int j = 0; j < keys.length; j++) {
+
+        for (int j = 0; j < keys.length; j++) {
             String k = keys[j];
             n[i][1] = table.get(k);
             n[i][0] = k;
@@ -279,11 +284,12 @@ public class ArrayUtilities {
         return new DefaultTableModel(table, new Object[]{"Devices"});
     }
 
-    public static ArrayList<Ip> removeDuplicates(ArrayList<Ip> arlList) {
-        Set<Ip> set = new HashSet<Ip>();
-        List<Ip> newList = new ArrayList<Ip>();
+    @SuppressWarnings("unchecked")
+    public static ArrayList removeDuplicates(ArrayList arlList) {
+        Set set = new HashSet();
+        List newList = new ArrayList();
         for (Iterator<Ip> iter = arlList.iterator(); iter.hasNext();) {
-            Ip element = iter.next();
+            Object element = iter.next();
             if (set.add(element)) {
                 newList.add(element);
             }
@@ -292,6 +298,148 @@ public class ArrayUtilities {
         arlList.addAll(newList);
 
         return arlList;
+    }
+
+    /**
+     *
+     * @param data
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public static DefaultTreeModel toTreeModel(HashMap<String, Ip> data) {
+//
+//        data = new HashMap<String, Ip>();
+//        data.put("f", new Ip("192.168.8.1"));
+//        data.put("fg", new Ip("192.168.8.2"));
+//        data.put("g", new Ip("192.168.8.3"));
+//        data.put("d", new Ip("192.168.8.4"));
+//        data.put("gdfg", new Ip("192.168.8.5"));
+//
+//        data.put("dfgfdg", new Ip("192.168.9.1"));
+//        data.put("yrtytry", new Ip("192.168.9.2"));
+//        data.put("tryty", new Ip("192.168.9.4"));
+//
+//        data.put("ertertrt", new Ip("191.168.9.1"));
+//        data.put("56g", new Ip("191.168.9.2"));
+//        data.put("fghtyi", new Ip("191.168.9.4"));
+//
+//        data.put("pop", new Ip("192.162.9.1"));
+//        data.put("ijlkghh", new Ip("192.162.9.2"));
+//        data.put("uyiouy", new Ip("192.167.9.4"));
+
+
+        DefaultMutableTreeNode node1 = new DefaultMutableTreeNode("Devices");
+        System.out.println("Converting to tree: " + data.keySet().size() + " values");
+
+        DefaultMutableTreeNode subnode1 = null;
+
+        try {
+            Collection<Ip> ips = data.values();
+            Iterator<Ip> ipIterator = ips.iterator();
+
+            ArrayList<Ip> allIps = new ArrayList<Ip>(data.values());
+            ArrayList<Ip> subnet1 = new ArrayList<Ip>();
+            ArrayList<Ip> subnet2 = new ArrayList<Ip>();
+            ArrayList<Ip> subnet3 = new ArrayList<Ip>();
+
+            subnode1 = new DefaultMutableTreeNode("IP");
+
+            while (ipIterator.hasNext()) {
+                Ip ip = ipIterator.next();
+                subnet1.add(new Ip(String.valueOf(ip.getPart0()) + ".0.0.0"));
+                subnet2.add(new Ip(String.valueOf(ip.getPart0()) + "." + String.valueOf(ip.getPart1()) + ".0.0"));
+                subnet3.add(new Ip(String.valueOf(ip.getPart0()) + "." + String.valueOf(ip.getPart1()) + "." + String.valueOf(ip.getPart2()) + ".0"));
+
+            }
+
+            subnet1 = removeDuplicates(subnet1);
+            subnet2 = removeDuplicates(subnet2);
+            subnet3 = removeDuplicates(subnet3);
+
+
+//*********************SUBNET 1  xxx.0.0.0 ******************
+            for (int i = 0; i < subnet1.size(); i++) {
+                Ip subn1 = subnet1.get(i);
+                DefaultMutableTreeNode nodex = new DefaultMutableTreeNode(subn1);
+                subnode1.add(nodex);
+
+
+//*********************SUBNET 2  0.xxx.0.0 ******************
+                for (int ii = 0; ii < subnet2.size(); ii++) {
+                    Ip subn2 = subnet2.get(ii);
+                    if (subn2.getPart0() == subn1.getPart0()) {
+                        DefaultMutableTreeNode nodey = new DefaultMutableTreeNode(subn2);
+                        nodex.add(nodey);
+
+
+//*********************SUBNET 3  0.0.xxx.0 ******************
+                        for (int iii = 0; iii < subnet3.size(); iii++) {
+                            Ip subn3 = subnet3.get(iii);
+                            if (subn3.getPart0() == subn2.getPart0() &&
+                                    subn3.getPart1() == subn2.getPart1()) {
+                                DefaultMutableTreeNode nodez = new DefaultMutableTreeNode(subn3);
+                                nodey.add(nodez);
+
+
+
+//*********************SUBNET 4  0.0.0.xxx ******************
+                                for (int iiii = 0; iiii < allIps.size(); iiii++) {
+                                    Ip ip = allIps.get(iiii);
+
+                                    if (!new Ip("0.0.0.0").equals(ip) && ip.getPart0() == subn3.getPart0() &&
+                                            ip.getPart1() == subn3.getPart1() &&
+                                            ip.getPart2() == subn3.getPart2()) {
+                                        nodez.add(new DefaultMutableTreeNode(ip));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        node1.add(subnode1);
+        DefaultTreeModel model = new DefaultTreeModel(node1);
+        return model;
+    }
+
+    public static DefaultTreeModel toTreeModel(ArrayList<Group> data, String rootNodeName) {
+
+        MPV5View.setWaiting(true);
+        DefaultMutableTreeNode node1 = new DefaultMutableTreeNode(rootNodeName);
+
+        try {
+
+           node1.add(addToParents(node1,data));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            MPV5View.setWaiting(false);
+        }
+        DefaultTreeModel model = new DefaultTreeModel(node1);
+        return model;
+    }
+
+
+    private static DefaultMutableTreeNode addToParents(DefaultMutableTreeNode firstnode, ArrayList<Group> groups) {
+         ArrayList<Group> parentgroups = new ArrayList<Group>();
+         ArrayList<Group> childgroups = new ArrayList<Group>();
+
+            //First level groups
+            for (int i = 0; i < groups.size(); i++) {
+                Group group = groups.get(i);
+                if (group.__getParentgroup() <= 0) {
+                    firstnode.add(new DefaultMutableTreeNode(group));
+                } else {
+                    childgroups.add(group);
+                }
+            }
+
+return null;
+
     }
 
     public static ArrayList<String> getSelectionFromTree(JTree tree) {
@@ -454,15 +602,16 @@ public class ArrayUtilities {
     }
 
     public static String[] hashTableKeysToArray(Hashtable<String, Object> data) {
-         Object[] array = data.keySet().toArray();
-         String[] keyz = new String[array.length];
+        Object[] array = data.keySet().toArray();
+        String[] keyz = new String[array.length];
 
         for (int i = 0; i < array.length; i++) {
             keyz[i] = (array[i]).toString();
         }
 
-         return keyz;
+        return keyz;
     }
+
 
     /**
      * Converts a HashMap to a 2-column array {key, value}

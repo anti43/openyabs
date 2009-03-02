@@ -266,7 +266,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         });
 
         number.set_Label(bundle.getString("ContactPanel.number._Label")); // NOI18N
-        number.set_LabelFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        
         number.setName("number"); // NOI18N
 
         dateadded.setText(bundle.getString("ContactPanel.dateadded.text")); // NOI18N

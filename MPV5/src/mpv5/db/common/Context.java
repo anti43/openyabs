@@ -31,6 +31,7 @@ public class Context {
     public static String IDENTITY_ADDRESS = "addresses";
     public static String IDENTITY_GROUPS = "groups";
     public static String IDENTITY_GROUPS_TO_PARENTGROUP = "groupstoparents";
+    public static String IDENTITY_SCHEDULE = "schedule";
 
     //********** identity classes **********************************************
     private static Class IDENTITY_CONTACTS_CLASS = Contact.class;
@@ -120,6 +121,19 @@ public class Context {
         list.add(getAddress());
         list.add(getItem(true, false));
         list.add(getSubItem());
+        list.add(getSchedule());
+        return list;
+    }
+
+        public static ArrayList<Context> getGroupableContexts() {
+        ArrayList<Context> list = new ArrayList<Context>();
+        list.add(getCompany());
+        list.add(getUser());
+        list.add(getCustomer());
+        list.add(getManufacturer());
+        list.add(getSupplier());
+        list.add(getItem(true, false));
+        list.add(getSchedule());
         return list;
     }
     /**
@@ -148,6 +162,7 @@ public class Context {
     private boolean exclusiveConditionsAvailable = false;
     private String exclusiveCondition;
     private String uniqueColumns;
+    private int id = -1;
 
     /**
      * Create a new Context instance with the given do as owner
@@ -511,6 +526,10 @@ public class Context {
         return isManufacturer;
     }
 
+    private void setId(int id) {
+        this.id =id;
+    }
+
     /**
      * @param Manufacturer the Manufacturer to set
      */
@@ -568,6 +587,7 @@ public class Context {
         c.setSearchFields(DEFAULT_CONTACT_SEARCH);
         c.setSearchHeaders(Headers.CONTACT_DEFAULT);
         c.setIdentityClass(IDENTITY_CONTACTS_CLASS);
+        c.setId(0);
 
         return c;
     }
@@ -581,6 +601,7 @@ public class Context {
         c.setIdentityClass(IDENTITY_ITEMS_CLASS);
         c.setIsActive(active);
         c.setIsDone(done);
+        c.setId(1);
 
         return c;
     }
@@ -590,6 +611,7 @@ public class Context {
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_SUBITEMS);
         c.setIdentityClass(IDENTITY_SUBITEMS_CLASS);
+        c.setId(2);
 
         return c;
     }
@@ -602,6 +624,7 @@ public class Context {
         c.setSearchFields(DEFAULT_CONTACT_SEARCH);
         c.setSearchHeaders(Headers.CONTACT_DEFAULT);
         c.setIdentityClass(IDENTITY_CONTACTS_CLASS);
+        c.setId(3);
 
         return c;
     }
@@ -614,6 +637,7 @@ public class Context {
         c.setSearchFields(DEFAULT_CONTACT_SEARCH);
         c.setSearchHeaders(Headers.CONTACT_DEFAULT);
         c.setIdentityClass(IDENTITY_CONTACTS_CLASS);
+        c.setId(4);
 
         return c;
     }
@@ -626,6 +650,7 @@ public class Context {
         c.setSearchFields(DEFAULT_CONTACT_SEARCH);
         c.setSearchHeaders(Headers.CONTACT_DEFAULT);
         c.setIdentityClass(IDENTITY_CONTACTS_CLASS);
+        c.setId(5);
 
         return c;
     }
@@ -637,6 +662,7 @@ public class Context {
         c.setSearchFields(DEFAULT_CONTACT_SEARCH);
         c.setSearchHeaders(Headers.CONTACT_DEFAULT);
         c.setIdentityClass(IDENTITY_CONTACTS_CLASS);
+        c.setId(6);
 
         return c;
     }
@@ -649,6 +675,16 @@ public class Context {
         c.setSearchHeaders(Headers.USER_DEFAULT);
         c.setIdentityClass(IDENTITY_USERS_CLASS);
         c.uniqueColumns = UNIQUECOLUMNS_USER;
+        c.setId(7);
+
+        return c;
+    }
+
+     public static Context getSchedule() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_SCHEDULE);
+        c.setId(8);
 
         return c;
     }
@@ -657,6 +693,7 @@ public class Context {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_LANGUAGES);
+        c.setId(9);
 
         return c;
     }
@@ -665,6 +702,7 @@ public class Context {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_FILES);
+        c.setId(10);
 
         return c;
     }
@@ -673,6 +711,7 @@ public class Context {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_LOCK);
+        c.setId(11);
 
         return c;
     }
@@ -681,6 +720,7 @@ public class Context {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_GROUPS_TO_PARENTGROUP);
+        c.setId(12);
 
         return c;
     }
@@ -689,6 +729,7 @@ public class Context {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_GROUPS);
+        c.setId(14);
 
         return c;
     }
@@ -697,6 +738,7 @@ public class Context {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_FAVS);
+        c.setId(15);
 
         return c;
     }
@@ -706,6 +748,8 @@ public class Context {
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_ADDRESS);
         c.setIdentityClass(IDENTITY_ADDRESS_CLASS);
+        c.setId(16);
+        
         return c;
     }
 
@@ -742,6 +786,13 @@ public class Context {
     @Override
     public String toString() {
         return dbIdentity;
+    }
+
+    /**
+     * @return the id
+     */
+    public int getId() {
+        return id;
     }
 
 

@@ -19,6 +19,7 @@ import mpv5.globals.LocalSettings;
  * @author Andreas
  */
 public class LabeledTextField extends javax.swing.JPanel {
+    private static final long serialVersionUID = 1L;
 
     private String _text;
     private String _label;
@@ -44,6 +45,12 @@ public class LabeledTextField extends javax.swing.JPanel {
             return false;
         }
     }
+
+
+//    public void setLabelFont(Font font) {
+//        setFont(font);
+//
+//    }
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -112,10 +119,14 @@ public class LabeledTextField extends javax.swing.JPanel {
         jLabel1.setText(_label);
     }
 
+   
     public void set_LabelFont(Font font) {
-        jLabel1.setFont(font);
+        if (font != null) {
+            jLabel1.setFont(font);
+        }
     }
 
+    @Override
     public void setEnabled(boolean enabled) {
         jLabel1.setEnabled(enabled);
         jTextField1.setEnabled(enabled);

@@ -59,8 +59,8 @@ public class DatabaseInstallation {
         "CREATE TABLE groups (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
         "cname VARCHAR(250) UNIQUE NOT NULL," +
         "description VARCHAR(750) DEFAULT NULL," +
-        "defaultvalue DOUBLE DEFAULT 0," +
-        "taxvalue DOUBLE DEFAULT 0," +
+        "defaultvalue VARCHAR(250) DEFAULT NULL," +
+        "parentgroupids BIGINT DEFAULT 0," +
         "reserve1 VARCHAR(500) default NULL, reserve2 VARCHAR(500) default NULL, " +
         "PRIMARY KEY  (ids))",
 
@@ -146,11 +146,6 @@ public class DatabaseInstallation {
         "description VARCHAR(1000) default NULL,  value DOUBLE DEFAULT 0 NOT NULL, taxpercentvalue DOUBLE DEFAULT 0 NOT NULL," +
         "datedelivery DATE DEFAULT NULL, reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (ids))",
 
-        "CREATE TABLE groupstoparents (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
-        "parentids BIGINT REFERENCES groups(ids)  ON DELETE CASCADE, " +
-        "childids BIGINT REFERENCES groups(ids)  ON DELETE CASCADE, " +
-        "reserve1 VARCHAR(500) default NULL, reserve2 VARCHAR(500) default NULL, " +
-        "PRIMARY KEY  (ids))",
 
         "CREATE TABLE schedule (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
         "cname VARCHAR(250) NOT NULL, " +

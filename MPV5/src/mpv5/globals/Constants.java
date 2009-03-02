@@ -32,7 +32,7 @@ public interface Constants {
      */
     public static final String VERSION = "5.00";
     /**
-     * Will be dynamically changed by SVN,,
+     * Will be dynamically changed by SVN.
      */
     public static final String REVISION = "$Rev$";
     public static final String RELEASE_VERSION = "5";
