@@ -29,6 +29,14 @@ public class DatabaseSearch {
 
     /**
      * Get multiple values from a search
+     * @return select("*", null);
+     */
+    public Object[][] getValuesFor() {
+          return QueryHandler.instanceOf().clone(context).select("*", null);
+    }
+
+    /**
+     * Get multiple values from a search
      * @param resultingFieldNames What do you like to get (columns)?
      * @param what Which column do you like to take for the condition?
      * @param where And what value should the column value have?

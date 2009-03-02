@@ -22,12 +22,20 @@ along with MP.  If not, see <http://www.gnu.org/licenses/>.
 package mpv5.ui.dialogs.subcomponents;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import mpv5.data.PropertyStore;
 import mpv5.db.common.Context;
+import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.DatabaseSearch;
+import mpv5.db.common.NodataFoundException;
 import mpv5.globals.Messages;
+import mpv5.items.div.Group;
+import mpv5.logging.Log;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.usermanagement.MPSecurityManager;
+import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.ui.TextFieldUtils;
 
@@ -209,6 +217,7 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
         return insta;
     }
 
+    @SuppressWarnings("unchecked")
     private void refresh() {
         ArrayList<Context> c = Context.getGroupableContexts();
         Object[][] arr = new Object[c.size()][2];
@@ -229,7 +238,14 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
         area.setModel(MPComboBoxModelItem.toModel(arr));
         area.setSelectedIndex(0);
 
+        ArrayList<Group> data = null;
+        try {
+            data =  DatabaseObject.getObjects(Context.getGroup(), Group.class);
+        } catch (NodataFoundException ex) {
+            Log.Debug(this, ex.getMessage());
+        }
 
+        tree.setModel(ArrayUtilities.toTreeModel(data, area.getSelectedItem().toString()));
 
     }
 }

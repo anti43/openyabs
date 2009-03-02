@@ -426,6 +426,25 @@ public abstract class DatabaseObject {
         return list;
     }
 
+    /**
+     * Returns all DBOs in the specific context, as List<clazz/>
+     * @param context
+     * @param clazz
+     * @return A list of DBOs
+     * @throws NodataFoundException
+     */
+    @SuppressWarnings("unchecked")
+    public static ArrayList getObjects(Context context, Class clazz) throws NodataFoundException {
+        Object[][] allIds = QueryHandler.instanceOf().clone(context).selectIndexes().getData();
+        ArrayList list = new ArrayList();
+
+        for (int i = 0; i < allIds.length; i++) {
+            int id = Integer.valueOf(allIds[i][0].toString());
+            list.add(clazz.cast(DatabaseObject.getObject(context, id)));
+        }
+        return list;
+    }
+
     public static ArrayList<DatabaseObject> getReferencedObjects(DatabaseObject dataOwner, Context inReference) throws NodataFoundException {
 
         Object[][] allIds = QueryHandler.instanceOf().clone(inReference).select("ids", new String[]{dataOwner.getDbIdentity() + "ids", dataOwner.__getIDS().toString(), ""});

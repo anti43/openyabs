@@ -412,7 +412,7 @@ public class ArrayUtilities {
 
         try {
 
-           node1.add(addToParents(node1,data));
+            node1.add(addToParents(node1, data));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -423,23 +423,28 @@ public class ArrayUtilities {
         return model;
     }
 
-
     private static DefaultMutableTreeNode addToParents(DefaultMutableTreeNode firstnode, ArrayList<Group> groups) {
-         ArrayList<Group> parentgroups = new ArrayList<Group>();
-         ArrayList<Group> childgroups = new ArrayList<Group>();
-
-            //First level groups
-            for (int i = 0; i < groups.size(); i++) {
-                Group group = groups.get(i);
-                if (group.__getParentgroup() <= 0) {
-                    firstnode.add(new DefaultMutableTreeNode(group));
-                } else {
-                    childgroups.add(group);
+        Enumeration nodes;
+        for (int i = 0; i < groups.size(); i++) {
+            Group group = groups.get(i);
+            if (group.__getParentgroup() <= 0 && firstnode.isRoot()) {
+                firstnode.add(new DefaultMutableTreeNode(group));
+                groups.remove(group);//First level groups
+            } else if (!firstnode.isRoot()) {
+                nodes = firstnode.children();
+                while (nodes.hasMoreElements()) {
+                    DefaultMutableTreeNode object = (DefaultMutableTreeNode) nodes.nextElement();
+                    if (object.getAllowsChildren() &&
+                            ((Group) object.getUserObject()).__getParentgroup() == ((Group) firstnode.getUserObject()).__getIDS().intValue()) {
+                        firstnode.add(new DefaultMutableTreeNode(group));
+                        groups.remove(group);//Add children to the node if the node is the parent
+                    } else {
+                        addToParents(firstnode, groups);//Step further
+                    }
                 }
             }
-
-return null;
-
+        }
+        return firstnode;
     }
 
     public static ArrayList<String> getSelectionFromTree(JTree tree) {
@@ -611,7 +616,6 @@ return null;
 
         return keyz;
     }
-
 
     /**
      * Converts a HashMap to a 2-column array {key, value}
