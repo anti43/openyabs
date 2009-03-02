@@ -135,42 +135,7 @@ public class ArrayUtilities {
 //        }
 //    }
 
-    public static Object[][] changeToClassValue(Object[][] prods, Class aClass, int[] cols) {
-
-        try {
-            Object[][] data = new Object[prods.length][prods[0].length];
-
-            for (int idx = 0; idx < prods.length; idx++) {
-                for (int k = 0; k < cols.length; k++) {
-                    if (aClass.getName().matches("java.lang.Boolean")) {
-                        if (prods[idx][cols[k]].equals("1")) {
-                            data[idx][cols[k]] = true;
-                        } else {
-                            data[idx][cols[k]] = false;
-                        }
-                    } else if (aClass.getName().matches("java.util.Date")) {
-                        Date d = DateConverter.getDate(String.valueOf(prods[idx][cols[k]]));
-                        if (d != null) {
-                            data[idx][cols[k]] = DateConverter.getDefDateString(d);
-                        } else {
-                            data[idx][cols[k]] = "Kein";
-                        }
-                    }
-                }
-
-                for (int h = 0; h < prods[0].length; h++) {
-                    if (data[idx][h] == null) {
-                        data[idx][h] = prods[idx][h];
-                    }
-                }
-            }
-            return data;
-        } catch (Exception e) {
-//            Log.Debug(this,e);
-            return new Object[0][0];
-        }
-    }
-
+  
     /**
      * Returns a table column's data as array
      * @param table

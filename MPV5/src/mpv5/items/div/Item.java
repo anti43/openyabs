@@ -33,6 +33,7 @@ public class Item extends DatabaseObject{
     private double value;
     private double taxvalue;
     private Date datetodo;
+    private Date dateend;
     private int intreminders;
     private String groupname = "";
 
@@ -171,6 +172,20 @@ public class Item extends DatabaseObject{
      */
     public void setGroupname(String groupname) {
         this.groupname = groupname;
+    }
+
+    /**
+     * @return the dateend
+     */
+    public Date __getDateend() {
+        return dateend;
+    }
+
+    /**
+     * @param dateend the dateend to set
+     */
+    public void setDateend(Date dateend) {
+        this.dateend = dateend;
     }
 
 }

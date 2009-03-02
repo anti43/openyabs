@@ -67,7 +67,7 @@ public class DatabaseConnection {
             Class.forName(ctype.getDriver()).newInstance();
         } catch (Exception ex) {
             ex.printStackTrace();
-            Popup.warn(ex.getMessage(), Popup.ERROR);
+//            Popup.warn(ex.getMessage(), Popup.ERROR);
             DatabaseConnection.shutdown();
         }
 
@@ -87,7 +87,7 @@ public class DatabaseConnection {
             Log.Debug(this, ex.getNextException());
             Log.Debug(this, ex.getNextException().getNextException());
             Log.Debug(this, ex.getNextException().getNextException().getNextException());
-            Popup.warn(ex.getMessage(), Popup.ERROR);
+//            Popup.warn(ex.getMessage(), Popup.ERROR);
             DatabaseConnection.shutdown();
             return false;
         }
@@ -106,7 +106,7 @@ public class DatabaseConnection {
             try {
                 Class.forName(ctype.getDriver()).newInstance();
             } catch (ClassNotFoundException ex) {
-                Popup.warn(Messages.DB_DRIVER_INVALID + ex.getMessage(), Popup.ERROR);
+//                Popup.warn(Messages.DB_DRIVER_INVALID + ex.getMessage(), Popup.ERROR);
             DatabaseConnection.shutdown();
 
             }

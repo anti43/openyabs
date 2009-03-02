@@ -72,7 +72,7 @@ public class DatabaseInstallation {
         "fax VARCHAR(250) default NULL,mobilephone VARCHAR(250) default NULL,workphone VARCHAR(250) default NULL," +
         "mailaddress VARCHAR(350) default NULL,company VARCHAR(250) DEFAULT NULL, department VARCHAR(250) DEFAULT NULL," +
         "website VARCHAR(350) default NULL,notes VARCHAR(10000)," +
-        "dateadded DATE DEFAULT CURRENT_DATE,isactive SMALLINT DEFAULT 0,iscustomer SMALLINT DEFAULT 0," +
+        "dateadded DATE DEFAULT NULL,isactive SMALLINT DEFAULT 0,iscustomer SMALLINT DEFAULT 0," +
         "ismanufacturer SMALLINT DEFAULT 0,issupplier SMALLINT DEFAULT 0,iscompany SMALLINT DEFAULT 0," +
         "ismale SMALLINT DEFAULT 0,isenabled SMALLINT DEFAULT 1,addedby VARCHAR(350) default NULL," +
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
@@ -132,9 +132,9 @@ public class DatabaseInstallation {
         "cname VARCHAR(250) UNIQUE NOT NULL, " +
         "groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1," +
         "contactsids BIGINT REFERENCES contacts(ids)  ON DELETE CASCADE," +
-        "dateadded DATE DEFAULT CURRENT_DATE, isactive SMALLINT DEFAULT 0, isfinished SMALLINT DEFAULT 0," +
+        "dateadded DATE DEFAULT NULL, isactive SMALLINT DEFAULT 0, isfinished SMALLINT DEFAULT 0," +
         "value DOUBLE DEFAULT 0," +
-        "taxvalue DOUBLE DEFAULT 0, datetodo DATE DEFAULT CURRENT_DATE, intreminders INTEGER DEFAULT 0," +
+        "taxvalue DOUBLE DEFAULT 0, datetodo DATE DEFAULT NULL, dateend DATE DEFAULT NULL, intreminders INTEGER DEFAULT 0," +
         "reserve1 VARCHAR(500) default NULL, reserve2 VARCHAR(500) default NULL, " +
         "PRIMARY KEY  (ids))",
                 
@@ -144,7 +144,7 @@ public class DatabaseInstallation {
         "groupsids BIGINT REFERENCES groups(ids)," +
         "countvalue DOUBLE DEFAULT 0 NOT NULL, quantityvalue DOUBLE DEFAULT 0 NOT NULL, measure VARCHAR(250) NOT NULL," +
         "description VARCHAR(1000) default NULL,  value DOUBLE DEFAULT 0 NOT NULL, taxpercentvalue DOUBLE DEFAULT 0 NOT NULL," +
-        "datedelivery DATE DEFAULT CURRENT_DATE, reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (ids))",
+        "datedelivery DATE DEFAULT NULL, reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (ids))",
 
         "CREATE TABLE groupstoparents (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
         "parentids BIGINT REFERENCES groups(ids)  ON DELETE CASCADE, " +

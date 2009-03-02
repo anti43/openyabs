@@ -5,21 +5,15 @@
  */
 package mpv5.ui.dialogs;
 
-import java.awt.Component;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.security.NoSuchAlgorithmException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
 import mpv5.db.common.NodataFoundException;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPV5View;
 import mpv5.ui.parents.Position;
-import mpv5.usermanagement.Lock;
 import mpv5.usermanagement.User;
 import mpv5.utils.text.MD5HashGenerator;
 
@@ -30,13 +24,12 @@ import mpv5.utils.text.MD5HashGenerator;
  */
 public class LoginScreen extends javax.swing.JFrame {
 
-    private Component frame;
 
     /** Creates new form login
-     * @param frame 
+
      */
-    public LoginScreen(Component frame) {
-        this.frame = frame;
+    public LoginScreen() {
+
         initComponents();
 
         if (!LocalSettings.getProperty("lastuser").equals("null")) {
@@ -197,8 +190,7 @@ private void jPasswordField1ActionPerformed(java.awt.event.ActionEvent evt) {//G
     private void login() {
         User user = mpv5.usermanagement.MPSecurityManager.checkAuth(jTextField1.getText(), new String(jPasswordField1.getPassword()));
         if (user != null) {
-           Lock.unlock(frame);
-           MPV5View.setUser(user);
+           user.login();
             if (jCheckBox1.isSelected()) {
                 LocalSettings.setProperty("lastuser", MPV5View.getUser().__getIDS().toString());
                 LocalSettings.save();

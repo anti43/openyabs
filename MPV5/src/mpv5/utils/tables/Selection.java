@@ -22,8 +22,6 @@ package mpv5.utils.tables;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
-import mpv5.logging.Log;
-
 
 /**
  *
@@ -33,19 +31,20 @@ public class Selection {
 
     private Integer id = null;
     private JTable table;
-    private int removed  = 0;
+    private int removed = 0;
 
     public Selection(JTable table) {
         this.table = table;
-        if(table.getCellEditor()!=null) table.getCellEditor().stopCellEditing();
+        if (table.getCellEditor() != null) {
+            table.getCellEditor().stopCellEditing();
+        }
     }
 
     public boolean checkID() {
         try {
-            id = Integer.valueOf(String.valueOf( table.getValueAt(table.getSelectedRow(), 0)));
+            id = Integer.valueOf(String.valueOf(table.getValueAt(table.getSelectedRow(), 0)));
             return true;
         } catch (Exception numberFormatException) {
-            numberFormatException.printStackTrace();
             return false;
         }
     }
@@ -63,7 +62,7 @@ public class Selection {
         for (int idx = 0; idx < data.length; idx++) {
             data[idx] = table.getModel().getValueAt(table.getSelectedRow(), idx);
         }
-        Log.PrintArray(data);
+
         return data;
     }
 
@@ -87,12 +86,12 @@ public class Selection {
     }
 
     public boolean rowHasData(int testcol) {
-        if(table.getModel().getRowCount()>0){
-        for (int i = 0; i < table.getModel().getColumnCount(); i++) {
-            if (table.getModel().getValueAt(table.getSelectedRow(), testcol) != null) {
-                return true;
+        if (table.getModel().getRowCount() > 0) {
+            for (int i = 0; i < table.getModel().getColumnCount(); i++) {
+                if (table.getModel().getValueAt(table.getSelectedRow(), testcol) != null) {
+                    return true;
+                }
             }
-        }
         }
         return false;
     }

@@ -80,5 +80,6 @@ public class Messages {
     public static String ADDED_TO_FAVOURITES = "The item has been added to your favourites list: ";
     public static String NO_PRINTER_FOUND = "No printer found on this system.";
     public static String UNGROUPED = "Ungrouped";
+    public static String ADMIN_USER = "User Administrator can not be deleted.";
 
 }

@@ -101,7 +101,7 @@ public class Main extends SingleFrameApplication {
         LocalSettings.save();
         try {
             if (!MPV5View.getUser().isDefault()) {
-                MPV5View.getUser().save();
+                MPV5View.getUser().logout();
             }
         } catch (Exception e) {
         }
@@ -290,7 +290,7 @@ public class Main extends SingleFrameApplication {
                 Log.Debug(this, "Trying to login user: " + usern1);
                 User user = mpv5.usermanagement.MPSecurityManager.checkAuthInternal(usern1, LocalSettings.getProperty("lastuserpw"));
                 if (user != null) {
-                    MPV5View.setUser(user);
+                    user.login();
                 }
             }
         }

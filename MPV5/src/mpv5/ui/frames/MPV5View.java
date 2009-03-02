@@ -724,6 +724,7 @@ public class MPV5View extends FrameView {
     private void jButton26ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton26ActionPerformed
 
         mpv5.usermanagement.Lock.lock(this.getFrame());
+        getUser().logout();
 }//GEN-LAST:event_jButton26ActionPerformed
 
     private void jButton24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton24ActionPerformed
@@ -733,25 +734,7 @@ public class MPV5View extends FrameView {
 }//GEN-LAST:event_jButton24ActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
-        final Component pane = tabPane.getSelectedComponent();
-        if (pane != null) {
-            final String title = tabPane.getTitleAt(tabPane.getSelectedIndex());
-            tabPane.remove(pane);
-            JFrame fr = new JFrame(title) {
-
-                @Override
-                public void dispose() {
-                    tabPane.addTab(title, pane);
-                    tabPane.setSelectedComponent(pane);
-                    super.dispose();
-                }
-            };
-            fr.add(pane, BorderLayout.CENTER);
-            fr.setSize(pane.getSize());
-            new Position(fr);
-            fr.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            fr.setVisible(true);
-        }
+        selectedTabInNewFrame();
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
@@ -863,5 +846,30 @@ public class MPV5View extends FrameView {
      */
     public javax.swing.JMenu getFavouritesMenu() {
         return favouritesMenu;
+    }
+
+    /**
+     * Open the currently selected tab in a new frame
+     */
+    public void selectedTabInNewFrame() {
+        final Component pane = tabPane.getSelectedComponent();
+        if (pane != null) {
+            final String title = tabPane.getTitleAt(tabPane.getSelectedIndex());
+            tabPane.remove(pane);
+            JFrame fr = new JFrame(title) {
+
+                @Override
+                public void dispose() {
+                    tabPane.addTab(title, pane);
+                    tabPane.setSelectedComponent(pane);
+                    super.dispose();
+                }
+            };
+            fr.add(pane, BorderLayout.CENTER);
+            fr.setSize(pane.getSize());
+            new Position(fr);
+            fr.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            fr.setVisible(true);
+        }
     }
 }

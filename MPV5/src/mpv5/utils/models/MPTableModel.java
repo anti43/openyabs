@@ -24,25 +24,31 @@ import javax.swing.table.DefaultTableModel;
  * @author Andreas
  */
 public class MPTableModel extends DefaultTableModel {
+    private static final long serialVersionUID = 1L;
 
     private Class[] types;
     private boolean[] canEdits;
 
- 
     public MPTableModel(Object[][] datstr, String[] header) {
-       super(datstr, header);
-       setTypes(new Class[]{Object.class,Object.class,Object.class,Object.class,Object.class,Object.class,Object.class,
-       Object.class,Object.class,Object.class,Object.class,Object.class,Object.class,Object.class,Object.class,
-       Object.class,Object.class,Object.class,Object.class,Object.class,Object.class,Object.class,Object.class});
-       setCanEdits(new boolean[]{false,false,false,false,false,false,false,false,false,false,false,false,false,false,
-       false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,
-       false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,});
+        super(datstr, header);
+        setEditable(false);
+
+        setTypes(new Class[]{Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
+                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
+                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class});
+
     }
 
     public MPTableModel(Class[] types, boolean[] canEdits, Object[][] data, Object[] columnNames) {
         super(data, columnNames);
         setTypes(types);
         setCanEdits(canEdits);
+    }
+
+    public MPTableModel(Class[] types, Object[][] data, Object[] columnNames) {
+        super(data, columnNames);
+        setTypes(types);
+        setEditable(false);
     }
 
     @Override
@@ -73,5 +79,11 @@ public class MPTableModel extends DefaultTableModel {
 
     public Vector getColumnIdentifiers() {
         return columnIdentifiers;
+    }
+
+    private void setEditable(boolean b) {
+        setCanEdits(new boolean[]{b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b,
+        b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b,
+        b, b, b, b, b, b, b, b, b});
     }
 }

@@ -17,9 +17,8 @@
 package mpv5.utils.tables;
 
 import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableModel;
 import mpv5.logging.Log;
 import mpv5.utils.models.MPTableModel;
 
@@ -30,6 +29,43 @@ import mpv5.utils.models.MPTableModel;
  */
 public class TableFormat {
 
+    /**
+     * Changes table values from text to class values,<br/>
+     * currently supported classes:<br/>
+     * - <code>Boolean.class</code>: "1" and "true" will be true, false otherwise
+     * @param values The original values
+     * @param aClass The class to be changed
+     * @param cols The column to change
+     * @return
+     */
+    public static Object[][] changeToClassValue(Object[][] values, Class aClass, int[] cols) {
+
+        try {
+            Object[][] data = new Object[values.length][values[0].length];
+
+            for (int idx = 0; idx < values.length; idx++) {
+                for (int k = 0; k < cols.length; k++) {
+                    if (aClass.getName().equalsIgnoreCase("java.lang.Boolean") ) {
+                        if (String.valueOf(values[idx][cols[k]]).equalsIgnoreCase("1") || String.valueOf(values[idx][cols[k]]).equalsIgnoreCase("true")) {
+                            data[idx][cols[k]] = true;
+                        } else {
+                            data[idx][cols[k]] = false;
+                        }
+                    } 
+                }
+
+                for (int h = 0; h < values[0].length; h++) {
+                    if (data[idx][h] == null) {
+                        data[idx][h] = values[idx][h];
+                    }
+                }
+            }
+            return data;
+        } catch (Exception e) {
+//            Log.Debug(this,e);
+            return new Object[0][0];
+        }
+    }
 
 
     public static void makeUneditable(JTable table) {
@@ -91,12 +127,15 @@ public class TableFormat {
     }
 
 
-    public static void formatUneditableTable(JTable jTable1, String[][] data, String[] header) {
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+    public static DefaultTableModel getUneditableTable(String[][] data, String[] header) {
+       return new javax.swing.table.DefaultTableModel(
                 data,
                 header) {
 
             boolean[] canEdits = new boolean[]{
+                false, false, false, false, false,
+                false, false, false, false, false,
+                false, false, false, false, false,
                 false, false, false, false, false,
                 false, false, false, false, false,
                 false, false, false, false, false
@@ -106,10 +145,7 @@ public class TableFormat {
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdits[columnIndex];
             }
-        });
-
-        jTable1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        stripFirstColumn(jTable1);
+        };
     }
 
 

@@ -22,6 +22,7 @@ import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.globals.Messages;
 import mpv5.ui.dialogs.Popup;
+import mpv5.ui.frames.MPV5View;
 
 /**
  *
@@ -80,6 +81,36 @@ public class User extends DatabaseObject {
         }
     }
 
+    public boolean isAdmin() {
+        if (getName().equals("admin") && __getFullname().equals("Administrator")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Logs in this user into MP
+     */
+    public void login() {
+        MPV5View.setUser(this);
+        Lock.unlock(MPV5View.identifierFrame);
+        setDatelastlog(new Date());
+        setIsloggedin(true);
+        save();
+    }
+
+    /**
+     * Logs out this user
+     */
+    public void logout() {
+        MPV5View.setUser(DEFAULT);
+        if (!isDefault()) {
+            setIsloggedin(false);
+            save();
+        }
+    }
+
     @Override
     public void setCName(String name) {
         cname = name;
@@ -91,6 +122,16 @@ public class User extends DatabaseObject {
             return super.save();
         } else {
             Popup.notice(Messages.DEFAULT_USER);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean delete() {
+        if (!isAdmin()) {
+            return super.delete();
+        } else {
+            Popup.notice(Messages.ADMIN_USER);
             return false;
         }
     }
@@ -239,7 +280,6 @@ public class User extends DatabaseObject {
     public void setFullname(String fullname) {
         this.fullname = fullname;
     }
-
 
     /**
      * @return the groupsids

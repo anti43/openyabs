@@ -27,6 +27,7 @@ import mpv5.usermanagement.User;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.models.MPComboBoxModelItem;
+import mpv5.utils.models.MPTableModel;
 import mpv5.utils.tables.Selection;
 import mpv5.utils.tables.TableFormat;
 import mpv5.utils.text.MD5HashGenerator;
@@ -582,15 +583,15 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         }
 
         inthighestright.setModel(MPSecurityManager.getRolesAsComboBoxModel());
-        jTable1.setModel(new DefaultTableModel(ArrayUtilities.changeToClassValue(QueryHandler.instanceOf().clone(Context.getUser()).select(Context.DETAILS_USERS, null), boolean.class, new int[]{4,5}), Headers.USER_DETAILS));
+        jTable1.setModel(new MPTableModel(new Class[]{String.class, String.class, String.class, String.class, Boolean.class, Boolean.class},TableFormat.changeToClassValue(QueryHandler.instanceOf().clone(Context.getUser()).select(Context.DETAILS_USERS, null), Boolean.class, new int[]{4,5}), Headers.USER_DETAILS));
 
         groupname.setModel(new DefaultComboBoxModel(
                     MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID(), null, null))));
 
         TableFormat.stripFirstColumn(jTable1);
-        TableFormat.format(jTable1, 1, 100);
-        TableFormat.format(jTable1, 2, 100);
-        TableFormat.format(jTable1, 3, 100);
+        TableFormat.format(jTable1, 1, 120);
+        TableFormat.format(jTable1, 4, 80);
+        TableFormat.format(jTable1, 5, 80);
     }
 
     public ControlApplet instanceOf() {

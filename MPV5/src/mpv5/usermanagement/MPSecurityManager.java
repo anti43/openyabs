@@ -75,6 +75,10 @@ public class MPSecurityManager {
         return true;
     }
 
+    /**
+     * Checks whether the currently logged in user has to right to do admin tasks
+     * @return
+     */
     public static boolean checkAdminAccess() {
         if (MPV5View.getUser().__getINThighestright() <= RIGHT_TO_CREATE_OR_DELETE) {
             return true;
@@ -84,6 +88,13 @@ public class MPSecurityManager {
         }
     }
 
+    /**
+     * Checks the credentials for this user. Will return NULL if the user is <br/>
+     * not existing, disabled or the wrong password is provided.
+     * @param username
+     * @param password
+     * @return
+     */
     public static User checkAuth(String username, String password) {
         User usern1 = new User();
   
