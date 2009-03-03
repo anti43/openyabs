@@ -412,7 +412,7 @@ public class ArrayUtilities {
 
         try {
 
-            node1.add(addToParents(node1, data));
+           addToParents(node1, data);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -425,6 +425,7 @@ public class ArrayUtilities {
 
     private static DefaultMutableTreeNode addToParents(DefaultMutableTreeNode firstnode, ArrayList<Group> groups) {
         Enumeration nodes;
+        Log.Debug(ArrayUtilities.class, "Parent Node: " + firstnode);
         for (int i = 0; i < groups.size(); i++) {
             Group group = groups.get(i);
             if (group.__getParentgroup() <= 0 && firstnode.isRoot()) {
@@ -434,6 +435,7 @@ public class ArrayUtilities {
                 nodes = firstnode.children();
                 while (nodes.hasMoreElements()) {
                     DefaultMutableTreeNode object = (DefaultMutableTreeNode) nodes.nextElement();
+//                     Log.Debug(ArrayUtilities.class, "Parent Node: " +object);
                     if (object.getAllowsChildren() &&
                             ((Group) object.getUserObject()).__getParentgroup() == ((Group) firstnode.getUserObject()).__getIDS().intValue()) {
                         firstnode.add(new DefaultMutableTreeNode(group));

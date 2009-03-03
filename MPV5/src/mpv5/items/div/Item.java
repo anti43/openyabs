@@ -36,6 +36,9 @@ public class Item extends DatabaseObject{
     private Date dateend;
     private int intreminders;
     private String groupname = "";
+    private boolean isbill;
+    private boolean isorder;
+    private boolean isoffer;
 
 
     @Override
@@ -186,6 +189,48 @@ public class Item extends DatabaseObject{
      */
     public void setDateend(Date dateend) {
         this.dateend = dateend;
+    }
+
+    /**
+     * @return the isbill
+     */
+    public boolean __getisIsbill() {
+        return isbill;
+    }
+
+    /**
+     * @param isbill the isbill to set
+     */
+    public void setIsbill(boolean isbill) {
+        this.isbill = isbill;
+    }
+
+    /**
+     * @return the isorder
+     */
+    public boolean __getisIsorder() {
+        return isorder;
+    }
+
+    /**
+     * @param isorder the isorder to set
+     */
+    public void setIsorder(boolean isorder) {
+        this.isorder = isorder;
+    }
+
+    /**
+     * @return the isoffer
+     */
+    public boolean __getisIsoffer() {
+        return isoffer;
+    }
+
+    /**
+     * @param isoffer the isoffer to set
+     */
+    public void setIsoffer(boolean isoffer) {
+        this.isoffer = isoffer;
     }
 
 }

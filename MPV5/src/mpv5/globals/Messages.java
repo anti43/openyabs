@@ -81,6 +81,6 @@ public class Messages {
     public static String NO_PRINTER_FOUND = "No printer found on this system.";
     public static String UNGROUPED = "Ungrouped";
     public static String ADMIN_USER = "User Administrator can not be deleted.";
-    public static String GROUPNAMES= "6-Contacts,3-Customers,4-Manufacturers,5-Suppliers,1-Items,Bills,Orders,Offers,7-Users,8-Scheduled Tasks";
+    public static String GROUPNAMES= "6-Contacts,3-Customers,4-Manufacturers,5-Suppliers,1-Items,17-Bills,18-Orders,19-Offers,7-Users,8-Scheduled Tasks";
 
 }

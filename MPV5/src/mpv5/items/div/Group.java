@@ -26,7 +26,7 @@ import mpv5.db.common.DatabaseObject;
 public class Group extends DatabaseObject {
 
     private String description   = "";
-    private String defaultvalue = "";
+    private String defaults = "";
     private int parentgroup = 0;
 
 
@@ -62,15 +62,15 @@ public class Group extends DatabaseObject {
     /**
      * @return the defaultvalue
      */
-    public String __getDefaultvalue() {
-        return defaultvalue;
+    public String __getDefaults() {
+        return defaults;
     }
 
     /**
      * @param defaultvalue the defaultvalue to set
      */
-    public void setDefaultvalue(String defaultvalue) {
-        this.defaultvalue = defaultvalue;
+    public void setDefaults(String defaultvalue) {
+        this.defaults = defaultvalue;
     }
 
     /**
@@ -96,7 +96,7 @@ public class Group extends DatabaseObject {
     public int hashCode() {
         int hash = 7;
         hash = 83 * hash + (this.description != null ? this.description.hashCode() : 0);
-        hash = 83 * hash + (this.defaultvalue != null ? this.defaultvalue.hashCode() : 0);
+        hash = 83 * hash + (this.defaults != null ? this.defaults.hashCode() : 0);
         hash = 83 * hash + this.parentgroup;
         return hash;
     }

@@ -59,7 +59,7 @@ public class DatabaseInstallation {
         "CREATE TABLE groups (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
         "cname VARCHAR(250) UNIQUE NOT NULL," +
         "description VARCHAR(750) DEFAULT NULL," +
-        "defaultvalue VARCHAR(250) DEFAULT NULL," +
+        "defaults VARCHAR(250) DEFAULT NULL," +
         "parentgroupids BIGINT DEFAULT 0," +
         "reserve1 VARCHAR(500) default NULL, reserve2 VARCHAR(500) default NULL, " +
         "PRIMARY KEY  (ids))",
@@ -135,7 +135,10 @@ public class DatabaseInstallation {
         "dateadded DATE DEFAULT NULL, isactive SMALLINT DEFAULT 0, isfinished SMALLINT DEFAULT 0," +
         "value DOUBLE DEFAULT 0," +
         "taxvalue DOUBLE DEFAULT 0, datetodo DATE DEFAULT NULL, dateend DATE DEFAULT NULL, intreminders INTEGER DEFAULT 0," +
-        "reserve1 VARCHAR(500) default NULL, reserve2 VARCHAR(500) default NULL, " +
+        "isBillSMALLINT DEFAULT 0,"+
+        "isOrder SMALLINT DEFAULT 0,"+
+        "isOffer SMALLINT DEFAULT 0,"+
+         "reserve1 VARCHAR(500) default NULL, reserve2 VARCHAR(500) default NULL, " +
         "PRIMARY KEY  (ids))",
                 
         "CREATE TABLE subitems (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +

@@ -22,18 +22,19 @@ along with MP.  If not, see <http://www.gnu.org/licenses/>.
 package mpv5.ui.dialogs.subcomponents;
 
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.DefaultComboBoxModel;
+import javax.swing.JTextField;
 import mpv5.data.PropertyStore;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
-import mpv5.db.common.DatabaseSearch;
 import mpv5.db.common.NodataFoundException;
+import mpv5.db.common.QueryHandler;
 import mpv5.globals.Messages;
 import mpv5.items.div.Group;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.ControlApplet;
+import mpv5.ui.dialogs.Popup;
+import mpv5.ui.frames.MPV5View;
+import mpv5.ui.panels.DataPanel;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.models.MPComboBoxModelItem;
@@ -43,20 +44,43 @@ import mpv5.utils.ui.TextFieldUtils;
  *
  * @author anti43
  */
-public class ControlPanel_Groups extends javax.swing.JPanel implements ControlApplet{
+public class ControlPanel_Groups extends javax.swing.JPanel implements ControlApplet, DataPanel {
+
     private static final long serialVersionUID = 1L;
     private ControlPanel_Groups insta;
+    private ArrayList<Object[]> arr;
+    private Group dataOwner;
 
     /** Creates new form ContactPanel
      */
     public ControlPanel_Groups() {
         if (MPSecurityManager.checkAdminAccess()) {
             initComponents();
+            ArrayList<Context> c = Context.getContexts();
+
+            arr = new ArrayList<Object[]>();
+            String[] groups = Messages.GROUPNAMES.split(",");
+
+            for (int i = 0; i < groups.length; i++) {
+                String string = groups[i];
+                for (int j = 0; j < c.size(); j++) {
+                    Context context = c.get(j);
+                    if (context.getId() == Integer.valueOf(string.split("-")[0]).intValue()) {
+                        Object[] o = new Object[2];
+                        o[0] = Integer.valueOf(string.split("-")[0]).intValue();
+                        o[1] = string.split("-")[1];
+                        arr.add(o);
+                        break;
+                    }
+                }
+            }
+
+            area.setModel(MPComboBoxModelItem.toModel(arr.toArray(new Object[arr.size()][2])));
+            area.setSelectedIndex(0);
+
             refresh();
         }
     }
-
- 
 
     public void showRequiredFields() {
         TextFieldUtils.blinkerRed(cname);
@@ -81,6 +105,16 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
         rightpane = new javax.swing.JPanel();
         cname = new mpv5.ui.beans.LabeledTextField();
         labeledTextField2 = new mpv5.ui.beans.LabeledTextField();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
+        labeledTextField1 = new mpv5.ui.beans.LabeledTextField();
+        labeledTextField3 = new mpv5.ui.beans.LabeledTextField();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTextArea2 = new javax.swing.JTextArea();
+        jButton4 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Groups.border.title"))); // NOI18N
@@ -104,6 +138,11 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
         jLabel1.setName("jLabel1"); // NOI18N
 
         area.setName("area"); // NOI18N
+        area.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                areaActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -127,7 +166,7 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
                     .addComponent(jLabel1)
                     .addComponent(area, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 276, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 345, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -140,6 +179,73 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
         labeledTextField2.set_Label(bundle.getString("ControlPanel_Groups.labeledTextField2._Label")); // NOI18N
         labeledTextField2.setName("labeledTextField2"); // NOI18N
 
+        jScrollPane2.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        jScrollPane2.setName("jScrollPane2"); // NOI18N
+
+        jTextArea1.setBackground(new java.awt.Color(238, 238, 238));
+        jTextArea1.setColumns(20);
+        jTextArea1.setEditable(false);
+        jTextArea1.setLineWrap(true);
+        jTextArea1.setRows(5);
+        jTextArea1.setText(bundle.getString("ControlPanel_Groups.jTextArea1.text")); // NOI18N
+        jTextArea1.setWrapStyleWord(true);
+        jTextArea1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        jTextArea1.setName("jTextArea1"); // NOI18N
+        jScrollPane2.setViewportView(jTextArea1);
+
+        labeledTextField1.set_Label(bundle.getString("ControlPanel_Groups.labeledTextField1._Label")); // NOI18N
+        labeledTextField1.setName("labeledTextField1"); // NOI18N
+
+        labeledTextField3.set_Label(bundle.getString("ControlPanel_Groups.labeledTextField3._Label")); // NOI18N
+        labeledTextField3.setName("labeledTextField3"); // NOI18N
+
+        jScrollPane3.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        jScrollPane3.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+        jScrollPane3.setName("jScrollPane3"); // NOI18N
+
+        jTextArea2.setBackground(new java.awt.Color(238, 238, 238));
+        jTextArea2.setColumns(20);
+        jTextArea2.setEditable(false);
+        jTextArea2.setLineWrap(true);
+        jTextArea2.setRows(5);
+        jTextArea2.setText(bundle.getString("ControlPanel_Groups.jTextArea2.text")); // NOI18N
+        jTextArea2.setWrapStyleWord(true);
+        jTextArea2.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        jTextArea2.setName("jTextArea2"); // NOI18N
+        jScrollPane3.setViewportView(jTextArea2);
+
+        jButton4.setText(bundle.getString("ControlPanel_Groups.jButton4.text")); // NOI18N
+        jButton4.setName("jButton4"); // NOI18N
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
+        jButton3.setText(bundle.getString("ControlPanel_Groups.jButton3.text")); // NOI18N
+        jButton3.setName("jButton3"); // NOI18N
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
+        jButton2.setText(bundle.getString("ControlPanel_Groups.jButton2.text")); // NOI18N
+        jButton2.setName("jButton2"); // NOI18N
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        jButton1.setText(bundle.getString("ControlPanel_Groups.jButton1.text")); // NOI18N
+        jButton1.setName("jButton1"); // NOI18N
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout rightpaneLayout = new javax.swing.GroupLayout(rightpane);
         rightpane.setLayout(rightpaneLayout);
         rightpaneLayout.setHorizontalGroup(
@@ -147,8 +253,20 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
             .addGroup(rightpaneLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cname, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
-                    .addComponent(labeledTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 339, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 339, Short.MAX_VALUE)
+                    .addComponent(cname, javax.swing.GroupLayout.DEFAULT_SIZE, 339, Short.MAX_VALUE)
+                    .addComponent(labeledTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 339, Short.MAX_VALUE)
+                    .addComponent(labeledTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 339, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, rightpaneLayout.createSequentialGroup()
+                        .addComponent(jButton4)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton3)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton1))
+                    .addComponent(labeledTextField3, javax.swing.GroupLayout.DEFAULT_SIZE, 339, Short.MAX_VALUE))
                 .addContainerGap())
         );
         rightpaneLayout.setVerticalGroup(
@@ -157,7 +275,21 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
                 .addComponent(cname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(labeledTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(265, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(labeledTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(labeledTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 72, Short.MAX_VALUE)
+                .addGroup(rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(jButton2)
+                    .addComponent(jButton3)
+                    .addComponent(jButton4))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -171,7 +303,7 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
                         .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(rightpane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(toolbarpane, javax.swing.GroupLayout.DEFAULT_SIZE, 562, Short.MAX_VALUE)))
+                    .addComponent(toolbarpane, javax.swing.GroupLayout.DEFAULT_SIZE, 663, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -184,20 +316,78 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void areaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_areaActionPerformed
+        refresh();
+    }//GEN-LAST:event_areaActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        if (Popup.Y_N_dialog(Messages.REALLY_DELETE)) {
+            if (dataOwner != null) {
+                DatabaseObject dato = dataOwner;
+                dato.getPanelData(this);
+                dato.delete();
+            }
+            refresh();
+        }
+}//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        reset();
+}//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+
+        if (dataOwner != null) {
+            DatabaseObject dato = dataOwner;
+            dato.getPanelData(this);
+            if (dato.save()) {
+            } else {
+                showRequiredFields();
+            }
+        }
+}//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+
+        if (dataOwner == null) {
+            dataOwner = new Group();
+        }
+        DatabaseObject dato = dataOwner;
+        if (QueryHandler.instanceOf().clone(Context.getUser()).checkUniqueness(Context.getGroup().getUniqueColumns(), new JTextField[]{cname.getTextField()})) {
+            dato.getPanelData(this);
+            dato.setIDS(-1);
+            if (dato.save()) {
+            } else {
+                showRequiredFields();
+            }
+        }
+
+        refresh();
+}//GEN-LAST:event_jButton1ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox area;
     private javax.swing.ButtonGroup buttonGroup1;
     private mpv5.ui.beans.LabeledTextField cname;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTextArea jTextArea2;
+    private mpv5.ui.beans.LabeledTextField labeledTextField1;
     private mpv5.ui.beans.LabeledTextField labeledTextField2;
+    private mpv5.ui.beans.LabeledTextField labeledTextField3;
     private javax.swing.JPanel rightpane;
     private javax.swing.JPanel toolbarpane;
     private javax.swing.JTree tree;
     // End of variables declaration//GEN-END:variables
 
-   
     public void setValues(PropertyStore values) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -207,7 +397,11 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
     }
 
     public void reset() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        DatabaseObject dato = dataOwner;
+
+        dato.getPanelData(this);
+        dato.reset();
+        setDataOwner(dato);
     }
 
     public ControlApplet instanceOf() {
@@ -217,35 +411,44 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
         return insta;
     }
 
-    @SuppressWarnings("unchecked")
-    private void refresh() {
-        ArrayList<Context> c = Context.getGroupableContexts();
-        Object[][] arr = new Object[c.size()][2];
-        String[] groups = Messages.GROUPNAMES.split(",");
-        
-        for (int i = 0; i < groups.length; i++) {
-            String string = groups[i];                   
-             for (int j = 0; j < c.size(); j++) {
-                Context context = c.get(j);
-                if(context.getId() == Integer.valueOf(string.split("-")[0]).intValue()){
-                      arr[i][0] =  Integer.valueOf(string.split("-")[0]).intValue();
-                      arr[i][1] = string.split("-")[1];
-                      break;
-                }
-            }
-        }
-        
-        area.setModel(MPComboBoxModelItem.toModel(arr));
-        area.setSelectedIndex(0);
+
+    public void refresh() {
 
         ArrayList<Group> data = null;
         try {
-            data =  DatabaseObject.getObjects(Context.getGroup(), Group.class);
+            data = DatabaseObject.getObjects(Context.getGroup());
         } catch (NodataFoundException ex) {
             Log.Debug(this, ex.getMessage());
         }
 
         tree.setModel(ArrayUtilities.toTreeModel(data, area.getSelectedItem().toString()));
 
+    }
+
+    public void collectData() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public DatabaseObject getDataOwner() {
+        return dataOwner;
+    }
+
+    public void setDataOwner(DatabaseObject object) {
+        dataOwner = (Group) object;
+        dataOwner.setPanelData(this);
+        this.exposeData();
+    }
+
+    public void exposeData() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+
+    public void paste(DatabaseObject dbo) {
+        if (dbo.getDbIdentity().equals(Context.getGroup().getDbIdentity())) {
+            setDataOwner(dbo);
+        } else {
+            MPV5View.addMessage(Messages.NOT_POSSIBLE + Messages.PASTE);
+        }
     }
 }

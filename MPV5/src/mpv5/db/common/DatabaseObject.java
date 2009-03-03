@@ -409,40 +409,39 @@ public abstract class DatabaseObject {
         return null;
     }
 
+//    /**
+//     * Returns all DBOs in the specific context
+//     * @param context
+//     * @return A list of DBOs
+//     * @throws NodataFoundException
+//     */
+//    public static ArrayList<DatabaseObject> getObjects(Context context) throws NodataFoundException {
+//        Object[][] allIds = QueryHandler.instanceOf().clone(context).selectIndexes().getData();
+//        ArrayList<DatabaseObject> list = new ArrayList<DatabaseObject>();
+//
+//        for (int i = 0; i < allIds.length; i++) {
+//            int id = Integer.valueOf(allIds[i][0].toString());
+//            list.add(DatabaseObject.getObject(context, id));
+//        }
+//        return list;
+//    }
     /**
-     * Returns all DBOs in the specific context
+     * Returns all DBOs in the specific context,
+     * @param <T>
      * @param context
      * @return A list of DBOs
      * @throws NodataFoundException
      */
-    public static ArrayList<DatabaseObject> getObjects(Context context) throws NodataFoundException {
+    @SuppressWarnings("unchecked")
+    public static <T extends DatabaseObject> ArrayList<T> getObjects(Context context) throws NodataFoundException {
         Object[][] allIds = QueryHandler.instanceOf().clone(context).selectIndexes().getData();
         ArrayList<DatabaseObject> list = new ArrayList<DatabaseObject>();
 
         for (int i = 0; i < allIds.length; i++) {
             int id = Integer.valueOf(allIds[i][0].toString());
-            list.add(DatabaseObject.getObject(context, id));
+            list.add((DatabaseObject.getObject(context, id)));
         }
-        return list;
-    }
-
-    /**
-     * Returns all DBOs in the specific context, as List<clazz/>
-     * @param context
-     * @param clazz
-     * @return A list of DBOs
-     * @throws NodataFoundException
-     */
-    @SuppressWarnings("unchecked")
-    public static ArrayList getObjects(Context context, Class clazz) throws NodataFoundException {
-        Object[][] allIds = QueryHandler.instanceOf().clone(context).selectIndexes().getData();
-        ArrayList list = new ArrayList();
-
-        for (int i = 0; i < allIds.length; i++) {
-            int id = Integer.valueOf(allIds[i][0].toString());
-            list.add(clazz.cast(DatabaseObject.getObject(context, id)));
-        }
-        return list;
+        return (ArrayList<T>) list;
     }
 
     public static ArrayList<DatabaseObject> getReferencedObjects(DatabaseObject dataOwner, Context inReference) throws NodataFoundException {
@@ -515,6 +514,7 @@ public abstract class DatabaseObject {
      */
     private void explode(ReturnValue select) {
         ArrayList<Method> vars = setVars();
+        String valx;
 
         for (int i = 0; i < select.getData().length; i++) {
             for (int j = 0; j < select.getData()[i].length; j++) {
@@ -522,9 +522,16 @@ public abstract class DatabaseObject {
 
                 for (int k = 0; k < vars.size(); k++) {
                     if (vars.get(k).getName().toLowerCase().substring(3).equals(name)) {
-//                        Log.Debug(this, name + " ?? : " + vars.get(k).getName() + " = " + select.getData()[i][j]);
-                        Log.Debug("Explode: " + vars.get(k).toGenericString() + " with " + select.getData()[i][j] +
-                                "[" + select.getData()[i][j].getClass().getName() + "]");
+
+                        //Debug section
+                        if (select.getData()[i][j] != null) {
+                            valx = select.getData()[i][j].getClass().getName();
+                        } else {
+                            valx = "NULL VALUE!";
+                        }
+                        Log.Debug("Explode: " + vars.get(k).toGenericString() + " with " + select.getData()[i][j] + "[" + valx + "]");
+                        //End Debug Section
+                        
                         try {
                             if (name.startsWith("is") || name.toUpperCase().startsWith("BOOL") || name.toUpperCase().endsWith("BOOL")) {
                                 if (String.valueOf(select.getData()[i][j]).equals("1")) {
