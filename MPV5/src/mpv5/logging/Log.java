@@ -18,7 +18,9 @@ package mpv5.logging;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
+import mpv5.items.div.Group;
 import mpv5.utils.files.FileReaderWriter;
 
 /**
@@ -95,6 +97,10 @@ public class Log {
         } else {
             Debug(message, true);
         }
+    }
+
+    public static void PrintArray(ArrayList<Group> data) {
+        PrintArray(data.toArray());
     }
 
     public static void PrintArray(Object[][][] array) {

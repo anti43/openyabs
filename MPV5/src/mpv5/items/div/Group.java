@@ -27,7 +27,7 @@ public class Group extends DatabaseObject {
 
     private String description   = "";
     private String defaults = "";
-    private int parentgroup = 0;
+    private int parentgroupids = 0;
 
 
     public Group(){
@@ -76,15 +76,15 @@ public class Group extends DatabaseObject {
     /**
      * @return the parentgroup
      */
-    public int __getParentgroup() {
-        return parentgroup;
+    public int __getParentgroupids() {
+        return parentgroupids;
     }
 
     /**
      * @param parentgroup the parentgroup to set
      */
-    public void setParentgroup(int parentgroup) {
-        this.parentgroup = parentgroup;
+    public void setParentgroupids(int parentgroup) {
+        this.parentgroupids = parentgroup;
     }
 
     @Override
@@ -97,7 +97,7 @@ public class Group extends DatabaseObject {
         int hash = 7;
         hash = 83 * hash + (this.description != null ? this.description.hashCode() : 0);
         hash = 83 * hash + (this.defaults != null ? this.defaults.hashCode() : 0);
-        hash = 83 * hash + this.parentgroup;
+        hash = 83 * hash + this.parentgroupids;
         return hash;
     }
 

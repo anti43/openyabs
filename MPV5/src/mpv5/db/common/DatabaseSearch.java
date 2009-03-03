@@ -1,5 +1,3 @@
-
-
 package mpv5.db.common;
 
 /**
@@ -7,13 +5,14 @@ package mpv5.db.common;
  * @author Andreas
  */
 public class DatabaseSearch {
+
     private Context context;
 
     /**
      *
      * @param context
      */
-    public DatabaseSearch(Context context){
+    public DatabaseSearch(Context context) {
         this.context = context;
     }
 
@@ -32,7 +31,7 @@ public class DatabaseSearch {
      * @return select("*", null);
      */
     public Object[][] getValuesFor() {
-          return QueryHandler.instanceOf().clone(context).select("*", null);
+        return QueryHandler.instanceOf().clone(context).select("*", null);
     }
 
     /**
@@ -43,7 +42,7 @@ public class DatabaseSearch {
      * @return
      */
     public Object[][] getValuesFor(String resultingFieldNames, String what, String where) {
-       return QueryHandler.instanceOf().clone(context).select(resultingFieldNames, new String[]{what, where, "'"});
+        return QueryHandler.instanceOf().clone(context).select(resultingFieldNames, new String[]{what, where, "'"});
     }
 
     /**
@@ -64,8 +63,27 @@ public class DatabaseSearch {
      * @param what Which column do you like to get and search through?
      * @param needle
      * @return
+     * @throws NodataFoundException If no data was found matching your search
      */
-    public Object[] searchFor(String what, String needle){
-       return QueryHandler.instanceOf().clone(context).getValuesFor(what,needle);
+    public Object[] searchFor(String what, String needle) throws NodataFoundException {
+        return searchFor(null, what, needle);
+    }
+
+    /**
+     * Get a single dimension list from a search after values from the column
+     * where the value is LIKE the given needle
+     * @param columns Which columns to get?
+     * @param what Which column do you like to search through?
+     * @param needle
+     * @return
+     * @throws NodataFoundException If no data was found matching your search
+     */
+    public Object[] searchFor(String[] columns, String what, String needle) throws NodataFoundException {
+       Object[] data = QueryHandler.instanceOf().clone(context).getValuesFor(columns, what, needle);
+        if (data == null || data.length == 0) {
+            throw new NodataFoundException();
+        } else {
+            return data;
+        }
     }
 }

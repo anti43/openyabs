@@ -173,8 +173,8 @@
                       <Component id="jScrollPane3" alignment="0" pref="339" max="32767" attributes="0"/>
                       <Component id="jScrollPane2" alignment="0" pref="339" max="32767" attributes="0"/>
                       <Component id="cname" alignment="0" pref="339" max="32767" attributes="0"/>
-                      <Component id="labeledTextField2" alignment="0" pref="339" max="32767" attributes="0"/>
-                      <Component id="labeledTextField1" alignment="0" pref="339" max="32767" attributes="0"/>
+                      <Component id="desc" alignment="0" pref="339" max="32767" attributes="0"/>
+                      <Component id="defaults" alignment="0" pref="339" max="32767" attributes="0"/>
                       <Group type="102" alignment="1" attributes="0">
                           <Component id="jButton4" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
@@ -184,7 +184,7 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jButton1" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <Component id="labeledTextField3" alignment="0" pref="339" max="32767" attributes="0"/>
+                      <Component id="parents" alignment="0" pref="339" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -195,15 +195,15 @@
               <Group type="102" alignment="0" attributes="0">
                   <Component id="cname" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="labeledTextField2" min="-2" max="-2" attributes="0"/>
+                  <Component id="desc" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="jScrollPane2" min="-2" pref="94" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="labeledTextField1" min="-2" max="-2" attributes="0"/>
+                  <Component id="defaults" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="jScrollPane3" min="-2" pref="51" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="labeledTextField3" min="-2" max="-2" attributes="0"/>
+                  <Component id="parents" min="-2" max="-2" attributes="0"/>
                   <EmptySpace pref="72" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="jButton1" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -225,12 +225,12 @@
             <Property name="name" type="java.lang.String" value="cname" noResource="true"/>
           </Properties>
         </Component>
-        <Component class="mpv5.ui.beans.LabeledTextField" name="labeledTextField2">
+        <Component class="mpv5.ui.beans.LabeledTextField" name="desc">
           <Properties>
             <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ControlPanel_Groups.labeledTextField2._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ControlPanel_Groups.desc._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
-            <Property name="name" type="java.lang.String" value="labeledTextField2" noResource="true"/>
+            <Property name="name" type="java.lang.String" value="desc" noResource="true"/>
           </Properties>
         </Component>
         <Container class="javax.swing.JScrollPane" name="jScrollPane2">
@@ -271,20 +271,20 @@
             </Component>
           </SubComponents>
         </Container>
-        <Component class="mpv5.ui.beans.LabeledTextField" name="labeledTextField1">
+        <Component class="mpv5.ui.beans.LabeledTextField" name="defaults">
           <Properties>
             <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ControlPanel_Groups.labeledTextField1._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ControlPanel_Groups.defaults._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
-            <Property name="name" type="java.lang.String" value="labeledTextField1" noResource="true"/>
+            <Property name="name" type="java.lang.String" value="defaults" noResource="true"/>
           </Properties>
         </Component>
-        <Component class="mpv5.ui.beans.LabeledTextField" name="labeledTextField3">
+        <Component class="mpv5.ui.beans.LabeledTextField" name="parents">
           <Properties>
             <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ControlPanel_Groups.labeledTextField3._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ControlPanel_Groups.parents._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
-            <Property name="name" type="java.lang.String" value="labeledTextField3" noResource="true"/>
+            <Property name="name" type="java.lang.String" value="parents" noResource="true"/>
           </Properties>
         </Component>
         <Container class="javax.swing.JScrollPane" name="jScrollPane3">

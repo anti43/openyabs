@@ -137,7 +137,7 @@ public class QueryHandler implements Cloneable {
         }
     }
 
-     /**
+    /**
      * This is a convenience method to retrieve data such as "SELECT * FROM table"
      * @return All rows in the current context
      * @throws NodataFoundException
@@ -151,7 +151,7 @@ public class QueryHandler implements Cloneable {
         }
     }
 
-     /**
+    /**
      * This is a convenience method to retrieve all IDS such as "SELECT ids FROM table"
      * @return All row IDs in the current context
      * @throws NodataFoundException
@@ -165,24 +165,34 @@ public class QueryHandler implements Cloneable {
         }
     }
 
-
     /**
      *
+     * @param columns If null, the column specified with "needle" is returned
      * @param needle
      * @param value
      * @return
      */
-    public Object[] getValuesFor(String needle, String value) {
+    public Object[] getValuesFor(String[] columns, String needle, String value) {
+        String cols = needle;
+        if (columns != null) {
+            cols = "";
+            for (int i = 0; i < columns.length; i++) {
+                String string = columns[i];
+                cols += string + ",";
+            }
+            cols = cols.substring(0, cols.length() - 1);
+        }
+
         if (context != null) {
             if (value == null) {
-                return ArrayUtilities.ObjectToSingleColumnArray(freeReturnQuery("SELECT " + needle + " FROM " + table + " " + context.getReferences() + " WHERE " + context.getConditions().substring(5, context.getConditions().length()), mpv5.usermanagement.MPSecurityManager.VIEW, null).getData());
+                return ArrayUtilities.ObjectToSingleColumnArray(freeReturnQuery("SELECT " + cols + " FROM " + table + " " + context.getReferences() + " WHERE " + context.getConditions().substring(5, context.getConditions().length()), mpv5.usermanagement.MPSecurityManager.VIEW, null).getData());
             } else {
-                return ArrayUtilities.ObjectToSingleColumnArray(freeReturnQuery("SELECT " + needle + " FROM " + table + " " + context.getReferences() + " WHERE " + needle + " LIKE %" + value + "% AND " + context.getConditions().substring(5, context.getConditions().length()), mpv5.usermanagement.MPSecurityManager.VIEW, null).getData());
+                return ArrayUtilities.ObjectToSingleColumnArray(freeReturnQuery("SELECT " + cols + " FROM " + table + " " + context.getReferences() + " WHERE " + needle + " LIKE '%" + value + "%' AND " + context.getConditions().substring(5, context.getConditions().length()), mpv5.usermanagement.MPSecurityManager.VIEW, null).getData());
             }
         } else if (value == null) {
-            return ArrayUtilities.ObjectToSingleColumnArray(freeReturnQuery("SELECT " + needle + " FROM " + table + " " + context.getReferences(), mpv5.usermanagement.MPSecurityManager.VIEW, null).getData());
+            return ArrayUtilities.ObjectToSingleColumnArray(freeReturnQuery("SELECT " + cols + " FROM " + table + " " + context.getReferences(), mpv5.usermanagement.MPSecurityManager.VIEW, null).getData());
         } else {
-            return ArrayUtilities.ObjectToSingleColumnArray(freeReturnQuery("SELECT " + needle + " FROM " + table + " " + context.getReferences() + "  WHERE " + needle + " LIKE %" + value + "%", mpv5.usermanagement.MPSecurityManager.VIEW, null).getData());
+            return ArrayUtilities.ObjectToSingleColumnArray(freeReturnQuery("SELECT " + cols + " FROM " + table + " " + context.getReferences() + "  WHERE " + needle + " LIKE '%" + value + "%'", mpv5.usermanagement.MPSecurityManager.VIEW, null).getData());
         }
     }
 
@@ -368,7 +378,6 @@ public class QueryHandler implements Cloneable {
     public boolean checkUniqueness(String column, String value) {
         return checkUniqueness(new String[]{column, value, "'"}, new int[]{0});
     }
-
 
     private void stop() {
         comp.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
