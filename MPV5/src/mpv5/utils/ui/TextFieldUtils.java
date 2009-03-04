@@ -27,12 +27,16 @@ import mpv5.ui.beans.LabeledTextField;
  */
 public class TextFieldUtils {
 
+    public static void blinkerGrey(LabeledTextField field) {
+        new blinker(field.getTextField(), 2, Color.GRAY).execute();
+    }
+
     /**
      * Lets a text field blink
      * @param field
      */
     public static void blinkerRed(JTextField field) {
-        new blinker(field, 3, Color.RED).execute();
+        new blinker(field, 2, Color.RED).execute();
     }
 
     /** 
@@ -40,7 +44,7 @@ public class TextFieldUtils {
      * @param lfield
      */
     public static void blinkerRed(LabeledTextField lfield) {
-        new blinker(lfield.getTextField(), 3, Color.RED).execute();
+        new blinker(lfield.getTextField(), 2, Color.RED).execute();
     }
 
     private static class blinker extends SwingWorker<Void, Void> {

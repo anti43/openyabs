@@ -11,10 +11,13 @@
 package mpv5.ui.panels;
 
 import mpv5.db.common.Context;
-import mpv5.data.ContactSearch;
+
 import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.DatabaseSearch;
 import mpv5.db.common.NodataFoundException;
+import mpv5.globals.Headers;
 import mpv5.logging.Log;
+import mpv5.utils.models.MPTableModel;
 import mpv5.utils.tables.Selection;
 import mpv5.utils.tables.TableFormat;
 
@@ -39,7 +42,7 @@ public class SearchPanel extends javax.swing.JPanel {
         initComponents();
         this.context = context;
         this.panel = panel;
-        search(4, context.getParent().__getCName());
+        search(1, context.getParent().__getCName());
     }
 
     /**
@@ -47,6 +50,11 @@ public class SearchPanel extends javax.swing.JPanel {
      */
     public void refresh() {
         search(lasttype, lastneedle);
+    }
+
+    public void setContextOwner(DatabaseObject object) {
+      context.setOwner(object);
+      refresh();
     }
 
     /** This me4thod is called from within the constructor to
@@ -190,7 +198,7 @@ public class SearchPanel extends javax.swing.JPanel {
         );
         resultsLayout.setVerticalGroup(
             resultsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(resultsscrollpane, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
+            .addComponent(resultsscrollpane, javax.swing.GroupLayout.DEFAULT_SIZE, 289, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -217,16 +225,24 @@ public class SearchPanel extends javax.swing.JPanel {
         switch (searchtype) {
 
             case 1:
-                resulttable.setModel(new ContactSearch(getContext(), ContactSearch.NUMBERSEARCH).getTableModelFor(value));
+                resulttable.setModel(new MPTableModel(new DatabaseSearch(context).getValuesFor("ids,cname,cnumber", "cname", value, true), Headers.SEARCH_DEFAULT));
+
                 break;
             case 2:
-                resulttable.setModel(new ContactSearch(getContext(), ContactSearch.NAMESEARCH).getTableModelFor(value));
+                resulttable.setModel(new MPTableModel(new DatabaseSearch(context).getValuesFor("ids,cname,cnumber", "cnumber", value, true), Headers.SEARCH_DEFAULT));
+
                 break;
             case 3:
-                resulttable.setModel(new ContactSearch(getContext(), ContactSearch.DETAILSSEARCH).getTableModelFor(value));
+               Integer id = new DatabaseSearch(Context.getGroup()).searchForID( "cname", value);
+               if (id!=null){
+                    resulttable.setModel(new MPTableModel(new DatabaseSearch(context).getValuesFor("ids,cname,cnumber", "groupsids",
+                            id), Headers.SEARCH_DEFAULT));
+               }
+
                 break;
             case 4:
-                resulttable.setModel(new ContactSearch(getContext(), ContactSearch.CONTEXTSEARCH).getTableModelFor(value));
+                resulttable.setModel(new MPTableModel(new DatabaseSearch(context).getValuesFor("ids,cname,cnumber", "cname",context.getParent().__getCName(), true), Headers.SEARCH_DEFAULT));
+
         }
         TableFormat.stripFirstColumn(resulttable);
         TableFormat.makeUneditable(resulttable);

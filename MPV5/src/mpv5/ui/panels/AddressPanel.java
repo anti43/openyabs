@@ -54,7 +54,7 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
         initComponents();
           try {
             companyselect.setModel(new DefaultComboBoxModel(ArrayUtilities.merge(new Object[]{new MPComboBoxModelItem("<no_value>", "")},
-                    MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getCompany()).getValuesFor(Context.getCompany().getSubID(), null, null)))));
+                    MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getCompany()).getValuesFor(Context.getCompany().getSubID(), null, "")))));
         } catch (Exception e) {
             Log.Debug(this, e);
         }
@@ -279,6 +279,7 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
     public String company_;
     public int ids_;
     public int contactsids_;
+    public int groupsids_ = 1;
 
     public void collectData() {
         city_ = city.get_Text();

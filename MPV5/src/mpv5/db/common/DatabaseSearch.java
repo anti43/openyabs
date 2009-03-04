@@ -1,5 +1,8 @@
 package mpv5.db.common;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author Andreas
@@ -44,6 +47,16 @@ public class DatabaseSearch {
     public Object[][] getValuesFor(String resultingFieldNames, String what, String where) {
         return QueryHandler.instanceOf().clone(context).select(resultingFieldNames, new String[]{what, where, "'"});
     }
+   /**
+     * Get multiple values from a search, where the search column is a number column
+     * @param resultingFieldNames What do you like to get (columns)?
+     * @param what Which column do you like to take for the condition?
+    * @param  value
+    * @return
+     */
+    public Object[][] getValuesFor(String resultingFieldNames, String what,  Number value) {
+         return QueryHandler.instanceOf().clone(context).select(resultingFieldNames, new String[]{what, value.toString(), ""});
+    }
 
     /**
      * Get multiple values from a search
@@ -79,11 +92,27 @@ public class DatabaseSearch {
      * @throws NodataFoundException If no data was found matching your search
      */
     public Object[] searchFor(String[] columns, String what, String needle) throws NodataFoundException {
-       Object[] data = QueryHandler.instanceOf().clone(context).getValuesFor(columns, what, needle);
+        Object[] data = QueryHandler.instanceOf().clone(context).getValuesFor(columns, what, needle);
         if (data == null || data.length == 0) {
             throw new NodataFoundException();
         } else {
             return data;
+        }
+    }
+
+    /**
+     * Search for an ID in this context
+     * @param what The column which you like to search through
+     * @param needle The value of the row in that column
+     * @return An id if there is a matching dataset found, NULL otherwise
+     */
+    public Integer searchForID( String what, String needle) {
+        Object[] data;
+        try {
+            data = QueryHandler.instanceOf().clone(context).selectLast("ids", new String[]{what, needle, "'"}, true);
+            return Integer.valueOf(data[0].toString());
+        } catch (Exception ex) {
+            return null;
         }
     }
 }

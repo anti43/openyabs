@@ -477,13 +477,8 @@ public class QueryHandler implements Cloneable {
     @SuppressWarnings("unchecked")
     public Object[] selectLast(String what, String[] where) throws NodataFoundException {
 
-        String l = "";
-        String k = " = ";
+        Object[][] data = select(what, where, what, false);
 
-        String query;
-        start();
-        query = "SELECT " + what + " FROM " + table + " WHERE " + table + "." + where[0] + k + where[2] + l + where[1] + l + where[2];
-        Object[][] data = freeReturnQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null).getData();
         if (data == null || data.length == 0) {
             throw new NodataFoundException();
         } else {
@@ -502,14 +497,55 @@ public class QueryHandler implements Cloneable {
     @SuppressWarnings("unchecked")
     public Object[] selectFirst(String what, String[] where) throws NodataFoundException {
 
-        start();
-        String query = "SELECT " + what + " FROM " + table + " WHERE " + table + "." + where[0] + " = " + where[2] + where[1] + where[2] + " ";
-        Object[][] data = freeReturnQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null).getData();
+        Object[][] data = select(what, where, what, false);
 
         if (data == null || data.length == 0) {
             throw new NodataFoundException();
         } else {
             return data[data.length - 1];
+        }
+    }
+
+    /**
+     * if "where" is "null", everything is selected (without "where" -clause)
+     *
+     * @param what
+     * @param where : {value, comparison, "'"}
+     * @param searchFoLike
+     * @return first matching result as string array
+     * @throws NodataFoundException
+     */
+    @SuppressWarnings("unchecked")
+    public Object[] selectFirst(String what, String[] where, boolean searchFoLike) throws NodataFoundException {
+
+        Object[][] data = select(what, where, what, searchFoLike);
+
+        if (data == null || data.length == 0) {
+            throw new NodataFoundException();
+        } else {
+            return data[data.length - 1];
+        }
+    }
+
+
+    /**
+     * if "where" is "null", everything is selected (without "where" -clause)
+     *
+     * @param what
+     * @param where : {value, comparison, "'"}
+     * @param searchFoLike
+     * @return last matching result as string array
+     * @throws NodataFoundException
+     */
+    @SuppressWarnings("unchecked")
+    public Object[] selectLast(String what, String[] where, boolean searchFoLike) throws NodataFoundException {
+
+        Object[][] data = select(what, where, what, searchFoLike);
+
+        if (data == null || data.length == 0) {
+            throw new NodataFoundException();
+        } else {
+            return data[0];
         }
     }
 
@@ -637,18 +673,26 @@ public class QueryHandler implements Cloneable {
      * @param where : {value, comparison, "'"}
      *                eg new String[][]{{"ids", "8" , ""},{"ids", "9",""}}
      * @param jobmessage
+     * @return True if the deletion was not terminated by constraints
      */
-    public void delete(String[][] where, String jobmessage) {
+    public boolean delete(String[][] where, String jobmessage) {
         start();
         String str = "";
         String query = null;
+        ReturnValue retval = null;
 
         if (where != null) {
             for (int i = 0; i < where.length; i++) {
                 str = str + table + "." + where[i][0] + " = " + where[i][2] + where[i][1] + where[i][2];
             }
             query = "DELETE FROM " + table + " WHERE " + str;
-            freeQuery(query, mpv5.usermanagement.MPSecurityManager.CREATE_OR_DELETE, jobmessage);
+            retval = freeQuery(query, mpv5.usermanagement.MPSecurityManager.CREATE_OR_DELETE, jobmessage);
+        }
+
+        if (retval == null) {
+            return false;
+        } else {
+            return true;
         }
     }
 
@@ -657,8 +701,9 @@ public class QueryHandler implements Cloneable {
      * @param whereColumns
      * @param haveValues
      * @param jobmessage
+     * @return 
      */
-    public void delete(String[] whereColumns, Object[] haveValues, String jobmessage) {
+    public boolean delete(String[] whereColumns, Object[] haveValues, String jobmessage) {
         String query = "DELETE FROM " + table + " WHERE ";
         for (int i = 0; i < haveValues.length; i++) {
             Object object = haveValues[i];
@@ -673,7 +718,13 @@ public class QueryHandler implements Cloneable {
                 query += " AND ";
             }
         }
-        freeQuery(query, mpv5.usermanagement.MPSecurityManager.CREATE_OR_DELETE, jobmessage);
+        ReturnValue retval = freeQuery(query, mpv5.usermanagement.MPSecurityManager.CREATE_OR_DELETE, jobmessage);
+
+        if (retval == null) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     /**
@@ -914,6 +965,7 @@ public class QueryHandler implements Cloneable {
             stop();
             jobmessage = Messages.ERROR_OCCURED;
             Log.Debug(this, message + ex.getMessage());
+            retval = null;
             if (log != null) {
                 log.append("\n " + ex.getMessage());
             }

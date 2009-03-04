@@ -586,7 +586,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         jTable1.setModel(new MPTableModel(new Class[]{String.class, String.class, String.class, String.class, Boolean.class, Boolean.class},TableFormat.changeToClassValue(QueryHandler.instanceOf().clone(Context.getUser()).select(Context.DETAILS_USERS, null), Boolean.class, new int[]{4,5}), Headers.USER_DETAILS));
 
         groupname.setModel(new DefaultComboBoxModel(
-                    MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID(), null, null))));
+                    MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID(), null, ""))));
 
         TableFormat.stripFirstColumn(jTable1);
         TableFormat.format(jTable1, 1, 120);

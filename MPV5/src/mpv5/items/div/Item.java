@@ -36,6 +36,7 @@ public class Item extends DatabaseObject{
     private Date dateend;
     private int intreminders;
     private String groupname = "";
+    private String cnumber = "";
     private boolean isbill;
     private boolean isorder;
     private boolean isoffer;
@@ -231,6 +232,20 @@ public class Item extends DatabaseObject{
      */
     public void setIsoffer(boolean isoffer) {
         this.isoffer = isoffer;
+    }
+
+    /**
+     * @return the cnumber
+     */
+    public String __getCnumber() {
+        return cnumber;
+    }
+
+    /**
+     * @param cnumber the cnumber to set
+     */
+    public void setCnumber(String cnumber) {
+        this.cnumber = cnumber;
     }
 
 }

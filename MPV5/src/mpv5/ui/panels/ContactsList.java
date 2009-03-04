@@ -1,8 +1,11 @@
 package mpv5.ui.panels;
 
-import mpv5.data.ContactSearch;
+
 import mpv5.db.common.Context;
+import mpv5.db.common.DatabaseSearch;
 import mpv5.globals.Headers;
+import mpv5.utils.arrays.ArrayUtilities;
+import mpv5.utils.models.MPTableModel;
 
 /**
  *
@@ -23,8 +26,8 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
         initComponents();
         this.context = context;
         context.setSearchFields(Context.DETAILS_CONTACTS);
-        context.setSearchHeaders(Headers.CONTACT_DETAILS);
-        context.addReference(Context.IDENTITY_CONTACTS, "ids", "company");
+//        context.setSearchHeaders(Headers.CONTACT_DETAILS);
+//        context.addReference(Context.IDENTITY_CONTACTS, "ids", "company");
         fill(true, true, true, true, false);
         prinitingComboBox1.init(listTable);
     }
@@ -33,7 +36,7 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
         context.setContactConditions(customer, supplier, manufacturer, company);
         context.setExclusiveContactConditions(customer, supplier, manufacturer, company);
         context.useExclusiveConditions(filtered);
-        listTable.setModel(new ContactSearch(getContext(), ContactSearch.NAMESEARCH).getTableModelFor(""));
+        listTable.setModel(new MPTableModel(new DatabaseSearch(context).getValuesFor(Context.DETAILS_CONTACTS, null, ""), Headers.CONTACT_DETAILS));
         count.setText(String.valueOf(listTable.getModel().getRowCount()));
     }
 

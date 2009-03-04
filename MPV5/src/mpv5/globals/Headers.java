@@ -10,13 +10,15 @@ package mpv5.globals;
  */
 public class Headers {
 
+    public static String[] SEARCH_DEFAULT = new String[]{"Internal ID", "Name", "Number"};
     public static String[] CONTACT_DEFAULT = new String[]{"Internal ID", "ID", "Name", "City"};
-    public static String[] CONTACT_DETAILS = new String[]{"Internal ID", "ID", "Title",
+    public static String[] CONTACT_DETAILS = new String[]{
+        "Internal ID", "ID", "Title",
         "Prename", "Name", "Street",
         "Zip", "City", "Mainphone",
         "Fax", "Mobilephone", "Workphone",
         "Mailaddress", "Company",
-        "Website", "Notes", "taxnumber"};
+        "Website", "Notes", "Taxnumber"};
     public static String[] USER_DEFAULT = new String[]{"Internal ID", "ID", "User Name", "Mail", "Last logged in"};
     public static String[] USER_DETAILS = new String[]{"Internal ID", "User Name", "Fullname", "Mail", "Enabled", "Logged in"};
 

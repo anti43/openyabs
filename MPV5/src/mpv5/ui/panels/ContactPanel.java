@@ -896,7 +896,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     public String company_;
     public int ids_;
     public Date dateadded_;
-    public int groupsids_;
+    public int groupsids_ = 1;
 
     public void collectData() {
         city_ = city.get_Text();
@@ -972,10 +972,10 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     public void refresh() {
         try {
             companyselect.setModel(new DefaultComboBoxModel(ArrayUtilities.merge(new Object[]{new MPComboBoxModelItem("<no_value>", "")},
-                    MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getCompany()).getValuesFor(Context.getCompany().getSubID(), null, null)))));
+                    MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getCompany()).getValuesFor(Context.getCompany().getSubID(), null, "")))));
     
             groupnameselect.setModel(new DefaultComboBoxModel(
-                    MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID(), null, null))));
+                    MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID(), null, ""))));
 
             sp.refresh();
         } catch (Exception e) {

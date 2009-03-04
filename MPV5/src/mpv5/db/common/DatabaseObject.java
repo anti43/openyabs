@@ -53,6 +53,8 @@ public abstract class DatabaseObject {
      */
     public String cname = "";
 
+    private int groupsids = 1;
+
     /**
      *
      * @return The mandatory name
@@ -217,13 +219,14 @@ public abstract class DatabaseObject {
      * @return
      */
     public boolean delete() {
+        boolean result = false;
         if (ids > 0) {
             Log.Debug(this, "Deleting dataset:");
-            QueryHandler.instanceOf().clone(context).delete(new String[][]{{"ids", ids.toString(), ""}}, this.__getCName() + Messages.ROW_DELETED);
+            result = QueryHandler.instanceOf().clone(context).delete(new String[][]{{"ids", ids.toString(), ""}}, this.__getCName() + Messages.ROW_DELETED);
             Log.Debug(this, "The deleted row had id: " + ids);
         }
         setIDS(-1);
-        return true;
+        return result;
     }
 
     /**
@@ -267,6 +270,7 @@ public abstract class DatabaseObject {
             if (this.getClass().getMethods()[i].getName().startsWith("__get") && !this.getClass().getMethods()[i].getName().endsWith("IDS")) {
                 try {
                     left += this.getClass().getMethods()[i].getName().toLowerCase().substring(5, this.getClass().getMethods()[i].getName().length()) + ",";
+                    Log.Debug(this, "Calling: "  +this.getClass().getMethods()[i]);
                     tempval = this.getClass().getMethods()[i].invoke(this, (Object[]) null);
                     Log.Debug(this, "Collect: " + tempval.getClass().getName() + " : " + this.getClass().getMethods()[i].getName() + " ? " + tempval);
                     if (tempval.getClass().isInstance(new String())) {
@@ -603,5 +607,19 @@ public abstract class DatabaseObject {
                 }
             }
         }
+    }
+
+    /**
+     * @return the groupsids
+     */
+    public int __getGroupsids() {
+        return groupsids;
+    }
+
+    /**
+     * @param groupsids the groupsids to set
+     */
+    public void setGroupsids(int groupsids) {
+        this.groupsids = groupsids;
     }
 }

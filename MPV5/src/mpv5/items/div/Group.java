@@ -16,8 +16,12 @@
  */
 package mpv5.items.div;
 
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.NodataFoundException;
 
 /**
  *
@@ -25,9 +29,9 @@ import mpv5.db.common.DatabaseObject;
  */
 public class Group extends DatabaseObject {
 
-    private String description   = "";
-    private String defaults = "";
-    private int parentgroupids = 0;
+    private String description   =  "";
+    private String defaults =  "";
+
 
 
     public Group(){
@@ -73,19 +77,6 @@ public class Group extends DatabaseObject {
         this.defaults = defaultvalue;
     }
 
-    /**
-     * @return the parentgroup
-     */
-    public int __getParentgroupids() {
-        return parentgroupids;
-    }
-
-    /**
-     * @param parentgroup the parentgroup to set
-     */
-    public void setParentgroupids(int parentgroup) {
-        this.parentgroupids = parentgroup;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -97,13 +88,29 @@ public class Group extends DatabaseObject {
         int hash = 7;
         hash = 83 * hash + (this.description != null ? this.description.hashCode() : 0);
         hash = 83 * hash + (this.defaults != null ? this.defaults.hashCode() : 0);
-        hash = 83 * hash + this.parentgroupids;
+        hash = 83 * hash + this.__getGroupsids();
         return hash;
     }
 
     @Override
     public String toString(){
         return __getCName();
+    }
+
+    @Override
+    public boolean delete(){
+        try {
+            ArrayList<DatabaseObject> childs = DatabaseObject.getReferencedObjects(this, Context.getGroup());
+            for (int i = 0; i < childs.size(); i++) {
+                DatabaseObject databaseObject = childs.get(i);
+                if(!databaseObject.delete()) {
+                    return false;
+                }
+            }
+        } catch (NodataFoundException ex) {
+            Logger.getLogger(Group.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return super.delete();
     }
 
 }

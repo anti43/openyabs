@@ -26,7 +26,6 @@ import mpv5.db.common.DatabaseObject;
 public class SubItem extends DatabaseObject {
 
     private int itemsids;
-    private int groupsids;
     private int originalproductsids;
     private double countvalue;
     private double quantityvalue;
@@ -172,17 +171,5 @@ public class SubItem extends DatabaseObject {
         this.datedelivery = datedelivery;
     }
 
-    /**
-     * @return the classesids
-     */
-    public int __getGroupsids() {
-        return groupsids;
-    }
 
-    /**
-     * @param classesids the classesids to set
-     */
-    public void setGroupsids(int classesids) {
-        this.groupsids = classesids;
-    }
 }

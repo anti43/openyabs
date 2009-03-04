@@ -19,6 +19,7 @@ along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
 package mpv5.utils.arrays;
 
+import javax.swing.tree.TreeNode;
 import mpv5.utils.numbers.Ip;
 import java.util.Hashtable;
 import mpv5.utils.tables.*;
@@ -43,6 +44,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
+import mpv5.db.common.DatabaseObject;
 import mpv5.items.div.Group;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPV5View;
@@ -405,18 +407,12 @@ public class ArrayUtilities {
         return model;
     }
 
-    public static DefaultTreeModel toTreeModel(ArrayList<Group> data, String rootNodeName) {
+    public static <T extends DatabaseObject> DefaultTreeModel toTreeModel(ArrayList<T> data, T rootNode) {
 
-        Group g = new Group();
-        g.setCName(rootNodeName);
-        g.setIDS(1);
-
-        MPV5View.setWaiting(true);
-        DefaultMutableTreeNode node1 = new DefaultMutableTreeNode(g);
-
+        DefaultMutableTreeNode node1 = new DefaultMutableTreeNode(rootNode);
         try {
-
-            addToParents(node1, data);
+            MPV5View.setWaiting(true);
+            node1 = addToParents(node1, data);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -427,77 +423,31 @@ public class ArrayUtilities {
         return model;
     }
 
-    private static DefaultMutableTreeNode addToParents(DefaultMutableTreeNode firstnode, ArrayList<Group> groups) {
+    private static <T extends DatabaseObject> DefaultMutableTreeNode addToParents(DefaultMutableTreeNode firstnode, ArrayList<T> groups) {
 
         Log.Debug(ArrayUtilities.class, "Parent Node: " + firstnode);
         for (int i = 0; i < groups.size(); i++) {
-            Group group = groups.get(i);
+            T group = groups.get(i);
             Log.Debug(ArrayUtilities.class, "Node: " + group);
 
-            if (group.__getParentgroupids() <= 0 && firstnode.isRoot()) {
+            if (group.__getGroupsids() <= 0 && firstnode.isRoot()) {
                 Log.Debug(ArrayUtilities.class, "Node is root child, adding it to root and removing it from the list.");
                 firstnode.add(new DefaultMutableTreeNode(group));
                 groups.remove(group);//First level groups
+                i--;
             } else {
-
-                int parentid = group.__getParentgroupids();
+                int parentid = group.__getGroupsids();
                 if (((Group) firstnode.getUserObject()).__getIDS().intValue() == parentid) {
                     Log.Debug(ArrayUtilities.class, "Node is child of parentnode, adding and removing it from the list.");
                     firstnode.add(new DefaultMutableTreeNode(group));
                     groups.remove(group);
+                    i--;
                 } else {
                     Log.Debug(ArrayUtilities.class, "Node is no child of parentnode, iterating over the parent node..");
                     @SuppressWarnings("unchecked")
                     Enumeration<DefaultMutableTreeNode> nodes = firstnode.children();
                     while (nodes.hasMoreElements()) {
                         addToParents(nodes.nextElement(), groups);
-                    }
-                }
-            }
-        }
-        return firstnode;
-    }
-
-
-    class ALeaf {
-
-            private int id = 0;
-            private int parentid;
-
-            public int getID() {
-                return id;
-            }
-
-            public int getParentID() {
-                return parentid;
-            }
-        }
-
-
-    public static DefaultMutableTreeNode addToParents2(DefaultMutableTreeNode firstnode, ArrayList<ALeaf> nodes) {
-        
-        for (int i = 0; i < nodes.size(); i++) {
-
-            ALeaf l = nodes.get(i);
-
-            if (l.getParentID() <= 0 && firstnode.isRoot()) {
-
-                firstnode.add(new DefaultMutableTreeNode(l));
-                nodes.remove(l);//First level
-
-            } else {
-
-                if (((ALeaf) firstnode.getUserObject()).getID() == l.getParentID()) {
-
-                    firstnode.add(new DefaultMutableTreeNode(l));
-                    nodes.remove(l);//Children of firstnode
-                } else {
-
-                    Enumeration<DefaultMutableTreeNode> no = firstnode.children();
-
-                    while (no.hasMoreElements()) {
-                        DefaultMutableTreeNode n = no.nextElement();
-                        addToParents2(n, nodes);
                     }
                 }
             }
