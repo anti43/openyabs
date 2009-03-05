@@ -34,6 +34,7 @@ public class Context {
     public static String IDENTITY_GROUPS = "groups";
     public static String IDENTITY_GROUPS_TO_PARENTGROUP = "groupstoparents";
     public static String IDENTITY_SCHEDULE = "schedule";
+    public static String IDENTITY_FILES_TO_CONTACTS = "filestocontacts";
 
     //********** identity classes **********************************************
     private static Class IDENTITY_CONTACTS_CLASS = Contact.class;
@@ -46,6 +47,7 @@ public class Context {
     public static String UNIQUECOLUMNS_USER = "cname";
     public static String UNIQUECOLUMNS_ITEMS = "cname";
     public static String UNIQUECOLUMNS_GROUPS = "cname";
+    
 
     //********** conditions ****************************************************
     private boolean isCompany = false;
@@ -118,6 +120,8 @@ public class Context {
             IDENTITY_ITEMS + "." + "datetodo, " +
             IDENTITY_ITEMS + "." + "intreminders";
 
+    public static String DETAILS_FILES = Context.getFiles().getDbIdentity() +"0.cname,"+getFilesToContacts().getDbIdentity() + ".cname, " +Context.getFiles().getDbIdentity() +"0.dateadded,"+Context.getFilesToContacts().getDbIdentity() +".description";
+
     //**************************************************************************
     public static ArrayList<Context> getSecuredContexts() {
         ArrayList<Context> list = new ArrayList<Context>();
@@ -165,7 +169,8 @@ public class Context {
                 getSubItem(),
                 getGroup(),
                 getGroupToParentGroup(),
-                getSchedule()
+                getSchedule(),
+                getFilesToContacts()
             }));
     private String[] searchHeaders;
     private ArrayList<String[]> references = new ArrayList<String[]>();
@@ -480,25 +485,25 @@ public class Context {
 
     /**
      * Add a self-table reference to this context
-     * @param referencetable
      * @param referencekey
      * @param referenceidkey
      */
-    public void addReference(String referencetable, String referencekey, String referenceidkey) {
-        String alias = referencetable;
-        references.add(new String[]{referencetable, referencekey, referenceidkey, alias});
+    public void addReference( String referencekey, String referenceidkey) {
+        String alias = this.getDbIdentity();
+        references.add(new String[]{this.getDbIdentity(), referencekey, referenceidkey, alias});
     }
 
     /**
-     * Add a foreign table reference to this context
-     * @param referencetable
-     * @param referencekey
-     * @param referenceidkey
-     * @param calledtable
+     * Add a foreign table reference to this context<br/><br/>
+     *  Context c= Context.getFilesToContacts();<br/>
+     *  c.addReference(Context.getFiles().getDbIdentity(), "cname", "filename");<br/>
+     * @param referencetable The table which will be joined
+     * @param referencekey The key column of the joined table
+     * @param referenceidkey They key column in the original table
      */
-    public void addReference(String referencetable, String referencekey, String referenceidkey, String calledtable) {
+    public void addReference(String referencetable, String referencekey, String referenceidkey) {
         String alias = referencetable;
-        references.add(new String[]{referencetable, referencekey, referenceidkey, alias, calledtable});
+        references.add(new String[]{referencetable, referencekey, referenceidkey, alias, this.getDbIdentity()});
     }
 
     /**
@@ -773,6 +778,15 @@ public class Context {
         return c;
     }
 
+
+     public static Context getFilesToContacts() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_FILES_TO_CONTACTS);
+        c.setId(20);
+
+        return c;
+    }
 
     public static Context getSubItem() {
         Context c = new Context(new SubItem());

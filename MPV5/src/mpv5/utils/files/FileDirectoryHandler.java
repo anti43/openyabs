@@ -8,6 +8,7 @@ package mpv5.utils.files;
  *
  * @author Galileo Computing
  */
+import java.awt.Desktop;
 import java.io.BufferedOutputStream;
 import java.io.FileNotFoundException;
 
@@ -21,7 +22,12 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import mpv5.globals.Messages;
 import mpv5.logging.Log;
+import mpv5.ui.dialogs.DialogForFile;
+import mpv5.ui.dialogs.Popup;
 import mpv5.utils.text.RandomText;
 
 public class FileDirectoryHandler {
@@ -98,6 +104,19 @@ public class FileDirectoryHandler {
 
     /**
      * Copies a file via stream
+     * @param source
+     * @param target
+     * @return
+     * @throws java.io.FileNotFoundException
+     * @throws java.io.IOException
+     */
+    public static File copyFile2(File source, File target) throws FileNotFoundException, IOException {
+        Log.Debug("Copying file to " + target);
+        return new File(copyFile(source, target));
+    }
+
+    /**
+     * Copies a file via stream
      * @param sourceFile
      * @param targetDirectory
      * @param targetFilename
@@ -121,7 +140,7 @@ public class FileDirectoryHandler {
             outp.delete();
             out = new FileOutputStream(targetFilename);
         }
-       
+
 
         // Copy the bits from instream to outstream
         byte[] buf = new byte[1024];
@@ -195,6 +214,23 @@ public class FileDirectoryHandler {
     private static ArrayList<File> lstFiles;
 
     /**
+     * Open a file in default app or as "save as" dialog, depending on the platform
+     * @param file
+     */
+    public static void open(File file) {
+        if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.OPEN)) {
+            try {
+                Desktop.getDesktop().open(file);
+            } catch (Exception ex) {
+                Log.Debug(FileDirectoryHandler.class, ex.getMessage());
+                Popup.notice(Messages.FILE_OPEN_FAILED + file.getPath());
+            }
+        } else {
+            new DialogForFile().saveFile(file);
+        }
+    }
+
+    /**
      * Copies a file to a temporary file. The resulting file is NOT linked
      * to the original one and even the original file is locked,
      * the resulting file is not
@@ -230,7 +266,7 @@ public class FileDirectoryHandler {
      * @return
      */
     public static File getTempFile(String suffix) {
-        return getTempFile(new RandomText(8).getString() , suffix);
+        return getTempFile(new RandomText(8).getString(), suffix);
     }
 
     /**
@@ -248,9 +284,17 @@ public class FileDirectoryHandler {
      * @return A temporay file with the given name
      */
     public static File getTempFile(String filename, String suffix) {
-        File fil = new File(System.getProperty("java.io.tmpdir") + File.separator +filename + "." + suffix);
+        File fil = new File(System.getProperty("java.io.tmpdir") + File.separator + filename + "." + suffix);
         fil.deleteOnExit();
         return fil;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public static String getTempDir() {
+        return System.getProperty("java.io.tmpdir") + File.separator;
     }
 
     /**
@@ -337,8 +381,6 @@ public class FileDirectoryHandler {
 
         return outp.toURI();
     }
-
-    
 }
     
 

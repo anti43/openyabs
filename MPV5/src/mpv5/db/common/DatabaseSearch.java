@@ -1,13 +1,11 @@
 package mpv5.db.common;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  *
  * @author Andreas
  */
 public class DatabaseSearch {
+    public static String ALL = "*";
 
     private Context context;
 

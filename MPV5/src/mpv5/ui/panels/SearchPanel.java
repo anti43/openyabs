@@ -53,8 +53,8 @@ public class SearchPanel extends javax.swing.JPanel {
     }
 
     public void setContextOwner(DatabaseObject object) {
-      context.setOwner(object);
-      refresh();
+        context.setOwner(object);
+        refresh();
     }
 
     /** This me4thod is called from within the constructor to
@@ -233,15 +233,17 @@ public class SearchPanel extends javax.swing.JPanel {
 
                 break;
             case 3:
-               Integer id = new DatabaseSearch(Context.getGroup()).searchForID( "cname", value);
-               if (id!=null){
+                Integer id = new DatabaseSearch(Context.getGroup()).searchForID("cname", value);
+                if (id != null) {
                     resulttable.setModel(new MPTableModel(new DatabaseSearch(context).getValuesFor("ids,cname,cnumber", "groupsids",
                             id), Headers.SEARCH_DEFAULT));
-               }
+                } else {
+                    resulttable.setModel(new MPTableModel(new String[][]{}, Headers.SEARCH_DEFAULT));
+                }
 
                 break;
             case 4:
-                resulttable.setModel(new MPTableModel(new DatabaseSearch(context).getValuesFor("ids,cname,cnumber", "cname",context.getParent().__getCName(), true), Headers.SEARCH_DEFAULT));
+                resulttable.setModel(new MPTableModel(new DatabaseSearch(context).getValuesFor("ids,cname,cnumber", "cname", context.getParent().__getCName(), true), Headers.SEARCH_DEFAULT));
 
         }
         TableFormat.stripFirstColumn(resulttable);

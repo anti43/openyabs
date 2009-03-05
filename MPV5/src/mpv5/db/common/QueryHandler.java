@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -25,6 +26,7 @@ import javax.swing.JFrame;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import mpv5.globals.Messages;
+import mpv5.items.div.Contact;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPV5View;
 import mpv5.ui.dialogs.Popup;
@@ -401,19 +403,28 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
-     *
+     * Inserts data into the current context's table. If "saveValues" is not <code>true</code><br/>
+     * All data will be parsed and the following chars will be replaced:<br/><br/>
+     *  - ' will become `<br/>
+     *  - (;;2#4#1#1#8#0#;;) will become '<br/>
+     *  - (;;,;;) will become ,<br/>
+     * <br/>
+     * this prevents the SQL String to be broken by invalid characters.<br/>
      * @param what
      * @param uniquecols
      * @param jobmessage
+     * @param saveValues
      * @return id (unique) of the inserted row
      */
-    public int insert(String[] what, int[] uniquecols, String jobmessage) {
-        what[1] = what[1].replace("'", "`");
-        what[1] = what[1].replaceAll("\\(;;2#4#1#1#8#0#;;\\)", "'");
-        what[1] = what[1].replaceAll("\\(;;\\,;;\\)", ",");
-        if (what[2] == null) {
-            what[2] = "";
+    public int insert(String[] what, int[] uniquecols, String jobmessage, boolean saveValues) {
+        if (!saveValues) {
+            what[1] = what[1].replace("'", "`");
+            what[1] = what[1].replaceAll("\\(;;2#4#1#1#8#0#;;\\)", "'");
+            what[1] = what[1].replaceAll("\\(;;\\,;;\\)", ",");
         }
+//        if (what[2] == null) {
+//            what[2] = "";
+//        }
         String query = null;
         start();
         query = "INSERT INTO " + table + " (" + what[0] + " ) VALUES (" + what[1] + ") ";
@@ -428,14 +439,15 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
-     * 
+     * Insert values to db
      * @param what  : {set, value, "'"}
      *   this.insert("name,wert", "'Sprache (Waehrung, z.B. Schweiz:  de_CH' ,'de_DE'");
-     * @param jobmessage 
+     * @param jobmessage The message to be displayd after a successful run
+     * @param saveValues If true, values are not masked; see {@link #insert(java.lang.String[], int[], java.lang.String, boolean) insert}
      * @return id of inserted row
      */
-    public int insert(String[] what, String jobmessage) {
-        return insert(what, (int[]) null, jobmessage);
+    public int insert(String[] what, String jobmessage, boolean saveValues) {
+        return insert(what, (int[]) null, jobmessage, saveValues);
     }
 
     /**
@@ -526,7 +538,6 @@ public class QueryHandler implements Cloneable {
             return data[data.length - 1];
         }
     }
-
 
     /**
      * if "where" is "null", everything is selected (without "where" -clause)
@@ -1219,7 +1230,7 @@ public class QueryHandler implements Cloneable {
     public String insertFile(File file) throws FileNotFoundException {
         start();
         String name = null;
-        String query = "INSERT INTO " + table + "(cname, data) VALUES (?, ?)";
+        String query = "INSERT INTO " + table + "(cname, data, dateadded) VALUES (?, ?, ?)";
         String jobmessage = null;
         try {
             int fileLength = (int) file.length();
@@ -1227,6 +1238,7 @@ public class QueryHandler implements Cloneable {
             java.io.InputStream fin = new java.io.FileInputStream(file);
             PreparedStatement ps = sqlConn.prepareStatement(query);
             ps.setString(1, name);
+            ps.setDate(3, new java.sql.Date(new Date().getTime()));
             ps.setBinaryStream(2, fin, fileLength);
             ps.execute();
             sqlConn.commit();
@@ -1331,6 +1343,36 @@ public class QueryHandler implements Cloneable {
      * A convenience method to retrieve one file from db, or null of no file
      * with the specified name is available.
      * @param name
+     * @param targetFile 
+     * @return The target file or NULL
+     */
+    public File retrieveFile(String name, File targetFile) {
+        ArrayList<File> list;
+        try {
+            list = retrieveFiles(name);
+        } catch (Exception ex) {
+            Log.Debug(this, name + " not found in " + table);
+            return null;
+        }
+        if (list.size() == 0) {
+            return null;
+        } else {
+            URI k;
+            try {
+                k = FileDirectoryHandler.copyFile(list.get(0), targetFile.getParentFile(), targetFile.getName());
+            } catch (IOException ex) {
+                Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
+                return null;
+            }
+            File f= new File(k);
+            return f;
+        }
+    }
+
+    /**
+     * A convenience method to retrieve one file from db, or null of no file
+     * with the specified name is available.
+     * @param name
      * @return A file or NULL
      */
     public File retrieveFile(String name) {
@@ -1355,5 +1397,22 @@ public class QueryHandler implements Cloneable {
      */
     public void removeFile(String fileid) throws Exception {
         delete(new String[][]{{"cname", fileid, "'"}});
+    }
+
+    /**
+     * This is a convenience method to insert files associated with contacts
+     * @param file The file
+     * @param dataOwner The contact
+     * @param descriptiveText Describe the file
+     * @return True if the insert was a success
+     */
+    public boolean insertFile(File file, Contact dataOwner, String descriptiveText) {
+        try {
+            String s = insertFile(file);
+            QueryHandler.instanceOf().clone(Context.getFilesToContacts()).insert(new String[]{"cname,contactsids,filename, description", "'" + file.getName() + "', " + dataOwner.__getIDS() + " ,'" + s + "','" + descriptiveText + "'"}, Messages.FILE_SAVED + file.getName(), true);
+            return true;
+        } catch (FileNotFoundException fileNotFoundException) {
+            return false;
+        }
     }
 }

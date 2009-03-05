@@ -97,6 +97,7 @@ public class DatabaseInstallation {
         "CREATE TABLE files (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),"+
         "cname VARCHAR(25) UNIQUE NOT NULL, " +
         "groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1," +
+        "dateadded DATE default NULL, "+
         "data BLOB(25M) NOT NULL,"+
         "PRIMARY KEY  (ids))",
 
@@ -143,6 +144,13 @@ public class DatabaseInstallation {
         "CREATE TABLE tablelock (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
         "cname VARCHAR(250), rowID BIGINT NOT NULL, usersids BIGINT REFERENCES users (ids)  ON DELETE CASCADE," +
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
+        "PRIMARY KEY  (ids))",
+
+        "CREATE TABLE filestocontacts(IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),"+
+        "cname VARCHAR(250) NOT NULL, " +
+        "description VARCHAR(550) DEFAULT NULL, " +
+        "contactsids BIGINT NOT NULL  REFERENCES contacts(ids) ON DELETE CASCADE," +
+        "filename VARCHAR(25) NOT NULL REFERENCES files(cname) ON DELETE CASCADE,"+
         "PRIMARY KEY  (ids))",
                 
         "CREATE TABLE subitems (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +

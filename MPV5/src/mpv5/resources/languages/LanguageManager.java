@@ -206,8 +206,8 @@ public class LanguageManager {
                         insert(new String[]{"cname, longname, filename",
                             PrepareData.finalize(PrepareData.prepareString(langid) +
                             PrepareData.prepareString(langname) +
-                            PrepareData.prepareString(dbname)), null},
-                        new int[]{0}, "Imported language: " + langname);
+                            PrepareData.prepareString(dbname)), null, },
+                        new int[]{0}, "Imported language: " + langname, true);
                 MPV5View.addMessage(langname + Messages.ROW_UPDATED);
             } catch (FileNotFoundException ex) {
                 Log.Debug(LanguageManager.class, ex);
