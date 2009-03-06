@@ -231,6 +231,23 @@ public class FileDirectoryHandler {
     }
 
     /**
+     * Edit a file in default app or as "save as" dialog, depending on the platform
+     * @param file
+     */
+    public static void edit(File file) {
+        if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.EDIT)) {
+            try {
+                Desktop.getDesktop().edit(file);
+            } catch (Exception ex) {
+                Log.Debug(FileDirectoryHandler.class, ex.getMessage());
+                Popup.notice(Messages.FILE_OPEN_FAILED + file.getPath());
+            }
+        } else {
+            new DialogForFile().saveFile(file);
+        }
+    }
+
+    /**
      * Copies a file to a temporary file. The resulting file is NOT linked
      * to the original one and even the original file is locked,
      * the resulting file is not

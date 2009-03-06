@@ -24,6 +24,8 @@ package mpv5.ui.panels;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Desktop;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -32,8 +34,10 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import mpv5.db.common.*;
 import mpv5.globals.Headers;
 import mpv5.globals.Messages;
@@ -43,6 +47,8 @@ import mpv5.items.div.Favourite;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.frames.MPV5View;
+import mpv5.ui.popups.DOTablePopUp;
+import mpv5.ui.popups.FileTablePopUp;
 import mpv5.ui.toolbars.DataPanelTB;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
@@ -79,6 +85,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         refresh();
         dateadded.setText(DateConverter.getTodayDefDate());
         addedby.setText(MPV5View.getUser().getName());
+
 //        new Watcher(this, ids_);
     }
 
@@ -888,12 +895,24 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
     private void dataTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_dataTableMouseClicked
         if (evt.getClickCount() > 1) {
-                evt.consume();
-                FileDirectoryHandler.open(QueryHandler.instanceOf().clone(Context.getFiles()).
-                        retrieveFile(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).
-                        toString(), new File(FileDirectoryHandler.getTempDir() +dataTable.getModel().
-                        getValueAt(dataTable.getSelectedRow(), 1).toString())));
+            FileDirectoryHandler.open(QueryHandler.instanceOf().clone(Context.getFiles()).
+                    retrieveFile(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).
+                    toString(), new File(FileDirectoryHandler.getTempDir() + dataTable.getModel().
+                    getValueAt(dataTable.getSelectedRow(), 1).toString())));
+        } else if (evt.getClickCount() == 1 && evt.getButton() == evt.BUTTON3) {
+
+            JTable source = (JTable) evt.getSource();
+            int row = source.rowAtPoint(evt.getPoint());
+            int column = source.columnAtPoint(evt.getPoint());
+
+            if (!source.isRowSelected(row)) {
+                source.changeSelection(row, column, false, false);
+            }
+
+            FileTablePopUp.instanceOf(dataTable).show(source, evt.getX(), evt.getY());
         }
+
+
     }//GEN-LAST:event_dataTableMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

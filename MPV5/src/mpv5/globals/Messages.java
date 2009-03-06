@@ -70,6 +70,8 @@ public class Messages {
     public static String PASTE = "Paste";
     public static String COPY = "Copy";
     public static String DELETE = "Delete";
+    public static String OPEN = "Open";
+    public static String EDIT = "Edit";
     public static String VALUE_NOT_VALID = "You have entered an invalid value: ";
     public static String VALUE_ALREADY_EXISTS = "The value already exists in the database and must not be duplicated: ";
     public static String ADMIN_ACCESS = "You need administrative rights to perform this action.";

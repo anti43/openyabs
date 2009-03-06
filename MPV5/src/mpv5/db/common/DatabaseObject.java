@@ -101,6 +101,8 @@ public abstract class DatabaseObject {
     }
 
 
+
+
 //    private Icon ICON_CONTACT = new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/agt_family.png"));
     /**
      * Set the mandatory name
