@@ -424,9 +424,9 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
         description_ = desc.getText();
 //        defaults_ = defaults.get_Text();
         try {
-            groupsids_ = Integer.valueOf(new DatabaseSearch(Context.getGroup()).searchFor(new String[]{"ids"}, "cname", parents.get_Text())[0].toString());
+            groupsids_ = Integer.valueOf(new DatabaseSearch(Context.getGroup()).searchFor(new String[]{"ids"}, "cname", parents.get_Text(), true)[0].toString());
         } catch (NodataFoundException ex) {
-            groupsids_ = 1;
+            groupsids_ = 0;
         }
     }
 

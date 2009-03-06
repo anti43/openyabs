@@ -247,6 +247,11 @@ public class FileDirectoryHandler {
         }
     }
 
+    public static void save(File file) {
+        DialogForFile d = new DialogForFile(new File(file.getName()));
+        d.saveFile(file);
+    }
+
     /**
      * Copies a file to a temporary file. The resulting file is NOT linked
      * to the original one and even the original file is locked,

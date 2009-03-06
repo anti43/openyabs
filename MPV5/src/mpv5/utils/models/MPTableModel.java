@@ -24,10 +24,19 @@ import javax.swing.table.DefaultTableModel;
  * @author Andreas
  */
 public class MPTableModel extends DefaultTableModel {
-    private static final long serialVersionUID = 1L;
 
+    private static final long serialVersionUID = 1L;
     private Class[] types;
     private boolean[] canEdits;
+
+    public MPTableModel() {
+        super();
+        setEditable(false);
+
+        setTypes(new Class[]{Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
+                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
+                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class});
+    }
 
     public MPTableModel(Object[][] datstr, String[] header) {
         super(datstr, header);
@@ -83,7 +92,7 @@ public class MPTableModel extends DefaultTableModel {
 
     private void setEditable(boolean b) {
         setCanEdits(new boolean[]{b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b,
-        b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b,
-        b, b, b, b, b, b, b, b, b});
+                    b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b,
+                    b, b, b, b, b, b, b, b, b});
     }
 }

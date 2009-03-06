@@ -26,6 +26,7 @@ import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -107,6 +108,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
         tb.setFavourite(Favourite.isFavourite(object));
         addAddresses();
+        dataTable.setModel(new MPTableModel());
     }
 
     public void setType(int type) {
@@ -160,10 +162,19 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                     Messages.ENTER_A_DESCRIPTION);
 
             if (s != null) {
-                QueryHandler.instanceOf().clone(Context.getFiles()).insertFile(d.getFile(), dataOwner, s);
+                QueryHandler.instanceOf().clone(Context.getFiles()).insertFile(d.getFile(), dataOwner, new SaveString(s));
                 fillFiles();
             }
         }
+    }
+
+    private void deleteFile() {
+        try {
+            QueryHandler.instanceOf().clone(Context.getFiles()).removeFile(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).toString());
+        } catch (Exception ex) {
+            Logger.getLogger(ContactPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        fillFiles();
     }
 
     private void fillFiles() {
@@ -535,6 +546,11 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         removefile.setText(bundle.getString("ContactPanel.removefile.text")); // NOI18N
         removefile.setEnabled(false);
         removefile.setName("removefile"); // NOI18N
+        removefile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removefileActionPerformed(evt);
+            }
+        });
 
         addfile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/add.png"))); // NOI18N
         addfile.setText(bundle.getString("ContactPanel.addfile.text")); // NOI18N
@@ -584,7 +600,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                     .addComponent(removefile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(addfile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -832,7 +848,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(leftpane, javax.swing.GroupLayout.DEFAULT_SIZE, 599, Short.MAX_VALUE)
+            .addComponent(leftpane, javax.swing.GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(toolbarpane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -899,7 +915,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                     retrieveFile(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).
                     toString(), new File(FileDirectoryHandler.getTempDir() + dataTable.getModel().
                     getValueAt(dataTable.getSelectedRow(), 1).toString())));
-        } else if (evt.getClickCount() == 1 && evt.getButton() == evt.BUTTON3) {
+        } else if (evt.getClickCount() == 1 && evt.getButton() == MouseEvent.BUTTON3) {
 
             JTable source = (JTable) evt.getSource();
             int row = source.rowAtPoint(evt.getPoint());
@@ -914,6 +930,10 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
 
     }//GEN-LAST:event_dataTableMouseClicked
+
+    private void removefileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removefileActionPerformed
+        deleteFile();
+    }//GEN-LAST:event_removefileActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel addedby;
@@ -1089,6 +1109,10 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                     MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID(), null, ""))));
 
             sp.refresh();
+
+            if (jButton1.isEnabled()) {
+                fillFiles();
+            }
         } catch (Exception e) {
             Log.Debug(this, e);
         }

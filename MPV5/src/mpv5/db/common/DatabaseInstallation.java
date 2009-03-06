@@ -98,7 +98,8 @@ public class DatabaseInstallation {
         "cname VARCHAR(25) UNIQUE NOT NULL, " +
         "groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1," +
         "dateadded DATE default NULL, "+
-        "data BLOB(25M) NOT NULL,"+
+        "data BLOB(5M) NOT NULL,"+
+        "filesize BIGINT NOT NULL,"+
         "PRIMARY KEY  (ids))",
 
         "CREATE TABLE languages(IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),"+

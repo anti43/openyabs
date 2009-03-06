@@ -29,12 +29,10 @@ import mpv5.db.common.NodataFoundException;
  */
 public class Group extends DatabaseObject {
 
-    private String description   =  "";
-    private String defaults =  "";
+    private String description = "";
+    private String defaults = "";
 
-
-
-    public Group(){
+    public Group() {
         context.setDbIdentity(Context.IDENTITY_GROUPS);
         context.setIdentityClass(this.getClass());
     }
@@ -77,7 +75,6 @@ public class Group extends DatabaseObject {
         this.defaults = defaultvalue;
     }
 
-
     @Override
     public boolean equals(Object o) {
         return super.equals(this);
@@ -93,17 +90,17 @@ public class Group extends DatabaseObject {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return __getCName();
     }
 
     @Override
-    public boolean delete(){
+    public boolean delete() {
         try {
             ArrayList<DatabaseObject> childs = DatabaseObject.getReferencedObjects(this, Context.getGroup());
             for (int i = 0; i < childs.size(); i++) {
                 DatabaseObject databaseObject = childs.get(i);
-                if(!databaseObject.delete()) {
+                if (!databaseObject.delete()) {
                     return false;
                 }
             }

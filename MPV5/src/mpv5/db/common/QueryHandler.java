@@ -5,6 +5,8 @@
 package mpv5.db.common;
 
 import java.awt.Cursor;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -20,11 +22,13 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingWorker;
 import mpv5.globals.Messages;
 import mpv5.items.div.Contact;
 import mpv5.logging.Log;
@@ -172,9 +176,10 @@ public class QueryHandler implements Cloneable {
      * @param columns If null, the column specified with "needle" is returned
      * @param needle
      * @param value
+     * @param exactMatch 
      * @return
      */
-    public Object[] getValuesFor(String[] columns, String needle, String value) {
+    public Object[] getValuesFor(String[] columns, String needle, String value, boolean exactMatch) {
         String cols = needle;
         if (columns != null) {
             cols = "";
@@ -184,17 +189,24 @@ public class QueryHandler implements Cloneable {
             }
             cols = cols.substring(0, cols.length() - 1);
         }
+        String f = " = '";
+        String g = "'";
+
+        if (!exactMatch) {
+            f = " LIKE '%";
+            g = "%'";
+        }
 
         if (context != null) {
             if (value == null) {
                 return ArrayUtilities.ObjectToSingleColumnArray(freeReturnQuery("SELECT " + cols + " FROM " + table + " " + context.getReferences() + " WHERE " + context.getConditions().substring(5, context.getConditions().length()), mpv5.usermanagement.MPSecurityManager.VIEW, null).getData());
             } else {
-                return ArrayUtilities.ObjectToSingleColumnArray(freeReturnQuery("SELECT " + cols + " FROM " + table + " " + context.getReferences() + " WHERE " + needle + " LIKE '%" + value + "%' AND " + context.getConditions().substring(5, context.getConditions().length()), mpv5.usermanagement.MPSecurityManager.VIEW, null).getData());
+                return ArrayUtilities.ObjectToSingleColumnArray(freeReturnQuery("SELECT " + cols + " FROM " + table + " " + context.getReferences() + " WHERE " + needle + f + value + g + " AND " + context.getConditions().substring(5, context.getConditions().length()), mpv5.usermanagement.MPSecurityManager.VIEW, null).getData());
             }
         } else if (value == null) {
             return ArrayUtilities.ObjectToSingleColumnArray(freeReturnQuery("SELECT " + cols + " FROM " + table + " " + context.getReferences(), mpv5.usermanagement.MPSecurityManager.VIEW, null).getData());
         } else {
-            return ArrayUtilities.ObjectToSingleColumnArray(freeReturnQuery("SELECT " + cols + " FROM " + table + " " + context.getReferences() + "  WHERE " + needle + " LIKE '%" + value + "%'", mpv5.usermanagement.MPSecurityManager.VIEW, null).getData());
+            return ArrayUtilities.ObjectToSingleColumnArray(freeReturnQuery("SELECT " + cols + " FROM " + table + " " + context.getReferences() + "  WHERE " + needle + f + value + g, mpv5.usermanagement.MPSecurityManager.VIEW, null).getData());
         }
     }
 
@@ -383,10 +395,12 @@ public class QueryHandler implements Cloneable {
 
     private void stop() {
         comp.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+//        MPV5View.setProgressRunning(false);
     }
 
     private void start() {
         comp.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+//         MPV5View.setProgressRunning(true);
     }
 
 //    public String getNextStringNumber(String colName) {
@@ -1227,51 +1241,38 @@ public class QueryHandler implements Cloneable {
      * @return The UNIQUE name of the inserted file in db
      * @throws java.io.FileNotFoundException
      */
-    public String insertFile(File file) throws FileNotFoundException {
-        start();
+    public String insertFile(final File file) throws FileNotFoundException {
+
         String name = null;
-        String query = "INSERT INTO " + table + "(cname, data, dateadded) VALUES (?, ?, ?)";
+        String query = "INSERT INTO " + table + "(cname, data, dateadded, filesize) VALUES (?, ?, ?, ?)";
         String jobmessage = null;
+        Log.Debug(this, "Adding file: " + file.getName());
+        backgroundSqlQuery j;
+
         try {
             int fileLength = (int) file.length();
             name = new RandomText(23).getString();
             java.io.InputStream fin = new java.io.FileInputStream(file);
             PreparedStatement ps = sqlConn.prepareStatement(query);
             ps.setString(1, name);
+            ps.setLong(4, file.length());
             ps.setDate(3, new java.sql.Date(new Date().getTime()));
             ps.setBinaryStream(2, fin, fileLength);
-            ps.execute();
-            sqlConn.commit();
-        } catch (SQLException ex) {
+            j = new backgroundSqlQuery(ps);
+            j.execute();
+
+        } catch (Exception ex) {
             Log.Debug(this, "Datenbankfehler: " + query, true);
             Log.Debug(this, ex);
             Popup.error(ex.getMessage(), "Datenbankfehler");
             jobmessage = Messages.ERROR_OCCURED;
-        } finally {
-            // Alle Ressourcen wieder freigeben
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException ex) {
-                    jobmessage = Messages.ERROR_OCCURED;
-                    Log.Debug(this, ex.getMessage());
-                    Popup.error(ex.getMessage(), "Datenbankfehler");
-                }
-            }
-            if (stm != null) {
-                try {
-                    stm.close();
-                } catch (SQLException ex) {
-                    Log.Debug(this, ex.getMessage());
-                    Popup.error(ex.getMessage(), "Datenbankfehler");
-                }
-            }
         }
-        stop();
+
         if (jobmessage != null) {
             MPV5View.addMessage(jobmessage);
         }
         return name;
+
     }
 
     /**
@@ -1282,7 +1283,7 @@ public class QueryHandler implements Cloneable {
      */
     public ArrayList<File> retrieveFiles(String filename) throws IOException {
         start();
-        String query = "SELECT data FROM " + table + " WHERE cname= '" + filename + "'";
+        String query = "SELECT data, filesize FROM " + table + " WHERE cname= '" + filename + "'";
         String jobmessage = null;
         ArrayList<File> list = null;
         try {
@@ -1292,20 +1293,26 @@ public class QueryHandler implements Cloneable {
             ResultSet rs = stm.executeQuery(query);
             Log.Debug(this, query);
             while (rs.next()) {
+
+                MPV5View.setProgressMaximumValue(rs.getInt(2));
                 byte[] buffer = new byte[1024];
                 File f = FileDirectoryHandler.getTempFile();
                 BufferedInputStream inputStream = new BufferedInputStream(rs.getBinaryStream(1), 1024);
                 FileOutputStream outputStream = new FileOutputStream(f);
                 int readBytes = 0;
+                int read = 0;
                 while (readBytes != -1) {
                     readBytes = inputStream.read(buffer, 0, buffer.length);
+                    read += buffer.length;
                     if (readBytes != -1) {
                         outputStream.write(buffer, 0, readBytes);
                     }
+                    MPV5View.setProgressValue(read);
                 }
                 inputStream.close();
                 outputStream.close();
                 list.add(f);
+                MPV5View.setProgressReset();
             }
 
         } catch (SQLException ex) {
@@ -1364,7 +1371,7 @@ public class QueryHandler implements Cloneable {
                 Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
                 return null;
             }
-            File f= new File(k);
+            File f = new File(k);
             return f;
         }
     }
@@ -1406,13 +1413,152 @@ public class QueryHandler implements Cloneable {
      * @param descriptiveText Describe the file
      * @return True if the insert was a success
      */
-    public boolean insertFile(File file, Contact dataOwner, String descriptiveText) {
+    public boolean insertFile(File file, Contact dataOwner, SaveString descriptiveText) {
         try {
-            String s = insertFile(file);
-            QueryHandler.instanceOf().clone(Context.getFilesToContacts()).insert(new String[]{"cname,contactsids,filename, description", "'" + file.getName() + "', " + dataOwner.__getIDS() + " ,'" + s + "','" + descriptiveText + "'"}, Messages.FILE_SAVED + file.getName(), true);
+            new backgroundFileInsert(file, dataOwner, descriptiveText.getString()).execute();
             return true;
-        } catch (FileNotFoundException fileNotFoundException) {
+        } catch (Exception e) {
             return false;
         }
     }
+
+    class backgroundSqlQuery extends SwingWorker<Void, Void> {
+
+        private PreparedStatement ps;
+
+        public backgroundSqlQuery(PreparedStatement ps) {
+            this.ps = ps;
+            this.addPropertyChangeListener(new changeListener());
+        }
+
+        @Override
+        protected Void doInBackground() {
+
+            setProgress(0);
+            try {
+                Object obj = new Object();
+                synchronized (obj) {
+                    ps.execute();
+                    sqlConn.commit();
+                }
+            } catch (SQLException ex) {
+                Log.Debug(this, ex);
+                Popup.error(ex.getMessage(), Messages.ERROR_OCCURED);
+            } finally {
+                MPV5View.setProgressReset();
+            }
+            return null;
+        }
+
+        @Override
+        public void done() {
+            setProgress(100);
+        }
+
+        class changeListener implements PropertyChangeListener {
+
+            /**
+             * Invoked when task's progress property changes.
+             */
+            public void propertyChange(PropertyChangeEvent evt) {
+                if ("progress".equals(evt.getPropertyName())) {
+                    int progress = (Integer) evt.getNewValue();
+                    Log.Debug(this, "Progress changed to: " + progress);
+                    if (progress == 0) {
+                        MPV5View.setProgressRunning(true);
+                    } else if (progress == 100) {
+                        MPV5View.setProgressReset();
+                    }
+                }
+            }
+        }
+    }
+
+    class backgroundFileInsert extends SwingWorker<String, Void> {
+
+        private File file;
+        private String name;
+        private DatabaseObject dataOwner;
+        private String descriptiveText;
+
+        public backgroundFileInsert(File file, DatabaseObject owner, String description) {
+            description = description.replace("'", "`");
+            description = description.replaceAll("\\(;;2#4#1#1#8#0#;;\\)", "");
+            description = description.replaceAll("\\(;;\\,;;\\)", ",");
+            this.addPropertyChangeListener(new changeListener());
+            this.file = file;
+            this.dataOwner = owner;
+            this.descriptiveText = description;
+        }
+
+        @Override
+        protected String doInBackground() {
+
+
+            Object obj = new Object();
+            synchronized (obj) {
+//                setProgress(0);
+                String query = "INSERT INTO " + table + "(cname, data, dateadded, filesize) VALUES (?, ?, ?, ?)";
+                String jobmessage = null;
+                Log.Debug(this, "Adding file: " + file.getName());
+                MPV5View.addMessage(Messages.PROCESSING + file.getName());
+
+                try {
+                    int fileLength = (int) file.length();
+                    name = new RandomText(23).getString();
+                    java.io.InputStream fin = new java.io.FileInputStream(file);
+                    PreparedStatement ps = sqlConn.prepareStatement(query);
+                    ps.setString(1, name);
+                    ps.setLong(4, file.length());
+                    ps.setDate(3, new java.sql.Date(new Date().getTime()));
+                    ps.setBinaryStream(2, fin, fileLength);
+                    ps.execute();
+                    sqlConn.commit();
+                } catch (Exception ex) {
+                    Log.Debug(this, "Datenbankfehler: " + query, true);
+                    Log.Debug(this, ex);
+                    Popup.error(ex.getMessage(), "Datenbankfehler");
+                    jobmessage = Messages.ERROR_OCCURED;
+                }
+
+                if (jobmessage != null) {
+                    MPV5View.addMessage(jobmessage);
+                }
+            }
+
+            return name;
+        }
+
+        @Override
+        public void done() {
+            try {
+                QueryHandler.instanceOf().clone(Context.getFilesToContacts()).insert(new String[]{"cname,contactsids,filename, description", "'" + file.getName() + "', " + dataOwner.__getIDS() + " ,'" + get() + "','" + descriptiveText + "'"}, Messages.FILE_SAVED + file.getName(), true);
+                MPV5View.addMessage(Messages.FILE_SAVED + file.getName());
+            } catch (InterruptedException ex) {
+                Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ExecutionException ex) {
+                Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        class changeListener implements PropertyChangeListener {
+
+            /**
+             * Invoked when task's progress property changes.
+             */
+            public void propertyChange(PropertyChangeEvent evt) {
+                System.out.println(Thread.currentThread().getName() + evt.getNewValue());
+                if ("state".equals(evt.getPropertyName())) {
+
+                    Log.Debug(this, "Progress changed to: " + evt.getNewValue());
+                    if (StateValue.STARTED == evt.getNewValue()) {
+                        MPV5View.setProgressRunning(true);
+                    } else if (StateValue.DONE == evt.getNewValue()) {
+                        MPV5View.setProgressReset();
+                    }
+                }
+            }
+        }
+    }
 }
+

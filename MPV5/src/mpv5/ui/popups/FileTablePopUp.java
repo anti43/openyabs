@@ -30,6 +30,8 @@ import javax.swing.JTable;
 import mpv5.db.common.Context;
 import mpv5.db.common.QueryHandler;
 import mpv5.globals.Messages;
+import mpv5.ui.frames.MPV5View;
+import mpv5.ui.panels.DataPanel;
 import mpv5.utils.files.FileDirectoryHandler;
 
 /**
@@ -57,6 +59,18 @@ public class FileTablePopUp extends JPopupMenu {
     }
 
     private static FileTablePopUp getDefaultPopupMenu() {
+
+         JMenuItem x = new JMenuItem(Messages.SAVE_AS);
+         x.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                JTable dataTable = source;
+                FileDirectoryHandler.save(QueryHandler.instanceOf().clone(Context.getFiles()).
+                        retrieveFile(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).
+                        toString(), new File(FileDirectoryHandler.getTempDir() + dataTable.getModel().
+                        getValueAt(dataTable.getSelectedRow(), 1).toString())));
+            }
+        });
 
         JMenuItem i = new JMenuItem(Messages.OPEN);
         i.addActionListener(new ActionListener() {
@@ -89,13 +103,15 @@ public class FileTablePopUp extends JPopupMenu {
                 JTable dataTable = source;
                 try {
                     QueryHandler.instanceOf().clone(Context.getFiles()).removeFile(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).toString());
+            
+                  ( (DataPanel) MPV5View.getShowingTab()).refresh();
                 } catch (Exception ex) {
                     Logger.getLogger(FileTablePopUp.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
 
-        return new FileTablePopUp(new JMenuItem[]{i, h, g});
+        return new FileTablePopUp(new JMenuItem[]{i, x, h, g});
     }
 
     /**

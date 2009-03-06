@@ -6,15 +6,18 @@ package mpv5.ui.frames;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import javax.swing.Icon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JProgressBar;
+import javax.swing.Timer;
 import javax.swing.UIManager;
 import mpv5.Main;
 import mpv5.db.common.Context;
@@ -42,6 +45,8 @@ import mpv5.utils.text.TypeConversion;
 import mpv5.utils.xml.XMLWriter;
 import org.jdesktop.application.SingleFrameApplication;
 import org.jdesktop.application.FrameView;
+import org.jdesktop.application.ResourceMap;
+import org.jdesktop.application.TaskMonitor;
 
 /**
  * The application's main frame.
@@ -65,6 +70,15 @@ public class MPV5View extends FrameView {
     public static void addMessage(String message) {
         messagelabel.setText(message);
     }
+
+    /**
+     * Returns the currently selected tab on the main tab pane
+     * @return
+     */
+    public static Object getShowingTab() {
+       return tabPane.getSelectedComponent();
+    }
+
 
     public static void showFilesaveDialogFor(File f) {
         filedialog.setSelectedFile(new File(f.getName()));
@@ -105,6 +119,11 @@ public class MPV5View extends FrameView {
     public static void setProgressReset() {
         progressbar.setValue(0);
         progressbar.setIndeterminate(false);
+    }
+
+
+    public static void setProgressRunning(boolean b) {
+        progressbar.setIndeterminate(b);
     }
 
     /**
@@ -177,6 +196,7 @@ public class MPV5View extends FrameView {
         super(app);
 
         initComponents();
+
         tabPane = new CloseableTabbedPane(this);
         identifierFrame = this.getFrame();
         Popup.identifier = identifierFrame;
@@ -194,6 +214,9 @@ public class MPV5View extends FrameView {
 
         fillFavouritesmenu();
         QueryHandler.setWaitCursorFor(identifierFrame);
+
+//        setStatusBar();
+//        setStatusBar(statusPanel);
     }
 
     public void enableToolBar(boolean enable) {
@@ -254,9 +277,9 @@ public class MPV5View extends FrameView {
         clipboardMenu = new javax.swing.JMenu();
         jMenuItem7 = new javax.swing.JMenuItem();
         statusPanel = new javax.swing.JPanel();
-        javax.swing.JSeparator statusPanelSeparator = new javax.swing.JSeparator();
         statusMessageLabel = new FadeOnChangeLabel();
         progressBar = new javax.swing.JProgressBar();
+        statusAnimationLabel = new javax.swing.JLabel();
         mainToolbar = new javax.swing.JToolBar();
         jButton24 = new javax.swing.JButton();
         jButton26 = new javax.swing.JButton();
@@ -592,11 +615,13 @@ public class MPV5View extends FrameView {
         statusPanel.setName("statusPanel"); // NOI18N
         statusPanel.setPreferredSize(new java.awt.Dimension(800, 20));
 
-        statusPanelSeparator.setName("statusPanelSeparator"); // NOI18N
-
         statusMessageLabel.setName("statusMessageLabel"); // NOI18N
 
+        progressBar.setBorder(new javax.swing.border.LineBorder(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"), 1, true));
         progressBar.setName("progressBar"); // NOI18N
+
+        statusAnimationLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        statusAnimationLabel.setName("statusAnimationLabel"); // NOI18N
 
         javax.swing.GroupLayout statusPanelLayout = new javax.swing.GroupLayout(statusPanel);
         statusPanel.setLayout(statusPanelLayout);
@@ -604,18 +629,25 @@ public class MPV5View extends FrameView {
             statusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(statusPanelLayout.createSequentialGroup()
                 .addGroup(statusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(statusPanelSeparator, javax.swing.GroupLayout.DEFAULT_SIZE, 273, Short.MAX_VALUE)
-                    .addComponent(statusMessageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 273, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, statusPanelLayout.createSequentialGroup()
+                        .addComponent(statusMessageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 368, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, statusPanelLayout.createSequentialGroup()
+                        .addContainerGap(443, Short.MAX_VALUE)
+                        .addComponent(statusAnimationLabel)))
+                .addContainerGap())
         );
         statusPanelLayout.setVerticalGroup(
             statusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(statusPanelLayout.createSequentialGroup()
-                .addComponent(statusPanelSeparator, javax.swing.GroupLayout.PREFERRED_SIZE, 2, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(1, 1, 1)
-                .addComponent(statusMessageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 13, Short.MAX_VALUE))
-            .addComponent(progressBar, javax.swing.GroupLayout.DEFAULT_SIZE, 16, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, statusPanelLayout.createSequentialGroup()
+                .addGroup(statusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(statusPanelLayout.createSequentialGroup()
+                        .addGap(3, 3, 3)
+                        .addComponent(statusMessageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 15, Short.MAX_VALUE))
+                    .addComponent(progressBar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 18, Short.MAX_VALUE)
+                    .addComponent(statusAnimationLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, 0))
         );
 
         mainToolbar.setRollover(true);
@@ -808,6 +840,7 @@ public class MPV5View extends FrameView {
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JPanel naviPanel;
     private javax.swing.JProgressBar progressBar;
+    private javax.swing.JLabel statusAnimationLabel;
     private javax.swing.JLabel statusMessageLabel;
     private javax.swing.JPanel statusPanel;
     public static final javax.swing.JPanel tabpanePanel = new javax.swing.JPanel();
@@ -871,5 +904,67 @@ public class MPV5View extends FrameView {
             fr.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             fr.setVisible(true);
         }
+    }
+
+
+    private Timer messageTimer;
+    private Timer busyIconTimer;
+    private Icon idleIcon;
+    private Icon[] busyIcons = new Icon[15];
+    private int busyIconIndex = 0;
+    private void setStatusBar() {
+            // status bar initialization - message timeout, idle icon and busy animation, etc
+        ResourceMap resourceMap = getResourceMap();
+        int messageTimeout = resourceMap.getInteger("StatusBar.messageTimeout");
+        messageTimer = new Timer(messageTimeout, new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                statusMessageLabel.setText("");
+            }
+        });
+        messageTimer.setRepeats(false);
+        int busyAnimationRate = resourceMap.getInteger("StatusBar.busyAnimationRate");
+        for (int i = 0; i < busyIcons.length; i++) {
+            busyIcons[i] = resourceMap.getIcon("StatusBar.busyIcons[" + i + "]");
+        }
+        busyIconTimer = new Timer(busyAnimationRate, new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                busyIconIndex = (busyIconIndex + 1) % busyIcons.length;
+                statusAnimationLabel.setIcon(busyIcons[busyIconIndex]);
+            }
+        });
+        idleIcon = resourceMap.getIcon("StatusBar.idleIcon");
+        statusAnimationLabel.setIcon(idleIcon);
+        progressBar.setVisible(false);
+
+        // connecting action tasks to status bar via TaskMonitor
+        TaskMonitor taskMonitor = new TaskMonitor(getApplication().getContext());
+        taskMonitor.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                String propertyName = evt.getPropertyName();
+                if ("started".equals(propertyName)) {
+                    if (!busyIconTimer.isRunning()) {
+                        statusAnimationLabel.setIcon(busyIcons[0]);
+                        busyIconIndex = 0;
+                        busyIconTimer.start();
+                    }
+                    progressBar.setVisible(true);
+                    progressBar.setIndeterminate(true);
+                } else if ("done".equals(propertyName)) {
+                    busyIconTimer.stop();
+                    statusAnimationLabel.setIcon(idleIcon);
+                    progressBar.setVisible(false);
+                    progressBar.setValue(0);
+                } else if ("message".equals(propertyName)) {
+                    String text = (String)(evt.getNewValue());
+                    statusMessageLabel.setText((text == null) ? "" : text);
+                    messageTimer.restart();
+                } else if ("progress".equals(propertyName)) {
+                    int value = (Integer)(evt.getNewValue());
+                    progressBar.setVisible(true);
+                    progressBar.setIndeterminate(false);
+                    progressBar.setValue(value);
+                }
+            }
+        });
     }
 }

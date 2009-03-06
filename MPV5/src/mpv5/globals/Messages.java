@@ -47,7 +47,8 @@ public class Messages {
     public static String NOTICE = "Notice";
     public static String FILE_EXISTS = "The file already exists, overwrite?";
     public static String ARE_YOU_SURE = "Are you sure?";
-    public static String FINISH = "Finish";
+    public static String FINISH = "Finish ";
+    public static String SAVE_AS= "Save as.. ";
     public static String CONNECTION_VERIFIED = "Database Connection established.";
     public static String CONNECTION_FAILED = "The Database Connection failed.";
     public static String CONNECTION_PROBE = "Checking Database Connection: ";

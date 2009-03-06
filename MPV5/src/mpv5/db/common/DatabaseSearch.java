@@ -86,17 +86,36 @@ public class DatabaseSearch {
      * @param columns Which columns to get?
      * @param what Which column do you like to search through?
      * @param needle
+     * @param exactMatch
      * @return
      * @throws NodataFoundException If no data was found matching your search
      */
-    public Object[] searchFor(String[] columns, String what, String needle) throws NodataFoundException {
-        Object[] data = QueryHandler.instanceOf().clone(context).getValuesFor(columns, what, needle);
+    public Object[] searchFor(String[] columns, String what, String needle , boolean exactMatch) throws NodataFoundException {
+        Object[] data = QueryHandler.instanceOf().clone(context).getValuesFor(columns, what, needle, exactMatch);
         if (data == null || data.length == 0) {
             throw new NodataFoundException();
         } else {
             return data;
         }
     }
+    /**
+     * Get a single dimension list from a search after values from the column
+     * where the value is LIKE the given needle
+     * @param columns Which columns to get?
+     * @param what Which column do you like to search through?
+     * @param needle
+     * @return
+     * @throws NodataFoundException If no data was found matching your search
+     */
+    public Object[] searchFor(String[] columns, String what, String needle) throws NodataFoundException {
+        Object[] data = QueryHandler.instanceOf().clone(context).getValuesFor(columns, what, needle, false);
+        if (data == null || data.length == 0) {
+            throw new NodataFoundException();
+        } else {
+            return data;
+        }
+    }
+
 
     /**
      * Search for an ID in this context

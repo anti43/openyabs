@@ -403,6 +403,7 @@ public abstract class DatabaseObject {
      */
     public static DatabaseObject getObject(Context context, int id) throws NodataFoundException {
 
+
         try {
             Object obj = context.getIdentityClass().newInstance();
             ((DatabaseObject) obj).fetchDataOf(id);
