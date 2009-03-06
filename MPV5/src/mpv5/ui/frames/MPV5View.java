@@ -177,7 +177,7 @@ public class MPV5View extends FrameView {
         for (int i = 0; i < favs.length; i++) {
             Favourite fav = favs[i];
             try {
-                favMenu.add(new FavouritesMenuItem(Favourite.getObject(fav.getFavContext(), fav.__getItemid())));
+                favMenu.add(new FavouritesMenuItem(Favourite.getObject(fav.getFavContext(), fav.__getItemsids())));
             } catch (NodataFoundException ex) {
                 Log.Debug(ex);
             }

@@ -29,8 +29,8 @@ import mpv5.usermanagement.User;
 public class Favourite extends DatabaseObject {
 
 
-    private int userid;
-    private int itemid;
+    private int usersids;
+    private int itemsids;
 
     public Favourite() {
         context.setDbIdentity(Context.IDENTITY_FAVS);
@@ -38,9 +38,9 @@ public class Favourite extends DatabaseObject {
 
     public Favourite(DatabaseObject dato) {
         context.setDbIdentity(Context.IDENTITY_FAVS);
-        this.setUserid(MPV5View.getUser().__getIDS());
+        this.setUsersids(MPV5View.getUser().__getIDS());
         setCName(dato.getDbIdentity());
-        setItemid(dato.__getIDS());
+        setItemsids(dato.__getIDS());
     }
 
     /**
@@ -61,29 +61,29 @@ public class Favourite extends DatabaseObject {
     /**
      * @return the userid
      */
-    public int __getUserid() {
-        return userid;
+    public int __getUsersids() {
+        return usersids;
     }
 
     /**
      * @param userid the userid to set
      */
-    public void setUserid(int userid) {
-        this.userid = userid;
+    public void setUsersids(int userid) {
+        this.usersids = userid;
     }
 
     /**
      * @return the itemid
      */
-    public int __getItemid() {
-        return itemid;
+    public int __getItemsids() {
+        return itemsids;
     }
 
     /**
      * @param itemid the itemid to set
      */
-    public void setItemid(int itemid) {
-        this.itemid = itemid;
+    public void setItemsids(int itemid) {
+        this.itemsids = itemid;
     }
 
     /**
@@ -126,8 +126,8 @@ public class Favourite extends DatabaseObject {
         for (int i = 0; i < favs.length; i++) {
             Favourite favi = new Favourite();
             favi.setCName(String.valueOf(data[i][0]));
-            favi.setUserid(Integer.valueOf(data[i][1].toString()));
-            favi.setItemid(Integer.valueOf(data[i][2].toString()));
+            favi.setUsersids(Integer.valueOf(data[i][1].toString()));
+            favi.setItemsids(Integer.valueOf(data[i][2].toString()));
             favs[i] = favi;
         }
 
