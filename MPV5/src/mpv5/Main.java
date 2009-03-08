@@ -12,6 +12,12 @@ import org.jdesktop.application.SingleFrameApplication;
 
 import com.l2fprod.common.swing.plaf.LookAndFeelAddons;
 import java.io.File;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketException;
 import java.util.Date;
 import java.util.Map;
 import java.util.Properties;
@@ -39,6 +45,8 @@ import org.apache.commons.cli2.util.*;
  */
 public class Main extends SingleFrameApplication {
 
+    private File lockfile = new File((System.getProperty("user.home") + File.separator + Constants.PROG_NAME + Constants.VERSION + "." + "lck"));
+
     /**
      *
      */
@@ -47,7 +55,7 @@ public class Main extends SingleFrameApplication {
             LocalSettings.read();
             LocalSettings.apply();
         } catch (Exception ex) {
-            Log.Debug(Main.class,"Local settings file not found: " + LocalSettings.getLocalFile());
+            Log.Debug(Main.class, "Local settings file not found: " + LocalSettings.getLocalFile());
         }
         launch(Main.class, new String[]{});
     }
@@ -57,22 +65,17 @@ public class Main extends SingleFrameApplication {
      */
     @Override
     protected void startup() {
+
+        if (!firstInstance()) {
+            System.exit(1);
+        }
+
         if (probeDatabaseConnection()) {
             setLaF(null);
             login();
-            show(new MPV5View(this));
+            super.show(new MPV5View(this));
         } else if (Popup.Y_N_dialog(Messages.NO_DB_CONNECTION)) {
-            try {
-                Log.setLogLevel(Log.LOGLEVEL_DEBUG);
-                LogConsole.setLogFile("install.log");
-                Log.Debug(this, new Date());
-            } catch (Exception ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            Wizard w = new Wizard(true);
-            w.addPanel(new wizard_DBSettings_1(w));
-            w.addPanel(new wizard_DBSettings_2(w));
-            w.showWiz();
+            showDbWiz();
         } else {
             System.exit(1);
         }
@@ -305,5 +308,37 @@ public class Main extends SingleFrameApplication {
 //            Log.Debug(this, ex);
             return false;
         }
+    }
+
+    private boolean firstInstance() {
+        try {
+            if (lockfile.exists()) {
+                Log.Debug(this, "Application already running.");
+                return false;
+            } else {
+                lockfile.createNewFile();
+                lockfile.deleteOnExit();
+                Log.Debug(this, "Application will start now.");
+                return true;
+            }
+        } catch (Exception e) {
+            Log.Debug(this, "Application encountered some problem. Will try to continue anyway.");
+            return true;
+        }
+
+    }
+
+    private void showDbWiz() {
+        try {
+            Log.setLogLevel(Log.LOGLEVEL_DEBUG);
+            LogConsole.setLogFile("install.log");
+            Log.Debug(this, new Date());
+        } catch (Exception ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        Wizard w = new Wizard(true);
+        w.addPanel(new wizard_DBSettings_1(w));
+        w.addPanel(new wizard_DBSettings_2(w));
+        w.showWiz();
     }
 }
