@@ -62,7 +62,8 @@ public class MPV5View extends FrameView {
     private static JMenu favMenu;
     private static String predefTitle;
     public static DialogForFile filedialog;
-    
+    public static SingleFrameApplication identifierApplication;
+
     /**
      * Display a message at the bottom of the MP frame
      * @param message
@@ -76,15 +77,34 @@ public class MPV5View extends FrameView {
      * @return
      */
     public static Object getShowingTab() {
-       return tabPane.getSelectedComponent();
+        return tabPane.getSelectedComponent();
     }
 
-
+    /**
+     * Shows a file save dialog with the selcted file f.
+     * If the file's parent directory is not the current directory,
+     * changes the current directory to be the file's parent directory.
+     * @param f
+     */
     public static void showFilesaveDialogFor(File f) {
         filedialog.setSelectedFile(new File(f.getName()));
         filedialog.saveFile(f);
     }
-   
+
+    /**
+     * Initialize and show the secondary JFrame.
+     * This method is intended for showing "secondary" windows,
+     * like message dialogs, about boxes, and so on.
+     *
+     * Unlike the mainFrame, dismissing a secondary window will not exit the application.
+     * Session state is only automatically saved if the specified JFrame has a name,
+     * and then only for component descendants that are named.
+     * Throws an IllegalArgumentException if c is null
+     * @param c
+     */
+    public static void show(JFrame c) {
+        identifierApplication.show(c);
+    }
 
     /**
      * Reloads fav menu
@@ -121,7 +141,10 @@ public class MPV5View extends FrameView {
         progressbar.setIndeterminate(false);
     }
 
-
+    /**
+     * Sets the indeterminate property of the progress bar.
+     * @param b
+     */
     public static void setProgressRunning(boolean b) {
         progressbar.setIndeterminate(b);
     }
@@ -168,7 +191,11 @@ public class MPV5View extends FrameView {
         }
     }
 
-    public DataPanel getCurrentTab(){
+    /**
+     * Returns the curently selected tab
+     * @return
+     */
+    public DataPanel getCurrentTab() {
         return (DataPanel) tabPane.getSelectedComponent();
     }
 
@@ -188,12 +215,14 @@ public class MPV5View extends FrameView {
      * Add something to the clipboard menu
      * @param obj
      */
-    public void addToClipBoard(DatabaseObject obj){
+    public void addToClipBoard(DatabaseObject obj) {
         clipboardMenu.add(new ClipboardMenuItem(obj));
     }
 
     public MPV5View(SingleFrameApplication app) {
         super(app);
+
+        MPV5View.identifierApplication = app;
 
         initComponents();
 
@@ -219,10 +248,18 @@ public class MPV5View extends FrameView {
 //        setStatusBar(statusPanel);
     }
 
+    /**
+     * Set the state of the main toolbar
+     * @param enable
+     */
     public void enableToolBar(boolean enable) {
         mainToolbar.setEnabled(enable);
     }
 
+    /**
+     * Add a tab to the main tab pane
+     * @param item
+     */
     public void addTab(DatabaseObject item) {
         if (item.getDbIdentity().equalsIgnoreCase(Context.getContact().getDbIdentity())) {
             addContactTab(item);
@@ -838,7 +875,7 @@ public class MPV5View extends FrameView {
 
     private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
 
-        clipboardMenu.add(new  ClipboardMenuItem(getCurrentTab().getDataOwner() ));
+        clipboardMenu.add(new ClipboardMenuItem(getCurrentTab().getDataOwner()));
 
     }//GEN-LAST:event_jMenuItem9ActionPerformed
 
@@ -945,18 +982,18 @@ public class MPV5View extends FrameView {
             fr.setVisible(true);
         }
     }
-
-
     private Timer messageTimer;
     private Timer busyIconTimer;
     private Icon idleIcon;
     private Icon[] busyIcons = new Icon[15];
     private int busyIconIndex = 0;
+
     private void setStatusBar() {
-            // status bar initialization - message timeout, idle icon and busy animation, etc
+        // status bar initialization - message timeout, idle icon and busy animation, etc
         ResourceMap resourceMap = getResourceMap();
         int messageTimeout = resourceMap.getInteger("StatusBar.messageTimeout");
         messageTimer = new Timer(messageTimeout, new ActionListener() {
+
             public void actionPerformed(ActionEvent e) {
                 statusMessageLabel.setText("");
             }
@@ -967,6 +1004,7 @@ public class MPV5View extends FrameView {
             busyIcons[i] = resourceMap.getIcon("StatusBar.busyIcons[" + i + "]");
         }
         busyIconTimer = new Timer(busyAnimationRate, new ActionListener() {
+
             public void actionPerformed(ActionEvent e) {
                 busyIconIndex = (busyIconIndex + 1) % busyIcons.length;
                 statusAnimationLabel.setIcon(busyIcons[busyIconIndex]);
@@ -979,6 +1017,7 @@ public class MPV5View extends FrameView {
         // connecting action tasks to status bar via TaskMonitor
         TaskMonitor taskMonitor = new TaskMonitor(getApplication().getContext());
         taskMonitor.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 String propertyName = evt.getPropertyName();
                 if ("started".equals(propertyName)) {
@@ -995,11 +1034,11 @@ public class MPV5View extends FrameView {
                     progressBar.setVisible(false);
                     progressBar.setValue(0);
                 } else if ("message".equals(propertyName)) {
-                    String text = (String)(evt.getNewValue());
+                    String text = (String) (evt.getNewValue());
                     statusMessageLabel.setText((text == null) ? "" : text);
                     messageTimer.restart();
                 } else if ("progress".equals(propertyName)) {
-                    int value = (Integer)(evt.getNewValue());
+                    int value = (Integer) (evt.getNewValue());
                     progressBar.setVisible(true);
                     progressBar.setIndeterminate(false);
                     progressBar.setValue(value);

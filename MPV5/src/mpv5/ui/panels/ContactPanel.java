@@ -39,6 +39,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.JWindow;
 import mpv5.db.common.*;
 import mpv5.globals.Headers;
 import mpv5.globals.Messages;
@@ -46,6 +47,7 @@ import mpv5.items.div.Address;
 import mpv5.items.div.Contact;
 import mpv5.items.div.Favourite;
 import mpv5.logging.Log;
+import mpv5.ui.dialogs.BigPopup;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.frames.MPV5View;
 import mpv5.ui.popups.DOTablePopUp;
@@ -214,6 +216,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         addedby = new javax.swing.JLabel();
         groupnameselect = new javax.swing.JComboBox();
         jLabel4 = new javax.swing.JLabel();
+        button_order2 = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         notes = new javax.swing.JTextPane();
@@ -290,7 +293,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             }
         });
 
-        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 12));
+        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel2.setText(bundle.getString("ContactPanel.jLabel2.text")); // NOI18N
         jLabel2.setName("jLabel2"); // NOI18N
 
@@ -352,6 +355,18 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jLabel4.setText(bundle.getString("ContactPanel.jLabel4.text")); // NOI18N
         jLabel4.setName("jLabel4"); // NOI18N
 
+        button_order2.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
+        button_order2.setText(bundle.getString("ContactPanel.button_order2.text")); // NOI18N
+        button_order2.setFocusable(false);
+        button_order2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        button_order2.setName("button_order2"); // NOI18N
+        button_order2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        button_order2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_order2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -380,6 +395,8 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                     .addComponent(dateadded, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(button_order2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(addedby, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(groupnameselect, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -409,7 +426,9 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                                 .addComponent(dateadded, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(addedby, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel4))
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel4)
+                                .addComponent(button_order2, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(groupnameselect, 0, 0, Short.MAX_VALUE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -603,7 +622,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                     .addComponent(removefile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(addfile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -773,7 +792,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
         addresspanel.addTab(bundle.getString("ContactPanel.jPanel2.TabConstraints.tabTitle"), jPanel2); // NOI18N
 
-        button_order1.setFont(new java.awt.Font("Dialog", 0, 10));
+        button_order1.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
         button_order1.setText(bundle.getString("ContactPanel.button_order1.text")); // NOI18N
         button_order1.setFocusable(false);
         button_order1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -851,7 +870,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(leftpane, javax.swing.GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE)
+            .addComponent(leftpane, javax.swing.GroupLayout.DEFAULT_SIZE, 602, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(toolbarpane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -938,6 +957,10 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         deleteFile();
     }//GEN-LAST:event_removefileActionPerformed
 
+    private void button_order2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_order2ActionPerformed
+       BigPopup.showPopup(this, this);
+    }//GEN-LAST:event_button_order2ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel addedby;
     private javax.swing.JButton addfile;
@@ -949,6 +972,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     private javax.swing.JButton button_offers;
     private javax.swing.JButton button_order;
     private javax.swing.JButton button_order1;
+    private javax.swing.JButton button_order2;
     private javax.swing.JButton button_orders;
     private javax.swing.JButton button_product;
     private javax.swing.JButton button_products;
