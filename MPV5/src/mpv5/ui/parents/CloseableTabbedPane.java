@@ -18,8 +18,6 @@ package mpv5.ui.parents;
 
 import java.util.EventListener;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JTabbedPane;
@@ -38,13 +36,14 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
 import javax.swing.ImageIcon;
+import javax.swing.UIDefaults;
+import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.EventListenerList;
 
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import javax.swing.plaf.metal.MetalTabbedPaneUI;
 import mpv5.ui.frames.MPV5View;
-import mpv5.ui.panels.DataPanel;
 
 /**
  * A JTabbedPane which has a close ('X') icon on each tab.
@@ -94,7 +93,7 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseListener,
                 new ImageIcon(CloseableTabbedPane.class.getResource("/mpv5/resources/images/closeclick.png")));
 
 
-        setBorder(new EmptyBorder(1, 1, 1, 1));
+        setBorder(new EmptyBorder(0, 0,0, 0));
         this.parentv = view;
 
     }
@@ -118,12 +117,7 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseListener,
         listenerList = new EventListenerList();
         addMouseListener(this);
         addMouseMotionListener(this);
-
-        if (getUI() instanceof MetalTabbedPaneUI) {
-            setUI(new CloseableMetalTabbedPaneUI(horizontalTextPosition));
-        } else {
-            setUI(new CloseableTabbedPaneUI(horizontalTextPosition));
-        }
+        setUI(new CloseableTabbedPaneUI(horizontalTextPosition));
     }
 
     /**
@@ -568,6 +562,7 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseListener,
             javax.swing.text.View v = getTextViewForTab(tabIndex);
             if (v != null) {
                 tabPane.putClientProperty("html", v);
+
             }
 
             SwingUtilities.layoutCompoundLabel((JComponent) tabPane,
@@ -580,7 +575,7 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseListener,
                     tabRect,
                     iconRect,
                     textRect,
-                    textIconGap + 2);
+                    textIconGap + 0);
 
             tabPane.putClientProperty("html", null);
 

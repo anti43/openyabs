@@ -28,6 +28,7 @@ public class Messages {
     public static String NEW_OFFER = "New Offer";
     public static String NEW_BILL = "New Bill";
     public static String NEW_VALUE= "New Value";
+    public static String NEW_COMPANY= "New Company";
     public static String ACCESS_DENIED = "Access denied.";
     public static String ACTION_CREATE = "Create";
     public static String ACTION_EDIT = "Edit";
@@ -88,5 +89,6 @@ public class Messages {
     public static String IN_USE = "The dataset is in use, locked or has subitems assigned to it.";
     public static String ENTER_A_DESCRIPTION = "Please enter a description:";
     public static String FILE_OPEN_FAILED = "Unable to open the file: \n";
+    
 
 }

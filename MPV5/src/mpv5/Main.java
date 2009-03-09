@@ -12,12 +12,7 @@ import org.jdesktop.application.SingleFrameApplication;
 
 import com.l2fprod.common.swing.plaf.LookAndFeelAddons;
 import java.io.File;
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketException;
+import java.io.FileWriter;
 import java.util.Date;
 import java.util.Map;
 import java.util.Properties;
@@ -31,7 +26,7 @@ import mpv5.globals.Messages;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.Wizard;
 import mpv5.ui.dialogs.subcomponents.wizard_DBSettings_1;
-import mpv5.ui.dialogs.subcomponents.wizard_DBSettings_2;
+
 
 import mpv5.usermanagement.User;
 import mpv5.utils.files.FileDirectoryHandler;
@@ -45,12 +40,13 @@ import org.apache.commons.cli2.util.*;
  */
 public class Main extends SingleFrameApplication {
 
-    private File lockfile = new File((System.getProperty("user.home") + File.separator + Constants.PROG_NAME + Constants.VERSION + "." + "lck"));
+    private File lockfile = new File(MPPATH + File.separator + "." + Constants.PROG_NAME + Constants.VERSION + "." + "lck");
 
     /**
      *
      */
     public static void start() {
+
         try {
             LocalSettings.read();
             LocalSettings.apply();
@@ -65,15 +61,17 @@ public class Main extends SingleFrameApplication {
      */
     @Override
     protected void startup() {
-
         if (!firstInstance()) {
             System.exit(1);
         }
+
+        getContext().getLocalStorage().setDirectory(new File(Main.MPPATH));
 
         if (probeDatabaseConnection()) {
             setLaF(null);
             login();
             super.show(new MPV5View(this));
+            SwingUtilities.updateComponentTreeUI(MPV5View.identifierFrame);
         } else if (Popup.Y_N_dialog(Messages.NO_DB_CONNECTION)) {
             showDbWiz();
         } else {
@@ -159,6 +157,7 @@ public class Main extends SingleFrameApplication {
             APP_DIR = USER_HOME + File.separator + Constants.PROG_NAME;
 
         }
+
     }
 
     private static void parseArgs(String[] args) {
@@ -195,7 +194,6 @@ public class Main extends SingleFrameApplication {
         CommandLine cl = p.parseAndHelp(args);
         if (cl == null) {
             System.err.println("Cannot parse arguments");
-            System.exit(1);
         }
         if (cl.hasOption(help)) {
             hf.print();
@@ -316,7 +314,9 @@ public class Main extends SingleFrameApplication {
                 Log.Debug(this, "Application already running.");
                 return false;
             } else {
-                lockfile.createNewFile();
+                FileWriter x = new FileWriter(lockfile);
+                x.write("Locked on " + new Date() +". Delete me!");
+                x.close();
                 lockfile.deleteOnExit();
                 Log.Debug(this, "Application will start now.");
                 return true;
@@ -337,8 +337,7 @@ public class Main extends SingleFrameApplication {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
         Wizard w = new Wizard(true);
-        w.addPanel(new wizard_DBSettings_1(w));
-        w.addPanel(new wizard_DBSettings_2(w));
+        w.addPanel(new wizard_DBSettings_1(w)); w.addPanel(new wizard_DBSettings_1(w));
         w.showWiz();
     }
 }

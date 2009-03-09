@@ -141,6 +141,19 @@ public class DatabaseInstallation {
         "reserve1 VARCHAR(500) default NULL, reserve2 VARCHAR(500) default NULL," +
         "PRIMARY KEY  (ids))",
 
+        "CREATE TABLE tax (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
+        "cname VARCHAR(250), taxvalue DOUBLE DEFAULT 0," +
+        "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
+        "PRIMARY KEY  (ids))",
+
+        "CREATE TABLE products (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
+        "cname VARCHAR(500) NOT NULL, cnumber VARCHAR(150) , description VARCHAR(500), pricenetvalue DOUBLE DEFAULT 0, buypricevalue DOUBLE DEFAULT 0, " +
+        "taxids BIGINT REFERENCES tax(ids) ON DELETE CASCADE, manufacturer BIGINT REFERENCES contacts(ids)  ON DELETE CASCADE DEFAULT NULL," +
+        "supplier BIGINT REFERENCES contacts(ids)  ON DELETE CASCADE DEFAULT NULL, groupsids  BIGINT  REFERENCES groups(ids) DEFAULT 1," +
+        "dateadded DATE NOT NULL, url VARCHAR(250) default NULL,ean VARCHAR(25) default null, reference VARCHAR(50) default null," +
+        "reserve1 VARCHAR(500) default NULL," +
+        "reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (ids))",
+
 //Subtables
         "CREATE TABLE tablelock (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
         "cname VARCHAR(250), rowID BIGINT NOT NULL, usersids BIGINT REFERENCES users (ids)  ON DELETE CASCADE," +

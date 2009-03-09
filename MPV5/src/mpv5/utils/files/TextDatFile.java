@@ -26,11 +26,7 @@ import javax.print.DocFlavor;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
-import mpv5.globals.Constants;
-import mpv5.globals.Messages;
 import mpv5.logging.Log;
-import mpv5.ui.dialogs.DialogForFile;
-import mpv5.ui.frames.MPV5View;
 
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.jobs.Waitable;
@@ -43,7 +39,7 @@ public class TextDatFile extends File implements Waitable {
 
     private static final long serialVersionUID = 2059941918698508985L;
     private FileReaderWriter rw;
-    private String fieldSeparator = Constants.FELDTRENNER;
+    private String fieldSeparator = ";";
     private String[][] data;
     private String[] header;
     private int mode;

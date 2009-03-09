@@ -70,6 +70,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     public static final int SUPPLIER = 2;
     public static final int MANUFACTURER = 3;
     private static final long serialVersionUID = 1L;
+    public static final int COMPANY = 4;
     private Contact dataOwner;
     private DataPanelTB tb = new mpv5.ui.toolbars.DataPanelTB(this);
     private SearchPanel sp;
@@ -113,16 +114,19 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
     public void setType(int type) {
         switch (type) {
-            case 0:
+            case CONTACT:
                 break;
-            case 1:
+            case CUSTOMER:
                 isCustomer(true);
                 break;
-            case 2:
+            case SUPPLIER:
                 isSupplier(true);
                 break;
-            case 3:
+            case MANUFACTURER:
                 isManufacturer(true);
+                break;
+            case COMPANY:
+                isCompany(true);
                 break;
             default:
                 ;
@@ -162,8 +166,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                     Messages.ENTER_A_DESCRIPTION);
 
             if (s != null) {
-                QueryHandler.instanceOf().clone(Context.getFiles()).insertFile(d.getFile(), dataOwner, new SaveString(s));
-                fillFiles();
+                QueryHandler.instanceOf().clone(Context.getFiles(), this).insertFile(d.getFile(), dataOwner, new SaveString(s));
             }
         }
     }

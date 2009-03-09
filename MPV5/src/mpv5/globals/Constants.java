@@ -28,41 +28,58 @@ public interface Constants {
 
     /**
      * 
-     * Version info
+     * Full Version number
      */
     public static final String VERSION = "5.00";
     /**
      * Will be dynamically changed by SVN.
      */
     public static final String REVISION = "$Rev$";
+    /**
+     *
+     * The Release version
+     */
     public static final String RELEASE_VERSION = "5";
+    /**
+     *
+     * Alias
+     */
     public static final String TITLE = "[Vienna]";
+    /**
+     *
+     * Name of the main JAR
+     */
     public static final String JAR_NAME = "MPV5.jar";
+    /**
+     *
+     * Program name
+     */
     public static final String PROG_NAME = "MP-" + Constants.VERSION + "";
+    /**
+     *
+     * Running Java Version info
+     */
     public static String JAVA_VERSION = "Java Version: " + System.getProperty("java.version");
+    /**
+     *
+     * The marker for valid plugins for this version
+     */
     public static String PLUGIN_IDENTIFIER = "MP5Plugin";
+    /**
+     *
+     * The class name to be loaded from plugins
+     */
     public static String PLUGIN_LOAD_CLASS = "plugin.Main";
     /**
      * Name of databasedir 
      */
     public static final String DATABASENAME = "mpv" + Constants.RELEASE_VERSION + "db";
-    /**
-     * Full path to database dir 
-     */
-//    public static final String MPPATH = Main.MPPATH;
+
     public static String SEP = File.separator;
-    public static String TEMPLATES_DIR = "Vorlagen";
     public static String LIB_DIR = "lib";
-    public static String PDF = "PDF";
-    public static String OFFER_SAVE_DIR = "Angebote";
     public static String CACHE_DIR = "Cache";
     public static String PLUGIN_DIR = "Plugins";
-    public static String BILL_SAVE_DIR = "Rechnungen";
-    public static String ARREAR_SAVE_DIR = "Mahnungen";
-    public static String PRODUCT_SAVE_DIR = "Produkte";
-    public static String LIEFERSCHEIN_SAVE_DIR = "Lieferscheine";
-    public static String BACKUPS_SAVE_DIR = "Backup";
     public static String ICON_NAME_LIN = "mp.desktop";
     public static String ICON_NAME_WIN = "MP-Rechnungs-Kundenverwaltung.url";
-    public static String FELDTRENNER = ";";
+
 }

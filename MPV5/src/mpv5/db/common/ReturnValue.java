@@ -13,6 +13,7 @@ public class ReturnValue {
     private int id  = 0;
     private Object[][] data;
     private String[] columnnames;
+    private String message = null;
 
     public ReturnValue(int idOfIt, Object[][] data) {
 
@@ -34,6 +35,12 @@ public class ReturnValue {
     }
 
     /**
+     *
+     */
+    public ReturnValue() {
+    }
+
+    /**
      * @return the id
      */
     public int getId() {
@@ -52,5 +59,46 @@ public class ReturnValue {
      */
     public String[] getColumnnames() {
         return columnnames;
+    }
+
+    public void set(ReturnValue returnValue) {
+         this.setId(returnValue.id);
+        this.setColumnnames(returnValue.columnnames);
+        this.setData(returnValue.data);
+    }
+
+    /**
+     * @return the message
+     */
+    public String getMessage() {
+        return message;
+    }
+
+    /**
+     * @param message the message to set
+     */
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    /**
+     * @param data the data to set
+     */
+    public void setData(Object[][] data) {
+        this.data = data;
+    }
+
+    /**
+     * @param columnnames the columnnames to set
+     */
+    public void setColumnnames(String[] columnnames) {
+        this.columnnames = columnnames;
     }
 }

@@ -22,7 +22,6 @@
  */
 package mpv5.ui.dialogs;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.util.ArrayList;
 import javax.swing.JFrame;
@@ -40,7 +39,7 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
     private static final long serialVersionUID = 1L;
 
     public PropertyStore actionVars = new PropertyStore();
-    private int index = 0;
+//    private int index = 4300;
     private Component lastpanel;
     private ArrayList<Component> oldcomponents = new ArrayList<Component>();
     private boolean isEnded = false;
@@ -52,13 +51,10 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
     public Wizard(boolean standalone) {
         initComponents();
         back.setEnabled(false);
-        new Position(this);
-        setVisible(true);
         this.standalone = standalone;
         if (standalone) {
             this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         }
-        repaint();
     }
 
     public void showWiz() {
@@ -66,7 +62,6 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
         new Position(this);
         setVisible(true); 
         pack();
-        setResizable(false);
         repaint();
     }
 
@@ -80,7 +75,7 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
     private void initComponents() {
 
         content = new javax.swing.JPanel();
-        layer = new javax.swing.JLayeredPane();
+        layerpane = new javax.swing.JLayeredPane();
         control = new javax.swing.JPanel();
         cancel = new javax.swing.JButton();
         back = new javax.swing.JButton();
@@ -98,8 +93,8 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
         content.setName("content"); // NOI18N
         content.setLayout(new java.awt.BorderLayout());
 
-        layer.setName("layer"); // NOI18N
-        content.add(layer, java.awt.BorderLayout.CENTER);
+        layerpane.setName("layerpane"); // NOI18N
+        content.add(layerpane, java.awt.BorderLayout.CENTER);
 
         control.setBackground(new java.awt.Color(255, 255, 255));
         control.setName("control"); // NOI18N
@@ -190,9 +185,9 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
             System.exit(0);
         }
 
-        lastpanel = layer.getComponent(0);
+        lastpanel = layerpane.getComponent(0);
         if (!isEnded && ((Wizardable) lastpanel).next()) {
-            layer.moveToBack(lastpanel);
+            layerpane.moveToBack(lastpanel);
             oldcomponents.add(lastpanel);
             back.setEnabled(true);
         }
@@ -203,8 +198,8 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
     private void backActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backActionPerformed
 
         try {
-            if (((Wizardable) layer.getComponent(0)).back()) {
-                layer.moveToFront(layer.getComponent(layer.getIndexOf(oldcomponents.get(oldcomponents.size() - 1))));
+            if (((Wizardable) layerpane.getComponent(0)).back()) {
+                layerpane.moveToFront(layerpane.getComponent(layerpane.getIndexOf(oldcomponents.get(oldcomponents.size() - 1))));
                 oldcomponents.remove(oldcomponents.size() - 1);
             }
         } catch (Exception e) {
@@ -220,12 +215,12 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
      * @param panel
      */
     public void addPanel(Wizardable panel) {
-        ((JPanel) panel).setPreferredSize(content.getSize());
-        ((JPanel) panel).setBounds(0, 0, content.getWidth(), content.getHeight());
-        ((JPanel) panel).setOpaque(true);
-        layer.add(((JPanel) panel), JLayeredPane.DEFAULT_LAYER, index);
-        index++;
-        layer.validate();
+        JPanel pane = (JPanel)panel;
+        (pane).setPreferredSize(content.getSize());
+        (pane).setBounds(0, 0, content.getWidth(), content.getHeight());
+        (pane).setOpaque(true);
+        layerpane.add(( pane));
+
     }
 
     /**
@@ -275,7 +270,7 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
     private javax.swing.JButton cancel;
     private javax.swing.JPanel content;
     private javax.swing.JPanel control;
-    private javax.swing.JLayeredPane layer;
+    private javax.swing.JLayeredPane layerpane;
     private javax.swing.JLabel message;
     private javax.swing.JButton next;
     // End of variables declaration//GEN-END:variables

@@ -34,6 +34,8 @@ import mpv5.items.div.Contact;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPV5View;
 import mpv5.ui.dialogs.Popup;
+import mpv5.ui.panels.ContactPanel;
+import mpv5.ui.panels.DataPanel;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.arrays.ArrayUtilities;
 
@@ -70,6 +72,7 @@ public class QueryHandler implements Cloneable {
         }
         return instance;
     }
+    private DataPanel viewToBeNotified = null;
 
     private QueryHandler() {
         try {
@@ -392,7 +395,6 @@ public class QueryHandler implements Cloneable {
     public boolean checkUniqueness(String column, String value) {
         return checkUniqueness(new String[]{column, value, "'"}, new int[]{0});
     }
-    
     private static int RUNNING_JOBS = 0;
 
     private void stop() {
@@ -802,6 +804,19 @@ public class QueryHandler implements Cloneable {
         return theClone;
     }
 
+    public QueryHandler clone(Context c, DataPanel viewToBeNotified) {
+        this.viewToBeNotified = viewToBeNotified;
+        QueryHandler theClone = null;
+        this.context = c;
+        try {
+            theClone = (QueryHandler) this.clone();
+            theClone.setTable(context.getDbIdentity());
+        } catch (CloneNotSupportedException ex) {
+            Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return theClone;
+    }
+
     /**
      * 
      * @param what
@@ -890,7 +905,7 @@ public class QueryHandler implements Cloneable {
         } catch (SQLException ex) {
             Log.Debug(this, message + ex.getMessage());
             Popup.error(message + ex.getMessage(), "Datenbankfehler");
-            
+
             return 0;
         } finally {
             stop();
@@ -997,7 +1012,7 @@ public class QueryHandler implements Cloneable {
             retval = new ReturnValue(id, data, columnnames);
 
         } catch (SQLException ex) {
-       
+
             jobmessage = Messages.ERROR_OCCURED;
             Log.Debug(this, message + ex.getMessage());
             retval = null;
@@ -1011,7 +1026,7 @@ public class QueryHandler implements Cloneable {
                 try {
                     resultSet.close();
                 } catch (SQLException ex) {
-                    
+
                     jobmessage = Messages.ERROR_OCCURED;
                     Log.Debug(this, message + ex.getMessage());
                     if (log != null) {
@@ -1023,7 +1038,7 @@ public class QueryHandler implements Cloneable {
                 try {
                     stm.close();
                 } catch (SQLException ex) {
-                    
+
                     Log.Debug(this, message + ex.getMessage());
                     if (log != null) {
                         log.append(" \n" + ex.getMessage());
@@ -1088,7 +1103,7 @@ public class QueryHandler implements Cloneable {
             if (log != null) {
                 log.append("\n " + stm.getUpdateCount() + " rows affected.");
             }
-      
+
 
             keys = stm.getGeneratedKeys();
 
@@ -1099,7 +1114,7 @@ public class QueryHandler implements Cloneable {
             retval = new ReturnValue(id, null, null);
 
         } catch (SQLException ex) {
-         
+
             jobmessage = Messages.ERROR_OCCURED;
             Log.Debug(this, message + ex.getMessage());
             if (log != null) {
@@ -1112,7 +1127,7 @@ public class QueryHandler implements Cloneable {
                 try {
                     resultSet.close();
                 } catch (SQLException ex) {
-                    
+
                     jobmessage = Messages.ERROR_OCCURED;
                     Log.Debug(this, message + ex.getMessage());
                     if (log != null) {
@@ -1124,7 +1139,7 @@ public class QueryHandler implements Cloneable {
                 try {
                     stm.close();
                 } catch (SQLException ex) {
-                 
+
                     Log.Debug(this, message + ex.getMessage());
                     if (log != null) {
                         log.append(" \n" + ex.getMessage());
@@ -1132,7 +1147,7 @@ public class QueryHandler implements Cloneable {
                 }
             }
         }
-      
+
         if (jobmessage != null) {
             MPV5View.addMessage(jobmessage);
         }
@@ -1221,8 +1236,8 @@ public class QueryHandler implements Cloneable {
             jobmessage = Messages.ERROR_OCCURED;
         } finally {
             // Alle Ressourcen wieder freigeben
-              stop();
-              if (resultSet != null) {
+            stop();
+            if (resultSet != null) {
                 try {
                     resultSet.close();
                 } catch (SQLException ex) {
@@ -1240,7 +1255,7 @@ public class QueryHandler implements Cloneable {
                 }
             }
         }
-      
+
         if (jobmessage != null) {
             MPV5View.addMessage(jobmessage);
         }
@@ -1284,7 +1299,9 @@ public class QueryHandler implements Cloneable {
 
             stop();
         }
-
+        if (viewToBeNotified != null) {
+            viewToBeNotified.refresh();
+        }
         if (jobmessage != null) {
             MPV5View.addMessage(jobmessage);
         }
@@ -1357,7 +1374,9 @@ public class QueryHandler implements Cloneable {
                 }
             }
         }
-     
+        if (viewToBeNotified != null) {
+            viewToBeNotified.refresh();
+        }
         if (jobmessage != null) {
             MPV5View.addMessage(jobmessage);
         }
@@ -1471,6 +1490,9 @@ public class QueryHandler implements Cloneable {
         @Override
         public void done() {
             setProgress(100);
+            if (viewToBeNotified != null) {
+                viewToBeNotified.refresh();
+            }
         }
 
         class changeListener implements PropertyChangeListener {
@@ -1533,6 +1555,7 @@ public class QueryHandler implements Cloneable {
                     ps.execute();
                     sqlConn.commit();
                 } catch (Exception ex) {
+                    MPV5View.setProgressReset();
                     Log.Debug(this, "Datenbankfehler: " + query, true);
                     Log.Debug(this, ex);
                     Popup.error(ex.getMessage(), "Datenbankfehler");
@@ -1552,6 +1575,9 @@ public class QueryHandler implements Cloneable {
             try {
                 QueryHandler.instanceOf().clone(Context.getFilesToContacts()).insert(new String[]{"cname,contactsids,filename, description", "'" + file.getName() + "', " + dataOwner.__getIDS() + " ,'" + get() + "','" + descriptiveText + "'"}, Messages.FILE_SAVED + file.getName(), true);
                 MPV5View.addMessage(Messages.FILE_SAVED + file.getName());
+                if (viewToBeNotified != null) {
+                    viewToBeNotified.refresh();
+                }
             } catch (InterruptedException ex) {
                 Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ExecutionException ex) {

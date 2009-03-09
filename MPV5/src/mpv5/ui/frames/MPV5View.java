@@ -169,7 +169,7 @@ public class MPV5View extends FrameView {
     }
 
     public DataPanel getCurrentTab(){
-        return (DataPanel) tabPane.getTabComponentAt(tabPane.getSelectedIndex());
+        return (DataPanel) tabPane.getSelectedComponent();
     }
 
     private static void fillFavouritesmenu() {
@@ -275,7 +275,9 @@ public class MPV5View extends FrameView {
         favouritesMenu = new javax.swing.JMenu();
         jMenuItem5 = new javax.swing.JMenuItem();
         clipboardMenu = new javax.swing.JMenu();
+        jMenu6 = new javax.swing.JMenu();
         jMenuItem7 = new javax.swing.JMenuItem();
+        jMenuItem9 = new javax.swing.JMenuItem();
         statusPanel = new javax.swing.JPanel();
         statusMessageLabel = new FadeOnChangeLabel();
         progressBar = new javax.swing.JProgressBar();
@@ -476,7 +478,9 @@ public class MPV5View extends FrameView {
         );
         naviPanelLayout.setVerticalGroup(
             naviPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jOutlookBar1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 502, Short.MAX_VALUE)
+            .addGroup(naviPanelLayout.createSequentialGroup()
+                .addComponent(jOutlookBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 490, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
@@ -513,9 +517,11 @@ public class MPV5View extends FrameView {
         jMenu4.setText(bundle.getString("MPV5View.jMenu4.text")); // NOI18N
         jMenu4.setName("jMenu4"); // NOI18N
 
+        jMenu5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/kontact_contacts.png"))); // NOI18N
         jMenu5.setText(bundle.getString("MPV5View.jMenu5.text")); // NOI18N
         jMenu5.setName("jMenu5"); // NOI18N
 
+        jMenuItem8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/xml.png"))); // NOI18N
         jMenuItem8.setText(bundle.getString("MPV5View.jMenuItem8.text")); // NOI18N
         jMenuItem8.setName("jMenuItem8"); // NOI18N
         jMenuItem8.addActionListener(new java.awt.event.ActionListener() {
@@ -558,6 +564,7 @@ public class MPV5View extends FrameView {
         jMenu1.add(jMenu2);
 
         jMenuItem4.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/2uparrow.png"))); // NOI18N
         jMenuItem4.setText(bundle.getString("MPV5View.jMenuItem4.text")); // NOI18N
         jMenuItem4.setName("jMenuItem4"); // NOI18N
         jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
@@ -572,6 +579,7 @@ public class MPV5View extends FrameView {
         jMenu3.setText(bundle.getString("MPV5View.jMenu3.text_1")); // NOI18N
         jMenu3.setName("jMenu3"); // NOI18N
 
+        jMenuItem3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/configure_shortcuts.png"))); // NOI18N
         jMenuItem3.setText(bundle.getString("MPV5View.jMenuItem3.text_1")); // NOI18N
         jMenuItem3.setName("jMenuItem3"); // NOI18N
         jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
@@ -586,6 +594,7 @@ public class MPV5View extends FrameView {
         favouritesMenu.setText(bundle.getString("MPV5View.favouritesMenu.text")); // NOI18N
         favouritesMenu.setName("favouritesMenu"); // NOI18N
 
+        jMenuItem5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/remove.png"))); // NOI18N
         jMenuItem5.setText(bundle.getString("MPV5View.jMenuItem5.text")); // NOI18N
         jMenuItem5.setName("jMenuItem5"); // NOI18N
         jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
@@ -600,6 +609,9 @@ public class MPV5View extends FrameView {
         clipboardMenu.setText(bundle.getString("MPV5View.clipboardMenu.text")); // NOI18N
         clipboardMenu.setName("clipboardMenu"); // NOI18N
 
+        jMenu6.setText(bundle.getString("MPV5View.jMenu6.text")); // NOI18N
+        jMenu6.setName("jMenu6"); // NOI18N
+
         jMenuItem7.setText(bundle.getString("MPV5View.jMenuItem7.text")); // NOI18N
         jMenuItem7.setName("jMenuItem7"); // NOI18N
         jMenuItem7.addActionListener(new java.awt.event.ActionListener() {
@@ -607,7 +619,20 @@ public class MPV5View extends FrameView {
                 jMenuItem7ActionPerformed(evt);
             }
         });
-        clipboardMenu.add(jMenuItem7);
+        jMenu6.add(jMenuItem7);
+
+        jMenuItem9.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/editcopy.png"))); // NOI18N
+        jMenuItem9.setText(bundle.getString("MPV5View.jMenuItem9.text")); // NOI18N
+        jMenuItem9.setName("jMenuItem9"); // NOI18N
+        jMenuItem9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem9ActionPerformed(evt);
+            }
+        });
+        jMenu6.add(jMenuItem9);
+
+        clipboardMenu.add(jMenu6);
 
         menuBar.add(clipboardMenu);
 
@@ -644,8 +669,8 @@ public class MPV5View extends FrameView {
                 .addGroup(statusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(statusPanelLayout.createSequentialGroup()
                         .addGap(3, 3, 3)
-                        .addComponent(statusMessageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 15, Short.MAX_VALUE))
-                    .addComponent(progressBar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 18, Short.MAX_VALUE)
+                        .addComponent(statusMessageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 13, Short.MAX_VALUE))
+                    .addComponent(progressBar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 16, Short.MAX_VALUE)
                     .addComponent(statusAnimationLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 0, 0))
         );
@@ -723,6 +748,11 @@ public class MPV5View extends FrameView {
 }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton20ActionPerformed
+
+        ContactPanel tab = new ContactPanel(Context.getCompany());
+        tab.setType(ContactPanel.COMPANY);
+        tabPane.addTab(Messages.NEW_COMPANY, tab);
+        tabPane.setSelectedComponent(tab);
     }//GEN-LAST:event_jButton20ActionPerformed
 
     private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
@@ -788,6 +818,8 @@ public class MPV5View extends FrameView {
 
     private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
 
+        clipboardMenu.removeAll();
+        clipboardMenu.add(jMenu6);
 
     }//GEN-LAST:event_jMenuItem7ActionPerformed
 
@@ -803,6 +835,12 @@ public class MPV5View extends FrameView {
             Log.Debug(this, ex);
         }
     }//GEN-LAST:event_jMenuItem8ActionPerformed
+
+    private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
+
+        clipboardMenu.add(new  ClipboardMenuItem(getCurrentTab().getDataOwner() ));
+
+    }//GEN-LAST:event_jMenuItem9ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JMenu clipboardMenu;
@@ -820,6 +858,7 @@ public class MPV5View extends FrameView {
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu jMenu5;
+    private javax.swing.JMenu jMenu6;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
@@ -828,6 +867,7 @@ public class MPV5View extends FrameView {
     private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JMenuItem jMenuItem8;
+    private javax.swing.JMenuItem jMenuItem9;
     private com.l2fprod.common.swing.JOutlookBar jOutlookBar1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
