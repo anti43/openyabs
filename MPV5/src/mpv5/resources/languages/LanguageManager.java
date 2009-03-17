@@ -59,6 +59,14 @@ public class LanguageManager {
         cachedLanguages.clear();
     }
 
+    /**
+     * Import & replace the country list
+     * @param file
+     */
+    public static void importCountries(File file) {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
     private static boolean isCachedLanguage(String langid) {
         return cachedLanguages.containsKey(langid);
     }
@@ -68,7 +76,7 @@ public class LanguageManager {
         if (cachedLanguages.containsKey(langid)) {
             cachedLanguages.remove(langid);
         }
-        cachedLanguages.put(langid,bundle);
+        cachedLanguages.put(langid, bundle);
     }
 
     private static ResourceBundle getCachedLanguage(String langid) {
@@ -169,9 +177,17 @@ public class LanguageManager {
         Object[][] data = QueryHandler.instanceOf().clone(Context.getLanguage()).select("cname, longname", null);
         MPComboBoxModelItem[] t = null;
         Object[][] ldata;
-        ldata =ArrayUtilities.merge(defLanguage, data);
+        ldata = ArrayUtilities.merge(defLanguage, data);
         t = MPComboBoxModelItem.toItems(ldata);
         return new DefaultComboBoxModel(t);
+    }
+
+     /**
+     *
+     * @return A ComboBoxModel reflecting the available Countries
+     */
+    public static ComboBoxModel getCountriesAsComboBoxModel() {
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     /**
@@ -206,7 +222,7 @@ public class LanguageManager {
                         insert(new String[]{"cname, longname, filename",
                             PrepareData.finalize(PrepareData.prepareString(langid) +
                             PrepareData.prepareString(langname) +
-                            PrepareData.prepareString(dbname)), null, },
+                            PrepareData.prepareString(dbname)), null,},
                         new int[]{0}, "Imported language: " + langname, true);
                 MPV5View.addMessage(langname + Messages.ROW_UPDATED);
             } catch (FileNotFoundException ex) {
