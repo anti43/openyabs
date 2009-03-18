@@ -387,11 +387,13 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
     }
 
     public void reset() {
-        DatabaseObject dato = dataOwner;
+        if (dataOwner.isExisting()) {
+            DatabaseObject dato = dataOwner;
 
-        dato.getPanelData(this);
-        dato.reset();
-        setDataOwner(dato);
+            dato.getPanelData(this);
+            dato.reset();
+            setDataOwner(dato);
+        }
     }
 
     public ControlApplet instanceOf() {
