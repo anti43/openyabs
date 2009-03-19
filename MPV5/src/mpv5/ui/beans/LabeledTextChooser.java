@@ -11,8 +11,11 @@
 package mpv5.ui.beans;
 
 import java.awt.Font;
+import java.io.File;
 import mpv5.globals.LocalSettings;
+import mpv5.globals.Messages;
 import mpv5.ui.dialogs.DialogForFile;
+import mpv5.ui.dialogs.Popup;
 
 /**
  *
@@ -105,6 +108,11 @@ public class LabeledTextChooser extends javax.swing.JPanel {
      * @return the _text
      */
     public String get_Text() {
+        if (new File(jTextField1.getText()).exists()) {
+            return jTextField1.getText();
+        } else {
+            Popup.notice(Messages.FILE_OPEN_FAILED + jTextField1.getText());
+        }
         return jTextField1.getText();
     }
 

@@ -43,7 +43,7 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
             master.setMessage(Messages.CONNECTION_PROBE + master.getStore().getProperty("driver"));
             conn = new DatabaseConnection();
             try {
-                if(new File(master.getStore().getProperty("url") + File.separator + Constants.DATABASENAME).exists()) {
+                if (new File(master.getStore().getProperty("url") + File.separator + Constants.DATABASENAME).exists()) {
                     existing = true;
                 }
                 if (conn.connect(jComboBox1.getSelectedItem().toString(),
@@ -228,7 +228,13 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
     // End of variables declaration//GEN-END:variables
 
     public boolean next() {
-        return DBVerification();
+        if (DBVerification()) {
+            Main.getApplication().go();
+            this.master.dispose();
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public boolean back() {

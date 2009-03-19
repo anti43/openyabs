@@ -22,9 +22,13 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import javax.xml.bind.JAXBElement.GlobalScope;
 import mpv5.data.PropertyStore;
 import mpv5.db.common.DatabaseObject;
+import mpv5.globals.Messages;
 import mpv5.logging.Log;
+import mpv5.ui.dialogs.Popup;
+import org.jdom.Attribute;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -37,40 +41,58 @@ import org.jdom.input.SAXBuilder;
  */
 public class XMLReader {
 
-    private Element rootElement = new Element("mpv5");
+    private Element rootElement = new Element(mpv5.globals.Constants.XML_ROOT);
     private Document myDocument = new Document();
 
     /**
-     * Gets a node with the given name and the "ID" attributevalue
-     * @param nodename
-     * @param id
-     * @return The value of the node
+     *
+     * @param name
+     * @return
      */
-    public String[] getNode(String nodename, String id) {
+    public Element getSubRootElement(String name) {
         @SuppressWarnings("unchecked")
-        List<Element> list = (List<Element>) rootElement.getContent();
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i) instanceof Element) {
-                if (list.get(i).getName().equals(nodename) && list.get(i).getAttribute("id") != null && list.get(i).getAttribute("id").getValue().equals(id)) {
-                    @SuppressWarnings("unchecked")
-                    List<Element> liste = list.get(i).getChildren();
-                    String[] values = new String[liste.size()];
-                    for (int j = 0; j < liste.size(); j++) {
-                        Element element = liste.get(j);
-                        values[j] = element.getValue();
-                    }
-                }
+        List<Element> l = rootElement.getContent(new ElementFilter());
+
+        for (int i = 0; i < l.size(); i++) {
+            Element element = l.get(i);
+            if (element.getName().equals(name)) {
+                return element;
             }
         }
-        return null;
+
+        return new Element(name);
     }
 
+//    /**
+//     * Gets a node with the given name and the "ID" attributevalue
+//     * @param nodename
+//     * @param id
+//     * @return The value of the node
+//     */
+//    public String[] getNode(String nodename, String id) {
+//        @SuppressWarnings("unchecked")
+//        List<Element> list = (List<Element>) rootElement.getContent();
+//        for (int i = 0; i < list.size(); i++) {
+//            if (list.get(i) instanceof Element) {
+//                if (list.get(i).getName().equals(nodename) && list.get(i).getAttribute("id") != null && list.get(i).getAttribute("id").getValue().equals(id)) {
+//                    @SuppressWarnings("unchecked")
+//                    List<Element> liste = list.get(i).getChildren();
+//                    String[] values = new String[liste.size()];
+//                    for (int j = 0; j < liste.size(); j++) {
+//                        Element element = liste.get(j);
+//                        values[j] = element.getValue();
+//                    }
+//                }
+//            }
+//        }
+//        return null;
+//    }
     /**
      * Parses a XML document
      * @param xmlfile
      * @return The resulting xml document
      */
-    public Document newDoc(File xmlfile)  {
+    public Document newDoc(File xmlfile) {
         return createDocument(xmlfile, false);
     }
 
@@ -86,14 +108,15 @@ public class XMLReader {
 
     /**
      * Gets an element value
+     * @param type
      * @param nodename The name of the node
      * @param attributevalue The ID of the node
      * @param name The name of the element
      * @return The value of the element
      */
-    public String getElement(String nodename, String attributevalue, String name) {
+    public String getElement(String type, String nodename, String attributevalue, String name) {
         @SuppressWarnings("unchecked")
-        List<Element> list = (List<Element>) rootElement.getContent();
+        List<Element> list = (List<Element>) rootElement.getChild(type).getContent();
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i) instanceof Element) {
                 if (list.get(i).getName().equals(nodename) && list.get(i).getAttribute("id") != null && list.get(i).getAttribute("id").getValue().equals(attributevalue)) {
@@ -104,6 +127,11 @@ public class XMLReader {
         return null;
     }
 
+    /**
+     * Tries to parse the xml file into a list of matching database objects.
+     * @param template
+     * @return
+     */
     public ArrayList<DatabaseObject> getObjects(DatabaseObject template) {
 
         String ident = template.getType();
@@ -114,11 +142,11 @@ public class XMLReader {
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i) instanceof Element && list.get(i).getName().equalsIgnoreCase(template.getType())) {
                 if (list.get(i).getName().equals(ident) && list.get(i).getAttribute("id") != null) {
-                        Element element = list.get(i);
-                        DatabaseObject obj = template.clone();
-                        obj.parse(toHashTable(element));
-                        arrlist.add(obj);
-                    }
+                    Element element = list.get(i);
+                    DatabaseObject obj = template.clone();
+                    obj.parse(toHashTable(element));
+                    arrlist.add(obj);
+                }
             }
         }
         return arrlist;
@@ -139,16 +167,25 @@ public class XMLReader {
 
     /**
      * Reads a node with the given name into a property store object
+     * @param type 
      * @param nodename
+     * @param nodeid 
      * @param store
      * @return
      */
-    public PropertyStore readInto(String nodename, PropertyStore store) {
+    public PropertyStore readInto(String type, String nodename, String nodeid, PropertyStore store) {
         @SuppressWarnings("unchecked")
-        List<Element> list = (List<Element>) rootElement.getChild(nodename).getContent(new ElementFilter());
+        List<Element> list = (List<Element>) rootElement.getChild(type).getContent(new ElementFilter());
         for (int i = 0; i < list.size(); i++) {
             Element element = list.get(i);
-            store.addProperty(element.getName(), element.getValue());
+            if (element.getName().equals(nodename) && element.getAttribute("id").getValue().equals(nodeid)) {
+                @SuppressWarnings("unchecked")
+                List<Element> list2 = (List<Element>) element.getContent(new ElementFilter());
+                for (int j = 0; j < list2.size(); j++) {
+                    Element element1 = list2.get(j);
+                    store.addProperty(element1.getName(), element1.getValue());
+                }
+            }
         }
 
         return store;
@@ -164,17 +201,18 @@ public class XMLReader {
         try {
             myDocument = parser.build(xmlfile);
             rootElement = myDocument.getRootElement();
-           return myDocument;
-        } catch (JDOMException jDOMException) {
+            Log.Debug(this, "Document validated: " + xmlfile);
+            return myDocument;
+        } catch (Exception jDOMException) {
             Log.Debug(this, jDOMException.getMessage());
-        } catch (IOException iOException) {
-            Log.Debug(this, iOException.getMessage());
-        }
+            Popup.error("", jDOMException);
+        } 
         return null;
     }
 
     /**
-     * Converts a node into a hashtable
+     * Converts a node into a hashtable<br/>
+     * {name, value}, will not return any attributes
      * @param node
      * @return
      */
@@ -188,6 +226,33 @@ public class XMLReader {
             table.put(element.getName(), element.getValue());
         }
 
+        return table;
+    }
+
+    /**
+     * Reads a node into a dynamic String array
+     * {name, vale, attribute1, attribute2.. 5}
+     * @param node
+     * @return
+     */
+    public String[][] toArray(Element node) {
+        @SuppressWarnings("unchecked")
+        List<Element> liste = node.getContent(new ElementFilter());
+        Log.Debug(this, liste.size() + " elements found in " + node);
+        String[][] table = new String[liste.size()][5];
+
+        for (int i = 0; i < liste.size(); i++) {
+            Element element = liste.get(i);
+            table[i][0] = element.getName();
+            table[i][1] = element.getValue();
+            @SuppressWarnings("unchecked")
+            List<Attribute> atts = element.getAttributes();
+
+            for (int j = 2; j < atts.size() + 2; j++) {
+                Attribute a = atts.get(j-2);
+                table[i][j] = a.getValue();
+            }
+        }
         return table;
     }
 }

@@ -23,12 +23,12 @@ import java.util.Iterator;
 import java.util.List;
 import mpv5.data.PropertyStore;
 import mpv5.db.common.DatabaseObject;
+import mpv5.globals.Constants;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
-import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.frames.MPV5View;
 import mpv5.utils.files.FileDirectoryHandler;
-import org.jdom.Attribute;
+import org.jdom.DocType;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.output.Format;
@@ -40,10 +40,11 @@ import org.jdom.output.XMLOutputter;
  */
 public class XMLWriter {
 
-    private String root = "mpv5";
-    private Element rootElement = new Element(root);
+    public static String rootElementName = Constants.XML_ROOT;
+    private Element rootElement = new Element(rootElementName);
     private Document myDocument = new Document();
-   
+    public static DocType DEFAULT_DOCTYPE = new DocType(rootElementName, Constants.XML_DOCTYPE_ID, Constants.XML_DOCTYPE_URL);
+    private Element defaultSubRoot;
 
     /**
      * Adds all objects
@@ -51,36 +52,75 @@ public class XMLWriter {
      */
     public void add(ArrayList<DatabaseObject> dbobjarr) {
 
-        if (dbobjarr != null) {
+        if (dbobjarr != null && dbobjarr.size() > 0) {
+            DatabaseObject d = dbobjarr.get(0);
+            String sident = d.getDbIdentity();
+            Element parent = addNode(new Element(sident));
             for (int i = 0; i < dbobjarr.size(); i++) {
                 try {
 
                     DatabaseObject databaseObject = dbobjarr.get(i);
-                    String ident = databaseObject.getType();
+                    Element ident = new Element(databaseObject.getType());
 
                     ArrayList<String[]> data = databaseObject.getValues();
-                    this.addNode(ident, databaseObject.__getIDS().toString());
+                    this.addNode(parent, ident, databaseObject.__getIDS().toString());
 
                     for (int h = 0; h < data.size(); h++) {
-                        this.addElement(ident, databaseObject.__getIDS().toString(), data.get(h)[0], data.get(h)[1]);
+                        this.addElement(parent, ident, databaseObject.__getIDS().toString(), data.get(h)[0], data.get(h)[1]);
                     }
-                } catch (Exception e) {
-                    Log.Debug(this, e.getMessage());
+                } catch (Exception ex) {
+                    Log.Debug(this, ex.getMessage());
                 }
             }
         }
     }
 
     /**
-     * Adds a node with the given name, and an additional attribute "ID" with the attribute value
-     * @param name The node name
-     * @param attribute The value for the attribute "ID"
+     * Adds a node to root with the given name
+     * @param e
+     * @return
      */
-    public void addNode(String name, String attribute) {
-        Element elem = new Element(name);
-        elem.setAttribute("id", attribute);
-        rootElement.addContent(elem);
+    public Element addNode(Element e) {
+        rootElement.addContent(e);
+        return e;
     }
+
+    /**
+     * Adds a node to parent with the given name
+     * @param parent
+     * @param name The node name
+     * @return
+     */
+    public Element addNode(Element parent, String name) {
+        Element elem = new Element(name);
+        parent.addContent(elem);
+        return elem;
+    }
+
+    /**
+     * Adds a node to parent with the given name, and an additional attribute "ID" with the attribute value
+     * @param parent
+     * @param name
+     * @param attribute
+     * @return
+     */
+    public Element addNode(Element parent, Element name, String attribute) {
+        Element elem = name;
+        elem.setAttribute("id", attribute);
+        parent.addContent(elem);
+        return elem;
+    }
+
+//    /**
+//     * Adds a node with the given name to root
+//     * @param name
+//     * @return
+//     */
+//    public Element addNode(String name) {
+//        Element e = new Element(name);
+//        rootElement.addContent(e);
+//        return e;
+//    }
 
     /**
      * Appends the PropertyStore's data to an existing XML file,
@@ -98,7 +138,7 @@ public class XMLWriter {
             myDocument = reader.newDoc(file);
             rootElement = myDocument.getRootElement();
         } catch (Exception ex) {
-            newDoc(root);
+            newDoc();
         }
         parse(nodename, nodeid, cookie);
     }
@@ -119,20 +159,30 @@ public class XMLWriter {
     }
 
     /**
-     * Creates a ned XML document with  the given root element
-     * @param rootElementName
+     * Creates a new XML document with the root element
      */
-    public void newDoc(String rootElementName) {
+    public void newDoc() {
         // Create the root element
-        rootElement = new Element(rootElementName);
-        myDocument = new Document(rootElement);
+//        rootElement = new Element(rootElementName);
+        myDocument = new Document(rootElement, (DocType) DEFAULT_DOCTYPE.clone());
     //add an attribute to the root element
 //        rootElement.setAttribute(new Attribute("userid", MPV5View.getUser().getID()));
     }
 
+
+    /**
+     * Creates a ned XML document with the sub root element
+     * @param defaultSubRootElementName
+     */
+    public void newDoc(String defaultSubRootElementName) {
+       newDoc();
+       defaultSubRoot = new Element(defaultSubRootElementName);
+       rootElement.addContent(defaultSubRoot);
+    }
+
     /**
      * Creates a new XML file with the given name
-     * and pops up a 'save file as..' dialog
+     * 
      * @param filename
      * @return
      */
@@ -151,20 +201,21 @@ public class XMLWriter {
 
     /**
      * Adds an element or replaces it if already existing
-     * @param nodename 
+     * @param parent
+     * @param nodename
      * @param attributevalue The ID of the node where this element shall be added
      * @param name The name of the new element
      * @param value The value of the element
      */
-    public void addElement(String nodename, String attributevalue, String name, String value) {
+    public void addElement(Element parent, Element nodename, String attributevalue, String name, String value) {
         //add some child elements
         Element elem = new Element(name);
         elem.addContent(value);
         @SuppressWarnings("unchecked")
-        List<Element> list = (List<Element>) rootElement.getContent();
+        List<Element> list = (List<Element>) parent.getContent();
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i) instanceof Element) {
-                if (list.get(i).getName().equals(nodename) && list.get(i).getAttribute("id") != null && list.get(i).getAttribute("id").getValue().equals(attributevalue)) {
+                if (list.get(i).getName().equals(nodename.getName()) && list.get(i).getAttribute("id") != null && list.get(i).getAttribute("id").getValue().equals(attributevalue)) {
                     list.get(i).addContent(elem);
                 }
             }
@@ -172,13 +223,6 @@ public class XMLWriter {
 
     }
 
-    /**
-     * Adds a node with the given name
-     * @param name
-     */
-    public void addNode(String name) {
-        rootElement.addContent(new Element(name));
-    }
 
     /**
      * Parses a PropertyStore object.
@@ -189,12 +233,13 @@ public class XMLWriter {
      */
     public void parse(String nodename, String nodeid, PropertyStore cookie) {
 
-        addNode(nodename, nodeid);
+        Element e = new Element(nodename);
+        addNode(defaultSubRoot, e, nodeid);
         Iterator list = cookie.getList().iterator();
         while (list.hasNext()) {
             Object o = list.next();
 //            Log.Debug(this,((String[]) o)[0]);
-            addElement(nodename, nodeid, ((String[]) o)[0], ((String[]) o)[1]);
+            addElement(defaultSubRoot, e, nodeid, ((String[]) o)[0], ((String[]) o)[1]);
         }
     }
 }

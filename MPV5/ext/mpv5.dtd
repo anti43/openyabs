@@ -1,6 +1,9 @@
 <!--Root element of any MPv5 XML file-->
-<!ELEMENT mpv5 ( contacts* ) >
+<!ELEMENT mpv5 ( contacts|countries )* >
+<!--END Root element of any MPv5 XML file-->
 
+
+<!--CONTACTS-->
 <!ELEMENT Addedby ( #PCDATA ) >
 <!ELEMENT CName ( #PCDATA ) >
 <!ELEMENT CNumber ( #PCDATA ) >
@@ -33,7 +36,17 @@
 <!ELEMENT Website ( #PCDATA ) >
 <!ELEMENT Workphone ( #PCDATA ) >
 <!ELEMENT Zip ( #PCDATA ) >
-<!ELEMENT contact ( CName, CNumber?, Taxnumber?, Title?, Prename?, Street?, Zip?, City?, Mainphone?, Workphone?, Fax?, Mobilephone?, Mailaddress?, Website?, Notes?, isMale?, isEnabled?, isCompany?, Iscustomer?, Ismanufacturer?, Issupplier?, Company?, Dateadded?, Addedby?, IDS? ) >
+<!ELEMENT Department ( #PCDATA ) >
+<!-- default: '1' -->
+<!ELEMENT Groupsids ( #PCDATA ) >
+<!ELEMENT contact ( CName | CNumber? | Taxnumber? | Groupsids | Title? | Prename? | Street? | Zip? | City? | Mainphone? | Workphone? | Fax? | Mobilephone? | Mailaddress? | Website? | Notes? | isMale? | isEnabled? | isCompany? | Iscustomer? | Ismanufacturer? | Issupplier? | Company? | Dateadded? | Addedby? | Department? | IDS? )* >
 <!ELEMENT contacts ( contact* ) >
-
 <!ATTLIST contact id CDATA #REQUIRED>
+<!--END CONTACTS-->
+
+
+<!--COUNTRIES-->
+<!ELEMENT country ( #PCDATA ) >
+<!ELEMENT countries ( country* ) >
+<!ATTLIST country iso CDATA #REQUIRED>
+<!--END COUTRIES-->

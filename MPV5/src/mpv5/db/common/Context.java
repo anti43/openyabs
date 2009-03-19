@@ -27,6 +27,7 @@ public class Context {
     public static String IDENTITY_ITEMS = "items";
     public static String IDENTITY_SUBITEMS = "subitems";
     public static String IDENTITY_LANGUAGES = "languages";
+    public static String IDENTITY_COUNTRIES = "countriestousers";
     public static String IDENTITY_FILES = "files";
     public static String IDENTITY_LOCK = "tablelock";
     public static String IDENTITY_FAVS = "favourites";
@@ -784,6 +785,15 @@ public class Context {
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_FILES_TO_CONTACTS);
         c.setId(20);
+
+        return c;
+    }
+
+      public static Context getUsersToCountries() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_COUNTRIES);
+        c.setId(21);
 
         return c;
     }

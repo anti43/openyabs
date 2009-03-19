@@ -113,8 +113,8 @@ public class LocalSettings {
 
         Log.Debug(LocalSettings.class, "Reading in local settings..");
         XMLReader read = new XMLReader();
-        read.newDoc(new File(Main.SETTINGS_FILE));
-        cookie = read.readInto("connection", cookie);
+        read.newDoc(new File(Main.SETTINGS_FILE), false);
+        cookie = read.readInto("localsettings","connection", "1", cookie);
         cookie.print();
         Log.Debug(LocalSettings.class, "Finished local settings.");
     }

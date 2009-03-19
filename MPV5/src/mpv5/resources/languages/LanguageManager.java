@@ -24,6 +24,8 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import mpv5.db.common.Context;
@@ -35,12 +37,15 @@ import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPV5View;
 
+import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.files.FileReaderWriter;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.reflection.ClasspathTools;
 import mpv5.utils.text.RandomText;
+import mpv5.utils.xml.XMLReader;
+import org.jdom.Document;
 
 /**
  *
@@ -64,7 +69,30 @@ public class LanguageManager {
      * @param file
      */
     public static void importCountries(File file) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        XMLReader r= new XMLReader();
+        Document doc = r.newDoc(file, true);
+
+        if (MPSecurityManager.checkAdminAccess() && !MPV5View.getUser().isDefault()) {
+            if (doc != null) {
+                try {
+                    QueryHandler.instanceOf().clone(Context.getUsersToCountries()).delete(new String[][]{{"usersids", MPV5View.getUser().getID().toString(),""}});
+                } catch (Exception ex) {
+                    Log.Debug(ex);
+                }
+                String[][] countries = r.toArray(r.getSubRootElement("countries"));
+                for (int i = 0; i < countries.length; i++) {
+                    String[] country = countries[i];
+                    QueryHandler.instanceOf().clone(Context.getUsersToCountries()).
+                            insert(new String[]{"cname, iso, usersids",
+                                PrepareData.finalize(PrepareData.prepareString(country[1]) +
+                                PrepareData.prepareNumber(Integer.valueOf(country[2])) +
+                                PrepareData.prepareNumber(MPV5View.getUser().getID())), null,}, Messages.DONE, false);
+                }
+//                MPV5View.addMessage(langname + Messages.ROW_UPDATED);
+            }
+        } else {
+            Popup.notice(Messages.ADMIN_ACCESS + "\n" + Messages.DEFAULT_USER);
+        }
     }
 
     private static boolean isCachedLanguage(String langid) {
@@ -187,7 +215,12 @@ public class LanguageManager {
      * @return A ComboBoxModel reflecting the available Countries
      */
     public static ComboBoxModel getCountriesAsComboBoxModel() {
-        throw new UnsupportedOperationException("Not yet implemented");
+         Object[][] data = QueryHandler.instanceOf().clone(Context.getLanguage()).select("cname, longname", null);
+        MPComboBoxModelItem[] t = null;
+        Object[][] ldata;
+        ldata = ArrayUtilities.merge(defLanguage, data);
+        t = MPComboBoxModelItem.toItems(ldata);
+        return new DefaultComboBoxModel(t);
     }
 
     /**

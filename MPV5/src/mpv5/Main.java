@@ -51,7 +51,8 @@ public class Main extends SingleFrameApplication {
             LocalSettings.read();
             LocalSettings.apply();
         } catch (Exception ex) {
-            Log.Debug(Main.class, "Local settings file not found: " + LocalSettings.getLocalFile());
+            Log.Debug(Main.class, ex.getMessage());
+            Log.Debug(Main.class, "Local settings file not readable: " + LocalSettings.getLocalFile());
         }
         launch(Main.class, new String[]{});
     }
@@ -68,10 +69,7 @@ public class Main extends SingleFrameApplication {
         getContext().getLocalStorage().setDirectory(new File(Main.MPPATH));
 
         if (probeDatabaseConnection()) {
-            setLaF(null);
-            login();
-            super.show(new MPV5View(this));
-            SwingUtilities.updateComponentTreeUI(MPV5View.identifierFrame);
+            go();
         } else if (Popup.Y_N_dialog(Messages.NO_DB_CONNECTION)) {
             showDbWiz();
         } else {
@@ -283,6 +281,13 @@ public class Main extends SingleFrameApplication {
         }
     }
 
+    public void go() {
+        setLaF(null);
+        login();
+        super.show(new MPV5View(this));
+        SwingUtilities.updateComponentTreeUI(MPV5View.identifierFrame);
+    }
+
     private void login() {
         if (!LocalSettings.getProperty("lastuser").equals("null") && !LocalSettings.getProperty("lastuserpw").equals("null")) {
             User usern1 = new User();
@@ -315,7 +320,7 @@ public class Main extends SingleFrameApplication {
                 return false;
             } else {
                 FileWriter x = new FileWriter(lockfile);
-                x.write("Locked on " + new Date() +". Delete me!");
+                x.write("Locked on " + new Date() + ". Instance[0]");
                 x.close();
                 lockfile.deleteOnExit();
                 Log.Debug(this, "Application will start now.");
@@ -337,7 +342,8 @@ public class Main extends SingleFrameApplication {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
         Wizard w = new Wizard(true);
-        w.addPanel(new wizard_DBSettings_1(w)); w.addPanel(new wizard_DBSettings_1(w));
+        w.addPanel(new wizard_DBSettings_1(w));
+        w.addPanel(new wizard_DBSettings_1(w));
         w.showWiz();
     }
 }

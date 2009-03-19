@@ -155,6 +155,11 @@ public class DatabaseInstallation {
         "reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (ids))",
 
 //Subtables
+        "CREATE TABLE countriestousers (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
+        "cname VARCHAR(250), iso SMALLINT NOT NULL, usersids BIGINT REFERENCES users (ids)  ON DELETE CASCADE," +
+        "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
+        "PRIMARY KEY  (ids))",
+
         "CREATE TABLE tablelock (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
         "cname VARCHAR(250), rowID BIGINT NOT NULL, usersids BIGINT REFERENCES users (ids)  ON DELETE CASCADE," +
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +

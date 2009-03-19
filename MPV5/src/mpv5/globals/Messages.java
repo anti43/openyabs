@@ -42,7 +42,7 @@ public class Messages {
     public static String ROW_DELETED = " removed from database";
     public static String CNAME_CANNOT_BE_NULL = "You must set a NAME for this item.";
     public static String FILE_SAVED = "File saved: ";
-    public static String ERROR_OCCURED = "An error occurred";
+    public static String ERROR_OCCURED = "An error occurred\n";
     public static String FILE_NOT_SAVED = "File NOT saved: ";
     public static String WARNING = "Warning";
     public static String NOTICE = "Notice";
@@ -78,7 +78,7 @@ public class Messages {
     public static String VALUE_ALREADY_EXISTS = "The value already exists in the database and must not be duplicated: ";
     public static String ADMIN_ACCESS = "You need administrative rights to perform this action.";
     public static String NOT_POSSIBLE = "Requested action is not possible: ";
-    public static String DEFAULT_USER = "Default user can`t do this,\nlog in as real user to perform this action.";
+    public static String DEFAULT_USER = "Default user can't do this,\nlog in as real user to perform this action.";
     public static String REALLY_DELETE = "Do you really want to delete this dataset?";
     public static String NOT_SAVED_YET = "The data has not been saved yet.";
     public static String ADDED_TO_FAVOURITES = "The item has been added to your favourites list: ";
