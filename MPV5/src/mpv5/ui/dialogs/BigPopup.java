@@ -32,7 +32,10 @@ public class BigPopup {
                     window.dispose();
                 }
             }
-            public void keyPressed(KeyEvent e) {}
+            public void keyPressed(KeyEvent e) {
+               if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    window.dispose();
+                }}
             public void keyReleased(KeyEvent e) {
               
             }
