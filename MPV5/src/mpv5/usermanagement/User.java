@@ -34,6 +34,7 @@ public class User extends DatabaseObject {
     private String fullname = "";
     private String laf = "";
     private String locale = "en_UK";
+    private String defcountry = "";
     private String mail = "";
     private String language = "buildin_en";
     private int inthighestright = 4;
@@ -281,17 +282,44 @@ public class User extends DatabaseObject {
         this.fullname = fullname;
     }
 
+//    /**
+//     * @return the groupsids
+//     */
+//    public int __getGroupsids() {
+//        return groupsids;
+//    }
+//
+//    /**
+//     * @param groupsids the groupsids to set
+//     */
+//    public void setGroupsids(int groupsids) {
+//        this.groupsids = groupsids;
+//    }
     /**
-     * @return the groupsids
+     * @return the defcountry
      */
-    public int __getGroupsids() {
-        return groupsids;
+    public String __getDefcountry() {
+        return defcountry;
     }
 
     /**
-     * @param groupsids the groupsids to set
+     * @param defcountry the defcountry to set
      */
-    public void setGroupsids(int groupsids) {
-        this.groupsids = groupsids;
+    public void setDefcountry(String defcountry) {
+        this.defcountry = defcountry;
+    }
+
+    /**
+     * If the usernames match, return true
+     * @param n
+     * @return
+     */
+    @Override
+    public boolean equals(Object n) {
+        if (((User) n).__getCName().equals(this.__getCName())) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

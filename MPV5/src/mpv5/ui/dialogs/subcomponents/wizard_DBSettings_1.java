@@ -35,9 +35,9 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
         DatabaseConnection conn;
         this.master.setCursor(new Cursor(Cursor.WAIT_CURSOR));
         boolean existing = false;
-        if (labeledTextChooser1.get_Text() != null && labeledTextChooser1.get_Text().length() > 0) {
+        if (labeledTextChooser1.get_Text(false) != null && labeledTextChooser1.get_Text(false).length() > 0) {
             master.getStore().changeProperty("driver", jComboBox1.getSelectedItem().toString());
-            master.getStore().changeProperty("url", labeledTextChooser1.get_Text());
+            master.getStore().changeProperty("url", labeledTextChooser1.get_Text(false));
             master.getStore().changeProperty("user", labeledTextField2.get_Text());
             master.getStore().changeProperty("password", labeledTextField1.get_Text());
             master.setMessage(Messages.CONNECTION_PROBE + master.getStore().getProperty("driver"));
@@ -62,6 +62,7 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
                             master.setMessage(Messages.CONNECTION_VERIFIED);
                         } else {
                             master.setMessage(Messages.CREATING_DATABASE_FAILED);
+                            return false;
                         }
                     }
                     master.isEnd(true);
@@ -233,6 +234,7 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
             this.master.dispose();
             return true;
         } else {
+            this.master.setCursor(Cursor.DEFAULT_CURSOR);
             return false;
         }
     }

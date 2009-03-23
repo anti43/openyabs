@@ -18,6 +18,7 @@ package mpv5.resources.languages;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -46,6 +47,7 @@ import mpv5.utils.reflection.ClasspathTools;
 import mpv5.utils.text.RandomText;
 import mpv5.utils.xml.XMLReader;
 import org.jdom.Document;
+import org.jdom.JDOMException;
 
 /**
  *
@@ -70,28 +72,32 @@ public class LanguageManager {
      */
     public static void importCountries(File file) {
         XMLReader r= new XMLReader();
-        Document doc = r.newDoc(file, true);
+        try {
+            Document doc = r.newDoc(file, true);
 
-        if (MPSecurityManager.checkAdminAccess() && !MPV5View.getUser().isDefault()) {
-            if (doc != null) {
-                try {
-                    QueryHandler.instanceOf().clone(Context.getUsersToCountries()).delete(new String[][]{{"usersids", MPV5View.getUser().getID().toString(),""}});
-                } catch (Exception ex) {
-                    Log.Debug(ex);
-                }
-                String[][] countries = r.toArray(r.getSubRootElement("countries"));
-                for (int i = 0; i < countries.length; i++) {
-                    String[] country = countries[i];
-                    QueryHandler.instanceOf().clone(Context.getUsersToCountries()).
-                            insert(new String[]{"cname, iso, usersids",
-                                PrepareData.finalize(PrepareData.prepareString(country[1]) +
-                                PrepareData.prepareNumber(Integer.valueOf(country[2])) +
-                                PrepareData.prepareNumber(MPV5View.getUser().getID())), null,}, Messages.DONE, false);
-                }
+            if (MPSecurityManager.checkAdminAccess() && !MPV5View.getUser().isDefault()) {
+                if (doc != null) {
+                    try {
+                        QueryHandler.instanceOf().clone(Context.getCountries()).delete(new String[][]{{"usersids", MPV5View.getUser().getID().toString(), ""}});
+                    } catch (Exception ex) {
+                        Log.Debug(ex);
+                    }
+                    String[][] countries = r.toArray(r.getSubRootElement("countries"));
+                    for (int i = 0; i < countries.length; i++) {
+                        String[] country = countries[i];
+                        QueryHandler.instanceOf().clone(Context.getCountries()).
+                                insert(new String[]{"cname, iso",
+                                    PrepareData.finalize(PrepareData.prepareString(country[1]) +
+                                    PrepareData.prepareNumber(Integer.valueOf(country[2]))
+                                   ), null,}, Messages.DONE, false);
+                    }
 //                MPV5View.addMessage(langname + Messages.ROW_UPDATED);
+                }
+            } else {
+                Popup.notice(Messages.ADMIN_ACCESS + "\n" + Messages.DEFAULT_USER);
             }
-        } else {
-            Popup.notice(Messages.ADMIN_ACCESS + "\n" + Messages.DEFAULT_USER);
+        } catch (Exception x) {
+            Log.Debug(LanguageManager.class, x);
         }
     }
 
@@ -215,10 +221,10 @@ public class LanguageManager {
      * @return A ComboBoxModel reflecting the available Countries
      */
     public static ComboBoxModel getCountriesAsComboBoxModel() {
-         Object[][] data = QueryHandler.instanceOf().clone(Context.getLanguage()).select("cname, longname", null);
+        Object[][] data = QueryHandler.instanceOf().clone(Context.getCountries()).select("iso, cname", null);
         MPComboBoxModelItem[] t = null;
         Object[][] ldata;
-        ldata = ArrayUtilities.merge(defLanguage, data);
+        ldata = ArrayUtilities.merge(new String[][]{{"",""}}, data);
         t = MPComboBoxModelItem.toItems(ldata);
         return new DefaultComboBoxModel(t);
     }
@@ -233,11 +239,12 @@ public class LanguageManager {
         for (int i = 0; i < items.length; i++) {
             String language = o[i].getLanguage();
             String country = o[i].getCountry();
-            String locale_name = o[i].getDisplayName();
+            String locale_name = o[i].getDisplayName();Log.Debug(LanguageManager.class, locale_name);
             items[i] = new MPComboBoxModelItem(language + "_" + country,
                     locale_name + "  [" + language + "_" + country + "]");
 //            items[i] = new MPComboBoxModelItem(o[i].toString(), o[i].getDisplayName());
         }
+        
         return new DefaultComboBoxModel(ArrayUtilities.sort(items));
     }
 

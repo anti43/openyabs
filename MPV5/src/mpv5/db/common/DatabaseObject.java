@@ -536,7 +536,7 @@ public abstract class DatabaseObject {
                         } else {
                             valx = "NULL VALUE!";
                         }
-                        Log.Debug("Explode: " + vars.get(k).toGenericString() + " with " + select.getData()[i][j] + "[" + valx + "]");
+                        Log.Debug(this, "Explode: " + vars.get(k).toGenericString() + " with " + select.getData()[i][j] + "[" + valx + "]");
                         //End Debug Section
                         
                         try {

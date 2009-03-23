@@ -61,7 +61,7 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
      */
     public static int getItemIDfromValue(String value, ComboBoxModel model) {
         for (int i = 0; i < model.getSize(); i++) {
-//            Log.Debug(MPComboBoxModelItem.class, ((MPComboBoxModelItem) model.getElementAt(i)).id + " comparing with: " + uid);
+//            Log.Debug(MPComboBoxModelItem.class, ((MPComboBoxModelItem) model.getElementAt(i)).name + " comparing with: " + value);
             if (((MPComboBoxModelItem) model.getElementAt(i)).name.equals(value)) {
 //                Log.Debug(MPComboBoxModelItem.class, "Found at Index:" + i);
                 return i;
@@ -73,6 +73,7 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
 
     /**
      * Converts an array to mp combo box items
+     * {id (hidden), value (shown in the list)}
      * @param items
      * @return
      */
@@ -127,7 +128,7 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
     /**
      * @return the name
      */
-    public String getName() {
+    public String getValue() {
         return name;
     }
 
@@ -145,6 +146,6 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
 
     @Override
     public int compareTo(MPComboBoxModelItem to) {
-        return name.compareTo(to.getName());
+        return name.compareTo(to.getValue());
     }
 }

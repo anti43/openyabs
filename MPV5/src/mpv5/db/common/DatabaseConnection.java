@@ -4,15 +4,12 @@
  */
 package mpv5.db.common;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mpv5.logging.Log;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import mpv5.globals.LocalSettings;
-import mpv5.globals.Messages;
 import mpv5.ui.dialogs.Popup;
 
 /**
@@ -63,7 +60,7 @@ public class DatabaseConnection {
         ctype.setURL(location);
 
         try {
-            Log.Debug(this, "Datenbanktreiber: " + ctype.getDriver(), true);
+            Log.Debug(this, "Datenbanktreiber: " + ctype.getDriver());
             Class.forName(ctype.getDriver()).newInstance();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -72,7 +69,7 @@ public class DatabaseConnection {
         }
 
         try {
-            Log.Debug(this, "Datenbankverbindung: " + ctype.getConnectionString(create), true);
+            Log.Debug(this, "Datenbankverbindung: " + ctype.getConnectionString(create));
             conn = DriverManager.getConnection(ctype.getConnectionString(create), user, password);
             if (conn != null && conn.isValid(10)) {
                 connector = this;
@@ -102,7 +99,7 @@ public class DatabaseConnection {
 
         ctype = new ConnectionTypeHandler();
         try {
-            Log.Debug(this, "Datenbanktreiber: " + ctype.getDriver(), true);
+            Log.Debug(this, "Datenbanktreiber: " + ctype.getDriver());
             try {
                 Class.forName(ctype.getDriver()).newInstance();
             } catch (ClassNotFoundException ex) {
@@ -120,7 +117,7 @@ public class DatabaseConnection {
         }
 
         try {
-            Log.Debug(this, "Datenbankverbindung: " + ctype.getConnectionString(create), true);
+            Log.Debug(this, "Datenbankverbindung: " + ctype.getConnectionString(create));
             conn = DriverManager.getConnection(ctype.getConnectionString(create), user, password);
 
         } catch (SQLException ex) {
@@ -160,14 +157,19 @@ public class DatabaseConnection {
     
     public boolean runQueries(String[] queries) throws SQLException{
         Statement stm = this.getConnection().createStatement();
-        for (int i = 0; i < queries.length; i++) {
-            stm.addBatch(queries[i]);
-        }
-        Log.PrintArray(queries);
+//        for (int i = 0; i < queries.length; i++) {
+//            stm.addBatch(queries[i]);
+//        }
+//        Log.PrintArray(queries);
         try {
-            stm.executeBatch();
+//            stm.executeBatch();
+            for (int i = 0; i < queries.length; i++) {
+                String string = queries[i];
+                Log.Debug(this, string);
+                stm.execute(string);
+            }
             return true;
-        } catch (SQLException sQLException) {
+        } catch (Exception sQLException) {
             Log.Debug(sQLException);
             return false;
         }

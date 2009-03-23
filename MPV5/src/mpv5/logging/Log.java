@@ -19,7 +19,9 @@ package mpv5.logging;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.logging.Level;
+import mpv5.globals.Messages;
 import mpv5.items.div.Group;
 import mpv5.utils.files.FileReaderWriter;
 
@@ -30,7 +32,7 @@ import mpv5.utils.files.FileReaderWriter;
 public class Log {
 
     public static final int LOGLEVEL_NONE = 0;
-    public static final int LOGLEVEL_HIGH = 1;
+    public static final int LOGLEVEL_NORMAL = 1;
     public static final int LOGLEVEL_DEBUG = 2;
     private static int loglevel = 0;
     private static LogConsole logger = new LogConsole();
@@ -43,190 +45,156 @@ public class Log {
         PrintArray(new FileReaderWriter(file).readLines());
     }
 
+    /**
+     * 
+     * @param source
+     * @param message
+     * @param alwaysToKonsole
+     * @deprecated Replaced with <code>Debug(Object source, Object message)</code>
+     */
     public static void Debug(Object source, Object message, boolean alwaysToKonsole) {
-        if (loglevel == LOGLEVEL_DEBUG) {
-            Debug(source.getClass().getName() + ": " + message, alwaysToKonsole);
-            try {
-                if (message.toString().contains("Exception")) {
-                    ((Exception) message).printStackTrace();
-                }
-            } catch (Exception e) {
-            }
-        } else {
-            Debug(message, alwaysToKonsole);
-        }
+        Debug(source, message);
     }
 
+    /**
+     * The main debug method. Logs the given message depending on the current Log level.<br/><br/>
+     * <li>LOGLEVEL_NONE = no logging</li>
+     * <li>LOGLEVEL_HIGH  = basic logging</li>
+     * <li>LOGLEVEL_DEBUG = verbose logging</li>
+     * 
+     * @param source
+     * @param message
+     */
     public static void Debug(Object source, Object message) {
-        if (loglevel == LOGLEVEL_DEBUG) {
-            Debug(source.getClass().getName() + ": " + message, true);
-            try {
-                if (message.toString().contains("Exception")) {
-                    ((Exception) message).printStackTrace();
-                }
-            } catch (Exception e) {
-            }
+        String sourcen;
+        if (source instanceof Class) {
+            sourcen = ((Class) source).getName();
         } else {
-            Debug(message, true);
+            sourcen = source.getClass().getName();
+        }
+
+        switch (loglevel) {
+            case LOGLEVEL_DEBUG:
+                write(sourcen + ": " + message);
+                if ( message !=null && message.toString().contains("Exception")) {
+                    ((Exception) message).printStackTrace();
+                    write("\nCaused by:\n");
+                    ((Exception) message).getCause().printStackTrace();
+                    mpv5.ui.frames.MPV5View.addMessage(Messages.ERROR_OCCURED + ". " + Messages.SEE_LOG);
+                }
+                break;
+            case LOGLEVEL_NORMAL:
+                write(sourcen + ": " + message);
+                break;
+            case LOGLEVEL_NONE:
+                ;
+                break;
+            default:
+                write(sourcen + ": " + message);
         }
     }
 
+    /**
+     * 
+     * @param source
+     * @param message
+     * @param alwaysToKonsole
+     * @deprecated  Replaced with <code>Debug(Object source, Object message)</code>
+     */
     public static void Debug(Class source, Object message, boolean alwaysToKonsole) {
-        if (loglevel == LOGLEVEL_DEBUG) {
-            Debug(source.getName() + ": " + message, alwaysToKonsole);
-            try {
-                if (message.toString().contains("Exception")) {
-                    ((Exception) message).printStackTrace();
-                }
-            } catch (Exception e) {
-            }
-        } else {
-            Debug(message, true);
-        }
+        Debug(source, message);
     }
 
-    public static void Debug(Class source, Object message) {
-        if (loglevel == LOGLEVEL_DEBUG) {
-            Debug(source.getName() + ": " + message, true);
-            try {
-                if (message.toString().contains("Exception")) {
-                    ((Exception) message).printStackTrace();
-                }
-            } catch (Exception e) {
-            }
-        } else {
-            Debug(message, true);
-        }
-    }
-
+    /**
+     * Print a list
+     * @param data
+     */
     public static void PrintArray(ArrayList<Group> data) {
         PrintArray(data.toArray());
     }
 
+    /**
+     * Print an array
+     * @param array
+     */
     public static void PrintArray(Object[][][] array) {
-        Debug("Print array: {");
+        write("Print array: {");
         if (loglevel != LOGLEVEL_NONE) {
             for (int i = 0; i < array.length; i++) {
-                try {
-                    logger.log();
-                } catch (IOException ex) {
-                    java.util.logging.Logger.getLogger(Log.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                write("");
                 for (int k = 0; k < array[i].length; k++) {
-                    try {
-                        logger.log();
-                    } catch (IOException ex) {
-                        java.util.logging.Logger.getLogger(Log.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                    write("");
                     for (int f = 0; f < array[i][k].length; f++) {
-                        if (loglevel != LOGLEVEL_NONE) {
-                            try {
-                                logger.log(array[i][k][f] + " ");
-                            } catch (IOException ex) {
-                                java.util.logging.Logger.getLogger(Log.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                        }
+                        write(array[i][k][f] + " ");
                     }
                 }
             }
         }
-        Debug("}//End Print array");
+        write("}//End Print array");
     }
 
+    /**
+     * Print an array
+     * @param array
+     */
     public static void PrintArray(Object[][] array) {
-
-        Debug("Print array: {");
+        write("Print array: {");
         for (int i = 0; i < array.length; i++) {
             for (int k = 0; k < array[i].length; k++) {
                 if (loglevel != LOGLEVEL_NONE) {
-
-                    Debug("[" + i + "]" + " [" + k + "] " + array[i][k], true);
-
+                    write("[" + i + "]" + " [" + k + "] " + array[i][k]);
                 }
             }
         }
-        Debug("}//End Print array");
+        write("}//End Print array");
     }
 
+    /**
+     * Print an array
+     * @param string
+     */
     public static void PrintArray(Object[] string) {
-        Debug("Print array: {");
+        write("Print array: {");
         for (int i = 0; i < string.length; i++) {
-
             if (loglevel != LOGLEVEL_NONE) {
-                Debug(string[i], true);
+                write(string[i]);
             }
-
         }
-        Debug("}//End Print array");
+        write("}//End Print array");
     }
 
-    public static void Debug(String[][] array) {
-        for (int i = 0; i < array.length; i++) {
-            for (int k = 0; k < array[i].length; k++) {
-                if (loglevel != LOGLEVEL_NONE) {
-
-                    Debug("[" + i + "]" + " [" + k + "] " + array[i][k], true);
-
-                }
-            }
+    private static void write(Object obj) {
+        try {
+            logger.log(obj);
+            System.out.println(obj);
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
     }
 
-    public static void show(String string) {
-        System.err.println(string);
-    }
-
-    public static void Debug(Object obj) {
-
-        if (loglevel != LOGLEVEL_NONE) {
-            try {
-                logger.log(obj);
-            } catch (IOException ex) {
-                java.util.logging.Logger.getLogger(Log.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }
-
+    /**
+     * Debug an Exception
+     * @param ex
+     */
     public static void Debug(Exception ex) {
-        Debug(ex, true);
+        Debug(Log.class, ex);
     }
 
-    private static void Debug(Exception ex, boolean konsole) {
-        if (loglevel != LOGLEVEL_NONE) {
-            if (konsole) {
-                try {
-                    logger.log(ex.getMessage() + "\n" + ex.getCause());
-                } catch (IOException ex1) {
-                    java.util.logging.Logger.getLogger(Log.class.getName()).log(Level.SEVERE, null, ex1);
-                }
-                ex.printStackTrace();
-            } else {
-                Debug(ex.getMessage() + "\n" + ex.getCause());
-            }
-        }
-    }
-
-    private static void Debug(Object string, boolean konsole) {
-        if (loglevel != LOGLEVEL_NONE) {
-            if (konsole) {
-                try {
-                    logger.log(string);
-                } catch (IOException ex) {
-                    java.util.logging.Logger.getLogger(Log.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                if (loglevel != LOGLEVEL_NONE) {
-                    System.out.println(string);
-                }
-            } else {
-                Debug(string);
-            }
-        }
-    }
-
+    /**
+     *
+     * @return
+     */
     public static LogConsole getLogger() {
         return logger;
     }
 
+    /**
+     * Set the log level<br/>
+     * <li>LOGLEVEL_NONE = no logging</li>
+     * <li>LOGLEVEL_HIGH  = basic logging</li>
+     * <li>LOGLEVEL_DEBUG = verbose logging</li>
+     * @param level
+     */
     public static void setLogLevel(int level) {
         Log.loglevel = level;
     }
@@ -234,6 +202,10 @@ public class Log {
     private Log() {
     }
 
+    /**
+     *
+     * @return The current log level
+     */
     public static int getLoglevel() {
         return loglevel;
     }

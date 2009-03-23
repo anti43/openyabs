@@ -5,6 +5,7 @@
 package mpv5.globals;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
 import java.util.Properties;
@@ -111,12 +112,16 @@ public class LocalSettings {
      */
     public static void read() throws Exception {
 
-        Log.Debug(LocalSettings.class, "Reading in local settings..");
-        XMLReader read = new XMLReader();
-        read.newDoc(new File(Main.SETTINGS_FILE), false);
-        cookie = read.readInto("localsettings","connection", "1", cookie);
-        cookie.print();
-        Log.Debug(LocalSettings.class, "Finished local settings.");
+        try {
+            Log.Debug(LocalSettings.class, "Reading in local settings..");
+            XMLReader read = new XMLReader();
+            read.newDoc(new File(Main.SETTINGS_FILE), false);
+            cookie = read.readInto("localsettings", "connection", "1", cookie);
+            cookie.print();
+            Log.Debug(LocalSettings.class, "Finished local settings.");
+        } catch (Exception e) {
+            throw new FileNotFoundException(Main.SETTINGS_FILE);
+        }
     }
 
     /**

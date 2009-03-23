@@ -39,6 +39,7 @@ public class Contact extends DatabaseObject {
     private boolean iscustomer = false;
     private boolean ismanufacturer = false;
     private boolean issupplier = false;
+    private String country = "";
 
     public Contact() {
         context.setDbIdentity(Context.IDENTITY_CONTACTS);
@@ -395,18 +396,32 @@ public class Contact extends DatabaseObject {
         this.department = dep;
     }
 
-    /**
-     * @return the groupsids
+//    /**
+//     * @return the groupsids
+//     */
+//    public int __getGroupsids() {
+//        return groupsids;
+//    }
+//
+//    /**
+//     * @param groupsids the groupsids to set
+//     */
+//    public void setGroupsids(int groupsids) {
+//        this.groupsids = groupsids;
+//    }
+
+        /**
+     * @return the country
      */
-    public int __getGroupsids() {
-        return groupsids;
+    public String __getCountry() {
+        return country;
     }
 
     /**
-     * @param groupsids the groupsids to set
+     * @param country the country to set
      */
-    public void setGroupsids(int groupsids) {
-        this.groupsids = groupsids;
+    public void setCountry(String country) {
+        this.country = country;
     }
 //    /**
 //     * @return the role

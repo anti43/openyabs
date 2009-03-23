@@ -17,11 +17,14 @@
 package mpv5.ui.dialogs;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.io.IOException;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.border.EmptyBorder;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
-
 
 /**
  *
@@ -41,7 +44,7 @@ public class Popup {
      * @return
      */
     public static boolean Y_N_dialog(String text) {
-        if (JOptionPane.showConfirmDialog(identifier, text, Messages.ARE_YOU_SURE,JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE , new javax.swing.ImageIcon(new Popup().getClass().getResource("/mpv5/resources/images/32/warning.png"))) == JOptionPane.YES_OPTION) {
+        if (JOptionPane.showConfirmDialog(identifier, prepareText(text), Messages.ARE_YOU_SURE, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, new javax.swing.ImageIcon(new Popup().getClass().getResource("/mpv5/resources/images/32/warning.png"))) == JOptionPane.YES_OPTION) {
             return true;
         } else {
             return false;
@@ -49,7 +52,7 @@ public class Popup {
     }
 
     public static void notice(Component parent, String text) {
-        JOptionPane.showMessageDialog(parent, text, Popup.NOTICE, JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(parent, prepareText(text), Popup.NOTICE, JOptionPane.INFORMATION_MESSAGE);
     }
 
     /**
@@ -58,7 +61,7 @@ public class Popup {
      * @param label
      */
     public static void warn(String text, String label) {
-        JOptionPane.showMessageDialog(identifier, text, label, JOptionPane.WARNING_MESSAGE);
+        JOptionPane.showMessageDialog(identifier,prepareText(text), label, JOptionPane.WARNING_MESSAGE);
     }
 
     /**
@@ -67,7 +70,7 @@ public class Popup {
      * @param label
      */
     public static void error(String text, String label) {
-        JOptionPane.showMessageDialog(identifier, text, label, JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(identifier,prepareText(text), label, JOptionPane.ERROR_MESSAGE);
     }
 
     /**
@@ -76,7 +79,7 @@ public class Popup {
      * @param label
      */
     public static void notice(String text, String label) {
-        JOptionPane.showMessageDialog(identifier, text, label, JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(identifier, prepareText(text), label, JOptionPane.INFORMATION_MESSAGE);
     }
 
     /**
@@ -84,17 +87,27 @@ public class Popup {
      * @param text
      */
     public static void notice(String text) {
-        JOptionPane.showMessageDialog(identifier, text, Popup.NOTICE, JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(identifier, prepareText(text), Popup.NOTICE, JOptionPane.INFORMATION_MESSAGE);
     }
 
-    public static void error(String string, Exception iOException) {
-        error(string + "\n" + iOException.getMessage()
-                        , Messages.ERROR_OCCURED);
-        Log.Debug(iOException);
+    public static void error(String string, Exception x) {
+        error(string + "\n" + x.getMessage(), Messages.ERROR_OCCURED);
+    }
+
+    private static Object prepareText(String s) {
+        JTextArea text = new JTextArea(s);
+        JScrollPane scroll = new JScrollPane(text);
+        text.setLineWrap(true);
+        text.setWrapStyleWord(true);
+        text.setEditable(false);
+        text.setBorder(new EmptyBorder(1, 1, 1, 1));
+        scroll.setBorder(new EmptyBorder(0, 0, 0, 0));
+        scroll.setPreferredSize(new Dimension(300, 80));
+        return scroll;
     }
 
     public Popup(String text) {
-       JOptionPane.showMessageDialog(identifier, text, Popup.NOTICE, JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(identifier,prepareText(text), Popup.NOTICE, JOptionPane.INFORMATION_MESSAGE);
     }
 
     /**
@@ -103,7 +116,7 @@ public class Popup {
      * @param label
      */
     public Popup(String text, String label) {
-        JOptionPane.showMessageDialog(identifier, text, label, JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(identifier,prepareText(text), label, JOptionPane.INFORMATION_MESSAGE);
     }
 
     private Popup() {

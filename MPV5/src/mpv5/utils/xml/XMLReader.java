@@ -91,8 +91,10 @@ public class XMLReader {
      * Parses a XML document
      * @param xmlfile
      * @return The resulting xml document
+     * @throws JDOMException
+     * @throws IOException 
      */
-    public Document newDoc(File xmlfile) {
+    public Document newDoc(File xmlfile) throws JDOMException, IOException {
         return createDocument(xmlfile, false);
     }
 
@@ -101,8 +103,10 @@ public class XMLReader {
      * @param xmlfile
      * @param validate
      * @return The resulting xml document
+     * @throws JDOMException
+     * @throws IOException
      */
-    public Document newDoc(File xmlfile, boolean validate) {
+    public Document newDoc(File xmlfile, boolean validate) throws JDOMException, IOException {
         return createDocument(xmlfile, validate);
     }
 
@@ -191,23 +195,23 @@ public class XMLReader {
         return store;
     }
 
-    private Document createDocument(File xmlfile, boolean validate) {
+    private Document createDocument(File xmlfile, boolean validate) throws JDOMException, IOException {
         //        SAXBuilder parser = new SAXBuilder("org.apache.xerces.parsers.SAXParser", true);
 //        parser.setFeature("http://apache.org/xml/features/validation/schema", true);
 //        parser.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation",
 //                                       "http://www.w3.org/2001/12/soap-envelope contacts.dtd");
 //        Document doc = builder.build(xml);
         SAXBuilder parser = new SAXBuilder(validate);
-        try {
+//        try {
             myDocument = parser.build(xmlfile);
             rootElement = myDocument.getRootElement();
             Log.Debug(this, "Document validated: " + xmlfile);
             return myDocument;
-        } catch (Exception jDOMException) {
-            Log.Debug(this, jDOMException.getMessage());
-            Popup.error("", jDOMException);
-        } 
-        return null;
+//        } catch (Exception jDOMException) {
+//            Log.Debug(this, jDOMException.getMessage());
+//            Popup.error("", jDOMException);
+//        }
+//        return null;
     }
 
     /**

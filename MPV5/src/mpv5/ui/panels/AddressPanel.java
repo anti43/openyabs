@@ -21,8 +21,6 @@
  */
 package mpv5.ui.panels;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JTabbedPane;
 import mpv5.db.common.Context;
@@ -33,7 +31,7 @@ import mpv5.globals.Messages;
 import mpv5.items.div.Address;
 import mpv5.items.div.Contact;
 import mpv5.logging.Log;
-import mpv5.ui.dialogs.Popup;
+import mpv5.resources.languages.LanguageManager;
 import mpv5.ui.frames.MPV5View;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.models.MPComboBoxModelItem;
@@ -52,12 +50,7 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
     /** Creates new form AddressPanel */
     public AddressPanel() {
         initComponents();
-          try {
-            companyselect.setModel(new DefaultComboBoxModel(ArrayUtilities.merge(new Object[]{new MPComboBoxModelItem("<no_value>", "")},
-                    MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getCompany()).getValuesFor(Context.getCompany().getSubID(), null, "")))));
-        } catch (Exception e) {
-            Log.Debug(this, e);
-        }
+        refresh();
     }
 
     /** This method is called from within the constructor to
@@ -75,15 +68,17 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
         cname = new mpv5.ui.beans.LabeledTextField();
         prename = new mpv5.ui.beans.LabeledTextField();
         city = new mpv5.ui.beans.LabeledTextField();
-        companyselect = new javax.swing.JComboBox();
-        jLabel3 = new javax.swing.JLabel();
         zip = new mpv5.ui.beans.LabeledTextField();
         male = new javax.swing.JRadioButton();
         female = new javax.swing.JRadioButton();
-        taxnumber = new mpv5.ui.beans.LabeledTextField();
-        department = new mpv5.ui.beans.LabeledTextField();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        companyselect = new javax.swing.JComboBox();
+        countryselect = new javax.swing.JComboBox();
+        jLabel5 = new javax.swing.JLabel();
+        taxnumber = new mpv5.ui.beans.LabeledTextField();
+        department = new mpv5.ui.beans.LabeledTextField();
 
         setBackground(new java.awt.Color(227, 219, 202));
         setName("Address#"); // NOI18N
@@ -108,34 +103,19 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
         city.set_Label(bundle.getString("AddressPanel.city._Label")); // NOI18N
         city.setName("city"); // NOI18N
 
-        companyselect.setName("companyselect"); // NOI18N
-        companyselect.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                companyselectActionPerformed(evt);
-            }
-        });
-
-        jLabel3.setFont(new java.awt.Font("Dialog", 0, 12));
-        jLabel3.setText(bundle.getString("AddressPanel.jLabel3.text")); // NOI18N
-        jLabel3.setName("jLabel3"); // NOI18N
-
         zip.set_Label(bundle.getString("AddressPanel.zip._Label")); // NOI18N
         zip.setName("zip"); // NOI18N
 
+        male.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
         male.setSelected(true);
         male.setText(bundle.getString("AddressPanel.male.text")); // NOI18N
         male.setName("male"); // NOI18N
         male.setOpaque(false);
 
+        female.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
         female.setText(bundle.getString("AddressPanel.female.text")); // NOI18N
         female.setName("female"); // NOI18N
         female.setOpaque(false);
-
-        taxnumber.set_Label(bundle.getString("AddressPanel.taxnumber._Label")); // NOI18N
-        taxnumber.setName("taxnumber"); // NOI18N
-
-        department.set_Label(bundle.getString("AddressPanel.department._Label")); // NOI18N
-        department.setName("department"); // NOI18N
 
         jButton1.setText(bundle.getString("AddressPanel.jButton1.text")); // NOI18N
         jButton1.setName("jButton1"); // NOI18N
@@ -152,6 +132,34 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
                 jButton2ActionPerformed(evt);
             }
         });
+
+        jLabel3.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel3.setText(bundle.getString("AddressPanel.jLabel3.text")); // NOI18N
+        jLabel3.setName("jLabel3"); // NOI18N
+
+        companyselect.setName("companyselect"); // NOI18N
+        companyselect.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                companyselectActionPerformed(evt);
+            }
+        });
+
+        countryselect.setName("countryselect"); // NOI18N
+        countryselect.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                countryselectActionPerformed(evt);
+            }
+        });
+
+        jLabel5.setFont(new java.awt.Font("Dialog", 0, 12));
+        jLabel5.setText(bundle.getString("AddressPanel.jLabel5.text")); // NOI18N
+        jLabel5.setName("jLabel5"); // NOI18N
+
+        taxnumber.set_Label(bundle.getString("AddressPanel.taxnumber._Label")); // NOI18N
+        taxnumber.setName("taxnumber"); // NOI18N
+
+        department.set_Label(bundle.getString("AddressPanel.department._Label")); // NOI18N
+        department.setName("department"); // NOI18N
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -176,43 +184,51 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(cname, 0, 0, Short.MAX_VALUE)
                             .addComponent(zip, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addContainerGap())
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE)
+                            .addComponent(jButton1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(department, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel3)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(department, javax.swing.GroupLayout.DEFAULT_SIZE, 267, Short.MAX_VALUE)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(companyselect, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(18, 18, 18)
-                        .addComponent(taxnumber, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(countryselect, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(taxnumber, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel3)
+                        .addComponent(countryselect, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(companyselect, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel5))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(department, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(taxnumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(male)
+                    .addComponent(female))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jButton2)
+                        .addComponent(jButton2, 0, 0, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1))
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jLabel3)
-                                .addComponent(companyselect, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(taxnumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(department, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(male)
-                            .addComponent(female))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(title, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(prename, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -237,9 +253,6 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void companyselectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_companyselectActionPerformed
-}//GEN-LAST:event_companyselectActionPerformed
-
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         removeAddress();
     }//GEN-LAST:event_jButton1ActionPerformed
@@ -250,15 +263,24 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
 
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void companyselectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_companyselectActionPerformed
+}//GEN-LAST:event_companyselectActionPerformed
+
+    private void countryselectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_countryselectActionPerformed
+        // TODO add your handling code here:
+}//GEN-LAST:event_countryselectActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private mpv5.ui.beans.LabeledTextField city;
     private mpv5.ui.beans.LabeledTextField cname;
     private javax.swing.JComboBox companyselect;
+    private javax.swing.JComboBox countryselect;
     private mpv5.ui.beans.LabeledTextField department;
     private javax.swing.JRadioButton female;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JRadioButton male;
     private mpv5.ui.beans.LabeledTextField prename;
@@ -277,6 +299,7 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
     public String title_;
     public String zip_;
     public String company_;
+    public String country_;
     public int ids_;
     public int contactsids_;
     public int groupsids_ = 1;
@@ -287,10 +310,18 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
         taxnumber_ = taxnumber.get_Text();
 
         if (companyselect.getSelectedItem() != null) {
-            company_ = String.valueOf(((MPComboBoxModelItem) companyselect.getSelectedItem()).getName());
+            company_ = String.valueOf(((MPComboBoxModelItem) companyselect.getSelectedItem()).getValue());
         } else {
             company_ = "";
         }
+
+        if (countryselect.getSelectedItem() != null) {
+            country_ = String.valueOf(((MPComboBoxModelItem) countryselect.getSelectedItem()).getValue());
+        } else {
+            country_ = "";
+        }
+
+
         ismale_ = male.isSelected();
         prename_ = prename.get_Text();
         street_ = street.get_Text();
@@ -298,6 +329,7 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
         zip_ = zip.get_Text();
         department_ = department.get_Text();
         contactsids_ = dataParent.__getIDS();
+
     }
 
     public void exposeData() {
@@ -308,6 +340,12 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
             companyselect.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(company_, companyselect.getModel()));
         } catch (Exception e) {
         }
+
+        try {
+            countryselect.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(country_, countryselect.getModel()));
+        } catch (Exception e) {
+        }
+
         male.setSelected(ismale_);
         female.setSelected(!ismale_);
         prename.set_Text(prename_);
@@ -339,7 +377,15 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
     }
 
     public void refresh() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        try {
+            companyselect.setModel(new DefaultComboBoxModel(ArrayUtilities.merge(new Object[]{new MPComboBoxModelItem("<no_value>", "")},
+                    MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getCompany()).getValuesFor(Context.getCompany().getSubID(), null, "")))));
+
+            countryselect.setModel(LanguageManager.getCountriesAsComboBoxModel());
+            countryselect.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(MPV5View.getUser().__getDefcountry(), countryselect.getModel()));
+        } catch (Exception e) {
+            Log.Debug(this, e);
+        }
     }
 
     public void paste(DatabaseObject dbo) {
@@ -372,7 +418,7 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
             if (!dataOwner.save()) {
                 showRequiredFields();
             }
-        } 
+        }
     }
 
     /**

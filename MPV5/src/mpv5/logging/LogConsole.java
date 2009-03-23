@@ -31,7 +31,7 @@ public class LogConsole extends javax.swing.JFrame {
         } else {
             FILE_LOG_ENABLED = true;
             logwriter = new FileReaderWriter(logfile);
-            Log.Debug(LogConsole.class, "Logging to File: " + logfile.getPath(), true);
+            Log.Debug(LogConsole.class, "Logging to File: " + logfile.getPath());
 
         }
     }

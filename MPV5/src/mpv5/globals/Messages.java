@@ -43,6 +43,7 @@ public class Messages {
     public static String CNAME_CANNOT_BE_NULL = "You must set a NAME for this item.";
     public static String FILE_SAVED = "File saved: ";
     public static String ERROR_OCCURED = "An error occurred\n";
+    public static String SEE_LOG = "See Logs for details.";
     public static String FILE_NOT_SAVED = "File NOT saved: ";
     public static String WARNING = "Warning";
     public static String NOTICE = "Notice";
@@ -89,6 +90,7 @@ public class Messages {
     public static String IN_USE = "The dataset is in use, locked or has subitems assigned to it.";
     public static String ENTER_A_DESCRIPTION = "Please enter a description:";
     public static String FILE_OPEN_FAILED = "Unable to open the file: \n";
+   
     
 
 }

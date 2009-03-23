@@ -67,6 +67,7 @@ public class DatabaseInstallation {
         "CREATE TABLE contacts (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
         "cnumber VARCHAR(250),taxnumber VARCHAR(250),title VARCHAR(250) default NULL," +
         "groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1," +
+        "country VARCHAR(50) default NULL, "+
         "prename VARCHAR(250) default NULL, cname VARCHAR(250) default NULL, street VARCHAR(250) default NULL," +
         "zip VARCHAR(50) default NULL,city VARCHAR(300) default NULL, mainphone VARCHAR(250) default NULL," +
         "fax VARCHAR(250) default NULL,mobilephone VARCHAR(250) default NULL,workphone VARCHAR(250) default NULL," +
@@ -85,6 +86,7 @@ public class DatabaseInstallation {
         "password VARCHAR(250) NOT NULL,"+
         "laf VARCHAR(50) default NULL, "+
         "locale VARCHAR(50) default NULL, "+
+        "defcountry VARCHAR(50) default NULL, "+
         "mail VARCHAR(50) default NULL, "+
         "language VARCHAR(50) default NULL, "+
         "inthighestright SMALLINT DEFAULT 3,"+
@@ -155,9 +157,9 @@ public class DatabaseInstallation {
         "reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (ids))",
 
 //Subtables
-        "CREATE TABLE countriestousers (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
-        "cname VARCHAR(250), iso SMALLINT NOT NULL, usersids BIGINT REFERENCES users (ids)  ON DELETE CASCADE," +
-        "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
+        "CREATE TABLE countries (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
+        "cname VARCHAR(250)  UNIQUE NOT NULL, iso SMALLINT  UNIQUE NOT NULL," +
+        "reserve1 VARCHAR(500) default NULL, reserve2 VARCHAR(500) default NULL," +
         "PRIMARY KEY  (ids))",
 
         "CREATE TABLE tablelock (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +

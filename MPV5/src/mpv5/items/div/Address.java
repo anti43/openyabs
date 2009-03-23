@@ -33,6 +33,7 @@ public class Address extends DatabaseObject {
     private String city = "";
     private String company = "";
     private String department = "";
+    private String country = "";
     private boolean ismale = true;
     private int contactsids = 0;
 
@@ -189,6 +190,20 @@ public class Address extends DatabaseObject {
      */
     public void setContactsids(int contactsids) {
         this.contactsids = contactsids;
+    }
+
+    /**
+     * @return the country
+     */
+    public String __getCountry() {
+        return country;
+    }
+
+    /**
+     * @param country the country to set
+     */
+    public void setCountry(String country) {
+        this.country = country;
     }
 
 

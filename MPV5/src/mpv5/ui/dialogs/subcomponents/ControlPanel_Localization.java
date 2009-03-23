@@ -376,7 +376,7 @@ public class ControlPanel_Localization extends javax.swing.JPanel implements Con
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         if (labeledTextChooser1.hasText() &&
                 labeledTextField1.hasText()) {
-            LanguageManager.importLanguage(labeledTextField1.get_Text(), new File(labeledTextChooser1.get_Text()));
+            LanguageManager.importLanguage(labeledTextField1.get_Text(), new File(labeledTextChooser1.get_Text(true)));
             setLanguageSelection();
         } else {
             TextFieldUtils.blinkerRed(labeledTextField1.getTextField());
@@ -385,7 +385,7 @@ public class ControlPanel_Localization extends javax.swing.JPanel implements Con
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
          if (labeledTextChooser2.hasText() ) {
-            LanguageManager.importCountries(new File(labeledTextChooser2.get_Text()));
+            LanguageManager.importCountries(new File(labeledTextChooser2.get_Text(true)));
         }
     }//GEN-LAST:event_jButton4ActionPerformed
 

@@ -319,7 +319,7 @@ public class MPBabelFish extends javax.swing.JFrame {
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
         if (MPSecurityManager.checkAdminAccess()) {
-            if (Popup.Y_N_dialog(Messages.REALLY_WIPE + ": " + ((MPComboBoxModelItem) languages.getSelectedItem()).getName())) {
+            if (Popup.Y_N_dialog(Messages.REALLY_WIPE + ": " + ((MPComboBoxModelItem) languages.getSelectedItem()).getValue())) {
                 try {
                     LanguageManager.removeLanguage(((MPComboBoxModelItem) languages.getSelectedItem()).getId());
                 } catch (NodataFoundException ex) {

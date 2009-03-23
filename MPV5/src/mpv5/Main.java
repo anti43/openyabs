@@ -207,7 +207,7 @@ public class Main extends SingleFrameApplication {
             System.exit(0);
         }
         if (cl.hasOption(verbose)) {
-            Log.setLogLevel(Log.LOGLEVEL_HIGH);
+            Log.setLogLevel(Log.LOGLEVEL_NORMAL);
 
         }
 
@@ -220,7 +220,7 @@ public class Main extends SingleFrameApplication {
             try {
                 LogConsole.setLogFile(((String) cl.getValue(logfile)).split("=")[1]);
             } catch (Exception e) {
-                Log.Debug(Main.class, "Fehler beim Schreiben der Logdatei: " + e.getMessage(), true);
+                Log.Debug(Main.class, "Fehler beim Schreiben der Logdatei: " + e.getMessage());
             }
         }
 
@@ -342,7 +342,6 @@ public class Main extends SingleFrameApplication {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
         Wizard w = new Wizard(true);
-        w.addPanel(new wizard_DBSettings_1(w));
         w.addPanel(new wizard_DBSettings_1(w));
         w.showWiz();
     }

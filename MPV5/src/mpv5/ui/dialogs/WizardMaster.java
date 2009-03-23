@@ -31,6 +31,8 @@ public interface WizardMaster {
     public void dispose();
     public void isEnd(boolean end);
     public PropertyStore getStore();
+
+    public void setCursor(int DEFAULT_CURSOR);
     public void setCursor(Cursor cursor);
     public void setMessage(String message);
 }
