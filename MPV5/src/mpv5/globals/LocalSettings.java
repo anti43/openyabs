@@ -101,7 +101,7 @@ public class LocalSettings {
             x.parse("connection", "1", cookie);
             x.createOrReplace(new File(Main.SETTINGS_FILE));
         } catch (Exception ex) {
-            Popup.error(Messages.ERROR_SAVING_LOCALSETTINGS, ex);
+            Popup.warn(Messages.ERROR_SAVING_LOCALSETTINGS);
             Log.Debug(LocalSettings.class, ex);
         }
     }

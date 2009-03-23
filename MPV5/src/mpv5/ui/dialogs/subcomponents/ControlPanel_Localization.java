@@ -31,7 +31,6 @@ public class ControlPanel_Localization extends javax.swing.JPanel implements Con
         locales.setSelectedIndex(MPComboBoxModelItem.getItemID(Locale.getDefault().toString(),
                 locales.getModel()));
         setLanguageSelection();
-        setCountrySelection();
         setVisible(true);
     }
 
@@ -56,10 +55,6 @@ public class ControlPanel_Localization extends javax.swing.JPanel implements Con
         jButton3 = new javax.swing.JButton();
         labeledTextField1 = new mpv5.ui.beans.LabeledTextField();
         jLabel7 = new javax.swing.JLabel();
-        jPanel6 = new javax.swing.JPanel();
-        jLabel10 = new javax.swing.JLabel();
-        jLabel11 = new javax.swing.JLabel();
-        countries = new javax.swing.JComboBox();
         jPanel5 = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
@@ -94,11 +89,11 @@ public class ControlPanel_Localization extends javax.swing.JPanel implements Con
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel2.setName("jPanel2"); // NOI18N
 
-        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 12));
         jLabel2.setText(bundle.getString("ControlPanel_Localization.jLabel2.text")); // NOI18N
         jLabel2.setName("jLabel2"); // NOI18N
 
-        jLabel1.setFont(new java.awt.Font("Dialog", 0, 11)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Dialog", 0, 11));
         jLabel1.setText(bundle.getString("ControlPanel_Localization.jLabel1.text")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
 
@@ -131,11 +126,11 @@ public class ControlPanel_Localization extends javax.swing.JPanel implements Con
         jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel3.setName("jPanel3"); // NOI18N
 
-        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 12));
         jLabel3.setText(bundle.getString("ControlPanel_Localization.jLabel3.text")); // NOI18N
         jLabel3.setName("jLabel3"); // NOI18N
 
-        jLabel4.setFont(new java.awt.Font("Dialog", 0, 11)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Dialog", 0, 11));
         jLabel4.setText(bundle.getString("ControlPanel_Localization.jLabel4.text")); // NOI18N
         jLabel4.setName("jLabel4"); // NOI18N
 
@@ -168,16 +163,16 @@ public class ControlPanel_Localization extends javax.swing.JPanel implements Con
         jPanel4.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel4.setName("jPanel4"); // NOI18N
 
-        jLabel5.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel5.setFont(new java.awt.Font("Tahoma", 1, 12));
         jLabel5.setText(bundle.getString("ControlPanel_Localization.jLabel5.text")); // NOI18N
         jLabel5.setName("jLabel5"); // NOI18N
 
-        jLabel6.setFont(new java.awt.Font("Dialog", 0, 11)); // NOI18N
+        jLabel6.setFont(new java.awt.Font("Dialog", 0, 11));
         jLabel6.setText(bundle.getString("ControlPanel_Localization.jLabel6.text")); // NOI18N
         jLabel6.setName("jLabel6"); // NOI18N
 
         labeledTextChooser1.set_Label(bundle.getString("ControlPanel_Localization.labeledTextChooser1._Label")); // NOI18N
-        labeledTextChooser1.set_LabelFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        labeledTextChooser1.set_LabelFont(new java.awt.Font("Tahoma", 0, 11));
         labeledTextChooser1.setName("labeledTextChooser1"); // NOI18N
 
         jButton3.setText(bundle.getString("ControlPanel_Localization.jButton3.text")); // NOI18N
@@ -189,10 +184,10 @@ public class ControlPanel_Localization extends javax.swing.JPanel implements Con
         });
 
         labeledTextField1.set_Label(bundle.getString("ControlPanel_Localization.labeledTextField1._Label")); // NOI18N
-        labeledTextField1.set_LabelFont(new java.awt.Font("Dialog", 0, 11)); // NOI18N
+        labeledTextField1.set_LabelFont(new java.awt.Font("Dialog", 0, 11));
         labeledTextField1.setName("labeledTextField1"); // NOI18N
 
-        jLabel7.setFont(new java.awt.Font("Dialog", 0, 11)); // NOI18N
+        jLabel7.setFont(new java.awt.Font("Dialog", 0, 11));
         jLabel7.setText(bundle.getString("ControlPanel_Localization.jLabel7.text")); // NOI18N
         jLabel7.setName("jLabel7"); // NOI18N
 
@@ -233,56 +228,19 @@ public class ControlPanel_Localization extends javax.swing.JPanel implements Con
                 .addGap(15, 15, 15))
         );
 
-        jPanel6.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jPanel6.setName("jPanel6"); // NOI18N
-
-        jLabel10.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jLabel10.setText(bundle.getString("ControlPanel_Localization.jLabel10.text")); // NOI18N
-        jLabel10.setName("jLabel10"); // NOI18N
-
-        jLabel11.setFont(new java.awt.Font("Dialog", 0, 11)); // NOI18N
-        jLabel11.setText(bundle.getString("ControlPanel_Localization.jLabel11.text")); // NOI18N
-        jLabel11.setName("jLabel11"); // NOI18N
-
-        countries.setName("countries"); // NOI18N
-
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel10)
-                    .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(countries, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(173, Short.MAX_VALUE))
-        );
-        jPanel6Layout.setVerticalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel10)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel11)
-                .addGap(18, 18, 18)
-                .addComponent(countries, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(13, Short.MAX_VALUE))
-        );
-
         jPanel5.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel5.setName("jPanel5"); // NOI18N
 
-        jLabel8.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel8.setFont(new java.awt.Font("Tahoma", 1, 12));
         jLabel8.setText(bundle.getString("ControlPanel_Localization.jLabel8.text")); // NOI18N
         jLabel8.setName("jLabel8"); // NOI18N
 
-        jLabel9.setFont(new java.awt.Font("Dialog", 0, 11)); // NOI18N
+        jLabel9.setFont(new java.awt.Font("Dialog", 0, 11));
         jLabel9.setText(bundle.getString("ControlPanel_Localization.jLabel9.text")); // NOI18N
         jLabel9.setName("jLabel9"); // NOI18N
 
         labeledTextChooser2.set_Label(bundle.getString("ControlPanel_Localization.labeledTextChooser2._Label")); // NOI18N
-        labeledTextChooser2.set_LabelFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        labeledTextChooser2.set_LabelFont(new java.awt.Font("Tahoma", 0, 11));
         labeledTextChooser2.setName("labeledTextChooser2"); // NOI18N
 
         jButton4.setText(bundle.getString("ControlPanel_Localization.jButton4.text")); // NOI18N
@@ -327,18 +285,17 @@ public class ControlPanel_Localization extends javax.swing.JPanel implements Con
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jButton2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1))
-                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -351,10 +308,8 @@ public class ControlPanel_Localization extends javax.swing.JPanel implements Con
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton2))
@@ -401,14 +356,11 @@ public class ControlPanel_Localization extends javax.swing.JPanel implements Con
         setValues(oldvalues);
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox countries;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -422,7 +374,6 @@ public class ControlPanel_Localization extends javax.swing.JPanel implements Con
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel6;
     private mpv5.ui.beans.LabeledTextChooser labeledTextChooser1;
     private mpv5.ui.beans.LabeledTextChooser labeledTextChooser2;
     private mpv5.ui.beans.LabeledTextField labeledTextField1;
@@ -430,9 +381,7 @@ public class ControlPanel_Localization extends javax.swing.JPanel implements Con
     private javax.swing.JComboBox locales;
     // End of variables declaration//GEN-END:variables
 
-    private void setCountrySelection() {
-       countries.setModel(getCountries());
-    }
+  
     // End of variables declaration
 
     private void setLanguageSelection() {

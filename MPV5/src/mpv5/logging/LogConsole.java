@@ -8,8 +8,8 @@ package mpv5.logging;
 import java.io.File;
 import mpv5.utils.files.*;
 import java.io.IOException;
-import java.io.Writer;
-import javax.swing.text.BadLocationException;
+import javax.swing.SwingUtilities;
+import mpv5.ui.parents.Position;
 
 /**
  *
@@ -21,18 +21,26 @@ public class LogConsole extends javax.swing.JFrame {
     private static boolean FILE_LOG_ENABLED = false;
     private static FileReaderWriter logwriter;
 
-    public static void setLogFile(String string) throws Exception {
-        LogConsole.logfile = new File(string);
+    /**
+     * Set a file to log to. A null value for file stops file logging
+     * @param file The log file
+     * @throws java.lang.Exception
+     */
+    public static void setLogFile(String file) throws Exception {
+        if (file != null) {
+            LogConsole.logfile = new File(file);
 
-        logfile.delete();
+            logfile.delete();
 
-        if (logfile.createNewFile() && !logfile.canWrite()) {
-            throw new Exception("Fehler in " + logfile.getCanonicalPath());
+            if (logfile.createNewFile() && !logfile.canWrite()) {
+                throw new Exception("Fehler in " + logfile.getCanonicalPath());
+            } else {
+                FILE_LOG_ENABLED = true;
+                logwriter = new FileReaderWriter(logfile);
+                Log.Debug(LogConsole.class, "Logging to File: " + logfile.getPath());
+            }
         } else {
-            FILE_LOG_ENABLED = true;
-            logwriter = new FileReaderWriter(logfile);
-            Log.Debug(LogConsole.class, "Logging to File: " + logfile.getPath());
-
+            FILE_LOG_ENABLED = false;
         }
     }
 
@@ -40,35 +48,44 @@ public class LogConsole extends javax.swing.JFrame {
     public LogConsole() {
         initComponents();
 //        this.setExtendedState(ICONIFIED);
-
     }
 
+    /**
+     * Append a new line to the logging object
+     * @throws java.io.IOException
+     */
     public void log() throws IOException {
-        if (FILE_LOG_ENABLED) {
-            logwriter.write("\n");
-        } else {
-            jTextArea1.append("\n");
-        }
+        log("\n");
     }
 
-    public void log(Object object) throws IOException {
-        if (FILE_LOG_ENABLED) {
-            logwriter.write(object.toString());
-        } else {
-            if (object != null) {
-                jTextArea1.append("\n" + object.toString());
-            } else {
-                jTextArea1.append("\nNULL");
+    /**
+     * Log the String value of the given Object
+     * @param object Null objects will lead to the String "NULL"
+     * @throws java.io.IOException Is thrown if an invalid log file is specified
+     */
+    public void log(final Object object) throws IOException {
+        Runnable runnable = new Runnable() {
+            public void run() {
+                if (FILE_LOG_ENABLED) {
+                    logwriter.write(object.toString());
+                }
+                if (object != null) {
+                    jTextArea1.append("\n" + object.toString());
+                } else {
+                    jTextArea1.append("\nNULL");
+                }
             }
-        }
+        };
+        SwingUtilities.invokeLater(runnable);
     }
 
-    public void log(String string) throws IOException {
-        if (FILE_LOG_ENABLED) {
-            logwriter.write(string);
-        } else {
-            jTextArea1.append("\n" + string);
-        }
+    /**
+     * Show the log konsole (will change the log level to DEBUG)
+     */
+    public void open() {
+        Log.setLogLevel(Log.LOGLEVEL_DEBUG);
+        new Position(this);
+        this.setVisible(true);
     }
 
     /** This method is called from within the constructor to
@@ -79,15 +96,12 @@ public class LogConsole extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("MP Logger");
-
-        jLabel1.setText("MP Logger:");
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
@@ -106,29 +120,26 @@ public class LogConsole extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 637, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jLabel1)
-                        .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 637, Short.MAX_VALUE)
+                    .addComponent(jButton1))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 205, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 173, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1))
+                .addComponent(jButton1)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
 private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-    jTextArea1.setText(null);
+    flush();
 }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -143,49 +154,23 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         });
     }
 
-    public void log(Exception e) {
-
-        jTextArea1.append(e.getMessage());
-    }
-
+    /**
+     * Flush the current logging object
+     */
     public void flush() {
-        System.out.print(jTextArea1.getText());
-        jTextArea1.setText(null);
-
+        if (FILE_LOG_ENABLED) {
+//            System.err.print(logwriter.read());
+            logwriter.flush();
+        } else {
+            System.err.print(jTextArea1.getText());
+            jTextArea1.setText(null);
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
     // End of variables declaration
-
-    static class DocumentWriter
-            extends Writer {
-
-        final javax.swing.text.Document doc;
-
-        public DocumentWriter(javax.swing.JTextArea jta) {
-            this(jta.getDocument());
-        }
-
-        public DocumentWriter(javax.swing.text.Document doc) {
-            this.doc = doc;
-        }
-
-        public void close() {
-        }
-
-        public void flush() {
-        }
-
-        public void write(char[] cbuf, int off, int len) {
-            try {
-                doc.insertString(doc.getLength(), String.valueOf(cbuf, off, len), null);
-            } catch (BadLocationException ex) {
-            }
-        }
-    }
 }

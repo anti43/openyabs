@@ -112,7 +112,7 @@ public class DatabaseConnection {
 
         } catch (Exception ex) {
             ex.printStackTrace();
-            Popup.warn(ex.getMessage(), Popup.ERROR);
+            Popup.warn(ex.getMessage());
             DatabaseConnection.shutdown();
         }
 
@@ -127,7 +127,7 @@ public class DatabaseConnection {
                 Log.Debug(this, ex.getNextException());
                 Log.Debug(this, ex.getNextException().getNextException());
                 Log.Debug(this, ex.getNextException().getNextException().getNextException());
-                Popup.warn(ex.getMessage(), Popup.ERROR);
+                Popup.warn(ex.getMessage());
                 DatabaseConnection.shutdown();
             } catch (Exception e) {
                 Log.Debug(this, ex.getMessage());

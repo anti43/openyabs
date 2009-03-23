@@ -7,6 +7,8 @@ package mpv5.ui.dialogs.subcomponents;
 
 import java.awt.Cursor;
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mpv5.Main;
 import mpv5.db.common.DatabaseConnection;
 import mpv5.db.common.DatabaseInstallation;
@@ -14,6 +16,8 @@ import mpv5.globals.Constants;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 
+import mpv5.logging.Log;
+import mpv5.logging.LogConsole;
 import mpv5.ui.dialogs.WizardMaster;
 import mpv5.ui.dialogs.Wizardable;
 
@@ -230,6 +234,8 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
 
     public boolean next() {
         if (DBVerification()) {
+            Log.setLogLevel(Log.LOGLEVEL_NONE);
+            try {LogConsole.setLogFile(null);} catch (Exception ignore) {}
             Main.getApplication().go();
             this.master.dispose();
             return true;

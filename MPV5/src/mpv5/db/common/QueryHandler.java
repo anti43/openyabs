@@ -888,7 +888,7 @@ public class QueryHandler implements Cloneable {
         stm = null;
         resultSet = null;
 
-        Log.Debug(this, query, true);
+        Log.Debug(this, query);
         try {
             // Select-Anweisung ausführen
             stm = sqlConn.createStatement(resultSet.TYPE_SCROLL_INSENSITIVE, resultSet.CONCUR_READ_ONLY);
@@ -904,7 +904,7 @@ public class QueryHandler implements Cloneable {
             }
         } catch (SQLException ex) {
             Log.Debug(this, message + ex.getMessage());
-            Popup.error(message + ex.getMessage(), "Datenbankfehler");
+            Popup.error(ex);
 
             return 0;
         } finally {
@@ -915,7 +915,7 @@ public class QueryHandler implements Cloneable {
                     resultSet.close();
                 } catch (SQLException ex) {
                     Log.Debug(this, message + ex.getMessage());
-                    Popup.error(message + ex.getMessage(), "Datenbankfehler");
+                   Popup.error(ex);
                 }
             }
             if (stm != null) {
@@ -923,7 +923,7 @@ public class QueryHandler implements Cloneable {
                     stm.close();
                 } catch (SQLException ex) {
                     Log.Debug(this, message + ex.getMessage());
-                    Popup.error(message + ex.getMessage(), "Datenbankfehler");
+                    Popup.error(ex);
                 }
             }
         }
@@ -948,8 +948,7 @@ public class QueryHandler implements Cloneable {
             Log.Debug(this, Messages.SECURITYMANAGER_DENIED +
                     mpv5.usermanagement.MPSecurityManager.getActionName(action) + Messages.CONTEXT + context.getDbIdentity());
             Popup.warn(Messages.SECURITYMANAGER_DENIED +
-                    mpv5.usermanagement.MPSecurityManager.getActionName(action) + Messages.CONTEXT + context.getDbIdentity(),
-                    Messages.ACCESS_DENIED);
+                    mpv5.usermanagement.MPSecurityManager.getActionName(action) + Messages.CONTEXT + context.getDbIdentity());
             return new ReturnValue(-1, new Object[0][0], new String[0]);
         }
 
@@ -968,7 +967,7 @@ public class QueryHandler implements Cloneable {
         try {
             // Select-Anweisung ausführen
             stm = sqlConn.createStatement();
-            Log.Debug(this, query, true);
+            Log.Debug(this, query);
             if (log != null) {
                 log.append("\n " + query);
             }
@@ -1072,8 +1071,7 @@ public class QueryHandler implements Cloneable {
             Log.Debug(this, Messages.SECURITYMANAGER_DENIED +
                     mpv5.usermanagement.MPSecurityManager.getActionName(action) + Messages.CONTEXT + context.getDbIdentity());
             Popup.warn(Messages.SECURITYMANAGER_DENIED +
-                    mpv5.usermanagement.MPSecurityManager.getActionName(action) + Messages.CONTEXT + context.getDbIdentity(),
-                    Messages.ACCESS_DENIED);
+                    mpv5.usermanagement.MPSecurityManager.getActionName(action) + Messages.CONTEXT + context.getDbIdentity());
             return new ReturnValue(-1, new Object[0][0], new String[0]);
         } else {
 //              Log.Debug(this, Messages.SECURITYMANAGER_ALLOWED+
@@ -1095,7 +1093,7 @@ public class QueryHandler implements Cloneable {
         try {
             // Select-Anweisung ausführen
             stm = sqlConn.createStatement();
-            Log.Debug(this, query, true);
+            Log.Debug(this, query);
             if (log != null) {
                 log.append("\n " + query);
             }
@@ -1171,8 +1169,7 @@ public class QueryHandler implements Cloneable {
             Log.Debug(this, Messages.SECURITYMANAGER_DENIED +
                     mpv5.usermanagement.MPSecurityManager.getActionName(action) + Messages.CONTEXT + context.getDbIdentity());
             Popup.warn(Messages.SECURITYMANAGER_DENIED +
-                    mpv5.usermanagement.MPSecurityManager.getActionName(action) + Messages.CONTEXT + context.getDbIdentity(),
-                    Messages.ACCESS_DENIED);
+                    mpv5.usermanagement.MPSecurityManager.getActionName(action) + Messages.CONTEXT + context.getDbIdentity());
             return new ReturnValue(-1, new Object[0][0], new String[0]);
         } else {
 //              Log.Debug(this, Messages.SECURITYMANAGER_ALLOWED+
@@ -1194,7 +1191,7 @@ public class QueryHandler implements Cloneable {
         try {
             // Select-Anweisung ausführen
             stm = sqlConn.createStatement();
-            Log.Debug(this, query, true);
+            Log.Debug(this, query);
             resultSet = stm.executeQuery(query);
             ArrayList spalten = new ArrayList();
             ArrayList zeilen = new ArrayList();
@@ -1230,9 +1227,9 @@ public class QueryHandler implements Cloneable {
                 }
             }
         } catch (SQLException ex) {
-            Log.Debug(this, "Datenbankfehler: " + query, true);
+            Log.Debug(this, "Datenbankfehler: " + query);
             Log.Debug(this, message + ex.getMessage());
-            Popup.error(message + ex.getMessage(), "Datenbankfehler");
+            Popup.error(ex);
             jobmessage = Messages.ERROR_OCCURED;
         } finally {
             // Alle Ressourcen wieder freigeben
@@ -1243,7 +1240,7 @@ public class QueryHandler implements Cloneable {
                 } catch (SQLException ex) {
                     jobmessage = Messages.ERROR_OCCURED;
                     Log.Debug(this, message + ex.getMessage());
-                    Popup.error(message + ex.getMessage(), "Datenbankfehler");
+                   Popup.error(ex);
                 }
             }
             if (stm != null) {
@@ -1251,7 +1248,7 @@ public class QueryHandler implements Cloneable {
                     stm.close();
                 } catch (SQLException ex) {
                     Log.Debug(this, message + ex.getMessage());
-                    Popup.error(message + ex.getMessage(), "Datenbankfehler");
+                    Popup.error(ex);
                 }
             }
         }
@@ -1291,9 +1288,9 @@ public class QueryHandler implements Cloneable {
             j.execute();
 
         } catch (Exception ex) {
-            Log.Debug(this, "Datenbankfehler: " + query, true);
+            Log.Debug(this, "Datenbankfehler: " + query);
             Log.Debug(this, ex);
-            Popup.error(ex.getMessage(), "Datenbankfehler");
+            Popup.error(ex);
             jobmessage = Messages.ERROR_OCCURED;
         } finally {
 
@@ -1350,8 +1347,8 @@ public class QueryHandler implements Cloneable {
             }
 
         } catch (SQLException ex) {
-            Log.Debug(this, "Datenbankfehler: " + ex.getMessage(), true);
-            Popup.error(ex.getMessage(), "Datenbankfehler");
+            Log.Debug(this, "Datenbankfehler: " + ex.getMessage());
+            Popup.error(ex);
             jobmessage = Messages.ERROR_OCCURED;
         } finally {
             // Alle Ressourcen wieder freigeben
@@ -1362,7 +1359,7 @@ public class QueryHandler implements Cloneable {
                 } catch (SQLException ex) {
                     jobmessage = Messages.ERROR_OCCURED;
                     Log.Debug(this, ex.getMessage());
-                    Popup.error(ex.getMessage(), "Datenbankfehler");
+                    Popup.error(ex);
                 }
             }
             if (stm != null) {
@@ -1370,7 +1367,7 @@ public class QueryHandler implements Cloneable {
                     stm.close();
                 } catch (SQLException ex) {
                     Log.Debug(this, ex.getMessage());
-                    Popup.error(ex.getMessage(), "Datenbankfehler");
+                    Popup.error(ex);
                 }
             }
         }
@@ -1480,7 +1477,7 @@ public class QueryHandler implements Cloneable {
                 }
             } catch (SQLException ex) {
                 Log.Debug(this, ex);
-                Popup.error(ex.getMessage(), Messages.ERROR_OCCURED);
+                Popup.error(ex);
             } finally {
                 MPV5View.setProgressReset();
             }
@@ -1556,9 +1553,9 @@ public class QueryHandler implements Cloneable {
                     sqlConn.commit();
                 } catch (Exception ex) {
                     MPV5View.setProgressReset();
-                    Log.Debug(this, "Datenbankfehler: " + query, true);
+                    Log.Debug(this, "Datenbankfehler: " + query);
                     Log.Debug(this, ex);
-                    Popup.error(ex.getMessage(), "Datenbankfehler");
+                    Popup.error(ex);
                     jobmessage = Messages.ERROR_OCCURED;
                 }
 

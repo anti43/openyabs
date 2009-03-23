@@ -34,8 +34,6 @@ import java.util.logging.Logger;
 import mpv5.logging.Log;
 import mpv5.utils.arrays.ArrayUtilities;
 
-
-
 public class FileReaderWriter {
 
     private BufferedReader datenstrom;
@@ -101,8 +99,8 @@ public class FileReaderWriter {
     }
 
     /**
-     * 
-     * @return
+     * Read a file into an array (line by line)
+     * @return The array representing the file
      */
     public String[] readLines() {
 
@@ -131,6 +129,12 @@ public class FileReaderWriter {
         return ArrayUtilities.listToStringArray(arr);
     }
 
+    /**
+     * Appends the String Array to a file (new line per array field) or creates it if needed
+     * 
+     * @param text
+     * @return true is writing successful
+     */
     public boolean write(String[] text) {
 
         for (int i = 0; i < text.length; i++) {
@@ -188,9 +192,7 @@ public class FileReaderWriter {
             return false;
         }
 
-
         return true;
-
     }
 
     /**
@@ -217,23 +219,39 @@ public class FileReaderWriter {
         } catch (Exception ex) {
             Log.Debug(ex);
             return "\n" + filer.getPath() + " not found :-( \n";
-            
+
         }
         return new String(charArray);
     }
 
+    /**
+     * Try to delete the file (may fail, though)
+     */
     public void deleteFile() {
         filer.delete();
     }
 
+    /**
+     * Write one line representing the given array
+     * @param text
+     * @param sep The separator between the array items
+     * @return
+     */
     public boolean writeLine(String[] text, String sep) {
         String string = "";
         for (int i = 0; i < text.length; i++) {
             string += text[i] + sep;
         }
-        if (!writeOnce(string.substring(0, string.length()-sep.length()))) {
+        if (!writeOnce(string.substring(0, string.length() - sep.length()))) {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Flush the file (make it an empty file)
+     */
+    public void flush() {
+        writeOnce("");
     }
 }

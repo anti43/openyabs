@@ -179,8 +179,8 @@ public class DialogForFile extends JFileChooser implements Waiter {
                 }
                 fileToSave.delete();
                 MPV5View.addMessage(Messages.FILE_SAVED + file.getCanonicalPath());
-            } catch (IOException iOException) {
-                Popup.error(Messages.FILE_NOT_SAVED + file.getName(), iOException);
+            } catch (IOException ex) {
+                Popup.error(ex);
 
             } finally {
                 try {
@@ -238,7 +238,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
                 FileDirectoryHandler.copyFile(file, this.file);
                 MPV5View.addMessage(Messages.FILE_SAVED + this.file);
             } catch (Exception ex) {
-                Popup.error(Messages.FILE_NOT_SAVED + file.getName(), ex);
+                Popup.error(ex);
                 Log.Debug(this, ex);
             }
         }

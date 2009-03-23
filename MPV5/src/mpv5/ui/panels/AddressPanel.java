@@ -106,13 +106,13 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
         zip.set_Label(bundle.getString("AddressPanel.zip._Label")); // NOI18N
         zip.setName("zip"); // NOI18N
 
-        male.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        male.setFont(new java.awt.Font("Dialog", 0, 12));
         male.setSelected(true);
         male.setText(bundle.getString("AddressPanel.male.text")); // NOI18N
         male.setName("male"); // NOI18N
         male.setOpaque(false);
 
-        female.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        female.setFont(new java.awt.Font("Dialog", 0, 12));
         female.setText(bundle.getString("AddressPanel.female.text")); // NOI18N
         female.setName("female"); // NOI18N
         female.setOpaque(false);
@@ -133,7 +133,7 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
             }
         });
 
-        jLabel3.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Dialog", 0, 12));
         jLabel3.setText(bundle.getString("AddressPanel.jLabel3.text")); // NOI18N
         jLabel3.setName("jLabel3"); // NOI18N
 
