@@ -42,7 +42,7 @@ public class User extends DatabaseObject {
     private boolean isloggedin = true;
     private Date datelastlog = new Date();
     public static User DEFAULT = new User("Default User", "nobody", -1, 4343);
-    private int groupsids = 1;
+
 
     public User(int userid) throws NodataFoundException {
         context.setDbIdentity(Context.IDENTITY_USERS);
@@ -322,4 +322,6 @@ public class User extends DatabaseObject {
             return false;
         }
     }
+
+
 }

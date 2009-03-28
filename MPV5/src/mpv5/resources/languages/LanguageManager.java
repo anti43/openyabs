@@ -31,7 +31,7 @@ import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import mpv5.db.common.Context;
 import mpv5.db.common.NodataFoundException;
-import mpv5.db.common.PrepareData;
+import mpv5.db.common.DataStringHandler;
 import mpv5.db.common.QueryHandler;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
@@ -85,11 +85,10 @@ public class LanguageManager {
                     String[][] countries = r.toArray(r.getSubRootElement("countries"));
                     for (int i = 0; i < countries.length; i++) {
                         String[] country = countries[i];
-                        QueryHandler.instanceOf().clone(Context.getCountries()).
-                                insert(new String[]{"cname, iso",
-                                    PrepareData.finalize(PrepareData.prepareString(country[1]) +
-                                    PrepareData.prepareNumber(Integer.valueOf(country[2]))
-                                   ), null,}, Messages.DONE, false);
+                        DataStringHandler t = new DataStringHandler();
+                        t.add("cname", country[1]);
+                        t.add("iso", Integer.valueOf(country[2]));
+                        QueryHandler.instanceOf().clone(Context.getCountries()).insert(t, Messages.DONE);
                     }
 //                MPV5View.addMessage(langname + Messages.ROW_UPDATED);
                 }
@@ -258,12 +257,11 @@ public class LanguageManager {
         if (hasNeededKeys(file)) {
             try {
                 String dbname = QueryHandler.instanceOf().clone(Context.getFiles()).insertFile(file);
-                QueryHandler.instanceOf().clone(Context.getLanguage()).
-                        insert(new String[]{"cname, longname, filename",
-                            PrepareData.finalize(PrepareData.prepareString(langid) +
-                            PrepareData.prepareString(langname) +
-                            PrepareData.prepareString(dbname)), null,},
-                        new int[]{0}, "Imported language: " + langname, true);
+                 DataStringHandler t = new DataStringHandler();
+                 t.add("cname", langid);
+                 t.add("longname", langname);
+                 t.add("filename", dbname);
+                QueryHandler.instanceOf().clone(Context.getLanguage()).insert(t,new int[]{0}, "Imported language: " + langname);
                 MPV5View.addMessage(langname + Messages.ROW_UPDATED);
             } catch (FileNotFoundException ex) {
                 Log.Debug(LanguageManager.class, ex);

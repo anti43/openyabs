@@ -149,7 +149,7 @@ public class Favourite extends DatabaseObject {
      * @param user
      */
     public static void flush(User user) {
-       mpv5.db.common.QueryHandler.instanceOf().clone(Context.getFavourites()).delete(new String[][]{{"userid",user.__getIDS().toString(),""}},
+       mpv5.db.common.QueryHandler.instanceOf().clone(Context.getFavourites()).delete(new String[][]{{"usersids",user.__getIDS().toString(),""}},
                Messages.DONE);
     }
 }

@@ -368,15 +368,17 @@ public class QueryHandler implements Cloneable {
 
     /**
      * Checks the uniqueness of the data
-     * @param values
+     * @param vals
      * @param uniquecols
      * @return
      */
-    public boolean checkUniqueness(String[] values, int[] uniquecols) {
+    public boolean checkUniqueness(DataStringHandler vals, int[] uniquecols) {
+        String[] values = vals.getKeys();
+
         if (uniquecols != null) {
             for (int i = 0; i < uniquecols.length; i++) {
                 int j = uniquecols[i];
-                Object[][] val = select(values[0].split(",")[j], new String[]{values[0].split(",")[j], values[1].split(",")[j], values[2]});
+                Object[][] val = select(values[j], new String[]{values[j], vals.getValue(values[j]).toString(), vals.getValue(values[j]).getWrapper()});
                 if (val != null && val.length > 0) {
                     MPV5View.addMessage(Messages.VALUE_ALREADY_EXISTS + values[1].split(",")[j]);
                     return false;
@@ -393,7 +395,9 @@ public class QueryHandler implements Cloneable {
      * @return
      */
     public boolean checkUniqueness(String column, String value) {
-        return checkUniqueness(new String[]{column, value, "'"}, new int[]{0});
+        DataStringHandler t = new DataStringHandler();
+        t.add(column, value);
+        return checkUniqueness(t, new int[]{0});
     }
     private static int RUNNING_JOBS = 0;
 
@@ -427,31 +431,20 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
-     * Inserts data into the current context's table. If "saveValues" is not <code>true</code><br/>
-     * All data will be parsed and the following chars will be replaced:<br/><br/>
-     *  - ' will become `<br/>
-     *  - (;;2#4#1#1#8#0#;;) will become '<br/>
-     *  - (;;,;;) will become ,<br/>
-     * <br/>
-     * this prevents the SQL String to be broken by invalid characters.<br/>
+     * Inserts data into the current context's table
      * @param what
      * @param uniquecols
      * @param jobmessage
-     * @param saveValues
      * @return id (unique) of the inserted row
      */
-    public int insert(String[] what, int[] uniquecols, String jobmessage, boolean saveValues) {
-        if (!saveValues) {
-            what[1] = what[1].replace("'", "`");
-            what[1] = what[1].replaceAll("\\(;;2#4#1#1#8#0#;;\\)", "'");
-            what[1] = what[1].replaceAll("\\(;;\\,;;\\)", ",");
-        }
+    public int insert(DataStringHandler what, int[] uniquecols, String jobmessage) {
+
 //        if (what[2] == null) {
 //            what[2] = "";
 //        }
         String query = null;
 //        start();
-        query = "INSERT INTO " + table + " (" + what[0] + " ) VALUES (" + what[1] + ") ";
+        query = "INSERT INTO " + table + " (" + what.getKeysString() + " ) VALUES (" + what.getValuesString() + ") ";
 
         if (uniquecols != null) {
             if (!checkUniqueness(what, uniquecols)) {
@@ -467,11 +460,10 @@ public class QueryHandler implements Cloneable {
      * @param what  : {set, value, "'"}
      *   this.insert("name,wert", "'Sprache (Waehrung, z.B. Schweiz:  de_CH' ,'de_DE'");
      * @param jobmessage The message to be displayd after a successful run
-     * @param saveValues If true, values are not masked; see {@link #insert(java.lang.String[], int[], java.lang.String, boolean) insert}
      * @return id of inserted row
      */
-    public int insert(String[] what, String jobmessage, boolean saveValues) {
-        return insert(what, (int[]) null, jobmessage, saveValues);
+    public int insert(DataStringHandler what, String jobmessage) {
+        return insert(what, (int[]) null, jobmessage);
     }
 
     /**
@@ -480,20 +472,16 @@ public class QueryHandler implements Cloneable {
      * @param where : {value, comparison, "'"}
      * @param jobmessage
      */
-    public void update(String[] what, String[] where, String jobmessage) {
+    public void update(DataStringHandler what, String[] where, String jobmessage) {
 
-//        start();
-        what[1] = what[1].replaceAll("'", "`");
-        what[1] = what[1].replaceAll("\\(;;2#4#1#1#8#0#;;\\)", "'");
         String query;
-        Log.Debug(this, what);
+//        Log.Debug(this, what);
 
-        String[] a = what[0].split(",");
-        String[] b = what[1].split("\\(;;\\,;;\\)");
+        String[] a = what.getKeys();
         String c = "";
 
         for (int i = 0; i < a.length; i++) {
-            c = c + a[i] + " = " + b[i] + ", ";
+            c += a[i] + " = " + what.getValue(a[i]).getWrapper() + what.getValue(a[i]).toString() + what.getValue(a[i]).getWrapper() + ", ";
         }
 
         c = c.substring(0, c.length() - 2);
@@ -915,7 +903,7 @@ public class QueryHandler implements Cloneable {
                     resultSet.close();
                 } catch (SQLException ex) {
                     Log.Debug(this, message + ex.getMessage());
-                   Popup.error(ex);
+                    Popup.error(ex);
                 }
             }
             if (stm != null) {
@@ -1240,7 +1228,7 @@ public class QueryHandler implements Cloneable {
                 } catch (SQLException ex) {
                     jobmessage = Messages.ERROR_OCCURED;
                     Log.Debug(this, message + ex.getMessage());
-                   Popup.error(ex);
+                    Popup.error(ex);
                 }
             }
             if (stm != null) {
@@ -1449,7 +1437,7 @@ public class QueryHandler implements Cloneable {
      */
     public boolean insertFile(File file, Contact dataOwner, SaveString descriptiveText) {
         try {
-            new backgroundFileInsert(file, dataOwner, descriptiveText.getString()).execute();
+            new backgroundFileInsert(file, dataOwner, descriptiveText).execute();
             return true;
         } catch (Exception e) {
             return false;
@@ -1518,14 +1506,11 @@ public class QueryHandler implements Cloneable {
         private DatabaseObject dataOwner;
         private String descriptiveText;
 
-        public backgroundFileInsert(File file, DatabaseObject owner, String description) {
-            description = description.replace("'", "`");
-            description = description.replaceAll("\\(;;2#4#1#1#8#0#;;\\)", "");
-            description = description.replaceAll("\\(;;\\,;;\\)", ",");
+        public backgroundFileInsert(File file, DatabaseObject owner, SaveString description) {
             this.addPropertyChangeListener(new changeListener());
             this.file = file;
             this.dataOwner = owner;
-            this.descriptiveText = description;
+            this.descriptiveText = description.toString();
         }
 
         @Override
@@ -1570,7 +1555,7 @@ public class QueryHandler implements Cloneable {
         @Override
         public void done() {
             try {
-                QueryHandler.instanceOf().clone(Context.getFilesToContacts()).insert(new String[]{"cname,contactsids,filename, description", "'" + file.getName() + "', " + dataOwner.__getIDS() + " ,'" + get() + "','" + descriptiveText + "'"}, Messages.FILE_SAVED + file.getName(), true);
+                QueryHandler.instanceOf().clone(Context.getFilesToContacts()).insert(new DataStringHandler(new String[]{"cname,contactsids,filename, description", file.getName() + "," + dataOwner.__getIDS() + "," + get() + "," + descriptiveText }), Messages.FILE_SAVED + file.getName());
                 MPV5View.addMessage(Messages.FILE_SAVED + file.getName());
                 if (viewToBeNotified != null) {
                     viewToBeNotified.refresh();

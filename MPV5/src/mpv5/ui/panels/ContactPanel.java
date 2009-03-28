@@ -170,7 +170,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                     Messages.ENTER_A_DESCRIPTION);
 
             if (s != null) {
-                QueryHandler.instanceOf().clone(Context.getFiles(), this).insertFile(d.getFile(), dataOwner, new SaveString(s));
+                QueryHandler.instanceOf().clone(Context.getFiles(), this).insertFile(d.getFile(), dataOwner, DataStringHandler.getSaveStringFor(s));
             }
         }
     }
@@ -448,6 +448,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jScrollPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
+        notes.setText(bundle.getString("ContactPanel.notes.text")); // NOI18N
         notes.setDragEnabled(true);
         notes.setName("notes"); // NOI18N
         jScrollPane1.setViewportView(notes);

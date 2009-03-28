@@ -190,6 +190,7 @@ public class DatabaseInstallation {
         "prename VARCHAR(250) default NULL, cname VARCHAR(250) default NULL, street VARCHAR(250) default NULL," +
         "zip VARCHAR(50) default NULL,city VARCHAR(300) default NULL, " +
         "company VARCHAR(250) DEFAULT NULL, department VARCHAR(250) DEFAULT NULL," +
+        "country VARCHAR(50) default NULL, "+
         "ismale SMALLINT DEFAULT 0," +
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
         "PRIMARY KEY  (ids))",

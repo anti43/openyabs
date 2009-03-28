@@ -52,7 +52,6 @@ public abstract class DatabaseObject {
      * The mandatory name
      */
     public String cname = "";
-
     private int groupsids = 1;
 
     /**
@@ -99,9 +98,6 @@ public abstract class DatabaseObject {
             return null;
         }
     }
-
-
-
 
 //    private Icon ICON_CONTACT = new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/agt_family.png"));
     /**
@@ -185,7 +181,7 @@ public abstract class DatabaseObject {
             try {
                 if (ids <= 0) {
                     Log.Debug(this, "Inserting new dataset:");
-                    ids = QueryHandler.instanceOf().clone(context).insert(collect(), this.__getCName() + Messages.ROW_UPDATED, false);
+                    ids = QueryHandler.instanceOf().clone(context).insert(collect(), this.__getCName() + Messages.ROW_UPDATED);
                     Log.Debug(this, "The inserted row has id: " + ids);
                 } else {
                     Log.Debug(this, "Updating dataset: " + ids + " within context '" + context + "'");
@@ -261,39 +257,34 @@ public abstract class DatabaseObject {
     /**
      * Collect the data to masked/valid DB String array
      */
-    private String[] collect() {
+    private DataStringHandler collect() {
 
+        DataStringHandler t = new DataStringHandler();
         String left = "";
-        String right = "";
         Object tempval;
-        String stringval = "";
+
 
         for (int i = 0; i < this.getClass().getMethods().length; i++) {
             if (this.getClass().getMethods()[i].getName().startsWith("__get") && !this.getClass().getMethods()[i].getName().endsWith("IDS")) {
                 try {
-                    left += this.getClass().getMethods()[i].getName().toLowerCase().substring(5, this.getClass().getMethods()[i].getName().length()) + ",";
-                    Log.Debug(this, "Calling: "  +this.getClass().getMethods()[i]);
+                    left = this.getClass().getMethods()[i].getName().toLowerCase().substring(5, this.getClass().getMethods()[i].getName().length());
+                    Log.Debug(this, "Calling: " + this.getClass().getMethods()[i]);
                     tempval = this.getClass().getMethods()[i].invoke(this, (Object[]) null);
                     Log.Debug(this, "Collect: " + tempval.getClass().getName() + " : " + this.getClass().getMethods()[i].getName() + " ? " + tempval);
                     if (tempval.getClass().isInstance(new String())) {
-                        stringval = "(;;2#4#1#1#8#0#;;)" + tempval + "(;;2#4#1#1#8#0#;;)";
+                        t.add(left, String.valueOf(tempval));
                     } else if (tempval.getClass().isInstance(true)) {
                         boolean c = (Boolean) tempval;
-                        if (c) {
-                            stringval = "1";
-                        } else {
-                            stringval = "0";
-                        }
+                        t.add(left, c);
                     } else if (tempval.getClass().isInstance(new Date())) {
-                        stringval = "(;;2#4#1#1#8#0#;;)" + DateConverter.getSQLDateString((Date) tempval) + "(;;2#4#1#1#8#0#;;)";
-                    } else if (tempval.getClass().isInstance(new Integer(0))) {
-                        stringval = String.valueOf(tempval);
-                    } else if (tempval.getClass().isInstance(new Float(0f))) {
-                        stringval = String.valueOf(tempval);
-                    } else if (tempval.getClass().isInstance(new Double(0d))) {
-                        stringval = String.valueOf(tempval);
+                        t.add(left, DateConverter.getSQLDateString((Date) tempval));
+                    } else if (tempval.getClass().isInstance(0)) {
+                        t.add(left, (Integer) tempval);
+                    } else if (tempval.getClass().isInstance(0f)) {
+                        t.add(left, (Float) tempval);
+                    } else if (tempval.getClass().isInstance(0d)) {
+                        t.add(left, (Double) tempval);
                     }
-                    right += stringval + "(;;,;;)";
                 } catch (IllegalAccessException ex) {
                     Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (IllegalArgumentException ex) {
@@ -322,7 +313,7 @@ public abstract class DatabaseObject {
 //            }
         }
 
-        return new String[]{left.substring(0, left.length() - 1), right.substring(0, right.length() - 7), ""};
+        return t;
     }
 
     /**
@@ -538,7 +529,7 @@ public abstract class DatabaseObject {
                         }
                         Log.Debug(this, "Explode: " + vars.get(k).toGenericString() + " with " + select.getData()[i][j] + "[" + valx + "]");
                         //End Debug Section
-                        
+
                         try {
                             if (name.startsWith("is") || name.toUpperCase().startsWith("BOOL") || name.toUpperCase().endsWith("BOOL")) {
                                 if (String.valueOf(select.getData()[i][j]).equals("1")) {

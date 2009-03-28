@@ -39,16 +39,16 @@ public class DataPanelTB extends javax.swing.JPanel {
 
     private static final long serialVersionUID = -8215471082724735228L;
     private DataPanel parents;
-    private ActionListener action1 = new java.awt.event.ActionListener() {
+    private final ActionListener action1 = new java.awt.event.ActionListener() {
 
         public void actionPerformed(java.awt.event.ActionEvent evt) {
-            jButton24ActionPerformed3(evt);
+            favAdd(evt);
         }
     };
-    private ActionListener action2 = new java.awt.event.ActionListener() {
+    private final ActionListener action2 = new java.awt.event.ActionListener() {
 
         public void actionPerformed(java.awt.event.ActionEvent evt) {
-            jButton24ActionPerformed2(evt);
+            favRemover(evt);
         }
     };
 
@@ -72,6 +72,7 @@ public class DataPanelTB extends javax.swing.JPanel {
             jButton24.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
             jButton24.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
             jButton24.removeActionListener(action2);
+            jButton24.removeActionListener(action1);
             jButton24.addActionListener(action1);
         } else {
             jButton24.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/bookmark.png"))); // NOI18N
@@ -79,6 +80,7 @@ public class DataPanelTB extends javax.swing.JPanel {
             jButton24.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
             jButton24.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
             jButton24.removeActionListener(action1);
+            jButton24.removeActionListener(action2);
             jButton24.addActionListener(action2);
         }
         this.validate();
@@ -182,6 +184,11 @@ public class DataPanelTB extends javax.swing.JPanel {
         jButton24.setFocusable(false);
         jButton24.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton24.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton24.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton24ActionPerformed(evt);
+            }
+        });
         commonActionsToolbar.add(jButton24);
         commonActionsToolbar.add(jSeparator2);
 
@@ -275,6 +282,11 @@ public class DataPanelTB extends javax.swing.JPanel {
             parents.setDataOwner(dato);
         }
     }//GEN-LAST:event_jButton26ActionPerformed
+
+    private void jButton24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton24ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton24ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToolBar commonActionsToolbar;
     private javax.swing.JButton jButton21;
@@ -289,7 +301,7 @@ public class DataPanelTB extends javax.swing.JPanel {
     private javax.swing.JToolBar.Separator jSeparator3;
     // End of variables declaration//GEN-END:variables
 
-    private void jButton24ActionPerformed2(java.awt.event.ActionEvent evt) {
+    private void favRemover(java.awt.event.ActionEvent evt) {
 
         DatabaseObject dato = parents.getDataOwner();
         if (!MPV5View.getUser().isDefault() && dato.isExisting()) {
@@ -304,8 +316,7 @@ public class DataPanelTB extends javax.swing.JPanel {
         }
     }
 
-    private void jButton24ActionPerformed3(java.awt.event.ActionEvent evt) {
-
+    private void favAdd(java.awt.event.ActionEvent evt) {
         DatabaseObject dato = parents.getDataOwner();
         Favourite fav = null;
         if (!MPV5View.getUser().isDefault()) {

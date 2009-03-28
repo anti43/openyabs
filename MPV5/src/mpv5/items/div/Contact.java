@@ -32,7 +32,7 @@ public class Contact extends DatabaseObject {
     private String addedby = "";
     private String company = "";
     private String department = "";
-    private int groupsids = 1;
+//    private int groupsids = 1;
     private boolean ismale = true;
     private boolean isenabled = true;
     private boolean iscompany = false;
