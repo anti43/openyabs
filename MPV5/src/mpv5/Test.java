@@ -33,7 +33,7 @@ import org.jdom.JDOMException;
 public class Test {
 
     public static void main(String[] args) {
-        try {
+//        try {
 //        try {
 //            new XMLReader().newDoc(new File("contacts.xml"), true);
 //
@@ -42,18 +42,18 @@ public class Test {
 //        } catch (IOException ex) {
 //            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
 //        }
-            XMLReader r = new XMLReader();
-            r.newDoc(new File("contacts.xml"), true); 
-            ArrayList<DatabaseObject> l = r.getObjects(new Contact());
-           
-            for (int i = 0; i < l.size(); i++) {
-
-                DatabaseObject databaseObject = l.get(i);
-                System.out.println(databaseObject.__getCName());
-      
-            }
-        } catch (Exception ex) {
-           ex.printStackTrace();
-        } 
+//            XMLReader r = new XMLReader();
+//            r.newDoc(new File("contacts.xml"), true);
+//            ArrayList<DatabaseObject> l = r.getObjects(new Contact());
+//
+//            for (int i = 0; i < l.size(); i++) {
+//
+//                DatabaseObject databaseObject = l.get(i);
+//                System.out.println(databaseObject.__getCName());
+//
+//            }
+//        } catch (Exception ex) {
+//           ex.printStackTrace();
+//        }
     }
 }

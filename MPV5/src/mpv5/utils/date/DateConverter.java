@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import mpv5.logging.Log;
 
 /**
  *
@@ -32,12 +33,11 @@ import java.util.Locale;
 public class DateConverter {
 
     public static String[] months = {"Jan", "Feb",
-            "Mar", "Aprl", "May", "Jun", "Jul",
-            "Aug", "Sep", "Oct", "Nov",
-            "Dec"};
-
+        "Mar", "Aprl", "May", "Jun", "Jul",
+        "Aug", "Sep", "Oct", "Nov",
+        "Dec"};
     private static Calendar cl = Calendar.getInstance();
-    //   yyyy-mm-dd hh.mm.ss[.nnnnnn] - SQL DATE Timestamp
+    public static final DateFormat NATIVE_DATE_FORMAT = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z");
     public static final DateFormat DB_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     public static final DateFormat DE_DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN);
     public static final DateFormat DE_DATE_FORMAT_DAY = new SimpleDateFormat("dd", Locale.GERMAN);
@@ -52,9 +52,9 @@ public class DateConverter {
     public static final DateFormat DE_DATE_FORMAT_NODAY_LONGMONTH_YEAR = new SimpleDateFormat("MMMM.yyyy", Locale.GERMAN);
     public static final DateFormat ENG_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
     public static final ArrayList<DateFormat> DATE_FORMATS = new ArrayList<DateFormat>(Arrays.asList(new DateFormat[]{DB_DATE_FORMAT, ENG_DATE_FORMAT, DE_DATE_FORMAT_NODAY_LONGMONTH_YEAR,
-        DE_DATE_FORMAT, DE_DATE_FORMAT_SHORTYEAR, DE_DATE_FORMAT_SHORTMONTH, DE_DATE_FORMAT_NODAY_SHORTMONTH_SHORTYEAR,
-        DE_DATE_FORMAT_SHORTMONTH_SHORTYEAR, DE_DATE_FORMAT_NODAY_MONTH_YEAR, DE_DATE_FORMAT_YEAR, DE_DATE_FORMAT_NODAY_SHORTMONTH_YEAR
-    }));
+                DE_DATE_FORMAT, DE_DATE_FORMAT_SHORTYEAR, DE_DATE_FORMAT_SHORTMONTH, DE_DATE_FORMAT_NODAY_SHORTMONTH_SHORTYEAR,
+                DE_DATE_FORMAT_SHORTMONTH_SHORTYEAR, DE_DATE_FORMAT_NODAY_MONTH_YEAR, DE_DATE_FORMAT_YEAR, DE_DATE_FORMAT_NODAY_SHORTMONTH_YEAR, NATIVE_DATE_FORMAT
+            }));
     public static final DateFormat DE_FULL_DATE_FORMAT = new SimpleDateFormat("dd.MM.yyy - HH:mm:ss");
 
     public static Date addDays(Date date, Integer add) {
@@ -74,7 +74,7 @@ public class DateConverter {
 
         Calendar d1 = Calendar.getInstance();
         d1.setTime(date1);
-        
+
         Calendar d2 = Calendar.getInstance();
         d2.setTime(date2);
 
@@ -199,10 +199,13 @@ public class DateConverter {
         Date DATE = null;
         for (int i = 0; i < DATE_FORMATS.toArray().length; i++) {
             try {
-                DATE = ((DateFormat)DATE_FORMATS.toArray()[i]).parse(date);
+                DATE = ((DateFormat) DATE_FORMATS.toArray()[i]).parse(date);
                 return DATE;
             } catch (ParseException ex) {
             }
+        }
+        if (DATE == null) {
+            Log.Debug(DateConverter.class, "String not parseable to a date: " + date);
         }
         return DATE;
     }

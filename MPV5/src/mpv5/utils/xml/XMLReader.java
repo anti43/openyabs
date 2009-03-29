@@ -24,6 +24,7 @@ import java.util.List;
 
 import javax.xml.bind.JAXBElement.GlobalScope;
 import mpv5.data.PropertyStore;
+import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
@@ -32,6 +33,7 @@ import org.jdom.Attribute;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
+import org.jdom.filter.ContentFilter;
 import org.jdom.filter.ElementFilter;
 import org.jdom.input.SAXBuilder;
 
@@ -133,27 +135,64 @@ public class XMLReader {
 
     /**
      * Tries to parse the xml file into a list of matching database objects.
+     * @param <T> 
      * @param template
      * @return
      */
-    public ArrayList<DatabaseObject> getObjects(DatabaseObject template) {
+    @SuppressWarnings({"unchecked"})
+    public <T extends DatabaseObject> ArrayList<T> getObjects(T template) {
 
+        Log.Debug(this, "Looking for: " + template.getDbIdentity());
         String ident = template.getType();
         ArrayList<DatabaseObject> arrlist = new ArrayList<DatabaseObject>();
         @SuppressWarnings("unchecked")
         List<Element> list = (List<Element>) rootElement.getChild(template.getDbIdentity()).getContent(new ElementFilter());
 
+        Log.Debug(this, "Found items: " + list.size());
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i) instanceof Element && list.get(i).getName().equalsIgnoreCase(template.getType())) {
-                if (list.get(i).getName().equals(ident) && list.get(i).getAttribute("id") != null) {
+//                Log.Debug(this, "Found item: " + list.get(i).getName());
+                if (list.get(i).getName().equals(ident)) {
                     Element element = list.get(i);
                     DatabaseObject obj = template.clone();
                     obj.parse(toHashTable(element));
+//                    if (list.get(i).getAttribute("id") != null) {
+//                        obj.setIDS(Integer.valueOf(list.get(i).getAttribute("id").getValue()));
+//                    }
                     arrlist.add(obj);
                 }
             }
         }
-        return arrlist;
+        return (ArrayList<T>) arrlist;
+    }
+
+    /**
+     * Tries to parse the xml file into a list of database objects. <br/>
+     * May contain empty lists
+     * @return
+     */
+    public ArrayList<ArrayList<DatabaseObject>> getObjects() {
+        ArrayList<Context> c = Context.getContexts();
+        ArrayList<ArrayList<DatabaseObject>> t = new ArrayList<ArrayList<DatabaseObject>>();
+        DatabaseObject template = null;
+        Context context = null;
+
+        for (int i = 0; i < c.size(); i++) {
+            try {
+                context = c.get(i);
+                template = DatabaseObject.getObject(context);
+                t.add(getObjects(template));
+            } catch (Exception ignore) {
+                Log.Debug(this, "Element of typ: " + context.getDbIdentity() + " not found in this document!");
+            }
+        }
+
+        for (int i = 0; i < t.size(); i++) {
+            ArrayList<DatabaseObject> arrayList = t.get(i);
+            Log.PrintArray(arrayList);
+        }
+
+        return t;
     }
 
     /**
@@ -203,10 +242,10 @@ public class XMLReader {
 //        Document doc = builder.build(xml);
         SAXBuilder parser = new SAXBuilder(validate);
 //        try {
-            myDocument = parser.build(xmlfile);
-            rootElement = myDocument.getRootElement();
-            Log.Debug(this, "Document validated: " + xmlfile);
-            return myDocument;
+        myDocument = parser.build(xmlfile);
+        rootElement = myDocument.getRootElement();
+        Log.Debug(this, "Document validated: " + xmlfile);
+        return myDocument;
 //        } catch (Exception jDOMException) {
 //            Log.Debug(this, jDOMException.getMessage());
 //            Popup.error("", jDOMException);
@@ -253,7 +292,7 @@ public class XMLReader {
             List<Attribute> atts = element.getAttributes();
 
             for (int j = 2; j < atts.size() + 2; j++) {
-                Attribute a = atts.get(j-2);
+                Attribute a = atts.get(j - 2);
                 table[i][j] = a.getValue();
             }
         }

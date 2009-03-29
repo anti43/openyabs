@@ -14,6 +14,7 @@ import com.l2fprod.common.swing.plaf.LookAndFeelAddons;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.Map;
 import java.util.Properties;
 import javax.swing.SwingUtilities;
@@ -113,12 +114,16 @@ public class Main extends SingleFrameApplication {
      */
     public static void main(String[] args) {
 
+
         System.out.print(Messages.START_MESSAGE);
 
         getOS();
         setEnv();
         parseArgs(args);
         setDerbyLog();
+        if (Log.getLoglevel() == Log.LOGLEVEL_DEBUG) {
+            printEnv();
+        }
         start();
     }
     public static boolean IS_WINDOWS = false;
@@ -275,9 +280,12 @@ public class Main extends SingleFrameApplication {
     }
 
     public static void printEnv() {
-        Map<String, String> env = System.getenv();
-        for (String envName : env.keySet()) {
-            System.out.format("%s=%s%n", envName, env.get(envName));
+        Properties sysprops = System.getProperties();
+        Enumeration propnames = sysprops.propertyNames();
+
+        while (propnames.hasMoreElements()) {
+            String propname = (String) propnames.nextElement();
+            Log.Debug(Main.class,"System env: " +  propname.toUpperCase() + " : " + System.getProperty(propname));
         }
     }
 

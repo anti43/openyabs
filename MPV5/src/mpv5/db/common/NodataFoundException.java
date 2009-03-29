@@ -19,8 +19,8 @@ package mpv5.db.common;
 import mpv5.globals.Messages;
 
 /**
- *
- * @author Administrator
+ * Thrown if no matching data was found, the resultset is empty
+ * @author Anti
  */
 public class NodataFoundException extends Exception {
 

@@ -373,9 +373,13 @@ public abstract class DatabaseObject {
 
         for (int i = 0; i < vars.size(); i++) {
             try {
-                vals.add(new String[]{vars.get(i).getName().substring(5, vars.get(i).getName().length()),
-                            String.valueOf(vars.get(i).invoke(this, new Object[0]))});
-
+                if (!vars.get(i).getName().substring(5, vars.get(i).getName().length()).toUpperCase().startsWith("DATE")) {
+                    vals.add(new String[]{vars.get(i).getName().substring(5, vars.get(i).getName().length()),
+                                String.valueOf(vars.get(i).invoke(this, new Object[0]))});
+                } else {
+                    vals.add(new String[]{vars.get(i).getName().substring(5, vars.get(i).getName().length()),
+                                DateConverter.getDefDateString((Date) vars.get(i).invoke(this, new Object[0]))});
+                }
             } catch (Exception n) {
                 Log.Debug(this, n.getCause());
                 n.printStackTrace();
@@ -393,11 +397,27 @@ public abstract class DatabaseObject {
      * @throws NodataFoundException 
      */
     public static DatabaseObject getObject(Context context, int id) throws NodataFoundException {
-
-
         try {
             Object obj = context.getIdentityClass().newInstance();
             ((DatabaseObject) obj).fetchDataOf(id);
+            return (DatabaseObject) obj;
+        } catch (InstantiationException ex) {
+            Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    /**
+     * Returns an empty "sample" Object of the specified <code>Context</code> type
+     * @param context
+     * @return
+     */
+    public static DatabaseObject getObject(Context context) {
+
+        try {
+            Object obj = context.getIdentityClass().newInstance();
             return (DatabaseObject) obj;
         } catch (InstantiationException ex) {
             Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
@@ -561,7 +581,7 @@ public abstract class DatabaseObject {
 
     /**
      * Tries to reflect the hash table into this do.
-     * The hashtable's keys much match the methods retrieved by do.setVars()
+     * The hashtable's keys must match the methods retrieved by do.setVars()
      * @param toHashTable
      */
     public void parse(Hashtable<String, Object> toHashTable) {
@@ -578,12 +598,12 @@ public abstract class DatabaseObject {
 //                    Log.Debug(this, name + " ?? : " + vars.get(k).getName() + " = " + data[row][1]);
                     try {
                         if (name.startsWith("is") || name.toUpperCase().startsWith("BOOL")) {
-                            if (String.valueOf(data[row][1]).equals("1")) {
+                            if (String.valueOf(data[row][1]).equals("1") || String.valueOf(data[row][1]).toUpperCase().equals("TRUE")) {
                                 vars.get(k).invoke(this, new Object[]{true});
                             } else {
                                 vars.get(k).invoke(this, new Object[]{false});
                             }
-                        } else if (name.toUpperCase().startsWith("INT") || name.endsWith("uid") || name.equals("ids")) {
+                        } else if (name.toUpperCase().startsWith("INT") || name.endsWith("uid") || name.equals("ids") || name.endsWith("ids")) {
                             vars.get(k).invoke(this, new Object[]{Integer.valueOf(String.valueOf(data[row][1]))});
                         } else if (name.toUpperCase().startsWith("DATE")) {
                             vars.get(k).invoke(this, new Object[]{DateConverter.getDate(String.valueOf(data[row][1]))});
@@ -591,11 +611,14 @@ public abstract class DatabaseObject {
                             vars.get(k).invoke(this, new Object[]{String.valueOf(data[row][1])});
                         }
                     } catch (IllegalAccessException ex) {
-                        Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+                        Log.Debug(this, name.toUpperCase() + " caused an exception: " + ex.getMessage());
+                        Log.Debug(ex);
                     } catch (IllegalArgumentException ex) {
-                        Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+                        Log.Debug(this, name.toUpperCase() + " caused an exception: " + ex.getMessage());
+                        Log.Debug(ex);
                     } catch (InvocationTargetException ex) {
-                        Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+                        Log.Debug(this, name.toUpperCase() + " caused an exception: " + ex.getMessage());
+                        Log.Debug(ex);
                     }
 
                 }

@@ -9,9 +9,12 @@ import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -42,11 +45,13 @@ import mpv5.ui.parents.Position;
 import mpv5.usermanagement.User;
 import mpv5.utils.print.PrintJob;
 import mpv5.utils.text.TypeConversion;
+import mpv5.utils.xml.XMLReader;
 import mpv5.utils.xml.XMLWriter;
 import org.jdesktop.application.SingleFrameApplication;
 import org.jdesktop.application.FrameView;
 import org.jdesktop.application.ResourceMap;
 import org.jdesktop.application.TaskMonitor;
+import org.jdom.JDOMException;
 
 /**
  * The application's main frame.
@@ -274,6 +279,35 @@ public class MPV5View extends FrameView {
         tabPane.setSelectedComponent(tab);
     }
 
+    private void importXML() {
+        DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY);
+        d.setFileFilter(DialogForFile.XML_FILES);
+        XMLReader x;
+        ArrayList<ArrayList<DatabaseObject>> objs = null;
+
+        if(d.chooseFile()){
+            x = new XMLReader();
+            try {
+                x.newDoc(d.getFile(), true);
+                objs = x.getObjects();
+            } catch (Exception ex) {
+                Log.Debug(ex);
+            }
+        }
+
+
+        if (objs!=null) {
+            for (int i = 0; i < objs.size(); i++) {
+                ArrayList<DatabaseObject> arrayList = objs.get(i);
+                for (int j = 0; j < arrayList.size(); j++) {
+                    DatabaseObject databaseObject = arrayList.get(j);
+                        Log.Debug(this, "Parsing " + databaseObject.getDbIdentity() + " : " + databaseObject.__getCName() + " from file: " + d.getFile());
+                        databaseObject.save();
+                }
+            }
+        }
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -302,6 +336,8 @@ public class MPV5View extends FrameView {
         jMenu4 = new javax.swing.JMenu();
         jMenu5 = new javax.swing.JMenu();
         jMenuItem8 = new javax.swing.JMenuItem();
+        jMenu8 = new javax.swing.JMenu();
+        jMenuItem11 = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -573,6 +609,21 @@ public class MPV5View extends FrameView {
         jMenu4.add(jMenu5);
 
         fileMenu.add(jMenu4);
+
+        jMenu8.setText(bundle.getString("MPV5View.jMenu8.text")); // NOI18N
+        jMenu8.setName("jMenu8"); // NOI18N
+
+        jMenuItem11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/xml.png"))); // NOI18N
+        jMenuItem11.setText(bundle.getString("MPV5View.jMenuItem11.text")); // NOI18N
+        jMenuItem11.setName("jMenuItem11"); // NOI18N
+        jMenuItem11.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem11ActionPerformed(evt);
+            }
+        });
+        jMenu8.add(jMenuItem11);
+
+        fileMenu.add(jMenu8);
 
         menuBar.add(fileMenu);
 
@@ -899,6 +950,10 @@ public class MPV5View extends FrameView {
         Log.getLogger().open();
     }//GEN-LAST:event_jMenuItem10ActionPerformed
 
+    private void jMenuItem11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem11ActionPerformed
+        importXML();
+    }//GEN-LAST:event_jMenuItem11ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JMenu clipboardMenu;
     public javax.swing.JMenu favouritesMenu;
@@ -917,8 +972,10 @@ public class MPV5View extends FrameView {
     private javax.swing.JMenu jMenu5;
     private javax.swing.JMenu jMenu6;
     private javax.swing.JMenu jMenu7;
+    private javax.swing.JMenu jMenu8;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem10;
+    private javax.swing.JMenuItem jMenuItem11;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;

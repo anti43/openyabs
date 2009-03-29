@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
+import mpv5.db.common.DatabaseObject;
 import mpv5.globals.Messages;
 import mpv5.items.div.Group;
 import mpv5.utils.files.FileReaderWriter;
@@ -79,8 +80,11 @@ public class Log {
                 if ( message !=null && message.toString().contains("Exception")) {
                     ((Exception) message).printStackTrace();
                     write("\nCaused by:\n");
-                    ((Exception) message).getCause().printStackTrace();
-                    mpv5.ui.frames.MPV5View.addMessage(Messages.ERROR_OCCURED + ". " + Messages.SEE_LOG);
+                    try {
+                        ((Exception) message).getCause().printStackTrace();
+                        mpv5.ui.frames.MPV5View.addMessage(Messages.ERROR_OCCURED + ". " + Messages.SEE_LOG);
+                    } catch (Exception e) {
+                    }
                 }
                 break;
             case LOGLEVEL_NORMAL:
@@ -105,11 +109,13 @@ public class Log {
         Debug(source, message);
     }
 
+   
+
     /**
      * Print a list
      * @param data
      */
-    public static void PrintArray(ArrayList<Group> data) {
+    public static void PrintArray(ArrayList data) {
         PrintArray(data.toArray());
     }
 
