@@ -271,6 +271,7 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
     }
 
     public void refresh() {
+
     }
 
     public void flush() {

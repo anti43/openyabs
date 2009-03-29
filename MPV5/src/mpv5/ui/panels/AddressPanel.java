@@ -23,6 +23,7 @@ package mpv5.ui.panels;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JTabbedPane;
+import javax.swing.SwingUtilities;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.DatabaseSearch;
@@ -377,15 +378,23 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
     }
 
     public void refresh() {
-        try {
-            companyselect.setModel(new DefaultComboBoxModel(ArrayUtilities.merge(new Object[]{new MPComboBoxModelItem("<no_value>", "")},
-                    MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getCompany()).getValuesFor(Context.getCompany().getSubID(), null, "")))));
 
-            countryselect.setModel(LanguageManager.getCountriesAsComboBoxModel());
-            countryselect.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(MPV5View.getUser().__getDefcountry(), countryselect.getModel()));
-        } catch (Exception e) {
-            Log.Debug(this, e);
-        }
+        Runnable runnable = new Runnable() {
+
+            public void run() {
+                try {
+                    companyselect.setModel(new DefaultComboBoxModel(ArrayUtilities.merge(new Object[]{new MPComboBoxModelItem("<no_value>", "")},
+                            MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getCompany()).getValuesFor(Context.getCompany().getSubID(), null, "")))));
+
+                    countryselect.setModel(LanguageManager.getCountriesAsComboBoxModel());
+                    countryselect.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(MPV5View.getUser().__getDefcountry(), countryselect.getModel()));
+                } catch (Exception e) {
+                    Log.Debug(this, e);
+                }
+            }
+        };
+
+        SwingUtilities.invokeLater(runnable);
     }
 
     public void paste(DatabaseObject dbo) {

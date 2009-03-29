@@ -32,7 +32,7 @@ public interface DataPanel {
     public void setDataOwner(DatabaseObject object);
 
     /**
-     * Reload the view from database
+     * Reload the view from database, in background
      */
     public void refresh();
 

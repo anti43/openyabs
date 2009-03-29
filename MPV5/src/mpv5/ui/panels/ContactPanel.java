@@ -40,6 +40,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JWindow;
+import javax.swing.SwingUtilities;
 import mpv5.db.common.*;
 import mpv5.globals.Headers;
 import mpv5.globals.Messages;
@@ -1173,24 +1174,31 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     }
 
     public void refresh() {
-        try {
-            companyselect.setModel(new DefaultComboBoxModel(ArrayUtilities.merge(new Object[]{new MPComboBoxModelItem("<no_value>", "")},
-                    MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getCompany()).getValuesFor(Context.getCompany().getSubID(), null, "")))));
+        Runnable runnable = new Runnable() {
 
-            groupnameselect.setModel(new DefaultComboBoxModel(
-                    MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID(), null, ""))));
+            public void run() {
+                try {
+                    companyselect.setModel(new DefaultComboBoxModel(ArrayUtilities.merge(new Object[]{new MPComboBoxModelItem("<no_value>", "")},
+                            MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getCompany()).getValuesFor(Context.getCompany().getSubID(), null, "")))));
 
-            sp.refresh();
+                    groupnameselect.setModel(new DefaultComboBoxModel(
+                            MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID(), null, ""))));
 
-            if (jButton1.isEnabled()) {
-                fillFiles();
+                    sp.refresh();
+
+                    if (jButton1.isEnabled()) {
+                        fillFiles();
+                    }
+
+                    countryselect.setModel(LanguageManager.getCountriesAsComboBoxModel());
+                    countryselect.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(MPV5View.getUser().__getDefcountry(), countryselect.getModel()));
+                } catch (Exception e) {
+                    Log.Debug(this, e);
+                }
             }
+        };
 
-            countryselect.setModel(LanguageManager.getCountriesAsComboBoxModel());
-            countryselect.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(MPV5View.getUser().__getDefcountry(), countryselect.getModel()));
-        } catch (Exception e) {
-            Log.Debug(this, e);
-        }
+        SwingUtilities.invokeLater(runnable);
     }
 
     private void isCustomer(boolean b) {
