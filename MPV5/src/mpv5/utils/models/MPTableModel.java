@@ -16,8 +16,11 @@
  */
 package mpv5.utils.models;
 
+import java.util.ArrayList;
 import java.util.Vector;
 import javax.swing.table.DefaultTableModel;
+import mpv5.db.common.DatabaseObject;
+import mpv5.logging.Log;
 
 /**
  *
@@ -36,6 +39,35 @@ public class MPTableModel extends DefaultTableModel {
         setTypes(new Class[]{Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
                     Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
                     Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class});
+    }
+
+    public MPTableModel(ArrayList<DatabaseObject> list, String[] header) {
+        super();
+        Object[][] data = new Object[0][0];
+        if (list.size() > 0 && list.get(0) != null) {
+            data = new Object[list.size()][list.get(0).getValues().size() ];
+        }
+        ArrayList<String[]> sdata;
+
+       
+
+        for (int i = 0; i < list.size(); i++) {
+            DatabaseObject databaseObject = list.get(i);
+            sdata = databaseObject.getValues();
+            for (int j = 0; j < sdata.size(); j++) {
+                String[] strings = sdata.get(j);
+                data[i][j] = strings[1];
+            }
+        }
+
+        setDataVector(data, header);
+
+        setEditable(false);
+
+        setTypes(new Class[]{Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
+                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
+                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class});
+
     }
 
     public MPTableModel(Object[][] datstr, String[] header) {

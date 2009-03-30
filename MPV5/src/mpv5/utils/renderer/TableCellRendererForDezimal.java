@@ -18,7 +18,7 @@ This file is part of MP by anti43 /GPL.
  * 
  */
 
-package mpv5.utils.tables;
+package mpv5.utils.renderer;
 
 import java.text.NumberFormat;
 import javax.swing.table.DefaultTableCellRenderer;

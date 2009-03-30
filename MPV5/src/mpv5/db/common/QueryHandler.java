@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import mpv5.globals.Messages;
 import mpv5.items.div.Contact;
@@ -92,6 +93,15 @@ public class QueryHandler implements Cloneable {
      */
     public boolean checkConstraint(String[] constraint, Object[] values) {
 
+        for (int i = 0; i < values.length; i++) {
+            Object object = values[i];
+
+            if (!(object instanceof Number)) {
+               values[i] = "'"+object.toString()+"'";
+            } 
+
+        }
+
         Object[][] val = select("ids", constraint, values);
         if (val != null && val.length > 0) {
             Log.Debug(this, "Uniqueness check failed!");
@@ -144,6 +154,17 @@ public class QueryHandler implements Cloneable {
         } else {
             return data;
         }
+    }
+
+    /**
+     * This is a convenience method to retrieve data such as
+     * <code>select("*", criterias.getKeys(), criterias.getValues())<code/>
+     * @param criterias
+     * @return
+     * @throws NodataFoundException
+     */
+    public Object[][] select(DataStringHandler criterias) throws NodataFoundException {
+        return select("*", criterias.getKeys(), criterias.getValues());
     }
 
     /**
@@ -401,20 +422,29 @@ public class QueryHandler implements Cloneable {
     }
     private static int RUNNING_JOBS = 0;
 
-    private void stop() {
-        RUNNING_JOBS--;
+    private synchronized void stop() {
+        Runnable runnable = new Runnable() {
 
-        if (RUNNING_JOBS <= 0) {
-            comp.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-        }
-//        MPV5View.setProgressRunning(false);
+            public void run() {
+                try {//Avoid Cursor flickering
+                    Thread.sleep(10);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                if (RUNNING_JOBS <= 1) {
+                    comp.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                    MPV5View.setProgressRunning(false);
+                }
+                RUNNING_JOBS--;
+            }
+        };
+        SwingUtilities.invokeLater(runnable);
     }
 
-    private void start() {
+    private synchronized void start() {
         RUNNING_JOBS++;
         comp.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-
-//         MPV5View.setProgressRunning(true);
+        MPV5View.setProgressRunning(true);
     }
 
 //    public String getNextStringNumber(String colName) {
@@ -630,11 +660,7 @@ public class QueryHandler implements Cloneable {
 
             Object object = haveValues[i];
             String column = whereColumns[i];
-            if (object instanceof Number) {
-                query += column + "=" + object.toString();
-            } else {
-                query += column + "='" + object.toString() + "'";
-            }
+            query += column + "=" + String.valueOf(object);
 
             if ((i + 1) != haveValues.length) {
                 query += " AND ";
@@ -1555,7 +1581,7 @@ public class QueryHandler implements Cloneable {
         @Override
         public void done() {
             try {
-                QueryHandler.instanceOf().clone(Context.getFilesToContacts()).insert(new DataStringHandler(new String[]{"cname,contactsids,filename, description", file.getName() + "," + dataOwner.__getIDS() + "," + get() + "," + descriptiveText }), Messages.FILE_SAVED + file.getName());
+                QueryHandler.instanceOf().clone(Context.getFilesToContacts()).insert(new DataStringHandler(new String[]{"cname,contactsids,filename, description", file.getName() + "," + dataOwner.__getIDS() + "," + get() + "," + descriptiveText}), Messages.FILE_SAVED + file.getName());
                 MPV5View.addMessage(Messages.FILE_SAVED + file.getName());
                 if (viewToBeNotified != null) {
                     viewToBeNotified.refresh();

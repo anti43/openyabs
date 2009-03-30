@@ -37,9 +37,10 @@ public class Messages {
     public static String SECURITYMANAGER_DENIED = "The Security Manager has DENIED your request.\nAction ";
     public static String SECURITYMANAGER_ALLOWED = "The Security Manager has ALLOWED your request.\nAction ";
     public static String CONTEXT = ", in context: ";
-    public static String ROW_INSERTED = " created";
-    public static String ROW_UPDATED = " saved";
-    public static String ROW_DELETED = " removed from database";
+    public static String INSERTED = " created";
+    public static String UPDATED = " updated";
+    public static String SAVED = " saved";
+    public static String DELETED = " removed from database";
     public static String CNAME_CANNOT_BE_NULL = "You must set a NAME for this item.";
     public static String FILE_SAVED = "File saved: ";
     public static String ERROR_OCCURED = "An error occurred\n";
@@ -90,6 +91,7 @@ public class Messages {
     public static String IN_USE = "The dataset is in use, locked or has subitems assigned to it.";
     public static String ENTER_A_DESCRIPTION = "Please enter a description:";
     public static String FILE_OPEN_FAILED = "Unable to open the file: \n";
+    public static String HISTORY_PANEL =  "History";
    
     
 

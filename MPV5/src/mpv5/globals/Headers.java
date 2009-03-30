@@ -25,4 +25,5 @@ public class Headers {
     public static String[] BABELFISH = new String[]{"Component", "Language Value", "New Value"};
     public static String[] ITEM_DEFAULT = new String[]{"Internal ID", "ID", "Date", "Value"};
     public static String[] CONTACT_FILES = new String[]{"id", "Filename", "Date", "Description"};
+    public static String[] HISTORY = new String[]{"id", "Description", "User", "Type", "Item", "Group", "Date"};
 }

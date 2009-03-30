@@ -262,7 +262,7 @@ public class LanguageManager {
                  t.add("longname", langname);
                  t.add("filename", dbname);
                 QueryHandler.instanceOf().clone(Context.getLanguage()).insert(t,new int[]{0}, "Imported language: " + langname);
-                MPV5View.addMessage(langname + Messages.ROW_UPDATED);
+                MPV5View.addMessage(langname + Messages.UPDATED);
             } catch (FileNotFoundException ex) {
                 Log.Debug(LanguageManager.class, ex);
             }

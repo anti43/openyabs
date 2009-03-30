@@ -1,0 +1,104 @@
+/*
+ *  This file is part of MP by anti43 /GPL.
+ *
+ *      MP is free software: you can redistribute it and/or modify
+ *      it under the terms of the GNU General Public License as published by
+ *      the Free Software Foundation, either version 3 of the License, or
+ *      (at your option) any later version.
+ *
+ *      MP is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU General Public License for more details.
+ *
+ *      You should have received a copy of the GNU General Public License
+ *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package mpv5.items.div;
+
+import java.util.Date;
+import mpv5.db.common.Context;
+import mpv5.db.common.DatabaseObject;
+
+/**
+ *
+ * @author anti
+ */
+public class HistoryItem extends DatabaseObject {
+
+  private String username;
+  private String dbidentity;
+  private Date dateadded = new Date();
+  private int intitem;
+
+  public HistoryItem() {
+        context.setDbIdentity(Context.IDENTITY_HISTORY);
+        context.setIdentityClass(this.getClass());
+    }
+    
+    @Override
+    public String __getCName() {
+        return cname;
+    }
+
+    @Override
+    public void setCName(String name) {
+        cname = name;
+    }
+
+    /**
+     * @return the user
+     */
+    public String __getUsername() {
+        return username;
+    }
+
+    /**
+     * @param user the user to set
+     */
+    public void setUsername(String user) {
+        this.username = user;
+    }
+
+    /**
+     * @return the dbidentity
+     */
+    public String __getDbidentity() {
+        return dbidentity;
+    }
+
+    /**
+     * @param dbidentity the dbidentity to set
+     */
+    public void setDbidentity(String dbidentity) {
+        this.dbidentity = dbidentity;
+    }
+
+    /**
+     * @return the item
+     */
+    public int __getIntitem() {
+        return intitem;
+    }
+
+    /**
+     * @param item the item to set
+     */
+    public void setIntitem(int item) {
+        this.intitem = item;
+    }
+
+    /**
+     * @return the dateadded
+     */
+    public Date __getDateadded() {
+        return dateadded;
+    }
+
+    /**
+     * @param dateadded the dateadded to set
+     */
+    public void setDateadded(Date dateadded) {
+        this.dateadded = dateadded;
+    }
+}

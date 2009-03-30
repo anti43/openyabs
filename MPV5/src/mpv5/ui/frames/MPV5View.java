@@ -16,10 +16,12 @@ import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Icon;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JProgressBar;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.UIManager;
 import mpv5.Main;
@@ -38,12 +40,14 @@ import mpv5.ui.menus.FavouritesMenuItem;
 import mpv5.ui.panels.ContactPanel;
 import mpv5.ui.panels.ContactsList;
 import mpv5.ui.panels.DataPanel;
+import mpv5.ui.panels.HistoryPanel;
 import mpv5.ui.panels.MPControlPanel;
 import mpv5.ui.parents.CloseableTabbedPane;
 import mpv5.ui.parents.FadeOnChangeLabel;
 import mpv5.ui.parents.Position;
 import mpv5.usermanagement.User;
 import mpv5.utils.print.PrintJob;
+import mpv5.utils.renderer.ComboBoxRendererForTooltip;
 import mpv5.utils.text.TypeConversion;
 import mpv5.utils.xml.XMLReader;
 import mpv5.utils.xml.XMLWriter;
@@ -62,6 +66,7 @@ public class MPV5View extends FrameView {
     public static JFrame identifierFrame;
     public static CloseableTabbedPane tabPane;
     public static JLabel messagelabel = new JLabel();
+    public static JComboBox history = new JComboBox();
     public static User currentUser;
     public static JProgressBar progressbar = new JProgressBar();
     private static JMenu favMenu;
@@ -73,8 +78,16 @@ public class MPV5View extends FrameView {
      * Display a message at the bottom of the MP frame
      * @param message
      */
-    public static void addMessage(String message) {
-        messagelabel.setText(message);
+    public static void addMessage(final String message) {
+        Runnable runnable = new Runnable() {
+
+            public void run() {
+                messagelabel.setText(message);
+                history.addItem(message);
+                history.setSelectedItem(message);
+            }
+        };
+        SwingUtilities.invokeLater(runnable);
     }
 
     /**
@@ -237,6 +250,8 @@ public class MPV5View extends FrameView {
         progressbar = this.progressBar;
         progressbar.setMinimum(0);
         messagelabel = statusMessageLabel;
+        history = xhistory;
+        history.setRenderer(new ComboBoxRendererForTooltip());
         tabpanePanel.add(tabPane, BorderLayout.CENTER);
         favMenu = favouritesMenu;
         identifierView = this;
@@ -285,26 +300,29 @@ public class MPV5View extends FrameView {
         XMLReader x;
         ArrayList<ArrayList<DatabaseObject>> objs = null;
 
-        if(d.chooseFile()){
+        if (d.chooseFile()) {
             x = new XMLReader();
             try {
                 x.newDoc(d.getFile(), true);
                 objs = x.getObjects();
             } catch (Exception ex) {
+                addMessage(ex.getMessage());
                 Log.Debug(ex);
             }
         }
 
 
-        if (objs!=null) {
+        if (objs != null && objs.size() < 0) {
             for (int i = 0; i < objs.size(); i++) {
                 ArrayList<DatabaseObject> arrayList = objs.get(i);
                 for (int j = 0; j < arrayList.size(); j++) {
                     DatabaseObject databaseObject = arrayList.get(j);
-                        Log.Debug(this, "Parsing " + databaseObject.getDbIdentity() + " : " + databaseObject.__getCName() + " from file: " + d.getFile());
-                        databaseObject.save();
+                    Log.Debug(this, "Parsing " + databaseObject.getDbIdentity() + " : " + databaseObject.__getCName() + " from file: " + d.getFile());
+                    databaseObject.save();
                 }
             }
+        } else {
+            addMessage(Messages.NO_DATA_FOUND);
         }
     }
 
@@ -330,6 +348,7 @@ public class MPV5View extends FrameView {
         jPanel3 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
+        jButton6 = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         javax.swing.JMenu fileMenu = new javax.swing.JMenu();
         jMenuItem6 = new javax.swing.JMenuItem();
@@ -356,7 +375,7 @@ public class MPV5View extends FrameView {
         statusPanel = new javax.swing.JPanel();
         statusMessageLabel = new FadeOnChangeLabel();
         progressBar = new javax.swing.JProgressBar();
-        statusAnimationLabel = new javax.swing.JLabel();
+        xhistory = new javax.swing.JComboBox();
         mainToolbar = new javax.swing.JToolBar();
         jButton24 = new javax.swing.JButton();
         jButton26 = new javax.swing.JButton();
@@ -385,7 +404,7 @@ public class MPV5View extends FrameView {
         jPanel2.setName("jPanel2"); // NOI18N
         jPanel2.setPreferredSize(new java.awt.Dimension(110, 400));
 
-        jButton5.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton5.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/agt_family.png"))); // NOI18N
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jButton5.setText(bundle.getString("MPV5View.jButton5.text_1")); // NOI18N
@@ -502,11 +521,11 @@ public class MPV5View extends FrameView {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 110, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 396, Short.MAX_VALUE)
         );
 
         jOutlookBar1.addTab(bundle.getString("MPV5View.jPanel3.TabConstraints.tabTitle_1"), jPanel3); // NOI18N
@@ -532,15 +551,38 @@ public class MPV5View extends FrameView {
         jPanel6.setName("jPanel6"); // NOI18N
         jPanel6.setPreferredSize(new java.awt.Dimension(110, 400));
 
+        jButton6.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/kservices.png"))); // NOI18N
+        jButton6.setText(bundle.getString("MPV5View.jButton6.text")); // NOI18N
+        jButton6.setToolTipText(bundle.getString("MPV5View.jButton6.toolTipText")); // NOI18N
+        jButton6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton6.setName("jButton6"); // NOI18N
+        jButton6.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 110, Short.MAX_VALUE)
+            .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel6Layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jButton6, javax.swing.GroupLayout.DEFAULT_SIZE, 86, Short.MAX_VALUE)
+                    .addContainerGap()))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 396, Short.MAX_VALUE)
+            .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel6Layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jButton6)
+                    .addContainerGap(325, Short.MAX_VALUE)))
         );
 
         jOutlookBar1.addTab(bundle.getString("MPV5View.jPanel6.TabConstraints.tabTitle"), jPanel6); // NOI18N
@@ -740,43 +782,39 @@ public class MPV5View extends FrameView {
 
         menuBar.add(jMenu7);
 
-        statusPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        statusPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
         statusPanel.setName("statusPanel"); // NOI18N
         statusPanel.setPreferredSize(new java.awt.Dimension(800, 20));
 
+        statusMessageLabel.setFont(new java.awt.Font("Dialog", 0, 11));
         statusMessageLabel.setName("statusMessageLabel"); // NOI18N
 
         progressBar.setBorder(new javax.swing.border.LineBorder(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"), 1, true));
         progressBar.setName("progressBar"); // NOI18N
 
-        statusAnimationLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        statusAnimationLabel.setName("statusAnimationLabel"); // NOI18N
+        xhistory.setFont(new java.awt.Font("Dialog", 0, 11));
+        xhistory.setEditor(null);
+        xhistory.setFocusable(false);
+        xhistory.setName("xhistory"); // NOI18N
+        xhistory.setRequestFocusEnabled(false);
+        xhistory.setVerifyInputWhenFocusTarget(false);
 
         javax.swing.GroupLayout statusPanelLayout = new javax.swing.GroupLayout(statusPanel);
         statusPanel.setLayout(statusPanelLayout);
         statusPanelLayout.setHorizontalGroup(
             statusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(statusPanelLayout.createSequentialGroup()
-                .addGroup(statusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, statusPanelLayout.createSequentialGroup()
-                        .addComponent(statusMessageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 368, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, statusPanelLayout.createSequentialGroup()
-                        .addContainerGap(443, Short.MAX_VALUE)
-                        .addComponent(statusAnimationLabel)))
-                .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, statusPanelLayout.createSequentialGroup()
+                .addComponent(statusMessageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(xhistory, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         statusPanelLayout.setVerticalGroup(
             statusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, statusPanelLayout.createSequentialGroup()
-                .addGroup(statusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(statusPanelLayout.createSequentialGroup()
-                        .addGap(3, 3, 3)
-                        .addComponent(statusMessageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 13, Short.MAX_VALUE))
-                    .addComponent(progressBar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 16, Short.MAX_VALUE)
-                    .addComponent(statusAnimationLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 0, 0))
+            .addComponent(progressBar, javax.swing.GroupLayout.DEFAULT_SIZE, 16, Short.MAX_VALUE)
+            .addComponent(xhistory, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+            .addComponent(statusMessageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         mainToolbar.setRollover(true);
@@ -954,6 +992,11 @@ public class MPV5View extends FrameView {
         importXML();
     }//GEN-LAST:event_jMenuItem11ActionPerformed
 
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        tabPane.addTab(Messages.HISTORY_PANEL, HistoryPanel.instanceOf());
+        tabPane.setSelectedComponent(HistoryPanel.instanceOf());
+    }//GEN-LAST:event_jButton6ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JMenu clipboardMenu;
     public javax.swing.JMenu favouritesMenu;
@@ -965,6 +1008,7 @@ public class MPV5View extends FrameView {
     private javax.swing.JButton jButton25;
     private javax.swing.JButton jButton26;
     private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
@@ -996,10 +1040,10 @@ public class MPV5View extends FrameView {
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JPanel naviPanel;
     private javax.swing.JProgressBar progressBar;
-    private javax.swing.JLabel statusAnimationLabel;
     private javax.swing.JLabel statusMessageLabel;
     private javax.swing.JPanel statusPanel;
     public static final javax.swing.JPanel tabpanePanel = new javax.swing.JPanel();
+    private javax.swing.JComboBox xhistory;
     // End of variables declaration//GEN-END:variables
 
     /**
@@ -1066,63 +1110,4 @@ public class MPV5View extends FrameView {
     private Icon idleIcon;
     private Icon[] busyIcons = new Icon[15];
     private int busyIconIndex = 0;
-
-    private void setStatusBar() {
-        // status bar initialization - message timeout, idle icon and busy animation, etc
-        ResourceMap resourceMap = getResourceMap();
-        int messageTimeout = resourceMap.getInteger("StatusBar.messageTimeout");
-        messageTimer = new Timer(messageTimeout, new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                statusMessageLabel.setText("");
-            }
-        });
-        messageTimer.setRepeats(false);
-        int busyAnimationRate = resourceMap.getInteger("StatusBar.busyAnimationRate");
-        for (int i = 0; i < busyIcons.length; i++) {
-            busyIcons[i] = resourceMap.getIcon("StatusBar.busyIcons[" + i + "]");
-        }
-        busyIconTimer = new Timer(busyAnimationRate, new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                busyIconIndex = (busyIconIndex + 1) % busyIcons.length;
-                statusAnimationLabel.setIcon(busyIcons[busyIconIndex]);
-            }
-        });
-        idleIcon = resourceMap.getIcon("StatusBar.idleIcon");
-        statusAnimationLabel.setIcon(idleIcon);
-        progressBar.setVisible(false);
-
-        // connecting action tasks to status bar via TaskMonitor
-        TaskMonitor taskMonitor = new TaskMonitor(getApplication().getContext());
-        taskMonitor.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                String propertyName = evt.getPropertyName();
-                if ("started".equals(propertyName)) {
-                    if (!busyIconTimer.isRunning()) {
-                        statusAnimationLabel.setIcon(busyIcons[0]);
-                        busyIconIndex = 0;
-                        busyIconTimer.start();
-                    }
-                    progressBar.setVisible(true);
-                    progressBar.setIndeterminate(true);
-                } else if ("done".equals(propertyName)) {
-                    busyIconTimer.stop();
-                    statusAnimationLabel.setIcon(idleIcon);
-                    progressBar.setVisible(false);
-                    progressBar.setValue(0);
-                } else if ("message".equals(propertyName)) {
-                    String text = (String) (evt.getNewValue());
-                    statusMessageLabel.setText((text == null) ? "" : text);
-                    messageTimer.restart();
-                } else if ("progress".equals(propertyName)) {
-                    int value = (Integer) (evt.getNewValue());
-                    progressBar.setVisible(true);
-                    progressBar.setIndeterminate(false);
-                    progressBar.setValue(value);
-                }
-            }
-        });
-    }
 }

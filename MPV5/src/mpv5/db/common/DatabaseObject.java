@@ -13,11 +13,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.SwingUtilities;
 import mpv5.globals.Messages;
 import mpv5.items.div.Contact;
+import mpv5.items.div.HistoryItem;
 import mpv5.logging.Log;
 import mpv5.ui.panels.DataPanel;
 import mpv5.ui.dialogs.Popup;
+import mpv5.ui.frames.MPV5View;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
 
@@ -176,17 +179,41 @@ public abstract class DatabaseObject {
      * @return
      */
     public boolean save() {
+        String message = null;
 
         if (__getCName() != null && __getCName().length() > 0) {
             try {
                 if (ids <= 0) {
                     Log.Debug(this, "Inserting new dataset:");
-                    ids = QueryHandler.instanceOf().clone(context).insert(collect(), this.__getCName() + Messages.ROW_UPDATED);
+                   if (!this.getType().equals(new HistoryItem().getType())) {
+                        message = this.__getCName() + Messages.INSERTED;
+                    }
+                    ids = QueryHandler.instanceOf().clone(context).insert(collect(), message);
                     Log.Debug(this, "The inserted row has id: " + ids);
+
                 } else {
                     Log.Debug(this, "Updating dataset: " + ids + " within context '" + context + "'");
-                    QueryHandler.instanceOf().clone(context).update(collect(), new String[]{"ids", String.valueOf(ids), ""}, this.__getCName() + Messages.ROW_UPDATED);
+                    message = this.__getCName() + Messages.UPDATED;
+                    QueryHandler.instanceOf().clone(context).update(collect(), new String[]{"ids", String.valueOf(ids), ""}, this.__getCName() + Messages.UPDATED);
                 }
+
+                final String fmessage = message;
+                final String fdbid = this.getDbIdentity();
+                final int fids = this.ids;
+                if (!this.getType().equals(new HistoryItem().getType())) {
+                    Runnable runnable = new Runnable() {
+                        public void run() {
+                            HistoryItem h = new HistoryItem();
+                            h.setCName(fmessage);
+                            h.setUsername(MPV5View.getUser().getName());
+                            h.setDbidentity(fdbid);
+                            h.setIntitem(fids);
+                            h.save();
+                        }
+                    };
+                    SwingUtilities.invokeLater(runnable);
+                }
+
                 return true;
             } catch (Exception e) {
                 Log.Debug(this, e);
@@ -218,10 +245,31 @@ public abstract class DatabaseObject {
      */
     public boolean delete() {
         boolean result = false;
+        String message = null;
+        if (!this.getType().equals(new HistoryItem().getType())) {
+            message = this.__getCName() + Messages.DELETED;
+        }
         if (ids > 0) {
             Log.Debug(this, "Deleting dataset:");
-            result = QueryHandler.instanceOf().clone(context).delete(new String[][]{{"ids", ids.toString(), ""}}, this.__getCName() + Messages.ROW_DELETED);
+            result = QueryHandler.instanceOf().clone(context).delete(new String[][]{{"ids", ids.toString(), ""}},message);
             Log.Debug(this, "The deleted row had id: " + ids);
+
+                final String fmessage = message;
+                final String fdbid = this.getDbIdentity();
+                final int fids = this.ids;
+                if (!this.getType().equals(new HistoryItem().getType())) {
+                    Runnable runnable = new Runnable() {
+                        public void run() {
+                            HistoryItem h = new HistoryItem();
+                            h.setCName(fmessage);
+                            h.setUsername(MPV5View.getUser().getName());
+                            h.setDbidentity(fdbid);
+                            h.setIntitem(fids);
+                            h.save();
+                        }
+                    };
+                    SwingUtilities.invokeLater(runnable);
+                }
         }
         setIDS(-1);
         return result;
@@ -363,8 +411,8 @@ public abstract class DatabaseObject {
 
     /**
      *
-     * @return A list containing pairs of VARNAME and their VALUE of this Databaseobject,
-     * those which return in getVars(), as two-fields String-Array
+     * @return A list containing pairs of <b>VARNAME</b> and their <b>VALUE</b> of this Databaseobject,
+     * those which return in <code>getVars()</code>, as two-fields String-Array.
      * Example: new String[]{CName, Michael}
      */
     public ArrayList<String[]> getValues() {
@@ -427,22 +475,6 @@ public abstract class DatabaseObject {
         return null;
     }
 
-//    /**
-//     * Returns all DBOs in the specific context
-//     * @param context
-//     * @return A list of DBOs
-//     * @throws NodataFoundException
-//     */
-//    public static ArrayList<DatabaseObject> getObjects(Context context) throws NodataFoundException {
-//        Object[][] allIds = QueryHandler.instanceOf().clone(context).selectIndexes().getData();
-//        ArrayList<DatabaseObject> list = new ArrayList<DatabaseObject>();
-//
-//        for (int i = 0; i < allIds.length; i++) {
-//            int id = Integer.valueOf(allIds[i][0].toString());
-//            list.add(DatabaseObject.getObject(context, id));
-//        }
-//        return list;
-//    }
     /**
      * Returns all DBOs in the specific context,
      * @param <T>
@@ -462,6 +494,34 @@ public abstract class DatabaseObject {
         return (ArrayList<T>) list;
     }
 
+    /**
+     *  Returns objects within the given context which match the criterias in the given DataStringHandler
+     * @param <T>
+     * @param context
+     * @param criterias
+     * @return
+     * @throws NodataFoundException
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends DatabaseObject> ArrayList<T> getObjects(Context context, DataStringHandler criterias) throws NodataFoundException {
+        Object[][] data = QueryHandler.instanceOf().clone(context).select(criterias);
+        ArrayList<DatabaseObject> list = new ArrayList<DatabaseObject>();
+
+        for (int i = 0; i < data.length; i++) {
+            int id = Integer.valueOf(data[i][0].toString());
+            list.add((DatabaseObject.getObject(context, id)));
+        }
+        return (ArrayList<T>) list;
+    }
+
+    /**
+     * Return objects which are referenced in the dataOwners Context
+     * <br/>As getObjects(inReference, idataOwner.getinReferencesids)
+     * @param dataOwner
+     * @param inReference
+     * @return
+     * @throws mpv5.db.common.NodataFoundException
+     */
     public static ArrayList<DatabaseObject> getReferencedObjects(DatabaseObject dataOwner, Context inReference) throws NodataFoundException {
 
         Object[][] allIds = QueryHandler.instanceOf().clone(inReference).select("ids", new String[]{dataOwner.getDbIdentity() + "ids", dataOwner.__getIDS().toString(), ""});
@@ -638,5 +698,10 @@ public abstract class DatabaseObject {
      */
     public void setGroupsids(int groupsids) {
         this.groupsids = groupsids;
+    }
+
+    @Override
+    public String toString() {
+        return cname;
     }
 }

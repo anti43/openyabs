@@ -19,17 +19,20 @@ package mpv5.db.common;
 import java.util.HashMap;
 import mpv5.logging.Log;
 
-
 /**
  * This class is used to put any kind of data before passing it to the <code>QueryHandler</code> for transmission.
  * @author anti43
  */
 public class DataStringHandler {
 
+    /**
+     * Generate a <code>SaveString<code/>
+     * @param s
+     * @return
+     */
     public static SaveString getSaveStringFor(String s) {
         return new SaveString(s, true);
     }
-
     private HashMap<String, SaveString> list = new HashMap<String, SaveString>();
 
     /**
@@ -46,7 +49,8 @@ public class DataStringHandler {
         }
     }
 
-    public DataStringHandler() {}
+    public DataStringHandler() {
+    }
 
     /**
      * Adds a key with a value
@@ -81,34 +85,7 @@ public class DataStringHandler {
         String string = String.valueOf(value);
         list.put(key, new SaveString(string, true));
     }
-//
-//    /**
-//     * Use this method get a save, decoded string from all the added values
-//     * @return The final String to be passed to the <code>QueryHandler</code>
-//     */
-//    @Override
-//    public String toString() {
-//        String s = "";
-//        for (int i = 0; i < list.size(); i++) {
-//            SaveString saveString = list.get(i);
-//            s += saveString.toString() + ";";
-//        }
-//        return s;
-//    }
 
-
-//    /**
-//     * Converts a db bool value into a java.lang.boolean
-//     * @param bool
-//     * @return True if the given String matches "1", "true", "TRUE" , false otherwise
-//     */
-//    public static boolean parseBoolean(String bool) {
-//        if (bool.matches("1") || bool.equalsIgnoreCase("true")) {
-//            return true;
-//        } else {
-//            return false;
-//        }
-//    }
     /**
      * Mask backslashes with even more backslashes
      * @param string
@@ -121,14 +98,14 @@ public class DataStringHandler {
 
     /**
      *
-     * @return
+     * @return An array of keys
      */
     public String[] getKeys() {
         return list.keySet().toArray(new String[]{});
     }
 
     /**
-     *
+     * returns the value of the given key
      * @param key
      * @return
      */
@@ -136,6 +113,11 @@ public class DataStringHandler {
         return list.get(key);
     }
 
+    /**
+     * Generates a comma separated String represantion of the current values<br/>
+     * with String values wrapped in single quotes
+     * @return
+     */
     public String getValuesString() {
         String[] k = getKeys();
         String s = "";
@@ -146,7 +128,19 @@ public class DataStringHandler {
         }
         return s.substring(0, s.length() - 1);
     }
+    
+    /**
+     * 
+     * @return An array of all values, in getKeys() - order
+     */
+    public String[] getValues() {
+        return getValuesString().split(",");
+    }
 
+    /**
+     * Generates a comma separated String representation of the current keys
+     * @return
+     */
     public String getKeysString() {
         String[] k = getKeys();
         String s = "";
@@ -157,6 +151,7 @@ public class DataStringHandler {
         return s.substring(0, s.length() - 1);
     }
 }
+
 /**
  * Represents a <code>SaveString</code> value which <br><br/>
  * <li>Does not contain single quotes and<br/>

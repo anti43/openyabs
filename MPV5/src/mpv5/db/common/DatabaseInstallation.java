@@ -55,7 +55,7 @@ public class DatabaseInstallation {
        * "LEFT JOIN addresses ON addresses.contactid = contactdetails.ids",
      */
     public final static String[] DERBY_STRUCTURE = new String[]{
-//Main tables
+//Main tables, must have ids, cname, groupsids
         "CREATE TABLE groups (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
         "cname VARCHAR(250) UNIQUE NOT NULL," +
         "description VARCHAR(750) DEFAULT NULL," +
@@ -156,14 +156,21 @@ public class DatabaseInstallation {
         "reserve1 VARCHAR(500) default NULL," +
         "reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (ids))",
 
+        "CREATE TABLE history (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
+        "cname VARCHAR(250)  NOT NULL, username VARCHAR(250) NOT NULL," +
+        "dbidentity VARCHAR(25)  NOT NULL, INTitem SMALLINT NOT NULL," +
+        "groupsids BIGINT DEFAULT 0, dateadded DATE NOT NULL," +
+        "reserve1 VARCHAR(500) default NULL, reserve2 VARCHAR(500) default NULL," +
+        "PRIMARY KEY  (ids))",
 //Subtables
         "CREATE TABLE countries (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
         "cname VARCHAR(250)  UNIQUE NOT NULL, iso SMALLINT  UNIQUE NOT NULL," +
         "reserve1 VARCHAR(500) default NULL, reserve2 VARCHAR(500) default NULL," +
         "PRIMARY KEY  (ids))",
 
+
         "CREATE TABLE tablelock (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
-        "cname VARCHAR(250), rowID BIGINT NOT NULL, usersids BIGINT REFERENCES users (ids)  ON DELETE CASCADE," +
+        "cname VARCHAR(250), rowID BIGINT NOT NULL, usersids BIGINT REFERENCES users(ids)  ON DELETE CASCADE," +
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
         "PRIMARY KEY  (ids))",
 

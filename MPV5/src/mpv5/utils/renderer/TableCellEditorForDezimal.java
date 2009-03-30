@@ -17,7 +17,7 @@ along with MP.  If not, see <http://www.gnu.org/licenses/>.
 
  * 
  */
-package mpv5.utils.tables;
+package mpv5.utils.renderer;
 
 import java.awt.Color;
 import javax.swing.DefaultCellEditor;

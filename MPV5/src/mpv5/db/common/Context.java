@@ -11,6 +11,7 @@ import mpv5.items.div.Address;
 import mpv5.items.div.Contact;
 import mpv5.items.div.Favourite;
 import mpv5.items.div.Group;
+import mpv5.items.div.HistoryItem;
 import mpv5.items.div.Item;
 import mpv5.items.div.SubItem;
 import mpv5.usermanagement.User;
@@ -35,6 +36,7 @@ public class Context {
     public static String IDENTITY_GROUPS = "groups";
     public static String IDENTITY_GROUPS_TO_PARENTGROUP = "groupstoparents";
     public static String IDENTITY_SCHEDULE = "schedule";
+    public static String IDENTITY_HISTORY = "history";
     public static String IDENTITY_FILES_TO_CONTACTS = "filestocontacts";
 
     //********** identity classes **********************************************
@@ -42,6 +44,7 @@ public class Context {
     private static Class IDENTITY_ADDRESS_CLASS = Address.class;
     private static Class IDENTITY_USERS_CLASS = User.class;
     private static Class IDENTITY_ITEMS_CLASS = Item.class;
+    private static Class HISTORY_ITEMS_CLASS = HistoryItem.class;
     private static Class IDENTITY_SUBITEMS_CLASS = SubItem.class;
 
     //********** unique constraints *******************************************
@@ -785,6 +788,16 @@ public class Context {
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_FILES_TO_CONTACTS);
         c.setId(20);
+
+        return c;
+    }
+
+       public static Context getHistory() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_HISTORY);
+        c.setIdentityClass(HISTORY_ITEMS_CLASS);
+        c.setId(21);
 
         return c;
     }
