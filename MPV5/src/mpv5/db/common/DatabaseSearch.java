@@ -32,7 +32,7 @@ public class DatabaseSearch {
      * @return select("*", null);
      */
     public Object[][] getValuesFor() {
-        return QueryHandler.instanceOf().clone(context).select("*", null);
+        return QueryHandler.instanceOf().clone(context).select("*",(String[]) null);
     }
 
     /**

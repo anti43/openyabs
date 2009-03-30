@@ -207,7 +207,7 @@ public class LanguageManager {
      * @return A ComboBoxModel reflecting the available Languages
      */
     public static ComboBoxModel getLanguagesAsComboBoxModel() {
-        Object[][] data = QueryHandler.instanceOf().clone(Context.getLanguage()).select("cname, longname", null);
+        Object[][] data = QueryHandler.instanceOf().clone(Context.getLanguage()).select("cname, longname", (String[])null);
         MPComboBoxModelItem[] t = null;
         Object[][] ldata;
         ldata = ArrayUtilities.merge(defLanguage, data);
@@ -220,7 +220,7 @@ public class LanguageManager {
      * @return A ComboBoxModel reflecting the available Countries
      */
     public static ComboBoxModel getCountriesAsComboBoxModel() {
-        Object[][] data = QueryHandler.instanceOf().clone(Context.getCountries()).select("iso, cname", null);
+        Object[][] data = QueryHandler.instanceOf().clone(Context.getCountries()).select("iso, cname", (String[])null);
         MPComboBoxModelItem[] t = null;
         Object[][] ldata;
         ldata = ArrayUtilities.merge(new String[][]{{"",""}}, data);

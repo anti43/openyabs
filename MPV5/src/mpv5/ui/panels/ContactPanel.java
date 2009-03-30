@@ -1091,6 +1091,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     public int groupsids_ = 1;
     public String country_;
 
+
     public void collectData() {
         city_ = city.get_Text();
         cname_ = cname.get_Text();

@@ -97,8 +97,8 @@ public class QueryHandler implements Cloneable {
             Object object = values[i];
 
             if (!(object instanceof Number)) {
-               values[i] = "'"+object.toString()+"'";
-            } 
+                values[i] = "'" + object.toString() + "'";
+            }
 
         }
 
@@ -131,6 +131,7 @@ public class QueryHandler implements Cloneable {
         return returnv;
     }
 
+
     /**
      *
      * @param context
@@ -159,12 +160,13 @@ public class QueryHandler implements Cloneable {
     /**
      * This is a convenience method to retrieve data such as
      * <code>select("*", criterias.getKeys(), criterias.getValues())<code/>
+     * @param columns
      * @param criterias
      * @return
      * @throws NodataFoundException
      */
-    public Object[][] select(DataStringHandler criterias) throws NodataFoundException {
-        return select("*", criterias.getKeys(), criterias.getValues());
+    public Object[][] select(String columns, DataStringHandler criterias) throws NodataFoundException {
+        return select(columns, criterias.getKeys(), criterias.getValues());
     }
 
     /**
@@ -655,7 +657,7 @@ public class QueryHandler implements Cloneable {
      * @return
      */
     public Object[][] select(String what, String[] whereColumns, Object[] haveValues) {
-        String query = "SELECT " + what + " FROM " + table + " WHERE ";
+        String query = "SELECT " + what + " FROM " + table + " " + context.getReferences() + " WHERE ";
         for (int i = 0; i < haveValues.length; i++) {
 
             Object object = haveValues[i];
@@ -664,6 +666,8 @@ public class QueryHandler implements Cloneable {
 
             if ((i + 1) != haveValues.length) {
                 query += " AND ";
+            } else {
+                query += " AND " + context.getConditions().substring(5, context.getConditions().length());
             }
         }
         return freeReturnQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null).getData();

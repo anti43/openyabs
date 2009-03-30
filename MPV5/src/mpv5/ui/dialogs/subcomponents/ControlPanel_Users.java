@@ -531,6 +531,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
     public Date datelastlog_ = new Date();
     public int ids_;
     public int groupsids_ = 1;
+    public java.util.Date dateadded_ = new java.util.Date();
 
     public void collectData() {
 
@@ -610,7 +611,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         }
 
         inthighestright.setModel(MPSecurityManager.getRolesAsComboBoxModel());
-        jTable1.setModel(new MPTableModel(new Class[]{String.class, String.class, String.class, String.class, Boolean.class, Boolean.class},TableFormat.changeToClassValue(QueryHandler.instanceOf().clone(Context.getUser()).select(Context.DETAILS_USERS, null), Boolean.class, new int[]{4,5}), Headers.USER_DETAILS));
+        jTable1.setModel(new MPTableModel(new Class[]{String.class, String.class, String.class, String.class, Boolean.class, Boolean.class},TableFormat.changeToClassValue(QueryHandler.instanceOf().clone(Context.getUser()).select(Context.DETAILS_USERS,(String[]) null), Boolean.class, new int[]{4,5}), Headers.USER_DETAILS));
 
         groupname.setModel(new DefaultComboBoxModel(
                     MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID(), null, ""))));

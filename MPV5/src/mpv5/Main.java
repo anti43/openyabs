@@ -71,7 +71,7 @@ public class Main extends SingleFrameApplication {
 
         if (probeDatabaseConnection()) {
             go();
-        } else if (Popup.Y_N_dialog(Messages.NO_DB_CONNECTION)) {
+        } else if (Popup.Y_N_dialog(Messages.NO_DB_CONNECTION, Messages.ERROR_OCCURED)) {
             showDbWiz();
         } else {
             System.exit(1);

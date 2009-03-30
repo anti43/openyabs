@@ -16,6 +16,9 @@
  */
 package mpv5.db.common;
 
+import java.util.Date;
+import mpv5.utils.date.DateConverter;
+
 /**
  * @author anti43
  */
@@ -55,12 +58,13 @@ public class DatabaseInstallation {
        * "LEFT JOIN addresses ON addresses.contactid = contactdetails.ids",
      */
     public final static String[] DERBY_STRUCTURE = new String[]{
-//Main tables, must have ids, cname, groupsids
+//Main tables, must have ids, cname, groupsids, dateadded
         "CREATE TABLE groups (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
         "cname VARCHAR(250) UNIQUE NOT NULL," +
         "description VARCHAR(750) DEFAULT NULL," +
         "defaults VARCHAR(250) DEFAULT NULL," +
         "groupsids BIGINT DEFAULT 0," +
+        "dateadded DATE NOT NULL,"+
         "reserve1 VARCHAR(500) default NULL, reserve2 VARCHAR(500) default NULL, " +
         "PRIMARY KEY  (ids))",
 
@@ -73,7 +77,7 @@ public class DatabaseInstallation {
         "fax VARCHAR(250) default NULL,mobilephone VARCHAR(250) default NULL,workphone VARCHAR(250) default NULL," +
         "mailaddress VARCHAR(350) default NULL,company VARCHAR(250) DEFAULT NULL, department VARCHAR(250) DEFAULT NULL," +
         "website VARCHAR(350) default NULL,notes VARCHAR(10000)," +
-        "dateadded DATE DEFAULT NULL,isactive SMALLINT DEFAULT 0,iscustomer SMALLINT DEFAULT 0," +
+        "dateadded DATE NOT NULL,isactive SMALLINT DEFAULT 0,iscustomer SMALLINT DEFAULT 0," +
         "ismanufacturer SMALLINT DEFAULT 0,issupplier SMALLINT DEFAULT 0,iscompany SMALLINT DEFAULT 0," +
         "ismale SMALLINT DEFAULT 0,isenabled SMALLINT DEFAULT 1,addedby VARCHAR(350) default NULL," +
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
@@ -93,13 +97,14 @@ public class DatabaseInstallation {
         "isenabled SMALLINT DEFAULT 1,"+
         "isloggedin SMALLINT DEFAULT 0,"+
         "datelastlog DATE default NULL, "+
+        "dateadded DATE NOT NULL,"+
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,"+
         "PRIMARY KEY  (ids))",
 
         "CREATE TABLE files (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),"+
         "cname VARCHAR(25) UNIQUE NOT NULL, " +
         "groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1," +
-        "dateadded DATE default NULL, "+
+        "dateadded DATE NOT NULL,"+
         "data BLOB(5M) NOT NULL,"+
         "filesize BIGINT NOT NULL,"+
         "PRIMARY KEY  (ids))",
@@ -109,6 +114,7 @@ public class DatabaseInstallation {
         "groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1," +
         "longname VARCHAR(250) NOT NULL, " +
         "filename VARCHAR(25) NOT NULL REFERENCES files(cname) ON DELETE CASCADE,"+
+        "dateadded DATE NOT NULL,"+
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,"+
         "PRIMARY KEY  (ids))",
 
@@ -117,6 +123,7 @@ public class DatabaseInstallation {
         "usersids BIGINT REFERENCES users (ids)  ON DELETE CASCADE," +
         "groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1," +
         "itemsids BIGINT NOT NULL," +
+        "dateadded DATE NOT NULL,"+
         "reserve1 VARCHAR(500) default NULL, reserve2 VARCHAR(500) default NULL," +
         "PRIMARY KEY  (ids))",
 
@@ -124,14 +131,26 @@ public class DatabaseInstallation {
         "cnumber VARCHAR(250), cname VARCHAR(250) UNIQUE NOT NULL, " +
         "groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1," +
         "contactsids BIGINT REFERENCES contacts(ids)  ON DELETE CASCADE," +
-        "dateadded DATE DEFAULT NULL, isactive SMALLINT DEFAULT 0, isfinished SMALLINT DEFAULT 0," +
+        "isactive SMALLINT DEFAULT 0, isfinished SMALLINT DEFAULT 0," +
         "value DOUBLE DEFAULT 0," +
         "taxvalue DOUBLE DEFAULT 0, datetodo DATE DEFAULT NULL, dateend DATE DEFAULT NULL, intreminders INTEGER DEFAULT 0," +
         "isBill SMALLINT DEFAULT 0,"+
         "isOrder SMALLINT DEFAULT 0,"+
         "isOffer SMALLINT DEFAULT 0,"+
+        "dateadded DATE NOT NULL,"+
         "reserve1 VARCHAR(500) default NULL, reserve2 VARCHAR(500) default NULL, " +
         "PRIMARY KEY  (ids))",
+        
+        "CREATE TABLE subitems (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
+        "cname VARCHAR(250) default NULL," +
+        "itemsids BIGINT REFERENCES items(ids)  ON DELETE CASCADE, " +
+        "groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1," +
+        "originalproductsids BIGINT DEFAULT NULL, " +
+        "countvalue DOUBLE DEFAULT 0 NOT NULL, quantityvalue DOUBLE DEFAULT 0 NOT NULL, measure VARCHAR(250) NOT NULL," +
+        "description VARCHAR(1000) default NULL,  value DOUBLE DEFAULT 0 NOT NULL, taxpercentvalue DOUBLE DEFAULT 0 NOT NULL," +
+        "datedelivery DATE DEFAULT NULL, " +
+        "dateadded DATE NOT NULL,"+
+        "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (ids))",
 
         "CREATE TABLE schedule (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
         "cname VARCHAR(250) NOT NULL, " +
@@ -140,19 +159,22 @@ public class DatabaseInstallation {
         "itemsids BIGINT REFERENCES items (ids)  ON DELETE CASCADE," +
         "nextdate DATE NOT NULL, " +
         "intervalmonth SMALLINT NOT NULL, " +
+        "dateadded DATE NOT NULL,"+
         "reserve1 VARCHAR(500) default NULL, reserve2 VARCHAR(500) default NULL," +
         "PRIMARY KEY  (ids))",
 
         "CREATE TABLE tax (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
         "cname VARCHAR(250), taxvalue DOUBLE DEFAULT 0," +
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
+        "dateadded DATE NOT NULL,"+
         "PRIMARY KEY  (ids))",
 
         "CREATE TABLE products (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
         "cname VARCHAR(500) NOT NULL, cnumber VARCHAR(150) , description VARCHAR(500), pricenetvalue DOUBLE DEFAULT 0, buypricevalue DOUBLE DEFAULT 0, " +
         "taxids BIGINT REFERENCES tax(ids) ON DELETE CASCADE, manufacturer BIGINT REFERENCES contacts(ids)  ON DELETE CASCADE DEFAULT NULL," +
         "supplier BIGINT REFERENCES contacts(ids)  ON DELETE CASCADE DEFAULT NULL, groupsids  BIGINT  REFERENCES groups(ids) DEFAULT 1," +
-        "dateadded DATE NOT NULL, url VARCHAR(250) default NULL,ean VARCHAR(25) default null, reference VARCHAR(50) default null," +
+        "url VARCHAR(250) default NULL,ean VARCHAR(25) default null, reference VARCHAR(50) default null," +
+        "dateadded DATE NOT NULL,"+
         "reserve1 VARCHAR(500) default NULL," +
         "reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (ids))",
 
@@ -168,7 +190,6 @@ public class DatabaseInstallation {
         "reserve1 VARCHAR(500) default NULL, reserve2 VARCHAR(500) default NULL," +
         "PRIMARY KEY  (ids))",
 
-
         "CREATE TABLE tablelock (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
         "cname VARCHAR(250), rowID BIGINT NOT NULL, usersids BIGINT REFERENCES users(ids)  ON DELETE CASCADE," +
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
@@ -180,15 +201,6 @@ public class DatabaseInstallation {
         "contactsids BIGINT NOT NULL  REFERENCES contacts(ids) ON DELETE CASCADE," +
         "filename VARCHAR(25) NOT NULL REFERENCES files(cname) ON DELETE CASCADE,"+
         "PRIMARY KEY  (ids))",
-                
-        "CREATE TABLE subitems (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-        "cname VARCHAR(250) default NULL," +
-        "itemsids BIGINT REFERENCES items(ids)  ON DELETE CASCADE, " +
-        "groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1," +
-        "originalproductsids BIGINT DEFAULT NULL, " +
-        "countvalue DOUBLE DEFAULT 0 NOT NULL, quantityvalue DOUBLE DEFAULT 0 NOT NULL, measure VARCHAR(250) NOT NULL," +
-        "description VARCHAR(1000) default NULL,  value DOUBLE DEFAULT 0 NOT NULL, taxpercentvalue DOUBLE DEFAULT 0 NOT NULL," +
-        "datedelivery DATE DEFAULT NULL, reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (ids))",
        
         "CREATE TABLE addresses (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
         "groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1," +
@@ -203,8 +215,8 @@ public class DatabaseInstallation {
         "PRIMARY KEY  (ids))",
 
 //Initial data
-        "INSERT INTO groups (cname,description) VALUES ('ungrouped','This group holds all yet ungrouped items.')",
-        "INSERT INTO users (fullname,password,cname,laf,locale,mail,language,inthighestright,datelastlog,isenabled ) VALUES ('Administrator','5f4dcc3b5aa765d61d8327deb882cf99','admin','de.muntjak.tinylookandfeel.TinyLookAndFeel','de_DE','','buildin_en',0,'2009-01-26 05:45:38',1)"
+        "INSERT INTO groups (cname,description, dateadded) VALUES ('ungrouped','This group holds all yet ungrouped items.', '" + DateConverter.getSQLDateString(new Date()) + "')",
+        "INSERT INTO users (fullname,password,cname,laf,locale,mail,language,inthighestright,datelastlog,isenabled, dateadded ) VALUES ('Administrator','5f4dcc3b5aa765d61d8327deb882cf99','admin','de.muntjak.tinylookandfeel.TinyLookAndFeel','de_DE','','buildin_en',0,'" + DateConverter.getSQLDateString(new Date()) + "',1,'" + DateConverter.getSQLDateString(new Date()) + "')"
 
     };
     

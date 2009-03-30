@@ -4,6 +4,7 @@
  */
 package mpv5.ui.panels;
 
+import java.util.Date;
 import mpv5.db.common.DatabaseObject;
 
 
@@ -51,4 +52,6 @@ public interface DataPanel {
      * Show the user the fields which are mandatory to fill in
      */
     public void showRequiredFields();
+
+   
 }

@@ -42,7 +42,17 @@ public class Popup {
      * @return
      */
     public static boolean Y_N_dialog(String text) {
-        if (JOptionPane.showConfirmDialog(identifier, prepareText(text), Messages.ARE_YOU_SURE, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, new javax.swing.ImageIcon(new Popup().getClass().getResource("/mpv5/resources/images/32/warning.png"))) == JOptionPane.YES_OPTION) {
+        return Y_N_dialog(text, Messages.ARE_YOU_SURE);
+    }
+
+    /**
+     * A Y_N_dialog
+     * @param text
+     * @param label 
+     * @return
+     */
+    public static boolean Y_N_dialog(String text, String label) {
+        if (JOptionPane.showConfirmDialog(identifier, prepareText(text), label, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, new javax.swing.ImageIcon(new Popup().getClass().getResource("/mpv5/resources/images/32/warning.png"))) == JOptionPane.YES_OPTION) {
             return true;
         } else {
             return false;

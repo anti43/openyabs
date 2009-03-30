@@ -37,6 +37,12 @@ public class Group extends DatabaseObject {
         context.setIdentityClass(this.getClass());
     }
 
+    public Group(String name) {
+        context.setDbIdentity(Context.IDENTITY_GROUPS);
+        context.setIdentityClass(this.getClass());
+        cname = name;
+    }
+
     @Override
     public String __getCName() {
         return cname;
@@ -77,7 +83,11 @@ public class Group extends DatabaseObject {
 
     @Override
     public boolean equals(Object o) {
-        return super.equals(this);
+          if (((Group) o).__getIDS().intValue() == this.__getIDS().intValue()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override

@@ -22,9 +22,6 @@
 package mpv5.ui.panels;
 
 import java.awt.Component;
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import mpv5.db.common.Context;
 import mpv5.db.common.DataStringHandler;
@@ -32,8 +29,10 @@ import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryHandler;
 import mpv5.globals.Headers;
+import mpv5.items.div.Group;
 import mpv5.logging.Log;
 import mpv5.usermanagement.User;
+import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.tables.TableFormat;
 
@@ -57,12 +56,27 @@ public class HistoryPanel extends javax.swing.JPanel {
     public HistoryPanel() {
         initComponents();
         prinitingComboBox1.init(jTable1);
+        Object[] dat;
+        Object[] dat2;
         try {
-            users.setModel(new DefaultComboBoxModel(User.getObjects(Context.getUser()).toArray()));
+            dat = DatabaseObject.getObjects(Context.getUser()).toArray();
+            dat = ArrayUtilities.merge(new Object[]{User.DEFAULT}, dat);
+            users.setModel(new DefaultComboBoxModel(dat));
         } catch (NodataFoundException ex) {
-            Logger.getLogger(HistoryPanel.class.getName()).log(Level.SEVERE, null, ex);
+            Log.Debug(ex);
+            users.setModel(new DefaultComboBoxModel());
         }
-        refresh(null);
+
+        try {
+            dat2 = DatabaseObject.getObjects(Context.getGroup()).toArray();
+            dat2 = ArrayUtilities.merge(new Object[]{new Group("")}, dat2);
+            groups.setModel(new DefaultComboBoxModel(dat2));
+        } catch (NodataFoundException ex) {
+            Log.Debug(ex);
+            groups.setModel(new DefaultComboBoxModel());
+        }
+
+        refresh(null, null);
     }
 
     /** This method is called from within the constructor to
@@ -80,6 +94,10 @@ public class HistoryPanel extends javax.swing.JPanel {
         jSeparator1 = new javax.swing.JToolBar.Separator();
         users = new javax.swing.JComboBox();
         jSeparator2 = new javax.swing.JToolBar.Separator();
+        jLabel2 = new javax.swing.JLabel();
+        jSeparator5 = new javax.swing.JToolBar.Separator();
+        groups = new javax.swing.JComboBox();
+        jSeparator4 = new javax.swing.JToolBar.Separator();
         jButton1 = new javax.swing.JButton();
         jSeparator3 = new javax.swing.JToolBar.Separator();
         prinitingComboBox1 = new mpv5.ui.beans.PrinitingComboBox();
@@ -105,10 +123,34 @@ public class HistoryPanel extends javax.swing.JPanel {
 
         users.setMaximumSize(new java.awt.Dimension(224, 20));
         users.setName("users"); // NOI18N
+        users.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                usersActionPerformed(evt);
+            }
+        });
         jToolBar1.add(users);
 
         jSeparator2.setName("jSeparator2"); // NOI18N
         jToolBar1.add(jSeparator2);
+
+        jLabel2.setText(bundle.getString("HistoryPanel.jLabel2.text")); // NOI18N
+        jLabel2.setName("jLabel2"); // NOI18N
+        jToolBar1.add(jLabel2);
+
+        jSeparator5.setName("jSeparator5"); // NOI18N
+        jToolBar1.add(jSeparator5);
+
+        groups.setMaximumSize(new java.awt.Dimension(224, 20));
+        groups.setName("groups"); // NOI18N
+        groups.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                groupsActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(groups);
+
+        jSeparator4.setName("jSeparator4"); // NOI18N
+        jToolBar1.add(jSeparator4);
 
         jButton1.setText(bundle.getString("HistoryPanel.jButton1.text")); // NOI18N
         jButton1.setFocusable(false);
@@ -148,8 +190,8 @@ public class HistoryPanel extends javax.swing.JPanel {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jToolBar1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 390, Short.MAX_VALUE)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 390, Short.MAX_VALUE)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 502, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -172,47 +214,86 @@ public class HistoryPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        refresh((User) users.getSelectedItem());
+        try {
+            if (users.getSelectedIndex() > 0 && groups.getSelectedIndex() > 0) {
+                refresh((User) users.getSelectedItem(), (Group) groups.getSelectedItem());
+            } else if (groups.getSelectedIndex() > 0) {
+                refresh(null, (Group) groups.getSelectedItem());
+            } else if (users.getSelectedIndex() > 0) {
+                refresh((User) users.getSelectedItem(), null);
+            } else {
+                refresh(null, null);
+            }
+        } catch (Exception ignore) {
+            refresh(null, null);
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void groupsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_groupsActionPerformed
+    }//GEN-LAST:event_groupsActionPerformed
+
+    private void usersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_usersActionPerformed
+    }//GEN-LAST:event_usersActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox groups;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JToolBar.Separator jSeparator2;
     private javax.swing.JToolBar.Separator jSeparator3;
+    private javax.swing.JToolBar.Separator jSeparator4;
+    private javax.swing.JToolBar.Separator jSeparator5;
     private javax.swing.JTable jTable1;
     private javax.swing.JToolBar jToolBar1;
     private mpv5.ui.beans.PrinitingComboBox prinitingComboBox1;
     private javax.swing.JComboBox users;
     // End of variables declaration//GEN-END:variables
 
-    private void refresh(User forUser) {
+    private void refresh(User forUser, Group forGroup) {
         DataStringHandler dh = null;
         Object[][] d = new Object[0][0];
 
-        if (forUser != null) {
+        if (forUser != null && !forUser.equals(User.DEFAULT)) {
             try {
                 dh = new DataStringHandler();
-                dh.add(forUser.getType(), forUser.getName());
-                d = QueryHandler.instanceOf().clone(Context.getHistory()).select(dh);
+                dh.add(forUser.getType() + "name", forUser.getName());
+                if (forGroup != null && !forGroup.__getCName().equals("")) {
+                    dh.add(Context.getHistory().getDbIdentity() + "." + forGroup.getDbIdentity() + "ids", forGroup.__getIDS());
+                }
+                Context c = Context.getHistory();
+                c.addReference(Context.getGroup());
+                d = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_HISTORY, dh);
+
+            } catch (NodataFoundException ex) {
+                Log.Debug(this, ex.getMessage());
+            }
+        } else if (forGroup != null && !forGroup.__getCName().equals("")) {
+            try {
+                dh = new DataStringHandler();
+                dh.add(Context.getHistory().getDbIdentity() + "." + forGroup.getDbIdentity() + "ids", forGroup.__getIDS());
+
+                Context c = Context.getHistory();
+                c.addReference(Context.getGroup());
+                d = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_HISTORY, dh);
 
             } catch (NodataFoundException ex) {
                 Log.Debug(this, ex.getMessage());
             }
         } else {
-            try {
-                d = QueryHandler.instanceOf().clone(Context.getHistory()).select().getData();
-            } catch (NodataFoundException ex) {
-                Log.Debug(this, ex.getMessage());
-            }
+
+            Context c = Context.getHistory();
+            c.addReference(Context.getGroup());
+            d = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_HISTORY, (String[]) null);
+
         }
 
         jTable1.setModel(new MPTableModel(d, Headers.HISTORY));
         TableFormat.stripColumn(jTable1, 0);
-        TableFormat.stripColumn(jTable1, 3);
-        TableFormat.stripColumn(jTable1, 4);
+//        TableFormat.stripColumn(jTable1, 3);
+//        TableFormat.stripColumn(jTable1, 4);
     }
 }

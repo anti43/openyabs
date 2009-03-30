@@ -56,6 +56,7 @@ public abstract class DatabaseObject {
      */
     public String cname = "";
     private int groupsids = 1;
+    private Date dateadded = new Date();
 
     /**
      *
@@ -504,7 +505,7 @@ public abstract class DatabaseObject {
      */
     @SuppressWarnings("unchecked")
     public static <T extends DatabaseObject> ArrayList<T> getObjects(Context context, DataStringHandler criterias) throws NodataFoundException {
-        Object[][] data = QueryHandler.instanceOf().clone(context).select(criterias);
+        Object[][] data = QueryHandler.instanceOf().clone(context).select("ids", criterias);
         ArrayList<DatabaseObject> list = new ArrayList<DatabaseObject>();
 
         for (int i = 0; i < data.length; i++) {
@@ -703,5 +704,19 @@ public abstract class DatabaseObject {
     @Override
     public String toString() {
         return cname;
+    }
+
+    /**
+     * @return the dateadded
+     */
+    public Date __getDateadded() {
+        return dateadded;
+    }
+
+    /**
+     * @param dateadded the dateadded to set
+     */
+    public void setDateadded(Date dateadded) {
+        this.dateadded = dateadded;
     }
 }

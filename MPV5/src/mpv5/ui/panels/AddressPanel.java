@@ -48,6 +48,7 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
     private Address dataOwner = new Address();
     private Contact dataParent = new Contact();
 
+
     /** Creates new form AddressPanel */
     public AddressPanel() {
         initComponents();
@@ -304,6 +305,7 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
     public int ids_;
     public int contactsids_;
     public int groupsids_ = 1;
+    public java.util.Date dateadded_ = new java.util.Date();
 
     public void collectData() {
         city_ = city.get_Text();

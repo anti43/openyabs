@@ -51,6 +51,7 @@ public class Context {
     public static String UNIQUECOLUMNS_USER = "cname";
     public static String UNIQUECOLUMNS_ITEMS = "cname";
     public static String UNIQUECOLUMNS_GROUPS = "cname";
+
     
 
     //********** conditions ****************************************************
@@ -123,6 +124,8 @@ public class Context {
             IDENTITY_ITEMS + "." + "taxvalue, " +
             IDENTITY_ITEMS + "." + "datetodo, " +
             IDENTITY_ITEMS + "." + "intreminders";
+
+    public static String DETAILS_HISTORY= getHistory().getDbIdentity() + ".ids, " + getHistory().getDbIdentity() + ".cname, " + getHistory().getDbIdentity() + ".username, " + Context.getGroup().getDbIdentity() +"0.cname," +Context.getHistory().getDbIdentity() +".dateadded";
 
     public static String DETAILS_FILES = Context.getFiles().getDbIdentity() +"0.cname,"+getFilesToContacts().getDbIdentity() + ".cname, " +Context.getFiles().getDbIdentity() +"0.dateadded,"+Context.getFilesToContacts().getDbIdentity() +".description";
 
@@ -209,6 +212,7 @@ public class Context {
 
     private Context() {
     }
+
 
     /**
      *
@@ -495,6 +499,16 @@ public class Context {
     public void addReference( String referencekey, String referenceidkey) {
         String alias = this.getDbIdentity();
         references.add(new String[]{this.getDbIdentity(), referencekey, referenceidkey, alias});
+    }
+
+
+    /**
+     *
+     * @param group
+     */
+    public void addReference(Context group) {
+        String alias = group.getDbIdentity();
+        references.add(new String[]{alias, "ids", alias+"ids", alias, this.getDbIdentity()});
     }
 
     /**
