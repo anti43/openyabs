@@ -11,6 +11,7 @@ import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
 
 import com.l2fprod.common.swing.plaf.LookAndFeelAddons;
+import java.awt.Dimension;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.Date;
@@ -86,6 +87,7 @@ public class Main extends SingleFrameApplication {
      */
     @Override
     protected void configureWindow(java.awt.Window root) {
+
     }
 
     /**
@@ -126,11 +128,29 @@ public class Main extends SingleFrameApplication {
         }
         start();
     }
+    /**
+     * Inicates if the OS is a Windows version
+     */
     public static boolean IS_WINDOWS = false;
+    /**
+     * The path for db, cache, session files
+     */
     public static String MPPATH = null;
+    /**
+     * The local settings file
+     */
     public static String SETTINGS_FILE = null;
+    /**
+     * The directory where the application files go
+     */
     public static String APP_DIR = null;
+    /**
+     * The user home directory
+     */
     public static String USER_HOME = null;
+    /**
+     * A shortcut to the user desktop
+     */
     public static String DESKTOP = null;
 
     private static void getOS() {
