@@ -51,9 +51,6 @@ public class Context {
     public static String UNIQUECOLUMNS_USER = "cname";
     public static String UNIQUECOLUMNS_ITEMS = "cname";
     public static String UNIQUECOLUMNS_GROUPS = "cname";
-
-    
-
     //********** conditions ****************************************************
     private boolean isCompany = false;
     private boolean isCustomer = false;
@@ -86,7 +83,6 @@ public class Context {
     public static String DEFAULT_ITEM_SEARCH = "ids, cname, dateadded, value";
 
     //********** table fields ********************************************************
-
     public static String DETAILS_CONTACTS = IDENTITY_CONTACTS + "." + "IDS," + IDENTITY_CONTACTS + "." + "CNUMBER," +
             IDENTITY_CONTACTS + "." + "TITLE," + IDENTITY_CONTACTS + "." + "PRENAME," + IDENTITY_CONTACTS + "." + "CNAME," +
             IDENTITY_CONTACTS + "." + "STREET," + IDENTITY_CONTACTS + "." + "ZIP," + IDENTITY_CONTACTS + "." + "CITY," +
@@ -124,12 +120,14 @@ public class Context {
             IDENTITY_ITEMS + "." + "taxvalue, " +
             IDENTITY_ITEMS + "." + "datetodo, " +
             IDENTITY_ITEMS + "." + "intreminders";
-
-    public static String DETAILS_HISTORY= getHistory().getDbIdentity() + ".ids, " + getHistory().getDbIdentity() + ".cname, " + getHistory().getDbIdentity() + ".username, " + Context.getGroup().getDbIdentity() +"0.cname," +Context.getHistory().getDbIdentity() +".dateadded";
-
-    public static String DETAILS_FILES = Context.getFiles().getDbIdentity() +"0.cname,"+getFilesToContacts().getDbIdentity() + ".cname, " +Context.getFiles().getDbIdentity() +"0.dateadded,"+Context.getFilesToContacts().getDbIdentity() +".description";
+    public static String DETAILS_HISTORY = getHistory().getDbIdentity() + ".ids, " + getHistory().getDbIdentity() + ".cname, " + getHistory().getDbIdentity() + ".username, " + Context.getGroup().getDbIdentity() + "0.cname," + Context.getHistory().getDbIdentity() + ".dateadded";
+    public static String DETAILS_FILES = Context.getFiles().getDbIdentity() + "0.cname," + getFilesToContacts().getDbIdentity() + ".cname, " + Context.getFiles().getDbIdentity() + "0.dateadded," + Context.getFilesToContacts().getDbIdentity() + ".description";
 
     //**************************************************************************
+    /**
+     * Contexts which are protected by the Securitymanager
+     * @return
+     */
     public static ArrayList<Context> getSecuredContexts() {
         ArrayList<Context> list = new ArrayList<Context>();
         list.add(getCompany());
@@ -144,6 +142,30 @@ public class Context {
         list.add(getOffer());
         list.add(getSubItem());
         list.add(getSchedule());
+        list.add(getCountries());
+        list.add(getContact());
+        return list;
+    }
+
+    /**
+     * Contexts which are monitored by the Historie
+     * @return
+     */
+    public static ArrayList<Context> getArchivableContexts() {
+        return getSecuredContexts();
+    }
+
+    /**
+     * Contexts which can be used in a user's Search
+     * @return
+     */
+    public static ArrayList<Context> getSearchableContexts() {
+        ArrayList<Context> list = new ArrayList<Context>();
+        list.add(getUser());
+        list.add(getAddress());
+        list.add(getItem(true, false, false, false, false));
+        list.add(getSchedule());
+        list.add(getContact());
         return list;
     }
 
@@ -152,7 +174,7 @@ public class Context {
      * @return All availbale contexts
      */
     public static ArrayList<Context> getContexts() {
-        return  allContexts;
+        return allContexts;
     }
     /**
      * A list of all available contexts
@@ -177,7 +199,9 @@ public class Context {
                 getGroup(),
                 getGroupToParentGroup(),
                 getSchedule(),
-                getFilesToContacts()
+                getFilesToContacts(),
+                getHistory(),
+                getCountries()
             }));
     private String[] searchHeaders;
     private ArrayList<String[]> references = new ArrayList<String[]>();
@@ -212,7 +236,6 @@ public class Context {
 
     private Context() {
     }
-
 
     /**
      *
@@ -496,11 +519,10 @@ public class Context {
      * @param referencekey
      * @param referenceidkey
      */
-    public void addReference( String referencekey, String referenceidkey) {
+    public void addReference(String referencekey, String referenceidkey) {
         String alias = this.getDbIdentity();
         references.add(new String[]{this.getDbIdentity(), referencekey, referenceidkey, alias});
     }
-
 
     /**
      *
@@ -508,7 +530,7 @@ public class Context {
      */
     public void addReference(Context group) {
         String alias = group.getDbIdentity();
-        references.add(new String[]{alias, "ids", alias+"ids", alias, this.getDbIdentity()});
+        references.add(new String[]{alias, "ids", alias + "ids", alias, this.getDbIdentity()});
     }
 
     /**
@@ -754,7 +776,7 @@ public class Context {
         return c;
     }
 
-      public static Context getBill() {
+    public static Context getBill() {
         Context c = new Context(new Item());
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_ITEMS);
@@ -768,7 +790,7 @@ public class Context {
         return c;
     }
 
-        public static Context getOrder() {
+    public static Context getOrder() {
         Context c = new Context(new Item());
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_ITEMS);
@@ -782,7 +804,7 @@ public class Context {
         return c;
     }
 
-     public static Context getOffer() {
+    public static Context getOffer() {
         Context c = new Context(new Item());
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_ITEMS);
@@ -796,8 +818,7 @@ public class Context {
         return c;
     }
 
-
-     public static Context getFilesToContacts() {
+    public static Context getFilesToContacts() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_FILES_TO_CONTACTS);
@@ -806,7 +827,7 @@ public class Context {
         return c;
     }
 
-       public static Context getHistory() {
+    public static Context getHistory() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_HISTORY);
@@ -816,11 +837,11 @@ public class Context {
         return c;
     }
 
-      public static Context getCountries() {
+    public static Context getCountries() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_COUNTRIES);
-        c.setId(21);
+        c.setId(22);
 
         return c;
     }
@@ -1007,7 +1028,7 @@ public class Context {
 
     @Override
     public String toString() {
-        return dbIdentity;
+        return dbIdentity.toUpperCase();
     }
 
     /**
@@ -1015,5 +1036,21 @@ public class Context {
      */
     public int getId() {
         return id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (((Context) o).getDbIdentity().equals(getDbIdentity())) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 89 * hash + (this.dbIdentity != null ? this.dbIdentity.hashCode() : 0);
+        return hash;
     }
 }

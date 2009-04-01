@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.Properties;
+import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import mpv5.db.common.ConnectionTypeHandler;
@@ -26,6 +27,7 @@ import mpv5.globals.Constants;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.ui.dialogs.Popup;
+import mpv5.ui.dialogs.SplashScreen;
 import mpv5.ui.dialogs.Wizard;
 import mpv5.ui.dialogs.subcomponents.wizard_DBSettings_1;
 
@@ -41,6 +43,7 @@ import org.apache.commons.cli2.util.*;
  * The main class of the application.
  */
 public class Main extends SingleFrameApplication {
+    public static SplashScreen splash;
 
     private File lockfile = new File(MPPATH + File.separator + "." + Constants.PROG_NAME + Constants.VERSION + "." + "lck");
 
@@ -49,6 +52,7 @@ public class Main extends SingleFrameApplication {
      */
     public static void start() {
 
+       splash.nextStep(Messages.LOCAL_SETTINGS);
         try {
             LocalSettings.read();
             LocalSettings.apply();
@@ -56,6 +60,7 @@ public class Main extends SingleFrameApplication {
             Log.Debug(Main.class, ex.getMessage());
             Log.Debug(Main.class, "Local settings file not readable: " + LocalSettings.getLocalFile());
         }
+        splash.nextStep(Messages.LAUNCH);
         launch(Main.class, new String[]{});
     }
 
@@ -64,15 +69,19 @@ public class Main extends SingleFrameApplication {
      */
     @Override
     protected void startup() {
+     
+        splash.nextStep(Messages.FIRST_INSTANCE);
         if (!firstInstance()) {
             System.exit(1);
         }
 
         getContext().getLocalStorage().setDirectory(new File(Main.MPPATH));
 
+         splash.nextStep(Messages.DB_CHECK);
         if (probeDatabaseConnection()) {
             go();
         } else if (Popup.Y_N_dialog(Messages.NO_DB_CONNECTION, Messages.ERROR_OCCURED)) {
+            splash.dispose();
             showDbWiz();
         } else {
             System.exit(1);
@@ -116,17 +125,24 @@ public class Main extends SingleFrameApplication {
      */
     public static void main(String[] args) {
 
+        try {
+            splash = new SplashScreen(new ImageIcon(Test.class.getResource(mpv5.globals.Constants.SPLASH_IMAGE)));
+            splash.init(7);
+            System.out.print(Messages.START_MESSAGE);
 
-        System.out.print(Messages.START_MESSAGE);
-
-        getOS();
-        setEnv();
-        parseArgs(args);
-        setDerbyLog();
-        if (Log.getLoglevel() == Log.LOGLEVEL_DEBUG) {
-            printEnv();
+            splash.nextStep(Messages.INIT);
+            getOS();
+            setEnv();
+            parseArgs(args);
+            setDerbyLog();
+            if (Log.getLoglevel() == Log.LOGLEVEL_DEBUG) {
+                printEnv();
+            }
+            start();
+        } catch (Exception e) {
+            splash.dispose();
+            e.printStackTrace();
         }
-        start();
     }
     /**
      * Inicates if the OS is a Windows version
@@ -311,9 +327,12 @@ public class Main extends SingleFrameApplication {
 
     public void go() {
         setLaF(null);
+        Main.splash.nextStep(Messages.INIT_LOGIN);
         login();
+        Main.splash.nextStep(Messages.INIT_GUI);
         super.show(new MPV5View(this));
         SwingUtilities.updateComponentTreeUI(MPV5View.identifierFrame);
+        splash.dispose();
     }
 
     private void login() {

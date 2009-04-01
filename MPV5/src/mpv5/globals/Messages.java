@@ -21,14 +21,26 @@ public class Messages {
             "*****************************************************************\n\n";
     public static String CONTACT = "Contact: ";
 //    public static final String GPL = new FileReaderWriter("license.txt").read();
+    /**
+     * Start messages
+     */
+    public static String INIT = "Initialising..";
+    public static String LOCAL_SETTINGS = "Reading local settings..";
+    public static String LAUNCH = "Launching application..";
+    public static String FIRST_INSTANCE = "Checking for running instances..";
+    public static String DB_CHECK = "Checking database connectivity..";
+    public static String INIT_GUI = "Initialising Graphical User Interface..";
+    public static String INIT_LOGIN = "Logging in user..";
+
+
     public static String NEW_CONTACT = "New Contact";
     public static String NEW_CUSTOMER = "New Customer";
     public static String NEW_SUPPLIER = "New Supplier";
     public static String NEW_MANUFACTURER = "New Manufacturer";
     public static String NEW_OFFER = "New Offer";
     public static String NEW_BILL = "New Bill";
-    public static String NEW_VALUE= "New Value";
-    public static String NEW_COMPANY= "New Company";
+    public static String NEW_VALUE = "New Value";
+    public static String NEW_COMPANY = "New Company";
     public static String ACCESS_DENIED = "Access denied.";
     public static String ACTION_CREATE = "Create";
     public static String ACTION_EDIT = "Edit";
@@ -51,7 +63,7 @@ public class Messages {
     public static String FILE_EXISTS = "The file already exists, overwrite?";
     public static String ARE_YOU_SURE = "Are you sure?";
     public static String FINISH = "Finish ";
-    public static String SAVE_AS= "Save as.. ";
+    public static String SAVE_AS = "Save as.. ";
     public static String CONNECTION_VERIFIED = "Database Connection established.";
     public static String CONNECTION_FAILED = "The Database Connection failed.";
     public static String CONNECTION_PROBE = "Checking Database Connection: ";
@@ -87,12 +99,9 @@ public class Messages {
     public static String NO_PRINTER_FOUND = "No printer found on this system.";
     public static String UNGROUPED = "Ungrouped";
     public static String ADMIN_USER = "User Administrator can not be deleted.";
-    public static String GROUPNAMES= "All Groups";
+    public static String GROUPNAMES = "All Groups";
     public static String IN_USE = "The dataset is in use, locked or has subitems assigned to it.";
     public static String ENTER_A_DESCRIPTION = "Please enter a description:";
     public static String FILE_OPEN_FAILED = "Unable to open the file: \n";
-    public static String HISTORY_PANEL =  "History";
-   
-    
-
+    public static String HISTORY_PANEL = "History";
 }

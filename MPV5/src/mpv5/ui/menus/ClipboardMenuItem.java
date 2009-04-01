@@ -47,4 +47,11 @@ public class ClipboardMenuItem extends JMenuItem {
         this.setText(name);
         this.setIcon(dbo.getTypeIcon());
     }
+
+    /**
+     * @return the item
+     */
+    public DatabaseObject getItem() {
+        return item;
+    }
 }

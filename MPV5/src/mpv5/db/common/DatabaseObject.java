@@ -8,7 +8,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Icon;
@@ -21,6 +23,7 @@ import mpv5.logging.Log;
 import mpv5.ui.panels.DataPanel;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPV5View;
+import mpv5.usermanagement.User;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
 
@@ -201,7 +204,9 @@ public abstract class DatabaseObject {
                 final String fmessage = message;
                 final String fdbid = this.getDbIdentity();
                 final int fids = this.ids;
-                if (!this.getType().equals(new HistoryItem().getType())) {
+                //Ignore History and User events
+
+                if (Context.getArchivableContexts().contains(context)) {
                     Runnable runnable = new Runnable() {
                         public void run() {
                             HistoryItem h = new HistoryItem();

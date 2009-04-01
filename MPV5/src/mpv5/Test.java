@@ -16,15 +16,8 @@
  */
 package mpv5;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import mpv5.db.common.DatabaseObject;
-import mpv5.items.div.Contact;
-import mpv5.utils.xml.XMLReader;
-import org.jdom.JDOMException;
+import javax.swing.ImageIcon;
+import mpv5.ui.dialogs.SplashScreen;
 
 /**
  *
@@ -33,6 +26,8 @@ import org.jdom.JDOMException;
 public class Test {
 
     public static void main(String[] args) {
+
+        new SplashScreen(new ImageIcon(Test.class.getResource("/mpv5/resources/images/background.png")));
 //        try {
 //        try {
 //            new XMLReader().newDoc(new File("contacts.xml"), true);

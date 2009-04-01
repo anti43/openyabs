@@ -21,6 +21,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
@@ -35,7 +36,10 @@ import mpv5.globals.Messages;
 import mpv5.items.div.Favourite;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.DialogForFile;
+
 import mpv5.ui.dialogs.Popup;
+import mpv5.ui.dialogs.Search;
+import mpv5.ui.dialogs.SplashScreen;
 import mpv5.ui.menus.ClipboardMenuItem;
 import mpv5.ui.menus.FavouritesMenuItem;
 import mpv5.ui.panels.ContactPanel;
@@ -264,7 +268,7 @@ public class MPV5View extends FrameView {
 
         fillFavouritesmenu();
         QueryHandler.setWaitCursorFor(identifierFrame);
- 
+
 
 //        setStatusBar();
 //        setStatusBar(statusPanel);
@@ -346,19 +350,30 @@ public class MPV5View extends FrameView {
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton18 = new javax.swing.JButton();
-        jButton20 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
         jButton6 = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         javax.swing.JMenu fileMenu = new javax.swing.JMenu();
+        jMenuItem13 = new javax.swing.JMenuItem();
+        jMenuItem14 = new javax.swing.JMenuItem();
+        jSeparator3 = new javax.swing.JSeparator();
         jMenuItem6 = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
         jMenu5 = new javax.swing.JMenu();
         jMenuItem8 = new javax.swing.JMenuItem();
         jMenu8 = new javax.swing.JMenu();
         jMenuItem11 = new javax.swing.JMenuItem();
+        jSeparator1 = new javax.swing.JSeparator();
+        jMenuItem12 = new javax.swing.JMenuItem();
+        jMenu9 = new javax.swing.JMenu();
+        jMenuItem15 = new javax.swing.JMenuItem();
+        jSeparator4 = new javax.swing.JSeparator();
+        jMenuItem9 = new javax.swing.JMenuItem();
+        jMenuItem16 = new javax.swing.JMenuItem();
+        jSeparator5 = new javax.swing.JSeparator();
+        jMenuItem17 = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -371,7 +386,6 @@ public class MPV5View extends FrameView {
         clipboardMenu = new javax.swing.JMenu();
         jMenu6 = new javax.swing.JMenu();
         jMenuItem7 = new javax.swing.JMenuItem();
-        jMenuItem9 = new javax.swing.JMenuItem();
         jMenu7 = new javax.swing.JMenu();
         jMenuItem10 = new javax.swing.JMenuItem();
         statusPanel = new javax.swing.JPanel();
@@ -459,19 +473,6 @@ public class MPV5View extends FrameView {
             }
         });
 
-        jButton20.setFont(new java.awt.Font("Tahoma", 0, 10));
-        jButton20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/agt_internet.png"))); // NOI18N
-        jButton20.setText(bundle.getString("MPV5View.jButton20.text_1")); // NOI18N
-        jButton20.setToolTipText(bundle.getString("MPV5View.jButton20.toolTipText_1")); // NOI18N
-        jButton20.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton20.setName("jButton20"); // NOI18N
-        jButton20.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton20.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton20ActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -492,10 +493,6 @@ public class MPV5View extends FrameView {
                 .addContainerGap()
                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 89, Short.MAX_VALUE)
                 .addGap(11, 11, 11))
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jButton20, javax.swing.GroupLayout.DEFAULT_SIZE, 89, Short.MAX_VALUE)
-                .addGap(11, 11, 11))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -508,9 +505,7 @@ public class MPV5View extends FrameView {
                 .addComponent(jButton18)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton20)
-                .addGap(119, 119, 119))
+                .addGap(121, 121, 121))
         );
 
         jOutlookBar1.addTab(bundle.getString("MPV5View.jPanel2.TabConstraints.tabTitle_1"), jPanel2); // NOI18N
@@ -622,6 +617,31 @@ public class MPV5View extends FrameView {
         fileMenu.setText(bundle.getString("MPV5View.fileMenu.text_1")); // NOI18N
         fileMenu.setName("fileMenu"); // NOI18N
 
+        jMenuItem13.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/filesave.png"))); // NOI18N
+        jMenuItem13.setText(bundle.getString("MPV5View.jMenuItem13.text")); // NOI18N
+        jMenuItem13.setName("jMenuItem13"); // NOI18N
+        jMenuItem13.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem13ActionPerformed(evt);
+            }
+        });
+        fileMenu.add(jMenuItem13);
+
+        jMenuItem14.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/filesaveas.png"))); // NOI18N
+        jMenuItem14.setText(bundle.getString("MPV5View.jMenuItem14.text")); // NOI18N
+        jMenuItem14.setName("jMenuItem14"); // NOI18N
+        jMenuItem14.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem14ActionPerformed(evt);
+            }
+        });
+        fileMenu.add(jMenuItem14);
+
+        jSeparator3.setName("jSeparator3"); // NOI18N
+        fileMenu.add(jSeparator3);
+
         jMenuItem6.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/22/printer1.png"))); // NOI18N
         jMenuItem6.setText(bundle.getString("MPV5View.jMenuItem6.text")); // NOI18N
@@ -669,7 +689,73 @@ public class MPV5View extends FrameView {
 
         fileMenu.add(jMenu8);
 
+        jSeparator1.setName("jSeparator1"); // NOI18N
+        fileMenu.add(jSeparator1);
+
+        jMenuItem12.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/remove.png"))); // NOI18N
+        jMenuItem12.setText(bundle.getString("MPV5View.jMenuItem12.text")); // NOI18N
+        jMenuItem12.setName("jMenuItem12"); // NOI18N
+        jMenuItem12.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem12ActionPerformed(evt);
+            }
+        });
+        fileMenu.add(jMenuItem12);
+
         menuBar.add(fileMenu);
+
+        jMenu9.setText(bundle.getString("MPV5View.jMenu9.text")); // NOI18N
+        jMenu9.setName("jMenu9"); // NOI18N
+
+        jMenuItem15.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem15.setText(bundle.getString("MPV5View.jMenuItem15.text")); // NOI18N
+        jMenuItem15.setName("jMenuItem15"); // NOI18N
+        jMenuItem15.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem15ActionPerformed(evt);
+            }
+        });
+        jMenu9.add(jMenuItem15);
+
+        jSeparator4.setName("jSeparator4"); // NOI18N
+        jMenu9.add(jSeparator4);
+
+        jMenuItem9.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/editcopy.png"))); // NOI18N
+        jMenuItem9.setText(bundle.getString("MPV5View.jMenuItem9.text")); // NOI18N
+        jMenuItem9.setName("jMenuItem9"); // NOI18N
+        jMenuItem9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem9ActionPerformed(evt);
+            }
+        });
+        jMenu9.add(jMenuItem9);
+
+        jMenuItem16.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_B, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem16.setText(bundle.getString("MPV5View.jMenuItem16.text")); // NOI18N
+        jMenuItem16.setName("jMenuItem16"); // NOI18N
+        jMenuItem16.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem16ActionPerformed(evt);
+            }
+        });
+        jMenu9.add(jMenuItem16);
+
+        jSeparator5.setName("jSeparator5"); // NOI18N
+        jMenu9.add(jSeparator5);
+
+        jMenuItem17.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem17.setText(bundle.getString("MPV5View.jMenuItem17.text")); // NOI18N
+        jMenuItem17.setName("jMenuItem17"); // NOI18N
+        jMenuItem17.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem17ActionPerformed(evt);
+            }
+        });
+        jMenu9.add(jMenuItem17);
+
+        menuBar.add(jMenu9);
 
         jMenu1.setText(bundle.getString("MPV5View.jMenu1.text_1")); // NOI18N
         jMenu1.setName("jMenu1"); // NOI18N
@@ -754,17 +840,6 @@ public class MPV5View extends FrameView {
             }
         });
         jMenu6.add(jMenuItem7);
-
-        jMenuItem9.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItem9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/editcopy.png"))); // NOI18N
-        jMenuItem9.setText(bundle.getString("MPV5View.jMenuItem9.text")); // NOI18N
-        jMenuItem9.setName("jMenuItem9"); // NOI18N
-        jMenuItem9.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem9ActionPerformed(evt);
-            }
-        });
-        jMenu6.add(jMenuItem9);
 
         clipboardMenu.add(jMenu6);
 
@@ -891,14 +966,6 @@ public class MPV5View extends FrameView {
         tabPane.setSelectedComponent(tab);
 }//GEN-LAST:event_jButton2ActionPerformed
 
-    private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton20ActionPerformed
-
-        ContactPanel tab = new ContactPanel(Context.getCompany());
-        tab.setType(ContactPanel.COMPANY);
-        tabPane.addTab(Messages.NEW_COMPANY, tab);
-        tabPane.setSelectedComponent(tab);
-    }//GEN-LAST:event_jButton20ActionPerformed
-
     private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
         ContactPanel tab = new ContactPanel(Context.getManufacturer());
         tab.setType(ContactPanel.MANUFACTURER);
@@ -999,13 +1066,88 @@ public class MPV5View extends FrameView {
         tabPane.setSelectedComponent(HistoryPanel.instanceOf());
     }//GEN-LAST:event_jButton6ActionPerformed
 
+    private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem12ActionPerformed
+        identifierApplication.exit(evt);
+    }//GEN-LAST:event_jMenuItem12ActionPerformed
+
+    private void jMenuItem13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem13ActionPerformed
+
+        Component pane = tabPane.getSelectedComponent();
+        if (pane instanceof DataPanel) {
+            try {
+
+                DatabaseObject dato = ((DataPanel) pane).getDataOwner();
+
+                dato.getPanelData(((DataPanel) pane));
+                if (dato.save()) {
+                    ((DataPanel) pane).refresh();
+                    ((DataPanel) pane).setDataOwner(dato);
+                } else {
+                    ((DataPanel) pane).showRequiredFields();
+                }
+            } catch (Exception e) {
+                Log.Debug(this, e);
+            }
+        }
+    }//GEN-LAST:event_jMenuItem13ActionPerformed
+
+    private void jMenuItem14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem14ActionPerformed
+
+        Component pane = tabPane.getSelectedComponent();
+        if (pane instanceof DataPanel) {
+            try {
+
+                DatabaseObject dato = ((DataPanel) pane).getDataOwner();
+                dato.getPanelData(((DataPanel) pane));
+                dato.setIDS(-1);
+                if (dato.save()) {
+                    ((DataPanel) pane).refresh();
+                    ((DataPanel) pane).setDataOwner(dato);
+                } else {
+                    ((DataPanel) pane).showRequiredFields();
+                }
+            } catch (Exception e) {
+                Log.Debug(this, e);
+            }
+        }
+    }//GEN-LAST:event_jMenuItem14ActionPerformed
+
+    private void jMenuItem16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem16ActionPerformed
+        ClipboardMenuItem item;
+        try {
+            if (clipboardMenu.getItemCount() > 1) {
+                item = (ClipboardMenuItem) clipboardMenu.getItem(clipboardMenu.getItemCount());
+                getCurrentTab().paste(item.getItem());
+            }
+        } catch (Exception ignore) {
+        }
+
+    }//GEN-LAST:event_jMenuItem16ActionPerformed
+
+    private void jMenuItem15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem15ActionPerformed
+        DataPanel tab = getCurrentTab();
+        DatabaseObject dato = tab.getDataOwner();
+
+        if (dato.isExisting()) {
+            dato.getPanelData((tab));
+            dato.reset();
+            tab.refresh();
+            tab.setDataOwner(dato);
+        }
+    }//GEN-LAST:event_jMenuItem15ActionPerformed
+
+    private void jMenuItem17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem17ActionPerformed
+
+        Search.instanceOf();
+
+    }//GEN-LAST:event_jMenuItem17ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JMenu clipboardMenu;
     public javax.swing.JMenu favouritesMenu;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton18;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton20;
     private javax.swing.JButton jButton24;
     private javax.swing.JButton jButton25;
     private javax.swing.JButton jButton26;
@@ -1019,9 +1161,16 @@ public class MPV5View extends FrameView {
     private javax.swing.JMenu jMenu6;
     private javax.swing.JMenu jMenu7;
     private javax.swing.JMenu jMenu8;
+    private javax.swing.JMenu jMenu9;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem10;
     private javax.swing.JMenuItem jMenuItem11;
+    private javax.swing.JMenuItem jMenuItem12;
+    private javax.swing.JMenuItem jMenuItem13;
+    private javax.swing.JMenuItem jMenuItem14;
+    private javax.swing.JMenuItem jMenuItem15;
+    private javax.swing.JMenuItem jMenuItem16;
+    private javax.swing.JMenuItem jMenuItem17;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
@@ -1036,7 +1185,11 @@ public class MPV5View extends FrameView {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JToolBar.Separator jSeparator2;
+    private javax.swing.JSeparator jSeparator3;
+    private javax.swing.JSeparator jSeparator4;
+    private javax.swing.JSeparator jSeparator5;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JToolBar mainToolbar;
     private javax.swing.JMenuBar menuBar;

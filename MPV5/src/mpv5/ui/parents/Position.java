@@ -19,20 +19,26 @@ package mpv5.ui.parents;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import javax.swing.JComponent;
 
 /**
- *
+ * This is a helper class for visual component positioning
  * @author anti43
  */
 public class Position {
     private Component comp;
 
+    /**
+     * Centers the given Component
+     * @param comp
+     */
     public Position(Component comp) {
         this.comp = comp;
         center();
     }
 
+    /**
+     * Centers the given Component
+     */
     public void center() {
         Dimension frameSize = new Dimension(comp.getSize());
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -45,6 +51,10 @@ public class Position {
     }
 
 
+    /**
+     * Returns TRUE if the component is not as big as the screen
+     * @return
+     */
     public boolean isNotMaximized() {
         Dimension frameSize = new Dimension(comp.getSize());
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -56,6 +66,9 @@ public class Position {
         }
     }
 
+    /**
+     * Moves the component to the upper left corner
+     */
     public void topLeft() {
         comp.setLocation(0, 0);
     }
