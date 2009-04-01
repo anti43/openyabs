@@ -1,5 +1,8 @@
 package mpv5.db.common;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 /**
  *
  * @author Andreas
@@ -59,6 +62,23 @@ public class DatabaseSearch {
     /**
      * Get multiple values from a search
      * @param resultingFieldNames What do you like to get (columns)?
+     * @param possibleColumns Which columns do you like to take for the condition?
+     * @param where And what value should the column value have?
+     * @param searchForLike Shall we search with "like" condition?
+     * @return 
+     */
+    public Object[][] getValuesFor(String resultingFieldNames, String[] possibleColumns, String where, boolean searchForLike) {
+     ArrayList<Object[]> list = new ArrayList<Object[]>();
+        for (int i = 0; i < possibleColumns.length; i++) {
+            String string = possibleColumns[i];
+             list.addAll(Arrays.asList( QueryHandler.instanceOf().clone(context).select(resultingFieldNames, new String[]{string, where, "'"}, null, searchForLike)));
+        }
+     return list.toArray(new Object[][]{});
+    }
+
+    /**
+     * Get multiple values from a search
+     * @param resultingFieldNames What do you like to get (columns)?
      * @param what Which column do you like to take for the condition?
      * @param where And what value should the column value have?
      * @param searchForLike Shall we search with "like" condition?
@@ -66,6 +86,7 @@ public class DatabaseSearch {
      */
     public Object[][] getValuesFor(String resultingFieldNames, String what, String where, boolean searchForLike) {
         return QueryHandler.instanceOf().clone(context).select(resultingFieldNames, new String[]{what, where, "'"}, null, searchForLike);
+
     }
 
     /**

@@ -29,6 +29,7 @@ public class Context {
     public static String IDENTITY_SUBITEMS = "subitems";
     public static String IDENTITY_LANGUAGES = "languages";
     public static String IDENTITY_COUNTRIES = "countries";
+    public static String IDENTITY_PRODUCTS = "products";
     public static String IDENTITY_FILES = "files";
     public static String IDENTITY_LOCK = "tablelock";
     public static String IDENTITY_FAVS = "favourites";
@@ -144,6 +145,7 @@ public class Context {
         list.add(getSchedule());
         list.add(getCountries());
         list.add(getContact());
+        list.add(getProducts());
         return list;
     }
 
@@ -162,10 +164,11 @@ public class Context {
     public static ArrayList<Context> getSearchableContexts() {
         ArrayList<Context> list = new ArrayList<Context>();
         list.add(getUser());
-        list.add(getAddress());
+//        list.add(getAddress());
         list.add(getItem(true, false, false, false, false));
         list.add(getSchedule());
         list.add(getContact());
+        list.add(getProducts());
         return list;
     }
 
@@ -201,7 +204,8 @@ public class Context {
                 getSchedule(),
                 getFilesToContacts(),
                 getHistory(),
-                getCountries()
+                getCountries(),
+                getProducts()
             }));
     private String[] searchHeaders;
     private ArrayList<String[]> references = new ArrayList<String[]>();
@@ -842,6 +846,15 @@ public class Context {
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_COUNTRIES);
         c.setId(22);
+
+        return c;
+    }
+
+     public static Context getProducts() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_PRODUCTS);
+        c.setId(23);
 
         return c;
     }

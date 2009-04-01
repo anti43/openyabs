@@ -41,15 +41,33 @@ public class MPTableModel extends DefaultTableModel {
                     Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class});
     }
 
+    public MPTableModel(Object[][] data) {
+        super();
+
+        if (data.length > 0) {
+            String[] header = new String[data[0].length];
+            for (int i = 0; i < header.length; i++) {
+                header[i] = String.valueOf(i);
+            }
+            setDataVector(data, header);
+        }
+
+        setEditable(false);
+
+        setTypes(new Class[]{Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
+                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
+                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class});
+    }
+
     public MPTableModel(ArrayList<DatabaseObject> list, String[] header) {
         super();
         Object[][] data = new Object[0][0];
         if (list.size() > 0 && list.get(0) != null) {
-            data = new Object[list.size()][list.get(0).getValues().size() ];
+            data = new Object[list.size()][list.get(0).getValues().size()];
         }
         ArrayList<String[]> sdata;
 
-       
+
 
         for (int i = 0; i < list.size(); i++) {
             DatabaseObject databaseObject = list.get(i);

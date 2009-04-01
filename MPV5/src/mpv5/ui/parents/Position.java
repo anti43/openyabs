@@ -25,6 +25,7 @@ import java.awt.Toolkit;
  * @author anti43
  */
 public class Position {
+
     private Component comp;
 
     /**
@@ -34,6 +35,27 @@ public class Position {
     public Position(Component comp) {
         this.comp = comp;
         center();
+    }
+
+    /**
+     *
+     * @param comp
+     * @param doNotCenter
+     */
+    public Position(Component comp, boolean doNotCenter) {
+        this.comp = comp;
+        if (!doNotCenter) {
+            center();
+        }
+    }
+
+    /**
+     * Moves the component to the bottom left corner
+     */
+    public void bottomLeft() {
+        Dimension frameSize = new Dimension(comp.getSize());
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        comp.setLocation(0, (int) (screenSize.getHeight() - frameSize.getHeight()));
     }
 
     /**
@@ -49,7 +71,6 @@ public class Position {
         comp.setSize(frameSize);
         comp.setLocation(left, top);
     }
-
 
     /**
      * Returns TRUE if the component is not as big as the screen
@@ -72,6 +93,5 @@ public class Position {
     public void topLeft() {
         comp.setLocation(0, 0);
     }
-
 }
 
