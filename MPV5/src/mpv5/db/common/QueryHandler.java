@@ -21,6 +21,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
@@ -130,7 +131,6 @@ public class QueryHandler implements Cloneable {
 
         return returnv;
     }
-
 
     /**
      *
@@ -471,12 +471,7 @@ public class QueryHandler implements Cloneable {
      */
     public int insert(DataStringHandler what, int[] uniquecols, String jobmessage) {
 
-//        if (what[2] == null) {
-//            what[2] = "";
-//        }
-        String query = null;
-//        start();
-        query = "INSERT INTO " + table + " (" + what.getKeysString() + " ) VALUES (" + what.getValuesString() + ") ";
+        String query = query = "INSERT INTO " + table + " (" + what.getKeysString() + " ) VALUES (" + what.getValuesString() + ") ";
 
         if (uniquecols != null) {
             if (!checkUniqueness(what, uniquecols)) {
@@ -497,6 +492,39 @@ public class QueryHandler implements Cloneable {
     public int insert(DataStringHandler what, String jobmessage) {
         return insert(what, (int[]) null, jobmessage);
     }
+
+
+    /**
+     *  This is a special insert method for the History feature
+     * @param message
+     * @param username
+     * @param dbidentity
+     * @param item
+     * @param groupid
+     */
+    public void insertHistoryItem(String message, String username, String dbidentity, int item, int groupid) {
+        try {
+            if (psHistory == null) {
+                try {
+                    String query = "INSERT INTO " + table + "(cname, username, dbidentity, intitem, groupsids, dateadded) VALUES (?, ?, ?, ?, ?, ?)";
+                    psHistory = sqlConn.prepareStatement(query);
+                } catch (SQLException ex) {
+                    Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            psHistory.setString(1, message);
+            psHistory.setString(2, username);
+            psHistory.setString(3, dbidentity);
+            psHistory.setInt(4, item);
+            psHistory.setInt(5, groupid);
+            psHistory.setDate(6, new java.sql.Date(new java.util.Date().getTime()));
+            psHistory.execute();
+        } catch (SQLException ex) {
+            Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+    private static PreparedStatement psHistory;
 
     /**
      * 
@@ -1584,8 +1612,12 @@ public class QueryHandler implements Cloneable {
 
         @Override
         public void done() {
+            DataStringHandler x;
             try {
-                QueryHandler.instanceOf().clone(Context.getFilesToContacts()).insert(new DataStringHandler(new String[]{"cname,contactsids,filename, description", file.getName() + "," + dataOwner.__getIDS() + "," + get() + "," + descriptiveText}), Messages.FILE_SAVED + file.getName());
+
+                x = new DataStringHandler(new String[]{"cname,filename, description", file.getName() + "," + get() + "," + descriptiveText});
+                x.add("contactsids",dataOwner.__getIDS());
+                QueryHandler.instanceOf().clone(Context.getFilesToContacts()).insert(x, Messages.FILE_SAVED + file.getName());
                 MPV5View.addMessage(Messages.FILE_SAVED + file.getName());
                 if (viewToBeNotified != null) {
                     viewToBeNotified.refresh();

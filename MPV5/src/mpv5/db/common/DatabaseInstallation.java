@@ -195,6 +195,7 @@ public class DatabaseInstallation {
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
         "PRIMARY KEY  (ids))",
 
+
         "CREATE TABLE filestocontacts(IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),"+
         "cname VARCHAR(250) NOT NULL, " +
         "description VARCHAR(550) DEFAULT NULL, " +
@@ -213,7 +214,105 @@ public class DatabaseInstallation {
         "ismale SMALLINT DEFAULT 0," +
         "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
         "PRIMARY KEY  (ids))",
+        
+        "CREATE TABLE searchindex (" +
+        "dbidentity VARCHAR(25) NOT NULL, rowID BIGINT NOT NULL," +
+        "text VARCHAR(5000) default NULL)",
 
+        //TRIGGER
+        "CREATE TRIGGER contacts_indexer1 AFTER INSERT ON contacts REFERENCING NEW AS newdata FOR EACH ROW " +
+        "INSERT INTO searchindex (dbidentity, rowid, text) VALUES ('contacts',newdata.ids," +
+        "newdata.cnumber||' '||newdata.taxnumber||' '||newdata.title||' '||newdata.country||' '|| newdata.prename||' '|| newdata.cname||' '|| " +
+                "newdata.street||' '||newdata.zip||' '|| newdata.city ||' '||newdata.mainphone||' '||newdata.fax||' '||newdata.mobilephone||' '||" +
+                "newdata.workphone||' '||newdata.mailaddress||' '||newdata.company||' '|| newdata.department||' '||newdata.website||' '||" +
+                "newdata.notes)",
+                
+        "CREATE TRIGGER contacts_indexer2 AFTER UPDATE ON contacts REFERENCING NEW AS newdata FOR EACH ROW " +
+        "DELETE FROM searchindex WHERE dbidentity = 'contacts' AND  rowid = newdata.ids",
+
+        "CREATE TRIGGER contacts_indexer3 AFTER UPDATE ON contacts REFERENCING NEW AS newdata FOR EACH ROW " +
+        "INSERT INTO searchindex (dbidentity, rowid, text) VALUES ('contacts',newdata.ids," +
+        "newdata.cnumber||' '||newdata.taxnumber||' '||newdata.title||' '||newdata.country||' '|| newdata.prename||' '|| newdata.cname||' '|| " +
+                "newdata.street||' '||newdata.zip||' '|| newdata.city ||' '||newdata.mainphone||' '||newdata.fax||' '||newdata.mobilephone||' '||" +
+                "newdata.workphone||' '||newdata.mailaddress||' '||newdata.company||' '|| newdata.department||' '||newdata.website||' '||" +
+                "newdata.notes)",
+
+        "CREATE TRIGGER contacts_indexer4 AFTER DELETE ON contacts REFERENCING OLD AS newdata FOR EACH ROW " +
+        "DELETE FROM searchindex WHERE dbidentity = 'contacts' AND  rowid = newdata.ids",
+        ////////////////////////////////////////////////////////////////////////
+        "CREATE TRIGGER filestocontacts_indexer1 AFTER INSERT ON filestocontacts REFERENCING NEW AS newdata FOR EACH ROW " +
+        "INSERT INTO searchindex (dbidentity, rowid, text) VALUES ('filestocontacts',newdata.ids," +
+        "newdata.cname||' '||newdata.description||' '||newdata.filename)",
+
+        "CREATE TRIGGER filestocontacts_indexer2 AFTER UPDATE ON filestocontacts REFERENCING NEW AS newdata FOR EACH ROW " +
+        "DELETE FROM searchindex WHERE dbidentity = 'filestocontacts' AND  rowid = newdata.ids",
+
+        "CREATE TRIGGER filestocontacts_indexer3 AFTER UPDATE ON filestocontacts REFERENCING NEW AS newdata FOR EACH ROW " +
+        "INSERT INTO searchindex (dbidentity, rowid, text) VALUES ('filestocontacts',newdata.ids," +
+         "newdata.cname||' '||newdata.description||' '||newdata.filename)",
+
+        "CREATE TRIGGER filestocontacts_indexer4 AFTER DELETE ON filestocontacts REFERENCING OLD AS newdata FOR EACH ROW " +
+        "DELETE FROM searchindex WHERE dbidentity = 'filestocontacts' AND  rowid = newdata.ids",
+
+                ////////////////////////////////////////////////////////////////////////
+        "CREATE TRIGGER groups_indexer1 AFTER INSERT ON groups REFERENCING NEW AS newdata FOR EACH ROW " +
+        "INSERT INTO searchindex (dbidentity, rowid, text) VALUES ('groups',newdata.ids," +
+        "newdata.cname||' '||newdata.description||' '||newdata.dateadded)",
+
+        "CREATE TRIGGER groups_indexer2 AFTER UPDATE ON groups REFERENCING NEW AS newdata FOR EACH ROW " +
+        "DELETE FROM searchindex WHERE dbidentity = 'groups' AND  rowid = newdata.ids",
+
+        "CREATE TRIGGER groups_indexer3 AFTER UPDATE ON groups REFERENCING NEW AS newdata FOR EACH ROW " +
+        "INSERT INTO searchindex (dbidentity, rowid, text) VALUES ('groups',newdata.ids," +
+         "newdata.cname||' '||newdata.description||' '||newdata.dateadded)",
+
+        "CREATE TRIGGER groups_indexer4 AFTER DELETE ON groups REFERENCING OLD AS newdata FOR EACH ROW " +
+        "DELETE FROM searchindex WHERE dbidentity = 'groups' AND  rowid = newdata.ids",
+
+                ////////////////////////////////////////////////////////////////////////
+        "CREATE TRIGGER items_indexer1 AFTER INSERT ON items REFERENCING NEW AS newdata FOR EACH ROW " +
+        "INSERT INTO searchindex (dbidentity, rowid, text) VALUES ('items',newdata.ids," +
+        "newdata.cname||' '||newdata.cnumber||' '||newdata.dateadded)",
+
+        "CREATE TRIGGER items_indexer2 AFTER UPDATE ON items REFERENCING NEW AS newdata FOR EACH ROW " +
+        "DELETE FROM searchindex WHERE dbidentity = 'items' AND  rowid = newdata.ids",
+
+        "CREATE TRIGGER items_indexer3 AFTER UPDATE ON items REFERENCING NEW AS newdata FOR EACH ROW " +
+        "INSERT INTO searchindex (dbidentity, rowid, text) VALUES ('items',newdata.ids," +
+         "newdata.cname||' '||newdata.cnumber||' '||newdata.dateadded)",
+
+        "CREATE TRIGGER items_indexer4 AFTER DELETE ON items REFERENCING OLD AS newdata FOR EACH ROW " +
+        "DELETE FROM searchindex WHERE dbidentity = 'items' AND  rowid = newdata.ids",
+
+                        ////////////////////////////////////////////////////////////////////////
+        "CREATE TRIGGER subitems_indexer1 AFTER INSERT ON subitems REFERENCING NEW AS newdata FOR EACH ROW " +
+        "INSERT INTO searchindex (dbidentity, rowid, text) VALUES ('subitems',newdata.ids," +
+        "newdata.cname||' '||newdata.description||' '||newdata.dateadded)",
+
+        "CREATE TRIGGER subitems_indexer2 AFTER UPDATE ON subitems REFERENCING NEW AS newdata FOR EACH ROW " +
+        "DELETE FROM searchindex WHERE dbidentity = 'subitems' AND  rowid = newdata.ids",
+
+        "CREATE TRIGGER subitems_indexer3 AFTER UPDATE ON subitems REFERENCING NEW AS newdata FOR EACH ROW " +
+        "INSERT INTO searchindex (dbidentity, rowid, text) VALUES ('subitems',newdata.ids," +
+         "newdata.cname||' '||newdata.description||' '||newdata.dateadded)",
+
+        "CREATE TRIGGER subitems_indexer4 AFTER DELETE ON subitems REFERENCING OLD AS newdata FOR EACH ROW " +
+        "DELETE FROM searchindex WHERE dbidentity = 'subitems' AND  rowid = newdata.ids",
+
+                        ////////////////////////////////////////////////////////////////////////
+        "CREATE TRIGGER products_indexer1 AFTER INSERT ON products REFERENCING NEW AS newdata FOR EACH ROW " +
+        "INSERT INTO searchindex (dbidentity, rowid, text) VALUES ('products',newdata.ids," +
+        "newdata.cname||' '||newdata.cnumber||' '||newdata.description||' '||newdata.dateadded)",
+
+        "CREATE TRIGGER products_indexer2 AFTER UPDATE ON products REFERENCING NEW AS newdata FOR EACH ROW " +
+        "DELETE FROM searchindex WHERE dbidentity = 'products' AND  rowid = newdata.ids",
+
+        "CREATE TRIGGER products_indexer3 AFTER UPDATE ON products REFERENCING NEW AS newdata FOR EACH ROW " +
+        "INSERT INTO searchindex (dbidentity, rowid, text) VALUES ('products',newdata.ids," +
+         "newdata.cname||' '||newdata.cnumber||' '||newdata.description||' '||newdata.dateadded)",
+
+        "CREATE TRIGGER products_indexer4 AFTER DELETE ON products REFERENCING OLD AS newdata FOR EACH ROW " +
+        "DELETE FROM searchindex WHERE dbidentity = 'products' AND  rowid = newdata.ids",
 //Initial data
         "INSERT INTO groups (cname,description, dateadded) VALUES ('ungrouped','This group holds all yet ungrouped items.', '" + DateConverter.getSQLDateString(new Date()) + "')",
         "INSERT INTO users (fullname,password,cname,laf,locale,mail,language,inthighestright,datelastlog,isenabled, dateadded ) VALUES ('Administrator','5f4dcc3b5aa765d61d8327deb882cf99','admin','de.muntjak.tinylookandfeel.TinyLookAndFeel','de_DE','','buildin_en',0,'" + DateConverter.getSQLDateString(new Date()) + "',1,'" + DateConverter.getSQLDateString(new Date()) + "')"

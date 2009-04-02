@@ -179,8 +179,8 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     private void deleteFile() {
         try {
             QueryHandler.instanceOf().clone(Context.getFiles()).removeFile(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).toString());
-        } catch (Exception ex) {
-            Logger.getLogger(ContactPanel.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception e) {
+            Log.Debug(this, e.getMessage());
         }
         fillFiles();
     }
@@ -990,7 +990,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     }//GEN-LAST:event_button_order2ActionPerformed
 
     private void countryselectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_countryselectActionPerformed
-        // TODO add your handling code here:
+  
 }//GEN-LAST:event_countryselectActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1090,7 +1090,6 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     public Date dateadded_;
     public int groupsids_ = 1;
     public String country_;
-
 
     public void collectData() {
         city_ = city.get_Text();

@@ -204,17 +204,13 @@ public abstract class DatabaseObject {
                 final String fmessage = message;
                 final String fdbid = this.getDbIdentity();
                 final int fids = this.ids;
+                final int fgids = this.groupsids;
                 //Ignore History and User events
 
                 if (Context.getArchivableContexts().contains(context)) {
                     Runnable runnable = new Runnable() {
                         public void run() {
-                            HistoryItem h = new HistoryItem();
-                            h.setCName(fmessage);
-                            h.setUsername(MPV5View.getUser().getName());
-                            h.setDbidentity(fdbid);
-                            h.setIntitem(fids);
-                            h.save();
+                             QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, MPV5View.getUser().__getCName(), fdbid, fids, fgids);
                         }
                     };
                     SwingUtilities.invokeLater(runnable);
@@ -263,15 +259,11 @@ public abstract class DatabaseObject {
                 final String fmessage = message;
                 final String fdbid = this.getDbIdentity();
                 final int fids = this.ids;
+                final int fgids = this.groupsids;
                 if (!this.getType().equals(new HistoryItem().getType())) {
                     Runnable runnable = new Runnable() {
                         public void run() {
-                            HistoryItem h = new HistoryItem();
-                            h.setCName(fmessage);
-                            h.setUsername(MPV5View.getUser().getName());
-                            h.setDbidentity(fdbid);
-                            h.setIntitem(fids);
-                            h.save();
+                            QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, MPV5View.getUser().__getCName(), fdbid, fids, fgids);
                         }
                     };
                     SwingUtilities.invokeLater(runnable);

@@ -39,6 +39,7 @@ public class Context {
     public static String IDENTITY_SCHEDULE = "schedule";
     public static String IDENTITY_HISTORY = "history";
     public static String IDENTITY_FILES_TO_CONTACTS = "filestocontacts";
+    public static String IDENTITY_SEARCHINDEX = "searchindex";
 
     //********** identity classes **********************************************
     private static Class IDENTITY_CONTACTS_CLASS = Contact.class;
@@ -855,6 +856,15 @@ public class Context {
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_PRODUCTS);
         c.setId(23);
+
+        return c;
+    }
+
+     public static Context getSearchIndex() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_SEARCHINDEX);
+        c.setId(24);
 
         return c;
     }
