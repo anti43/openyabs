@@ -104,4 +104,5 @@ public class Messages {
     public static String ENTER_A_DESCRIPTION = "Please enter a description:";
     public static String FILE_OPEN_FAILED = "Unable to open the file: \n";
     public static String HISTORY_PANEL = "History";
+    public static String NEW_TAB = "New Tab";
 }

@@ -20,9 +20,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.UIManager;
 import mpv5.db.common.Context;
-import mpv5.db.common.NodataFoundException;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
@@ -50,8 +48,8 @@ public class MPSecurityManager {
     private static Object[][] availableRights = new Object[][]{
         {RIGHT_TO_CREATE_OR_DELETE, "Administrator"},
         {RIGHT_TO_EDIT, "Editor"},
-        {RIGHT_TO_VIEW, "Viewer"},
-        {RIGHT_TO_EXPORT, "Export"}
+        {RIGHT_TO_EXPORT, "Export"},
+        {RIGHT_TO_VIEW, "Viewer"}
     };
 
     /**

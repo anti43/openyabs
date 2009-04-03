@@ -781,6 +781,10 @@ public class Context {
         return c;
     }
 
+    public static Context getItems() {
+        return getItem(true, false, false, false, false);
+    }
+
     public static Context getBill() {
         Context c = new Context(new Item());
         c.setSubID(DEFAULT_SUBID);
@@ -851,7 +855,7 @@ public class Context {
         return c;
     }
 
-     public static Context getProducts() {
+    public static Context getProducts() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_PRODUCTS);
@@ -860,7 +864,7 @@ public class Context {
         return c;
     }
 
-     public static Context getSearchIndex() {
+    public static Context getSearchIndex() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_SEARCHINDEX);

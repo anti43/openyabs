@@ -55,10 +55,10 @@ public interface MP5Plugin {
     public abstract Long getUID();
 
     /**
-     * Check whether this plugin is only for test or real
-     * @return True if the plugin is not a dummy
+     * Check whether this plugin is enabled
+     * @return True if the plugin is active
      */
-    public abstract boolean isReal();
+    public abstract boolean isEnabled();
 
     /**
      * Check whether this plugin inherits <code>JPanel</code> and can be displayed

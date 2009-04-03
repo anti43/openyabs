@@ -18,16 +18,19 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.UIManager;
 import mpv5.Main;
 import mpv5.db.common.Context;
+import mpv5.db.common.DataStringHandler;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryHandler;
@@ -40,16 +43,19 @@ import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.Search;
 import mpv5.ui.dialogs.SplashScreen;
+import mpv5.ui.dialogs.subcomponents.ControlPanel_Users;
 import mpv5.ui.menus.ClipboardMenuItem;
 import mpv5.ui.menus.FavouritesMenuItem;
 import mpv5.ui.panels.ContactPanel;
 import mpv5.ui.panels.ContactsList;
 import mpv5.ui.panels.DataPanel;
+import mpv5.ui.panels.GeneralListPanel;
 import mpv5.ui.panels.HistoryPanel;
 import mpv5.ui.panels.MPControlPanel;
 import mpv5.ui.parents.CloseableTabbedPane;
 import mpv5.ui.parents.FadeOnChangeLabel;
 import mpv5.ui.parents.Position;
+import mpv5.usermanagement.MPSecurityManager;
 import mpv5.usermanagement.User;
 import mpv5.utils.print.PrintJob;
 import mpv5.utils.renderer.ComboBoxRendererForTooltip;
@@ -287,11 +293,26 @@ public class MPV5View extends FrameView {
      * @param item
      */
     public void addTab(DatabaseObject item) {
-        if (item.getDbIdentity().equalsIgnoreCase(Context.getContact().getDbIdentity())) {
+        if (item.getContext().equals(Context.getContact())) {
             addContactTab(item);
+        } else if (item.getContext().equals(Context.getUser())) {
+            GeneralListPanel g = GeneralListPanel.instanceOf();
+            DataStringHandler criterias = new DataStringHandler();
+            criterias.add("addedby", item.__getCName());
+            g.setData(DatabaseObject.getObjects(new Context[]{Context.getContact(), Context.getFiles(), Context.getItems()}, criterias));
+            addTab(g);
         } else {
             Log.Debug(this, item.getDbIdentity() + " not supported yet. (addTab)");
         }
+    }
+
+    /**
+     * Add a tab to the main tab pane
+     * @param tab
+     */
+    public void addTab(JComponent tab) {
+        tabPane.addTab(Messages.NEW_TAB, tab);
+        tabPane.setSelectedComponent(tab);
     }
 
     private void addContactTab(DatabaseObject item) {
@@ -1037,15 +1058,17 @@ public class MPV5View extends FrameView {
     }//GEN-LAST:event_jMenuItem7ActionPerformed
 
     private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
-        try {
-            XMLWriter xmlw = new XMLWriter();
-            xmlw.newDoc(Context.getContact().getDbIdentity());
-            String name = Context.getContact().getDbIdentity();
-            ArrayList<DatabaseObject> dbobjarr = DatabaseObject.getObjects(Context.getContact());
-            xmlw.add(dbobjarr);
-            showFilesaveDialogFor(xmlw.createFile(name));
-        } catch (NodataFoundException ex) {
-            Log.Debug(this, ex);
+        if (mpv5.usermanagement.MPSecurityManager.check(Context.getContact(), MPSecurityManager.EXPORT)) {
+            try {
+                XMLWriter xmlw = new XMLWriter();
+                xmlw.newDoc(Context.getContact().getDbIdentity());
+                String name = Context.getContact().getDbIdentity();
+                ArrayList<DatabaseObject> dbobjarr = DatabaseObject.getObjects(Context.getContact());
+                xmlw.add(dbobjarr);
+                showFilesaveDialogFor(xmlw.createFile(name));
+            } catch (NodataFoundException ex) {
+                Log.Debug(this, ex);
+            }
         }
     }//GEN-LAST:event_jMenuItem8ActionPerformed
 

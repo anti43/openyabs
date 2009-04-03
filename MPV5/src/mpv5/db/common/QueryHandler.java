@@ -1315,7 +1315,7 @@ public class QueryHandler implements Cloneable {
     public String insertFile(final File file) throws FileNotFoundException {
 
         String name = null;
-        String query = "INSERT INTO " + table + "(cname, data, dateadded, filesize) VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO " + table + "(cname, data, dateadded, filesize, addedby) VALUES (?, ?, ?, ?, ?)";
         String jobmessage = null;
         Log.Debug(this, "Adding file: " + file.getName());
         backgroundSqlQuery j;
@@ -1327,6 +1327,7 @@ public class QueryHandler implements Cloneable {
             java.io.InputStream fin = new java.io.FileInputStream(file);
             PreparedStatement ps = sqlConn.prepareStatement(query);
             ps.setString(1, name);
+            ps.setString(5, MPV5View.getUser().__getCName());
             ps.setLong(4, file.length());
             ps.setDate(3, new java.sql.Date(new Date().getTime()));
             ps.setBinaryStream(2, fin, fileLength);

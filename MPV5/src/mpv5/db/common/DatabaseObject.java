@@ -34,6 +34,10 @@ import mpv5.utils.date.DateConverter;
  */
 public abstract class DatabaseObject {
 
+    public static ArrayList<DatabaseObject> getObjects(Context[] context, DataStringHandler criterias) {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
     /**
      * The db context of this do
      */
@@ -88,6 +92,14 @@ public abstract class DatabaseObject {
      */
     public String getType() {
         return getDbIdentity().substring(0, getDbIdentity().length() - 1);
+    }
+
+    /**
+     * The do's context
+     * @return A Context
+     */
+    public Context getContext() {
+        return context;
     }
 
     /**
@@ -189,7 +201,7 @@ public abstract class DatabaseObject {
             try {
                 if (ids <= 0) {
                     Log.Debug(this, "Inserting new dataset:");
-                   if (!this.getType().equals(new HistoryItem().getType())) {
+                    if (!this.getType().equals(new HistoryItem().getType())) {
                         message = this.__getCName() + Messages.INSERTED;
                     }
                     ids = QueryHandler.instanceOf().clone(context).insert(collect(), message);
@@ -209,8 +221,9 @@ public abstract class DatabaseObject {
 
                 if (Context.getArchivableContexts().contains(context)) {
                     Runnable runnable = new Runnable() {
+
                         public void run() {
-                             QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, MPV5View.getUser().__getCName(), fdbid, fids, fgids);
+                            QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, MPV5View.getUser().__getCName(), fdbid, fids, fgids);
                         }
                     };
                     SwingUtilities.invokeLater(runnable);
@@ -253,21 +266,22 @@ public abstract class DatabaseObject {
         }
         if (ids > 0) {
             Log.Debug(this, "Deleting dataset:");
-            result = QueryHandler.instanceOf().clone(context).delete(new String[][]{{"ids", ids.toString(), ""}},message);
+            result = QueryHandler.instanceOf().clone(context).delete(new String[][]{{"ids", ids.toString(), ""}}, message);
             Log.Debug(this, "The deleted row had id: " + ids);
 
-                final String fmessage = message;
-                final String fdbid = this.getDbIdentity();
-                final int fids = this.ids;
-                final int fgids = this.groupsids;
-                if (!this.getType().equals(new HistoryItem().getType())) {
-                    Runnable runnable = new Runnable() {
-                        public void run() {
-                            QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, MPV5View.getUser().__getCName(), fdbid, fids, fgids);
-                        }
-                    };
-                    SwingUtilities.invokeLater(runnable);
-                }
+            final String fmessage = message;
+            final String fdbid = this.getDbIdentity();
+            final int fids = this.ids;
+            final int fgids = this.groupsids;
+            if (!this.getType().equals(new HistoryItem().getType())) {
+                Runnable runnable = new Runnable() {
+
+                    public void run() {
+                        QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, MPV5View.getUser().__getCName(), fdbid, fids, fgids);
+                    }
+                };
+                SwingUtilities.invokeLater(runnable);
+            }
         }
         setIDS(-1);
         return result;

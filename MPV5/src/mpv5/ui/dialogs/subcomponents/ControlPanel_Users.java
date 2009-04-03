@@ -56,6 +56,15 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         }
     }
 
+    public ControlPanel_Users(User user) {
+        if (MPSecurityManager.checkAdminAccess()) {
+            initComponents();
+            refresh();
+            setDataOwner(user);
+            setVisible(true);
+        }
+    }
+
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {

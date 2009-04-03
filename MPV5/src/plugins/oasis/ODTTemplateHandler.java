@@ -45,7 +45,7 @@ public class ODTTemplateHandler implements MP5Plugin{
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public boolean isReal() {
+    public boolean isEnabled() {
        return false;
     }
 

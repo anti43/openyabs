@@ -7,6 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import mpv5.Main;
 import mpv5.db.common.Context;
@@ -33,7 +34,11 @@ public class MPControlPanel extends javax.swing.JPanel {
 
     private static MPControlPanel cpanel;
 
-    public static Component instanceOf() {
+    /**
+     * 
+     * @return
+     */
+    public static JComponent instanceOf() {
         if (cpanel != null) {
             return cpanel;
         } else {
@@ -370,7 +375,7 @@ public class MPControlPanel extends javax.swing.JPanel {
 
     /**
      * This method adds a button to the Properties panel, with given
-     * Icon and Text. A click on the generated button places the JPanel on the deatils pane.
+     * Icon and Text. A click on the generated button places the JPanel on the details pane.
      * <b>Bring your own scrollpane!<b>
      * @param icon
      * @param text
@@ -403,7 +408,11 @@ public class MPControlPanel extends javax.swing.JPanel {
         buttons.add(button);
     }
 
-    private void openDetails(ControlApplet panel) {
+    /**
+     *  Show a Control Panel Applet
+     * @param panel
+     */
+    public void openDetails(ControlApplet panel) {
         if (panel != null) {
             MPV5View.setWaiting(true);
             details.removeAll();
