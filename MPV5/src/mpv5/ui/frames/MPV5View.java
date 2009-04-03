@@ -289,6 +289,8 @@ public class MPV5View extends FrameView {
     public void addTab(DatabaseObject item) {
         if (item.getDbIdentity().equalsIgnoreCase(Context.getContact().getDbIdentity())) {
             addContactTab(item);
+        } else {
+            Log.Debug(this, item.getDbIdentity() + " not supported yet. (addTab)");
         }
     }
 

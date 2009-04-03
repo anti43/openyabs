@@ -155,12 +155,15 @@ public class TableFormat {
      * @param columnToHide
      */
     public static void stripColumn(JTable table, int columnToHide) {
-        table.getColumn(table.getColumnName(columnToHide)).setWidth(0);
-        table.getColumn(table.getColumnName(columnToHide)).setPreferredWidth(0);
-        table.getColumn(table.getColumnName(columnToHide)).setMinWidth(0);
-        table.getColumn(table.getColumnName(columnToHide)).setMaxWidth(0);
+        try {
+            table.getColumn(table.getColumnName(columnToHide)).setWidth(0);
+            table.getColumn(table.getColumnName(columnToHide)).setPreferredWidth(0);
+            table.getColumn(table.getColumnName(columnToHide)).setMinWidth(0);
+            table.getColumn(table.getColumnName(columnToHide)).setMaxWidth(0);
 
-        table.doLayout();
+            table.doLayout();
+        } catch (Exception e) {
+        }
     }
 
     /**
@@ -178,11 +181,12 @@ public class TableFormat {
      * @param width
      */
     public static void format(JTable table, int column, int width) {
-        table.getColumn(table.getColumnName(column)).setWidth(width);
-        table.getColumn(table.getColumnName(column)).setPreferredWidth(width);
-        table.getColumn(table.getColumnName(column)).setMinWidth(width);
-        table.getColumn(table.getColumnName(column)).setMaxWidth(width);
-
-
+        try {
+            table.getColumn(table.getColumnName(column)).setWidth(width);
+            table.getColumn(table.getColumnName(column)).setPreferredWidth(width);
+            table.getColumn(table.getColumnName(column)).setMinWidth(width);
+            table.getColumn(table.getColumnName(column)).setMaxWidth(width);
+        } catch (Exception e) {
+        }
     }
 }

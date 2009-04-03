@@ -770,19 +770,24 @@ public class ArrayUtilities {
     }
 
     public static String[][] ObjectToStringArray(Object[][] array1) {
-        if (array1 == null) {
+        if (array1 == null || array1.length < 1) {
             array1 = new Object[0][0];
         }
 
-        String[][] mergedArray = new String[array1.length][array1[0].length];
-        int i = 0;
-        for (i = 0; i < array1.length; i++) {
+        String[][] mergedArray = null;
+        try {
+            mergedArray = new String[array1.length][array1[0].length];
+            int i = 0;
+            for (i = 0; i < array1.length; i++) {
 
-            for (int k = 0; k < array1[i].length; k++) {
+                for (int k = 0; k < array1[i].length; k++) {
 
-                mergedArray[i][k] = array1[i][k].toString();
+                    mergedArray[i][k] = array1[i][k].toString();
+                }
             }
-        }
+        } catch (Exception e) {
+           return new String[0][0];
+       }
         return mergedArray;
     }
 
