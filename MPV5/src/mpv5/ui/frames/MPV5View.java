@@ -1285,9 +1285,5 @@ public class MPV5View extends FrameView {
             fr.setVisible(true);
         }
     }
-    private Timer messageTimer;
-    private Timer busyIconTimer;
-    private Icon idleIcon;
-    private Icon[] busyIcons = new Icon[15];
-    private int busyIconIndex = 0;
+
 }
