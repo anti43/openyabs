@@ -32,7 +32,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import mpv5.globals.Messages;
-import mpv5.items.div.Contact;
+import mpv5.items.main.Contact;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPV5View;
 import mpv5.ui.dialogs.Popup;
@@ -93,7 +93,6 @@ public class QueryHandler implements Cloneable {
      * @return true if the key constraint is not existing yet
      */
     public boolean checkConstraint(String[] constraint, Object[] values) {
-
         for (int i = 0; i < values.length; i++) {
             Object object = values[i];
 
@@ -1327,7 +1326,7 @@ public class QueryHandler implements Cloneable {
             java.io.InputStream fin = new java.io.FileInputStream(file);
             PreparedStatement ps = sqlConn.prepareStatement(query);
             ps.setString(1, name);
-            ps.setString(5, MPV5View.getUser().__getCName());
+            ps.setInt(5, MPV5View.getUser().getID());
             ps.setLong(4, file.length());
             ps.setDate(3, new java.sql.Date(new Date().getTime()));
             ps.setBinaryStream(2, fin, fileLength);

@@ -14,7 +14,7 @@
  *      You should have received a copy of the GNU General Public License
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mpv5.items.div;
+package mpv5.items.main;
 
 import java.util.Date;
 import mpv5.db.common.DatabaseObject;
@@ -27,7 +27,6 @@ public class Item extends DatabaseObject{
 
 
     private int contactsids;
-    private Date dateadded;
     private boolean isactive;
     private boolean isfinished;
     private double value;
@@ -66,19 +65,6 @@ public class Item extends DatabaseObject{
         this.contactsids = contactsids;
     }
 
-    /**
-     * @return the dateadded
-     */
-    public Date __getDateadded() {
-        return dateadded;
-    }
-
-    /**
-     * @param dateadded the dateadded to set
-     */
-    public void setDateadded(Date dateadded) {
-        this.dateadded = dateadded;
-    }
 
     /**
      * @return the isactive

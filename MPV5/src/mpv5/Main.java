@@ -45,6 +45,13 @@ import org.apache.commons.cli2.util.*;
 public class Main extends SingleFrameApplication {
     public static SplashScreen splash;
 
+    /**
+     * Use this method to (re) cache data from the database to avoid uneccessary db queries
+     */
+    public static void cache() {
+        User.cacheUser();
+    }
+
     private File lockfile = new File(MPPATH + File.separator + "." + Constants.PROG_NAME + Constants.VERSION + "." + "lck");
 
     /**
@@ -60,6 +67,7 @@ public class Main extends SingleFrameApplication {
             Log.Debug(Main.class, ex.getMessage());
             Log.Debug(Main.class, "Local settings file not readable: " + LocalSettings.getLocalFile());
         }
+
         splash.nextStep(Messages.LAUNCH);
         launch(Main.class, new String[]{});
     }
@@ -127,7 +135,7 @@ public class Main extends SingleFrameApplication {
 
         try {
             splash = new SplashScreen(new ImageIcon(Test.class.getResource(mpv5.globals.Constants.SPLASH_IMAGE)));
-            splash.init(7);
+            splash.init(8);
             System.out.print(Messages.START_MESSAGE);
 
             splash.nextStep(Messages.INIT);
@@ -326,6 +334,8 @@ public class Main extends SingleFrameApplication {
     }
 
     public void go() {
+        splash.nextStep(Messages.CACHE);
+        cache();
         setLaF(null);
         Main.splash.nextStep(Messages.INIT_LOGIN);
         login();

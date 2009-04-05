@@ -289,7 +289,7 @@ public class MPV5View extends FrameView {
     }
 
     /**
-     * Add a tab to the main tab pane
+     * Add a tab to the main tab pane, automatically determines the needed View
      * @param item
      */
     public void addTab(DatabaseObject item) {
@@ -298,8 +298,8 @@ public class MPV5View extends FrameView {
         } else if (item.getContext().equals(Context.getUser())) {
             GeneralListPanel g = GeneralListPanel.instanceOf();
             DataStringHandler criterias = new DataStringHandler();
-            criterias.add("addedby", item.__getCName());
-            g.setData(DatabaseObject.getObjects(new Context[]{Context.getContact(), Context.getFiles(), Context.getItems()}, criterias));
+            criterias.add("addedby", item.__getIDS());
+//            g.setData(DatabaseObject.getObjects(new Context[]{Context.getContact(), Context.getFiles(), Context.getItems()}, criterias));
             addTab(g);
         } else {
             Log.Debug(this, item.getDbIdentity() + " not supported yet. (addTab)");

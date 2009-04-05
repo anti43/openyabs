@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package mpv5.items.div;
+package mpv5.items.main;
 
 import java.util.Date;
 import mpv5.db.common.Context;
@@ -28,11 +28,8 @@ public class Contact extends DatabaseObject {
     private String mailaddress = "";
     private String website = "";
     private String notes = "";
-    private Date dateadded = new Date();
-    private String addedby = "";
     private String company = "";
     private String department = "";
-//    private int groupsids = 1;
     private boolean ismale = true;
     private boolean isenabled = true;
     private boolean iscompany = false;
@@ -354,33 +351,6 @@ public class Contact extends DatabaseObject {
         this.company = company;
     }
 
-    /**
-     * @return the dateadded
-     */
-    public Date __getDateadded() {
-        return dateadded;
-    }
-
-    /**
-     * @param dateadded the dateadded to set
-     */
-    public void setDateadded(Date dateadded) {
-        this.dateadded = dateadded;
-    }
-
-    /**
-     * @return the addedby
-     */
-    public String __getAddedby() {
-        return addedby;
-    }
-
-    /**
-     * @param addedby the addedby to set
-     */
-    public void setAddedby(String addedby) {
-        this.addedby = addedby;
-    }
 
         /**
      * @return the department

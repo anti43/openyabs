@@ -8,12 +8,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import mpv5.globals.Headers;
 import mpv5.items.div.Address;
-import mpv5.items.div.Contact;
+import mpv5.items.main.Contact;
 import mpv5.items.div.Favourite;
 import mpv5.items.div.Group;
 import mpv5.items.div.HistoryItem;
-import mpv5.items.div.Item;
-import mpv5.items.div.SubItem;
+import mpv5.items.main.Item;
+import mpv5.items.main.SubItem;
 import mpv5.usermanagement.User;
 
 /**

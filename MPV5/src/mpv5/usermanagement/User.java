@@ -16,11 +16,18 @@
  */
 package mpv5.usermanagement;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.globals.Messages;
+import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPV5View;
 
@@ -42,7 +49,62 @@ public class User extends DatabaseObject {
     private boolean isloggedin = true;
     private Date datelastlog = new Date();
     public static User DEFAULT = new User("Default User", "nobody", -1, 4343);
+    public static HashMap<String, String> userCache = new HashMap<String, String>();
 
+    public static void cacheUser() {
+        userCache.clear();
+        userCache.put(Integer.toBinaryString(DEFAULT.__getIDS()), DEFAULT.__getCName());
+        try {
+            ArrayList<DatabaseObject> data = DatabaseObject.getObjects(Context.getUser());
+            for (int i = 0; i < data.size(); i++) {
+                DatabaseObject databaseObject = data.get(i);
+                userCache.put(Integer.toBinaryString(databaseObject.__getIDS()), databaseObject.__getCName());
+            }
+        } catch (NodataFoundException ex) {
+            Logger.getLogger(User.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public static String getUsername(int forId) {
+        if (userCache.containsKey(Integer.toBinaryString(forId))) {
+            return userCache.get(Integer.toBinaryString(forId));
+        } else {
+            cacheUser();
+            if (userCache.containsKey(Integer.toBinaryString(forId))) {
+                return userCache.get(Integer.toBinaryString(forId));
+            }
+        }
+        return "unknown";
+    }
+
+    public static int getUserId(String username) {
+
+        if (userCache.containsValue(username)) {
+            Iterator<Entry<String, String>> data = userCache.entrySet().iterator();
+
+            while (data.hasNext()) {
+                Entry<String, String> entry = data.next();
+                if (entry.getValue().equals(username)) {
+                    Log.Debug(User.class, "Cached user id found: " + Integer.parseInt(entry.getKey(), 2));
+                    return Integer.parseInt(entry.getKey(), 2);
+                }
+            }
+        } else {
+            cacheUser();
+            if (userCache.containsValue(username)) {
+                Iterator<Entry<String, String>> data = userCache.entrySet().iterator();
+
+                while (data.hasNext()) {
+                    Entry<String, String> entry = data.next();
+                    if (entry.getValue().equals(username)) {
+                        Log.Debug(User.class, "Cached user id found: " + Integer.parseInt(entry.getKey(), 2));
+                        return Integer.parseInt(entry.getKey(), 2);
+                    }
+                }
+            }
+        }
+        return DEFAULT.ids;
+    }
 
     public User(int userid) throws NodataFoundException {
         context.setDbIdentity(Context.IDENTITY_USERS);
@@ -75,7 +137,7 @@ public class User extends DatabaseObject {
     }
 
     public boolean isDefault() {
-        if (getName().equals("nobody") && __getFullname().equals("Default User")) {
+        if (getName().equals(DEFAULT.__getCName()) && __getIDS().intValue() == DEFAULT.__getIDS().intValue()) {
             return true;
         } else {
             return false;
@@ -83,7 +145,7 @@ public class User extends DatabaseObject {
     }
 
     public boolean isAdmin() {
-        if (getName().equals("admin") && __getFullname().equals("Administrator")) {
+        if (__getIDS().intValue() == 1) {
             return true;
         } else {
             return false;
@@ -282,19 +344,6 @@ public class User extends DatabaseObject {
         this.fullname = fullname;
     }
 
-//    /**
-//     * @return the groupsids
-//     */
-//    public int __getGroupsids() {
-//        return groupsids;
-//    }
-//
-//    /**
-//     * @param groupsids the groupsids to set
-//     */
-//    public void setGroupsids(int groupsids) {
-//        this.groupsids = groupsids;
-//    }
     /**
      * @return the defcountry
      */
@@ -310,18 +359,16 @@ public class User extends DatabaseObject {
     }
 
     /**
-     * If the usernames match, return true
+     * If the usernames & ids match, return true
      * @param n
      * @return
      */
     @Override
     public boolean equals(Object n) {
-        if (((User) n).__getCName().equals(this.__getCName())) {
+        if (((User) n).__getCName().equals(this.__getCName()) && ((User) n).__getIDS().intValue() == this.__getIDS().intValue()) {
             return true;
         } else {
             return false;
         }
     }
-
-
 }

@@ -30,7 +30,7 @@ import mpv5.db.common.DatabaseSearch;
 import mpv5.db.common.NodataFoundException;
 import mpv5.globals.Messages;
 import mpv5.items.div.Address;
-import mpv5.items.div.Contact;
+import mpv5.items.main.Contact;
 import mpv5.logging.Log;
 import mpv5.resources.languages.LanguageManager;
 import mpv5.ui.frames.MPV5View;

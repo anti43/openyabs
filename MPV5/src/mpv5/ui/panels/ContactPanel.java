@@ -45,7 +45,7 @@ import mpv5.db.common.*;
 import mpv5.globals.Headers;
 import mpv5.globals.Messages;
 import mpv5.items.div.Address;
-import mpv5.items.div.Contact;
+import mpv5.items.main.Contact;
 import mpv5.items.div.Favourite;
 import mpv5.logging.Log;
 import mpv5.resources.languages.LanguageManager;
@@ -56,6 +56,7 @@ import mpv5.ui.frames.MPV5View;
 import mpv5.ui.popups.DOTablePopUp;
 import mpv5.ui.popups.FileTablePopUp;
 import mpv5.ui.toolbars.DataPanelTB;
+import mpv5.usermanagement.User;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.files.FileDirectoryHandler;
@@ -1084,7 +1085,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     public String website_;
     public String workphone_;
     public String zip_;
-    public String addedby_;
+    public int intaddedby_;
     public String company_;
     public int ids_;
     public Date dateadded_;
@@ -1132,7 +1133,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         workphone_ = workphone.get_Text();
         zip_ = zip.get_Text();
         dateadded_ = DateConverter.getDate(dateadded.getText());
-        addedby_ = addedby.getText();
+        intaddedby_ = User.getUserId(addedby.getText());
         department_ = department.get_Text();
     }
 //ids label?
@@ -1167,7 +1168,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         workphone.set_Text(workphone_);
         zip.set_Text(zip_);
         dateadded.setText(DateConverter.getDefDateString(dateadded_));
-        addedby.setText(addedby_);
+        addedby.setText(User.getUsername(intaddedby_));
         department.set_Text(department_);
 
 //        dataTable.setModel(new MPTableModel(new DatabaseSearch(Context.getCompany()).getValuesFor(prename_, fax_, phone_), header));

@@ -8,22 +8,17 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 import mpv5.globals.Messages;
-import mpv5.items.div.Contact;
 import mpv5.items.div.HistoryItem;
 import mpv5.logging.Log;
 import mpv5.ui.panels.DataPanel;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPV5View;
-import mpv5.usermanagement.User;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
 
@@ -34,9 +29,9 @@ import mpv5.utils.date.DateConverter;
  */
 public abstract class DatabaseObject {
 
-    public static ArrayList<DatabaseObject> getObjects(Context[] context, DataStringHandler criterias) {
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
+//    public static ArrayList<DatabaseObject> getObjects(Context[] context, DataStringHandler criterias) {
+//        throw new UnsupportedOperationException("Not yet implemented");
+//    }
 
     /**
      * The db context of this do
@@ -63,6 +58,7 @@ public abstract class DatabaseObject {
      */
     public String cname = "";
     private int groupsids = 1;
+    private int intaddedby = 0;
     private Date dateadded = new Date();
 
     /**
@@ -729,5 +725,19 @@ public abstract class DatabaseObject {
      */
     public void setDateadded(Date dateadded) {
         this.dateadded = dateadded;
+    }
+
+    /**
+     * @return the intaddedby
+     */
+    public int __getIntaddedby() {
+        return intaddedby;
+    }
+
+    /**
+     * @param intaddedby the intaddedby to set
+     */
+    public void setIntaddedby(int intaddedby) {
+        this.intaddedby = intaddedby;
     }
 }
