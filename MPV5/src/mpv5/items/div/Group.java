@@ -19,6 +19,7 @@ package mpv5.items.div;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
@@ -118,6 +119,11 @@ public class Group extends DatabaseObject {
             Logger.getLogger(Group.class.getName()).log(Level.SEVERE, null, ex);
         }
         return super.delete();
+    }
+
+    @Override
+    public JComponent getView() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }

@@ -16,6 +16,7 @@
  */
 package mpv5.items.div;
 
+import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.globals.Messages;
@@ -151,5 +152,10 @@ public class Favourite extends DatabaseObject {
     public static void flush(User user) {
        mpv5.db.common.QueryHandler.instanceOf().clone(Context.getFavourites()).delete(new String[][]{{"usersids",user.__getIDS().toString(),""}},
                Messages.DONE);
+    }
+
+    @Override
+    public JComponent getView() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

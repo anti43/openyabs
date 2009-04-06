@@ -293,17 +293,7 @@ public class MPV5View extends FrameView {
      * @param item
      */
     public void addTab(DatabaseObject item) {
-        if (item.getContext().equals(Context.getContact())) {
-            addContactTab(item);
-        } else if (item.getContext().equals(Context.getUser())) {
-            GeneralListPanel g = GeneralListPanel.instanceOf();
-            DataStringHandler criterias = new DataStringHandler();
-            criterias.add("addedby", item.__getIDS());
-//            g.setData(DatabaseObject.getObjects(new Context[]{Context.getContact(), Context.getFiles(), Context.getItems()}, criterias));
-            addTab(g);
-        } else {
-            Log.Debug(this, item.getDbIdentity() + " not supported yet. (addTab)");
-        }
+       addTab(item.getView());
     }
 
     /**

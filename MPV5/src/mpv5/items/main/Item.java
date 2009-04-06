@@ -17,6 +17,7 @@
 package mpv5.items.main;
 
 import java.util.Date;
+import javax.swing.JComponent;
 import mpv5.db.common.DatabaseObject;
 
 /**
@@ -233,5 +234,11 @@ public class Item extends DatabaseObject{
     public void setCnumber(String cnumber) {
         this.cnumber = cnumber;
     }
+
+    @Override
+    public JComponent getView() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
 
 }

@@ -68,7 +68,7 @@ public class QueryHandler implements Cloneable {
      * !Use "Clone" method before actually do anything!
      * @return The one and only instance of the database connection
      */
-    public static QueryHandler instanceOf() {
+    public static synchronized QueryHandler instanceOf() {
         if (instance == null) {
             instance = new QueryHandler();
         }
@@ -289,6 +289,14 @@ public class QueryHandler implements Cloneable {
 
     }
 
+    /**
+     *
+     * @param what
+     * @param where
+     * @param zeitraum
+     * @param additionalCondition
+     * @return
+     */
     public ArrayList<Double> selectMonthlySums(String what, String[] where, vTimeframe zeitraum, String additionalCondition) {
 
         Date temdate = zeitraum.getStart();
@@ -318,6 +326,16 @@ public class QueryHandler implements Cloneable {
 
     }
 
+    /**
+     *
+     * @param what
+     * @param where
+     * @param leftJoinTable
+     * @param leftJoinKey
+     * @param order
+     * @param like
+     * @return
+     */
     public Object[][] select(String what, String[] where, String leftJoinTable, String leftJoinKey, String order, Boolean like) {
 //        start();
         String query;
@@ -359,14 +377,28 @@ public class QueryHandler implements Cloneable {
         return freeReturnQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null).getData();
     }
 
+    /**
+     *
+     * @param date1
+     * @param date2
+     * @return
+     */
     public int selectCountBetween(java.util.Date date1, java.util.Date date2) {
         return selectCount("datum", "BETWEEN '" + DateConverter.getSQLDateString(date1) + "' AND '" + DateConverter.getSQLDateString(date2) + "'");
     }
 
+    /**
+     *
+     * @param newTable
+     */
     public void setTable(String newTable) {
         this.table = newTable;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getTable() {
         return table;
     }
@@ -849,6 +881,12 @@ public class QueryHandler implements Cloneable {
         return theClone;
     }
 
+    /**
+     * 
+     * @param c
+     * @param viewToBeNotified
+     * @return
+     */
     public QueryHandler clone(Context c, DataPanel viewToBeNotified) {
         this.viewToBeNotified = viewToBeNotified;
         QueryHandler theClone = null;
@@ -1573,7 +1611,6 @@ public class QueryHandler implements Cloneable {
 
         @Override
         protected String doInBackground() {
-
 
             Object obj = new Object();
             synchronized (obj) {

@@ -5,8 +5,10 @@
 package mpv5.items.main;
 
 import java.util.Date;
+import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
+import mpv5.ui.panels.ContactPanel;
 
 /**
  *
@@ -392,6 +394,13 @@ public class Contact extends DatabaseObject {
      */
     public void setCountry(String country) {
         this.country = country;
+    }
+
+    @Override
+    public JComponent getView() {
+       ContactPanel x =new ContactPanel(getContext());
+        x.setDataOwner(this);
+        return x;
     }
 //    /**
 //     * @return the role

@@ -17,6 +17,7 @@
 package mpv5.items.main;
 
 import java.util.Date;
+import javax.swing.JComponent;
 import mpv5.db.common.DatabaseObject;
 
 /**
@@ -171,5 +172,9 @@ public class SubItem extends DatabaseObject {
         this.datedelivery = datedelivery;
     }
 
+    @Override
+    public JComponent getView() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
 }

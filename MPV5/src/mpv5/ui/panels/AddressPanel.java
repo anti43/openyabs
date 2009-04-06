@@ -34,6 +34,7 @@ import mpv5.items.main.Contact;
 import mpv5.logging.Log;
 import mpv5.resources.languages.LanguageManager;
 import mpv5.ui.frames.MPV5View;
+import mpv5.usermanagement.User;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.ui.TextFieldUtils;
@@ -306,6 +307,7 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
     public int contactsids_;
     public int groupsids_ = 1;
     public java.util.Date dateadded_ = new java.util.Date();
+    public int intaddedby_ = 4343;
 
     public void collectData() {
         city_ = city.get_Text();

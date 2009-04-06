@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
@@ -370,5 +371,10 @@ public class User extends DatabaseObject {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public JComponent getView() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

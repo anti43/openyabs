@@ -38,7 +38,7 @@ public class MPControlPanel extends javax.swing.JPanel {
      * 
      * @return
      */
-    public static JComponent instanceOf() {
+    public static synchronized JComponent instanceOf() {
         if (cpanel != null) {
             return cpanel;
         } else {

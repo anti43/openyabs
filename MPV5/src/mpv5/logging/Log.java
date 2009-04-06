@@ -19,11 +19,7 @@ package mpv5.logging;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.logging.Level;
-import mpv5.db.common.DatabaseObject;
 import mpv5.globals.Messages;
-import mpv5.items.div.Group;
 import mpv5.utils.files.FileReaderWriter;
 
 /**

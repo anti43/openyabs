@@ -16,6 +16,7 @@
  */
 package mpv5.items.div;
 
+import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 
@@ -204,6 +205,11 @@ public class Address extends DatabaseObject {
      */
     public void setCountry(String country) {
         this.country = country;
+    }
+
+    @Override
+    public JComponent getView() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 

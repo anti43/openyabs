@@ -14,33 +14,35 @@
  *      You should have received a copy of the GNU General Public License
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mpv5.items.div;
+package mpv5.items.main;
 
-import java.util.Date;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
-import mpv5.ui.panels.HistoryPanel;
 
 /**
  *
  * @author anti
  */
-public class HistoryItem extends DatabaseObject {
+public class ContactFile extends DatabaseObject {
 
-  private String username;
-  private String dbidentity;
-  private Date dateadded = new Date();
-  private int intitem;
+    private String description;
+    private int contactsids;
+    private String filename;
 
-  public HistoryItem() {
-        context.setDbIdentity(Context.IDENTITY_HISTORY);
+    public ContactFile(){
+        context.setDbIdentity(Context.IDENTITY_FILES_TO_CONTACTS);
         context.setIdentityClass(this.getClass());
     }
-    
+
     @Override
     public String __getCName() {
         return cname;
+    }
+
+    @Override
+    public JComponent getView() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
@@ -49,50 +51,44 @@ public class HistoryItem extends DatabaseObject {
     }
 
     /**
-     * @return the user
+     * @return the description
      */
-    public String __getUsername() {
-        return username;
+    public String __getDescription() {
+        return description;
     }
 
     /**
-     * @param user the user to set
+     * @param description the description to set
      */
-    public void setUsername(String user) {
-        this.username = user;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     /**
-     * @return the dbidentity
+     * @return the contactsids
      */
-    public String __getDbidentity() {
-        return dbidentity;
+    public int __getContactsids() {
+        return contactsids;
     }
 
     /**
-     * @param dbidentity the dbidentity to set
+     * @param contactsids the contactsids to set
      */
-    public void setDbidentity(String dbidentity) {
-        this.dbidentity = dbidentity;
+    public void setContactsids(int contactsids) {
+        this.contactsids = contactsids;
     }
 
     /**
-     * @return the item
+     * @return the filename
      */
-    public int __getIntitem() {
-        return intitem;
+    public String __getFilename() {
+        return filename;
     }
 
     /**
-     * @param item the item to set
+     * @param filename the filename to set
      */
-    public void setIntitem(int item) {
-        this.intitem = item;
+    public void setFilename(String filename) {
+        this.filename = filename;
     }
-
-     @Override
-    public JComponent getView() {
-      return new HistoryPanel();
-    }
-
 }

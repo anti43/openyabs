@@ -29,7 +29,7 @@ public class DatabaseConnection {
      * @return Database connector
      * @throws Exception 
      */
-    public static DatabaseConnection instanceOf() throws Exception {
+    public static synchronized DatabaseConnection instanceOf() throws Exception {
         if (connector == null) {
             connector = new DatabaseConnection();
             connector.connect(false);

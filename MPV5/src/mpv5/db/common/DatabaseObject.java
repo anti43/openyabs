@@ -12,6 +12,7 @@ import java.util.Hashtable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Icon;
+import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 import mpv5.globals.Messages;
 import mpv5.items.div.HistoryItem;
@@ -28,10 +29,6 @@ import mpv5.utils.date.DateConverter;
  * @author anti43
  */
 public abstract class DatabaseObject {
-
-//    public static ArrayList<DatabaseObject> getObjects(Context[] context, DataStringHandler criterias) {
-//        throw new UnsupportedOperationException("Not yet implemented");
-//    }
 
     /**
      * The db context of this do
@@ -66,6 +63,12 @@ public abstract class DatabaseObject {
      * @return The mandatory name
      */
     public abstract String __getCName();
+
+    /**
+     *
+     * @return The preferred view for this do's data
+     */
+    public abstract JComponent getView();
 
     @Override
     public DatabaseObject clone() {

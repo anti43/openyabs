@@ -12,6 +12,7 @@ import mpv5.items.main.Contact;
 import mpv5.items.div.Favourite;
 import mpv5.items.div.Group;
 import mpv5.items.div.HistoryItem;
+import mpv5.items.main.ContactFile;
 import mpv5.items.main.Item;
 import mpv5.items.main.SubItem;
 import mpv5.usermanagement.User;
@@ -46,6 +47,7 @@ public class Context {
     private static Class IDENTITY_ADDRESS_CLASS = Address.class;
     private static Class IDENTITY_USERS_CLASS = User.class;
     private static Class IDENTITY_ITEMS_CLASS = Item.class;
+    private static Class IDENTITY_CONTACTS_FILES_CLASS = ContactFile.class;
     private static Class HISTORY_ITEMS_CLASS = HistoryItem.class;
     private static Class IDENTITY_SUBITEMS_CLASS = SubItem.class;
 
@@ -831,6 +833,7 @@ public class Context {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_FILES_TO_CONTACTS);
+        c.setIdentityClass(IDENTITY_CONTACTS_FILES_CLASS);
         c.setId(20);
 
         return c;
