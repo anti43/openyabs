@@ -461,4 +461,8 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
             MPV5View.addMessage(Messages.NOT_POSSIBLE + Messages.PASTE);
         }
     }
+
+    public void showSearchBar(boolean show) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

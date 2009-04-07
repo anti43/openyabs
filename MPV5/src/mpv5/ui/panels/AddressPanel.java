@@ -448,4 +448,8 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
         this.dataParent = dataParent;
 
     }
+
+    public void showSearchBar(boolean show) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

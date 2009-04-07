@@ -25,6 +25,7 @@ import java.awt.event.ActionListener;
 import mpv5.db.common.DatabaseObject;
 import mpv5.globals.Messages;
 import mpv5.items.div.Favourite;
+import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPV5View;
 import mpv5.ui.panels.ContactPanel;
@@ -96,6 +97,8 @@ public class DataPanelTB extends javax.swing.JPanel {
     private void initComponents() {
 
         commonActionsToolbar = new javax.swing.JToolBar();
+        jToggleButton1 = new javax.swing.JToggleButton();
+        jSeparator4 = new javax.swing.JToolBar.Separator();
         jButton22 = new javax.swing.JButton();
         jButton25 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
@@ -107,12 +110,30 @@ public class DataPanelTB extends javax.swing.JPanel {
         jSeparator2 = new javax.swing.JToolBar.Separator();
         jButton23 = new javax.swing.JButton();
 
+        commonActionsToolbar.setFloatable(false);
         commonActionsToolbar.setRollover(true);
+        commonActionsToolbar.setPreferredSize(new java.awt.Dimension(342, 41));
+
+        jToggleButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/viewmag.png"))); // NOI18N
+        jToggleButton1.setSelected(true);
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        jToggleButton1.setText(bundle.getString("DataPanelTB.jToggleButton1.text")); // NOI18N
+        jToggleButton1.setToolTipText(bundle.getString("DataPanelTB.jToggleButton1.toolTipText")); // NOI18N
+        jToggleButton1.setFocusable(false);
+        jToggleButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jToggleButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToggleButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jToggleButton1ActionPerformed(evt);
+            }
+        });
+        commonActionsToolbar.add(jToggleButton1);
+        commonActionsToolbar.add(jSeparator4);
 
         jButton22.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/revert.png"))); // NOI18N
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jButton22.setText(bundle.getString("MPV5View.jButton22.text")); // NOI18N
         jButton22.setToolTipText(bundle.getString("MPV5View.jButton22.toolTipText")); // NOI18N
+        jButton22.setContentAreaFilled(false);
         jButton22.setFocusable(false);
         jButton22.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton22.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -126,6 +147,7 @@ public class DataPanelTB extends javax.swing.JPanel {
         jButton25.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/3floppy_unmount.png"))); // NOI18N
         jButton25.setText(bundle.getString("MPV5View.jButton25.text")); // NOI18N
         jButton25.setToolTipText(bundle.getString("MPV5View.jButton25.toolTipText")); // NOI18N
+        jButton25.setContentAreaFilled(false);
         jButton25.setFocusable(false);
         jButton25.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton25.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -139,6 +161,7 @@ public class DataPanelTB extends javax.swing.JPanel {
         jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/filenew.png"))); // NOI18N
         jButton4.setText(bundle.getString("MPV5View.jButton4.text")); // NOI18N
         jButton4.setToolTipText(bundle.getString("MPV5View.jButton4.toolTipText")); // NOI18N
+        jButton4.setContentAreaFilled(false);
         jButton4.setFocusable(false);
         jButton4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -153,6 +176,7 @@ public class DataPanelTB extends javax.swing.JPanel {
         jButton26.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/edittrash.png"))); // NOI18N
         jButton26.setText(bundle.getString("MPV5View.jButton26.text")); // NOI18N
         jButton26.setToolTipText(bundle.getString("MPV5View.jButton26.toolTipText")); // NOI18N
+        jButton26.setContentAreaFilled(false);
         jButton26.setFocusable(false);
         jButton26.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton26.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -167,6 +191,7 @@ public class DataPanelTB extends javax.swing.JPanel {
         jButton21.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/password.png"))); // NOI18N
         jButton21.setText(bundle.getString("MPV5View.jButton21.text")); // NOI18N
         jButton21.setToolTipText(bundle.getString("MPV5View.jButton21.toolTipText")); // NOI18N
+        jButton21.setContentAreaFilled(false);
         jButton21.setEnabled(false);
         jButton21.setFocusable(false);
         jButton21.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -181,6 +206,7 @@ public class DataPanelTB extends javax.swing.JPanel {
         jButton24.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/bookmark_add.png"))); // NOI18N
         jButton24.setText(bundle.getString("MPV5View.jButton24.text")); // NOI18N
         jButton24.setToolTipText(bundle.getString("MPV5View.jButton24.toolTipText")); // NOI18N
+        jButton24.setContentAreaFilled(false);
         jButton24.setFocusable(false);
         jButton24.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton24.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -195,6 +221,7 @@ public class DataPanelTB extends javax.swing.JPanel {
         jButton23.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/printer.png"))); // NOI18N
         jButton23.setText(bundle.getString("MPV5View.jButton23.text")); // NOI18N
         jButton23.setToolTipText(bundle.getString("MPV5View.jButton23.toolTipText")); // NOI18N
+        jButton23.setContentAreaFilled(false);
         jButton23.setFocusable(false);
         jButton23.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton23.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -209,7 +236,7 @@ public class DataPanelTB extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(commonActionsToolbar, javax.swing.GroupLayout.DEFAULT_SIZE, 365, Short.MAX_VALUE)
+            .addComponent(commonActionsToolbar, javax.swing.GroupLayout.DEFAULT_SIZE, 451, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -226,6 +253,8 @@ public class DataPanelTB extends javax.swing.JPanel {
             parents.refresh();
             parents.setDataOwner(dato);
         }
+
+        Log.Debug(this, commonActionsToolbar.getSize());
 
 }//GEN-LAST:event_jButton22ActionPerformed
 
@@ -284,8 +313,13 @@ public class DataPanelTB extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton26ActionPerformed
 
     private void jButton24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton24ActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_jButton24ActionPerformed
+
+    private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
+
+          parents.showSearchBar(!jToggleButton1.isSelected());
+
+    }//GEN-LAST:event_jToggleButton1ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToolBar commonActionsToolbar;
@@ -299,6 +333,8 @@ public class DataPanelTB extends javax.swing.JPanel {
     private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JToolBar.Separator jSeparator2;
     private javax.swing.JToolBar.Separator jSeparator3;
+    private javax.swing.JToolBar.Separator jSeparator4;
+    private javax.swing.JToggleButton jToggleButton1;
     // End of variables declaration//GEN-END:variables
 
     private void favRemover(java.awt.event.ActionEvent evt) {
@@ -336,4 +372,5 @@ public class DataPanelTB extends javax.swing.JPanel {
             Popup.notice(Messages.DEFAULT_USER);
         }
     }
+
 }

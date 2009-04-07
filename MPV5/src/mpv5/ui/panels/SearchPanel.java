@@ -10,6 +10,7 @@
  */
 package mpv5.ui.panels;
 
+import java.awt.Dimension;
 import mpv5.db.common.Context;
 
 import mpv5.db.common.DatabaseObject;
@@ -41,6 +42,11 @@ public class SearchPanel extends javax.swing.JPanel {
 
     public SearchPanel(Context context, DataPanel panel) {
         initComponents();
+//        jToolBar1.setSize(jToolBar1.getWidth(), 41);
+//        jToolBar1.setPreferredSize(new Dimension(jToolBar1.getWidth(), 41));
+//        jToolBar1.setSize(jToolBar1.getWidth(), 41);
+//        jToolBar1.setMinimumSize(new Dimension(jToolBar1.getWidth(), 41));
+        this.validate();
         this.context = context;
         this.panel = panel;
         search(1, context.getParent().__getCName());
@@ -78,7 +84,6 @@ public class SearchPanel extends javax.swing.JPanel {
         results = new javax.swing.JPanel();
         resultsscrollpane = new javax.swing.JScrollPane();
         resulttable = new javax.swing.JTable();
-        jToggleButton1 = new javax.swing.JToggleButton();
 
         setName("Form"); // NOI18N
 
@@ -140,10 +145,10 @@ public class SearchPanel extends javax.swing.JPanel {
                     .addComponent(label3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(searchfieldsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(searchbutton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 94, Short.MAX_VALUE)
-                    .addComponent(searchfield3, javax.swing.GroupLayout.DEFAULT_SIZE, 94, Short.MAX_VALUE)
-                    .addComponent(searchfield2, javax.swing.GroupLayout.DEFAULT_SIZE, 94, Short.MAX_VALUE)
-                    .addComponent(searchfield1, javax.swing.GroupLayout.DEFAULT_SIZE, 94, Short.MAX_VALUE))
+                    .addComponent(searchbutton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 66, Short.MAX_VALUE)
+                    .addComponent(searchfield3, javax.swing.GroupLayout.DEFAULT_SIZE, 66, Short.MAX_VALUE)
+                    .addComponent(searchfield2, javax.swing.GroupLayout.DEFAULT_SIZE, 66, Short.MAX_VALUE)
+                    .addComponent(searchfield1, javax.swing.GroupLayout.DEFAULT_SIZE, 66, Short.MAX_VALUE))
                 .addContainerGap())
         );
         searchfieldsLayout.setVerticalGroup(
@@ -161,7 +166,7 @@ public class SearchPanel extends javax.swing.JPanel {
                     .addComponent(label3)
                     .addComponent(searchfield3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(searchbutton1, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
+                .addComponent(searchbutton1, javax.swing.GroupLayout.DEFAULT_SIZE, 19, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -192,31 +197,15 @@ public class SearchPanel extends javax.swing.JPanel {
         });
         resultsscrollpane.setViewportView(resulttable);
 
-        jToggleButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/22/viewmagfit.png"))); // NOI18N
-        jToggleButton1.setText(bundle.getString("SearchPanel.jToggleButton1.text")); // NOI18N
-        jToggleButton1.setToolTipText(bundle.getString("SearchPanel.jToggleButton1.toolTipText")); // NOI18N
-        jToggleButton1.setName("jToggleButton1"); // NOI18N
-        jToggleButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jToggleButton1ActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout resultsLayout = new javax.swing.GroupLayout(results);
         results.setLayout(resultsLayout);
         resultsLayout.setHorizontalGroup(
             resultsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(resultsscrollpane, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE)
-            .addGroup(resultsLayout.createSequentialGroup()
-                .addComponent(jToggleButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+            .addComponent(resultsscrollpane, javax.swing.GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE)
         );
         resultsLayout.setVerticalGroup(
             resultsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(resultsLayout.createSequentialGroup()
-                .addComponent(resultsscrollpane, javax.swing.GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jToggleButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(resultsscrollpane, javax.swing.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -229,7 +218,7 @@ public class SearchPanel extends javax.swing.JPanel {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(searchfields, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(searchfields, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(results, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -296,21 +285,7 @@ public class SearchPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_resulttableMouseClicked
 
-    private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
-
-            resultsscrollpane.setVisible(!jToggleButton1.isSelected());
-            searchfield1.setVisible(!jToggleButton1.isSelected());
-            searchfield2.setVisible(!jToggleButton1.isSelected());
-            searchfield3.setVisible(!jToggleButton1.isSelected());
-            label1.setVisible(!jToggleButton1.isSelected());
-            label2.setVisible(!jToggleButton1.isSelected());
-            label3.setVisible(!jToggleButton1.isSelected());
-            searchbutton1.setVisible(!jToggleButton1.isSelected());
-     
-    }//GEN-LAST:event_jToggleButton1ActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JToggleButton jToggleButton1;
     private javax.swing.JLabel label1;
     private javax.swing.JLabel label2;
     private javax.swing.JLabel label3;

@@ -53,5 +53,11 @@ public interface DataPanel {
      */
     public void showRequiredFields();
 
+    /**
+     * Show/hide the search panel for this view (if any)
+     * @param show
+     */
+    public void showSearchBar(boolean show);
+
    
 }

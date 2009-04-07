@@ -649,4 +649,8 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
     public void showRequiredFields() {
         TextFieldUtils.blinkerRed(fullname);
     }
+
+    public void showSearchBar(boolean show) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

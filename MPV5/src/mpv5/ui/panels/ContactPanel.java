@@ -89,7 +89,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         sp = new SearchPanel(context, this);
         toolbarpane.add(tb, BorderLayout.CENTER);
         dataOwner = new Contact();
-        leftpane.add(sp, BorderLayout.CENTER);
+        showSearchBar(true);
         refresh();
         dateadded.setText(DateConverter.getTodayDefDate());
         addedby.setText(MPV5View.getUser().getName());
@@ -991,7 +991,6 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     }//GEN-LAST:event_button_order2ActionPerformed
 
     private void countryselectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_countryselectActionPerformed
-  
 }//GEN-LAST:event_countryselectActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1246,5 +1245,14 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         } else {
             MPV5View.addMessage(Messages.NOT_POSSIBLE + Messages.PASTE);
         }
+    }
+
+    public void showSearchBar(boolean show) {
+        leftpane.removeAll();
+        if (show) {
+            leftpane.add(sp, BorderLayout.CENTER);
+        }
+
+        validate();
     }
 }
