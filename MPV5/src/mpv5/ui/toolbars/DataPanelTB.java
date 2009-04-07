@@ -23,14 +23,15 @@ package mpv5.ui.toolbars;
 
 import java.awt.event.ActionListener;
 import mpv5.db.common.DatabaseObject;
+import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.items.div.Favourite;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPV5View;
-import mpv5.ui.panels.ContactPanel;
 import mpv5.ui.panels.DataPanel;
 import mpv5.utils.print.PrintJob;
+
 
 /**
  *
@@ -56,6 +57,7 @@ public class DataPanelTB extends javax.swing.JPanel {
     public DataPanelTB(DataPanel aThis) {
         initComponents();
         parents = aThis;
+        jButton21.setEnabled(LocalSettings.hasProperty("DataLock"));
     }
 
     public void setMinimalFunctionality(boolean on) {
@@ -115,10 +117,10 @@ public class DataPanelTB extends javax.swing.JPanel {
         commonActionsToolbar.setPreferredSize(new java.awt.Dimension(342, 41));
 
         jToggleButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/viewmag.png"))); // NOI18N
-        jToggleButton1.setSelected(true);
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jToggleButton1.setText(bundle.getString("DataPanelTB.jToggleButton1.text")); // NOI18N
         jToggleButton1.setToolTipText(bundle.getString("DataPanelTB.jToggleButton1.toolTipText")); // NOI18N
+        jToggleButton1.setContentAreaFilled(false);
         jToggleButton1.setFocusable(false);
         jToggleButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jToggleButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -290,6 +292,8 @@ public class DataPanelTB extends javax.swing.JPanel {
             dato.getPanelData(parents);
             dato.lock();
         }
+
+
 
 }//GEN-LAST:event_jButton21ActionPerformed
 

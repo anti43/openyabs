@@ -68,8 +68,8 @@ public class PropertyStore {
     public String getProperty(String name) {
         if (list.size() > 0) {
             for (int i = list.size(); i > 0; i--) {
-                if (list.get(i-1)[0].equals(name)) {
-                    return list.get(i-1)[1];
+                if (list.get(i - 1)[0].equals(name)) {
+                    return list.get(i - 1)[1];
                 }
             }
         }
@@ -86,8 +86,8 @@ public class PropertyStore {
         boolean found = false;
         if (list.size() > 0) {
             for (int i = list.size(); i > 0; i--) {
-                if (list.get(i-1)[0].equals(name)) {
-                    list.set(i-1, new String[]{name, newvalue});
+                if (list.get(i - 1)[0].equals(name)) {
+                    list.set(i - 1, new String[]{name, newvalue});
                     found = true;
                 }
             }
@@ -97,11 +97,24 @@ public class PropertyStore {
         }
     }
 
+    /**
+     * Returns True if the local property store does contain a value with the given key name
+     * @param propertyname
+     * @return True if the key exists
+     */
+    public boolean hasProperty(String propertyname) {
+        if (getProperty(propertyname) == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     public String print() {
-       String str = "";
+        String str = "";
         if (list.size() > 0) {
             for (int i = list.size(); i > 0; i--) {
-               str += list.get(i-1)[0] + ": " + list.get(i-1)[1] + "\n";
+                str += list.get(i - 1)[0] + ": " + list.get(i - 1)[1] + "\n";
             }
         }
         Log.Debug(this, str);

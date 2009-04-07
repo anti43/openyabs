@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
+import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.items.div.HistoryItem;
 import mpv5.logging.Log;
@@ -293,15 +294,14 @@ public abstract class DatabaseObject {
      * @return
      */
     public boolean lock() {
-//
-//        if (ids > 0) {
-//            Log.Debug(this, "Locking dataset:");
-//            QueryHandler.instanceOf().clone(context).delete(new String[][]{{"ids", ids.toString(), ""}}, this.__getCName() + Messages.ROW_DELETED);
-//            Log.Debug(this, "The locked row has id: " + ids);
-//        }
-//  "cname VARCHAR(250), rowID BIGINT NOT NULL, userID
 
-        throw new UnsupportedOperationException("Not yet implemented");
+        if (!LocalSettings.hasProperty("DataLock")) {
+            throw new UnsupportedOperationException("Not yet implemented");
+        } else {
+
+            return true;//@todo
+
+        }
 
     }
 

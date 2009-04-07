@@ -82,6 +82,15 @@ public class LocalSettings {
     }
 
     /**
+     * Returns True if the local property store does contain a value with the given key name
+     * @param propertyname
+     * @return True if the key exists
+     */
+    public static boolean hasProperty(String propertyname) {
+       return cookie.hasProperty(propertyname);
+    }
+
+    /**
      * Add or change a property
      * @param name
      * @param value
