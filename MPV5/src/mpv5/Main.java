@@ -26,6 +26,7 @@ import mpv5.db.common.DatabaseConnection;
 import mpv5.globals.Constants;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
+import mpv5.pluginhandling.MPPLuginLoader;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.SplashScreen;
 import mpv5.ui.dialogs.Wizard;
@@ -339,10 +340,17 @@ public class Main extends SingleFrameApplication {
         setLaF(null);
         Main.splash.nextStep(Messages.INIT_LOGIN);
         login();
+        Main.splash.nextStep(Messages.INIT_PLUGINS);
+        loadPlugins();
         Main.splash.nextStep(Messages.INIT_GUI);
         super.show(new MPV5View(this));
         SwingUtilities.updateComponentTreeUI(MPV5View.identifierFrame);
         splash.dispose();
+    }
+
+    private void loadPlugins() {
+        MPPLuginLoader loadr = new MPPLuginLoader();
+        MPV5View.queuePlugins(loadr.getPlugins());
     }
 
     private void login() {

@@ -6,50 +6,37 @@ package mpv5.ui.frames;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Locale;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.Icon;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
-import javax.swing.Timer;
 import javax.swing.UIManager;
 import mpv5.Main;
 import mpv5.db.common.Context;
-import mpv5.db.common.DataStringHandler;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryHandler;
-import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.items.div.Favourite;
 import mpv5.logging.Log;
+import mpv5.pluginhandling.MP5Plugin;
 import mpv5.ui.dialogs.DialogForFile;
 
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.Search;
-import mpv5.ui.dialogs.SplashScreen;
-import mpv5.ui.dialogs.subcomponents.ControlPanel_Users;
 import mpv5.ui.menus.ClipboardMenuItem;
 import mpv5.ui.menus.FavouritesMenuItem;
 import mpv5.ui.panels.ContactPanel;
 import mpv5.ui.panels.ContactsList;
 import mpv5.ui.panels.DataPanel;
-import mpv5.ui.panels.GeneralListPanel;
 import mpv5.ui.panels.HistoryPanel;
 import mpv5.ui.panels.MPControlPanel;
 import mpv5.ui.parents.CloseableTabbedPane;
@@ -64,9 +51,6 @@ import mpv5.utils.xml.XMLReader;
 import mpv5.utils.xml.XMLWriter;
 import org.jdesktop.application.SingleFrameApplication;
 import org.jdesktop.application.FrameView;
-import org.jdesktop.application.ResourceMap;
-import org.jdesktop.application.TaskMonitor;
-import org.jdom.JDOMException;
 
 /**
  * The application's main frame.
@@ -84,6 +68,7 @@ public class MPV5View extends FrameView {
     private static String predefTitle;
     public static DialogForFile filedialog;
     public static SingleFrameApplication identifierApplication;
+    private static ArrayList<MP5Plugin> pluginstoBeLoaded = new ArrayList<MP5Plugin>();
 
     /**
      * Display a message at the bottom of the MP frame
@@ -107,6 +92,16 @@ public class MPV5View extends FrameView {
      */
     public static Object getShowingTab() {
         return tabPane.getSelectedComponent();
+    }
+
+    /**
+     * Queues plugins to be loaded after the main Frame is showing.</br>
+     * Adding plugins AFTER the main Frame is constructed will result in nothing.</br>
+     * Use {@link loadPlugin(MP5Plugin)} instead.
+     * @param plugins
+     */
+    public static void queuePlugins(MP5Plugin[] plugins) {
+        pluginstoBeLoaded.addAll(Arrays.asList(plugins));
     }
 
     /**
@@ -134,6 +129,7 @@ public class MPV5View extends FrameView {
     public static void show(JFrame c) {
         identifierApplication.show(c);
     }
+
 
     /**
      * Reloads fav menu
@@ -275,6 +271,7 @@ public class MPV5View extends FrameView {
         fillFavouritesmenu();
         QueryHandler.setWaitCursorFor(identifierFrame);
 
+        loadPlugins();
 
 //        setStatusBar();
 //        setStatusBar(statusPanel);
@@ -293,7 +290,7 @@ public class MPV5View extends FrameView {
      * @param item
      */
     public void addTab(DatabaseObject item) {
-       addTab(item.getView());
+        addTab(item.getView());
     }
 
     /**
@@ -1276,4 +1273,25 @@ public class MPV5View extends FrameView {
         }
     }
 
+    /**
+     * Loads the given plugin (by calling <code>plugin.load(this)<code/>). If the plugin is a visible plugin, adds it to the main tab pane.</br>
+     * If it is a <code>Runnable<code/>, it will be queued asynchronously on the AWT event dispatching thread.
+     * @param mP5Plugin
+     */
+    public void loadPlugin(MP5Plugin mP5Plugin) {
+        mP5Plugin.load(this);
+        if (mP5Plugin.isComponent()) {
+            addTab((JComponent) mP5Plugin);
+        }
+        if (mP5Plugin.isRunnable()) {
+            SwingUtilities.invokeLater((Runnable) mP5Plugin);
+        }
+    }
+
+    private void loadPlugins() {
+        for (int i = 0; i < pluginstoBeLoaded.size(); i++) {
+            MP5Plugin mP5Plugin = pluginstoBeLoaded.get(i);
+            loadPlugin(mP5Plugin);
+        }
+    }
 }

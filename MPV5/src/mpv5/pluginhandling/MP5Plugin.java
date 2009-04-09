@@ -19,7 +19,7 @@ package mpv5.pluginhandling;
 import mpv5.ui.frames.MPV5View;
 
 /**
- *
+ * This class is to be implemented on MP5 plugins
  * @author anti
  */
 public interface MP5Plugin {
@@ -62,7 +62,13 @@ public interface MP5Plugin {
 
     /**
      * Check whether this plugin inherits <code>JPanel</code> and can be displayed
-     * @return True if the plugin is assignment compatible with JPanel
+     * @return True if the plugin is to be displayed on the main tab pane
      */
-    public abstract boolean isVisual();
+    public abstract boolean isComponent();
+
+    /**
+     * Check whether this plugin is a <code>Runnable<code/>
+     * @return
+     */
+    public abstract boolean isRunnable();
 }

@@ -32,6 +32,7 @@ public class Messages {
     public static String INIT_GUI = "Initialising Graphical User Interface..";
     public static String INIT_LOGIN = "Logging in user..";
     public static String CACHE  ="Caching data..";
+     public static String INIT_PLUGINS = "Initialising Plugins..";
 
 
     public static String NEW_CONTACT = "New Contact";
@@ -106,5 +107,6 @@ public class Messages {
     public static String FILE_OPEN_FAILED = "Unable to open the file: \n";
     public static String HISTORY_PANEL = "History";
     public static String NEW_TAB = "New Tab";
+   
    
 }

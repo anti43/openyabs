@@ -24,7 +24,7 @@ package mpv5.ui.panels;
 import java.awt.Component;
 import javax.swing.DefaultComboBoxModel;
 import mpv5.db.common.Context;
-import mpv5.db.common.DataStringHandler;
+import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryHandler;
@@ -254,12 +254,12 @@ public class HistoryPanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     private void refresh(User forUser, Group forGroup) {
-        DataStringHandler dh = null;
+        QueryCriteria dh = null;
         Object[][] d = new Object[0][0];
 
         if (forUser != null && !forUser.equals(User.DEFAULT)) {
             try {
-                dh = new DataStringHandler();
+                dh = new QueryCriteria();
                 dh.add(forUser.getType() + "name", forUser.getName());
                 if (forGroup != null && !forGroup.__getCName().equals("")) {
                     dh.add(Context.getHistory().getDbIdentity() + "." + forGroup.getDbIdentity() + "ids", forGroup.__getIDS());
@@ -273,7 +273,7 @@ public class HistoryPanel extends javax.swing.JPanel {
             }
         } else if (forGroup != null && !forGroup.__getCName().equals("")) {
             try {
-                dh = new DataStringHandler();
+                dh = new QueryCriteria();
                 dh.add(Context.getHistory().getDbIdentity() + "." + forGroup.getDbIdentity() + "ids", forGroup.__getIDS());
 
                 Context c = Context.getHistory();

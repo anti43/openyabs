@@ -164,7 +164,7 @@ public class QueryHandler implements Cloneable {
      * @return
      * @throws NodataFoundException
      */
-    public Object[][] select(String columns, DataStringHandler criterias) throws NodataFoundException {
+    public Object[][] select(String columns, QueryCriteria criterias) throws NodataFoundException {
         return select(columns, criterias.getKeys(), criterias.getValues());
     }
 
@@ -426,7 +426,7 @@ public class QueryHandler implements Cloneable {
      * @param uniquecols
      * @return
      */
-    public boolean checkUniqueness(DataStringHandler vals, int[] uniquecols) {
+    public boolean checkUniqueness(QueryCriteria vals, int[] uniquecols) {
         String[] values = vals.getKeys();
 
         if (uniquecols != null) {
@@ -449,7 +449,7 @@ public class QueryHandler implements Cloneable {
      * @return
      */
     public boolean checkUniqueness(String column, String value) {
-        DataStringHandler t = new DataStringHandler();
+        QueryCriteria t = new QueryCriteria();
         t.add(column, value);
         return checkUniqueness(t, new int[]{0});
     }
@@ -500,7 +500,7 @@ public class QueryHandler implements Cloneable {
      * @param jobmessage
      * @return id (unique) of the inserted row
      */
-    public int insert(DataStringHandler what, int[] uniquecols, String jobmessage) {
+    public int insert(QueryCriteria what, int[] uniquecols, String jobmessage) {
 
         String query = query = "INSERT INTO " + table + " (" + what.getKeysString() + " ) VALUES (" + what.getValuesString() + ") ";
 
@@ -520,7 +520,7 @@ public class QueryHandler implements Cloneable {
      * @param jobmessage The message to be displayd after a successful run
      * @return id of inserted row
      */
-    public int insert(DataStringHandler what, String jobmessage) {
+    public int insert(QueryCriteria what, String jobmessage) {
         return insert(what, (int[]) null, jobmessage);
     }
 
@@ -563,7 +563,7 @@ public class QueryHandler implements Cloneable {
      * @param where : {value, comparison, "'"}
      * @param jobmessage
      */
-    public void update(DataStringHandler what, String[] where, String jobmessage) {
+    public void update(QueryCriteria what, String[] where, String jobmessage) {
 
         String query;
 //        Log.Debug(this, what);
@@ -1498,7 +1498,7 @@ public class QueryHandler implements Cloneable {
      * A convenience method to retrieve one file from db, or null of no file
      * with the specified name is available.
      * @param name
-     * @return A file or NULL
+     * @return A virtual file or NULL
      */
     public File retrieveFile(String name) {
         ArrayList<File> list;
@@ -1649,10 +1649,10 @@ public class QueryHandler implements Cloneable {
 
         @Override
         public void done() {
-            DataStringHandler x;
+            QueryCriteria x;
             try {
 
-                x = new DataStringHandler(new String[]{"cname,filename, description", file.getName() + "," + get() + "," + descriptiveText});
+                x = new QueryCriteria(new String[]{"cname,filename, description", file.getName() + "," + get() + "," + descriptiveText});
                 x.add("contactsids",dataOwner.__getIDS());
                 QueryHandler.instanceOf().clone(Context.getFilesToContacts()).insert(x, Messages.FILE_SAVED + file.getName());
                 MPV5View.addMessage(Messages.FILE_SAVED + file.getName());

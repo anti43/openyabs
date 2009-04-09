@@ -172,7 +172,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                     Messages.ENTER_A_DESCRIPTION);
 
             if (s != null) {
-                QueryHandler.instanceOf().clone(Context.getFiles(), this).insertFile(d.getFile(), dataOwner, DataStringHandler.getSaveStringFor(s));
+                QueryHandler.instanceOf().clone(Context.getFiles(), this).insertFile(d.getFile(), dataOwner, QueryCriteria.getSaveStringFor(s));
             }
         }
     }

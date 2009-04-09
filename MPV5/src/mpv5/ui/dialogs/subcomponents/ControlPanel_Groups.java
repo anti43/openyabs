@@ -377,6 +377,7 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
     public String cname_ = "";
     public int ids_;
     public int groupsids_ = 1;
+    public int intaddedby_ = 1;
     public java.util.Date dateadded_ = new java.util.Date();
 
     public void setValues(PropertyStore values) {

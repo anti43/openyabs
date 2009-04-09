@@ -19,11 +19,12 @@ package mpv5.db.common;
 import java.util.HashMap;
 import mpv5.logging.Log;
 
+
 /**
  * This class is used to put any kind of data before passing it to the <code>QueryHandler</code> for transmission.
  * @author anti43
  */
-public class DataStringHandler {
+public class QueryCriteria {
 
     /**
      * Generate a <code>SaveString<code/>
@@ -40,7 +41,7 @@ public class DataStringHandler {
      * what  : {set, values}
      * @param what
      */
-    public DataStringHandler(String[] what) {
+    public QueryCriteria(String[] what) {
         String[] keys = what[0].split(",");
         String[] vals = what[1].split(",");
 
@@ -49,7 +50,7 @@ public class DataStringHandler {
         }
     }
 
-    public DataStringHandler() {
+    public QueryCriteria() {
     }
 
     /**
@@ -92,7 +93,7 @@ public class DataStringHandler {
      * @return
      */
     public String maskBackslashes(String string) {
-        Log.Debug(DataStringHandler.class, "Masking Backslashes!");
+        Log.Debug(QueryCriteria.class, "Masking Backslashes!");
         return new SaveString(string.replaceAll("\\\\", "\\\\\\\\"), true).toString();
     }
 
@@ -151,7 +152,6 @@ public class DataStringHandler {
         return s.substring(0, s.length() - 1);
     }
 }
-
 /**
  * Represents a <code>SaveString</code> value which <br><br/>
  * <li>Does not contain single quotes and<br/>

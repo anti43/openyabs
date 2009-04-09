@@ -316,9 +316,9 @@ public abstract class DatabaseObject {
     /**
      * Collect the data to masked/valid DB String array
      */
-    private DataStringHandler collect() {
+    private QueryCriteria collect() {
 
-        DataStringHandler t = new DataStringHandler();
+        QueryCriteria t = new QueryCriteria();
         String left = "";
         Object tempval;
 
@@ -414,7 +414,7 @@ public abstract class DatabaseObject {
 //                Log.Debug(this, vars.get(i).getName());
                 target.getClass().getField(vars.get(i).getName().toLowerCase().substring(5, vars.get(i).getName().length()) + "_").set(target, vars.get(i).invoke(this, new Object[0]));
             } catch (Exception n) {
-                Log.Debug(this, n.getCause());
+                Log.Debug(this, n.getMessage() +" in " + target);
                 n.printStackTrace();
             }
         }
@@ -514,7 +514,7 @@ public abstract class DatabaseObject {
      * @throws NodataFoundException
      */
     @SuppressWarnings("unchecked")
-    public static <T extends DatabaseObject> ArrayList<T> getObjects(Context context, DataStringHandler criterias) throws NodataFoundException {
+    public static <T extends DatabaseObject> ArrayList<T> getObjects(Context context, QueryCriteria criterias) throws NodataFoundException {
         Object[][] data = QueryHandler.instanceOf().clone(context).select("ids", criterias);
         ArrayList<DatabaseObject> list = new ArrayList<DatabaseObject>();
 
