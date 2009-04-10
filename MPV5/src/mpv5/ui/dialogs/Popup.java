@@ -23,6 +23,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 import mpv5.globals.Messages;
+import mpv5.ui.frames.MPV5View;
 
 /**
  *
@@ -35,6 +36,16 @@ public class Popup {
     public static String NOTICE = Messages.NOTICE;
     public static String GENERAL_ERROR = Messages.ERROR_OCCURED;
     public static Component identifier = null;
+
+    /**
+     * Prompts the user with a text box
+     * @param message
+     * @return
+     */
+    public static String  Enter_Value(String message) {
+       return JOptionPane.showInputDialog(MPV5View.identifierFrame,
+                    message);
+    }
 
     /**
      * A Y_N_dialog

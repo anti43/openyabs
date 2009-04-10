@@ -1352,7 +1352,7 @@ public class QueryHandler implements Cloneable {
     public String insertFile(final File file) throws FileNotFoundException {
 
         String name = null;
-        String query = "INSERT INTO " + table + "(cname, data, dateadded, filesize, addedby) VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO " + table + "(cname, data, dateadded, filesize, intaddedby) VALUES (?, ?, ?, ?, ?)";
         String jobmessage = null;
         Log.Debug(this, "Adding file: " + file.getName());
         backgroundSqlQuery j;

@@ -16,16 +16,16 @@ import mpv5.utils.ui.TextFieldUtils;
  *
  * @author anti43
  */
-public class ControlPanel_PLugins extends javax.swing.JPanel implements ControlApplet {
+public class ControlPanel_Locale extends javax.swing.JPanel implements ControlApplet {
 
     /**
      * This unique name identifies this control applet
      */
     public final String UNAME = "locale";
     private PropertyStore oldvalues;
-    private static ControlPanel_PLugins ident;
+    private static ControlPanel_Locale ident;
 
-    public ControlPanel_PLugins() {
+    public ControlPanel_Locale() {
         initComponents();
         locales.setModel(getLocales());
         locales.setSelectedIndex(MPComboBoxModelItem.getItemID(Locale.getDefault().toString(),
@@ -67,10 +67,10 @@ public class ControlPanel_PLugins extends javax.swing.JPanel implements ControlA
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_PLugins.jPanel1.border.title"))); // NOI18N
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Locale.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 
-        jButton1.setText(bundle.getString("ControlPanel_PLugins.jButton1.text")); // NOI18N
+        jButton1.setText(bundle.getString("ControlPanel_Locale.jButton1.text")); // NOI18N
         jButton1.setName("jButton1"); // NOI18N
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -78,7 +78,7 @@ public class ControlPanel_PLugins extends javax.swing.JPanel implements ControlA
             }
         });
 
-        jButton2.setText(bundle.getString("ControlPanel_PLugins.jButton2.text")); // NOI18N
+        jButton2.setText(bundle.getString("ControlPanel_Locale.jButton2.text")); // NOI18N
         jButton2.setName("jButton2"); // NOI18N
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -90,11 +90,11 @@ public class ControlPanel_PLugins extends javax.swing.JPanel implements ControlA
         jPanel2.setName("jPanel2"); // NOI18N
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 12));
-        jLabel2.setText(bundle.getString("ControlPanel_PLugins.jLabel2.text")); // NOI18N
+        jLabel2.setText(bundle.getString("ControlPanel_Locale.jLabel2.text")); // NOI18N
         jLabel2.setName("jLabel2"); // NOI18N
 
         jLabel1.setFont(new java.awt.Font("Dialog", 0, 11));
-        jLabel1.setText(bundle.getString("ControlPanel_PLugins.jLabel1.text")); // NOI18N
+        jLabel1.setText(bundle.getString("ControlPanel_Locale.jLabel1.text")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
 
         locales.setName("locales"); // NOI18N
@@ -127,11 +127,11 @@ public class ControlPanel_PLugins extends javax.swing.JPanel implements ControlA
         jPanel3.setName("jPanel3"); // NOI18N
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 1, 12));
-        jLabel3.setText(bundle.getString("ControlPanel_PLugins.jLabel3.text")); // NOI18N
+        jLabel3.setText(bundle.getString("ControlPanel_Locale.jLabel3.text")); // NOI18N
         jLabel3.setName("jLabel3"); // NOI18N
 
         jLabel4.setFont(new java.awt.Font("Dialog", 0, 11));
-        jLabel4.setText(bundle.getString("ControlPanel_PLugins.jLabel4.text")); // NOI18N
+        jLabel4.setText(bundle.getString("ControlPanel_Locale.jLabel4.text")); // NOI18N
         jLabel4.setName("jLabel4"); // NOI18N
 
         languages.setName("languages"); // NOI18N
@@ -164,18 +164,18 @@ public class ControlPanel_PLugins extends javax.swing.JPanel implements ControlA
         jPanel4.setName("jPanel4"); // NOI18N
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 12));
-        jLabel5.setText(bundle.getString("ControlPanel_PLugins.jLabel5.text")); // NOI18N
+        jLabel5.setText(bundle.getString("ControlPanel_Locale.jLabel5.text")); // NOI18N
         jLabel5.setName("jLabel5"); // NOI18N
 
         jLabel6.setFont(new java.awt.Font("Dialog", 0, 11));
-        jLabel6.setText(bundle.getString("ControlPanel_PLugins.jLabel6.text")); // NOI18N
+        jLabel6.setText(bundle.getString("ControlPanel_Locale.jLabel6.text")); // NOI18N
         jLabel6.setName("jLabel6"); // NOI18N
 
-        labeledTextChooser1.set_Label(bundle.getString("ControlPanel_PLugins.labeledTextChooser1._Label")); // NOI18N
+        labeledTextChooser1.set_Label(bundle.getString("ControlPanel_Locale.labeledTextChooser1._Label")); // NOI18N
         labeledTextChooser1.set_LabelFont(new java.awt.Font("Tahoma", 0, 11));
         labeledTextChooser1.setName("labeledTextChooser1"); // NOI18N
 
-        jButton3.setText(bundle.getString("ControlPanel_PLugins.jButton3.text")); // NOI18N
+        jButton3.setText(bundle.getString("ControlPanel_Locale.jButton3.text")); // NOI18N
         jButton3.setName("jButton3"); // NOI18N
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -183,12 +183,12 @@ public class ControlPanel_PLugins extends javax.swing.JPanel implements ControlA
             }
         });
 
-        labeledTextField1.set_Label(bundle.getString("ControlPanel_PLugins.labeledTextField1._Label")); // NOI18N
+        labeledTextField1.set_Label(bundle.getString("ControlPanel_Locale.labeledTextField1._Label")); // NOI18N
         labeledTextField1.set_LabelFont(new java.awt.Font("Dialog", 0, 11));
         labeledTextField1.setName("labeledTextField1"); // NOI18N
 
         jLabel7.setFont(new java.awt.Font("Dialog", 0, 11));
-        jLabel7.setText(bundle.getString("ControlPanel_PLugins.jLabel7.text")); // NOI18N
+        jLabel7.setText(bundle.getString("ControlPanel_Locale.jLabel7.text")); // NOI18N
         jLabel7.setName("jLabel7"); // NOI18N
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -232,18 +232,18 @@ public class ControlPanel_PLugins extends javax.swing.JPanel implements ControlA
         jPanel5.setName("jPanel5"); // NOI18N
 
         jLabel8.setFont(new java.awt.Font("Tahoma", 1, 12));
-        jLabel8.setText(bundle.getString("ControlPanel_PLugins.jLabel8.text")); // NOI18N
+        jLabel8.setText(bundle.getString("ControlPanel_Locale.jLabel8.text")); // NOI18N
         jLabel8.setName("jLabel8"); // NOI18N
 
         jLabel9.setFont(new java.awt.Font("Dialog", 0, 11));
-        jLabel9.setText(bundle.getString("ControlPanel_PLugins.jLabel9.text")); // NOI18N
+        jLabel9.setText(bundle.getString("ControlPanel_Locale.jLabel9.text")); // NOI18N
         jLabel9.setName("jLabel9"); // NOI18N
 
-        labeledTextChooser2.set_Label(bundle.getString("ControlPanel_PLugins.labeledTextChooser2._Label")); // NOI18N
+        labeledTextChooser2.set_Label(bundle.getString("ControlPanel_Locale.labeledTextChooser2._Label")); // NOI18N
         labeledTextChooser2.set_LabelFont(new java.awt.Font("Tahoma", 0, 11));
         labeledTextChooser2.setName("labeledTextChooser2"); // NOI18N
 
-        jButton4.setText(bundle.getString("ControlPanel_PLugins.jButton4.text")); // NOI18N
+        jButton4.setText(bundle.getString("ControlPanel_Locale.jButton4.text")); // NOI18N
         jButton4.setName("jButton4"); // NOI18N
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -417,7 +417,7 @@ public class ControlPanel_PLugins extends javax.swing.JPanel implements ControlA
 
     public ControlApplet instanceOf() {
         if (ident == null) {
-            ident = new ControlPanel_PLugins();
+            ident = new ControlPanel_Locale();
         }
         return ident;
     }

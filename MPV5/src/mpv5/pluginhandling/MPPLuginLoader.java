@@ -17,7 +17,6 @@
 package mpv5.pluginhandling;
 
 import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -27,6 +26,7 @@ import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.QueryHandler;
 import mpv5.globals.Constants;
+import mpv5.globals.LocalSettings;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPV5View;
@@ -37,7 +37,7 @@ import mpv5.usermanagement.UserPlugin;
  * @author anti
  */
 public class MPPLuginLoader {
-
+public static String pluginSignature = LocalSettings.getProperty(LocalSettings.CACHE_DIR) + File.separator + "%%filename%%-mp5p.jar";
     /**
      * Loads all plugins which are assigned to the current logged in user from database or cache dir<br/>
      * does NOT call plugin.load()
@@ -45,7 +45,10 @@ public class MPPLuginLoader {
      */
     public MP5Plugin[] getPlugins(){
 
+
+
         ArrayList<MP5Plugin> list = null;
+        
         try {
             list = new ArrayList<MP5Plugin>();
             ArrayList<File> jars = new ArrayList<File>();
@@ -55,12 +58,12 @@ public class MPPLuginLoader {
                 ArrayList<UserPlugin> data = DatabaseObject.getObjects(Context.getPluginsToUsers(), criterias);
                 for (int i = 0; i < data.size(); i++) {
                     UserPlugin up = data.get(i);
-                    if (isCachedPlugin(up.__getFilename()) == null) {
-                        Log.Debug(this, "Caching plugin: " + isCachedPlugin(up.__getFilename()));
-                        jars.add(QueryHandler.instanceOf().clone(Context.getFiles()).retrieveFile(up.__getFilename(), isCachedPlugin(up.__getFilename())));
+                    if (!isCachedPlugin(up.__getFilename())) {
+                        Log.Debug(this, "Caching plugin: " + pluginSignature.replace("%%filename%%", up.__getFilename()));
+                        jars.add(QueryHandler.instanceOf().clone(Context.getFiles()).retrieveFile(up.__getFilename(), new File(pluginSignature.replace("%%filename%%", up.__getFilename()))));
                     } else {
-                        Log.Debug(this, "Using cached plugin: " + isCachedPlugin(up.__getFilename()));
-                        jars.add(isCachedPlugin(up.__getFilename()));
+                        Log.Debug(this, "Using cached plugin: " + pluginSignature.replace("%%filename%%", up.__getFilename()));
+                        jars.add(new File(pluginSignature.replace("%%filename%%", up.__getFilename())));
                     }
                 }
             } catch (NodataFoundException ex) {
@@ -68,12 +71,11 @@ public class MPPLuginLoader {
             }
 
             for (int i = 0; i < jars.size(); i++) {
-                URL[] urls = {new URL("jar:file:" + jars.get(i).getPath() + "!/")};
-                URLClassLoader loader = URLClassLoader.newInstance(urls);
-                Class c = loader.loadClass(Constants.PLUGIN_LOAD_CLASS);
-                Object o = c.newInstance();
-                MP5Plugin m = (MP5Plugin) o;
-                list.add(m);
+                File x = jars.get(i);
+                MP5Plugin c= checkPlugin(x);
+                if (c !=null) {
+                    list.add(c);
+                }
             }
         } catch (Exception e) {
             Popup.error(e);
@@ -86,13 +88,27 @@ public class MPPLuginLoader {
     /**
      * Checks if the plugin is already cached
      * @param pluginid 
-     * @return the plugin jar if the file exists in the plugin cache directory
+     * @return the plugin jar if the file DOES NOT EXIST  in the plugin cache directory, null otherwise
      */
-    public File isCachedPlugin(String pluginid) {
-        File f = new File(Constants.CACHE_DIR + File.separator + pluginid + "-mp5p.jar");
-        if (f.exists()) {
-            return f;
-        } else {
+    public boolean isCachedPlugin(String pluginid) {
+        File f = new File(pluginSignature.replace("%%filename%%", pluginid));
+        return f.exists() && f.canRead();
+    }
+
+    /**
+     * Checks if the given file is a valid plugin
+     * @param pluginCandidate
+     * @return the plugin if <code>Constants.PLUGIN_LOAD_CLASS<code/> could be instantiated from this file
+     */
+    public MP5Plugin checkPlugin(File pluginCandidate) {
+        try {
+            URL[] urls = {new URL("jar:file:" + pluginCandidate + "!/")};
+            URLClassLoader loader = URLClassLoader.newInstance(urls);
+            Class c = loader.loadClass(Constants.PLUGIN_LOAD_CLASS);
+            Object o = c.newInstance();
+            return (MP5Plugin) o;
+        } catch (Exception malformedURLException) {
+            Log.Debug(malformedURLException);
             return null;
         }
     }

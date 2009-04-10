@@ -16,6 +16,7 @@ import mpv5.items.main.ContactFile;
 import mpv5.items.main.Item;
 import mpv5.items.main.SubItem;
 import mpv5.usermanagement.User;
+import mpv5.usermanagement.UserPlugin;
 
 /**
  *
@@ -51,11 +52,13 @@ public class Context {
     private static Class IDENTITY_CONTACTS_FILES_CLASS = ContactFile.class;
     private static Class HISTORY_ITEMS_CLASS = HistoryItem.class;
     private static Class IDENTITY_SUBITEMS_CLASS = SubItem.class;
+    private static Class IDENTITY_USER_PLUGINS_CLASS =  UserPlugin.class;
 
     //********** unique constraints *******************************************
     public static String UNIQUECOLUMNS_USER = "cname";
     public static String UNIQUECOLUMNS_ITEMS = "cname";
     public static String UNIQUECOLUMNS_GROUPS = "cname";
+
     //********** conditions ****************************************************
     private boolean isCompany = false;
     private boolean isCustomer = false;
@@ -881,6 +884,7 @@ public class Context {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_PLUGINS_TO_USERS);
+        c.setIdentityClass(IDENTITY_USER_PLUGINS_CLASS);
         c.setId(25);
 
         return c;

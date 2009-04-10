@@ -71,4 +71,10 @@ public interface MP5Plugin {
      * @return
      */
     public abstract boolean isRunnable();
+
+    /**
+     * Inidcates whether the plugin has bee previously loaded
+     * @return
+     */
+    public abstract boolean isLoaded();
 }

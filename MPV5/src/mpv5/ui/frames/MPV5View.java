@@ -298,15 +298,7 @@ public class MPV5View extends FrameView {
      * @param tab
      */
     public void addTab(JComponent tab) {
-        tabPane.addTab(Messages.NEW_TAB, tab);
-        tabPane.setSelectedComponent(tab);
-    }
-
-    private void addContactTab(DatabaseObject item) {
-        ContactPanel tab = new ContactPanel(Context.getCustomer());
-        tab.setType(ContactPanel.CUSTOMER);
-        tabPane.addTab(item.__getCName(), tab);
-        tab.setDataOwner(item);
+        tabPane.addTab(tab.getName(), tab);
         tabPane.setSelectedComponent(tab);
     }
 
@@ -1275,7 +1267,7 @@ public class MPV5View extends FrameView {
 
     /**
      * Loads the given plugin (by calling <code>plugin.load(this)<code/>). If the plugin is a visible plugin, adds it to the main tab pane.</br>
-     * If it is a <code>Runnable<code/>, it will be queued asynchronously on the AWT event dispatching thread.
+     * If it is a <code>Runnable<code/>, it will be started on an new thread.
      * @param mP5Plugin
      */
     public void loadPlugin(MP5Plugin mP5Plugin) {
@@ -1283,8 +1275,9 @@ public class MPV5View extends FrameView {
         if (mP5Plugin.isComponent()) {
             addTab((JComponent) mP5Plugin);
         }
-        if (mP5Plugin.isRunnable()) {
-            SwingUtilities.invokeLater((Runnable) mP5Plugin);
+        if (mP5Plugin.isRunnable() && mP5Plugin.isLoaded()) {
+            Thread t = new Thread((Runnable)  mP5Plugin);
+            t.start();
         }
     }
 

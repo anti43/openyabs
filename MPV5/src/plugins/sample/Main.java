@@ -34,6 +34,7 @@ public class Main extends JPanel implements MP5Plugin, Runnable {
     private MPV5View frame;
     private JMenu cmenu;
     private JLabel clock =  new JLabel();
+    private boolean loaded = false;
 
     public MP5Plugin load(MPV5View frame) {
         this.frame = frame;
@@ -45,6 +46,7 @@ public class Main extends JPanel implements MP5Plugin, Runnable {
         clock.setFont(new Font("Courier", Font.BOLD, 16));
         add(clock, BorderLayout.CENTER);
 
+        loaded = true;
         return this;
     }
 
@@ -79,11 +81,15 @@ public class Main extends JPanel implements MP5Plugin, Runnable {
     }
 
     public void run() {
-       while(true){
+       while(loaded){
            clock.setText(new Date().toString());
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException ignore) {}
        }
+    }
+
+    public boolean isLoaded() {
+       return loaded;
     }
 }

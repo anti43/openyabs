@@ -3,26 +3,28 @@
  */
 package mpv5;
 
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import mpv5.db.common.NodataFoundException;
 import mpv5.ui.frames.MPV5View;
 import mpv5.logging.*;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
 
 import com.l2fprod.common.swing.plaf.LookAndFeelAddons;
-import java.awt.Dimension;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.Map;
 import java.util.Properties;
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import mpv5.db.common.ConnectionTypeHandler;
+import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseConnection;
+import mpv5.db.common.DatabaseObject;
 import mpv5.globals.Constants;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
@@ -44,7 +46,9 @@ import org.apache.commons.cli2.util.*;
  * The main class of the application.
  */
 public class Main extends SingleFrameApplication {
+
     public static SplashScreen splash;
+    private static boolean removeplugs = false;
 
     /**
      * Use this method to (re) cache data from the database to avoid uneccessary db queries
@@ -52,7 +56,6 @@ public class Main extends SingleFrameApplication {
     public static void cache() {
         User.cacheUser();
     }
-
     private File lockfile = new File(MPPATH + File.separator + "." + Constants.PROG_NAME + Constants.VERSION + "." + "lck");
 
     /**
@@ -60,7 +63,7 @@ public class Main extends SingleFrameApplication {
      */
     public static void start() {
 
-       splash.nextStep(Messages.LOCAL_SETTINGS);
+        splash.nextStep(Messages.LOCAL_SETTINGS);
         try {
             LocalSettings.read();
             LocalSettings.apply();
@@ -78,7 +81,7 @@ public class Main extends SingleFrameApplication {
      */
     @Override
     protected void startup() {
-     
+
         splash.nextStep(Messages.FIRST_INSTANCE);
         if (!firstInstance()) {
             System.exit(1);
@@ -86,7 +89,7 @@ public class Main extends SingleFrameApplication {
 
         getContext().getLocalStorage().setDirectory(new File(Main.MPPATH));
 
-         splash.nextStep(Messages.DB_CHECK);
+        splash.nextStep(Messages.DB_CHECK);
         if (probeDatabaseConnection()) {
             go();
         } else if (Popup.Y_N_dialog(Messages.NO_DB_CONNECTION, Messages.ERROR_OCCURED)) {
@@ -105,7 +108,6 @@ public class Main extends SingleFrameApplication {
      */
     @Override
     protected void configureWindow(java.awt.Window root) {
-
     }
 
     /**
@@ -225,6 +227,7 @@ public class Main extends SingleFrameApplication {
         Option nolf = obuilder.withShortName("nolf").withDescription("use system L&F instead of Tiny L&F").create();
         Option dbtype = obuilder.withShortName("dbdriver").withShortName("r").withDescription("DB Driver: derby (default), mysql, custom").withArgument(option).create();
         Option debug = obuilder.withShortName("debug").withDescription("debug logging").create();
+        Option removeplugins = obuilder.withShortName("removeplugins").withDescription("remove all plugins which would be loaded").create();
         Option logfile = obuilder.withShortName("logfile").withShortName("l").withDescription("use file for log").withArgument(filearg).create();
         Group options = gbuilder.withName("options").
                 withOption(help).
@@ -233,6 +236,7 @@ public class Main extends SingleFrameApplication {
                 withOption(debug).
                 withOption(license).
                 withOption(nolf).
+                withOption(removeplugins).
                 withOption(logfile).create();
 
         HelpFormatter hf = new HelpFormatter();
@@ -287,6 +291,10 @@ public class Main extends SingleFrameApplication {
         if (cl.hasOption(nolf)) {
             setLaF(null);
         }
+
+        if (cl.hasOption(removeplugins)) {
+            removeplugs = true;
+        }
     }
 
     /**
@@ -330,7 +338,7 @@ public class Main extends SingleFrameApplication {
 
         while (propnames.hasMoreElements()) {
             String propname = (String) propnames.nextElement();
-            Log.Debug(Main.class,"System env: " +  propname.toUpperCase() + " : " + System.getProperty(propname));
+            Log.Debug(Main.class, "System env: " + propname.toUpperCase() + " : " + System.getProperty(propname));
         }
     }
 
@@ -349,8 +357,26 @@ public class Main extends SingleFrameApplication {
     }
 
     private void loadPlugins() {
-        MPPLuginLoader loadr = new MPPLuginLoader();
-        MPV5View.queuePlugins(loadr.getPlugins());
+
+        if (!removeplugs) {
+            try {
+                MPPLuginLoader loadr = new MPPLuginLoader();
+                MPV5View.queuePlugins(loadr.getPlugins());
+            } catch (Exception e) {
+                Log.Debug(e);
+            }
+        } else {
+            try {
+                ArrayList<DatabaseObject> data = DatabaseObject.getReferencedObjects(MPV5View.getUser(), Context.getPluginsToUsers());
+
+                for (int i = 0; i < data.size(); i++) {
+                    data.get(i).delete();
+                }
+
+            } catch (NodataFoundException ex) {
+                Log.Debug(Main.class, ex.getMessage());
+            }
+        }
     }
 
     private void login() {

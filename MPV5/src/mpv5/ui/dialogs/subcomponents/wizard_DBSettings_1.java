@@ -90,6 +90,17 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
         }
     }
 
+    private boolean DirectoryCreate() {
+        ////////////// The cache dir //////////////////////
+        LocalSettings.setProperty(LocalSettings.CACHE_DIR, LocalSettings.getProperty(LocalSettings.DBPATH) + File.separator + "Cache");
+        LocalSettings.save();
+        File file1 = new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR));
+        file1.mkdirs();
+        ///////////////////////////////////////////////////////////
+
+        return file1.exists();
+    }
+
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -237,16 +248,19 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
     // End of variables declaration//GEN-END:variables
 
     public boolean next() {
-        if (DBVerification()) {
+        if (DBVerification() & DirectoryCreate()) {
             Log.setLogLevel(Log.LOGLEVEL_NONE);
-          
+
             try {
                 FileDirectoryHandler.copyFile(new File("ext/mainFrame.session.xml"), new File(Main.MPPATH + File.separator + "mainFrame.session.xml"));
             } catch (Exception ex) {
                 Log.Debug(ex);
             }
 
-            try {LogConsole.setLogFile(null);} catch (Exception ignore) {}
+            try {
+                LogConsole.setLogFile(null);
+            } catch (Exception ignore) {
+            }
             Main.getApplication().go();
             this.master.dispose();
             return true;

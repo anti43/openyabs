@@ -18,8 +18,6 @@
  */
 package mpv5.globals;
 
-import java.io.File;
-
 /**
  *
  * @author anti43
@@ -75,15 +73,10 @@ public interface Constants {
      */
     public static final String DATABASENAME = "mpv" + Constants.RELEASE_VERSION + "db";
 
-
-    public static String LIB_DIR = "lib";
-    public static String CACHE_DIR = "Cache";
-    public static String PLUGIN_DIR = "Plugins";
     public static String ICON_NAME_LIN = "mp.desktop";
     public static String ICON_NAME_WIN = "MP-Rechnungs-Kundenverwaltung.url";
     public static String XML_ROOT = "mpv5";
     public static String XML_DOCTYPE_ID = "-//http://code.google.com/p/mp-rechnungs-und-kundenverwaltung//DTD mpv5 V 1.0//EN";
     public static String XML_DOCTYPE_URL = "http://mp-rechnungs-und-kundenverwaltung.googlecode.com/files/mpv5.dtd";
     public static String SPLASH_IMAGE = "/mpv5/resources/images/background.png";
-
 }

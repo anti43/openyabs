@@ -32,12 +32,13 @@ public class LocalSettings {
     public static final String PROXYUSER = "proxyuser";
     public static final String PROXYPASSWORD = "proxypassword";
     public static final String OFFICE_HOME = "/opt/openoffice.org3/";
+    public static final String CACHE_DIR = "cachedir";
     private static PropertyStore predefinedSettings = new PropertyStore(new String[][]{ //        {LAF,UIManager.getSystemLookAndFeelClassName()}
                 {"defaultfont", "Tahoma"}
             });
     public static final String DEFAULT_FONT = "defaultfont";
-    public static String PRINT_DEVAPP = "devappprint";
-    public static String PROXYUSE = "useproxy";
+    public static final String PRINT_DEVAPP = "devappprint";
+    public static final String PROXYUSE = "useproxy";
 
     /**
      * Applies the environmental settings

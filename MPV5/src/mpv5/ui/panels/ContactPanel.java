@@ -51,6 +51,7 @@ import mpv5.logging.Log;
 import mpv5.resources.languages.LanguageManager;
 import mpv5.ui.dialogs.BigPopup;
 import mpv5.ui.dialogs.DialogForFile;
+import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Groups;
 import mpv5.ui.frames.MPV5View;
 import mpv5.ui.popups.DOTablePopUp;
@@ -168,8 +169,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY);
         if (d.chooseFile()) {
 
-            String s = JOptionPane.showInputDialog(MPV5View.identifierFrame,
-                    Messages.ENTER_A_DESCRIPTION);
+            String s =Popup.Enter_Value(Messages.ENTER_A_DESCRIPTION);
 
             if (s != null) {
                 QueryHandler.instanceOf().clone(Context.getFiles(), this).insertFile(d.getFile(), dataOwner, QueryCriteria.getSaveStringFor(s));
