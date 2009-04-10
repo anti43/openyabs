@@ -15,6 +15,7 @@ import mpv5.items.div.HistoryItem;
 import mpv5.items.main.ContactFile;
 import mpv5.items.main.Item;
 import mpv5.items.main.SubItem;
+import mpv5.pluginhandling.Plugin;
 import mpv5.usermanagement.User;
 import mpv5.usermanagement.UserPlugin;
 
@@ -43,6 +44,7 @@ public class Context {
     public static String IDENTITY_FILES_TO_CONTACTS = "filestocontacts";
     public static String IDENTITY_SEARCHINDEX = "searchindex";
     public static String IDENTITY_PLUGINS_TO_USERS = "pluginstousers";
+    public static String IDENTITY_PLUGINS = "plugins";
 
     //********** identity classes **********************************************
     private static Class IDENTITY_CONTACTS_CLASS = Contact.class;
@@ -53,6 +55,7 @@ public class Context {
     private static Class HISTORY_ITEMS_CLASS = HistoryItem.class;
     private static Class IDENTITY_SUBITEMS_CLASS = SubItem.class;
     private static Class IDENTITY_USER_PLUGINS_CLASS =  UserPlugin.class;
+    private static Class IDENTITY_PLUGINS_CLASS =  Plugin.class;
 
     //********** unique constraints *******************************************
     public static String UNIQUECOLUMNS_USER = "cname";
@@ -886,6 +889,16 @@ public class Context {
         c.setDbIdentity(IDENTITY_PLUGINS_TO_USERS);
         c.setIdentityClass(IDENTITY_USER_PLUGINS_CLASS);
         c.setId(25);
+
+        return c;
+    }
+
+    public static Context getPlugins() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_PLUGINS);
+        c.setIdentityClass(IDENTITY_PLUGINS_CLASS);
+        c.setId(26);
 
         return c;
     }

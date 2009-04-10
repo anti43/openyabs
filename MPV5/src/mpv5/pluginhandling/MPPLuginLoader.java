@@ -38,6 +38,8 @@ import mpv5.usermanagement.UserPlugin;
  */
 public class MPPLuginLoader {
 public static String pluginSignature = LocalSettings.getProperty(LocalSettings.CACHE_DIR) + File.separator + "%%filename%%-mp5p.jar";
+
+
     /**
      * Loads all plugins which are assigned to the current logged in user from database or cache dir<br/>
      * does NOT call plugin.load()
@@ -58,12 +60,13 @@ public static String pluginSignature = LocalSettings.getProperty(LocalSettings.C
                 ArrayList<UserPlugin> data = DatabaseObject.getObjects(Context.getPluginsToUsers(), criterias);
                 for (int i = 0; i < data.size(); i++) {
                     UserPlugin up = data.get(i);
-                    if (!isCachedPlugin(up.__getFilename())) {
-                        Log.Debug(this, "Caching plugin: " + pluginSignature.replace("%%filename%%", up.__getFilename()));
-                        jars.add(QueryHandler.instanceOf().clone(Context.getFiles()).retrieveFile(up.__getFilename(), new File(pluginSignature.replace("%%filename%%", up.__getFilename()))));
+                    Plugin o =((Plugin)DatabaseObject.getObject(Context.getPlugins(), up.__getPluginsids()));
+                    if (!isCachedPlugin(o.__getFilename()) ){
+                        Log.Debug(this, "Caching plugin: " + pluginSignature.replace("%%filename%%", o.__getFilename()));
+                        jars.add(QueryHandler.instanceOf().clone(Context.getFiles()).retrieveFile(o.__getFilename(), new File(pluginSignature.replace("%%filename%%", o.__getFilename()))));
                     } else {
-                        Log.Debug(this, "Using cached plugin: " + pluginSignature.replace("%%filename%%", up.__getFilename()));
-                        jars.add(new File(pluginSignature.replace("%%filename%%", up.__getFilename())));
+                        Log.Debug(this, "Using cached plugin: " + pluginSignature.replace("%%filename%%", o.__getFilename()));
+                        jars.add(new File(pluginSignature.replace("%%filename%%", o.__getFilename())));
                     }
                 }
             } catch (NodataFoundException ex) {
@@ -111,5 +114,14 @@ public static String pluginSignature = LocalSettings.getProperty(LocalSettings.C
             Log.Debug(malformedURLException);
             return null;
         }
+    }
+
+    /**
+     *
+     * @param file
+     * @return
+     */
+    public MP5Plugin getPlugin(File file) {
+        return checkPlugin(file);
     }
 }

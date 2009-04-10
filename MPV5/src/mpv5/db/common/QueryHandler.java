@@ -1371,6 +1371,8 @@ public class QueryHandler implements Cloneable {
             j = new backgroundSqlQuery(ps);
             j.execute();
 
+            Log.Debug(this, "File added: " + name);
+
         } catch (Exception ex) {
             Log.Debug(this, "Datenbankfehler: " + query);
             Log.Debug(this, ex);

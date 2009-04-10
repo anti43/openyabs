@@ -14,7 +14,7 @@
  *      You should have received a copy of the GNU General Public License
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mpv5.usermanagement;
+package mpv5.pluginhandling;
 
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
@@ -24,24 +24,24 @@ import mpv5.db.common.DatabaseObject;
  *
  * @author anti
  */
-public class UserPlugin extends DatabaseObject {
+public class Plugin extends DatabaseObject{
 
-    private int pluginsids;
-    private int usersids;
+    private String description;
+    private String filename;
 
-    public UserPlugin() {
-        context.setDbIdentity(Context.IDENTITY_PLUGINS_TO_USERS);
+   public Plugin() {
+        context.setDbIdentity(Context.IDENTITY_PLUGINS);
         context.setIdentityClass(this.getClass());
     }
 
     @Override
     public String __getCName() {
-        return cname;
+       return cname;
     }
 
     @Override
     public JComponent getView() {
-        throw new UnsupportedOperationException("Not supported yet.");
+       return null;
     }
 
     @Override
@@ -49,33 +49,32 @@ public class UserPlugin extends DatabaseObject {
         cname = name;
     }
 
-
     /**
-     * @return the contactsids
+     * @return the description
      */
-    public int __getUsersids() {
-        return usersids;
+    public String __getDescription() {
+        return description;
     }
 
     /**
-     * @param contactsids the contactsids to set
+     * @param description the description to set
      */
-    public void setUsersids(int contactsids) {
-        this.usersids = contactsids;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     /**
-     * @return the pluginsids
+     * @return the filename
      */
-    public int __getPluginsids() {
-        return pluginsids;
+    public String __getFilename() {
+        return filename;
     }
 
     /**
-     * @param pluginsids the pluginsids to set
+     * @param filename the filename to set
      */
-    public void setPluginsids(int pluginsids) {
-        this.pluginsids = pluginsids;
+    public void setFilename(String filename) {
+        this.filename = filename;
     }
 
 }
