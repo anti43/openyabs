@@ -5,8 +5,6 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -15,7 +13,6 @@ import mpv5.data.PropertyStore;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
-import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryHandler;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
@@ -76,10 +73,11 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
     private void addPopupMenu() {
         popup = new JPopupMenu();
         JMenuItem jmi1;
-        popup.add(jmi1 = new JMenuItem(Messages.DELETE));
+        popup.add(jmi1 = new JMenuItem(Messages.ACTION_DELETE));
         popup.add(new JPopupMenu.Separator());
         JMenuItem jmi2;
-        popup.add(jmi2 = new JMenuItem(Messages.OPEN));
+        popup.add(jmi2 = new JMenuItem(Messages.ACTION_OPEN));
+        popup.add(new JPopupMenu.Separator());
 
         jmi1.addActionListener(new ActionListener() {
 
@@ -99,7 +97,6 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
                 MPV5View.identifierView.loadPlugin(gin);
             }
         });
-
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -158,6 +155,7 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
+        list.setToolTipText(bundle.getString("ControlPanel_Plugins.list.toolTipText")); // NOI18N
         list.setName("list"); // NOI18N
         list.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {

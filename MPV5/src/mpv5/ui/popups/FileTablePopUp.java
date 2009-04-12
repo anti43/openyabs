@@ -72,7 +72,7 @@ public class FileTablePopUp extends JPopupMenu {
             }
         });
 
-        JMenuItem i = new JMenuItem(Messages.OPEN);
+        JMenuItem i = new JMenuItem(Messages.ACTION_OPEN);
         i.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -84,7 +84,7 @@ public class FileTablePopUp extends JPopupMenu {
             }
         });
 
-        JMenuItem h = new JMenuItem(Messages.EDIT);
+        JMenuItem h = new JMenuItem(Messages.ACTION_EDIT);
        h.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -96,7 +96,7 @@ public class FileTablePopUp extends JPopupMenu {
             }
         });
 
-        JMenuItem g = new JMenuItem(Messages.DELETE);
+        JMenuItem g = new JMenuItem(Messages.ACTION_DELETE);
         g.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -143,7 +143,7 @@ public class FileTablePopUp extends JPopupMenu {
     public static void addDefaultPopupMenu(final JTable dataTable) {
 
 
-        JMenuItem i = new JMenuItem(Messages.OPEN);
+        JMenuItem i = new JMenuItem(Messages.ACTION_OPEN);
         i.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -154,7 +154,7 @@ public class FileTablePopUp extends JPopupMenu {
             }
         });
 
-        JMenuItem h = new JMenuItem(Messages.EDIT);
+        JMenuItem h = new JMenuItem(Messages.ACTION_EDIT);
         i.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -165,7 +165,7 @@ public class FileTablePopUp extends JPopupMenu {
             }
         });
 
-        JMenuItem g = new JMenuItem(Messages.OPEN);
+        JMenuItem g = new JMenuItem(Messages.ACTION_OPEN);
         i.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {

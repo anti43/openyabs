@@ -32,7 +32,7 @@ public class Messages {
     public static String INIT_GUI = "Initialising Graphical User Interface..";
     public static String INIT_LOGIN = "Logging in user..";
     public static String CACHE  ="Caching data..";
-     public static String INIT_PLUGINS = "Initialising Plugins..";
+    public static String INIT_PLUGINS = "Initialising Plugins..";
 
 
     public static String NEW_CONTACT = "New Contact";
@@ -44,10 +44,22 @@ public class Messages {
     public static String NEW_VALUE = "New Value";
     public static String NEW_COMPANY = "New Company";
     public static String ACCESS_DENIED = "Access denied.";
+
+
+    /**
+     * Actions
+     */
     public static String ACTION_CREATE = "Create";
     public static String ACTION_EDIT = "Edit";
     public static String ACTION_EXPORT = "Export";
     public static String ACTION_VIEW = "View";
+    public static String ACTION_PASTE = "Paste";
+    public static String ACTION_COPY = "Copy";
+    public static String ACTION_DELETE = "Delete";
+    public static String ACTION_OPEN = "Open";
+    public static String ACTION_REMOVE = "Remove";
+
+
     public static String SECURITYMANAGER_DENIED = "The Security Manager has DENIED your request.\nAction ";
     public static String SECURITYMANAGER_ALLOWED = "The Security Manager has ALLOWED your request.\nAction ";
     public static String CONTEXT = ", in context: ";
@@ -85,11 +97,6 @@ public class Messages {
     public static String DONE = "Task finished successfully.";
     public static String PROCESSING = "Processing: ";
     public static String LOCKED = " is now locked";
-    public static String PASTE = "Paste";
-    public static String COPY = "Copy";
-    public static String DELETE = "Delete";
-    public static String OPEN = "Open";
-    public static String EDIT = "Edit";
     public static String VALUE_NOT_VALID = "You have entered an invalid value: ";
     public static String VALUE_ALREADY_EXISTS = "The value already exists in the database and must not be duplicated: ";
     public static String ADMIN_ACCESS = "You need administrative rights to perform this action.";

@@ -1243,7 +1243,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         if (dbo.getDbIdentity().equals(Context.getContact().getDbIdentity())) {
             setDataOwner(dbo);
         } else {
-            MPV5View.addMessage(Messages.NOT_POSSIBLE + Messages.PASTE);
+            MPV5View.addMessage(Messages.NOT_POSSIBLE + Messages.ACTION_PASTE);
         }
     }
 

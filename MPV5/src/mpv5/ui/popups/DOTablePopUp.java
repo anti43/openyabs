@@ -21,8 +21,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
@@ -31,6 +29,7 @@ import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
+import mpv5.ui.frames.MPV5View;
 
 /**
  *
@@ -69,14 +68,14 @@ public class DOTablePopUp extends JPopupMenu {
     }
 
     /**
-     * Adds a Popup menu with default action (delete) to the given table
+     * Adds a Popup menu with default action (delete, open) to the given table
      * 
      * @param to A table holding DatabaseObjects, first column MUST be the ID
      * @param c The context of the DatabaeObjects
      */
     public static void addDefaultPopupMenu(final JTable to, final Context c) {
 
-        JMenuItem i = new JMenuItem(Messages.OPEN);
+        JMenuItem i = new JMenuItem(Messages.ACTION_DELETE);
         i.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -88,8 +87,20 @@ public class DOTablePopUp extends JPopupMenu {
             }
         });
 
+        JMenuItem i2 = new JMenuItem(Messages.ACTION_OPEN);
+        i.addActionListener(new ActionListener() {
 
-        new DOTablePopUp(to, new JMenuItem[]{i}, c);
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    MPV5View.identifierView.addTab(DatabaseObject.getObject(c, Integer.valueOf(to.getModel().getValueAt(to.getSelectedRow(), 0).toString())));
+                } catch (NodataFoundException ex) {
+                    Log.Debug(DOTablePopUp.class, ex);
+                }
+            }
+        });
+
+
+        new DOTablePopUp(to, new JMenuItem[]{i, i2}, c);
     }
 
     public static void clear(final JTable to) {
