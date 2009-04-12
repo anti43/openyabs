@@ -18,6 +18,7 @@ package mpv5.db.common;
 
 import java.util.HashMap;
 import mpv5.logging.Log;
+import mpv5.data.*;
 
 
 /**
@@ -124,7 +125,7 @@ public class QueryCriteria {
         String s = "";
 
         for (int i = 0; i < k.length; i++) {
-            SaveString v = getValue(k[i]);
+            mpv5.data.SaveString v = getValue(k[i]);
             s += v.getWrapper() + v.toString() + v.getWrapper() + ",";
         }
         return s.substring(0, s.length() - 1);
@@ -152,34 +153,4 @@ public class QueryCriteria {
         return s.substring(0, s.length() - 1);
     }
 }
-/**
- * Represents a <code>SaveString</code> value which <br><br/>
- * <li>Does not contain single quotes and<br/>
- * is considered to be safe to be inserted into a database<li/>
- */
-class SaveString {
 
-    private static final long serialVersionUID = 1L;
-    private String string = "";
-    private String wrapper = "";
-
-    public SaveString(String str, boolean wrapped) {
-        this.string = str.replace("'", "`");
-        if (wrapped) {
-            this.wrapper = "'";
-        }
-    }
-
-    /**
-     * Gets the String value of this SaveString
-     * @return the save, decoded string
-     */
-    @Override
-    public String toString() {
-        return string;
-    }
-
-    public String getWrapper() {
-        return wrapper;
-    }
-}

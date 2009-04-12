@@ -27,8 +27,12 @@ import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
+import mpv5.db.common.QueryCriteria;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
+import mpv5.pluginhandling.MP5Plugin;
+import mpv5.pluginhandling.MPPLuginLoader;
+import mpv5.pluginhandling.UserPlugin;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPV5View;
 
@@ -135,6 +139,14 @@ public class User extends DatabaseObject {
     @Override
     public String __getCName() {
         return cname;
+    }
+
+    /**
+     * Return this users plugins
+     * @return 
+     */
+    public MP5Plugin[] getPlugins() {
+       return new MPPLuginLoader().getPlugins();
     }
 
     public boolean isDefault() {

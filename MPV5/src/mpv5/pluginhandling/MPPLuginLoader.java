@@ -30,7 +30,7 @@ import mpv5.globals.LocalSettings;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPV5View;
-import mpv5.usermanagement.UserPlugin;
+import mpv5.pluginhandling.UserPlugin;
 
 /**
  *
@@ -90,12 +90,12 @@ public static String pluginSignature = LocalSettings.getProperty(LocalSettings.C
 
     /**
      * Checks if the plugin is already cached
-     * @param pluginid 
-     * @return the plugin jar if the file DOES NOT EXIST  in the plugin cache directory, null otherwise
+     * @param filename
+     * @return false if the file DOES NOT EXIST in the plugin cache directory, true otherwise
      */
-    public boolean isCachedPlugin(String pluginid) {
-        File f = new File(pluginSignature.replace("%%filename%%", pluginid));
-        return f.exists() && f.canRead();
+    public boolean isCachedPlugin(String filename) {
+        File f = new File(pluginSignature.replace("%%filename%%", filename));
+        return f.exists() && f.canRead() && (checkPlugin(f)!=null);
     }
 
     /**
@@ -124,4 +124,5 @@ public static String pluginSignature = LocalSettings.getProperty(LocalSettings.C
     public MP5Plugin getPlugin(File file) {
         return checkPlugin(file);
     }
+
 }

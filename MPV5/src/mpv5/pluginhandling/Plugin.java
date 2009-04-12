@@ -19,29 +19,31 @@ package mpv5.pluginhandling;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.QueryHandler;
+import mpv5.logging.Log;
 
 /**
  *
  * @author anti
  */
-public class Plugin extends DatabaseObject{
+public class Plugin extends DatabaseObject {
 
     private String description;
     private String filename;
 
-   public Plugin() {
+    public Plugin() {
         context.setDbIdentity(Context.IDENTITY_PLUGINS);
         context.setIdentityClass(this.getClass());
     }
 
     @Override
     public String __getCName() {
-       return cname;
+        return cname;
     }
 
     @Override
     public JComponent getView() {
-       return null;
+        return null;
     }
 
     @Override
@@ -77,4 +79,19 @@ public class Plugin extends DatabaseObject{
         this.filename = filename;
     }
 
+    @Override
+    public boolean delete() {
+        try {
+            QueryHandler.instanceOf().clone(Context.getFiles()).removeFile(__getFilename());
+            return super.delete();
+        } catch (Exception ex) {
+            Log.Debug(ex);
+            return false;
+        }
+    }
+
+    @Override
+    public String toString(){
+    return __getCName() + " (" +  __getDescription() + ")";
+    }
 }

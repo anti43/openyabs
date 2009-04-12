@@ -16,6 +16,7 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -28,6 +29,7 @@ import mpv5.globals.Messages;
 import mpv5.items.div.Favourite;
 import mpv5.logging.Log;
 import mpv5.pluginhandling.MP5Plugin;
+import mpv5.pluginhandling.Plugin;
 import mpv5.ui.dialogs.DialogForFile;
 
 import mpv5.ui.dialogs.Popup;
@@ -74,7 +76,7 @@ public class MPV5View extends FrameView {
      * Display a message at the bottom of the MP frame
      * @param message
      */
-    public static void addMessage(final String message) {
+    public static synchronized void addMessage(final String message) {
         Runnable runnable = new Runnable() {
 
             public void run() {
@@ -129,6 +131,8 @@ public class MPV5View extends FrameView {
     public static void show(JFrame c) {
         identifierApplication.show(c);
     }
+
+
 
 
     /**
@@ -1286,5 +1290,15 @@ public class MPV5View extends FrameView {
             MP5Plugin mP5Plugin = pluginstoBeLoaded.get(i);
             loadPlugin(mP5Plugin);
         }
+    }
+
+      /**
+     * Loads the given plugin (by calling <code>plugin.load(this)<code/>). If the plugin is a visible plugin, adds it to the main tab pane.</br>
+     * If it is a <code>Runnable<code/>, it will be started on an new thread.
+       * @param gin
+       */
+    public void loadPlugin(Plugin gin) {
+        MP5Plugin plo = new mpv5.pluginhandling.MPPLuginLoader().getPlugin(QueryHandler.instanceOf().clone(Context.getFiles()).retrieveFile(gin.__getFilename()));
+        loadPlugin(plo);
     }
 }

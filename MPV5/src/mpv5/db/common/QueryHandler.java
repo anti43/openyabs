@@ -36,7 +36,7 @@ import mpv5.items.main.Contact;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPV5View;
 import mpv5.ui.dialogs.Popup;
-import mpv5.ui.panels.ContactPanel;
+import mpv5.data.*;
 import mpv5.ui.panels.DataPanel;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.arrays.ArrayUtilities;
@@ -130,6 +130,7 @@ public class QueryHandler implements Cloneable {
 
         return returnv;
     }
+
 
     /**
      *
@@ -846,6 +847,15 @@ public class QueryHandler implements Cloneable {
      */
     public void delete(String[][] where) throws Exception {
         delete(where, null);
+    }
+
+
+    /**
+     * Deletes the given data permanently from the database
+     * @param criterias
+     */
+    public void delete(QueryCriteria criterias) {
+      delete(criterias.getKeys(),criterias.getValues(),null);
     }
 
     /**

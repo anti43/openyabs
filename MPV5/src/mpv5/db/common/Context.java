@@ -17,7 +17,7 @@ import mpv5.items.main.Item;
 import mpv5.items.main.SubItem;
 import mpv5.pluginhandling.Plugin;
 import mpv5.usermanagement.User;
-import mpv5.usermanagement.UserPlugin;
+import mpv5.pluginhandling.UserPlugin;
 
 /**
  *

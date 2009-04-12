@@ -14,7 +14,7 @@
  *      You should have received a copy of the GNU General Public License
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mpv5.usermanagement;
+package mpv5.pluginhandling;
 
 import javax.swing.JComponent;
 import mpv5.db.common.Context;

@@ -1,15 +1,21 @@
 package mpv5.ui.dialogs.subcomponents;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.SwingUtilities;
 import mpv5.data.PropertyStore;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
+import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryHandler;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
@@ -19,7 +25,8 @@ import mpv5.pluginhandling.Plugin;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPV5View;
-import mpv5.usermanagement.UserPlugin;
+import mpv5.usermanagement.MPSecurityManager;
+import mpv5.pluginhandling.UserPlugin;
 
 /**
  *
@@ -34,9 +41,11 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
     public final String UNAME = "plugins";
     private PropertyStore oldvalues;
     private static ControlPanel_Plugins ident;
+    private JPopupMenu popup;
 
     public ControlPanel_Plugins() {
         initComponents();
+        addPopupMenu();
         refresh();
         setVisible(true);
     }
@@ -64,6 +73,35 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
         }
     }
 
+    private void addPopupMenu() {
+        popup = new JPopupMenu();
+        JMenuItem jmi1;
+        popup.add(jmi1 = new JMenuItem(Messages.DELETE));
+        popup.add(new JPopupMenu.Separator());
+        JMenuItem jmi2;
+        popup.add(jmi2 = new JMenuItem(Messages.OPEN));
+
+        jmi1.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                if (MPSecurityManager.checkAdminAccess()) {
+                    Plugin gin = (Plugin) list.getSelectedValue();
+                    gin.delete();
+                    refresh();
+                }
+            }
+        });
+
+        jmi2.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                Plugin gin = (Plugin) list.getSelectedValue();
+                MPV5View.identifierView.loadPlugin(gin);
+            }
+        });
+
+    }
+
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -74,7 +112,7 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList();
+        list = new javax.swing.JList();
         jPanel5 = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
@@ -120,8 +158,13 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
-        jList1.setName("jList1"); // NOI18N
-        jScrollPane1.setViewportView(jList1);
+        list.setName("list"); // NOI18N
+        list.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                listMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(list);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -246,28 +289,36 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
-        Object[] plugs = jList1.getSelectedValues();
+        Object[] plugs = list.getSelectedValues();
         for (int i = 0; i < plugs.length; i++) {
             Plugin gin = (Plugin) plugs[i];
-            MP5Plugin plo = new MPPLuginLoader().getPlugin(QueryHandler.instanceOf().clone(Context.getFiles()).retrieveFile(gin.__getFilename()));
-            MPV5View.identifierView.loadPlugin(plo);
+            MPV5View.identifierView.loadPlugin(gin);
         }
 
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
-//        MP5Plugin[] plugs = (MP5Plugin[]) jList1.getSelectedValues();
-//
-//        for (int i = 0; i < plugs.length; i++) {
-//            MP5Plugin mP5Plugin = plugs[i];
-//
-//            UserPlugin up = new UserPlugin();
-//            up.setUsersids(MPV5View.getUser().__getIDS());
-//            up.setPluginsids(mP5Plugin.);
-//        }
+        try {
+            ArrayList<DatabaseObject> data = DatabaseObject.getReferencedObjects(MPV5View.getUser(), Context.getPluginsToUsers());
+            for (int i = 0; i < data.size(); i++) {
+                data.get(i).delete();
+            }
+        } catch (NodataFoundException ex) {
+            Log.Debug(ex);
+        }
 
+        Object[] plugs = list.getSelectedValues();
 
+        for (int i = 0; i < plugs.length; i++) {
+            Plugin gin = (Plugin) plugs[i];
+
+            UserPlugin up = new UserPlugin();
+            up.setUsersids(MPV5View.getUser().__getIDS());
+            up.setPluginsids(gin.__getIDS());
+            up.setCName(gin.__getCName());
+            up.save();
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
@@ -287,6 +338,13 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
             MPV5View.identifierView.loadPlugin(p);
         }
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void listMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listMouseClicked
+
+        if (SwingUtilities.isRightMouseButton(evt) && !list.isSelectionEmpty() && list.locationToIndex(evt.getPoint()) == list.getSelectedIndex()) {
+            popup.show(list, evt.getX(), evt.getY());
+        }
+}//GEN-LAST:event_listMouseClicked
 
     public void setValues(PropertyStore values) {
         oldvalues = values;
@@ -308,12 +366,12 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JList jList1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private mpv5.ui.beans.LabeledTextChooser labeledTextChooser2;
+    private javax.swing.JList list;
     // End of variables declaration//GEN-END:variables
 
     public ControlApplet instanceOf() {
@@ -361,7 +419,7 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
             sel[i] = integer.intValue();
         }
 
-        jList1.setModel(xl);
-        jList1.setSelectedIndices(sel);
+        list.setModel(xl);
+        list.setSelectedIndices(sel);
     }
 }

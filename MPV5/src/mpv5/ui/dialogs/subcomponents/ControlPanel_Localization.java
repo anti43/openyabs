@@ -14,7 +14,7 @@ import mpv5.logging.Log;
 import mpv5.resources.languages.LanguageManager;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.frames.MPV5View;
-import mpv5.usermanagement.UserPlugin;
+import mpv5.pluginhandling.UserPlugin;
 
 
 /**
