@@ -28,8 +28,20 @@ import mpv5.utils.files.FileReaderWriter;
  */
 public class Log {
 
+    /**
+     *
+     * Set the logging to NONE
+     */
     public static final int LOGLEVEL_NONE = 0;
+    /**
+     *
+     * Gives basic messages 
+     */
     public static final int LOGLEVEL_NORMAL = 1;
+    /**
+     *
+     * Produces a huge amount of messages, and error stack traces
+     */
     public static final int LOGLEVEL_DEBUG = 2;
     private static int loglevel = 0;
     private static LogConsole logger = new LogConsole();
@@ -73,7 +85,7 @@ public class Log {
         switch (loglevel) {
             case LOGLEVEL_DEBUG:
                 write(sourcen + ": " + message);
-                if ( message !=null && message.toString().contains("Exception")) {
+                if (message != null && message.toString().contains("Exception")) {
                     ((Exception) message).printStackTrace();
                     write("\nCaused by:\n");
                     try {
@@ -104,8 +116,6 @@ public class Log {
     public static void Debug(Class source, Object message, boolean alwaysToKonsole) {
         Debug(source, message);
     }
-
-   
 
     /**
      * Print a list

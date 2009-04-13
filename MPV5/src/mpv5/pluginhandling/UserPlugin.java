@@ -21,7 +21,7 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 
 /**
- *
+ * This binds plugins to users
  * @author anti
  */
 public class UserPlugin extends DatabaseObject {

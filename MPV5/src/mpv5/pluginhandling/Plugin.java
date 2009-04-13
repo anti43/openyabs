@@ -23,7 +23,7 @@ import mpv5.db.common.QueryHandler;
 import mpv5.logging.Log;
 
 /**
- *
+ * This is the bridge between MP5 Plugins and jars in the database
  * @author anti
  */
 public class Plugin extends DatabaseObject {
