@@ -24,15 +24,18 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComponent;
+import javax.swing.SwingUtilities;
+import mpv5.data.PropertyStore;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria;
+import mpv5.db.common.QueryData;
+import mpv5.db.common.QueryHandler;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.pluginhandling.MP5Plugin;
 import mpv5.pluginhandling.MPPLuginLoader;
-import mpv5.pluginhandling.UserPlugin;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPV5View;
 
@@ -55,7 +58,11 @@ public class User extends DatabaseObject {
     private Date datelastlog = new Date();
     public static User DEFAULT = new User("Default User", "nobody", -1, 4343);
     public static HashMap<String, String> userCache = new HashMap<String, String>();
+    private static PropertyStore properties = new PropertyStore();
 
+    /**
+     * Caches all available usernames and IDs
+     */
     public static void cacheUser() {
         userCache.clear();
         userCache.put(Integer.toBinaryString(DEFAULT.__getIDS()), DEFAULT.__getCName());
@@ -66,10 +73,15 @@ public class User extends DatabaseObject {
                 userCache.put(Integer.toBinaryString(databaseObject.__getIDS()), databaseObject.__getCName());
             }
         } catch (NodataFoundException ex) {
-            Logger.getLogger(User.class.getName()).log(Level.SEVERE, null, ex);
+            Log.Debug(User.class, ex.getMessage());
         }
     }
 
+    /**
+     * Tries to find the given ID in the DB
+     * @param forId
+     * @return A username if existing, else "unknown"
+     */
     public static String getUsername(int forId) {
         if (userCache.containsKey(Integer.toBinaryString(forId))) {
             return userCache.get(Integer.toBinaryString(forId));
@@ -82,6 +94,11 @@ public class User extends DatabaseObject {
         return "unknown";
     }
 
+    /**
+     * Tries to find an User with the given name
+     * @param username
+     * @return
+     */
     public static int getUserId(String username) {
 
         if (userCache.containsValue(username)) {
@@ -111,6 +128,11 @@ public class User extends DatabaseObject {
         return DEFAULT.ids;
     }
 
+    /**
+     * Tries to find the given ID in the DB
+     * @param userid
+     * @throws mpv5.db.common.NodataFoundException
+     */
     public User(int userid) throws NodataFoundException {
         context.setDbIdentity(Context.IDENTITY_USERS);
         this.fetchDataOf(userid);
@@ -141,14 +163,19 @@ public class User extends DatabaseObject {
         return cname;
     }
 
+
     /**
      * Return this users plugins
      * @return 
      */
     public MP5Plugin[] getPlugins() {
-       return new MPPLuginLoader().getPlugins();
+        return new MPPLuginLoader().getPlugins();
     }
 
+    /**
+     *
+     * @return True if this user IS User.DEFAULT
+     */
     public boolean isDefault() {
         if (getName().equals(DEFAULT.__getCName()) && __getIDS().intValue() == DEFAULT.__getIDS().intValue()) {
             return true;
@@ -169,11 +196,19 @@ public class User extends DatabaseObject {
      * Logs in this user into MP
      */
     public void login() {
+        setProperties();
         MPV5View.setUser(this);
         Lock.unlock(MPV5View.identifierFrame);
-        setDatelastlog(new Date());
-        setIsloggedin(true);
-        save();
+        Runnable runnable = new Runnable() {
+
+            public void run() {
+                setDatelastlog(new Date());
+                setIsloggedin(true);
+                save();
+            }
+        };
+
+        SwingUtilities.invokeLater(runnable);
     }
 
     /**
@@ -194,6 +229,9 @@ public class User extends DatabaseObject {
 
     @Override
     public boolean save() {
+
+        saveProperties();
+
         if (!isDefault()) {
             return super.save();
         } else {
@@ -387,6 +425,48 @@ public class User extends DatabaseObject {
 
     @Override
     public JComponent getView() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new mpv5.ui.dialogs.subcomponents.ControlPanel_Users(this);
+    }
+
+    /**
+     * Set a property for this user
+     * @param key
+     * @param value
+     */
+    public void setProperty(String key, String value) {
+        properties.addProperty(key, value);
+    }
+
+    /**
+     * Retrieve all properties from this user
+     * @return 
+     */
+    public PropertyStore getProperties() {
+        return properties;
+    }
+
+    /**
+     * Saves the user properties
+     */
+    public void saveProperties() {
+        QueryData q = new QueryData();
+        q.parse(properties);
+        QueryCriteria c = new QueryCriteria();
+        c.add("usersids", __getIDS());
+        QueryHandler.instanceOf().clone(Context.getProperties()).delete(c);
+        if (q.hasValues()) {
+            QueryHandler.instanceOf().clone(Context.getProperties()).insert(q, null);
+        }
+    }
+
+    private void setProperties() {
+        QueryCriteria criteria = new QueryCriteria();
+        criteria.add("usersids", ids);
+        properties = new PropertyStore();
+        try {
+            properties.addAll(QueryHandler.instanceOf().clone(Context.getProperties()).select("cname, value", criteria));
+        } catch (NodataFoundException ex) {
+            Log.Debug(this, ex.getMessage());
+        }
     }
 }

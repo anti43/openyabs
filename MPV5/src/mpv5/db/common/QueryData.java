@@ -16,16 +16,16 @@
  */
 package mpv5.db.common;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import mpv5.logging.Log;
 import mpv5.data.*;
 
-
 /**
- * This class is used to store criterias for <code>Select</code> queries
+ * This class is used to put any kind of data before passing it to the <code>QueryHandler</code> for transmission.
  * @author anti43
  */
-public class QueryCriteria {
+public class QueryData {
 
     /**
      * Generate a <code>SaveString<code/>
@@ -36,7 +36,22 @@ public class QueryCriteria {
         return new SaveString(s, true);
     }
     private HashMap<String, SaveString> list = new HashMap<String, SaveString>();
-    public QueryCriteria() {
+
+    /**
+     * This is a legacy constructor, to speed up the conversion of old style data into new style data
+     * what  : {set, values}
+     * @param what
+     */
+    public QueryData(String[] what) {
+        String[] keys = what[0].split(",");
+        String[] vals = what[1].split(",");
+
+        for (int i = 0; i < vals.length; i++) {
+            add(keys[i], vals[i]);
+        }
+    }
+
+    public QueryData() {
     }
 
     /**
@@ -75,6 +90,24 @@ public class QueryCriteria {
 
     /**
      *
+     * @return True if there is at least one value
+     */
+    public boolean hasValues() {
+        return !list.isEmpty();
+    }
+
+    /**
+     * Mask backslashes with even more backslashes
+     * @param string
+     * @return
+     */
+    public String maskBackslashes(String string) {
+        Log.Debug(QueryData.class, "Masking Backslashes!");
+        return new SaveString(string.replaceAll("\\\\", "\\\\\\\\"), true).toString();
+    }
+
+    /**
+     *
      * @return An array of keys
      */
     public String[] getKeys() {
@@ -95,7 +128,7 @@ public class QueryCriteria {
      * with String values wrapped in single quotes
      * @return
      */
-    private String getValuesString() {
+    public String getValuesString() {
         String[] k = getKeys();
         String s = "";
 
@@ -103,9 +136,13 @@ public class QueryCriteria {
             mpv5.data.SaveString v = getValue(k[i]);
             s += v.getWrapper() + v.toString() + v.getWrapper() + ",";
         }
-        return s.substring(0, s.length() - 1);
+        if (s.length() > 1) {
+            return s.substring(0, s.length() - 1);
+        } else {
+            return s;
+        }
     }
-    
+
     /**
      * 
      * @return An array of all values, in getKeys() - order
@@ -114,6 +151,35 @@ public class QueryCriteria {
         return getValuesString().split(",");
     }
 
+    /**
+     * Generates a comma separated String representation of the current keys
+     * @return
+     */
+    public String getKeysString() {
+        String[] k = getKeys();
+        String s = "";
 
+        for (int i = 0; i < k.length; i++) {
+            s += k[i] + ",";
+        }
+        if (s.length() > 1) {
+            return s.substring(0, s.length() - 1);
+        } else {
+            return s;
+        }
+    }
+
+    /**
+     * This method acts as bridge between  {@link PropertyStore} and {@link QueryData}
+     * All data will be of type <code>String</code>
+     * @param properties
+     */
+    public void parse(PropertyStore properties) {
+        ArrayList<String[]> data = properties.getList();
+        for (int i = 0; i < data.size(); i++) {
+            String[] s = data.get(i);
+            add(s[0], s[1]);
+        }
+    }
 }
 

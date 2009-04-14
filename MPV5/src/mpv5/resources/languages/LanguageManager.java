@@ -32,6 +32,7 @@ import javax.swing.DefaultComboBoxModel;
 import mpv5.db.common.Context;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria;
+import mpv5.db.common.QueryData;
 import mpv5.db.common.QueryHandler;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
@@ -85,7 +86,7 @@ public class LanguageManager {
                     String[][] countries = r.toArray(r.getSubRootElement("countries"));
                     for (int i = 0; i < countries.length; i++) {
                         String[] country = countries[i];
-                        QueryCriteria t = new QueryCriteria();
+                        QueryData t = new QueryData();
                         t.add("cname", country[1]);
                         t.add("iso", Integer.valueOf(country[2]));
                         QueryHandler.instanceOf().clone(Context.getCountries()).insert(t, Messages.DONE);
@@ -257,7 +258,7 @@ public class LanguageManager {
         if (hasNeededKeys(file)) {
             try {
                 String dbname = QueryHandler.instanceOf().clone(Context.getFiles()).insertFile(file);
-                 QueryCriteria t = new QueryCriteria();
+                 QueryData t = new QueryData();
                  t.add("cname", langid);
                  t.add("longname", langname);
                  t.add("filename", dbname);

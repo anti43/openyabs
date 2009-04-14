@@ -45,6 +45,7 @@ public class Context {
     public static String IDENTITY_SEARCHINDEX = "searchindex";
     public static String IDENTITY_PLUGINS_TO_USERS = "pluginstousers";
     public static String IDENTITY_PLUGINS = "plugins";
+    public static String IDENTITY_PROPERTIES_TO_USERS = "userproperties";
 
     //********** identity classes **********************************************
     private static Class IDENTITY_CONTACTS_CLASS = Contact.class;
@@ -192,7 +193,7 @@ public class Context {
     /**
      * A list of all available contexts
      */
-    public static ArrayList<Context> allContexts = new ArrayList<Context>(Arrays.asList(new Context[]{
+    private static ArrayList<Context> allContexts = new ArrayList<Context>(Arrays.asList(new Context[]{
                 getCompany(),
                 getContact(),
                 getCustomer(),
@@ -215,7 +216,10 @@ public class Context {
                 getFilesToContacts(),
                 getHistory(),
                 getCountries(),
-                getProducts()
+                getProducts(),
+                getPlugins(),
+                getPluginsToUsers(),
+                getProperties()
             }));
     private String[] searchHeaders;
     private ArrayList<String[]> references = new ArrayList<String[]>();
@@ -899,6 +903,15 @@ public class Context {
         c.setDbIdentity(IDENTITY_PLUGINS);
         c.setIdentityClass(IDENTITY_PLUGINS_CLASS);
         c.setId(26);
+
+        return c;
+    }
+
+     public static Context getProperties() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_PROPERTIES_TO_USERS);
+        c.setId(27);
 
         return c;
     }

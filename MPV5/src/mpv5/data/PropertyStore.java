@@ -16,11 +16,13 @@
  */
 package mpv5.data;
 
+import java.awt.AWTEvent;
 import java.util.ArrayList;
+import javax.swing.JComponent;
 import mpv5.logging.Log;
 
 /**
- *
+ * PropertyStores is used to store key-value pairs
  * @author anti43
  */
 public class PropertyStore {
@@ -33,13 +35,22 @@ public class PropertyStore {
     public PropertyStore() {
     }
 
+
     /**
      * Creates a new property store and initially adds the given values
-     * @param string
+     * @param data
      */
-    public PropertyStore(String[][] string) {
-        for (int i = 0; i < string.length; i++) {
-            addProperty(string[i][0], string[i][1]);
+    public PropertyStore(Object[][] data) {
+       addAll(data);
+    }
+
+    /**
+     * Adds all
+     * @param data {key, value}
+     */
+    public void addAll(Object[][] data) {
+       for (int i = 0; i < data.length; i++) {
+            addProperty(data[i][0].toString(), String.valueOf(data[i][1]));
         }
     }
 
@@ -52,11 +63,12 @@ public class PropertyStore {
         list.add(new String[]{name, value});
     }
 
+
     /**
-     * 
+     *  Generate a List of String(key-value.toString()) pairs
      * @return The complete list of properties and values
      */
-    public ArrayList getList() {
+    public ArrayList<String[]> getList() {
         return list;
     }
 
@@ -77,6 +89,91 @@ public class PropertyStore {
     }
 
     /**
+     * Return a double property. Will return NULL if the property is not parseable as double
+     * @param key
+     * @param desiredClass
+     * @return
+     */
+    public double getProperty(String key, double desiredClass) {
+        String t = getProperty(key);
+        if (t == null) {
+            return 0d;
+        } else {
+            try {
+                return Double.valueOf(t);
+            } catch (NumberFormatException numberFormatException) {
+                return 0d;
+            }
+        }
+    }
+  /**
+     * Convenience method to retrieve visual component properties stored as
+     * <br/>comp.getClass().getName() + "$" + evt.getSource()
+     * @param comp
+     * @param evt
+     * @param b
+     * @return
+     */
+    public double getProperty(JComponent comp, JComponent source, double b) {
+        return getProperty(comp.getClass().getName() + "$" + source.getClass(), b);
+    }
+       /**
+     * Return a Integer property. Will return 0 if the property is not parseable as Integer
+     * @param key
+     * @param desiredClass
+     * @return
+     */
+    public int getProperty(String key, int desiredClass) {
+        String t = getProperty(key);
+        if (t == null) {
+            return 0;
+        } else {
+            try {
+                return Integer.valueOf(t);
+            } catch (NumberFormatException numberFormatException) {
+                return 0;
+            }
+        }
+    }
+  /**
+     * Convenience method to retrieve visual component properties stored as
+     * <br/>comp.getClass().getName() + "$" + evt.getSource()
+     * @param comp
+     * @param evt
+     * @param b
+     * @return
+     */
+    public int getProperty(JComponent comp,  JComponent source, int b) {
+        return getProperty(comp.getClass().getName() + "$" + source.getClass(), b);
+    }
+       /**
+     * Return a boolean property. Will return false if the property is not parseable as boolean
+     * @param key
+     * @param desiredClass
+     * @return
+     */
+    public boolean getProperty(String key, boolean desiredClass) {
+        String t = getProperty(key);
+        if (t == null) {
+            return false;
+        } else {
+            return Boolean.parseBoolean(t);
+        }
+    }
+
+    /**
+     * Convenience method to retrieve visual component properties stored as
+     * <br/>comp.getClass().getName() + "$" + evt.getSource()
+     * @param comp
+     * @param evt
+     * @param b
+     * @return
+     */
+    public boolean getProperty(JComponent comp, JComponent source, boolean b) {
+        return getProperty(comp.getClass().getName() + "$" + source.getClass(), b);
+    }
+
+    /**
      * Changes the given property, if exists and
      * creates a new, if not.
      * @param name
@@ -94,6 +191,28 @@ public class PropertyStore {
         }
         if (!found) {
             addProperty(name, newvalue);
+        }
+    }
+
+    /**
+     * Changes the given property, if exists and
+     * creates a new, if not. Stored as comp.getClass().getName() + "$" + evt.getSource()
+     * @param comp
+     * @param evt
+     * @param newvalue
+     */
+    public void changeProperty(JComponent comp, AWTEvent evt, Object newvalue) {
+        boolean found = false;
+        if (list.size() > 0) {
+            for (int i = list.size(); i > 0; i--) {
+                if (list.get(i - 1)[0].equals(comp.getClass().getName() + "$" + evt.getSource().getClass())) {
+                    list.set(i - 1, new String[]{comp.getClass().getName() + "$" + evt.getSource().getClass(), String.valueOf(newvalue)});
+                    found = true;
+                }
+            }
+        }
+        if (!found) {
+            addProperty(comp.getClass().getName() + "$" + evt.getSource().getClass(), String.valueOf(newvalue));
         }
     }
 

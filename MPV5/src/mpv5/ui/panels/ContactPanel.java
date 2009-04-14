@@ -79,7 +79,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     private static final long serialVersionUID = 1L;
     public static final int COMPANY = 4;
     private Contact dataOwner;
-    private DataPanelTB tb = new mpv5.ui.toolbars.DataPanelTB(this);
+    private DataPanelTB tb;
     private SearchPanel sp;
 
     /** Creates new form ContactPanel
@@ -88,14 +88,13 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     public ContactPanel(Context context) {
         initComponents();
         sp = new SearchPanel(context, this);
+        tb = new mpv5.ui.toolbars.DataPanelTB(this);
         toolbarpane.add(tb, BorderLayout.CENTER);
         dataOwner = new Contact();
         showSearchBar(true);
         refresh();
         dateadded.setText(DateConverter.getTodayDefDate());
         addedby.setText(MPV5View.getUser().getName());
-
-//        new Watcher(this, ids_);
     }
 
     public DatabaseObject getDataOwner() {

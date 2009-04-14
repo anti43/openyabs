@@ -131,7 +131,6 @@ public class QueryHandler implements Cloneable {
         return returnv;
     }
 
-
     /**
      *
      * @param context
@@ -427,7 +426,7 @@ public class QueryHandler implements Cloneable {
      * @param uniquecols
      * @return
      */
-    public boolean checkUniqueness(QueryCriteria vals, int[] uniquecols) {
+    public boolean checkUniqueness(QueryData vals, int[] uniquecols) {
         String[] values = vals.getKeys();
 
         if (uniquecols != null) {
@@ -450,7 +449,7 @@ public class QueryHandler implements Cloneable {
      * @return
      */
     public boolean checkUniqueness(String column, String value) {
-        QueryCriteria t = new QueryCriteria();
+        QueryData t = new QueryData();
         t.add(column, value);
         return checkUniqueness(t, new int[]{0});
     }
@@ -501,7 +500,7 @@ public class QueryHandler implements Cloneable {
      * @param jobmessage
      * @return id (unique) of the inserted row
      */
-    public int insert(QueryCriteria what, int[] uniquecols, String jobmessage) {
+    public int insert(QueryData what, int[] uniquecols, String jobmessage) {
 
         String query = query = "INSERT INTO " + table + " (" + what.getKeysString() + " ) VALUES (" + what.getValuesString() + ") ";
 
@@ -521,10 +520,9 @@ public class QueryHandler implements Cloneable {
      * @param jobmessage The message to be displayd after a successful run
      * @return id of inserted row
      */
-    public int insert(QueryCriteria what, String jobmessage) {
+    public int insert(QueryData what, String jobmessage) {
         return insert(what, (int[]) null, jobmessage);
     }
-
 
     /**
      *  This is a special insert method for the History feature
@@ -564,11 +562,9 @@ public class QueryHandler implements Cloneable {
      * @param where : {value, comparison, "'"}
      * @param jobmessage
      */
-    public void update(QueryCriteria what, String[] where, String jobmessage) {
+    public void update(QueryData what, String[] where, String jobmessage) {
 
         String query;
-//        Log.Debug(this, what);
-
         String[] a = what.getKeys();
         String c = "";
 
@@ -576,11 +572,32 @@ public class QueryHandler implements Cloneable {
             c += a[i] + " = " + what.getValue(a[i]).getWrapper() + what.getValue(a[i]).toString() + what.getValue(a[i]).getWrapper() + ", ";
         }
 
-        c = c.substring(0, c.length() - 2);
+        if (c.length() > 2) {
+            c = c.substring(0, c.length() - 2);
+        }
 
         query = "UPDATE " + table + " SET " + c + " WHERE " + table + "." + where[0] + " = " + where[2] + where[1] + where[2];
         freeUpdateQuery(query, mpv5.usermanagement.MPSecurityManager.EDIT, jobmessage);
-//        stop();
+    }
+
+    /**
+     *
+     * @param q The data
+     * @param criteria Only the "ids" criterium will be used
+     * @param jobmessage
+     */
+    public void update(QueryData q, QueryCriteria criteria, String jobmessage) {
+        update(q, Integer.valueOf(criteria.getValue("ids").toString()), jobmessage);
+    }
+
+    /**
+     *
+     * @param q The data
+     * @param doId The row id
+     * @param jobmessage
+     */
+    public void update(QueryData q, int doId, String jobmessage) {
+        update(q, new String[]{"ids", String.valueOf(doId), ""}, jobmessage);
     }
 
     /**
@@ -821,11 +838,11 @@ public class QueryHandler implements Cloneable {
         for (int i = 0; i < haveValues.length; i++) {
             Object object = haveValues[i];
             String column = whereColumns[i];
-            if (object instanceof Number) {
+//            if (object instanceof Number) {
                 query += column + "=" + object.toString();
-            } else {
-                query += column + "='" + object.toString() + "'";
-            }
+//            } else {
+//                query += column + "='" + object.toString() + "'";
+//            }
 
             if ((i + 1) != haveValues.length) {
                 query += " AND ";
@@ -849,13 +866,12 @@ public class QueryHandler implements Cloneable {
         delete(where, null);
     }
 
-
     /**
      * Deletes the given data permanently from the database
      * @param criterias
      */
     public void delete(QueryCriteria criterias) {
-      delete(criterias.getKeys(),criterias.getValues(),null);
+        delete(criterias.getKeys(), criterias.getValues(), null);
     }
 
     /**
@@ -1661,11 +1677,11 @@ public class QueryHandler implements Cloneable {
 
         @Override
         public void done() {
-            QueryCriteria x;
+            QueryData x;
             try {
 
-                x = new QueryCriteria(new String[]{"cname,filename, description", file.getName() + "," + get() + "," + descriptiveText});
-                x.add("contactsids",dataOwner.__getIDS());
+                x = new QueryData(new String[]{"cname,filename, description", file.getName() + "," + get() + "," + descriptiveText});
+                x.add("contactsids", dataOwner.__getIDS());
                 QueryHandler.instanceOf().clone(Context.getFilesToContacts()).insert(x, Messages.FILE_SAVED + file.getName());
                 MPV5View.addMessage(Messages.FILE_SAVED + file.getName());
                 if (viewToBeNotified != null) {

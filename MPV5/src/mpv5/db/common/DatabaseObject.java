@@ -210,7 +210,7 @@ public abstract class DatabaseObject {
                 } else {
                     Log.Debug(this, "Updating dataset: " + ids + " within context '" + context + "'");
                     message = this.__getCName() + Messages.UPDATED;
-                    QueryHandler.instanceOf().clone(context).update(collect(), new String[]{"ids", String.valueOf(ids), ""}, this.__getCName() + Messages.UPDATED);
+                    QueryHandler.instanceOf().clone(context).update(collect(),  ids, this.__getCName() + Messages.UPDATED);
                 }
 
                 final String fmessage = message;
@@ -316,9 +316,9 @@ public abstract class DatabaseObject {
     /**
      * Collect the data to masked/valid DB String array
      */
-    private QueryCriteria collect() {
+    private QueryData collect() {
 
-        QueryCriteria t = new QueryCriteria();
+        QueryData t = new QueryData();
         String left = "";
         Object tempval;
 

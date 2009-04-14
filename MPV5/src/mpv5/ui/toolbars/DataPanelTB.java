@@ -32,7 +32,6 @@ import mpv5.ui.frames.MPV5View;
 import mpv5.ui.panels.DataPanel;
 import mpv5.utils.print.PrintJob;
 
-
 /**
  *
  * @author anti43
@@ -58,6 +57,7 @@ public class DataPanelTB extends javax.swing.JPanel {
         initComponents();
         parents = aThis;
         jButton21.setEnabled(LocalSettings.hasProperty("DataLock"));
+        parents.showSearchBar(!MPV5View.getUser().getProperties().getProperty(this, jToggleButton1,true));
     }
 
     public void setMinimalFunctionality(boolean on) {
@@ -124,6 +124,11 @@ public class DataPanelTB extends javax.swing.JPanel {
         jToggleButton1.setFocusable(false);
         jToggleButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jToggleButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToggleButton1.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jToggleButton1ItemStateChanged(evt);
+            }
+        });
         jToggleButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jToggleButton1ActionPerformed(evt);
@@ -321,9 +326,12 @@ public class DataPanelTB extends javax.swing.JPanel {
 
     private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
 
-          parents.showSearchBar(!jToggleButton1.isSelected());
-
+        parents.showSearchBar(!jToggleButton1.isSelected());
     }//GEN-LAST:event_jToggleButton1ActionPerformed
+
+    private void jToggleButton1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jToggleButton1ItemStateChanged
+        MPV5View.getUser().getProperties().changeProperty(this, evt, jToggleButton1.isSelected());
+    }//GEN-LAST:event_jToggleButton1ItemStateChanged
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToolBar commonActionsToolbar;
@@ -376,5 +384,4 @@ public class DataPanelTB extends javax.swing.JPanel {
             Popup.notice(Messages.DEFAULT_USER);
         }
     }
-
 }
