@@ -12,7 +12,7 @@ import java.util.Hashtable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Icon;
-import javax.swing.JComponent;
+import mpv5.db.common.Context;
 import javax.swing.SwingUtilities;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
@@ -23,6 +23,8 @@ import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPV5View;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
+import javax.swing.JComponent;
+
 
 /**
  * Database Objects reflect a row in a table, and can parse graphical and
@@ -34,7 +36,7 @@ public abstract class DatabaseObject {
     /**
      * The db context of this do
      */
-    public Context context = new Context(this);
+    public Context context = new Context(this) {};
     /**
      * The unique id, or 0 if it is a new do
      */
@@ -59,11 +61,13 @@ public abstract class DatabaseObject {
     private int intaddedby = 0;
     private Date dateadded = new Date();
 
-    /**
-     *
-     * @return The mandatory name
-     */
-    public abstract String __getCName();
+    public String __getCName() {
+        return cname;
+    }
+    public void setCName(String name) {
+        cname = name;
+    }
+
 
     /**
      *
@@ -118,12 +122,7 @@ public abstract class DatabaseObject {
         }
     }
 
-//    private Icon ICON_CONTACT = new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/agt_family.png"));
-    /**
-     * Set the mandatory name
-     * @param name
-     */
-    public abstract void setCName(String name);
+
 
     /**
      *

@@ -57,7 +57,8 @@ public class DataPanelTB extends javax.swing.JPanel {
         initComponents();
         parents = aThis;
         jButton21.setEnabled(LocalSettings.hasProperty("DataLock"));
-        parents.showSearchBar(!MPV5View.getUser().getProperties().getProperty(this, jToggleButton1,true));
+        parents.showSearchBar(!MPV5View.getUser().getProperties().getProperty(this,"jToggleButton1",true));
+        jToggleButton1.setSelected(MPV5View.getUser().getProperties().getProperty(this,"jToggleButton1",true));
     }
 
     public void setMinimalFunctionality(boolean on) {
@@ -330,7 +331,7 @@ public class DataPanelTB extends javax.swing.JPanel {
     }//GEN-LAST:event_jToggleButton1ActionPerformed
 
     private void jToggleButton1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jToggleButton1ItemStateChanged
-        MPV5View.getUser().getProperties().changeProperty(this, evt, jToggleButton1.isSelected());
+        MPV5View.getUser().getProperties().changeProperty(this, "jToggleButton1", jToggleButton1.isSelected());
     }//GEN-LAST:event_jToggleButton1ItemStateChanged
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

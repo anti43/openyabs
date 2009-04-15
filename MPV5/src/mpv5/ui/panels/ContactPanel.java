@@ -91,7 +91,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         tb = new mpv5.ui.toolbars.DataPanelTB(this);
         toolbarpane.add(tb, BorderLayout.CENTER);
         dataOwner = new Contact();
-        showSearchBar(true);
+//        showSearchBar(true);
         refresh();
         dateadded.setText(DateConverter.getTodayDefDate());
         addedby.setText(MPV5View.getUser().getName());

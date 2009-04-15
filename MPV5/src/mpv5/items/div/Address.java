@@ -43,15 +43,6 @@ public class Address extends DatabaseObject {
         context.setIdentityClass(this.getClass());
     }
 
-    @Override
-    public String __getCName() {
-        return cname;
-    }
-
-    @Override
-    public void setCName(String name) {
-        cname = name;
-    }
 
     /**
      * @return the taxnumber

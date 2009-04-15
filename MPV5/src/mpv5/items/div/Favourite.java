@@ -44,20 +44,7 @@ public class Favourite extends DatabaseObject {
         setItemsids(dato.__getIDS());
     }
 
-    /**
-     * @return the name
-     */
-    public String __getCName() {
-        return cname;
-    }
 
-
-    /**
-     * @param name the name to set
-     */
-    public void setCName(String name) {
-        this.cname = name;
-    }
 
     /**
      * @return the userid

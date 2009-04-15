@@ -33,6 +33,7 @@ import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryData;
 import mpv5.db.common.QueryHandler;
 import mpv5.globals.Messages;
+import mpv5.items.div.Property;
 import mpv5.logging.Log;
 import mpv5.pluginhandling.MP5Plugin;
 import mpv5.pluginhandling.MPPLuginLoader;
@@ -163,7 +164,6 @@ public class User extends DatabaseObject {
         return cname;
     }
 
-
     /**
      * Return this users plugins
      * @return 
@@ -196,8 +196,8 @@ public class User extends DatabaseObject {
      * Logs in this user into MP
      */
     public void login() {
-        setProperties();
         MPV5View.setUser(this);
+        setProperties();
         Lock.unlock(MPV5View.identifierFrame);
         Runnable runnable = new Runnable() {
 
@@ -215,6 +215,7 @@ public class User extends DatabaseObject {
      * Logs out this user
      */
     public void logout() {
+        saveProperties();
         MPV5View.setUser(DEFAULT);
         if (!isDefault()) {
             setIsloggedin(false);
@@ -229,9 +230,6 @@ public class User extends DatabaseObject {
 
     @Override
     public boolean save() {
-
-        saveProperties();
-
         if (!isDefault()) {
             return super.save();
         } else {
@@ -449,24 +447,55 @@ public class User extends DatabaseObject {
      * Saves the user properties
      */
     public void saveProperties() {
-        QueryData q = new QueryData();
-        q.parse(properties);
+
+        Runnable runnable = new Runnable() {
+
+            public void run() {
+                if (properties.isChanged()) {
+                    ArrayList<String[]> l = properties.getList();
+                    for (int i = 0; i < l.size(); i++) {
+                        String[] d = l.get(i);
+                        Property p = new Property();
+                        p.setValue(d[1]);
+                        p.setCName(d[0]);
+                        p.setUsersids(getID());
+                        p.save();
+                    }
+                }
+                properties.setChanged(false);
+            }
+        };
+
+        SwingUtilities.invokeLater(runnable);
+    }
+
+    /**
+     * Delete the users properties
+     */
+    public void deleteProperties() {
         QueryCriteria c = new QueryCriteria();
         c.add("usersids", __getIDS());
         QueryHandler.instanceOf().clone(Context.getProperties()).delete(c);
-        if (q.hasValues()) {
-            QueryHandler.instanceOf().clone(Context.getProperties()).insert(q, null);
-        }
     }
 
     private void setProperties() {
-        QueryCriteria criteria = new QueryCriteria();
-        criteria.add("usersids", ids);
-        properties = new PropertyStore();
-        try {
-            properties.addAll(QueryHandler.instanceOf().clone(Context.getProperties()).select("cname, value", criteria));
-        } catch (NodataFoundException ex) {
-            Log.Debug(this, ex.getMessage());
-        }
+        Runnable runnable = new Runnable() {
+
+            public void run() {
+                QueryCriteria criteria = new QueryCriteria();
+                criteria.add("usersids", ids);
+                properties = new PropertyStore();
+                try {
+                    properties.addAll(QueryHandler.instanceOf().clone(Context.getProperties()).select("cname, value", criteria));
+//            if (Log.getLoglevel() == Log.LOGLEVEL_DEBUG) {
+//                properties.print();
+//            }
+                } catch (NodataFoundException ex) {
+                    Log.Debug(this, ex.getMessage());
+                }
+            }
+        };
+
+        SwingUtilities.invokeLater(runnable);
     }
 }

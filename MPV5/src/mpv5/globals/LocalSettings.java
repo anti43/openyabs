@@ -97,6 +97,7 @@ public class LocalSettings {
      * @param value
      */
     public static void setProperty(String name, String value) {
+        if(value==null)value = "null";
         Log.Debug(LocalSettings.class, "Changing property '" + name + "' to: " + value);
         cookie.changeProperty(name, value);
     }
@@ -127,7 +128,7 @@ public class LocalSettings {
             XMLReader read = new XMLReader();
             read.newDoc(new File(Main.SETTINGS_FILE), false);
             cookie = read.readInto("localsettings", "connection", "1", cookie);
-            cookie.print();
+//            cookie.print();
             Log.Debug(LocalSettings.class, "Finished local settings.");
         } catch (Exception e) {
             throw new FileNotFoundException(Main.SETTINGS_FILE);

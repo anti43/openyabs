@@ -37,16 +37,7 @@ public class HistoryItem extends DatabaseObject {
         context.setDbIdentity(Context.IDENTITY_HISTORY);
         context.setIdentityClass(this.getClass());
     }
-    
-    @Override
-    public String __getCName() {
-        return cname;
-    }
 
-    @Override
-    public void setCName(String name) {
-        cname = name;
-    }
 
     /**
      * @return the user

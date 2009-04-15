@@ -17,13 +17,11 @@ import mpv5.ui.parents.Position;
 import mpv5.usermanagement.User;
 import mpv5.utils.text.MD5HashGenerator;
 
-
 /**
  *
  * @author  Andreas
  */
 public class LoginScreen extends javax.swing.JFrame {
-
 
     /** Creates new form login
 
@@ -51,6 +49,9 @@ public class LoginScreen extends javax.swing.JFrame {
 
             private void close() {
                 if (Popup.Y_N_dialog(Messages.REALLY_CLOSE)) {
+                    LocalSettings.setProperty("lastuser", null);
+                    LocalSettings.setProperty("lastuserpw", null);
+                    LocalSettings.save();
                     System.exit(0);
                 }
             }
@@ -59,7 +60,6 @@ public class LoginScreen extends javax.swing.JFrame {
         new Position(this);
         this.setVisible(rootPaneCheckingEnabled);
     }
-
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -187,16 +187,17 @@ private void jPasswordField1ActionPerformed(java.awt.event.ActionEvent evt) {//G
     private javax.swing.JPasswordField jPasswordField1;
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
+
     private void login() {
         User user = mpv5.usermanagement.MPSecurityManager.checkAuth(jTextField1.getText(), new String(jPasswordField1.getPassword()));
         if (user != null) {
-           user.login();
+            user.login();
             if (jCheckBox1.isSelected()) {
                 LocalSettings.setProperty("lastuser", MPV5View.getUser().__getIDS().toString());
                 LocalSettings.save();
             }
 
-           if (jCheckBox2.isSelected()) {
+            if (jCheckBox2.isSelected()) {
                 try {
                     LocalSettings.setProperty("lastuserpw", MD5HashGenerator.getInstance().hashData(jPasswordField1.getPassword()));
                 } catch (NoSuchAlgorithmException ex) {

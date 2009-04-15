@@ -44,15 +44,6 @@ public class Group extends DatabaseObject {
         cname = name;
     }
 
-    @Override
-    public String __getCName() {
-        return cname;
-    }
-
-    @Override
-    public void setCName(String name) {
-        cname = name;
-    }
 
     /**
      * @return the description
