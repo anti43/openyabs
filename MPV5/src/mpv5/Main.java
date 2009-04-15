@@ -73,7 +73,13 @@ public class Main extends SingleFrameApplication {
         }
 
         splash.nextStep(Messages.LAUNCH);
-        launch(Main.class, new String[]{});
+        Runnable runnable = new Runnable() {
+
+            public void run() {
+                launch(Main.class, new String[]{});
+            }
+        };
+        SwingUtilities.invokeLater(runnable);
     }
 
     /**

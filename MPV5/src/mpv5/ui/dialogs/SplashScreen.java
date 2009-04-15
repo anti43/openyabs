@@ -12,6 +12,9 @@ package mpv5.ui.dialogs;
 
 import java.awt.Graphics;
 import java.awt.Image;
+import java.lang.reflect.InvocationTargetException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.GrayFilter;
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
@@ -208,7 +211,8 @@ public class SplashScreen extends javax.swing.JFrame {
                 progressSteps += progressSteps;
             }
         };
-
-        SwingUtilities.invokeLater(runnable);
+       
+            SwingUtilities.invokeLater(runnable);
+     
     }
 }
