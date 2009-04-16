@@ -193,6 +193,7 @@ public class PropertyStore {
                 if (list.get(i - 1)[0].equals(name)) {
                     list.set(i - 1, new String[]{name, newvalue});
                     found = true;setChanged(true);
+                    Log.Debug(this, "Change property: " +  list.get(i - 1)[1] + " for " + name);
                 }
             }
         }
@@ -216,6 +217,7 @@ public class PropertyStore {
                 if (list.get(i - 1)[0].equals(comp.getClass().getName() + "$" + source)) {
                     list.set(i - 1, new String[]{comp.getClass().getName() + "$" + source, String.valueOf(newvalue)});
                     found = true;setChanged(true);
+                    Log.Debug(this, "Change property: " +  list.get(i - 1)[1] + " for " + comp.getClass().getName() + "$" + source);
                 }
             }
         }
@@ -249,7 +251,7 @@ public class PropertyStore {
     }
 
     public void setChanged(boolean b) {
-        this.changed = false;
+        this.changed = b;
     }
 
     /**

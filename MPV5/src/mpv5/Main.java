@@ -126,12 +126,15 @@ public class Main extends SingleFrameApplication {
 
     @Override
     protected void shutdown() {
-        LocalSettings.save();
+        MPV5View.setWaiting(true);
+        MPV5View.setProgressRunning(true);
         try {
+            LocalSettings.save();
             if (!MPV5View.getUser().isDefault()) {
                 MPV5View.getUser().logout();
             }
         } catch (Exception e) {
+            Log.Debug(e);
         }
         super.shutdown();
     }

@@ -448,9 +448,6 @@ public class User extends DatabaseObject {
      */
     public void saveProperties() {
 
-        Runnable runnable = new Runnable() {
-
-            public void run() {
                 if (properties.isChanged()) {
                     ArrayList<String[]> l = properties.getList();
                     for (int i = 0; i < l.size(); i++) {
@@ -463,10 +460,7 @@ public class User extends DatabaseObject {
                     }
                 }
                 properties.setChanged(false);
-            }
-        };
 
-        SwingUtilities.invokeLater(runnable);
     }
 
     /**
