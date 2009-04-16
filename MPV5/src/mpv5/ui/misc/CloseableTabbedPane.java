@@ -14,7 +14,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mpv5.ui.parents;
+package mpv5.ui.misc;
 
 import java.util.EventListener;
 
@@ -36,8 +36,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
 import javax.swing.ImageIcon;
-import javax.swing.UIDefaults;
-import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.EventListenerList;
 

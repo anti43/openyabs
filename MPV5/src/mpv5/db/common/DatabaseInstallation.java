@@ -28,31 +28,6 @@ public class DatabaseInstallation {
        * As SQL.Views are currently not updateable from DERBY, i use two nearly identical tables here, to store user informations.
        * First one holds a users default data, where the second table holds additional address info.
        *
-       * As this may change in the future, here is the CREATE VIEW statement (may get inaccurate):
-       *
-       * "CREATE TABLE contactdetails (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
-       * "cnumber VARCHAR(250),taxnumber VARCHAR(250)," +
-       * "mainphone VARCHAR(250) default NULL," +
-       * "fax VARCHAR(250) default NULL,mobilephone VARCHAR(250) default NULL,workphone VARCHAR(250) default NULL," +
-       * "mailaddress VARCHAR(350) default NULL," +
-       * "website VARCHAR(350) default NULL,notes VARCHAR(10000)," +
-       * "dateadded DATE DEFAULT CURRENT_DATE,isactive SMALLINT DEFAULT 0,iscustomer SMALLINT DEFAULT 0," +
-       * "ismanufacturer SMALLINT DEFAULT 0,issupplier SMALLINT DEFAULT 0,iscompany SMALLINT DEFAULT 0," +
-       * "isenabled SMALLINT DEFAULT 1,intaddedby BIGINT DEFAULT 0," +
-       * "reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL," +
-       * "PRIMARY KEY  (ids))",
-       *
-       * "CREATE TABLE addresses (IDT BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," +
-       * "contactid BIGINT REFERENCES contactdetails(ids)," +
-       * "title VARCHAR(250) default NULL," +
-       * "prename VARCHAR(250) default NULL, cname VARCHAR(250) default NULL, street VARCHAR(250) default NULL," +
-       * "zip VARCHAR(50) default NULL,city VARCHAR(300) default NULL, " +
-       * "company VARCHAR(250) DEFAULT NULL, department VARCHAR(250) DEFAULT NULL," +
-       * "ismale SMALLINT DEFAULT 0," +
-       * "PRIMARY KEY  (IDT))",
-       *
-       * "CREATE VIEW contacts AS SELECT * FROM contactdetails " +
-       * "LEFT JOIN addresses ON addresses.contactid = contactdetails.ids",
      */
     public final static String[] DERBY_STRUCTURE = new String[]{
 

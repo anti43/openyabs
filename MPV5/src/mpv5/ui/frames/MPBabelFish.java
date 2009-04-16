@@ -33,7 +33,7 @@ import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableModel;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
-import mpv5.ui.parents.Position;
+import mpv5.ui.misc.Position;
 import mpv5.usermanagement.MPSecurityManager;
 
 import mpv5.utils.models.MPComboBoxModelItem;

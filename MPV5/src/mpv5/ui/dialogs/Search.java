@@ -18,7 +18,7 @@ import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.DatabaseSearch;
 import mpv5.db.common.NodataFoundException;
 import mpv5.ui.frames.MPV5View;
-import mpv5.ui.parents.Position;
+import mpv5.ui.misc.Position;
 import mpv5.utils.html.HtmlParser;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.tables.Selection;

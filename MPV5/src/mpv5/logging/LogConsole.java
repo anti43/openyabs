@@ -9,7 +9,7 @@ import java.io.File;
 import mpv5.utils.files.*;
 import java.io.IOException;
 import javax.swing.SwingUtilities;
-import mpv5.ui.parents.Position;
+import mpv5.ui.misc.Position;
 
 /**
  *

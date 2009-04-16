@@ -15,49 +15,26 @@
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
 /*
- * MPCalculator2.java
+ * SchedulerPanel.java
  *
- * Created on 12.02.2009, 14:30:32
+ * Created on 16.04.2009, 14:39:21
  */
-package mpv5.ui.frames;
 
-import java.awt.BorderLayout;
-import mpv5.ui.misc.Position;
-import mpv5.utils.ui.Calc;
+package mpv5.ui.panels;
+
+import java.awt.Font;
 
 /**
  *
  * @author anti
  */
-public class MPCalculator2 extends javax.swing.JFrame {
+public class SchedulerPanel extends javax.swing.JPanel {
 
-    private static MPCalculator2 calc;
-    private static final long serialVersionUID = 1L;
-
-    /** Creates new form MPCalculator2 */
-    private MPCalculator2() {
+    /** Creates new form SchedulerPanel */
+    public SchedulerPanel() {
         initComponents();
-        jPanel1.add(new Calc(), BorderLayout.CENTER);
-        setSize(340, 300);
-        setResizable(false);
-        new Position(this);
-    }
-
-    public static MPCalculator2 instanceOf() {
-        if (calc == null) {
-            calc = new MPCalculator2();
-        }
-        calc.setVisible(true);
-        return calc;
-    }
-
-    /**
-     *
-     */
-    @Override
-    public void dispose() {
-        setVisible(false);
-
+        jCalendar1.setFont(new Font("Tahoma",Font.PLAIN, 16));
+    
     }
 
     /** This method is called from within the constructor to
@@ -69,32 +46,27 @@ public class MPCalculator2 extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
+        jCalendar1 = new com.toedter.calendar.JCalendar();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("MP Calc");
         setName("Form"); // NOI18N
 
-        jPanel1.setName("jPanel1"); // NOI18N
-        jPanel1.setLayout(new java.awt.BorderLayout());
+        jCalendar1.setName("jCalendar1"); // NOI18N
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 277, Short.MAX_VALUE)
+            .addComponent(jCalendar1, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
+            .addComponent(jCalendar1, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
         );
-
-        pack();
     }// </editor-fold>//GEN-END:initComponents
 
 
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel jPanel1;
+    private com.toedter.calendar.JCalendar jCalendar1;
     // End of variables declaration//GEN-END:variables
+
 }

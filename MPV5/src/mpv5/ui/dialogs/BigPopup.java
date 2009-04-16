@@ -10,7 +10,7 @@ import java.awt.event.KeyListener;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import mpv5.ui.parents.Position;
+import mpv5.ui.misc.Position;
 
 /**
  *

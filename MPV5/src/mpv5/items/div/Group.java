@@ -23,6 +23,8 @@ import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
+import mpv5.ui.dialogs.subcomponents.ControlPanel_Groups;
+import mpv5.ui.panels.MPControlPanel;
 
 /**
  *
@@ -114,7 +116,9 @@ public class Group extends DatabaseObject {
 
     @Override
     public JComponent getView() {
-        throw new UnsupportedOperationException("Not supported yet.");
+//       MPControlPanel p = (MPControlPanel) MPControlPanel.instanceOf();
+//       p.openDetails(new ControlPanel_Groups(this));
+       return new ControlPanel_Groups(this);
     }
 
 }

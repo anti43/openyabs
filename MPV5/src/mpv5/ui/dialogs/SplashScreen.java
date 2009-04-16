@@ -19,7 +19,7 @@ import javax.swing.GrayFilter;
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 import mpv5.globals.Constants;
-import mpv5.ui.parents.Position;
+import mpv5.ui.misc.Position;
 
 /**
  *

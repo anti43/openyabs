@@ -41,9 +41,10 @@ import mpv5.ui.panels.ContactsList;
 import mpv5.ui.panels.DataPanel;
 import mpv5.ui.panels.HistoryPanel;
 import mpv5.ui.panels.MPControlPanel;
-import mpv5.ui.parents.CloseableTabbedPane;
-import mpv5.ui.parents.FadeOnChangeLabel;
-import mpv5.ui.parents.Position;
+import mpv5.ui.misc.CloseableTabbedPane;
+import mpv5.ui.misc.FadeOnChangeLabel;
+import mpv5.ui.misc.Position;
+import mpv5.ui.panels.SchedulerPanel;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.usermanagement.User;
 import mpv5.utils.print.PrintJob;
@@ -387,6 +388,7 @@ public class MPV5View extends FrameView {
         jMenuItem4 = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
+        jMenuItem18 = new javax.swing.JMenuItem();
         favouritesMenu = new javax.swing.JMenu();
         jMenuItem5 = new javax.swing.JMenuItem();
         clipboardMenu = new javax.swing.JMenu();
@@ -815,6 +817,15 @@ public class MPV5View extends FrameView {
         });
         jMenu3.add(jMenuItem3);
 
+        jMenuItem18.setText(bundle.getString("MPV5View.jMenuItem18.text")); // NOI18N
+        jMenuItem18.setName("jMenuItem18"); // NOI18N
+        jMenuItem18.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem18ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItem18);
+
         menuBar.add(jMenu3);
 
         favouritesMenu.setText(bundle.getString("MPV5View.favouritesMenu.text")); // NOI18N
@@ -1150,6 +1161,10 @@ public class MPV5View extends FrameView {
 
     }//GEN-LAST:event_jMenuItem17ActionPerformed
 
+    private void jMenuItem18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem18ActionPerformed
+            MPV5View.identifierView.addTab(new SchedulerPanel());
+    }//GEN-LAST:event_jMenuItem18ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JMenu clipboardMenu;
     public javax.swing.JMenu favouritesMenu;
@@ -1179,6 +1194,7 @@ public class MPV5View extends FrameView {
     private javax.swing.JMenuItem jMenuItem15;
     private javax.swing.JMenuItem jMenuItem16;
     private javax.swing.JMenuItem jMenuItem17;
+    private javax.swing.JMenuItem jMenuItem18;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;

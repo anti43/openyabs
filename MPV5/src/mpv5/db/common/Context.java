@@ -13,6 +13,7 @@ import mpv5.items.div.Favourite;
 import mpv5.items.div.Group;
 import mpv5.items.div.HistoryItem;
 import mpv5.items.div.Property;
+import mpv5.items.div.Schedule;
 import mpv5.items.main.ContactFile;
 import mpv5.items.main.Item;
 import mpv5.items.main.SubItem;
@@ -997,6 +998,7 @@ public class Context {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_SCHEDULE);
+        c.setIdentityClass(Schedule.class);
         c.setId(8);
 
         return c;

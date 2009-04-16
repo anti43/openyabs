@@ -64,6 +64,15 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
         }
     }
 
+    public ControlPanel_Groups(Group aThis) {
+        if (MPSecurityManager.checkAdminAccess()) {
+            initComponents();
+            tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+            refresh();
+            setDataOwner(aThis);
+        }
+    }
+
     public void showRequiredFields() {
         TextFieldUtils.blinkerRed(cname);
         TextFieldUtils.blinkerGrey(parents);

@@ -1,5 +1,5 @@
 
-package mpv5.ui.parents;
+package mpv5.ui.misc;
 
 import java.awt.BorderLayout;
 import javax.swing.JInternalFrame;
