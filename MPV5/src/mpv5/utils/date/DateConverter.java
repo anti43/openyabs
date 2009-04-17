@@ -17,6 +17,7 @@
 package mpv5.utils.date;
 
 import java.text.DateFormat;
+import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import mpv5.logging.Log;
+import mpv5.ui.frames.MPV5View;
 
 /**
  *
@@ -32,38 +34,58 @@ import mpv5.logging.Log;
  */
 public class DateConverter {
 
-    public static String[] months = {"Jan", "Feb",
-        "Mar", "Aprl", "May", "Jun", "Jul",
-        "Aug", "Sep", "Oct", "Nov",
-        "Dec"};
+    public static String[] months = DateFormatSymbols.getInstance().getShortMonths();
     private static Calendar cl = Calendar.getInstance();
+    public static DateFormat DEF_DATE_FORMAT = DateFormat.getDateInstance(DateFormat.SHORT);
     public static final DateFormat NATIVE_DATE_FORMAT = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z");
-    public static final DateFormat DB_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    public static final DateFormat DE_DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN);
-    public static final DateFormat DE_DATE_FORMAT_DAY = new SimpleDateFormat("dd", Locale.GERMAN);
-    public static final DateFormat DE_DATE_FORMAT_SHORTYEAR = new SimpleDateFormat("dd.MM.yy", Locale.GERMAN);
-    public static final DateFormat DE_DATE_FORMAT_SHORTMONTH = new SimpleDateFormat("dd.M.yyyy", Locale.GERMAN);
-    public static final DateFormat DE_DATE_FORMAT_NODAY_SHORTMONTH_SHORTYEAR = new SimpleDateFormat("M.yy", Locale.GERMAN);
-    public static final DateFormat DE_DATE_FORMAT_NODAY_SHORTMONTH_YEAR = new SimpleDateFormat("M.yyyy", Locale.GERMAN);
-    public static final DateFormat DE_DATE_FORMAT_SHORTMONTH_SHORTYEAR = new SimpleDateFormat("dd.M.yy", Locale.GERMAN);
-    public static final DateFormat DE_DATE_FORMAT_NODAY_MONTH_YEAR = new SimpleDateFormat("MM.yyyy", Locale.GERMAN);
-    public static final DateFormat DE_DATE_FORMAT_YEAR = new SimpleDateFormat("yyyy", Locale.GERMAN);
-    public static final DateFormat DE_DATE_FORMAT_MONTH = new SimpleDateFormat("MMMM", Locale.GERMAN);
-    public static final DateFormat DE_DATE_FORMAT_NODAY_LONGMONTH_YEAR = new SimpleDateFormat("MMMM.yyyy", Locale.GERMAN);
-    public static final DateFormat ENG_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
-    public static final ArrayList<DateFormat> DATE_FORMATS = new ArrayList<DateFormat>(Arrays.asList(new DateFormat[]{DB_DATE_FORMAT, ENG_DATE_FORMAT, DE_DATE_FORMAT_NODAY_LONGMONTH_YEAR,
-                DE_DATE_FORMAT, DE_DATE_FORMAT_SHORTYEAR, DE_DATE_FORMAT_SHORTMONTH, DE_DATE_FORMAT_NODAY_SHORTMONTH_SHORTYEAR,
-                DE_DATE_FORMAT_SHORTMONTH_SHORTYEAR, DE_DATE_FORMAT_NODAY_MONTH_YEAR, DE_DATE_FORMAT_YEAR, DE_DATE_FORMAT_NODAY_SHORTMONTH_YEAR, NATIVE_DATE_FORMAT
-            }));
     public static final DateFormat DE_FULL_DATE_FORMAT = new SimpleDateFormat("dd.MM.yyy - HH:mm:ss");
+    public static final DateFormat DB_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    //DE format
+    public static final DateFormat DE_DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN);
+    //US format
+    public static final DateFormat ENG_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+    public static final ArrayList<DateFormat> DATE_FORMATS = new ArrayList<DateFormat>(Arrays.asList(new DateFormat[]{
+                DB_DATE_FORMAT,
+                ENG_DATE_FORMAT,
+                DE_DATE_FORMAT,
+                DE_FULL_DATE_FORMAT,
+                NATIVE_DATE_FORMAT,
+                DEF_DATE_FORMAT
+            }));
 
-    public static Date addDays(Date date, Integer add) {
+    /**
+     * 
+     * @param date
+     * @param amount
+     * @return
+     */
+    public static Date addDays(Date date, Integer amount) {
         cl.setTime(date);
-        cl.add(Calendar.DATE, add);
+        cl.add(Calendar.DATE, amount);
 
         return cl.getTime();
     }
 
+    /**
+     * 
+     * @param date
+     * @param amount
+     * @return
+     */
+    public static Date addYears(Date date, int amount) {
+
+        cl.setTime(date);
+        cl.add(Calendar.YEAR, amount);
+
+        return cl.getTime();
+    }
+
+    /**
+     * Get days difference
+     * @param date1
+     * @param date2
+     * @return
+     */
     public static Integer getDifferenceBetween(Date date1, Date date2) {
 
         if (date1.after(date2)) {
@@ -92,13 +114,6 @@ public class DateConverter {
 
     }
 
-    public static String getFullDefDateString(Date date) {
-        return DE_FULL_DATE_FORMAT.format(new Date());
-    }
-
-    public static Date getSylvesterOf(Date date) {
-        return DateConverter.getDate(DE_DATE_FORMAT_YEAR.format(date));
-    }
 
     public static String getTodayDefDate() {
         return DE_DATE_FORMAT.format(new Date());
@@ -154,18 +169,10 @@ public class DateConverter {
     /**
      * 
      * @param date
-     * @return Default date (dd.mm.yyyy)
+     * @return Default date
      */
     public static String getDefDateString(Date date) {
-        return DE_DATE_FORMAT.format(date);
-    }
-
-    public static String getYear(Date datum) {
-        return DE_DATE_FORMAT_YEAR.format(datum);
-    }
-
-    public static String getMonth(Date datum) {
-        return DE_DATE_FORMAT_NODAY_MONTH_YEAR.format(datum);
+        return DEF_DATE_FORMAT.format(date);
     }
 
     public static String getDay(Date datum) {
@@ -210,10 +217,6 @@ public class DateConverter {
         return DATE;
     }
 
-    public static String getTodayDefMonth() {
-        return DE_DATE_FORMAT_NODAY_MONTH_YEAR.format(new Date());
-    }
-
     public static String getYear() {
         return String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
     }
@@ -235,11 +238,7 @@ public class DateConverter {
         return months[cal.get(Calendar.MONTH)];
     }
 
-    public static Date getMonthAndYear() {
-        try {
-            return DateConverter.DE_DATE_FORMAT_NODAY_MONTH_YEAR.parse(DateConverter.getMonth() + "." + DateConverter.getYear());
-        } catch (ParseException ex) {
-            return null;
-        }
+    public static void setDefaultFormat(DateFormat df) {
+        DEF_DATE_FORMAT = df;
     }
 }

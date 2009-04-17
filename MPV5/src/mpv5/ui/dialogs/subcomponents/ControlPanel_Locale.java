@@ -10,6 +10,7 @@ import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.frames.MPV5View;
 
 import mpv5.utils.models.MPComboBoxModelItem;
+import mpv5.utils.text.TypeConversion;
 import mpv5.utils.ui.TextFieldUtils;
 
 /**
@@ -397,7 +398,7 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
         String languagestring = ((MPComboBoxModelItem) languages.getSelectedItem()).getId();
         MPV5View.getUser().setLocale(localestring);
         MPV5View.getUser().setLanguage(languagestring);
-//        Locale.setDefault(TypeConversion.stringToLocale(localestring));
+        Locale.setDefault(TypeConversion.stringToLocale(localestring));
 
     }
 

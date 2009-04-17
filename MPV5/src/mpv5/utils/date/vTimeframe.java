@@ -5,7 +5,6 @@
 
 package mpv5.utils.date;
 
-import mpv5.utils.date.vDate;
 import java.util.Date;
 
 /**
@@ -27,6 +26,10 @@ public class vTimeframe {
         this.start = von.date; 
         this.end = bis.date;   
         this.time = end.getTime() - start.getTime();   
+    }
+
+    public boolean contains(Date day) {
+        return this.getEnd().equals(day) || this.getStart().equals(day) || (day.after(this.getStart()) && day.before(this.getEnd()));
     }
 
     public Date getStart() {

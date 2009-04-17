@@ -239,18 +239,18 @@ public class QueryHandler implements Cloneable {
      * 
      * @param what
      * @param where
+     * @param datecolumn
      * @param zeitraum
      * @return
      */
-    public Object[][] selectBetween(String what, String[] where, vTimeframe zeitraum) {
-        String str = "AND datum BETWEEN '" + DateConverter.getSQLDateString(zeitraum.getStart()) + "' AND '" + DateConverter.getSQLDateString(zeitraum.getEnd()) + "'";
+    public Object[][] selectBetween(String what, String[] where, String datecolumn, vTimeframe zeitraum) {
+        String dateCriterium = datecolumn+" >= '" + DateConverter.getSQLDateString(zeitraum.getStart()) + "' AND " +datecolumn+" < '" + DateConverter.getSQLDateString(zeitraum.getEnd()) + "'";
         String query;
         if (where != null) {
-            query = "SELECT " + what + " FROM " + table + " WHERE " + where[0] + " = " + where[2] + where[1] + where[2] + " " + "  " + str;
+            query = "SELECT " + what + " FROM " + table + " WHERE " + where[0] + " = " + where[2] + where[1] + where[2] + " AND " +dateCriterium;
         } else {
-            query = "SELECT " + what + " FROM " + table + "  " + str;
+            query = "SELECT " + what + " FROM " + table + "  WHERE " + dateCriterium;
         }
-        String message = "Database Error (select) :";
         return freeReturnQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null).getData();
     }
 

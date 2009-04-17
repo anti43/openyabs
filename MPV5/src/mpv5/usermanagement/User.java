@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,6 +40,7 @@ import mpv5.pluginhandling.MP5Plugin;
 import mpv5.pluginhandling.MPPLuginLoader;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPV5View;
+import mpv5.utils.text.TypeConversion;
 
 /**
  *
@@ -198,6 +200,11 @@ public class User extends DatabaseObject {
     public void login() {
         MPV5View.setUser(this);
         setProperties();
+        try {
+                Locale.setDefault(TypeConversion.stringToLocale(__getLocale()));
+        } catch (Exception e) {
+            Log.Debug(e);
+        }
         Lock.unlock(MPV5View.identifierFrame);
         Runnable runnable = new Runnable() {
 
