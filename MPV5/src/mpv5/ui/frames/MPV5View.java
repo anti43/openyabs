@@ -3,7 +3,6 @@
  */
 package mpv5.ui.frames;
 
-import com.toedter.calendar.JCalendar;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -46,6 +45,7 @@ import mpv5.ui.misc.CloseableTabbedPane;
 import mpv5.ui.misc.FadeOnChangeLabel;
 import mpv5.ui.misc.Position;
 
+import mpv5.ui.panels.calendar.JCalendar;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.usermanagement.User;
 import mpv5.utils.print.PrintJob;

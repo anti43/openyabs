@@ -114,6 +114,7 @@ public class Messages {
     public static String FILE_OPEN_FAILED = "Unable to open the file: \n";
     public static String HISTORY_PANEL = "History";
     public static String NEW_TAB = "New Tab";
+    public static String CALENDAR = "Calendar";
    
    
 }
