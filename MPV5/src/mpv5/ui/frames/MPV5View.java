@@ -1154,14 +1154,17 @@ public class MPV5View extends FrameView {
     }//GEN-LAST:event_jMenuItem16ActionPerformed
 
     private void jMenuItem15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem15ActionPerformed
-        DataPanel tab = getCurrentTab();
-        DatabaseObject dato = tab.getDataOwner();
+        try {
+            DataPanel tab = getCurrentTab();
+            DatabaseObject dato = tab.getDataOwner();
 
-        if (dato.isExisting()) {
-            dato.getPanelData((tab));
-            dato.reset();
-            tab.refresh();
-            tab.setDataOwner(dato);
+            if (dato.isExisting()) {
+                dato.getPanelData((tab));
+                dato.reset();
+                tab.refresh();
+                tab.setDataOwner(dato);
+            }
+        } catch (Exception ignore) {
         }
     }//GEN-LAST:event_jMenuItem15ActionPerformed
 

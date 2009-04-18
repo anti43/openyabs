@@ -455,7 +455,7 @@ public class Context {
         if (!first) {
             cond = cond.substring(4, cond.length() - 4);
             if (MPV5View.getUser().__getIsrgrouped() && getGroupableContexts().contains(this)) {
-                cond = "AND   " + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids();
+                cond += "AND   " + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids();
             }
         } else {
 
@@ -544,7 +544,7 @@ public class Context {
             if (!first) {
                 cond = cond.substring(4, cond.length() - 3);
                 if (MPV5View.getUser().__getIsrgrouped() && getGroupableContexts().contains(this)) {
-                    cond = "AND   " + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids();
+                    cond += "AND   " + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids();
                 }
             } else {
 
