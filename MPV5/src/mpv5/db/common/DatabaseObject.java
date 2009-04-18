@@ -25,7 +25,6 @@ import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
 import javax.swing.JComponent;
 
-
 /**
  * Database Objects reflect a row in a table, and can parse graphical and
  * non-graphical beans to update or create itself to the database
@@ -36,7 +35,8 @@ public abstract class DatabaseObject {
     /**
      * The db context of this do
      */
-    public Context context = new Context(this) {};
+    public Context context = new Context(this) {
+    };
     /**
      * The unique id, or 0 if it is a new do
      */
@@ -64,10 +64,10 @@ public abstract class DatabaseObject {
     public String __getCName() {
         return cname;
     }
+
     public void setCName(String name) {
         cname = name;
     }
-
 
     /**
      *
@@ -121,8 +121,6 @@ public abstract class DatabaseObject {
             return null;
         }
     }
-
-
 
     /**
      *
@@ -209,7 +207,7 @@ public abstract class DatabaseObject {
                 } else {
                     Log.Debug(this, "Updating dataset: " + ids + " within context '" + context + "'");
                     message = this.__getCName() + Messages.UPDATED;
-                    QueryHandler.instanceOf().clone(context).update(collect(),  ids, this.__getCName() + Messages.UPDATED);
+                    QueryHandler.instanceOf().clone(context).update(collect(), ids, this.__getCName() + Messages.UPDATED);
                 }
 
                 final String fmessage = message;
@@ -264,9 +262,18 @@ public abstract class DatabaseObject {
             message = this.__getCName() + Messages.DELETED;
         }
         if (ids > 0) {
-            Log.Debug(this, "Deleting dataset:");
-            result = QueryHandler.instanceOf().clone(context).delete(new String[][]{{"ids", ids.toString(), ""}}, message);
-            Log.Debug(this, "The deleted row had id: " + ids);
+            if (Context.getTrashableContexts().contains(context)) {
+                Log.Debug(this, "Moving to trash:");
+                QueryData d = new QueryData();
+                d.add("invisible", 1);
+                QueryHandler.instanceOf().clone(context).update(d, new String[]{"ids", ids.toString(), ""}, message);
+                result = true;
+                Log.Debug(this, "The trashed row has id: " + ids);
+            } else {
+                Log.Debug(this, "Deleting dataset:");
+                result = QueryHandler.instanceOf().clone(context).delete(new String[][]{{"ids", ids.toString(), ""}}, message);
+                Log.Debug(this, "The deleted row had id: " + ids);
+            }
 
             final String fmessage = message;
             final String fdbid = this.getDbIdentity();
@@ -413,7 +420,7 @@ public abstract class DatabaseObject {
 //                Log.Debug(this, vars.get(i).getName());
                 target.getClass().getField(vars.get(i).getName().toLowerCase().substring(5, vars.get(i).getName().length()) + "_").set(target, vars.get(i).invoke(this, new Object[0]));
             } catch (Exception n) {
-                Log.Debug(this, n.getMessage() +" in " + target);
+                Log.Debug(this, n.getMessage() + " in " + target);
                 n.printStackTrace();
             }
         }

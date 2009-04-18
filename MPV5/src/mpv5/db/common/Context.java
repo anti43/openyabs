@@ -164,6 +164,10 @@ public class Context {
         return list;
     }
 
+    /**
+     * Contexts which are groupable
+     * @return
+     */
     public static ArrayList<Context> getGroupableContexts() {
         ArrayList<Context> list = new ArrayList<Context>();
         list.add(getCompany());
@@ -177,6 +181,27 @@ public class Context {
         list.add(getSchedule());
         list.add(getContact());
         list.add(getProducts());
+        return list;
+    }
+
+    /**
+     * Contexts which can be moved to trash rather than delete
+     * @return
+     */
+    public static ArrayList<Context> getTrashableContexts() {
+        ArrayList<Context> list = new ArrayList<Context>();
+        list.add(getCompany());
+        list.add(getCustomer());
+        list.add(getManufacturer());
+        list.add(getSupplier());
+        list.add(getItem(true, false, false, false, false));
+        list.add(getBill());
+        list.add(getOrder());
+        list.add(getOffer());
+        list.add(getSchedule());
+        list.add(getContact());
+        list.add(getProducts());
+        list.add(getFiles());
         return list;
     }
 
@@ -384,6 +409,10 @@ public class Context {
             }
         }
 
+         if(getTrashableContexts().contains(this)){
+            cond += " AND invisible = 0 ";
+        }
+
         exclusiveCondition = cond;
     }
 
@@ -464,6 +493,10 @@ public class Context {
             } else {
                 cond = "WHERE " + CONDITION_DEFAULT;
             }
+        }
+
+        if (getTrashableContexts().contains(this)) {
+            cond += " AND invisible = 0 ";
         }
 
         exclusiveCondition = cond;
@@ -554,6 +587,11 @@ public class Context {
                     cond = "WHERE " + CONDITION_DEFAULT;
                 }
             }
+
+            if (getTrashableContexts().contains(this)) {
+                cond += " AND invisible = 0 ";
+            }
+
             return cond;
         } else {
             return exclusiveCondition.toString();
