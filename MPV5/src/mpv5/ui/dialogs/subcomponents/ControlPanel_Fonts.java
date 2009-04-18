@@ -1,11 +1,13 @@
 package mpv5.ui.dialogs.subcomponents;
 
 import java.awt.Font;
+import javax.swing.UIManager;
 import mpv5.data.PropertyStore;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.Popup;
+import mpv5.ui.frames.MPV5View;
 
 /**
  *
@@ -28,6 +30,48 @@ public class ControlPanel_Fonts extends javax.swing.JPanel implements ControlApp
         jFontChooser1.setSelectedFont(Font.decode(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT)));
 
         validate();
+    }
+
+    /**
+     * Applies the give font
+     * @param font
+     */
+    public static void applyFont(Font font) {
+        UIManager.put("Button.font", font);
+        UIManager.put("ToggleButton.font", font);
+        UIManager.put("RadioButton.font", font);
+        UIManager.put("CheckBox.font", font);
+        UIManager.put("ColorChooser.font", font);
+        UIManager.put("ComboBox.font", font);
+        UIManager.put("Label.font", font);
+        UIManager.put("List.font", font);
+        UIManager.put("MenuBar.font", font);
+        UIManager.put("MenuItem.font", font);
+        UIManager.put("RadioButtonMenuItem.font", font);
+        UIManager.put("CheckBoxMenuItem.font", font);
+        UIManager.put("Menu.font", font);
+        UIManager.put("PopupMenu.font", font);
+        UIManager.put("OptionPane.font", font);
+        UIManager.put("Panel.font", font);
+        UIManager.put("ProgressBar.font", font);
+        UIManager.put("ScrollPane.font", font);
+        UIManager.put("Viewport.font", font);
+        UIManager.put("TabbedPane.font", font);
+        UIManager.put("Table.font", font);
+        UIManager.put("TableHeader.font", font);
+        UIManager.put("TextField.font", font);
+        UIManager.put("PasswordField.font", font);
+        UIManager.put("TextArea.font", font);
+        UIManager.put("TextPane.font", font);
+        UIManager.put("EditorPane.font", font);
+        UIManager.put("TitledBorder.font", font);
+        UIManager.put("ToolBar.font", font);
+        UIManager.put("ToolTip.font", font);
+        UIManager.put("Tree.font", font);
+
+        if (MPV5View.identifierFrame != null) {
+            MPV5View.identifierFrame.validate();
+        }
     }
 
     private String getFontString(Font font) {
@@ -192,6 +236,9 @@ public class ControlPanel_Fonts extends javax.swing.JPanel implements ControlApp
 
         jFontChooser1.setSelectedFont(Font.decode(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT)));
         font.setText(getFontString(jFontChooser1.getSelectedFont()));
+
+        applyFont(Font.decode(getFontString(font.getText())));
+
     }
 
     public ControlApplet instanceOf() {

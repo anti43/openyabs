@@ -12,7 +12,6 @@ package mpv5.ui.beans;
 
 import java.awt.Font;
 import java.io.File;
-import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.Popup;
@@ -30,7 +29,6 @@ public class LabeledTextChooser extends javax.swing.JPanel {
     /** Creates new form LabeledTextField */
     public LabeledTextChooser() {
         initComponents();
-        jLabel1.setFont(Font.decode(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT)));
     }
 
     /**
@@ -60,6 +58,7 @@ public class LabeledTextChooser extends javax.swing.JPanel {
 
         setOpaque(false);
 
+        jLabel1.setFont(jLabel1.getFont());
         jLabel1.setText("text");
 
         jButton1.setText("...");
@@ -142,14 +141,13 @@ public class LabeledTextChooser extends javax.swing.JPanel {
         jLabel1.setText(_label);
     }
 
-    public void set_LabelFont(Font font) {
-        jLabel1.setFont(font);
-    }
-
     @Override
     public void setEnabled(boolean enabled) {
         jLabel1.setEnabled(enabled);
         jTextField1.setEnabled(enabled);
+    }
+
+    public void set_LabelFont(Font ignore) {
     }
 
     /**

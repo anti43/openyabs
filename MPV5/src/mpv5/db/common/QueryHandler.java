@@ -148,7 +148,7 @@ public class QueryHandler implements Cloneable {
      * @throws NodataFoundException
      */
     public ReturnValue select(int id) throws NodataFoundException {
-        ReturnValue data = freeReturnQuery("SELECT * FROM " + table + " WHERE " + table + ".ids = " + id, mpv5.usermanagement.MPSecurityManager.VIEW, null);
+        ReturnValue data = freeSelectQuery("SELECT * FROM " + table + " WHERE " + table + ".ids = " + id, mpv5.usermanagement.MPSecurityManager.VIEW, null);
         if (data.getData().length == 0) {
             throw new NodataFoundException();
         } else {
@@ -174,7 +174,7 @@ public class QueryHandler implements Cloneable {
      * @throws NodataFoundException
      */
     public ReturnValue select() throws NodataFoundException {
-        ReturnValue data = freeReturnQuery("SELECT * FROM " + table, mpv5.usermanagement.MPSecurityManager.VIEW, null);
+        ReturnValue data = freeSelectQuery("SELECT * FROM " + table, mpv5.usermanagement.MPSecurityManager.VIEW, null);
         if (data.getData().length == 0) {
             throw new NodataFoundException();
         } else {
@@ -188,7 +188,7 @@ public class QueryHandler implements Cloneable {
      * @throws NodataFoundException
      */
     public ReturnValue selectIndexes() throws NodataFoundException {
-        ReturnValue data = freeReturnQuery("SELECT ids FROM " + table, mpv5.usermanagement.MPSecurityManager.VIEW, null);
+        ReturnValue data = freeSelectQuery("SELECT ids FROM " + table, mpv5.usermanagement.MPSecurityManager.VIEW, null);
         if (data.getData().length == 0) {
             throw new NodataFoundException();
         } else {
@@ -224,14 +224,14 @@ public class QueryHandler implements Cloneable {
 
         if (context != null) {
             if (value == null) {
-                return ArrayUtilities.ObjectToSingleColumnArray(freeReturnQuery("SELECT " + cols + " FROM " + table + " " + context.getReferences() + " WHERE " + context.getConditions().substring(5, context.getConditions().length()), mpv5.usermanagement.MPSecurityManager.VIEW, null).getData());
+                return ArrayUtilities.ObjectToSingleColumnArray(freeSelectQuery("SELECT " + cols + " FROM " + table + " " + context.getReferences() + " WHERE " + context.getConditions().substring(5, context.getConditions().length()), mpv5.usermanagement.MPSecurityManager.VIEW, null).getData());
             } else {
-                return ArrayUtilities.ObjectToSingleColumnArray(freeReturnQuery("SELECT " + cols + " FROM " + table + " " + context.getReferences() + " WHERE " + needle + f + value + g + " AND " + context.getConditions().substring(5, context.getConditions().length()), mpv5.usermanagement.MPSecurityManager.VIEW, null).getData());
+                return ArrayUtilities.ObjectToSingleColumnArray(freeSelectQuery("SELECT " + cols + " FROM " + table + " " + context.getReferences() + " WHERE " + needle + f + value + g + " AND " + context.getConditions().substring(5, context.getConditions().length()), mpv5.usermanagement.MPSecurityManager.VIEW, null).getData());
             }
         } else if (value == null) {
-            return ArrayUtilities.ObjectToSingleColumnArray(freeReturnQuery("SELECT " + cols + " FROM " + table + " " + context.getReferences(), mpv5.usermanagement.MPSecurityManager.VIEW, null).getData());
+            return ArrayUtilities.ObjectToSingleColumnArray(freeSelectQuery("SELECT " + cols + " FROM " + table + " " + context.getReferences(), mpv5.usermanagement.MPSecurityManager.VIEW, null).getData());
         } else {
-            return ArrayUtilities.ObjectToSingleColumnArray(freeReturnQuery("SELECT " + cols + " FROM " + table + " " + context.getReferences() + "  WHERE " + needle + f + value + g, mpv5.usermanagement.MPSecurityManager.VIEW, null).getData());
+            return ArrayUtilities.ObjectToSingleColumnArray(freeSelectQuery("SELECT " + cols + " FROM " + table + " " + context.getReferences() + "  WHERE " + needle + f + value + g, mpv5.usermanagement.MPSecurityManager.VIEW, null).getData());
         }
     }
 
@@ -244,14 +244,14 @@ public class QueryHandler implements Cloneable {
      * @return
      */
     public Object[][] selectBetween(String what, String[] where, String datecolumn, vTimeframe zeitraum) {
-        String dateCriterium = datecolumn+" >= '" + DateConverter.getSQLDateString(zeitraum.getStart()) + "' AND " +datecolumn+" < '" + DateConverter.getSQLDateString(zeitraum.getEnd()) + "'";
+        String dateCriterium = datecolumn + " >= '" + DateConverter.getSQLDateString(zeitraum.getStart()) + "' AND " + datecolumn + " < '" + DateConverter.getSQLDateString(zeitraum.getEnd()) + "'";
         String query;
         if (where != null) {
-            query = "SELECT " + what + " FROM " + table + " WHERE " + where[0] + " = " + where[2] + where[1] + where[2] + " AND " +dateCriterium;
+            query = "SELECT " + what + " FROM " + table + " WHERE " + where[0] + " = " + where[2] + where[1] + where[2] + " AND " + dateCriterium;
         } else {
             query = "SELECT " + what + " FROM " + table + "  WHERE " + dateCriterium;
         }
-        return freeReturnQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null).getData();
+        return freeSelectQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null).getData();
     }
 
     /**
@@ -276,7 +276,7 @@ public class QueryHandler implements Cloneable {
                 query = "SELECT SUM(" + what + ") FROM " + table + "  " + str + " " + additionalCondition;
             }
 
-            Object[][] o = freeReturnQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null).getData();
+            Object[][] o = freeSelectQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null).getData();
             if (o != null && o[0][0] != null && !o[0][0].equals("null")) {
                 values.add(Double.valueOf(String.valueOf(o[0][0])));
             } else {
@@ -311,7 +311,7 @@ public class QueryHandler implements Cloneable {
                 query = "SELECT SUM(" + what + ") FROM " + table + "  " + str + " " + additionalCondition;
             }
 
-            Object[][] o = freeReturnQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null).getData();
+            Object[][] o = freeSelectQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null).getData();
             if (o != null && o[0][0] != null && !o[0][0].equals("null")) {
                 Log.Debug(this, "Summe: " + o[0][0]);
                 values.add(Double.valueOf(String.valueOf(o[0][0])));
@@ -374,7 +374,7 @@ public class QueryHandler implements Cloneable {
                     "  ORDER BY " + table + "." + order;
         }
 
-        return freeReturnQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null).getData();
+        return freeSelectQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null).getData();
     }
 
     /**
@@ -434,7 +434,7 @@ public class QueryHandler implements Cloneable {
                 int j = uniquecols[i];
                 Object[][] val = select(values[j], new String[]{values[j], vals.getValue(values[j]).toString(), vals.getValue(values[j]).getWrapper()});
                 if (val != null && val.length > 0) {
-                    MPV5View.addMessage(Messages.VALUE_ALREADY_EXISTS + values[1].split(",")[j]);
+                    MPV5View.addMessage(Messages.VALUE_ALREADY_EXISTS + vals.getValue(values[j]).toString());
                     return false;
                 }
             }
@@ -723,7 +723,7 @@ public class QueryHandler implements Cloneable {
         } else {
             query = "SELECT " + what + " FROM " + table + " " + context.getReferences() + " WHERE " + context.getConditions().substring(5, context.getConditions().length());
         }
-        return freeReturnQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null).getData();
+        return freeSelectQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null).getData();
     }
 
     /**
@@ -747,7 +747,7 @@ public class QueryHandler implements Cloneable {
                 query += " AND " + context.getConditions().substring(5, context.getConditions().length());
             }
         }
-        return freeReturnQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null).getData();
+        return freeSelectQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null).getData();
     }
 
     /**
@@ -795,7 +795,7 @@ public class QueryHandler implements Cloneable {
         }
         String query = "SELECT " + what + " FROM " + table + " " + context.getReferences() + wher + ord;
 
-        return freeReturnQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null).getData();
+        return freeSelectQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null).getData();
     }
 
     /**
@@ -839,7 +839,7 @@ public class QueryHandler implements Cloneable {
             Object object = haveValues[i];
             String column = whereColumns[i];
 //            if (object instanceof Number) {
-                query += column + "=" + object.toString();
+            query += column + "=" + object.toString();
 //            } else {
 //                query += column + "='" + object.toString() + "'";
 //            }
@@ -976,7 +976,7 @@ public class QueryHandler implements Cloneable {
         }
         String query = "SELECT " + what + " FROM " + table + " " + context.getReferences() + " WHERE " + wher + ord;
 
-        return freeReturnQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null).getData();
+        return freeSelectQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null).getData();
     }
 
     /**
@@ -1202,7 +1202,7 @@ public class QueryHandler implements Cloneable {
         try {
             // Select-Anweisung ausführen
             stm = sqlConn.createStatement();
-            Log.Debug(this, query);
+            Log.Debug(this, "freeUpdateQuery::" + query);
             if (log != null) {
                 log.append("\n " + query);
             }
@@ -1270,7 +1270,7 @@ public class QueryHandler implements Cloneable {
      * @return Your Data
      */
     @SuppressWarnings({"unchecked"})
-    public ReturnValue freeReturnQuery(String query, int action, String jobmessage) {
+    public ReturnValue freeSelectQuery(String query, int action, String jobmessage) {
 
         query = query.replace("%%tablename%%", table);
 
@@ -1300,7 +1300,7 @@ public class QueryHandler implements Cloneable {
         try {
             // Select-Anweisung ausführen
             stm = sqlConn.createStatement();
-            Log.Debug(this, query);
+            Log.Debug(this, "freeSelectQuery::" + query);
             resultSet = stm.executeQuery(query);
             ArrayList spalten = new ArrayList();
             ArrayList zeilen = new ArrayList();

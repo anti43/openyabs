@@ -27,7 +27,7 @@ public class LabeledTextField extends javax.swing.JPanel {
     /** Creates new form LabeledTextField */
     public LabeledTextField() {
         initComponents();
-        jLabel1.setFont(Font.decode(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT)));
+
     }
 
     public JTextField getTextField() {
@@ -121,9 +121,9 @@ public class LabeledTextField extends javax.swing.JPanel {
 
    
     public void set_LabelFont(Font font) {
-        if (font != null) {
-            jLabel1.setFont(font);
-        }
+//        if (font != null) {
+//            jLabel1.setFont(font);
+//        }
     }
 
     @Override

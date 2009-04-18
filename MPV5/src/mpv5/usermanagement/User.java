@@ -16,6 +16,7 @@
  */
 package mpv5.usermanagement;
 
+import java.awt.Font;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -26,6 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
+import mpv5.Main;
 import mpv5.data.PropertyStore;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -33,12 +35,14 @@ import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryData;
 import mpv5.db.common.QueryHandler;
+import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.items.div.Property;
 import mpv5.logging.Log;
 import mpv5.pluginhandling.MP5Plugin;
 import mpv5.pluginhandling.MPPLuginLoader;
 import mpv5.ui.dialogs.Popup;
+import mpv5.ui.dialogs.subcomponents.ControlPanel_Fonts;
 import mpv5.ui.frames.MPV5View;
 import mpv5.utils.text.TypeConversion;
 
@@ -58,6 +62,7 @@ public class User extends DatabaseObject {
     private int inthighestright = 4;
     private boolean isenabled = true;
     private boolean isloggedin = true;
+    private boolean isrgrouped = false;
     private Date datelastlog = new Date();
     public static User DEFAULT = new User("Default User", "nobody", -1, 4343);
     public static HashMap<String, String> userCache = new HashMap<String, String>();
@@ -201,7 +206,9 @@ public class User extends DatabaseObject {
         MPV5View.setUser(this);
         setProperties();
         try {
-                Locale.setDefault(TypeConversion.stringToLocale(__getLocale()));
+            Locale.setDefault(TypeConversion.stringToLocale(__getLocale()));
+            ControlPanel_Fonts.applyFont(Font.decode(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT)));
+            Main.setLaF(__getLaf());
         } catch (Exception e) {
             Log.Debug(e);
         }
@@ -438,7 +445,7 @@ public class User extends DatabaseObject {
      * @param key
      * @param value
      */
-    public void setProperty(String key, String value) {
+    public void changeProperty(String key, String value) {
         properties.addProperty(key, value);
     }
 
@@ -455,18 +462,18 @@ public class User extends DatabaseObject {
      */
     public void saveProperties() {
 
-                if (properties.isChanged()) {
-                    ArrayList<String[]> l = properties.getList();
-                    for (int i = 0; i < l.size(); i++) {
-                        String[] d = l.get(i);
-                        Property p = new Property();
-                        p.setValue(d[1]);
-                        p.setCName(d[0]);
-                        p.setUsersids(getID());
-                        p.save();
-                    }
-                }
-                properties.setChanged(false);
+        if (properties.isChanged()) {
+            ArrayList<String[]> l = properties.getList();
+            for (int i = 0; i < l.size(); i++) {
+                String[] d = l.get(i);
+                Property p = new Property();
+                p.setValue(d[1]);
+                p.setCName(d[0]);
+                p.setUsersids(getID());
+                p.save();
+            }
+        }
+        properties.setChanged(false);
 
     }
 
@@ -498,5 +505,19 @@ public class User extends DatabaseObject {
         };
 
         SwingUtilities.invokeLater(runnable);
+    }
+
+    /**
+     * @return the isrgrouped
+     */
+    public boolean __getIsrgrouped() {
+        return isrgrouped;
+    }
+
+    /**
+     * @param isrgrouped the isrgrouped to set
+     */
+    public void setIsrgrouped(boolean isrgrouped) {
+        this.isrgrouped = isrgrouped;
     }
 }

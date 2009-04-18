@@ -168,7 +168,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY);
         if (d.chooseFile()) {
 
-            String s =Popup.Enter_Value(Messages.ENTER_A_DESCRIPTION);
+            String s = Popup.Enter_Value(Messages.ENTER_A_DESCRIPTION);
 
             if (s != null) {
                 QueryHandler.instanceOf().clone(Context.getFiles(), this).insertFile(d.getFile(), dataOwner, QueryCriteria.getSaveStringFor(s));
@@ -284,10 +284,11 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel1.setName("jPanel1"); // NOI18N
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 12));
+        jLabel1.setFont(jLabel1.getFont());
         jLabel1.setText(bundle.getString("ContactPanel.jLabel1.text")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
 
+        enabled.setFont(enabled.getFont().deriveFont(enabled.getFont().getStyle() & ~java.awt.Font.BOLD));
         enabled.setSelected(true);
         enabled.setText(bundle.getString("ContactPanel.enabled.text")); // NOI18N
         enabled.setName("enabled"); // NOI18N
@@ -298,11 +299,11 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             }
         });
 
-        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 12));
+        jLabel2.setFont(jLabel2.getFont());
         jLabel2.setText(bundle.getString("ContactPanel.jLabel2.text")); // NOI18N
         jLabel2.setName("jLabel2"); // NOI18N
 
-        customer.setFont(new java.awt.Font("Dialog", 0, 12));
+        customer.setFont(customer.getFont().deriveFont(customer.getFont().getStyle() & ~java.awt.Font.BOLD));
         customer.setText(bundle.getString("ContactPanel.customer.text")); // NOI18N
         customer.setName("customer"); // NOI18N
         customer.setOpaque(false);
@@ -312,7 +313,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             }
         });
 
-        supplier.setFont(new java.awt.Font("Dialog", 0, 12));
+        supplier.setFont(supplier.getFont().deriveFont(supplier.getFont().getStyle() & ~java.awt.Font.BOLD));
         supplier.setText(bundle.getString("ContactPanel.supplier.text")); // NOI18N
         supplier.setName("supplier"); // NOI18N
         supplier.setOpaque(false);
@@ -322,7 +323,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             }
         });
 
-        manufacturer.setFont(new java.awt.Font("Dialog", 0, 12));
+        manufacturer.setFont(manufacturer.getFont().deriveFont(manufacturer.getFont().getStyle() & ~java.awt.Font.BOLD));
         manufacturer.setText(bundle.getString("ContactPanel.manufacturer.text")); // NOI18N
         manufacturer.setName("manufacturer"); // NOI18N
         manufacturer.setOpaque(false);
@@ -333,15 +334,17 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         });
 
         number.set_Label(bundle.getString("ContactPanel.number._Label")); // NOI18N
-        number.set_LabelFont(new java.awt.Font("Tahoma", 1, 11));
+        number.setFont(number.getFont());
         number.setName("number"); // NOI18N
 
+        dateadded.setFont(dateadded.getFont());
         dateadded.setText(bundle.getString("ContactPanel.dateadded.text")); // NOI18N
         dateadded.setToolTipText(bundle.getString("ContactPanel.dateadded.toolTipText")); // NOI18N
         dateadded.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         dateadded.setEnabled(false);
         dateadded.setName("dateadded"); // NOI18N
 
+        company.setFont(company.getFont().deriveFont(company.getFont().getStyle() & ~java.awt.Font.BOLD));
         company.setText(bundle.getString("ContactPanel.company.text")); // NOI18N
         company.setName("company"); // NOI18N
         company.setOpaque(false);
@@ -351,6 +354,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             }
         });
 
+        addedby.setFont(addedby.getFont());
         addedby.setText(bundle.getString("ContactPanel.addedby.text")); // NOI18N
         addedby.setToolTipText(bundle.getString("ContactPanel.addedby.toolTipText")); // NOI18N
         addedby.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -359,11 +363,11 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
         groupnameselect.setName("groupnameselect"); // NOI18N
 
-        jLabel4.setFont(new java.awt.Font("Dialog", 0, 12));
+        jLabel4.setFont(jLabel4.getFont());
         jLabel4.setText(bundle.getString("ContactPanel.jLabel4.text")); // NOI18N
         jLabel4.setName("jLabel4"); // NOI18N
 
-        button_order2.setFont(new java.awt.Font("Dialog", 0, 10));
+        button_order2.setFont(button_order2.getFont().deriveFont(button_order2.getFont().getStyle() & ~java.awt.Font.BOLD, button_order2.getFont().getSize()-2));
         button_order2.setText(bundle.getString("ContactPanel.button_order2.text")); // NOI18N
         button_order2.setFocusable(false);
         button_order2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -398,7 +402,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(company, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(manufacturer))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 66, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 74, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(dateadded, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -458,7 +462,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 653, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 661, Short.MAX_VALUE)
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -504,7 +508,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(mobilephone, javax.swing.GroupLayout.DEFAULT_SIZE, 201, Short.MAX_VALUE)
                     .addComponent(website, javax.swing.GroupLayout.DEFAULT_SIZE, 201, Short.MAX_VALUE))
-                .addContainerGap(88, Short.MAX_VALUE))
+                .addContainerGap(96, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -522,15 +526,15 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                 .addContainerGap())
         );
 
-        jLabel9.setFont(new java.awt.Font("Tahoma", 1, 11));
+        jLabel9.setFont(jLabel9.getFont());
         jLabel9.setText(bundle.getString("ContactPanel.jLabel9.text")); // NOI18N
         jLabel9.setName("jLabel9"); // NOI18N
 
-        jLabel8.setFont(new java.awt.Font("Tahoma", 1, 11));
+        jLabel8.setFont(jLabel8.getFont());
         jLabel8.setText(bundle.getString("ContactPanel.jLabel8.text")); // NOI18N
         jLabel8.setName("jLabel8"); // NOI18N
 
-        jLabel7.setFont(new java.awt.Font("Tahoma", 1, 11));
+        jLabel7.setFont(jLabel7.getFont());
         jLabel7.setText(bundle.getString("ContactPanel.jLabel7.text")); // NOI18N
         jLabel7.setName("jLabel7"); // NOI18N
 
@@ -600,7 +604,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 629, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 637, Short.MAX_VALUE)
                     .addGroup(jPanel9Layout.createSequentialGroup()
                         .addComponent(button_bills)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -609,7 +613,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                         .addComponent(button_products)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(button_orders)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 190, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 198, Short.MAX_VALUE)
                         .addComponent(jButton1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(addfile, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -631,7 +635,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                     .addComponent(removefile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(addfile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 37, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -719,22 +723,24 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         zip.setName("zip"); // NOI18N
 
         buttonGroup1.add(male);
-        male.setFont(new java.awt.Font("Dialog", 0, 12));
+        male.setFont(male.getFont().deriveFont(male.getFont().getStyle() & ~java.awt.Font.BOLD));
         male.setSelected(true);
         male.setText(bundle.getString("ContactPanel.male.text")); // NOI18N
         male.setName("male"); // NOI18N
         male.setOpaque(false);
 
         buttonGroup1.add(female);
-        female.setFont(new java.awt.Font("Dialog", 0, 12));
+        female.setFont(female.getFont().deriveFont(female.getFont().getStyle() & ~java.awt.Font.BOLD));
         female.setText(bundle.getString("ContactPanel.female.text")); // NOI18N
         female.setName("female"); // NOI18N
         female.setOpaque(false);
 
         taxnumber.set_Label(bundle.getString("ContactPanel.taxnumber._Label")); // NOI18N
+        taxnumber.setFont(taxnumber.getFont().deriveFont(taxnumber.getFont().getStyle() | java.awt.Font.BOLD));
         taxnumber.setName("taxnumber"); // NOI18N
 
         department.set_Label(bundle.getString("ContactPanel.department._Label")); // NOI18N
+        department.setFont(department.getFont().deriveFont(department.getFont().getStyle() | java.awt.Font.BOLD));
         department.setName("department"); // NOI18N
 
         jLabel5.setFont(new java.awt.Font("Dialog", 0, 12));
@@ -820,7 +826,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
         addresspanel.addTab(bundle.getString("ContactPanel.jPanel2.TabConstraints.tabTitle"), jPanel2); // NOI18N
 
-        button_order1.setFont(new java.awt.Font("Dialog", 0, 10));
+        button_order1.setFont(button_order1.getFont().deriveFont(button_order1.getFont().getStyle() & ~java.awt.Font.BOLD, button_order1.getFont().getSize()-2));
         button_order1.setText(bundle.getString("ContactPanel.button_order1.text")); // NOI18N
         button_order1.setFocusable(false);
         button_order1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -846,7 +852,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                     .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 657, Short.MAX_VALUE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 665, Short.MAX_VALUE)
                     .addComponent(addresspanel, javax.swing.GroupLayout.Alignment.LEADING, 0, 0, Short.MAX_VALUE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, rightpaneLayout.createSequentialGroup()
@@ -895,11 +901,11 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(6, 6, 6)
                         .addComponent(rightpane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(toolbarpane, javax.swing.GroupLayout.DEFAULT_SIZE, 685, Short.MAX_VALUE)))
+                    .addComponent(toolbarpane, javax.swing.GroupLayout.DEFAULT_SIZE, 693, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(leftpane, javax.swing.GroupLayout.DEFAULT_SIZE, 595, Short.MAX_VALUE)
+            .addComponent(leftpane, javax.swing.GroupLayout.DEFAULT_SIZE, 603, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(toolbarpane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1180,8 +1186,13 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                     companyselect.setModel(new DefaultComboBoxModel(ArrayUtilities.merge(new Object[]{new MPComboBoxModelItem("<no_value>", "")},
                             MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getCompany()).getValuesFor(Context.getCompany().getSubID(), null, "")))));
 
-                    groupnameselect.setModel(new DefaultComboBoxModel(
-                            MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID(), null, ""))));
+                    if (!MPV5View.getUser().__getIsrgrouped()) {
+                        groupnameselect.setModel(new DefaultComboBoxModel(
+                                MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID(), null, ""))));
+                    } else {
+                        groupnameselect.setModel(new DefaultComboBoxModel(
+                                MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID(), "ids", MPV5View.getUser().__getGroupsids()))));
+                    }
 
                     sp.refresh();
 

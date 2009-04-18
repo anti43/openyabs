@@ -20,6 +20,7 @@ import mpv5.items.main.SubItem;
 import mpv5.pluginhandling.Plugin;
 import mpv5.usermanagement.User;
 import mpv5.pluginhandling.UserPlugin;
+import mpv5.ui.frames.MPV5View;
 
 /**
  *
@@ -57,9 +58,9 @@ public class Context {
     private static Class IDENTITY_CONTACTS_FILES_CLASS = ContactFile.class;
     private static Class HISTORY_ITEMS_CLASS = HistoryItem.class;
     private static Class IDENTITY_SUBITEMS_CLASS = SubItem.class;
-    private static Class IDENTITY_USER_PLUGINS_CLASS =  UserPlugin.class;
-    private static Class IDENTITY_PLUGINS_CLASS =  Plugin.class;
-    private static Class IDENTITY_PROPERTIES_CLASS =  Property.class;
+    private static Class IDENTITY_USER_PLUGINS_CLASS = UserPlugin.class;
+    private static Class IDENTITY_PLUGINS_CLASS = Plugin.class;
+    private static Class IDENTITY_PROPERTIES_CLASS = Property.class;
 
     //********** unique constraints *******************************************
     public static String UNIQUECOLUMNS_USER = "cname";
@@ -158,6 +159,22 @@ public class Context {
         list.add(getSubItem());
         list.add(getSchedule());
         list.add(getCountries());
+        list.add(getContact());
+        list.add(getProducts());
+        return list;
+    }
+
+    public static ArrayList<Context> getGroupableContexts() {
+        ArrayList<Context> list = new ArrayList<Context>();
+        list.add(getCompany());
+        list.add(getCustomer());
+        list.add(getManufacturer());
+        list.add(getSupplier());
+        list.add(getItem(true, false, false, false, false));
+        list.add(getBill());
+        list.add(getOrder());
+        list.add(getOffer());
+        list.add(getSchedule());
         list.add(getContact());
         list.add(getProducts());
         return list;
@@ -355,8 +372,16 @@ public class Context {
 
         if (!first) {
             cond = cond.substring(4, cond.length() - 4);
+            if (MPV5View.getUser().__getIsrgrouped() && getGroupableContexts().contains(this)) {
+                cond = "AND   " + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids();
+            }
         } else {
-            cond = "WHERE " + CONDITION_DEFAULT;
+
+            if (MPV5View.getUser().__getIsrgrouped() && getGroupableContexts().contains(this)) {
+                cond = "WHERE " + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids();
+            } else {
+                cond = "WHERE " + CONDITION_DEFAULT;
+            }
         }
 
         exclusiveCondition = cond;
@@ -429,8 +454,16 @@ public class Context {
 
         if (!first) {
             cond = cond.substring(4, cond.length() - 4);
+            if (MPV5View.getUser().__getIsrgrouped() && getGroupableContexts().contains(this)) {
+                cond = "AND   " + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids();
+            }
         } else {
-            cond = "WHERE " + CONDITION_DEFAULT;
+
+            if (MPV5View.getUser().__getIsrgrouped() && getGroupableContexts().contains(this)) {
+                cond = "WHERE " + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids();
+            } else {
+                cond = "WHERE " + CONDITION_DEFAULT;
+            }
         }
 
         exclusiveCondition = cond;
@@ -510,8 +543,16 @@ public class Context {
             }
             if (!first) {
                 cond = cond.substring(4, cond.length() - 3);
+                if (MPV5View.getUser().__getIsrgrouped() && getGroupableContexts().contains(this)) {
+                    cond = "AND   " + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids();
+                }
             } else {
-                cond = "WHERE " + CONDITION_DEFAULT;
+
+                if (MPV5View.getUser().__getIsrgrouped() && getGroupableContexts().contains(this)) {
+                    cond = "WHERE " + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids();
+                } else {
+                    cond = "WHERE " + CONDITION_DEFAULT;
+                }
             }
             return cond;
         } else {
@@ -890,7 +931,7 @@ public class Context {
         return c;
     }
 
-      public static Context getPluginsToUsers() {
+    public static Context getPluginsToUsers() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_PLUGINS_TO_USERS);
@@ -910,7 +951,7 @@ public class Context {
         return c;
     }
 
-     public static Context getProperties() {
+    public static Context getProperties() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_PROPERTIES_TO_USERS);

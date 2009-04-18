@@ -89,6 +89,7 @@ public class LanguageManager {
                         QueryData t = new QueryData();
                         t.add("cname", country[1]);
                         t.add("iso", Integer.valueOf(country[2]));
+                        t.add("groupsids", MPV5View.getUser().__getGroupsids());
                         QueryHandler.instanceOf().clone(Context.getCountries()).insert(t, Messages.DONE);
                     }
 //                MPV5View.addMessage(langname + Messages.ROW_UPDATED);

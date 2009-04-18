@@ -206,8 +206,6 @@ public class MPV5View extends FrameView {
     public static void setUser(User usern) {
         currentUser = usern;
         predefTitle = (" (" + usern.getName() + ")");
-        Main.setLaF(usern.__getLaf());
-        Locale.setDefault(TypeConversion.stringToLocale(usern.__getLocale()));
     }
 
     /**
@@ -386,6 +384,7 @@ public class MPV5View extends FrameView {
         jMenu2 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
+        jMenuItem19 = new javax.swing.JMenuItem();
         jMenuItem4 = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
@@ -792,6 +791,16 @@ public class MPV5View extends FrameView {
 
         jMenu1.add(jMenu2);
 
+        jMenuItem19.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0));
+        jMenuItem19.setText(bundle.getString("MPV5View.jMenuItem19.text")); // NOI18N
+        jMenuItem19.setName("jMenuItem19"); // NOI18N
+        jMenuItem19.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem19ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem19);
+
         jMenuItem4.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F11, 0));
         jMenuItem4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/2uparrow.png"))); // NOI18N
         jMenuItem4.setText(bundle.getString("MPV5View.jMenuItem4.text")); // NOI18N
@@ -1166,6 +1175,13 @@ public class MPV5View extends FrameView {
             MPV5View.identifierView.addTab(new JCalendar());
     }//GEN-LAST:event_jMenuItem18ActionPerformed
 
+    private void jMenuItem19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem19ActionPerformed
+        try {
+            getCurrentTab().refresh();
+        } catch (Exception ignore) {
+        }
+    }//GEN-LAST:event_jMenuItem19ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JMenu clipboardMenu;
     public javax.swing.JMenu favouritesMenu;
@@ -1196,6 +1212,7 @@ public class MPV5View extends FrameView {
     private javax.swing.JMenuItem jMenuItem16;
     private javax.swing.JMenuItem jMenuItem17;
     private javax.swing.JMenuItem jMenuItem18;
+    private javax.swing.JMenuItem jMenuItem19;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
