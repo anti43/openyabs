@@ -73,7 +73,7 @@ public class TableFormat {
         try {
             ((MPTableModel) table.getModel()).setCanEdits(new boolean[]{false, false, false, false, false, false, false, false, false, false, false, false, false});
         } catch (Exception e) {
-            Log.Debug(TableFormat.class,"Can not change this table to uneditable.", true);
+            Log.Debug(TableFormat.class,"Can not change this table to uneditable.");
         }
     }
 
@@ -91,7 +91,7 @@ public class TableFormat {
 
             ((MPTableModel) table.getModel()).setCanEdits(unedits);
         } catch (Exception e) {
-            Log.Debug(TableFormat.class,"Can not change this table to uneditable.", true);
+            Log.Debug(TableFormat.class,"Can not change this table to uneditable.");
         }
     }
 

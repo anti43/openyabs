@@ -532,21 +532,23 @@ public abstract class DatabaseObject {
     }
 
     /**
-     * Return objects which are referenced in the dataOwners Context
-     * <br/>As getObjects(inReference, idataOwner.getinReferencesids)
+     * Return objects which are referenced in the given Context@table
+     * <br/>As list of getObject(inReference, (SELECT ids FROM Context@table WHERE dataOwnerIDS = dataowner.ids))
+     * @param <T>
      * @param dataOwner
      * @param inReference
      * @return
      * @throws mpv5.db.common.NodataFoundException
      */
-    public static ArrayList<DatabaseObject> getReferencedObjects(DatabaseObject dataOwner, Context inReference) throws NodataFoundException {
+    @SuppressWarnings("unchecked")
+    public static <T extends DatabaseObject>ArrayList<T> getReferencedObjects(T dataOwner, Context inReference) throws NodataFoundException {
 
         Object[][] allIds = QueryHandler.instanceOf().clone(inReference).select("ids", new String[]{dataOwner.getDbIdentity() + "ids", dataOwner.__getIDS().toString(), ""});
-        ArrayList<DatabaseObject> list = new ArrayList<DatabaseObject>();
+        ArrayList<T> list = new ArrayList<T>();
 
         for (int i = 0; i < allIds.length; i++) {
             int id = Integer.valueOf(allIds[i][0].toString());
-            list.add(DatabaseObject.getObject(inReference, id));
+            list.add((T)DatabaseObject.getObject(inReference, id));
         }
         return list;
     }

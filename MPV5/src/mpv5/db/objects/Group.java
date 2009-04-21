@@ -101,7 +101,7 @@ public class Group extends DatabaseObject {
     @Override
     public boolean delete() {
         try {
-            ArrayList<DatabaseObject> childs = DatabaseObject.getReferencedObjects(this, Context.getGroup());
+            ArrayList<Group> childs = DatabaseObject.getReferencedObjects(this, Context.getGroup());
             for (int i = 0; i < childs.size(); i++) {
                 DatabaseObject databaseObject = childs.get(i);
                 if (!databaseObject.delete()) {

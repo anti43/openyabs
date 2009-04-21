@@ -376,7 +376,7 @@ public class Main extends SingleFrameApplication {
             }
         } else {
             try {
-                ArrayList<DatabaseObject> data = DatabaseObject.getReferencedObjects(MPV5View.getUser(), Context.getPluginsToUsers());
+                ArrayList<User> data = DatabaseObject.getReferencedObjects(MPV5View.getUser(), Context.getPluginsToUsers());
 
                 for (int i = 0; i < data.size(); i++) {
                     data.get(i).delete();

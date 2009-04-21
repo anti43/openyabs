@@ -150,7 +150,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         addresspanel.add(n);
         addresspanel.setTitleAt(0, str);
         try {
-            ArrayList<DatabaseObject> data = DatabaseObject.getReferencedObjects(dataOwner, Context.getAddress());
+            ArrayList<Contact> data = DatabaseObject.getReferencedObjects(dataOwner, Context.getAddress());
 
             for (int i = 0; i < data.size(); i++) {
                 DatabaseObject databaseObject = data.get(i);

@@ -14,6 +14,7 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryHandler;
+import mpv5.db.objects.User;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.pluginhandling.MP5Plugin;
@@ -298,7 +299,7 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
         try {
-            ArrayList<DatabaseObject> data = DatabaseObject.getReferencedObjects(MPV5View.getUser(), Context.getPluginsToUsers());
+            ArrayList<User> data = DatabaseObject.getReferencedObjects(MPV5View.getUser(), Context.getPluginsToUsers());
             for (int i = 0; i < data.size(); i++) {
                 data.get(i).delete();
             }

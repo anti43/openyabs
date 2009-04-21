@@ -52,6 +52,7 @@ public class Main extends JPanel implements MP5Plugin, Runnable {
 
     public void unload() {
         frame.getMenuBar().remove(cmenu);
+        loaded = false;
     }
 
     @Override

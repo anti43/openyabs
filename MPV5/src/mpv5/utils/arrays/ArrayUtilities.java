@@ -824,8 +824,8 @@ public class ArrayUtilities {
         return items;
     }
 
-    public static ArrayList StringArrayToList(String[][] array) {
-        ArrayList list = new ArrayList();
+    public static ArrayList<String[]> StringArrayToList(String[][] array) {
+        ArrayList<String[]> list = new ArrayList<String[]>();
 
         for (int i = 0; i < array.length; i++) {
 
@@ -836,11 +836,11 @@ public class ArrayUtilities {
     }
 
     public static ArrayList TableModelToList(JTable mode) {
-        ArrayList list = new ArrayList();
+        ArrayList<String[]> list = new ArrayList<String[]>();
         DefaultTableModel model = (DefaultTableModel) mode.getModel();
-        String[] str = null;
 
         for (int i = 0; i < model.getRowCount(); i++) {
+           String[] str =null;
             for (int j = 0; j < model.getColumnCount(); j++) {
                 str = new String[model.getColumnCount()];
                 str[j] = model.getValueAt(i, j).toString();

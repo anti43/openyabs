@@ -51,6 +51,7 @@ public class Context {
     public static String IDENTITY_PLUGINS = "plugins";
     public static String IDENTITY_PROPERTIES_TO_USERS = "userproperties";
     public static String IDENTITY_ACCOUNTS = "accounts";
+    public static String IDENTITY_ITEMS_TO_ACCOUNTS = "itemstoaccounts";
 
     //********** identity classes **********************************************
     private static Class IDENTITY_CONTACTS_CLASS = Contact.class;
@@ -272,7 +273,8 @@ public class Context {
                 getPlugins(),
                 getPluginsToUsers(),
                 getProperties(),
-                getAccounts()
+                getAccounts(),
+                getItemsToAccounts()
             }));
 
     private String[] searchHeaders;
@@ -889,138 +891,7 @@ public class Context {
         return getItem(true, false, false, false, false);
     }
 
-    public static Context getBill() {
-        Context c = new Context(new Item());
-        c.setSubID(DEFAULT_SUBID);
-        c.setDbIdentity(IDENTITY_ITEMS);
-        c.setSearchFields(DEFAULT_ITEM_SEARCH);
-        c.setSearchHeaders(Headers.ITEM_DEFAULT);
-        c.setIdentityClass(IDENTITY_ITEMS_CLASS);
-        c.setIsActive(true);
-        c.setIsBill(true);
-        c.setId(17);
-
-        return c;
-    }
-
-    public static Context getOrder() {
-        Context c = new Context(new Item());
-        c.setSubID(DEFAULT_SUBID);
-        c.setDbIdentity(IDENTITY_ITEMS);
-        c.setSearchFields(DEFAULT_ITEM_SEARCH);
-        c.setSearchHeaders(Headers.ITEM_DEFAULT);
-        c.setIdentityClass(IDENTITY_ITEMS_CLASS);
-        c.setIsActive(true);
-        c.setIsOrder(true);
-        c.setId(18);
-
-        return c;
-    }
-
-    public static Context getOffer() {
-        Context c = new Context(new Item());
-        c.setSubID(DEFAULT_SUBID);
-        c.setDbIdentity(IDENTITY_ITEMS);
-        c.setSearchFields(DEFAULT_ITEM_SEARCH);
-        c.setSearchHeaders(Headers.ITEM_DEFAULT);
-        c.setIdentityClass(IDENTITY_ITEMS_CLASS);
-        c.setIsActive(true);
-        c.setIsOffer(true);
-        c.setId(19);
-
-        return c;
-    }
-
-    public static Context getFilesToContacts() {
-        Context c = new Context();
-        c.setSubID(DEFAULT_SUBID);
-        c.setDbIdentity(IDENTITY_FILES_TO_CONTACTS);
-        c.setIdentityClass(IDENTITY_CONTACTS_FILES_CLASS);
-        c.setId(20);
-
-        return c;
-    }
-
-    public static Context getHistory() {
-        Context c = new Context();
-        c.setSubID(DEFAULT_SUBID);
-        c.setDbIdentity(IDENTITY_HISTORY);
-        c.setIdentityClass(HISTORY_ITEMS_CLASS);
-        c.setId(21);
-
-        return c;
-    }
-
-    public static Context getCountries() {
-        Context c = new Context();
-        c.setSubID(DEFAULT_SUBID);
-        c.setDbIdentity(IDENTITY_COUNTRIES);
-        c.setId(22);
-
-        return c;
-    }
-
-    public static Context getProducts() {
-        Context c = new Context();
-        c.setSubID(DEFAULT_SUBID);
-        c.setDbIdentity(IDENTITY_PRODUCTS);
-        c.setId(23);
-
-        return c;
-    }
-
-    public static Context getSearchIndex() {
-        Context c = new Context();
-        c.setSubID(DEFAULT_SUBID);
-        c.setDbIdentity(IDENTITY_SEARCHINDEX);
-        c.setId(24);
-
-        return c;
-    }
-
-    public static Context getPluginsToUsers() {
-        Context c = new Context();
-        c.setSubID(DEFAULT_SUBID);
-        c.setDbIdentity(IDENTITY_PLUGINS_TO_USERS);
-        c.setIdentityClass(IDENTITY_USER_PLUGINS_CLASS);
-        c.setId(25);
-
-        return c;
-    }
-
-    public static Context getPlugins() {
-        Context c = new Context();
-        c.setSubID(DEFAULT_SUBID);
-        c.setDbIdentity(IDENTITY_PLUGINS);
-        c.setIdentityClass(IDENTITY_PLUGINS_CLASS);
-        c.setId(26);
-
-        return c;
-    }
-    
-
-
-    public static Context getProperties() {
-        Context c = new Context();
-        c.setSubID(DEFAULT_SUBID);
-        c.setDbIdentity(IDENTITY_PROPERTIES_TO_USERS);
-        c.setIdentityClass(IDENTITY_PROPERTIES_CLASS);
-        c.setId(27);
-
-        return c;
-    }
-
-    public static Context getAccounts() {
-        Context c = new Context();
-        c.setSubID(DEFAULT_SUBID);
-        c.setDbIdentity(IDENTITY_ACCOUNTS);
-        c.setIdentityClass(IDENTITY_ACCOUNTS_CLASS);
-        c.setId(28);
-
-        return c;
-    }
-    
-    public static Context getSubItem() {
+      public static Context getSubItem() {
         Context c = new Context(new SubItem());
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_SUBITEMS);
@@ -1170,6 +1041,147 @@ public class Context {
 
         return c;
     }
+
+    public static Context getBill() {
+        Context c = new Context(new Item());
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_ITEMS);
+        c.setSearchFields(DEFAULT_ITEM_SEARCH);
+        c.setSearchHeaders(Headers.ITEM_DEFAULT);
+        c.setIdentityClass(IDENTITY_ITEMS_CLASS);
+        c.setIsActive(true);
+        c.setIsBill(true);
+        c.setId(17);
+
+        return c;
+    }
+
+    public static Context getOrder() {
+        Context c = new Context(new Item());
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_ITEMS);
+        c.setSearchFields(DEFAULT_ITEM_SEARCH);
+        c.setSearchHeaders(Headers.ITEM_DEFAULT);
+        c.setIdentityClass(IDENTITY_ITEMS_CLASS);
+        c.setIsActive(true);
+        c.setIsOrder(true);
+        c.setId(18);
+
+        return c;
+    }
+
+    public static Context getOffer() {
+        Context c = new Context(new Item());
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_ITEMS);
+        c.setSearchFields(DEFAULT_ITEM_SEARCH);
+        c.setSearchHeaders(Headers.ITEM_DEFAULT);
+        c.setIdentityClass(IDENTITY_ITEMS_CLASS);
+        c.setIsActive(true);
+        c.setIsOffer(true);
+        c.setId(19);
+
+        return c;
+    }
+
+    public static Context getFilesToContacts() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_FILES_TO_CONTACTS);
+        c.setIdentityClass(IDENTITY_CONTACTS_FILES_CLASS);
+        c.setId(20);
+
+        return c;
+    }
+
+    public static Context getHistory() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_HISTORY);
+        c.setIdentityClass(HISTORY_ITEMS_CLASS);
+        c.setId(21);
+
+        return c;
+    }
+
+    public static Context getCountries() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_COUNTRIES);
+        c.setId(22);
+
+        return c;
+    }
+
+    public static Context getProducts() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_PRODUCTS);
+        c.setId(23);
+
+        return c;
+    }
+
+    public static Context getSearchIndex() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_SEARCHINDEX);
+        c.setId(24);
+
+        return c;
+    }
+
+    public static Context getPluginsToUsers() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_PLUGINS_TO_USERS);
+        c.setIdentityClass(IDENTITY_USER_PLUGINS_CLASS);
+        c.setId(25);
+
+        return c;
+    }
+
+    public static Context getPlugins() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_PLUGINS);
+        c.setIdentityClass(IDENTITY_PLUGINS_CLASS);
+        c.setId(26);
+
+        return c;
+    }
+    
+
+    public static Context getProperties() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_PROPERTIES_TO_USERS);
+        c.setIdentityClass(IDENTITY_PROPERTIES_CLASS);
+        c.setId(27);
+
+        return c;
+    }
+
+    public static Context getAccounts() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_ACCOUNTS);
+        c.setIdentityClass(IDENTITY_ACCOUNTS_CLASS);
+        c.setId(28);
+
+        return c;
+    }
+
+   public static Context getItemsToAccounts() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_ITEMS_TO_ACCOUNTS);
+        c.setId(29);
+
+        return c;
+    }
+    
+  
 
     /**
      *

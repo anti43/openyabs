@@ -17,16 +17,12 @@
 package mpv5.db.objects;
 
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JComponent;
 
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
-import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryHandler;
-import mpv5.ui.frames.MPV5View;
 
 /**
  *
@@ -35,11 +31,11 @@ import mpv5.ui.frames.MPV5View;
 public class Account extends DatabaseObject {
 
     public Account() {
-        context.setDbIdentity(Context.IDENTITY_PROPERTIES_TO_USERS);
+        context.setDbIdentity(Context.IDENTITY_ACCOUNTS);
         context.setIdentityClass(this.getClass());
     }
-    private String value;
-    private int usersids;
+    private String description;
+    private int taxids;
 
     @Override
     public JComponent getView() {
@@ -47,51 +43,55 @@ public class Account extends DatabaseObject {
     }
 
     /**
-     * @return the value
+     * @return the description
      */
-    public String __getValue() {
-        return value;
+    public String __getDescription() {
+        return description;
     }
 
     /**
-     * @param value the value to set
+     * @param description the description to set
      */
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    @Override
-    public boolean save() {
-//        QueryCriteria c = new QueryCriteria();
-//        c.add("cname", cname);
-//        c.add("usersids", usersids);
-//
-//        try {//delete old entries
-//             ArrayList<DatabaseObject> obj = DatabaseObject.getObjects(context, c);
-//            for (int i = 0; i < obj.size(); i++) {
-//                obj.get(i).delete();
-//            }
-//
-        QueryCriteria c = new QueryCriteria();
-        c.add("usersids", MPV5View.getUser().__getIDS());
-        c.add("cname", cname);
-        QueryHandler.instanceOf().clone(Context.getProperties()).delete(c);
-//        } catch (NodataFoundException ignore) { }
-
-        return super.save();
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     /**
-     * @return the usersids
+     * @return the taxids
      */
-    public int __getUsersids() {
-        return usersids;
+    public int __getTaxids() {
+        return taxids;
     }
 
     /**
-     * @param usersids the usersids to set
+     * @param taxids the taxids to set
      */
-    public void setUsersids(int usersids) {
-        this.usersids = usersids;
+    public void setTaxids(int taxids) {
+        this.taxids = taxids;
+    }
+
+    /**
+     * Get all Items which are assigned to this account
+     * @return
+     * @throws mpv5.db.common.NodataFoundException
+     */
+    public ArrayList<Item> getItemsInAccount() throws NodataFoundException {
+        return DatabaseObject.getReferencedObjects((Item) DatabaseObject.getObject(Context.getItems()), Context.getItemsToAccounts());
+    }
+
+    /**
+     * Get all accounts where the given item is currently assigned to
+     * @param item
+     * @return
+     * @throws mpv5.db.common.NodataFoundException
+     */
+    public static ArrayList<Account> getAccountsOfItem(Item item) throws NodataFoundException {
+        Object[][] tmp = QueryHandler.instanceOf().clone(Context.getItemsToAccounts()).select("accountsids", new String[]{"itemsids", item.__getIDS().toString(), ""});
+        ArrayList<Account> l = new ArrayList<Account>();
+        for (int i = 0; i < tmp.length; i++) {
+            int id = Integer.valueOf(tmp[i][0].toString());
+            l.add((Account) DatabaseObject.getObject(Context.getAccounts(), id));
+        }
+        return l;
     }
 }

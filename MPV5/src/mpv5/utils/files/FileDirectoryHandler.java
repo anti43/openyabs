@@ -59,7 +59,7 @@ public class FileDirectoryHandler {
             if (file.isDirectory()) {
                 deleteTree(file);
             } else {
-                Log.Debug(FileDirectoryHandler.class, "Delete: " + file.getCanonicalPath(), true);
+                Log.Debug(FileDirectoryHandler.class, "Delete: " + file.getCanonicalPath());
                 file.delete();
             }
         }
@@ -159,7 +159,7 @@ public class FileDirectoryHandler {
             if (file.isDirectory()) {
                 deleteTreeOnExit(file);
             } else {
-                Log.Debug(FileDirectoryHandler.class, "Delete On Exit: " + file.getCanonicalPath(), true);
+                Log.Debug(FileDirectoryHandler.class, "Delete On Exit: " + file.getCanonicalPath());
                 file.deleteOnExit();
             }
         }
@@ -178,9 +178,9 @@ public class FileDirectoryHandler {
         try {
             lstFiles = new ArrayList<java.io.File>();
             src = new File(directory);
-            Log.Debug(FileDirectoryHandler.class, "Verzeichnis: " + src, true);
+            Log.Debug(FileDirectoryHandler.class, "Verzeichnis: " + src);
             File[] files = src.listFiles();
-            Log.Debug(FileDirectoryHandler.class, "Dateien analysieren...", true);
+            Log.Debug(FileDirectoryHandler.class, "Dateien analysieren...");
             lstFiles = new ArrayList<java.io.File>();
 
             for (int i = 0, k = 0; i < files.length; i++) {
@@ -192,10 +192,10 @@ public class FileDirectoryHandler {
 //                        fileinfo[1] = files[i].getName();
 //                        fileinfo[2] = files[i].getCanonicalPath();
                         lstFiles.add(files[i]);
-                        Log.Debug(FileDirectoryHandler.class, "Datei gefunden: " + files[i].getName(), true);
+                        Log.Debug(FileDirectoryHandler.class, "Datei gefunden: " + files[i].getName());
                         k++;
                     } catch (Exception ex) {
-                        Log.Debug(FileDirectoryHandler.class, ex.getMessage(), true);
+                        Log.Debug(FileDirectoryHandler.class, ex.getMessage());
                     }
                 }
             }
@@ -207,7 +207,7 @@ public class FileDirectoryHandler {
             }
         } catch (Exception exception) {
             Log.Debug(FileDirectoryHandler.class, exception);
-            Log.Debug(FileDirectoryHandler.class, exception.getMessage(), true);
+            Log.Debug(FileDirectoryHandler.class, exception.getMessage());
         }
         return lstFiles.toArray(new File[0]);
     }

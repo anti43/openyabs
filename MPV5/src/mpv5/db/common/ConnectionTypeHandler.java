@@ -118,13 +118,13 @@ public class ConnectionTypeHandler {
             case MYSQL:
                 setConnectionString("jdbc:mysql://" + getURL() + "/" + Constants.DATABASENAME);
                 if (withCreate) {
-                    Log.Debug(this, "Sie müssen die MYSQL Datenbank " + Constants.DATABASENAME + " manuell anlegen.", true);
+                    Log.Debug(this, "Sie müssen die MYSQL Datenbank " + Constants.DATABASENAME + " manuell anlegen.");
                 }
                 break;
             case CUSTOM:
                 setConnectionString("jdbc:sql://" + getURL() + "/" + Constants.DATABASENAME);
                 if (withCreate) {
-                    Log.Debug(this, "Sie müssen die SQL Datenbank " + Constants.DATABASENAME + " manuell anlegen.", true);
+                    Log.Debug(this, "Sie müssen die SQL Datenbank " + Constants.DATABASENAME + " manuell anlegen.");
                 }
                 break;
         }
@@ -150,7 +150,7 @@ public class ConnectionTypeHandler {
         }
         try {
 
-            Log.Debug(this, "SQL Datei: " + filen.getCanonicalPath(), true);
+            Log.Debug(this, "SQL Datei: " + filen.getCanonicalPath());
         } catch (IOException ex) {
             Log.Debug(this, ex);
         }
