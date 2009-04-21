@@ -42,7 +42,7 @@ public class Context {
     public static String IDENTITY_FAVS = "favourites";
     public static String IDENTITY_ADDRESS = "addresses";
     public static String IDENTITY_GROUPS = "groups";
-    public static String IDENTITY_GROUPS_TO_PARENTGROUP = "groupstoparents";
+//    public static String IDENTITY_GROUPS_TO_PARENTGROUP = "groupstoparents";
     public static String IDENTITY_SCHEDULE = "schedule";
     public static String IDENTITY_HISTORY = "history";
     public static String IDENTITY_FILES_TO_CONTACTS = "filestocontacts";
@@ -70,6 +70,7 @@ public class Context {
     public static String UNIQUECOLUMNS_USER = "cname";
     public static String UNIQUECOLUMNS_ITEMS = "cname";
     public static String UNIQUECOLUMNS_GROUPS = "cname";
+    private static String UNIQUECOLUMNS_DEFAULT= "cname";
 
     //********** conditions ****************************************************
     private boolean isCompany = false;
@@ -264,7 +265,7 @@ public class Context {
                 getOffer(),
                 getSubItem(),
                 getGroup(),
-                getGroupToParentGroup(),
+//                getGroupToParentGroup(),
                 getSchedule(),
                 getFilesToContacts(),
                 getHistory(),
@@ -1001,15 +1002,15 @@ public class Context {
 
         return c;
     }
-
-    public static Context getGroupToParentGroup() {
-        Context c = new Context();
-        c.setSubID(DEFAULT_SUBID);
-        c.setDbIdentity(IDENTITY_GROUPS_TO_PARENTGROUP);
-        c.setId(12);
-
-        return c;
-    }
+//
+//    public static Context getGroupToParentGroup() {
+//        Context c = new Context();
+//        c.setSubID(DEFAULT_SUBID);
+//        c.setDbIdentity(IDENTITY_GROUPS_TO_PARENTGROUP);
+//        c.setId(12);
+//
+//        return c;
+//    }
 
     public static Context getGroup() {
         Context c = new Context();
@@ -1168,6 +1169,7 @@ public class Context {
         c.setDbIdentity(IDENTITY_ACCOUNTS);
         c.setIdentityClass(IDENTITY_ACCOUNTS_CLASS);
         c.setId(28);
+        c.uniqueColumns = UNIQUECOLUMNS_DEFAULT;
 
         return c;
     }

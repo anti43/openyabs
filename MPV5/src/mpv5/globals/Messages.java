@@ -109,6 +109,7 @@ public class Messages {
     public static String UNGROUPED = "Ungrouped";
     public static String ADMIN_USER = "User Administrator can not be deleted.";
     public static String GROUPNAMES = "All Groups";
+    public static String ACCOUNTNAMES = "All Accounts";
     public static String IN_USE = "The dataset is in use, locked or has subitems assigned to it.";
     public static String ENTER_A_DESCRIPTION = "Please enter a description:";
     public static String FILE_OPEN_FAILED = "Unable to open the file: \n";

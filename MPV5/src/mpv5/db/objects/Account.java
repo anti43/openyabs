@@ -30,6 +30,9 @@ import mpv5.db.common.QueryHandler;
  */
 public class Account extends DatabaseObject {
 
+    // Overridden and used here to organize accounts and sub-accounts
+    private int groupsids;
+
     public Account() {
         context.setDbIdentity(Context.IDENTITY_ACCOUNTS);
         context.setIdentityClass(this.getClass());
@@ -93,5 +96,23 @@ public class Account extends DatabaseObject {
             l.add((Account) DatabaseObject.getObject(Context.getAccounts(), id));
         }
         return l;
+    }
+
+    /**
+     * Represents the parent account
+     * @return the groupsids
+     */
+    @Override
+    public int __getGroupsids() {
+        return groupsids;
+    }
+
+    /**
+     * Set the parent account
+     * @param groupsids the groupsids to set
+     */
+    @Override
+    public void setGroupsids(int groupsids) {
+        this.groupsids = groupsids;
     }
 }

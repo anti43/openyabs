@@ -33,8 +33,8 @@ import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.DatabaseSearch;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryHandler;
+import mpv5.db.objects.Account;
 import mpv5.globals.Messages;
-import mpv5.db.objects.Group;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.Popup;
@@ -49,24 +49,26 @@ import mpv5.utils.ui.TextFieldUtils;
  *
  * @author anti43
  */
-public class ControlPanel_Groups extends javax.swing.JPanel implements ControlApplet, DataPanel {
+public class ControlPanel_Accounts extends javax.swing.JPanel implements ControlApplet, DataPanel {
 
     private static final long serialVersionUID = 1L;
-    private ControlPanel_Groups insta;
+    private ControlPanel_Accounts insta;
     private ArrayList<Object[]> arr;
-    private Group dataOwner;
+    private Account dataOwner;
 
     /** Creates new form ContactPanel
      */
-    public ControlPanel_Groups() {
+    public ControlPanel_Accounts() {
         if (MPSecurityManager.checkAdminAccess()) {
             initComponents();
             tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+
             refresh();
+
         }
     }
 
-    public ControlPanel_Groups(Group aThis) {
+    public ControlPanel_Accounts(Account aThis) {
         if (MPSecurityManager.checkAdminAccess()) {
             initComponents();
             tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
@@ -110,7 +112,7 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
         jLabel3 = new javax.swing.JLabel();
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
-        setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Groups.border.title"))); // NOI18N
+        setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Accounts.border.title"))); // NOI18N
         setName("Form"); // NOI18N
 
         toolbarpane.setName("toolbarpane"); // NOI18N
@@ -124,7 +126,7 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
 
         javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("root");
         tree.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
-        tree.setToolTipText(bundle.getString("ControlPanel_Groups.tree.toolTipText")); // NOI18N
+        tree.setToolTipText(bundle.getString("ControlPanel_Accounts.tree.toolTipText")); // NOI18N
         tree.setName("tree"); // NOI18N
         tree.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -133,7 +135,7 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
         });
         jScrollPane1.setViewportView(tree);
 
-        jLabel1.setText(bundle.getString("ControlPanel_Groups.jLabel1.text")); // NOI18N
+        jLabel1.setText(bundle.getString("ControlPanel_Accounts.jLabel1.text")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -153,17 +155,17 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 270, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
-        rightpane.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Groups.rightpane.border.title"))); // NOI18N
+        rightpane.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Accounts.rightpane.border.title"))); // NOI18N
         rightpane.setName("rightpane"); // NOI18N
 
-        cname.set_Label(bundle.getString("ControlPanel_Groups.cname._Label")); // NOI18N
+        cname.set_Label(bundle.getString("ControlPanel_Accounts.cname._Label")); // NOI18N
         cname.setName("cname"); // NOI18N
 
-        parents.set_Label(bundle.getString("ControlPanel_Groups.parents._Label")); // NOI18N
+        parents.set_Label(bundle.getString("ControlPanel_Accounts.parents._Label")); // NOI18N
         parents.setName("parents"); // NOI18N
 
         jScrollPane3.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
@@ -175,13 +177,13 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
         jTextArea2.setEditable(false);
         jTextArea2.setLineWrap(true);
         jTextArea2.setRows(5);
-        jTextArea2.setText(bundle.getString("ControlPanel_Groups.jTextArea2.text")); // NOI18N
+        jTextArea2.setText(bundle.getString("ControlPanel_Accounts.jTextArea2.text")); // NOI18N
         jTextArea2.setWrapStyleWord(true);
         jTextArea2.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         jTextArea2.setName("jTextArea2"); // NOI18N
         jScrollPane3.setViewportView(jTextArea2);
 
-        jButton4.setText(bundle.getString("ControlPanel_Groups.jButton4.text")); // NOI18N
+        jButton4.setText(bundle.getString("ControlPanel_Accounts.jButton4.text")); // NOI18N
         jButton4.setName("jButton4"); // NOI18N
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -189,7 +191,7 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
             }
         });
 
-        jButton3.setText(bundle.getString("ControlPanel_Groups.jButton3.text")); // NOI18N
+        jButton3.setText(bundle.getString("ControlPanel_Accounts.jButton3.text")); // NOI18N
         jButton3.setName("jButton3"); // NOI18N
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -197,7 +199,7 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
             }
         });
 
-        jButton2.setText(bundle.getString("ControlPanel_Groups.jButton2.text")); // NOI18N
+        jButton2.setText(bundle.getString("ControlPanel_Accounts.jButton2.text")); // NOI18N
         jButton2.setName("jButton2"); // NOI18N
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -205,7 +207,7 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
             }
         });
 
-        jButton1.setText(bundle.getString("ControlPanel_Groups.jButton1.text")); // NOI18N
+        jButton1.setText(bundle.getString("ControlPanel_Accounts.jButton1.text")); // NOI18N
         jButton1.setName("jButton1"); // NOI18N
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -213,8 +215,8 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
             }
         });
 
-        jLabel2.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
-        jLabel2.setText(bundle.getString("ControlPanel_Groups.jLabel2.text")); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Dialog", 0, 12));
+        jLabel2.setText(bundle.getString("ControlPanel_Accounts.jLabel2.text")); // NOI18N
         jLabel2.setName("jLabel2"); // NOI18N
 
         jScrollPane2.setName("jScrollPane2"); // NOI18N
@@ -225,7 +227,7 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
         jScrollPane2.setViewportView(desc);
 
         jLabel3.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
-        jLabel3.setText(bundle.getString("ControlPanel_Groups.jLabel3.text")); // NOI18N
+        jLabel3.setText(bundle.getString("ControlPanel_Accounts.jLabel3.text")); // NOI18N
         jLabel3.setName("jLabel3"); // NOI18N
 
         javax.swing.GroupLayout rightpaneLayout = new javax.swing.GroupLayout(rightpane);
@@ -265,7 +267,7 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(parents, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                 .addGroup(rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton2)
@@ -330,10 +332,10 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
         if (dataOwner == null) {
-            dataOwner = new Group();
+            dataOwner = new Account();
         }
         DatabaseObject dato = dataOwner;
-        if (QueryHandler.instanceOf().clone(Context.getGroup()).checkUniqueness(Context.getGroup().getUniqueColumns(), new JTextField[]{cname.getTextField()})) {
+        if (QueryHandler.instanceOf().clone(Context.getAccounts()).checkUniqueness(Context.getAccounts().getUniqueColumns(), new JTextField[]{cname.getTextField()})) {
             dato.getPanelData(this);
             dato.setIDS(-1);
             if (dato.save()) {
@@ -351,12 +353,12 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
 
         if (evt.getClickCount() == 1) {
             if (node != null) {
-                Group g = (Group) node.getUserObject();
+                Account g = (Account) node.getUserObject();
                 parents.set_Text(g.__getCName());
             }
         } else {
             if (node != null) {
-                Group g = (Group) node.getUserObject();
+                Account g = (Account) node.getUserObject();
                 setDataOwner(g);
             }
         }
@@ -390,13 +392,14 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
     public int groupsids_ = 1;
     public int intaddedby_ = 1;
     public java.util.Date dateadded_ = new java.util.Date();
+    public int taxids_ = 1;
 
     public void setValues(PropertyStore values) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public String getUname() {
-        return "Groups";
+        return "Accounts";
     }
 
     public void reset() {
@@ -411,30 +414,36 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
 
     public ControlApplet instanceOf() {
         if (insta == null) {
-            insta = new ControlPanel_Groups();
+            insta = new ControlPanel_Accounts();
         }
         return insta;
     }
 
     public void refresh() {
 
-        ArrayList<Group> data = null;
+        ArrayList<Account> data = null;
         try {
-            data = DatabaseObject.getObjects(Context.getGroup());
+            data = DatabaseObject.getObjects(Context.getAccounts());
         } catch (NodataFoundException ex) {
             Log.Debug(this, ex.getMessage());
         }
 
-        Group g;
+        Account g = null;
         try {
-            g = (Group) DatabaseObject.getObject(Context.getGroup(), 1);
+            g = (Account) DatabaseObject.getObject(Context.getAccounts(), 1);
         } catch (NodataFoundException ex) {
-            g= new Group(Messages.GROUPNAMES);
+            g.setCName(Messages.ACCOUNTNAMES);
             g.setIDS(-1);
         }
 
-        tree.setModel(ArrayUtilities.toTreeModel(data, g));
-        TreeFormat.expandTree(tree);
+        try {
+            tree.setModel(ArrayUtilities.toTreeModel(data, g));
+            TreeFormat.expandTree(tree);
+        } catch (Exception e) {
+            Log.Debug(this, e.getMessage());
+        }
+
+
     }
 
     public void collectData() {
@@ -442,10 +451,12 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
         description_ = desc.getText();
 //        defaults_ = defaults.get_Text();
         try {
-            groupsids_ = Integer.valueOf(new DatabaseSearch(Context.getGroup()).searchFor(new String[]{"ids"}, "cname", parents.get_Text(), true)[0].toString());
+            groupsids_ = Integer.valueOf(new DatabaseSearch(Context.getAccounts()).searchFor(new String[]{"ids"}, "cname", parents.get_Text(), true)[0].toString());
         } catch (NodataFoundException ex) {
             groupsids_ = 1;
         }
+
+        taxids_ = 1;
     }
 
     public DatabaseObject getDataOwner() {
@@ -453,7 +464,7 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
     }
 
     public void setDataOwner(DatabaseObject object) {
-        dataOwner = (Group) object;
+        dataOwner = (Account) object;
         dataOwner.setPanelData(this);
         this.exposeData();
     }
@@ -462,7 +473,7 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
         cname.set_Text(cname_);
         desc.setText(description_);
         try {
-            parents.set_Text(DatabaseObject.getObject(Context.getGroup(), groupsids_).__getCName());
+            parents.set_Text(DatabaseObject.getObject(Context.getAccounts(), groupsids_).__getCName());
         } catch (NodataFoundException ex) {
             Log.Debug(this, ex);
         }
@@ -470,7 +481,7 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
     }
 
     public void paste(DatabaseObject dbo) {
-        if (dbo.getDbIdentity().equals(Context.getGroup().getDbIdentity())) {
+        if (dbo.getDbIdentity().equals(Context.getAccounts().getDbIdentity())) {
             setDataOwner(dbo);
         } else {
             MPV5View.addMessage(Messages.NOT_POSSIBLE + Messages.ACTION_PASTE);

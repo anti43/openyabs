@@ -541,14 +541,14 @@ public abstract class DatabaseObject {
      * @throws mpv5.db.common.NodataFoundException
      */
     @SuppressWarnings("unchecked")
-    public static <T extends DatabaseObject>ArrayList<T> getReferencedObjects(T dataOwner, Context inReference) throws NodataFoundException {
+    public static <T extends DatabaseObject> ArrayList<T> getReferencedObjects(T dataOwner, Context inReference) throws NodataFoundException {
 
         Object[][] allIds = QueryHandler.instanceOf().clone(inReference).select("ids", new String[]{dataOwner.getDbIdentity() + "ids", dataOwner.__getIDS().toString(), ""});
         ArrayList<T> list = new ArrayList<T>();
 
         for (int i = 0; i < allIds.length; i++) {
             int id = Integer.valueOf(allIds[i][0].toString());
-            list.add((T)DatabaseObject.getObject(inReference, id));
+            list.add((T) DatabaseObject.getObject(inReference, id));
         }
         return list;
     }
@@ -750,5 +750,18 @@ public abstract class DatabaseObject {
      */
     public void setIntaddedby(int intaddedby) {
         this.intaddedby = intaddedby;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 83 * hash + (this.context != null ? this.context.hashCode() : 0);
+        hash = 83 * hash + (this.ids != null ? this.ids.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return hashCode() == o.hashCode();
     }
 }

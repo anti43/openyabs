@@ -16,6 +16,8 @@
  */
 package mpv5.db.common;
 
+import mpv5.globals.Messages;
+
 /**
  * @author anti43
  */
@@ -49,7 +51,7 @@ public class DatabaseInstallation {
 "CREATE TABLE schedule (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),cname VARCHAR(250) NOT NULL, groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1,usersids BIGINT REFERENCES users (ids)  ON DELETE CASCADE,itemsids BIGINT REFERENCES items (ids)  ON DELETE CASCADE,nextdate DATE NOT NULL, intervalmonth SMALLINT NOT NULL, dateadded DATE NOT NULL,intaddedby BIGINT DEFAULT 0,invisible SMALLINT DEFAULT 0,reserve1 VARCHAR(500) default NULL, reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (ids))",
 "CREATE TABLE products (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), cname VARCHAR(500) NOT NULL, cnumber VARCHAR(150) , description VARCHAR(500), pricenetvalue DOUBLE DEFAULT 0, buypricevalue DOUBLE DEFAULT 0, taxids BIGINT REFERENCES tax(ids) ON DELETE CASCADE, manufacturer BIGINT REFERENCES contacts(ids)  ON DELETE CASCADE DEFAULT NULL,supplier BIGINT REFERENCES contacts(ids)  ON DELETE CASCADE DEFAULT NULL, groupsids  BIGINT  REFERENCES groups(ids) DEFAULT 1,url VARCHAR(250) default NULL,ean VARCHAR(25) default null, reference VARCHAR(50) default null,dateadded DATE NOT NULL,intaddedby BIGINT DEFAULT 0,invisible SMALLINT DEFAULT 0,reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (ids))",
 "CREATE TABLE userproperties(IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),cname VARCHAR(250) NOT NULL, value VARCHAR(250) NOT NULL, usersids BIGINT NOT NULL, dateadded DATE NOT NULL,intaddedby BIGINT DEFAULT 0, groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1,invisible SMALLINT DEFAULT 0, PRIMARY KEY  (ids))",
-"CREATE TABLE accounts(IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),cname VARCHAR(250) NOT NULL, description VARCHAR(250) NOT NULL, taxids BIGINT NOT NULL REFERENCES tax(ids), dateadded DATE NOT NULL,intaddedby BIGINT DEFAULT 0, groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1,invisible SMALLINT DEFAULT 0, PRIMARY KEY  (ids))",
+"CREATE TABLE accounts(IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),cname VARCHAR(250) NOT NULL, description VARCHAR(250) NOT NULL, taxids BIGINT NOT NULL REFERENCES tax(ids), dateadded DATE NOT NULL,intaddedby BIGINT DEFAULT 0, groupsids BIGINT  DEFAULT 0, invisible SMALLINT DEFAULT 0, PRIMARY KEY  (ids))",
 
 
 //sub tables #2
@@ -95,8 +97,10 @@ public class DatabaseInstallation {
 "CREATE TRIGGER thrash_handler1 AFTER INSERT ON trashbin FOR EACH STATEMENT DELETE FROM trashbin WHERE deleteme = 1",
 "CREATE TRIGGER thrash_handler2 AFTER INSERT ON trashbin FOR EACH STATEMENT DELETE FROM trashbin WHERE ids IN (SELECT ids FROM trashbin WHERE EXISTS( SELECT ids FROM trashbin AS tmptable WHERE trashbin.cname = tmptable.cname AND trashbin.rowid = tmptable.rowid HAVING trashbin.ids < MAX(tmptable.ids) ) )",
 
-
+"INSERT INTO tax(cname, dateadded) VALUES ('Default', '2009-04-03 09:31:33')",
+"INSERT INTO groups (cname,description, dateadded) VALUES ('"+Messages.GROUPNAMES+"','This group holds all yet ungrouped items.', '2009-04-03 09:31:33')",
 "INSERT INTO groups (cname,description, dateadded) VALUES ('ungrouped','This group holds all yet ungrouped items.', '2009-04-03 09:31:33')",
+"INSERT INTO accounts (cname,description, dateadded, taxids) VALUES ('"+Messages.ACCOUNTNAMES+"','This account holds all yet ungrouped items.', '2009-04-03 09:31:33', 1)",
 "INSERT INTO users (fullname,password,cname,laf,locale,mail,language,inthighestright,datelastlog,isenabled, dateadded ) VALUES ('Administrator','5f4dcc3b5aa765d61d8327deb882cf99','admin','de.muntjak.tinylookandfeel.TinyLookAndFeel','de_DE','','buildin_en',0,'2009-04-03 09:31:33',1,'2009-04-03 09:31:33')"
 
     };

@@ -410,12 +410,13 @@ public class ArrayUtilities {
     public static <T extends DatabaseObject> DefaultTreeModel toTreeModel(ArrayList<T> data, T rootNode) {
 
         DefaultMutableTreeNode node1 = new DefaultMutableTreeNode(rootNode);
+        data.remove(rootNode);//remove root if in list
         try {
             MPV5View.setWaiting(true);
             node1 = addToParents(node1, data);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.Debug(e);
         } finally {
             MPV5View.setWaiting(false);
         }
@@ -423,31 +424,32 @@ public class ArrayUtilities {
         return model;
     }
 
-    private static <T extends DatabaseObject> DefaultMutableTreeNode addToParents(DefaultMutableTreeNode firstnode, ArrayList<T> groups) {
+    @SuppressWarnings("unchecked")
+    private static <T extends DatabaseObject> DefaultMutableTreeNode addToParents(DefaultMutableTreeNode firstnode, ArrayList<T> dobjlist) {
 
         Log.Debug(ArrayUtilities.class, "Parent Node: " + firstnode);
-        for (int i = 0; i < groups.size(); i++) {
-            T group = groups.get(i);
-            Log.Debug(ArrayUtilities.class, "Node: " + group);
+        for (int i = 0; i < dobjlist.size(); i++) {
+            T dobj = dobjlist.get(i);
+            Log.Debug(ArrayUtilities.class, "Node: " + dobj);
 
-            if (group.__getGroupsids() <= 0 && firstnode.isRoot()) {
+            if (dobj.__getGroupsids() <= 0 && firstnode.isRoot()) {
                 Log.Debug(ArrayUtilities.class, "Node is root child, adding it to root and removing it from the list.");
-                firstnode.add(new DefaultMutableTreeNode(group));
-                groups.remove(group);//First level groups
+                firstnode.add(new DefaultMutableTreeNode(dobj));
+                dobjlist.remove(dobj);//First level groups
                 i--;
             } else {
-                int parentid = group.__getGroupsids();
-                if (((Group) firstnode.getUserObject()).__getIDS().intValue() == parentid) {
+                int parentid = dobj.__getGroupsids();
+                if (((T) firstnode.getUserObject()).__getIDS().intValue() == parentid) {
                     Log.Debug(ArrayUtilities.class, "Node is child of parentnode, adding and removing it from the list.");
-                    firstnode.add(new DefaultMutableTreeNode(group));
-                    groups.remove(group);
+                    firstnode.add(new DefaultMutableTreeNode(dobj));
+                    dobjlist.remove(dobj);
                     i--;
                 } else {
                     Log.Debug(ArrayUtilities.class, "Node is no child of parentnode, iterating over the parent node..");
                     @SuppressWarnings("unchecked")
                     Enumeration<DefaultMutableTreeNode> nodes = firstnode.children();
                     while (nodes.hasMoreElements()) {
-                        addToParents(nodes.nextElement(), groups);
+                        addToParents(nodes.nextElement(), dobjlist);
                     }
                 }
             }
