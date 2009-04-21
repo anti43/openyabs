@@ -25,7 +25,7 @@ import java.awt.event.ActionListener;
 import mpv5.db.common.DatabaseObject;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
-import mpv5.items.div.Favourite;
+import mpv5.db.objects.Favourite;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPV5View;

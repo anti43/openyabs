@@ -14,7 +14,7 @@ import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPV5View;
 import mpv5.ui.misc.Position;
-import mpv5.usermanagement.User;
+import mpv5.db.objects.User;
 import mpv5.utils.text.MD5HashGenerator;
 
 /**

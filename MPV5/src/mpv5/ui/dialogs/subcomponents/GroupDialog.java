@@ -18,7 +18,7 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.globals.Messages;
-import mpv5.items.div.Group;
+import mpv5.db.objects.Group;
 import mpv5.logging.Log;
 import mpv5.ui.panels.DataPanel;
 import mpv5.utils.arrays.ArrayUtilities;

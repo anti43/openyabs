@@ -52,7 +52,7 @@ import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 import mpv5.db.common.NodataFoundException;
 import mpv5.globals.Messages;
-import mpv5.items.div.Schedule;
+import mpv5.db.objects.Schedule;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.ScheduleDayEvents;
 import mpv5.utils.date.DateConverter;

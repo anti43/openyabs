@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package mpv5.data;
+package mpv5.db.common;
 
 /**
  *

@@ -19,7 +19,7 @@ package mpv5.ui.panels.calendar;
 import java.awt.Color;
 import java.util.Date;
 import javax.swing.JButton;
-import mpv5.items.div.Schedule;
+import mpv5.db.objects.Schedule;
 
 /**
  *

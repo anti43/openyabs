@@ -32,7 +32,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import mpv5.globals.Messages;
-import mpv5.items.main.Contact;
+import mpv5.db.objects.Contact;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPV5View;
 import mpv5.ui.dialogs.Popup;

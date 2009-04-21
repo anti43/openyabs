@@ -7,18 +7,19 @@ package mpv5.db.common;
 import java.util.ArrayList;
 import java.util.Arrays;
 import mpv5.globals.Headers;
-import mpv5.items.div.Address;
-import mpv5.items.main.Contact;
-import mpv5.items.div.Favourite;
-import mpv5.items.div.Group;
-import mpv5.items.div.HistoryItem;
-import mpv5.items.div.Property;
-import mpv5.items.div.Schedule;
-import mpv5.items.main.ContactFile;
-import mpv5.items.main.Item;
-import mpv5.items.main.SubItem;
+import mpv5.db.objects.Account;
+import mpv5.db.objects.Address;
+import mpv5.db.objects.Contact;
+import mpv5.db.objects.Favourite;
+import mpv5.db.objects.Group;
+import mpv5.db.objects.HistoryItem;
+import mpv5.db.objects.Property;
+import mpv5.db.objects.Schedule;
+import mpv5.db.objects.ContactFile;
+import mpv5.db.objects.Item;
+import mpv5.db.objects.SubItem;
 import mpv5.pluginhandling.Plugin;
-import mpv5.usermanagement.User;
+import mpv5.db.objects.User;
 import mpv5.pluginhandling.UserPlugin;
 import mpv5.ui.frames.MPV5View;
 
@@ -49,6 +50,7 @@ public class Context {
     public static String IDENTITY_PLUGINS_TO_USERS = "pluginstousers";
     public static String IDENTITY_PLUGINS = "plugins";
     public static String IDENTITY_PROPERTIES_TO_USERS = "userproperties";
+    public static String IDENTITY_ACCOUNTS = "accounts";
 
     //********** identity classes **********************************************
     private static Class IDENTITY_CONTACTS_CLASS = Contact.class;
@@ -61,6 +63,7 @@ public class Context {
     private static Class IDENTITY_USER_PLUGINS_CLASS = UserPlugin.class;
     private static Class IDENTITY_PLUGINS_CLASS = Plugin.class;
     private static Class IDENTITY_PROPERTIES_CLASS = Property.class;
+    private static Class IDENTITY_ACCOUNTS_CLASS = Account.class;
 
     //********** unique constraints *******************************************
     public static String UNIQUECOLUMNS_USER = "cname";
@@ -161,6 +164,8 @@ public class Context {
         list.add(getCountries());
         list.add(getContact());
         list.add(getProducts());
+        list.add(getAccounts());
+                
         return list;
     }
 
@@ -181,6 +186,7 @@ public class Context {
         list.add(getSchedule());
         list.add(getContact());
         list.add(getProducts());
+        list.add(getAccounts());
         return list;
     }
 
@@ -206,7 +212,7 @@ public class Context {
     }
 
     /**
-     * Contexts which are monitored by the Historie
+     * Contexts which are monitored by the History
      * @return
      */
     public static ArrayList<Context> getArchivableContexts() {
@@ -225,6 +231,7 @@ public class Context {
         list.add(getSchedule());
         list.add(getContact());
         list.add(getProducts());
+        list.add(getAccounts());
         return list;
     }
 
@@ -264,8 +271,10 @@ public class Context {
                 getProducts(),
                 getPlugins(),
                 getPluginsToUsers(),
-                getProperties()
+                getProperties(),
+                getAccounts()
             }));
+
     private String[] searchHeaders;
     private ArrayList<String[]> references = new ArrayList<String[]>();
     private boolean exclusiveConditionsAvailable = false;
@@ -988,6 +997,8 @@ public class Context {
 
         return c;
     }
+    
+
 
     public static Context getProperties() {
         Context c = new Context();
@@ -999,6 +1010,16 @@ public class Context {
         return c;
     }
 
+    public static Context getAccounts() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_ACCOUNTS);
+        c.setIdentityClass(IDENTITY_ACCOUNTS_CLASS);
+        c.setId(28);
+
+        return c;
+    }
+    
     public static Context getSubItem() {
         Context c = new Context(new SubItem());
         c.setSubID(DEFAULT_SUBID);

@@ -23,7 +23,7 @@ import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPV5View;
 import mpv5.ui.panels.DataPanel;
 import mpv5.usermanagement.MPSecurityManager;
-import mpv5.usermanagement.User;
+import mpv5.db.objects.User;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.models.MPComboBoxModelItem;

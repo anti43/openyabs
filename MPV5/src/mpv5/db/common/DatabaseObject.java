@@ -16,7 +16,7 @@ import mpv5.db.common.Context;
 import javax.swing.SwingUtilities;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
-import mpv5.items.div.HistoryItem;
+import mpv5.db.objects.HistoryItem;
 import mpv5.logging.Log;
 import mpv5.ui.panels.DataPanel;
 import mpv5.ui.dialogs.Popup;

@@ -14,8 +14,9 @@
  *      You should have received a copy of the GNU General Public License
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mpv5.usermanagement;
+package mpv5.db.objects;
 
+import mpv5.usermanagement.*;
 import java.awt.Font;
 import java.util.ArrayList;
 import java.util.Date;
@@ -37,7 +38,7 @@ import mpv5.db.common.QueryData;
 import mpv5.db.common.QueryHandler;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
-import mpv5.items.div.Property;
+import mpv5.db.objects.Property;
 import mpv5.logging.Log;
 import mpv5.pluginhandling.MP5Plugin;
 import mpv5.pluginhandling.MPPLuginLoader;

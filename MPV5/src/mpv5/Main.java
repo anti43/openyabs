@@ -35,7 +35,7 @@ import mpv5.ui.dialogs.Wizard;
 import mpv5.ui.dialogs.subcomponents.wizard_DBSettings_1;
 
 
-import mpv5.usermanagement.User;
+import mpv5.db.objects.User;
 import mpv5.utils.files.FileDirectoryHandler;
 import org.apache.commons.cli2.*;
 import org.apache.commons.cli2.builder.*;

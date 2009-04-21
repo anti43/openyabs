@@ -133,7 +133,7 @@ public class QueryData {
         String s = "";
 
         for (int i = 0; i < k.length; i++) {
-            mpv5.data.SaveString v = getValue(k[i]);
+            mpv5.db.common.SaveString v = getValue(k[i]);
             s += v.getWrapper() + v.toString() + v.getWrapper() + ",";
         }
         if (s.length() > 1) {

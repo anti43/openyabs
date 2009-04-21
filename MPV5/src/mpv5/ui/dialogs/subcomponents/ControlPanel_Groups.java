@@ -32,7 +32,7 @@ import mpv5.db.common.DatabaseSearch;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryHandler;
 import mpv5.globals.Messages;
-import mpv5.items.div.Group;
+import mpv5.db.objects.Group;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.Popup;

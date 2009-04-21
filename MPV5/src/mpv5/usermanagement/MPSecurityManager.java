@@ -16,6 +16,7 @@
  */
 package mpv5.usermanagement;
 
+import mpv5.db.objects.User;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import javax.swing.ComboBoxModel;

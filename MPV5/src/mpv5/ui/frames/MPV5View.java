@@ -26,7 +26,7 @@ import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryHandler;
 import mpv5.globals.Messages;
-import mpv5.items.div.Favourite;
+import mpv5.db.objects.Favourite;
 import mpv5.logging.Log;
 import mpv5.pluginhandling.MP5Plugin;
 import mpv5.pluginhandling.Plugin;
@@ -47,7 +47,7 @@ import mpv5.ui.misc.Position;
 
 import mpv5.ui.panels.calendar.JCalendar;
 import mpv5.usermanagement.MPSecurityManager;
-import mpv5.usermanagement.User;
+import mpv5.db.objects.User;
 import mpv5.utils.print.PrintJob;
 import mpv5.utils.renderer.ComboBoxRendererForTooltip;
 import mpv5.utils.text.TypeConversion;

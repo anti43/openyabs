@@ -100,7 +100,7 @@ public class QueryCriteria {
         String s = "";
 
         for (int i = 0; i < k.length; i++) {
-            mpv5.data.SaveString v = getValue(k[i]);
+            mpv5.db.common.SaveString v = getValue(k[i]);
             s += v.getWrapper() + v.toString() + v.getWrapper() + ",";
         }
         return s.substring(0, s.length() - 1);
