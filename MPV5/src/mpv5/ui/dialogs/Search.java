@@ -80,19 +80,21 @@ public class Search extends javax.swing.JFrame {
         jCheckBox2 = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/ui/dialogs/Bundle"); // NOI18N
-        setTitle(bundle.getString("Search.title")); // NOI18N
+        setTitle(null);
         setName("Form"); // NOI18N
 
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("Search.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 
         jLabel1.setText(bundle.getString("Search.jLabel1.text")); // NOI18N
+        jLabel1.setToolTipText(bundle.getString("Search.jLabel1.toolTipText")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
 
         scope.setName("scope"); // NOI18N
 
         jLabel2.setText(bundle.getString("Search.jLabel2.text")); // NOI18N
+        jLabel2.setToolTipText(bundle.getString("Search.jLabel2.toolTipText")); // NOI18N
         jLabel2.setName("jLabel2"); // NOI18N
 
         key.setEditable(true);
@@ -104,9 +106,11 @@ public class Search extends javax.swing.JFrame {
         });
 
         jCheckBox1.setText(bundle.getString("Search.jCheckBox1.text")); // NOI18N
+        jCheckBox1.setToolTipText(bundle.getString("Search.jCheckBox1.toolTipText")); // NOI18N
         jCheckBox1.setName("jCheckBox1"); // NOI18N
 
         jButton1.setText(bundle.getString("Search.jButton1.text")); // NOI18N
+        jButton1.setToolTipText(bundle.getString("Search.jButton1.toolTipText")); // NOI18N
         jButton1.setName("jButton1"); // NOI18N
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -166,14 +170,14 @@ public class Search extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jCheckBox1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 80, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(key, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(scope, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jButton2))
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 346, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 348, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
