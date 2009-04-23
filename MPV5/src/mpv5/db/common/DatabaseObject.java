@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 import javax.swing.Icon;
 import mpv5.db.common.Context;
 import javax.swing.SwingUtilities;
+import mpv5.db.objects.Item;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.db.objects.HistoryItem;
@@ -31,6 +32,8 @@ import javax.swing.JComponent;
  * @author anti43
  */
 public abstract class DatabaseObject {
+
+
 
     /**
      * The db context of this do
@@ -532,6 +535,26 @@ public abstract class DatabaseObject {
     }
 
     /**
+     *  Returns objects within the given context which match the criterias in the given QueryCriteria object
+     * @param <T>
+     * @param criterias
+     * @param template
+     * @return
+     * @throws NodataFoundException
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends DatabaseObject> ArrayList<T> getObjects(T template, QueryCriteria criterias) throws NodataFoundException {
+        Object[][] data = QueryHandler.instanceOf().clone(template.getContext()).select("ids", criterias);
+        ArrayList<T> list = new ArrayList<T>();
+
+        for (int i = 0; i < data.length; i++) {
+            int id = Integer.valueOf(data[i][0].toString());
+            list.add(((T)DatabaseObject.getObject(template.getContext(), id)));
+        }
+        return list;
+    }
+
+    /**
      * Return objects which are referenced in the given Context@table
      * <br/>As list of getObject(inReference, (SELECT ids FROM Context@table WHERE dataOwnerIDS = dataowner.ids))
      * @param <T>
@@ -646,10 +669,13 @@ public abstract class DatabaseObject {
                                 vars.get(k).invoke(this, new Object[]{String.valueOf(select.getData()[i][j])});
                             }
                         } catch (IllegalAccessException ex) {
+                          
                             Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
                         } catch (IllegalArgumentException ex) {
+                              Log.Debug(this,name + " " + String.valueOf(select.getData()[i][j]));
                             Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
                         } catch (InvocationTargetException ex) {
+                           
                             Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }

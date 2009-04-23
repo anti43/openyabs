@@ -22,6 +22,7 @@ import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
+import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryHandler;
 
 /**
@@ -32,6 +33,16 @@ public class Account extends DatabaseObject {
 
     // Overridden and used here to organize accounts and sub-accounts
     private int groupsids;
+    private int intaccountclass ;
+    /**
+     * Expenses go here
+     */
+    public static int EXPENSE = 0;
+    /**
+     * Revenues go here
+     */
+    public static int REVENUE = 1;
+
 
     public Account() {
         context.setDbIdentity(Context.IDENTITY_ACCOUNTS);
@@ -39,6 +50,7 @@ public class Account extends DatabaseObject {
     }
     private String description;
     private int taxids;
+    private int intaccounttype;
 
     @Override
     public JComponent getView() {
@@ -79,11 +91,19 @@ public class Account extends DatabaseObject {
      * @throws mpv5.db.common.NodataFoundException
      */
     public ArrayList<Item> getItemsInAccount() throws NodataFoundException {
-        return DatabaseObject.getReferencedObjects((Item) DatabaseObject.getObject(Context.getItems()), Context.getItemsToAccounts());
+        ArrayList<Item> tmp = DatabaseObject.getReferencedObjects((Item) DatabaseObject.getObject(Context.getItems()), Context.getItemsToAccounts());
+
+        QueryCriteria c = new QueryCriteria();
+        c.add("defaultaccountsids", this.__getIDS());
+        ArrayList<Item> tmp2 = DatabaseObject.getObjects(new Item(), c);
+
+        tmp.addAll(tmp2);
+        
+        return tmp;
     }
 
     /**
-     * Get all accounts where the given item is currently assigned to
+     * Get all additional accounts where the given item is currently assigned to
      * @param item
      * @return
      * @throws mpv5.db.common.NodataFoundException
@@ -91,10 +111,14 @@ public class Account extends DatabaseObject {
     public static ArrayList<Account> getAccountsOfItem(Item item) throws NodataFoundException {
         Object[][] tmp = QueryHandler.instanceOf().clone(Context.getItemsToAccounts()).select("accountsids", new String[]{"itemsids", item.__getIDS().toString(), ""});
         ArrayList<Account> l = new ArrayList<Account>();
+
+        l.add((Account) DatabaseObject.getObject(Context.getAccounts(), item.__getDefaultaccountsids()));
+
         for (int i = 0; i < tmp.length; i++) {
             int id = Integer.valueOf(tmp[i][0].toString());
             l.add((Account) DatabaseObject.getObject(Context.getAccounts(), id));
         }
+
         return l;
     }
 
@@ -114,5 +138,34 @@ public class Account extends DatabaseObject {
     @Override
     public void setGroupsids(int groupsids) {
         this.groupsids = groupsids;
+    }
+
+    /**
+     * @return the accounttype
+     */
+    public int __getIntaccounttype() {
+        return intaccounttype;
+    }
+
+    /**
+     * @param accounttype the accounttype to set
+     */
+    public void setIntaccounttype(int accounttype) {
+        this.intaccounttype = accounttype;
+    }
+
+
+    /**
+     * @return the intaccountclass
+     */
+    public int __getIntaccountclass() {
+        return intaccountclass;
+    }
+
+    /**
+     * @param intaccountclass the intaccountclass to set
+     */
+    public void setIntaccountclass(int intaccountclass) {
+        this.intaccountclass = intaccountclass;
     }
 }

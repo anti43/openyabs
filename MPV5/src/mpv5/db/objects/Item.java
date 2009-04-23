@@ -28,6 +28,7 @@ public class Item extends DatabaseObject{
 
 
     private int contactsids;
+    private int defaultaccountsids;
     private boolean isactive;
     private boolean isfinished;
     private double value;
@@ -238,6 +239,20 @@ public class Item extends DatabaseObject{
     @Override
     public JComponent getView() {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    /**
+     * @return the defaultaccountsids
+     */
+    public int __getDefaultaccountsids() {
+        return defaultaccountsids;
+    }
+
+    /**
+     * @param defaultaccountsids the defaultaccountsids to set
+     */
+    public void setDefaultaccountsids(int defaultaccountsids) {
+        this.defaultaccountsids = defaultaccountsids;
     }
 
 

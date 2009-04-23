@@ -305,7 +305,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
             if (dataOwner != null) {
                 DatabaseObject dato = dataOwner;
                 dato.getPanelData(this);
-                if (dato.__getIDS().intValue() == 1|| !dato.delete()) {
+                if (dato.__getIDS().intValue() == 1 || !dato.delete()) {
                     Popup.notice(Messages.NOT_POSSIBLE + "\n" + Messages.IN_USE);
                 }
             }
@@ -393,6 +393,8 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
     public int intaddedby_ = 1;
     public java.util.Date dateadded_ = new java.util.Date();
     public int taxids_ = 1;
+    public int intaccountclass_ = 0;
+    public int intaccounttype_ = 0;
 
     public void setValues(PropertyStore values) {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -457,6 +459,8 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
         }
 
         taxids_ = 1;
+        intaccountclass_ = 0;
+        intaccounttype_ = 0;
     }
 
     public DatabaseObject getDataOwner() {
