@@ -75,6 +75,7 @@ public class Context {
     public static String UNIQUECOLUMNS_ITEMS = "cname";
     public static String UNIQUECOLUMNS_GROUPS = "cname";
     private static String UNIQUECOLUMNS_DEFAULT= "cname";
+    public static String DETAIL_CONTACT_SEARCH = "prename,cname,street,city,country,notes";
 
     //********** conditions ****************************************************
     private boolean isCompany = false;
