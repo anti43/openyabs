@@ -404,14 +404,6 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener, 
                         processedEvents.add(schedule);
                     } else {
 
-                        days[i + n + 7].setToolTipText(Messages.NEW_VALUE);
-                        days[i + n + 7].addActionListener(new ActionListener() {
-
-                            public void actionPerformed(ActionEvent e) {
-                                new ScheduleDayEvent();
-                            }
-                        });
-
                         for (int k = 0; k < processedEvents.size(); k++) {
                             Schedule schedule1 = processedEvents.get(k);
                             if (schedule1.getDate().contains(day)) {
@@ -420,14 +412,31 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener, 
                         }
                         if (!found) {
                             days[i + n + 7].setIcon(null);
+                                  if ( days[i + n + 7].getIcon() == null) {
+                days[i + n + 7].setToolTipText(Messages.NEW_VALUE);
+                days[i + n + 7].addActionListener(new ActionListener() {
+
+                    public void actionPerformed(ActionEvent e) {
+                        new ScheduleDayEvent();
+                    }
+                });
+            }
                         }
                     }
                 }
             }
 
-
+         
 //            days[i + n + 7].setContentAreaFilled(true);
-
+//      if ( days[i + n + 7].getIcon() == null) {
+//                days[i + n + 7].setToolTipText(Messages.NEW_VALUE);
+//                days[i + n + 7].addActionListener(new ActionListener() {
+//
+//                    public void actionPerformed(ActionEvent e) {
+//                        new ScheduleDayEvent();
+//                    }
+//                });
+//            }
             n++;
             tmpCalendar.add(Calendar.DATE, 1);
             day = tmpCalendar.getTime();
