@@ -20,10 +20,8 @@
  */
 package mpv5.ui.panels.calendar;
 
-
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridLayout;
@@ -43,10 +41,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
@@ -54,6 +49,7 @@ import mpv5.db.common.NodataFoundException;
 import mpv5.globals.Messages;
 import mpv5.db.objects.Schedule;
 import mpv5.logging.Log;
+import mpv5.ui.dialogs.ScheduleDayEvent;
 import mpv5.ui.dialogs.ScheduleDayEvents;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.date.vTimeframe;
@@ -407,6 +403,14 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener, 
                         }
                         processedEvents.add(schedule);
                     } else {
+
+                        days[i + n + 7].setToolTipText(Messages.NEW_VALUE);
+                        days[i + n + 7].addActionListener(new ActionListener() {
+
+                            public void actionPerformed(ActionEvent e) {
+                                new ScheduleDayEvent();
+                            }
+                        });
 
                         for (int k = 0; k < processedEvents.size(); k++) {
                             Schedule schedule1 = processedEvents.get(k);
@@ -901,7 +905,7 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener, 
         this.dayBordersVisible = dayBordersVisible;
         if (initialized) {
 
-             for (int x = 0; x < 7; x++) {
+            for (int x = 0; x < 7; x++) {
 
                 days[x].setContentAreaFilled(true);
                 days[x].setBorder(new LineBorder(Color.white, 1, false));
@@ -1067,7 +1071,6 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener, 
      * @param s
      *            The command line arguments
      */
-
     class DecoratorButton extends CalendarButton {
 
         private static final long serialVersionUID = -5306477668406547496L;
