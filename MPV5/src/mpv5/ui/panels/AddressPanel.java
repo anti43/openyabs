@@ -392,6 +392,7 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
 
                     countryselect.setModel(LanguageManager.getCountriesAsComboBoxModel());
                     countryselect.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(MPV5View.getUser().__getDefcountry(), countryselect.getModel()));
+//                         groupnameselect.setSelectedItem(DatabaseObject.getObject(Context.getGroup(), MPV5View.getUser().__getIDS()));
                 } catch (Exception e) {
                     Log.Debug(this, e);
                 }

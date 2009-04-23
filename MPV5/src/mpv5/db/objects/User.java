@@ -204,26 +204,28 @@ public class User extends DatabaseObject {
      * Logs in this user into MP
      */
     public void login() {
-        MPV5View.setUser(this);
-        setProperties();
-        try {
-            Locale.setDefault(TypeConversion.stringToLocale(__getLocale()));
-            ControlPanel_Fonts.applyFont(Font.decode(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT)));
-            Main.setLaF(__getLaf());
-        } catch (Exception e) {
-            Log.Debug(e);
-        }
-        Lock.unlock(MPV5View.identifierFrame);
-        Runnable runnable = new Runnable() {
-
-            public void run() {
-                setDatelastlog(new Date());
-                setIsloggedin(true);
-                save();
+        if (isenabled) {
+            MPV5View.setUser(this);
+            setProperties();
+            try {
+                Locale.setDefault(TypeConversion.stringToLocale(__getLocale()));
+                ControlPanel_Fonts.applyFont(Font.decode(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT)));
+                Main.setLaF(__getLaf());
+            } catch (Exception e) {
+                Log.Debug(e);
             }
-        };
+            Lock.unlock(MPV5View.identifierFrame);
+            Runnable runnable = new Runnable() {
 
-        SwingUtilities.invokeLater(runnable);
+                public void run() {
+                    setDatelastlog(new Date());
+                    setIsloggedin(true);
+                    save();
+                }
+            };
+
+            SwingUtilities.invokeLater(runnable);
+        } else Popup.warn(Messages.NOT_POSSIBLE + Messages.USER_DISABLED);
     }
 
     /**

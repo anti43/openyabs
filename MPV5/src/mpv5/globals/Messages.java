@@ -116,6 +116,7 @@ public class Messages {
     public static String HISTORY_PANEL = "History";
     public static String NEW_TAB = "New Tab";
     public static String CALENDAR = "Calendar";
+    public static String USER_DISABLED = "The user is disabled. Contact your Administrator.";
    
    
 }
