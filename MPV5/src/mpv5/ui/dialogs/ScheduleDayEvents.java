@@ -36,12 +36,12 @@ public class ScheduleDayEvents extends javax.swing.JFrame {
         new Position(this);
         setVisible(rootPaneCheckingEnabled);
     }
-
-
-    @Override
-    public void dispose() {
-        setVisible(false);
-    }
+//
+//
+//    @Override
+//    public void dispose() {
+//        setVisible(false);
+//    }
 
     /** Creates new form SplashScreen
      * @param list

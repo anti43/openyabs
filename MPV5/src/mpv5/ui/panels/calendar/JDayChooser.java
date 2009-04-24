@@ -412,21 +412,25 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener, 
                         }
                         if (!found) {
                             days[i + n + 7].setIcon(null);
-                                  if ( days[i + n + 7].getIcon() == null) {
-                days[i + n + 7].setToolTipText(Messages.NEW_VALUE);
-                days[i + n + 7].addActionListener(new ActionListener() {
 
-                    public void actionPerformed(ActionEvent e) {
-                        new ScheduleDayEvent();
-                    }
-                });
-            }
                         }
                     }
                 }
             }
 
-         
+            if (days[i + n + 7].getIcon() == null) {
+                days[i + n + 7].setToolTipText(Messages.NEW_VALUE);
+                days[i + n + 7].addActionListener(new ActionListener() {
+
+                    public void actionPerformed(ActionEvent e) {
+                        if (!ScheduleDayEvent.instanceOf().isVisible()) {
+                            ScheduleDayEvent.instanceOf().setVisible(true);                   
+                        }
+//                          ScheduleDayEvent.instanceOf().requestFocus();
+                            ScheduleDayEvent.instanceOf().setDate(tday);
+                    }
+                });
+            }
 //            days[i + n + 7].setContentAreaFilled(true);
 //      if ( days[i + n + 7].getIcon() == null) {
 //                days[i + n + 7].setToolTipText(Messages.NEW_VALUE);
