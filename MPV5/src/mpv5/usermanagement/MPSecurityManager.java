@@ -64,7 +64,7 @@ public class MPSecurityManager {
     public static Boolean check(Context context, int action) {
         for (Context item : securedContexts) {
             if (item.getDbIdentity().equals(context.getDbIdentity())) {
-                if (MPV5View.getUser().__getINThighestright() <= action) {
+                if (MPV5View.getUser().__getInthighestright() <= action) {
                     return true;
                 } else {
                     return false;
@@ -79,7 +79,7 @@ public class MPSecurityManager {
      * @return
      */
     public static boolean checkAdminAccess() {
-        if (MPV5View.getUser().__getINThighestright() <= RIGHT_TO_CREATE_OR_DELETE) {
+        if (MPV5View.getUser().__getInthighestright() <= RIGHT_TO_CREATE_OR_DELETE) {
             return true;
         } else {
             Popup.notice(Messages.ADMIN_ACCESS);

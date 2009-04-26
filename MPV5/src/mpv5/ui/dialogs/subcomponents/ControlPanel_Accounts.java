@@ -24,6 +24,7 @@ package mpv5.ui.dialogs.subcomponents;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JTextField;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeSelectionModel;
@@ -42,6 +43,7 @@ import mpv5.ui.frames.MPV5View;
 import mpv5.ui.panels.DataPanel;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.arrays.ArrayUtilities;
+import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.trees.TreeFormat;
 import mpv5.utils.ui.TextFieldUtils;
 
@@ -110,6 +112,8 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
         jScrollPane2 = new javax.swing.JScrollPane();
         desc = new javax.swing.JTextArea();
         jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        groupnameselect = new javax.swing.JComboBox();
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Accounts.border.title"))); // NOI18N
@@ -155,7 +159,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 270, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 321, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -226,9 +230,14 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
         desc.setName("desc"); // NOI18N
         jScrollPane2.setViewportView(desc);
 
-        jLabel3.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Dialog", 0, 12));
         jLabel3.setText(bundle.getString("ControlPanel_Accounts.jLabel3.text")); // NOI18N
         jLabel3.setName("jLabel3"); // NOI18N
+
+        jLabel4.setText(bundle.getString("ControlPanel_Accounts.jLabel4.text")); // NOI18N
+        jLabel4.setName("jLabel4"); // NOI18N
+
+        groupnameselect.setName("groupnameselect"); // NOI18N
 
         javax.swing.GroupLayout rightpaneLayout = new javax.swing.GroupLayout(rightpane);
         rightpane.setLayout(rightpaneLayout);
@@ -250,7 +259,11 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
                     .addComponent(jLabel2)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 339, Short.MAX_VALUE)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 339, Short.MAX_VALUE)
-                    .addComponent(parents, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 339, Short.MAX_VALUE))
+                    .addComponent(parents, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 339, Short.MAX_VALUE)
+                    .addGroup(rightpaneLayout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+                        .addComponent(groupnameselect, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         rightpaneLayout.setVerticalGroup(
@@ -267,7 +280,11 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(parents, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel4)
+                    .addComponent(groupnameselect, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
                 .addGroup(rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton2)
@@ -368,6 +385,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
     private javax.swing.ButtonGroup buttonGroup1;
     private mpv5.ui.beans.LabeledTextField cname;
     private javax.swing.JTextArea desc;
+    private javax.swing.JComboBox groupnameselect;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
@@ -375,6 +393,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
@@ -395,6 +414,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
     public int taxids_ = 1;
     public int intaccountclass_ = 0;
     public int intaccounttype_ = 0;
+    public int intparentaccount_ = 1;
 
     public void setValues(PropertyStore values) {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -439,11 +459,21 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
         }
 
         try {
-            tree.setModel(ArrayUtilities.toTreeModel(data, g));
+            tree.setModel(Account.toTreeModel(data, g));
             TreeFormat.expandTree(tree);
         } catch (Exception e) {
             Log.Debug(this, e.getMessage());
         }
+
+        if (!MPV5View.getUser().__getIsrgrouped()) {
+            groupnameselect.setModel(new DefaultComboBoxModel(
+                    MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID(), null, ""))));
+        } else {
+            groupnameselect.setModel(new DefaultComboBoxModel(
+                    MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID(), "ids", MPV5View.getUser().__getGroupsids()))));
+        }
+
+        groupnameselect.setSelectedIndex(MPComboBoxModelItem.getItemID(MPV5View.getUser().__getGroupsids(), groupnameselect.getModel()));
 
 
     }
@@ -453,8 +483,14 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
         description_ = desc.getText();
 //        defaults_ = defaults.get_Text();
         try {
-            groupsids_ = Integer.valueOf(new DatabaseSearch(Context.getAccounts()).searchFor(new String[]{"ids"}, "cname", parents.get_Text(), true)[0].toString());
+            intparentaccount_ = Integer.valueOf(new DatabaseSearch(Context.getAccounts()).searchFor(new String[]{"ids"}, "cname", parents.get_Text(), true)[0].toString());
         } catch (NodataFoundException ex) {
+            intparentaccount_ = 1;
+        }
+
+         if (groupnameselect.getSelectedItem() != null) {
+            groupsids_ = Integer.valueOf(((MPComboBoxModelItem) groupnameselect.getSelectedItem()).getId());
+        } else {
             groupsids_ = 1;
         }
 
@@ -478,6 +514,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
         desc.setText(description_);
         try {
             parents.set_Text(DatabaseObject.getObject(Context.getAccounts(), groupsids_).__getCName());
+             groupnameselect.setSelectedIndex(MPComboBoxModelItem.getItemID(groupsids_, groupnameselect.getModel()));
         } catch (NodataFoundException ex) {
             Log.Debug(this, ex);
         }

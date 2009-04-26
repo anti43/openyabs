@@ -191,25 +191,23 @@ public class Account extends DatabaseObject {
     @SuppressWarnings("unchecked")
     private static DefaultMutableTreeNode addToParents(DefaultMutableTreeNode firstnode, ArrayList<Account> dobjlist) {
 
-        Log.Debug(ArrayUtilities.class, "Parent Node: " + firstnode);
         for (int i = 0; i < dobjlist.size(); i++) {
             Account dobj = dobjlist.get(i);
-            Log.Debug(ArrayUtilities.class, "Node: " + dobj);
 
             if (dobj.__getIntparentaccount() <= 0 && firstnode.isRoot()) {
-                Log.Debug(ArrayUtilities.class, "Node is root child, adding it to root and removing it from the list.");
+//                Log.Debug(ArrayUtilities.class, "Node is root child, adding it to root and removing it from the list.");
                 firstnode.add(new DefaultMutableTreeNode(dobj));
                 dobjlist.remove(dobj);//First level groups
                 i--;
             } else {
                 int parentid = dobj.__getIntparentaccount();
                 if (((Account) firstnode.getUserObject()).__getIDS().intValue() == parentid) {
-                    Log.Debug(ArrayUtilities.class, "Node is child of parentnode, adding and removing it from the list.");
+//                    Log.Debug(ArrayUtilities.class, "Node is child of parentnode, adding and removing it from the list.");
                     firstnode.add(new DefaultMutableTreeNode(dobj));
                     dobjlist.remove(dobj);
                     i--;
                 } else {
-                    Log.Debug(ArrayUtilities.class, "Node is no child of parentnode, iterating over the parent node..");
+//                    Log.Debug(ArrayUtilities.class, "Node is no child of parentnode, iterating over the parent node..");
                     @SuppressWarnings("unchecked")
                     Enumeration<DefaultMutableTreeNode> nodes = firstnode.children();
                     while (nodes.hasMoreElements()) {

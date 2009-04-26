@@ -61,6 +61,7 @@ public class User extends DatabaseObject {
     private String mail = "";
     private String language = "buildin_en";
     private int inthighestright = 4;
+    private int intdefaultaccount = 1;
     private boolean isenabled = true;
     private boolean isloggedin = true;
     private boolean isrgrouped = false;
@@ -335,19 +336,6 @@ public class User extends DatabaseObject {
         this.language = language;
     }
 
-    /**
-     * @return the highestright
-     */
-    public int __getINThighestright() {
-        return inthighestright;
-    }
-
-    /**
-     * @param highestright the highestright to set
-     */
-    public void setINThighestright(int highestright) {
-        this.inthighestright = highestright;
-    }
 
     /**
      * @return the isenabled
@@ -522,5 +510,33 @@ public class User extends DatabaseObject {
      */
     public void setIsrgrouped(boolean isrgrouped) {
         this.isrgrouped = isrgrouped;
+    }
+
+    /**
+     * @return the inthighestright
+     */
+    public int __getInthighestright() {
+        return inthighestright;
+    }
+
+    /**
+     * @param inthighestright the inthighestright to set
+     */
+    public void setInthighestright(int inthighestright) {
+        this.inthighestright = inthighestright;
+    }
+
+    /**
+     * @return the intdefaultaccount
+     */
+    public int __getIntdefaultaccount() {
+        return intdefaultaccount;
+    }
+
+    /**
+     * @param intdefaultaccount the intdefaultaccount to set
+     */
+    public void setIntdefaultaccount(int intdefaultaccount) {
+        this.intdefaultaccount = intdefaultaccount;
     }
 }

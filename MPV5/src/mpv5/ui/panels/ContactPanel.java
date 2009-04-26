@@ -1194,6 +1194,8 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                                 MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID(), "ids", MPV5View.getUser().__getGroupsids()))));
                     }
 
+                    groupnameselect.setSelectedIndex(MPComboBoxModelItem.getItemID(MPV5View.getUser().__getGroupsids(), groupnameselect.getModel()));
+
                     sp.refresh();
 
                     if (jButton1.isEnabled()) {
@@ -1202,7 +1204,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
                     countryselect.setModel(LanguageManager.getCountriesAsComboBoxModel());
                     countryselect.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(MPV5View.getUser().__getDefcountry(), countryselect.getModel()));
-                    groupnameselect.setSelectedIndex(MPComboBoxModelItem.getItemID(MPV5View.getUser().__getGroupsids(), groupnameselect.getModel()));
+
                 } catch (Exception e) {
                     Log.Debug(this, e);
                 }

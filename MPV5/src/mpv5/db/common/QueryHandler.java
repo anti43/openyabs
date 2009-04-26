@@ -148,7 +148,7 @@ public class QueryHandler implements Cloneable {
      * @throws NodataFoundException
      */
     public ReturnValue select(int id) throws NodataFoundException {
-        ReturnValue data = freeSelectQuery("SELECT * FROM " + table + " WHERE " + table + ".ids = " + id, mpv5.usermanagement.MPSecurityManager.VIEW, null);
+        ReturnValue data = freeSelectQuery("SELECT * FROM " + table + " WHERE " + table + ".ids = " + id + " AND " + context.getConditions().substring(5, context.getConditions().length()), mpv5.usermanagement.MPSecurityManager.VIEW, null);
         if (data.getData().length == 0) {
             throw new NodataFoundException();
         } else {
@@ -174,7 +174,7 @@ public class QueryHandler implements Cloneable {
      * @throws NodataFoundException
      */
     public ReturnValue select() throws NodataFoundException {
-        ReturnValue data = freeSelectQuery("SELECT * FROM " + table, mpv5.usermanagement.MPSecurityManager.VIEW, null);
+        ReturnValue data = freeSelectQuery("SELECT * FROM " + table + " " + context.getConditions(), mpv5.usermanagement.MPSecurityManager.VIEW, null);
         if (data.getData().length == 0) {
             throw new NodataFoundException();
         } else {
@@ -188,7 +188,7 @@ public class QueryHandler implements Cloneable {
      * @throws NodataFoundException
      */
     public ReturnValue selectIndexes() throws NodataFoundException {
-        ReturnValue data = freeSelectQuery("SELECT ids FROM " + table, mpv5.usermanagement.MPSecurityManager.VIEW, null);
+        ReturnValue data = freeSelectQuery("SELECT ids FROM " + table + " " + context.getConditions(), mpv5.usermanagement.MPSecurityManager.VIEW, null);
         if (data.getData().length == 0) {
             throw new NodataFoundException();
         } else {
