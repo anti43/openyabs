@@ -17,13 +17,19 @@
 package mpv5.db.objects;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
 import javax.swing.JComponent;
 
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryHandler;
+import mpv5.logging.Log;
+import mpv5.ui.frames.MPV5View;
+import mpv5.utils.arrays.ArrayUtilities;
 
 /**
  *
@@ -31,8 +37,8 @@ import mpv5.db.common.QueryHandler;
  */
 public class Account extends DatabaseObject {
 
-    // Overridden and used here to organize accounts and sub-accounts
-    private int groupsids;
+  
+    private int intparentaccount;
     private int intaccountclass ;
     /**
      * Expenses go here
@@ -123,24 +129,6 @@ public class Account extends DatabaseObject {
     }
 
     /**
-     * Represents the parent account
-     * @return the groupsids
-     */
-    @Override
-    public int __getGroupsids() {
-        return groupsids;
-    }
-
-    /**
-     * Set the parent account
-     * @param groupsids the groupsids to set
-     */
-    @Override
-    public void setGroupsids(int groupsids) {
-        this.groupsids = groupsids;
-    }
-
-    /**
      * @return the accounttype
      */
     public int __getIntaccounttype() {
@@ -167,5 +155,69 @@ public class Account extends DatabaseObject {
      */
     public void setIntaccountclass(int intaccountclass) {
         this.intaccountclass = intaccountclass;
+    }
+
+    /**
+     * @return the intparentaccount
+     */
+    public int __getIntparentaccount() {
+        return intparentaccount;
+    }
+
+    /**
+     * @param intparentaccount the intparentaccount to set
+     */
+    public void setIntparentaccount(int intparentaccount) {
+        this.intparentaccount = intparentaccount;
+    }
+
+      public static DefaultTreeModel toTreeModel(ArrayList<Account> data, Account rootNode) {
+
+        DefaultMutableTreeNode node1 = new DefaultMutableTreeNode(rootNode);
+        data.remove(rootNode);//remove root if in list
+        try {
+            MPV5View.setWaiting(true);
+            node1 = addToParents(node1, data);
+
+        } catch (Exception e) {
+            Log.Debug(e);
+        } finally {
+            MPV5View.setWaiting(false);
+        }
+        DefaultTreeModel model = new DefaultTreeModel(node1);
+        return model;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static DefaultMutableTreeNode addToParents(DefaultMutableTreeNode firstnode, ArrayList<Account> dobjlist) {
+
+        Log.Debug(ArrayUtilities.class, "Parent Node: " + firstnode);
+        for (int i = 0; i < dobjlist.size(); i++) {
+            Account dobj = dobjlist.get(i);
+            Log.Debug(ArrayUtilities.class, "Node: " + dobj);
+
+            if (dobj.__getIntparentaccount() <= 0 && firstnode.isRoot()) {
+                Log.Debug(ArrayUtilities.class, "Node is root child, adding it to root and removing it from the list.");
+                firstnode.add(new DefaultMutableTreeNode(dobj));
+                dobjlist.remove(dobj);//First level groups
+                i--;
+            } else {
+                int parentid = dobj.__getIntparentaccount();
+                if (((Account) firstnode.getUserObject()).__getIDS().intValue() == parentid) {
+                    Log.Debug(ArrayUtilities.class, "Node is child of parentnode, adding and removing it from the list.");
+                    firstnode.add(new DefaultMutableTreeNode(dobj));
+                    dobjlist.remove(dobj);
+                    i--;
+                } else {
+                    Log.Debug(ArrayUtilities.class, "Node is no child of parentnode, iterating over the parent node..");
+                    @SuppressWarnings("unchecked")
+                    Enumeration<DefaultMutableTreeNode> nodes = firstnode.children();
+                    while (nodes.hasMoreElements()) {
+                        addToParents(nodes.nextElement(), dobjlist);
+                    }
+                }
+            }
+        }
+        return firstnode;
     }
 }
