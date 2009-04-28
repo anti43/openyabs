@@ -294,15 +294,16 @@ public class MPV5View extends FrameView {
      * @param item
      */
     public void addTab(DatabaseObject item) {
-        addTab(item.getView());
+        addTab(item.getView(),item.__getCName());
     }
 
     /**
      * Add a tab to the main tab pane
      * @param tab
+     * @param name
      */
-    public void addTab(JComponent tab) {
-        tabPane.addTab(tab.getName(), tab);
+    public void addTab(JComponent tab, String name) {
+        tabPane.addTab(name, tab);
         tabPane.setSelectedComponent(tab);
     }
 
@@ -1175,7 +1176,7 @@ public class MPV5View extends FrameView {
     }//GEN-LAST:event_jMenuItem17ActionPerformed
 
     private void jMenuItem18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem18ActionPerformed
-            MPV5View.identifierView.addTab(new JCalendar());
+            MPV5View.identifierView.addTab(new JCalendar(), Messages.CALENDAR);
     }//GEN-LAST:event_jMenuItem18ActionPerformed
 
     private void jMenuItem19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem19ActionPerformed
@@ -1314,7 +1315,7 @@ public class MPV5View extends FrameView {
     public void loadPlugin(MP5Plugin mP5Plugin) {
         mP5Plugin.load(this);
         if (mP5Plugin.isComponent()) {
-            addTab((JComponent) mP5Plugin);
+            addTab((JComponent) mP5Plugin, mP5Plugin.getName());
         }
         if (mP5Plugin.isRunnable() && mP5Plugin.isLoaded()) {
             Thread t = new Thread((Runnable)  mP5Plugin);

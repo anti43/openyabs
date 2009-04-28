@@ -1,10 +1,15 @@
 package mpv5.ui.panels;
 
 import mpv5.db.common.Context;
+import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.DatabaseSearch;
+import mpv5.db.common.NodataFoundException;
 import mpv5.globals.Headers;
+import mpv5.logging.Log;
+import mpv5.ui.frames.MPV5View;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.models.MPTableModel;
+import mpv5.utils.tables.Selection;
 
 /**
  *
@@ -92,6 +97,11 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
         listTable.setFillsViewportHeight(true);
         listTable.setName("listTable"); // NOI18N
         listTable.setSurrendersFocusOnKeystroke(true);
+        listTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                listTableMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(listTable);
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
@@ -238,7 +248,7 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
                     .addComponent(prinitingComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 56, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 58, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -266,6 +276,20 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
         fill(jCheckBox1.isSelected(), jCheckBox2.isSelected(), jCheckBox3.isSelected(), jCheckBox4.isSelected(), excButton.isSelected());
     }//GEN-LAST:event_jTextField1ActionPerformed
+
+    private void listTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listTableMouseClicked
+
+        if (evt.getClickCount() >1) {
+            Selection sel = new Selection(listTable);
+            if (sel.checkID()) {
+                try {
+                    MPV5View.identifierView.addTab(DatabaseObject.getObject(context, sel.getId()));
+                } catch (NodataFoundException ex) {
+                    Log.Debug(ex);
+                }
+            }
+        }
+    }//GEN-LAST:event_listTableMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel count;

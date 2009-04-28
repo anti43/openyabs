@@ -61,7 +61,7 @@
                       <Component id="jPanel2" alignment="1" min="-2" max="-2" attributes="3"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jScrollPane1" pref="56" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" pref="58" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -88,6 +88,9 @@
                 <Property name="name" type="java.lang.String" value="listTable" noResource="true"/>
                 <Property name="surrendersFocusOnKeystroke" type="boolean" value="true"/>
               </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="listTableMouseClicked"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
