@@ -16,6 +16,7 @@
  */
 package mpv5.ui.dialogs;
 
+import java.awt.Component;
 import mpv5.data.PropertyStore;
 
 /**
@@ -23,6 +24,12 @@ import mpv5.data.PropertyStore;
  * @author anti43
  */
 public interface ControlApplet {
+
+    /**
+     * A panel containing the save, delete etc buttons
+     * @return
+     */
+    public Component getActionPanel();
 
     /**
      * Fills the view with data

@@ -1680,8 +1680,9 @@ public class QueryHandler implements Cloneable {
             QueryData x;
             try {
 
-                x = new QueryData(new String[]{"cname,filename, description", file.getName() + "," + get() + "," + descriptiveText});
+                x = new QueryData(new String[]{"cname,filename, description, dateadded", file.getName() + "," + get() + "," + descriptiveText + "," +  DateConverter.getTodayDBDate()});
                 x.add("contactsids", dataOwner.__getIDS());
+                x.add("intaddedby", MPV5View.getUser().__getIDS());
                 QueryHandler.instanceOf().clone(Context.getFilesToContacts()).insert(x, Messages.FILE_SAVED + file.getName());
                 MPV5View.addMessage(Messages.FILE_SAVED + file.getName());
                 if (viewToBeNotified != null) {

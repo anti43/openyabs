@@ -1,5 +1,6 @@
 package mpv5.ui.dialogs.subcomponents;
 
+import java.awt.Component;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Date;
@@ -70,9 +71,6 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
@@ -102,7 +100,11 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         jLabel1 = new javax.swing.JLabel();
         datelastlog = new javax.swing.JTextField();
         loggedin = new javax.swing.JCheckBox();
+        jPanel6 = new javax.swing.JPanel();
         jButton4 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setName("Form"); // NOI18N
@@ -112,30 +114,6 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Users.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
-
-        jButton1.setText(bundle.getString("ControlPanel_Users.jButton1.text")); // NOI18N
-        jButton1.setName("jButton1"); // NOI18N
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
-        jButton2.setText(bundle.getString("ControlPanel_Users.jButton2.text")); // NOI18N
-        jButton2.setName("jButton2"); // NOI18N
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-
-        jButton3.setText(bundle.getString("ControlPanel_Users.jButton3.text")); // NOI18N
-        jButton3.setName("jButton3"); // NOI18N
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
 
         jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Users.jScrollPane1.border.title"))); // NOI18N
         jScrollPane1.setName("jScrollPane1"); // NOI18N
@@ -187,11 +165,11 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
 
         countrylist.setName("countrylist"); // NOI18N
 
-        jLabel7.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel7.setFont(new java.awt.Font("Dialog", 0, 12));
         jLabel7.setText(bundle.getString("ControlPanel_Users.jLabel7.text")); // NOI18N
         jLabel7.setName("jLabel7"); // NOI18N
 
-        jLabel8.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel8.setFont(new java.awt.Font("Dialog", 0, 12));
         jLabel8.setText(bundle.getString("ControlPanel_Users.jLabel8.text")); // NOI18N
         jLabel8.setName("jLabel8"); // NOI18N
 
@@ -395,8 +373,12 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(16, 16, 16))
+                .addGap(46, 46, 46))
         );
+
+        jPanel6.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel6.setName("jPanel6"); // NOI18N
+        jPanel6.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 
         jButton4.setText(bundle.getString("ControlPanel_Users.jButton4.text")); // NOI18N
         jButton4.setName("jButton4"); // NOI18N
@@ -405,6 +387,34 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
                 jButton4ActionPerformed(evt);
             }
         });
+        jPanel6.add(jButton4);
+
+        jButton3.setText(bundle.getString("ControlPanel_Users.jButton3.text")); // NOI18N
+        jButton3.setName("jButton3"); // NOI18N
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+        jPanel6.add(jButton3);
+
+        jButton2.setText(bundle.getString("ControlPanel_Users.jButton2.text")); // NOI18N
+        jButton2.setName("jButton2"); // NOI18N
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+        jPanel6.add(jButton2);
+
+        jButton1.setText(bundle.getString("ControlPanel_Users.jButton1.text")); // NOI18N
+        jButton1.setName("jButton1"); // NOI18N
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jPanel6.add(jButton1);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -412,18 +422,10 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jButton4)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton3)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1))
+                    .addComponent(jPanel6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 563, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE)
-                        .addGap(6, 6, 6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -431,15 +433,10 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 558, Short.MAX_VALUE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 585, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 585, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2)
-                    .addComponent(jButton3)
-                    .addComponent(jButton4))
-                .addContainerGap())
+                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         add(jPanel1, java.awt.BorderLayout.CENTER);
@@ -546,6 +543,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     private mpv5.ui.beans.LabeledTextField laf;
@@ -625,21 +623,25 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
 
     public void exposeData() {
 
-        laf.set_Text(laf_);
-        language.setSelectedIndex(MPComboBoxModelItem.getItemID(language_, language.getModel()));
-        locale.setSelectedIndex(MPComboBoxModelItem.getItemID(locale_, locale.getModel()));
-        countrylist.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(defcountry_, countrylist.getModel()));
-        fullname.set_Text(fullname_);
+        try {
+            laf.set_Text(laf_);
+            language.setSelectedIndex(MPComboBoxModelItem.getItemID(language_, language.getModel()));
+            locale.setSelectedIndex(MPComboBoxModelItem.getItemID(locale_, locale.getModel()));
+            countrylist.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(defcountry_, countrylist.getModel()));
+            fullname.set_Text(fullname_);
 //        password.setText(password_);
-        mail.set_Text(mail_);
-        cname.set_Text(cname_);
-        enabled.setSelected(isenabled_);
-        rgroups.setSelected(isrgrouped_);
-        inthighestright.setSelectedIndex(MPComboBoxModelItem.getItemID(inthighestright_, inthighestright.getModel()));
-        loggedin.setSelected(isloggedin_);
-        datelastlog.setText(DateConverter.getDefDateString(datelastlog_));
-        groupname.setSelectedIndex(MPComboBoxModelItem.getItemID(groupsids_, groupname.getModel()));
-        accountlist.setSelectedIndex(MPComboBoxModelItem.getItemID(intdefaultaccount_, accountlist.getModel()));
+            mail.set_Text(mail_);
+            cname.set_Text(cname_);
+            enabled.setSelected(isenabled_);
+            rgroups.setSelected(isrgrouped_);
+            inthighestright.setSelectedIndex(MPComboBoxModelItem.getItemID(inthighestright_, inthighestright.getModel()));
+            loggedin.setSelected(isloggedin_);
+            datelastlog.setText(DateConverter.getDefDateString(datelastlog_));
+            groupname.setSelectedIndex(MPComboBoxModelItem.getItemID(groupsids_, groupname.getModel()));
+            accountlist.setSelectedIndex(MPComboBoxModelItem.getItemID(intdefaultaccount_, accountlist.getModel()));
+        } catch (Exception e) {
+//            Log.Debug(this, e);
+        }
     }
 
     public DatabaseObject getDataOwner() {
@@ -697,5 +699,11 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
 
     public void showSearchBar(boolean show) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Component getActionPanel() {
+        jPanel1.remove(jPanel6);
+        jPanel1.validate();
+        return jPanel6;
     }
 }

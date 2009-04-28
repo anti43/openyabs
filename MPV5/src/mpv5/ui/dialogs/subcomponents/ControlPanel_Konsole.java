@@ -1,6 +1,7 @@
 
 package mpv5.ui.dialogs.subcomponents;
 
+import java.awt.Component;
 import mpv5.data.PropertyStore;
 import mpv5.globals.LocalSettings;
 import mpv5.ui.dialogs.ControlApplet;
@@ -88,4 +89,10 @@ public class ControlPanel_Konsole extends javax.swing.JPanel implements ControlA
         }
         return ident;
     }
+
+    public Component getActionPanel() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+
 }

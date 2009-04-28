@@ -409,16 +409,19 @@ public class ArrayUtilities {
 
     public static <T extends DatabaseObject> DefaultTreeModel toTreeModel(ArrayList<T> data, T rootNode) {
 
-        DefaultMutableTreeNode node1 = new DefaultMutableTreeNode(rootNode);
-        data.remove(rootNode);//remove root if in list
-        try {
-            MPV5View.setWaiting(true);
-            node1 = addToParents(node1, data);
+        DefaultMutableTreeNode node1 = null;
+       if (data.size() >0) {
+            node1 = new DefaultMutableTreeNode(rootNode);
+            data.remove(rootNode);//remove root if in list
+            try {
+                MPV5View.setWaiting(true);
+                node1 = addToParents(node1, data);
 
-        } catch (Exception e) {
-            Log.Debug(e);
-        } finally {
-            MPV5View.setWaiting(false);
+            } catch (Exception e) {
+                Log.Debug(e);
+            } finally {
+                MPV5View.setWaiting(false);
+            }
         }
         DefaultTreeModel model = new DefaultTreeModel(node1);
         return model;
