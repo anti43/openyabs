@@ -6,6 +6,7 @@ package mpv5.ui.frames;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -62,6 +63,7 @@ import org.jdesktop.application.FrameView;
 public class MPV5View extends FrameView {
 
     public static MPV5View identifierView;
+    public static Dimension initialSize = new Dimension(1000, 800);
     public static JFrame identifierFrame;
     public static CloseableTabbedPane tabPane;
     public static JLabel messagelabel = new JLabel();
@@ -133,8 +135,6 @@ public class MPV5View extends FrameView {
     public static void show(JFrame c) {
         identifierApplication.show(c);
     }
-
-
 
 
     /**
@@ -277,6 +277,7 @@ public class MPV5View extends FrameView {
 
         loadPlugins();
 
+
 //        setStatusBar();
 //        setStatusBar(statusPanel);
     }
@@ -294,7 +295,7 @@ public class MPV5View extends FrameView {
      * @param item
      */
     public void addTab(DatabaseObject item) {
-        addTab(item.getView(),item.__getCName());
+        addTab(item.getView(), item.__getCName());
     }
 
     /**
@@ -1171,7 +1172,7 @@ public class MPV5View extends FrameView {
     }//GEN-LAST:event_jMenuItem17ActionPerformed
 
     private void jMenuItem18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem18ActionPerformed
-            MPV5View.identifierView.addTab(new JCalendar(), Messages.CALENDAR);
+        MPV5View.identifierView.addTab(new JCalendar(), Messages.CALENDAR);
     }//GEN-LAST:event_jMenuItem18ActionPerformed
 
     private void jMenuItem19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem19ActionPerformed
@@ -1312,7 +1313,7 @@ public class MPV5View extends FrameView {
             addTab((JComponent) mP5Plugin, mP5Plugin.getName());
         }
         if (mP5Plugin.isRunnable() && mP5Plugin.isLoaded()) {
-            Thread t = new Thread((Runnable)  mP5Plugin);
+            Thread t = new Thread((Runnable) mP5Plugin);
             t.start();
         }
     }
@@ -1324,11 +1325,11 @@ public class MPV5View extends FrameView {
         }
     }
 
-      /**
+    /**
      * Loads the given plugin (by calling <code>plugin.load(this)<code/>). If the plugin is a visible plugin, adds it to the main tab pane.</br>
      * If it is a <code>Runnable<code/>, it will be started on an new thread.
-       * @param gin
-       */
+     * @param gin
+     */
     public void loadPlugin(Plugin gin) {
         MP5Plugin plo = new mpv5.pluginhandling.MPPLuginLoader().getPlugin(QueryHandler.instanceOf().clone(Context.getFiles()).retrieveFile(gin.__getFilename()));
         loadPlugin(plo);

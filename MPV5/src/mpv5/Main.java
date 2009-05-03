@@ -81,6 +81,10 @@ public class Main extends SingleFrameApplication {
         };
         SwingUtilities.invokeLater(runnable);
     }
+    /**
+     * Indicates whether this is the first start of the application
+     */
+    public static boolean firstStart;
 
     /**
      * At startup create and show the main frame of the application.
@@ -97,7 +101,7 @@ public class Main extends SingleFrameApplication {
 
         splash.nextStep(Messages.DB_CHECK);
         if (probeDatabaseConnection()) {
-            go();
+            go(false);
         } else if (Popup.Y_N_dialog(Messages.NO_DB_CONNECTION, Messages.ERROR_OCCURED)) {
             splash.dispose();
             showDbWiz();
@@ -114,6 +118,7 @@ public class Main extends SingleFrameApplication {
      */
     @Override
     protected void configureWindow(java.awt.Window root) {
+
     }
 
     /**
@@ -341,6 +346,9 @@ public class Main extends SingleFrameApplication {
         }
     }
 
+    /**
+     *
+     */
     public static void printEnv() {
         Properties sysprops = System.getProperties();
         Enumeration propnames = sysprops.propertyNames();
@@ -351,7 +359,11 @@ public class Main extends SingleFrameApplication {
         }
     }
 
-    public void go() {
+    /**
+     *
+     * @param firststart
+     */
+    public void go(boolean firststart) {
         splash.nextStep(Messages.CACHE);
         cache();
         setLaF(null);
@@ -361,8 +373,13 @@ public class Main extends SingleFrameApplication {
         loadPlugins();
         Main.splash.nextStep(Messages.INIT_GUI);
         super.show(new MPV5View(this));
+        firstStart = firststart;
         SwingUtilities.updateComponentTreeUI(MPV5View.identifierFrame);
         splash.dispose();
+
+        if (Main.firstStart) {
+          getApplication().getMainFrame().setSize(MPV5View.initialSize);
+        }
     }
 
     private void loadPlugins() {

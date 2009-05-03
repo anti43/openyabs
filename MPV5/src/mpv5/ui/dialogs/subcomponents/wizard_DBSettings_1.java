@@ -6,12 +6,7 @@
 package mpv5.ui.dialogs.subcomponents;
 
 import java.awt.Cursor;
-import java.awt.Dimension;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mpv5.Main;
 import mpv5.db.common.DatabaseConnection;
 import mpv5.db.common.DatabaseInstallation;
@@ -23,7 +18,6 @@ import mpv5.logging.Log;
 import mpv5.logging.LogConsole;
 import mpv5.ui.dialogs.WizardMaster;
 import mpv5.ui.dialogs.Wizardable;
-import mpv5.utils.files.FileDirectoryHandler;
 
 /**
  *
@@ -250,18 +244,18 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
     public boolean next() {
         if (DBVerification() & DirectoryCreate()) {
             Log.setLogLevel(Log.LOGLEVEL_NONE);
-
-            try {
-                FileDirectoryHandler.copyFile(new File("ext/mainFrame.session.xml"), new File(Main.MPPATH + File.separator + "mainFrame.session.xml"));
-            } catch (Exception ex) {
-                Log.Debug(ex);
-            }
+//
+//            try {
+//                FileDirectoryHandler.copyFile(new File("ext/mainFrame.session.xml"), new File(Main.MPPATH + File.separator + "mainFrame.session.xml"));
+//            } catch (Exception ex) {
+//                Log.Debug(ex);
+//            }
 
             try {
                 LogConsole.setLogFile(null);
             } catch (Exception ignore) {
             }
-            Main.getApplication().go();
+            Main.getApplication().go(true);
             this.master.dispose();
             return true;
         } else {
