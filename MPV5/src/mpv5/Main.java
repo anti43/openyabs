@@ -118,7 +118,6 @@ public class Main extends SingleFrameApplication {
      */
     @Override
     protected void configureWindow(java.awt.Window root) {
-
     }
 
     /**
@@ -374,12 +373,11 @@ public class Main extends SingleFrameApplication {
         Main.splash.nextStep(Messages.INIT_GUI);
         super.show(new MPV5View(this));
         firstStart = firststart;
+        if (Main.firstStart) {
+            getApplication().getMainFrame().setSize(MPV5View.initialSize);
+        }
         SwingUtilities.updateComponentTreeUI(MPV5View.identifierFrame);
         splash.dispose();
-
-        if (Main.firstStart) {
-          getApplication().getMainFrame().setSize(MPV5View.initialSize);
-        }
     }
 
     private void loadPlugins() {
