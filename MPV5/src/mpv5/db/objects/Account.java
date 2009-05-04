@@ -29,7 +29,6 @@ import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryHandler;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPV5View;
-import mpv5.utils.arrays.ArrayUtilities;
 
 /**
  *
@@ -37,18 +36,14 @@ import mpv5.utils.arrays.ArrayUtilities;
  */
 public class Account extends DatabaseObject {
 
-  
     private int intparentaccount;
-    private int intaccountclass ;
-    /**
-     * Expenses go here
-     */
-    public static int EXPENSE = 0;
-    /**
-     * Revenues go here
-     */
-    public static int REVENUE = 1;
-
+    private int intaccountclass;
+    public static int ASSET = 0;
+    public static int COST = 1;
+    public static int EXPENSE = 2;
+    public static int INCOME = 3;
+    public static int LIABILITY = 4;
+    public static int EQUITY = 5;
 
     public Account() {
         context.setDbIdentity(Context.IDENTITY_ACCOUNTS);
@@ -104,7 +99,7 @@ public class Account extends DatabaseObject {
         ArrayList<Item> tmp2 = DatabaseObject.getObjects(new Item(), c);
 
         tmp.addAll(tmp2);
-        
+
         return tmp;
     }
 
@@ -129,6 +124,14 @@ public class Account extends DatabaseObject {
     }
 
     /**
+     *
+     * <li> 1: Assets: Aktiva,
+     *   <li>2: Cost: direkte Kosten (Wareneinkauf),
+     *   <li>3: Expenses: sonstige Kosten, Aufwandskonto,
+     *   <li>4: Income: Ertragskonto,
+     *   <li>5: Liablities: Verbindlichkeiten (Mittelherkunft),
+     *   <li>6: Equity: Passiva
+     *
      * @return the accounttype
      */
     public int __getIntaccounttype() {
@@ -136,12 +139,19 @@ public class Account extends DatabaseObject {
     }
 
     /**
+     *
+     * <li> 1: Assets: Aktiva,
+     *   <li>2: Cost: direkte Kosten (Wareneinkauf),
+     *   <li>3: Expenses: sonstige Kosten, Aufwandskonto,
+     *   <li>4: Income: Ertragskonto,
+     *   <li>5: Liablities: Verbindlichkeiten (Mittelherkunft),
+     *   <li>6: Equity: Passiva
+     *
      * @param accounttype the accounttype to set
      */
     public void setIntaccounttype(int accounttype) {
         this.intaccounttype = accounttype;
     }
-
 
     /**
      * @return the intaccountclass
@@ -171,22 +181,22 @@ public class Account extends DatabaseObject {
         this.intparentaccount = intparentaccount;
     }
 
-      public static DefaultTreeModel toTreeModel(ArrayList<Account> data, Account rootNode) {
+    public static DefaultTreeModel toTreeModel(ArrayList<Account> data, Account rootNode) {
 
-          DefaultMutableTreeNode node1 = null;
-          if (data.size() >0) {
-              node1 = new DefaultMutableTreeNode(rootNode);
-              data.remove(rootNode);//remove root if in list
-              try {
-                  MPV5View.setWaiting(true);
-                  node1 = addToParents(node1, data);
+        DefaultMutableTreeNode node1 = null;
+        if (data.size() > 0) {
+            node1 = new DefaultMutableTreeNode(rootNode);
+            data.remove(rootNode);//remove root if in list
+            try {
+                MPV5View.setWaiting(true);
+                node1 = addToParents(node1, data);
 
-              } catch (Exception e) {
-                  Log.Debug(e);
-              } finally {
-                  MPV5View.setWaiting(false);
-              }
-          }
+            } catch (Exception e) {
+                Log.Debug(e);
+            } finally {
+                MPV5View.setWaiting(false);
+            }
+        }
         DefaultTreeModel model = new DefaultTreeModel(node1);
         return model;
     }
