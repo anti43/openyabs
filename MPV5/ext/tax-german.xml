@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mpv5 PUBLIC "-//http://code.google.com/p/mp-rechnungs-und-kundenverwaltung//DTD mpv5 V 1.0//EN"
+"http://mp-rechnungs-und-kundenverwaltung.googlecode.com/files/mpv5.dtd">
+<mpv5>
+    <tax>
+        <ta>
+            <taxvalue>0</taxvalue>
+            <cname>Keine Steuer</cname>
+        </ta>
+        <ta>
+            <taxvalue>0</taxvalue>
+            <cname>Umsatzsteuerfrei </cname>
+        </ta>
+        <ta>
+            <taxvalue>0.07 </taxvalue>
+            <cname>Umsatzsteuer 7% </cname>
+        </ta>
+        <ta>
+            <taxvalue>0.19</taxvalue>
+            <cname>Umsatzsteuer 16% </cname>
+        </ta>
+        <ta>
+            <taxvalue>0.07</taxvalue>
+            <cname>Vorsteuer 7% </cname>
+        </ta>
+        <ta>
+            <taxvalue>0.16 </taxvalue>
+            <cname>Vorsteuer 16% </cname>
+        </ta>
+        <ta>
+            <taxvalue>0</taxvalue>
+            <cname>Im anderen EG-Staat steuerpfl. Lieferung </cname>
+        </ta>
+        <ta>
+            <taxvalue>0</taxvalue>
+            <cname>Steuerfreie EG-Lief. an Abn. mit UStIdNr </cname>
+        </ta>
+        <ta>
+            <taxvalue>0.07</taxvalue>
+            <cname>Steuerpflicht. EG-Lieferungen 7% </cname>
+        </ta>
+        <ta>
+            <taxvalue>0.19</taxvalue>
+            <cname>Steuerpflicht. EG-Lieferungen 16% </cname>
+        </ta>
+        <ta>
+            <taxvalue>0.07 </taxvalue>
+            <cname>Steuerpflicht. EG-Erwerb 7% </cname>
+        </ta>
+        <ta>
+            <taxvalue>0.19</taxvalue>
+            <cname>Steuerpflicht. EG-Erwerb 16% </cname>
+        </ta>
+    </tax>
+</mpv5>

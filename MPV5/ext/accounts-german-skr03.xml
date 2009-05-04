@@ -1,0 +1,2287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mpv5 PUBLIC "-//http://code.google.com/p/mp-rechnungs-und-kundenverwaltung//DTD mpv5 V 1.0//EN"
+"http://mp-rechnungs-und-kundenverwaltung.googlecode.com/files/mpv5.dtd">
+<mpv5>
+    <accounts>
+        <row>
+            <intaccountclass>27</intaccountclass>
+            <cname>EDV-Software</cname>
+            <intaccounttype>0</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>90</intaccountclass>
+            <cname>Geschäftsbauten</cname>
+            <intaccounttype>0</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>200</intaccountclass>
+            <cname>Techn.Anlagen und Maschinen</cname>
+            <intaccounttype>0</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>210</intaccountclass>
+            <cname>Maschinen</cname>
+            <intaccounttype>0</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>380</intaccountclass>
+            <cname>Sonst.Transportmittel</cname>
+            <intaccounttype>0</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>400</intaccountclass>
+            <cname>Betriebsausstattung</cname>
+            <intaccounttype>0</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>410</intaccountclass>
+            <cname>Geschäftsausstattung</cname>
+            <intaccounttype>0</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>420</intaccountclass>
+            <cname>Büroeinrichtung</cname>
+            <intaccounttype>0</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>430</intaccountclass>
+            <cname>Ladeneinrichtung</cname>
+            <intaccounttype>0</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>440</intaccountclass>
+            <cname>Werkzeuge</cname>
+            <intaccounttype>0</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>480</intaccountclass>
+            <cname>Geringwertige Wirtschaftsg.b.410EUR</cname>
+            <intaccounttype>0</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>1200</intaccountclass>
+            <cname>Bank</cname>
+            <intaccounttype>0</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>1360</intaccountclass>
+            <cname>Geldtransit</cname>
+            <intaccounttype>0</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>1400</intaccountclass>
+            <cname>Ford. a.Lieferungen und Leistungen</cname>
+            <intaccounttype>0</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>1590</intaccountclass>
+            <cname>Durchlaufende Posten</cname>
+            <intaccounttype>0</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>1600</intaccountclass>
+            <cname>Verbindlichkeiten aus Lief.u.Leist.</cname>
+            <intaccounttype>4</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>1780</intaccountclass>
+            <cname>Umsatzsteuer-Vorauszahlungen</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>1790</intaccountclass>
+            <cname>Umsatzsteuer Vorjahr</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>1791</intaccountclass>
+            <cname>Umsatzsteuer frühere Jahre</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>1800</intaccountclass>
+            <cname>Privatentnahme allgemein</cname>
+            <intaccounttype>5</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>1810</intaccountclass>
+            <cname>Privatsteuern</cname>
+            <intaccounttype>5</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>1820</intaccountclass>
+            <cname>Sonderausgaben beschränkt abzugsfähig</cname>
+            <intaccounttype>5</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>1830</intaccountclass>
+            <cname>Sonderausgaben unbeschr.anzugsfähig</cname>
+            <intaccounttype>5</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>1840</intaccountclass>
+            <cname>Zuwendungen, Spenden</cname>
+            <intaccounttype>5</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>1890</intaccountclass>
+            <cname>Privateinlagen</cname>
+            <intaccounttype>5</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2110</intaccountclass>
+            <cname>Zinsaufwendung f.kurzf.Verbindlichk</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2120</intaccountclass>
+            <cname>Zinsaufwendung f.langf.Verbindlichk</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2130</intaccountclass>
+            <cname>Diskontaufwendung</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2310</intaccountclass>
+            <cname>Anlagenabgänge Sachanlagen Restbuchw.b.Buchverlust</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2315</intaccountclass>
+            <cname>Anlagenabgänge Sachanlagen Restbuchw.b.Buchgewinn</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2320</intaccountclass>
+            <cname>Verluste Abgang Gegenst.d.Anlagever</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2650</intaccountclass>
+            <cname>Sonstige Zinsen und änliche Erträge</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2720</intaccountclass>
+            <cname>Ertr.a.d.Abgang v.Gegens.d.Anlageve</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2742</intaccountclass>
+            <cname>Versicherungsentschädigungen</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>3000</intaccountclass>
+            <cname>Roh,-Hilfs,-und Betriebsstoffe</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>3300</intaccountclass>
+            <cname>Wareneingang 7% Vorsteuer</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>8</taxids>
+        </row>
+        <row>
+            <intaccountclass>3550</intaccountclass>
+            <cname>Steuerfreier innergem.Erwerb</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>3731</intaccountclass>
+            <cname>Erhaltene Skonti 7% Vorsteuer</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>8</taxids>
+        </row>
+        <row>
+            <intaccountclass>3750</intaccountclass>
+            <cname>Erhaltene Boni 7% Vorsteuer</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>8</taxids>
+        </row>
+        <row>
+            <intaccountclass>3780</intaccountclass>
+            <cname>Erhaltene Rabatte 7% Vorsteuer</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>8</taxids>
+        </row>
+        <row>
+            <intaccountclass>3800</intaccountclass>
+            <cname>Bezugsnebenkosten</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>3830</intaccountclass>
+            <cname>Leergut</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>3850</intaccountclass>
+            <cname>ZÃ¶lle und Einfuhrabgaben</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>3960</intaccountclass>
+            <cname>Bestandsver.Roh-,Hilfs-.Betriebs.sow.bez.Waren</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>3970</intaccountclass>
+            <cname>Bestand Roh-,Hilfs-,u.Betriebsstoff</cname>
+            <intaccounttype>0</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4000</intaccountclass>
+            <cname>Material-und Stoffverbrauch</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4110</intaccountclass>
+            <cname>LÃ¶hne</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>3990</intaccountclass>
+            <cname>Verrechnete Stoffkosten</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4120</intaccountclass>
+            <cname>Gehälter</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4125</intaccountclass>
+            <cname>Ehegattengehalt</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4138</intaccountclass>
+            <cname>Beiträge zur Berufsgenossenschaft</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4139</intaccountclass>
+            <cname>Ausgleichsabgabe i.S.d.Schwerbehinterdengesetzes</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4140</intaccountclass>
+            <cname>Freiwillig soziale Aufwendungen lohnsteuerfrei</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4145</intaccountclass>
+            <cname>Freiwillige sozi.Aufw.lohnsteuerpflichtig.</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4149</intaccountclass>
+            <cname>Pauschale Lohnsteuera.sons.Bezüge (z.B.Fahrtkostenzu)</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4150</intaccountclass>
+            <cname>Krankengeldzuschüsse</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4175</intaccountclass>
+            <cname>Fahrtkostenerst.Wohnung/Arbeitsstät</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4190</intaccountclass>
+            <cname>AushilfslÃ¶hne</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4199</intaccountclass>
+            <cname>Lohnsteuer für Aushilfe</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4200</intaccountclass>
+            <cname>Raumkosten</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>4210</intaccountclass>
+            <cname>Miete</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>4220</intaccountclass>
+            <cname>Pacht</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4230</intaccountclass>
+            <cname>Heizung</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>4240</intaccountclass>
+            <cname>Gas,Strom, Wasser</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>4260</intaccountclass>
+            <cname>Instandhaltung betrieb.Räume</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>4280</intaccountclass>
+            <cname>Sonstige Raumkosten</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>4301</intaccountclass>
+            <cname>Nicht abziehbare Vorsteuer 7%</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4320</intaccountclass>
+            <cname>Gewerbesteuer</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4340</intaccountclass>
+            <cname>Sonstige Betriebssteuern</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4350</intaccountclass>
+            <cname>Verbrauchssteuer</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4355</intaccountclass>
+            <cname>Ã–kosteuer</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4396</intaccountclass>
+            <cname>Steuerl.abzugs.Verspätungszuschl.u.Zwangsgelder</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4397</intaccountclass>
+            <cname>Steuerl.n.abzugsf.Verspätungszuschläge u.Zwangsgelder</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4530</intaccountclass>
+            <cname>Laufende Kfz-Betriebskosten</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>4540</intaccountclass>
+            <cname>Kfz-Reparaturen</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>4550</intaccountclass>
+            <cname>Garagenmiete</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4570</intaccountclass>
+            <cname>Leasingfahrzeugkosten</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4580</intaccountclass>
+            <cname>Sonstige Kfz-Kosten</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>4600</intaccountclass>
+            <cname>Werbe-und Reisekosten</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>4638</intaccountclass>
+            <cname>Geschenke ausschlieÃŸl.betrieb.genut</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>4640</intaccountclass>
+            <cname>Repräsentationskosten</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>4650</intaccountclass>
+            <cname>Bewirtungskosten</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>4653</intaccountclass>
+            <cname>Aufmerksamkeiten</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>4654</intaccountclass>
+            <cname>Nicht abzugsfähige Bewirtungskosten</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4660</intaccountclass>
+            <cname>Reisekosten Arbeitnehmer</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>4663</intaccountclass>
+            <cname>Reisekosten Arbeitn.m.Vorsteuerabzu f.Ã¶ffentl.Verkehrsm.</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>8</taxids>
+        </row>
+        <row>
+            <intaccountclass>4664</intaccountclass>
+            <cname>Reisekosten Arbeitn.Verpflegungmehr</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4666</intaccountclass>
+            <cname>Reisekosten Arbeitn.Ãœbernachtungsaufwand</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4668</intaccountclass>
+            <cname>Kilometerentgelderstattung Arbeitnehmer</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4670</intaccountclass>
+            <cname>Reisekosten Unternehmer</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>4673</intaccountclass>
+            <cname>Reisek.Untern.m.Vorsteuerabzug (Ã¶ffentl.Verkehrsm.</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>8</taxids>
+        </row>
+        <row>
+            <intaccountclass>4674</intaccountclass>
+            <cname>Reisekosten Untern.Verpflegungsmehr</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4676</intaccountclass>
+            <cname>Reisekosten Untern.Ãœbernachtungsauf</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4700</intaccountclass>
+            <cname>Kosten der Warenabgabe</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>16</taxids>
+        </row>
+        <row>
+            <intaccountclass>4710</intaccountclass>
+            <cname>Verpackungsmaterial</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>16</taxids>
+        </row>
+        <row>
+            <intaccountclass>4730</intaccountclass>
+            <cname>Ausgangsfracht</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>16</taxids>
+        </row>
+        <row>
+            <intaccountclass>4750</intaccountclass>
+            <cname>Transportversicherung</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>16</taxids>
+        </row>
+        <row>
+            <intaccountclass>4760</intaccountclass>
+            <cname>Verkaufsprovision</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>16</taxids>
+        </row>
+        <row>
+            <intaccountclass>4780</intaccountclass>
+            <cname>Fremdarbeiten</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>16</taxids>
+        </row>
+        <row>
+            <intaccountclass>4790</intaccountclass>
+            <cname>Aufwand für Gewährleistungen</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4800</intaccountclass>
+            <cname>Rep.u.Instandhaltungen v.techn.Anlagen u.Maschinen</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>4806</intaccountclass>
+            <cname>Wartungskosten für Hard-u.Software</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>4809</intaccountclass>
+            <cname>Sonstige Reparaturen u.Instandhalt.</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>4810</intaccountclass>
+            <cname>Mietleasing</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4815</intaccountclass>
+            <cname>Kaufleasing</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4822</intaccountclass>
+            <cname>Abschreibungen a.immat.VermÃ¶gensgeg</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>17</taxids>
+        </row>
+        <row>
+            <intaccountclass>4824</intaccountclass>
+            <cname>Abschreibung a.d.Geschäft-o.Firmenw</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>17</taxids>
+        </row>
+        <row>
+            <intaccountclass>4840</intaccountclass>
+            <cname>AuÃŸerplanmäÃŸig Abschr.a.Sachanlagen</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>17</taxids>
+        </row>
+        <row>
+            <intaccountclass>4855</intaccountclass>
+            <cname>Sofortabschreibung GWG</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>17</taxids>
+        </row>
+        <row>
+            <intaccountclass>4860</intaccountclass>
+            <cname>Abschreibungen auf aktivierte GWG</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>17</taxids>
+        </row>
+        <row>
+            <intaccountclass>4900</intaccountclass>
+            <cname>Sonstige betriebliche Aufwendungen</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>4905</intaccountclass>
+            <cname>Sons.Aufw.betriebl. und regelmäÃŸig</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>4909</intaccountclass>
+            <cname>Fremdleistungen</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4910</intaccountclass>
+            <cname>Porto</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4920</intaccountclass>
+            <cname>Telefon</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>4925</intaccountclass>
+            <cname>Telefax</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>4930</intaccountclass>
+            <cname>Bürobedarf</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>4940</intaccountclass>
+            <cname>Zeitschriften, Bücher</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>8</taxids>
+        </row>
+        <row>
+            <intaccountclass>4945</intaccountclass>
+            <cname>Fortbildungskosten</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>4946</intaccountclass>
+            <cname>Freiwillige Sozialleistungen</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4950</intaccountclass>
+            <cname>Rechts- und Beratungskosten</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>4955</intaccountclass>
+            <cname>Buchführungskosten</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>4957</intaccountclass>
+            <cname>AbschluÃŸ- und Prüfungskosten</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>4960</intaccountclass>
+            <cname>Mieten für Einrichtungen</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>4969</intaccountclass>
+            <cname>Aufwend.f.Abraum-u.Abfallbeseitigung</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>4970</intaccountclass>
+            <cname>Nebenkosten des Geldverkehrs</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4980</intaccountclass>
+            <cname>Betriebsbedarf</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>4985</intaccountclass>
+            <cname>Werkzeuge und Kleingeräte</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>8200</intaccountclass>
+            <cname>ErlÃ¶se</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>8320</intaccountclass>
+            <cname>ErlÃ¶se aus im and.EG-Land steuerpfl.Lieferungen</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>10</taxids>
+        </row>
+        <row>
+            <intaccountclass>8500</intaccountclass>
+            <cname>ProvisionserlÃ¶se</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>3</taxids>
+        </row>
+        <row>
+            <intaccountclass>8520</intaccountclass>
+            <cname>ErlÃ¶se Abfallverwertung</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>3</taxids>
+        </row>
+        <row>
+            <intaccountclass>8540</intaccountclass>
+            <cname>ErlÃ¶s Leergut</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>3</taxids>
+        </row>
+        <row>
+            <intaccountclass>8829</intaccountclass>
+            <cname>Erl.a.Anlagenverk.bei Buchgewinn</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>3</taxids>
+        </row>
+        <row>
+            <intaccountclass>8905</intaccountclass>
+            <cname>Entnahme v. Gegenst.o.USt.</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>8919</intaccountclass>
+            <cname>Entnahme durch den Untern.f.Zwecke auÃŸerhalb d.Untern.(Waren)o.USt</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>8924</intaccountclass>
+            <cname>Verwendung v.Gegenständen f.Zwecke auÃŸerhalb d.Untern.o.USt.</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>8955</intaccountclass>
+            <cname>Umsatzsteuervergütungen</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>9090</intaccountclass>
+            <cname>Summenvortragskonto</cname>
+            <intaccounttype>0</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>8800</intaccountclass>
+            <cname>ErlÃ¶se aus Anlagenverkäufen</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>3</taxids>
+        </row>
+        <row>
+            <intaccountclass>4380</intaccountclass>
+            <cname>Beiträge</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4360</intaccountclass>
+            <cname>Versicherungen</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4390</intaccountclass>
+            <cname>Sonstige Abgaben</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>631</intaccountclass>
+            <cname>Vblk.geg.Kreditinst.- Restlaufzeit b.1 Jahr</cname>
+            <intaccounttype>0</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>640</intaccountclass>
+            <cname>Vblk.geg.Kreditinst.- Restlaufzeit 1 bis 5 Jahre</cname>
+            <intaccounttype>0</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>650</intaccountclass>
+            <cname>Vblk.geg.Kreditinst.- Restlaufzeit grÃ¶sser als 5 Jahre</cname>
+            <intaccounttype>0</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4510</intaccountclass>
+            <cname>Kfz-Steuer</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4520</intaccountclass>
+            <cname>Kfz-Versicherungen</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>1767</intaccountclass>
+            <cname>Im anderen EG-Staat steuerpfl. Lieferung</cname>
+            <intaccounttype> </intaccounttype>
+            <taxids>10</taxids>
+        </row>
+        <row>
+            <intaccountclass>853</intaccountclass>
+            <cname>Satzungsm.Rücklagen 0% Vorbelast.(st.Einlagekto.)</cname>
+            <intaccounttype>5</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>1607</intaccountclass>
+            <cname>Vblk.a.LuL ohne Vorsteuer (EÃœR)</cname>
+            <intaccounttype>4</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>1609</intaccountclass>
+            <cname>Gegenkonto 1605-1607 b.Aufteilung d.Vblk.n.Steuers.(EÃœR)</cname>
+            <intaccounttype>4</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2125</intaccountclass>
+            <cname>Zinsaufwend.f.Gebäude,die z.BetriebsvermÃ¶gen gehÃ¶ren</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>1445</intaccountclass>
+            <cname>Ford.a.LuL z.allg.USt-Satz o.eines Kleinuntern.(EÃœR)</cname>
+            <intaccounttype>0</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>1446</intaccountclass>
+            <cname>Ford.aLuL z.erm.USt.-Satz (EÃœR)</cname>
+            <intaccounttype>0</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>1447</intaccountclass>
+            <cname>Ford.a.steuerfr.od.nicht steuerb.LuL (EÃœR)</cname>
+            <intaccounttype>0</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>1448</intaccountclass>
+            <cname>Ford.a.LuL n.Durchschnittss.gem.Â§24UStG(EÃœR)</cname>
+            <intaccounttype>0</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>1449</intaccountclass>
+            <cname>Gegenkto. 1445-1448 bei Aufteil.d.Ford.n.Steuers.(EÃœR)</cname>
+            <intaccounttype>0</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>1605</intaccountclass>
+            <cname>Vblk.a.LuL z.allg.Umsatzsteuersatz (EÃœR)</cname>
+            <intaccounttype>4</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>1606</intaccountclass>
+            <cname>Vblk.a.LuL zum erm.Umsatzsteuersatz (EÃœR)</cname>
+            <intaccounttype>4</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2212</intaccountclass>
+            <cname>Kapitalertragssteuer 20%</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2342</intaccountclass>
+            <cname>Einst.in SoPo m.Rücklageanteil (Existenzgründungsrücklage)</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2351</intaccountclass>
+            <cname>Gründstücksaufwend.f.Gebäude,die nicht z.Betriebsverm.gehÃ¶ren</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2376</intaccountclass>
+            <cname>Grundsteuer f.Gebäude,die nicht z.BetriebsvermÃ¶gen geh.</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2733</intaccountclass>
+            <cname>Erträge a.d.AuflÃ¶sung v.SoPo m.Rücklageant.(Exitenzgründungszusch.)</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2746</intaccountclass>
+            <cname>Steuerfr.Erträge a.d.AuflÃ¶s.v.SoPo m.Rücklageanteil</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2747</intaccountclass>
+            <cname>Sonst.steuerfreie Betriebseinnahmen</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2797</intaccountclass>
+            <cname>Entnahmen a.satzungsmäÃŸigen Rücklagen</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>3580</intaccountclass>
+            <cname>Wareneinkauf z.allg.Umsatzsteuersatz (EÃœR)</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>3581</intaccountclass>
+            <cname>Wareneinkauf z.erm.Umsatzsteuersatz(EÃœR)</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>3582</intaccountclass>
+            <cname>Wareneinkauf ohne Vorsteuerabzug(EÃœR)</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>3589</intaccountclass>
+            <cname>Gegenkto.3580-3582 b.Aufteilung d.WE n.Steuersätzen(EüR)</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4261</intaccountclass>
+            <cname>Instandhlt.betriebl.Räume in Geb.die nicht z.BV gehÃ¶ren</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4271</intaccountclass>
+            <cname>Abgaben f.betriebl.genutzten Grundbesitz,d.nicht z.BV gehÃ¶rt</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4288</intaccountclass>
+            <cname>Aufwend.f.ein häusliches Arbeitszimmer(abziehb.Anteil)</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4289</intaccountclass>
+            <cname>Aufwend.f.ein häusliches Arbeitszimmer(nicht abziehb.Anteil)</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4361</intaccountclass>
+            <cname>Versicherungen f.Gebäude,die zum BV gehÃ¶ren</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4505</intaccountclass>
+            <cname>Fahrzeugkosten f.Kfz,die nicht zum BV gehÃ¶ren</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4515</intaccountclass>
+            <cname>Kfz-Steuer f.Kfz,die nicht zum BV gehÃ¶ren</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4525</intaccountclass>
+            <cname>Kfz-Versicherung f.Kfz,die nicht zum BV gehÃ¶ren</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4535</intaccountclass>
+            <cname>Lfd.Kfz-Betriebskosten f.Kfz,die nicht zum BV gehÃ¶ren</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4545</intaccountclass>
+            <cname>Kfz-Rep.für Kfz,die nicht zum BV gehÃ¶ren</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4555</intaccountclass>
+            <cname>Garagenmiete f.Kfz,die nicht zum BV gehÃ¶ren</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4560</intaccountclass>
+            <cname>Mautgebühren</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4565</intaccountclass>
+            <cname>Mautgebühren f. Kfz,die nicht zum BV gehÃ¶ren</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4651</intaccountclass>
+            <cname>Sonst.eingeschr.abziehb.Betriebsausgaben (abziehb.Anteil)</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4652</intaccountclass>
+            <cname>Sonst.eingeschr.abziehb.Betriebsausgaben(nicht abziehb.Teil)</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4678</intaccountclass>
+            <cname>Kilometergelderstatt.(Wohn.-Arbeitsst.abziehb.Teil)</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4679</intaccountclass>
+            <cname>Fahrten zw.Wohn.und Arbeitsstätte (nicht abziehb.Teil)</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4680</intaccountclass>
+            <cname>Fahrten zw.Wohn.-und Arbeitsstätte (Haben)</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4831</intaccountclass>
+            <cname>Abschreibung auf Gebäude</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4830</intaccountclass>
+            <cname>Abschreibungen auf Sachanlagen (o.Kfz u.Geb.)</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4832</intaccountclass>
+            <cname>Abschreibungen auf Kfz</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4841</intaccountclass>
+            <cname>Absetzung f.auÃŸergew.techn.u.wirtschaftl.AfA bei Gebäuden</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4842</intaccountclass>
+            <cname>Absetzung f.auÃŸergew.techn.u.wirtschaftl.AfA des Kfz</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4843</intaccountclass>
+            <cname>Absetzung f.auÃŸergew.techn.u.wirtschaftl.AfA sonst.WG</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4851</intaccountclass>
+            <cname>Sonderabschreibung nach Â§7g(1)u.(2)EStG (ohne Kfz)</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4852</intaccountclass>
+            <cname>Sonderabschreibung n.Â§7g(1)u.(2)EStG (für Kfz)</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4965</intaccountclass>
+            <cname>Mietleasing</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>4966</intaccountclass>
+            <cname>Gewerbest.zu berücksicht.Mietleasing Â§8 GewStG</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>8580</intaccountclass>
+            <cname>ErlÃ¶se zum allg.Umsatzsteuersatz (EÃœR)</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>8581</intaccountclass>
+            <cname>ErlÃ¶se zum ermä.Umsatzsteuersatz (EÃœR)</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>8582</intaccountclass>
+            <cname>ErlÃ¶se steuerfrei u.nicht steuerbar (EÃœR)</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>8589</intaccountclass>
+            <cname>Gegenkonto 8580-8582 b.Aufteilung d.ErlÃ¶se n.Steuersätzen(EÃœR)</cname>
+            <intaccounttype>1</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>1000</intaccountclass>
+            <cname>Kasse</cname>
+            <intaccounttype>0</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2501</intaccountclass>
+            <cname>Ausserordentliche Erträge finanzwirksam</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2505</intaccountclass>
+            <cname>Ausserordentliche Erträge nicht finanzwirksam</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4130</intaccountclass>
+            <cname>Gesetzlich soziale Aufwendungen</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4630</intaccountclass>
+            <cname>Geschenke bis 35 EUR abzugsfähig</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4635</intaccountclass>
+            <cname>Geschenke über 35EUR nicht abzugsf.</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4655</intaccountclass>
+            <cname>Nicht abzugsf.Betriebsausg.a.Werbe-Repräsentatisonk.etc.</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>4805</intaccountclass>
+            <cname>Rep.u.Instandhalt.v.and.Anlagen u.Betriebs-u.Geschäftsausst.</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>8960</intaccountclass>
+            <cname>Bestandsveränderung unf.Erz.</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>8970</intaccountclass>
+            <cname>Bestandsveränd.unf.Leist.</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>8980</intaccountclass>
+            <cname>Bestandsveränd.fert..Leist.</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>8990</intaccountclass>
+            <cname>And.aktiv.Eigenleistungen</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>3090</intaccountclass>
+            <cname>Energiestoffe (Fert.).</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>4595</intaccountclass>
+            <cname>Fremdfahrzeuge</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>1450</intaccountclass>
+            <cname>Ford.a.LuL n.Durchschnittss.gem.Â§24UStG(EÃœR)</cname>
+            <intaccounttype>0</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>1580</intaccountclass>
+            <cname>Gegenkonto Vorsteuer Â§4/3 EStG</cname>
+            <intaccounttype>0</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>1581</intaccountclass>
+            <cname>AuflÃ¶sung Vorst.a.Vorjahr Â§4/3 EStG</cname>
+            <intaccounttype>0</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>1582</intaccountclass>
+            <cname>Vorst.aus Investitionen Â§4/3 EStG</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>1584</intaccountclass>
+            <cname>abziehb.VorSt IG Erwerb Neufzg.b.Lief. o. USt.Ident.Nr</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>1592</intaccountclass>
+            <cname>Fremdgeld</cname>
+            <intaccounttype>0</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>3100</intaccountclass>
+            <cname>Fremdleistungen</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>3600</intaccountclass>
+            <cname>Nicht abziehbare Vorsteuer</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>3610</intaccountclass>
+            <cname>Nicht abziehb.Vorsteuer 7%</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2739</intaccountclass>
+            <cname>Erträge Aufl. Sopo m.R.(Ansparafa)</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>8590</intaccountclass>
+            <cname>Verrechnete sons. Sachbezüge keine Waren</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>8949</intaccountclass>
+            <cname>Unentgeltl.Zuwendung v.Waren o.USt.</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4126</intaccountclass>
+            <cname>Tantiemen</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4127</intaccountclass>
+            <cname>Geschäftsführergehälter</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4167</intaccountclass>
+            <cname>Pauschale Lohnsteuer auf sonst.Bezüge(z.B.Direktversicherung</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4170</intaccountclass>
+            <cname>VermÃ¶genswirksame Leistungen</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4180</intaccountclass>
+            <cname>Bedienungsgelder</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4826</intaccountclass>
+            <cname>AuÃŸerplan.AfA a.immat.VermÃ¶gensgeg.</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4850</intaccountclass>
+            <cname>Abschr.a.Sachanl.aufgr.steuerl.Sondervorschriften</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4875</intaccountclass>
+            <cname>Abschr.a.Wertp.d.UmlaufvermÃ¶gens</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4880</intaccountclass>
+            <cname>Abschreibungen auf Umlaufverm. o.Wertpapiere (soweit unübl.HÃ¶he</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2208</intaccountclass>
+            <cname>Solidaritätszuschlag</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2209</intaccountclass>
+            <cname>Solidaritätszuschlag für Vorjahr</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2375</intaccountclass>
+            <cname>Grundsteuer</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2400</intaccountclass>
+            <cname>Forderungsverlust-übliche HÃ¶he</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2341</intaccountclass>
+            <cname>Einstellungen in SoPo m.Rücklageanteil (Ansparabschreibung</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2100</intaccountclass>
+            <cname>Zinsen und ähnl.Aufwendungen</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2107</intaccountclass>
+            <cname>Zinsaufwendung-betriebliche Steuern Â§223aAO</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2140</intaccountclass>
+            <cname>Zinsähnliche Aufwendungen</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2000</intaccountclass>
+            <cname>AuÃŸerordentliche Aufwendung</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2010</intaccountclass>
+            <cname>Betriebsfremde Aufwendungen soweit n.auÃŸerord.</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2020</intaccountclass>
+            <cname>Periodenfremde Aufwend.(soweit n.auÃŸerordentlich</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2150</intaccountclass>
+            <cname>Aufwendungen aus Kursdifferenzen</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2170</intaccountclass>
+            <cname>Nicht abziehbare Vorsteuer</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2171</intaccountclass>
+            <cname>Nicht abziehbare Vorsteuer 7%</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2280</intaccountclass>
+            <cname>Stnachzahl.Vorj.v.Einkomm u.Ertrag</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2285</intaccountclass>
+            <cname>Steuernachzahlung Vorj.f.sons.Steue</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2289</intaccountclass>
+            <cname>Erträge a.d.Aufl.v. Rück.f.sons.Ste</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2350</intaccountclass>
+            <cname>Grundstücksaufwendungen</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>2380</intaccountclass>
+            <cname>Zuwend.,Spenden,steuerlich n.abziehbar</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2450</intaccountclass>
+            <cname>Einstell.i.d.Pauschalwertbe.z.Forde</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2657</intaccountclass>
+            <cname>Zinserträge-betriebliche Steuern</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2670</intaccountclass>
+            <cname>Diskonterträge</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2680</intaccountclass>
+            <cname>Zinsähnliche Erträge</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>8650</intaccountclass>
+            <cname>ErlÃ¶se Zinsen und Diskotspesen</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>8700</intaccountclass>
+            <cname>ErlÃ¶sschmälerungen</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>8727</intaccountclass>
+            <cname>ErlÃ¶sschmä.and.EG Land stpfl.Liefer</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2500</intaccountclass>
+            <cname>AuÃŸerordentliche Erträge</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2510</intaccountclass>
+            <cname>Betriebsfremde Erträge nichtauÃŸerorden</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2520</intaccountclass>
+            <cname>Periodenfremde Erträge nicht auÃŸero</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2600</intaccountclass>
+            <cname>Erträge aus Beteiligungen</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2660</intaccountclass>
+            <cname>Erträge aus Kursdifferenzen</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2710</intaccountclass>
+            <cname>Ertrag a.d.Zuschreib.d.AnlagevermÃ¶g</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2715</intaccountclass>
+            <cname>Ertr.a.Zuschreib.d.UmlaufvermÃ¶gens</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2725</intaccountclass>
+            <cname>Ertr.a.d.Abg.v.Gegenst.d.Umlaufverm</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2730</intaccountclass>
+            <cname>Ertr.a.Herabsetzung d.PWB zu Forderungen</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2732</intaccountclass>
+            <cname>Ertr. aus abgeschriebenen Forderung</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2735</intaccountclass>
+            <cname>Ertr.a.d.AuflÃ¶sung v.Rückstellungen</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2743</intaccountclass>
+            <cname>Investitionszuschüsse-steuerpflicht</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2744</intaccountclass>
+            <cname>Investitionszulage-steuerfrei</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2750</intaccountclass>
+            <cname>Grundstückserträge</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>3</taxids>
+        </row>
+        <row>
+            <intaccountclass>2284</intaccountclass>
+            <cname>Ertr.a.d.Aufl.v.Rücks.f.St.v.Ein.Er</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2287</intaccountclass>
+            <cname>Steuererstattung Vorj.f.sons.Steuer</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2282</intaccountclass>
+            <cname>Sterstat.Vorj.Steuer v.Eink.u.Ertrag</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4990</intaccountclass>
+            <cname>Kalkulatorischer Unternehmerlohn</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4992</intaccountclass>
+            <cname>Kalkulatorische Zinsen</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4993</intaccountclass>
+            <cname>Kalkulatorische Aschreibungen</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4994</intaccountclass>
+            <cname>Kalkulatorische Wagnisse</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4995</intaccountclass>
+            <cname>Kalkulatorischer Lohn f.unentgeltl.Mitarbeiter</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2200</intaccountclass>
+            <cname>KÃ¶rperschaftssteuer</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2214</intaccountclass>
+            <cname>Anrechenb.Soli auf Kapitalertragssteuer 20%</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2215</intaccountclass>
+            <cname>Zinsabschlagsteuer</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2218</intaccountclass>
+            <cname>Anrechb.Solidari.zuschlag a.Zinsabschlagst.</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>8125</intaccountclass>
+            <cname>Steuerfrei innergem. Lieferungen Â§41bUStG</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>8130</intaccountclass>
+            <cname>Liefe.d.1.Abnehm.bei innergem.Dreiecksg Â§25b2UStG</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>8828</intaccountclass>
+            <cname>ErlÃ¶se a.Verk.Sachanlagen steuerfr.Â§4Nr.1bUStG(b.Buchgewinn)</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>8808</intaccountclass>
+            <cname>ErlÃ¶se a.Verk.Sachanlagen steuerfreiÂ§4Nr.1bUStG(b.Buchverlust)</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>8135</intaccountclass>
+            <cname>Steuerfr.innergem.Lief.v.Neufahrz.an Abn.o.USt-Ident-Nr.</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>8120</intaccountclass>
+            <cname>Steuerfreie Umsätze Â§4Nr.1a UstG</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>8150</intaccountclass>
+            <cname>Sonstige steuerfreie Umsätze Â§42-7UStG</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>8827</intaccountclass>
+            <cname>ErlÃ¶se a.Verk.Sachanlagen steuerfr.Â§4Nr.1aUStG(bei Buchgewinn)</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>8807</intaccountclass>
+            <cname>ErlÃ¶se a.Verk.Sachanlagen steuerfreiÂ§4Nr.1aUStG(b.Buchverlust)</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>8100</intaccountclass>
+            <cname>Steuerfreie Umsätze Â§4Nr.8ff UstG</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>8110</intaccountclass>
+            <cname>Sonstige steuerfreie Umsätze Inland</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>8600</intaccountclass>
+            <cname>Sonstige ErlÃ¶se betriebl.u.regelmäÃŸ</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>3</taxids>
+        </row>
+        <row>
+            <intaccountclass>8720</intaccountclass>
+            <cname>ErlÃ¶sschmälerung 16%/19% USt.</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>3</taxids>
+        </row>
+        <row>
+            <intaccountclass>2700</intaccountclass>
+            <cname>Sonstige Erträge</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>3</taxids>
+        </row>
+        <row>
+            <intaccountclass>1775</intaccountclass>
+            <cname>Umsatzsteuer 16%</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>8300</intaccountclass>
+            <cname>ErlÃ¶se 7%USt</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>2</taxids>
+        </row>
+        <row>
+            <intaccountclass>8310</intaccountclass>
+            <cname>ErlÃ¶se Inland stpfl. EG-Lieferung7%</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>12</taxids>
+        </row>
+        <row>
+            <intaccountclass>8506</intaccountclass>
+            <cname>ProvisionserlÃ¶se 7% USt.</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>2</taxids>
+        </row>
+        <row>
+            <intaccountclass>8591</intaccountclass>
+            <cname>Sachbezüge 7% Ust (Waren)</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>2</taxids>
+        </row>
+        <row>
+            <intaccountclass>8731</intaccountclass>
+            <cname>Gewährte Skonti 7% USt</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>2</taxids>
+        </row>
+        <row>
+            <intaccountclass>8750</intaccountclass>
+            <cname>Gewährte Boni 7% USt.</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>2</taxids>
+        </row>
+        <row>
+            <intaccountclass>8780</intaccountclass>
+            <cname>Gewährte Rabatte 7% USt.</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>2</taxids>
+        </row>
+        <row>
+            <intaccountclass>8915</intaccountclass>
+            <cname>Entnah.d.Untern.f.Zwecke ausserh.d.Untern.7%USt</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>2</taxids>
+        </row>
+        <row>
+            <intaccountclass>8930</intaccountclass>
+            <cname>Verwendung v.Gegenst.f.Zwecke auÃŸerhalb d.Unternehmens 7% USt.</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>2</taxids>
+        </row>
+        <row>
+            <intaccountclass>8945</intaccountclass>
+            <cname>Unentgeltl.Zuw.von Waren 7% Ust</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>2</taxids>
+        </row>
+        <row>
+            <intaccountclass>2401</intaccountclass>
+            <cname>Forderungsverluste 7% USt.(übliche HÃ¶he</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>2</taxids>
+        </row>
+        <row>
+            <intaccountclass>8710</intaccountclass>
+            <cname>ErlÃ¶sschmälerung 7% USt.</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>2</taxids>
+        </row>
+        <row>
+            <intaccountclass>8725</intaccountclass>
+            <cname>ErlÃ¶sschmä.Inl.stpfl.EG-Lief. 7%USt</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>12</taxids>
+        </row>
+        <row>
+            <intaccountclass>8950</intaccountclass>
+            <cname>Nicht steuerbare Umsätze</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>3110</intaccountclass>
+            <cname>Leist.v.ausländ.Untern. 7% VSt.u.7%USt.</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>8</taxids>
+        </row>
+        <row>
+            <intaccountclass>1785</intaccountclass>
+            <cname>Umsatzsteuer n.Â§13b UStG</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>1571</intaccountclass>
+            <cname>Abziebare Vorsteuer 7%</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>1588</intaccountclass>
+            <cname>Bezahlte Einfuhrumsatzsteuer</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>1578</intaccountclass>
+            <cname>Abzieb.Vorst.n.Â§13b</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>1577</intaccountclass>
+            <cname>Abzieb.Vorst.n.allg.Durchschnittss.UStVA Kz.63</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4250</intaccountclass>
+            <cname>Reinigung</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>4610</intaccountclass>
+            <cname>Werbekosten</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>3559</intaccountclass>
+            <cname>Steuerfreie Einfuhren</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>1776</intaccountclass>
+            <cname>Umsatzsteuer 19 %</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>3980</intaccountclass>
+            <cname>Bestand Waren</cname>
+            <intaccounttype>0</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>9000</intaccountclass>
+            <cname>Saldenvorträge,Sachkonten</cname>
+            <intaccounttype>0</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>9008</intaccountclass>
+            <cname>Saldenvorträge,Debitoren</cname>
+            <intaccounttype>0</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>9009</intaccountclass>
+            <cname>Saldenvorträge,Kreditoren</cname>
+            <intaccounttype>4</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>1575</intaccountclass>
+            <cname>Abziehbare Vorsteuer 16%</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>1576</intaccountclass>
+            <cname>Abziehbare Vorsteuer 19 %</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>3400</intaccountclass>
+            <cname>Wareneingang 16%/19% Vorsteuer</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>3440</intaccountclass>
+            <cname>Innergem.Erwerb v.Neufahrz.v.Lief.o.USt.Identnr.16%/19%VSt.u.16%/19%USt.</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>19</taxids>
+        </row>
+        <row>
+            <intaccountclass>3735</intaccountclass>
+            <cname>Erhaltene Skonti 16%/19% Vorsteuer</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>3760</intaccountclass>
+            <cname>Erhaltene Boni 16%/19% Vorsteuer</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>3790</intaccountclass>
+            <cname>Erhaltene Rabatte 16%/19% Vorsteuer</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>4305</intaccountclass>
+            <cname>Nicht abziehbare Vorsteuer 16%/19%</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>8508</intaccountclass>
+            <cname>ProvisionserlÃ¶se 16%/19% USt.</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>3</taxids>
+        </row>
+        <row>
+            <intaccountclass>3650</intaccountclass>
+            <cname>Nicht abziehb.Vorsteuer 16%/19%</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>2175</intaccountclass>
+            <cname>Nicht abziehbare Vorsteuer 16%/19%</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>8315</intaccountclass>
+            <cname>ErlÃ¶s Inland stpfl.EG-Lieferung 16%/19%</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>13</taxids>
+        </row>
+        <row>
+            <intaccountclass>8595</intaccountclass>
+            <cname>Sachbezüge 16%/19% Ust (Waren)</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>3</taxids>
+        </row>
+        <row>
+            <intaccountclass>8735</intaccountclass>
+            <cname>Gewährte Skonti 16%/19% USt.</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>3</taxids>
+        </row>
+        <row>
+            <intaccountclass>8760</intaccountclass>
+            <cname>Gewährte Boni 16%/19% USt.</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>3</taxids>
+        </row>
+        <row>
+            <intaccountclass>8790</intaccountclass>
+            <cname>Gewährte Rabatte 16%/19% Ust.</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>3</taxids>
+        </row>
+        <row>
+            <intaccountclass>8820</intaccountclass>
+            <cname>ErlÃ¶se aus Anlageverkäufen Sachanl.verm.b.Buchgewinn16%/19%Ust</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>3</taxids>
+        </row>
+        <row>
+            <intaccountclass>8910</intaccountclass>
+            <cname>Entnahme des Untern.f.Zwecke ausserh.d.Untern 16%/19%(Waren)</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>3</taxids>
+        </row>
+        <row>
+            <intaccountclass>8935</intaccountclass>
+            <cname>Unentgeltl.Zuwend.v.Gegens. 16%/19% Ust</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>3</taxids>
+        </row>
+        <row>
+            <intaccountclass>8400</intaccountclass>
+            <cname>ErlÃ¶se 16%/19% USt.</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>3</taxids>
+        </row>
+        <row>
+            <intaccountclass>8921</intaccountclass>
+            <cname>Verwend.v.Gegenst.f.Zwecke auÃŸerh.d.Untern.16%/19%USt(Kfz-Nutzung)</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>8922</intaccountclass>
+            <cname>Verwend.f.Gegenst.f.Zwecke auÃŸerh.d.Untern.16%/19%USt(Telefonnutzung)</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>8809</intaccountclass>
+            <cname>ErlÃ¶se aus Verk.SachanlagevermÃ¶gen16%/19% USt (bei Buchverlust)</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>8801</intaccountclass>
+            <cname>ErlÃ¶se aus Anlagenverkäufen Sachanl.verm.b.Buchverl.16%/19%USt.</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>3</taxids>
+        </row>
+        <row>
+            <intaccountclass>8920</intaccountclass>
+            <cname>Verw.v.Gegens.f.Zwecke ausserh.d.Untern.16%/19%USt.</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>3</taxids>
+        </row>
+        <row>
+            <intaccountclass>8940</intaccountclass>
+            <cname>Unentgeltl.Zuw.v Waren 16%/19% Ust</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>3</taxids>
+        </row>
+        <row>
+            <intaccountclass>2405</intaccountclass>
+            <cname>Forderungsverluste 16%/19% USt.(übliche HÃ¶he</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>3</taxids>
+        </row>
+        <row>
+            <intaccountclass>8726</intaccountclass>
+            <cname>ErlÃ¶sschmä.Inl.stpfl.EG-Lief.16%/19%USt</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>13</taxids>
+        </row>
+        <row>
+            <intaccountclass>3120</intaccountclass>
+            <cname>Leist.v.ausländ.Untern. 16%/19% VSt.u.16%/19%USt.</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>9</taxids>
+        </row>
+        <row>
+            <intaccountclass>1772</intaccountclass>
+            <cname>Umsatzsteuer 7% innergem.Erwerb</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>1773</intaccountclass>
+            <cname>Umsatzsteuer 16% innergem.Erwerb</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>1572</intaccountclass>
+            <cname>Abziehbare Vorsteuer 7% innergem. Erwerb</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>1573</intaccountclass>
+            <cname>Abziehbare Vorsteuer 16% innergem. Erwerb</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>3425</intaccountclass>
+            <cname>Innergem. Erwerb 16%/19% VSt u. USt.</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>3420</intaccountclass>
+            <cname>Innergem. Erwerb 7% VSt u. USt.</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>8195</intaccountclass>
+            <cname>ErlÃ¶se als Kleinunternehmer i.S.d.Â§19(1)UStG</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4870</intaccountclass>
+            <cname>Abschreibungen auf Finanzanlagen</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>8190</intaccountclass>
+            <cname>ErlÃ¶se,die mit den Durchschnittssätzen d.Â§24UStG vers.werd.</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>1570</intaccountclass>
+            <cname>Anrechenbare Vorsteuer</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>1574</intaccountclass>
+            <cname>Abziehbare Vorsteuer aus innergem. Erwerb 19 %</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>1774</intaccountclass>
+            <cname>Umsatzsteuer aus innergem. Erwerb 19 %</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>4500</intaccountclass>
+            <cname>Fahrzeugkosten</cname>
+            <intaccounttype>2</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>8900</intaccountclass>
+            <cname>Unentgeltliche Wertabgaben</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>8939</intaccountclass>
+            <cname>Unentgeltl.Zuw.v.Gegens.ohne Ust</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+        <row>
+            <intaccountclass>8925</intaccountclass>
+            <cname>Unentgeltl.Erbring.sons.Leis.16%/19%USt</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>3</taxids>
+        </row>
+        <row>
+            <intaccountclass>1771</intaccountclass>
+            <cname>Umsatzsteuer 7%</cname>
+            <intaccounttype>3</intaccounttype>
+            <taxids>0</taxids>
+        </row>
+    </accounts>
+</mpv5>
