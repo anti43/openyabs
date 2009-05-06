@@ -4,7 +4,6 @@
 
 
 <!--CONTACTS-->
-<!ELEMENT Addedby ( #PCDATA ) >
 <!ELEMENT CName ( #PCDATA ) >
 <!ELEMENT CNumber ( #PCDATA ) >
 <!ELEMENT City ( #PCDATA ) >
@@ -40,7 +39,8 @@
 <!ELEMENT Department ( #PCDATA ) >
 <!-- default: '1' -->
 <!ELEMENT Groupsids ( #PCDATA ) >
-<!ELEMENT contact ( CName | CNumber? | Taxnumber? | Groupsids | Title? | Prename? | Street? | Zip? | City? | Mainphone? | Workphone? | Fax? | Mobilephone? | Mailaddress? | Website? | Notes? | isMale? | isEnabled? | isCompany? | Iscustomer? | Ismanufacturer? | Issupplier? | Company? | Dateadded? | Addedby? | Department? | Country? | IDS? )* >
+<!ELEMENT Intaddedby ( #PCDATA ) >
+<!ELEMENT contact ( CName | CNumber? | Taxnumber? | Groupsids | Title? | Prename? | Street? | Zip? | City? | Mainphone? | Workphone? | Fax? | Mobilephone? | Mailaddress? | Website? | Notes? | isMale? | isEnabled? | isCompany? | Iscustomer? | Ismanufacturer? | Issupplier? | Company? | Dateadded? | Addedby? | Department? | Country? | IDS? | Intaddedby? )* >
 <!ELEMENT contacts ( contact* ) >
 <!ATTLIST contact id CDATA #REQUIRED>
 <!--END CONTACTS-->

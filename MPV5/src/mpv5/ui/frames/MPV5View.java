@@ -49,6 +49,9 @@ import mpv5.ui.misc.Position;
 import mpv5.ui.panels.calendar.JCalendar;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.db.objects.User;
+import mpv5.ui.dialogs.Wizard;
+import mpv5.ui.dialogs.subcomponents.wizard_XMLImport_1;
+import mpv5.ui.dialogs.subcomponents.wizard_XMLImport_2;
 import mpv5.utils.print.PrintJob;
 import mpv5.utils.renderer.ComboBoxRendererForTooltip;
 import mpv5.utils.text.TypeConversion;
@@ -309,35 +312,41 @@ public class MPV5View extends FrameView {
     }
 
     private void importXML() {
-        DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY);
-        d.setFileFilter(DialogForFile.XML_FILES);
-        XMLReader x;
-        ArrayList<ArrayList<DatabaseObject>> objs = null;
-
-        if (d.chooseFile()) {
-            x = new XMLReader();
-            try {
-                x.newDoc(d.getFile(), true);
-                objs = x.getObjects();
-            } catch (Exception ex) {
-                addMessage(ex.getMessage());
-                Log.Debug(ex);
-            }
-        }
+        Wizard w = new Wizard(false);
+        w.addPanel(new wizard_XMLImport_1(w));
+        w.addPanel(new wizard_XMLImport_2(w));
+        w.showWiz();
 
 
-        if (objs != null && objs.size() < 0) {
-            for (int i = 0; i < objs.size(); i++) {
-                ArrayList<DatabaseObject> arrayList = objs.get(i);
-                for (int j = 0; j < arrayList.size(); j++) {
-                    DatabaseObject databaseObject = arrayList.get(j);
-                    Log.Debug(this, "Parsing " + databaseObject.getDbIdentity() + " : " + databaseObject.__getCName() + " from file: " + d.getFile());
-                    databaseObject.save();
-                }
-            }
-        } else {
-            addMessage(Messages.NO_DATA_FOUND);
-        }
+//        DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY);
+//        d.setFileFilter(DialogForFile.XML_FILES);
+//        XMLReader x;
+//        ArrayList<ArrayList<DatabaseObject>> objs = null;
+//
+//        if (d.chooseFile()) {
+//            x = new XMLReader();
+//            try {
+//                x.newDoc(d.getFile(), true);
+//                objs = x.getObjects();
+//            } catch (Exception ex) {
+//                addMessage(ex.getMessage());
+//                Log.Debug(ex);
+//            }
+//        }
+//
+//
+//        if (objs != null && objs.size() < 0) {
+//            for (int i = 0; i < objs.size(); i++) {
+//                ArrayList<DatabaseObject> arrayList = objs.get(i);
+//                for (int j = 0; j < arrayList.size(); j++) {
+//                    DatabaseObject databaseObject = arrayList.get(j);
+//                    Log.Debug(this, "Parsing " + databaseObject.getDbIdentity() + " : " + databaseObject.__getCName() + " from file: " + d.getFile());
+//                    databaseObject.save();
+//                }
+//            }
+//        } else {
+//            addMessage(Messages.NO_DATA_FOUND);
+//        }
     }
 
     /** This method is called from within the constructor to

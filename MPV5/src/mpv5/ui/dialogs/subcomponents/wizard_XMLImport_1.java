@@ -1,6 +1,8 @@
 package mpv5.ui.dialogs.subcomponents;
 
 import mpv5.data.PropertyStore;
+import mpv5.ui.dialogs.DialogForFile;
+import mpv5.ui.dialogs.WizardMaster;
 import mpv5.ui.dialogs.Wizardable;
 
 /**
@@ -8,15 +10,15 @@ import mpv5.ui.dialogs.Wizardable;
  * @author anti43
  */
 public class wizard_XMLImport_1 extends javax.swing.JPanel implements Wizardable {
+
     private static final long serialVersionUID = -8347532498124147821L;
+    private WizardMaster master;
 
-
-    public wizard_XMLImport_1() {
+    public wizard_XMLImport_1(WizardMaster w) {
+        this.master = w;
         initComponents();
-
+        labeledTextChooser1.setFilter(DialogForFile.XML_FILES);
     }
-
- 
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -64,8 +66,6 @@ public class wizard_XMLImport_1 extends javax.swing.JPanel implements Wizardable
 
         add(jPanel1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
-
-    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
@@ -73,12 +73,15 @@ public class wizard_XMLImport_1 extends javax.swing.JPanel implements Wizardable
     // End of variables declaration//GEN-END:variables
 
     public boolean next() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (labeledTextChooser1.hasText()) {
+            master.getStore().addProperty("file", labeledTextChooser1.get_Text(true));
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public boolean back() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return false;
     }
-
-
 }

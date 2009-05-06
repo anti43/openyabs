@@ -104,6 +104,12 @@ public class MPTableModel extends DefaultTableModel {
         setCanEdits(canEdits);
     }
 
+     public MPTableModel(Class[] types, boolean[] canEdits, Object[] columnNames) {
+        super(columnNames,1);
+        setTypes(types);
+        setCanEdits(canEdits);
+    }
+
     public MPTableModel(Class[] types, Object[][] data, Object[] columnNames) {
         super(data, columnNames);
         setTypes(types);
@@ -112,11 +118,13 @@ public class MPTableModel extends DefaultTableModel {
 
     @Override
     public Class getColumnClass(int columnIndex) {
+        getTypes()[columnIndex].toString();//Check for non-null
         return getTypes()[columnIndex];
     }
 
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
+        new Boolean(getCanEdits()[columnIndex]).toString();//Check for non-null
         return getCanEdits()[columnIndex];
     }
 

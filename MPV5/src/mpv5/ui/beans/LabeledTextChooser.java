@@ -12,6 +12,7 @@ package mpv5.ui.beans;
 
 import java.awt.Font;
 import java.io.File;
+import javax.swing.filechooser.FileFilter;
 import mpv5.globals.Messages;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.Popup;
@@ -22,9 +23,11 @@ import mpv5.ui.dialogs.Popup;
  */
 public class LabeledTextChooser extends javax.swing.JPanel {
 
+    private static final long serialVersionUID = 1L;
     private String _text;
     private String _label;
     private int _mode = DialogForFile.FILES_AND_DIRECTORIES;
+    private FileFilter filter;
 
     /** Creates new form LabeledTextField */
     public LabeledTextChooser() {
@@ -41,6 +44,14 @@ public class LabeledTextChooser extends javax.swing.JPanel {
         } else {
             return false;
         }
+    }
+
+    /**
+     * Sets a File filter for this text field
+     * @param f
+     */
+    public void setFilter(FileFilter f) {
+        filter = f;
     }
 
     /** This method is called from within the constructor to
@@ -92,6 +103,9 @@ public class LabeledTextChooser extends javax.swing.JPanel {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         DialogForFile dialog = new DialogForFile(getMode());
+        if (filter != null) {
+            dialog.setFileFilter(filter);
+        }
         if (dialog.chooseFile()) {
             jTextField1.setText(dialog.getFile().getPath());
         }
