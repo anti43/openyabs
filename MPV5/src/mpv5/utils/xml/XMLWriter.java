@@ -56,6 +56,8 @@ public class XMLWriter {
             DatabaseObject d = dbobjarr.get(0);
             String sident = d.getDbIdentity();
             Element parent = addNode(new Element(sident));
+//            Element parent = (new Element(sident));
+            Log.Debug(this, "Adding root node " + sident);
             for (int i = 0; i < dbobjarr.size(); i++) {
                 try {
 

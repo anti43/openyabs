@@ -18,7 +18,6 @@
 package mpv5.ui.dialogs;
 
 import java.awt.Cursor;
-import java.util.ArrayList;
 import mpv5.data.PropertyStore;
 
 
@@ -29,6 +28,8 @@ import mpv5.data.PropertyStore;
 public interface WizardMaster {
 
     public void dispose();
+
+    public Wizardable getNext();
     public void isEnd(boolean end);
     public PropertyStore getStore();
 

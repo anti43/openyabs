@@ -75,6 +75,7 @@ public class wizard_XMLImport_1 extends javax.swing.JPanel implements Wizardable
     public boolean next() {
         if (labeledTextChooser1.hasText()) {
             master.getStore().addProperty("file", labeledTextChooser1.get_Text(true));
+            master.getNext().load();
             return true;
         } else {
             return false;
@@ -83,5 +84,9 @@ public class wizard_XMLImport_1 extends javax.swing.JPanel implements Wizardable
 
     public boolean back() {
         return false;
+    }
+
+    public void load() {
+
     }
 }

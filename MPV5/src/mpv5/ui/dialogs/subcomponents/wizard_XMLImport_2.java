@@ -1,17 +1,11 @@
 package mpv5.ui.dialogs.subcomponents;
 
 import java.awt.Cursor;
-import java.awt.FlowLayout;
 import java.io.File;
 import java.util.ArrayList;
 
-import javax.swing.BoxLayout;
-import javax.swing.JTable;
 import mpv5.db.common.DatabaseObject;
-import mpv5.globals.Messages;
 import mpv5.logging.Log;
-import mpv5.ui.dialogs.DialogForFile;
-import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.WizardMaster;
 import mpv5.ui.dialogs.Wizardable;
 import mpv5.ui.frames.MPV5View;
@@ -160,5 +154,9 @@ public class wizard_XMLImport_2 extends javax.swing.JPanel implements Wizardable
 
     public boolean back() {
         return true;
+    }
+
+    public void load() {
+       importXML();
     }
 }

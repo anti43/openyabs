@@ -35,7 +35,7 @@ public class DatabaseInstallation {
 
 //sub tables
 "CREATE TABLE groups (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),cname VARCHAR(250) UNIQUE NOT NULL,description VARCHAR(750) DEFAULT NULL,defaults VARCHAR(250) DEFAULT NULL,groupsids BIGINT DEFAULT 0,dateadded DATE NOT NULL,reserve1 VARCHAR(500) default NULL,intaddedby BIGINT DEFAULT 0, reserve2 VARCHAR(500) default NULL, PRIMARY KEY  (ids))",
-"CREATE TABLE tax (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),cname VARCHAR(250), taxvalue DOUBLE DEFAULT 0,reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,dateadded DATE NOT NULL,intaddedby BIGINT DEFAULT 0,PRIMARY KEY  (ids))",
+"CREATE TABLE tax (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),cname VARCHAR(250), taxvalue DOUBLE DEFAULT 0,identifier VARCHAR(250) UNIQUE NOT NULL,reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,dateadded DATE NOT NULL,intaddedby BIGINT DEFAULT 0,PRIMARY KEY  (ids))",
 "CREATE TABLE history (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),cname VARCHAR(250)  NOT NULL, username VARCHAR(250) NOT NULL,dbidentity VARCHAR(25)  NOT NULL, INTitem SMALLINT NOT NULL,groupsids BIGINT DEFAULT 0, dateadded DATE NOT NULL,intaddedby BIGINT DEFAULT 0,reserve1 VARCHAR(500) default NULL, reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (ids))",
 "CREATE TABLE countries (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),cname VARCHAR(250)  UNIQUE NOT NULL, iso SMALLINT  UNIQUE NOT NULL,groupsids BIGINT DEFAULT 0,reserve1 VARCHAR(500) default NULL, reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (ids))",
 "CREATE TABLE searchindex (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),dbidentity VARCHAR(25) NOT NULL, rowID BIGINT NOT NULL,text VARCHAR(5000) default NULL)",
@@ -102,7 +102,7 @@ public class DatabaseInstallation {
 "CREATE TRIGGER thrash_handler1 AFTER INSERT ON trashbin FOR EACH STATEMENT DELETE FROM trashbin WHERE deleteme = 1",
 "CREATE TRIGGER thrash_handler2 AFTER INSERT ON trashbin FOR EACH STATEMENT DELETE FROM trashbin WHERE ids IN (SELECT ids FROM trashbin WHERE EXISTS( SELECT ids FROM trashbin AS tmptable WHERE trashbin.cname = tmptable.cname AND trashbin.rowid = tmptable.rowid HAVING trashbin.ids < MAX(tmptable.ids) ) )",
 
-"INSERT INTO tax(cname, dateadded) VALUES ('Default', '2009-04-03 09:31:33')",
+"INSERT INTO tax(cname, dateadded, identifier) VALUES ('Default', '2009-04-03 09:31:33', 'Default tax')",
 "INSERT INTO groups (cname,description, dateadded) VALUES ('"+Messages.GROUPNAMES+"','This group holds all yet ungrouped items.', '2009-04-03 09:31:33')",
 "INSERT INTO groups (cname,description, dateadded) VALUES ('ungrouped','This group holds all yet ungrouped items.', '2009-04-03 09:31:33')",
 "INSERT INTO accounts (cname,description, dateadded, taxids, intaccounttype) VALUES ('"+Messages.ACCOUNTNAMES+"','This account holds all yet ungrouped items.', '2009-04-03 09:31:33', 1, 0)",

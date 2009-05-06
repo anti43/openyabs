@@ -1071,7 +1071,7 @@ public class MPV5View extends FrameView {
         if (mpv5.usermanagement.MPSecurityManager.check(Context.getContact(), MPSecurityManager.EXPORT)) {
             try {
                 XMLWriter xmlw = new XMLWriter();
-                xmlw.newDoc(Context.getContact().getDbIdentity());
+                xmlw.newDoc();
                 String name = Context.getContact().getDbIdentity();
                 ArrayList<DatabaseObject> dbobjarr = DatabaseObject.getObjects(Context.getContact());
                 xmlw.add(dbobjarr);

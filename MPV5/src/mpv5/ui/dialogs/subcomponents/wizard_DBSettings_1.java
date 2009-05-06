@@ -24,13 +24,14 @@ import mpv5.ui.dialogs.Wizardable;
  * @author anti43
  */
 public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardable {
+    private static final long serialVersionUID = 1L;
 
     private WizardMaster master;
 
     public wizard_DBSettings_1(WizardMaster w) {
         this.master = w;
         initComponents();
-        labeledTextChooser1.set_Text(Main.MPPATH);
+       load();
     }
 
     private boolean DBVerification() {
@@ -266,5 +267,9 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
 
     public boolean back() {
         return false;
+    }
+
+    public void load() {
+       labeledTextChooser1.set_Text(Main.MPPATH);
     }
 }

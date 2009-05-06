@@ -38,14 +38,15 @@ import mpv5.ui.misc.Position;
  * @author anti43
  */
 public class Wizard extends javax.swing.JFrame implements WizardMaster {
-    private static final long serialVersionUID = 1L;
 
+    private static final long serialVersionUID = 1L;
     public PropertyStore actionVars = new PropertyStore();
 //    private int index = 4300;
     private Component lastpanel;
     private boolean isEnded = false;
     private boolean standalone;
-    private ArrayList<JComponent> contentlist =  new ArrayList<JComponent>();;
+    private ArrayList<JComponent> contentlist = new ArrayList<JComponent>();
+    ;
     private int level;
 
     /** Creates new form Wizard
@@ -64,12 +65,12 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
     public void showWiz() {
         back.setEnabled(false);
         new Position(this);
-        setVisible(true); 
+        setVisible(true);
         pack();
         repaint();
 
         content.add(contentlist.get(level), BorderLayout.CENTER);
-      
+
         setAlwaysOnTop(true);
     }
 
@@ -194,7 +195,8 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
             if (!isEnded && ((Wizardable) lastpanel).next()) {
                 content.remove(lastpanel);
                 back.setEnabled(true);
-                content.add(contentlist.get(level+1), BorderLayout.CENTER);
+                content.add(contentlist.get(level + 1), BorderLayout.CENTER);
+                ((Wizardable) contentlist.get(level + 1)).load();
             }
 
             level++;
@@ -210,7 +212,7 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
         try {
             if (((Wizardable) content.getComponent(0)).back() && level > 0) {
                 content.remove(lastpanel);
-                content.add(contentlist.get(level-1), BorderLayout.CENTER);
+                content.add(contentlist.get(level - 1), BorderLayout.CENTER);
                 level--;
             }
         } catch (Exception e) {
@@ -226,7 +228,7 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
      * @param panel
      */
     public void addPanel(Wizardable panel) {
-        JPanel pane = (JPanel)panel;
+        JPanel pane = (JPanel) panel;
         (pane).setPreferredSize(content.getSize());
 //        (pane).setBounds(0, 0, content.getWidth(), content.getHeight());
         (pane).setOpaque(true);
@@ -273,8 +275,6 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
             }
         });
     }
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton back;
     private javax.swing.JButton cancel;
@@ -283,4 +283,12 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
     private javax.swing.JLabel message;
     private javax.swing.JButton next;
     // End of variables declaration//GEN-END:variables
+
+    /**
+     *
+     * @return
+     */
+    public Wizardable getNext() {
+        return (Wizardable) contentlist.get(level + 1);
+    }
 }

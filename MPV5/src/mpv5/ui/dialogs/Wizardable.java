@@ -24,4 +24,5 @@ public interface Wizardable {
 
     public boolean next();
     public boolean back();
+    public void load();
 }
