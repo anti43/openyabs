@@ -24,6 +24,7 @@ package mpv5.ui.dialogs;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.util.ArrayList;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -83,6 +84,7 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jScrollPane1 = new javax.swing.JScrollPane();
         content = new javax.swing.JPanel();
         control = new javax.swing.JPanel();
         cancel = new javax.swing.JButton();
@@ -96,10 +98,13 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
         setBackground(new java.awt.Color(255, 255, 255));
         setName("Form"); // NOI18N
 
+        jScrollPane1.setName("jScrollPane1"); // NOI18N
+
         content.setBackground(new java.awt.Color(255, 255, 255));
         content.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         content.setName("content"); // NOI18N
         content.setLayout(new java.awt.BorderLayout());
+        jScrollPane1.setViewportView(content);
 
         control.setBackground(new java.awt.Color(255, 255, 255));
         control.setName("control"); // NOI18N
@@ -139,7 +144,7 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
                 .addContainerGap()
                 .addComponent(cancel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(message, javax.swing.GroupLayout.DEFAULT_SIZE, 224, Short.MAX_VALUE)
+                .addComponent(message, javax.swing.GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(back)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -163,14 +168,18 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(control, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(content, javax.swing.GroupLayout.DEFAULT_SIZE, 478, Short.MAX_VALUE)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 488, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(content, javax.swing.GroupLayout.DEFAULT_SIZE, 353, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addContainerGap(359, Short.MAX_VALUE)
                 .addComponent(control, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 357, Short.MAX_VALUE)
+                    .addGap(51, 51, 51)))
         );
 
         pack();
@@ -188,6 +197,8 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
 
         if (isEnded && standalone) {
             System.exit(0);
+        } else if (isEnded) {
+            dispose();
         }
 
         try {
@@ -196,7 +207,6 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
                 content.remove(lastpanel);
                 back.setEnabled(true);
                 content.add(contentlist.get(level + 1), BorderLayout.CENTER);
-                validate();
                 ((Wizardable) contentlist.get(level + 1)).load();
             }
 
@@ -205,6 +215,7 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
             next.setEnabled(false);
         }
 
+        this.validate();
 }//GEN-LAST:event_nextActionPerformed
 
     private void backActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backActionPerformed
@@ -229,7 +240,7 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
      */
     public void addPanel(Wizardable panel) {
         JPanel pane = (JPanel) panel;
-        (pane).setPreferredSize(content.getSize());
+        (pane).setPreferredSize(new Dimension(content.getWidth() - 10, content.getHeight() - 10));
 //        (pane).setBounds(0, 0, content.getWidth(), content.getHeight());
         (pane).setOpaque(true);
         contentlist.add(pane);
@@ -280,6 +291,7 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
     private javax.swing.JButton cancel;
     private javax.swing.JPanel content;
     private javax.swing.JPanel control;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel message;
     private javax.swing.JButton next;
     // End of variables declaration//GEN-END:variables

@@ -669,7 +669,7 @@ public abstract class DatabaseObject {
                         } else {
                             valx = "NULL VALUE!";
                         }
-                        Log.Debug(this, "Explode: " + vars.get(k).toGenericString() + " with " + select.getData()[i][j] + "[" + valx + "]");
+//                        Log.Debug(this, "Explode: " + vars.get(k).toGenericString() + " with " + select.getData()[i][j] + "[" + valx + "]");
                         //End Debug Section
 
                         try {
@@ -708,8 +708,9 @@ public abstract class DatabaseObject {
      * Tries to reflect the hash table into this do.
      * The hashtable's keys must match the methods retrieved by do.setVars()
      * @param toHashTable
+     * @throws Exception
      */
-    public void parse(Hashtable<String, Object> toHashTable) {
+    public void parse(Hashtable<String, Object> toHashTable) throws Exception {
         ArrayList<Method> vars = setVars();
 //        Log.Debug(this, " ?? : " +  toHashTable.size());
         Object[][] data = ArrayUtilities.hashTableToArray(toHashTable);
@@ -721,30 +722,23 @@ public abstract class DatabaseObject {
 //                Log.Debug(this, name + " ?? : " + vars.get(k).getName() + " = " + data[row][1]);
                 if (vars.get(k).getName().toLowerCase().substring(3).equals(name)) {
 //                    Log.Debug(this, name + " ?? : " + vars.get(k).getName() + " = " + data[row][1]);
-                    try {
+                  
                         if (name.startsWith("is") || name.toUpperCase().startsWith("BOOL")) {
                             if (String.valueOf(data[row][1]).equals("1") || String.valueOf(data[row][1]).toUpperCase().equals("TRUE")) {
                                 vars.get(k).invoke(this, new Object[]{true});
                             } else {
                                 vars.get(k).invoke(this, new Object[]{false});
                             }
-                        } else if (name.toUpperCase().startsWith("INT") || name.endsWith("uid") || name.equals("ids") || name.endsWith("ids")) {
+                        } else if (name.toUpperCase().startsWith("INT") || name.endsWith("uid") || name.endsWith("ids") || name.equals("ids")) {
                             vars.get(k).invoke(this, new Object[]{Integer.valueOf(String.valueOf(data[row][1]))});
-                        } else if (name.toUpperCase().startsWith("DATE")) {
+                        } else if (name.toUpperCase().startsWith("DATE") || name.toUpperCase().endsWith("DATE")) {
                             vars.get(k).invoke(this, new Object[]{DateConverter.getDate(String.valueOf(data[row][1]))});
+                        } else if (name.toUpperCase().startsWith("VALUE") || name.toUpperCase().endsWith("VALUE")) {
+                            vars.get(k).invoke(this, new Object[]{Double.valueOf(String.valueOf(data[row][1]))});
                         } else {
                             vars.get(k).invoke(this, new Object[]{String.valueOf(data[row][1])});
                         }
-                    } catch (IllegalAccessException ex) {
-                        Log.Debug(this, name.toUpperCase() + " caused an exception: " + ex.getMessage());
-                        Log.Debug(ex);
-                    } catch (IllegalArgumentException ex) {
-                        Log.Debug(this, name.toUpperCase() + " caused an exception: " + ex.getMessage());
-                        Log.Debug(ex);
-                    } catch (InvocationTargetException ex) {
-                        Log.Debug(this, name.toUpperCase() + " caused an exception: " + ex.getMessage());
-                        Log.Debug(ex);
-                    }
+          
 
                 }
             }

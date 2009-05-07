@@ -38,17 +38,20 @@ public class wizard_XMLImport_2 extends javax.swing.JPanel implements Wizardable
     }
 
     private void importXML() {
+        master.setCursor(new Cursor(Cursor.WAIT_CURSOR));
         isConsumed = true;
         XMLReader x;
         ArrayList<ArrayList<DatabaseObject>> objs = null;
 
         if (master.getStore().hasProperty("file")) {
             x = new XMLReader();
+
+            x.setOverwriteExisting(true);
             try {
-                setCursor(new Cursor(Cursor.WAIT_CURSOR));
+
                 x.newDoc(new File(master.getStore().getProperty("file")), true);
                 objs = x.getObjects();
-                jTable1.setModel(ImportModel.getModel(objs));
+                jTable1.setModel(ImportModel.getModel(objs, !master.getStore().getProperty("overwrite", true)));
                 jLabel2.setText(jLabel2.getText() + " " + master.getStore().getProperty("file"));
                 TableFormat.format(jTable1, 0, 33);
                 TableFormat.format(jTable1, 1, 33);
@@ -58,7 +61,7 @@ public class wizard_XMLImport_2 extends javax.swing.JPanel implements Wizardable
                 Popup.error(ex);
                 Log.Debug(ex);
             } finally {
-                setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                master.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
             }
         }
 //
@@ -78,53 +81,47 @@ public class wizard_XMLImport_2 extends javax.swing.JPanel implements Wizardable
     }
 
     private void imports() {
-//        final ImportModel m = (ImportModel) jTable1.getModel();
+
+        jProgressBar1.setMinimum(0);
+        jProgressBar1.setMaximum(jTable1.getRowCount());
+
         for (int i = 0; i < jTable1.getRowCount(); i++) {
             if ((Boolean) jTable1.getValueAt(i, 1)) {
+                master.setCursor(new Cursor(Cursor.WAIT_CURSOR));
                 final int p = i;
-                SwingWorker<String, Void> runnable = new SwingWorker<String, Void>() {
 
-                    @Override
-                    public void done() {
-                        String s;
-                        try {
-                            s=get();
-                            jTable1.setValueAt(s, p, 4);
-                        } catch (InterruptedException ex) {
-                            Logger.getLogger(wizard_XMLImport_2.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (ExecutionException ex) {
-                            Logger.getLogger(wizard_XMLImport_2.class.getName()).log(Level.SEVERE, null, ex);
-                        }
+                String val = "";
+                try {
+                    if (!((DatabaseObject) jTable1.getValueAt(p, 0)).saveImport()) {
+                        val = "<html><p><font color =red>" + Messages.ERROR_OCCURED;
+                    } else {
+                        val = "<html><p><font color =green>" + Messages.IMPORTED;
                     }
-
-                    @Override
-                    protected String doInBackground() throws Exception {
-                       String val;
-                        try {
-                            if (!((DatabaseObject) jTable1.getValueAt(p, 0)).saveImport()) {
-                                val = "<html><p><font color =red>" + Messages.ERROR_OCCURED;
-                            } else {
-                                val = "<html><p><font color =green>" + Messages.IMPORTED;
-                            }
-                        } catch (Exception e) {
-                            val = "<html><p><font color =red>" + Messages.ERROR_OCCURED + ": " + e.getMessage();
-                        } finally {
-                        }
-                        return val;
+                } catch (Exception e) {
+                    val = "<html><p><font color =red>" + Messages.ERROR_OCCURED + ": " + e.getMessage();
+                } finally {
+                    jTable1.setValueAt(val, p, 4);
+                    jProgressBar1.setValue(p);
+                    if (p >= jTable1.getRowCount()) {
+                        master.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                     }
-
-                };
-             runnable.execute();
+                }
             }
+
         }
+
+        master.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+        master.isEnd(true);
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jTable1 = new javax.swing.JTable();
         jLabel2 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        jProgressBar1 = new javax.swing.JProgressBar();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setName("Form"); // NOI18N
@@ -135,22 +132,29 @@ public class wizard_XMLImport_2 extends javax.swing.JPanel implements Wizardable
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("wizard_XMLImport_2.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 
+        jLabel2.setText(bundle.getString("wizard_XMLImport_2.jLabel2.text")); // NOI18N
+        jLabel2.setName("jLabel2"); // NOI18N
+
+        jScrollPane1.setName("jScrollPane1"); // NOI18N
+
+        jTable1.setAutoCreateRowSorter(true);
         jTable1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {},
-                {},
-                {},
-                {}
+                {null}
             },
             new String [] {
-
+                "Title 1"
             }
         ));
+        jTable1.setCellSelectionEnabled(true);
+        jTable1.setDoubleBuffered(true);
+        jTable1.setFillsViewportHeight(true);
         jTable1.setName("jTable1"); // NOI18N
+        jScrollPane1.setViewportView(jTable1);
 
-        jLabel2.setText(bundle.getString("wizard_XMLImport_2.jLabel2.text")); // NOI18N
-        jLabel2.setName("jLabel2"); // NOI18N
+        jProgressBar1.setName("jProgressBar1"); // NOI18N
+        jProgressBar1.setStringPainted(true);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -160,14 +164,21 @@ public class wizard_XMLImport_2 extends javax.swing.JPanel implements Wizardable
                 .addContainerGap()
                 .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 399, Short.MAX_VALUE)
                 .addContainerGap())
-            .addComponent(jTable1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 423, Short.MAX_VALUE)
+            .addComponent(jProgressBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 423, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 423, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTable1, javax.swing.GroupLayout.DEFAULT_SIZE, 357, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 343, Short.MAX_VALUE)
+                .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGap(20, 20, 20)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 337, Short.MAX_VALUE)
+                    .addGap(21, 21, 21)))
         );
 
         add(jPanel1, java.awt.BorderLayout.CENTER);
@@ -175,13 +186,18 @@ public class wizard_XMLImport_2 extends javax.swing.JPanel implements Wizardable
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JProgressBar jProgressBar1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 
     public boolean next() {
-
-        imports();
-        master.isEnd(true);
+        try {
+            imports();
+        } catch (Exception e) {
+            Log.Debug(e);
+            master.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+        }
         return false;
     }
 
@@ -194,6 +210,7 @@ public class wizard_XMLImport_2 extends javax.swing.JPanel implements Wizardable
      */
     public void load() {
         if (!isConsumed) {
+            Log.Debug(this, "Overwrite is set to " + master.getStore().getProperty("overwrite", true));
             importXML();
         }
     }

@@ -23,8 +23,6 @@ package mpv5.ui.dialogs.subcomponents;
 
 import java.awt.Component;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JTextField;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -43,7 +41,6 @@ import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPV5View;
 import mpv5.ui.panels.DataPanel;
 import mpv5.usermanagement.MPSecurityManager;
-import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.trees.TreeFormat;
 import mpv5.utils.ui.TextFieldUtils;
@@ -58,16 +55,18 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
     private ControlPanel_Accounts insta;
     private ArrayList<Object[]> arr;
     private Account dataOwner;
+    private ArrayList<Account> data = new ArrayList<Account>();
 
     /** Creates new form ContactPanel
      */
     public ControlPanel_Accounts() {
         if (MPSecurityManager.checkAdminAccess()) {
             initComponents();
+            tax.set_ValueClass(Double.class);
+            classv.set_ValueClass(Integer.class);
             tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 
             refresh();
-
         }
     }
 
@@ -83,6 +82,8 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
     public void showRequiredFields() {
         TextFieldUtils.blinkerRed(cname);
         TextFieldUtils.blinkerGrey(parents);
+        TextFieldUtils.blinkerRed(tax);
+        TextFieldUtils.blinkerRed(classv);
     }
 
     /** This method is called from within the constructor to
@@ -111,6 +112,10 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         groupnameselect = new javax.swing.JComboBox();
+        tax = new mpv5.ui.beans.LabeledTextField();
+        jLabel5 = new javax.swing.JLabel();
+        typeselect = new javax.swing.JComboBox();
+        classv = new mpv5.ui.beans.LabeledTextField();
         jPanel6 = new javax.swing.JPanel();
         jButton4 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
@@ -151,7 +156,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE)
                     .addComponent(jLabel1))
                 .addContainerGap())
         );
@@ -161,7 +166,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 339, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 428, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -209,23 +214,40 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
 
         groupnameselect.setName("groupnameselect"); // NOI18N
 
+        tax.set_Label(bundle.getString("ControlPanel_Accounts.tax._Label")); // NOI18N
+        tax.setName("tax"); // NOI18N
+
+        jLabel5.setText(bundle.getString("ControlPanel_Accounts.jLabel5.text")); // NOI18N
+        jLabel5.setName("jLabel5"); // NOI18N
+
+        typeselect.setName("typeselect"); // NOI18N
+
+        classv.set_Label(bundle.getString("ControlPanel_Accounts.classv._Label")); // NOI18N
+        classv.setName("classv"); // NOI18N
+
         javax.swing.GroupLayout rightpaneLayout = new javax.swing.GroupLayout(rightpane);
         rightpane.setLayout(rightpaneLayout);
         rightpaneLayout.setHorizontalGroup(
             rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(rightpaneLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, rightpaneLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel3)
-                    .addComponent(cname, javax.swing.GroupLayout.DEFAULT_SIZE, 339, Short.MAX_VALUE)
-                    .addComponent(jLabel2)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 339, Short.MAX_VALUE)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 339, Short.MAX_VALUE)
-                    .addComponent(parents, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 339, Short.MAX_VALUE)
+                .addGroup(rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cname, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 338, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 338, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tax, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(rightpaneLayout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
-                        .addComponent(groupnameselect, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel5))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                        .addGroup(rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(typeselect, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(groupnameselect, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(classv, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(parents, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 338, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         rightpaneLayout.setVerticalGroup(
@@ -239,14 +261,22 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(parents, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(tax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(classv, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
                 .addGroup(rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel4)
                     .addComponent(groupnameselect, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(55, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(typeselect, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
 
         jPanel6.setBackground(new java.awt.Color(255, 255, 255));
@@ -298,12 +328,13 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 373, Short.MAX_VALUE)
-                            .addComponent(rightpane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap())
-                    .addComponent(toolbarpane, javax.swing.GroupLayout.DEFAULT_SIZE, 663, Short.MAX_VALUE)))
+                        .addGap(7, 7, 7)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(12, 12, 12))
+                            .addComponent(rightpane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(toolbarpane, javax.swing.GroupLayout.DEFAULT_SIZE, 609, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -312,8 +343,8 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(rightpane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(rightpane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
                         .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
@@ -388,6 +419,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
+    private mpv5.ui.beans.LabeledTextField classv;
     private mpv5.ui.beans.LabeledTextField cname;
     private javax.swing.JTextArea desc;
     private javax.swing.JComboBox groupnameselect;
@@ -399,6 +431,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
@@ -407,8 +440,10 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
     private javax.swing.JTextArea jTextArea2;
     private mpv5.ui.beans.LabeledTextField parents;
     private javax.swing.JPanel rightpane;
+    private mpv5.ui.beans.LabeledTextField tax;
     private javax.swing.JPanel toolbarpane;
     private javax.swing.JTree tree;
+    private javax.swing.JComboBox typeselect;
     // End of variables declaration//GEN-END:variables
     public String description_ = "";
     public String defaults_ = "";
@@ -417,7 +452,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
     public int groupsids_ = 1;
     public int intaddedby_ = 1;
     public java.util.Date dateadded_ = new java.util.Date();
-    public int taxids_ = 1;
+    public double taxvalue_ = 0;
     public int intaccountclass_ = 0;
     public int intaccounttype_ = 0;
     public int intparentaccount_ = 1;
@@ -449,7 +484,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
 
     public void refresh() {
 
-        ArrayList<Account> data = null;
+
         try {
             data = DatabaseObject.getObjects(Context.getAccounts());
         } catch (NodataFoundException ex) {
@@ -497,6 +532,15 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
 
         groupnameselect.setSelectedIndex(MPComboBoxModelItem.getItemID(MPV5View.getUser().__getGroupsids(), groupnameselect.getModel()));
 
+        typeselect.setModel(new DefaultComboBoxModel(MPComboBoxModelItem.toItems(
+                new Object[][]{
+                {Account.ASSET, "Asset"},
+                {Account.COST, "Cost"},
+                {Account.EQUITY, "Equity"},
+                {Account.EXPENSE, "Expense"},
+                {Account.INCOME, "Income"},
+                {Account.LIABILITY, "Liability"}
+        })));
 
     }
 
@@ -516,9 +560,9 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
             groupsids_ = 1;
         }
 
-        taxids_ = 1;
-        intaccountclass_ = 0;
-        intaccounttype_ = 0;
+        taxvalue_ = Double.valueOf(tax.getText());
+        intaccountclass_ = Integer.valueOf(classv.getText());
+        intaccounttype_ =  Integer.valueOf(((MPComboBoxModelItem) typeselect.getSelectedItem()).getId());
     }
 
     public DatabaseObject getDataOwner() {
@@ -535,12 +579,15 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
         cname.set_Text(cname_);
         desc.setText(description_);
         try {
-            parents.set_Text(DatabaseObject.getObject(Context.getAccounts(), groupsids_).__getCName());
+            parents.set_Text(DatabaseObject.getObject(Context.getAccounts(), intparentaccount_).__getCName());
             groupnameselect.setSelectedIndex(MPComboBoxModelItem.getItemID(groupsids_, groupnameselect.getModel()));
+            typeselect.setSelectedIndex(MPComboBoxModelItem.getItemID(intaccounttype_, typeselect.getModel()));
         } catch (NodataFoundException ex) {
             Log.Debug(this, ex);
         }
-//        defaults.set_Text(defaults_);
+
+        tax.set_Text(taxvalue_);
+        classv.set_Text(intaccountclass_);
     }
 
     public void paste(DatabaseObject dbo) {

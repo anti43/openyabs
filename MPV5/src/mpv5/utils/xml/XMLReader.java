@@ -45,6 +45,7 @@ public class XMLReader {
 
     private Element rootElement = new Element(mpv5.globals.Constants.XML_ROOT);
     private Document myDocument = new Document();
+    private boolean overwriteExisting = false;
 
     /**
      *
@@ -138,9 +139,10 @@ public class XMLReader {
      * @param <T> 
      * @param template
      * @return
+     * @throws Exception
      */
     @SuppressWarnings({"unchecked"})
-    public <T extends DatabaseObject> ArrayList<T> getObjects(T template) {
+    public <T extends DatabaseObject> ArrayList<T> getObjects(T template) throws Exception {
 
         Log.Debug(this, "Looking for: " + template.getDbIdentity());
         String ident = template.getType();
@@ -156,9 +158,11 @@ public class XMLReader {
                     Element element = list.get(i);
                     DatabaseObject obj = template.clone();
                     obj.parse(toHashTable(element));
-//                    if (list.get(i).getAttribute("id") != null) {
-//                        obj.setIDS(Integer.valueOf(list.get(i).getAttribute("id").getValue()));
-//                    }
+                    if (isOverwriteExisting() && list.get(i).getAttribute("id") != null) {
+                       
+                        obj.setIDS(Integer.valueOf(list.get(i).getAttribute("id").getValue()));
+                        Log.Debug(this, "Overwriting/updating dataset id " + obj.getDbIdentity() + ": " +obj.__getIDS() );
+                    }
                     arrlist.add(obj);
                 }
             }
@@ -186,11 +190,11 @@ public class XMLReader {
                 Log.Debug(this, "Element of typ: " + context.getDbIdentity() + " not found in this document!");
             }
         }
-
-        for (int i = 0; i < t.size(); i++) {
-            ArrayList<DatabaseObject> arrayList = t.get(i);
-            Log.PrintArray(arrayList);
-        }
+//
+//        for (int i = 0; i < t.size(); i++) {
+//            ArrayList<DatabaseObject> arrayList = t.get(i);
+//            Log.PrintArray(arrayList);
+//        }
 
         return t;
     }
@@ -297,5 +301,19 @@ public class XMLReader {
             }
         }
         return table;
+    }
+
+    /**
+     * @return the overwriteExisting
+     */
+    public boolean isOverwriteExisting() {
+        return overwriteExisting;
+    }
+
+    /**
+     * @param overwriteExisting the overwriteExisting to set
+     */
+    public void setOverwriteExisting(boolean overwriteExisting) {
+        this.overwriteExisting = overwriteExisting;
     }
 }

@@ -50,7 +50,7 @@ public class Account extends DatabaseObject {
         context.setIdentityClass(this.getClass());
     }
     private String description;
-    private int taxids;
+    private double taxvalue;
     private int intaccounttype;
 
     @Override
@@ -72,19 +72,6 @@ public class Account extends DatabaseObject {
         this.description = description;
     }
 
-    /**
-     * @return the taxids
-     */
-    public int __getTaxids() {
-        return taxids;
-    }
-
-    /**
-     * @param taxids the taxids to set
-     */
-    public void setTaxids(int taxids) {
-        this.taxids = taxids;
-    }
 
     /**
      * Get all Items which are assigned to this account
@@ -230,5 +217,19 @@ public class Account extends DatabaseObject {
             }
         }
         return firstnode;
+    }
+
+    /**
+     * @return the taxvalue
+     */
+    public double __getTaxvalue() {
+        return taxvalue;
+    }
+
+    /**
+     * @param taxvalue the taxvalue to set
+     */
+    public void setTaxvalue(double taxvalue) {
+        this.taxvalue = taxvalue;
     }
 }

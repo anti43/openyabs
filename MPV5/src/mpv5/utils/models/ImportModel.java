@@ -17,6 +17,7 @@
 package mpv5.utils.models;
 
 import java.util.ArrayList;
+import javax.swing.table.TableModel;
 import mpv5.db.common.DatabaseObject;
 import mpv5.globals.Headers;
 
@@ -31,9 +32,10 @@ public class ImportModel extends MPTableModel {
     /**
      * 
      * @param objs
+     * @param selectOnlyNonExisting
      * @return
      */
-    public static ImportModel getModel(ArrayList<ArrayList<DatabaseObject>> objs) {
+    public static ImportModel getModel(ArrayList<ArrayList<DatabaseObject>> objs, boolean selectOnlyNonExisting) {
         ArrayList<DatabaseObject> l = new ArrayList<DatabaseObject>();
 
         for (int i = 0; i < objs.size(); i++) {
@@ -43,14 +45,15 @@ public class ImportModel extends MPTableModel {
                 l.add(databaseObject);
             }
         }
-        return new ImportModel(l);
+        return new ImportModel(l, selectOnlyNonExisting);
     }
 
     /**
      *
      * @param list
+     * @param selectOnlyNonExisting
      */
-    public ImportModel(ArrayList<DatabaseObject> list) {
+    public ImportModel(ArrayList<DatabaseObject> list, boolean selectOnlyNonExisting) {
         super();
 
         Object[][] data = new Object[list.size()][5];
@@ -65,7 +68,13 @@ public class ImportModel extends MPTableModel {
                 sdata += strings[0] + ": " + strings[1] + "  ";
             }
             data[i][0] = databaseObject;
-            data[i][1] = true;
+            if (selectOnlyNonExisting) {
+                if (DatabaseObject.exists(databaseObject.getContext(), databaseObject.__getIDS())) {
+                    data[i][1] = false;
+                } else {
+                    data[i][1] = true;
+                }
+            }
             data[i][2] = databaseObject.getDbIdentity();
             data[i][3] = databaseObject.__getCName();
             data[i][4] = sdata;

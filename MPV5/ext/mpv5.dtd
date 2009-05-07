@@ -1,53 +1,68 @@
 <!--Root element of any MPv5 XML file-->
-<!ELEMENT mpv5 ( contacts|countries )* >
+<!ELEMENT mpv5 ( contacts|countries|accounts )* >
 <!--END Root element of any MPv5 XML file-->
 
 
 <!--CONTACTS-->
-<!ELEMENT CName ( #PCDATA ) >
-<!ELEMENT CNumber ( #PCDATA ) >
-<!ELEMENT City ( #PCDATA ) >
-<!ELEMENT Company ( #PCDATA ) >
-<!ELEMENT Country ( #PCDATA ) >
-<!ELEMENT Dateadded ( #PCDATA ) >
-<!ELEMENT Fax ( #PCDATA ) >
+<!ELEMENT cname ( #PCDATA ) >
+<!ELEMENT cnumber ( #PCDATA ) >
+<!ELEMENT city ( #PCDATA ) >
+<!ELEMENT company ( #PCDATA ) >
+<!ELEMENT country ( #PCDATA ) >
+<!ELEMENT dateadded ( #PCDATA ) >
+<!ELEMENT fax ( #PCDATA ) >
 <!--Must match a valid entry if existing-->
-<!ELEMENT IDS ( #PCDATA ) >
+<!--<!ELEMENT IDS ( #PCDATA ) >-->
 <!-- default: 'false' -->
-<!ELEMENT Iscustomer ( #PCDATA ) >
+<!ELEMENT iscustomer ( #PCDATA ) >
 <!-- default: 'false' -->
-<!ELEMENT Ismanufacturer ( #PCDATA ) >
+<!ELEMENT ismanufacturer ( #PCDATA ) >
 <!-- default: 'false' -->
-<!ELEMENT Issupplier ( #PCDATA ) >
+<!ELEMENT issupplier ( #PCDATA ) >
 <!-- default: 'false' -->
-<!ELEMENT isCompany ( #PCDATA ) >
+<!ELEMENT iscompany ( #PCDATA ) >
 <!-- default: 'true' -->
-<!ELEMENT isEnabled ( #PCDATA ) >
+<!ELEMENT isenabled ( #PCDATA ) >
 <!-- default: 'true' -->
-<!ELEMENT isMale ( #PCDATA ) >
-<!ELEMENT Mailaddress ( #PCDATA ) >
-<!ELEMENT Mainphone ( #PCDATA ) >
-<!ELEMENT Mobilephone ( #PCDATA ) >
-<!ELEMENT Notes ( #PCDATA ) >
-<!ELEMENT Prename ( #PCDATA ) >
-<!ELEMENT Street ( #PCDATA ) >
-<!ELEMENT Taxnumber ( #PCDATA ) >
-<!ELEMENT Title ( #PCDATA ) >
-<!ELEMENT Website ( #PCDATA ) >
-<!ELEMENT Workphone ( #PCDATA ) >
-<!ELEMENT Zip ( #PCDATA ) >
-<!ELEMENT Department ( #PCDATA ) >
+<!ELEMENT ismale ( #PCDATA ) >
+<!ELEMENT mailaddress ( #PCDATA ) >
+<!ELEMENT mainphone ( #PCDATA ) >
+<!ELEMENT mobilephone ( #PCDATA ) >
+<!ELEMENT notes ( #PCDATA ) >
+<!ELEMENT prename ( #PCDATA ) >
+<!ELEMENT street ( #PCDATA ) >
+<!ELEMENT taxnumber ( #PCDATA ) >
+<!ELEMENT title ( #PCDATA ) >
+<!ELEMENT website ( #PCDATA ) >
+<!ELEMENT workphone ( #PCDATA ) >
+<!ELEMENT zip ( #PCDATA ) >
+<!ELEMENT department ( #PCDATA ) >
 <!-- default: '1' -->
-<!ELEMENT Groupsids ( #PCDATA ) >
-<!ELEMENT Intaddedby ( #PCDATA ) >
-<!ELEMENT contact ( CName | CNumber? | Taxnumber? | Groupsids | Title? | Prename? | Street? | Zip? | City? | Mainphone? | Workphone? | Fax? | Mobilephone? | Mailaddress? | Website? | Notes? | isMale? | isEnabled? | isCompany? | Iscustomer? | Ismanufacturer? | Issupplier? | Company? | Dateadded? | Addedby? | Department? | Country? | IDS? | Intaddedby? )* >
+<!ELEMENT groupsids ( #PCDATA ) >
+<!ELEMENT intaddedby ( #PCDATA ) >
+<!ELEMENT contact ( cname | cnumber? | taxnumber? | groupsids? | title? | prename? | street? | zip? | city? | mainphone? | workphone? | fax? | mobilephone? | mailaddress? | website? | notes? | ismale? | isenabled? | iscompany? | iscustomer? | ismanufacturer? | issupplier? | company? | dateadded? | addedby? | department? | country? | intaddedby? )* >
 <!ELEMENT contacts ( contact* ) >
-<!ATTLIST contact id CDATA #REQUIRED>
+<!ATTLIST contact id CDATA #IMPLIED>
 <!--END CONTACTS-->
 
 
 <!--COUNTRIES-->
-<!ELEMENT country ( #PCDATA ) >
+<!--<!ELEMENT country ( #PCDATA ) >-->
 <!ELEMENT countries ( country* ) >
-<!ATTLIST country iso CDATA #REQUIRED>
+<!ATTLIST country iso CDATA #IMPLIED>
+<!ATTLIST country id CDATA #IMPLIED>
 <!--END COUTRIES-->
+
+
+<!--ACCOUNTS-->
+<!ELEMENT intaccountclass ( #PCDATA ) >
+<!ELEMENT intaccounttype ( #PCDATA ) >
+<!ELEMENT description ( #PCDATA ) >
+<!ELEMENT intparentaccount ( #PCDATA ) >
+<!ELEMENT taxvalue ( #PCDATA ) >
+<!ELEMENT account ( intaccountclass | taxvalue | cname | intaccounttype | taxvalue | description | intparentaccount | groupsids? | intaddedby? | dateadded? )* >
+<!ELEMENT accounts ( account* ) >
+<!ATTLIST account id CDATA #IMPLIED>
+<!--END ACCOUNTS-->
+
+

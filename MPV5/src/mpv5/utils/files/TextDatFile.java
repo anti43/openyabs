@@ -19,6 +19,7 @@ package mpv5.utils.files;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,6 +27,7 @@ import javax.print.DocFlavor;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import mpv5.db.common.DatabaseObject;
 import mpv5.logging.Log;
 
 import mpv5.utils.arrays.ArrayUtilities;
@@ -102,6 +104,32 @@ public class TextDatFile extends File implements Waitable {
         rw = new FileReaderWriter(this);
         this.table = table;
         mode = 2;
+    }
+
+    public void parse(ArrayList<DatabaseObject> dbobjarr) {
+        String[] headers;
+        Method[] headerx;
+           if (dbobjarr.size() > 0) {
+                    headerx = dbobjarr.get(0).getVars().toArray(new Method[]{});
+                    headers = new String[headerx.length];
+                    for (int i = 0; i < headerx.length; i++) {
+                        Method method = headerx[i];
+                        headers[i] = method.getName().substring(5);
+                    }
+                    data = new String[dbobjarr.size()][dbobjarr.get(0).getVars().size()];
+                    for (int i = 0; i < dbobjarr.size(); i++) {
+                        DatabaseObject databaseObject = dbobjarr.get(i);
+                        ArrayList<String[]> temp = databaseObject.getValues();
+
+                        for (int j = 0; j < temp.size(); j++) {
+                            String[] strings = temp.get(j);
+                            data[i][j] = strings[1];
+                        }
+                    }
+
+                   setData(data);
+                   setHeader(headers);
+                }
     }
 
     @Override

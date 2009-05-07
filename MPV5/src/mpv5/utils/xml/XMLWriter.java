@@ -68,7 +68,9 @@ public class XMLWriter {
                     this.addNode(parent, ident, databaseObject.__getIDS().toString());
 
                     for (int h = 0; h < data.size(); h++) {
-                        this.addElement(parent, ident, databaseObject.__getIDS().toString(), data.get(h)[0], data.get(h)[1]);
+                        if (!data.get(h)[0].equals("IDS")) {
+                            this.addElement(parent, ident, databaseObject.__getIDS().toString(), data.get(h)[0].toLowerCase(), data.get(h)[1]);
+                        }
                     }
                 } catch (Exception ex) {
                     Log.Debug(this, ex.getMessage());
@@ -123,7 +125,6 @@ public class XMLWriter {
 //        rootElement.addContent(e);
 //        return e;
 //    }
-
     /**
      * Appends the PropertyStore's data to an existing XML file,
      * or creates one if not existant
@@ -171,15 +172,14 @@ public class XMLWriter {
 //        rootElement.setAttribute(new Attribute("userid", MPV5View.getUser().getID()));
     }
 
-
     /**
      * Creates a ned XML document with the sub root element
      * @param defaultSubRootElementName
      */
     public void newDoc(String defaultSubRootElementName) {
-       newDoc();
-       defaultSubRoot = new Element(defaultSubRootElementName);
-       rootElement.addContent(defaultSubRoot);
+        newDoc();
+        defaultSubRoot = new Element(defaultSubRootElementName);
+        rootElement.addContent(defaultSubRoot);
     }
 
     /**
@@ -224,7 +224,6 @@ public class XMLWriter {
         }
 
     }
-
 
     /**
      * Parses a PropertyStore object.
