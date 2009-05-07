@@ -66,6 +66,7 @@ public class Messages {
     public static String INSERTED = " created";
     public static String UPDATED = " updated";
     public static String SAVED = " saved";
+    public static String IMPORTED = " imported";
     public static String DELETED = " removed from database";
     public static String CNAME_CANNOT_BE_NULL = "You must set a NAME for this item.";
     public static String FILE_SAVED = "File saved: ";
@@ -117,6 +118,7 @@ public class Messages {
     public static String NEW_TAB = "New Tab";
     public static String CALENDAR = "Calendar";
     public static String USER_DISABLED = "The user is disabled. Contact your Administrator.";
+
    
    
 }

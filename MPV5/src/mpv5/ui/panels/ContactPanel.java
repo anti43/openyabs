@@ -1239,8 +1239,11 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     }
 
     private void isCompany(boolean selected) {
-        if (selected) {
-            companyselect.setSelectedIndex(0);
+        try {
+            if (selected) {
+                companyselect.setSelectedIndex(0);
+            }
+        } catch (Exception e) {
         }
         company.setSelected(selected);
         companyselect.setEnabled(!selected);

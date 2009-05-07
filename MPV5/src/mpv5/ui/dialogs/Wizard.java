@@ -196,6 +196,7 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
                 content.remove(lastpanel);
                 back.setEnabled(true);
                 content.add(contentlist.get(level + 1), BorderLayout.CENTER);
+                validate();
                 ((Wizardable) contentlist.get(level + 1)).load();
             }
 
@@ -204,7 +205,6 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
             next.setEnabled(false);
         }
 
-        this.validate();
 }//GEN-LAST:event_nextActionPerformed
 
     private void backActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backActionPerformed

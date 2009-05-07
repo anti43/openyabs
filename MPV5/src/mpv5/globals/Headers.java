@@ -26,5 +26,5 @@ public class Headers {
     public static String[] ITEM_DEFAULT = new String[]{"Internal ID", "ID", "Date", "Value"};
     public static String[] CONTACT_FILES = new String[]{"id", "Filename", "Date", "Description"};
     public static String[] HISTORY = new String[]{"id", "Description", "User", "Group", "Date"};
-    public static String[] IMPORT =  new String[]{"Import", "Group", "Name", "Data"};
+    public static String[] IMPORT =  new String[]{"Id", "Import", "Type", "Name", "Data"};
 }

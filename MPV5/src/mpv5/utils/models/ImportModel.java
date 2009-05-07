@@ -53,7 +53,7 @@ public class ImportModel extends MPTableModel {
     public ImportModel(ArrayList<DatabaseObject> list) {
         super();
 
-        Object[][] data = new Object[list.size()][4];
+        Object[][] data = new Object[list.size()][5];
 
         for (int i = 0; i < list.size(); i++) {
             DatabaseObject databaseObject = list.get(i);
@@ -64,14 +64,15 @@ public class ImportModel extends MPTableModel {
                 String[] strings = t.get(j);
                 sdata += strings[0] + ": " + strings[1] + "  ";
             }
-            data[i][0] = true;
-            data[i][1] = databaseObject.getDbIdentity();
-            data[i][2] = databaseObject.__getCName();
-            data[i][3] = sdata;
+            data[i][0] = databaseObject;
+            data[i][1] = true;
+            data[i][2] = databaseObject.getDbIdentity();
+            data[i][3] = databaseObject.__getCName();
+            data[i][4] = sdata;
         }
 
-        setCanEdits(new boolean[]{true, false, false, false, false});
-        setTypes(new Class[]{Boolean.class, Object.class, Object.class, Object.class, Object.class});
+        setCanEdits(new boolean[]{false, true, false, false, false, false});
+        setTypes(new Class[]{Object.class, Boolean.class, Object.class, Object.class, Object.class, Object.class});
         setDataVector(data, Headers.IMPORT);
 
     }

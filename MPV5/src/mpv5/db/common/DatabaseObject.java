@@ -33,8 +33,6 @@ import javax.swing.JComponent;
  */
 public abstract class DatabaseObject {
 
-
-
     /**
      * The db context of this do
      */
@@ -239,6 +237,28 @@ public abstract class DatabaseObject {
             Popup.notice(Messages.CNAME_CANNOT_BE_NULL);
             return false;
         }
+    }
+
+    /**
+     * Safely import a database object from external sources (xml, csv etc)<br/>
+     * Override this for ensuring the existance of DObject specific mandatory values.
+     * @return
+     */
+    public boolean saveImport() {
+        Log.Debug(this, "Starting import..");
+        Log.Debug(this, "Setting IDS to -1");
+        ids = -1;
+        Log.Debug(this, "Setting intaddedby to " + MPV5View.getUser().__getIDS());
+        intaddedby = MPV5View.getUser().__getIDS();
+
+        if (groupsids <= 0 || !DatabaseObject.exists(Context.getGroup(), groupsids)) {
+            Log.Debug(this, "Setting groups to 'ungrouped'");
+            groupsids = 1;
+        }
+
+
+
+        return save();
     }
 
     /**
@@ -549,7 +569,7 @@ public abstract class DatabaseObject {
 
         for (int i = 0; i < data.length; i++) {
             int id = Integer.valueOf(data[i][0].toString());
-            list.add(((T)DatabaseObject.getObject(template.getContext(), id)));
+            list.add(((T) DatabaseObject.getObject(template.getContext(), id)));
         }
         return list;
     }
@@ -669,13 +689,13 @@ public abstract class DatabaseObject {
                                 vars.get(k).invoke(this, new Object[]{String.valueOf(select.getData()[i][j])});
                             }
                         } catch (IllegalAccessException ex) {
-                          
+
                             Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
                         } catch (IllegalArgumentException ex) {
-                              Log.Debug(this,name + " " + String.valueOf(select.getData()[i][j]));
+                            Log.Debug(this, name + " " + String.valueOf(select.getData()[i][j]));
                             Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
                         } catch (InvocationTargetException ex) {
-                           
+
                             Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
@@ -789,5 +809,23 @@ public abstract class DatabaseObject {
     @Override
     public boolean equals(Object o) {
         return hashCode() == o.hashCode();
+    }
+
+    /**
+     * Return true if the given id exist in the given Context
+     * @param cont
+     * @param ids
+     * @return
+     */
+    public static boolean exists(Context cont, Integer ids) {
+        try {
+            if (QueryHandler.instanceOf().clone(cont).select(ids).getData().length > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (NodataFoundException ex) {
+            return false;
+        }
     }
 }
