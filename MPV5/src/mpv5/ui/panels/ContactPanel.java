@@ -23,23 +23,13 @@ package mpv5.ui.panels;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Desktop;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
-import javax.swing.JWindow;
 import javax.swing.SwingUtilities;
 import mpv5.db.common.*;
 import mpv5.globals.Headers;
@@ -54,7 +44,6 @@ import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Groups;
 import mpv5.ui.frames.MPV5View;
-import mpv5.ui.popups.DOTablePopUp;
 import mpv5.ui.popups.FileTablePopUp;
 import mpv5.ui.toolbars.DataPanelTB;
 import mpv5.db.objects.User;
@@ -72,9 +61,21 @@ import mpv5.utils.ui.TextFieldUtils;
  */
 public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
+    /**
+     * Represents a Contact in general
+     */
     public static final int CONTACT = 0;
+    /**
+     * Is a customer
+     */
     public static final int CUSTOMER = 1;
+    /**
+     * Is a supplier
+     */
     public static final int SUPPLIER = 2;
+    /**
+     * Is a manufacturer
+     */
     public static final int MANUFACTURER = 3;
     private static final long serialVersionUID = 1L;
     public static final int COMPANY = 4;

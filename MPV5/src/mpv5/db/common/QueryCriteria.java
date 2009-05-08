@@ -40,6 +40,25 @@ public class QueryCriteria {
     }
 
     /**
+     * Convenience constructor, calls add(string, value)
+     * @param <T>
+     * @param string
+     * @param value
+     */
+    public <T extends Number>QueryCriteria(String string, T value) {
+       add(string, value);
+    }
+
+
+       /**
+     * Convenience constructor, calls add(string, value)
+     * @param string
+     * @param value
+     */
+    public QueryCriteria(String string, String value) {
+       add(string, value);
+    }
+    /**
      * Adds a key with a value
      * @param <T> 
      * @param key

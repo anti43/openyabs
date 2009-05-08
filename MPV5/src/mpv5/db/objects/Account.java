@@ -112,7 +112,7 @@ public class Account extends DatabaseObject {
 
     /**
      *
-     * <li> 1: Assets: Aktiva,
+     *   <li> 1: Assets: Aktiva,
      *   <li>2: Cost: direkte Kosten (Wareneinkauf),
      *   <li>3: Expenses: sonstige Kosten, Aufwandskonto,
      *   <li>4: Income: Ertragskonto,
@@ -127,7 +127,7 @@ public class Account extends DatabaseObject {
 
     /**
      *
-     * <li> 1: Assets: Aktiva,
+     *   <li> 1: Assets: Aktiva,
      *   <li>2: Cost: direkte Kosten (Wareneinkauf),
      *   <li>3: Expenses: sonstige Kosten, Aufwandskonto,
      *   <li>4: Income: Ertragskonto,
@@ -232,4 +232,22 @@ public class Account extends DatabaseObject {
     public void setTaxvalue(double taxvalue) {
         this.taxvalue = taxvalue;
     }
+
+
+    @Override
+    public boolean delete() {
+        try {
+            ArrayList<Account> childs = DatabaseObject.getObjects(context, new QueryCriteria("intparentaccount", ids));
+            for (int i = 0; i < childs.size(); i++) {
+                DatabaseObject databaseObject = childs.get(i);
+                if (!databaseObject.delete()) {
+                    return false;
+                }
+            }
+        } catch (NodataFoundException ex) {
+            Log.Debug(ex);
+        }
+        return super.delete();
+    }
+
 }

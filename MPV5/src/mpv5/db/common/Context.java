@@ -507,12 +507,12 @@ public class Context {
         if (!first) {
             cond = cond.substring(4, cond.length() - 4);
             if (MPV5View.getUser().__getIsrgrouped() && getGroupableContexts().contains(this)) {
-                cond += "AND   " + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids();
+                cond += "AND   " + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids() + " OR " + dbIdentity + "." + "GROUPSIDS = 1";
             }
         } else {
 
             if (MPV5View.getUser().__getIsrgrouped() && getGroupableContexts().contains(this)) {
-                cond = "WHERE " + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids();
+                cond = "WHERE " + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids() + " OR " + dbIdentity + "." + "GROUPSIDS = 1";
             } else {
                 cond = "WHERE " + CONDITION_DEFAULT;
             }
@@ -600,12 +600,12 @@ public class Context {
             if (!first) {
                 cond = cond.substring(4, cond.length() - 3);
                 if (MPV5View.getUser().__getIsrgrouped() && getGroupableContexts().contains(this)) {
-                    cond += "AND   " + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids();
+                    cond += "AND   " + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids() + " OR " + dbIdentity + "." + "GROUPSIDS = 1";
                 }
             } else {
 
                 if (MPV5View.getUser().__getIsrgrouped() && getGroupableContexts().contains(this)) {
-                    cond = "WHERE " + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids();
+                    cond = "WHERE " + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids() + " OR " + dbIdentity + "." + "GROUPSIDS = 1";
                 } else {
                     cond = "WHERE " + CONDITION_DEFAULT;
                 }

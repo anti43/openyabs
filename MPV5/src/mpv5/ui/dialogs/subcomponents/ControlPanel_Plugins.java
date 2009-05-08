@@ -334,9 +334,15 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         MP5Plugin p = null;
-        if (new MPPLuginLoader().checkPlugin(new File(labeledTextChooser2.get_Text(true))) != null) {
-            p = new MPPLuginLoader().checkPlugin(new File(labeledTextChooser2.get_Text(true)));
-            MPV5View.identifierView.loadPlugin(p);
+        try {
+            if (new MPPLuginLoader().checkPlugin(new File(labeledTextChooser2.get_Text(true))) != null) {
+                p = new MPPLuginLoader().checkPlugin(new File(labeledTextChooser2.get_Text(true)));
+                MPV5View.identifierView.loadPlugin(p);
+            } else {
+                Popup.notice(Messages.ERROR_OCCURED);
+            }
+        } catch (Exception e) {
+            Popup.notice(Messages.ERROR_OCCURED);
         }
     }//GEN-LAST:event_jButton3ActionPerformed
 
@@ -424,7 +430,6 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
         list.setModel(xl);
         list.setSelectedIndices(sel);
     }
-
 
     public Component getActionPanel() {
         jPanel1.remove(jPanel2);
