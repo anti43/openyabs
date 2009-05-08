@@ -101,4 +101,12 @@ public class ReturnValue {
     public void setColumnnames(String[] columnnames) {
         this.columnnames = columnnames;
     }
+
+    /**
+     * Checks if the ReturnValue has any data at all
+     * @return
+     */
+    public boolean hasData() {
+        return data !=null && data.length >0;
+    }
 }

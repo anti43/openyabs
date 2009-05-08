@@ -132,7 +132,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
             if (this.showOpenDialog(MPV5View.identifierFrame) == JFileChooser.APPROVE_OPTION) {
                 try {
                     this.file = this.getSelectedFile();
-                    CURRENT_DIR = file.getParentFile();
+                    CURRENT_DIR = file;
                     return true;
                 } catch (Exception ex) {
                     Log.Debug(this, ex);
@@ -154,7 +154,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
                 try {
                     if (!this.getSelectedFile().exists()) {
                         this.file = this.getSelectedFile();
-                        CURRENT_DIR = file.getParentFile();
+                        CURRENT_DIR = file;
                         return true;
                     } else {
                         if (!Popup.Y_N_dialog(Messages.FILE_EXISTS + "\n" + getSelectedFile())) {
@@ -212,7 +212,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
                     out.write(c);
                 }
                 fileToSave.delete();
-                CURRENT_DIR = file.getParentFile();
+                CURRENT_DIR = file;
                 MPV5View.addMessage(Messages.FILE_SAVED + file.getCanonicalPath());
             } catch (IOException ex) {
                 Popup.error(ex);
@@ -250,7 +250,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
             try {
                 field.setText(this.getSelectedFile().getCanonicalPath());
                 this.file = this.getSelectedFile();
-                CURRENT_DIR = file.getParentFile();
+                CURRENT_DIR = file;
                 return true;
             } catch (IOException ex) {
                 Log.Debug(this, ex);

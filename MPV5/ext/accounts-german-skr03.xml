@@ -4,14 +4,6 @@
 <mpv5>
 	<accounts>
 		<account>
-			<intaccountclass>0</intaccountclass>
-			<cname>SKR 03</cname>
-			<description>SKR03 Standard Kontenrahmen</description>
-			<intaccounttype>0</intaccounttype>
-			<taxvalue>0.0</taxvalue>
-			<intparentaccount>1</intparentaccount>
-		</account>
-		<account>
 			<intaccountclass>27</intaccountclass>
 			<cname>EDV-Software</cname>
 			<description>NA</description>

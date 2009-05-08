@@ -61,6 +61,7 @@ public static String pluginSignature = LocalSettings.getProperty(LocalSettings.C
                 for (int i = 0; i < data.size(); i++) {
                     UserPlugin up = data.get(i);
                     Plugin o =((Plugin)DatabaseObject.getObject(Context.getPlugins(), up.__getPluginsids()));
+                    Log.Debug(this, "Found Plugin: " + o);
                     if (!isCachedPlugin(o.__getFilename()) ){
                         Log.Debug(this, "Caching plugin: " + pluginSignature.replace("%%filename%%", o.__getFilename()));
                         jars.add(QueryHandler.instanceOf().clone(Context.getFiles()).retrieveFile(o.__getFilename(), new File(pluginSignature.replace("%%filename%%", o.__getFilename()))));
@@ -95,6 +96,7 @@ public static String pluginSignature = LocalSettings.getProperty(LocalSettings.C
      */
     public boolean isCachedPlugin(String filename) {
         File f = new File(pluginSignature.replace("%%filename%%", filename));
+        Log.Debug(this, "Checking cache for " + filename);
         return f.exists() && f.canRead() && (checkPlugin(f)!=null);
     }
 

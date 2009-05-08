@@ -145,15 +145,18 @@ public class User extends DatabaseObject {
      */
     public User(int userid) throws NodataFoundException {
         context.setDbIdentity(Context.IDENTITY_USERS);
+        context.setIdentityClass(User.class);
         this.fetchDataOf(userid);
     }
 
     public User() {
         context.setDbIdentity(Context.IDENTITY_USERS);
+        context.setIdentityClass(User.class);
     }
 
     private User(String fullname, String userid, int highright, int IDS) {
         context.setDbIdentity(Context.IDENTITY_USERS);
+        context.setIdentityClass(User.class);
         this.fullname = fullname;
         this.cname = userid;
         this.inthighestright = highright;

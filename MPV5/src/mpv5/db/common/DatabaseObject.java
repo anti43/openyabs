@@ -7,6 +7,7 @@ package mpv5.db.common;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.logging.Level;
@@ -504,13 +505,17 @@ public abstract class DatabaseObject {
      */
     public static DatabaseObject getObject(Context context) {
 
-        try {
-            Object obj = context.getIdentityClass().newInstance();
-            return (DatabaseObject) obj;
-        } catch (InstantiationException ex) {
-            Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+        if (context.getIdentityClass() != null) {
+            try {
+                Object obj = context.getIdentityClass().newInstance();
+                return (DatabaseObject) obj;
+            } catch (InstantiationException ex) {
+                Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IllegalAccessException ex) {
+                Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            Log.Debug(DatabaseObject.class, "No identity class found for: " + context);
         }
         return null;
     }
@@ -524,14 +529,7 @@ public abstract class DatabaseObject {
      */
     @SuppressWarnings("unchecked")
     public static <T extends DatabaseObject> ArrayList<T> getObjects(Context context) throws NodataFoundException {
-        Object[][] allIds = QueryHandler.instanceOf().clone(context).selectIndexes().getData();
-        ArrayList<DatabaseObject> list = new ArrayList<DatabaseObject>();
-
-        for (int i = 0; i < allIds.length; i++) {
-            int id = Integer.valueOf(allIds[i][0].toString());
-            list.add((DatabaseObject.getObject(context, id)));
-        }
-        return (ArrayList<T>) list;
+        return (ArrayList<T>) getObjects(DatabaseObject.getObject(context), null);
     }
 
     /**
@@ -544,33 +542,36 @@ public abstract class DatabaseObject {
      */
     @SuppressWarnings("unchecked")
     public static <T extends DatabaseObject> ArrayList<T> getObjects(Context context, QueryCriteria criterias) throws NodataFoundException {
-        Object[][] data = QueryHandler.instanceOf().clone(context).select("ids", criterias);
-        ArrayList<DatabaseObject> list = new ArrayList<DatabaseObject>();
-
-        for (int i = 0; i < data.length; i++) {
-            int id = Integer.valueOf(data[i][0].toString());
-            list.add((DatabaseObject.getObject(context, id)));
-        }
-        return (ArrayList<T>) list;
+        return (ArrayList<T>) getObjects(DatabaseObject.getObject(context), criterias);
     }
 
     /**
      *  Returns objects within the given context which match the criterias in the given QueryCriteria object
      * @param <T>
-     * @param criterias
+     * @param criterias If NULL returns ALL
      * @param template
      * @return
      * @throws NodataFoundException
      */
     @SuppressWarnings("unchecked")
     public static <T extends DatabaseObject> ArrayList<T> getObjects(T template, QueryCriteria criterias) throws NodataFoundException {
-        Object[][] data = QueryHandler.instanceOf().clone(template.getContext()).select("ids", criterias);
-        ArrayList<T> list = new ArrayList<T>();
-
-        for (int i = 0; i < data.length; i++) {
-            int id = Integer.valueOf(data[i][0].toString());
-            list.add(((T) DatabaseObject.getObject(template.getContext(), id)));
+        ReturnValue data = null;
+        if (criterias != null) {
+            data = QueryHandler.instanceOf().clone(template.getContext()).select(criterias);
+        } else {
+            data = QueryHandler.instanceOf().clone(template.getContext()).select();
         }
+        ArrayList<T> list = new ArrayList<T>(0);
+
+        if (data.hasData()) {
+            DatabaseObject[] f = explode(data, template, false);
+            for (int i = 0; i < f.length; i++) {
+                DatabaseObject databaseObject = f[i];
+                list.add((T) databaseObject);
+            }
+        }
+
+        Log.Debug(DatabaseObject.class, "Rows found: " + data.getData().length);
         return list;
     }
 
@@ -603,7 +604,7 @@ public abstract class DatabaseObject {
      */
     public boolean fetchDataOf(int id) {
         try {
-            explode(QueryHandler.instanceOf().clone(context).select(id));
+            explode(QueryHandler.instanceOf().clone(context).select(id), this, true);
             return true;
         } catch (NodataFoundException ex) {
             return false;
@@ -642,7 +643,7 @@ public abstract class DatabaseObject {
             return false;
         }
         if (data.getData() != null && data.getData().length > 0) {
-            explode(data);
+            explode(data, this, true);
             return true;
         } else {
             return false;
@@ -650,58 +651,85 @@ public abstract class DatabaseObject {
     }
 
     /**
-     * Fills this do with the return value's data
+     * Fills the return value's data (rows) into an array of dos if target is NULL, if not fills target with the first row
      */
-    private void explode(ReturnValue select) {
-        ArrayList<Method> vars = setVars();
-        String valx;
+    private static DatabaseObject[] explode(ReturnValue select, DatabaseObject target, boolean  singleExplode) {
 
-        for (int i = 0; i < select.getData().length; i++) {
-            for (int j = 0; j < select.getData()[i].length; j++) {
-                String name = select.getColumnnames()[j].toLowerCase();
+        DatabaseObject[] dos = null;
+        if (!singleExplode) {
+            dos = new DatabaseObject[select.getData().length];
+        } else {
+            dos = new DatabaseObject[1];
+        }
+        String valx = "";
+        Log.Debug(DatabaseObject.class, "Preparing to explode rows: " + dos.length);
 
-                for (int k = 0; k < vars.size(); k++) {
-                    if (vars.get(k).getName().toLowerCase().substring(3).equals(name)) {
+        for (int i = 0; i < dos.length; i++) {
 
-                        //Debug section
-                        if (select.getData()[i][j] != null) {
-                            valx = select.getData()[i][j].getClass().getName();
-                        } else {
-                            valx = "NULL VALUE!";
-                        }
-//                        Log.Debug(this, "Explode: " + vars.get(k).toGenericString() + " with " + select.getData()[i][j] + "[" + valx + "]");
-                        //End Debug Section
+            DatabaseObject y = null;
+            ArrayList<Method> vars = null;
+            if (!singleExplode) {
+                y = DatabaseObject.getObject(target.getContext());
+            } else {
+                y = target;
+            }
 
-                        try {
-                            if (name.startsWith("is") || name.toUpperCase().startsWith("BOOL") || name.toUpperCase().endsWith("BOOL")) {
-                                if (String.valueOf(select.getData()[i][j]).equals("1")) {
-                                    vars.get(k).invoke(this, new Object[]{true});
-                                } else {
-                                    vars.get(k).invoke(this, new Object[]{false});
-                                }
-                            } else if (name.toUpperCase().startsWith("INT") || name.endsWith("uid") || name.endsWith("ids") || name.equals("ids")) {
-                                vars.get(k).invoke(this, new Object[]{Integer.valueOf(String.valueOf(select.getData()[i][j]))});
-                            } else if (name.toUpperCase().startsWith("DATE") || name.toUpperCase().endsWith("DATE")) {
-                                vars.get(k).invoke(this, new Object[]{DateConverter.getDate(String.valueOf(select.getData()[i][j]))});
-                            } else if (name.toUpperCase().startsWith("VALUE") || name.toUpperCase().endsWith("VALUE")) {
-                                vars.get(k).invoke(this, new Object[]{Double.valueOf(String.valueOf(select.getData()[i][j]))});
+            vars = y.setVars();
+            dos[i] = y;
+
+            if (select.hasData()) {
+                for (int j = 0; j < select.getData()[i].length; j++) {
+                    String name = select.getColumnnames()[j].toLowerCase();
+
+                    for (int k = 0; k < vars.size(); k++) {
+                        if (vars.get(k).getName().toLowerCase().substring(3).equals(name)) {
+
+                            //Debug section
+                            if (select.getData()[i][j] != null) {
+                                valx = select.getData()[i][j].getClass().getName();
                             } else {
-                                vars.get(k).invoke(this, new Object[]{String.valueOf(select.getData()[i][j])});
+                                valx = "NULL VALUE!";
                             }
-                        } catch (IllegalAccessException ex) {
+//                        Log.Debug(DatabaseObject.class, "Explode: " + vars.get(k).toGenericString() + " with " + select.getData()[i][j] + "[" + valx + "]");
+                            //End Debug Section
 
-                            Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (IllegalArgumentException ex) {
-                            Log.Debug(this, name + " " + String.valueOf(select.getData()[i][j]));
-                            Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (InvocationTargetException ex) {
+                            try {
+                                if (name.startsWith("is") || name.toUpperCase().startsWith("BOOL") || name.toUpperCase().endsWith("BOOL")) {
+                                    if (String.valueOf(select.getData()[i][j]).equals("1")) {
+                                        vars.get(k).invoke(y, new Object[]{true});
+                                    } else {
+                                        vars.get(k).invoke(y, new Object[]{false});
+                                    }
+                                } else if (name.toUpperCase().startsWith("INT") || name.endsWith("uid") || name.endsWith("ids") || name.equals("ids")) {
+                                    vars.get(k).invoke(y, new Object[]{Integer.valueOf(String.valueOf(select.getData()[i][j]))});
+                                } else if (name.toUpperCase().startsWith("DATE") || name.toUpperCase().endsWith("DATE")) {
+                                    vars.get(k).invoke(y, new Object[]{DateConverter.getDate(String.valueOf(select.getData()[i][j]))});
+                                } else if (name.toUpperCase().startsWith("VALUE") || name.toUpperCase().endsWith("VALUE")) {
+                                    vars.get(k).invoke(y, new Object[]{Double.valueOf(String.valueOf(select.getData()[i][j]))});
+                                } else {
+                                    vars.get(k).invoke(y, new Object[]{String.valueOf(select.getData()[i][j])});
+                                }
+                            } catch (IllegalAccessException ex) {
 
-                            Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+                                Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (IllegalArgumentException ex) {
+                                Log.Debug(y, name + " " + String.valueOf(select.getData()[i][j]));
+                                Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (InvocationTargetException ex) {
+
+                                Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+                            }
                         }
                     }
                 }
             }
+
+            
         }
+
+
+
+        return dos;
     }
 
     /**
@@ -722,23 +750,23 @@ public abstract class DatabaseObject {
 //                Log.Debug(this, name + " ?? : " + vars.get(k).getName() + " = " + data[row][1]);
                 if (vars.get(k).getName().toLowerCase().substring(3).equals(name)) {
 //                    Log.Debug(this, name + " ?? : " + vars.get(k).getName() + " = " + data[row][1]);
-                  
-                        if (name.startsWith("is") || name.toUpperCase().startsWith("BOOL")) {
-                            if (String.valueOf(data[row][1]).equals("1") || String.valueOf(data[row][1]).toUpperCase().equals("TRUE")) {
-                                vars.get(k).invoke(this, new Object[]{true});
-                            } else {
-                                vars.get(k).invoke(this, new Object[]{false});
-                            }
-                        } else if (name.toUpperCase().startsWith("INT") || name.endsWith("uid") || name.endsWith("ids") || name.equals("ids")) {
-                            vars.get(k).invoke(this, new Object[]{Integer.valueOf(String.valueOf(data[row][1]))});
-                        } else if (name.toUpperCase().startsWith("DATE") || name.toUpperCase().endsWith("DATE")) {
-                            vars.get(k).invoke(this, new Object[]{DateConverter.getDate(String.valueOf(data[row][1]))});
-                        } else if (name.toUpperCase().startsWith("VALUE") || name.toUpperCase().endsWith("VALUE")) {
-                            vars.get(k).invoke(this, new Object[]{Double.valueOf(String.valueOf(data[row][1]))});
+
+                    if (name.startsWith("is") || name.toUpperCase().startsWith("BOOL")) {
+                        if (String.valueOf(data[row][1]).equals("1") || String.valueOf(data[row][1]).toUpperCase().equals("TRUE")) {
+                            vars.get(k).invoke(this, new Object[]{true});
                         } else {
-                            vars.get(k).invoke(this, new Object[]{String.valueOf(data[row][1])});
+                            vars.get(k).invoke(this, new Object[]{false});
                         }
-          
+                    } else if (name.toUpperCase().startsWith("INT") || name.endsWith("uid") || name.endsWith("ids") || name.equals("ids")) {
+                        vars.get(k).invoke(this, new Object[]{Integer.valueOf(String.valueOf(data[row][1]))});
+                    } else if (name.toUpperCase().startsWith("DATE") || name.toUpperCase().endsWith("DATE")) {
+                        vars.get(k).invoke(this, new Object[]{DateConverter.getDate(String.valueOf(data[row][1]))});
+                    } else if (name.toUpperCase().startsWith("VALUE") || name.toUpperCase().endsWith("VALUE")) {
+                        vars.get(k).invoke(this, new Object[]{Double.valueOf(String.valueOf(data[row][1]))});
+                    } else {
+                        vars.get(k).invoke(this, new Object[]{String.valueOf(data[row][1])});
+                    }
+
 
                 }
             }

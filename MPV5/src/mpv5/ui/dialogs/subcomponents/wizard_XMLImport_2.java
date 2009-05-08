@@ -52,8 +52,8 @@ public class wizard_XMLImport_2 extends javax.swing.JPanel implements Wizardable
                 x.newDoc(new File(master.getStore().getProperty("file")), true);
                 objs = x.getObjects();
                 jTable1.setModel(ImportModel.getModel(objs, !master.getStore().getProperty("overwrite", true)));
-                jLabel2.setText(jLabel2.getText() + " " + master.getStore().getProperty("file"));
-                TableFormat.format(jTable1, 0, 33);
+                jLabel2.setText(jLabel2.getText() + " " + master.getStore().getProperty("file") + " (" + jTable1.getRowCount() + ")");
+                TableFormat.format(jTable1, 0, 0);
                 TableFormat.format(jTable1, 1, 33);
                 TableFormat.format(jTable1, 2, 100);
 
@@ -84,31 +84,39 @@ public class wizard_XMLImport_2 extends javax.swing.JPanel implements Wizardable
 
         jProgressBar1.setMinimum(0);
         jProgressBar1.setMaximum(jTable1.getRowCount());
+       
+       
+        Runnable runnable = new Runnable() {
 
-        for (int i = 0; i < jTable1.getRowCount(); i++) {
-            if ((Boolean) jTable1.getValueAt(i, 1)) {
-                master.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-                final int p = i;
+            public void run() {
+                int imp = 0;
+                for (int i = 0; i < jTable1.getRowCount(); i++) {
+                    if ((Boolean) jTable1.getValueAt(i, 1)) {
+                        master.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+                        final int p = i;
 
-                String val = "";
-                try {
-                    if (!((DatabaseObject) jTable1.getValueAt(p, 0)).saveImport()) {
-                        val = "<html><p><font color =red>" + Messages.ERROR_OCCURED;
-                    } else {
-                        val = "<html><p><font color =green>" + Messages.IMPORTED;
-                    }
-                } catch (Exception e) {
-                    val = "<html><p><font color =red>" + Messages.ERROR_OCCURED + ": " + e.getMessage();
-                } finally {
-                    jTable1.setValueAt(val, p, 4);
-                    jProgressBar1.setValue(p);
-                    if (p >= jTable1.getRowCount()) {
-                        master.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                        String val = "";
+                        try {
+                            DatabaseObject dog = ((DatabaseObject) jTable1.getValueAt(p, 0));
+                            if (!dog.saveImport()) {
+                                val = "<html><p><font color =red>" + Messages.ERROR_OCCURED;
+                            } else {
+                                val = "<html><p><font color =green>" + Messages.IMPORTED + " ID: " + dog.__getIDS();
+                                imp++;
+                            }
+                        } catch (Exception e) {
+                            val = "<html><p><font color =red>" + Messages.ERROR_OCCURED + ": " + e.getMessage();
+                        } finally {
+                            jTable1.setValueAt(val, p, 4);
+                            jProgressBar1.setValue(p);
+
+                            master.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                        }
                     }
                 }
+                jProgressBar1.setString( imp + " " + Messages.IMPORTED);
             }
-
-        }
+        }; SwingUtilities.invokeLater(runnable);
 
         master.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
         master.isEnd(true);

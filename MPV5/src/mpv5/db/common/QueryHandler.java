@@ -168,6 +168,30 @@ public class QueryHandler implements Cloneable {
         return select(columns, criterias.getKeys(), criterias.getValues());
     }
 
+
+    /**
+     * Convenience method to retrieve * from where the criterias match
+     * @param criterias
+     * @return
+     * @throws mpv5.db.common.NodataFoundException
+     */
+    public ReturnValue select(QueryCriteria criterias) throws NodataFoundException {
+        String query = "SELECT * FROM " + table + " " + context.getReferences() + " WHERE ";
+        for (int i = 0; i < criterias.getValues().length; i++) {
+
+            Object object = criterias.getValues()[i];
+            String column = criterias.getKeys()[i];
+            query += column + "=" + String.valueOf(object);
+
+            if ((i + 1) != criterias.getValues().length) {
+                query += " AND ";
+            } else {
+                query += " AND " + context.getConditions().substring(5, context.getConditions().length());
+            }
+        }
+        return freeSelectQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null);
+    }
+
     /**
      * This is a convenience method to retrieve data such as "SELECT * FROM table"
      * @return All rows in the current context
@@ -454,6 +478,7 @@ public class QueryHandler implements Cloneable {
         return checkUniqueness(t, new int[]{0});
     }
     private static int RUNNING_JOBS = 0;
+
 
     private synchronized void stop() {
         Runnable runnable = new Runnable() {
