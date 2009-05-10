@@ -18,14 +18,14 @@ package mpv5.db.objects;
 
 import java.util.Date;
 import javax.swing.JComponent;
+import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 
 /**
  *
  * @author anti
  */
-public class Item extends DatabaseObject{
-
+public class Item extends DatabaseObject {
 
     private int contactsids;
     private int defaultaccountsids;
@@ -36,21 +36,25 @@ public class Item extends DatabaseObject{
     private Date datetodo;
     private Date dateend;
     private int intreminders;
-    private String groupname = "";
+//    private String groupname = "";
     private String cnumber = "";
     private boolean isbill;
     private boolean isorder;
     private boolean isoffer;
 
+    public Item() {
+        context.setDbIdentity(Context.IDENTITY_ITEMS);
+        context.setIdentityClass(Item.class);
+    }
 
     @Override
     public String __getCName() {
-       return cname;
+        return cname;
     }
 
     @Override
     public void setCName(String name) {
-       this.cname = name;
+        this.cname = name;
     }
 
     /**
@@ -67,11 +71,10 @@ public class Item extends DatabaseObject{
         this.contactsids = contactsids;
     }
 
-
     /**
      * @return the isactive
      */
-    public boolean __getisIsactive() {
+    public boolean __getIsactive() {
         return isactive;
     }
 
@@ -85,7 +88,7 @@ public class Item extends DatabaseObject{
     /**
      * @return the isfinished
      */
-    public boolean __getisIsfinished() {
+    public boolean __getIsfinished() {
         return isfinished;
     }
 
@@ -152,19 +155,19 @@ public class Item extends DatabaseObject{
         this.intreminders = intreminders;
     }
 
-    /**
-     * @return the groupname
-     */
-    public String __getGroupname() {
-        return groupname;
-    }
-
-    /**
-     * @param groupname the groupname to set
-     */
-    public void setGroupname(String groupname) {
-        this.groupname = groupname;
-    }
+//    /**
+//     * @return the groupname
+//     */
+////    public String __getGroupname() {
+//        return groupname;
+//    }
+//
+//    /**
+//     * @param groupname the groupname to set
+//     */
+//    public void setGroupname(String groupname) {
+//        this.groupname = groupname;
+//    }
 
     /**
      * @return the dateend
@@ -183,7 +186,7 @@ public class Item extends DatabaseObject{
     /**
      * @return the isbill
      */
-    public boolean __getisIsbill() {
+    public boolean __getIsbill() {
         return isbill;
     }
 
@@ -197,7 +200,7 @@ public class Item extends DatabaseObject{
     /**
      * @return the isorder
      */
-    public boolean __getisIsorder() {
+    public boolean __getIsorder() {
         return isorder;
     }
 
@@ -211,7 +214,7 @@ public class Item extends DatabaseObject{
     /**
      * @return the isoffer
      */
-    public boolean __getisIsoffer() {
+    public boolean __getIsoffer() {
         return isoffer;
     }
 
@@ -254,6 +257,4 @@ public class Item extends DatabaseObject{
     public void setDefaultaccountsids(int defaultaccountsids) {
         this.defaultaccountsids = defaultaccountsids;
     }
-
-
 }

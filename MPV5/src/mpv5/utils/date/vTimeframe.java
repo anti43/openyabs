@@ -40,6 +40,10 @@ public class vTimeframe {
         return end;
     }
 
+    /**
+     *
+     * @return The difference of start and end in millis
+     */
     public long getTime() {
         return time;
     }

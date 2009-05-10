@@ -141,7 +141,6 @@ public class MPV5View extends FrameView {
         identifierApplication.show(c);
     }
 
-
     /**
      * Reloads fav menu
      */
@@ -404,6 +403,7 @@ public class MPV5View extends FrameView {
         jMenu3 = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
         jMenuItem18 = new javax.swing.JMenuItem();
+        jMenuItem22 = new javax.swing.JMenuItem();
         favouritesMenu = new javax.swing.JMenu();
         jMenuItem5 = new javax.swing.JMenuItem();
         clipboardMenu = new javax.swing.JMenu();
@@ -870,6 +870,15 @@ public class MPV5View extends FrameView {
         });
         jMenu3.add(jMenuItem18);
 
+        jMenuItem22.setText(bundle.getString("MPV5View.jMenuItem22.text")); // NOI18N
+        jMenuItem22.setName("jMenuItem22"); // NOI18N
+        jMenuItem22.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem22ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItem22);
+
         menuBar.add(jMenu3);
 
         favouritesMenu.setText(bundle.getString("MPV5View.favouritesMenu.text")); // NOI18N
@@ -1220,8 +1229,8 @@ public class MPV5View extends FrameView {
     }//GEN-LAST:event_jMenuItem19ActionPerformed
 
     private void jMenuItem20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem20ActionPerformed
-       
-         if (mpv5.usermanagement.MPSecurityManager.check(Context.getAccounts(), MPSecurityManager.EXPORT)) {
+
+        if (mpv5.usermanagement.MPSecurityManager.check(Context.getAccounts(), MPSecurityManager.EXPORT)) {
             try {
                 XMLWriter xmlw = new XMLWriter();
                 xmlw.newDoc();
@@ -1237,22 +1246,34 @@ public class MPV5View extends FrameView {
 
     private void jMenuItem21ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem21ActionPerformed
 
-      
+
         if (mpv5.usermanagement.MPSecurityManager.check(Context.getAccounts(), MPSecurityManager.EXPORT)) {
             try {
-                
+
                 String name = Context.getAccounts().getDbIdentity();
                 ArrayList<DatabaseObject> dbobjarr = DatabaseObject.getObjects(Context.getAccounts());
-                
+
                 TextDatFile t = new TextDatFile();
                 t.parse(dbobjarr);
-             
+
                 showFilesaveDialogFor(t.createFile(name));
             } catch (NodataFoundException ex) {
                 Log.Debug(this, ex);
             }
         }
     }//GEN-LAST:event_jMenuItem21ActionPerformed
+
+    private void jMenuItem22ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem22ActionPerformed
+        if (Popup.Y_N_dialog("Fill database with sample data?")) {
+
+
+            try {
+                new mpv5.db.sample.Contacts(Integer.valueOf(Popup.Enter_Value("Enter a valid Integer value [3]")), true);
+            } catch (NumberFormatException numberFormatException) {
+                new mpv5.db.sample.Contacts(3, true);
+            }
+        }
+    }//GEN-LAST:event_jMenuItem22ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JMenu clipboardMenu;
@@ -1289,6 +1310,7 @@ public class MPV5View extends FrameView {
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem20;
     private javax.swing.JMenuItem jMenuItem21;
+    private javax.swing.JMenuItem jMenuItem22;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;

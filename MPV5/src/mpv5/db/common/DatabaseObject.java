@@ -26,6 +26,7 @@ import mpv5.ui.frames.MPV5View;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
 import javax.swing.JComponent;
+import mpv5.utils.date.RandomDate;
 
 /**
  * Database Objects reflect a row in a table, and can parse graphical and
@@ -199,7 +200,7 @@ public abstract class DatabaseObject {
         if (__getCName() != null && __getCName().length() > 0) {
             try {
                 if (ids <= 0) {
-                    Log.Debug(this, "Inserting new dataset:");
+                    Log.Debug(this, "Inserting new dataset into: " + this.getContext());
                     if (!this.getType().equals(new HistoryItem().getType())) {
                         message = this.__getCName() + Messages.INSERTED;
                     }
@@ -366,6 +367,8 @@ public abstract class DatabaseObject {
                         boolean c = (Boolean) tempval;
                         t.add(left, c);
                     } else if (tempval.getClass().isInstance(new Date())) {
+                        t.add(left, DateConverter.getSQLDateString((Date) tempval));
+                    } else if (tempval.getClass().isInstance(new RandomDate(null))) {
                         t.add(left, DateConverter.getSQLDateString((Date) tempval));
                     } else if (tempval.getClass().isInstance(0)) {
                         t.add(left, (Integer) tempval);
@@ -653,7 +656,7 @@ public abstract class DatabaseObject {
     /**
      * Fills the return value's data (rows) into an array of dos if target is NULL, if not fills target with the first row
      */
-    private static DatabaseObject[] explode(ReturnValue select, DatabaseObject target, boolean  singleExplode) {
+    private static DatabaseObject[] explode(ReturnValue select, DatabaseObject target, boolean singleExplode) {
 
         DatabaseObject[] dos = null;
         if (!singleExplode) {
@@ -724,7 +727,7 @@ public abstract class DatabaseObject {
                 }
             }
 
-            
+
         }
 
 
