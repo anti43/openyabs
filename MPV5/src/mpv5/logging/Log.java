@@ -178,7 +178,9 @@ public class Log {
     private static void write(Object obj) {
         try {
             logger.log(obj);
-            System.out.println(obj);
+            if(loglevel==LOGLEVEL_DEBUG) {
+                System.out.println(obj);
+            }
         } catch (IOException ex) {
             ex.printStackTrace();
         }

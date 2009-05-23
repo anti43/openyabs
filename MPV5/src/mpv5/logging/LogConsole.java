@@ -43,6 +43,7 @@ public class LogConsole extends javax.swing.JFrame {
             FILE_LOG_ENABLED = false;
         }
     }
+    private static int line = 0;
 
     /** Creates new form Logger */
     public LogConsole() {
@@ -63,17 +64,21 @@ public class LogConsole extends javax.swing.JFrame {
      * @param object Null objects will lead to the String "NULL"
      * @throws java.io.IOException Is thrown if an invalid log file is specified
      */
-    public void log(final Object object) throws IOException {
+    public synchronized void log(final Object object) throws IOException {
+
         Runnable runnable = new Runnable() {
+
             public void run() {
+                line++;
                 if (FILE_LOG_ENABLED) {
-                    logwriter.write(object.toString());
+                    logwriter.write(line + ": " + object.toString());
                 }
                 if (object != null) {
-                    jTextArea1.append("\n" + object.toString());
+                    jTextArea1.append("\n" + line + ": " + object.toString());
                 } else {
-                    jTextArea1.append("\nNULL");
+                    jTextArea1.append("\n" + line + ": " + "NULL");
                 }
+//                jTextArea1.setCaretPosition(jTextArea1.getDocument().getLength() );
             }
         };
         SwingUtilities.invokeLater(runnable);
@@ -103,6 +108,10 @@ public class LogConsole extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("MP Logger");
 
+        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        jScrollPane1.setAutoscrolls(true);
+
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
         jScrollPane1.setViewportView(jTextArea1);
@@ -121,7 +130,7 @@ public class LogConsole extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 637, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 375, Short.MAX_VALUE)
                     .addComponent(jButton1))
                 .addContainerGap())
         );
