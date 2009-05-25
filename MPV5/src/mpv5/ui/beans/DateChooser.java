@@ -27,12 +27,20 @@ public class DateChooser extends javax.swing.JPanel {
         return (d.getDate() != null);
     }
 
-    public void setDate(Date date){
-      if (d == null) {
-            d = new MiniCalendar(jTextField1);
+    public void setDate(Date date) {
+        if (d == null) {
+            d = new MiniCalendar(jTextField1, false);
         }
 
-      d.setDate(date);
+        d.setDate(date);
+    }
+
+    public Date getDate() {
+        if (hasDate()) {
+            return d.getDate();
+        } else {
+            return new Date();
+        }
     }
 
     /** This method is called from within the constructor to
@@ -78,7 +86,7 @@ public class DateChooser extends javax.swing.JPanel {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         if (d == null) {
-            d = new MiniCalendar(jTextField1);
+            d = new MiniCalendar(jTextField1, true);
         }
         d.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed

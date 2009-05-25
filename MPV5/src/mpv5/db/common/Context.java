@@ -54,7 +54,7 @@ public class Context {
     public static String IDENTITY_ACCOUNTS = "accounts";
     public static String IDENTITY_ITEMS_TO_ACCOUNTS = "itemstoaccounts";
     public static String IDENTITY_MESSAGES = "messages";
-    public static String IDENTITY_MESSAGES_TO_ITEMS= "messagestoitems";
+    public static String IDENTITY_MESSAGES_TO_ITEMS = "messagestoitems";
 
     //********** identity classes **********************************************
     private static Class IDENTITY_CONTACTS_CLASS = Contact.class;
@@ -74,7 +74,7 @@ public class Context {
     public static String UNIQUECOLUMNS_USER = "cname";
     public static String UNIQUECOLUMNS_ITEMS = "cname";
     public static String UNIQUECOLUMNS_GROUPS = "cname";
-    private static String UNIQUECOLUMNS_DEFAULT= "cname";
+    private static String UNIQUECOLUMNS_DEFAULT = "cname";
     public static String DETAIL_CONTACT_SEARCH = "prename,cname,street,city,country,notes";
 
     //********** conditions ****************************************************
@@ -146,6 +146,14 @@ public class Context {
             IDENTITY_ITEMS + "." + "taxvalue, " +
             IDENTITY_ITEMS + "." + "datetodo, " +
             IDENTITY_ITEMS + "." + "intreminders";
+
+    public static String DETAILS_JOURNAL = IDENTITY_ITEMS + "." + "IDS," + IDENTITY_ITEMS + "." + "CNAME," +
+            IDENTITY_GROUPS + "0." + "CNAME," + IDENTITY_ITEMS + "." + "dateadded," + IDENTITY_ITEMS + "." + "isactive," +
+            IDENTITY_ITEMS + "." + "value," +
+            IDENTITY_ITEMS + "." + "taxvalue, " +
+            IDENTITY_ITEMS + "." + "datetodo, " +
+            IDENTITY_ITEMS + "." + "intreminders";
+
     public static String DETAILS_HISTORY = getHistory().getDbIdentity() + ".ids, " + getHistory().getDbIdentity() + ".cname, " + getHistory().getDbIdentity() + ".username, " + Context.getGroup().getDbIdentity() + "0.cname," + Context.getHistory().getDbIdentity() + ".dateadded";
     public static String DETAILS_FILES = Context.getFiles().getDbIdentity() + "0.cname," + getFilesToContacts().getDbIdentity() + ".cname, " + Context.getFiles().getDbIdentity() + "0.dateadded," + Context.getFilesToContacts().getDbIdentity() + ".description";
 
@@ -173,7 +181,7 @@ public class Context {
         list.add(getProducts());
         list.add(getAccounts());
         list.add(getMessages());
-                
+
         return list;
     }
 
@@ -273,7 +281,7 @@ public class Context {
                 getOffer(),
                 getSubItem(),
                 getGroup(),
-//                getGroupToParentGroup(),
+                //                getGroupToParentGroup(),
                 getSchedule(),
                 getFilesToContacts(),
                 getHistory(),
@@ -286,9 +294,7 @@ public class Context {
                 getItemsToAccounts(),
                 getMessages(),
                 getMessagesToItems()
-
             }));
-
     private String[] searchHeaders;
     private ArrayList<String[]> references = new ArrayList<String[]>();
     private boolean exclusiveConditionsAvailable = false;
@@ -432,7 +438,7 @@ public class Context {
             }
         }
 
-         if(getTrashableContexts().contains(this)){
+        if (getTrashableContexts().contains(this)) {
             cond += " AND invisible = 0 ";
         }
 
@@ -903,7 +909,7 @@ public class Context {
         return getItem(true, false, false, false, false);
     }
 
-      public static Context getSubItem() {
+    public static Context getSubItem() {
         Context c = new Context(new SubItem());
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_SUBITEMS);
@@ -1162,7 +1168,6 @@ public class Context {
 
         return c;
     }
-    
 
     public static Context getProperties() {
         Context c = new Context();
@@ -1185,7 +1190,7 @@ public class Context {
         return c;
     }
 
-   public static Context getItemsToAccounts() {
+    public static Context getItemsToAccounts() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_ITEMS_TO_ACCOUNTS);
@@ -1194,7 +1199,7 @@ public class Context {
         return c;
     }
 
-   public static Context getMessages() {
+    public static Context getMessages() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_MESSAGES);
@@ -1205,7 +1210,7 @@ public class Context {
         return c;
     }
 
-   public static Context getMessagesToItems() {
+    public static Context getMessagesToItems() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_MESSAGES_TO_ITEMS);
@@ -1213,7 +1218,6 @@ public class Context {
 
         return c;
     }
-  
 
     /**
      *

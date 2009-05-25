@@ -98,6 +98,11 @@ public class MPTableModel extends DefaultTableModel {
 
     }
 
+    public MPTableModel(Object[][] datstr, String[] header, Class[] types) {
+        super(datstr, header);
+        setEditable(false);
+        setTypes(types);
+    }
     public MPTableModel(Class[] types, boolean[] canEdits, Object[][] data, Object[] columnNames) {
         super(data, columnNames);
         setTypes(types);

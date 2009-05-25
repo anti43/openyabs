@@ -251,6 +251,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         button_product = new javax.swing.JButton();
         button_order = new javax.swing.JButton();
         jSeparator2 = new javax.swing.JToolBar.Separator();
+        jButton2 = new javax.swing.JButton();
         prinitingComboBox1 = new mpv5.ui.beans.PrinitingComboBox();
         addresspanel = new javax.swing.JTabbedPane();
         jPanel2 = new javax.swing.JPanel();
@@ -683,6 +684,18 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jSeparator2.setName("jSeparator2"); // NOI18N
         jToolBar1.add(jSeparator2);
 
+        jButton2.setText(bundle.getString("ContactPanel.jButton2.text")); // NOI18N
+        jButton2.setFocusable(false);
+        jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton2.setName("jButton2"); // NOI18N
+        jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(jButton2);
+
         prinitingComboBox1.setName("prinitingComboBox1"); // NOI18N
 
         addresspanel.setBackground(new java.awt.Color(255, 255, 255));
@@ -1000,6 +1013,13 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     private void countryselectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_countryselectActionPerformed
 }//GEN-LAST:event_countryselectActionPerformed
 
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+
+        if (dataOwner.isExisting()) {
+            MPV5View.identifierView.addTab(new JournalPanel(), Messages.JOURNAL + getDataOwner().__getCName());
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel addedby;
     private javax.swing.JButton addfile;
@@ -1029,6 +1049,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     private javax.swing.JRadioButton female;
     private javax.swing.JComboBox groupnameselect;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

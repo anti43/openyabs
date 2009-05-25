@@ -16,8 +16,10 @@
  */
 package mpv5.utils.models;
 
+import java.util.ArrayList;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
+import mpv5.db.common.DatabaseObject;
 import mpv5.logging.Log;
 
 /**
@@ -81,6 +83,20 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
         MPComboBoxModelItem[] array = new MPComboBoxModelItem[items.length];
         for (int i = 0; i < array.length; i++) {
             array[i] = new MPComboBoxModelItem(String.valueOf(items[i][0]), String.valueOf(items[i][1]));
+        }
+        return array;
+    }
+
+      /**
+     * Converts an array to mp combo box items
+     * {id (hidden), value (shown in the list)}
+     * @param items
+     * @return
+     */
+    public static MPComboBoxModelItem[] toItems(ArrayList<DatabaseObject> items) {
+        MPComboBoxModelItem[] array = new MPComboBoxModelItem[items.size()];
+        for (int i = 0; i < array.length; i++) {
+            array[i] = new MPComboBoxModelItem(items.get(i).__getIDS(), items.get(i).__getCName());
         }
         return array;
     }

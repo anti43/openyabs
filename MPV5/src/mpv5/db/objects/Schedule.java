@@ -80,7 +80,7 @@ public class Schedule extends DatabaseObject {
      * @return
      */
     public static ArrayList<Schedule> getEvents(vTimeframe date) {
-        Object[][] data = QueryHandler.instanceOf().clone(Context.getSchedule()).selectBetween("ids", null, "nextdate", date);
+        Object[][] data = QueryHandler.instanceOf().clone(Context.getSchedule()).select("ids", null, "nextdate", date);
         ArrayList<Schedule> l = new ArrayList<Schedule>();
         for (int i = 0; i < data.length; i++) {
             Object[] objects = data[i];

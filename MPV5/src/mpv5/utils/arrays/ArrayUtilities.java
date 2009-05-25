@@ -100,6 +100,34 @@ public class ArrayUtilities {
         }
         table.setModel(new DefaultTableModel(data, columnNames));
     }
+
+    /**
+     * Supports 
+     * <li>Date
+     * <li>Integer
+     * <li>Double
+     * <li>String
+     * 
+     * @param d
+     * @param column
+     * @param aClass
+     * @return
+     */
+    public static Object[][] changeToClassValue(Object[][] d, int column, Class aClass) {
+        for (int i = 0; i < d.length; i++) {
+            if (aClass.isInstance(new Integer(0))) {
+                d[i][column] = Integer.valueOf(String.valueOf(d[i][column]));
+            } else if (aClass.isInstance(new Double(0d))) {
+                d[i][column] = Double.valueOf(String.valueOf(d[i][column]));
+            } else if (aClass.isInstance(new Date())) {
+                d[i][column] = DateConverter.getDate(String.valueOf(d[i][column]));
+            } else if (aClass.isInstance(new String())) {
+                d[i][column] = String.valueOf(d[i][column]);
+            }
+        }
+
+        return d;
+    }
 //
 //    /**
 //     * 
@@ -410,7 +438,7 @@ public class ArrayUtilities {
     public static <T extends DatabaseObject> DefaultTreeModel toTreeModel(ArrayList<T> data, T rootNode) {
 
         DefaultMutableTreeNode node1 = null;
-       if (data.size() >0) {
+        if (data.size() > 0) {
             node1 = new DefaultMutableTreeNode(rootNode);
             data.remove(rootNode);//remove root if in list
             try {
@@ -791,8 +819,8 @@ public class ArrayUtilities {
                 }
             }
         } catch (Exception e) {
-           return new String[0][0];
-       }
+            return new String[0][0];
+        }
         return mergedArray;
     }
 
@@ -845,7 +873,7 @@ public class ArrayUtilities {
         DefaultTableModel model = (DefaultTableModel) mode.getModel();
 
         for (int i = 0; i < model.getRowCount(); i++) {
-           String[] str =null;
+            String[] str = null;
             for (int j = 0; j < model.getColumnCount(); j++) {
                 str = new String[model.getColumnCount()];
                 str[j] = model.getValueAt(i, j).toString();

@@ -44,13 +44,15 @@ public class DateConverter {
     public static final DateFormat DE_DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN);
     //US format
     public static final DateFormat ENG_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+    public static final DateFormat YEAR_DATE_FORMAT = new SimpleDateFormat("yyyy");
     public static final ArrayList<DateFormat> DATE_FORMATS = new ArrayList<DateFormat>(Arrays.asList(new DateFormat[]{
                 DB_DATE_FORMAT,
                 ENG_DATE_FORMAT,
                 DE_DATE_FORMAT,
                 DE_FULL_DATE_FORMAT,
                 NATIVE_DATE_FORMAT,
-                DEF_DATE_FORMAT
+                DEF_DATE_FORMAT,
+                YEAR_DATE_FORMAT
             }));
 
     /**
@@ -114,6 +116,22 @@ public class DateConverter {
 
     }
 
+    /**
+     * Returns the same date , one second before the next day
+     * @param date
+     * @return
+     */
+    public static Date getEndOfDay(Date date) {
+        Calendar calendar = cl;
+        synchronized (calendar) {
+            calendar.setTime(date);
+            calendar.set(Calendar.HOUR_OF_DAY, 23);
+            calendar.set(Calendar.MILLISECOND, 999);
+            calendar.set(Calendar.SECOND, 59);
+            calendar.set(Calendar.MINUTE, 59);
+            return calendar.getTime();
+        }
+    }
 
     public static String getTodayDefDate() {
         return DE_DATE_FORMAT.format(new Date());
@@ -124,11 +142,13 @@ public class DateConverter {
     }
 
     public static Date addYear(Date date) {
+        Calendar cal = DateConverter.cl;
+        synchronized (cal) {
+            cal.setTime(date);
+            cal.add(Calendar.YEAR, 1);
 
-        cl.setTime(date);
-        cl.add(Calendar.YEAR, 1);
-
-        return cl.getTime();
+            return cal.getTime();
+        }
     }
 
     /**
@@ -137,11 +157,14 @@ public class DateConverter {
      * @return The next month
      */
     public static Date addMonth(Date date) {
+        Calendar cal = DateConverter.cl;
 
-        cl.setTime(date);
-        cl.add(Calendar.MONTH, 1);
+        synchronized (cal) {
+            cal.setTime(date);
+            cal.add(Calendar.MONTH, 1);
 
-        return cl.getTime();
+            return cal.getTime();
+        }
     }
 
     /**
@@ -150,11 +173,13 @@ public class DateConverter {
      * @return The next day
      */
     public static Date addDay(Date date) {
+        Calendar cal = DateConverter.cl;
+        synchronized (cal) {
+            cal.setTime(date);
+            cal.add(Calendar.DATE, 1);
 
-        cl.setTime(date);
-        cl.add(Calendar.DATE, 1);
-
-        return cl.getTime();
+            return cal.getTime();
+        }
     }
 
     /**

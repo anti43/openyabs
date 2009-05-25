@@ -22,7 +22,12 @@ public class MiniCalendar extends javax.swing.JFrame {
     private CalendarPane xc;
     private JTextField t;
 
-    public MiniCalendar(JTextField t) {
+    /**
+     * 
+     * @param t
+     * @param visible
+     */
+    public MiniCalendar(JTextField t, boolean visible) {
         try {
             initComponents();
 
@@ -39,8 +44,8 @@ public class MiniCalendar extends javax.swing.JFrame {
             this.t = t;
             this.jPanel1.add(xc, BorderLayout.CENTER);
             new Position(this);
-            this.setVisible(rootPaneCheckingEnabled);
-            this.setAlwaysOnTop(true);
+            this.setVisible(visible);
+            this.setAlwaysOnTop(visible);
         } catch (PropertyVetoException ex) {
             Logger.getLogger(MiniCalendar.class.getName()).log(Level.SEVERE, null, ex);
         }

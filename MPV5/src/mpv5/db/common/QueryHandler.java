@@ -168,6 +168,38 @@ public class QueryHandler implements Cloneable {
         return select(columns, criterias.getKeys(), criterias.getValues());
     }
 
+    /**
+     * Requires 'dateadded' column
+     * @param columns
+     * @param criterias
+     * @param time
+     * @return
+     * @throws NodataFoundException 
+     */
+    public Object[][] select(String columns, QueryCriteria criterias, vTimeframe time) throws NodataFoundException {
+
+        String dateCriterium = table + ".dateadded >= '" + DateConverter.getSQLDateString(time.getStart()) + "' AND " + table + ".dateadded < '" + DateConverter.getSQLDateString(time.getEnd()) + "'";
+        String query = "SELECT " + columns + " FROM " + table + " " + context.getReferences() + " WHERE ";
+
+        for (int i = 0; i < criterias.getKeys().length; i++) {
+
+            Object object = criterias.getValues()[i];
+            String column = criterias.getKeys()[i];
+            query += table +"."+column + "=" + String.valueOf(object);
+
+            if ((i + 1) != criterias.getValues().length) {
+                query += " AND ";
+            } else {
+                query += " AND " + context.getConditions().substring(5, context.getConditions().length());
+            }
+        }
+        if (criterias.getKeys().length > 0 && !query.endsWith("AND ")) {
+            query += " AND ";
+        }
+        query += dateCriterium;
+
+        return freeSelectQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null).getData();
+    }
 
     /**
      * Convenience method to retrieve * from where the criterias match
@@ -267,7 +299,7 @@ public class QueryHandler implements Cloneable {
      * @param zeitraum
      * @return
      */
-    public Object[][] selectBetween(String what, String[] where, String datecolumn, vTimeframe zeitraum) {
+    public Object[][] select(String what, String[] where, String datecolumn, vTimeframe zeitraum) {
         String dateCriterium = datecolumn + " >= '" + DateConverter.getSQLDateString(zeitraum.getStart()) + "' AND " + datecolumn + " < '" + DateConverter.getSQLDateString(zeitraum.getEnd()) + "'";
         String query;
         if (where != null) {
@@ -478,7 +510,6 @@ public class QueryHandler implements Cloneable {
         return checkUniqueness(t, new int[]{0});
     }
     private static int RUNNING_JOBS = 0;
-
 
     private synchronized void stop() {
         Runnable runnable = new Runnable() {
@@ -764,7 +795,7 @@ public class QueryHandler implements Cloneable {
 
             Object object = haveValues[i];
             String column = whereColumns[i];
-            query += column + "=" + String.valueOf(object);
+            query +=  table +"."+column + "=" + String.valueOf(object);
 
             if ((i + 1) != haveValues.length) {
                 query += " AND ";
@@ -1705,7 +1736,7 @@ public class QueryHandler implements Cloneable {
             QueryData x;
             try {
 
-                x = new QueryData(new String[]{"cname,filename, description, dateadded", file.getName() + "," + get() + "," + descriptiveText + "," +  DateConverter.getTodayDBDate()});
+                x = new QueryData(new String[]{"cname,filename, description, dateadded", file.getName() + "," + get() + "," + descriptiveText + "," + DateConverter.getTodayDBDate()});
                 x.add("contactsids", dataOwner.__getIDS());
                 x.add("intaddedby", MPV5View.getUser().__getIDS());
                 QueryHandler.instanceOf().clone(Context.getFilesToContacts()).insert(x, Messages.FILE_SAVED + file.getName());

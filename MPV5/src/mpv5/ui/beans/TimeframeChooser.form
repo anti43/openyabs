@@ -21,41 +21,43 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <Component id="jLabel1" min="-2" pref="58" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="jComboBox1" min="-2" pref="98" max="-2" attributes="0"/>
+              <Component id="dateChooser1" min="-2" pref="144" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
+              <Component id="jLabel1" min="-2" pref="20" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
+              <Component id="dateChooser2" min="-2" pref="150" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
-      <Group type="103" groupAlignment="3" attributes="0">
-          <Component id="jLabel1" alignment="3" min="-2" pref="20" max="-2" attributes="0"/>
-          <Component id="jComboBox1" alignment="3" min="-2" pref="20" max="-2" attributes="0"/>
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Component id="dateChooser1" alignment="2" min="-2" max="-2" attributes="1"/>
+          <Component id="jLabel1" alignment="2" pref="20" max="32767" attributes="1"/>
+          <Component id="dateChooser2" alignment="2" min="-2" max="-2" attributes="1"/>
       </Group>
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="javax.swing.JComboBox" name="jComboBox1">
+    <Component class="mpv5.ui.beans.DateChooser" name="dateChooser1">
       <Properties>
-        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="0"/>
-        </Property>
-        <Property name="name" type="java.lang.String" value="jComboBox1" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="dateChooser1" noResource="true"/>
       </Properties>
-      <Events>
-        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="jComboBox1ItemStateChanged"/>
-      </Events>
+    </Component>
+    <Component class="mpv5.ui.beans.DateChooser" name="dateChooser2">
+      <Properties>
+        <Property name="name" type="java.lang.String" value="dateChooser2" noResource="true"/>
+      </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel1">
       <Properties>
-        <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
-          <FontInfo relative="true">
-            <Font component="jLabel1" property="font" relativeSize="true" size="0"/>
-          </FontInfo>
+        <Property name="horizontalAlignment" type="int" value="0"/>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/mpv5/resources/images/32/2rightarrow.png"/>
         </Property>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="PrinitingComboBox.jLabel1.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="TimeframeChooser.jLabel1.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
         </Property>
+        <Property name="iconTextGap" type="int" value="0"/>
         <Property name="name" type="java.lang.String" value="jLabel1" noResource="true"/>
       </Properties>
     </Component>
