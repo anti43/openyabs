@@ -39,6 +39,7 @@ public class LocalSettings {
     public static final String DEFAULT_FONT = "defaultfont";
     public static final String PRINT_DEVAPP = "devappprint";
     public static final String PROXYUSE = "useproxy";
+    public static final String DBNAME = "dbname";
 
     /**
      * Applies the environmental settings
@@ -78,6 +79,27 @@ public class LocalSettings {
         return cookie.getProperty(name);
     }
 
+
+    private static int connectionID = 1;
+    /**
+     * Specify the connection id to be used from the config file, default is 1
+     * @param id
+     */
+    public static void setConnectionID(Integer id) {
+        connectionID = id;
+    }
+    /**
+     * Get the connection id to be used from the config file
+     * @return
+     */
+    public static int getConnectionID() {
+        return connectionID;
+    }
+
+    /**
+     *
+     * @return
+     */
     public static PropertyStore getPropertyStore() {
         return cookie;
     }
@@ -124,10 +146,10 @@ public class LocalSettings {
     public static void read() throws Exception {
 
         try {
-            Log.Debug(LocalSettings.class, "Reading in local settings..");
+            Log.Debug(LocalSettings.class, "Reading in local settings where ID =" + connectionID);
             XMLReader read = new XMLReader();
             read.newDoc(new File(Main.SETTINGS_FILE), false);
-            cookie = read.readInto("localsettings", "connection", "1", cookie);
+            cookie = read.readInto("localsettings", "connection", String.valueOf(connectionID), cookie);
 //            cookie.print();
             Log.Debug(LocalSettings.class, "Finished local settings.");
         } catch (Exception e) {

@@ -32,36 +32,27 @@ public class ConnectionTypeHandler {
      * Use embedded derby database
      */
     public static final int DERBY = 0;
+    public static String DERBY_DRIVER = "org.apache.derby.jdbc.ClientDriver";
     /**
      * Use myql database driver
      */
     public static final int MYSQL = 1;
+    public static String MYSQL_DRIVER = "com.mysql.jdbc.Driver";
     /**
      * Use custom database driver
      */
-    public static final int CUSTOM = 2;    //Available Drivers
-    /**
-     * Use single user database
-     */
-    public static final int SINGLE_USER = 0;
-    /**
-     * Use multi user database
-     */
-    public static final int MULTI_USER = 1;
-    public static String DERBY_DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
-    public static String MYSQL_DRIVER = "com.mysql.jdbc.Driver";
-    public static String CUSTOM_DRIVER = "custom.driver";    //Available SQL Files
+    public static final int CUSTOM = 2;
+
+    //Available Drivers
+    public static String CUSTOM_DRIVER = "custom.driver";
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public static String[] DRIVERS = {DERBY_DRIVER, MYSQL_DRIVER, CUSTOM_DRIVER};
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public static File DERBY_FILE = null;
     public static File MYSQL_FILE = null;
     public static File CUSTOM_FILE = null;
 
-    public static boolean isInSingleUserMode() {
-        if (MODE == ConnectionTypeHandler.SINGLE_USER) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+
 
     public static String getDriverName() {
         return CONNECTION_STRING;
@@ -72,24 +63,19 @@ public class ConnectionTypeHandler {
     }
     private static String CONNECTION_STRING = null;
     private static Integer PREDEFINED_DRVER = null;
-    private static Integer MODE = 0;
-    private static String URL = LocalSettings.getProperty(LocalSettings.DBPATH);
+
+    private static String URL;
+    private static String DBNAME;
+
 
     /**
      * Constructs a new ConnHandler
      */
     public ConnectionTypeHandler() {
 
-        if (LocalSettings.getProperty(LocalSettings.DBDRIVER).equalsIgnoreCase(DERBY_DRIVER)) {
-            ConnectionTypeHandler.PREDEFINED_DRVER = ConnectionTypeHandler.DERBY;
-            ConnectionTypeHandler.MODE = ConnectionTypeHandler.SINGLE_USER;
-        } else if (LocalSettings.getProperty(LocalSettings.DBDRIVER).equalsIgnoreCase(MYSQL_DRIVER)) {
-            ConnectionTypeHandler.PREDEFINED_DRVER = ConnectionTypeHandler.MYSQL;
-            ConnectionTypeHandler.MODE = ConnectionTypeHandler.MULTI_USER;
-        } else {
-            ConnectionTypeHandler.PREDEFINED_DRVER = ConnectionTypeHandler.CUSTOM;
-            ConnectionTypeHandler.MODE = ConnectionTypeHandler.MULTI_USER;
-        }
+        setDRIVER(LocalSettings.getProperty(LocalSettings.DBDRIVER));
+        ConnectionTypeHandler.URL = LocalSettings.getProperty( LocalSettings.DBPATH);
+        ConnectionTypeHandler.DBNAME = LocalSettings.getProperty( LocalSettings.DBNAME);
     }
 
     /**
@@ -109,22 +95,22 @@ public class ConnectionTypeHandler {
 
         switch (PREDEFINED_DRVER) {
             case DERBY:
-                String cstring = "jdbc:derby:" + getURL() + File.separator + Constants.DATABASENAME + ";";
+                String cstring = "jdbc:derby:" + getURL() + File.separator + DBNAME + ";";
                 if (withCreate) {
                     cstring += "create=true;";
                 }
                 setConnectionString(cstring);
                 break;
             case MYSQL:
-                setConnectionString("jdbc:mysql://" + getURL() + "/" + Constants.DATABASENAME);
+                setConnectionString("jdbc:mysql://" + getURL() + "/" + DBNAME);
                 if (withCreate) {
-                    Log.Debug(this, "Sie müssen die MYSQL Datenbank " + Constants.DATABASENAME + " manuell anlegen.");
+                    Log.Debug(this, "Sie müssen die MYSQL Datenbank " + DBNAME + " manuell anlegen.");
                 }
                 break;
             case CUSTOM:
-                setConnectionString("jdbc:sql://" + getURL() + "/" + Constants.DATABASENAME);
+                setConnectionString("jdbc:sql://" + getURL() + "/" + DBNAME);
                 if (withCreate) {
-                    Log.Debug(this, "Sie müssen die SQL Datenbank " + Constants.DATABASENAME + " manuell anlegen.");
+                    Log.Debug(this, "Sie müssen die SQL Datenbank " + DBNAME + " manuell anlegen.");
                 }
                 break;
         }
@@ -216,13 +202,17 @@ public class ConnectionTypeHandler {
      * @param predefinedDriver
      */
     public void setDRIVER(String predefinedDriver) {
-        if (predefinedDriver.equals(DERBY_DRIVER)) {
+        if (predefinedDriver.equalsIgnoreCase(DERBY_DRIVER)) {
             PREDEFINED_DRVER = DERBY;
-        } else if (predefinedDriver.equals(MYSQL_DRIVER)) {
+        } else if (predefinedDriver.equalsIgnoreCase(MYSQL_DRIVER)) {
             PREDEFINED_DRVER = MYSQL;
         } else {
             PREDEFINED_DRVER = CUSTOM;
             CUSTOM_DRIVER = predefinedDriver;
         }
+    }
+
+    public void setDBName(String dbname) {
+       this.DBNAME = dbname;
     }
 }

@@ -123,7 +123,7 @@ public class DatabaseInstallation {
     public String[] getStructure() {
         if (ConnectionTypeHandler.getDriverType() == ConnectionTypeHandler.DERBY) {
             return DERBY_STRUCTURE;
-        } else if (ConnectionTypeHandler.getDriverType() == ConnectionTypeHandler.DERBY) {
+        } else if (ConnectionTypeHandler.getDriverType() == ConnectionTypeHandler.MYSQL) {
             return MYSQL_STRUCTURE;
         } else {
             return CUSTOM_STRUCTURE;

@@ -232,16 +232,18 @@ public class Main extends SingleFrameApplication {
         Argument option = abuilder.withName("=option").withMinimum(1).withMaximum(1).create();
         Argument filearg = abuilder.withName("=file").withMinimum(1).withMaximum(1).create();
         Argument dirarg = abuilder.withName("=directory").withMinimum(1).withMaximum(1).create();
+        Argument number = abuilder.withName("number").withMinimum(1).withMaximum(1).create();
 
         Option help = obuilder.withShortName("help").withShortName("h").withDescription("print this message").create();
         Option license = obuilder.withShortName("license").withShortName("li").withDescription("print license").create();
         Option version = obuilder.withShortName("version").withDescription("print the version information and exit").create();
         Option verbose = obuilder.withShortName("verbose").withDescription("be extra verbose").create();
         Option nolf = obuilder.withShortName("nolf").withDescription("use system L&F instead of Tiny L&F").create();
-        Option dbtype = obuilder.withShortName("dbdriver").withShortName("r").withDescription("DB Driver: derby (default), mysql, custom").withArgument(option).create();
         Option debug = obuilder.withShortName("debug").withDescription("debug logging").create();
         Option removeplugins = obuilder.withShortName("removeplugins").withDescription("remove all plugins which would be loaded").create();
         Option logfile = obuilder.withShortName("logfile").withShortName("l").withDescription("use file for log").withArgument(filearg).create();
+        Option connectionInstance = obuilder.withShortName("connectionInstance").withShortName("conn").withDescription("Use stored connection with this ID").withArgument(number).create();
+
         Group options = gbuilder.withName("options").
                 withOption(help).
                 withOption(version).
@@ -250,16 +252,24 @@ public class Main extends SingleFrameApplication {
                 withOption(license).
                 withOption(nolf).
                 withOption(removeplugins).
+                withOption(connectionInstance).
                 withOption(logfile).create();
 
         HelpFormatter hf = new HelpFormatter();
         Parser p = new Parser();
         p.setGroup(options);
         p.setHelpFormatter(hf);
+
         CommandLine cl = p.parseAndHelp(args);
+
         if (cl == null) {
             System.err.println("Cannot parse arguments");
+        } else {
+
+        if(cl.hasOption(connectionInstance)){
+            LocalSettings.setConnectionID(Integer.valueOf(String.valueOf(cl.getValue(connectionInstance))));
         }
+
         if (cl.hasOption(help)) {
             hf.print();
             System.exit(0);
@@ -291,22 +301,13 @@ public class Main extends SingleFrameApplication {
             }
         }
 
-        if (cl.hasOption(dbtype)) {
-            if (((String) cl.getValue(dbtype)).toLowerCase().endsWith("derby")) {
-                LocalSettings.setProperty(LocalSettings.DBDRIVER, ConnectionTypeHandler.DERBY_DRIVER);
-            } else if (((String) cl.getValue(dbtype)).toLowerCase().endsWith("mysql")) {
-                LocalSettings.setProperty(LocalSettings.DBDRIVER, ConnectionTypeHandler.MYSQL_DRIVER);
-            } else if (((String) cl.getValue(dbtype)).toLowerCase().endsWith("custom")) {
-                LocalSettings.setProperty(LocalSettings.DBDRIVER, ConnectionTypeHandler.CUSTOM_DRIVER);
-            }
-        }
-
         if (cl.hasOption(nolf)) {
             setLaF(null);
         }
 
         if (cl.hasOption(removeplugins)) {
             removeplugs = true;
+        }
         }
     }
 

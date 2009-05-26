@@ -24,6 +24,7 @@ public class DatabaseConnection {
     private static String user;
     private static String password;
 
+
     /**
      * 
      * @return Database connector
@@ -38,9 +39,8 @@ public class DatabaseConnection {
     }
     private Statement statement;
 
-
     public java.sql.Connection getConnection() {
-            return conn;
+        return conn;
     }
 
     /**
@@ -49,15 +49,17 @@ public class DatabaseConnection {
      * @param user
      * @param password
      * @param location
+     * @param dbname
      * @param create
      * @return Connection
      * @throws Exception
      */
-    public boolean connect(String predefinedDriver, String user, String password, String location, boolean create) throws Exception {
+    public boolean connect(String predefinedDriver, String user, String password, String location, String dbname, boolean create) throws Exception {
 
         ctype = new ConnectionTypeHandler();
         ctype.setDRIVER(predefinedDriver);
         ctype.setURL(location);
+        ctype.setDBName(dbname);
 
         try {
             Log.Debug(this, "Datenbanktreiber: " + ctype.getDriver());
@@ -104,7 +106,7 @@ public class DatabaseConnection {
                 Class.forName(ctype.getDriver()).newInstance();
             } catch (ClassNotFoundException ex) {
 //                Popup.warn(Messages.DB_DRIVER_INVALID + ex.getMessage(), Popup.ERROR);
-            DatabaseConnection.shutdown();
+                DatabaseConnection.shutdown();
 
             }
             user = LocalSettings.getProperty("dbuser");
@@ -154,8 +156,8 @@ public class DatabaseConnection {
             System.exit(1);
         }
     }
-    
-    public boolean runQueries(String[] queries) throws SQLException{
+
+    public boolean runQueries(String[] queries) throws SQLException {
         Statement stm = this.getConnection().createStatement();
 //        for (int i = 0; i < queries.length; i++) {
 //            stm.addBatch(queries[i]);

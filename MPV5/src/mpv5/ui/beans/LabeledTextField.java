@@ -103,6 +103,7 @@ public class LabeledTextField extends javax.swing.JPanel {
     public void set_Text(Object text) {
         this._text = String.valueOf(text);
         jTextField1.setText(_text);
+
     }
 
     /**
@@ -118,6 +119,8 @@ public class LabeledTextField extends javax.swing.JPanel {
     public void set_Label(String label) {
         this._label = label;
         jLabel1.setText(_label);
+        this.setToolTipText(_text);
+        jLabel1.setToolTipText(_text);
     }
 
     public void set_LabelFont(Font font) {
@@ -135,7 +138,7 @@ public class LabeledTextField extends javax.swing.JPanel {
     /**
      * Set the class of possible entries. Currently supported:
      * <li>Integer - invalid values will be replaced with 0
-      *<li>Double - invalid values will be replaced with 0.0
+     *<li>Double - invalid values will be replaced with 0.0
      * @param clazz
      */
     public void set_ValueClass(Class clazz) {
