@@ -69,6 +69,17 @@ public class DialogForFile extends JFileChooser implements Waiter {
             return "PDF Format(*.pdf)";
         }
     };
+
+     public static FileFilter ODT_FILES = new FileFilter() {
+
+        public boolean accept(File f) {
+            return f.getName().toLowerCase().endsWith(".odt") || f.isDirectory();
+        }
+
+        public String getDescription() {
+            return "ODT Format(*.odt)";
+        }
+    };
     private File file = null;
     public static File CURRENT_DIR = new File("");
 
@@ -92,7 +103,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
     }
 
     /**
-     * Create a new dialog for files and dirs with the given file seleced
+     * Create a new dialog for files and dirs with the given file selected
      * @param file
      */
     public DialogForFile(File file) {

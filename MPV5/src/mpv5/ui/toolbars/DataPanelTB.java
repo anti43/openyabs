@@ -283,6 +283,7 @@ public class DataPanelTB extends javax.swing.JPanel {
 
         dato.getPanelData(parents);
         dato.setIDS(-1);
+
         if (dato.save()) {
             parents.refresh();
             parents.setDataOwner(dato);

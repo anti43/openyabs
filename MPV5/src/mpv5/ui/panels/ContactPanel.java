@@ -1159,7 +1159,9 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         website_ = website.get_Text();
         workphone_ = workphone.get_Text();
         zip_ = zip.get_Text();
-        dateadded_ = DateConverter.getDate(dateadded.getText());
+        if (dateadded_ == null) {
+            dateadded_ = new Date();
+        }
         intaddedby_ = User.getUserId(addedby.getText());
         department_ = department.get_Text();
     }

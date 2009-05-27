@@ -44,10 +44,10 @@ public class Export extends HashMap<String, String> {
     /**
      *  Set the file to be filled
      * @param <T>
-     * @param pdfFile
+     * @param templateFile 
      */
-    public <T extends File> void setFile(T pdfFile) {
-        this.file = pdfFile;
+    public <T extends File> void setFile(T templateFile) {
+        this.file = templateFile;
     }
 
     /**
@@ -60,9 +60,14 @@ public class Export extends HashMap<String, String> {
         if (this.isEmpty()) {
             throw new NodataFoundException();
         }
-        if (!this.file.exists()) {
+
+        if (file == null ) {
+            throw new FileNotFoundException();
+        }else if (!this.file.exists()) {
             throw new FileNotFoundException(file.getPath());
         }
+
+      
         return false;
     }
 

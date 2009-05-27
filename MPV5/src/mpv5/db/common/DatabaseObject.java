@@ -62,7 +62,7 @@ public abstract class DatabaseObject {
     public String cname = "";
     private int groupsids = 1;
     private int intaddedby = 0;
-    private Date dateadded = new Date();
+    private Date dateadded = null;
 
     public String __getCName() {
         return cname;
@@ -201,6 +201,7 @@ public abstract class DatabaseObject {
             try {
                 if (ids <= 0) {
                     Log.Debug(this, "Inserting new dataset into: " + this.getContext());
+                    dateadded = new Date();
                     if (!this.getType().equals(new HistoryItem().getType())) {
                         message = this.__getCName() + Messages.INSERTED;
                     }
