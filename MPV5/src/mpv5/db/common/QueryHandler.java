@@ -185,7 +185,7 @@ public class QueryHandler implements Cloneable {
 
             Object object = criterias.getValues()[i];
             String column = criterias.getKeys()[i];
-            query += table +"."+column + "=" + String.valueOf(object);
+            query += table + "." + column + "=" + String.valueOf(object);
 
             if ((i + 1) != criterias.getValues().length) {
                 query += " AND ";
@@ -795,7 +795,7 @@ public class QueryHandler implements Cloneable {
 
             Object object = haveValues[i];
             String column = whereColumns[i];
-            query +=  table +"."+column + "=" + String.valueOf(object);
+            query += table + "." + column + "=" + String.valueOf(object);
 
             if ((i + 1) != haveValues.length) {
                 query += " AND ";
@@ -937,6 +937,7 @@ public class QueryHandler implements Cloneable {
      */
     public QueryHandler clone(String newTable) {
         QueryHandler theClone = null;
+        this.context = Context.getMatchingContext(newTable);
         try {
             theClone = (QueryHandler) this.clone();
             theClone.setTable(newTable);
@@ -944,6 +945,19 @@ public class QueryHandler implements Cloneable {
             Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
         return theClone;
+    }
+
+    /**
+     * Returns a new db connection without any table or Context association.
+     * @return A QueryHandler object
+     */
+    public static QueryHandler getConnection() {
+        try {
+            return (QueryHandler) QueryHandler.instanceOf().clone();
+        } catch (CloneNotSupportedException ex) {
+            Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
     }
 
     /**
