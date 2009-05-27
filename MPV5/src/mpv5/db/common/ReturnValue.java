@@ -10,7 +10,7 @@ package mpv5.db.common;
  */
 public class ReturnValue {
 
-    private int id  = 0;
+    private int id = 0;
     private Object[][] data;
     private String[] columnnames;
     private String message = null;
@@ -28,6 +28,14 @@ public class ReturnValue {
         this.data = data;
     }
 
+    public ReturnValue(int idOfIt, Object[][] data, String[] columnnames, String jobmessage) {
+
+        this.id = idOfIt;
+        this.columnnames = columnnames;
+        this.data = data;
+        this.message = jobmessage;
+    }
+
     public ReturnValue(Integer id) {
         this.id = id;
         this.columnnames = new String[0];
@@ -41,6 +49,7 @@ public class ReturnValue {
     }
 
     /**
+     * If an inserting query has generated an ID, it will be available here
      * @return the id
      */
     public int getId() {
@@ -48,6 +57,7 @@ public class ReturnValue {
     }
 
     /**
+     * All data retrived by a select query
      * @return the data
      */
     public Object[][] getData() {
@@ -55,19 +65,26 @@ public class ReturnValue {
     }
 
     /**
+     * The column names used
      * @return the columnnames
      */
     public String[] getColumnnames() {
         return columnnames;
     }
 
+    /**
+     * Add all the data of the given ReturnValue
+     * @param returnValue
+     */
     public void set(ReturnValue returnValue) {
-         this.setId(returnValue.id);
+        this.setId(returnValue.id);
         this.setColumnnames(returnValue.columnnames);
         this.setData(returnValue.data);
+        this.setMessage(returnValue.message);
     }
 
     /**
+     * If the query had a message, this will be non-NULL
      * @return the message
      */
     public String getMessage() {
@@ -107,6 +124,6 @@ public class ReturnValue {
      * @return
      */
     public boolean hasData() {
-        return data !=null && data.length >0;
+        return data != null && data.length > 0;
     }
 }

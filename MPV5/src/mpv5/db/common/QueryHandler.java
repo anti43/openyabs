@@ -440,7 +440,7 @@ public class QueryHandler implements Cloneable {
      * @return
      */
     public int selectCountBetween(java.util.Date date1, java.util.Date date2) {
-        return selectCount("datum", "BETWEEN '" + DateConverter.getSQLDateString(date1) + "' AND '" + DateConverter.getSQLDateString(date2) + "'");
+        return selectCount("dateadded", "BETWEEN '" + DateConverter.getSQLDateString(date1) + "' AND '" + DateConverter.getSQLDateString(date2) + "'");
     }
 
     /**
@@ -1050,17 +1050,19 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
-     * 
-     * @param from
-     * @param where
+     * Returns the count of rows which match the condition.
+     * <br/>Example:
+     * <br/>selectCount("cname", "LIKE %Andreas%")
+     * @param what
+     * @param condition
      * @return
      */
-    public int selectCount(String from, String where) {
+    public int selectCount(String what, String condition) {
         String wher = "";
         start();
 
-        if (where != null) {
-            wher = " WHERE " + from + " " + where;
+        if (condition != null) {
+            wher = " WHERE " + what + " " + condition;
         }
         String query = "SELECT COUNT(*) AS rowcount FROM " + table + " " + wher;
         String message = "Database Error (SelectCount:COUNT):";
@@ -1227,6 +1229,7 @@ public class QueryHandler implements Cloneable {
 
         if (jobmessage != null) {
             MPV5View.addMessage(jobmessage);
+            retval.setMessage(jobmessage);
         }
         return retval;
 
@@ -1327,6 +1330,7 @@ public class QueryHandler implements Cloneable {
 
         if (jobmessage != null) {
             MPV5View.addMessage(jobmessage);
+            retval.setMessage(jobmessage);
         }
         return retval;
 
@@ -1436,7 +1440,7 @@ public class QueryHandler implements Cloneable {
             MPV5View.addMessage(jobmessage);
         }
 //        Log.PrintArray(data);
-        return new ReturnValue(id, data, columnnames);
+        return new ReturnValue(id, data, columnnames, jobmessage);
     }
 
     /**
