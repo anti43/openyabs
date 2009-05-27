@@ -148,7 +148,7 @@ public class Context {
             IDENTITY_ITEMS + "." + "intreminders";
 
     public static String DETAILS_JOURNAL = IDENTITY_ITEMS + "." + "IDS," + IDENTITY_ITEMS + "." + "CNAME," +
-            IDENTITY_GROUPS + "0." + "CNAME," + IDENTITY_ITEMS + "." + "dateadded," + IDENTITY_ITEMS + "." + "isactive," +
+            IDENTITY_GROUPS + "0." + "CNAME," + IDENTITY_ITEMS + "." + "dateadded," +
             IDENTITY_ITEMS + "." + "value," +
             IDENTITY_ITEMS + "." + "taxvalue, " +
             IDENTITY_ITEMS + "." + "datetodo, " +

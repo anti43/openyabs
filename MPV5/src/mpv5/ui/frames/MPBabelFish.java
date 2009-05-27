@@ -305,7 +305,7 @@ public class MPBabelFish extends javax.swing.JFrame {
         DialogForFile dialog = new DialogForFile(DialogForFile.FILES_ONLY, "language.mp");
 //        MPTableModel mpdel = DataModelUtils.getModelCopy(data);
         ArrayUtilities.removeColumn(data, 1);
-        dialog.writeFile(ArrayUtilities.tableModelToFile(data, "="));
+        dialog.saveFile(ArrayUtilities.tableModelToFile(data, "="));
 //        data.setModel(mpdel);
         setLanguageSelection();
     }//GEN-LAST:event_jMenuItem1ActionPerformed

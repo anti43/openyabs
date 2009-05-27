@@ -379,7 +379,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
 
             }
 
-            jTable1.setModel(new MPTableModel(ArrayUtilities.changeToClassValue(d, 4, Date.class), Headers.HISTORY, new Class[]{String.class, String.class, String.class, String.class, Date.class}));
+            jTable1.setModel(new MPTableModel(ArrayUtilities.changeToClassValue(d, 4, Date.class), Headers.JOURNAL, new Class[]{String.class, String.class, String.class, String.class, Date.class}));
             TableFormat.stripColumn(jTable1, 0);
         } catch (Exception e) {
             Log.Debug(this, e.getMessage());

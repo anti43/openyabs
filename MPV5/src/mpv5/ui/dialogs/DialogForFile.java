@@ -94,11 +94,11 @@ public class DialogForFile extends JFileChooser implements Waiter {
 
     /**
      * Create a new dialog for the given selection mode
-     * @param mode DialogForFile.MODE
+     * @param selectionMode  DialogForFile.MODE
      */
-    public DialogForFile(int mode) {
+    public DialogForFile(int selectionMode) {
         super();
-        this.setFileSelectionMode(mode);
+        this.setFileSelectionMode(selectionMode);
         this.setSelectedFile(CURRENT_DIR);
     }
 
@@ -279,15 +279,4 @@ public class DialogForFile extends JFileChooser implements Waiter {
         saveFile((File) object);
     }
 
-    public void writeFile(File file) {
-        if (saveFile()) {
-            try {
-                FileDirectoryHandler.copyFile(file, this.file);
-                MPV5View.addMessage(Messages.FILE_SAVED + this.file);
-            } catch (Exception ex) {
-                Popup.error(ex);
-                Log.Debug(this, ex);
-            }
-        }
-    }
 }

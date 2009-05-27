@@ -27,4 +27,5 @@ public class Headers {
     public static String[] CONTACT_FILES = new String[]{"id", "Filename", "Date", "Description"};
     public static String[] HISTORY = new String[]{"id", "Description", "User", "Group", "Date"};
     public static String[] IMPORT =  new String[]{"Id", "Import", "Type", "Name", "Data"};
+    public static String[] JOURNAL= new String[]{"id", "Description", "User", "Group", "Date"};
 }
