@@ -31,10 +31,10 @@ public class Export extends HashMap<String, String> {
     private File file;
 
     /**
-     * Add the data to be exported, as key - value pairs
+     * Add the data, must be key - value pairs
      * @param data 
      */
-    public void setData(String[][] data) {
+    public void addData(String[][] data) {
         for (int i = 0; i < data.length; i++) {
             String[] strings = data[i];
             super.put(strings[0], strings[1]);
