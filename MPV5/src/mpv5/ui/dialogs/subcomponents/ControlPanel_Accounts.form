@@ -107,7 +107,7 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jScrollPane1" pref="428" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" pref="429" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -165,9 +165,9 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="1" attributes="0">
+              <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="1" attributes="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="jScrollPane3" alignment="0" pref="338" max="32767" attributes="0"/>
                       <Component id="jLabel3" alignment="0" min="-2" max="-2" attributes="0"/>
                       <Component id="cname" alignment="0" min="-2" pref="338" max="-2" attributes="0"/>
@@ -185,8 +185,8 @@
                               <Component id="groupnameselect" alignment="0" min="-2" pref="271" max="-2" attributes="1"/>
                           </Group>
                       </Group>
-                      <Component id="classv" alignment="0" min="-2" max="-2" attributes="0"/>
                       <Component id="parents" alignment="0" min="-2" pref="338" max="-2" attributes="0"/>
+                      <Component id="classv" alignment="0" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -210,7 +210,7 @@
                   <Component id="tax" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="classv" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="23" max="32767" attributes="0"/>
+                  <EmptySpace pref="22" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">
                       <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
                       <Component id="groupnameselect" min="-2" pref="22" max="-2" attributes="0"/>
@@ -362,7 +362,7 @@
             <Property name="name" type="java.lang.String" value="typeselect" noResource="true"/>
           </Properties>
         </Component>
-        <Component class="mpv5.ui.beans.LabeledTextField" name="classv">
+        <Component class="mpv5.ui.beans.LabeledSpinner" name="classv">
           <Properties>
             <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
               <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ControlPanel_Accounts.classv._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>

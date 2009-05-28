@@ -24,7 +24,11 @@ package mpv5.ui.dialogs.subcomponents;
 import java.awt.Component;
 import java.util.ArrayList;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JFormattedTextField;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SpinnerListModel;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeSelectionModel;
 import mpv5.data.PropertyStore;
@@ -63,11 +67,12 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
         if (MPSecurityManager.checkAdminAccess()) {
             initComponents();
             tax.set_ValueClass(Double.class);
-            classv.set_ValueClass(Integer.class);
             tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 
             refresh();
         }
+
+        ((JSpinner.DefaultEditor) classv.getSpinner().getEditor()).getTextField().setEditable(false);
     }
 
     public ControlPanel_Accounts(Account aThis) {
@@ -77,13 +82,14 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
             refresh();
             setDataOwner(aThis);
         }
+
+        ((JSpinner.DefaultEditor) classv.getSpinner().getEditor()).getTextField().setEditable(false);
     }
 
     public void showRequiredFields() {
         TextFieldUtils.blinkerRed(cname);
-        TextFieldUtils.blinkerGrey(parents);
+        TextFieldUtils.blinkerRed(parents);
         TextFieldUtils.blinkerRed(tax);
-        TextFieldUtils.blinkerRed(classv);
     }
 
     /** This method is called from within the constructor to
@@ -115,7 +121,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
         tax = new mpv5.ui.beans.LabeledTextField();
         jLabel5 = new javax.swing.JLabel();
         typeselect = new javax.swing.JComboBox();
-        classv = new mpv5.ui.beans.LabeledTextField();
+        classv = new mpv5.ui.beans.LabeledSpinner();
         jPanel6 = new javax.swing.JPanel();
         jButton4 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
@@ -166,7 +172,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 428, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 429, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -229,16 +235,16 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
         rightpane.setLayout(rightpaneLayout);
         rightpaneLayout.setHorizontalGroup(
             rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, rightpaneLayout.createSequentialGroup()
+            .addGroup(rightpaneLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cname, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 338, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 338, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tax, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(rightpaneLayout.createSequentialGroup()
+                .addGroup(rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
+                    .addComponent(jLabel3)
+                    .addComponent(cname, javax.swing.GroupLayout.PREFERRED_SIZE, 338, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 338, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, rightpaneLayout.createSequentialGroup()
                         .addGroup(rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel4)
                             .addComponent(jLabel5))
@@ -246,8 +252,8 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
                         .addGroup(rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(typeselect, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(groupnameselect, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(classv, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(parents, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 338, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(parents, javax.swing.GroupLayout.PREFERRED_SIZE, 338, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(classv, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         rightpaneLayout.setVerticalGroup(
@@ -268,7 +274,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
                 .addComponent(tax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(classv, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
                 .addGroup(rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel4)
                     .addComponent(groupnameselect, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -419,7 +425,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
-    private mpv5.ui.beans.LabeledTextField classv;
+    private mpv5.ui.beans.LabeledSpinner classv;
     private mpv5.ui.beans.LabeledTextField cname;
     private javax.swing.JTextArea desc;
     private javax.swing.JComboBox groupnameselect;
@@ -534,13 +540,16 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
 
         typeselect.setModel(new DefaultComboBoxModel(MPComboBoxModelItem.toItems(
                 new Object[][]{
-                {Account.ASSET, "Asset"},
-                {Account.COST, "Cost"},
-                {Account.EQUITY, "Equity"},
-                {Account.EXPENSE, "Expense"},
-                {Account.INCOME, "Income"},
-                {Account.LIABILITY, "Liability"}
-        })));
+                    {Account.ASSET, "Asset"},
+                    {Account.COST, "Cost"},
+                    {Account.EQUITY, "Equity"},
+                    {Account.EXPENSE, "Expense"},
+                    {Account.INCOME, "Income"},
+                    {Account.LIABILITY, "Liability"}
+                })));
+
+//        classv.getSpinner().setModel(new SpinnerListModel(QueryHandler.getConnection().getValuesFor(null, "intaccountclass", cname_,"", false)));
+
 
     }
 
@@ -561,8 +570,8 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
         }
 
         taxvalue_ = Double.valueOf(tax.getText());
-        intaccountclass_ = Integer.valueOf(classv.getText());
-        intaccounttype_ =  Integer.valueOf(((MPComboBoxModelItem) typeselect.getSelectedItem()).getId());
+        intaccountclass_ = Integer.valueOf(String.valueOf(classv.getSpinner().getValue()));
+        intaccounttype_ = Integer.valueOf(((MPComboBoxModelItem) typeselect.getSelectedItem()).getId());
     }
 
     public DatabaseObject getDataOwner() {
@@ -587,7 +596,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
         }
 
         tax.set_Text(taxvalue_);
-        classv.set_Text(intaccountclass_);
+        classv.set_Value(intaccountclass_);
     }
 
     public void paste(DatabaseObject dbo) {

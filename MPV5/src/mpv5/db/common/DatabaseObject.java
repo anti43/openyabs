@@ -62,7 +62,7 @@ public abstract class DatabaseObject {
     public String cname = "";
     private int groupsids = 1;
     private int intaddedby = 0;
-    private Date dateadded = null;
+    private Date dateadded = new Date(0);
 
     public String __getCName() {
         return cname;

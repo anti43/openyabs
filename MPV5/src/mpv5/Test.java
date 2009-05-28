@@ -16,8 +16,14 @@
  */
 package mpv5;
 
+import com.lowagie.text.DocumentException;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import mpv5.ui.dialogs.SplashScreen;
+import mpv5.utils.pdf.PDFFormTest;
 
 /**
  *
@@ -26,8 +32,38 @@ import mpv5.ui.dialogs.SplashScreen;
 public class Test {
 
     public static void main(String[] args) {
+        try {
+            new PDFFormTest(new File("/home/anti/Desktop/t.pdf")).printFields();
+//        new SplashScreen(new ImageIcon(Test.class.getResource("/mpv5/resources/images/background.png")));
+//        try {
+//        try {
+//            new XMLReader().newDoc(new File("contacts.xml"), true);
+//
+//        } catch (JDOMException ex) {
+//            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (IOException ex) {
+//            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//            XMLReader r = new XMLReader();
+//            r.newDoc(new File("contacts.xml"), true);
+//            ArrayList<DatabaseObject> l = r.getObjects(new Contact());
+//
+//            for (int i = 0; i < l.size(); i++) {
+//
+//                DatabaseObject databaseObject = l.get(i);
+//                System.out.println(databaseObject.__getCName());
+//
+//            }
+//        } catch (Exception ex) {
+//           ex.printStackTrace();
+//        }
+        } catch (IOException ex) {
+            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (DocumentException ex) {
+            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
-        new SplashScreen(new ImageIcon(Test.class.getResource("/mpv5/resources/images/background.png")));
+//        new SplashScreen(new ImageIcon(Test.class.getResource("/mpv5/resources/images/background.png")));
 //        try {
 //        try {
 //            new XMLReader().newDoc(new File("contacts.xml"), true);
