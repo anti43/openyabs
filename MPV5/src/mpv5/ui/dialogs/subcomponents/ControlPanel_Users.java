@@ -665,7 +665,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         }
 
         inthighestright.setModel(MPSecurityManager.getRolesAsComboBoxModel());
-        jTable1.setModel(new MPTableModel(new Class[]{String.class, String.class, String.class, String.class, Boolean.class, Boolean.class}, TableFormat.changeToClassValue(QueryHandler.instanceOf().clone(Context.getUser()).select(Context.DETAILS_USERS, (String[]) null), Boolean.class, new int[]{4, 5}), Headers.USER_DETAILS));
+        jTable1.setModel(new MPTableModel(new Class[]{String.class, String.class, String.class, String.class, Boolean.class, Boolean.class}, TableFormat.changeToClassValue(QueryHandler.instanceOf().clone(Context.getUser()).select(Context.DETAILS_USERS, (String[]) null), Boolean.class, new int[]{4, 5}), Headers.USER_DETAILS.getValue()));
 
         groupname.setModel(new DefaultComboBoxModel(
                 MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID(), null, ""))));
@@ -689,7 +689,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         if (dbo.getDbIdentity().equals(Context.getUser().getDbIdentity())) {
             setDataOwner(dbo);
         } else {
-            MPV5View.addMessage(Messages.NOT_POSSIBLE + Messages.ACTION_PASTE);
+            MPV5View.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE);
         }
     }
 

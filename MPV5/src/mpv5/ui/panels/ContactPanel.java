@@ -191,7 +191,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         c.addReference(Context.getFiles().getDbIdentity(), "cname", "filename");
         Object[][] data = new DatabaseSearch(c).getValuesFor(Context.DETAILS_FILES, "contactsids", dataOwner.__getIDS());
 
-        dataTable.setModel(new MPTableModel(data, Headers.CONTACT_FILES));
+        dataTable.setModel(new MPTableModel(data, Headers.CONTACT_FILES.getValue()));
         TableFormat.stripFirstColumn(dataTable);
     }
 
@@ -954,7 +954,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
     private void button_order1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_order1ActionPerformed
         AddressPanel p = new AddressPanel();
-        p.setName(Messages.NEW_VALUE);
+        p.setName(Messages.NEW_VALUE.toString());
         ((Address) p.getDataOwner()).setCompany(dataOwner.__getCompany());
         ((Address) p.getDataOwner()).setTaxnumber(dataOwner.__getTaxnumber());
         p.setDataOwner(p.getDataOwner());
@@ -1284,7 +1284,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         if (dbo.getDbIdentity().equals(Context.getContact().getDbIdentity())) {
             setDataOwner(dbo);
         } else {
-            MPV5View.addMessage(Messages.NOT_POSSIBLE + Messages.ACTION_PASTE);
+            MPV5View.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());
         }
     }
 

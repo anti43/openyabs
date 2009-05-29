@@ -419,7 +419,7 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener, 
             }
 
             if (days[i + n + 7].getIcon() == null) {
-                days[i + n + 7].setToolTipText(Messages.NEW_VALUE);
+                days[i + n + 7].setToolTipText(Messages.NEW_VALUE.toString());
                 days[i + n + 7].addActionListener(new ActionListener() {
 
                     public void actionPerformed(ActionEvent e) {

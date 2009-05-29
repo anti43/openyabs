@@ -133,16 +133,16 @@ public class MPSecurityManager {
         switch (action) {
 
             case CREATE_OR_DELETE:
-                return Messages.ACTION_CREATE;
+                return Messages.ACTION_CREATE.getValue();
 
             case EDIT:
-                return Messages.ACTION_EDIT;
+                return Messages.ACTION_EDIT.getValue();
 
             case EXPORT:
-                return Messages.ACTION_EXPORT;
+                return Messages.ACTION_EXPORT.getValue();
 
             case VIEW:
-                return Messages.ACTION_VIEW;
+                return Messages.ACTION_VIEW.getValue();
         }
 
         return null;

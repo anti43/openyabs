@@ -168,7 +168,7 @@ public class JCalendar extends JPanel implements PropertyChangeListener {
 	 */
 	public JCalendar(Date date, Locale locale, boolean monthSpinner, boolean weekOfYearVisible) {
 
-		setName(Messages.CALENDAR);
+		setName(Messages.CALENDAR.toString());
 
 		// needed for setFont() etc.
 		dayChooser = null;

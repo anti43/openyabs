@@ -230,7 +230,7 @@ public class User extends DatabaseObject {
 
             SwingUtilities.invokeLater(runnable);
         } else {
-            Popup.warn(Messages.NOT_POSSIBLE + Messages.USER_DISABLED);
+            Popup.warn(Messages.NOT_POSSIBLE.toString() + Messages.USER_DISABLED);
         }
     }
 

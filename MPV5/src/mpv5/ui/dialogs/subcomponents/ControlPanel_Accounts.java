@@ -23,6 +23,8 @@ package mpv5.ui.dialogs.subcomponents;
 
 import java.awt.Component;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFormattedTextField;
 import javax.swing.JSpinner;
@@ -505,7 +507,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
                 g = (Account) DatabaseObject.getObject(Context.getAccounts(), 1);
             } catch (NodataFoundException ex) {
                 g = (Account) DatabaseObject.getObject(Context.getAccounts());
-                g.setCName(Messages.ACCOUNTNAMES);
+                g.setCName(Messages.ACCOUNTNAMES.toString());
                 g.setIDS(-1);
             }
         } else {
@@ -540,16 +542,24 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
 
         typeselect.setModel(new DefaultComboBoxModel(MPComboBoxModelItem.toItems(
                 new Object[][]{
-                    {Account.ASSET, "Asset"},
-                    {Account.COST, "Cost"},
-                    {Account.EQUITY, "Equity"},
-                    {Account.EXPENSE, "Expense"},
-                    {Account.INCOME, "Income"},
-                    {Account.LIABILITY, "Liability"}
+                    {Account.ASSET, Messages.ASSET},
+                    {Account.COST, Messages.COST},
+                    {Account.EQUITY, Messages.EQUITY},
+                    {Account.EXPENSE, Messages.EXPENSE},
+                    {Account.INCOME, Messages.INCOME},
+                    {Account.LIABILITY, Messages.LIABILITY}
                 })));
+        try {
+            classv.getSpinner().setModel(new SpinnerListModel(QueryHandler.getConnection().clone(Context.getAccounts()).getColumn("intaccountclass", -1)));
+        } catch (NodataFoundException ex) {
+            Log.Debug(this, ex.getMessage());
+            classv.getSpinner().setModel(new SpinnerListModel());
+        }
 
-//        classv.getSpinner().setModel(new SpinnerListModel(QueryHandler.getConnection().getValuesFor(null, "intaccountclass", cname_,"", false)));
-
+        try {
+            classv.getSpinner().setValue(0);
+        } catch (Exception e) {
+        }
 
     }
 
@@ -603,7 +613,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
         if (dbo.getDbIdentity().equals(Context.getAccounts().getDbIdentity())) {
             setDataOwner(dbo);
         } else {
-            MPV5View.addMessage(Messages.NOT_POSSIBLE + Messages.ACTION_PASTE);
+            MPV5View.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE);
         }
     }
 

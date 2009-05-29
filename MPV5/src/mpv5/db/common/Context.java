@@ -872,7 +872,7 @@ public class Context {
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_CONTACTS);
         c.setSearchFields(DEFAULT_CONTACT_SEARCH);
-        c.setSearchHeaders(Headers.CONTACT_DEFAULT);
+        c.setSearchHeaders(Headers.CONTACT_DEFAULT.getValue());
         c.setIdentityClass(IDENTITY_CONTACTS_CLASS);
         c.setId(0);
 
@@ -893,7 +893,7 @@ public class Context {
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_ITEMS);
         c.setSearchFields(DEFAULT_ITEM_SEARCH);
-        c.setSearchHeaders(Headers.ITEM_DEFAULT);
+        c.setSearchHeaders(Headers.ITEM_DEFAULT.getValue());
         c.setIdentityClass(IDENTITY_ITEMS_CLASS);
         c.setIsActive(active);
         c.setIsDone(done);
@@ -925,7 +925,7 @@ public class Context {
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_CONTACTS);
         c.setSearchFields(DEFAULT_CONTACT_SEARCH);
-        c.setSearchHeaders(Headers.CONTACT_DEFAULT);
+        c.setSearchHeaders(Headers.CONTACT_DEFAULT.getValue());
         c.setIdentityClass(IDENTITY_CONTACTS_CLASS);
         c.setId(3);
 
@@ -938,7 +938,7 @@ public class Context {
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_CONTACTS);
         c.setSearchFields(DEFAULT_CONTACT_SEARCH);
-        c.setSearchHeaders(Headers.CONTACT_DEFAULT);
+        c.setSearchHeaders(Headers.CONTACT_DEFAULT.getValue());
         c.setIdentityClass(IDENTITY_CONTACTS_CLASS);
         c.setId(4);
 
@@ -951,7 +951,7 @@ public class Context {
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_CONTACTS);
         c.setSearchFields(DEFAULT_CONTACT_SEARCH);
-        c.setSearchHeaders(Headers.CONTACT_DEFAULT);
+        c.setSearchHeaders(Headers.CONTACT_DEFAULT.getValue());
         c.setIdentityClass(IDENTITY_CONTACTS_CLASS);
         c.setId(5);
 
@@ -963,7 +963,7 @@ public class Context {
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_CONTACTS);
         c.setSearchFields(DEFAULT_CONTACT_SEARCH);
-        c.setSearchHeaders(Headers.CONTACT_DEFAULT);
+        c.setSearchHeaders(Headers.CONTACT_DEFAULT.getValue());
         c.setIdentityClass(IDENTITY_CONTACTS_CLASS);
         c.setId(6);
 
@@ -975,7 +975,7 @@ public class Context {
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_USERS);
         c.setSearchFields(DEFAULT_USER_SEARCH);
-        c.setSearchHeaders(Headers.USER_DEFAULT);
+        c.setSearchHeaders(Headers.USER_DEFAULT.getValue());
         c.setIdentityClass(IDENTITY_USERS_CLASS);
         c.uniqueColumns = UNIQUECOLUMNS_USER;
         c.setId(7);
@@ -1065,7 +1065,7 @@ public class Context {
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_ITEMS);
         c.setSearchFields(DEFAULT_ITEM_SEARCH);
-        c.setSearchHeaders(Headers.ITEM_DEFAULT);
+        c.setSearchHeaders(Headers.ITEM_DEFAULT.getValue());
         c.setIdentityClass(IDENTITY_ITEMS_CLASS);
         c.setIsActive(true);
         c.setIsBill(true);
@@ -1079,7 +1079,7 @@ public class Context {
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_ITEMS);
         c.setSearchFields(DEFAULT_ITEM_SEARCH);
-        c.setSearchHeaders(Headers.ITEM_DEFAULT);
+        c.setSearchHeaders(Headers.ITEM_DEFAULT.getValue());
         c.setIdentityClass(IDENTITY_ITEMS_CLASS);
         c.setIsActive(true);
         c.setIsOrder(true);
@@ -1093,7 +1093,7 @@ public class Context {
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_ITEMS);
         c.setSearchFields(DEFAULT_ITEM_SEARCH);
-        c.setSearchHeaders(Headers.ITEM_DEFAULT);
+        c.setSearchHeaders(Headers.ITEM_DEFAULT.getValue());
         c.setIdentityClass(IDENTITY_ITEMS_CLASS);
         c.setIsActive(true);
         c.setIsOffer(true);

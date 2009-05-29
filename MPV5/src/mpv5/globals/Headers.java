@@ -8,24 +8,36 @@ package mpv5.globals;
  *
  * @author Andreas
  */
-public class Headers {
+public enum Headers {
 
-    public static String[] SEARCH_DEFAULT = new String[]{"Internal ID", "Name", "Number"};
-    public static String[] CONTACT_DEFAULT = new String[]{"Internal ID", "ID", "Name", "City"};
-    public static String[] CONTACT_DETAILS = new String[]{
-        "Internal ID", "ID", "Title",
-        "Prename", "Name", "Street",
-        "Zip", "City", "Mainphone",
-        "Fax", "Mobilephone", "Workphone",
-        "Mailaddress", "Company",
-        "Website", "Notes", "Taxnumber"};
-    public static String[] USER_DEFAULT = new String[]{"Internal ID", "ID", "User Name", "Mail", "Last logged in"};
-    public static String[] USER_DETAILS = new String[]{"Internal ID", "User Name", "Fullname", "Mail", "Enabled", "Logged in"};
+    SEARCH_DEFAULT(new String[]{"Internal ID", "Name", "Number"}),
+    CONTACT_DEFAULT(new String[]{"Internal ID", "ID", "Name", "City"}),
+    CONTACT_DETAILS(new String[]{
+"Internal ID", "ID", "Title",
+"Prename", "Name", "Street",
+"Zip", "City", "Mainphone",
+"Fax", "Mobilephone", "Workphone",
+"Mailaddress", "Company",
+"Website", "Notes", "Taxnumber"}),
+    USER_DEFAULT(new String[]{"Internal ID", "ID", "User Name", "Mail", "Last logged in"}),
+    USER_DETAILS(new String[]{"Internal ID", "User Name", "Fullname", "Mail", "Enabled", "Logged in"}),
+    BABELFISH(new String[]{"Component", "Language Value", "New Value"}),
+    ITEM_DEFAULT(new String[]{"Internal ID", "ID", "Date", "Value"}),
+    CONTACT_FILES(new String[]{"id", "Filename", "Date", "Description"}),
+    HISTORY(new String[]{"id", "Description", "User", "Group", "Date"}),
+    IMPORT(new String[]{"Id", "Import", "Type", "Name", "Data"}),
+    JOURNAL(new String[]{"id", "Description", "User", "Group", "Date"});
 
-    public static String[] BABELFISH = new String[]{"Component", "Language Value", "New Value"};
-    public static String[] ITEM_DEFAULT = new String[]{"Internal ID", "ID", "Date", "Value"};
-    public static String[] CONTACT_FILES = new String[]{"id", "Filename", "Date", "Description"};
-    public static String[] HISTORY = new String[]{"id", "Description", "User", "Group", "Date"};
-    public static String[] IMPORT =  new String[]{"Id", "Import", "Type", "Name", "Data"};
-    public static String[] JOURNAL= new String[]{"id", "Description", "User", "Group", "Date"};
+    private Headers(String[] header) {
+        this.header = header;
+    }
+    private String[] header;
+
+    public String[] getValue() {
+        return header;
+    }
+
+    public void setValue(String[] header) {
+        this.header = header;
+    }
 }

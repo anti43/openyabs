@@ -323,7 +323,7 @@ public class HistoryPanel extends javax.swing.JPanel implements ListPanel {
 
         }
 
-        jTable1.setModel(new MPTableModel(ArrayUtilities.changeToClassValue(d, 4, Date.class), Headers.HISTORY, new Class[]{String.class, String.class, String.class, String.class, Date.class}));
+        jTable1.setModel(new MPTableModel(ArrayUtilities.changeToClassValue(d, 4, Date.class), Headers.HISTORY.getValue(), new Class[]{String.class, String.class, String.class, String.class, Date.class}));
         TableFormat.stripColumn(jTable1, 0);
 //        TableFormat.stripColumn(jTable1, 3);
 //        TableFormat.stripColumn(jTable1, 4);

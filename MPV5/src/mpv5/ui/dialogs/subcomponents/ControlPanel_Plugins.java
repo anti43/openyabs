@@ -75,10 +75,10 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
     private void addPopupMenu() {
         popup = new JPopupMenu();
         JMenuItem jmi1;
-        popup.add(jmi1 = new JMenuItem(Messages.ACTION_DELETE));
+        popup.add(jmi1 = new JMenuItem(Messages.ACTION_DELETE.toString()));
         popup.add(new JPopupMenu.Separator());
         JMenuItem jmi2;
-        popup.add(jmi2 = new JMenuItem(Messages.ACTION_OPEN));
+        popup.add(jmi2 = new JMenuItem(Messages.ACTION_OPEN.toString()));
         popup.add(new JPopupMenu.Separator());
 
         jmi1.addActionListener(new ActionListener() {

@@ -431,7 +431,7 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
         try {
             g = (Group) DatabaseObject.getObject(Context.getGroup(), 1);
         } catch (NodataFoundException ex) {
-            g= new Group(Messages.GROUPNAMES);
+            g= new Group(Messages.GROUPNAMES.toString());
             g.setIDS(-1);
         }
 
@@ -475,7 +475,7 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
         if (dbo.getDbIdentity().equals(Context.getGroup().getDbIdentity())) {
             setDataOwner(dbo);
         } else {
-            MPV5View.addMessage(Messages.NOT_POSSIBLE + Messages.ACTION_PASTE);
+            MPV5View.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE);
         }
     }
 

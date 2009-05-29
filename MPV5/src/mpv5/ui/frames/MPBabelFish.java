@@ -446,7 +446,7 @@ public class MPBabelFish extends javax.swing.JFrame {
                     new Class[]{String.class, String.class, String.class},
                     new boolean[]{false, true, true},
                     LanguageManager.getEditorModel(((MPComboBoxModelItem) languages.getSelectedItem()).getId()),
-                    Headers.BABELFISH));
+                    Headers.BABELFISH.getValue()));
             data.validate();
 //            langName.set_Text((((MPComboBoxModelItem) languages.getSelectedItem()).getName() + " (" + MPV5View.getUser().getName() + ")"));
             parent.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));

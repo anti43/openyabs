@@ -18,25 +18,20 @@ package mpv5.resources.languages;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Locale;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import mpv5.Main;
 import mpv5.db.common.Context;
-import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
-import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryData;
 import mpv5.db.common.QueryHandler;
-import mpv5.globals.Constants;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
@@ -53,7 +48,6 @@ import mpv5.utils.reflection.ClasspathTools;
 import mpv5.utils.text.RandomText;
 import mpv5.utils.xml.XMLReader;
 import org.jdom.Document;
-import org.jdom.JDOMException;
 
 /**
  *
@@ -95,7 +89,7 @@ public class LanguageManager {
                         t.add("cname", country[1]);
                         t.add("iso", Integer.valueOf(country[2]));
                         t.add("groupsids", MPV5View.getUser().__getGroupsids());
-                        QueryHandler.instanceOf().clone(Context.getCountries()).insert(t, Messages.DONE);
+                        QueryHandler.instanceOf().clone(Context.getCountries()).insert(t, Messages.DONE.toString());
                     }
 //                MPV5View.addMessage(langname + Messages.ROW_UPDATED);
                 }
@@ -137,47 +131,66 @@ public class LanguageManager {
         }
     }
 
+    private static  boolean failed = false;
     /**
      * 
      * @param langid
      * @return
      */
     public static ResourceBundle getBundle(String langid) {
-        if (!langid.contentEquals("buildin_en")) {
-            if (!isCachedLanguage(langid)) {
-                File bundlefile = null;
-                Object[] data;
-                URI newfile;
-                String tempname = new RandomText(10).getString();
-                try {
-                    data = QueryHandler.instanceOf().clone(Context.getLanguage()).
-                            selectFirst("filename", new String[]{Context.SEARCH_NAME, langid, "'"});
-                    if (data != null && data.length > 0) {
-                        bundlefile = QueryHandler.instanceOf().clone(Context.getFiles()).retrieveFile(String.valueOf(
-                                data[0]));
-                    }
-                    if (bundlefile != null) {
-                        newfile = FileDirectoryHandler.copyFile(bundlefile, new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR)), tempname + ".properties", true);
-                        if (hasNeededKeys(bundlefile)) {
-                            ClasspathTools.addPath(new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR)));//Add the files parent to classpath to be found
+       
+        synchronized(LanguageManager.class) {
+            if (!langid.contentEquals("buildin_en")) {
+                Log.Debug(LanguageManager.class, "Checking language: " + langid);
+                if (!failed) {
+                    Log.Debug(LanguageManager.class, "Language has not previously failed: " + langid);
+                    if (!isCachedLanguage(langid)) {
+                        Log.Debug(LanguageManager.class, "Language is not cached: " + langid);
+                        File bundlefile = null;
+                        Object[] data;
+                        URI newfile;
+                        String tempname = new RandomText(10).getString();
+                        try {
+                            data = QueryHandler.instanceOf().clone(Context.getLanguage()).
+                                    selectFirst("filename", new String[]{Context.SEARCH_NAME, langid, "'"});
+                            if (data != null && data.length > 0) {
+                                bundlefile = QueryHandler.instanceOf().clone(Context.getFiles()).retrieveFile(String.valueOf(
+                                        data[0]));
+                            }
+                            if (bundlefile != null) {
+                                newfile = FileDirectoryHandler.copyFile(bundlefile, new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR)), tempname + ".properties", true);
+                                if (hasNeededKeys(bundlefile)) {
+                                    Log.Debug(LanguageManager.class, "File has needed keys for language: " + langid);
+                                    ClasspathTools.addPath(new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR)));//Add the files parent to classpath to be found
 //                            FileDirectoryHandler.deleteTreeOnExit(new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR)));
 
-                            Log.Debug(LanguageManager.class, "Created language file at: " + newfile);
-                            try {
-                                ResourceBundle bundle = java.util.ResourceBundle.getBundle(tempname);
-                                cachelanguage(langid, bundle);
-                                return bundle;
-                            } catch (Exception e) {
-                                Log.Debug(LanguageManager.class, e);
+                                    Log.Debug(LanguageManager.class, "Created language file at: " + newfile);
+                                    try {
+                                        ResourceBundle bundle = java.util.ResourceBundle.getBundle(tempname);
+                                        cachelanguage(langid, bundle);
+                                        return bundle;
+                                    } catch (Exception e) {
+                                        failed= true;
+                                        Log.Debug(LanguageManager.class, e);
+                                    }
+                                } else {
+                                    Log.Debug(LanguageManager.class, "Failed language: " + langid);
+                                    failed= true;
+                                }
                             }
+                        } catch (Exception e) {
+                            failed= true;
+                            Log.Debug(LanguageManager.class, e);
                         }
+
+                    } else {
+                        return getCachedLanguage(langid);
                     }
-                } catch (Exception e) {
-                    Log.Debug(LanguageManager.class, e);
+                } else {
+                    failed= true;
+                    Log.Debug(LanguageManager.class, "Error loading additional languages. Using default now.");
+                    return java.util.ResourceBundle.getBundle(defLanguageBundle);
                 }
-                Log.Debug(LanguageManager.class, "Error loading additional languages. Using default now.");
-            } else {
-                return getCachedLanguage(langid);
             }
         }
 
@@ -279,11 +292,11 @@ public class LanguageManager {
                 Log.Debug(LanguageManager.class, "Adding language: " + langname);
                 int id = QueryHandler.instanceOf().clone(Context.getLanguage()).insert(t, "Imported language: " + langname);
                 if (id > 0) {
-                    MPV5View.addMessage(langname + Messages.INSERTED);
-                    Popup.notice(langname + Messages.INSERTED);
+                    MPV5View.addMessage(langname + Messages.INSERTED.toString());
+                    Popup.notice(langname + Messages.INSERTED.toString());
                 } else {
-                    MPV5View.addMessage(Messages.ERROR_OCCURED);
-                    Popup.notice(Messages.ERROR_OCCURED);
+                    MPV5View.addMessage(Messages.ERROR_OCCURED.toString());
+                    Popup.notice(Messages.ERROR_OCCURED.toString());
                 }
             } catch (FileNotFoundException ex) {
                 Log.Debug(LanguageManager.class, ex);
@@ -330,8 +343,10 @@ public class LanguageManager {
                 }
             }
             if (!found) {
+                failed = true;
                 Log.Debug(LanguageManager.class, "Key '" + string + "' not found in file " + file);
-                MPV5View.addMessage(Messages.ERROR_OCCURED);
+                MPV5View.addMessage(Messages.ERROR_OCCURED.toString());
+
                 return false;
             }
         }

@@ -20,6 +20,11 @@ public class SaveString {
     private String string = "";
     private String wrapper = "";
 
+    /**
+     * Constructs a ne save string
+     * @param str The original String
+     * @param wrapped If true, the String will be wrapped with a single quote on insertion time
+     */
     public SaveString(String str, boolean wrapped) {
         this.string = str.replace("'", "`");
         if (wrapped) {

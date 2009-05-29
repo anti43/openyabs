@@ -91,7 +91,7 @@ public class GroupDialog extends javax.swing.JPanel {
         }
 
         Group g = new Group();
-        g.setCName(Messages.GROUPNAMES);
+        g.setCName(Messages.GROUPNAMES.toString());
         g.setIDS(-1);
 
         tree.setModel(ArrayUtilities.toTreeModel(data, g));

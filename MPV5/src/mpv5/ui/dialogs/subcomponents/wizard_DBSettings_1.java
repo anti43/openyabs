@@ -63,24 +63,24 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
                         master.getStore().getProperty("url"),
                         master.getStore().getProperty("dbname"),
                         true)) {
-                    master.setMessage(Messages.CONNECTION_VERIFIED);
+                    master.setMessage(Messages.CONNECTION_VERIFIED.toString());
                     LocalSettings.save();
 
                     if (!jCheckBox1.isSelected()) {
-                        master.setMessage(Messages.CREATING_DATABASE);
+                        master.setMessage(Messages.CREATING_DATABASE.toString());
                         if (conn.runQueries(new DatabaseInstallation().getStructure())) {
-                            master.setMessage(Messages.CONNECTION_VERIFIED);
+                            master.setMessage(Messages.CONNECTION_VERIFIED.toString());
                         } else {
-                            master.setMessage(Messages.CREATING_DATABASE_FAILED);
+                            master.setMessage(Messages.CREATING_DATABASE_FAILED.toString());
                             return false;
                         }
                     }
                     master.isEnd(true);
                 } else {
-                    master.setMessage(Messages.CONNECTION_FAILED);
+                    master.setMessage(Messages.CONNECTION_FAILED.toString());
                 }
             } catch (Exception ex) {
-                master.setMessage(Messages.CONNECTION_FAILED);
+                master.setMessage(Messages.CONNECTION_FAILED.toString());
                 this.master.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                 return false;
             }

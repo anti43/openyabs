@@ -132,6 +132,29 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
+     * Returns a full column
+     * @param columnName
+     * @param maximumRowCount If >0 , this is the row count limit
+     * @return The column
+     * @throws NodataFoundException
+     */
+    public Object[] getColumn(String columnName, int maximumRowCount) throws NodataFoundException {
+        ReturnValue data = null;
+        if (maximumRowCount > 0) {
+            data = freeSelectQuery("SELECT TOP(" + maximumRowCount + ") " +
+                    columnName + " FROM " + table + " " + context.getConditions(), mpv5.usermanagement.MPSecurityManager.VIEW, null);
+        } else {
+            data = freeSelectQuery("SELECT " +
+                    columnName + " FROM " + table + " " + context.getConditions(), mpv5.usermanagement.MPSecurityManager.VIEW, null);
+        }
+        if (data.getData().length == 0) {
+            throw new NodataFoundException();
+        } else {
+            return ArrayUtilities.ObjectToSingleColumnArray(data.getData());
+        }
+    }
+
+    /**
      *
      * @param context
      * @return
@@ -549,7 +572,6 @@ public class QueryHandler implements Cloneable {
         return i;
     }
 
-
     /**
      * Insert values to db
      * @param what  : {set, value, "'"}
@@ -564,8 +586,6 @@ public class QueryHandler implements Cloneable {
 
         return freeUpdateQuery(query, mpv5.usermanagement.MPSecurityManager.CREATE_OR_DELETE, jobmessage).getId();
     }
-
-
 
     /**
      *  This is a special insert method for the History feature
@@ -1180,7 +1200,7 @@ public class QueryHandler implements Cloneable {
 
         } catch (SQLException ex) {
 
-            jobmessage = Messages.ERROR_OCCURED;
+            jobmessage = Messages.ERROR_OCCURED.toString();
             Log.Debug(this, message + ex.getMessage());
             retval = null;
             if (log != null) {
@@ -1194,7 +1214,7 @@ public class QueryHandler implements Cloneable {
                     resultSet.close();
                 } catch (SQLException ex) {
 
-                    jobmessage = Messages.ERROR_OCCURED;
+                    jobmessage = Messages.ERROR_OCCURED.toString();
                     Log.Debug(this, message + ex.getMessage());
                     if (log != null) {
                         log.append(" \n" + ex.getMessage());
@@ -1282,7 +1302,7 @@ public class QueryHandler implements Cloneable {
 
         } catch (SQLException ex) {
 
-            jobmessage = Messages.ERROR_OCCURED;
+            jobmessage = Messages.ERROR_OCCURED.toString();
             Log.Debug(this, message + ex.getMessage());
             if (log != null) {
                 log.append("\n " + ex.getMessage());
@@ -1295,7 +1315,7 @@ public class QueryHandler implements Cloneable {
                     resultSet.close();
                 } catch (SQLException ex) {
 
-                    jobmessage = Messages.ERROR_OCCURED;
+                    jobmessage = Messages.ERROR_OCCURED.toString();
                     Log.Debug(this, message + ex.getMessage());
                     if (log != null) {
                         log.append(" \n" + ex.getMessage());
@@ -1400,7 +1420,7 @@ public class QueryHandler implements Cloneable {
             Log.Debug(this, "Datenbankfehler: " + query);
             Log.Debug(this, message + ex.getMessage());
             Popup.error(ex);
-            jobmessage = Messages.ERROR_OCCURED;
+            jobmessage = Messages.ERROR_OCCURED.toString();
         } finally {
             // Alle Ressourcen wieder freigeben
             stop();
@@ -1408,7 +1428,7 @@ public class QueryHandler implements Cloneable {
                 try {
                     resultSet.close();
                 } catch (SQLException ex) {
-                    jobmessage = Messages.ERROR_OCCURED;
+                    jobmessage = Messages.ERROR_OCCURED.toString();
                     Log.Debug(this, message + ex.getMessage());
                     Popup.error(ex);
                 }
@@ -1464,7 +1484,7 @@ public class QueryHandler implements Cloneable {
             Log.Debug(this, "Datenbankfehler: " + query);
             Log.Debug(this, ex);
             Popup.error(ex);
-            jobmessage = Messages.ERROR_OCCURED;
+            jobmessage = Messages.ERROR_OCCURED.toString();
         } finally {
 
             stop();
@@ -1522,7 +1542,7 @@ public class QueryHandler implements Cloneable {
         } catch (SQLException ex) {
             Log.Debug(this, "Datenbankfehler: " + ex.getMessage());
             Popup.error(ex);
-            jobmessage = Messages.ERROR_OCCURED;
+            jobmessage = Messages.ERROR_OCCURED.toString();
         } finally {
             // Alle Ressourcen wieder freigeben
             stop();
@@ -1530,7 +1550,7 @@ public class QueryHandler implements Cloneable {
                 try {
                     resultSet.close();
                 } catch (SQLException ex) {
-                    jobmessage = Messages.ERROR_OCCURED;
+                    jobmessage = Messages.ERROR_OCCURED.toString();
                     Log.Debug(this, ex.getMessage());
                     Popup.error(ex);
                 }
@@ -1725,7 +1745,7 @@ public class QueryHandler implements Cloneable {
                     Log.Debug(this, "Datenbankfehler: " + query);
                     Log.Debug(this, ex);
                     Popup.error(ex);
-                    jobmessage = Messages.ERROR_OCCURED;
+                    jobmessage = Messages.ERROR_OCCURED.toString();
                 }
 
                 if (jobmessage != null) {

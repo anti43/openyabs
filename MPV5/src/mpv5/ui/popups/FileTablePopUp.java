@@ -60,7 +60,7 @@ public class FileTablePopUp extends JPopupMenu {
 
     private static FileTablePopUp getDefaultPopupMenu() {
 
-         JMenuItem x = new JMenuItem(Messages.SAVE_AS);
+         JMenuItem x = new JMenuItem(Messages.SAVE_AS.getValue());
          x.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -72,7 +72,7 @@ public class FileTablePopUp extends JPopupMenu {
             }
         });
 
-        JMenuItem i = new JMenuItem(Messages.ACTION_OPEN);
+        JMenuItem i = new JMenuItem(Messages.ACTION_OPEN.getValue());
         i.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -84,7 +84,7 @@ public class FileTablePopUp extends JPopupMenu {
             }
         });
 
-        JMenuItem h = new JMenuItem(Messages.ACTION_EDIT);
+        JMenuItem h = new JMenuItem(Messages.ACTION_EDIT.getValue());
        h.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -96,7 +96,7 @@ public class FileTablePopUp extends JPopupMenu {
             }
         });
 
-        JMenuItem g = new JMenuItem(Messages.ACTION_DELETE);
+        JMenuItem g = new JMenuItem(Messages.ACTION_DELETE.getValue());
         g.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -143,7 +143,7 @@ public class FileTablePopUp extends JPopupMenu {
     public static void addDefaultPopupMenu(final JTable dataTable) {
 
 
-        JMenuItem i = new JMenuItem(Messages.ACTION_OPEN);
+        JMenuItem i = new JMenuItem(Messages.ACTION_OPEN.getValue());
         i.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -154,7 +154,7 @@ public class FileTablePopUp extends JPopupMenu {
             }
         });
 
-        JMenuItem h = new JMenuItem(Messages.ACTION_EDIT);
+        JMenuItem h = new JMenuItem(Messages.ACTION_EDIT.getValue());
         i.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -165,7 +165,7 @@ public class FileTablePopUp extends JPopupMenu {
             }
         });
 
-        JMenuItem g = new JMenuItem(Messages.ACTION_OPEN);
+        JMenuItem g = new JMenuItem(Messages.ACTION_OPEN.getValue());
         i.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {

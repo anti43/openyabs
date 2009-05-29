@@ -61,7 +61,7 @@ public class LabeledSpinner extends javax.swing.JPanel {
         jLabel1.setText("text");
 
         jSpinner1.setModel(new javax.swing.SpinnerListModel(new String[] {""}));
-        jSpinner1.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinner1, ""));
+        jSpinner1.setEditor(new javax.swing.JSpinner.ListEditor(jSpinner1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);

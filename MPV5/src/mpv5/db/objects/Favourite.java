@@ -98,7 +98,7 @@ public class Favourite extends DatabaseObject {
         
             mpv5.db.common.QueryHandler.instanceOf().clone(Context.getFavourites()).
                     delete(new String[]{"cname", "usersids", "itemsids"},
-                    new Object[]{dato.getDbIdentity(), MPV5View.getUser().__getIDS(),dato.__getIDS()}, Messages.DONE);
+                    new Object[]{dato.getDbIdentity(), MPV5View.getUser().__getIDS(),dato.__getIDS()}, Messages.DONE.toString());
         
     }
 
@@ -138,7 +138,7 @@ public class Favourite extends DatabaseObject {
      */
     public static void flush(User user) {
        mpv5.db.common.QueryHandler.instanceOf().clone(Context.getFavourites()).delete(new String[][]{{"usersids",user.__getIDS().toString(),""}},
-               Messages.DONE);
+               Messages.DONE.toString());
     }
 
     @Override

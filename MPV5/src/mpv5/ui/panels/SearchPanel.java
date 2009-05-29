@@ -232,25 +232,25 @@ public class SearchPanel extends javax.swing.JPanel {
         switch (searchtype) {
 
             case 1:
-                resulttable.setModel(new MPTableModel(new DatabaseSearch(context).getValuesFor("ids,cname,cnumber", "cname", value, true), Headers.SEARCH_DEFAULT));
+                resulttable.setModel(new MPTableModel(new DatabaseSearch(context).getValuesFor("ids,cname,cnumber", "cname", value, true), Headers.SEARCH_DEFAULT.getValue()));
 
                 break;
             case 2:
-                resulttable.setModel(new MPTableModel(new DatabaseSearch(context).getValuesFor("ids,cname,cnumber", "cnumber", value, true), Headers.SEARCH_DEFAULT));
+                resulttable.setModel(new MPTableModel(new DatabaseSearch(context).getValuesFor("ids,cname,cnumber", "cnumber", value, true), Headers.SEARCH_DEFAULT.getValue()));
 
                 break;
             case 3:
                 Integer id = new DatabaseSearch(Context.getGroup()).searchForID("cname", value);
                 if (id != null) {
                     resulttable.setModel(new MPTableModel(new DatabaseSearch(context).getValuesFor("ids,cname,cnumber", "groupsids",
-                            id), Headers.SEARCH_DEFAULT));
+                            id), Headers.SEARCH_DEFAULT.getValue()));
                 } else {
-                    resulttable.setModel(new MPTableModel(new String[][]{}, Headers.SEARCH_DEFAULT));
+                    resulttable.setModel(new MPTableModel(new String[][]{}, Headers.SEARCH_DEFAULT.getValue()));
                 }
 
                 break;
             case 4:
-                resulttable.setModel(new MPTableModel(new DatabaseSearch(context).getValuesFor("ids,cname,cnumber", "cname", context.getParent().__getCName(), true), Headers.SEARCH_DEFAULT));
+                resulttable.setModel(new MPTableModel(new DatabaseSearch(context).getValuesFor("ids,cname,cnumber", "cname", context.getParent().__getCName(), true), Headers.SEARCH_DEFAULT.getValue()));
 
         }
         TableFormat.stripFirstColumn(resulttable);

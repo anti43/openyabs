@@ -82,7 +82,7 @@ public class ImportModel extends MPTableModel {
 
         setCanEdits(new boolean[]{false, true, false, false, false, false});
         setTypes(new Class[]{Object.class, Boolean.class, Object.class, Object.class, Object.class, Object.class});
-        setDataVector(data, Headers.IMPORT);
+        setDataVector(data, Headers.IMPORT.getValue());
 
     }
 }

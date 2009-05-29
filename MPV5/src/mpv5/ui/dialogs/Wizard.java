@@ -253,7 +253,7 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
     public void isEnd(boolean end) {
         this.isEnded = end;
         if (end) {
-            next.setText(Messages.FINISH);
+            next.setText(Messages.FINISH.toString());
         }
         cancel.setEnabled(!end);
         back.setEnabled(!end);

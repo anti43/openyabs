@@ -67,7 +67,7 @@ public class Main extends SingleFrameApplication {
      */
     public static void start() {
 
-        splash.nextStep(Messages.LOCAL_SETTINGS);
+        splash.nextStep(Messages.LOCAL_SETTINGS.toString());
         try {
             LocalSettings.read();
             LocalSettings.apply();
@@ -76,7 +76,7 @@ public class Main extends SingleFrameApplication {
             Log.Debug(Main.class, "Local settings file not readable: " + LocalSettings.getLocalFile());
         }
 
-        splash.nextStep(Messages.LAUNCH);
+        splash.nextStep(Messages.LAUNCH.toString());
         Runnable runnable = new Runnable() {
 
             public void run() {
@@ -96,17 +96,17 @@ public class Main extends SingleFrameApplication {
     @Override
     protected void startup() {
 
-        splash.nextStep(Messages.FIRST_INSTANCE);
+        splash.nextStep(Messages.FIRST_INSTANCE.toString());
         if (!firstInstance()) {
             System.exit(1);
         }
 
         getContext().getLocalStorage().setDirectory(new File(Main.MPPATH));
 
-        splash.nextStep(Messages.DB_CHECK);
+        splash.nextStep(Messages.DB_CHECK.toString());
         if (probeDatabaseConnection()) {
             go(false);
-        } else if (Popup.Y_N_dialog(Messages.NO_DB_CONNECTION, Messages.ERROR_OCCURED)) {
+        } else if (Popup.Y_N_dialog(Messages.NO_DB_CONNECTION, Messages.ERROR_OCCURED.toString())) {
             splash.dispose();
             showDbWiz();
         } else {
@@ -159,7 +159,7 @@ public class Main extends SingleFrameApplication {
             splash.init(8);
             System.out.print(Messages.START_MESSAGE);
 
-            splash.nextStep(Messages.INIT);
+            splash.nextStep(Messages.INIT.toString());
             getOS();
             setEnv();
             parseArgs(args);
@@ -369,14 +369,14 @@ public class Main extends SingleFrameApplication {
      * @param firststart
      */
     public void go(boolean firststart) {
-        splash.nextStep(Messages.CACHE);
+        splash.nextStep(Messages.CACHE.toString());
         cache();
         setLaF(null);
-        Main.splash.nextStep(Messages.INIT_LOGIN);
+        Main.splash.nextStep(Messages.INIT_LOGIN.toString());
         login();
-        Main.splash.nextStep(Messages.INIT_PLUGINS);
+        Main.splash.nextStep(Messages.INIT_PLUGINS.toString());
         loadPlugins();
-        Main.splash.nextStep(Messages.INIT_GUI);
+        Main.splash.nextStep(Messages.INIT_GUI.toString());
         super.show(new MPV5View(this));
         firstStart = firststart;
         if (Main.firstStart) {

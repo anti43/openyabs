@@ -75,7 +75,7 @@ public class DOTablePopUp extends JPopupMenu {
      */
     public static void addDefaultPopupMenu(final JTable to, final Context c) {
 
-        JMenuItem i = new JMenuItem(Messages.ACTION_DELETE);
+        JMenuItem i = new JMenuItem(Messages.ACTION_DELETE.getValue());
         i.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -87,7 +87,7 @@ public class DOTablePopUp extends JPopupMenu {
             }
         });
 
-        JMenuItem i2 = new JMenuItem(Messages.ACTION_OPEN);
+        JMenuItem i2 = new JMenuItem(Messages.ACTION_OPEN.getValue());
         i.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {

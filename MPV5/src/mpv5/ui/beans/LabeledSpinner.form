@@ -49,6 +49,9 @@
             <ListItem value=""/>
           </SpinnerModel>
         </Property>
+        <Property name="editor" type="javax.swing.JComponent" editor="org.netbeans.modules.form.editors.SpinnerEditorEditor">
+          <SpinnerEditor type="2"/>
+        </Property>
       </Properties>
     </Component>
   </SubComponents>
