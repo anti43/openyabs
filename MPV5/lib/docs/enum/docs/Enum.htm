@@ -1,0 +1,386 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.75 [en] (Windows NT 5.0; U) [Netscape]">
+   <meta name="Author" content="Dmitri Plotnikov">
+   <title>HCO Database Design</title>
+</head>
+<body text="#000000" bgcolor="#FFFFEF" link="#0000EE" vlink="#551A8B" alink="#FF0000">
+<img SRC="images/plotnix_logo.gif" NOSAVE height=68 width=216>
+<h1>
+Enum<br>
+<font size=+2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; An Amazing Enum Implementation
+for Java</font></h1>
+Unlike its ancestors (C and C++)&nbsp; Java does not support the notion
+of an <b>enum</b>, which is a data type all values of which are explicitly
+enumerated in the type definition.
+<p>That said, an object-oriented implementation of the concept of enum
+in Java can be much more powerful than C-style <b>enum</b>.
+<p>The Enum framework (in reality, the whole framework is a single class)
+proves that by providing extensive functionality that includes:
+<blockquote>&nbsp;
+<table>
+<tr>
+<td VALIGN=TOP WIDTH="30"><img SRC="images/star.gif" NOSAVE BORDER=0 height=15 width=17></td>
+
+<td>Either an integer or string value or both for each constant</td>
+</tr>
+
+<tr>
+<td VALIGN=TOP><img SRC="images/star.gif" NOSAVE BORDER=0 height=15 width=17></td>
+
+<td VALIGN=TOP>A human-readable description that can be easily internationalized.&nbsp;
+An enum type is automatically associated with .properties files containing
+labels of enums in specific languages.</td>
+</tr>
+
+<tr>
+<td VALIGN=TOP><img SRC="images/star.gif" NOSAVE BORDER=0 height=15 width=17></td>
+
+<td>All constants of an Enum can be loaded from a .properties file.</td>
+</tr>
+</table>
+</blockquote>
+Every Enum type is represented by a separate class extending the Enum abstract
+class (see <a href="api/com/plotnix/enum/Enum.html">API</a>)
+<br>&nbsp;
+<h2>
+Basic Enum</h2>
+The easiest way to define an Enum type is to declare a class that extends
+Enum and a separate instance of that class as a public static field of
+the class itself.
+<blockquote><tt><font color="#003399">public class Color extends Enum</font></tt>
+<br><tt><font color="#003399">{</font></tt>
+<br><tt><font color="#003399">&nbsp;&nbsp;&nbsp; public static Color RED
+= new Color();</font></tt>
+<br><tt><font color="#003399">&nbsp;&nbsp;&nbsp; public static Color GREEN
+= new Color();</font></tt>
+<br><tt><font color="#003399">&nbsp;&nbsp;&nbsp; public static Color BLUE
+= new Color();</font></tt>
+<br><tt><font color="#003399">}</font></tt></blockquote>
+This class is accompanied by a <tt>Color.properties</tt> file that is located
+in the same package as the <tt>Color</tt> class:
+<blockquote><tt><font color="#009900">RED=Red</font></tt>
+<br><tt><font color="#009900">GREEN=Green</font></tt>
+<br><tt><font color="#009900">BLUE=Blue</font></tt></blockquote>
+Italian names of colors are in <tt>Color_it_IT.properties</tt> file:
+<blockquote><tt><font color="#009900">RED=Rosso</font></tt>
+<br><tt><font color="#009900">GREEN=Verde</font></tt>
+<br><tt><font color="#009900">BLUE=Azzurro</font></tt></blockquote>
+The following table contains values returned by various methods of Color:
+<blockquote>&nbsp;
+<table BORDER COLS=4 WIDTH="500" >
+<tr>
+<td>&nbsp;</td>
+
+<td><b><tt>Color.RED</tt></b></td>
+
+<td><b><tt>Color.GREEN</tt></b></td>
+
+<td><b><tt>Color.BLUE</tt></b></td>
+</tr>
+
+<tr>
+<td><b><tt>intValue()</tt></b></td>
+
+<td><tt><font color="#660000">0</font></tt></td>
+
+<td><tt><font color="#660000">1</font></tt></td>
+
+<td><tt><font color="#660000">2</font></tt></td>
+</tr>
+
+<tr>
+<td><b><tt>stringValue()</tt></b></td>
+
+<td><tt><font color="#660000">"RED"</font></tt></td>
+
+<td><tt><font color="#660000">"GREEN"</font></tt></td>
+
+<td><tt><font color="#660000">"BLUE"</font></tt></td>
+</tr>
+
+<tr>
+<td><b><tt>toString()</tt></b></td>
+
+<td><tt><font color="#660000">"Red"</font></tt></td>
+
+<td><tt><font color="#660000">"Green"</font></tt></td>
+
+<td><tt><font color="#660000">"Blue"</font></tt></td>
+</tr>
+
+<tr>
+<td><b><tt>toString(Locale.ITALY)</tt></b></td>
+
+<td><tt><font color="#660000">"Rosso"</font></tt></td>
+
+<td><tt><font color="#660000">"Verde"</font></tt></td>
+
+<td><tt><font color="#660000">"Azzurro"</font></tt></td>
+</tr>
+</table>
+</blockquote>
+Enum provides the following automation:
+<ul>
+<li>
+Each constant is given a unique, sequencial integer value</li>
+
+<li>
+Each constant's string value is the name of the <tt>public static</tt>
+declaration of the constant</li>
+
+<li>
+String representations of constants are retrieved from the .properties
+file for the specified Locale, using the constant's string value as a property
+key.</li>
+</ul>
+Class Enum has some useful static methods:
+<blockquote><tt><font color="#003399">Color allColors[] = (Color[])Enum.enum(Color.class);</font></tt>
+<blockquote>This method will return all Colors in the order they are declared:
+<tt>Color.RED</tt>,
+<tt>Color.GREEN</tt>,
+<tt>Color.BLUE</tt></blockquote>
+<tt><font color="#003399">Color green = (Color)Enum.enum(Color.class, "GREEN");</font></tt>
+<blockquote>This method will the Color constant by its string value</blockquote>
+<tt><font color="#003399">Color blue = (Color)Enum.enum(Color.class, 2);</font></tt>
+<blockquote>This method will the Color constant by its integer value</blockquote>
+</blockquote>
+Enums can be used as types of properties of JavaBeans:
+<blockquote><tt><font color="#000084">public class Crayon {</font></tt>
+<p><tt><font color="#000084">&nbsp;&nbsp; private Color color;</font></tt>
+<p><tt><font color="#000084">&nbsp;&nbsp; public void setColor(Color color){</font></tt>
+<br><tt><font color="#000084">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.color
+= color;</font></tt>
+<br><tt><font color="#000084">&nbsp;&nbsp; }</font></tt>
+<p><tt><font color="#000084">&nbsp;&nbsp; public Color getColor(){</font></tt>
+<br><tt><font color="#000084">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return color;</font></tt>
+<br><tt><font color="#000084">&nbsp;&nbsp; }</font></tt>
+<p><tt><font color="#000084">&nbsp;&nbsp; ...</font></tt>
+<br><tt><font color="#000084">}</font></tt>
+<p><tt><font color="#000084">Crayon crayon = new Crayon();</font></tt>
+<br><tt><font color="#000084">crayon.setColor(Color.GREEN);</font></tt>
+<p><tt><font color="#000084">System.err.println("Questo pastello &egrave;
+" +</font></tt>
+<br><tt><font color="#000084">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+crayon.getColor().toString(Locale.ITALY));</font></tt>
+<br>&nbsp;
+<br>&nbsp;</blockquote>
+
+<h2>
+Explicit String Values and Labels</h2>
+String values and/or labels of constants can be specified explicitly:
+<blockquote><tt><font color="#003399">public class Gender extends Enum</font></tt>
+<br><tt><font color="#003399">{</font></tt>
+<br><tt><font color="#003399">&nbsp;&nbsp;&nbsp; public static Gender FEMALE
+= new Gender("F", "Female");</font></tt>
+<br><tt><font color="#003399">&nbsp;&nbsp;&nbsp; public static Gender MALE
+= new Gender("M", "Male");</font></tt>
+<p><tt><font color="#003399">&nbsp;&nbsp;&nbsp; protected Gender(String
+string, String label){</font></tt>
+<br><tt><font color="#003399">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+super(string, label);</font></tt>
+<br><tt><font color="#003399">&nbsp;&nbsp;&nbsp; }</font></tt>
+<br><tt><font color="#003399">}</font></tt></blockquote>
+Spanish words for genders are in <tt>Gender_es.properties</tt> file:
+<blockquote><tt><font color="#009900">F=Feminino</font></tt>
+<br><tt><font color="#009900">M=Masculino</font></tt></blockquote>
+The default labels are used when the <tt>.properties</tt> file for the
+corresponding locale is missing.
+<p>The following table contains values returned by various methods of Gender:
+<blockquote>&nbsp;
+<table BORDER WIDTH="500" >
+<tr>
+<td WIDTH="300">&nbsp;</td>
+
+<td><b><tt>Gender.FEMALE</tt></b></td>
+
+<td><b><tt>Gender.MALE</tt></b></td>
+</tr>
+
+<tr>
+<td><b><tt>intValue()</tt></b></td>
+
+<td><tt><font color="#660000">0</font></tt></td>
+
+<td><tt><font color="#660000">1</font></tt></td>
+</tr>
+
+<tr>
+<td><b><tt>stringValue()</tt></b></td>
+
+<td><tt><font color="#660000">"F"</font></tt></td>
+
+<td><tt><font color="#660000">"M"</font></tt></td>
+</tr>
+
+<tr>
+<td><b><tt>toString()</tt></b></td>
+
+<td><tt><font color="#660000">"Female"</font></tt></td>
+
+<td><tt><font color="#660000">"Male"</font></tt></td>
+</tr>
+
+<tr>
+<td><b><tt>toString(new Locale("es", "MX"))</tt></b></td>
+
+<td><tt><font color="#660000">"Feminino"</font></tt></td>
+
+<td><tt><font color="#660000">"Masculino"</font></tt></td>
+</tr>
+
+<tr>
+<td><b><tt>toString(Locale.ITALY)</tt></b></td>
+
+<td><tt><font color="#660000">"Female"</font></tt></td>
+
+<td><tt><font color="#660000">"Male"</font></tt></td>
+</tr>
+</table>
+</blockquote>
+
+<h2>
+Explicit Integer Values</h2>
+Integer values of constants can alse be specified explicitly:
+<blockquote><tt><font color="#003399">public class Order extends Enum {</font></tt>
+<p><tt><font color="#003399">&nbsp;&nbsp;&nbsp; public static Order LESS_THAN
+= new Order(-1);</font></tt>
+<br><tt><font color="#003399">&nbsp;&nbsp;&nbsp; public static Order EQUAL_TO
+= new Order(0);</font></tt>
+<br><tt><font color="#003399">&nbsp;&nbsp;&nbsp; public static Order GREATER_THAN
+= new Order(1);</font></tt>
+<p><tt><font color="#003399">&nbsp;&nbsp;&nbsp; protected Order(int integer){</font></tt>
+<br><tt><font color="#003399">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+super(integer);</font></tt>
+<br><tt><font color="#003399">&nbsp;&nbsp;&nbsp; }</font></tt>
+<br><tt><font color="#003399">}</font></tt></blockquote>
+The following table contains values returned by various methods of <tt>Order</tt>:
+<blockquote>&nbsp;
+<table BORDER COLS=4 WIDTH="500" >
+<tr>
+<td>&nbsp;</td>
+
+<td><b><tt>Order.LESS_THAN</tt></b></td>
+
+<td><b><tt>Color.EQUAL_TO</tt></b></td>
+
+<td><b><tt>Color.GREATER_THAN</tt></b></td>
+</tr>
+
+<tr>
+<td><b><tt>intValue()</tt></b></td>
+
+<td><tt><font color="#660000">-1</font></tt></td>
+
+<td><tt><font color="#660000">0</font></tt></td>
+
+<td><tt><font color="#660000">1</font></tt></td>
+</tr>
+
+<tr>
+<td><b><tt>stringValue()</tt></b></td>
+
+<td><tt><font color="#660000">"LESS_THAN"</font></tt></td>
+
+<td><tt><font color="#660000">"EQUAL_TO"</font></tt></td>
+
+<td><tt><font color="#660000">"GREATER_THAN"</font></tt></td>
+</tr>
+
+<tr>
+<td><b><tt>toString()</tt></b></td>
+
+<td><tt><font color="#660000">"LESS_THAN"</font></tt></td>
+
+<td><tt><font color="#660000">"EQUAL_TO"</font></tt></td>
+
+<td><tt><font color="#660000">"GREATER_THAN"</font></tt></td>
+</tr>
+</table>
+</blockquote>
+
+<br>&nbsp;
+<h2>
+Integer Enums</h2>
+If you need to use an Enum in switch statements, you may want to declare
+integer constants instead of objects of the enum class.&nbsp; The static
+method <tt>Enum.initIntegerEnum</tt> method of Enum should be invoked from
+a static code fragment of the Enum class:
+<blockquote><tt><font color="#003399">public class Employment extends Enum
+{</font></tt>
+<p><tt><font color="#003399">&nbsp;&nbsp;&nbsp; public static final int
+EMPLOYED = 1;</font></tt>
+<br><tt><font color="#003399">&nbsp;&nbsp;&nbsp; public static final int
+SELF_EMPLOYED = 2;</font></tt>
+<br><tt><font color="#003399">&nbsp;&nbsp;&nbsp; public static final int
+UNEMPLOYED = 3;</font></tt>
+<p><tt><font color="#003399">&nbsp;&nbsp;&nbsp; static {</font></tt>
+<br><tt><font color="#003399">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+// Register all 'public static ints' of this class as Enums</font></tt>
+<br><tt><font color="#003399">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+initIntegerEnum(Employment.class);</font></tt>
+<br><tt><font color="#003399">&nbsp;&nbsp;&nbsp; }</font></tt>
+<br><tt><font color="#003399">}</font></tt></blockquote>
+String values and labels of the constants can be acquired using the following
+calls:
+<blockquote><tt><font color="#003399">Enum employed = Enum.enum(Employment.class,
+Employment.EMPLOYED);</font></tt>
+<br><tt><font color="#003399">String string = employed.stringValue();</font></tt>
+<br><tt><font color="#003399">String label = employed.toString();</font></tt></blockquote>
+In this case both the string value and the label will be "EMPLOYED". Just
+like any Enum, such integer Enum can be internationalized - the public
+static int field names function as keys in the .properties file.
+<br>&nbsp;
+<h2>
+Loading Enums from a Files</h2>
+If it is preferred to keep constant definitions in a file and not define
+individual constants for each value, that can also be done:
+<blockquote><tt><font color="#003399">public class Flower extends Enum</font></tt>
+<br><tt><font color="#003399">{</font></tt>
+<br><tt><font color="#003399">&nbsp;&nbsp;&nbsp; static {</font></tt>
+<br><tt><font color="#003399">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+// Load all Enums of this class from Flower.properties</font></tt>
+<br><tt><font color="#003399">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+loadEnum(Flower.class);</font></tt>
+<br><tt><font color="#003399">&nbsp;&nbsp;&nbsp; }</font></tt>
+<p><tt><font color="#003399">&nbsp;&nbsp;&nbsp; // Define any of the Flower
+constants individually</font></tt>
+<br><tt><font color="#003399">&nbsp;&nbsp;&nbsp; public static Flower ROSE
+= enum("rose");</font></tt>
+<p><tt><font color="#003399">&nbsp;&nbsp;&nbsp; /**</font></tt>
+<br><tt><font color="#003399">&nbsp;&nbsp;&nbsp;&nbsp; * Convenience method
+that finds a Flower object by its name.</font></tt>
+<br><tt><font color="#003399">&nbsp;&nbsp;&nbsp;&nbsp; */</font></tt>
+<br><tt><font color="#003399">&nbsp;&nbsp;&nbsp; public static Flower enum(String
+name){</font></tt>
+<br><tt><font color="#003399">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return (Flower)enum(Flower.class, name);</font></tt>
+<br><tt><font color="#003399">&nbsp;&nbsp;&nbsp; }</font></tt>
+<br><tt><font color="#003399">}</font></tt></blockquote>
+The Flower.properties file:
+<blockquote><tt><font color="#009900">rose=Rosa</font></tt>
+<br><tt><font color="#009900">daisy=Chrysanthemum leucanthemum</font></tt>
+<br><tt><font color="#009900">violet=Viola</font></tt>
+<br><tt><font color="#009900">forget-me-not=Myosotis</font></tt></blockquote>
+An integer Enum can be loaded the same way, except instead of the loadEnum
+method the loadIntegerEnum method should be called.&nbsp; Property names
+in the .properties file should then be numeric.
+<p>Note: if you are using one of the load... methods, do not allocate any
+additional constants, find the loaded once like we did in the Flower class.
+<br>&nbsp;
+<h2>
+Download</h2>
+The class is <i>freely</i> available under the PLOTNIX license.
+<p><a href="api/com/plotnix/enum/Enum.html">JavaDoc</a>
+<br>&nbsp;
+<p><b><font size=+2>Enjoy!</font></b>
+<p>
+<hr WIDTH="100%">
+<center><i><font size=-1>Copyright &copy; 2001, PLOTNIX, Inc</font></i></center>
+
+<p><font size=-2>Java, JavaSoft, are trademarks or registered trademarks
+of Sun Microsystems, Inc.</font>
+</body>
+</html>
