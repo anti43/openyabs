@@ -29,8 +29,12 @@ import mpv5.resources.languages.LanguageManager;
 import mpv5.ui.dialogs.DialogForFile;
 import com.google.api.translate.*;
 import java.awt.Cursor;
+import java.io.File;
+import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableModel;
+import mpv5.db.common.Context;
+import mpv5.db.common.QueryHandler;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.misc.Position;
@@ -39,6 +43,7 @@ import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.arrays.ArrayUtilities;
+import mpv5.utils.files.FileReaderWriter;
 import mpv5.utils.tables.ExcelAdapter;
 import mpv5.utils.ui.TextFieldUtils;
 
@@ -98,12 +103,13 @@ public class MPBabelFish extends javax.swing.JFrame {
         translate = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
+        jMenuItem4 = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.resources.languages.LanguageManager.getBundle(); // NOI18N
         setTitle(bundle.getString("MPBabelFish.title_1")); // NOI18N
         setName("Form"); // NOI18N
 
@@ -206,14 +212,14 @@ public class MPBabelFish extends javax.swing.JFrame {
                     .addComponent(jLabel2)
                     .addComponent(languages, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(36, 36, 36)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(langName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, 226, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 119, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(langName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, 339, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel1)
                 .addContainerGap())
-            .addComponent(GooogleTranslator, javax.swing.GroupLayout.DEFAULT_SIZE, 618, Short.MAX_VALUE)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 618, Short.MAX_VALUE)
+            .addComponent(GooogleTranslator, javax.swing.GroupLayout.DEFAULT_SIZE, 620, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 620, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -230,7 +236,7 @@ public class MPBabelFish extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(langName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 213, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(GooogleTranslator, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -239,6 +245,15 @@ public class MPBabelFish extends javax.swing.JFrame {
 
         jMenu1.setText(bundle.getString("MPBabelFish.jMenu1.text_1")); // NOI18N
         jMenu1.setName("jMenu1"); // NOI18N
+
+        jMenuItem4.setText(bundle.getString("MPBabelFish.jMenuItem4.text")); // NOI18N
+        jMenuItem4.setName("jMenuItem4"); // NOI18N
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem4ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem4);
 
         jMenuItem2.setText(bundle.getString("MPBabelFish.jMenuItem2.text_1")); // NOI18N
         jMenuItem2.setName("jMenuItem2"); // NOI18N
@@ -287,7 +302,8 @@ public class MPBabelFish extends javax.swing.JFrame {
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
 
-        if (MPSecurityManager.checkAdminAccess()) {
+        if (MPSecurityManager.checkAdminAccess() &&
+                QueryHandler.instanceOf().clone(Context.getLanguage()).checkUniqueness("longname", new JTextField[]{langName.getTextField()})) {
             if (langName.hasText()) {
 //            MPTableModel mpdel = DataModelUtils.getModelCopy(data);
                 ArrayUtilities.removeColumn(data, 1);
@@ -338,6 +354,16 @@ public class MPBabelFish extends javax.swing.JFrame {
         setLanguage();
     }//GEN-LAST:event_languagesActionPerformed
 
+    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+
+        DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY);
+        if (d.chooseFile()) {
+
+            new Job3(this, d.getFile()).execute();
+
+        }
+    }//GEN-LAST:event_jMenuItem4ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToolBar GooogleTranslator;
     private javax.swing.JTable data;
@@ -353,6 +379,7 @@ public class MPBabelFish extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JToolBar.Separator jSeparator1;
@@ -414,7 +441,7 @@ public class MPBabelFish extends javax.swing.JFrame {
         @Override
         public Object doInBackground() {
             parent.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-            
+
             data.setModel(new MPTableModel(
                     new Class[]{String.class, String.class, String.class},
                     new boolean[]{false, true, true},
@@ -429,6 +456,53 @@ public class MPBabelFish extends javax.swing.JFrame {
         @Override
         public void done() {
             parent.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+        }
+    }
+
+    class Job3 extends SwingWorker<Object, Object> {
+
+        private MPBabelFish parent;
+        private File f;
+
+        private Job3(MPBabelFish aThis, File f) {
+            this.parent = aThis;
+            this.f = f;
+        }
+
+        @Override
+        public Object doInBackground() {
+            parent.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+
+            String[] originallanguage = ArrayUtilities.SmallObjectToStringArray(ArrayUtilities.getColumnAsArray(data, 1));
+            String[] components = ArrayUtilities.SmallObjectToStringArray(ArrayUtilities.getColumnAsArray(data, 0));
+
+            FileReaderWriter fr = new FileReaderWriter(f);
+            String[] imported = fr.readLines();
+
+            MPV5View.setProgressMaximumValue(imported.length);
+            for (int i = 0; i < originallanguage.length; i++) {
+                String component = components[i];
+                try {
+                    for (int j = 0; j < imported.length; j++) {
+                        String string = imported[j];
+                        if (string.split("=")[0].equals(component)) {
+                            originallanguage[i] = string.split("=")[1];
+                            MPV5View.setProgressValue(i + 1);
+                        }
+                    }
+                } catch (Exception ex) {
+                    Log.Debug(this, ex);
+                }
+            }
+            ArrayUtilities.replaceColumn(data, 2, originallanguage);
+            return null;
+        }
+
+        @Override
+        public void done() {
+            parent.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            MPV5View.setProgressReset();
+            Popup.notice(Messages.DONE);
         }
     }
 }

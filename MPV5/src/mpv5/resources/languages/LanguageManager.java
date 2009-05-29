@@ -29,11 +29,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
+import mpv5.Main;
 import mpv5.db.common.Context;
+import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryData;
 import mpv5.db.common.QueryHandler;
+import mpv5.globals.Constants;
+import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
@@ -41,6 +45,7 @@ import mpv5.ui.frames.MPV5View;
 
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.arrays.ArrayUtilities;
+import mpv5.utils.date.DateConverter;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.files.FileReaderWriter;
 import mpv5.utils.models.MPComboBoxModelItem;
@@ -72,7 +77,7 @@ public class LanguageManager {
      * @param file
      */
     public static void importCountries(File file) {
-        XMLReader r= new XMLReader();
+        XMLReader r = new XMLReader();
         try {
             Document doc = r.newDoc(file, true);
 
@@ -152,10 +157,11 @@ public class LanguageManager {
                                 data[0]));
                     }
                     if (bundlefile != null) {
-                        newfile = FileDirectoryHandler.copyFile(bundlefile, new File("languages"), tempname + ".properties");
+                        newfile = FileDirectoryHandler.copyFile(bundlefile, new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR)), tempname + ".properties", true);
                         if (hasNeededKeys(bundlefile)) {
-                            ClasspathTools.addPath(new File("languages"));//Add the files parent to classpath to be found
-                            FileDirectoryHandler.deleteTreeOnExit(new File("languages"));
+                            ClasspathTools.addPath(new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR)));//Add the files parent to classpath to be found
+//                            FileDirectoryHandler.deleteTreeOnExit(new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR)));
+
                             Log.Debug(LanguageManager.class, "Created language file at: " + newfile);
                             try {
                                 ResourceBundle bundle = java.util.ResourceBundle.getBundle(tempname);
@@ -183,7 +189,11 @@ public class LanguageManager {
      * @return
      */
     public static ResourceBundle getBundle() {
-        return getBundle(MPV5View.getUser().__getLanguage());
+        if (Main.INSTANTIATED) {
+            return getBundle(MPV5View.getUser().__getLanguage());
+        } else {
+            return java.util.ResourceBundle.getBundle(defLanguageBundle);
+        }
     }
 
     /**
@@ -209,7 +219,7 @@ public class LanguageManager {
      * @return A ComboBoxModel reflecting the available Languages
      */
     public static ComboBoxModel getLanguagesAsComboBoxModel() {
-        Object[][] data = QueryHandler.instanceOf().clone(Context.getLanguage()).select("cname, longname", (String[])null);
+        Object[][] data = QueryHandler.instanceOf().clone(Context.getLanguage()).select("cname, longname", (String[]) null);
         MPComboBoxModelItem[] t = null;
         Object[][] ldata;
         ldata = ArrayUtilities.merge(defLanguage, data);
@@ -217,15 +227,15 @@ public class LanguageManager {
         return new DefaultComboBoxModel(t);
     }
 
-     /**
+    /**
      *
      * @return A ComboBoxModel reflecting the available Countries
      */
     public static ComboBoxModel getCountriesAsComboBoxModel() {
-        Object[][] data = QueryHandler.instanceOf().clone(Context.getCountries()).select("iso, cname", (String[])null);
+        Object[][] data = QueryHandler.instanceOf().clone(Context.getCountries()).select("iso, cname", (String[]) null);
         MPComboBoxModelItem[] t = null;
         Object[][] ldata;
-        ldata = ArrayUtilities.merge(new String[][]{{"",""}}, data);
+        ldata = ArrayUtilities.merge(new String[][]{{"", ""}}, data);
         t = MPComboBoxModelItem.toItems(ldata);
         return new DefaultComboBoxModel(t);
     }
@@ -240,12 +250,13 @@ public class LanguageManager {
         for (int i = 0; i < items.length; i++) {
             String language = o[i].getLanguage();
             String country = o[i].getCountry();
-            String locale_name = o[i].getDisplayName();Log.Debug(LanguageManager.class, locale_name);
+            String locale_name = o[i].getDisplayName();
+            Log.Debug(LanguageManager.class, locale_name);
             items[i] = new MPComboBoxModelItem(language + "_" + country,
                     locale_name + "  [" + language + "_" + country + "]");
 //            items[i] = new MPComboBoxModelItem(o[i].toString(), o[i].getDisplayName());
         }
-        
+
         return new DefaultComboBoxModel(ArrayUtilities.sort(items));
     }
 
@@ -256,18 +267,28 @@ public class LanguageManager {
      */
     public static void importLanguage(String langname, File file) {
         String langid = new RandomText(10).getString();
+
         if (hasNeededKeys(file)) {
             try {
                 String dbname = QueryHandler.instanceOf().clone(Context.getFiles()).insertFile(file);
-                 QueryData t = new QueryData();
-                 t.add("cname", langid);
-                 t.add("longname", langname);
-                 t.add("filename", dbname);
-                QueryHandler.instanceOf().clone(Context.getLanguage()).insert(t,new int[]{0}, "Imported language: " + langname);
-                MPV5View.addMessage(langname + Messages.UPDATED);
+                QueryData t = new QueryData();
+                t.add("cname", langid);
+                t.add("longname", langname);
+                t.add("filename", dbname);
+                t.add("dateadded", DateConverter.getTodayDBDate());
+                Log.Debug(LanguageManager.class, "Adding language: " + langname);
+                int id = QueryHandler.instanceOf().clone(Context.getLanguage()).insert(t, "Imported language: " + langname);
+                if (id > 0) {
+                    MPV5View.addMessage(langname + Messages.INSERTED);
+                    Popup.notice(langname + Messages.INSERTED);
+                } else {
+                    MPV5View.addMessage(Messages.ERROR_OCCURED);
+                    Popup.notice(Messages.ERROR_OCCURED);
+                }
             } catch (FileNotFoundException ex) {
                 Log.Debug(LanguageManager.class, ex);
             }
+
         }
     }
 

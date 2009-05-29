@@ -549,25 +549,6 @@ public class QueryHandler implements Cloneable {
         return i;
     }
 
-    /**
-     * Inserts data into the current context's table
-     * @param what
-     * @param uniquecols
-     * @param jobmessage
-     * @return id (unique) of the inserted row
-     */
-    public int insert(QueryData what, int[] uniquecols, String jobmessage) {
-
-        String query = query = "INSERT INTO " + table + " (" + what.getKeysString() + " ) VALUES (" + what.getValuesString() + ") ";
-
-        if (uniquecols != null) {
-            if (!checkUniqueness(what, uniquecols)) {
-                return 0;
-            }
-        }
-
-        return freeUpdateQuery(query, mpv5.usermanagement.MPSecurityManager.CREATE_OR_DELETE, jobmessage).getId();
-    }
 
     /**
      * Insert values to db
@@ -577,8 +558,14 @@ public class QueryHandler implements Cloneable {
      * @return id of inserted row
      */
     public int insert(QueryData what, String jobmessage) {
-        return insert(what, (int[]) null, jobmessage);
+
+        String query = query = "INSERT INTO " + table + " (" + what.getKeysString() + " ) VALUES (" + what.getValuesString() + ") ";
+
+
+        return freeUpdateQuery(query, mpv5.usermanagement.MPSecurityManager.CREATE_OR_DELETE, jobmessage).getId();
     }
+
+
 
     /**
      *  This is a special insert method for the History feature
@@ -1586,7 +1573,7 @@ public class QueryHandler implements Cloneable {
         } else {
             URI k;
             try {
-                k = FileDirectoryHandler.copyFile(list.get(0), targetFile.getParentFile(), targetFile.getName());
+                k = FileDirectoryHandler.copyFile(list.get(0), targetFile.getParentFile(), targetFile.getName(), false);
             } catch (IOException ex) {
                 Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
                 return null;

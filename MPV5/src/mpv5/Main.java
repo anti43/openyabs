@@ -49,6 +49,10 @@ public class Main extends SingleFrameApplication {
 
     public static SplashScreen splash;
     private static boolean removeplugs = false;
+    /**
+     * Is true if the application is running, false if in editor
+     */
+    public static boolean INSTANTIATED = false;
 
     /**
      * Use this method to (re) cache data from the database to avoid uneccessary db queries
@@ -149,6 +153,7 @@ public class Main extends SingleFrameApplication {
      */
     public static void main(String[] args) {
 
+        INSTANTIATED = true;
         try {
             splash = new SplashScreen(new ImageIcon(Test.class.getResource(mpv5.globals.Constants.SPLASH_IMAGE)));
             splash.init(8);

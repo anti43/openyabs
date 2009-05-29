@@ -118,7 +118,7 @@ public class DataPanelTB extends javax.swing.JPanel {
         commonActionsToolbar.setPreferredSize(new java.awt.Dimension(342, 41));
 
         jToggleButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/viewmag.png"))); // NOI18N
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.resources.languages.LanguageManager.getBundle(); // NOI18N
         jToggleButton1.setText(bundle.getString("DataPanelTB.jToggleButton1.text")); // NOI18N
         jToggleButton1.setToolTipText(bundle.getString("DataPanelTB.jToggleButton1.toolTipText")); // NOI18N
         jToggleButton1.setContentAreaFilled(false);

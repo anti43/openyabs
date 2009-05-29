@@ -118,10 +118,11 @@ public class FileDirectoryHandler {
      * @param sourceFile
      * @param targetDirectory
      * @param targetFilename
+     * @param deleteOnExit Shall we delete the NEW file on exit
      * @return
      * @throws java.io.IOException
      */
-    public static URI copyFile(File sourceFile, File targetDirectory, String targetFilename)
+    public static URI copyFile(File sourceFile, File targetDirectory, String targetFilename, boolean deleteOnExit)
             throws IOException {
         FileOutputStream out = null;
         InputStream in = new FileInputStream(sourceFile);
@@ -148,6 +149,10 @@ public class FileDirectoryHandler {
         }
         in.close();
         out.close();
+
+        if (deleteOnExit) {
+            outp.deleteOnExit();
+        }
 
         return outp.toURI();
     }
@@ -271,7 +276,7 @@ public class FileDirectoryHandler {
      */
     public static File tempFileClone(File file, String suffix) {
         try {
-            File fil = new File(copyFile(file, new File(System.getProperty("java.io.tmpdir")), new RandomText().getString() + "." + suffix));
+            File fil = new File(copyFile(file, new File(System.getProperty("java.io.tmpdir")), new RandomText().getString() + "." + suffix, true));
             fil.deleteOnExit();
             return fil;
         } catch (IOException ex) {

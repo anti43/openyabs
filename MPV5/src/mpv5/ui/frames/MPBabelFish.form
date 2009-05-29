@@ -15,6 +15,17 @@
             <Property name="name" type="java.lang.String" value="jMenu1" noResource="true"/>
           </Properties>
           <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem4">
+              <Properties>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="MPBabelFish.jMenuItem4.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
+                <Property name="name" type="java.lang.String" value="jMenuItem4" noResource="true"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem4ActionPerformed"/>
+              </Events>
+            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem2">
               <Properties>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
@@ -111,16 +122,16 @@
                       <Component id="languages" min="-2" pref="195" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                      <Component id="langName" max="32767" attributes="1"/>
-                      <Component id="jLabel7" alignment="0" pref="226" max="32767" attributes="1"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="langName" min="-2" max="-2" attributes="1"/>
+                      <Component id="jLabel7" pref="339" max="32767" attributes="1"/>
                   </Group>
-                  <EmptySpace pref="119" max="32767" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
                   <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
-              <Component id="GooogleTranslator" alignment="0" pref="618" max="32767" attributes="0"/>
-              <Component id="jScrollPane1" alignment="0" pref="618" max="32767" attributes="0"/>
+              <Component id="GooogleTranslator" alignment="0" pref="620" max="32767" attributes="0"/>
+              <Component id="jScrollPane1" alignment="0" pref="620" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
@@ -141,7 +152,7 @@
                       </Group>
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                  <Component id="jScrollPane1" pref="213" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" pref="214" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="GooogleTranslator" min="-2" pref="25" max="-2" attributes="0"/>
               </Group>
