@@ -103,7 +103,7 @@ public class PrinitingComboBox extends javax.swing.JPanel {
         });
 
         jLabel1.setFont(jLabel1.getFont());
-        java.util.ResourceBundle bundle = mpv5.resources.languages.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         jLabel1.setText(bundle.getString("PrinitingComboBox.jLabel1.text")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
 

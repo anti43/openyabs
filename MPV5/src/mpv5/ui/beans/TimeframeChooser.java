@@ -62,7 +62,7 @@ public class TimeframeChooser extends javax.swing.JPanel {
 
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/2rightarrow.png"))); // NOI18N
-        java.util.ResourceBundle bundle = mpv5.resources.languages.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         jLabel1.setText(bundle.getString("TimeframeChooser.jLabel1.text")); // NOI18N
         jLabel1.setIconTextGap(0);
         jLabel1.setName("jLabel1"); // NOI18N

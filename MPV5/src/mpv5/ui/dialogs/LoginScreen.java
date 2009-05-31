@@ -81,7 +81,7 @@ public class LoginScreen extends javax.swing.JFrame {
         jCheckBox2 = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        java.util.ResourceBundle bundle = mpv5.resources.languages.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         setTitle(bundle.getString("LoginScreen.title")); // NOI18N
         setFocusTraversalPolicyProvider(true);
         setResizable(false);

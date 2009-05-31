@@ -32,7 +32,7 @@ import mpv5.globals.Messages;
 import mpv5.db.objects.Address;
 import mpv5.db.objects.Contact;
 import mpv5.logging.Log;
-import mpv5.resources.languages.LanguageManager;
+import mpv5.i18n.LanguageManager;
 import mpv5.ui.frames.MPV5View;
 import mpv5.db.objects.User;
 import mpv5.utils.arrays.ArrayUtilities;
@@ -92,7 +92,7 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
 
         jButton1.setBackground(new java.awt.Color(255, 255, 255));
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/remove.png"))); // NOI18N
-        java.util.ResourceBundle bundle = mpv5.resources.languages.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         jButton1.setText(bundle.getString("AddressPanel.jButton1.text")); // NOI18N
         jButton1.setToolTipText(bundle.getString("AddressPanel.jButton1.toolTipText")); // NOI18N
         jButton1.setContentAreaFilled(false);

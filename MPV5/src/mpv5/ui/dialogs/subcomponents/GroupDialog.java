@@ -60,7 +60,7 @@ public class GroupDialog extends javax.swing.JPanel {
 
         javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("root");
         tree.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
-        java.util.ResourceBundle bundle = mpv5.resources.languages.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         tree.setToolTipText(bundle.getString("ControlPanel_Groups.tree.toolTipText")); // NOI18N
         tree.setName("tree"); // NOI18N
         tree.addMouseListener(new java.awt.event.MouseAdapter() {

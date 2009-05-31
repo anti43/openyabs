@@ -5,7 +5,7 @@ import java.util.Locale;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import mpv5.data.PropertyStore;
-import mpv5.resources.languages.LanguageManager;
+import mpv5.i18n.LanguageManager;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.frames.MPV5View;
 
@@ -68,7 +68,7 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
         setLayout(new java.awt.BorderLayout());
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        java.util.ResourceBundle bundle = mpv5.resources.languages.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Locale.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 

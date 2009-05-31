@@ -201,7 +201,7 @@ public class QueryHandler implements Cloneable {
      */
     public Object[][] select(String columns, QueryCriteria criterias, vTimeframe time) throws NodataFoundException {
 
-        String dateCriterium = table + ".dateadded >= '" + DateConverter.getSQLDateString(time.getStart()) + "' AND " + table + ".dateadded < '" + DateConverter.getSQLDateString(time.getEnd()) + "'";
+        String dateCriterium = table + ".dateadded >= '" + DateConverter.getSQLDateString(time.getStart()) + "' AND " + table + ".dateadded <= '" + DateConverter.getSQLDateString(time.getEnd()) + "'";
         String query = "SELECT " + columns + " FROM " + table + " " + context.getReferences() + " WHERE ";
 
         for (int i = 0; i < criterias.getKeys().length; i++) {
@@ -323,7 +323,7 @@ public class QueryHandler implements Cloneable {
      * @return
      */
     public Object[][] select(String what, String[] where, String datecolumn, vTimeframe zeitraum) {
-        String dateCriterium = datecolumn + " >= '" + DateConverter.getSQLDateString(zeitraum.getStart()) + "' AND " + datecolumn + " < '" + DateConverter.getSQLDateString(zeitraum.getEnd()) + "'";
+        String dateCriterium = datecolumn + " >= '" + DateConverter.getSQLDateString(zeitraum.getStart()) + "' AND " + datecolumn + " <= '" + DateConverter.getSQLDateString(zeitraum.getEnd()) + "'";
         String query;
         if (where != null) {
             query = "SELECT " + what + " FROM " + table + " WHERE " + where[0] + " = " + where[2] + where[1] + where[2] + " AND " + dateCriterium;

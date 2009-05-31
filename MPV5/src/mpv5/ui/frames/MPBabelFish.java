@@ -25,7 +25,7 @@ import javax.swing.DefaultComboBoxModel;
 import mpv5.db.common.NodataFoundException;
 import mpv5.globals.Headers;
 import mpv5.globals.Messages;
-import mpv5.resources.languages.LanguageManager;
+import mpv5.i18n.LanguageManager;
 import mpv5.ui.dialogs.DialogForFile;
 import com.google.api.translate.*;
 import java.awt.Cursor;
@@ -109,8 +109,9 @@ public class MPBabelFish extends javax.swing.JFrame {
         jMenuItem3 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        java.util.ResourceBundle bundle = mpv5.resources.languages.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setTitle(bundle.getString("MPBabelFish.title_1")); // NOI18N
+        setAlwaysOnTop(true);
         setName("Form"); // NOI18N
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("MPBabelFish.jPanel1.border.title_1"))); // NOI18N
@@ -236,7 +237,7 @@ public class MPBabelFish extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(langName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 215, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(GooogleTranslator, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
         );

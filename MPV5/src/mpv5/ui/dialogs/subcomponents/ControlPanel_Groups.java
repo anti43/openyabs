@@ -111,7 +111,7 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
         jButton2 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
 
-        java.util.ResourceBundle bundle = mpv5.resources.languages.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Groups.border.title"))); // NOI18N
         setName("Form"); // NOI18N
 

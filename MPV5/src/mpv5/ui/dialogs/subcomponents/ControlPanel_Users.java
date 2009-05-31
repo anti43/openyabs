@@ -18,7 +18,7 @@ import mpv5.db.common.QueryHandler;
 import mpv5.globals.Headers;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
-import mpv5.resources.languages.LanguageManager;
+import mpv5.i18n.LanguageManager;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPV5View;
@@ -111,7 +111,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         setLayout(new java.awt.BorderLayout());
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        java.util.ResourceBundle bundle = mpv5.resources.languages.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Users.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 

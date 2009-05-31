@@ -14,7 +14,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mpv5.resources.languages;
+package mpv5.i18n;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -24,6 +24,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Locale;
+
 import java.util.ResourceBundle;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
@@ -166,7 +167,7 @@ public class LanguageManager {
 
                                     Log.Debug(LanguageManager.class, "Created language file at: " + newfile);
                                     try {
-                                        ResourceBundle bundle = java.util.ResourceBundle.getBundle(tempname);
+                                        ResourceBundle bundle = ResourceBundleUtf8.getBundle(tempname);
                                         cachelanguage(langid, bundle);
                                         return bundle;
                                     } catch (Exception e) {
@@ -328,7 +329,7 @@ public class LanguageManager {
     }
 
     private static boolean hasNeededKeys(File file) {
-        Enumeration<String> keys = ResourceBundle.getBundle(defLanguageBundle).getKeys();
+        Enumeration<String> keys = ResourceBundleUtf8.getBundle(defLanguageBundle).getKeys();
         File impFile = file;
         FileReaderWriter frw = new FileReaderWriter(impFile);
         String[] lines = frw.readLines();

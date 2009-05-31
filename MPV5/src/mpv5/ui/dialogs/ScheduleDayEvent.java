@@ -82,7 +82,7 @@ public class ScheduleDayEvent extends javax.swing.JFrame {
         dateChooser2 = new mpv5.ui.beans.DateChooser();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        java.util.ResourceBundle bundle = mpv5.resources.languages.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         setTitle(bundle.getString("ScheduleDayEvent.title")); // NOI18N
         setName("Form"); // NOI18N
 

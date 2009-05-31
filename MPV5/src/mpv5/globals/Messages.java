@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Set;
 import mpv5.logging.Log;
-import mpv5.resources.languages.LanguageManager;
+import mpv5.i18n.LanguageManager;
 
 /**
  * This enum holds all messages for the mp5 main application
