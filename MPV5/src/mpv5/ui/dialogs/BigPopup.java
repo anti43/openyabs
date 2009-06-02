@@ -14,7 +14,7 @@ import mpv5.ui.misc.Position;
 
 /**
  *
- * @author anti
+ *  anti
  */
 public class BigPopup {
 

@@ -12,7 +12,7 @@ import mpv5.ui.panels.ContactPanel;
 
 /**
  *
- * @author anti43
+ *  anti43
  */
 public class Contact extends DatabaseObject {
 

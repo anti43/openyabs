@@ -6,7 +6,7 @@ package mpv5.utils.files;
 
 /**
  *
- * @author Galileo Computing
+ *  Galileo Computing
  */
 import java.awt.Desktop;
 import java.io.BufferedOutputStream;
@@ -327,7 +327,7 @@ public class FileDirectoryHandler {
      * @param address
      * @param localFileName
      * @return
-     * @author Marco Schmidt
+     *  Marco Schmidt
      */
     public static File download(String address, String localFileName) {
         OutputStream out = null;

@@ -23,7 +23,7 @@ import mpv5.utils.xml.XMLReader;
 
 /**
  *
- * @author anti43
+ *  anti43
  */
 public class wizard_XMLImport_2 extends javax.swing.JPanel implements Wizardable {
 

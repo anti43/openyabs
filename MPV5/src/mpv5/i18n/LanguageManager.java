@@ -1,5 +1,5 @@
 /*
- *  This file is part of MP by anti43 /GPL.
+ *  This file is part of MP.
  *
  *  MP is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -52,7 +52,7 @@ import org.jdom.Document;
 
 /**
  *
- * @author Administrator
+ *  Administrator
  */
 public class LanguageManager {
 
@@ -131,16 +131,16 @@ public class LanguageManager {
             return false;
         }
     }
+    private static boolean failed = false;
 
-    private static  boolean failed = false;
     /**
      * 
      * @param langid
      * @return
      */
     public static ResourceBundle getBundle(String langid) {
-       
-        synchronized(LanguageManager.class) {
+
+        synchronized (LanguageManager.class) {
             if (!langid.contentEquals("buildin_en")) {
                 Log.Debug(LanguageManager.class, "Checking language: " + langid);
                 if (!failed) {
@@ -171,16 +171,16 @@ public class LanguageManager {
                                         cachelanguage(langid, bundle);
                                         return bundle;
                                     } catch (Exception e) {
-                                        failed= true;
+                                        failed = true;
                                         Log.Debug(LanguageManager.class, e);
                                     }
                                 } else {
                                     Log.Debug(LanguageManager.class, "Failed language: " + langid);
-                                    failed= true;
+                                    failed = true;
                                 }
                             }
                         } catch (Exception e) {
-                            failed= true;
+                            failed = true;
                             Log.Debug(LanguageManager.class, e);
                         }
 
@@ -188,7 +188,7 @@ public class LanguageManager {
                         return getCachedLanguage(langid);
                     }
                 } else {
-                    failed= true;
+                    failed = true;
                     Log.Debug(LanguageManager.class, "Error loading additional languages. Using default now.");
                     return java.util.ResourceBundle.getBundle(defLanguageBundle);
                 }
@@ -329,26 +329,28 @@ public class LanguageManager {
     }
 
     private static boolean hasNeededKeys(File file) {
-        Enumeration<String> keys = ResourceBundleUtf8.getBundle(defLanguageBundle).getKeys();
-        File impFile = file;
-        FileReaderWriter frw = new FileReaderWriter(impFile);
-        String[] lines = frw.readLines();
+        synchronized (new LanguageManager()) {
+            Enumeration<String> keys = ResourceBundleUtf8.getBundle(defLanguageBundle).getKeys();
+            File impFile = file;
+            FileReaderWriter frw = new FileReaderWriter(impFile);
+            String[] lines = frw.readLines();
 
-        while (keys.hasMoreElements()) {
-            String string = keys.nextElement();
-            boolean found = false;
-            for (int i = 0; i < lines.length; i++) {
-                String line = lines[i];
-                if (line.startsWith(string)) {
-                    found = true;
+            while (keys.hasMoreElements()) {
+                String string = keys.nextElement();
+                boolean found = false;
+                for (int i = 0; i < lines.length; i++) {
+                    String line = lines[i];
+                    if (line.startsWith(string)) {
+                        found = true;
+                    }
                 }
-            }
-            if (!found) {
-                failed = true;
-                Log.Debug(LanguageManager.class, "Key '" + string + "' not found in file " + file);
-                MPV5View.addMessage(Messages.ERROR_OCCURED.toString());
+                if (!found) {
+                    failed = true;
+                    Log.Debug(LanguageManager.class, "Key '" + string + "' not found in file " + file);
+                    MPV5View.addMessage(Messages.ERROR_OCCURED.toString());
 
-                return false;
+                    return false;
+                }
             }
         }
         return true;

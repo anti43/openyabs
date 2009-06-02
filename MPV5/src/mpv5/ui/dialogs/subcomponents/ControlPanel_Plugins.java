@@ -29,7 +29,7 @@ import mpv5.pluginhandling.UserPlugin;
 
 /**
  *
- * @author anti43
+ *  anti43
  */
 public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlApplet {
 

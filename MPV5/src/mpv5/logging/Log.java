@@ -1,5 +1,5 @@
 /*
- *  This file is part of MP by anti43 /GPL.
+ *  This file is part of MP.
  *  
  *      MP is free software: you can redistribute it and/or modify
  *      it under the terms of the GNU General Public License as published by
@@ -20,12 +20,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import mpv5.Main;
 import mpv5.globals.Messages;
 import mpv5.utils.files.FileReaderWriter;
 
 /**
  *
- * @author anti43
+ *  anti43
  */
 public class Log {
 
@@ -44,7 +45,7 @@ public class Log {
      * Produces a huge amount of messages, and error stack traces
      */
     public static final int LOGLEVEL_DEBUG = 2;
-    private static int loglevel = 0;
+    private static int loglevel = 1;
     private static LogConsole logger = new LogConsole();
 
     /**
@@ -97,10 +98,13 @@ public class Log {
                 }
                 break;
             case LOGLEVEL_NORMAL:
-                write(sourcen + ": " + message);
+                if (message != null && message.toString().contains("Exception")) {
+                    write(sourcen + ": " + message);
+                    mpv5.ui.frames.MPV5View.addMessage(Messages.ERROR_OCCURED + ". " + Messages.SEE_LOG);
+                }
                 break;
             case LOGLEVEL_NONE:
-                ;
+                mpv5.ui.frames.MPV5View.addMessage(Messages.ERROR_OCCURED.getValue());
                 break;
             default:
                 write(sourcen + ": " + message);
@@ -116,6 +120,14 @@ public class Log {
      */
     public static void Debug(Class source, Object message, boolean alwaysToKonsole) {
         Debug(source, message);
+    }
+
+    /**
+     * Prints a message, regardless the log level
+     * @param message
+     */
+    public static void Print(Object message) {
+        write(message);
     }
 
     /**
@@ -176,17 +188,20 @@ public class Log {
         write("}//End Print array");
     }
 
+    /**
+     * Print a list
+     * @param lst
+     */
     public static void PrintArray(List lst) {
         for (int idx = 0; idx < lst.size(); idx++) {
             write(lst.get(idx));
         }
     }
 
-
     private static void write(Object obj) {
         try {
             logger.log(obj);
-            if(loglevel==LOGLEVEL_DEBUG) {
+            if (Log.getLoglevel() == Log.LOGLEVEL_DEBUG) {
                 System.out.println(obj);
             }
         } catch (IOException ex) {

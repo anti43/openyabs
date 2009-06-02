@@ -19,7 +19,7 @@ import mpv5.ui.dialogs.Popup;
 
 /**
  *
- * @author Andreas
+ *  Andreas
  */
 public class LabeledTextChooser extends javax.swing.JPanel {
 

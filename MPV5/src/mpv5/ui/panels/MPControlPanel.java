@@ -31,7 +31,7 @@ import mpv5.utils.files.FileDirectoryHandler;
 
 /**
  *
- * @author anti43
+ *  anti43
  */
 public class MPControlPanel extends javax.swing.JPanel {
 

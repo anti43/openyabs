@@ -1,5 +1,5 @@
 /*
- *  This file is part of MP by anti43 /GPL.
+ *  This file is part of MP.
  *
  *      MP is free software: you can redistribute it and/or modify
  *      it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
 /**
  *
- * @author anti
+ *  anti
  */
 public class ComboBoxRendererForTooltip extends BasicComboBoxRenderer {
     private static final long serialVersionUID = 2746090194775905713L;

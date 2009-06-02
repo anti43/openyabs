@@ -1,5 +1,5 @@
 /*
- *  This file is part of MP by anti43 /GPL.
+ *  This file is part of MP.
  *
  *      MP is free software: you can redistribute it and/or modify
  *      it under the terms of the GNU General Public License as published by
@@ -21,10 +21,7 @@ import java.util.Date;
 import javax.swing.JButton;
 import mpv5.db.objects.Schedule;
 
-/**
- *
- * @author anti
- */
+
 public class CalendarButton extends JButton {
 
     private static final long serialVersionUID = 1L;

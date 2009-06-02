@@ -10,7 +10,7 @@ import mpv5.logging.Log;
 
 /**
  *
- * @author Andreas
+ *  Andreas
  */
 public class Watcher implements Runnable {
 

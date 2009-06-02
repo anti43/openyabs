@@ -13,7 +13,7 @@ import mpv5.ui.misc.Position;
 
 /**
  *
- * @author  anti43
+ *   anti43
  */
 public class LogConsole extends javax.swing.JFrame {
 

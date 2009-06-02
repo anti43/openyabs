@@ -17,7 +17,7 @@ import mpv5.globals.LocalSettings;
 
 /**
  *
- * @author Andreas
+ *  Andreas
  */
 public class LabeledTextField extends javax.swing.JPanel {
 

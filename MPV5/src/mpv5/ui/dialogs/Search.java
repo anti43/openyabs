@@ -26,7 +26,7 @@ import mpv5.utils.tables.TableFormat;
 
 /**
  *
- * @author anti
+ *  anti
  */
 public class Search extends javax.swing.JFrame {
 

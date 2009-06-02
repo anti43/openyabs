@@ -1,5 +1,5 @@
 /*
- *  This file is part of MP by anti43 /GPL.
+ *  This file is part of MP.
  *
  *      MP is free software: you can redistribute it and/or modify
  *      it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ import mpv5.ui.frames.MPV5View;
 
 /**
  * Needs to go to a package named "plugin"
- * @author anti
+ *  anti
  */
 public class Main extends JPanel implements MP5Plugin, Runnable {
     private static final long serialVersionUID = -2334458558298502643L;

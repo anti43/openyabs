@@ -10,7 +10,7 @@ import mpv5.db.common.DatabaseObject;
 
 /**
  *
- * @author Andreas
+ *  Andreas
  */
 public interface DataPanel {
 

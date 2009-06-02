@@ -33,9 +33,9 @@ import org.json.JSONObject;
 /**
  * Makes the Google Translate API available to Java applications.
  * 
- * @author Richard Midwinter
- * @author Emeric Vernat
- * @author Juan B Cabral
+ *  Richard Midwinter
+ *  Emeric Vernat
+ *  Juan B Cabral
  */
 public class Translate {
 

@@ -14,7 +14,7 @@ import mpv5.i18n.LanguageManager;
 /**
  * This enum holds all messages for the mp5 main application
  *
- * @author Andreas
+ *  Andreas
  */
 public enum Messages {
 

@@ -13,7 +13,7 @@ import mpv5.utils.tables.Selection;
 
 /**
  *
- * @author anti43
+ *  anti43
  */
 public class ContactsList extends javax.swing.JPanel implements ListPanel {
 

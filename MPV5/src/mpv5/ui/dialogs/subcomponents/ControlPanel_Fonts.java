@@ -12,7 +12,7 @@ import mpv5.ui.frames.MPV5View;
 
 /**
  *
- * @author anti43
+ *  anti43
  */
 public class ControlPanel_Fonts extends javax.swing.JPanel implements ControlApplet {
 

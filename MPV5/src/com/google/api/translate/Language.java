@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * Defines language information for the Google Translate API.
  *
- * @author Richard Midwinter
+ *  Richard Midwinter
  */
 public final class Language {
 

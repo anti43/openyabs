@@ -9,7 +9,7 @@ import javax.swing.event.InternalFrameListener;
 
 /**
  *
- * @author anti43
+ *  anti43
  */
 public class IFrame extends JInternalFrame {
 

@@ -7,7 +7,7 @@ package mpv5.db.common;
 
 /**
  *
- * @author anti
+ *  anti
  */
 /**
  * Represents a <code>SaveString</code> value which <br><br/>

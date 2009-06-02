@@ -15,7 +15,7 @@ import mpv5.utils.ui.TextFieldUtils;
 
 /**
  *
- * @author anti43
+ *  anti43
  */
 public class ControlPanel_Locale extends javax.swing.JPanel implements ControlApplet {
 

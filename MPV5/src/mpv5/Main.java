@@ -1,5 +1,18 @@
 /*
- * Main.java
+ *  This file is part of MP.
+ *
+ *      MP is free software: you can redistribute it and/or modify
+ *      it under the terms of the GNU General Public License as published by
+ *      the Free Software Foundation, either version 3 of the License, or
+ *      (at your option) any later version.
+ *
+ *      MP is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU General Public License for more details.
+ *
+ *      You should have received a copy of the GNU General Public License
+ *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
 package mpv5;
 
@@ -22,7 +35,6 @@ import java.util.Properties;
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import mpv5.db.common.ConnectionTypeHandler;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseConnection;
 import mpv5.db.common.DatabaseObject;
@@ -64,18 +76,15 @@ public class Main extends SingleFrameApplication {
     }
 
     private static void useNetbookOpt() {
-
-
         ControlPanel_Fonts.applyFont(new Font("Dialog", Font.PLAIN, 11));
-
         MPV5View.setNavBarAnimated(false);
         MPV5View.setTabPaneScrolled(true);
-
     }
+
     private File lockfile = new File(MPPATH + File.separator + "." + Constants.PROG_NAME + Constants.VERSION + "." + "lck");
 
     /**
-     *
+     * Read in local settings and launch the application
      */
     public static void start() {
 
@@ -169,7 +178,7 @@ public class Main extends SingleFrameApplication {
         try {
             splash = new SplashScreen(new ImageIcon(Test.class.getResource(mpv5.globals.Constants.SPLASH_IMAGE)));
             splash.init(8);
-            System.out.print(Messages.START_MESSAGE);
+            Log.Print(Messages.START_MESSAGE);
 
             splash.nextStep(Messages.INIT.toString());
             getOS();
@@ -248,7 +257,8 @@ public class Main extends SingleFrameApplication {
         Argument dirarg = abuilder.withName("=directory").withMinimum(1).withMaximum(1).create();
         Argument number = abuilder.withName("number").withMinimum(1).withMaximum(1).create();
 
-        Option netbook = obuilder.withShortName("netbook").withShortName("net").withDescription("use netbook size optimisations").create();
+        Option showenv = obuilder.withShortName("showenv").withShortName("se").withDescription("show environmental variables").create();
+        Option netbook = obuilder.withShortName("netbook").withShortName("net").withDescription("use netbook size optimizations").create();
         Option help = obuilder.withShortName("help").withShortName("h").withDescription("print this message").create();
         Option license = obuilder.withShortName("license").withShortName("li").withDescription("print license").create();
         Option version = obuilder.withShortName("version").withDescription("print the version information and exit").create();
@@ -267,6 +277,7 @@ public class Main extends SingleFrameApplication {
                 withOption(license).
                 withOption(nolf).
                 withOption(netbook).
+                withOption(showenv).
                 withOption(removeplugins).
                 withOption(connectionInstance).
                 withOption(logfile).create();
@@ -328,11 +339,17 @@ public class Main extends SingleFrameApplication {
             if (cl.hasOption(removeplugins)) {
                 removeplugs = true;
             }
+
+            if (cl.hasOption(showenv)) {
+                printEnv();
+            }
         }
 
-        if (Log.getLoglevel() == Log.LOGLEVEL_DEBUG) {
-            Log.PrintArray(cl.getOptions());
+        Log.Print("\nOptions used:");
+        for (int idx = 0; idx < cl.getOptions().size(); idx++) {
+            Log.Print(cl.getOptions().get(idx));
         }
+        Log.Print("\n");
     }
 
     /**

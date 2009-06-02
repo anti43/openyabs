@@ -36,7 +36,7 @@ import mpv5.utils.ui.TextFieldUtils;
 
 /**
  *
- * @author anti43
+ *  anti43
  */
 public class ControlPanel_Users extends javax.swing.JPanel implements ControlApplet, DataPanel {
 

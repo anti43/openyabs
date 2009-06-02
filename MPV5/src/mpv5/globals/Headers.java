@@ -6,7 +6,7 @@ package mpv5.globals;
 
 /**
  *
- * @author Andreas
+ *  Andreas
  */
 public enum Headers {
 

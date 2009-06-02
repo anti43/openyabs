@@ -5,7 +5,7 @@ import java.util.Arrays;
 
 /**
  *
- * @author Andreas
+ *  Andreas
  */
 public class DatabaseSearch {
     public static String ALL = "*";

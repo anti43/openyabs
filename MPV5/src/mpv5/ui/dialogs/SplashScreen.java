@@ -24,7 +24,7 @@ import mpv5.ui.misc.Position;
 
 /**
  *
- * @author anti
+ *  anti
  */
 public class SplashScreen extends javax.swing.JFrame {
 

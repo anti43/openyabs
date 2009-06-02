@@ -9,7 +9,7 @@ import java.util.Date;
 
 /**
  *
- * @author anti43
+ *  anti43
  */
 public class vTimeframe {
     private Date start;

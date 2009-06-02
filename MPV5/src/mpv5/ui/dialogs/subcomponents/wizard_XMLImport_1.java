@@ -7,7 +7,7 @@ import mpv5.ui.dialogs.Wizardable;
 
 /**
  *
- * @author anti43
+ *  anti43
  */
 public class wizard_XMLImport_1 extends javax.swing.JPanel implements Wizardable {
 

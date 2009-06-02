@@ -26,7 +26,7 @@ import mpv5.utils.trees.TreeFormat;
 
 /**
  *
- * @author anti
+ *  anti
  */
 public class GroupDialog extends javax.swing.JPanel {
     private DataPanel view;

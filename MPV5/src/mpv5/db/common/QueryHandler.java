@@ -49,7 +49,7 @@ import mpv5.utils.ui.TextFieldUtils;
 
 /**
  *
- * @author Andreas
+ *  Andreas
  */
 public class QueryHandler implements Cloneable {
 

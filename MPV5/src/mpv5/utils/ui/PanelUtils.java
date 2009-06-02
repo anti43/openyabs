@@ -9,7 +9,7 @@ import mpv5.ui.beans.LabeledTextField;
 
 /**
  *
- * @author anti43
+ *  anti43
  */
 public class PanelUtils {
 

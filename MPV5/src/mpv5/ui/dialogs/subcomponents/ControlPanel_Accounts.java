@@ -1,5 +1,5 @@
 /*
-This file is part of MP by anti43 /GPL.
+This file is part of MP.
 
 MP is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@ import mpv5.utils.ui.TextFieldUtils;
 
 /**
  *
- * @author anti43
+ *  anti43
  */
 public class ControlPanel_Accounts extends javax.swing.JPanel implements ControlApplet, DataPanel {
 

@@ -1,5 +1,5 @@
 /*
- *  This file is part of MP by anti43 /GPL.
+ *  This file is part of MP.
  *
  *      MP is free software: you can redistribute it and/or modify
  *      it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ import mpv5.ui.frames.MPV5View;
 /**
  * This is a convenience class for using SwingWorker
  *
- * @author anti43
+ *  anti43
  */
 public class BackGroundJob extends SwingWorker<Void, Void> {
 

@@ -1,5 +1,5 @@
 /*
- *  This file is part of MP by anti43 /GPL.
+ *  This file is part of MP.
  *
  *      MP is free software: you can redistribute it and/or modify
  *      it under the terms of the GNU General Public License as published by
@@ -21,13 +21,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.ImageIcon;
-import mpv5.ui.dialogs.SplashScreen;
 import mpv5.utils.pdf.PDFFormTest;
 
 /**
  *
- * @author anti
+ *  anti
  */
 public class Test {
 

@@ -6,7 +6,7 @@ package mpv5.db.common;
 
 /**
  *
- * @author Andreas
+ *  Andreas
  */
 public class ReturnValue {
 

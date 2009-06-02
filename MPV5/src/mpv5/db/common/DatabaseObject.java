@@ -31,7 +31,7 @@ import mpv5.utils.date.RandomDate;
 /**
  * Database Objects reflect a row in a table, and can parse graphical and
  * non-graphical beans to update or create itself to the database
- * @author anti43
+ *  anti43
  */
 public abstract class DatabaseObject {
 
