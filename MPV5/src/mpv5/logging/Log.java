@@ -19,6 +19,7 @@ package mpv5.logging;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import mpv5.globals.Messages;
 import mpv5.utils.files.FileReaderWriter;
 
@@ -174,6 +175,13 @@ public class Log {
         }
         write("}//End Print array");
     }
+
+    public static void PrintArray(List lst) {
+        for (int idx = 0; idx < lst.size(); idx++) {
+            write(lst.get(idx));
+        }
+    }
+
 
     private static void write(Object obj) {
         try {

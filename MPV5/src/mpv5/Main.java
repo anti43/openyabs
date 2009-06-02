@@ -63,13 +63,13 @@ public class Main extends SingleFrameApplication {
         User.cacheUser();
     }
 
-    private static void useNetbookOpt(boolean use) {
+    private static void useNetbookOpt() {
 
-        if (use) {
-            ControlPanel_Fonts.applyFont(new Font("Dialog", Font.PLAIN, 11));
-        }
-        MPV5View.setNavBarAnimated(!use);
-        MPV5View.setTabPaneScrolled(use);
+
+        ControlPanel_Fonts.applyFont(new Font("Dialog", Font.PLAIN, 11));
+
+        MPV5View.setNavBarAnimated(false);
+        MPV5View.setTabPaneScrolled(true);
 
     }
     private File lockfile = new File(MPPATH + File.separator + "." + Constants.PROG_NAME + Constants.VERSION + "." + "lck");
@@ -176,9 +176,6 @@ public class Main extends SingleFrameApplication {
             setEnv();
             parseArgs(args);
             setDerbyLog();
-            if (Log.getLoglevel() == Log.LOGLEVEL_DEBUG) {
-                printEnv();
-            }
             start();
         } catch (Exception e) {
             splash.dispose();
@@ -325,12 +322,16 @@ public class Main extends SingleFrameApplication {
             }
 
             if (cl.hasOption(netbook)) {
-                useNetbookOpt(true);
+                useNetbookOpt();
             }
 
             if (cl.hasOption(removeplugins)) {
                 removeplugs = true;
             }
+        }
+
+        if (Log.getLoglevel() == Log.LOGLEVEL_DEBUG) {
+            Log.PrintArray(cl.getOptions());
         }
     }
 
