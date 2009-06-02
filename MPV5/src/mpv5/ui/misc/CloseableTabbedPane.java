@@ -179,6 +179,7 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseListener,
         } catch (Exception ignored) {/*Could probably be a ClassCastException*/
 
         }
+        
 
         super.addTab(title,
                 doPaintCloseIcon ? new CloseTabIcon(extraIcon) : null,
@@ -191,6 +192,8 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseListener,
                 }
             }
         }
+
+
 
     }
 

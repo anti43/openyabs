@@ -20,6 +20,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JProgressBar;
+import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import mpv5.Main;
@@ -80,6 +81,8 @@ public class MPV5View extends FrameView {
     public static DialogForFile filedialog;
     public static SingleFrameApplication identifierApplication;
     private static ArrayList<MP5Plugin> pluginstoBeLoaded = new ArrayList<MP5Plugin>();
+    private static boolean navBarAnimated = true;
+    private static boolean tabPaneScrolled = false;
 
     /**
      * Display a message at the bottom of the MP frame
@@ -113,6 +116,22 @@ public class MPV5View extends FrameView {
      */
     public static void queuePlugins(MP5Plugin[] plugins) {
         pluginstoBeLoaded.addAll(Arrays.asList(plugins));
+    }
+
+    /**
+     * Change the navigation bar behavior
+     * @param animated
+     */
+    public static void setNavBarAnimated(boolean animated) {
+        navBarAnimated = animated;
+    }
+
+    /**
+     * Change the main tabPane behavior
+     * @param scroll
+     */
+    public static void setTabPaneScrolled(boolean scroll) {
+        tabPaneScrolled = scroll;
     }
 
     /**
@@ -267,10 +286,16 @@ public class MPV5View extends FrameView {
         messagelabel = statusMessageLabel;
         history = xhistory;
         history.setRenderer(new ComboBoxRendererForTooltip());
-        tabpanePanel.add(tabPane, BorderLayout.CENTER);
+        if (tabPaneScrolled) {
+            tabpanePanel.add(new JScrollPane(tabPane), BorderLayout.CENTER);
+        } else {
+            tabpanePanel.add(tabPane, BorderLayout.CENTER);
+        }
         favMenu = favouritesMenu;
         identifierView = this;
         filedialog = new DialogForFile(DialogForFile.FILES_ONLY);
+
+        jOutlookBar1.setAnimated(navBarAnimated);
 
         if (predefTitle != null) {
             identifierFrame.setTitle(identifierFrame.getTitle() + predefTitle);
@@ -303,7 +328,7 @@ public class MPV5View extends FrameView {
     }
 
     /**
-     * Add a tab to the main tab pane
+     * Add a tab to the main tab pane, with new JScrollPane
      * @param tab
      * @param name
      */
@@ -430,8 +455,11 @@ public class MPV5View extends FrameView {
         tabpanePanel.setLayout(new java.awt.BorderLayout());
 
         naviPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        naviPanel.setAutoscrolls(true);
+        naviPanel.setFocusCycleRoot(true);
         naviPanel.setName("naviPanel"); // NOI18N
 
+        jOutlookBar1.setAnimated(false);
         jOutlookBar1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         jOutlookBar1.setName("jOutlookBar1"); // NOI18N
 
@@ -441,7 +469,7 @@ public class MPV5View extends FrameView {
 
         jButton5.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/agt_family.png"))); // NOI18N
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jButton5.setText(bundle.getString("MPV5View.jButton5.text_1")); // NOI18N
         jButton5.setToolTipText(bundle.getString("MPV5View.jButton5.toolTipText_1")); // NOI18N
         jButton5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -537,11 +565,11 @@ public class MPV5View extends FrameView {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 110, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 405, Short.MAX_VALUE)
         );
 
         jOutlookBar1.addTab(bundle.getString("MPV5View.jPanel3.TabConstraints.tabTitle_1"), jPanel3); // NOI18N

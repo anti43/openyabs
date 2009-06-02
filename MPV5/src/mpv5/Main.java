@@ -64,10 +64,13 @@ public class Main extends SingleFrameApplication {
     }
 
     private static void useNetbookOpt(boolean use) {
-        if(use){
-        ControlPanel_Fonts.applyFont(new Font("Dialog", Font.PLAIN, 11));
 
+        if (use) {
+            ControlPanel_Fonts.applyFont(new Font("Dialog", Font.PLAIN, 11));
         }
+        MPV5View.setNavBarAnimated(!use);
+        MPV5View.setTabPaneScrolled(use);
+
     }
     private File lockfile = new File(MPPATH + File.separator + "." + Constants.PROG_NAME + Constants.VERSION + "." + "lck");
 
