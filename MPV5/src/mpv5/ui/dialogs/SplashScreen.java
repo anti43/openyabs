@@ -19,6 +19,7 @@ import javax.swing.GrayFilter;
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 import mpv5.globals.Constants;
+import mpv5.logging.Log;
 import mpv5.ui.misc.Position;
 
 /**
@@ -43,7 +44,7 @@ public class SplashScreen extends javax.swing.JFrame {
         image = imageIcon.getImage();
         grayImage = GrayFilter.createDisabledImage(image);
         new Position(this);
-        setAlwaysOnTop(true);
+        setAlwaysOnTop(Log.getLoglevel() == Log.LOGLEVEL_NONE);
         setVisible(rootPaneCheckingEnabled);
     }
 

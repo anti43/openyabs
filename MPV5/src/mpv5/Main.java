@@ -13,6 +13,7 @@ import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
 
 import com.l2fprod.common.swing.plaf.LookAndFeelAddons;
+import java.awt.Font;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.Date;
@@ -36,6 +37,7 @@ import mpv5.ui.dialogs.subcomponents.wizard_DBSettings_1;
 
 
 import mpv5.db.objects.User;
+import mpv5.ui.dialogs.subcomponents.ControlPanel_Fonts;
 import mpv5.utils.files.FileDirectoryHandler;
 import org.apache.commons.cli2.*;
 import org.apache.commons.cli2.builder.*;
@@ -59,6 +61,13 @@ public class Main extends SingleFrameApplication {
      */
     public static void cache() {
         User.cacheUser();
+    }
+
+    private static void useNetbookOpt(boolean use) {
+        if(use){
+        ControlPanel_Fonts.applyFont(new Font("Dialog", Font.PLAIN, 11));
+
+        }
     }
     private File lockfile = new File(MPPATH + File.separator + "." + Constants.PROG_NAME + Constants.VERSION + "." + "lck");
 
@@ -239,6 +248,7 @@ public class Main extends SingleFrameApplication {
         Argument dirarg = abuilder.withName("=directory").withMinimum(1).withMaximum(1).create();
         Argument number = abuilder.withName("number").withMinimum(1).withMaximum(1).create();
 
+        Option netbook = obuilder.withShortName("netbook").withShortName("net").withDescription("use netbook size optimisations").create();
         Option help = obuilder.withShortName("help").withShortName("h").withDescription("print this message").create();
         Option license = obuilder.withShortName("license").withShortName("li").withDescription("print license").create();
         Option version = obuilder.withShortName("version").withDescription("print the version information and exit").create();
@@ -256,6 +266,7 @@ public class Main extends SingleFrameApplication {
                 withOption(debug).
                 withOption(license).
                 withOption(nolf).
+                withOption(netbook).
                 withOption(removeplugins).
                 withOption(connectionInstance).
                 withOption(logfile).create();
@@ -271,48 +282,52 @@ public class Main extends SingleFrameApplication {
             System.err.println("Cannot parse arguments");
         } else {
 
-        if(cl.hasOption(connectionInstance)){
-            LocalSettings.setConnectionID(Integer.valueOf(String.valueOf(cl.getValue(connectionInstance))));
-        }
-
-        if (cl.hasOption(help)) {
-            hf.print();
-            System.exit(0);
-        }
-
-        if (cl.hasOption(license)) {
-//            System.out.print(Messages.GPL);
-        }
-
-        if (cl.hasOption(version)) {
-            System.out.println("MP Version: " + Constants.VERSION);
-            System.exit(0);
-        }
-        if (cl.hasOption(verbose)) {
-            Log.setLogLevel(Log.LOGLEVEL_NORMAL);
-
-        }
-
-        if (cl.hasOption(debug)) {
-            Log.setLogLevel(Log.LOGLEVEL_DEBUG);
-
-        }
-
-        if (cl.hasOption(logfile)) {
-            try {
-                LogConsole.setLogFile(((String) cl.getValue(logfile)).split("=")[1]);
-            } catch (Exception e) {
-                Log.Debug(Main.class, "Fehler beim Schreiben der Logdatei: " + e.getMessage());
+            if (cl.hasOption(connectionInstance)) {
+                LocalSettings.setConnectionID(Integer.valueOf(String.valueOf(cl.getValue(connectionInstance))));
             }
-        }
 
-        if (cl.hasOption(nolf)) {
-            setLaF(null);
-        }
+            if (cl.hasOption(help)) {
+                hf.print();
+                System.exit(0);
+            }
 
-        if (cl.hasOption(removeplugins)) {
-            removeplugs = true;
-        }
+            if (cl.hasOption(license)) {
+//            System.out.print(Messages.GPL);
+            }
+
+            if (cl.hasOption(version)) {
+                System.out.println("MP Version: " + Constants.VERSION);
+                System.exit(0);
+            }
+            if (cl.hasOption(verbose)) {
+                Log.setLogLevel(Log.LOGLEVEL_NORMAL);
+
+            }
+
+            if (cl.hasOption(debug)) {
+                Log.setLogLevel(Log.LOGLEVEL_DEBUG);
+
+            }
+
+            if (cl.hasOption(logfile)) {
+                try {
+                    LogConsole.setLogFile(((String) cl.getValue(logfile)).split("=")[1]);
+                } catch (Exception e) {
+                    Log.Debug(Main.class, "Fehler beim Schreiben der Logdatei: " + e.getMessage());
+                }
+            }
+
+            if (cl.hasOption(nolf)) {
+                setLaF(null);
+            }
+
+            if (cl.hasOption(netbook)) {
+                useNetbookOpt(true);
+            }
+
+            if (cl.hasOption(removeplugins)) {
+                removeplugs = true;
+            }
         }
     }
 
