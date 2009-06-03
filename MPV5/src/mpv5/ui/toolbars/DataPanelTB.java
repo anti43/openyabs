@@ -56,9 +56,9 @@ public class DataPanelTB extends javax.swing.JPanel {
     public DataPanelTB(DataPanel aThis) {
         initComponents();
         parents = aThis;
-        jButton21.setEnabled(LocalSettings.hasProperty("DataLock"));
-        parents.showSearchBar(!MPV5View.getUser().getProperties().getProperty(this,"jToggleButton1",true));
-        jToggleButton1.setSelected(MPV5View.getUser().getProperties().getProperty(this,"jToggleButton1",true));
+//        jButton21.setEnabled(LocalSettings.hasProperty("DataLock"));
+        parents.showSearchBar(!MPV5View.getUser().getProperties().getProperty(this, "jToggleButton1", true));
+        jToggleButton1.setSelected(MPV5View.getUser().getProperties().getProperty(this, "jToggleButton1", true));
     }
 
     public void setMinimalFunctionality(boolean on) {
@@ -118,7 +118,7 @@ public class DataPanelTB extends javax.swing.JPanel {
         commonActionsToolbar.setPreferredSize(new java.awt.Dimension(342, 41));
 
         jToggleButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/viewmag.png"))); // NOI18N
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jToggleButton1.setText(bundle.getString("DataPanelTB.jToggleButton1.text")); // NOI18N
         jToggleButton1.setToolTipText(bundle.getString("DataPanelTB.jToggleButton1.toolTipText")); // NOI18N
         jToggleButton1.setContentAreaFilled(false);
@@ -200,7 +200,6 @@ public class DataPanelTB extends javax.swing.JPanel {
         jButton21.setText(bundle.getString("MPV5View.jButton21.text")); // NOI18N
         jButton21.setToolTipText(bundle.getString("MPV5View.jButton21.toolTipText")); // NOI18N
         jButton21.setContentAreaFilled(false);
-        jButton21.setEnabled(false);
         jButton21.setFocusable(false);
         jButton21.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton21.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -294,14 +293,17 @@ public class DataPanelTB extends javax.swing.JPanel {
 
     private void jButton21ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton21ActionPerformed
         DatabaseObject dato = parents.getDataOwner();
-
-        if (!MPV5View.getUser().isDefault() && dato.isExisting()) {
-            dato.getPanelData(parents);
-            dato.lock();
+        if (MPV5View.getUser().isDefault()) {
+            Popup.notice(Messages.DEFAULT_USER);
+        } else if (dato.isExisting()) {
+           if( dato.lock()){
+                 Popup.notice(dato.toString() + Messages.LOCKED);
+           } else {
+                 Popup.notice(Messages.LOCK_FAILED);
+           }
+        } else {
+            Popup.notice(Messages.NOT_SAVED_YET);
         }
-
-
-
 }//GEN-LAST:event_jButton21ActionPerformed
 
     private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton23ActionPerformed

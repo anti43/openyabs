@@ -63,7 +63,7 @@ public class DatabaseConnection {
 
         try {
             Log.Debug(this, "Datenbanktreiber: " + ctype.getDriver());
-            Class.forName(ctype.getDriver()).newInstance();
+//            Class.forName(ctype.getDriver()).newInstance();
         } catch (Exception ex) {
             ex.printStackTrace();
 //            Popup.warn(ex.getMessage(), Popup.ERROR);

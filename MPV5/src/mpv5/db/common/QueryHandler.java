@@ -31,6 +31,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
+import mpv5.db.objects.User;
 import mpv5.globals.Messages;
 import mpv5.db.objects.Contact;
 import mpv5.logging.Log;
@@ -605,11 +606,11 @@ public class QueryHandler implements Cloneable {
      * @param item
      * @param groupid
      */
-    public void insertHistoryItem(String message, String username, String dbidentity, int item, int groupid) {
+    public synchronized  void insertHistoryItem(String message, String username, String dbidentity, int item, int groupid) {
         try {
             if (psHistory == null) {
                 try {
-                    String query = "INSERT INTO " + table + "(cname, username, dbidentity, intitem, groupsids, dateadded) VALUES (?, ?, ?, ?, ?, ?)";
+                    String query = "INSERT INTO " + Context.getHistory().getDbIdentity() + " (cname, username, dbidentity, intitem, groupsids, dateadded) VALUES (?, ?, ?, ?, ?, ?)";
                     psHistory = sqlConn.prepareStatement(query);
                 } catch (SQLException ex) {
                     Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
@@ -628,6 +629,34 @@ public class QueryHandler implements Cloneable {
 
     }
     private static PreparedStatement psHistory;
+
+    /**
+     * This is a special insert method for the Lock feature
+     * @param context
+     * @param id
+     * @param user
+     * @return
+     * @throws UnableToLockException
+     */
+    public synchronized boolean insertLock(Context context, int id, User user) throws UnableToLockException {
+        try {
+            if (psLock == null) {
+                try {
+                    String query = "INSERT INTO " + Context.getLock().getDbIdentity() + " (cname, rowid, usersids) VALUES (?, ?, ?)";
+                    psLock = sqlConn.prepareStatement(query);
+                } catch (SQLException ex) {
+                    Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            psLock.setString(1, context.getDbIdentity());
+            psLock.setInt(2, id);
+            psLock.setInt(3, user.__getIDS());
+            return psLock.execute();
+        } catch (SQLException ex) {
+           throw new UnableToLockException(context, id, user);
+        }
+    }
+    private static PreparedStatement psLock;
 
     /**
      * 

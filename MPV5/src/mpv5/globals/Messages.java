@@ -69,6 +69,7 @@ public enum Messages {
     SAVED(" saved"),
     IMPORTED(" imported"),
     DELETED(" removed from database"),
+    TRASHED(" moved to trashbin"),
     CNAME_CANNOT_BE_NULL("You must set a NAME for this item."),
     FILE_SAVED("File saved: "),
     ERROR_OCCURED("An error occurred\n"),
@@ -125,6 +126,7 @@ public enum Messages {
     EQUITY("Equity"),
     EXPENSE("Expense"),
     INCOME("Income"),
+    LOCK_FAILED("Lock failed!"),
     LIABILITY("Liability");
 
     private Messages(String message) {
@@ -137,7 +139,7 @@ public enum Messages {
         try {
             message = LanguageManager.getBundle().getString(this.name());
         } catch (Exception e) {
-            Log.Debug(this, e);
+            Log.Debug(this, e.getMessage());
         }
         if (message == null) {
             return super.toString();
@@ -149,4 +151,5 @@ public enum Messages {
     public String getValue() {
         return toString();
     }
+  
 }

@@ -49,9 +49,9 @@ public abstract class DatabaseObject {
      */
     public boolean isSaved = false;
     /**
-     * I strue if this do is marked as Read-Only
+     * Is true if this do is marked as Read-Only (locked by someone else, or previous lock attempt failed)
      */
-    public boolean readonly = false;
+    public boolean readOnly = false;
     /**
      * Is this do active or not?
      */
@@ -285,7 +285,7 @@ public abstract class DatabaseObject {
         boolean result = false;
         String message = null;
         if (!this.getType().equals(new HistoryItem().getType())) {
-            message = this.__getCName() + Messages.DELETED;
+            message = this.__getCName() + Messages.TRASHED;
         }
         if (ids > 0) {
             if (Context.getTrashableContexts().contains(context)) {
@@ -297,6 +297,9 @@ public abstract class DatabaseObject {
                 Log.Debug(this, "The trashed row has id: " + ids);
             } else {
                 Log.Debug(this, "Deleting dataset:");
+                if (!this.getType().equals(new HistoryItem().getType())) {
+                    message = this.__getCName() + Messages.DELETED;
+                }
                 result = QueryHandler.instanceOf().clone(context).delete(new String[][]{{"ids", ids.toString(), ""}}, message);
                 Log.Debug(this, "The deleted row had id: " + ids);
             }
@@ -326,15 +329,11 @@ public abstract class DatabaseObject {
      * @return
      */
     public boolean lock() {
-
-        if (!LocalSettings.hasProperty("DataLock")) {
-            throw new UnsupportedOperationException("Not yet implemented");
+        if (!this.readOnly) {
+            return new DatabaseObjectLock(this).check();
         } else {
-
-            return true;//@todo
-
+            return false;
         }
-
     }
 
     /**
