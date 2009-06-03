@@ -75,6 +75,7 @@ public class QueryHandler implements Cloneable {
         return instance;
     }
     private DataPanel viewToBeNotified = null;
+    private static Integer ROW_LIMIT = null;
 
     private QueryHandler() {
         try {
@@ -83,6 +84,15 @@ public class QueryHandler implements Cloneable {
         } catch (Exception ex) {
             Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    /**
+     * Set the row limit for select queries. 0 is unlimited.
+     * @param limit
+     */
+    public static void setRowLimit(Integer limit) {
+        Log.Debug(QueryHandler.class, "Setting row limit to: " + limit);
+        ROW_LIMIT = limit;
     }
 
     /**
@@ -1379,8 +1389,10 @@ public class QueryHandler implements Cloneable {
         String[] columnnames = null;
 
         try {
-            // Select-Anweisung ausführen
             stm = sqlConn.createStatement();
+            if (ROW_LIMIT != null && ROW_LIMIT.intValue() >= 0) {
+                stm.setMaxRows(ROW_LIMIT.intValue());
+            }
             Log.Debug(this, "freeSelectQuery::" + query);
             resultSet = stm.executeQuery(query);
             ArrayList spalten = new ArrayList();
@@ -1514,6 +1526,9 @@ public class QueryHandler implements Cloneable {
             stm = sqlConn.createStatement();
             list = new ArrayList<File>();
 
+            if (ROW_LIMIT != null && ROW_LIMIT.intValue() >= 0) {
+                stm.setMaxRows(ROW_LIMIT.intValue());
+            }
             ResultSet rs = stm.executeQuery(query);
             Log.Debug(this, query);
             while (rs.next()) {

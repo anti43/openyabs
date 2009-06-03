@@ -17,6 +17,7 @@ import mpv5.db.objects.Property;
 import mpv5.db.objects.Schedule;
 import mpv5.db.objects.ContactFile;
 import mpv5.db.objects.Item;
+import mpv5.db.objects.ItemsList;
 import mpv5.db.objects.Message;
 import mpv5.db.objects.SubItem;
 import mpv5.pluginhandling.Plugin;
@@ -55,6 +56,7 @@ public class Context {
     public static String IDENTITY_ITEMS_TO_ACCOUNTS = "itemstoaccounts";
     public static String IDENTITY_MESSAGES = "messages";
     public static String IDENTITY_MESSAGES_TO_ITEMS = "messagestoitems";
+    public static String IDENTITY_ITEMSLIST = "itemslists";
 
     //********** identity classes **********************************************
     private static Class IDENTITY_CONTACTS_CLASS = Contact.class;
@@ -69,6 +71,7 @@ public class Context {
     private static Class IDENTITY_PROPERTIES_CLASS = Property.class;
     private static Class IDENTITY_ACCOUNTS_CLASS = Account.class;
     private static Class IDENTITY_MESSAGES_CLASS = Message.class;
+    private static Class IDENTITY_ITEMSLIST_CLASS = ItemsList.class;
 
     //********** unique constraints *******************************************
     public static String UNIQUECOLUMNS_USER = "cname";
@@ -76,6 +79,7 @@ public class Context {
     public static String UNIQUECOLUMNS_GROUPS = "cname";
     private static String UNIQUECOLUMNS_DEFAULT = "cname";
     public static String DETAIL_CONTACT_SEARCH = "prename,cname,street,city,country,notes";
+    
 
     //********** conditions ****************************************************
     private boolean isCompany = false;
@@ -181,6 +185,7 @@ public class Context {
         list.add(getProducts());
         list.add(getAccounts());
         list.add(getMessages());
+        list.add(getItemsList());
 
         return list;
     }
@@ -204,6 +209,8 @@ public class Context {
         list.add(getProducts());
         list.add(getAccounts());
         list.add(getMessages());
+        list.add(getItemsList());
+
         return list;
     }
 
@@ -226,6 +233,8 @@ public class Context {
         list.add(getProducts());
         list.add(getFiles());
         list.add(getMessages());
+        list.add(getItemsList());
+
         return list;
     }
 
@@ -281,7 +290,6 @@ public class Context {
                 getOffer(),
                 getSubItem(),
                 getGroup(),
-                //                getGroupToParentGroup(),
                 getSchedule(),
                 getFilesToContacts(),
                 getHistory(),
@@ -293,7 +301,9 @@ public class Context {
                 getAccounts(),
                 getItemsToAccounts(),
                 getMessages(),
-                getMessagesToItems()
+                getMessagesToItems(),
+                getItemsList()
+                        
             }));
     private String[] searchHeaders;
     private ArrayList<String[]> references = new ArrayList<String[]>();
@@ -1215,6 +1225,16 @@ public class Context {
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_MESSAGES_TO_ITEMS);
         c.setId(31);
+
+        return c;
+    }
+
+     public static Context getItemsList() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_ITEMSLIST);
+        c.setIdentityClass(IDENTITY_ITEMSLIST_CLASS);
+        c.setId(32);
 
         return c;
     }

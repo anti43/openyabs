@@ -8,7 +8,7 @@ import java.util.Arrays;
  *  Andreas
  */
 public class DatabaseSearch {
-    public static String ALL = "*";
+    public static String ALL_COLUMNS = "*";
 
     private Context context;
 

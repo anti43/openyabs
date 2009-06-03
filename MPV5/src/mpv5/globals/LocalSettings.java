@@ -11,6 +11,7 @@ import java.net.PasswordAuthentication;
 import java.util.Properties;
 import mpv5.Main;
 import mpv5.data.PropertyStore;
+import mpv5.db.common.QueryHandler;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
 import mpv5.utils.xml.XMLReader;
@@ -40,6 +41,7 @@ public class LocalSettings {
     public static final String PRINT_DEVAPP = "devappprint";
     public static final String PROXYUSE = "useproxy";
     public static final String DBNAME = "dbname";
+    public static String DBROW_LIMIT = "dbrowlimit";
 
     /**
      * Applies the environmental settings
@@ -61,6 +63,12 @@ public class LocalSettings {
                 });
             }
         }//End proxy settings
+
+        if (!getProperty(DBROW_LIMIT).equals("null")) {
+            QueryHandler.setRowLimit(Integer.valueOf(getProperty(DBROW_LIMIT)));
+        } else {
+            setProperty(DBROW_LIMIT, "0");
+        }
     }
 
     /**
@@ -78,9 +86,8 @@ public class LocalSettings {
         }
         return cookie.getProperty(name);
     }
-
-
     private static int connectionID = 1;
+
     /**
      * Specify the connection id to be used from the config file, default is 1
      * @param id
@@ -88,6 +95,7 @@ public class LocalSettings {
     public static void setConnectionID(Integer id) {
         connectionID = id;
     }
+
     /**
      * Get the connection id to be used from the config file
      * @return
@@ -110,7 +118,7 @@ public class LocalSettings {
      * @return True if the key exists
      */
     public static boolean hasProperty(String propertyname) {
-       return cookie.hasProperty(propertyname);
+        return cookie.hasProperty(propertyname);
     }
 
     /**
@@ -119,7 +127,9 @@ public class LocalSettings {
      * @param value
      */
     public static void setProperty(String name, String value) {
-        if(value==null)value = "null";
+        if (value == null) {
+            value = "null";
+        }
         Log.Debug(LocalSettings.class, "Changing property '" + name + "' to: " + value);
         cookie.changeProperty(name, value);
     }
