@@ -269,13 +269,13 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
 
     public boolean next() {
         if (DBVerification() & DirectoryCreate()) {
-            Log.setLogLevel(Log.LOGLEVEL_NONE);
-
-            try {
-                LogConsole.setLogFile(null);
-            } catch (Exception ignore) {
-            }
+          
             Main.getApplication().go(true);
+//              try {
+//                Log.setLogLevel(Log.LOGLEVEL_NONE);
+//                LogConsole.setLogFile(null);
+//            } catch (Exception ignore) {
+//            }
             this.master.dispose();
             return true;
         } else {

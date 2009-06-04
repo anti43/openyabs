@@ -225,7 +225,7 @@ public abstract class DatabaseObject {
                     };
                     SwingUtilities.invokeLater(runnable);
                 }
-                this._setSaved(true);
+                this.Saved(true);
                 return true;
             } catch (Exception e) {
                 Log.Debug(this, e);
@@ -325,7 +325,7 @@ public abstract class DatabaseObject {
      * @return
      */
     public boolean lock() {
-        if (!this._isReadOnly()) {
+        if (!this.isReadOnly()) {
             return LOCK.aquire();
         } else {
             return false;
@@ -733,7 +733,7 @@ public abstract class DatabaseObject {
             if (AUTO_LOCK) {
                 Log.Debug(DatabaseObject.class, "Preparing to lock: " + dbo);
                 boolean lck = dbo.lock();
-                dbo._setReadOnly(!lck);
+                dbo.ReadOnly(!lck);
                 Log.Debug(DatabaseObject.class, "Locking was: " + lck);
             }
         }
@@ -863,42 +863,42 @@ public abstract class DatabaseObject {
     /**
      * @return the isSaved
      */
-    public boolean _isSaved() {
+    public boolean isSaved() {
         return isSaved;
     }
 
     /**
      * @param isSaved the isSaved to set
      */
-    public void _setSaved(boolean isSaved) {
+    public void Saved(boolean isSaved) {
         this.isSaved = isSaved;
     }
 
     /**
      * @return the readOnly
      */
-    public boolean _isReadOnly() {
+    public boolean isReadOnly() {
         return readOnly;
     }
 
     /**
      * @param readOnly the readOnly to set
      */
-    public void _setReadOnly(boolean readOnly) {
+    public void ReadOnly(boolean readOnly) {
         this.readOnly = readOnly;
     }
 
     /**
      * @return the active
      */
-    public boolean _isActive() {
+    public boolean isActive() {
         return active;
     }
 
     /**
      * @param active the active to set
      */
-    public void _setActive(boolean active) {
+    public void Active(boolean active) {
         this.active = active;
     }
 
@@ -913,7 +913,7 @@ public abstract class DatabaseObject {
      * AutoLockEnabled
      * @param active
      */
-    public static void setAutoLockEnabled(boolean active) {
+    public static void AutoLockEnabled(boolean active) {
         AUTO_LOCK = active;
     }
 }

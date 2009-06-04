@@ -142,9 +142,9 @@ public class LanguageManager {
 
         synchronized (LanguageManager.class) {
             if (!langid.contentEquals("buildin_en")) {
-                Log.Debug(LanguageManager.class, "Checking language: " + langid);
+//                Log.Debug(LanguageManager.class, "Checking language: " + langid);
                 if (!failed) {
-                    Log.Debug(LanguageManager.class, "Language has not previously failed: " + langid);
+//                    Log.Debug(LanguageManager.class, "Language has not previously failed: " + langid);
                     if (!isCachedLanguage(langid)) {
                         Log.Debug(LanguageManager.class, "Language is not cached: " + langid);
                         File bundlefile = null;

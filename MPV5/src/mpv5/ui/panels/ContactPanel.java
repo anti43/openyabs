@@ -115,12 +115,12 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         prinitingComboBox1.init(dataOwner);
 
         tb.setFavourite(Favourite.isFavourite(object));
-        tb.setEditable(!object._isReadOnly());
+        tb.setEditable(!object.isReadOnly());
 
         addAddresses();
         dataTable.setModel(new MPTableModel());
 
-        if (object._isReadOnly()) {
+        if (object.isReadOnly()) {
             Popup.notice(Messages.LOCKED_BY);
         }
     }

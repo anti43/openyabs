@@ -46,7 +46,7 @@ public class DatabaseObjectLock {
      * @return TRUE if this Lock does represent a valid lock - if the DO is locked for the current user
      */
     public synchronized boolean aquire() {
-        if (dbo.__getIDS().intValue() > 0 && !dbo._isReadOnly()) {
+        if (dbo.__getIDS().intValue() > 0 && !dbo.isReadOnly()) {
             for (int i = 0; i < lockedObjects.size(); i++) {
                 DatabaseObject databaseObject = lockedObjects.get(i);
                 if (databaseObject.equals(dbo)) {
@@ -82,7 +82,7 @@ public class DatabaseObjectLock {
             } catch (UnableToLockException ex) {
                 Log.Debug(this, ex.getMessage());
                 LOCKED = false;
-                dbo._setReadOnly(true);
+                dbo.ReadOnly(true);
             }
         }
 
