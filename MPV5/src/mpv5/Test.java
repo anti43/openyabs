@@ -31,7 +31,7 @@ public class Test {
 
     public static void main(String[] args) {
         try {
-            new PDFFormTest(new File("/home/anti/Desktop/t.pdf")).printFields();
+            new PDFFormTest(new File("/home/anti/Desktop/euerformular.pdf")).fillFields();
 //        new SplashScreen(new ImageIcon(Test.class.getResource("/mpv5/resources/images/background.png")));
 //        try {
 //        try {
