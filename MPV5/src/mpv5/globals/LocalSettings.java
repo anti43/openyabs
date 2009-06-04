@@ -36,15 +36,17 @@ public class LocalSettings {
     public static final String PROXYPASSWORD = "proxypassword";
     public static final String OFFICE_HOME = "/opt/openoffice.org3/";
     public static final String CACHE_DIR = "cachedir";
-    private static PropertyStore predefinedSettings = new PropertyStore(new String[][]{ //        {LAF,UIManager.getSystemLookAndFeelClassName()}
-                {"defaultfont", "Tahoma"}
-            });
+   
     public static final String DEFAULT_FONT = "defaultfont";
     public static final String PRINT_DEVAPP = "devappprint";
     public static final String PROXYUSE = "useproxy";
     public static final String DBNAME = "dbname";
     public static final String DBROW_LIMIT = "dbrowlimit";
     public static final String DBAUTOLOCK = "dbautolock";
+
+     private static PropertyStore predefinedSettings = new PropertyStore(new String[][]{ //        {LAF,UIManager.getSystemLookAndFeelClassName()}
+                {DEFAULT_FONT, "Tahoma"}, {DBROW_LIMIT, "250"}, {DBAUTOLOCK, "true"}
+            });
 
     /**
      * Applies the environmental settings

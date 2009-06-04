@@ -65,6 +65,7 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
                         true)) {
                     master.setMessage(Messages.CONNECTION_VERIFIED.toString());
                     LocalSettings.save();
+                    LocalSettings.apply();
 
                     if (!jCheckBox1.isSelected()) {
                         master.setMessage(Messages.CREATING_DATABASE.toString());
