@@ -545,6 +545,7 @@ public class QueryHandler implements Cloneable {
     }
     private static int RUNNING_JOBS = 0;
 
+   
     private synchronized void stop() {
         Runnable runnable = new Runnable() {
 
@@ -638,7 +639,7 @@ public class QueryHandler implements Cloneable {
      * @return
      * @throws UnableToLockException
      */
-    public synchronized boolean insertLock(Context context, int id, User user) throws UnableToLockException {
+    synchronized boolean insertLock(Context context, int id, User user) throws UnableToLockException {
         try {
             if (psLock == null) {
                 try {
@@ -657,6 +658,26 @@ public class QueryHandler implements Cloneable {
         }
     }
     private static PreparedStatement psLock;
+
+   void removeLock(Context context, int id, User user) {
+         try {
+            if (psUnLock == null) {
+                try {
+                    String query = "DELETE FROM " + Context.getLock().getDbIdentity() + " WHERE cname = ? AND rowid = ? AND usersids = ?";
+                    psUnLock = sqlConn.prepareStatement(query);
+                } catch (SQLException ex) {
+                    Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            psUnLock.setString(1, context.getDbIdentity());
+            psUnLock.setInt(2, id);
+            psUnLock.setInt(3, user.__getIDS());
+            psUnLock.execute();
+        } catch (SQLException ex) {
+          Log.Debug(ex);
+        }
+    } private static PreparedStatement psUnLock;
+
 
     /**
      * 

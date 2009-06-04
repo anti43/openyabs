@@ -11,9 +11,11 @@ import java.net.PasswordAuthentication;
 import java.util.Properties;
 import mpv5.Main;
 import mpv5.data.PropertyStore;
+import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.QueryHandler;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
+import mpv5.utils.text.TypeConversion;
 import mpv5.utils.xml.XMLReader;
 import mpv5.utils.xml.XMLWriter;
 
@@ -41,7 +43,8 @@ public class LocalSettings {
     public static final String PRINT_DEVAPP = "devappprint";
     public static final String PROXYUSE = "useproxy";
     public static final String DBNAME = "dbname";
-    public static String DBROW_LIMIT = "dbrowlimit";
+    public static final String DBROW_LIMIT = "dbrowlimit";
+    public static final String DBAUTOLOCK = "dbautolock";
 
     /**
      * Applies the environmental settings
@@ -68,6 +71,12 @@ public class LocalSettings {
             QueryHandler.setRowLimit(Integer.valueOf(getProperty(DBROW_LIMIT)));
         } else {
             setProperty(DBROW_LIMIT, "0");
+        }
+
+          if (!getProperty(DBAUTOLOCK).equals("null")) {
+            DatabaseObject.setAutoLockEnabled(TypeConversion.stringToBoolean(getProperty(DBAUTOLOCK)));
+        } else {
+            setProperty(DBAUTOLOCK, "0");
         }
     }
 

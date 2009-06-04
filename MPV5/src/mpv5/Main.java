@@ -38,6 +38,7 @@ import javax.swing.UIManager;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseConnection;
 import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.DatabaseObjectLock;
 import mpv5.globals.Constants;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
@@ -157,6 +158,7 @@ public class Main extends SingleFrameApplication {
     protected void shutdown() {
         MPV5View.setWaiting(true);
         MPV5View.setProgressRunning(true);
+        DatabaseObjectLock.releaseAllObjectsFor(MPV5View.getUser());
         try {
             LocalSettings.save();
             if (!MPV5View.getUser().isDefault()) {

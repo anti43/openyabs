@@ -34,6 +34,7 @@ import mpv5.utils.date.RandomDate;
  *  anti43
  */
 public abstract class DatabaseObject {
+    private static boolean AUTO_LOCK = false;
 
     /**
      * The db context of this do
@@ -45,17 +46,11 @@ public abstract class DatabaseObject {
      */
     public Integer ids = 0;
     /**
-     * Should be false after this do's data has been altered in any way
-     */
-    public boolean isSaved = false;
-    /**
-     * Is true if this do is marked as Read-Only (locked by someone else, or previous lock attempt failed)
-     */
-    public boolean readOnly = false;
-    /**
      * Is this do active or not?
      */
-    public boolean active = true;
+    private boolean isSaved = false;
+    private boolean readOnly = false;
+    private boolean active = true;
     /**
      * The mandatory name
      */
@@ -63,6 +58,7 @@ public abstract class DatabaseObject {
     private int groupsids = 1;
     private int intaddedby = 0;
     private Date dateadded = new Date(0);
+    private DatabaseObjectLock LOCK = new DatabaseObjectLock(this);
 
     public String __getCName() {
         return cname;
@@ -229,7 +225,7 @@ public abstract class DatabaseObject {
                     };
                     SwingUtilities.invokeLater(runnable);
                 }
-
+                this._setSaved(true);
                 return true;
             } catch (Exception e) {
                 Log.Debug(this, e);
@@ -329,11 +325,18 @@ public abstract class DatabaseObject {
      * @return
      */
     public boolean lock() {
-        if (!this.readOnly) {
-            return new DatabaseObjectLock(this).check();
+        if (!this._isReadOnly()) {
+            return LOCK.aquire();
         } else {
             return false;
         }
+    }
+
+    /**
+     * Releases this object, if any locks are present for the current user
+     */
+    public void release() {
+        LOCK.release();
     }
 
     /**
@@ -669,16 +672,16 @@ public abstract class DatabaseObject {
 
         for (int i = 0; i < dos.length; i++) {
 
-            DatabaseObject y = null;
+            DatabaseObject dbo = null;
             ArrayList<Method> vars = null;
             if (!singleExplode) {
-                y = DatabaseObject.getObject(target.getContext());
+                dbo = DatabaseObject.getObject(target.getContext());
             } else {
-                y = target;
+                dbo = target;
             }
 
-            vars = y.setVars();
-            dos[i] = y;
+            vars = dbo.setVars();
+            dos[i] = dbo;
 
             if (select.hasData()) {
                 for (int j = 0; j < select.getData()[i].length; j++) {
@@ -699,24 +702,24 @@ public abstract class DatabaseObject {
                             try {
                                 if (name.startsWith("is") || name.toUpperCase().startsWith("BOOL") || name.toUpperCase().endsWith("BOOL")) {
                                     if (String.valueOf(select.getData()[i][j]).equals("1")) {
-                                        vars.get(k).invoke(y, new Object[]{true});
+                                        vars.get(k).invoke(dbo, new Object[]{true});
                                     } else {
-                                        vars.get(k).invoke(y, new Object[]{false});
+                                        vars.get(k).invoke(dbo, new Object[]{false});
                                     }
                                 } else if (name.toUpperCase().startsWith("INT") || name.endsWith("uid") || name.endsWith("ids") || name.equals("ids")) {
-                                    vars.get(k).invoke(y, new Object[]{Integer.valueOf(String.valueOf(select.getData()[i][j]))});
+                                    vars.get(k).invoke(dbo, new Object[]{Integer.valueOf(String.valueOf(select.getData()[i][j]))});
                                 } else if (name.toUpperCase().startsWith("DATE") || name.toUpperCase().endsWith("DATE")) {
-                                    vars.get(k).invoke(y, new Object[]{DateConverter.getDate(String.valueOf(select.getData()[i][j]))});
+                                    vars.get(k).invoke(dbo, new Object[]{DateConverter.getDate(String.valueOf(select.getData()[i][j]))});
                                 } else if (name.toUpperCase().startsWith("VALUE") || name.toUpperCase().endsWith("VALUE")) {
-                                    vars.get(k).invoke(y, new Object[]{Double.valueOf(String.valueOf(select.getData()[i][j]))});
+                                    vars.get(k).invoke(dbo, new Object[]{Double.valueOf(String.valueOf(select.getData()[i][j]))});
                                 } else {
-                                    vars.get(k).invoke(y, new Object[]{String.valueOf(select.getData()[i][j])});
+                                    vars.get(k).invoke(dbo, new Object[]{String.valueOf(select.getData()[i][j])});
                                 }
                             } catch (IllegalAccessException ex) {
 
                                 Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
                             } catch (IllegalArgumentException ex) {
-                                Log.Debug(y, name + " " + String.valueOf(select.getData()[i][j]));
+                                Log.Debug(dbo, name + " " + String.valueOf(select.getData()[i][j]));
                                 Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
                             } catch (InvocationTargetException ex) {
 
@@ -727,10 +730,13 @@ public abstract class DatabaseObject {
                 }
             }
 
-
+            if (AUTO_LOCK) {
+                Log.Debug(DatabaseObject.class, "Preparing to lock: " + dbo);
+                boolean lck = dbo.lock();
+                dbo._setReadOnly(!lck);
+                Log.Debug(DatabaseObject.class, "Locking was: " + lck);
+            }
         }
-
-
 
         return dos;
     }
@@ -852,5 +858,62 @@ public abstract class DatabaseObject {
         } catch (NodataFoundException ex) {
             return false;
         }
+    }
+
+    /**
+     * @return the isSaved
+     */
+    public boolean _isSaved() {
+        return isSaved;
+    }
+
+    /**
+     * @param isSaved the isSaved to set
+     */
+    public void _setSaved(boolean isSaved) {
+        this.isSaved = isSaved;
+    }
+
+    /**
+     * @return the readOnly
+     */
+    public boolean _isReadOnly() {
+        return readOnly;
+    }
+
+    /**
+     * @param readOnly the readOnly to set
+     */
+    public void _setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
+    }
+
+    /**
+     * @return the active
+     */
+    public boolean _isActive() {
+        return active;
+    }
+
+    /**
+     * @param active the active to set
+     */
+    public void _setActive(boolean active) {
+        this.active = active;
+    }
+
+      /**
+     * @return AutoLockEnabled
+     */
+    public static boolean isAutoLockEnabled() {
+        return AUTO_LOCK;
+    }
+
+    /**
+     * AutoLockEnabled
+     * @param active
+     */
+    public static void setAutoLockEnabled(boolean active) {
+        AUTO_LOCK = active;
     }
 }

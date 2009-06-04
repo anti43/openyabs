@@ -32,6 +32,7 @@ import mpv5.Main;
 import mpv5.data.PropertyStore;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.DatabaseObjectLock;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryData;
@@ -208,6 +209,7 @@ public class User extends DatabaseObject {
      * Logs in this user into MP
      */
     public void login() {
+        DatabaseObjectLock.releaseAllObjectsFor(this);
         if (isenabled) {
             MPV5View.setUser(this);
             setProperties();
@@ -238,6 +240,7 @@ public class User extends DatabaseObject {
      * Logs out this user
      */
     public void logout() {
+        DatabaseObjectLock.releaseAllObjectsFor(this);
         saveProperties();
         MPV5View.setUser(DEFAULT);
         if (!isDefault()) {

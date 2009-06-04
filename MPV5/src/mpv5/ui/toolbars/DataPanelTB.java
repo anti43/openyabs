@@ -41,34 +41,52 @@ public class DataPanelTB extends javax.swing.JPanel {
     private static final long serialVersionUID = -8215471082724735228L;
     private DataPanel parents;
     private final ActionListener action1 = new java.awt.event.ActionListener() {
-
         public void actionPerformed(java.awt.event.ActionEvent evt) {
             favAdd(evt);
         }
     };
     private final ActionListener action2 = new java.awt.event.ActionListener() {
-
         public void actionPerformed(java.awt.event.ActionEvent evt) {
             favRemover(evt);
         }
     };
 
-    public DataPanelTB(DataPanel aThis) {
+    /**
+     * 
+     * @param panel
+     */
+    public DataPanelTB(DataPanel panel) {
         initComponents();
-        parents = aThis;
-//        jButton21.setEnabled(LocalSettings.hasProperty("DataLock"));
+        parents = panel;
         parents.showSearchBar(!MPV5View.getUser().getProperties().getProperty(this, "jToggleButton1", true));
         jToggleButton1.setSelected(MPV5View.getUser().getProperties().getProperty(this, "jToggleButton1", true));
+        jButton21.setEnabled(!DatabaseObject.isAutoLockEnabled());
     }
 
+    /**
+     *
+     * @param on
+     */
     public void setMinimalFunctionality(boolean on) {
-
         jButton21.setEnabled(!on);
         jButton23.setEnabled(!on);
         jButton24.setEnabled(!on);
-
     }
 
+    /**
+     *
+     * @param on
+     */
+    public void setEditable(boolean on) {
+        jButton25.setEnabled(on);
+        jButton26.setEnabled(on);
+        jButton21.setEnabled(on);
+    }
+
+    /**
+     *
+     * @param favourite
+     */
     public void setFavourite(boolean favourite) {
         if (!favourite) {
             jButton24.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/bookmark_add.png"))); // NOI18N
@@ -296,11 +314,11 @@ public class DataPanelTB extends javax.swing.JPanel {
         if (MPV5View.getUser().isDefault()) {
             Popup.notice(Messages.DEFAULT_USER);
         } else if (dato.isExisting()) {
-           if( dato.lock()){
-                 Popup.notice(dato.toString() + Messages.LOCKED);
-           } else {
-                 Popup.notice(Messages.LOCK_FAILED);
-           }
+            if (dato.lock()) {
+                Popup.notice(dato.toString() + Messages.LOCKED);
+            } else {
+                Popup.notice(Messages.LOCK_FAILED);
+            }
         } else {
             Popup.notice(Messages.NOT_SAVED_YET);
         }

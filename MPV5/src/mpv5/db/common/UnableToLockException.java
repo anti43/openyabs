@@ -17,7 +17,6 @@
 package mpv5.db.common;
 
 import mpv5.db.objects.User;
-import mpv5.logging.Log;
 
 /**
  *
@@ -27,6 +26,5 @@ public class UnableToLockException extends Exception {
 
     public UnableToLockException(Context context, int id, User user) {
         super("Unable to lock item: " + context.getDbIdentity() + " with ID " + id + " for user: " + user);
-        Log.Debug(this);
     }
 }

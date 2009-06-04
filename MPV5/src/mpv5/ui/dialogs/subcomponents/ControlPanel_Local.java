@@ -53,6 +53,7 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
         jButton3 = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         rowlimit = new mpv5.ui.beans.LabeledTextField();
+        autolock = new javax.swing.JCheckBox();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setName("Form"); // NOI18N
@@ -80,7 +81,6 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
         jLabel3.setText(bundle.getString("ControlPanel_Local.jLabel3.text")); // NOI18N
         jLabel3.setName("jLabel3"); // NOI18N
 
-        auth.setBackground(new java.awt.Color(255, 255, 255));
         auth.setText(bundle.getString("ControlPanel_Local.auth.text")); // NOI18N
         auth.setName("auth"); // NOI18N
         auth.addItemListener(new java.awt.event.ItemListener() {
@@ -157,7 +157,7 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(proxy)
                             .addComponent(port, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(44, Short.MAX_VALUE))
+                .addContainerGap(105, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -177,7 +177,7 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
                 .addComponent(auth)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(authpanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addContainerGap(23, Short.MAX_VALUE))
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Local.jPanel3.border.title"))); // NOI18N
@@ -193,14 +193,14 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(printdev)
-                .addContainerGap(83, Short.MAX_VALUE))
+                .addContainerGap(144, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(printdev)
-                .addContainerGap(33, Short.MAX_VALUE))
+                .addContainerGap(37, Short.MAX_VALUE))
         );
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
@@ -240,21 +240,31 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
         rowlimit.set_Label(bundle.getString("ControlPanel_Local.rowlimit._Label")); // NOI18N
         rowlimit.setName("rowlimit"); // NOI18N
 
+        autolock.setText(bundle.getString("ControlPanel_Local.autolock.text")); // NOI18N
+        autolock.setName("autolock"); // NOI18N
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(rowlimit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(115, Short.MAX_VALUE))
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(rowlimit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(176, Short.MAX_VALUE))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(autolock, javax.swing.GroupLayout.DEFAULT_SIZE, 357, Short.MAX_VALUE)
+                        .addGap(16, 16, 16))))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(rowlimit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(13, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(autolock)
+                .addContainerGap(17, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout mainpanelLayout = new javax.swing.GroupLayout(mainpanel);
@@ -264,10 +274,10 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
             .addGroup(mainpanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(mainpanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 391, Short.MAX_VALUE))
                 .addContainerGap())
         );
         mainpanelLayout.setVerticalGroup(
@@ -278,7 +288,7 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(25, 25, 25)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -313,6 +323,7 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
         password.setText(values.getProperty("password"));
         printdev.setSelected(TypeConversion.stringToBoolean(values.getProperty("devappprint")));
         rowlimit.set_Text(values.getProperty(LocalSettings.DBROW_LIMIT));
+        autolock.setSelected(TypeConversion.stringToBoolean(values.getProperty(LocalSettings.DBAUTOLOCK)));
     }
 
     public String getUname() {
@@ -325,6 +336,7 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox auth;
     private javax.swing.JPanel authpanel;
+    private javax.swing.JCheckBox autolock;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
@@ -357,8 +369,7 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
         }
 
         LocalSettings.setProperty(LocalSettings.PRINT_DEVAPP, TypeConversion.booleanToString(printdev.isSelected()));
-        LocalSettings.apply();
-
+      
         try {
             if (Integer.valueOf(rowlimit.get_Text()).intValue() >= 0) {
                 LocalSettings.setProperty(LocalSettings.DBROW_LIMIT, Integer.valueOf(rowlimit.get_Text()).toString());
@@ -367,6 +378,10 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
         } catch (NumberFormatException numberFormatException) {
             Log.Debug(numberFormatException);
         }
+
+        LocalSettings.setProperty(LocalSettings.DBAUTOLOCK, TypeConversion.booleanToString(autolock.isSelected()));
+
+        LocalSettings.apply();
     }
 
     public ControlApplet instanceOf() {

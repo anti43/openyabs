@@ -38,14 +38,16 @@ public class TypeConversion {
     }
 
     /**
-     * Converts a String into a boolean value. Everything except the String "1" will return false.
+     * Converts a String into a boolean value. Everything except the String "1" or "true" will return false.
      * @param string
      * @return
      */
     public static boolean stringToBoolean(String string) {
         boolean val = false;
-        if (string != null&& string.equals("1")) {
-            val = true;
+        if (string != null) {
+            if (string.equals("1") || Boolean.valueOf(string)) {
+                val = true;
+            }
         }
         return val;
     }

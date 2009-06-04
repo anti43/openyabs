@@ -127,6 +127,7 @@ public enum Messages {
     EXPENSE("Expense"),
     INCOME("Income"),
     LOCK_FAILED("Lock failed!"),
+    LOCKED_BY("This dataset is currently locked by another user\nand can not be edited.."),
     LIABILITY("Liability");
 
     private Messages(String message) {
@@ -151,5 +152,6 @@ public enum Messages {
     public String getValue() {
         return toString();
     }
+ 
   
 }
