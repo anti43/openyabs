@@ -43,10 +43,12 @@ public class LocalSettings {
     public static final String DBNAME = "dbname";
     public static final String DBROW_LIMIT = "dbrowlimit";
     public static final String DBAUTOLOCK = "dbautolock";
+    public static final String DBTYPE =  "dbtype";
 
      private static PropertyStore predefinedSettings = new PropertyStore(new String[][]{ //        {LAF,UIManager.getSystemLookAndFeelClassName()}
                 {DEFAULT_FONT, "Tahoma"}, {DBROW_LIMIT, "250"}, {DBAUTOLOCK, "false"}
             });
+    
 
     /**
      * Applies the environmental settings

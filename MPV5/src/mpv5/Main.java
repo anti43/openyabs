@@ -35,6 +35,7 @@ import java.util.Properties;
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import mpv5.db.common.ConnectionTypeHandler;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseConnection;
 import mpv5.db.common.DatabaseObject;
@@ -81,7 +82,6 @@ public class Main extends SingleFrameApplication {
         MPV5View.setNavBarAnimated(false);
         MPV5View.setTabPaneScrolled(true);
     }
-
     private File lockfile = new File(MPPATH + File.separator + "." + Constants.PROG_NAME + Constants.VERSION + "." + "lck");
 
     /**
@@ -117,14 +117,11 @@ public class Main extends SingleFrameApplication {
      */
     @Override
     protected void startup() {
-
+        getContext().getLocalStorage().setDirectory(new File(Main.MPPATH));
         splash.nextStep(Messages.FIRST_INSTANCE.toString());
-        if (!firstInstance()) {
+        if (LocalSettings.getProperty(LocalSettings.DBTYPE).equals("single") && !firstInstance()) {
             System.exit(1);
         }
-
-        getContext().getLocalStorage().setDirectory(new File(Main.MPPATH));
-
         splash.nextStep(Messages.DB_CHECK.toString());
         if (probeDatabaseConnection()) {
             go(false);

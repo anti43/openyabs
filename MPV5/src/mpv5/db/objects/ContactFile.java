@@ -26,9 +26,9 @@ import mpv5.db.common.DatabaseObject;
  */
 public class ContactFile extends DatabaseObject {
 
-    private String description;
+    private String description = "";
     private int contactsids;
-    private String filename;
+    private String filename = "";
 
     public ContactFile(){
         context.setDbIdentity(Context.IDENTITY_FILES_TO_CONTACTS);

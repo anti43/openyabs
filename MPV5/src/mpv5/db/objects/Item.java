@@ -36,7 +36,7 @@ public class Item extends DatabaseObject {
     private int intreminders;
     private int intstatus;
     private int inttype;
-    private String description;
+    private String description = "";
     public static int STATUS_QUEUED = 0;
     public static int STATUS_IN_PROGRESS = 1;
     public static int STATUS_PAUSED = 2;

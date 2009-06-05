@@ -23,7 +23,7 @@ import mpv5.db.common.DatabaseObject;
 
 public class ItemsList extends DatabaseObject {
 
-    private String description;
+    private String description = "";
     private int itemsids;
     
     public ItemsList() {

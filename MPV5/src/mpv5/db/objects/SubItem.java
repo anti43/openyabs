@@ -30,8 +30,8 @@ public class SubItem extends DatabaseObject {
     private int originalproductsids;
     private double countvalue;
     private double quantityvalue;
-    private String measure;
-    private String description;
+    private String measure = "";
+    private String description = "";
     private double value;
     private double taxpercentvalue;
     private Date datedelivery;

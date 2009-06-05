@@ -148,7 +148,7 @@ public class Context {
             IDENTITY_ITEMS + "." + "taxvalue, " +
             IDENTITY_ITEMS + "." + "datetodo, " +
             IDENTITY_ITEMS + "." + "intreminders";
-    //date group number type status value
+    //ids date group number type status value
     public static String DETAILS_JOURNAL = IDENTITY_ITEMS + "." + "IDS,"  +
             IDENTITY_ITEMS + "." + "dateadded," +
             IDENTITY_GROUPS + "0." + "CNAME," +

@@ -112,7 +112,6 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
-        jTable1.setAutoCreateRowSorter(true);
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null},
@@ -125,28 +124,30 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             }
         ));
         jTable1.setName("jTable1"); // NOI18N
+        jTable1.setShowHorizontalLines(false);
+        jTable1.setShowVerticalLines(false);
         jScrollPane1.setViewportView(jTable1);
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("JournalPanel.jPanel2.border.title"))); // NOI18N
         jPanel2.setName("jPanel2"); // NOI18N
 
-        jLabel3.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Dialog", 0, 12));
         jLabel3.setText(bundle.getString("JournalPanel.jLabel3.text")); // NOI18N
         jLabel3.setName("jLabel3"); // NOI18N
 
-        jLabel4.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Dialog", 0, 12));
         jLabel4.setText(bundle.getString("JournalPanel.jLabel4.text")); // NOI18N
         jLabel4.setName("jLabel4"); // NOI18N
 
-        jLabel5.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel5.setFont(new java.awt.Font("Dialog", 0, 12));
         jLabel5.setText(bundle.getString("JournalPanel.jLabel5.text")); // NOI18N
         jLabel5.setName("jLabel5"); // NOI18N
 
         timeframeChooser1.setBackground(new java.awt.Color(255, 255, 255));
         timeframeChooser1.setName("timeframeChooser1"); // NOI18N
 
-        jLabel2.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Dialog", 0, 12));
         jLabel2.setText(bundle.getString("JournalPanel.jLabel2.text")); // NOI18N
         jLabel2.setName("jLabel2"); // NOI18N
 
@@ -158,7 +159,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             }
         });
 
-        jLabel6.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel6.setFont(new java.awt.Font("Dialog", 0, 12));
         jLabel6.setText(bundle.getString("JournalPanel.jLabel6.text")); // NOI18N
         jLabel6.setName("jLabel6"); // NOI18N
 
@@ -274,7 +275,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(prinitingComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -288,9 +289,9 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 76, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -374,7 +375,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
 
             }
 
-            jTable1.setModel(new MPTableModel(ArrayUtilities.changeToClassValue(d, 4, Date.class), Headers.JOURNAL.getValue(), new Class[]{String.class, String.class, String.class, String.class, Date.class}));
+            jTable1.setModel(new MPTableModel(ArrayUtilities.changeToClassValue(d, 1, Date.class), Headers.JOURNAL.getValue(), new Class[]{Integer.class,Date.class, String.class, String.class, Integer.class, Integer.class, Double.class, Double.class}));
             TableFormat.stripColumn(jTable1, 0);
         } catch (Exception e) {
             Log.Debug(this, e.getMessage());

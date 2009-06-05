@@ -28,8 +28,8 @@ import mpv5.ui.panels.HistoryPanel;
  */
 public class HistoryItem extends DatabaseObject {
 
-  private String username;
-  private String dbidentity;
+  private String username = "";
+  private String dbidentity = "";
   private Date dateadded = new Date();
   private int intitem;
 

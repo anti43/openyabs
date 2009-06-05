@@ -49,7 +49,7 @@ public class Account extends DatabaseObject {
         context.setDbIdentity(Context.IDENTITY_ACCOUNTS);
         context.setIdentityClass(this.getClass());
     }
-    private String description;
+    private String description = "";
     private double taxvalue;
     private int intaccounttype;
 

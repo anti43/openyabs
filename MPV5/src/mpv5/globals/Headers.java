@@ -26,7 +26,7 @@ public enum Headers {
     CONTACT_FILES(new String[]{"id", "Filename", "Date", "Description"}),
     HISTORY(new String[]{"id", "Description", "User", "Group", "Date"}),
     IMPORT(new String[]{"Id", "Import", "Type", "Name", "Data"}),
-    JOURNAL(new String[]{"id", "Date", "Group", "Number", "Type", "Status", "Value"});
+    JOURNAL(new String[]{"id", "Date", "Group", "Number", "Type", "Status", "Value", ""});
 
     private Headers(String[] header) {
         this.header = header;

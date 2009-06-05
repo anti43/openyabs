@@ -38,7 +38,7 @@ public class Property extends DatabaseObject {
         context.setDbIdentity(Context.IDENTITY_PROPERTIES_TO_USERS);
         context.setIdentityClass(this.getClass());
     }
-    private String value;
+    private String value = "";
     private int usersids;
 
     @Override
