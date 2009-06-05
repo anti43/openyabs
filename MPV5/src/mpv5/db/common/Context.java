@@ -590,13 +590,13 @@ public class Context {
                 first = false;
                 cond += " " + CONDITION_CONTACTS_SUPPLIER + "=1 OR ";
             }
-            if (isIsActive()) {
-                if (first) {
-                    cond += "WHERE ";
-                }
-                first = false;
-                cond += " " + CONDITION_ITEMS_ACTIVE + "=1 OR ";
-            }
+//            if (isIsActive()) {
+//                if (first) {
+//                    cond += "WHERE ";
+//                }
+//                first = false;
+//                cond += " " + CONDITION_ITEMS_ACTIVE + "=1 OR ";
+//            }
             if (isIsDone()) {
                 if (first) {
                     cond += "WHERE ";
@@ -833,19 +833,19 @@ public class Context {
         this.isDone = isDone;
     }
 
-    /**
-     * @return the isActive
-     */
-    private boolean isIsActive() {
-        return isActive;
-    }
-
-    /**
-     * @param isActive the isActive to set
-     */
-    private void setIsActive(boolean isActive) {
-        this.isActive = isActive;
-    }
+//    /**
+//     * @return the isActive
+//     */
+//    private boolean isIsActive() {
+//        return isActive;
+//    }
+//
+//    /**
+//     * @param isActive the isActive to set
+//     */
+//    private void setIsActive(boolean isActive) {
+//        this.isActive = isActive;
+//    }
 
     /**
      * @return the isBill
@@ -918,7 +918,7 @@ public class Context {
         c.setSearchFields(DEFAULT_ITEM_SEARCH);
         c.setSearchHeaders(Headers.ITEM_DEFAULT.getValue());
         c.setIdentityClass(IDENTITY_ITEMS_CLASS);
-        c.setIsActive(active);
+//        c.setIsActive(active);
         c.setIsDone(done);
         c.setIsBill(bill);
         c.setIsOrder(order);
@@ -1090,7 +1090,7 @@ public class Context {
         c.setSearchFields(DEFAULT_ITEM_SEARCH);
         c.setSearchHeaders(Headers.ITEM_DEFAULT.getValue());
         c.setIdentityClass(IDENTITY_ITEMS_CLASS);
-        c.setIsActive(true);
+//        c.setIsActive(true);
         c.setIsBill(true);
         c.setId(17);
 
@@ -1104,7 +1104,7 @@ public class Context {
         c.setSearchFields(DEFAULT_ITEM_SEARCH);
         c.setSearchHeaders(Headers.ITEM_DEFAULT.getValue());
         c.setIdentityClass(IDENTITY_ITEMS_CLASS);
-        c.setIsActive(true);
+//        c.setIsActive(true);
         c.setIsOrder(true);
         c.setId(18);
 
@@ -1118,7 +1118,7 @@ public class Context {
         c.setSearchFields(DEFAULT_ITEM_SEARCH);
         c.setSearchHeaders(Headers.ITEM_DEFAULT.getValue());
         c.setIdentityClass(IDENTITY_ITEMS_CLASS);
-        c.setIsActive(true);
+//        c.setIsActive(true);
         c.setIsOffer(true);
         c.setId(19);
 

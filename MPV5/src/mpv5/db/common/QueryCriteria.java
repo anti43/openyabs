@@ -17,9 +17,6 @@
 package mpv5.db.common;
 
 import java.util.HashMap;
-import mpv5.logging.Log;
-import mpv5.data.*;
-
 
 /**
  * This class is used to store criterias for <code>Select</code> queries
@@ -36,6 +33,8 @@ public class QueryCriteria {
         return new SaveString(s, true);
     }
     private HashMap<String, SaveString> list = new HashMap<String, SaveString>();
+    private String order = "";
+
     public QueryCriteria() {
     }
 
@@ -45,19 +44,19 @@ public class QueryCriteria {
      * @param string
      * @param value
      */
-    public <T extends Number>QueryCriteria(String string, T value) {
-       add(string, value);
+    public <T extends Number> QueryCriteria(String string, T value) {
+        add(string, value);
     }
 
-
-       /**
+    /**
      * Convenience constructor, calls add(string, value)
      * @param string
      * @param value
      */
     public QueryCriteria(String string, String value) {
-       add(string, value);
+        add(string, value);
     }
+
     /**
      * Adds a key with a value
      * @param <T> 
@@ -110,6 +109,20 @@ public class QueryCriteria {
     }
 
     /**
+     * 
+     * @param column
+     * @param asc
+     */
+    public void setOrder(String column, boolean asc) {
+        this.order = " ORDER BY " + column;
+        if (asc) {
+            order += " ASC ";
+        } else {
+            order += " DESC ";
+        }
+    }
+
+    /**
      * Generates a comma separated String represantion of the current values<br/>
      * with String values wrapped in single quotes
      * @return
@@ -124,7 +137,7 @@ public class QueryCriteria {
         }
         return s.substring(0, s.length() - 1);
     }
-    
+
     /**
      * 
      * @return An array of all values, in getKeys() - order
@@ -133,6 +146,11 @@ public class QueryCriteria {
         return getValuesString().split(",");
     }
 
-
+    /**
+     * @return the order
+     */
+    public String getOrder() {
+        return order;
+    }
 }
 

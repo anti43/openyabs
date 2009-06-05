@@ -231,6 +231,7 @@ public class QueryHandler implements Cloneable {
             query += " AND ";
         }
         query += dateCriterium;
+        query += criterias.getOrder();
 
         return freeSelectQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null).getData();
     }
@@ -255,6 +256,9 @@ public class QueryHandler implements Cloneable {
                 query += " AND " + context.getConditions().substring(5, context.getConditions().length());
             }
         }
+
+        query += criterias.getOrder();
+
         return freeSelectQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null);
     }
 
