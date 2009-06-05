@@ -36,7 +36,7 @@ import mpv5.utils.date.DateConverter;
  * table containing the data of the given data model 
  * (DefaultTableModel or String[][] representation)
  * 
- *  anti43
+ * 
  */
 public class TableHtmlWriter {
 

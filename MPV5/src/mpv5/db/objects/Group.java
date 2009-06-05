@@ -46,7 +46,6 @@ public class Group extends DatabaseObject {
         cname = name;
     }
 
-
     /**
      * @return the description
      */
@@ -76,24 +75,6 @@ public class Group extends DatabaseObject {
     }
 
     @Override
-    public boolean equals(Object o) {
-          if (((Group) o).__getIDS().intValue() == this.__getIDS().intValue()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 83 * hash + (this.description != null ? this.description.hashCode() : 0);
-        hash = 83 * hash + (this.defaults != null ? this.defaults.hashCode() : 0);
-        hash = 83 * hash + this.__getGroupsids();
-        return hash;
-    }
-
-    @Override
     public String toString() {
         return __getCName();
     }
@@ -118,7 +99,6 @@ public class Group extends DatabaseObject {
     public JComponent getView() {
 //       MPControlPanel p = (MPControlPanel) MPControlPanel.instanceOf();
 //       p.openDetails(new ControlPanel_Groups(this));
-       return new ControlPanel_Groups(this);
+        return new ControlPanel_Groups(this);
     }
-
 }

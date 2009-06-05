@@ -34,7 +34,7 @@ import mpv5.utils.files.FileDirectoryHandler;
  * table containing the data of the given data model
  * (DefaultTableModel or String[][] representation)
  *
- *  anti43
+ * 
  */
 public class TableHtmlWriter {
 

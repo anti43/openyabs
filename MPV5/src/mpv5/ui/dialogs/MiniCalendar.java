@@ -14,7 +14,7 @@ import mpv5.utils.date.DateConverter;
 
 /**
  *
- *   anti43
+ *  
  */
 public class MiniCalendar extends javax.swing.JFrame {
     private static final long serialVersionUID = 1L;

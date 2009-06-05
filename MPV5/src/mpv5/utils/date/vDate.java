@@ -24,7 +24,7 @@ import java.util.Date;
 
 /**
  *
- *  anti43
+ * 
  */
 public class vDate {
 

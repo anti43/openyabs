@@ -24,7 +24,7 @@ import mpv5.utils.tables.TableFormat;
 
 /**
  *
- *  anti43
+ * 
  */
 public class SearchPanel extends javax.swing.JPanel {
 

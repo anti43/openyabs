@@ -45,7 +45,7 @@ public class LocalSettings {
     public static final String DBAUTOLOCK = "dbautolock";
 
      private static PropertyStore predefinedSettings = new PropertyStore(new String[][]{ //        {LAF,UIManager.getSystemLookAndFeelClassName()}
-                {DEFAULT_FONT, "Tahoma"}, {DBROW_LIMIT, "250"}, {DBAUTOLOCK, "true"}
+                {DEFAULT_FONT, "Tahoma"}, {DBROW_LIMIT, "250"}, {DBAUTOLOCK, "false"}
             });
 
     /**

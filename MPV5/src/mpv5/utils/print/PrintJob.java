@@ -48,7 +48,7 @@ import mpv5.utils.text.TypeConversion;
 
 /**
  *
- *  anti43
+ * 
  */
 public class PrintJob implements Waiter {
 

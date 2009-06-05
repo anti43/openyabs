@@ -24,7 +24,7 @@ import mpv5.logging.Log;
 
 /**
  *
- *  anti43
+ * 
  */
 public class JavaProgram {
 

@@ -20,25 +20,27 @@ import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
 import mpv5.db.common.Context;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.DatabaseObjectModifier;
 import mpv5.db.common.QueryHandler;
 import mpv5.globals.Constants;
 import mpv5.globals.LocalSettings;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPV5View;
-import mpv5.pluginhandling.UserPlugin;
 
 /**
  *
- *  anti
+ *  This class loads plugins from the database, and utilises caching of the plugin files.
  */
 public class MPPLuginLoader {
 public static String pluginSignature = LocalSettings.getProperty(LocalSettings.CACHE_DIR) + File.separator + "%%filename%%-mp5p.jar";
-
+public static List<DatabaseObjectModifier> registeredModifiers = new Vector<DatabaseObjectModifier>();
 
     /**
      * Loads all plugins which are assigned to the current logged in user from database or cache dir<br/>
@@ -46,8 +48,6 @@ public static String pluginSignature = LocalSettings.getProperty(LocalSettings.C
      * @return An array of instantiated plugins
      */
     public MP5Plugin[] getPlugins(){
-
-
 
         ArrayList<MP5Plugin> list = null;
         
@@ -79,6 +79,9 @@ public static String pluginSignature = LocalSettings.getProperty(LocalSettings.C
                 MP5Plugin c= checkPlugin(x);
                 if (c !=null) {
                     list.add(c);
+                    if(c instanceof DatabaseObjectModifier) {
+                        registeredModifiers.add((DatabaseObjectModifier)c);
+                    }
                 }
             }
         } catch (Exception e) {

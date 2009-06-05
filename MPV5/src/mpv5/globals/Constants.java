@@ -20,7 +20,7 @@ package mpv5.globals;
 
 /**
  *
- *  anti43
+ * 
  */
 public interface Constants {
 

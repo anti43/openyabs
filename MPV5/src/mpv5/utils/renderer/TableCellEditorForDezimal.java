@@ -29,7 +29,7 @@ import mpv5.utils.numberformat.FormatNumber;
 
 /**
  *
- *  anti43
+ * 
  */
 public class TableCellEditorForDezimal extends DefaultCellEditor {
 

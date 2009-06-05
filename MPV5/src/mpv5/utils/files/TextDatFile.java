@@ -35,7 +35,7 @@ import mpv5.utils.jobs.Waitable;
 
 /**
  * This is a helper class for reading and writing csv files
- *  anti43
+ * 
  */
 public class TextDatFile extends File implements Waitable {
 

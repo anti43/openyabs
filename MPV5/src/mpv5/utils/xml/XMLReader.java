@@ -39,7 +39,7 @@ import org.jdom.input.SAXBuilder;
 
 /**
  *
- *  anti43
+ * 
  */
 public class XMLReader {
 

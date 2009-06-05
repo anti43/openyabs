@@ -425,9 +425,8 @@ public class User extends DatabaseObject {
      * @param n
      * @return
      */
-    @Override
-    public boolean equals(Object n) {
-        if (((User) n).__getCName().equals(this.__getCName()) && ((User) n).__getIDS().intValue() == this.__getIDS().intValue()) {
+    public boolean equalTo(User n) {
+        if ((n).__getCName().equals(this.__getCName()) && (n).__getIDS().intValue() == this.__getIDS().intValue()) {
             return true;
         } else {
             return false;

@@ -29,18 +29,21 @@ public class Item extends DatabaseObject {
 
     private int contactsids;
     private int defaultaccountsids;
-    private boolean isactive;
-    private boolean isfinished;
-    private double value;
+    private double netvalue;
     private double taxvalue;
     private Date datetodo;
     private Date dateend;
     private int intreminders;
-//    private String groupname = "";
-    private String cnumber = "";
-    private boolean isbill;
-    private boolean isorder;
-    private boolean isoffer;
+    private int intstatus;
+    private int inttype;
+    private String description;
+    public static int STATUS_QUEUED = 0;
+    public static int STATUS_IN_PROGRESS = 1;
+    public static int STATUS_PAUSED = 2;
+    public static int STATUS_FINISHED = 3;
+    public static int TYPE_BILL = 0;
+    public static int TYPE_ORDER = 1;
+    public static int TYPE_OFFER = 2;
 
     public Item() {
         context.setDbIdentity(Context.IDENTITY_ITEMS);
@@ -69,48 +72,6 @@ public class Item extends DatabaseObject {
      */
     public void setContactsids(int contactsids) {
         this.contactsids = contactsids;
-    }
-
-    /**
-     * @return the isactive
-     */
-    public boolean __getIsactive() {
-        return isactive;
-    }
-
-    /**
-     * @param isactive the isactive to set
-     */
-    public void setIsactive(boolean isactive) {
-        this.isactive = isactive;
-    }
-
-    /**
-     * @return the isfinished
-     */
-    public boolean __getIsfinished() {
-        return isfinished;
-    }
-
-    /**
-     * @param isfinished the isfinished to set
-     */
-    public void setIsfinished(boolean isfinished) {
-        this.isfinished = isfinished;
-    }
-
-    /**
-     * @return the value
-     */
-    public double __getValue() {
-        return value;
-    }
-
-    /**
-     * @param value the value to set
-     */
-    public void setValue(double value) {
-        this.value = value;
     }
 
     /**
@@ -168,7 +129,6 @@ public class Item extends DatabaseObject {
 //    public void setGroupname(String groupname) {
 //        this.groupname = groupname;
 //    }
-
     /**
      * @return the dateend
      */
@@ -181,62 +141,6 @@ public class Item extends DatabaseObject {
      */
     public void setDateend(Date dateend) {
         this.dateend = dateend;
-    }
-
-    /**
-     * @return the isbill
-     */
-    public boolean __getIsbill() {
-        return isbill;
-    }
-
-    /**
-     * @param isbill the isbill to set
-     */
-    public void setIsbill(boolean isbill) {
-        this.isbill = isbill;
-    }
-
-    /**
-     * @return the isorder
-     */
-    public boolean __getIsorder() {
-        return isorder;
-    }
-
-    /**
-     * @param isorder the isorder to set
-     */
-    public void setIsorder(boolean isorder) {
-        this.isorder = isorder;
-    }
-
-    /**
-     * @return the isoffer
-     */
-    public boolean __getIsoffer() {
-        return isoffer;
-    }
-
-    /**
-     * @param isoffer the isoffer to set
-     */
-    public void setIsoffer(boolean isoffer) {
-        this.isoffer = isoffer;
-    }
-
-    /**
-     * @return the cnumber
-     */
-    public String __getCnumber() {
-        return cnumber;
-    }
-
-    /**
-     * @param cnumber the cnumber to set
-     */
-    public void setCnumber(String cnumber) {
-        this.cnumber = cnumber;
     }
 
     @Override
@@ -256,5 +160,75 @@ public class Item extends DatabaseObject {
      */
     public void setDefaultaccountsids(int defaultaccountsids) {
         this.defaultaccountsids = defaultaccountsids;
+    }
+
+    /**
+     * @return the description
+     */
+    public String __getDescription() {
+        return description;
+    }
+
+    /**
+     * @param description the description to set
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    /**
+     *  <li>QUEUED = 0;
+     *  <li>IN_PROGRESS= 1;
+     *  <li>PAUSED = 2;
+     *  <li>FINNISHED= 3;
+     * @return the intstatus
+     */
+    public int __getIntstatus() {
+        return intstatus;
+    }
+
+    /**
+     *  <li>QUEUED = 0;
+     *  <li>IN_PROGRESS= 1;
+     *  <li>PAUSED = 2;
+     *  <li>FINNISHED= 3;
+     * @param intstatus the intstatus to set
+     */
+    public void setIntstatus(int intstatus) {
+        this.intstatus = intstatus;
+    }
+
+    /**
+     *  <li>TYPE_BILL = 0;
+     *  <li>TYPE_ORDER = 1;
+     *  <li>TYPE_OFFER = 2;
+     * @return the inttype
+     */
+    public int __getInttype() {
+        return inttype;
+    }
+
+    /**
+     *  <li>TYPE_BILL = 0;
+     *  <li>TYPE_ORDER = 1;
+     *  <li>TYPE_OFFER = 2;
+     * @param inttype the inttype to set
+     */
+    public void setInttype(int inttype) {
+        this.inttype = inttype;
+    }
+
+    /**
+     * @return the netvalue
+     */
+    public double __getNetvalue() {
+        return netvalue;
+    }
+
+    /**
+     * @param netvalue the netvalue to set
+     */
+    public void setNetvalue(double netvalue) {
+        this.netvalue = netvalue;
     }
 }

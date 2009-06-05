@@ -10,7 +10,7 @@ import mpv5.utils.ui.PanelUtils;
 
 /**
  *
- *  anti43
+ * 
  */
 public class ControlPanel_Konsole extends javax.swing.JPanel implements ControlApplet {
     private static final long serialVersionUID = 1L;

@@ -23,7 +23,7 @@ import mpv5.data.*;
 
 /**
  * This class is used to put any kind of data before passing it to the <code>QueryHandler</code> for transmission.
- *  anti43
+ * 
  */
 public class QueryData {
 

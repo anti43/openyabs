@@ -18,7 +18,7 @@ package mpv5.ui.dialogs;
 
 /**
  *
- *  anti43
+ * 
  */
 public interface Wizardable {
 

@@ -36,7 +36,7 @@ import mpv5.ui.misc.Position;
 
 /**
  *
- *  anti43
+ * 
  */
 public class Wizard extends javax.swing.JFrame implements WizardMaster {
 

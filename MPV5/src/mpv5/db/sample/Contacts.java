@@ -94,20 +94,17 @@ public class Contacts {
                             Date date = new RandomDate(new vTimeframe(DateConverter.getDate("01.01.2007"), new Date()));
 
                             Item it = new Item();
-                            it.setCName("Sample Bill " + seed + "-19-" + k);
-                            it.setCnumber("SI" + seed + "-19-" + k);
+                            it.setCName("SI" + seed + "-19-" + k);
                             it.setContactsids(c.__getIDS());
                             it.setDateend(date);
                             it.setDatetodo(date);
                             it.setDefaultaccountsids(1);
                             it.setGroupsids(group);
-//                    it.setGroupname(g.__getCName());
                             it.setIntreminders(0);
-                            it.setIsactive(true);
-                            it.setIsbill(true);
-                            it.setIsfinished(true);
+                            it.setInttype(Item.TYPE_BILL);
+                            it.setIntstatus(Item.STATUS_FINISHED);
                             it.setTaxvalue(FormatNumber.round((value * 1.19) - value));
-                            it.setValue(FormatNumber.round(value));
+                            it.setNetvalue(FormatNumber.round(value));
                             it.setIntaddedby(MPV5View.getUser().__getIDS());
                             it.save();
 
@@ -115,20 +112,17 @@ public class Contacts {
                             date = new RandomDate(new vTimeframe(DateConverter.getDate("01.01.2007"), new Date()));
 
                             Item it1 = new Item();
-                            it1.setCName("Sample Bill " + seed + "-7-" + k);
-                            it1.setCnumber("SI" + seed + "-7-" + k);
+                            it1.setCName("SI" + seed + "-7-" + k);
                             it1.setContactsids(c.__getIDS());
                             it1.setDateend(date);
                             it1.setDatetodo(date);
                             it1.setDefaultaccountsids(1);
                             it1.setGroupsids(group);
-//                    it.setGroupname(g.__getCName());
                             it1.setIntreminders(0);
-                            it1.setIsactive(true);
-                            it1.setIsbill(true);
-                            it1.setIsfinished(true);
+                            it1.setInttype(Item.TYPE_BILL);
+                            it1.setIntstatus(Item.STATUS_FINISHED);
                             it1.setTaxvalue(FormatNumber.round((value * 1.07) - value));
-                            it1.setValue(FormatNumber.round(value));
+                            it1.setNetvalue(FormatNumber.round(value));
                             it1.setIntaddedby(MPV5View.getUser().__getIDS());
                             it1.save();
 
@@ -136,34 +130,25 @@ public class Contacts {
                             date = new RandomDate(new vTimeframe(DateConverter.getDate("01.01.2007"), new Date()));
 
                             Item it2 = new Item();
-                            it2.setCName("Sample Bill " + seed + "-0-" + k);
-                            it2.setCnumber("SI" + seed + "-0-" + k);
+                            it2.setCName("SI" + seed + "-0-" + k);
                             it2.setContactsids(c.__getIDS());
                             it2.setDateend(date);
                             it2.setDatetodo(date);
                             it2.setDefaultaccountsids(1);
                             it2.setGroupsids(group);
-//                    it.setGroupname(g.__getCName());
                             it2.setIntreminders(0);
-                            it2.setIsactive(true);
-                            it2.setIsbill(true);
-                            it2.setIsfinished(true);
+                            it2.setInttype(Item.TYPE_BILL);
+                            it2.setIntstatus(Item.STATUS_FINISHED);
                             it2.setTaxvalue(FormatNumber.round(0));
-                            it2.setValue(FormatNumber.round(value));
+                            it2.setNetvalue(FormatNumber.round(value));
                             it2.setIntaddedby(MPV5View.getUser().__getIDS());
                             it2.save();
-
-
                         }
                     }
                 }
-                Popup.notice("Sample data generated!"); 
+                Popup.notice("Sample data generated!");
             }
-
-           
         };
         SwingUtilities.invokeLater(runnable);
-
-
     }
 }

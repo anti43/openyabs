@@ -14,36 +14,20 @@
  *      You should have received a copy of the GNU General Public License
  *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mpv5.usermanagement;
-
-import java.awt.Component;
-import mpv5.logging.Log;
+package mpv5.db.common;
 
 /**
- *
- * 
+ * Any {@link DatabaseObject} will be passed through all DatabaseObjectModifiers <br/>
+ * registered with loaded {@link mpv5.pluginhandling.MP5Plugin}s on loading time of the DatabaseObject.
+ * {@link mpv5.pluginhandling.MP5Plugin} s shall unregister from the {@link mpv5.pluginhandling.MPPLuginLoader} themselves on unload.
  */
-public class Lock {
+public interface DatabaseObjectModifier {
 
     /**
-     * Locks the given component and brings up a login window which could unlock it again
-     * @param comp
+     * This method will be called during construction of any {@link DatabaseObject} if this <br/>
+     * {@link DatabaseObjectModifier} is registered with a loaded  {@link mpv5.pluginhandling.MP5Plugin}
+     * @param object
+     * @return
      */
-    public static void lock(Component comp) {
-        comp.setEnabled(false);
-        new mpv5.ui.dialogs.LoginScreen();
-    }
-
-
-    /**
-     * Unlocks the given component
-     * @param frame
-     */
-    public static void unlock(Component frame) {
-        try {
-            frame.setEnabled(true);
-        } catch (Exception e) {
-            Log.Debug(Lock.class, "Frame is not visible, can not be unlocked.");
-        }
-    }
+    DatabaseObject modify(DatabaseObject object);
 }

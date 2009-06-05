@@ -48,7 +48,7 @@ import mpv5.utils.ui.TextFieldUtils;
 
 /**
  *
- *  anti43
+ * 
  */
 public class ControlPanel_Groups extends javax.swing.JPanel implements ControlApplet, DataPanel {
 

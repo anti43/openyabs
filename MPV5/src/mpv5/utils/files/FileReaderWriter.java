@@ -18,7 +18,7 @@ package mpv5.utils.files;
 
 /**
  *
- *  anti43
+ * 
  */
 import java.io.File;
 import java.io.BufferedReader;

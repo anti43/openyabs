@@ -16,7 +16,7 @@ import mpv5.pluginhandling.UserPlugin;
 
 /**
  *
- *  anti43
+ * 
  */
 public class ControlPanel_Localization extends javax.swing.JPanel implements ControlApplet {
 

@@ -22,7 +22,7 @@ import java.awt.Toolkit;
 
 /**
  * This is a helper class for visual component positioning
- *  anti43
+ * 
  */
 public class Position {
 

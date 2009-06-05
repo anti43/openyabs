@@ -7,16 +7,13 @@ package mpv5.db.common;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Icon;
-import mpv5.db.common.Context;
 import javax.swing.SwingUtilities;
-import mpv5.db.objects.Item;
-import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.db.objects.HistoryItem;
 import mpv5.logging.Log;
@@ -26,16 +23,17 @@ import mpv5.ui.frames.MPV5View;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
 import javax.swing.JComponent;
+import mpv5.pluginhandling.MPPLuginLoader;
 import mpv5.utils.date.RandomDate;
 
 /**
  * Database Objects reflect a row in a table, and can parse graphical and
  * non-graphical beans to update or create itself to the database
- *  anti43
+ * @author
  */
 public abstract class DatabaseObject {
-    private static boolean AUTO_LOCK = false;
 
+    private static boolean AUTO_LOCK = false;
     /**
      * The db context of this do
      */
@@ -316,6 +314,19 @@ public abstract class DatabaseObject {
         }
         setIDS(-1);
         return result;
+    }
+
+    private static synchronized DatabaseObject checkModification(DatabaseObject dbo) {
+        List<DatabaseObjectModifier> mods = MPPLuginLoader.registeredModifiers;
+        for (int i = 0; i < mods.size(); i++) {
+            DatabaseObjectModifier databaseObjectModifier = mods.get(i);
+            try {
+                dbo = databaseObjectModifier.modify(dbo);
+            } catch (Exception e) {
+                Log.Debug(DatabaseObject.class, "Error while modificationg Object " + dbo + " within Modifier " + databaseObjectModifier);
+            }
+        }
+        return dbo;
     }
 
     /**
@@ -730,12 +741,14 @@ public abstract class DatabaseObject {
                 }
             }
 
-            if (AUTO_LOCK) {
+            if (AUTO_LOCK && Context.getLockableContexts().contains(dbo.getContext())) {
                 Log.Debug(DatabaseObject.class, "Preparing to lock: " + dbo);
                 boolean lck = dbo.lock();
                 dbo.ReadOnly(!lck);
                 Log.Debug(DatabaseObject.class, "Locking was: " + lck);
             }
+
+            dbo = checkModification(dbo);
         }
 
         return dos;
@@ -837,9 +850,18 @@ public abstract class DatabaseObject {
         return hash;
     }
 
+    /**
+     * The equals Method is implemented here to check if two DatabaseObjects represent the same row of their table in the database.<br/>
+     * You should not override this, and if, check for the Object to be an instanceOf your own class.
+     * @param databaseObject
+     */
     @Override
-    public boolean equals(Object o) {
-        return hashCode() == o.hashCode();
+    public boolean equals(Object databaseObject) {
+        if (databaseObject == null || !(databaseObject instanceof DatabaseObject)) {
+            return false;
+        } else {
+            return hashCode() == databaseObject.hashCode();
+        }
     }
 
     /**
@@ -902,7 +924,7 @@ public abstract class DatabaseObject {
         this.active = active;
     }
 
-      /**
+    /**
      * @return AutoLockEnabled
      */
     public static boolean isAutoLockEnabled() {

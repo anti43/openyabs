@@ -21,7 +21,7 @@ import javax.print.DocFlavor;
 
 /**
  *
- *  anti43
+ * 
  */
 public interface Printable {
 

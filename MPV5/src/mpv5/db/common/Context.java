@@ -27,7 +27,7 @@ import mpv5.ui.frames.MPV5View;
 
 /**
  *
- *  anti43
+ * 
  */
 public class Context {
 
@@ -79,8 +79,6 @@ public class Context {
     public static String UNIQUECOLUMNS_GROUPS = "cname";
     private static String UNIQUECOLUMNS_DEFAULT = "cname";
     public static String DETAIL_CONTACT_SEARCH = "prename,cname,street,city,country,notes";
-    
-
     //********** conditions ****************************************************
     private boolean isCompany = false;
     private boolean isCustomer = false;
@@ -150,14 +148,15 @@ public class Context {
             IDENTITY_ITEMS + "." + "taxvalue, " +
             IDENTITY_ITEMS + "." + "datetodo, " +
             IDENTITY_ITEMS + "." + "intreminders";
-
-    public static String DETAILS_JOURNAL = IDENTITY_ITEMS + "." + "IDS," + IDENTITY_ITEMS + "." + "CNAME," +
-            IDENTITY_GROUPS + "0." + "CNAME," + IDENTITY_ITEMS + "." + "dateadded," +
-            IDENTITY_ITEMS + "." + "value," +
-            IDENTITY_ITEMS + "." + "taxvalue, " +
-            IDENTITY_ITEMS + "." + "datetodo, " +
-            IDENTITY_ITEMS + "." + "intreminders";
-
+    //date group number type status value
+    public static String DETAILS_JOURNAL = IDENTITY_ITEMS + "." + "IDS,"  +
+            IDENTITY_ITEMS + "." + "dateadded," +
+            IDENTITY_GROUPS + "0." + "CNAME," +
+            IDENTITY_ITEMS + "." + "CNAME," +
+            IDENTITY_ITEMS + "." + "inttype," +
+            IDENTITY_ITEMS + "." + "intstatus," +
+            IDENTITY_ITEMS + "." + "netvalue," +
+            IDENTITY_ITEMS + "." + "taxvalue";
     public static String DETAILS_HISTORY = getHistory().getDbIdentity() + ".ids, " + getHistory().getDbIdentity() + ".cname, " + getHistory().getDbIdentity() + ".username, " + Context.getGroup().getDbIdentity() + "0.cname," + Context.getHistory().getDbIdentity() + ".dateadded";
     public static String DETAILS_FILES = Context.getFiles().getDbIdentity() + "0.cname," + getFilesToContacts().getDbIdentity() + ".cname, " + Context.getFiles().getDbIdentity() + "0.dateadded," + Context.getFilesToContacts().getDbIdentity() + ".description";
 
@@ -262,6 +261,21 @@ public class Context {
         return list;
     }
 
+    public static ArrayList<Context> getLockableContexts() {
+        ArrayList<Context> list = new ArrayList<Context>();
+        list.add(getUser());
+        list.add(getItem(true, false, false, false, false));
+        list.add(getSchedule());
+        list.add(getContact());
+        list.add(getProducts());
+        list.add(getAccounts());
+        list.add(getCompany());
+        list.add(getCustomer());
+        list.add(getSupplier());
+        list.add(getManufacturer());
+        return list;
+    }
+
     /**
      *
      * @return All availbale contexts
@@ -303,7 +317,6 @@ public class Context {
                 getMessages(),
                 getMessagesToItems(),
                 getItemsList()
-                        
             }));
     private String[] searchHeaders;
     private ArrayList<String[]> references = new ArrayList<String[]>();
@@ -1229,7 +1242,7 @@ public class Context {
         return c;
     }
 
-     public static Context getItemsList() {
+    public static Context getItemsList() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_ITEMSLIST);

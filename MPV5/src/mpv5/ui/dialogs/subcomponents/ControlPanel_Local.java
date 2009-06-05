@@ -11,7 +11,7 @@ import mpv5.utils.ui.PanelUtils;
 
 /**
  *
- *  anti43
+ * 
  */
 public class ControlPanel_Local extends javax.swing.JPanel implements ControlApplet {
 

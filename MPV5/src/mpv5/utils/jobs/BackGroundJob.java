@@ -23,7 +23,7 @@ import mpv5.ui.frames.MPV5View;
 /**
  * This is a convenience class for using SwingWorker
  *
- *  anti43
+ * 
  */
 public class BackGroundJob extends SwingWorker<Void, Void> {
 

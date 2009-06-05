@@ -26,7 +26,7 @@ import mpv5.utils.files.FileReaderWriter;
 
 /**
  *
- *  anti43
+ * 
  */
 public class Log {
 

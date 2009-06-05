@@ -23,7 +23,7 @@ import mpv5.data.*;
 
 /**
  * This class is used to store criterias for <code>Select</code> queries
- *  anti43
+ * 
  */
 public class QueryCriteria {
 

@@ -25,7 +25,7 @@ import javax.swing.table.TableModel;
 
 /**
  *
- *  anti43
+ * 
  */
 public class Selection {
 

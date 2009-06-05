@@ -34,7 +34,7 @@ import mpv5.utils.print.PrintJob;
 
 /**
  *
- *  anti43
+ * 
  */
 public class DataPanelTB extends javax.swing.JPanel {
 

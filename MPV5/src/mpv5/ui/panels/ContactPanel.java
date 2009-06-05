@@ -57,7 +57,7 @@ import mpv5.utils.ui.TextFieldUtils;
 
 /**
  *
- *  anti43
+ * 
  */
 public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 

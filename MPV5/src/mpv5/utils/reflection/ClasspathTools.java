@@ -28,7 +28,7 @@ import java.util.logging.Logger;
 
 /**
  *
- *  anti43
+ * 
  */
 public class ClasspathTools {
 

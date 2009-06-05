@@ -36,7 +36,7 @@ import org.jdom.output.XMLOutputter;
 
 /**
  *
- *  anti43
+ * 
  */
 public class XMLWriter {
 

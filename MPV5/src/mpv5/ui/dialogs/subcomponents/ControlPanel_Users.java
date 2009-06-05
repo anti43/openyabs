@@ -36,7 +36,7 @@ import mpv5.utils.ui.TextFieldUtils;
 
 /**
  *
- *  anti43
+ * 
  */
 public class ControlPanel_Users extends javax.swing.JPanel implements ControlApplet, DataPanel {
 
@@ -452,7 +452,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
             DatabaseObject dato = dataOwner;
             dato.getPanelData(this);
             if (dato.save()) {
-                if (MPV5View.getUser().equals((User) dato)) {
+                if (MPV5View.getUser().equalTo((User) dato)) {
                     MPV5View.getUser().reset();
                 }
             } else {

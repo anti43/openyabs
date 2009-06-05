@@ -6,7 +6,7 @@ package mpv5.utils.files;
 
 /**
  *
- * @author anti43
+ * @author
  */
 import java.io.File;
 import java.io.FileOutputStream;

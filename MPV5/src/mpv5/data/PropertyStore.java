@@ -24,7 +24,7 @@ import mpv5.ui.toolbars.DataPanelTB;
 
 /**
  * PropertyStores is used to store key-value pairs
- *  anti43
+ * 
  */
 public class PropertyStore {
 
