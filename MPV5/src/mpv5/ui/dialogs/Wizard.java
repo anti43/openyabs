@@ -65,14 +65,12 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
 
     public void showWiz() {
         back.setEnabled(false);
+        content.add(contentlist.get(level), BorderLayout.CENTER);
         new Position(this);
-        setVisible(true);
         pack();
         repaint();
-
-        content.add(contentlist.get(level), BorderLayout.CENTER);
-
         setAlwaysOnTop(true);
+        setVisible(true);
     }
 
     /** This method is called from within the constructor to
@@ -240,7 +238,7 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
      */
     public void addPanel(Wizardable panel) {
         JPanel pane = (JPanel) panel;
-        (pane).setPreferredSize(new Dimension(content.getWidth() - 10, content.getHeight() - 10));
+        (pane).setPreferredSize(new Dimension(content.getPreferredSize()));
 //        (pane).setBounds(0, 0, content.getWidth(), content.getHeight());
         (pane).setOpaque(true);
         contentlist.add(pane);

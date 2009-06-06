@@ -133,6 +133,7 @@ public class Popup {
         text.setEditable(false);
         text.setBorder(new EmptyBorder(1, 1, 1, 1));
         text.setBackground(JOptionPane.getRootFrame().getBackground());
+        scroll.setBackground(JOptionPane.getRootFrame().getBackground());
         scroll.setBorder(new EmptyBorder(0, 0, 0, 0));
         scroll.setPreferredSize(new Dimension(300, 80));
         return scroll;
