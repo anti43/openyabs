@@ -15,7 +15,7 @@
  *  along with MP.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mpv5.utils.ui;
+package mpv5.ui.misc;
 
 
 import javax.swing.*;

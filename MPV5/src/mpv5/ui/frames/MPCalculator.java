@@ -19,7 +19,7 @@ package mpv5.ui.frames;
 
 import mpv5.globals.LocalSettings;
 import mpv5.ui.misc.Position;
-import mpv5.utils.ui.JCalc;
+import mpv5.ui.misc.JCalc;
 
 
 /**

@@ -16,15 +16,18 @@
  */
 package mpv5.ui.misc;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Graphics;
 
+import java.awt.Graphics2D;
 import java.awt.Insets;
 
 
 
 import javax.swing.JLabel;
+import mpv5.utils.ui.PanelUtils;
 
 /**
  * <p>Title: FadeOnChangeLabel </p>
@@ -86,6 +89,7 @@ public class FadeOnChangeLabel
      * the Container responsible for it.
      */
     private Container repaintCont = null;
+    private volatile float alpha = 1.0f;
 
     /**
      * Constructor. It contains only a call to setOpaque(),
@@ -95,6 +99,21 @@ public class FadeOnChangeLabel
         setOpaque(true);
     }
 
+
+//
+//    class Fader implements Runnable {
+//
+//        public void run() {
+//            while (!Thread.interrupted() && alpha > 0.0f) {
+//                repaint();
+//                alpha = Math.max(0.0f, alpha - 0.01f);
+//                try {
+//                    Thread.sleep(100);
+//                } catch (InterruptedException ignored) {
+//                }
+//            }
+//        }
+//    }
     /**
      * Sets animation parameters. Will only accept values in the
      * range [0,1] for color components and initial fade,
@@ -110,18 +129,23 @@ public class FadeOnChangeLabel
         if (r >= 0 && r <= 1) {
             red = r;
         }
+
         if (g >= 0 && g <= 1) {
             green = g;
         }
+
         if (b >= 0 && b <= 1) {
             blue = b;
         }
+
         if (fStep > 0 && fStep < 1) {
             fadeStep = fStep;
         }
+
         if (iFade >= 0 && iFade <= 1) {
             initFade = iFade;
         }
+
     }
 
     /**
@@ -143,6 +167,7 @@ public class FadeOnChangeLabel
     public void setText(String text) {
         super.setText(text);
         animate();
+
     }
 
     /**
@@ -151,6 +176,9 @@ public class FadeOnChangeLabel
     @Override
     public void paintComponent(Graphics g) {
         // Let the Label perform its normal painting.
+
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
         super.paintComponent(g);
         // Now make the fade effect.
         if (fade != 0) {
@@ -160,25 +188,33 @@ public class FadeOnChangeLabel
                     getWidth() - i.left - i.right,
                     getHeight() - i.top - i.bottom);
         }
-        // paintComponent() called, we can continue to the next
-        // animation frame.
+// paintComponent() called, we can continue to the next
+// animation frame.
+
         paintCalled = true;
     }
 
     public void setFadeColor(Color color) {
         float[] f = color.getComponents(null);
-        red = f[0];
-        green = f[1];
-        blue = f[2];
-        fadeColor = new Color(red, green, blue, fade);
+        red =
+                f[0];
+        green =
+                f[1];
+        blue =
+                f[2];
+        fadeColor =
+                new Color(red, green, blue, fade);
 //        fadeColor = new Color(fadeColor.getColorSpace(), f, fade);
     }
 
     public void reset() {
         red = 0.4f;
-        green = 0.8f;
-        blue = 0f;
-        fadeColor = new Color(red, green, blue, fade);
+        green =
+                0.8f;
+        blue =
+                0f;
+        fadeColor =
+                new Color(red, green, blue, fade);
     }
 
     /**
@@ -192,6 +228,7 @@ public class FadeOnChangeLabel
             Thread t = new Thread(this);
             t.start();
         }
+
     }
 
     /**
@@ -201,13 +238,17 @@ public class FadeOnChangeLabel
     public void run() {
         animating = true;
         fade = initFade;
+        alpha = 1.0f;
+
         try {
             while (fade != 0) {
+//            	while (!Thread.interrupted() && alpha > 0.0f) {
                 fadeColor = new Color(red, green, blue, fade);
                 fade += fadeStep;
                 if (fade < 0) {
                     fade = 0;
                 }
+
                 paintCalled = false;
                 if (repaintCont == null) {
                     repaint(); // This label controls it's painting.
@@ -215,9 +256,22 @@ public class FadeOnChangeLabel
                 else {
                     repaintCont.repaint(); // Ask the container to repaint.
                 } // Ask the container to repaint.
-                // Now wait until paintComponent() gets called.
+// Now wait until paintComponent() gets called.
+
+
                 while (!paintCalled && fade != 0) {
-                    Thread.sleep(500);
+                    Thread.sleep(512);
+                }
+
+            }
+            Thread.sleep(1111);
+            while (!Thread.interrupted() && alpha > 0f) {
+
+                alpha = Math.max(0f, alpha - 0.02f);
+                repaint();
+                try {
+                    Thread.sleep(33);
+                } catch (InterruptedException ignored) {
                 }
             }
             animating = false;

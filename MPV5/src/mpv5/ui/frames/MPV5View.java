@@ -8,17 +8,14 @@ import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.io.File;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Locale;
 
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
-import javax.swing.JMenuBar;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
@@ -57,8 +54,6 @@ import mpv5.ui.dialogs.subcomponents.wizard_XMLImport_2;
 import mpv5.utils.files.TextDatFile;
 import mpv5.utils.print.PrintJob;
 import mpv5.utils.renderer.ComboBoxRendererForTooltip;
-import mpv5.utils.text.TypeConversion;
-import mpv5.utils.xml.XMLReader;
 import mpv5.utils.xml.XMLWriter;
 import org.jdesktop.application.SingleFrameApplication;
 import org.jdesktop.application.FrameView;
@@ -72,7 +67,7 @@ public class MPV5View extends FrameView {
     public static Dimension initialSize = new Dimension(1000, 800);
     public static JFrame identifierFrame;
     public static CloseableTabbedPane tabPane;
-    public static JLabel messagelabel = new JLabel();
+    public static JLabel messagelabel = new FadeOnChangeLabel();
     public static JComboBox history = new JComboBox();
     public static User currentUser;
     public static JProgressBar progressbar = new JProgressBar();
@@ -1136,7 +1131,7 @@ public class MPV5View extends FrameView {
         if (mpv5.usermanagement.MPSecurityManager.check(Context.getContact(), MPSecurityManager.EXPORT)) {
             try {
                 XMLWriter xmlw = new XMLWriter();
-                xmlw.newDoc();
+                xmlw.newDoc(true);
                 String name = Context.getContact().getDbIdentity();
                 ArrayList<DatabaseObject> dbobjarr = DatabaseObject.getObjects(Context.getContact());
                 xmlw.add(dbobjarr);
@@ -1261,7 +1256,7 @@ public class MPV5View extends FrameView {
         if (mpv5.usermanagement.MPSecurityManager.check(Context.getAccounts(), MPSecurityManager.EXPORT)) {
             try {
                 XMLWriter xmlw = new XMLWriter();
-                xmlw.newDoc();
+                xmlw.newDoc(true);
                 String name = Context.getAccounts().getDbIdentity();
                 ArrayList<DatabaseObject> dbobjarr = DatabaseObject.getObjects(Context.getAccounts());
                 xmlw.add(dbobjarr);

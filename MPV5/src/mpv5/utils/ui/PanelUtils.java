@@ -4,6 +4,15 @@
  */
 package mpv5.utils.ui;
 
+import java.awt.AlphaComposite;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import javax.swing.*;
 import mpv5.ui.beans.LabeledTextField;
 
@@ -74,4 +83,6 @@ public class PanelUtils {
             component.getComponents()[i].setEnabled(state);
         }
     }
+
+
 }

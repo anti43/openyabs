@@ -23,7 +23,7 @@ package mpv5.ui.frames;
 
 import java.awt.BorderLayout;
 import mpv5.ui.misc.Position;
-import mpv5.utils.ui.Calc;
+import mpv5.ui.misc.Calc;
 
 /**
  *

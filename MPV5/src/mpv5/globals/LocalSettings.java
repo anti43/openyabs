@@ -153,7 +153,7 @@ public class LocalSettings {
     public static void save() {
         XMLWriter x = new XMLWriter();
         try {
-            x.newDoc("localsettings");
+            x.newDoc("localsettings", false);
             x.parse("connection", "1", cookie);
             x.createOrReplace(new File(Main.SETTINGS_FILE));
         } catch (Exception ex) {

@@ -68,7 +68,6 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
         content.add(contentlist.get(level), BorderLayout.CENTER);
         new Position(this);
         pack();
-        repaint();
         setAlwaysOnTop(true);
         setVisible(true);
     }
@@ -91,10 +90,11 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
         message = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setTitle(bundle.getString("Wizard.title")); // NOI18N
         setBackground(new java.awt.Color(255, 255, 255));
         setName("Form"); // NOI18N
+        getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.Y_AXIS));
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
@@ -104,8 +104,12 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
         content.setLayout(new java.awt.BorderLayout());
         jScrollPane1.setViewportView(content);
 
+        getContentPane().add(jScrollPane1);
+
         control.setBackground(new java.awt.Color(255, 255, 255));
+        control.setMaximumSize(new java.awt.Dimension(32767, 100));
         control.setName("control"); // NOI18N
+        control.setPreferredSize(new java.awt.Dimension(375, 50));
 
         cancel.setText(bundle.getString("Wizard.cancel.text")); // NOI18N
         cancel.setName("cancel"); // NOI18N
@@ -142,7 +146,7 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
                 .addContainerGap()
                 .addComponent(cancel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(message, javax.swing.GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE)
+                .addComponent(message, javax.swing.GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(back)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -152,7 +156,7 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
         controlLayout.setVerticalGroup(
             controlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, controlLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(13, Short.MAX_VALUE)
                 .addGroup(controlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(next)
                     .addComponent(back)
@@ -161,24 +165,7 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
                 .addContainerGap())
         );
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(control, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 488, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(359, Short.MAX_VALUE)
-                .addComponent(control, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 357, Short.MAX_VALUE)
-                    .addGap(51, 51, 51)))
-        );
+        getContentPane().add(control);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -213,7 +200,7 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
             next.setEnabled(false);
         }
 
-        this.validate();
+        pack();
 }//GEN-LAST:event_nextActionPerformed
 
     private void backActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backActionPerformed
@@ -238,8 +225,14 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
      */
     public void addPanel(Wizardable panel) {
         JPanel pane = (JPanel) panel;
-        (pane).setPreferredSize(new Dimension(content.getPreferredSize()));
+//        (pane).setPreferredSize(new Dimension(content.getPreferredSize()));
 //        (pane).setBounds(0, 0, content.getWidth(), content.getHeight());
+//        if (pane.getWidth() > content.getWidth() || pane.getHeight() > content.getHeight()) {
+//            content.setMinimumSize(new Dimension(pane.getWidth(), pane.getHeight()));
+//            content.setPreferredSize(new Dimension(pane.getWidth(), pane.getHeight()));
+//            this.setMinimumSize(new Dimension(pane.getWidth() + 10, pane.getHeight() + 10));
+//            this.setPreferredSize(new Dimension(pane.getWidth() + 10, pane.getHeight() + 10));
+//        }
         (pane).setOpaque(true);
         contentlist.add(pane);
     }

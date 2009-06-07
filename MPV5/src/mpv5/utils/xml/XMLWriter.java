@@ -141,7 +141,7 @@ public class XMLWriter {
             myDocument = reader.newDoc(file);
             rootElement = myDocument.getRootElement();
         } catch (Exception ex) {
-            newDoc();
+            newDoc(true);
         }
         parse(nodename, nodeid, cookie);
     }
@@ -164,20 +164,31 @@ public class XMLWriter {
     /**
      * Creates a new XML document with the root element
      */
-    public void newDoc() {
+    public void newDoc(boolean withDocTypeDeclaration) {
         // Create the root element
 //        rootElement = new Element(rootElementName);
-        myDocument = new Document(rootElement, (DocType) DEFAULT_DOCTYPE.clone());
+        if (withDocTypeDeclaration) {
+            myDocument = new Document(rootElement, (DocType) DEFAULT_DOCTYPE.clone());
+        } else {
+            myDocument = new Document(rootElement);
+        }
+
     //add an attribute to the root element
 //        rootElement.setAttribute(new Attribute("userid", MPV5View.getUser().getID()));
     }
 
     /**
-     * Creates a ned XML document with the sub root element
+     * Creates a ned XML document with the sub root element and DocType
      * @param defaultSubRootElementName
      */
     public void newDoc(String defaultSubRootElementName) {
-        newDoc();
+        newDoc(true);
+        defaultSubRoot = new Element(defaultSubRootElementName);
+        rootElement.addContent(defaultSubRoot);
+    }
+
+    public void newDoc(String defaultSubRootElementName, boolean withDocTypeDeclaration) {
+        newDoc(withDocTypeDeclaration);
         defaultSubRoot = new Element(defaultSubRootElementName);
         rootElement.addContent(defaultSubRoot);
     }
