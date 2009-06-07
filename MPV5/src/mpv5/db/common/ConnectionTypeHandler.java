@@ -19,7 +19,6 @@ package mpv5.db.common;
 import mpv5.logging.Log;
 import java.io.File;
 import java.io.IOException;
-import mpv5.globals.Constants;
 import mpv5.globals.LocalSettings;
 
 /**
@@ -37,14 +36,14 @@ public class ConnectionTypeHandler {
      * Use myql database driver
      */
     public static final int MYSQL = 1;
-    public static String MYSQL_DRIVER = "com.mysql.jdbc.Driver";
+    public static String MYSQL_DRIVER = "com.mysql.jdbc.Driver (specify path with <path>:port)";
     /**
      * Use custom database driver
      */
     public static final int CUSTOM = 2;
 
     //Available Drivers
-    public static String CUSTOM_DRIVER = "custom.driver";
+    public static String CUSTOM_DRIVER = "custom.driver (specify path with type declaration jdbc:sql://<path>:port)";
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public static String[] DRIVERS = {DERBY_DRIVER, MYSQL_DRIVER, CUSTOM_DRIVER};
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -108,7 +107,7 @@ public class ConnectionTypeHandler {
                 }
                 break;
             case CUSTOM:
-                setConnectionString("jdbc:sql://" + getURL() + "/" + DBNAME);
+                setConnectionString(getURL() + "/" + DBNAME);
                 if (withCreate) {
                     Log.Debug(this, "Sie müssen die SQL Datenbank " + DBNAME + " manuell anlegen.");
                 }
@@ -213,6 +212,6 @@ public class ConnectionTypeHandler {
     }
 
     public void setDBName(String dbname) {
-       this.DBNAME = dbname;
+       ConnectionTypeHandler.DBNAME = dbname;
     }
 }
