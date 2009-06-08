@@ -50,7 +50,7 @@ import mpv5.utils.text.TypeConversion;
 
 /**
  *
- *  Andreas
+ *  
  */
 public class User extends DatabaseObject {
 

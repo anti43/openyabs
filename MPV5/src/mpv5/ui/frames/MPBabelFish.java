@@ -49,7 +49,7 @@ import mpv5.utils.ui.TextFieldUtils;
 
 /**
  *
- *  Andreas
+ *  
  */
 public class MPBabelFish extends javax.swing.JFrame {
 

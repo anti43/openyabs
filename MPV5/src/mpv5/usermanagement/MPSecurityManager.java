@@ -31,7 +31,7 @@ import mpv5.utils.text.MD5HashGenerator;
 
 /**
  *
- *  Andreas
+ *  
  */
 public class MPSecurityManager {
 

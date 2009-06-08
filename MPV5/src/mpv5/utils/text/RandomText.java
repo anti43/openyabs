@@ -20,7 +20,7 @@ import java.util.Random;
 
 /**
  * A random text generator
- *  Andreas
+ *  
  */
 public class RandomText {
 
@@ -45,14 +45,95 @@ public class RandomText {
             "adozenotheritemsthatthehitchhikermightaccidentallyhavelostWhatthestragwillt" +
             "hinkisthatanymanwhocanhitchthelengthandbreadthofthegalaxyroughitslumitstrugg" +
             "leagainstterribleoddswinthroughandstillknowswherehistowelisisclearlyamantober" +
-            "2324989105969625913643");
-
+            "2324989105969625913643ThehistoryoftheGalaxyhasgotalittlemuddledforanumber" +
+            "ofreasonspartlybecausethosewhoaretryingtokeeptrackofithavegotalittlemuddledbut" +
+            "alsobecausesomeverymuddlingthingshavebeenhappeninganywayOneoftheproblemshas" +
+            "todowiththespeedoflightandthedifficultiesinvolvedintryingtoexceeditYoucantNothingtravels" +
+            "fasterthanthespeedoflightwiththepossibleexceptionofbadnewswhichobeysitsownspeciallawsT" +
+            "heHingefreelpeopleofArkintoofleMinordidtrytobuildspaceshipsthatwerepoweredbybadnewsb" +
+            "uttheydidntworkparticularlywellandweresoextremelyunwelcomewhenevertheyarrivedanywh" +
+            "erethattherewasntreallyanypointinbeingthereSobyandlargethepeoplesoftheGalaxytended" +
+            "tolanguishintheirownlocalmuddlesandthehistoryoftheGalaxyitselfwasforalongtimelargelycosm" +
+            "ologicalWhichisnottosaythatpeoplewerenttryingTheytriedsendingofffleetsofspaceshipstodoba" +
+            "ttleorbusinessindistantpartsbuttheseusuallytookthousandsofyearstogetanywhereBythetimethe" +
+            "yeventuallyarrivedotherformsoftravelhadbeendiscoveredwhichmadeuseofhyperspacetocircumven" +
+            "tthespeedoflightsothatwhateverbattlesitwasthattheslowerthanlightfleetshadbeensenttofighthadal" +
+            "readybeentakencareofcenturiesearlierbythetimetheyactuallygotthereThisdidntofcoursedetertheirc" +
+            "rewsfromwantingtofightthebattlesanywayTheyweretrainedtheywerereadytheydhadacoupleofthousand" +
+            "yearssleeptheydcomealongwaytodoatoughjobandbyZarquontheyweregoingtodoitThiswaswhent" +
+            "hefirstmajormuddlesofGalactichistorysetinwithbattlescontinuallyreeruptingcenturiesaftertheissu" +
+            "estheyhadbeenfoughtoverhadsupposedlybeensettledHoweverthesemuddleswereasnothingtothe" +
+            "oneswhichhistorianshadtotryandunraveloncetimetravelwasdiscoveredandbattlesstartedpreerupt" +
+            "inghundredsofyearsbeforetheissuesevenaroseWhentheInfiniteImprobabilityDrivearrivedandwholep" +
+            "lanetsstartedturningunexpectedlyintobananafruitcakethegreathistoryfacultyoftheUniversityofMaxiM" +
+            "egalonfinallygaveupcloseditselfdownandsurrendereditsbuildingstotherapidlygrowingjointfacultyofDiv" +
+            "inityandWaterPolowhichhadbeenafterthemforyearsWhichisallverywellofcoursebutitalmostcertainlym" +
+            "eansthatnoonewilleverknowforsurewhereforinstancetheGrebulonscamefromorexactlywhatitwasthey" +
+            "wantedAndthisisapitybecauseifanybodyhadknownanythingaboutthemitisjustpossiblethatamostterrib" +
+            "lecatastrophewouldhavebeenavertedoratleastwouldhavehadtofindadifferentwaytohappenClickhum" +
+            "OnboardtheshipeverythingwasasithadbeenformillenniadeeplydarkandSilentClickhumAtleastalmostev" +
+            "erythingClickclickhumClickhumclickhumclickhumClickclickclickclickclickhumHmmmAlowlevelsupervisin" +
+            "gprogramwokeupaslightlyhigherlevelsupervisingprogramdeepintheshipssemisomnolentcyberbrainandre" +
+            "portedtoitthatwheneveritwentclickallitgotwasahumThehigherlevelsupervisingprogramaskeditwhatitwass" +
+            "upposedtogetandthelowlevelsupervisingprogramsaidthatitcouldntrememberexactlybutthoughtitwasprob" +
+            "ablymoreofasortofdistantsatisfiedsighwasntitItdidntknowwhatthishumwasClickhumclickhumThatwasallitwa" +
+            "sgettingThehigherlevelsupervisingprogramconsideredthisanddidntlikeitItaskedthelowlevelsupervisingprog" +
+            "ramwhatexactlyitwassupervisingandthelowlevelsupervisingprogramsaiditcouldntrememberthateitherjusttha" +
+            "titwassomethingthatwasmeanttogoclicksigheverytenyearsorsowhichusuallyhappenedwithoutfailIthadtriedto" +
+            "consultitserrorlookuptablebutcouldntfinditwhichwaswhyithadalertedthehigherlevelsupervisingprogramtotheproblem" +
+            "Thehigherlevelsupervisingprogramwenttoconsultoneofitsownlookuptablestofindoutwhatthelowlevelsupervisingprogr" +
+            "amwasmeanttobesupervisingItcouldntfindthelookuptableOddItlookedagainAllitgotwasanerrormessageIttriedtolooku" +
+            "ptheerrormessageinitserrormessagelookuptableandcouldntfindthateitherItallowedacoupleofnanosecondstogobywhile" +
+            "itwentthroughallthisagainThenitwokeupitssectorfunctionsupervisorThesectorfunctionsupervisorhitimmediateproblemsI" +
+            "tcalleditssupervisingagentwhichhitproblemstooWithinafewmillionthsofasecondvirtualcircuitsthathadlaindormantsomefo" +
+            "ryearssomeforcenturieswereflaringintolifethroughouttheshipSomethingsomewherehadgoneterriblywrongbutnoneofthe" +
+            "supervisingprogramscouldtellwhatitwasAteverylevelvitalinstructionsweremissingandtheinstructionsaboutwhattodointhe" +
+            "eventofdiscoveringthatvitalinstructionsweremissingwerealsomissingSmallmodulesofsoftwareagentssurgedthroughthel" +
+            "ogicalpathwaysgroupingconsultingregroupingTheyquicklyestablishedthattheshipsmemoryallthewaybacktoitscentralmis" +
+            "sionmodulewasintattersNoamountofinterrogationcoulddeterminewhatitwasthathadhappenedEventhecentralmissionmo" +
+            "duleitselfseemedtobedamagedThismadethewholeproblemverysimpletodealwithReplacethecentralmissionmoduleThere" +
+            "wasanotheroneabackupanexactduplicateoftheoriginalIthadtobephysicallyreplacedbecauseforsafetyreasonstherewasn" +
+            "olinkwhatsoeverbetweentheoriginalanditsbackupOncethecentralmissionmodulewasreplaceditcoulditselfsupervisethere" +
+            "constructionoftherestofthesystemineverydetailandallwouldbewellRobotswereinstructedtobringthebackupcentralmissio" +
+            "nmodulefromtheshieldedstrongroomwheretheyguardedittotheshipslogicchamberforinstallationThisinvolvedthelengthy" +
+            "exchangeofemergencycodesandprotocolsastherobotsinterrogatedtheagentsastotheauthenticityoftheinstructionsAtlas" +
+            "ttherobotsweresatisfiedthatallprocedureswerecorrectTheyunpackedthebackupcentralmissionmodulefromitsstorageho" +
+            "usingcarrieditoutofthestoragechamberfelloutoftheshipandwentspinningoffintothevoidThisprovidedthefirstmajorclueast" +
+            "owhatitwasthatwaswrongFurtherinvestigationquicklyestablishedwhatitwasthathadhappenedAmeteoritehadknockedala" +
+            "rgeholeintheshipTheshiphadnotpreviouslydetectedthisbecausethemeteoritehadneatlyknockedoutthatpartoftheshipsp" +
+            "rocessingequipmentwhichwassupposedtodetectiftheshiphadbeenhitbyameteoriteThefirstthingtodowastotrytosealupth" +
+            "eholeThisturnedouttobeimpossiblebecausetheshipssensorscouldntseethattherewasaholeandthesupervisorswhichsho" +
+            "uldhavesaidthatthesensorswerentworkingproperlywerentworkingproperlyandkeptsayingthatthesensorswerefineTheshi" +
+            "pcouldonlydeducetheexistenceoftheholefromthefactthattherobotshadclearlyfallenoutofittakingitssparebrainwhichwoul" +
+            "dhaveenabledittoseetheholewiththemTheshiptriedtothinkintelligentlyaboutthisfailedandthenblankedoutcompletelyfora" +
+            "bitItdidntrealiseithadblankedoutofcoursebecauseithadblankedoutItwasmerelysurprisedtoseethestarsjumpAfterthethird" +
+            "timethestarsjumpedtheshipfinallyrealisedthatitmustbeblankingoutandthatitwastimetotakesomeseriousdecisionsItrelax" +
+            "edThenitrealisedithadntactuallytakentheseriousdecisionsyetandpanickedItblankedoutagainf" +
+            "orabitWhenitawokeagainitsealedallthebulkheadsaroundwhereitknewtheunseenholemustbeItclearlyh" +
+            "adntgottoitsdestinationyetitthoughtfitfullybutsinceitnolongerhadthefaintestideawhereitsdestinationwasorh" +
+            "owtoreachitthereseemedtobelittlepointincontinuingItconsultedwhattinyscrapsofinstructionsitcouldreconstr" +
+            "uctfromthetattersofitscentralmissionmoduleYouryearmissionistolandasafedistancelandmonitoritAlloftherestw" +
+            "ascompletegarbageBeforeitblankedoutforgoodtheshipwouldhavetopassonthoseinstructionssuchastheyweretoitsm" +
+            "oreprimitivesubsidiarysystemsItmustalsoreviveallofitscrewTherewasanotherproblemWhilethecrewwasinhibernationthe" +
+            "mindsofallofitsmemberstheirmemoriestheiridentitiesandtheirunderstandingofwhattheyhadcometodohadallbeentransferre" +
+            "dintotheshipscentralmissionmoduleforsafekeepingThecrewwouldnothavethefaintestideaofwhotheywereorwhattheyweredoin" +
+            "gthereOhwellJustbeforeitblankedoutforthefinaltimetheshiprealisedthatitsengineswerebeginningtogiveouttooTheshipandits" +
+            "revivedandconfusedcrewcoastedonunderthecontrolofitssubsidiaryautomaticsystemswhichsimplylookedtolandwherevertheyc" +
+            "ouldfindtolandandmonitorwhatevertheycouldfindtomonitorAsfarasfindingsomethingtolandonwasconcernedtheydidntdove" +
+            "rywellTheplanettheyfoundwasdesolatelycoldandlonelysoachinglyfarfromthesunthatshouldwarmitthatittookalloftheEnvir" +
+            "OFormmachineryandLifeSupportOSystemstheycarriedwiththemtorenderitoratleastenoughpartsofithabitableTherew" +
+            "erebetterplanetsnearerinbuttheshipsStrateejOMatwasobviouslylockedintoLurkmodeandchosethemostdistanta" +
+            "ndunobtrusiveplanetandfurthermorewouldnotbegainsaidbyanybodyotherthantheshipsChiefStrategicOfficerSi" +
+            "nceeverybodyontheshiphadlosttheirmindsnooneknewwhotheChiefStrategicOfficerwasorevenifhecouldhave" +
+            "beenidentifiedhowhewassupposedtogoaboutgainsayingtheshipsStrateejOMatAsfarasfindingsomethingt" +
+            "omonitorwasconcernedthoughtheyhitsolidgold");
     private String string;
     private int length = 5;
 
     /**
      * Constructs a random text generator 
      * with the given length and source text
+     *
      * @param source 
      * @param length
      */

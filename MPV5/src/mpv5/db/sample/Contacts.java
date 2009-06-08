@@ -102,7 +102,7 @@ public class Contacts {
                             it.setGroupsids(group);
                             it.setIntreminders(0);
                             it.setInttype(Item.TYPE_BILL);
-                            it.setIntstatus(Item.STATUS_FINISHED);
+                            it.setIntstatus(Item.STATUS_PAID);
                             it.setTaxvalue(FormatNumber.round((value * 1.19) - value));
                             it.setNetvalue(FormatNumber.round(value));
                             it.setIntaddedby(MPV5View.getUser().__getIDS());
@@ -120,7 +120,7 @@ public class Contacts {
                             it1.setGroupsids(group);
                             it1.setIntreminders(0);
                             it1.setInttype(Item.TYPE_BILL);
-                            it1.setIntstatus(Item.STATUS_FINISHED);
+                            it1.setIntstatus(Item.STATUS_PAID);
                             it1.setTaxvalue(FormatNumber.round((value * 1.07) - value));
                             it1.setNetvalue(FormatNumber.round(value));
                             it1.setIntaddedby(MPV5View.getUser().__getIDS());
@@ -138,7 +138,7 @@ public class Contacts {
                             it2.setGroupsids(group);
                             it2.setIntreminders(0);
                             it2.setInttype(Item.TYPE_BILL);
-                            it2.setIntstatus(Item.STATUS_FINISHED);
+                            it2.setIntstatus(Item.STATUS_PAID);
                             it2.setTaxvalue(FormatNumber.round(0));
                             it2.setNetvalue(FormatNumber.round(value));
                             it2.setIntaddedby(MPV5View.getUser().__getIDS());

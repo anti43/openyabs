@@ -18,7 +18,7 @@ package mpv5.ui.panels;
 
 /**
  *
- *  Andreas
+ *  
  */
 public interface ListPanel {
 

@@ -19,7 +19,7 @@ import mpv5.utils.text.MD5HashGenerator;
 
 /**
  *
- *   Andreas
+ *   
  */
 public class LoginScreen extends javax.swing.JFrame {
 

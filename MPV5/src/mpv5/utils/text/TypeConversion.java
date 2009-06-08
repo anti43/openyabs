@@ -20,7 +20,7 @@ import java.util.Locale;
 
 /**
  *
- *  Andreas
+ *  
  */
 public class TypeConversion {
 

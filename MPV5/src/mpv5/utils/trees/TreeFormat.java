@@ -24,7 +24,7 @@ import javax.swing.JTree;
 
 /**
  *
- *  Andreas
+ *  
  */
 public class TreeFormat {
 

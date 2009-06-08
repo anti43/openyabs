@@ -24,7 +24,7 @@ import mpv5.logging.Log;
 
 /**
  *
- *  Andreas
+ *  
  */
 public class MPTableModel extends DefaultTableModel {
 

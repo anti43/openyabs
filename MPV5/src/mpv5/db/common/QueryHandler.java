@@ -50,7 +50,7 @@ import mpv5.utils.ui.TextFieldUtils;
 
 /**
  *
- *  Andreas
+ *  
  */
 public class QueryHandler implements Cloneable {
 
@@ -1123,7 +1123,7 @@ public class QueryHandler implements Cloneable {
     /**
      * Returns the count of rows which match the condition.
      * <br/>Example:
-     * <br/>selectCount("cname", "LIKE %Andreas%")
+     * <br/>selectCount("cname", "LIKE %%")
      * @param what
      * @param condition
      * @return

@@ -24,7 +24,7 @@ import mpv5.ui.frames.MPV5View;
 
 /**
  *
- *  Andreas
+ *  
  */
 public class Job extends SwingWorker<Object, Object> {
 

@@ -14,7 +14,7 @@ import mpv5.ui.dialogs.Popup;
 
 /**
  *
- *  Andreas
+ *  
  */
 public class DatabaseConnection {
 

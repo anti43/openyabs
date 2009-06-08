@@ -5,7 +5,7 @@ import java.util.Arrays;
 
 /**
  *
- *  Andreas
+ *  
  */
 public class DatabaseSearch {
     public static String ALL_COLUMNS = "*";

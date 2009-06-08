@@ -20,6 +20,7 @@ import java.util.Date;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
+import mpv5.globals.Messages;
 
 /**
  *
@@ -27,6 +28,43 @@ import mpv5.db.common.DatabaseObject;
  */
 public class Item extends DatabaseObject {
 
+    /**
+     * Returns a localized string represenation of the given item status
+     * @param status
+     * @return
+     */
+    public static String getStatusString(int status) {
+        switch (status) {
+            case (STATUS_QUEUED):
+                return Messages.STATUS_QUEUED.toString();
+            case (STATUS_IN_PROGRESS):
+                return Messages.STATUS_IN_PROGRESS.toString();
+            case (STATUS_PAUSED):
+                return Messages.STATUS_PAUSED.toString();
+            case (STATUS_FINISHED):
+                return Messages.STATUS_FINISHED.toString();
+            case (STATUS_PAID):
+                return Messages.STATUS_PAID.toString();
+        }
+        return null;
+    }
+
+    /**
+     * Returns a localized string represenation of the given item type
+     * @param type
+     * @return
+     */
+    public static String getTypeString(int type) {
+        switch (type) {
+            case (TYPE_BILL):
+                return Messages.TYPE_BILL.toString();
+            case (TYPE_OFFER):
+                return Messages.TYPE_OFFER.toString();
+            case (TYPE_ORDER):
+                return Messages.TYPE_ORDER.toString();
+        }
+        return null;
+    }
     private int contactsids;
     private int defaultaccountsids;
     private double netvalue;
@@ -37,13 +75,14 @@ public class Item extends DatabaseObject {
     private int intstatus;
     private int inttype;
     private String description = "";
-    public static int STATUS_QUEUED = 0;
-    public static int STATUS_IN_PROGRESS = 1;
-    public static int STATUS_PAUSED = 2;
-    public static int STATUS_FINISHED = 3;
-    public static int TYPE_BILL = 0;
-    public static int TYPE_ORDER = 1;
-    public static int TYPE_OFFER = 2;
+    public static final int STATUS_QUEUED = 0;
+    public static final int STATUS_IN_PROGRESS = 1;
+    public static final int STATUS_PAUSED = 2;
+    public static final int STATUS_FINISHED = 3;
+    public static final int STATUS_PAID = 4;
+    public static final int TYPE_BILL = 0;
+    public static final int TYPE_ORDER = 1;
+    public static final int TYPE_OFFER = 2;
 
     public Item() {
         context.setDbIdentity(Context.IDENTITY_ITEMS);

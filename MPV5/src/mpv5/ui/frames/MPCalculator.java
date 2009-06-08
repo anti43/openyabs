@@ -24,7 +24,7 @@ import mpv5.ui.misc.JCalc;
 
 /**
  *
- *   Andreas
+ *   
  */
 public class MPCalculator extends javax.swing.JFrame {
 

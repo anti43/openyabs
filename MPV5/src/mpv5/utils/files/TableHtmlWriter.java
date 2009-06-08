@@ -29,7 +29,6 @@ import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
 import mpv5.utils.date.DateConverter;
 
-
 /**
  *
  * This class writes a HTML file with a 
@@ -44,6 +43,39 @@ public class TableHtmlWriter {
     private String[] header = null;
     private File file = FileDirectoryHandler.getTempFile();
     private String prefix = null;
+    private Color borderColor = Color.black;
+    private boolean showHorizontalLines = true;
+    private boolean showVerticalLines = true;
+
+    /**
+     * This constructor initializes the HTMLWriter with the
+     * given datamodel and the given output file.
+     * The table header will be set to header
+     * and the header of the created file will be the prefix
+     * @param model
+     * @param file
+     * @param showHorizontalLines
+     * @param showVerticalLines
+     */
+    public TableHtmlWriter(DefaultTableModel model, File file, boolean showHorizontalLines, boolean showVerticalLines) {
+        Object[][] obj = new Object[model.getRowCount()][model.getColumnCount()];
+
+        for (int k = 0; k < obj.length; k++) {
+            for (int l = 0; l < obj[k].length; l++) {
+                obj[k][l] = model.getValueAt(k, l);
+            }
+        }
+        String[] head = new String[model.getColumnCount()];
+        for (int i = 0; i < head.length; i++) {
+            head[i] = model.getColumnName(i);
+        }
+        this.header = head;
+        this.model = obj;
+        this.file = file;
+        this.showHorizontalLines = showHorizontalLines;
+        this.showVerticalLines = showVerticalLines;
+
+    }
 
     /**
      * This constructor initializes the HTMLWriter with the
@@ -58,22 +90,16 @@ public class TableHtmlWriter {
      */
     public TableHtmlWriter(DefaultTableModel model, File file, String[] header, String prefix) {
         Object[][] obj = new Object[model.getRowCount()][model.getColumnCount()];
-
         for (int k = 0; k < obj.length; k++) {
-
-
             for (int l = 0; l < obj[k].length; l++) {
-
                 obj[k][l] = model.getValueAt(k, l);
             }
-
         }
 
         this.model = obj;
         this.file = file;
         this.header = header;
         this.prefix = prefix;
-
     }
 
     /**
@@ -84,24 +110,19 @@ public class TableHtmlWriter {
      * @param file A file to write the output
      */
     public TableHtmlWriter(DefaultTableModel model, File file) {
-
-
         Object[][] obj = new Object[model.getRowCount()][model.getColumnCount()];
-
-
         for (int k = 0; k < obj.length; k++) {
-
-
             for (int l = 0; l < obj[k].length; l++) {
-
                 obj[k][l] = model.getValueAt(k, l);
             }
-
         }
-
         this.model = obj;
         this.file = file;
-
+        String[] head = new String[model.getColumnCount()];
+        for (int i = 0; i < head.length; i++) {
+            head[i] = model.getColumnName(i);
+        }
+        this.header = head;
     }
 
     /**
@@ -143,22 +164,18 @@ public class TableHtmlWriter {
      */
     public TableHtmlWriter(DefaultTableModel model) {
 
-
         Object[][] obj = new Object[model.getRowCount()][model.getColumnCount()];
-
-
         for (int k = 0; k < obj.length; k++) {
-
-
             for (int l = 0; l < obj[k].length; l++) {
-
                 obj[k][l] = model.getValueAt(k, l);
             }
-
         }
-
         this.model = obj;
-
+        String[] head = new String[model.getColumnCount()];
+        for (int i = 0; i < head.length; i++) {
+            head[i] = model.getColumnName(i);
+        }
+        this.header = head;
     }
 
     /**
@@ -169,7 +186,6 @@ public class TableHtmlWriter {
      */
     public TableHtmlWriter(Object[][] model) {
         this.model = model;
-
     }
 
     /**
@@ -191,7 +207,6 @@ public class TableHtmlWriter {
             System.err.println("No datamodel given.");
         }
 
-        
         return getFile();
     }
 
@@ -201,7 +216,6 @@ public class TableHtmlWriter {
      * @return The created HTML file
      */
     public File createHtml() {
-
         if (getModel() != null) {
             try {
                 write(0, Color.BLACK);
@@ -211,84 +225,62 @@ public class TableHtmlWriter {
         } else {
             System.err.println("No datamodel given.");
         }
-
         return getFile();
     }
 
-
-
     private void write(Integer border, Color borderc) throws IOException {
 
-        BufferedWriter out = new BufferedWriter(new FileWriter(getFile()));
+        String bo = "";
+        if (!showHorizontalLines || !showVerticalLines) {
+            if (!showHorizontalLines && !showVerticalLines) {
+                border = 0;
+            } else if (showHorizontalLines) {
+                bo = "RULES=COLS";
+            } else if (showHorizontalLines) {
+                bo = " RULES=ROWS";
+            }
+        }
 
+
+        BufferedWriter out = new BufferedWriter(new FileWriter(getFile()));
         String rgb = Integer.toHexString(borderc.getRGB());
         rgb = rgb.substring(2, rgb.length());
-
         out.write(" <meta http-equiv='Content-Type' content='text/html;'> <HTML>");
-        
-        
         out.write("<head><STYLE TYPE='text/css'><!--TD{font-family: Arial; font-size: 10pt;}" +
-                "table {border: 1px solid #666666;border-collapse: collapse;}"+
-                "td { border: 1px solid #666666; }"+
-                "th { border: 1px solid #666666; }"+
-                 "-->" +
-                 "</STYLE></head>");
-        
+                "table {border: " + border +
+                "px solid #" + rgb + ";border-collapse: collapse;}" +
+                "td { border: " + border + "px solid #" + rgb + "; }" +
+                "th { border: " + border + "px solid #" + rgb + "; }" +
+                "-->" +
+                "</STYLE></head>");
         if (getPrefix() != null) {
-
             out.write("<P><H2>" + getPrefix() + "</H2></P><BR>");
-
         }
-
-        out.write("<TABLE style='empty-cells:show' WIDTH = 100%   CELLPADDING=1px CELLSPACING=0px BORDERCOLOR = #" + rgb + ">\n");
-        
+        out.write("<TABLE style='empty-cells:show' WIDTH = 100%   CELLPADDING=1px CELLSPACING=0px BORDERCOLOR = #" + rgb + " " + bo + ">\n");
         if (getHeader() != null) {
-
             out.write("<THEAD>\n<TR VALIGN=TOP>\n");
-
             for (int k = 0; k < getHeader().length; k++) {
-              
-                   
                 out.write("<TH WIDTH=*>	<P>" + getHeader()[k] + "</P></TH>\n");
-
             }
-
             out.write("</TR></THEAD>\n");
         }
-
         out.write("	<TBODY>\n");
-
         for (int k = 0; k < getModel().length; k++) {
-
             out.write("<TR VALIGN=TOP>\n");
-
             for (int l = 0; l < getModel()[k].length; l++) {
-               
                 out.write("<TD WIDTH=*><P>");
-
                 if (getModel()[k][l] != null && !String.valueOf(getModel()[k][l]).equals("null")) {
-                    out.write(String.valueOf(getModel()[k][l]).replaceAll("<html>|<pre>|&nbsp;", "")+"&nbsp;");
+                    out.write(String.valueOf(getModel()[k][l]).replaceAll("<html>|<pre>|&nbsp;", "") + "&nbsp;");
                 }
-
-
                 out.write("</P></TD>\n");
-
             }
             out.write("</TR>\n");
         }
-
         out.write("</TBODY></TABLE>\n");
-
         out.write("<BR><BR>");
         out.write(DateConverter.getDefDateString(new Date()));
-
         out.write("</HTML>");
-
         out.close();
-
-
-
-
     }
 
     /**
@@ -354,5 +346,47 @@ public class TableHtmlWriter {
      */
     public void setPrefix(String prefix) {
         this.prefix = prefix;
+    }
+
+    /**
+     * @return the showHorizontalLines
+     */
+    public boolean isShowHorizontalLines() {
+        return showHorizontalLines;
+    }
+
+    /**
+     * @param showHorizontalLines the showHorizontalLines to set
+     */
+    public void setShowHorizontalLines(boolean showHorizontalLines) {
+        this.showHorizontalLines = showHorizontalLines;
+    }
+
+    /**
+     * @return the showVerticalLines
+     */
+    public boolean isShowVerticalLines() {
+        return showVerticalLines;
+    }
+
+    /**
+     * @param showVerticalLines the showVerticalLines to set
+     */
+    public void setShowVerticalLines(boolean showVerticalLines) {
+        this.showVerticalLines = showVerticalLines;
+    }
+
+    /**
+     * @return the borderColor
+     */
+    public Color getBorderColor() {
+        return borderColor;
+    }
+
+    /**
+     * @param borderColor the borderColor to set
+     */
+    public void setBorderColor(Color borderColor) {
+        this.borderColor = borderColor;
     }
 }

@@ -21,7 +21,7 @@ import mpv5.utils.xml.XMLWriter;
 
 /**
  *
- *  Andreas
+ *  
  */
 public class LocalSettings {
 

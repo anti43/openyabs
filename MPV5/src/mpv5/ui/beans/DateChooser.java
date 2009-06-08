@@ -6,7 +6,7 @@ import mpv5.utils.date.DateConverter;
 
 /**
  *
- *  Andreas
+ *  
  */
 public class DateChooser extends javax.swing.JPanel {
 

@@ -19,7 +19,7 @@ package mpv5.utils.jobs;
 
 /**
  *
- *  Andreas
+ *  
  */
 public interface Waitable {
 

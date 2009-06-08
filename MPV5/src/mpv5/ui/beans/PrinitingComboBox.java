@@ -162,7 +162,7 @@ public class PrinitingComboBox extends javax.swing.JPanel {
                         case 1:
                             DialogForFile dialog = new DialogForFile(DialogForFile.FILES_ONLY, "export-" + DateConverter.getTodayDefDate() + ".html");
                             if (dialog.saveFile()) {
-                                File f = new TableHtmlWriter(((DefaultTableModel) ((JTable) dataowner).getModel()), dialog.getFile()).createHtml();
+                                File f = new TableHtmlWriter(((DefaultTableModel) ((JTable) dataowner).getModel()), dialog.getFile(),  ((JTable) dataowner).getShowHorizontalLines(),((JTable) dataowner).getShowVerticalLines()).createHtml();
                                 FileActionHandler.open(f);
                             }
                             break;

@@ -25,7 +25,7 @@ import mpv5.utils.print.PrintJob;
 /**
  * This class is designed to have easy and quick, OS independent 
  * access to common desktop actions
- *  Andreas
+ *  
  */
 public class FileActionHandler {
 

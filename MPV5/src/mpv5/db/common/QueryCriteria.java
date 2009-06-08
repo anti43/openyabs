@@ -91,6 +91,7 @@ public class QueryCriteria {
         list.put(key, new SaveString(string, true));
     }
 
+
     /**
      *
      * @return An array of keys

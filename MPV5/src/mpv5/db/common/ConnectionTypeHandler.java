@@ -23,7 +23,7 @@ import mpv5.globals.LocalSettings;
 
 /**
  * This class handles the different DB connection types (derby, mysql, custom)
- *  Andreas
+ *  
  */
 public class ConnectionTypeHandler {
 

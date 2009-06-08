@@ -18,7 +18,7 @@ import mpv5.globals.LocalSettings;
 
 /**
  *
- *  Andreas
+ *  
  */
 public class LabeledSpinner extends javax.swing.JPanel {
 

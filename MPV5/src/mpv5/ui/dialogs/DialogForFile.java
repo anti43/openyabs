@@ -34,7 +34,7 @@ import mpv5.utils.jobs.Waiter;
 
 /**
  *  This class is useful for selecting files and directories
- *  Andreas
+ *  
  */
 public class DialogForFile extends JFileChooser implements Waiter {
 

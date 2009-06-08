@@ -7,7 +7,7 @@ package mpv5.utils.jobs;
 
 /**
  *
- *  Andreas
+ *  
  */
 public interface Waiter {
 public abstract void set(Object object);

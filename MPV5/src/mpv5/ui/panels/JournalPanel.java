@@ -24,6 +24,7 @@ package mpv5.ui.panels;
 import java.awt.Component;
 import java.util.Date;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 import mpv5.db.common.Context;
 import mpv5.db.common.QueryCriteria;
@@ -32,6 +33,7 @@ import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryHandler;
 import mpv5.globals.Headers;
 import mpv5.db.objects.Group;
+import mpv5.db.objects.Item;
 import mpv5.logging.Log;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
@@ -102,7 +104,6 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         jButton1 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         prinitingComboBox1 = new mpv5.ui.beans.PrinitingComboBox();
-        jTextField1 = new javax.swing.JTextField();
 
         setName("Form"); // NOI18N
 
@@ -125,7 +126,6 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         ));
         jTable1.setName("jTable1"); // NOI18N
         jTable1.setShowHorizontalLines(false);
-        jTable1.setShowVerticalLines(false);
         jScrollPane1.setViewportView(jTable1);
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
@@ -164,6 +164,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         jLabel6.setName("jLabel6"); // NOI18N
 
         jCheckBox1.setBackground(new java.awt.Color(255, 255, 255));
+        buttonGroup1.add(jCheckBox1);
         jCheckBox1.setSelected(true);
         jCheckBox1.setText(bundle.getString("JournalPanel.jCheckBox1.text")); // NOI18N
         jCheckBox1.setFocusable(false);
@@ -171,12 +172,14 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         jCheckBox1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
 
         jCheckBox2.setBackground(new java.awt.Color(255, 255, 255));
+        buttonGroup1.add(jCheckBox2);
         jCheckBox2.setText(bundle.getString("JournalPanel.jCheckBox2.text")); // NOI18N
         jCheckBox2.setFocusable(false);
         jCheckBox2.setName("jCheckBox2"); // NOI18N
         jCheckBox2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
 
         jCheckBox3.setBackground(new java.awt.Color(255, 255, 255));
+        buttonGroup1.add(jCheckBox3);
         jCheckBox3.setText(bundle.getString("JournalPanel.jCheckBox3.text")); // NOI18N
         jCheckBox3.setFocusable(false);
         jCheckBox3.setName("jCheckBox3"); // NOI18N
@@ -256,26 +259,20 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
 
         prinitingComboBox1.setName("prinitingComboBox1"); // NOI18N
 
-        jTextField1.setText(bundle.getString("JournalPanel.jTextField1.text")); // NOI18N
-        jTextField1.setName("jTextField1"); // NOI18N
-
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+            .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(prinitingComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 382, Short.MAX_VALUE)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(466, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(prinitingComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(14, Short.MAX_VALUE))
+                .addComponent(prinitingComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(16, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -289,9 +286,9 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 76, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 74, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -340,10 +337,51 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
     private mpv5.ui.beans.PrinitingComboBox prinitingComboBox1;
     private mpv5.ui.beans.TimeframeChooser timeframeChooser1;
     // End of variables declaration//GEN-END:variables
+
+    private Object[][] parse(Object[][] data) {
+//         //ids date group number type status value
+        double val = 0d;
+        double val1 = 0d;
+        Object[][] d = new Object[data.length][8];
+        try {
+            for (int i = 0; i < d.length; i++) {
+                d[i][3] = data[i][3];
+                d[i][2] = data[i][2];
+                d[i][1] = DateConverter.getDefDateString(DateConverter.getDate(data[i][1].toString()));
+                d[i][0] = data[i][0];
+                d[i][4] = Item.getTypeString(Integer.valueOf(data[i][4].toString()));
+                d[i][5] = Item.getStatusString(Integer.valueOf(data[i][5].toString()));
+                if (Integer.valueOf(data[i][5].toString()).intValue() == Item.STATUS_PAID) {
+                    val += Double.valueOf(data[i][6].toString()) + Double.valueOf(data[i][7].toString());
+                    d[i][7] = "<html><p align=center>" + mpv5.utils.numberformat.FormatNumber.formatDezimal(Double.valueOf(data[i][6].toString()) + Double.valueOf(data[i][7].toString()));
+                } else if (Integer.valueOf(data[i][5].toString()).intValue() == Item.STATUS_FINISHED) {
+                    d[i][7] = "<html><p align=center>" + mpv5.utils.numberformat.FormatNumber.formatDezimal(-1 * (Double.valueOf(data[i][6].toString()) + Double.valueOf(data[i][7].toString())));
+                    val -= Double.valueOf(data[i][6].toString()) + Double.valueOf(data[i][7].toString());
+                } else {
+                    d[i][7] = "<html><p align=center>" + mpv5.utils.numberformat.FormatNumber.formatDezimal(0d);
+                }
+
+                d[i][6] = "<html><p align=center>" + mpv5.utils.numberformat.FormatNumber.formatDezimal(Double.valueOf(data[i][6].toString()) + Double.valueOf(data[i][7].toString()));
+                val1 += Double.valueOf(data[i][6].toString()) + Double.valueOf(data[i][7].toString());
+
+            }
+        } catch (Exception numberFormatException) {
+            Log.Debug(numberFormatException);
+        }
+
+        Object[][] ok = new Object[3][8];
+
+        ok[0][6] = "_______________";
+        ok[1][6] = "<html><b>Total: " + mpv5.utils.numberformat.FormatNumber.formatDezimal(val1);
+
+        ok[0][7] = "_______________";
+        ok[1][7] = "<html><b>Total: " + mpv5.utils.numberformat.FormatNumber.formatDezimal(val);
+
+        return ArrayUtilities.merge(d, ok);
+    }
 
     private void refresh(Group forGroup) {
         try {
@@ -351,37 +389,33 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             Object[][] d = new Object[0][0];
 
             if (forGroup != null && !forGroup.__getCName().equals("")) {
-                try {
-
-                    dh.add(forGroup.getDbIdentity() + "ids", forGroup.__getIDS());
-                    dh.setOrder("dateadded", true);
-
-                    Context c = Context.getItems();
-                    c.addReference(Context.getGroup());
-                    d = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL, dh, timeframeChooser1.getTime());
-
-                } catch (NodataFoundException ex) {
-                    Log.Debug(this, ex.getMessage());
-                }
-            } else {
-                try {
-                    Context c = Context.getItems();
-                    dh.setOrder("dateadded", true);
-                    c.addReference(Context.getGroup());
-                    d = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL, dh, timeframeChooser1.getTime());
-                } catch (NodataFoundException ex) {
-                    Log.Debug(this, ex.getMessage());
-                }
-
+                dh.add(forGroup.getDbIdentity() + "ids", forGroup.__getIDS());
             }
 
-            jTable1.setModel(new MPTableModel(ArrayUtilities.changeToClassValue(d, 1, Date.class), Headers.JOURNAL.getValue(), new Class[]{Integer.class,Date.class, String.class, String.class, Integer.class, Integer.class, Double.class, Double.class}));
+            if (jCheckBox1.isSelected()) {
+                dh.add("inttype", Item.TYPE_BILL);
+            } else if (jCheckBox2.isSelected()) {
+                dh.add("inttype", Item.TYPE_ORDER);
+            } else if (jCheckBox3.isSelected()) {
+                dh.add("inttype", Item.TYPE_OFFER);
+            }
+
+            try {
+                Context c = Context.getItems();
+                dh.setOrder("dateadded", true);
+                c.addReference(Context.getGroup());
+                d = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL, dh, timeframeChooser1.getTime());
+            } catch (NodataFoundException ex) {
+                Log.Debug(this, ex.getMessage());
+            }
+
+            d = parse(d);
+
+            jTable1.setModel(new MPTableModel(d, Headers.JOURNAL.getValue(), new Class[]{Integer.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class}));
             TableFormat.stripColumn(jTable1, 0);
         } catch (Exception e) {
             Log.Debug(this, e.getMessage());
         }
-//        TableFormat.stripColumn(jTable1, 3);
-//        TableFormat.stripColumn(jTable1, 4);
     }
 
     public void refresh() {

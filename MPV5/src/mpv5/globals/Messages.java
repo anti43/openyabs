@@ -14,13 +14,13 @@ import mpv5.i18n.LanguageManager;
 /**
  * This enum holds all messages for the mp5 main application
  *
- *  Andreas
+ *  
  */
 public enum Messages {
 
     START_MESSAGE(
     "\n" +
-    "\n  MP " + Constants.VERSION + " Copyright (C) 2006-2008 Andreas Weber\n" +
+    "\n  MP " + Constants.VERSION + " Copyright (C) 2006-2008  Weber\n" +
     "\n  This program comes with ABSOLUTELY NO WARRANTY." +
     "\n  MP is free software, and you are welcome to redistribute it " +
     "\n  under certain conditions;" +
@@ -128,7 +128,15 @@ public enum Messages {
     INCOME("Income"),
     LOCK_FAILED("Lock failed!"),
     LOCKED_BY("This dataset is currently locked by another user\nand can not be edited.."),
-    LIABILITY("Liability");
+    LIABILITY("Liability"),
+    STATUS_QUEUED("Queued"),
+    STATUS_IN_PROGRESS("In progress"),
+    STATUS_PAUSED("Paused"),
+    STATUS_FINISHED("Finished"),
+    TYPE_BILL("Bill"),
+    TYPE_OFFER("Offer"), 
+    STATUS_PAID("Paid"),
+    TYPE_ORDER("Order");
 
     private Messages(String message) {
         this.message = message;
@@ -152,6 +160,4 @@ public enum Messages {
     public String getValue() {
         return toString();
     }
- 
-  
 }
