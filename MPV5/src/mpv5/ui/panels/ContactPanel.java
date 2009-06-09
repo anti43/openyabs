@@ -1004,8 +1004,6 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
             FileTablePopUp.instanceOf(dataTable).show(source, evt.getX(), evt.getY());
         }
-
-
     }//GEN-LAST:event_dataTableMouseClicked
 
     private void removefileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removefileActionPerformed

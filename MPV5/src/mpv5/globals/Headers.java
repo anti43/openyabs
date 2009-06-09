@@ -1,4 +1,3 @@
-
 package mpv5.globals;
 
 public enum Headers {
@@ -19,7 +18,8 @@ public enum Headers {
     CONTACT_FILES(new String[]{"Internal ID", "Filename", "Date", "Description"}),
     HISTORY(new String[]{"Internal ID", "Description", "User", "Group", "Date"}),
     IMPORT(new String[]{"Internal ID", "Import", "Type", "Name", "Data"}),
-    JOURNAL(new String[]{"Internal ID", "Date", "Group", "Number", "Type", "Status", "Value", "Paid"});
+    JOURNAL(new String[]{"Internal ID", "Date", "Group", "Number", "Type", "Status", "Value", "Paid"}),
+    TRASHBIN(new String[]{"Type", "Internal ID", "Description"});
 
     private Headers(String[] header) {
         this.header = header;

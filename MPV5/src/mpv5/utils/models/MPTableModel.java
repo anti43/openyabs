@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Vector;
 import javax.swing.table.DefaultTableModel;
 import mpv5.db.common.DatabaseObject;
+import mpv5.globals.Headers;
 import mpv5.logging.Log;
 
 /**
@@ -98,19 +99,30 @@ public class MPTableModel extends DefaultTableModel {
 
     }
 
+    public MPTableModel(Object[][] data, Headers header) {
+        super(data, header.getValue());
+        setEditable(false);
+
+        setTypes(new Class[]{Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
+                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
+                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class});
+
+    }
+
     public MPTableModel(Object[][] datstr, String[] header, Class[] types) {
         super(datstr, header);
         setEditable(false);
         setTypes(types);
     }
+
     public MPTableModel(Class[] types, boolean[] canEdits, Object[][] data, Object[] columnNames) {
         super(data, columnNames);
         setTypes(types);
         setCanEdits(canEdits);
     }
 
-     public MPTableModel(Class[] types, boolean[] canEdits, Object[] columnNames) {
-        super(columnNames,1);
+    public MPTableModel(Class[] types, boolean[] canEdits, Object[] columnNames) {
+        super(columnNames, 1);
         setTypes(types);
         setCanEdits(canEdits);
     }

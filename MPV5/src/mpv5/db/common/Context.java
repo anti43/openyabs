@@ -330,7 +330,9 @@ public class Context {
      * @param parentobject
      */
     public Context(DatabaseObject parentobject) {
-        setOwner(parentobject);
+        if (parentobject!=null) {
+            setOwner(parentobject);
+        }
     }
     private Class identityClass = null;
     /*

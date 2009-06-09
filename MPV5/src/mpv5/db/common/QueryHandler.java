@@ -1009,6 +1009,9 @@ public class QueryHandler implements Cloneable {
     public QueryHandler clone(String newTable) {
         QueryHandler theClone = null;
         this.context = Context.getMatchingContext(newTable);
+        if(context==null) {
+            context = new Context(null);
+        }
         try {
             theClone = (QueryHandler) this.clone();
             theClone.setTable(newTable);

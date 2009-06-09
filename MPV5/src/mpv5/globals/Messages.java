@@ -136,6 +136,11 @@ public enum Messages {
     TYPE_BILL("Bill"),
     TYPE_OFFER("Offer"), 
     STATUS_PAID("Paid"),
+    TRASHBIN("Trashbin"),
+    DELETE("Delete"),
+    RESTORE("Restore"),
+    RESTORED("Restored"),
+    RELOAD("Reload"),
     TYPE_ORDER("Order");
 
     private Messages(String message) {
@@ -160,4 +165,8 @@ public enum Messages {
     public String getValue() {
         return toString();
     }
+
+
+
+    
 }
