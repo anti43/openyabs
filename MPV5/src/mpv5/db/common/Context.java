@@ -84,21 +84,15 @@ public class Context {
     private boolean isCustomer = false;
     private boolean isManufacturer = false;
     private boolean isSupplier = false;
-    private boolean isDone = false;
-    private boolean isActive = false;
-    private boolean isBill = false;
-    private boolean isOrder = false;
-    private boolean isOffer = false;
+    private Integer itemStatus = null;
+    private Integer itemType = null;
     public static final String CONDITION_DEFAULT = "%%tablename%%" + "." + "IDS>0";
     public static final String CONDITION_CONTACTS_COMPANY = IDENTITY_CONTACTS + "." + "iscompany";
     public static final String CONDITION_CONTACTS_CUSTOMER = IDENTITY_CONTACTS + "." + "iscustomer";
     public static final String CONDITION_CONTACTS_MANUFACTURER = IDENTITY_CONTACTS + "." + "ismanufacturer";
     public static final String CONDITION_CONTACTS_SUPPLIER = IDENTITY_CONTACTS + "." + "issupplier";
-    public static final String CONDITION_ITEMS_DONE = IDENTITY_ITEMS + "." + "isfinished";
-    public static final String CONDITION_ITEMS_ACTIVE = IDENTITY_ITEMS + "." + "isactive";
-    public static final String CONDITION_ITEMS_BILL = IDENTITY_ITEMS + "." + "isbill";
-    public static final String CONDITION_ITEMS_ORDER = IDENTITY_ITEMS + "." + "isorder";
-    public static final String CONDITION_ITEMS_OFFER = IDENTITY_ITEMS + "." + "isoffer";
+    public static final String CONDITION_ITEMS_TYPE = IDENTITY_ITEMS + "." + "inttype";
+    public static final String CONDITION_ITEMS_STATUS = IDENTITY_ITEMS + "." + "intstatus";
 
     //********** searchfields **************************************************
     public static final String SEARCH_NAME = "cname";
@@ -108,7 +102,7 @@ public class Context {
     public static String DEFAULT_SUBID = "ids, cname";
     public static String DEFAULT_CONTACT_SEARCH = "ids, cnumber, cname, city";
     public static String DEFAULT_USER_SEARCH = "ids, cname, mail, lastlogdate";
-    public static String DEFAULT_ITEM_SEARCH = "ids, cname, dateadded, value";
+    public static String DEFAULT_ITEM_SEARCH = "ids, cname, dateadded, netvalue, taxvalue";
 
     //********** table fields ********************************************************
     public static String DETAILS_CONTACTS = IDENTITY_CONTACTS + "." + "IDS," + IDENTITY_CONTACTS + "." + "CNUMBER," +
@@ -142,14 +136,15 @@ public class Context {
 //            IDENTITY_USERS + "." + "laf," +
 //            IDENTITY_USERS + "." + "inthighestright," +
 //            IDENTITY_USERS + "." + "datelastlog";
-    public static String DETAILS_ITEMS = IDENTITY_ITEMS + "." + "IDS," + IDENTITY_ITEMS + "." + "CNAME," +
-            IDENTITY_CONTACTS + "." + "CNAME," + IDENTITY_ITEMS + "." + "dateadded," + IDENTITY_ITEMS + "." + "isactive," +
-            IDENTITY_ITEMS + "." + "value," +
+    public static String DETAILS_ITEMS =
+            IDENTITY_ITEMS + "." + "IDS," +
+            IDENTITY_ITEMS + "." + "CNAME," +
+            IDENTITY_ITEMS + "." + "dateadded," +
+            IDENTITY_ITEMS + "." + "netvalue," +
             IDENTITY_ITEMS + "." + "taxvalue, " +
-            IDENTITY_ITEMS + "." + "datetodo, " +
-            IDENTITY_ITEMS + "." + "intreminders";
+            IDENTITY_ITEMS + "." + "datetodo";
     //ids date group number type status value
-    public static String DETAILS_JOURNAL = IDENTITY_ITEMS + "." + "IDS,"  +
+    public static String DETAILS_JOURNAL = IDENTITY_ITEMS + "." + "IDS," +
             IDENTITY_ITEMS + "." + "dateadded," +
             IDENTITY_GROUPS + "0." + "CNAME," +
             IDENTITY_ITEMS + "." + "CNAME," +
@@ -173,7 +168,7 @@ public class Context {
         list.add(getManufacturer());
         list.add(getSupplier());
         list.add(getAddress());
-        list.add(getItem(true, false, false, false, false));
+        list.add(getItem(null, null));
         list.add(getBill());
         list.add(getOrder());
         list.add(getOffer());
@@ -199,7 +194,7 @@ public class Context {
         list.add(getCustomer());
         list.add(getManufacturer());
         list.add(getSupplier());
-        list.add(getItem(true, false, false, false, false));
+        list.add(getItem(null, null));
         list.add(getBill());
         list.add(getOrder());
         list.add(getOffer());
@@ -223,7 +218,7 @@ public class Context {
         list.add(getCustomer());
         list.add(getManufacturer());
         list.add(getSupplier());
-        list.add(getItem(true, false, false, false, false));
+        list.add(getItem(null, null));
         list.add(getBill());
         list.add(getOrder());
         list.add(getOffer());
@@ -253,7 +248,7 @@ public class Context {
         ArrayList<Context> list = new ArrayList<Context>();
         list.add(getUser());
 //        list.add(getAddress());
-        list.add(getItem(true, false, false, false, false));
+        list.add(getItem(null, null));
         list.add(getSchedule());
         list.add(getContact());
         list.add(getProducts());
@@ -264,7 +259,7 @@ public class Context {
     public static ArrayList<Context> getLockableContexts() {
         ArrayList<Context> list = new ArrayList<Context>();
         list.add(getUser());
-        list.add(getItem(true, false, false, false, false));
+        list.add(getItem(null, null));
         list.add(getSchedule());
         list.add(getContact());
         list.add(getProducts());
@@ -298,7 +293,7 @@ public class Context {
                 getSupplier(),
                 getUser(),
                 getAddress(),
-                getItem(true, false, false, false, false),
+                getItem(null, null),
                 getBill(),
                 getOrder(),
                 getOffer(),
@@ -330,7 +325,7 @@ public class Context {
      * @param parentobject
      */
     public Context(DatabaseObject parentobject) {
-        if (parentobject!=null) {
+        if (parentobject != null) {
             setOwner(parentobject);
         }
     }
@@ -369,107 +364,106 @@ public class Context {
         setCompany(company);
     }
 
-    /**
-     * Set conditions to get exclusive data
-     * @param done
-     * @param active
-     * @param bill
-     * @param order
-     * @param offer
-     */
-    public void setExclusiveItemConditions(boolean done, boolean active, boolean bill, boolean order, boolean offer) {
-
-        String cond = "    ";
-        boolean first = true;
-
-        if (done) {
-            if (first) {
-                cond += "WHERE ";
-            }
-            first = false;
-            cond += " " + CONDITION_ITEMS_DONE + "=1 AND ";
-        } else {
-            if (first) {
-                cond += "WHERE ";
-            }
-            first = false;
-            cond += " " + CONDITION_ITEMS_DONE + "=0 AND ";
-        }
-        if (active) {
-            if (first) {
-                cond += "WHERE ";
-            }
-            first = false;
-            cond += " " + CONDITION_ITEMS_ACTIVE + "=1 AND ";
-        } else {
-            if (first) {
-                cond += "WHERE ";
-            }
-            first = false;
-            cond += " " + CONDITION_ITEMS_ACTIVE + "=0 AND ";
-        }
-        if (bill) {
-            if (first) {
-                cond += "WHERE ";
-            }
-            first = false;
-            cond += " " + CONDITION_ITEMS_BILL + "=1 AND ";
-        } else {
-            if (first) {
-                cond += "WHERE ";
-            }
-            first = false;
-            cond += " " + CONDITION_ITEMS_BILL + "=0 AND ";
-        }
-        if (order) {
-            if (first) {
-                cond += "WHERE ";
-            }
-            first = false;
-            cond += " " + CONDITION_ITEMS_ORDER + "=1 AND ";
-        } else {
-            if (first) {
-                cond += "WHERE ";
-            }
-            first = false;
-            cond += " " + CONDITION_ITEMS_ORDER + "=0 AND ";
-        }
-        if (offer) {
-            if (first) {
-                cond += "WHERE ";
-            }
-            first = false;
-            cond += " " + CONDITION_ITEMS_OFFER + "=1 AND ";
-        } else {
-            if (first) {
-                cond += "WHERE ";
-            }
-            first = false;
-            cond += " " + CONDITION_ITEMS_OFFER + "=0 AND ";
-        }
-
-
-        if (!first) {
-            cond = cond.substring(4, cond.length() - 4);
-            if (MPV5View.getUser().__getIsrgrouped() && getGroupableContexts().contains(this)) {
-                cond = "AND   " + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids();
-            }
-        } else {
-
-            if (MPV5View.getUser().__getIsrgrouped() && getGroupableContexts().contains(this)) {
-                cond = "WHERE " + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids();
-            } else {
-                cond = "WHERE " + CONDITION_DEFAULT;
-            }
-        }
-
-        if (getTrashableContexts().contains(this)) {
-            cond += " AND invisible = 0 ";
-        }
-
-        exclusiveCondition = cond;
-    }
-
+//    /**
+//     * Set conditions to get exclusive data
+//     * @param done
+//     * @param active
+//     * @param bill
+//     * @param order
+//     * @param offer
+//     */
+//    public void setExclusiveItemConditions(boolean done, boolean active, boolean bill, boolean order, boolean offer) {
+//
+//        String cond = "    ";
+//        boolean first = true;
+//
+//        if (done) {
+//            if (first) {
+//                cond += "WHERE ";
+//            }
+//            first = false;
+//            cond += " " + CONDITION_ITEMS_DONE + "=1 AND ";
+//        } else {
+//            if (first) {
+//                cond += "WHERE ";
+//            }
+//            first = false;
+//            cond += " " + CONDITION_ITEMS_DONE + "=0 AND ";
+//        }
+//        if (active) {
+//            if (first) {
+//                cond += "WHERE ";
+//            }
+//            first = false;
+//            cond += " " + CONDITION_ITEMS_ACTIVE + "=1 AND ";
+//        } else {
+//            if (first) {
+//                cond += "WHERE ";
+//            }
+//            first = false;
+//            cond += " " + CONDITION_ITEMS_ACTIVE + "=0 AND ";
+//        }
+//        if (bill) {
+//            if (first) {
+//                cond += "WHERE ";
+//            }
+//            first = false;
+//            cond += " " + CONDITION_ITEMS_BILL + "=1 AND ";
+//        } else {
+//            if (first) {
+//                cond += "WHERE ";
+//            }
+//            first = false;
+//            cond += " " + CONDITION_ITEMS_BILL + "=0 AND ";
+//        }
+//        if (order) {
+//            if (first) {
+//                cond += "WHERE ";
+//            }
+//            first = false;
+//            cond += " " + CONDITION_ITEMS_ORDER + "=1 AND ";
+//        } else {
+//            if (first) {
+//                cond += "WHERE ";
+//            }
+//            first = false;
+//            cond += " " + CONDITION_ITEMS_ORDER + "=0 AND ";
+//        }
+//        if (offer) {
+//            if (first) {
+//                cond += "WHERE ";
+//            }
+//            first = false;
+//            cond += " " + CONDITION_ITEMS_OFFER + "=1 AND ";
+//        } else {
+//            if (first) {
+//                cond += "WHERE ";
+//            }
+//            first = false;
+//            cond += " " + CONDITION_ITEMS_OFFER + "=0 AND ";
+//        }
+//
+//
+//        if (!first) {
+//            cond = cond.substring(4, cond.length() - 4);
+//            if (MPV5View.getUser().__getIsrgrouped() && getGroupableContexts().contains(this)) {
+//                cond = "AND   " + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids();
+//            }
+//        } else {
+//
+//            if (MPV5View.getUser().__getIsrgrouped() && getGroupableContexts().contains(this)) {
+//                cond = "WHERE " + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids();
+//            } else {
+//                cond = "WHERE " + CONDITION_DEFAULT;
+//            }
+//        }
+//
+//        if (getTrashableContexts().contains(this)) {
+//            cond += " AND invisible = 0 ";
+//        }
+//
+//        exclusiveCondition = cond;
+//    }
     /**
      * Set conditions to get exclusive data (customer = false results in all data without any customer)
      * @param customer
@@ -592,42 +586,23 @@ public class Context {
                 first = false;
                 cond += " " + CONDITION_CONTACTS_SUPPLIER + "=1 OR ";
             }
-//            if (isIsActive()) {
-//                if (first) {
-//                    cond += "WHERE ";
-//                }
-//                first = false;
-//                cond += " " + CONDITION_ITEMS_ACTIVE + "=1 OR ";
-//            }
-            if (isIsDone()) {
+
+            if (itemType != null) {
                 if (first) {
                     cond += "WHERE ";
+                    first = false;
                 }
-                first = false;
-                cond += " " + CONDITION_ITEMS_DONE + "=1 OR ";
+                cond += " " + CONDITION_ITEMS_TYPE + "=" + getItemType() + " OR ";
+            }
+            
+            if (itemStatus != null) {
+                if (first) {
+                    cond += "WHERE ";
+                    first = false;
+                }
+                cond += " " + CONDITION_ITEMS_STATUS + "=" + getItemStatus() + " OR ";
             }
 
-            if (isIsBill()) {
-                if (first) {
-                    cond += "WHERE ";
-                }
-                first = false;
-                cond += " " + CONDITION_ITEMS_BILL + "=1 OR ";
-            }
-            if (isIsOffer()) {
-                if (first) {
-                    cond += "WHERE ";
-                }
-                first = false;
-                cond += " " + CONDITION_ITEMS_OFFER + "=1 OR ";
-            }
-            if (isIsOrder()) {
-                if (first) {
-                    cond += "WHERE ";
-                }
-                first = false;
-                cond += " " + CONDITION_ITEMS_ORDER + "=1 OR ";
-            }
             if (!first) {
                 cond = cond.substring(4, cond.length() - 3);
                 if (MPV5View.getUser().__getIsrgrouped() && getGroupableContexts().contains(this)) {
@@ -822,18 +797,46 @@ public class Context {
     }
 
     /**
-     * @return the isDone
+     * @return the itemStatus
      */
-    private boolean isIsDone() {
-        return isDone;
+    public int getItemStatus() {
+        return itemStatus;
     }
 
     /**
-     * @param isDone the isDone to set
+     * @param itemStatus the itemStatus to set
      */
-    private void setIsDone(boolean isDone) {
-        this.isDone = isDone;
+    public void setItemStatus(int itemStatus) {
+        this.itemStatus = itemStatus;
     }
+
+    /**
+     * @return the itemType
+     */
+    public int getItemType() {
+        return itemType;
+    }
+
+    /**
+     * @param itemType the itemType to set
+     */
+    public void setItemType(int itemType) {
+        this.itemType = itemType;
+    }
+
+//    /**
+//     * @return the isDone
+//     */
+//    private boolean isIsDone() {
+//        return isDone;
+//    }
+//
+//    /**
+//     * @param isDone the isDone to set
+//     */
+//    private void setIsDone(boolean isDone) {
+//        this.isDone = isDone;
+//    }
 
 //    /**
 //     * @return the isActive
@@ -848,49 +851,48 @@ public class Context {
 //    private void setIsActive(boolean isActive) {
 //        this.isActive = isActive;
 //    }
-
-    /**
-     * @return the isBill
-     */
-    public boolean isIsBill() {
-        return isBill;
-    }
-
-    /**
-     * @param isBill the isBill to set
-     */
-    public void setIsBill(boolean isBill) {
-        this.isBill = isBill;
-    }
-
-    /**
-     * @return the isOrder
-     */
-    public boolean isIsOrder() {
-        return isOrder;
-    }
-
-    /**
-     * @param isOrder the isOrder to set
-     */
-    public void setIsOrder(boolean isOrder) {
-        this.isOrder = isOrder;
-    }
-
-    /**
-     * @return the isOffer
-     */
-    public boolean isIsOffer() {
-        return isOffer;
-    }
-
-    /**
-     * @param isOffer the isOffer to set
-     */
-    public void setIsOffer(boolean isOffer) {
-        this.isOffer = isOffer;
-    }
-
+//
+//    /**
+//     * @return the isBill
+//     */
+//    public boolean isIsBill() {
+//        return isBill;
+//    }
+//
+//    /**
+//     * @param isBill the isBill to set
+//     */
+//    public void setIsBill(boolean isBill) {
+//        this.isBill = isBill;
+//    }
+//
+//    /**
+//     * @return the isOrder
+//     */
+//    public boolean isIsOrder() {
+//        return isOrder;
+//    }
+//
+//    /**
+//     * @param isOrder the isOrder to set
+//     */
+//    public void setIsOrder(boolean isOrder) {
+//        this.isOrder = isOrder;
+//    }
+//
+//    /**
+//     * @return the isOffer
+//     */
+//    public boolean isIsOffer() {
+//        return isOffer;
+//    }
+//
+//    /**
+//     * @param isOffer the isOffer to set
+//     */
+//    public void setIsOffer(boolean isOffer) {
+//        this.isOffer = isOffer;
+//    }
     public static Context getCompany() {
         Context c = new Context(new Contact());
         c.setCompany(true);
@@ -906,32 +908,30 @@ public class Context {
 
     /**
      * 
-     * @param active
-     * @param done
-     * @param bill
-     * @param order
-     * @param offer
+     * @param type 
+     * @param status
      * @return
      */
-    public static Context getItem(boolean active, boolean done, boolean bill, boolean order, boolean offer) {
+    public static Context getItem(Integer type, Integer status) {
         Context c = new Context(new Item());
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_ITEMS);
         c.setSearchFields(DEFAULT_ITEM_SEARCH);
         c.setSearchHeaders(Headers.ITEM_DEFAULT.getValue());
         c.setIdentityClass(IDENTITY_ITEMS_CLASS);
-//        c.setIsActive(active);
-        c.setIsDone(done);
-        c.setIsBill(bill);
-        c.setIsOrder(order);
-        c.setIsOffer(offer);
+        if (status != null) {
+            c.setItemStatus(status);
+        }
+        if (type != null) {
+            c.setItemType(type);
+        }
         c.setId(1);
 
         return c;
     }
 
     public static Context getItems() {
-        return getItem(true, false, false, false, false);
+        return getItem(Item.TYPE_BILL, Item.STATUS_QUEUED);
     }
 
     public static Context getSubItem() {
@@ -1092,8 +1092,7 @@ public class Context {
         c.setSearchFields(DEFAULT_ITEM_SEARCH);
         c.setSearchHeaders(Headers.ITEM_DEFAULT.getValue());
         c.setIdentityClass(IDENTITY_ITEMS_CLASS);
-//        c.setIsActive(true);
-        c.setIsBill(true);
+        c.setItemType(Item.TYPE_BILL);
         c.setId(17);
 
         return c;
@@ -1106,8 +1105,7 @@ public class Context {
         c.setSearchFields(DEFAULT_ITEM_SEARCH);
         c.setSearchHeaders(Headers.ITEM_DEFAULT.getValue());
         c.setIdentityClass(IDENTITY_ITEMS_CLASS);
-//        c.setIsActive(true);
-        c.setIsOrder(true);
+        c.setItemType(Item.TYPE_ORDER);
         c.setId(18);
 
         return c;
@@ -1120,8 +1118,7 @@ public class Context {
         c.setSearchFields(DEFAULT_ITEM_SEARCH);
         c.setSearchHeaders(Headers.ITEM_DEFAULT.getValue());
         c.setIdentityClass(IDENTITY_ITEMS_CLASS);
-//        c.setIsActive(true);
-        c.setIsOffer(true);
+        c.setItemType(Item.TYPE_OFFER);
         c.setId(19);
 
         return c;

@@ -177,4 +177,9 @@ public class SubItem extends DatabaseObject {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+     @Override
+    public mpv5.utils.images.MPIcon getIcon() {
+        return null;
+    }
+
 }

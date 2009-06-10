@@ -67,17 +67,17 @@ public class TablePopUp extends JPopupMenu {
             @Override
             public void mouseReleased(MouseEvent e) {
 
-//                    if (e.isPopupTrigger()) {
-                JTable source = (JTable) e.getSource();
-                int row = source.rowAtPoint(e.getPoint());
-                int column = source.columnAtPoint(e.getPoint());
+                if (e.getButton() == MouseEvent.BUTTON2 || e.getButton() == MouseEvent.BUTTON3) {
+                    JTable source = (JTable) e.getSource();
+                    int row = source.rowAtPoint(e.getPoint());
+                    int column = source.columnAtPoint(e.getPoint());
 
-                if (!source.isRowSelected(row)) {
-                    source.changeSelection(row, column, false, false);
+                    if (!source.isRowSelected(row)) {
+                        source.changeSelection(row, column, false, false);
+                    }
+
+                    show(source, e.getX(), e.getY());
                 }
-
-                show(source, e.getX(), e.getY());
-//                    }
             }
         });
         this.actions = actions;

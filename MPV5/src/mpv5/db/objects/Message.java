@@ -69,5 +69,8 @@ public class Message extends DatabaseObject {
         return l;
     }
 
- 
+  @Override
+    public mpv5.utils.images.MPIcon getIcon() {
+        return null;
+    }
 }

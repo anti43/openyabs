@@ -18,6 +18,7 @@ package mpv5.db.objects;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
+import javax.swing.Icon;
 import javax.swing.JComponent;
 
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -29,6 +30,7 @@ import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryHandler;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPV5View;
+import mpv5.utils.images.MPIcon;
 
 /**
  *
@@ -248,6 +250,11 @@ public class Account extends DatabaseObject {
             Log.Debug(ex);
         }
         return super.delete();
+    }
+
+    @Override
+    public MPIcon getIcon() {
+        return null;
     }
 
 }

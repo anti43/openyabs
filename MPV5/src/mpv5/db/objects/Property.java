@@ -94,4 +94,8 @@ public class Property extends DatabaseObject {
     public void setUsersids(int usersids) {
         this.usersids = usersids;
     }
+     @Override
+    public mpv5.utils.images.MPIcon getIcon() {
+        return null;
+    }
 }

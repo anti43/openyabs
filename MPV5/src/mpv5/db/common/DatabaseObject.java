@@ -25,6 +25,7 @@ import mpv5.utils.date.DateConverter;
 import javax.swing.JComponent;
 import mpv5.pluginhandling.MPPLuginLoader;
 import mpv5.utils.date.RandomDate;
+import mpv5.utils.images.MPIcon;
 
 /**
  * Database Objects reflect a row in a table, and can parse graphical and
@@ -72,6 +73,14 @@ public abstract class DatabaseObject {
      */
     public abstract JComponent getView();
 
+    /**
+     * This can be used to graphically represent a do.<br/>
+     * The programmer has to take care of the icon size!
+     * See {@link MPIcon#getIcon(int width, int height)}
+     * @return An Icon representing the type of this do
+     */
+    public abstract MPIcon getIcon();
+
     @Override
     public DatabaseObject clone() {
         try {
@@ -101,22 +110,6 @@ public abstract class DatabaseObject {
      */
     public Context getContext() {
         return context;
-    }
-
-    /**
-     * This can be used to graphically represent a do
-     * @return An Icon representing the type of this do
-     */
-    public Icon getTypeIcon() {
-        try {
-            if (getDbIdentity().equalsIgnoreCase(Context.getContact().getDbIdentity())) {
-                return new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/22/evolution-contacts.png"));
-            } else {
-                return null;
-            }
-        } catch (Exception e) {
-            return null;
-        }
     }
 
     /**

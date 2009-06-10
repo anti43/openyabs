@@ -145,4 +145,8 @@ public class Favourite extends DatabaseObject {
     public JComponent getView() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+     @Override
+    public mpv5.utils.images.MPIcon getIcon() {
+        return null;
+    }
 }

@@ -19,6 +19,7 @@ package mpv5.pluginhandling;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
+import mpv5.utils.images.MPIcon;
 
 /**
  * This binds plugins to users
@@ -76,6 +77,12 @@ public class UserPlugin extends DatabaseObject {
      */
     public void setPluginsids(int pluginsids) {
         this.pluginsids = pluginsids;
+    }
+
+
+    @Override
+    public MPIcon getIcon() {
+        return null;
     }
 
 }

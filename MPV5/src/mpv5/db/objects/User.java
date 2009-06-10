@@ -546,4 +546,9 @@ public class User extends DatabaseObject {
     public void setIntdefaultaccount(int intdefaultaccount) {
         this.intdefaultaccount = intdefaultaccount;
     }
+
+     @Override
+    public mpv5.utils.images.MPIcon getIcon() {
+        return null;
+    }
 }

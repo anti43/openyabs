@@ -164,4 +164,9 @@ public class Schedule extends DatabaseObject {
     public void setIntervalmonth(int intervalmonth) {
         this.intervalmonth = intervalmonth;
     }
+
+     @Override
+    public mpv5.utils.images.MPIcon getIcon() {
+        return null;
+    }
 }

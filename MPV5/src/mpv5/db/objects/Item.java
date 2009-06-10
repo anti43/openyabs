@@ -270,4 +270,9 @@ public class Item extends DatabaseObject {
     public void setNetvalue(double netvalue) {
         this.netvalue = netvalue;
     }
+
+     @Override
+    public mpv5.utils.images.MPIcon getIcon() {
+        return null;
+    }
 }

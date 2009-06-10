@@ -5,10 +5,12 @@
 package mpv5.db.objects;
 
 import java.util.Date;
+import javax.swing.Icon;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.ui.panels.ContactPanel;
+import mpv5.utils.images.MPIcon;
 
 /**
  *
@@ -368,20 +370,6 @@ public class Contact extends DatabaseObject {
         this.department = dep;
     }
 
-//    /**
-//     * @return the groupsids
-//     */
-//    public int __getGroupsids() {
-//        return groupsids;
-//    }
-//
-//    /**
-//     * @param groupsids the groupsids to set
-//     */
-//    public void setGroupsids(int groupsids) {
-//        this.groupsids = groupsids;
-//    }
-
         /**
      * @return the country
      */
@@ -402,37 +390,10 @@ public class Contact extends DatabaseObject {
         x.setDataOwner(this);
         return x;
     }
-//    /**
-//     * @return the role
-//     */
-//    public Roles __getRole() {
-//        return role;
-//    }
-//
-//    /**
-//     * @param role the role to set
-//     */
-//    public void setRole(Roles role) {
-//        this.role = role;
-//    }
-//
-//    public void toXML(){
-//        FileOutputStream fileOut = null;
-//
-//        try {
-//            fileOut = new FileOutputStream("bean.xml");
-//            JOXBeanOutputStream joxOut = new JOXBeanOutputStream(fileOut);
-//            joxOut.writeObject(this.getDbIdentity(), this);
-//            joxOut.close();
-//        } catch (IOException ex) {
-//            Logger.getLogger(Contact.class.getName()).log(Level.SEVERE, null, ex);
-//        } finally {
-//            try {
-//                fileOut.close();
-//            } catch (IOException ex) {
-//                Logger.getLogger(Contact.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//        }
-//
-//    }
+
+    @Override
+    public MPIcon getIcon() {
+        return new MPIcon("/mpv5/resources/images/48/evolution-contacts.png");
+    }
+
 }

@@ -63,4 +63,9 @@ public class ItemsList extends DatabaseObject {
     public void setItemsids(int itemsids) {
         this.itemsids = itemsids;
     }
+
+     @Override
+    public mpv5.utils.images.MPIcon getIcon() {
+        return null;
+    }
 }

@@ -16,9 +16,11 @@
  */
 package mpv5.db.objects;
 
+import javax.swing.Icon;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
+import mpv5.utils.images.MPIcon;
 
 /**
  *
@@ -203,5 +205,8 @@ public class Address extends DatabaseObject {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-
+   @Override
+    public MPIcon getIcon() {
+        return null;
+    }
 }

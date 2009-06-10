@@ -37,6 +37,7 @@ import mpv5.globals.Messages;
 import mpv5.db.objects.Address;
 import mpv5.db.objects.Contact;
 import mpv5.db.objects.Favourite;
+import mpv5.db.objects.Item;
 import mpv5.logging.Log;
 import mpv5.i18n.LanguageManager;
 import mpv5.ui.dialogs.BigPopup;
@@ -564,6 +565,11 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         button_bills.setText(bundle.getString("ContactPanel.button_bills.text")); // NOI18N
         button_bills.setEnabled(false);
         button_bills.setName("button_bills"); // NOI18N
+        button_bills.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_billsActionPerformed(evt);
+            }
+        });
 
         button_offers.setText(bundle.getString("ContactPanel.button_offers.text")); // NOI18N
         button_offers.setEnabled(false);
@@ -643,7 +649,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                     .addComponent(removefile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(addfile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 47, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -926,7 +932,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(leftpane, javax.swing.GroupLayout.DEFAULT_SIZE, 610, Short.MAX_VALUE)
+            .addComponent(leftpane, javax.swing.GroupLayout.DEFAULT_SIZE, 612, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(toolbarpane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1023,6 +1029,16 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             MPV5View.identifierView.addTab(new JournalPanel(), Messages.JOURNAL + getDataOwner().__getCName());
         }
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void button_billsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_billsActionPerformed
+
+      Context c = Context.getItem(Item.TYPE_BILL, null);
+//        c.addReference(Context.getContact().getDbIdentity(), "cname", "filename");
+        Object[][] data = new DatabaseSearch(c).getValuesFor(Context.DEFAULT_ITEM_SEARCH, "contactsids", dataOwner.__getIDS());
+
+        dataTable.setModel(new MPTableModel(data, Headers.ITEM_DEFAULT));
+        TableFormat.stripFirstColumn(dataTable);
+    }//GEN-LAST:event_button_billsActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel addedby;

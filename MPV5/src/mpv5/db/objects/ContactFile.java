@@ -16,6 +16,7 @@
  */
 package mpv5.db.objects;
 
+import javax.swing.Icon;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -90,5 +91,10 @@ public class ContactFile extends DatabaseObject {
      */
     public void setFilename(String filename) {
         this.filename = filename;
+    }
+
+   @Override
+    public mpv5.utils.images.MPIcon getIcon() {
+        return null;
     }
 }

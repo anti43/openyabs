@@ -85,5 +85,8 @@ public class HistoryItem extends DatabaseObject {
     public JComponent getView() {
       return new HistoryPanel();
     }
-
+ @Override
+    public mpv5.utils.images.MPIcon getIcon() {
+        return null;
+    }
 }

@@ -101,4 +101,9 @@ public class Group extends DatabaseObject {
 //       p.openDetails(new ControlPanel_Groups(this));
         return new ControlPanel_Groups(this);
     }
+
+     @Override
+    public mpv5.utils.images.MPIcon getIcon() {
+        return null;
+    }
 }

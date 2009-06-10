@@ -21,6 +21,7 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.QueryHandler;
 import mpv5.logging.Log;
+import mpv5.utils.images.MPIcon;
 
 /**
  * This is the bridge between MP5 Plugins and jars in the database
@@ -93,5 +94,10 @@ public class Plugin extends DatabaseObject {
     @Override
     public String toString(){
     return __getCName() + " (" +  __getDescription() + ")";
+    }
+
+    @Override
+    public MPIcon getIcon() {
+        return null;
     }
 }
