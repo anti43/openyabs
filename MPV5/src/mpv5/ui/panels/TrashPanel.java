@@ -58,7 +58,7 @@ public class TrashPanel extends javax.swing.JPanel {
                     try {
                         int id = Integer.valueOf(jTable1.getModel().getValueAt(jTable1.getSelectedRow(), 1).toString());
                         String type = String.valueOf(jTable1.getModel().getValueAt(jTable1.getSelectedRow(), 0).toString());
-                        TrashHandler.delete(type, id);
+                        TrashHandler.delete(type, id,String.valueOf(jTable1.getModel().getValueAt(jTable1.getSelectedRow(), 2).toString()) + Messages.DELETED );
                         setData();
                     } catch (Exception numberFormatException) {
                     }
@@ -69,7 +69,7 @@ public class TrashPanel extends javax.swing.JPanel {
                     try {
                         int id = Integer.valueOf(jTable1.getModel().getValueAt(jTable1.getSelectedRow(), 1).toString());
                         String type = String.valueOf(jTable1.getModel().getValueAt(jTable1.getSelectedRow(), 0).toString());
-                        TrashHandler.restore(type, id);
+                        TrashHandler.restore(type, id, String.valueOf(jTable1.getModel().getValueAt(jTable1.getSelectedRow(), 2).toString()) + Messages.RESTORED);
                         setData();
                     } catch (Exception numberFormatException) {
                     }

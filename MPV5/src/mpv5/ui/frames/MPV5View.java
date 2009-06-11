@@ -468,11 +468,11 @@ public class MPV5View extends FrameView {
         jMenuItem10 = new javax.swing.JMenuItem();
         statusPanel = new javax.swing.JPanel();
         statusMessageLabel = new FadeOnChangeLabel();
+        pluginIcons = new javax.swing.JPanel();
+        separator = new javax.swing.JPanel();
         progressBar = new javax.swing.JProgressBar();
         separator1 = new javax.swing.JPanel();
         xhistory = new javax.swing.JComboBox();
-        separator = new javax.swing.JPanel();
-        pluginIcons = new javax.swing.JPanel();
         mainToolbar = new javax.swing.JToolBar();
         jButton24 = new javax.swing.JButton();
         jButton26 = new javax.swing.JButton();
@@ -1022,12 +1022,37 @@ public class MPV5View extends FrameView {
         statusPanel.setPreferredSize(new java.awt.Dimension(800, 20));
         statusPanel.setLayout(new javax.swing.BoxLayout(statusPanel, javax.swing.BoxLayout.LINE_AXIS));
 
-        statusMessageLabel.setFont(new java.awt.Font("Dialog", 0, 11));
+        statusMessageLabel.setFont(new java.awt.Font("Dialog", 0, 11)); // NOI18N
         statusMessageLabel.setText(bundle.getString("MPV5View.statusMessageLabel.text")); // NOI18N
         statusMessageLabel.setMaximumSize(new java.awt.Dimension(1000, 25));
         statusMessageLabel.setMinimumSize(new java.awt.Dimension(300, 14));
         statusMessageLabel.setName("statusMessageLabel"); // NOI18N
         statusPanel.add(statusMessageLabel);
+
+        pluginIcons.setMaximumSize(new java.awt.Dimension(250, 32767));
+        pluginIcons.setMinimumSize(new java.awt.Dimension(1, 1));
+        pluginIcons.setName("pluginIcons"); // NOI18N
+        pluginIcons.setPreferredSize(new java.awt.Dimension(10, 15));
+        pluginIcons.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 0));
+        statusPanel.add(pluginIcons);
+
+        separator.setMaximumSize(new java.awt.Dimension(10, 32767));
+        separator.setMinimumSize(new java.awt.Dimension(1, 1));
+        separator.setName("separator"); // NOI18N
+        separator.setPreferredSize(new java.awt.Dimension(10, 15));
+
+        javax.swing.GroupLayout separatorLayout = new javax.swing.GroupLayout(separator);
+        separator.setLayout(separatorLayout);
+        separatorLayout.setHorizontalGroup(
+            separatorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 10, Short.MAX_VALUE)
+        );
+        separatorLayout.setVerticalGroup(
+            separatorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 16, Short.MAX_VALUE)
+        );
+
+        statusPanel.add(separator);
 
         progressBar.setBorder(new javax.swing.border.LineBorder(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"), 1, true));
         progressBar.setMaximumSize(new java.awt.Dimension(100, 25));
@@ -1063,31 +1088,6 @@ public class MPV5View extends FrameView {
         xhistory.setRequestFocusEnabled(false);
         xhistory.setVerifyInputWhenFocusTarget(false);
         statusPanel.add(xhistory);
-
-        separator.setMaximumSize(new java.awt.Dimension(10, 32767));
-        separator.setMinimumSize(new java.awt.Dimension(1, 1));
-        separator.setName("separator"); // NOI18N
-        separator.setPreferredSize(new java.awt.Dimension(10, 15));
-
-        javax.swing.GroupLayout separatorLayout = new javax.swing.GroupLayout(separator);
-        separator.setLayout(separatorLayout);
-        separatorLayout.setHorizontalGroup(
-            separatorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 10, Short.MAX_VALUE)
-        );
-        separatorLayout.setVerticalGroup(
-            separatorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 16, Short.MAX_VALUE)
-        );
-
-        statusPanel.add(separator);
-
-        pluginIcons.setMaximumSize(new java.awt.Dimension(250, 32767));
-        pluginIcons.setMinimumSize(new java.awt.Dimension(1, 1));
-        pluginIcons.setName("pluginIcons"); // NOI18N
-        pluginIcons.setPreferredSize(new java.awt.Dimension(10, 15));
-        pluginIcons.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 0));
-        statusPanel.add(pluginIcons);
 
         mainToolbar.setRollover(true);
         mainToolbar.setName("mainToolbar"); // NOI18N

@@ -139,9 +139,9 @@ public enum Messages {
     TRASHBIN("Trashbin"),
     DELETE("Delete"),
     RESTORE("Restore"),
-    RESTORED("Restored"),
+    RESTORED(" restored"),
     RELOAD("Reload"),
-    LOADED("Loaded"),
+    LOADED(" loaded"),
     UNLOAD("Unload"),
     TYPE_ORDER("Order");
 
