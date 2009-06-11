@@ -16,12 +16,17 @@
  */
 package mpv5.pluginhandling;
 
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
+import javax.imageio.ImageIO;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import mpv5.db.common.Context;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria;
@@ -39,18 +44,39 @@ import mpv5.ui.frames.MPV5View;
  *  This class loads plugins from the database, and utilises caching of the plugin files.
  */
 public class MPPLuginLoader {
-public static String pluginSignature = LocalSettings.getProperty(LocalSettings.CACHE_DIR) + File.separator + "%%filename%%-mp5p.jar";
-public static List<DatabaseObjectModifier> registeredModifiers = new Vector<DatabaseObjectModifier>();
+
+    public static String pluginSignature = LocalSettings.getProperty(LocalSettings.CACHE_DIR) + File.separator + "%%filename%%-mp5p.jar";
+    public static List<DatabaseObjectModifier> registeredModifiers = new Vector<DatabaseObjectModifier>();
+
+    public static Image getDefaultPluginImage() {
+        BufferedImage img = null;
+        try {
+            img = ImageIO.read(MPPLuginLoader.class.getResource("/mpv5/resources/images/48/blockdevice.png"));
+        } catch (Exception e) {
+            Log.Debug(e);
+        }
+        return img;
+    }
+
+    public static Image getErrorImage() {
+         BufferedImage img = null;
+        try {
+            img = ImageIO.read(MPPLuginLoader.class.getResource("/mpv5/resources/images/48/messagebox_question.png"));
+        } catch (Exception e) {
+            Log.Debug(e);
+        }
+        return img;
+    }
 
     /**
      * Loads all plugins which are assigned to the current logged in user from database or cache dir<br/>
      * does NOT call plugin.load()
      * @return An array of instantiated plugins
      */
-    public MP5Plugin[] getPlugins(){
+    public MP5Plugin[] getPlugins() {
 
         ArrayList<MP5Plugin> list = null;
-        
+
         try {
             list = new ArrayList<MP5Plugin>();
             ArrayList<File> jars = new ArrayList<File>();
@@ -60,9 +86,9 @@ public static List<DatabaseObjectModifier> registeredModifiers = new Vector<Data
                 ArrayList<UserPlugin> data = DatabaseObject.getObjects(Context.getPluginsToUsers(), criterias);
                 for (int i = 0; i < data.size(); i++) {
                     UserPlugin up = data.get(i);
-                    Plugin o =((Plugin)DatabaseObject.getObject(Context.getPlugins(), up.__getPluginsids()));
+                    Plugin o = ((Plugin) DatabaseObject.getObject(Context.getPlugins(), up.__getPluginsids()));
                     Log.Debug(this, "Found Plugin: " + o);
-                    if (!isCachedPlugin(o.__getFilename()) ){
+                    if (!isCachedPlugin(o.__getFilename())) {
                         Log.Debug(this, "Caching plugin: " + pluginSignature.replace("%%filename%%", o.__getFilename()));
                         jars.add(QueryHandler.instanceOf().clone(Context.getFiles()).retrieveFile(o.__getFilename(), new File(pluginSignature.replace("%%filename%%", o.__getFilename()))));
                     } else {
@@ -76,11 +102,12 @@ public static List<DatabaseObjectModifier> registeredModifiers = new Vector<Data
 
             for (int i = 0; i < jars.size(); i++) {
                 File x = jars.get(i);
-                MP5Plugin c= checkPlugin(x);
-                if (c !=null) {
+                MP5Plugin c = checkPlugin(x);
+                if (c != null) {
+
                     list.add(c);
-                    if(c instanceof DatabaseObjectModifier) {
-                        registeredModifiers.add((DatabaseObjectModifier)c);
+                    if (c instanceof DatabaseObjectModifier) {
+                        registeredModifiers.add((DatabaseObjectModifier) c);
                     }
                 }
             }
@@ -100,7 +127,7 @@ public static List<DatabaseObjectModifier> registeredModifiers = new Vector<Data
     public boolean isCachedPlugin(String filename) {
         File f = new File(pluginSignature.replace("%%filename%%", filename));
         Log.Debug(this, "Checking cache for " + filename);
-        return f.exists() && f.canRead() && (checkPlugin(f)!=null);
+        return f.exists() && f.canRead() && (checkPlugin(f) != null);
     }
 
     /**
@@ -129,5 +156,4 @@ public static List<DatabaseObjectModifier> registeredModifiers = new Vector<Data
     public MP5Plugin getPlugin(File file) {
         return checkPlugin(file);
     }
-
 }

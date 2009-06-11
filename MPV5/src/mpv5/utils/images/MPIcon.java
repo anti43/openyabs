@@ -31,6 +31,7 @@ import java.awt.image.ColorModel;
 import java.awt.image.PixelGrabber;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import mpv5.logging.Log;
 
 /**
  *
@@ -185,7 +186,12 @@ public class MPIcon extends ImageIcon {
 
         // Determine if the image has transparent pixels; for this method's
         // implementation, see e661 Determining If an Image Has Transparent Pixels
-        boolean hasAlpha = hasAlpha(image);
+        boolean hasAlpha = false;
+        try {
+            hasAlpha = hasAlpha(image);
+        } catch (Exception e) {
+            Log.Debug(MPIcon.class, "Could not determine alpha of image: " + image);
+        }
 
         // Create a buffered image with a format that's compatible with the screen
         BufferedImage bimage = null;

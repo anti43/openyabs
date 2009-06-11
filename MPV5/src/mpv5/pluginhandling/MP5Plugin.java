@@ -16,6 +16,8 @@
  */
 package mpv5.pluginhandling;
 
+
+import java.awt.Image;
 import mpv5.ui.frames.MPV5View;
 
 /**
@@ -23,6 +25,7 @@ import mpv5.ui.frames.MPV5View;
  *  anti
  */
 public interface MP5Plugin {
+
 
     /**
      * Initializes the plugin
@@ -50,7 +53,8 @@ public interface MP5Plugin {
 
     /**
      *
-     * @return The uid of the plugin
+     * @return The uid of the plugin, should be randomly generated,
+     * <br/>to be unique for each instance of the plugin!
      */
     public abstract Long getUID();
 
@@ -77,4 +81,10 @@ public interface MP5Plugin {
      * @return
      */
     public abstract boolean isLoaded();
+
+    /**
+     * If this returns null, a default icon is used to represent this plugin
+     * @return
+     */
+    public abstract Image getIcon();
 }

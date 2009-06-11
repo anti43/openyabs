@@ -141,6 +141,8 @@ public enum Messages {
     RESTORE("Restore"),
     RESTORED("Restored"),
     RELOAD("Reload"),
+    LOADED("Loaded"),
+    UNLOAD("Unload"),
     TYPE_ORDER("Order");
 
     private Messages(String message) {
@@ -165,6 +167,7 @@ public enum Messages {
     public String getValue() {
         return toString();
     }
+   
 
 
 

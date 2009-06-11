@@ -18,10 +18,16 @@ package plugins.sample;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.Date;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JPanel;
+import mpv5.logging.Log;
 import mpv5.pluginhandling.MP5Plugin;
 import mpv5.ui.frames.MPV5View;
 
@@ -92,5 +98,15 @@ public class Main extends JPanel implements MP5Plugin, Runnable {
 
     public boolean isLoaded() {
        return loaded;
+    }
+
+    public Image getIcon() {
+          BufferedImage img = null;
+        try {
+            img = ImageIO.read(new File("/mpv5/resources/images/48/blockdevice.png"));
+        } catch (Exception e) {
+            Log.Debug(e);
+        }
+        return img;
     }
 }

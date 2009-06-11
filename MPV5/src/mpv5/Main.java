@@ -51,6 +51,7 @@ import mpv5.ui.dialogs.subcomponents.wizard_DBSettings_1;
 
 
 import mpv5.db.objects.User;
+import mpv5.pluginhandling.UserPlugin;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Fonts;
 import mpv5.utils.files.FileDirectoryHandler;
 import org.apache.commons.cli2.*;
@@ -432,10 +433,14 @@ public class Main extends SingleFrameApplication {
             }
         } else {
             try {
-                ArrayList<User> data = DatabaseObject.getReferencedObjects(MPV5View.getUser(), Context.getPluginsToUsers());
+                ArrayList data = DatabaseObject.getReferencedObjects(MPV5View.getUser(), Context.getPluginsToUsers());
 
                 for (int i = 0; i < data.size(); i++) {
-                    data.get(i).delete();
+                    try {
+                       ((UserPlugin) data.get(i)).delete();
+                    } catch (Exception e) {
+                        Log.Debug(e);
+                    }
                 }
 
             } catch (NodataFoundException ex) {

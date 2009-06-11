@@ -1269,7 +1269,7 @@ public class QueryHandler implements Cloneable {
 
             jobmessage = Messages.ERROR_OCCURED.toString();
             Log.Debug(this, message + ex.getMessage());
-            retval = null;
+//            retval = null;
             if (log != null) {
                 log.append("\n " + ex.getMessage());
             }
@@ -1525,7 +1525,7 @@ public class QueryHandler implements Cloneable {
      * @return The UNIQUE name of the inserted file in db
      * @throws java.io.FileNotFoundException
      */
-    public String insertFile(final File file) throws FileNotFoundException {
+    public synchronized String insertFile(final File file) throws FileNotFoundException {
 
         String name = null;
         String query = "INSERT INTO " + table + "(cname, data, dateadded, filesize, intaddedby) VALUES (?, ?, ?, ?, ?)";

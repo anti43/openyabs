@@ -301,9 +301,9 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
         try {
-            ArrayList<User> data = DatabaseObject.getReferencedObjects(MPV5View.getUser(), Context.getPluginsToUsers());
+            ArrayList data = DatabaseObject.getReferencedObjects(MPV5View.getUser(), Context.getPluginsToUsers());
             for (int i = 0; i < data.size(); i++) {
-                data.get(i).delete();
+               ((UserPlugin) data.get(i)).delete();
             }
         } catch (NodataFoundException ex) {
             Log.Debug(ex);

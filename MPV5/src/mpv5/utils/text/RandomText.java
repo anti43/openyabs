@@ -16,15 +16,13 @@
  */
 package mpv5.utils.text;
 
-import java.util.Random;
-
 /**
  * A random text generator
  *  
  */
 public class RandomText {
 
-    private String source = new String("43Atowelitsaysisaboutthemostmassivelyusefu" +
+    private static String source = new String("43Atowelitsaysisaboutthemostmassivelyusefu" +
             "lthinganinterstellarhitchhikercanhavePartlyithasgreatpracticalvalue" +
             "youcanwrapitaroundyouforwarmthasyouboundacrossthecoldmoonsofJaglanBet" +
             "ayoucanlieonitonthebrilliantmarblesandedbeachesofSantraginusVinhalingt" +
@@ -139,7 +137,7 @@ public class RandomText {
      */
     public RandomText(String source, int length) {
         this.length = length;
-        this.source = source;
+        RandomText.source = source;
     }
 
     /**
@@ -159,15 +157,8 @@ public class RandomText {
     /**
      * @return The random text
      */
-    public String getString() {
-        StringBuffer sb = new StringBuffer();
-        Random r = new Random();
-        int te = 0;
-        for (int i = 1; i <= length; i++) {
-            te = r.nextInt(source.length());
-            sb.append(source.charAt(te));
-        }
-        string = sb.toString();
+    public synchronized String getString() {
+        string = RandomStringUtils.random(length, source);
         return string;
     }
 
