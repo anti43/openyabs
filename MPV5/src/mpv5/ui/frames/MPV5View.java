@@ -1025,6 +1025,7 @@ public class MPV5View extends FrameView {
         statusMessageLabel.setFont(new java.awt.Font("Dialog", 0, 11));
         statusMessageLabel.setText(bundle.getString("MPV5View.statusMessageLabel.text")); // NOI18N
         statusMessageLabel.setMaximumSize(new java.awt.Dimension(1000, 25));
+        statusMessageLabel.setMinimumSize(new java.awt.Dimension(300, 14));
         statusMessageLabel.setName("statusMessageLabel"); // NOI18N
         statusPanel.add(statusMessageLabel);
 
@@ -1560,7 +1561,7 @@ public class MPV5View extends FrameView {
             } else {
                 plab.setIcon(new MPIcon(MPPLuginLoader.getDefaultPluginImage()).getIcon(18));
             }
-            plab.setToolTipText(mP5Plugin.getName() + " " + Messages.LOADED + " [" + mP5Plugin.getUID() + "]");
+            plab.setToolTipText("<html><b>"+mP5Plugin.getName() + " " + Messages.LOADED + "</b><br/><font size=-3>[" + mP5Plugin.getUID() + "]</html>");
             plab.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e){

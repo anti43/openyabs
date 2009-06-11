@@ -929,6 +929,9 @@
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[1000, 25]"/>
             </Property>
+            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[300, 14]"/>
+            </Property>
             <Property name="name" type="java.lang.String" value="statusMessageLabel" noResource="true"/>
           </Properties>
           <AuxValues>
