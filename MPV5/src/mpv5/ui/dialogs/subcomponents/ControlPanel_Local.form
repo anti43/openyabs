@@ -389,7 +389,7 @@
                               <EmptySpace pref="176" max="32767" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="autolock" pref="357" max="32767" attributes="1"/>
+                              <Component id="autolock" pref="353" max="32767" attributes="1"/>
                               <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
                           </Group>
                       </Group>
@@ -414,6 +414,7 @@
                 <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                   <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ControlPanel_Local.rowlimit._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                 </Property>
+                <Property name="enabled" type="boolean" value="false"/>
                 <Property name="name" type="java.lang.String" value="rowlimit" noResource="true"/>
               </Properties>
             </Component>

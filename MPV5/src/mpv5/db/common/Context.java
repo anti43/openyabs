@@ -57,6 +57,7 @@ public class Context {
     public static String IDENTITY_MESSAGES = "messages";
     public static String IDENTITY_MESSAGES_TO_ITEMS = "messagestoitems";
     public static String IDENTITY_ITEMSLIST = "itemslists";
+    public static String IDENTITY_FORMATS_T_USERS = "formatstousers";
 
     //********** identity classes **********************************************
     private static Class IDENTITY_CONTACTS_CLASS = Contact.class;
@@ -311,7 +312,8 @@ public class Context {
                 getItemsToAccounts(),
                 getMessages(),
                 getMessagesToItems(),
-                getItemsList()
+                getItemsList(),
+                getFormats()
             }));
     private String[] searchHeaders;
     private ArrayList<String[]> references = new ArrayList<String[]>();
@@ -357,6 +359,13 @@ public class Context {
         return uniqueColumns;
     }
 
+    /**
+     *
+     * @param customer
+     * @param supplier
+     * @param manufacturer
+     * @param company
+     */
     public void setContactConditions(boolean customer, boolean supplier, boolean manufacturer, boolean company) {
         setCustomer(customer);
         setSupplier(supplier);
@@ -1247,6 +1256,15 @@ public class Context {
         c.setDbIdentity(IDENTITY_ITEMSLIST);
         c.setIdentityClass(IDENTITY_ITEMSLIST_CLASS);
         c.setId(32);
+
+        return c;
+    }
+
+     public static Context getFormats() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_FORMATS_T_USERS);
+        c.setId(33);
 
         return c;
     }

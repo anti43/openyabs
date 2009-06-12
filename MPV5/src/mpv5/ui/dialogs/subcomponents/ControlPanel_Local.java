@@ -238,6 +238,7 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
         jPanel4.setName("jPanel4"); // NOI18N
 
         rowlimit.set_Label(bundle.getString("ControlPanel_Local.rowlimit._Label")); // NOI18N
+        rowlimit.setEnabled(false);
         rowlimit.setName("rowlimit"); // NOI18N
 
         autolock.setText(bundle.getString("ControlPanel_Local.autolock.text")); // NOI18N
@@ -254,7 +255,7 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
                         .addComponent(rowlimit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(176, Short.MAX_VALUE))
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(autolock, javax.swing.GroupLayout.DEFAULT_SIZE, 357, Short.MAX_VALUE)
+                        .addComponent(autolock, javax.swing.GroupLayout.DEFAULT_SIZE, 353, Short.MAX_VALUE)
                         .addGap(16, 16, 16))))
         );
         jPanel4Layout.setVerticalGroup(

@@ -143,7 +143,10 @@ public enum Messages {
     RELOAD("Reload"),
     LOADED(" loaded"),
     UNLOAD("Unload"),
+    TYPE_PRODUCT("Product"),
+    TYPE_SERVICE("Service"),
     TYPE_ORDER("Order");
+
 
     private Messages(String message) {
         this.message = message;
@@ -167,9 +170,6 @@ public enum Messages {
     public String getValue() {
         return toString();
     }
-   
 
 
-
-    
 }
