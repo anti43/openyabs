@@ -171,8 +171,9 @@ public class Main extends SingleFrameApplication {
     /**
      * Main method launching the application.
      * @param args
+     * @throws Exception 
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 
         INSTANTIATED = true;
         try {
@@ -187,8 +188,7 @@ public class Main extends SingleFrameApplication {
             setDerbyLog();
             start();
         } catch (Exception e) {
-            splash.dispose();
-            e.printStackTrace();
+            throw e;
         }
     }
     /**

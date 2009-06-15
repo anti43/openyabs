@@ -80,6 +80,7 @@ public class Context {
     public static String UNIQUECOLUMNS_GROUPS = "cname";
     private static String UNIQUECOLUMNS_DEFAULT = "cname";
     public static String DETAIL_CONTACT_SEARCH = "prename,cname,street,city,country,notes";
+    
     //********** conditions ****************************************************
     private boolean isCompany = false;
     private boolean isCustomer = false;
@@ -104,6 +105,7 @@ public class Context {
     public static String DEFAULT_CONTACT_SEARCH = "ids, cnumber, cname, city";
     public static String DEFAULT_USER_SEARCH = "ids, cname, mail, lastlogdate";
     public static String DEFAULT_ITEM_SEARCH = "ids, cname, dateadded, netvalue, taxvalue";
+    public static String DEFAULT_PRODUCT_SEARCH = "ids, cname, cnumber, description";
 
     //********** table fields ********************************************************
     public static String DETAILS_CONTACTS = IDENTITY_CONTACTS + "." + "IDS," + IDENTITY_CONTACTS + "." + "CNUMBER," +

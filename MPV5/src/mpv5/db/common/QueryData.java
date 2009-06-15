@@ -181,5 +181,20 @@ public class QueryData {
             add(s[0], s[1]);
         }
     }
+
+    /**
+     * Adds a key with a value
+     * @param columnName
+     * @param value
+     */
+    public void add(String columnName, Object value) {
+        if (value instanceof Number) {
+            add(columnName, (Number) value);
+        } else if (value instanceof Boolean) {
+            add(columnName, (Boolean) value);
+        } else {
+            add(columnName, value.toString());
+        }
+    }
 }
 

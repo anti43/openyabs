@@ -9,6 +9,7 @@ import javax.swing.Icon;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
+import mpv5.handler.FormatHandler;
 import mpv5.ui.panels.ContactPanel;
 import mpv5.utils.images.MPIcon;
 
@@ -41,6 +42,7 @@ public class Contact extends DatabaseObject {
     private boolean ismanufacturer = false;
     private boolean issupplier = false;
     private String country = "";
+    private FormatHandler formatHandler;
 
     public Contact() {
         context.setDbIdentity(Context.IDENTITY_CONTACTS);
@@ -355,8 +357,7 @@ public class Contact extends DatabaseObject {
         this.company = company;
     }
 
-
-        /**
+    /**
      * @return the department
      */
     public String __getDepartment() {
@@ -370,7 +371,7 @@ public class Contact extends DatabaseObject {
         this.department = dep;
     }
 
-        /**
+    /**
      * @return the country
      */
     public String __getCountry() {
@@ -386,7 +387,7 @@ public class Contact extends DatabaseObject {
 
     @Override
     public JComponent getView() {
-       ContactPanel x =new ContactPanel(getContext());
+        ContactPanel x = new ContactPanel(getContext());
         x.setDataOwner(this);
         return x;
     }
@@ -396,4 +397,18 @@ public class Contact extends DatabaseObject {
         return new MPIcon("/mpv5/resources/images/48/evolution-contacts.png");
     }
 
+    @Override
+    public String toString() {
+        return cnumber;
+    }
+
+    /**
+     * @return the formatHandler
+     */
+    public FormatHandler getFormatHandler() {
+        if (formatHandler == null) {
+            formatHandler = new FormatHandler(this);
+        }
+        return formatHandler;
+    }
 }

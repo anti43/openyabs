@@ -27,6 +27,8 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
@@ -38,6 +40,7 @@ import mpv5.db.objects.Address;
 import mpv5.db.objects.Contact;
 import mpv5.db.objects.Favourite;
 import mpv5.db.objects.Item;
+import mpv5.handler.FormatHandler;
 import mpv5.logging.Log;
 import mpv5.i18n.LanguageManager;
 import mpv5.ui.dialogs.BigPopup;
@@ -83,6 +86,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     private Contact dataOwner;
     private DataPanelTB tb;
     private SearchPanel sp;
+    private Integer dataTableContent = null;
 
     /** Creates new form ContactPanel
      * @param context
@@ -97,12 +101,15 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         refresh();
         dateadded.setText(DateConverter.getTodayDefDate());
         addedby.setText(MPV5View.getUser().getName());
+        cname.requestFocus();
     }
 
+    @Override
     public DatabaseObject getDataOwner() {
         return dataOwner;
     }
 
+    @Override
     public void setDataOwner(DatabaseObject object) {
         dataOwner = (Contact) object;
         dataOwner.setPanelData(this);
@@ -193,6 +200,46 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         fillFiles();
     }
 
+    private void fileTableClicked(MouseEvent evt) {
+        if (evt.getClickCount() > 1) {
+            FileDirectoryHandler.open(QueryHandler.instanceOf().clone(Context.getFiles()).
+                    retrieveFile(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).
+                    toString(), new File(FileDirectoryHandler.getTempDir() + dataTable.getModel().
+                    getValueAt(dataTable.getSelectedRow(), 1).toString())));
+        } else if (evt.getClickCount() == 1 && evt.getButton() == MouseEvent.BUTTON3) {
+
+            JTable source = (JTable) evt.getSource();
+            int row = source.rowAtPoint(evt.getPoint());
+            int column = source.columnAtPoint(evt.getPoint());
+
+            if (!source.isRowSelected(row)) {
+                source.changeSelection(row, column, false, false);
+            }
+
+            FileTablePopUp.instanceOf(dataTable).show(source, evt.getX(), evt.getY());
+        }
+    }
+
+    private void itemTableClicked(MouseEvent evt) {
+        if (evt.getClickCount() > 1) {
+            try {
+                MPV5View.identifierView.addTab(DatabaseObject.getObject(Context.getItems(), Integer.valueOf(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).toString())));
+            } catch (NodataFoundException ex) {
+                Log.Debug(ex);
+            }
+        }
+    }
+
+    private void productTableClicked(MouseEvent evt) {
+        if (evt.getClickCount() > 1) {
+            try {
+                MPV5View.identifierView.addTab(DatabaseObject.getObject(Context.getProducts(), Integer.valueOf(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).toString())));
+            } catch (NodataFoundException ex) {
+                Log.Debug(ex);
+            }
+        }
+    }
+
     private void fillFiles() {
         Context c = Context.getFilesToContacts();
         c.addReference(Context.getFiles().getDbIdentity(), "cname", "filename");
@@ -253,10 +300,10 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         addfile = new javax.swing.JButton();
         jToolBar1 = new javax.swing.JToolBar();
         button_offer = new javax.swing.JButton();
+        button_order = new javax.swing.JButton();
         button_bill = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JToolBar.Separator();
         button_product = new javax.swing.JButton();
-        button_order = new javax.swing.JButton();
         jSeparator2 = new javax.swing.JToolBar.Separator();
         jButton2 = new javax.swing.JButton();
         prinitingComboBox1 = new mpv5.ui.beans.PrinitingComboBox();
@@ -343,6 +390,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         });
 
         number.set_Label(bundle.getString("ContactPanel.number._Label")); // NOI18N
+        number.setFocusable(false);
         number.setFont(number.getFont());
         number.setName("number"); // NOI18N
 
@@ -574,14 +622,29 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         button_offers.setText(bundle.getString("ContactPanel.button_offers.text")); // NOI18N
         button_offers.setEnabled(false);
         button_offers.setName("button_offers"); // NOI18N
+        button_offers.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_offersActionPerformed(evt);
+            }
+        });
 
         button_products.setText(bundle.getString("ContactPanel.button_products.text")); // NOI18N
         button_products.setEnabled(false);
         button_products.setName("button_products"); // NOI18N
+        button_products.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_productsActionPerformed(evt);
+            }
+        });
 
         button_orders.setText(bundle.getString("ContactPanel.button_orders.text")); // NOI18N
         button_orders.setEnabled(false);
         button_orders.setName("button_orders"); // NOI18N
+        button_orders.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_ordersActionPerformed(evt);
+            }
+        });
 
         jButton1.setText(bundle.getString("ContactPanel.jButton1.text")); // NOI18N
         jButton1.setName("jButton1"); // NOI18N
@@ -666,6 +729,14 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         button_offer.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar1.add(button_offer);
 
+        button_order.setText(bundle.getString("ContactPanel.button_order.text")); // NOI18N
+        button_order.setEnabled(false);
+        button_order.setFocusable(false);
+        button_order.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        button_order.setName("button_order"); // NOI18N
+        button_order.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(button_order);
+
         button_bill.setText(bundle.getString("ContactPanel.button_bill.text")); // NOI18N
         button_bill.setEnabled(false);
         button_bill.setFocusable(false);
@@ -684,14 +755,6 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         button_product.setName("button_product"); // NOI18N
         button_product.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar1.add(button_product);
-
-        button_order.setText(bundle.getString("ContactPanel.button_order.text")); // NOI18N
-        button_order.setEnabled(false);
-        button_order.setFocusable(false);
-        button_order.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        button_order.setName("button_order"); // NOI18N
-        button_order.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(button_order);
 
         jSeparator2.setName("jSeparator2"); // NOI18N
         jToolBar1.add(jSeparator2);
@@ -741,7 +804,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             }
         });
 
-        jLabel3.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Dialog", 0, 12));
         jLabel3.setText(bundle.getString("ContactPanel.jLabel3.text")); // NOI18N
         jLabel3.setName("jLabel3"); // NOI18N
 
@@ -769,7 +832,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         department.setFont(department.getFont().deriveFont(department.getFont().getStyle() | java.awt.Font.BOLD));
         department.setName("department"); // NOI18N
 
-        jLabel5.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel5.setFont(new java.awt.Font("Dialog", 0, 12));
         jLabel5.setText(bundle.getString("ContactPanel.jLabel5.text")); // NOI18N
         jLabel5.setName("jLabel5"); // NOI18N
 
@@ -981,6 +1044,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         if (dataOwner.isExisting()) {
+            dataTableContent = FILES;
             addfile.setEnabled(true);
             removefile.setEnabled(true);
             fillFiles();
@@ -992,24 +1056,22 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             addFile();
         }
     }//GEN-LAST:event_addfileActionPerformed
+    private static int FILES = 0;
+    private static int PRODUCTS = 1;
+    private static int ITEM = 2;
 
     private void dataTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_dataTableMouseClicked
-        if (evt.getClickCount() > 1) {
-            FileDirectoryHandler.open(QueryHandler.instanceOf().clone(Context.getFiles()).
-                    retrieveFile(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).
-                    toString(), new File(FileDirectoryHandler.getTempDir() + dataTable.getModel().
-                    getValueAt(dataTable.getSelectedRow(), 1).toString())));
-        } else if (evt.getClickCount() == 1 && evt.getButton() == MouseEvent.BUTTON3) {
+        if (dataTableContent != null) {
+            if (dataTableContent == FILES) {
+                fileTableClicked(evt);
 
-            JTable source = (JTable) evt.getSource();
-            int row = source.rowAtPoint(evt.getPoint());
-            int column = source.columnAtPoint(evt.getPoint());
+            } else if (dataTableContent == PRODUCTS) {
+                productTableClicked(evt);
 
-            if (!source.isRowSelected(row)) {
-                source.changeSelection(row, column, false, false);
+            } else if (dataTableContent == ITEM) {
+                itemTableClicked(evt);
+
             }
-
-            FileTablePopUp.instanceOf(dataTable).show(source, evt.getX(), evt.getY());
         }
     }//GEN-LAST:event_dataTableMouseClicked
 
@@ -1033,13 +1095,54 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
     private void button_billsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_billsActionPerformed
 
-      Context c = Context.getItem(Item.TYPE_BILL, null);
+        Context c = Context.getItem(Item.TYPE_BILL, null);
 //        c.addReference(Context.getContact().getDbIdentity(), "cname", "filename");
         Object[][] data = new DatabaseSearch(c).getValuesFor(Context.DEFAULT_ITEM_SEARCH, "contactsids", dataOwner.__getIDS());
 
         dataTable.setModel(new MPTableModel(data, Headers.ITEM_DEFAULT));
-        TableFormat.stripFirstColumn(dataTable);
+//        TableFormat.stripFirstColumn(dataTable);
+        dataTableContent = ITEM;
+        addfile.setEnabled(false);
+        removefile.setEnabled(false);
     }//GEN-LAST:event_button_billsActionPerformed
+
+    private void button_offersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_offersActionPerformed
+        Context c = Context.getItem(Item.TYPE_OFFER, null);
+
+        Object[][] data = new DatabaseSearch(c).getValuesFor(Context.DEFAULT_ITEM_SEARCH, "contactsids", dataOwner.__getIDS());
+
+        dataTable.setModel(new MPTableModel(data, Headers.ITEM_DEFAULT));
+//        TableFormat.stripFirstColumn(dataTable);
+        dataTableContent = ITEM;
+        addfile.setEnabled(false);
+        removefile.setEnabled(false);
+    }//GEN-LAST:event_button_offersActionPerformed
+
+    private void button_ordersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_ordersActionPerformed
+        Context c = Context.getItem(Item.TYPE_ORDER, null);
+
+        Object[][] data = new DatabaseSearch(c).getValuesFor(Context.DEFAULT_ITEM_SEARCH, "contactsids", dataOwner.__getIDS());
+
+        dataTable.setModel(new MPTableModel(data, Headers.ITEM_DEFAULT));
+//        TableFormat.stripFirstColumn(dataTable);
+        dataTableContent = ITEM;
+        addfile.setEnabled(false);
+        removefile.setEnabled(false);
+    }//GEN-LAST:event_button_ordersActionPerformed
+
+    private void button_productsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_productsActionPerformed
+        Context c = Context.getProducts();
+
+        Object[][] data1 = new DatabaseSearch(c).getValuesFor(Context.DEFAULT_PRODUCT_SEARCH, "manufacturersids", dataOwner.__getIDS());
+        Object[][] data2 = new DatabaseSearch(c).getValuesFor(Context.DEFAULT_PRODUCT_SEARCH, "suppliersids", dataOwner.__getIDS());
+        Object[][] data = ArrayUtilities.merge(data1, data2);
+
+        dataTable.setModel(new MPTableModel(data, Headers.PRODUCT_DEFAULT));
+        dataTableContent = PRODUCTS;
+        addfile.setEnabled(false);
+        removefile.setEnabled(false);
+//        TableFormat.stripFirstColumn(dataTable);
+    }//GEN-LAST:event_button_productsActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel addedby;
@@ -1140,6 +1243,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     public int groupsids_ = 1;
     public String country_;
 
+    @Override
     public void collectData() {
         city_ = city.get_Text();
         cname_ = cname.get_Text();
@@ -1185,6 +1289,9 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         }
         intaddedby_ = User.getUserId(addedby.getText());
         department_ = department.get_Text();
+
+        cnumber_ = dataOwner.getFormatHandler().toString(FormatHandler.getNextNumber(dataOwner));
+        
     }
 //ids label?
 

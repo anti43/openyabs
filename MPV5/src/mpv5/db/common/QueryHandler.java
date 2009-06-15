@@ -549,7 +549,6 @@ public class QueryHandler implements Cloneable {
     }
     private static int RUNNING_JOBS = 0;
 
-   
     private synchronized void stop() {
         Runnable runnable = new Runnable() {
 
@@ -611,7 +610,7 @@ public class QueryHandler implements Cloneable {
      * @param item
      * @param groupid
      */
-    public synchronized  void insertHistoryItem(String message, String username, String dbidentity, int item, int groupid) {
+    public synchronized void insertHistoryItem(String message, String username, String dbidentity, int item, int groupid) {
         try {
             if (psHistory == null) {
                 try {
@@ -658,13 +657,13 @@ public class QueryHandler implements Cloneable {
             psLock.setInt(3, user.__getIDS());
             return psLock.execute();
         } catch (SQLException ex) {
-           throw new UnableToLockException(context, id, user);
+            throw new UnableToLockException(context, id, user);
         }
     }
     private static PreparedStatement psLock;
 
-   void removeLock(Context context, int id, User user) {
-         try {
+    void removeLock(Context context, int id, User user) {
+        try {
             if (psUnLock == null) {
                 try {
                     String query = "DELETE FROM " + Context.getLock().getDbIdentity() + " WHERE cname = ? AND rowid = ? AND usersids = ?";
@@ -678,10 +677,22 @@ public class QueryHandler implements Cloneable {
             psUnLock.setInt(3, user.__getIDS());
             psUnLock.execute();
         } catch (SQLException ex) {
-          Log.Debug(ex);
+            Log.Debug(ex);
         }
-    } private static PreparedStatement psUnLock;
+    }
+    private static PreparedStatement psUnLock;
 
+    /**
+     * Updates the given column at the row with the given id
+     * @param columnName
+     * @param id
+     * @param value
+     */
+    public void update(String columnName, Integer id, Object value) {
+       QueryData d = new QueryData();
+       d.add(columnName, value);
+       update(d, new String[]{"ids", id.toString(), ""}, null);
+    }
 
     /**
      * 
@@ -1009,7 +1020,7 @@ public class QueryHandler implements Cloneable {
     public QueryHandler clone(String newTable) {
         QueryHandler theClone = null;
         this.context = Context.getMatchingContext(newTable);
-        if(context==null) {
+        if (context == null) {
             context = new Context(null);
         }
         try {
