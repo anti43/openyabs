@@ -100,9 +100,14 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
         }
         return array;
     }
-
-    public static ComboBoxModel toModel(Object[][] arr) {
-        return new DefaultComboBoxModel(toItems(arr));
+/**
+     * Creates a {@link DefaultComBoxModel} containing an array of {@link MPComboBoxModelItem}
+     * {id (hidden), value (shown in the list)}
+     * @param items
+     * @return
+     */
+    public static ComboBoxModel toModel(Object[][] data) {
+        return new DefaultComboBoxModel(toItems(data));
     }
     private String id;
     private String name;

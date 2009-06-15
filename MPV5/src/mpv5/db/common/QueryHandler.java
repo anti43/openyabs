@@ -165,6 +165,31 @@ public class QueryHandler implements Cloneable {
         }
     }
 
+    public Object[][] getColumns(String[] columnNames, int maximumRowCount) throws NodataFoundException {
+        ReturnValue data = null;
+        String columnName = "";
+        for (int i = 0; i < columnNames.length; i++) {
+            String string = columnNames[i];
+            if (i < columnNames.length - 1) {
+                columnName += string + ",";
+            } else {
+                columnName += string;
+            }
+        }
+        if (maximumRowCount > 0) {
+            data = freeSelectQuery("SELECT TOP(" + maximumRowCount + ") " +
+                    columnName + " FROM " + table + " " + context.getConditions(), mpv5.usermanagement.MPSecurityManager.VIEW, null);
+        } else {
+            data = freeSelectQuery("SELECT " +
+                    columnName + " FROM " + table + " " + context.getConditions(), mpv5.usermanagement.MPSecurityManager.VIEW, null);
+        }
+        if (data.getData().length == 0) {
+            throw new NodataFoundException();
+        } else {
+            return data.getData();
+        }
+    }
+
     /**
      *
      * @param context
@@ -689,9 +714,9 @@ public class QueryHandler implements Cloneable {
      * @param value
      */
     public void update(String columnName, Integer id, Object value) {
-       QueryData d = new QueryData();
-       d.add(columnName, value);
-       update(d, new String[]{"ids", id.toString(), ""}, null);
+        QueryData d = new QueryData();
+        d.add(columnName, value);
+        update(d, new String[]{"ids", id.toString(), ""}, null);
     }
 
     /**

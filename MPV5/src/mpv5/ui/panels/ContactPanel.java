@@ -23,7 +23,11 @@ package mpv5.ui.panels;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
@@ -101,7 +105,6 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         refresh();
         dateadded.setText(DateConverter.getTodayDefDate());
         addedby.setText(MPV5View.getUser().getName());
-        cname.requestFocus();
     }
 
     @Override
@@ -1291,7 +1294,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         department_ = department.get_Text();
 
         cnumber_ = dataOwner.getFormatHandler().toString(FormatHandler.getNextNumber(dataOwner));
-        
+
     }
 //ids label?
 

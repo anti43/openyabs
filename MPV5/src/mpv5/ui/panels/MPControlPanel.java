@@ -20,6 +20,7 @@ import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Accounts;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Fonts;
+import mpv5.ui.dialogs.subcomponents.ControlPanel_Formats;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Groups;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Local;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Locale;
@@ -77,6 +78,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton10 = new javax.swing.JButton();
         jButton11 = new javax.swing.JButton();
         jButton12 = new javax.swing.JButton();
+        jButton13 = new javax.swing.JButton();
         details = new javax.swing.JPanel();
         scroller = new javax.swing.JScrollPane();
         actions = new javax.swing.JPanel();
@@ -85,7 +87,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.PAGE_AXIS));
 
         buttons.setBackground(new java.awt.Color(255, 255, 255));
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         buttons.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("MPControlPanel.buttons.border.title"))); // NOI18N
         buttons.setAutoscrolls(true);
         buttons.setMinimumSize(new java.awt.Dimension(300, 10));
@@ -220,7 +222,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton8);
 
-        jButton9.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton9.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/fonts.png"))); // NOI18N
         jButton9.setText(bundle.getString("MPControlPanel.jButton9.text")); // NOI18N
         jButton9.setToolTipText(bundle.getString("MPControlPanel.jButton9.toolTipText")); // NOI18N
@@ -295,6 +297,25 @@ public class MPControlPanel extends javax.swing.JPanel {
             }
         });
         buttons.add(jButton12);
+
+        jButton13.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/blockdevice.png"))); // NOI18N
+        jButton13.setText(bundle.getString("MPControlPanel.jButton13.text")); // NOI18N
+        jButton13.setToolTipText(bundle.getString("MPControlPanel.jButton13.toolTipText")); // NOI18N
+        jButton13.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jButton13.setContentAreaFilled(false);
+        jButton13.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton13.setMaximumSize(new java.awt.Dimension(90, 90));
+        jButton13.setMinimumSize(new java.awt.Dimension(90, 80));
+        jButton13.setName("jButton13"); // NOI18N
+        jButton13.setPreferredSize(new java.awt.Dimension(90, 80));
+        jButton13.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton13.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton13ActionPerformed(evt);
+            }
+        });
+        buttons.add(jButton13);
 
         add(buttons);
 
@@ -371,6 +392,10 @@ public class MPControlPanel extends javax.swing.JPanel {
         openDetails(new ControlPanel_Accounts());
     }//GEN-LAST:event_jButton12ActionPerformed
 
+    private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
+           openDetails(new ControlPanel_Formats(MPV5View.getUser()));
+    }//GEN-LAST:event_jButton13ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel actions;
     private javax.swing.JPanel buttons;
@@ -379,6 +404,7 @@ public class MPControlPanel extends javax.swing.JPanel {
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton12;
+    private javax.swing.JButton jButton13;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton5;
