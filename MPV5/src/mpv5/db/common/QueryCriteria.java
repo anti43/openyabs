@@ -91,7 +91,6 @@ public class QueryCriteria {
         list.put(key, new SaveString(string, true));
     }
 
-
     /**
      *
      * @return An array of keys
@@ -136,7 +135,11 @@ public class QueryCriteria {
             mpv5.db.common.SaveString v = getValue(k[i]);
             s += v.getWrapper() + v.toString() + v.getWrapper() + ",";
         }
-        return s.substring(0, s.length() - 1);
+        if (s.length() > 1) {
+            return s.substring(0, s.length() - 1);
+        } else {
+            return s;
+        }
     }
 
     /**

@@ -47,6 +47,7 @@ public class FormatHandler {
     public static final int TYPE_SUPPLIER = 6;
     public static final int TYPE_PRODUCT = 7;
     public static final int TYPE_SERVICE = 8;
+
     private int type;
     private Integer startCount = null;
     private java.text.NumberFormat format;
@@ -148,6 +149,7 @@ public class FormatHandler {
         return newN+1;
     }
 
+
     /**
      * Formats a given number by the determined number format, <br/>if the {@link setStartCount(Integer) } has not been set.
      * Returns the defined start value then.
@@ -197,6 +199,13 @@ public class FormatHandler {
      */
     public void setFormat(java.text.NumberFormat format) {
         this.format = format;
+    }
+    
+     /**
+      * @param text the format to set, as String pattern
+     */
+    public void setFormat(String text) {
+        this.format = new DecimalFormat(text);
     }
 
     /**

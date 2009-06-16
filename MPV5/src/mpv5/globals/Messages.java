@@ -96,7 +96,7 @@ public enum Messages {
     REALLY_WIPE("Do you really want to wipe all data?\nYou may need to restart the application before changes take place."),
     WIPED_LOCALSETTINGS("Local settings have been marked for deletion. Please close MP now."),
     NO_DB_CONNECTION("Could not connect to database, start configuration wizard?"),
-    REALLY_CHANGE("Do you really want to alter the selected dataset? This will affect all users!"),
+    REALLY_CHANGE("Do you really want to alter the selected dataset? This may affect all users!"),
     DONE("Task finished successfully."),
     PROCESSING("Processing: "),
     LOCKED(" is now locked"),
@@ -152,6 +152,10 @@ public enum Messages {
         this.message = message;
     }
     private String message;
+
+    public void addMessage(String message){
+
+    }
 
     @Override
     public String toString() {

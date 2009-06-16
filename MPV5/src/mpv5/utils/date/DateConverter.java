@@ -133,6 +133,18 @@ public class DateConverter {
         }
     }
 
+    /**
+     * Quarter as 1,2,3,4
+     * @return
+     */
+    public static int getQuarter() {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date());
+        int month = cal.get(Calendar.MONTH); /* 0 through 11 */
+        int quarter = (month / 3) + 1;
+        return quarter;
+    }
+
     public static String getTodayDefDate() {
         return DE_DATE_FORMAT.format(new Date());
     }

@@ -12,6 +12,8 @@ package mpv5.ui.beans;
 
 import java.awt.Font;
 import javax.swing.JComboBox;
+import mpv5.handler.VariablesHandler.GENERIC_VARS;
+import mpv5.utils.models.MPComboBoxModelItem;
 
 /**
  *
@@ -34,7 +36,32 @@ public class LabeledCombobox extends javax.swing.JPanel {
         return jComboBox1;
     }
 
+    /**
+     * Delegates to setModel(Object[][])
+     * @param values
+     */
+    public void setModel(Enum[] values) {
+        String[][] val = new String[values.length][2];
+        for (int i = 0; i < values.length; i++) {
+            Enum enum1 = values[i];
+            val[i][0] = enum1.name();
+            val[i][1] = enum1.toString();
+        }
+        setModel(val);
+    }
 
+    /**
+     * Delegates to setModel(MPComboBoxModelItem.toModel(data));
+     * {id (hidden), value (shown in the list)}
+     * @param data
+     */
+    public void setModel(Object[][] data) {
+        jComboBox1.setModel(MPComboBoxModelItem.toModel(data));
+    }
+
+    public MPComboBoxModelItem getSelectedItem() {
+        return (MPComboBoxModelItem) jComboBox1.getSelectedItem();
+    }
 
 
 //    public void setLabelFont(Font font) {
@@ -124,6 +151,4 @@ public class LabeledCombobox extends javax.swing.JPanel {
         jLabel1.setEnabled(enabled);
         jComboBox1.setEnabled(enabled);
     }
-
-
 }
