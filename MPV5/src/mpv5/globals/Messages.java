@@ -63,6 +63,7 @@ public enum Messages {
     ACTION_REMOVE("Remove"),
     SECURITYMANAGER_DENIED("The Security Manager has DENIED your request.\nAction "),
     SECURITYMANAGER_ALLOWED("The Security Manager has ALLOWED your request.\nAction "),
+    THE_RESULT("The resulting value will look like:\n\n"),
     CONTEXT(", in context: "),
     INSERTED(" created"),
     UPDATED(" updated"),
@@ -134,7 +135,11 @@ public enum Messages {
     STATUS_PAUSED("Paused"),
     STATUS_FINISHED("Finished"),
     TYPE_BILL("Bill"),
-    TYPE_OFFER("Offer"), 
+    TYPE_OFFER("Offer"),
+    TYPE_CONTACT("Contact"),
+    TYPE_CUSTOMER("Customer"),
+    TYPE_MANUFACTURER("Manufacturer"),
+    TYPE_SUPPLIER("Supplier"),
     STATUS_PAID("Paid"),
     TRASHBIN("Trashbin"),
     DELETE("Delete"),
@@ -147,14 +152,12 @@ public enum Messages {
     TYPE_SERVICE("Service"),
     TYPE_ORDER("Order");
 
-
     private Messages(String message) {
         this.message = message;
     }
     private String message;
 
-    public void addMessage(String message){
-
+    public void addMessage(String message) {
     }
 
     @Override
@@ -174,6 +177,5 @@ public enum Messages {
     public String getValue() {
         return toString();
     }
-
 
 }

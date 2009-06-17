@@ -1269,20 +1269,21 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         } else {
             country_ = "";
         }
-
+        issupplier_ = supplier.isSelected();
+        ismanufacturer_ = manufacturer.isSelected();
         iscustomer_ = customer.isSelected();
         isenabled_ = enabled.isSelected();
         fax_ = fax.get_Text();
         mailaddress_ = mailaddress.get_Text();
         ismale_ = male.isSelected();
-        ismanufacturer_ = manufacturer.isSelected();
+
         mobilephone_ = mobilephone.get_Text();
         notes_ = notes.getText();
         cnumber_ = number.get_Text();
         mainphone_ = mainphone.get_Text();
         prename_ = prename.get_Text();
         street_ = street.get_Text();
-        issupplier_ = supplier.isSelected();
+
         title_ = title.get_Text();
         website_ = website.get_Text();
         workphone_ = workphone.get_Text();
@@ -1293,10 +1294,13 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         intaddedby_ = User.getUserId(addedby.getText());
         department_ = department.get_Text();
 
-        cnumber_ = dataOwner.getFormatHandler().toString(FormatHandler.getNextNumber(dataOwner));
+        dataOwner.setisCustomer(iscustomer_);
+        dataOwner.setisManufacturer(ismanufacturer_);
+        dataOwner.setisSupplier(issupplier_);
 
+        cnumber_ = dataOwner.getFormatHandler().toString(dataOwner.getFormatHandler().getNextNumber());
     }
-//ids label?
+
 
     public void exposeData() {
         city.set_Text(city_);

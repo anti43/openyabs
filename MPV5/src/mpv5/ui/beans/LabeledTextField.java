@@ -48,6 +48,10 @@ public class LabeledTextField extends javax.swing.JPanel {
         }
     }
 
+    public void setText(String text) {
+        set_Text(text);
+    }
+
 
 //    public void setLabelFont(Font font) {
 //        setFont(font);

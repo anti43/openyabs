@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import mpv5.db.common.DatabaseObject;
+import mpv5.handler.MPEnum;
 import mpv5.logging.Log;
 
 /**
@@ -27,6 +28,8 @@ import mpv5.logging.Log;
  * 
  */
 public class MPComboBoxModelItem extends DefaultComboBoxModel implements Comparable<MPComboBoxModelItem> {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * Returns the index of the item with the given id
@@ -37,7 +40,7 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
     public static int getItemID(int uid, ComboBoxModel model) {
         return getItemID(String.valueOf(uid), model);
     }
-     
+
     /**
      * Returns the index of the item with the given id
      * @param uid
@@ -55,10 +58,10 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
         return 0;
     }
 
-     /**
+    /**
      * Returns the index of the item with the given id
-      * @param value
-      * @param model
+     * @param value
+     * @param model
      * @return
      */
     public static int getItemIDfromValue(String value, ComboBoxModel model) {
@@ -71,7 +74,6 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
         }
         return 0;
     }
-
 
     /**
      * Converts an array to mp combo box items
@@ -87,7 +89,7 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
         return array;
     }
 
-      /**
+    /**
      * Converts an array to mp combo box items
      * {id (hidden), value (shown in the list)}
      * @param items
@@ -100,13 +102,36 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
         }
         return array;
     }
-/**
-     * Creates a {@link DefaultComBoxModel} containing an array of {@link MPComboBoxModelItem}
+
+      /**
+     * Converts an enum<id, name> to mp combo box items
      * {id (hidden), value (shown in the list)}
      * @param items
      * @return
      */
-    public static ComboBoxModel toModel(Object[][] data) {
+    public static MPComboBoxModelItem[] toItems(MPEnum[] items) {
+        MPComboBoxModelItem[] array = new MPComboBoxModelItem[items.length];
+        for (int i = 0; i < array.length; i++) {
+            array[i] = new MPComboBoxModelItem(items[i].getId(), items[i].getName());
+        }
+        return array;
+    }
+  /**
+     * Creates a {@link DefaultComBoxModel} containing an array of {@link MPComboBoxModelItem}
+     * {enum id (hidden), value (shown in the list)}
+     * @param data
+     * @return
+     */
+    public static DefaultComboBoxModel toModel(MPEnum[] data) {
+        return new DefaultComboBoxModel(toItems(data));
+    }
+    /**
+     * Creates a {@link DefaultComBoxModel} containing an array of {@link MPComboBoxModelItem}
+     * {id (hidden), value (shown in the list)}
+     * @param data
+     * @return
+     */
+    public static DefaultComboBoxModel toModel(Object[][] data) {
         return new DefaultComboBoxModel(toItems(data));
     }
     private String id;
@@ -147,13 +172,14 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
     }
 
     /**
-     * @return the name
+     * @return the value
      */
     public String getValue() {
         return name;
     }
 
     /**
+     * Name = Value
      * @param name the name to set
      */
     public void setName(String name) {
@@ -161,11 +187,17 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
     }
 
     @Override
+    /**
+     * Returns the value of the item
+     */
     public String toString() {
         return name;
     }
 
     @Override
+    /**
+     * MPComboBoxModelItems are compared to equal if their values are equal!
+     */
     public int compareTo(MPComboBoxModelItem to) {
         return name.compareTo(to.getValue());
     }

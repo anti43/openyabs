@@ -16,11 +16,12 @@
  */
 package mpv5.handler;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
+import java.text.MessageFormat;
 import java.text.ParseException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.text.ParsePosition;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.regex.Pattern;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.QueryCriteria;
@@ -29,6 +30,7 @@ import mpv5.db.common.ReturnValue;
 import mpv5.db.objects.Contact;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.Product;
+import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPV5View;
 import mpv5.usermanagement.MPSecurityManager;
@@ -48,10 +50,41 @@ public class FormatHandler {
     public static final int TYPE_PRODUCT = 7;
     public static final int TYPE_SERVICE = 8;
 
+    public static enum TYPES implements MPEnum {
+
+        TYPE_BILL(FormatHandler.TYPE_BILL, Messages.TYPE_BILL.getValue()),
+        TYPE_OFFER(FormatHandler.TYPE_OFFER, Messages.TYPE_OFFER.getValue()),
+        TYPE_ORDER(FormatHandler.TYPE_ORDER, Messages.TYPE_ORDER.getValue()),
+        TYPE_CONTACT(FormatHandler.TYPE_CONTACT, Messages.TYPE_CONTACT.getValue()),
+        TYPE_CUSTOMER(FormatHandler.TYPE_CUSTOMER, Messages.TYPE_CUSTOMER.getValue()),
+        TYPE_MANUFACTURER(FormatHandler.TYPE_MANUFACTURER, Messages.TYPE_MANUFACTURER.getValue()),
+        TYPE_SUPPLIER(FormatHandler.TYPE_SUPPLIER, Messages.TYPE_SUPPLIER.getValue()),
+        TYPE_PRODUCT(FormatHandler.TYPE_PRODUCT, Messages.TYPE_PRODUCT.getValue()),
+        TYPE_SERVICE(FormatHandler.TYPE_SERVICE, Messages.TYPE_SERVICE.getValue());
+        int ids;
+        String names;
+
+        TYPES(int id, String name) {
+            ids = id;
+            names = name;
+        }
+
+        @Override
+        public int getId() {
+            return ids;
+        }
+
+        @Override
+        public String getName() {
+            return names;
+        }
+    }
+    public static String INTEGERPART_IDENTIFIER = "{0,number,000000}";
     private int type;
+    private DatabaseObject source = null;
     private Integer startCount = null;
-    private java.text.NumberFormat format;
-    public static NumberFormat DEFAULT_FORMAT = new DecimalFormat("000000");
+    private java.text.MessageFormat format;
+    public static MessageFormat DEFAULT_FORMAT = new MessageFormat(INTEGERPART_IDENTIFIER);
     /**
      * This string identifies potential start values from the format string. Use as
      * START_VALUE_IDENTIFIERstartvalueSTART_VALUE_IDENTIFIERformat
@@ -97,22 +130,31 @@ public class FormatHandler {
      * @param forObject
      */
     public FormatHandler(DatabaseObject forObject) {
+        this.source = forObject;
         this.type = determineType(forObject);
         this.format = getFormat();
+    }
+
+    @Override
+    public String toString() {
+        return "Format: " + format.format(43) + " for " + source + " (" + type + ")";
+    }
+
+    private FormatHandler() {
     }
 
     /**
      *
      * @return
      */
-    public synchronized NumberFormat getFormat() {
+    public synchronized MessageFormat getFormat() {
         QueryCriteria c = new QueryCriteria();
         c.add("usersids", MPV5View.getUser().__getIDS());
         c.add("inttype", this.getType());
         try {
             Object[][] frm = QueryHandler.instanceOf().clone(Context.getFormats()).select("cname, ids", c);
-            String val = frm[frm.length][0].toString();
-            int id = Integer.valueOf(frm[frm.length][1].toString());
+            String val = frm[frm.length-1][0].toString();
+            int id = Integer.valueOf(frm[frm.length-1][1].toString());
             try {
                 if (val.startsWith(START_VALUE_IDENTIFIER)) {
                     startCount = Integer.valueOf(val.split(START_VALUE_IDENTIFIER)[1]);
@@ -123,8 +165,9 @@ public class FormatHandler {
                 Log.Debug(this, numberFormatException);
                 return DEFAULT_FORMAT;
             }
-            return new DecimalFormat(val);
+            return new MessageFormat(VariablesHandler.parse(val, source));
         } catch (Exception ex) {
+            Log.Debug(ex);
             Log.Debug(this, "Format not found, using default format instead!");
             return DEFAULT_FORMAT;
         }
@@ -132,23 +175,34 @@ public class FormatHandler {
 
     /**
      * Fetches the next number from the database
-     * @param forThis
      * @return
      */
-    public synchronized static int getNextNumber(DatabaseObject forThis) {
+    public synchronized int getNextNumber() {
         int newN = 0;
+        DatabaseObject forThis = source;
         if (forThis.getContext().equals(Context.getContact())) {
             ReturnValue val = QueryHandler.getConnection().freeQuery(
                     //                    "LOCK TABLE " + forThis.getDbIdentity() + " IN EXCLUSIVE MODE;" +
                     "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + ")", MPSecurityManager.VIEW, null);
             Log.Debug(FormatHandler.class, "Last number found: " + val.getData()[0][0]);
             newN = ((Contact) forThis).getFormatHandler().getIntegerPartOf(val.getData()[0][0].toString());
+            Log.Debug(FormatHandler.class, "Counter part: " + newN);
+            return getNextNumber(newN);
         } else {
             throw new UnsupportedOperationException("FormatHandler#getNextNumber is not defined for " + forThis);
         }
-        return newN+1;
     }
 
+    private synchronized int getNextNumber(int lastNumber) {
+        DatabaseObject forThis = source;
+        ReturnValue val2 = QueryHandler.getConnection().freeQuery("SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + toString(lastNumber + 1) + "' " , MPSecurityManager.VIEW, null);
+        if (val2.hasData()) {
+            Log.Debug(FormatHandler.class, "Already existing..: " + val2.getData()[0][0]);
+            return getNextNumber(lastNumber + 1);
+        } else {
+            return lastNumber + 1;
+        }
+    }
 
     /**
      * Formats a given number by the determined number format, <br/>if the {@link setStartCount(Integer) } has not been set.
@@ -158,9 +212,9 @@ public class FormatHandler {
      */
     public synchronized String toString(int number) {
         if (startCount == null) {
-            return format.format((double) number);
+            return format.format(new Object[]{number});
         } else {
-            String n = format.format((double) startCount);
+            String n = format.format(new Object[]{number});
             startCount = null;
             return n;
         }
@@ -197,15 +251,19 @@ public class FormatHandler {
     /**
      * @param format the format to set
      */
-    public void setFormat(java.text.NumberFormat format) {
+    public void setFormat(MessageFormat format) {
         this.format = format;
     }
-    
-     /**
-      * @param text the format to set, as String pattern
+
+    /**
+     * @param formatPattern the format to set, as String pattern
      */
-    public void setFormat(String text) {
-        this.format = new DecimalFormat(text);
+    public void setFormat(String formatPattern) {
+//        Pattern escaper = Pattern.compile("(['{])");
+        formatPattern = VariablesHandler.parse(formatPattern, source);
+//        formatPattern = escaper.matcher(formatPattern).replaceAll("''$1");
+//        Log.Debug(this, formatPattern);
+        this.format = new MessageFormat(formatPattern);
     }
 
     /**
@@ -215,8 +273,17 @@ public class FormatHandler {
      */
     private synchronized int getIntegerPartOf(String string) {
         try {
-            return Integer.valueOf(format.parse(string).toString());
-        } catch (ParseException ex) {
+            Number n = null;
+            try {
+                n = (Number) format.parse(string, new ParsePosition(0))[0];
+            } catch (Exception e) {
+                Log.Debug(this, e.getMessage());
+            }
+            if (n == null) {
+                n = 0;
+            }
+            return n.intValue();
+        } catch (Exception ex) {
             Log.Debug(ex);
             return 0;
         }

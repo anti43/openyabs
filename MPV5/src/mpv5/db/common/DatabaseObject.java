@@ -63,6 +63,37 @@ public abstract class DatabaseObject {
         return cname;
     }
 
+    /**
+     * Fills all {@link DatabaseObject#setVars()} with non-NULL default values
+     */
+    public void avoidNulls() {
+        ArrayList<Method> vals = setVars();
+        for (int i = 0; i < vals.size(); i++) {
+            Method method = vals.get(i);
+            try {
+                try {
+                    if (!method.getParameterTypes()[0].isPrimitive()) {
+                        if (!method.getParameterTypes()[0].isInstance(new String())) {
+                            Log.Debug(this, "Set : " + method + " with value: " + method.getParameterTypes()[0].newInstance());
+                            method.invoke(this, method.getParameterTypes()[0].newInstance());
+                        } else {
+                            Log.Debug(this, "Set : " + method + " with value: " + "<empty>");
+                            method.invoke(this, "<empty>");
+                        }
+                    }
+                } catch (IllegalArgumentException ex) {
+                    Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (InvocationTargetException ex) {
+                    Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } catch (InstantiationException ex) {
+                Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IllegalAccessException ex) {
+                Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
     public void setCName(String name) {
         cname = name;
     }

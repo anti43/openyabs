@@ -42,11 +42,10 @@ public class Popup {
      * @param message
      * @return
      */
-    public static String  Enter_Value(Object message) {
-       return JOptionPane.showInputDialog(MPV5View.identifierFrame,
-                    message);
+    public static String Enter_Value(Object message) {
+        return JOptionPane.showInputDialog(MPV5View.identifierFrame,
+                message);
     }
-
 
     /**
      * A Y_N_dialog
@@ -65,6 +64,20 @@ public class Popup {
      */
     public static boolean Y_N_dialog(Object text, String label) {
         if (JOptionPane.showConfirmDialog(identifier, prepareText(text.toString()), label, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, new javax.swing.ImageIcon(new Popup().getClass().getResource("/mpv5/resources/images/32/warning.png"))) == JOptionPane.YES_OPTION) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * A Ok or Cancel -dialog
+     * @param text
+     * @param label
+     * @return
+     */
+    public static boolean OK_dialog(Object text, String label) {
+        if (JOptionPane.showConfirmDialog(identifier, prepareText(text.toString()), label, JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, new javax.swing.ImageIcon(new Popup().getClass().getResource("/mpv5/resources/images/32/warning.png"))) == JOptionPane.OK_OPTION) {
             return true;
         } else {
             return false;

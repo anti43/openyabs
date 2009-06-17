@@ -69,6 +69,7 @@ public abstract class VariablesHandler {
         for (int i = 0; i < vars.size(); i++) {
             String[] method = vars.get(i);
             svars[i] = "[" + method[0].toUpperCase() + "]";
+//            Log.Debug(VariablesHandler.class, "Found var " + svars[i] );
         }
         return svars;
     }
@@ -78,47 +79,48 @@ public abstract class VariablesHandler {
      * @param target
      * @return
      */
-    public static String[][] resolveVarsFor(DatabaseObject target) {
-        String[][] g = new String[GENERIC_VARS.values().length + getSpecialVarsOf(target).length][2];
+    public static String[][] resolveVarsFor(final DatabaseObject target) {
+        String[][] vars = new String[GENERIC_VARS.values().length + getSpecialVarsOf(target).length][2];
         GENERIC_VARS[] gens = GENERIC_VARS.values();
         int i;
         for (i = 0; i < gens.length; i++) {
             VariablesHandler.GENERIC_VARS generic_vars = gens[i];
-            g[i][0] = generic_vars.toString();
+            vars[i][0] = generic_vars.toString();
             try {
-                if (g[i][0].equals(GENERIC_VARS.CREATE_USER.toString())) {
-                    g[i][1] = User.getUsername(target.__getIntaddedby());
-                } else if (g[i][0].equals(GENERIC_VARS.CURRENT_USER.toString())) {
-                    g[i][1] = User.getUsername(MPV5View.getUser().__getIDS());
-                } else if (g[i][0].equals(GENERIC_VARS.GROUP.toString())) {
-                    g[i][1] = Group.getObject(Context.getGroup(), target.__getGroupsids()).__getCName();
-                } else if (g[i][0].equals(GENERIC_VARS.MONTH.toString())) {
-                    g[i][1] = DateConverter.getMonth();
-                } else if (g[i][0].equals(GENERIC_VARS.MONTH_NAME.toString())) {
-                    g[i][1] = DateConverter.getMonthName();
-                } else if (g[i][0].equals(GENERIC_VARS.QUARTER.toString())) {
-                    g[i][1] = String.valueOf(DateConverter.getQuarter());
-                } else if (g[i][0].equals(GENERIC_VARS.YEAR.toString())) {
-                    g[i][1] = DateConverter.getYear();
+                if (vars[i][0].equals(GENERIC_VARS.CREATE_USER.toString())) {
+                    vars[i][1] = User.getUsername(target.__getIntaddedby());
+                } else if (vars[i][0].equals(GENERIC_VARS.CURRENT_USER.toString())) {
+                    vars[i][1] = User.getUsername(MPV5View.getUser().__getIDS());
+                } else if (vars[i][0].equals(GENERIC_VARS.GROUP.toString())) {
+                    vars[i][1] = Group.getObject(Context.getGroup(), target.__getGroupsids()).__getCName();
+                } else if (vars[i][0].equals(GENERIC_VARS.MONTH.toString())) {
+                    vars[i][1] = DateConverter.getMonth();
+                } else if (vars[i][0].equals(GENERIC_VARS.MONTH_NAME.toString())) {
+                    vars[i][1] = DateConverter.getMonthName();
+                } else if (vars[i][0].equals(GENERIC_VARS.QUARTER.toString())) {
+                    vars[i][1] = String.valueOf(DateConverter.getQuarter());
+                } else if (vars[i][0].equals(GENERIC_VARS.YEAR.toString())) {
+                    vars[i][1] = DateConverter.getYear();
                 }
             } catch (NodataFoundException nodataFoundException) {
             }
+        }
+        String[] specs = getSpecialVarsOf(target);
+        for (int j = 0; j < specs.length; j++) {
+            String variable = specs[j];
+            vars[i + j][0] = variable;
 
-            String[] specs = getSpecialVarsOf(target);
-            for (int j = 0; j < specs.length; j++) {
-                String string = specs[j];
-                g[1 + j][0] = string;
-                ArrayList<String[]> vals;
-                vals = target.getValues();
-                for (int k = 0; k < vals.size(); k++) {
-                    String[] methods = vals.get(k);
-                    if (methods[0].equalsIgnoreCase(string)) {
-                        g[1 + j][1] = methods[1];
-                    }
+            ArrayList<String[]> vals;
+            vals = target.getValues();
+            for (int k = 0; k < vals.size(); k++) {
+                String[] value = vals.get(k);
+                if (value[0].equalsIgnoreCase(variable.substring(1, variable.length()-1))) {
+                    vars[i + j][1] = value[1];
                 }
             }
         }
-        return g;
+
+        return vars;
     }
 
     /**
@@ -127,12 +129,14 @@ public abstract class VariablesHandler {
      * @param source
      * @return
      */
-    public static synchronized String parse(String text, DatabaseObject source){
+    public static synchronized String parse(String text, final DatabaseObject source) {
         String[][] c = resolveVarsFor(source);
         for (int i = 0; i < c.length; i++) {
             String[] data = c[i];
-            Log.Debug(VariablesHandler.class, source +": replacing key: " + data[0] + " with value: " + data[1]);
-            text = text.replace(data[0], data[1]);
+            Log.Debug(VariablesHandler.class, source + ": replacing key: " + data[0] + " with value: " + data[1]);
+            if (data[1] != null) {
+                text = text.replace(data[0], data[1]);
+            }
         }
         return text;
     }

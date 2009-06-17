@@ -11,6 +11,7 @@
 package mpv5.ui.beans;
 
 import java.awt.Font;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import mpv5.handler.VariablesHandler.GENERIC_VARS;
 import mpv5.utils.models.MPComboBoxModelItem;
@@ -62,6 +63,11 @@ public class LabeledCombobox extends javax.swing.JPanel {
     public MPComboBoxModelItem getSelectedItem() {
         return (MPComboBoxModelItem) jComboBox1.getSelectedItem();
     }
+
+    public void setModel(DefaultComboBoxModel model) {
+        jComboBox1.setModel(model);
+    }
+
 
 
 //    public void setLabelFont(Font font) {

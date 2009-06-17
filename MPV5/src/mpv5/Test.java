@@ -19,9 +19,25 @@ package mpv5;
 import com.lowagie.text.DocumentException;
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
+import javax.xml.parsers.*;
+import javax.xml.parsers.DocumentBuilderFactory;
+import mpv5.db.common.Context;
+import mpv5.db.common.QueryHandler;
+import mpv5.utils.arrays.ArrayUtilities;
+import mpv5.utils.date.DateConverter;
+import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.pdf.PDFFormTest;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  *
@@ -31,7 +47,36 @@ public class Test {
 
     public static void main(String[] args) {
         try {
-            new PDFFormTest(new File("/home/anti/Desktop/euerformular.pdf")).fillFields();
+//        try {
+//            new PDFFormTest(new File("/home/anti/Desktop/euerformular.pdf")).fillFields();
+////        new SplashScreen(new ImageIcon(Test.class.getResource("/mpv5/resources/images/background.png")));
+////        try {
+////        try {
+////            new XMLReader().newDoc(new File("contacts.xml"), true);
+////
+////        } catch (JDOMException ex) {
+////            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
+////        } catch (IOException ex) {
+////            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
+////        }
+////            XMLReader r = new XMLReader();
+////            r.newDoc(new File("contacts.xml"), true);
+////            ArrayList<DatabaseObject> l = r.getObjects(new Contact());
+////
+////            for (int i = 0; i < l.size(); i++) {
+////
+////                DatabaseObject databaseObject = l.get(i);
+////                System.out.println(databaseObject.__getCName());
+////
+////            }
+////        } catch (Exception ex) {
+////           ex.printStackTrace();
+////        }
+//        } catch (IOException ex) {
+//            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (DocumentException ex) {
+//            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
+//        }
 //        new SplashScreen(new ImageIcon(Test.class.getResource("/mpv5/resources/images/background.png")));
 //        try {
 //        try {
@@ -55,36 +100,69 @@ public class Test {
 //        } catch (Exception ex) {
 //           ex.printStackTrace();
 //        }
-        } catch (IOException ex) {
-            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (DocumentException ex) {
+//        String[][] ihreDaten = new String[][]{{"3", "Item 3"},{"4", "Item 4"},{"1", "Item 1"},{"2", "Item 2"}};
+//
+//        ComboBoxModel model = MPComboBoxModelItem.toModel(ihreDaten);
+//        JComboBox combobox = new JComboBox(model);
+//
+//        combobox.setSelectedIndex(MPComboBoxModelItem.getItemID("3", combobox.getModel()));
+//
+//        String value = ((MPComboBoxModelItem)combobox.getSelectedItem()).getValue();//"Item 3"
+//        String id = ((MPComboBoxModelItem)combobox.getSelectedItem()).getId();//"3"
+//
+//        int indexDesItems3 = MPComboBoxModelItem.getItemID("3", combobox.getModel());// 0
+//        int indexDesItems1 = MPComboBoxModelItem.getItemIDfromValue("Item 1", combobox.getModel());// 2
+//
+//        DateConverter.getQuarter();Locale.getDefault();
+            new DecimalFormat("'#'#'#'''-000").format(1000l);
+            
+            
+            File file = new File("D:\\projeler\\hal\\monitor\\hal_monitor\\msg_deneme.xml");
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            Document doc = db.parse(file);
+            doc.getDocumentElement().normalize();
+            System.out.println("Root element " + doc.getDocumentElement().getNodeName());
+            
+            NodeList nodeLst = doc.getElementsByTagName("messages");
+           
+            
+            for (int s = 0; s < nodeLst.getLength(); s++) {
+                Node fstNode = nodeLst.item(s);
+                if (fstNode.getNodeType() == Node.ELEMENT_NODE) {
+                    
+                    Element fstElmnt = (Element) fstNode;
+                    NodeList msgNameElmntLst = fstElmnt.getElementsByTagName("name");
+                    Element msgNameElmnt = (Element) msgNameElmntLst.item(0);
+                    NodeList msgName = msgNameElmnt.getChildNodes();
+                    System.out.println("Message Name : " + (msgName.item(0)).getNodeValue());
+                    NodeList trMode = fstElmnt.getElementsByTagName("trMode");
+                    Element trModeElmnt = (Element) trMode.item(0);
+                    NodeList tr = trModeElmnt.getChildNodes();
+                    System.out.println("TRMode : " + (tr.item(0)).getNodeValue());
+                    /***GET THE NAME OF FIELD NODE**/
+                    
+                     NodeList nodeLst_fields = fstNode.getChildNodes();
+                    
+                    for (int i = 0; i < nodeLst_fields.getLength(); i++) {
+                       Node fstFieldNode = nodeLst_fields.item(i);
+                      
+                            if (fstFieldNode.getNodeType() == Node.ELEMENT_NODE && fstFieldNode.getNodeName().equals("fields")) {
+                                Element fstFieldElmnt = (Element) fstFieldNode;
+                                NodeList fields = fstFieldElmnt.getElementsByTagName("name");
+                                Element fieldNameElmnt = (Element) fields.item(0);
+                                NodeList field = fieldNameElmnt.getChildNodes();
+                                System.out.println("Field Name : " + (field.item(0)).getNodeValue());
+                                //} //end field if
+                            } //end field for
+                        
+                        
+                    } // end if
+                } // end for
+            } // end try
+        } catch (Exception ex) {
             Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-//        new SplashScreen(new ImageIcon(Test.class.getResource("/mpv5/resources/images/background.png")));
-//        try {
-//        try {
-//            new XMLReader().newDoc(new File("contacts.xml"), true);
-//
-//        } catch (JDOMException ex) {
-//            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (IOException ex) {
-//            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//            XMLReader r = new XMLReader();
-//            r.newDoc(new File("contacts.xml"), true);
-//            ArrayList<DatabaseObject> l = r.getObjects(new Contact());
-//
-//            for (int i = 0; i < l.size(); i++) {
-//
-//                DatabaseObject databaseObject = l.get(i);
-//                System.out.println(databaseObject.__getCName());
-//
-//            }
-//        } catch (Exception ex) {
-//           ex.printStackTrace();
-//        }
-
 
     }
 }

@@ -89,15 +89,6 @@ public class Item extends DatabaseObject {
         context.setIdentityClass(Item.class);
     }
 
-    @Override
-    public String __getCName() {
-        return cname;
-    }
-
-    @Override
-    public void setCName(String name) {
-        this.cname = name;
-    }
 
     /**
      * @return the contactsids

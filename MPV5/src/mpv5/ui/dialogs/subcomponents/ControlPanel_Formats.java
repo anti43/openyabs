@@ -21,6 +21,7 @@ import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryData;
 import mpv5.db.common.QueryHandler;
+import mpv5.db.objects.Item;
 import mpv5.globals.Headers;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
@@ -32,6 +33,7 @@ import mpv5.ui.panels.DataPanel;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.db.objects.User;
 import mpv5.handler.FormatHandler;
+import mpv5.handler.MPEnum;
 import mpv5.handler.VariablesHandler;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
@@ -56,13 +58,16 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
     private PropertyStore oldvalues;
     private User dataOwner;
     private static ControlPanel_Formats ident;
+    private Integer currentUser;
 
     public ControlPanel_Formats() {
         if (MPSecurityManager.checkAdminAccess()) {
             initComponents();
             refresh();
+            setTable();
             setVisible(true);
             setacL();
+
         }
     }
 
@@ -90,6 +95,7 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
         labeledCombobox2 = new mpv5.ui.beans.LabeledCombobox();
         labeledTextField1 = new mpv5.ui.beans.LabeledTextField();
         jLabel1 = new javax.swing.JLabel();
+        labeledCombobox3 = new mpv5.ui.beans.LabeledCombobox();
         jPanel6 = new javax.swing.JPanel();
         jButton3 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
@@ -154,6 +160,9 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
         jLabel1.setText(bundle.getString("ControlPanel_Formats.jLabel1.text")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
 
+        labeledCombobox3.set_Label(bundle.getString("ControlPanel_Formats.labeledCombobox3._Label")); // NOI18N
+        labeledCombobox3.setName("labeledCombobox3"); // NOI18N
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -165,20 +174,21 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
                         .addGap(2, 2, 2))
                     .addComponent(jComboBox1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                    .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(0, 0, 0)
                         .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(labeledTextField1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 336, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(labeledCombobox2, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(labeledCombobox1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel1)
-                                .addGap(82, 82, 82))
-                            .addComponent(labeledTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 336, Short.MAX_VALUE)))
+                                .addGap(96, 96, 96))))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(labeledCombobox2, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(labeledCombobox1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(labeledCombobox3, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -193,14 +203,16 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(labeledCombobox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
                                 .addComponent(labeledCombobox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(labeledCombobox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel1)
-                                .addGap(28, 28, 28)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(labeledTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 189, Short.MAX_VALUE))))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 188, Short.MAX_VALUE))))
                 .addContainerGap())
         );
 
@@ -260,7 +272,9 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
     }//GEN-LAST:event_jComboBox1ItemStateChanged
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
-        refresh();
+
+        currentUser = Integer.valueOf(((MPComboBoxModelItem) jComboBox1.getSelectedItem()).getId());
+        setTable();
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
@@ -291,6 +305,7 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
     private javax.swing.JTable jTable1;
     private mpv5.ui.beans.LabeledCombobox labeledCombobox1;
     private mpv5.ui.beans.LabeledCombobox labeledCombobox2;
+    private mpv5.ui.beans.LabeledCombobox labeledCombobox3;
     private mpv5.ui.beans.LabeledTextField labeledTextField1;
     // End of variables declaration//GEN-END:variables
     public String laf_;
@@ -319,14 +334,14 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
             Log.Debug(ex);
         }
 
-        try {
-            jTable1.setModel(new MPTableModel(QueryHandler.instanceOf().clone(Context.getFormats()).select("cname, inttype", new QueryCriteria("usersids", Integer.valueOf(((MPComboBoxModelItem) jComboBox1.getSelectedItem()).getId())))));
-        } catch (NodataFoundException ex) {
-            Log.Debug(ex);
-        }
-     
-        labeledCombobox1.setModel(QueryHandler.instanceOf().clone(Context.getFormats()).select("inttype,cname", (String[])null));
+        labeledCombobox1.setModel(QueryHandler.instanceOf().clone(Context.getFormats()).select("inttype,cname", (String[]) null));
         labeledCombobox2.setModel(VariablesHandler.GENERIC_VARS.values());
+        labeledCombobox3.setModel(MPComboBoxModelItem.toModel((MPEnum[]) FormatHandler.TYPES.values()));
+        labeledTextField1.setText(FormatHandler.INTEGERPART_IDENTIFIER);
+        labeledCombobox3.getComboBox().setSelectedIndex(0);
+
+        setUser();
+        setTable();
     }
 
     @Override
@@ -346,14 +361,46 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
 
     private void save() {
         QueryCriteria c = new QueryCriteria();
-        c.add("inttype", 0);
+        c.add("inttype", Integer.valueOf(labeledCombobox3.getSelectedItem().getId()));
         c.add("usersids", Integer.valueOf(((MPComboBoxModelItem) jComboBox1.getSelectedItem()).getId()));
         QueryHandler.instanceOf().clone(Context.getFormats()).delete(c);
         QueryData what = new QueryData();
-        what.add("inttype", 0);
+        what.add("inttype", Integer.valueOf(labeledCombobox3.getSelectedItem().getId()));
         what.add("cname", labeledTextField1.getText());
         what.add("usersids", Integer.valueOf(((MPComboBoxModelItem) jComboBox1.getSelectedItem()).getId()));
         QueryHandler.instanceOf().clone(Context.getFormats()).insert(what, null);
+
+        setTable();
+    }
+
+    private void setTable() {
+        try {
+            Object[][] d = QueryHandler.instanceOf().clone(Context.getFormats()).select("cname, inttype", new QueryCriteria("usersids", currentUser));
+            for (int i = 0; i < d.length; i++) {
+                MPEnum[] t = FormatHandler.TYPES.values();
+                for (int j = 0; j < t.length; j++) {
+                    MPEnum mPEnum = t[j];
+                    if (mPEnum.getId() == Integer.valueOf(d[i][1].toString()).intValue()) {
+                        d[i][1] = mPEnum.getName();
+                        break;
+                    }
+                }
+            }
+            jTable1.setModel(new MPTableModel(d));
+            TableFormat.format(jTable1, 1, 100);
+        } catch (NodataFoundException ex) {
+            Log.Debug(ex);
+        }
+    }
+
+    private void setUser() {
+        if (currentUser == null) {
+            currentUser = MPV5View.getUser().getID();
+            jComboBox1.setSelectedIndex(MPComboBoxModelItem.getItemID(currentUser, jComboBox1.getModel()));
+        }
+
+        currentUser = Integer.valueOf(((MPComboBoxModelItem) jComboBox1.getSelectedItem()).getId());
+
     }
 
     private void setacL() {
@@ -370,7 +417,7 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                labeledTextField1.set_Text(labeledTextField1.get_Text() + labeledCombobox2.getSelectedItem().getValue());
+                labeledTextField1.set_Text(labeledCombobox2.getSelectedItem().getValue() + labeledTextField1.get_Text());
             }
         });
     }
@@ -381,10 +428,18 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
     }
 
     private boolean test() {
-       String str = "";
-        FormatHandler fh = new FormatHandler(DatabaseObject.getObject(Context.getBill()));
+        if (!labeledTextField1.getText().contains(FormatHandler.INTEGERPART_IDENTIFIER)) {
+            labeledTextField1.set_Text(labeledTextField1.getText() + FormatHandler.INTEGERPART_IDENTIFIER);
+        }
+
+        String str = "";
+        Item b = (Item) DatabaseObject.getObject(Context.getItems());
+        b.avoidNulls();
+
+        FormatHandler fh = new FormatHandler(b);
         fh.setFormat(labeledTextField1.getText());
-        str = fh.toString(43);
-       return Popup.Y_N_dialog(str, Messages.ARE_YOU_SURE.getValue());
+        str = fh.toString(1000);
+        str = Messages.THE_RESULT + str;
+        return Popup.OK_dialog(str, Messages.NOTICE.getValue());
     }
 }
