@@ -942,7 +942,7 @@ public class Context {
     }
 
     public static Context getItems() {
-        return getItem(Item.TYPE_BILL, Item.STATUS_QUEUED);
+        return getItem(null, null);
     }
 
     public static Context getSubItem() {

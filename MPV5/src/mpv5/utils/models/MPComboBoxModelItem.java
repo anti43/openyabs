@@ -103,7 +103,7 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
         return array;
     }
 
-      /**
+    /**
      * Converts an enum<id, name> to mp combo box items
      * {id (hidden), value (shown in the list)}
      * @param items
@@ -116,7 +116,8 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
         }
         return array;
     }
-  /**
+
+    /**
      * Creates a {@link DefaultComBoxModel} containing an array of {@link MPComboBoxModelItem}
      * {enum id (hidden), value (shown in the list)}
      * @param data
@@ -125,6 +126,7 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
     public static DefaultComboBoxModel toModel(MPEnum[] data) {
         return new DefaultComboBoxModel(toItems(data));
     }
+
     /**
      * Creates a {@link DefaultComBoxModel} containing an array of {@link MPComboBoxModelItem}
      * {id (hidden), value (shown in the list)}
@@ -162,6 +164,26 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
      */
     public String getId() {
         return id;
+    }
+
+    /**
+     * If the id is greater than 0 or longer than 0 if a String index
+     * @return
+     */
+    public boolean isValid() {
+        try {
+            if (Integer.valueOf(id).intValue() > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (NumberFormatException numberFormatException) {
+            if (id.length() > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
 
     /**

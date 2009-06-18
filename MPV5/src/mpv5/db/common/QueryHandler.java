@@ -77,6 +77,7 @@ public class QueryHandler implements Cloneable {
     }
     private DataPanel viewToBeNotified = null;
     private static Integer ROW_LIMIT = null;
+    private int limit = 0;
 
     private QueryHandler() {
         try {
@@ -573,6 +574,11 @@ public class QueryHandler implements Cloneable {
         return checkUniqueness(t, new int[]{0});
     }
     private static int RUNNING_JOBS = 0;
+
+    private void setLimit(int limit) {
+          Log.Debug(QueryHandler.class, "Setting row limit to: " + limit);
+        this.limit = limit;
+    }
 
     private synchronized void stop() {
         Runnable runnable = new Runnable() {
@@ -1087,6 +1093,19 @@ public class QueryHandler implements Cloneable {
         return theClone;
     }
 
+    public QueryHandler clone(Context context, int limit) {
+        QueryHandler theClone = null;
+        this.context = context;
+        try {
+            theClone = (QueryHandler) this.clone();
+            theClone.setTable(context.getDbIdentity());
+            theClone.setLimit(limit);
+        } catch (CloneNotSupportedException ex) {
+            Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return theClone;
+    }
+
     /**
      * 
      * @param c
@@ -1486,6 +1505,10 @@ public class QueryHandler implements Cloneable {
             if (ROW_LIMIT != null && ROW_LIMIT.intValue() >= 0) {
                 stm.setMaxRows(ROW_LIMIT.intValue());
             }
+            if (this.limit > 0) {
+                stm.setMaxRows(limit);
+            }
+
             Log.Debug(this, "freeSelectQuery::" + query);
             resultSet = stm.executeQuery(query);
             ArrayList spalten = new ArrayList();
@@ -1622,6 +1645,10 @@ public class QueryHandler implements Cloneable {
             if (ROW_LIMIT != null && ROW_LIMIT.intValue() >= 0) {
                 stm.setMaxRows(ROW_LIMIT.intValue());
             }
+            if (this.limit > 0) {
+                stm.setMaxRows(limit);
+            }
+
             ResultSet rs = stm.executeQuery(query);
             Log.Debug(this, query);
             while (rs.next()) {

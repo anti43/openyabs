@@ -11,6 +11,7 @@
 package mpv5.ui.panels;
 
 import java.awt.Dimension;
+import javax.swing.SwingUtilities;
 import mpv5.db.common.Context;
 
 import mpv5.db.common.DatabaseObject;
@@ -224,37 +225,42 @@ public class SearchPanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void search(int searchtype, String value) {
+    private void search(final int searchtype, final String value) {
 
-        lasttype = searchtype;
-        lastneedle = value;
+        Runnable runnable = new Runnable() {
 
-        switch (searchtype) {
+            public void run() {
+                lasttype = searchtype;
+                lastneedle = value;
 
-            case 1:
-                resulttable.setModel(new MPTableModel(new DatabaseSearch(context).getValuesFor("ids,cname,cnumber", "cname", value, true), Headers.SEARCH_DEFAULT.getValue()));
+                switch (searchtype) {
 
-                break;
-            case 2:
-                resulttable.setModel(new MPTableModel(new DatabaseSearch(context).getValuesFor("ids,cname,cnumber", "cnumber", value, true), Headers.SEARCH_DEFAULT.getValue()));
+                    case 1:
+                        resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 50).getValuesFor("ids,cname", "cname", value, true), Headers.SEARCH_DEFAULT.getValue()));
 
-                break;
-            case 3:
-                Integer id = new DatabaseSearch(Context.getGroup()).searchForID("cname", value);
-                if (id != null) {
-                    resulttable.setModel(new MPTableModel(new DatabaseSearch(context).getValuesFor("ids,cname,cnumber", "groupsids",
-                            id), Headers.SEARCH_DEFAULT.getValue()));
-                } else {
-                    resulttable.setModel(new MPTableModel(new String[][]{}, Headers.SEARCH_DEFAULT.getValue()));
+                        break;
+                    case 2:
+                        resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 50).getValuesFor("ids,cname", "cnumber", value, true), Headers.SEARCH_DEFAULT.getValue()));
+
+                        break;
+                    case 3:
+                        Integer id = new DatabaseSearch(Context.getGroup()).searchForID("cname", value);
+                        if (id != null) {
+                            resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 50).getValuesFor("ids,cname", "groupsids",
+                                    id), Headers.SEARCH_DEFAULT.getValue()));
+                        } else {
+                            resulttable.setModel(new MPTableModel(new String[][]{}, Headers.SEARCH_DEFAULT.getValue()));
+                        }
+
+                        break;
+                    case 4:
+                        resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 50).getValuesFor("ids,cname", "cname", context.getParent().__getCName(), true), Headers.SEARCH_DEFAULT.getValue()));
+
                 }
-
-                break;
-            case 4:
-                resulttable.setModel(new MPTableModel(new DatabaseSearch(context).getValuesFor("ids,cname,cnumber", "cname", context.getParent().__getCName(), true), Headers.SEARCH_DEFAULT.getValue()));
-
-        }
-        TableFormat.stripFirstColumn(resulttable);
-        TableFormat.makeUneditable(resulttable);
+                TableFormat.stripFirstColumn(resulttable);
+                TableFormat.makeUneditable(resulttable);
+            }
+        };SwingUtilities.invokeLater(runnable);
 
     }
 

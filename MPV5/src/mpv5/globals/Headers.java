@@ -2,7 +2,7 @@ package mpv5.globals;
 
 public enum Headers {
 
-    SEARCH_DEFAULT(new String[]{"Internal ID", "Name", "Number"}),
+    SEARCH_DEFAULT(new String[]{"Internal ID", "Name"}),
     CONTACT_DEFAULT(new String[]{"Internal ID", "ID", "Name", "City"}),
     CONTACT_DETAILS(new String[]{
 "Internal ID", "ID", "Title",

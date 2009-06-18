@@ -11,6 +11,7 @@ public class DatabaseSearch {
     public static String ALL_COLUMNS = "*";
 
     private Context context;
+    private int ROWLIMIT  = 0;
 
     /**
      *
@@ -30,12 +31,17 @@ public class DatabaseSearch {
         context.setSubID(Context.DEFAULT_SUBID);
     }
 
+    public DatabaseSearch(Context context, int rowlimit) {
+          this.context = context;
+          this.ROWLIMIT = rowlimit;
+    }
+
     /**
      * Get multiple values from a search
      * @return select("*", null);
      */
     public Object[][] getValuesFor() {
-        return QueryHandler.instanceOf().clone(context).select("*",(String[]) null);
+        return QueryHandler.instanceOf().clone(context, ROWLIMIT).select("*",(String[]) null);
     }
 
     /**
@@ -46,7 +52,7 @@ public class DatabaseSearch {
      * @return
      */
     public Object[][] getValuesFor(String resultingFieldNames, String what, String where) {
-        return QueryHandler.instanceOf().clone(context).select(resultingFieldNames, new String[]{what, where, "'"});
+        return QueryHandler.instanceOf().clone(context, ROWLIMIT).select(resultingFieldNames, new String[]{what, where, "'"});
     }
    /**
      * Get multiple values from a search, where the search column is a number column
@@ -56,7 +62,7 @@ public class DatabaseSearch {
     * @return
      */
     public Object[][] getValuesFor(String resultingFieldNames, String what,  Number value) {
-         return QueryHandler.instanceOf().clone(context).select(resultingFieldNames, new String[]{what, value.toString(), ""});
+         return QueryHandler.instanceOf().clone(context, ROWLIMIT).select(resultingFieldNames, new String[]{what, value.toString(), ""});
     }
 
     /**
@@ -71,7 +77,7 @@ public class DatabaseSearch {
      ArrayList<Object[]> list = new ArrayList<Object[]>();
         for (int i = 0; i < possibleColumns.length; i++) {
             String string = possibleColumns[i];
-             list.addAll(Arrays.asList( QueryHandler.instanceOf().clone(context).select(resultingFieldNames, new String[]{string, where, "'"}, null, searchForLike)));
+             list.addAll(Arrays.asList( QueryHandler.instanceOf().clone(context, ROWLIMIT).select(resultingFieldNames, new String[]{string, where, "'"}, null, searchForLike)));
         }
      return list.toArray(new Object[][]{});
     }
@@ -85,7 +91,7 @@ public class DatabaseSearch {
      * @return
      */
     public Object[][] getValuesFor(String resultingFieldNames, String what, String where, boolean searchForLike) {
-        return QueryHandler.instanceOf().clone(context).select(resultingFieldNames, new String[]{what, where, "'"}, null, searchForLike);
+        return QueryHandler.instanceOf().clone(context, ROWLIMIT).select(resultingFieldNames, new String[]{what, where, "'"}, null, searchForLike);
 
     }
 
@@ -112,7 +118,7 @@ public class DatabaseSearch {
      * @throws NodataFoundException If no data was found matching your search
      */
     public Object[] searchFor(String[] columns, String what, String needle , boolean exactMatch) throws NodataFoundException {
-        Object[] data = QueryHandler.instanceOf().clone(context).getValuesFor(columns, what, needle, exactMatch);
+        Object[] data = QueryHandler.instanceOf().clone(context, ROWLIMIT).getValuesFor(columns, what, needle, exactMatch);
         if (data == null || data.length == 0) {
             throw new NodataFoundException();
         } else {
@@ -129,7 +135,7 @@ public class DatabaseSearch {
      * @throws NodataFoundException If no data was found matching your search
      */
     public Object[] searchFor(String[] columns, String what, String needle) throws NodataFoundException {
-        Object[] data = QueryHandler.instanceOf().clone(context).getValuesFor(columns, what, needle, false);
+        Object[] data = QueryHandler.instanceOf().clone(context, ROWLIMIT).getValuesFor(columns, what, needle, false);
         if (data == null || data.length == 0) {
             throw new NodataFoundException();
         } else {
@@ -147,7 +153,7 @@ public class DatabaseSearch {
     public Integer searchForID( String what, String needle) {
         Object[] data;
         try {
-            data = QueryHandler.instanceOf().clone(context).selectLast("ids", new String[]{what, needle, "'"}, true);
+            data = QueryHandler.instanceOf().clone(context, ROWLIMIT).selectLast("ids", new String[]{what, needle, "'"}, true);
             return Integer.valueOf(data[0].toString());
         } catch (Exception ex) {
             return null;

@@ -11,8 +11,16 @@
 package mpv5.ui.beans;
 
 import java.awt.Font;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import javax.swing.ComboBoxEditor;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
+import javax.swing.SwingUtilities;
+import mpv5.db.common.Context;
+import mpv5.db.common.DatabaseSearch;
 import mpv5.handler.VariablesHandler.GENERIC_VARS;
 import mpv5.utils.models.MPComboBoxModelItem;
 
@@ -26,11 +34,47 @@ public class LabeledCombobox extends javax.swing.JPanel {
     private String _text;
     private String _label;
     private Class clazz;
+    public static boolean SEARCH_ON_ENTER = false;
+    private Context context;
 
     /** Creates new form LabeledTextField */
     public LabeledCombobox() {
         initComponents();
+        jComboBox1.getEditor().getEditorComponent().addKeyListener(new KeyListener() {
 
+            @Override
+            public void keyTyped(KeyEvent e) {
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+                if (SEARCH_ON_ENTER && e.getKeyCode() == KeyEvent.VK_ENTER && context != null) {
+                    Runnable runnable = new Runnable() {
+
+                        @Override
+                        public void run() {
+                            ComboBoxEditor cbField = jComboBox1.getEditor();
+                            Object value = cbField.getItem();
+//                            if(value instanceof MPComboBoxModelItem
+                            jComboBox1.setSelectedItem(new MPComboBoxModelItem(-1, value.toString()));
+                            Object[][] data = new DatabaseSearch(context, 50).getValuesFor("ids, cname", "cname", jComboBox1.getSelectedItem().toString(), true);
+//                    if (data.length > 0) {
+                            jComboBox1.setModel(MPComboBoxModelItem.toModel(data));
+                            if (data.length > 1) {
+                                jComboBox1.setPopupVisible(true);
+                            }
+                        }
+                    };
+                    SwingUtilities.invokeLater(runnable);
+//                    }
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+            }
+        });
     }
 
     public JComboBox getComboBox() {
@@ -60,20 +104,52 @@ public class LabeledCombobox extends javax.swing.JPanel {
         jComboBox1.setModel(MPComboBoxModelItem.toModel(data));
     }
 
+    /**
+     *
+     * @return An {@link MPComboBoxModelItem} or null if nothing is selected
+     */
     public MPComboBoxModelItem getSelectedItem() {
-        return (MPComboBoxModelItem) jComboBox1.getSelectedItem();
+        if (jComboBox1.getSelectedItem() instanceof MPComboBoxModelItem) {
+            return (MPComboBoxModelItem) jComboBox1.getSelectedItem();
+        } else {
+            return null;
+        }
     }
 
+    /**
+     * Set the model. Should contain only {@link MPComboBoxModelItem}s
+     * @param model
+     */
     public void setModel(DefaultComboBoxModel model) {
         jComboBox1.setModel(model);
     }
 
+    /**
+     * Sets the item with the given value as selected item
+     * @param valueOfItem
+     */
+    public void setSelectedItem(String valueOfItem) {
+        jComboBox1.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(valueOfItem, jComboBox1.getModel()));
+    }
 
+    /**
+     * If set to true, hitting "Enter" on the text field will trigger a search for the entered value and popup the results if any.
+     * <br/>{@link LabeledCombobox#setContext(Context)} must be called before this can work.
+     * @param enabled
+     */
+    public void setSearchOnEnterEnabled(boolean enabled) {
+        SEARCH_ON_ENTER = enabled;
+        jComboBox1.setEditable(true);
+    }
 
-//    public void setLabelFont(Font font) {
-//        setFont(font);
-//
-//    }
+    /**
+     * Set the context for database queries
+     * @param c
+     */
+    public void setContext(Context c) {
+        this.context = c;
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -90,7 +166,14 @@ public class LabeledCombobox extends javax.swing.JPanel {
 
         jLabel1.setText("text");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jComboBox1KeyPressed(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jComboBox1KeyTyped(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -108,6 +191,13 @@ public class LabeledCombobox extends javax.swing.JPanel {
                 .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jComboBox1KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jComboBox1KeyTyped
+    }//GEN-LAST:event_jComboBox1KeyTyped
+
+    private void jComboBox1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jComboBox1KeyPressed
+    }//GEN-LAST:event_jComboBox1KeyPressed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
@@ -116,17 +206,8 @@ public class LabeledCombobox extends javax.swing.JPanel {
     /**
      * @return the _text
      */
-    public Object get_Value() {
+    public Object getValue() {
         return jComboBox1.getSelectedItem();
-    }
-
-    /**
-     * @param text the _text to set
-     */
-    public void set_Value(Object text) {
-        this._text = String.valueOf(text);
-        jComboBox1.setSelectedItem(text);
-
     }
 
     /**
@@ -146,10 +227,8 @@ public class LabeledCombobox extends javax.swing.JPanel {
         jLabel1.setToolTipText(_text);
     }
 
+    @Deprecated
     public void set_LabelFont(Font font) {
-//        if (font != null) {
-//            jLabel1.setFont(font);
-//        }
     }
 
     @Override

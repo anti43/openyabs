@@ -61,6 +61,7 @@ import mpv5.pluginhandling.MPPLuginLoader;
 import mpv5.ui.dialogs.Wizard;
 import mpv5.ui.dialogs.subcomponents.wizard_XMLImport_1;
 import mpv5.ui.dialogs.subcomponents.wizard_XMLImport_2;
+import mpv5.ui.panels.ItemPanel;
 import mpv5.ui.panels.TrashPanel;
 import mpv5.utils.files.TextDatFile;
 import mpv5.utils.images.MPIcon;
@@ -420,6 +421,7 @@ public class MPV5View extends FrameView {
         jButton2 = new javax.swing.JButton();
         jButton18 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
+        jButton8 = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
         jButton6 = new javax.swing.JButton();
@@ -514,7 +516,7 @@ public class MPV5View extends FrameView {
             }
         });
 
-        jButton1.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton1.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/edit_group.png"))); // NOI18N
         jButton1.setText(bundle.getString("MPV5View.jButton1.text_1")); // NOI18N
         jButton1.setToolTipText(bundle.getString("MPV5View.jButton1.toolTipText_1")); // NOI18N
@@ -540,7 +542,7 @@ public class MPV5View extends FrameView {
             }
         });
 
-        jButton18.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton18.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/edit_group.png"))); // NOI18N
         jButton18.setText(bundle.getString("MPV5View.jButton18.text_1")); // NOI18N
         jButton18.setToolTipText(bundle.getString("MPV5View.jButton18.toolTipText_1")); // NOI18N
@@ -594,15 +596,38 @@ public class MPV5View extends FrameView {
         jPanel3.setName("jPanel3"); // NOI18N
         jPanel3.setPreferredSize(new java.awt.Dimension(110, 400));
 
+        jButton8.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/binary.png"))); // NOI18N
+        jButton8.setText(bundle.getString("MPV5View.jButton8.text")); // NOI18N
+        jButton8.setToolTipText(bundle.getString("MPV5View.jButton8.toolTipText")); // NOI18N
+        jButton8.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton8.setName("jButton8"); // NOI18N
+        jButton8.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 110, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel3Layout.createSequentialGroup()
+                    .addGap(11, 11, 11)
+                    .addComponent(jButton8, javax.swing.GroupLayout.DEFAULT_SIZE, 88, Short.MAX_VALUE)
+                    .addGap(11, 11, 11)))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel3Layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jButton8)
+                    .addContainerGap(329, Short.MAX_VALUE)))
         );
 
         jOutlookBar1.addTab(bundle.getString("MPV5View.jPanel3.TabConstraints.tabTitle_1"), jPanel3); // NOI18N
@@ -1408,6 +1433,10 @@ public class MPV5View extends FrameView {
         addTab(TrashPanel.instanceOf(), Messages.TRASHBIN);
     }//GEN-LAST:event_jButton7ActionPerformed
 
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        addTab(new ItemPanel(Context.getBill()), Messages.NEW_BILL);
+    }//GEN-LAST:event_jButton8ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JMenu clipboardMenu;
     public javax.swing.JMenu favouritesMenu;
@@ -1420,6 +1449,7 @@ public class MPV5View extends FrameView {
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
+    private javax.swing.JButton jButton8;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu10;
     private javax.swing.JMenu jMenu2;
@@ -1561,24 +1591,25 @@ public class MPV5View extends FrameView {
             } else {
                 plab.setIcon(new MPIcon(MPPLuginLoader.getDefaultPluginImage()).getIcon(18));
             }
-            plab.setToolTipText("<html><b>"+mP5Plugin.getName() + " " + Messages.LOADED + "</b><br/><font size=-3>[" + mP5Plugin.getUID() + "]</html>");
+            plab.setToolTipText("<html><b>" + mP5Plugin.getName() + " " + Messages.LOADED + "</b><br/><font size=-3>[" + mP5Plugin.getUID() + "]</html>");
             plab.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseReleased(MouseEvent e){
-             if (e.getButton() == MouseEvent.BUTTON2 || e.getButton() == MouseEvent.BUTTON3) {
-                    JLabel source = (JLabel) e.getSource();
-                    JPopupMenu m = new JPopupMenu();
-                    JMenuItem n = new JMenuItem(Messages.UNLOAD.getValue());
-                    n.addActionListener(new ActionListener() {
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    if (e.getButton() == MouseEvent.BUTTON2 || e.getButton() == MouseEvent.BUTTON3) {
+                        JLabel source = (JLabel) e.getSource();
+                        JPopupMenu m = new JPopupMenu();
+                        JMenuItem n = new JMenuItem(Messages.UNLOAD.getValue());
+                        n.addActionListener(new ActionListener() {
 
                             public void actionPerformed(ActionEvent e) {
-                              unLoadPlugin(mP5Plugin);
+                                unLoadPlugin(mP5Plugin);
                             }
                         });
-                    m.add(n);
-                    m.show(plab, e.getX(), e.getY());
+                        m.add(n);
+                        m.show(plab, e.getX(), e.getY());
+                    }
                 }
-            }
             });
             pluginIcons.add(plab);
         } catch (Exception e) {
