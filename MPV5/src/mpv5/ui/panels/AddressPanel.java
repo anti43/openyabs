@@ -49,7 +49,6 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
     private Address dataOwner = new Address();
     private Contact dataParent = new Contact();
 
-
     /** Creates new form AddressPanel */
     public AddressPanel() {
         initComponents();
@@ -277,11 +276,9 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void companyselectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_companyselectActionPerformed
-
 }//GEN-LAST:event_companyselectActionPerformed
 
     private void countryselectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_countryselectActionPerformed
-
 }//GEN-LAST:event_countryselectActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -442,6 +439,10 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
             dataOwner.getPanelData(this);
             if (!dataOwner.save()) {
                 showRequiredFields();
+            } else {
+                ((JTabbedPane) getParent()).setTitleAt(
+                        ((JTabbedPane) getParent()).getSelectedIndex(),
+                        dataOwner.__getCName());
             }
         }
     }

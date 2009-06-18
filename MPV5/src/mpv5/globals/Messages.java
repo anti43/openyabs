@@ -20,13 +20,13 @@ public enum Messages {
 
     START_MESSAGE(
     "\n" +
-    "\n  MP " + Constants.VERSION + " Copyright (C) 2006-2008  Weber\n" +
+    "\n  MP " + Constants.VERSION + " Copyright (C) 2006-2009 A. Weber\n" +
     "\n  This program comes with ABSOLUTELY NO WARRANTY." +
     "\n  MP is free software, and you are welcome to redistribute it " +
     "\n  under certain conditions;" +
     "\n  Start with -license for details.\n" +
     "\n  Start with -help for command line options.\n" +
-    "*****************************************************************\n\n"),
+    "*****************************************************************"),
     CONTACT("Contact: "),
     /**
      * Start MAIN
@@ -134,12 +134,16 @@ public enum Messages {
     STATUS_IN_PROGRESS("In progress"),
     STATUS_PAUSED("Paused"),
     STATUS_FINISHED("Finished"),
+    STATUS_CANCELLED("Cancelled"),
     TYPE_BILL("Bill"),
     TYPE_OFFER("Offer"),
     TYPE_CONTACT("Contact"),
     TYPE_CUSTOMER("Customer"),
     TYPE_MANUFACTURER("Manufacturer"),
     TYPE_SUPPLIER("Supplier"),
+    TYPE_PRODUCT("Product"),
+    TYPE_SERVICE("Service"),
+    TYPE_ORDER("Order"),
     STATUS_PAID("Paid"),
     TRASHBIN("Trashbin"),
     DELETE("Delete"),
@@ -147,10 +151,8 @@ public enum Messages {
     RESTORED(" restored"),
     RELOAD("Reload"),
     LOADED(" loaded"),
-    UNLOAD("Unload"),
-    TYPE_PRODUCT("Product"),
-    TYPE_SERVICE("Service"),
-    TYPE_ORDER("Order");
+    UNLOAD("Unload");
+   
 
     private Messages(String message) {
         this.message = message;
@@ -177,5 +179,4 @@ public enum Messages {
     public String getValue() {
         return toString();
     }
-
 }

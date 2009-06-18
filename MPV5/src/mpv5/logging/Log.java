@@ -128,6 +128,7 @@ public class Log {
      */
     public static void Print(Object message) {
         write(message);
+        System.out.println(message);
     }
 
     /**

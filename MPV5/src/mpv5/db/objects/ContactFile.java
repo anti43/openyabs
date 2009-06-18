@@ -16,10 +16,15 @@
  */
 package mpv5.db.objects;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.NodataFoundException;
+import mpv5.logging.Log;
+import mpv5.ui.panels.ContactPanel;
 
 /**
  *
@@ -31,7 +36,7 @@ public class ContactFile extends DatabaseObject {
     private int contactsids;
     private String filename = "";
 
-    public ContactFile(){
+    public ContactFile() {
         context.setDbIdentity(Context.IDENTITY_FILES_TO_CONTACTS);
         context.setIdentityClass(this.getClass());
     }
@@ -43,7 +48,13 @@ public class ContactFile extends DatabaseObject {
 
     @Override
     public JComponent getView() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        ContactPanel x = new ContactPanel(Context.getContact());
+        try {
+            x.setDataOwner(DatabaseObject.getObject(Context.getContact(), contactsids));
+        } catch (NodataFoundException ex) {
+            Log.Debug(ex);
+        }
+        return x;
     }
 
     @Override
@@ -93,7 +104,7 @@ public class ContactFile extends DatabaseObject {
         this.filename = filename;
     }
 
-   @Override
+    @Override
     public mpv5.utils.images.MPIcon getIcon() {
         return null;
     }

@@ -45,6 +45,8 @@ public class Item extends DatabaseObject {
                 return Messages.STATUS_FINISHED.toString();
             case (STATUS_PAID):
                 return Messages.STATUS_PAID.toString();
+            case (STATUS_CANCELLED):
+                return Messages.STATUS_CANCELLED.toString();
         }
         return null;
     }
@@ -80,6 +82,7 @@ public class Item extends DatabaseObject {
     public static final int STATUS_PAUSED = 2;
     public static final int STATUS_FINISHED = 3;
     public static final int STATUS_PAID = 4;
+    public static final int STATUS_CANCELLED = 5;
     public static final int TYPE_BILL = 0;
     public static final int TYPE_ORDER = 1;
     public static final int TYPE_OFFER = 2;
@@ -88,7 +91,6 @@ public class Item extends DatabaseObject {
         context.setDbIdentity(Context.IDENTITY_ITEMS);
         context.setIdentityClass(Item.class);
     }
-
 
     /**
      * @return the contactsids
@@ -262,7 +264,7 @@ public class Item extends DatabaseObject {
         this.netvalue = netvalue;
     }
 
-     @Override
+    @Override
     public mpv5.utils.images.MPIcon getIcon() {
         return null;
     }

@@ -153,8 +153,8 @@ public class FormatHandler {
         c.add("inttype", this.getType());
         try {
             Object[][] frm = QueryHandler.instanceOf().clone(Context.getFormats()).select("cname, ids", c);
-            String val = frm[frm.length-1][0].toString();
-            int id = Integer.valueOf(frm[frm.length-1][1].toString());
+            String val = frm[frm.length - 1][0].toString();
+            int id = Integer.valueOf(frm[frm.length - 1][1].toString());
             try {
                 if (val.startsWith(START_VALUE_IDENTIFIER)) {
                     startCount = Integer.valueOf(val.split(START_VALUE_IDENTIFIER)[1]);
@@ -178,24 +178,30 @@ public class FormatHandler {
      * @return
      */
     public synchronized int getNextNumber() {
-        int newN = 0;
-        DatabaseObject forThis = source;
-        if (forThis.getContext().equals(Context.getContact())) {
-            ReturnValue val = QueryHandler.getConnection().freeQuery(
-                    //                    "LOCK TABLE " + forThis.getDbIdentity() + " IN EXCLUSIVE MODE;" +
-                    "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + ")", MPSecurityManager.VIEW, null);
-            Log.Debug(FormatHandler.class, "Last number found: " + val.getData()[0][0]);
-            newN = ((Contact) forThis).getFormatHandler().getIntegerPartOf(val.getData()[0][0].toString());
-            Log.Debug(FormatHandler.class, "Counter part: " + newN);
-            return getNextNumber(newN);
+        if (startCount == null) {
+            int newN = 0;
+            DatabaseObject forThis = source;
+            if (forThis.getContext().equals(Context.getContact())) {
+                ReturnValue val = QueryHandler.getConnection().freeQuery(
+                        //                    "LOCK TABLE " + forThis.getDbIdentity() + " IN EXCLUSIVE MODE;" +
+                        "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + ")", MPSecurityManager.VIEW, null);
+                Log.Debug(FormatHandler.class, "Last number found: " + val.getData()[0][0]);
+                newN = ((Contact) forThis).getFormatHandler().getIntegerPartOf(val.getData()[0][0].toString());
+                Log.Debug(FormatHandler.class, "Counter part: " + newN);
+                return getNextNumber(newN);
+            } else {
+                throw new UnsupportedOperationException("FormatHandler#getNextNumber is not defined for " + forThis);
+            }
         } else {
-            throw new UnsupportedOperationException("FormatHandler#getNextNumber is not defined for " + forThis);
+            int tmp = startCount.intValue();
+            startCount = null;
+            return tmp;
         }
     }
 
     private synchronized int getNextNumber(int lastNumber) {
         DatabaseObject forThis = source;
-        ReturnValue val2 = QueryHandler.getConnection().freeQuery("SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + toString(lastNumber + 1) + "' " , MPSecurityManager.VIEW, null);
+        ReturnValue val2 = QueryHandler.getConnection().freeQuery("SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + toString(lastNumber + 1) + "' ", MPSecurityManager.VIEW, null);
         if (val2.hasData()) {
             Log.Debug(FormatHandler.class, "Already existing..: " + val2.getData()[0][0]);
             return getNextNumber(lastNumber + 1);
@@ -211,13 +217,7 @@ public class FormatHandler {
      * @return A formatted number
      */
     public synchronized String toString(int number) {
-        if (startCount == null) {
-            return format.format(new Object[]{number});
-        } else {
-            String n = format.format(new Object[]{number});
-            startCount = null;
-            return n;
-        }
+        return format.format(new Object[]{number});
     }
 
     /**

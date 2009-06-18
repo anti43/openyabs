@@ -28,7 +28,7 @@ import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.Popup;
 import mpv5.utils.text.RandomText;
 
-public class FileDirectoryHandler {
+public abstract class FileDirectoryHandler {
 
     /**
      * Deletes a file now or later

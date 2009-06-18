@@ -41,7 +41,8 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
         context.setExclusiveContactConditions(customer, supplier, manufacturer, company);
         context.useExclusiveConditions(filtered);
         if (jTextField1.getText() != null && jTextField1.getText().length() > 0) {
-            listTable.setModel(new MPTableModel(new DatabaseSearch(context).getValuesFor(Context.DETAILS_CONTACTS, Context.DETAIL_CONTACT_SEARCH.split(","), jTextField1.getText(), true), Headers.CONTACT_DETAILS.getValue()));
+            listTable.setModel(new MPTableModel(new DatabaseSearch(context).getValuesFor(Context.DETAILS_CONTACTS, Context.DETAIL_CONTACT_SEARCH.split(","), jTextField1.getText(), true), Headers.CONTACT_DETAILS.getValue(),
+                    new Class[]{Integer.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class}));
         } else {
             listTable.setModel(new MPTableModel(new DatabaseSearch(context).getValuesFor(Context.DETAILS_CONTACTS, null, ""), Headers.CONTACT_DETAILS.getValue()));
         }

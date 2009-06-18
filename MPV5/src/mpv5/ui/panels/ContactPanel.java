@@ -159,6 +159,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
     public void showRequiredFields() {
         TextFieldUtils.blinkerRed(cname);
+        cname.requestFocus();
     }
 
     private void addAddresses() {

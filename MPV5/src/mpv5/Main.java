@@ -16,6 +16,8 @@
  */
 package mpv5;
 
+import java.io.FileNotFoundException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,6 +30,7 @@ import org.jdesktop.application.SingleFrameApplication;
 import com.l2fprod.common.swing.plaf.LookAndFeelAddons;
 import java.awt.Font;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.Date;
 import java.util.Enumeration;
@@ -54,6 +57,7 @@ import mpv5.db.objects.User;
 import mpv5.pluginhandling.UserPlugin;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Fonts;
 import mpv5.utils.files.FileDirectoryHandler;
+import mpv5.utils.files.FileReaderWriter;
 import org.apache.commons.cli2.*;
 import org.apache.commons.cli2.builder.*;
 import org.apache.commons.cli2.commandline.Parser;
@@ -165,6 +169,7 @@ public class Main extends SingleFrameApplication {
         } catch (Exception e) {
             Log.Debug(e);
         }
+        Log.Print("So Long, and Thanks for All the Fish.");
         super.shutdown();
     }
 
@@ -303,13 +308,17 @@ public class Main extends SingleFrameApplication {
             }
 
             if (cl.hasOption(license)) {
-//            System.out.print(Messages.GPL);
+                    try {
+                        System.out.print(new FileReaderWriter(new File(Main.class.getResource("/mpv5/resources/license/gpl-3").toURI())).read());
+                    } catch (Exception ex) {
+                        Log.Debug(ex);
+                    }
             }
 
             if (cl.hasOption(version)) {
                 System.out.println("MP Version: " + Constants.VERSION);
-                System.exit(0);
             }
+
             if (cl.hasOption(verbose)) {
                 Log.setLogLevel(Log.LOGLEVEL_NORMAL);
 

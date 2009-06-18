@@ -500,7 +500,7 @@ public class MPV5View extends FrameView {
         jPanel2.setName("jPanel2"); // NOI18N
         jPanel2.setPreferredSize(new java.awt.Dimension(110, 400));
 
-        jButton5.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton5.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/agt_family.png"))); // NOI18N
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jButton5.setText(bundle.getString("MPV5View.jButton5.text_1")); // NOI18N
@@ -514,7 +514,7 @@ public class MPV5View extends FrameView {
             }
         });
 
-        jButton1.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton1.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/edit_group.png"))); // NOI18N
         jButton1.setText(bundle.getString("MPV5View.jButton1.text_1")); // NOI18N
         jButton1.setToolTipText(bundle.getString("MPV5View.jButton1.toolTipText_1")); // NOI18N
@@ -527,7 +527,7 @@ public class MPV5View extends FrameView {
             }
         });
 
-        jButton2.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton2.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/edit_user.png"))); // NOI18N
         jButton2.setText(bundle.getString("MPV5View.jButton2.text_1")); // NOI18N
         jButton2.setToolTipText(bundle.getString("MPV5View.jButton2.toolTipText_1")); // NOI18N
@@ -540,7 +540,7 @@ public class MPV5View extends FrameView {
             }
         });
 
-        jButton18.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton18.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/edit_group.png"))); // NOI18N
         jButton18.setText(bundle.getString("MPV5View.jButton18.text_1")); // NOI18N
         jButton18.setToolTipText(bundle.getString("MPV5View.jButton18.toolTipText_1")); // NOI18N
@@ -1022,7 +1022,7 @@ public class MPV5View extends FrameView {
         statusPanel.setPreferredSize(new java.awt.Dimension(800, 20));
         statusPanel.setLayout(new javax.swing.BoxLayout(statusPanel, javax.swing.BoxLayout.LINE_AXIS));
 
-        statusMessageLabel.setFont(new java.awt.Font("Dialog", 0, 11)); // NOI18N
+        statusMessageLabel.setFont(new java.awt.Font("Dialog", 0, 11));
         statusMessageLabel.setText(bundle.getString("MPV5View.statusMessageLabel.text")); // NOI18N
         statusMessageLabel.setMaximumSize(new java.awt.Dimension(1000, 25));
         statusMessageLabel.setMinimumSize(new java.awt.Dimension(300, 14));
