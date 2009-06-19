@@ -19,14 +19,12 @@ package mpv5.server;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.Socket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mpv5.logging.Log;
 import mpv5.utils.jobs.Waitable;
 import mpv5.utils.jobs.Waiter;
 
 /**
- *
+ * MPServerJobs can be queued for execution on demand to the MP Server
  */
 public abstract class MPServerJob implements Waitable, Waiter {
 
@@ -73,12 +71,13 @@ public abstract class MPServerJob implements Waitable, Waiter {
     }
 
     /**
-     * Start the job
+     * Start the job, will be called automatically when you give the command "run jobname" to the server.
      */
     public abstract void start();
 
     /**
      * @param sock the sock to set
+     * @throws IOException
      */
     public void setSock(Socket sock) throws IOException {
         this.sock = sock;

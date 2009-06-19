@@ -56,7 +56,6 @@ public class XMLWriter {
             DatabaseObject d = dbobjarr.get(0);
             String sident = d.getDbIdentity();
             Element parent = addNode(new Element(sident));
-//            Element parent = (new Element(sident));
             Log.Debug(this, "Adding root node " + sident);
             for (int i = 0; i < dbobjarr.size(); i++) {
                 try {
@@ -163,6 +162,7 @@ public class XMLWriter {
 
     /**
      * Creates a new XML document with the root element
+     * @param withDocTypeDeclaration 
      */
     public void newDoc(boolean withDocTypeDeclaration) {
         // Create the root element
@@ -191,6 +191,10 @@ public class XMLWriter {
         newDoc(withDocTypeDeclaration);
         defaultSubRoot = new Element(defaultSubRootElementName);
         rootElement.addContent(defaultSubRoot);
+    }
+
+    public void newDoc() {
+        newDoc(true);
     }
 
     /**

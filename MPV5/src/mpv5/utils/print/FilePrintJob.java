@@ -135,7 +135,7 @@ public class FilePrintJob {
 
     public void toXML() {
         XMLWriter xmlw = new XMLWriter();
-        xmlw.newDoc(dbobj.getDbIdentity());
+        xmlw.newDoc(true);
         String name = dbobj.__getCName();
 
         if (dbobj != null) {

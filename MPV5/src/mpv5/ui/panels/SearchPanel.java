@@ -57,9 +57,7 @@ public class SearchPanel extends javax.swing.JPanel {
      * Reload the search result
      */
     public void refresh() {
-        if (isShowing()) {
-            search(lasttype, lastneedle);
-        }
+        search(lasttype, lastneedle);
     }
 
     public void setContextOwner(DatabaseObject object) {
@@ -229,40 +227,43 @@ public class SearchPanel extends javax.swing.JPanel {
 
     private void search(final int searchtype, final String value) {
 
-        Runnable runnable = new Runnable() {
+        if (isShowing()) {
+            Runnable runnable = new Runnable() {
 
-            public void run() {
-                lasttype = searchtype;
-                lastneedle = value;
+                public void run() {
+                    lasttype = searchtype;
+                    lastneedle = value;
 
-                switch (searchtype) {
+                    switch (searchtype) {
 
-                    case 1:
-                        resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 50).getValuesFor("ids,cname", "cname", value, true), Headers.SEARCH_DEFAULT.getValue()));
+                        case 1:
+                            resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 50).getValuesFor("ids,cname", "cname", value, true), Headers.SEARCH_DEFAULT.getValue()));
 
-                        break;
-                    case 2:
-                        resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 50).getValuesFor("ids,cname", "cnumber", value, true), Headers.SEARCH_DEFAULT.getValue()));
+                            break;
+                        case 2:
+                            resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 50).getValuesFor("ids,cname", "cnumber", value, true), Headers.SEARCH_DEFAULT.getValue()));
 
-                        break;
-                    case 3:
-                        Integer id = new DatabaseSearch(Context.getGroup()).searchForID("cname", value);
-                        if (id != null) {
-                            resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 50).getValuesFor("ids,cname", "groupsids",
-                                    id), Headers.SEARCH_DEFAULT.getValue()));
-                        } else {
-                            resulttable.setModel(new MPTableModel(new String[][]{}, Headers.SEARCH_DEFAULT.getValue()));
-                        }
+                            break;
+                        case 3:
+                            Integer id = new DatabaseSearch(Context.getGroup()).searchForID("cname", value);
+                            if (id != null) {
+                                resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 50).getValuesFor("ids,cname", "groupsids",
+                                        id), Headers.SEARCH_DEFAULT.getValue()));
+                            } else {
+                                resulttable.setModel(new MPTableModel(new String[][]{}, Headers.SEARCH_DEFAULT.getValue()));
+                            }
 
-                        break;
-                    case 4:
-                        resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 50).getValuesFor("ids,cname", "cname", context.getParent().__getCName(), true), Headers.SEARCH_DEFAULT.getValue()));
+                            break;
+                        case 4:
+                            resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 50).getValuesFor("ids,cname", "cname", context.getParent().__getCName(), true), Headers.SEARCH_DEFAULT.getValue()));
 
+                    }
+                    TableFormat.stripFirstColumn(resulttable);
+                    TableFormat.makeUneditable(resulttable);
                 }
-                TableFormat.stripFirstColumn(resulttable);
-                TableFormat.makeUneditable(resulttable);
-            }
-        };SwingUtilities.invokeLater(runnable);
+            };
+            SwingUtilities.invokeLater(runnable);
+        }
 
     }
 

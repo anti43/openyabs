@@ -46,7 +46,7 @@ public class MPServerRunner implements Runnable {
     public static final String QUIT_OK = "Let’s face it, LeChuck. You are an evil, " +
             "foul-smelling, vile, codependent villain and that’s just not what I’m " +
             "looking for in a romantic relationship right now. [800]";
-    //************ Responses from clients ***********************************
+    //************ Commands from clients ***********************************
     public static final String HANDSHAKE_RESPONSE = "friend";
     public static final String RUN = "run";
     public static final String QUIT = "quit";
@@ -64,7 +64,8 @@ public class MPServerRunner implements Runnable {
     }
 
     /**
-     * Add a job to the runners job list
+     * Add a job to the runners job list.<br/>
+     * After adding a job, you can run it remotely by calling "run [jobname]" to the server.
      * @param name
      * @param job
      */
