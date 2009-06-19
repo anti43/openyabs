@@ -94,6 +94,12 @@ public abstract class DatabaseObject {
         }
     }
 
+    /**
+     * Some DatabaseObjects have unique fields, and calling this method shall ensure they are unique before saving.<br/>
+     * The native implementation actually does nothing, you need to override the method if you define unique columns for a DO.
+     */
+    public void ensureUniqueness() {}
+
     public void setCName(String name) {
         cname = name;
     }
@@ -241,6 +247,7 @@ public abstract class DatabaseObject {
                 if (Context.getArchivableContexts().contains(context)) {
                     Runnable runnable = new Runnable() {
 
+                        @Override
                         public void run() {
                             QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, MPV5View.getUser().__getCName(), fdbid, fids, fgids);
                         }
@@ -250,8 +257,7 @@ public abstract class DatabaseObject {
                 this.Saved(true);
                 return true;
             } catch (Exception e) {
-                Log.Debug(this, e);
-                e.printStackTrace();
+                Log.Debug(e);
                 return false;
             }
         } else {

@@ -16,7 +16,12 @@
  */
 package mpv5;
 
+import java.util.Date;
+import javax.swing.ComboBoxModel;
+import javax.swing.JComboBox;
 import mpv5.server.MPServer;
+import mpv5.utils.date.DateConverter;
+import mpv5.utils.models.*;
 
 /**
  *
@@ -26,7 +31,7 @@ public class Test {
 
     public static void main(String[] args) {
 
-        new MPServer();
+//        new MPServer();
 
 //        try {
 //        try {
@@ -82,18 +87,21 @@ public class Test {
 //        } catch (Exception ex) {
 //           ex.printStackTrace();
 //        }
-//        String[][] ihreDaten = new String[][]{{"3", "Item 3"},{"4", "Item 4"},{"1", "Item 1"},{"2", "Item 2"}};
-//
-//        ComboBoxModel model = MPComboBoxModelItem.toModel(ihreDaten);
-//        JComboBox combobox = new JComboBox(model);
-//
-//        combobox.setSelectedIndex(MPComboBoxModelItem.getItemID("3", combobox.getModel()));
-//
-//        String value = ((MPComboBoxModelItem)combobox.getSelectedItem()).getValue();//"Item 3"
-//        String id = ((MPComboBoxModelItem)combobox.getSelectedItem()).getId();//"3"
-//
-//        int indexDesItems3 = MPComboBoxModelItem.getItemID("3", combobox.getModel());// 0
-//        int indexDesItems1 = MPComboBoxModelItem.getItemIDfromValue("Item 1", combobox.getModel());// 2
+        Object[][] ihreDaten = new Object[][]{
+            {new Date(), "Item 1"},
+            {DateConverter.addYears(new Date(), 1), "Item 2"},
+            {DateConverter.addYears(new Date(), 2), "Item 3"},
+            {DateConverter.addYears(new Date(), 3), "Item 4"}};
+
+        MPComboboxModel model = MPComboBoxModelItem.toModel(ihreDaten);
+        JComboBox combobox = new JComboBox(model);
+
+        combobox.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue("Item 4", combobox.getModel()));
+
+        Date d = (Date) ((MPComboBoxModelItem)combobox.getSelectedItem()).getIdObject();
+        System.out.println(d);
+
+
 //
 //        DateConverter.getQuarter();Locale.getDefault();
 //            new DecimalFormat("'#'#'#'''-000").format(1000l);

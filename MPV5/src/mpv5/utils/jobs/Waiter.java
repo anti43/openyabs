@@ -10,5 +10,11 @@ package mpv5.utils.jobs;
  *  
  */
 public interface Waiter {
-public abstract void set(Object object);
+    /**
+     * 
+     * @param object
+     * @param exception
+     * @throws Exception
+     */
+    public abstract void set(Object object, Exception exception) throws Exception;
 }

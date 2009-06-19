@@ -411,4 +411,9 @@ public class Contact extends DatabaseObject {
         }
         return formatHandler;
     }
+
+    @Override
+    public void ensureUniqueness(){
+        setCNumber(getFormatHandler().toString(getFormatHandler().getNextNumber()));
+    }
 }

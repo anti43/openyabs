@@ -80,7 +80,7 @@ public class Context {
     public static String UNIQUECOLUMNS_GROUPS = "cname";
     private static String UNIQUECOLUMNS_DEFAULT = "cname";
     public static String DETAIL_CONTACT_SEARCH = "prename,cname,street,city,country,notes";
-    
+
     //********** conditions ****************************************************
     private boolean isCompany = false;
     private boolean isCustomer = false;
@@ -259,6 +259,10 @@ public class Context {
         return list;
     }
 
+    /**
+     * LOckable Contexts
+     * @return
+     */
     public static ArrayList<Context> getLockableContexts() {
         ArrayList<Context> list = new ArrayList<Context>();
         list.add(getUser());
@@ -273,6 +277,22 @@ public class Context {
         list.add(getManufacturer());
         return list;
     }
+
+
+    /**
+     * Importable Contexts
+     * @return
+     */
+    public static ArrayList<Context> getImportableContexts() {
+        ArrayList<Context> list = new ArrayList<Context>();
+        list.add(getItem(null, null));
+        list.add(getSchedule());
+        list.add(getContact());
+        list.add(getProducts());
+        list.add(getAccounts());
+        return list;
+    }
+
 
     /**
      *

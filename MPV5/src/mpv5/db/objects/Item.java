@@ -21,6 +21,7 @@ import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.globals.Messages;
+import mpv5.handler.FormatHandler;
 
 /**
  *
@@ -86,6 +87,7 @@ public class Item extends DatabaseObject {
     public static final int TYPE_BILL = 0;
     public static final int TYPE_ORDER = 1;
     public static final int TYPE_OFFER = 2;
+    private FormatHandler formatHandler;
 
     public Item() {
         context.setDbIdentity(Context.IDENTITY_ITEMS);
@@ -267,5 +269,20 @@ public class Item extends DatabaseObject {
     @Override
     public mpv5.utils.images.MPIcon getIcon() {
         return null;
+    }
+
+    /**
+     * @return the formatHandler
+     */
+    public FormatHandler getFormatHandler() {
+        if (formatHandler == null) {
+            formatHandler = new FormatHandler(this);
+        }
+        return formatHandler;
+    }
+
+    @Override
+    public void ensureUniqueness() {
+        setCName(getFormatHandler().toString(getFormatHandler().getNextNumber()));
     }
 }

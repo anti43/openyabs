@@ -16,32 +16,70 @@
  */
 package mpv5.server;
 
-
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mpv5.globals.LocalSettings;
 import mpv5.logging.Log;
+import mpv5.ui.frames.MPV5View;
+
 /**
- *This is a listening server which starts a new {@link MPServerThread} on each connection.
+ *This is a listening server which starts a new {@link MPServerRunner} on each connection.
  */
-public class MPServer {
+public class MPServer extends Thread {
+
+    /**
+     *
+     */
+    public static void stopAllInstances() {
+        for (int i = 0; i < SOCKETS.size(); i++) {
+            try {
+                SOCKETS.get(i).close();
+            } catch (Exception ex) {
+            }
+        }
+        for (int i = 0; i < INSTANCES.size(); i++) {
+            INSTANCES.get(i).interrupt();
+        }
+    }
+    /**
+     * If set to false, the server will stop after next connection attempt
+     */
+    public boolean ALLOWED_TO_RUN = true;
+    private Thread t;
+    private static Vector<Thread> INSTANCES = new Vector<Thread>();
+    private ServerSocket serverSocket;
+    private static Vector<ServerSocket> SOCKETS = new Vector<ServerSocket>();
 
     public MPServer() {
         Log.Debug(this, "Initialising MP Server..");
-        ServerSocket serverSocket = null;
+        INSTANCES.add(this);
+    }
+
+    @Override
+    public void run() {
+        ALLOWED_TO_RUN = true;
+        serverSocket = null;
+        
         boolean running = true;
         try {
             serverSocket = new ServerSocket(Integer.valueOf(LocalSettings.getProperty(LocalSettings.SERVER_PORT)));
+            SOCKETS.add(serverSocket);
             Log.Debug(this, "MP Server started!");
+            MPV5View.addMessage("MP Server started!");
         } catch (IOException e) {
             running = false;
             Log.Debug(e);
         }
-        while (running) {
+        while (running & ALLOWED_TO_RUN) {
             try {
-                new MPServerThread(serverSocket.accept()).start();
+                t = new Thread(new MPServerRunner(serverSocket.accept()));
+                t.start();
             } catch (IOException ex) {
-                Log.Debug(ex);
+                Log.Debug(this, ex.getMessage());
+                running = false;
             }
         }
         try {

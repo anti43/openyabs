@@ -133,18 +133,21 @@ public class TextDatFile extends File implements Waitable {
     }
 
     @Override
-    public void waitFor() {
-        switch (mode) {
-            case 0:
-                print();
-                break;
-            case 1:
-                read();
-                break;
-            case 2:
-                readToTable();
-                break;
-        }
+    public Exception waitFor() {
+
+            switch (mode) {
+                case 0:
+                    print();
+                    break;
+                case 1:
+                    read();
+                    break;
+                case 2:
+                    readToTable();
+                    break;
+            }
+
+        return null;
     }
 
     /**

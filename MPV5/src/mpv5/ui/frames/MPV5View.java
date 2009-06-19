@@ -13,6 +13,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -57,7 +58,9 @@ import mpv5.ui.misc.Position;
 import mpv5.ui.panels.calendar.JCalendar;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.db.objects.User;
+import mpv5.globals.LocalSettings;
 import mpv5.pluginhandling.MPPLuginLoader;
+import mpv5.server.MPServer;
 import mpv5.ui.dialogs.Wizard;
 import mpv5.ui.dialogs.subcomponents.wizard_XMLImport_1;
 import mpv5.ui.dialogs.subcomponents.wizard_XMLImport_2;
@@ -459,6 +462,7 @@ public class MPV5View extends FrameView {
         jMenuItem3 = new javax.swing.JMenuItem();
         jMenuItem18 = new javax.swing.JMenuItem();
         jMenuItem23 = new javax.swing.JMenuItem();
+        jMenuItem24 = new javax.swing.JMenuItem();
         jSeparator6 = new javax.swing.JSeparator();
         jMenuItem22 = new javax.swing.JMenuItem();
         favouritesMenu = new javax.swing.JMenu();
@@ -475,6 +479,7 @@ public class MPV5View extends FrameView {
         progressBar = new javax.swing.JProgressBar();
         separator1 = new javax.swing.JPanel();
         xhistory = new javax.swing.JComboBox();
+        serverlabel = new javax.swing.JPanel();
         mainToolbar = new javax.swing.JToolBar();
         jButton24 = new javax.swing.JButton();
         jButton26 = new javax.swing.JButton();
@@ -502,7 +507,7 @@ public class MPV5View extends FrameView {
         jPanel2.setName("jPanel2"); // NOI18N
         jPanel2.setPreferredSize(new java.awt.Dimension(110, 400));
 
-        jButton5.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton5.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/agt_family.png"))); // NOI18N
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jButton5.setText(bundle.getString("MPV5View.jButton5.text_1")); // NOI18N
@@ -529,7 +534,7 @@ public class MPV5View extends FrameView {
             }
         });
 
-        jButton2.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton2.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/edit_user.png"))); // NOI18N
         jButton2.setText(bundle.getString("MPV5View.jButton2.text_1")); // NOI18N
         jButton2.setToolTipText(bundle.getString("MPV5View.jButton2.toolTipText_1")); // NOI18N
@@ -596,7 +601,7 @@ public class MPV5View extends FrameView {
         jPanel3.setName("jPanel3"); // NOI18N
         jPanel3.setPreferredSize(new java.awt.Dimension(110, 400));
 
-        jButton8.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton8.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/binary.png"))); // NOI18N
         jButton8.setText(bundle.getString("MPV5View.jButton8.text")); // NOI18N
         jButton8.setToolTipText(bundle.getString("MPV5View.jButton8.toolTipText")); // NOI18N
@@ -613,21 +618,21 @@ public class MPV5View extends FrameView {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 110, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel3Layout.createSequentialGroup()
                     .addGap(11, 11, 11)
-                    .addComponent(jButton8, javax.swing.GroupLayout.DEFAULT_SIZE, 88, Short.MAX_VALUE)
+                    .addComponent(jButton8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGap(11, 11, 11)))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGap(0, 71, Short.MAX_VALUE)
             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel3Layout.createSequentialGroup()
                     .addContainerGap()
                     .addComponent(jButton8)
-                    .addContainerGap(329, Short.MAX_VALUE)))
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
 
         jOutlookBar1.addTab(bundle.getString("MPV5View.jPanel3.TabConstraints.tabTitle_1"), jPanel3); // NOI18N
@@ -722,7 +727,7 @@ public class MPV5View extends FrameView {
             .addGroup(mainPanelLayout.createSequentialGroup()
                 .addComponent(naviPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tabpanePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 487, Short.MAX_VALUE))
+                .addComponent(tabpanePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 544, Short.MAX_VALUE))
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -980,6 +985,16 @@ public class MPV5View extends FrameView {
         });
         jMenu3.add(jMenuItem23);
 
+        jMenuItem24.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/kwikdisk.png"))); // NOI18N
+        jMenuItem24.setText(bundle.getString("MPV5View.jMenuItem24.text")); // NOI18N
+        jMenuItem24.setName("jMenuItem24"); // NOI18N
+        jMenuItem24.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem24ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItem24);
+
         jSeparator6.setName("jSeparator6"); // NOI18N
         jMenu3.add(jSeparator6);
 
@@ -1047,7 +1062,7 @@ public class MPV5View extends FrameView {
         statusPanel.setPreferredSize(new java.awt.Dimension(800, 20));
         statusPanel.setLayout(new javax.swing.BoxLayout(statusPanel, javax.swing.BoxLayout.LINE_AXIS));
 
-        statusMessageLabel.setFont(new java.awt.Font("Dialog", 0, 11));
+        statusMessageLabel.setFont(new java.awt.Font("Dialog", 0, 11)); // NOI18N
         statusMessageLabel.setText(bundle.getString("MPV5View.statusMessageLabel.text")); // NOI18N
         statusMessageLabel.setMaximumSize(new java.awt.Dimension(1000, 25));
         statusMessageLabel.setMinimumSize(new java.awt.Dimension(300, 14));
@@ -1080,9 +1095,9 @@ public class MPV5View extends FrameView {
         statusPanel.add(separator);
 
         progressBar.setBorder(new javax.swing.border.LineBorder(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"), 1, true));
-        progressBar.setMaximumSize(new java.awt.Dimension(100, 25));
+        progressBar.setMaximumSize(new java.awt.Dimension(50, 25));
         progressBar.setName("progressBar"); // NOI18N
-        progressBar.setPreferredSize(new java.awt.Dimension(100, 14));
+        progressBar.setPreferredSize(new java.awt.Dimension(50, 14));
         statusPanel.add(progressBar);
 
         separator1.setMaximumSize(new java.awt.Dimension(10, 32767));
@@ -1113,6 +1128,13 @@ public class MPV5View extends FrameView {
         xhistory.setRequestFocusEnabled(false);
         xhistory.setVerifyInputWhenFocusTarget(false);
         statusPanel.add(xhistory);
+
+        serverlabel.setMaximumSize(new java.awt.Dimension(20, 100));
+        serverlabel.setMinimumSize(new java.awt.Dimension(20, 10));
+        serverlabel.setName("serverlabel"); // NOI18N
+        serverlabel.setPreferredSize(new java.awt.Dimension(20, 18));
+        serverlabel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 0));
+        statusPanel.add(serverlabel);
 
         mainToolbar.setRollover(true);
         mainToolbar.setName("mainToolbar"); // NOI18N
@@ -1437,6 +1459,12 @@ public class MPV5View extends FrameView {
         addTab(new ItemPanel(Context.getBill()), Messages.NEW_BILL);
     }//GEN-LAST:event_jButton8ActionPerformed
 
+    private void jMenuItem24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem24ActionPerformed
+        MPServer serv = new MPServer();
+        serv.start();
+        MPV5View.identifierView.showServerStatus(serv.isAlive());
+    }//GEN-LAST:event_jMenuItem24ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JMenu clipboardMenu;
     public javax.swing.JMenu favouritesMenu;
@@ -1476,6 +1504,7 @@ public class MPV5View extends FrameView {
     private javax.swing.JMenuItem jMenuItem21;
     private javax.swing.JMenuItem jMenuItem22;
     private javax.swing.JMenuItem jMenuItem23;
+    private javax.swing.JMenuItem jMenuItem24;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
@@ -1502,6 +1531,7 @@ public class MPV5View extends FrameView {
     private javax.swing.JProgressBar progressBar;
     private javax.swing.JPanel separator;
     private javax.swing.JPanel separator1;
+    private javax.swing.JPanel serverlabel;
     private javax.swing.JLabel statusMessageLabel;
     private javax.swing.JPanel statusPanel;
     public static final javax.swing.JPanel tabpanePanel = new javax.swing.JPanel();
@@ -1575,7 +1605,7 @@ public class MPV5View extends FrameView {
      */
     public void loadPlugin(final MP5Plugin mP5Plugin) {
         final JLabel plab = new JLabel();
-        plab.setDisabledIcon(new MPIcon(MPPLuginLoader.getErrorImage()).getIcon(22));
+        plab.setDisabledIcon(new MPIcon(MPPLuginLoader.getErrorImage()).getIcon(18));
         try {
             mP5Plugin.load(this);
 
@@ -1616,6 +1646,57 @@ public class MPV5View extends FrameView {
             Log.Debug(e);
             plab.setEnabled(false);
         }
+    }
+
+    /**
+     * Triggers the MP Server notification to the view
+     * @param running
+     */
+    public void showServerStatus(boolean running) {
+        if (running) {
+            serverlabel.setMaximumSize(new Dimension(18, 18));
+            serverlabel.setPreferredSize(new Dimension(18, 18));
+            serverlabel.setMinimumSize(new Dimension(18, 18));
+            serverlabel.setSize(18, 18);
+            final JLabel plab = new JLabel();
+            plab.setIcon(new MPIcon("/mpv5/resources/images/16/kwikdisk.png"));
+            plab.setEnabled(true);
+            plab.setToolTipText("<html><b>MP Server " + Messages.LOADED + "</b><br/>Port: " + LocalSettings.getProperty(LocalSettings.SERVER_PORT) + "</html>");
+            plab.addMouseListener(new MouseAdapter() {
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    if (e.getButton() == MouseEvent.BUTTON2 || e.getButton() == MouseEvent.BUTTON3) {
+                        JLabel source = (JLabel) e.getSource();
+                        final JPopupMenu m = new JPopupMenu();
+                        JMenuItem n = new JMenuItem(Messages.UNLOAD.getValue());
+                        n.addActionListener(new ActionListener() {
+
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                MPServer.stopAllInstances();
+                                plab.setEnabled(false);
+                                plab.setToolTipText("<html><b>MP Server</b>");
+                                MouseListener[] ml = plab.getMouseListeners();
+                                for (int i = 0; i < ml.length; i++) {
+                                    MouseListener mouseListener = ml[i];
+                                    plab.removeMouseListener(mouseListener);
+                                }
+                            }
+                        });
+                        m.add(n);
+                        m.show(plab, e.getX(), e.getY());
+                    }
+                }
+            });
+            serverlabel.add(plab);
+        } else {
+            serverlabel.setMaximumSize(new Dimension(0, 0));
+            serverlabel.setPreferredSize(new Dimension(0, 0));
+            serverlabel.setMinimumSize(new Dimension(0, 0));
+            serverlabel.setSize(0, 0);
+        }
+        MPV5View.identifierFrame.validate();
     }
 
     private void loadPlugins() {

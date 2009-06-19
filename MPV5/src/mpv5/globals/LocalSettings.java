@@ -36,26 +36,22 @@ public class LocalSettings {
     public static final String PROXYPASSWORD = "proxypassword";
     public static final String OFFICE_HOME = "/opt/openoffice.org3/";
     public static final String CACHE_DIR = "cachedir";
-   
     public static final String DEFAULT_FONT = "defaultfont";
     public static final String PRINT_DEVAPP = "devappprint";
     public static final String PROXYUSE = "useproxy";
     public static final String DBNAME = "dbname";
     public static final String DBROW_LIMIT = "dbrowlimit";
     public static final String DBAUTOLOCK = "dbautolock";
-    public static final String DBTYPE =  "dbtype";
+    public static final String DBTYPE = "dbtype";
     public static final String SERVER_PORT = "serverport";
-    public static final String SERVER_START = "serverstart";
-
-     private static PropertyStore predefinedSettings = new PropertyStore(new String[][]{ //        {LAF,UIManager.getSystemLookAndFeelClassName()}
-                {DEFAULT_FONT, "Tahoma"}, {DBROW_LIMIT, "0"}, {DBAUTOLOCK, "false"}, {SERVER_PORT, "4343"}, {SERVER_START, "false"}
+    private static PropertyStore predefinedSettings = new PropertyStore(new String[][]{ //        {LAF,UIManager.getSystemLookAndFeelClassName()}
+                {DEFAULT_FONT, "Tahoma"}, {DBROW_LIMIT, "0"}, {DBAUTOLOCK, "false"}, {SERVER_PORT, "4343"}
             });
-    
 
     /**
      * Applies the environmental settings
      */
-    public static void apply() {
+    public static synchronized void apply() {
         Properties systemSettings = System.getProperties();
 
         //Proxy settings
@@ -79,7 +75,7 @@ public class LocalSettings {
             setProperty(DBROW_LIMIT, "0");
         }
 
-          if (!getProperty(DBAUTOLOCK).equals("null")) {
+        if (!getProperty(DBAUTOLOCK).equals("null")) {
             DatabaseObject.AutoLockEnabled(TypeConversion.stringToBoolean(getProperty(DBAUTOLOCK)));
         } else {
             setProperty(DBAUTOLOCK, "0");
@@ -91,7 +87,7 @@ public class LocalSettings {
      * @param name
      * @return
      */
-    public static String getProperty(String name) {
+    public static synchronized String getProperty(String name) {
         if (cookie.getProperty(name) != null) {
             return cookie.getProperty(name);
         } else if (predefinedSettings.getProperty(name) != null) {
@@ -141,7 +137,7 @@ public class LocalSettings {
      * @param name
      * @param value
      */
-    public static void setProperty(String name, String value) {
+    public static synchronized void setProperty(String name, String value) {
         if (value == null) {
             value = "null";
         }
@@ -152,7 +148,7 @@ public class LocalSettings {
     /**
      * Save the local settings to disk
      */
-    public static void save() {
+    public static synchronized void save() {
         XMLWriter x = new XMLWriter();
         try {
             x.newDoc("localsettings", false);
@@ -168,7 +164,7 @@ public class LocalSettings {
      * Read the local settings from disk
      * @throws java.lang.Exception
      */
-    public static void read() throws Exception {
+    public static synchronized void read() throws Exception {
 
         try {
             Log.Debug(LocalSettings.class, "Reading in local settings where ID =" + connectionID);
@@ -186,7 +182,7 @@ public class LocalSettings {
      *
      * @return The local settings file
      */
-    public static File getLocalFile() {
+    public static synchronized File getLocalFile() {
         return new File(Main.SETTINGS_FILE);
     }
 }

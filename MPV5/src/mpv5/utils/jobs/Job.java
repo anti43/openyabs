@@ -16,11 +16,12 @@
  */
 package mpv5.utils.jobs;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JProgressBar;
 import javax.swing.SwingWorker;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPV5View;
-
 
 /**
  *
@@ -31,46 +32,67 @@ public class Job extends SwingWorker<Object, Object> {
     private Waitable object;
     private Waiter recipient;
     private JProgressBar bar;
+    private String message;
+    private Exception code = null;
 
-    public Job(Waitable object, Waiter rec) {
-        this.object = object;
-        this.recipient = rec;
+
+    /**
+     * 
+     * @param waitable
+     * @param waiter
+     */
+    public Job(Waitable waitable, Waiter waiter) {
+        this.object = waitable;
+        this.recipient = waiter;
+        this.bar = MPV5View.progressbar;
     }
 
-    public Job(Waitable object, Waiter rec, JProgressBar bar) {
-        this.object = object;
-        this.recipient = rec;
-        this.bar = bar;
+    /**
+     *
+     * @param waitable
+     * @param waiter 
+     * @param message
+     */
+    public Job(Waitable waitable, Waiter waiter, String message) {
+        this.object = waitable;
+        this.recipient = waiter;
+        this.message = message;
     }
 
     @Override
-    public Object doInBackground() {
-        MPV5View.setWaiting(true);
-        if (bar != null) {  
+    public Object doInBackground() throws Exception {
+        if (bar != null) {
             bar.setIndeterminate(true);
         }
         try {
-            object.waitFor();
+           code = object.waitFor();
         } catch (Exception e) {
-            MPV5View.setWaiting(false);
             if (bar != null) {
                 bar.setIndeterminate(false);
             }
-            Log.Debug(this, e);
-            e.printStackTrace();
+            throw e;
         } finally {
-            MPV5View.setWaiting(false);
-            if (bar != null)bar.setIndeterminate(false);
+            if (bar != null) {
+                bar.setIndeterminate(false);
+            }
         }
         return object;
     }
 
     @Override
     public void done() {
-        recipient.set(object);
-        MPV5View.setWaiting(false);
+        if (recipient != null) {
+            try {
+                recipient.set(object, code);
+            } catch (Exception ex) {
+                Log.Debug(ex);
+            }
+        }
         if (bar != null) {
             bar.setIndeterminate(false);
+        }
+        if (message != null) {
+            MPV5View.addMessage(message);
         }
     }
 }

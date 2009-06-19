@@ -118,6 +118,15 @@ public class Main extends SingleFrameApplication {
      * Indicates whether this is the first start of the application
      */
     public static boolean firstStart;
+    /**
+     * Sometimes it is nice to have a good goodbye message at hand ;-)<br/><br/>
+     * <b>"So Long, and Thanks for All the Fish."</b>
+     */
+    public static final String GOODBYE_MESSAGE = "So Long, and Thanks for All the Fish.";
+    /**
+     * Indicates whether the server component shall start
+     */
+    public static boolean START_SERVER = false;
 
     /**
      * At startup create and show the main frame of the application.
@@ -171,7 +180,7 @@ public class Main extends SingleFrameApplication {
         } catch (Exception e) {
             Log.Debug(e);
         }
-        Log.Print("So Long, and Thanks for All the Fish.");
+        Log.Print(GOODBYE_MESSAGE);
         super.shutdown();
     }
 
@@ -264,6 +273,7 @@ public class Main extends SingleFrameApplication {
         Argument dirarg = abuilder.withName("=directory").withMinimum(1).withMaximum(1).create();
         Argument number = abuilder.withName("number").withMinimum(1).withMaximum(1).create();
 
+        Option server = obuilder.withShortName("server").withShortName("serv").withDescription("start built-in server component").create();
         Option showenv = obuilder.withShortName("showenv").withShortName("se").withDescription("show environmental variables").create();
         Option netbook = obuilder.withShortName("netbook").withShortName("net").withDescription("use netbook size optimizations").create();
         Option help = obuilder.withShortName("help").withShortName("h").withDescription("print this message").create();
@@ -287,7 +297,9 @@ public class Main extends SingleFrameApplication {
                 withOption(showenv).
                 withOption(removeplugins).
                 withOption(connectionInstance).
-                withOption(logfile).create();
+                withOption(logfile).
+                withOption(server).
+                create();
 
         HelpFormatter hf = new HelpFormatter();
         Parser p = new Parser();
@@ -353,6 +365,10 @@ public class Main extends SingleFrameApplication {
 
             if (cl.hasOption(showenv)) {
                 printEnv();
+            }
+
+            if (cl.hasOption(server)) {
+                START_SERVER = true;
             }
         }
 
@@ -431,21 +447,16 @@ public class Main extends SingleFrameApplication {
         }
         SwingUtilities.updateComponentTreeUI(MPV5View.identifierFrame);
         splash.dispose();
-        if (LocalSettings.hasProperty(LocalSettings.SERVER_START) &&
-                LocalSettings.hasProperty(LocalSettings.SERVER_PORT) &&
-                TypeConversion.stringToBoolean(LocalSettings.getProperty(LocalSettings.SERVER_START))) {
-            Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    new MPServer();
-                }
-            };
-            SwingUtilities.invokeLater(runnable);
+        if (START_SERVER) {
+            MPServer serv = new MPServer();
+            serv.start();
+            MPV5View.identifierView.showServerStatus(serv.isAlive());
+        } else {
+            MPV5View.identifierView.showServerStatus(false);
         }
     }
 
     private void loadPlugins() {
-
         if (!removeplugs) {
             try {
                 MPPLuginLoader loadr = new MPPLuginLoader();

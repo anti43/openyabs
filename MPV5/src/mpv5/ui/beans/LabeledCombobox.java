@@ -11,18 +11,14 @@
 package mpv5.ui.beans;
 
 import java.awt.Font;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import javax.swing.ComboBoxEditor;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
-import javax.swing.JFormattedTextField;
 import javax.swing.SwingUtilities;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseSearch;
-import mpv5.handler.VariablesHandler.GENERIC_VARS;
-import mpv5.utils.models.MPComboBoxModelItem;
+import mpv5.utils.models.*;
 
 /**
  *
@@ -120,7 +116,7 @@ public class LabeledCombobox extends javax.swing.JPanel {
      * Set the model. Should contain only {@link MPComboBoxModelItem}s
      * @param model
      */
-    public void setModel(DefaultComboBoxModel model) {
+    public void setModel(MPComboboxModel model) {
         jComboBox1.setModel(model);
     }
 
@@ -206,8 +202,8 @@ public class LabeledCombobox extends javax.swing.JPanel {
     /**
      * @return the _text
      */
-    public Object getValue() {
-        return jComboBox1.getSelectedItem();
+    public MPComboBoxModelItem getValue() {
+        return (MPComboBoxModelItem) jComboBox1.getSelectedItem();
     }
 
     /**

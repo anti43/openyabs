@@ -1303,6 +1303,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     }
 
 
+    @Override
     public void exposeData() {
         city.set_Text(city_);
         cname.set_Text(cname_);

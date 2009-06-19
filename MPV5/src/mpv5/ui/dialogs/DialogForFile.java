@@ -30,6 +30,7 @@ import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPV5View;
 import mpv5.utils.files.FileDirectoryHandler;
+import mpv5.utils.jobs.Waitable;
 import mpv5.utils.jobs.Waiter;
 
 /**
@@ -273,10 +274,15 @@ public class DialogForFile extends JFileChooser implements Waiter {
     /**
      * Calls saveFile((File) object)
      * @param object
+     * @param e
+     * @throws Exception
      */
     @Override
-    public void set(Object object) {
-        saveFile((File) object);
+    public void set(Object object, Exception e) throws Exception{
+        if (e == null) {
+            saveFile((File) object);
+        }
     }
+
 
 }

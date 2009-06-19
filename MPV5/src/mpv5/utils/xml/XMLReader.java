@@ -22,18 +22,15 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import javax.xml.bind.JAXBElement.GlobalScope;
 import mpv5.data.PropertyStore;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
-import mpv5.globals.Messages;
+import mpv5.db.objects.Contact;
 import mpv5.logging.Log;
-import mpv5.ui.dialogs.Popup;
 import org.jdom.Attribute;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
-import org.jdom.filter.ContentFilter;
 import org.jdom.filter.ElementFilter;
 import org.jdom.input.SAXBuilder;
 
@@ -66,30 +63,6 @@ public class XMLReader {
         return new Element(name);
     }
 
-//    /**
-//     * Gets a node with the given name and the "ID" attributevalue
-//     * @param nodename
-//     * @param id
-//     * @return The value of the node
-//     */
-//    public String[] getNode(String nodename, String id) {
-//        @SuppressWarnings("unchecked")
-//        List<Element> list = (List<Element>) rootElement.getContent();
-//        for (int i = 0; i < list.size(); i++) {
-//            if (list.get(i) instanceof Element) {
-//                if (list.get(i).getName().equals(nodename) && list.get(i).getAttribute("id") != null && list.get(i).getAttribute("id").getValue().equals(id)) {
-//                    @SuppressWarnings("unchecked")
-//                    List<Element> liste = list.get(i).getChildren();
-//                    String[] values = new String[liste.size()];
-//                    for (int j = 0; j < liste.size(); j++) {
-//                        Element element = liste.get(j);
-//                        values[j] = element.getValue();
-//                    }
-//                }
-//            }
-//        }
-//        return null;
-//    }
     /**
      * Parses a XML document
      * @param xmlfile
@@ -102,7 +75,8 @@ public class XMLReader {
     }
 
     /**
-     * Parses a XML document
+     * Parses a XML document. If validate is TRUE, the file will need to have a valid DOCTYPE declaration.
+     * The <?xml version="1.0" encoding="UTF-8"?> tag MUST be on the first line!
      * @param xmlfile
      * @param validate
      * @return The resulting xml document
@@ -142,7 +116,7 @@ public class XMLReader {
      * @throws Exception
      */
     @SuppressWarnings({"unchecked"})
-    public <T extends DatabaseObject> ArrayList<T> getObjects(T template) throws Exception {
+    public synchronized <T extends DatabaseObject> ArrayList<T> getObjects(T template) throws Exception {
 
         Log.Debug(this, "Looking for: " + template.getDbIdentity());
         String ident = template.getType();
@@ -159,9 +133,10 @@ public class XMLReader {
                     DatabaseObject obj = template.clone();
                     obj.parse(toHashTable(element));
                     if (isOverwriteExisting() && list.get(i).getAttribute("id") != null) {
-                       
                         obj.setIDS(Integer.valueOf(list.get(i).getAttribute("id").getValue()));
-                        Log.Debug(this, "Overwriting/updating dataset id " + obj.getDbIdentity() + ": " +obj.__getIDS() );
+                        Log.Debug(this, "Overwriting/updating dataset id " + obj.getDbIdentity() + ": " + obj.__getIDS());
+                    } else {
+                        obj.ensureUniqueness();
                     }
                     arrlist.add(obj);
                 }
@@ -175,8 +150,8 @@ public class XMLReader {
      * May contain empty lists
      * @return
      */
-    public ArrayList<ArrayList<DatabaseObject>> getObjects() {
-        ArrayList<Context> c = Context.getContexts();
+    public synchronized ArrayList<ArrayList<DatabaseObject>> getObjects() {
+        ArrayList<Context> c = Context.getImportableContexts();
         ArrayList<ArrayList<DatabaseObject>> t = new ArrayList<ArrayList<DatabaseObject>>();
         DatabaseObject template = null;
         Context context = null;
@@ -190,11 +165,6 @@ public class XMLReader {
                 Log.Debug(this, "Element of typ: " + context.getDbIdentity() + " not found in this document!");
             }
         }
-//
-//        for (int i = 0; i < t.size(); i++) {
-//            ArrayList<DatabaseObject> arrayList = t.get(i);
-//            Log.PrintArray(arrayList);
-//        }
 
         return t;
     }
@@ -220,7 +190,7 @@ public class XMLReader {
      * @param store
      * @return
      */
-    public PropertyStore readInto(String type, String nodename, String nodeid, PropertyStore store) {
+    public synchronized PropertyStore readInto(String type, String nodename, String nodeid, PropertyStore store) {
         @SuppressWarnings("unchecked")
         List<Element> list = (List<Element>) rootElement.getChild(type).getContent(new ElementFilter());
         for (int i = 0; i < list.size(); i++) {
@@ -239,22 +209,11 @@ public class XMLReader {
     }
 
     private Document createDocument(File xmlfile, boolean validate) throws JDOMException, IOException {
-        //        SAXBuilder parser = new SAXBuilder("org.apache.xerces.parsers.SAXParser", true);
-//        parser.setFeature("http://apache.org/xml/features/validation/schema", true);
-//        parser.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation",
-//                                       "http://www.w3.org/2001/12/soap-envelope contacts.dtd");
-//        Document doc = builder.build(xml);
         SAXBuilder parser = new SAXBuilder(validate);
-//        try {
         myDocument = parser.build(xmlfile);
         rootElement = myDocument.getRootElement();
         Log.Debug(this, "Document validated: " + xmlfile);
         return myDocument;
-//        } catch (Exception jDOMException) {
-//            Log.Debug(this, jDOMException.getMessage());
-//            Popup.error("", jDOMException);
-//        }
-//        return null;
     }
 
     /**
@@ -263,7 +222,7 @@ public class XMLReader {
      * @param node
      * @return
      */
-    public Hashtable<String, Object> toHashTable(Element node) {
+    public synchronized Hashtable<String, Object> toHashTable(Element node) {
         @SuppressWarnings("unchecked")
         List<Element> liste = node.getChildren();
         Hashtable<String, Object> table = new Hashtable<String, Object>();

@@ -26,14 +26,14 @@ import mpv5.db.common.DatabaseObject;
 import mpv5.handler.MPEnum;
 
 /**
- *
+ * A MPComboBoxModelItem consists of a visible "value" part and an invisible "ID" part.
  * 
  */
 public class MPComboBoxModelItem extends DefaultComboBoxModel implements Comparable<MPComboBoxModelItem> {
 
     private static final long serialVersionUID = 1L;
     /**
-     * The id field may have different classes.
+     * The id field may have any class.
      */
     public Class ID_CLASS = String.class;
 
@@ -155,8 +155,8 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
      * @param data
      * @return
      */
-    public static DefaultComboBoxModel toModel(MPEnum[] data) {
-        return new DefaultComboBoxModel(toItems(data));
+    public static MPComboboxModel toModel(MPEnum[] data) {
+        return new MPComboboxModel(toItems(data));
     }
 
     /**
@@ -165,8 +165,8 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
      * @param data
      * @return
      */
-    public static DefaultComboBoxModel toModel(Object[][] data) {
-        return new DefaultComboBoxModel(toItems(data));
+    public static MPComboboxModel toModel(Object[][] data) {
+        return new MPComboboxModel(toItems(data));
     }
     private Object id;
     private String name;
@@ -297,21 +297,23 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
         this.name = value;
     }
 
-    @Override
+    
     /**
      * Returns the value of the item
      */
+    @Override
     public String toString() {
         return name;
     }
 
-    @Override
+    
     /**
-     * MPComboBoxModelItems are compared to equal if their values are equal!
+     * MPComboBoxModelItems are compared to their values!
      * <br/>The ID field is <b>NOT</b> part of the compare.
      *
      * Note: this class has a natural ordering that is inconsistent with equals.
      */
+    @Override
     public int compareTo(MPComboBoxModelItem to) {
         return name.compareTo(to.getValue());
     }
