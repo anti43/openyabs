@@ -205,8 +205,6 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
      * Creates a new instance of the class represented by this items' ID Class object.
      * The class is instantiated as if by a new expression with an empty argument list.
      *
-     * This Object can then be used for if(Object instanceOf Date) like comparisons.
-     *
      * @return An Object or null if the ID class has no public empty constructor
      */
     public Object getInstanceOfIDClass() {
