@@ -131,7 +131,7 @@ public class PrinitingComboBox extends javax.swing.JPanel {
         switch (mode) {
             case MODE_DO:
                 if (evt.getStateChange() == ItemEvent.SELECTED) {
-                    switch (Integer.valueOf(item.getId())) {
+                    switch (Integer.valueOf(item.getId().toString())) {
                         case 0:
                             new PrintJob().print((DatabaseObject) dataowner);
                             break;
@@ -151,7 +151,7 @@ public class PrinitingComboBox extends javax.swing.JPanel {
 
             case MODE_TABLE:
                 if (evt.getStateChange() == ItemEvent.SELECTED) {
-                    switch (Integer.valueOf(item.getId())) {
+                    switch (Integer.valueOf(item.getId().toString())) {
                         case 0:
                             try {
                                 ((JTable) dataowner).print();

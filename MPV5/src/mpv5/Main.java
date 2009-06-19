@@ -55,9 +55,11 @@ import mpv5.ui.dialogs.subcomponents.wizard_DBSettings_1;
 
 import mpv5.db.objects.User;
 import mpv5.pluginhandling.UserPlugin;
+import mpv5.server.MPServer;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Fonts;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.files.FileReaderWriter;
+import mpv5.utils.text.TypeConversion;
 import org.apache.commons.cli2.*;
 import org.apache.commons.cli2.builder.*;
 import org.apache.commons.cli2.commandline.Parser;
@@ -308,11 +310,11 @@ public class Main extends SingleFrameApplication {
             }
 
             if (cl.hasOption(license)) {
-                    try {
-                        System.out.print(new FileReaderWriter(new File(Main.class.getResource("/mpv5/resources/license/gpl-3").toURI())).read());
-                    } catch (Exception ex) {
-                        Log.Debug(ex);
-                    }
+                try {
+                    System.out.print(new FileReaderWriter(new File(Main.class.getResource("/mpv5/resources/license/gpl-3").toURI())).read());
+                } catch (Exception ex) {
+                    Log.Debug(ex);
+                }
             }
 
             if (cl.hasOption(version)) {
@@ -429,6 +431,17 @@ public class Main extends SingleFrameApplication {
         }
         SwingUtilities.updateComponentTreeUI(MPV5View.identifierFrame);
         splash.dispose();
+        if (LocalSettings.hasProperty(LocalSettings.SERVER_START) &&
+                LocalSettings.hasProperty(LocalSettings.SERVER_PORT) &&
+                TypeConversion.stringToBoolean(LocalSettings.getProperty(LocalSettings.SERVER_START))) {
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    new MPServer();
+                }
+            };
+            SwingUtilities.invokeLater(runnable);
+        }
     }
 
     private void loadPlugins() {
@@ -446,7 +459,7 @@ public class Main extends SingleFrameApplication {
 
                 for (int i = 0; i < data.size(); i++) {
                     try {
-                       ((UserPlugin) data.get(i)).delete();
+                        ((UserPlugin) data.get(i)).delete();
                     } catch (Exception e) {
                         Log.Debug(e);
                     }

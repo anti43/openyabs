@@ -17,11 +17,13 @@
 package mpv5.utils.models;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import mpv5.db.common.DatabaseObject;
 import mpv5.handler.MPEnum;
-import mpv5.logging.Log;
 
 /**
  *
@@ -30,6 +32,20 @@ import mpv5.logging.Log;
 public class MPComboBoxModelItem extends DefaultComboBoxModel implements Comparable<MPComboBoxModelItem> {
 
     private static final long serialVersionUID = 1L;
+    /**
+     * The id field may have different classes.
+     */
+    public Class ID_CLASS = String.class;
+
+    /**
+     * Convenience method for Integer IDs. Returns the index of the item with the given id
+     * @param uid
+     * @param model
+     * @return
+     */
+    public static int getItemID(Integer uid, ComboBoxModel model) {
+        return getItemID(String.valueOf(uid), model);
+    }
 
     /**
      * Returns the index of the item with the given id
@@ -37,12 +53,19 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
      * @param model
      * @return
      */
-    public static int getItemID(int uid, ComboBoxModel model) {
-        return getItemID(String.valueOf(uid), model);
+    public static int getItemID(Object uid, ComboBoxModel model) {
+        for (int i = 0; i < model.getSize(); i++) {
+//            Log.Debug(MPComboBoxModelItem.class, ((MPComboBoxModelItem) model.getElementAt(i)).id + " comparing with: " + uid);
+            if (((MPComboBoxModelItem) model.getElementAt(i)).id.equals(uid)) {
+//                Log.Debug(MPComboBoxModelItem.class, "Found at Index:" + i);
+                return i;
+            }
+        }
+        return 0;
     }
 
     /**
-     * Returns the index of the item with the given id
+     * Convenience method for String IDs. Returns the index of the item with the given id
      * @param uid
      * @param model
      * @return
@@ -84,8 +107,11 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
     public static MPComboBoxModelItem[] toItems(Object[][] items) {
         MPComboBoxModelItem[] array = new MPComboBoxModelItem[items.length];
         for (int i = 0; i < array.length; i++) {
-            array[i] = new MPComboBoxModelItem(String.valueOf(items[i][0]), String.valueOf(items[i][1]));
+            array[i] = new MPComboBoxModelItem(items[i][0], String.valueOf(items[i][1]));
         }
+
+        Arrays.sort(array);
+
         return array;
     }
 
@@ -100,6 +126,9 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
         for (int i = 0; i < array.length; i++) {
             array[i] = new MPComboBoxModelItem(items.get(i).__getIDS(), items.get(i).__getCName());
         }
+
+        Arrays.sort(array);
+
         return array;
     }
 
@@ -114,6 +143,9 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
         for (int i = 0; i < array.length; i++) {
             array[i] = new MPComboBoxModelItem(items[i].getId(), items[i].getName());
         }
+
+        Arrays.sort(array);
+
         return array;
     }
 
@@ -136,61 +168,112 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
     public static DefaultComboBoxModel toModel(Object[][] data) {
         return new DefaultComboBoxModel(toItems(data));
     }
-    private String id;
+    private Object id;
     private String name;
 
     /**
-     *
+     * Creates a new item with the given id and value
      * @param id
      * @param name
      */
-    public MPComboBoxModelItem(int id, String name) {
-        this.id = String.valueOf(id);
-        this.name = name;
-    }
-
-    /**
-     *
-     * @param id
-     * @param name
-     */
-    public MPComboBoxModelItem(String id, String name) {
+    public MPComboBoxModelItem(Integer id, String name) {
         this.id = id;
         this.name = name;
+        this.ID_CLASS = id.getClass();
     }
 
     /**
-     * @return the id
+     * Creates a new item with the given id and value
+     * @param id
+     * @param name
+     */
+    public MPComboBoxModelItem(Object id, String name) {
+        this.id = id;
+        this.name = name;
+        this.ID_CLASS = id.getClass();
+    }
+
+    /**
+     * To determine the class of the ID field object
+     * @return A class
+     */
+    public Class getIDClass() {
+        return ID_CLASS;
+    }
+
+    /**
+     * Creates a new instance of the class represented by this items' ID Class object.
+     * The class is instantiated as if by a new expression with an empty argument list.
+     *
+     * This Object can then be used for if(Object instanceOf Date) like comparisons.
+     *
+     * @return An Object or null if the ID class has no public empty constructor
+     */
+    public Object getInstanceOfIDClass() {
+        try {
+            return getIDClass().newInstance();
+        } catch (InstantiationException ex) {
+            Logger.getLogger(MPComboBoxModelItem.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(MPComboBoxModelItem.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    /**
+     * The String value of the ID field
+     * @return A {@link String} representation of this items' ID Object - <b>NEVER<b/> null
      */
     public String getId() {
+        return String.valueOf(id);
+    }
+
+    /**
+     * The ID field
+     * @return the id Object
+     */
+    public Object getIdObject() {
         return id;
     }
 
     /**
-     * If the id is greater than 0 or longer than 0 if a String index
-     * @return
+     * If the id is greater than 0 or longer than 0 if a String index or non-null for other ID Objects
+     * @return true if the ID appears to be valid as defined above.
      */
     public boolean isValid() {
-        try {
-            if (Integer.valueOf(id).intValue() > 0) {
-                return true;
-            } else {
-                return false;
+        if (id != null) {
+            try {
+                if (Integer.valueOf(id.toString()).intValue() > 0) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } catch (NumberFormatException numberFormatException) {
+                if (id instanceof String && ((String) id).length() > 0) {
+                    return true;
+                } else {
+                    return false;
+                }
             }
-        } catch (NumberFormatException numberFormatException) {
-            if (id.length() > 0) {
-                return true;
-            } else {
-                return false;
-            }
+        } else {
+            return false;
         }
     }
 
     /**
+
      * @param id the id to set
      */
     public void setId(Integer id) {
-        this.id = id.toString();
+        this.id = id;
+    }
+
+    /**
+     * Define the ID field of this item
+     * @param id the id to set
+     */
+    public void setId(Object id) {
+        this.id = id;
     }
 
     /**
@@ -201,11 +284,19 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
     }
 
     /**
-     * Name = Value
+     * Delegates to {@link MPComboBoxModelItem#setValue(String)}
      * @param name the name to set
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * Sets the displayed value of this item
+     * @param value
+     */
+    public void setValue(String value) {
+        this.name = value;
     }
 
     @Override
@@ -219,8 +310,34 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
     @Override
     /**
      * MPComboBoxModelItems are compared to equal if their values are equal!
+     * <br/>The ID field is <b>NOT</b> part of the compare.
+     *
+     * Note: this class has a natural ordering that is inconsistent with equals.
      */
     public int compareTo(MPComboBoxModelItem to) {
         return name.compareTo(to.getValue());
+    }
+
+    @Override
+    public boolean equals(Object anotherObject) {
+        if (anotherObject == null || !(anotherObject instanceof MPComboBoxModelItem)) {
+            return false;
+        }
+
+        MPComboBoxModelItem mPComboBoxModelItem = (MPComboBoxModelItem) anotherObject;
+        
+        if (mPComboBoxModelItem.getIdObject().equals(id) && mPComboBoxModelItem.getValue().equals(getValue())) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 29 * hash + (this.id != null ? this.id.hashCode() : 0);
+        hash = 29 * hash + (this.name != null ? this.name.hashCode() : 0);
+        return hash;
     }
 }
