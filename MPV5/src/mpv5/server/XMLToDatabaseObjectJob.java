@@ -25,17 +25,14 @@ import mpv5.db.common.DatabaseObject;
 import mpv5.logging.Log;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.files.FileReaderWriter;
+import mpv5.utils.jobs.Job;
 import mpv5.utils.xml.XMLReader;
 
 /**
  *
  */
 public class XMLToDatabaseObjectJob extends MPServerJob {
-
-    private String xmlData;
     private ArrayList<ArrayList<DatabaseObject>> dos;
-    private Socket sock;
-    private PrintStream out;
 
     /**
      *
@@ -44,10 +41,11 @@ public class XMLToDatabaseObjectJob extends MPServerJob {
      * @throws IOException
      */
     public XMLToDatabaseObjectJob(String xmlData, Socket socket) throws IOException {
-        super("DatabaseObjectFactory :: ");
-        this.xmlData = xmlData;
-        this.sock = socket;
-        this.out = new PrintStream(socket.getOutputStream());
+        super(xmlData, socket);
+    }
+
+    public XMLToDatabaseObjectJob() {
+        super();
     }
 
     @Override
@@ -55,13 +53,14 @@ public class XMLToDatabaseObjectJob extends MPServerJob {
         try {
             File file = FileDirectoryHandler.getTempFile("xml");
             FileReaderWriter fr = new FileReaderWriter(file);
-            fr.writeOnce(xmlData);
+            fr.writeOnce(super.getXmlData());
             XMLReader x = new XMLReader();
             x.newDoc(file, true);
             dos = x.getObjects();
             return null;
         } catch (Exception ex) {
             Log.Debug(ex);
+            super.getOut().println(ex.getMessage());
             return ex;
         }
     }
@@ -83,17 +82,23 @@ public class XMLToDatabaseObjectJob extends MPServerJob {
                 for (int i = 0; i < l.size(); i++) {
                     DatabaseObject databaseObject = l.get(i);
                     if (databaseObject.save()) {
-                        Log.Debug(this, "Done for: " + super.getName() + " " + databaseObject.__getCName());
-                         out.println(MPServerRunner.COMMAND_DONE);
+                        Log.Debug(this, "Done for: " + databaseObject.__getCName());
+                        super.getOut().println(MPServerRunner.COMMAND_DONE);
                     } else {
-                        out.println(MPServerRunner.ERROR_OCCOURED + " [" + databaseObject + "]");
+                        super.getOut().println(MPServerRunner.ERROR_OCCOURED + " [" + databaseObject + "]");
                     }
                 }
             } catch (Exception ex) {
-                out.println(ex.getMessage());
+                Log.Debug(ex);
+                super.getOut().println(ex.getMessage());
             }
         } else {
-            out.println(e.getMessage());
+            super.getOut().println(e.getMessage());
         }
+    }
+
+    @Override
+    public void start() {
+        new Job(this, this, MPServerRunner.JOB_DONE).execute();
     }
 }

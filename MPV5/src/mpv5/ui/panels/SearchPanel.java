@@ -57,7 +57,9 @@ public class SearchPanel extends javax.swing.JPanel {
      * Reload the search result
      */
     public void refresh() {
-        search(lasttype, lastneedle);
+        if (isShowing()) {
+            search(lasttype, lastneedle);
+        }
     }
 
     public void setContextOwner(DatabaseObject object) {

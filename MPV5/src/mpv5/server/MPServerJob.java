@@ -16,34 +16,86 @@
  */
 package mpv5.server;
 
+import java.io.IOException;
+import java.io.PrintStream;
+import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import mpv5.logging.Log;
 import mpv5.utils.jobs.Waitable;
 import mpv5.utils.jobs.Waiter;
 
 /**
  *
  */
-public abstract class MPServerJob implements Waitable, Waiter{
-    private String name;
+public abstract class MPServerJob implements Waitable, Waiter {
+
+    private Socket sock;
+    private PrintStream out;
+    private String xmlData;
 
     /**
      * Creates a new job
-     * @param name 
+     * @param data
+     * @param socket
      */
-    public MPServerJob(String name) {
-        this.name = name;
+    public MPServerJob(String data, Socket socket) {
+        this.xmlData = data;
+        this.sock = socket;
+        try {
+            this.out = new PrintStream(socket.getOutputStream());
+        } catch (IOException ex) {
+            Log.Debug(ex);
+        }
+    }
+
+    public MPServerJob(){}
+
+    /**
+     * @return the sock
+     */
+    public Socket getSock() {
+        return sock;
     }
 
     /**
-     * @return the name
+     * @return the out
      */
-    public String getName() {
-        return name;
+    public PrintStream getOut() {
+        return out;
     }
 
     /**
-     * @param name the name to set
+     * @return the xmlData
      */
-    public void setName(String name) {
-        this.name = name;
+    public String getXmlData() {
+        return xmlData;
+    }
+
+    /**
+     * Start the job
+     */
+    public abstract void start();
+
+    /**
+     * @param sock the sock to set
+     */
+    public void setSock(Socket sock) throws IOException {
+        this.sock = sock;
+        this.out = new PrintStream(sock.getOutputStream());
+    }
+
+    /**
+     * @param out the out to set
+     */
+    public void setOut(PrintStream out) {
+        this.out = out;
+    }
+
+    /**
+     * @param xmlData the xmlData to set
+     */
+    public void setXmlData(String xmlData) {
+        this.xmlData = xmlData;
     }
 }
