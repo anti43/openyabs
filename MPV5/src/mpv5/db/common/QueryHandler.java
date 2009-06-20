@@ -21,8 +21,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Hashtable;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -37,7 +35,6 @@ import mpv5.db.objects.Contact;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPV5View;
 import mpv5.ui.dialogs.Popup;
-import mpv5.data.*;
 import mpv5.ui.panels.DataPanel;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.arrays.ArrayUtilities;
@@ -50,7 +47,11 @@ import mpv5.utils.ui.TextFieldUtils;
 
 /**
  *
- *  
+ * Use this class to access the MP database.
+ *
+ * @see QueryHandler#instanceOf() 
+ * @see QueryHandler#getConnection()
+ * @see QueryHandler#clone(mpv5.db.common.Context) 
  */
 public class QueryHandler implements Cloneable {
 
@@ -576,7 +577,7 @@ public class QueryHandler implements Cloneable {
     private static int RUNNING_JOBS = 0;
 
     private void setLimit(int limit) {
-          Log.Debug(QueryHandler.class, "Setting row limit to: " + limit);
+        Log.Debug(QueryHandler.class, "Setting row limit to: " + limit);
         this.limit = limit;
     }
 
@@ -610,10 +611,7 @@ public class QueryHandler implements Cloneable {
 //        return originalvalue.substring(0, substringcount) + s;
 //    }
     public Integer getCount() {
-//        start();
         int i = selectCount(null, null);
-//        stop();
-
         i = (i < 0) ? -i : i;
         return i;
     }

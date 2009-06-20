@@ -297,7 +297,6 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
         this.name = value;
     }
 
-    
     /**
      * Returns the value of the item
      */
@@ -306,16 +305,34 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
         return name;
     }
 
-    
+//     * <br/>The ID field is <b>NOT</b> part of the compare.
+//     *
+//     * Note: this class has a natural ordering that is inconsistent with equals.
     /**
-     * MPComboBoxModelItems are compared to their values!
-     * <br/>The ID field is <b>NOT</b> part of the compare.
-     *
-     * Note: this class has a natural ordering that is inconsistent with equals.
+     * MPComboBoxModelItems are compared to their ids and values!
+     * @param to 
      */
     @Override
     public int compareTo(MPComboBoxModelItem to) {
-        return name.compareTo(to.getValue());
+        final int EQUAL = 0;
+        if (this == to){
+            return EQUAL;
+        }
+        if (to.getIdObject().equals(id) && to.getValue().equals(getValue())) {
+            return EQUAL;
+        }
+        int comparison = this.getValue().compareTo(to.getValue());
+        if (comparison != EQUAL) {
+            return comparison;
+        }
+
+        comparison = this.getId().compareTo(to.getId());
+        if (comparison != EQUAL) {
+            return comparison;
+        }
+
+        assert this.equals(to) : "compareTo inconsistent with equals.";
+        return EQUAL;
     }
 
     @Override
@@ -325,7 +342,7 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
         }
 
         MPComboBoxModelItem mPComboBoxModelItem = (MPComboBoxModelItem) anotherObject;
-        
+
         if (mPComboBoxModelItem.getIdObject().equals(id) && mPComboBoxModelItem.getValue().equals(getValue())) {
             return true;
         } else {

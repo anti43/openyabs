@@ -27,7 +27,7 @@ import mpv5.ui.frames.MPV5View;
 
 /**
  *
- * 
+ * Context controls Database Queries for all native MP {@link DatabaseObject}s
  */
 public class Context {
 
@@ -561,12 +561,12 @@ public class Context {
         if (!first) {
             cond = cond.substring(4, cond.length() - 4);
             if (MPV5View.getUser().isGroupRestricted() && getGroupableContexts().contains(this)) {
-                cond += "AND   " + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids() + " OR " + dbIdentity + "." + "GROUPSIDS = 1";
+                cond += "AND   (" + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids() + " OR " + dbIdentity + "." + "GROUPSIDS = 1)";
             }
         } else {
 
             if (MPV5View.getUser().isGroupRestricted() && getGroupableContexts().contains(this)) {
-                cond = "WHERE " + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids() + " OR " + dbIdentity + "." + "GROUPSIDS = 1";
+                cond = "WHERE (" + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids() + " OR " + dbIdentity + "." + "GROUPSIDS = 1)";
             } else {
                 cond = "WHERE " + CONDITION_DEFAULT;
             }
@@ -635,12 +635,12 @@ public class Context {
             if (!first) {
                 cond = cond.substring(4, cond.length() - 3);
                 if (MPV5View.getUser().isGroupRestricted() && getGroupableContexts().contains(this)) {
-                    cond += "AND   " + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids() + " OR " + dbIdentity + "." + "GROUPSIDS = 1";
+                    cond += "AND   (" + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids() + " OR " + dbIdentity + "." + "GROUPSIDS = 1)";
                 }
             } else {
 
                 if (MPV5View.getUser().isGroupRestricted() && getGroupableContexts().contains(this)) {
-                    cond = "WHERE " + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids() + " OR " + dbIdentity + "." + "GROUPSIDS = 1";
+                    cond = "WHERE (" + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids() + " OR " + dbIdentity + "." + "GROUPSIDS = 1)";
                 } else {
                     cond = "WHERE " + CONDITION_DEFAULT;
                 }
@@ -664,7 +664,7 @@ public class Context {
      */
     public String getGroupRestrictionSQLString() {
         if (MPV5View.getUser().isGroupRestricted() && getGroupableContexts().contains(this)) {
-            return " " + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids() + " OR " + dbIdentity + "." + "GROUPSIDS = 1";
+            return " (" + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids() + " OR " + dbIdentity + "." + "GROUPSIDS = 1)";
         } else {
             return " ";
         }

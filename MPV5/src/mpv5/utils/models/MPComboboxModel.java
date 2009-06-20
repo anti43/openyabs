@@ -35,7 +35,15 @@ public class MPComboboxModel extends DefaultComboBoxModel {
 
     @Override
     public MPComboBoxModelItem getSelectedItem() {
-        return (MPComboBoxModelItem) super.getSelectedItem();
+        if (super.getSelectedItem() != null) {
+            if (super.getSelectedItem() instanceof MPComboBoxModelItem) {
+                return (MPComboBoxModelItem) super.getSelectedItem();
+            } else {
+                return new MPComboBoxModelItem(0, super.getSelectedItem().toString());
+            }
+        } else {
+            return null;
+        }
     }
 
     /**
