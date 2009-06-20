@@ -501,7 +501,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
         }
 
         Account g = null;
-        if (!MPV5View.getUser().__getIsrgrouped()) {
+        if (!MPV5View.getUser().isGroupRestricted()) {
             g = null;
             try {
                 g = (Account) DatabaseObject.getObject(Context.getAccounts(), 1);
@@ -530,7 +530,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
             Log.Debug(this, e.getMessage());
         }
 
-        if (!MPV5View.getUser().__getIsrgrouped()) {
+        if (!MPV5View.getUser().isGroupRestricted()) {
             groupnameselect.setModel(new DefaultComboBoxModel(
                     MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID(), null, ""))));
         } else {

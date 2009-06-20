@@ -780,7 +780,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
 
             public void run() {
                 try {
-                    if (!MPV5View.getUser().__getIsrgrouped()) {
+                    if (!MPV5View.getUser().isGroupRestricted()) {
                         groupnameselect.setModel(new DefaultComboBoxModel(
                                 MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID(), null, ""))));
                     } else {

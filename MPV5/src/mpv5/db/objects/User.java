@@ -344,7 +344,6 @@ public class User extends DatabaseObject {
         this.language = language;
     }
 
-
     /**
      * @return the isenabled
      */
@@ -487,6 +486,7 @@ public class User extends DatabaseObject {
     private void setProperties() {
         Runnable runnable = new Runnable() {
 
+            @Override
             public void run() {
                 QueryCriteria criteria = new QueryCriteria();
                 criteria.add("usersids", ids);
@@ -547,8 +547,17 @@ public class User extends DatabaseObject {
         this.intdefaultaccount = intdefaultaccount;
     }
 
-     @Override
+    @Override
     public mpv5.utils.images.MPIcon getIcon() {
         return null;
+    }
+
+    /**
+     * If this returns true, the User is only allowed to see, and use, data which belongs to the same Group as him.<br/>
+     * Use this method to implement multi-client capability.
+     * @return
+     */
+    public boolean isGroupRestricted() {
+        return __getIsrgrouped();
     }
 }

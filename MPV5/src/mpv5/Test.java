@@ -19,6 +19,7 @@ package mpv5;
 import java.util.Date;
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
+import mpv5.db.common.Context;
 import mpv5.server.MPServer;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.models.*;
@@ -30,6 +31,8 @@ import mpv5.utils.models.*;
 public class Test {
 
     public static void main(String[] args) {
+
+        mpv5.db.common.Context.getItems().getGroupRestrictionSQLString();
 
 //        new MPServer();
 

@@ -1348,7 +1348,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                     companyselect.setModel(new DefaultComboBoxModel(ArrayUtilities.merge(new Object[]{new MPComboBoxModelItem("<no_value>", "")},
                             MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getCompany()).getValuesFor(Context.getCompany().getSubID(), null, "")))));
 
-                    if (!MPV5View.getUser().__getIsrgrouped()) {
+                    if (!MPV5View.getUser().isGroupRestricted()) {
                         groupnameselect.setModel(new DefaultComboBoxModel(
                                 MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID(), null, ""))));
                     } else {

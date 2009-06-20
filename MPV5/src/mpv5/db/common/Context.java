@@ -278,7 +278,6 @@ public class Context {
         return list;
     }
 
-
     /**
      * Importable Contexts
      * @return
@@ -292,7 +291,6 @@ public class Context {
         list.add(getAccounts());
         return list;
     }
-
 
     /**
      *
@@ -562,12 +560,12 @@ public class Context {
 
         if (!first) {
             cond = cond.substring(4, cond.length() - 4);
-            if (MPV5View.getUser().__getIsrgrouped() && getGroupableContexts().contains(this)) {
+            if (MPV5View.getUser().isGroupRestricted() && getGroupableContexts().contains(this)) {
                 cond += "AND   " + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids() + " OR " + dbIdentity + "." + "GROUPSIDS = 1";
             }
         } else {
 
-            if (MPV5View.getUser().__getIsrgrouped() && getGroupableContexts().contains(this)) {
+            if (MPV5View.getUser().isGroupRestricted() && getGroupableContexts().contains(this)) {
                 cond = "WHERE " + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids() + " OR " + dbIdentity + "." + "GROUPSIDS = 1";
             } else {
                 cond = "WHERE " + CONDITION_DEFAULT;
@@ -625,7 +623,7 @@ public class Context {
                 }
                 cond += " " + CONDITION_ITEMS_TYPE + "=" + getItemType() + " OR ";
             }
-            
+
             if (itemStatus != null) {
                 if (first) {
                     cond += "WHERE ";
@@ -636,12 +634,12 @@ public class Context {
 
             if (!first) {
                 cond = cond.substring(4, cond.length() - 3);
-                if (MPV5View.getUser().__getIsrgrouped() && getGroupableContexts().contains(this)) {
+                if (MPV5View.getUser().isGroupRestricted() && getGroupableContexts().contains(this)) {
                     cond += "AND   " + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids() + " OR " + dbIdentity + "." + "GROUPSIDS = 1";
                 }
             } else {
 
-                if (MPV5View.getUser().__getIsrgrouped() && getGroupableContexts().contains(this)) {
+                if (MPV5View.getUser().isGroupRestricted() && getGroupableContexts().contains(this)) {
                     cond = "WHERE " + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids() + " OR " + dbIdentity + "." + "GROUPSIDS = 1";
                 } else {
                     cond = "WHERE " + CONDITION_DEFAULT;
@@ -655,6 +653,20 @@ public class Context {
             return cond;
         } else {
             return exclusiveCondition.toString();
+        }
+    }
+
+    /**
+     * Generates a SQL String (WHERE clause) which can be used to implement multi-client capability.<br/>
+     * <br/>
+     * <b>If the current Context does not support grouping, or the current user is not Group restricted, this will return " ".</b>
+     * @return
+     */
+    public String getGroupRestrictionSQLString() {
+        if (MPV5View.getUser().isGroupRestricted() && getGroupableContexts().contains(this)) {
+            return " " + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids() + " OR " + dbIdentity + "." + "GROUPSIDS = 1";
+        } else {
+            return " ";
         }
     }
 
@@ -1282,7 +1294,7 @@ public class Context {
         return c;
     }
 
-     public static Context getFormats() {
+    public static Context getFormats() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_FORMATS_T_USERS);
