@@ -22,6 +22,7 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.globals.Messages;
 import mpv5.handler.FormatHandler;
+import mpv5.handler.MPEnum;
 
 /**
  *
@@ -50,6 +51,87 @@ public class Item extends DatabaseObject {
                 return Messages.STATUS_CANCELLED.toString();
         }
         return null;
+    }
+
+    /**
+     * Returns all possible status messages
+     * @return
+     */
+    public static MPEnum[] getStatusStrings() {
+        MPEnum[] en = new MPEnum[6];
+        en[0] = new MPEnum() {
+
+            @Override
+            public int getId() {
+                return STATUS_QUEUED;
+            }
+
+            @Override
+            public String getName() {
+                return getStatusString(getId());
+            }
+        };
+        en[1] = new MPEnum() {
+
+            @Override
+            public int getId() {
+                return STATUS_IN_PROGRESS;
+            }
+
+            @Override
+            public String getName() {
+                return getStatusString(getId());
+            }
+        };
+        en[2] = new MPEnum() {
+
+            @Override
+            public int getId() {
+                return STATUS_PAUSED;
+            }
+
+            @Override
+            public String getName() {
+                return getStatusString(getId());
+            }
+        };
+        en[3] = new MPEnum() {
+
+            @Override
+            public int getId() {
+                return STATUS_FINISHED;
+            }
+
+            @Override
+            public String getName() {
+                return getStatusString(getId());
+            }
+        };
+        en[4] = new MPEnum() {
+
+            @Override
+            public int getId() {
+                return STATUS_PAID;
+            }
+
+            @Override
+            public String getName() {
+                return getStatusString(getId());
+            }
+        };
+        en[5] = new MPEnum() {
+
+            @Override
+            public int getId() {
+                return STATUS_CANCELLED;
+            }
+
+            @Override
+            public String getName() {
+                return getStatusString(getId());
+            }
+        };
+        return en;
     }
 
     /**

@@ -20,6 +20,17 @@ public class DateChooser extends javax.swing.JPanel {
     }
 
     /**
+     *
+     * @param nullDate
+     */
+    public DateChooser(boolean nullDate) {
+        initComponents();
+        if (!nullDate) {
+            jTextField1.setText(DateConverter.getTodayDefDate());
+        }
+    }
+
+    /**
      * Determines if the field has some text
      * @return
      */
@@ -56,6 +67,11 @@ public class DateChooser extends javax.swing.JPanel {
         jButton1 = new javax.swing.JButton();
 
         setOpaque(false);
+
+        jTextField1.setEditable(false);
+        jTextField1.setForeground(new java.awt.Color(0, 0, 0));
+        jTextField1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jTextField1.setDisabledTextColor(new java.awt.Color(0, 0, 0));
 
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/cal.png"))); // NOI18N
         jButton1.setText("...");

@@ -32,6 +32,11 @@ import mpv5.handler.MPEnum;
 public class MPComboBoxModelItem extends DefaultComboBoxModel implements Comparable<MPComboBoxModelItem> {
 
     private static final long serialVersionUID = 1L;
+    public static int COMPARE_BY_ID = 0;
+    /**
+     * (default)
+     */
+    public static int COMPARE_BY_VALUE = 1;
     /**
      * The id field may have any class.
      */
@@ -149,6 +154,25 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
         return array;
     }
 
+     /**
+     * Converts an enum<id, name> to mp combo box items
+     * {id (hidden), value (shown in the list)}
+     * @param items
+      * @param compareMode
+      * @return
+     */
+    public static MPComboBoxModelItem[] toItems(MPEnum[] items, int compareMode) {
+        MPComboBoxModelItem[] array = new MPComboBoxModelItem[items.length];
+        for (int i = 0; i < array.length; i++) {
+            array[i] = new MPComboBoxModelItem(items[i].getId(), items[i].getName());
+            array[i].setCompareMode(compareMode);
+        }
+
+        Arrays.sort(array);
+
+        return array;
+    }
+
     /**
      * Creates a {@link DefaultComBoxModel} containing an array of {@link MPComboBoxModelItem}
      * {enum id (hidden), value (shown in the list)}
@@ -157,6 +181,17 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
      */
     public static MPComboboxModel toModel(MPEnum[] data) {
         return new MPComboboxModel(toItems(data));
+    }
+
+     /**
+     * Creates a {@link DefaultComBoxModel} containing an array of {@link MPComboBoxModelItem}
+     * {enum id (hidden), value (shown in the list)}
+     * @param data
+      * @param compareMode
+      * @return
+     */
+    public static MPComboboxModel toModel(MPEnum[] data, int compareMode) {
+        return new MPComboboxModel(toItems(data, compareMode));
     }
 
     /**
@@ -170,6 +205,7 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
     }
     private Object id;
     private String name;
+    private int comparemode = COMPARE_BY_VALUE;
 
     /**
      * Creates a new item with the given id and value
@@ -259,6 +295,14 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
     }
 
     /**
+     * Define how the items compare to each other
+     * @param mode
+     */
+    public void setCompareMode(int mode) {
+        this.comparemode = mode;
+    }
+
+    /**
 
      * @param id the id to set
      */
@@ -315,20 +359,31 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
     @Override
     public int compareTo(MPComboBoxModelItem to) {
         final int EQUAL = 0;
-        if (this == to){
+        if (this == to) {
             return EQUAL;
         }
         if (to.getIdObject().equals(id) && to.getValue().equals(getValue())) {
             return EQUAL;
         }
-        int comparison = this.getValue().compareTo(to.getValue());
-        if (comparison != EQUAL) {
-            return comparison;
-        }
 
-        comparison = this.getId().compareTo(to.getId());
-        if (comparison != EQUAL) {
-            return comparison;
+        if (comparemode == COMPARE_BY_VALUE) {
+            int comparison = this.getValue().compareTo(to.getValue());
+            if (comparison != EQUAL) {
+                return comparison;
+            }
+            comparison = this.getId().compareTo(to.getId());
+            if (comparison != EQUAL) {
+                return comparison;
+            }
+        } else {
+            int comparison = this.getId().compareTo(to.getId());
+            if (comparison != EQUAL) {
+                return comparison;
+            }
+            comparison = this.getValue().compareTo(to.getValue());
+            if (comparison != EQUAL) {
+                return comparison;
+            }
         }
 
         assert this.equals(to) : "compareTo inconsistent with equals.";

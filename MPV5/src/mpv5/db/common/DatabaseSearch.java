@@ -5,16 +5,17 @@ import java.util.Arrays;
 
 /**
  *
- *  
+ * Convenience class for database searches.
+ * <br/>Does <b>NOT</b> automatically take care of multi-client capability needs.
  */
 public class DatabaseSearch {
-    public static String ALL_COLUMNS = "*";
 
+    public static String ALL_COLUMNS = "*";
     private Context context;
-    private int ROWLIMIT  = 0;
+    private int ROWLIMIT = 0;
 
     /**
-     *
+     * Initiates a new search
      * @param context
      */
     public DatabaseSearch(Context context) {
@@ -22,7 +23,7 @@ public class DatabaseSearch {
     }
 
     /**
-     *
+     * Initiates a new search
      * @param obj The DBOBJ the search will rely on
      */
     public DatabaseSearch(DatabaseObject obj) {
@@ -31,9 +32,14 @@ public class DatabaseSearch {
         context.setSubID(Context.DEFAULT_SUBID);
     }
 
+    /**
+     * Initiates a new search and allows to limit the resulting rows
+     * @param context
+     * @param rowlimit
+     */
     public DatabaseSearch(Context context, int rowlimit) {
-          this.context = context;
-          this.ROWLIMIT = rowlimit;
+        this.context = context;
+        this.ROWLIMIT = rowlimit;
     }
 
     /**
@@ -41,7 +47,7 @@ public class DatabaseSearch {
      * @return select("*", null);
      */
     public Object[][] getValuesFor() {
-        return QueryHandler.instanceOf().clone(context, ROWLIMIT).select("*",(String[]) null);
+        return QueryHandler.instanceOf().clone(context, ROWLIMIT).select("*", (String[]) null);
     }
 
     /**
@@ -54,15 +60,16 @@ public class DatabaseSearch {
     public Object[][] getValuesFor(String resultingFieldNames, String what, String where) {
         return QueryHandler.instanceOf().clone(context, ROWLIMIT).select(resultingFieldNames, new String[]{what, where, "'"});
     }
-   /**
+
+    /**
      * Get multiple values from a search, where the search column is a number column
      * @param resultingFieldNames What do you like to get (columns)?
      * @param what Which column do you like to take for the condition?
-    * @param  value
-    * @return
+     * @param  value
+     * @return
      */
-    public Object[][] getValuesFor(String resultingFieldNames, String what,  Number value) {
-         return QueryHandler.instanceOf().clone(context, ROWLIMIT).select(resultingFieldNames, new String[]{what, value.toString(), ""});
+    public Object[][] getValuesFor(String resultingFieldNames, String what, Number value) {
+        return QueryHandler.instanceOf().clone(context, ROWLIMIT).select(resultingFieldNames, new String[]{what, value.toString(), ""});
     }
 
     /**
@@ -74,12 +81,12 @@ public class DatabaseSearch {
      * @return 
      */
     public Object[][] getValuesFor(String resultingFieldNames, String[] possibleColumns, String where, boolean searchForLike) {
-     ArrayList<Object[]> list = new ArrayList<Object[]>();
+        ArrayList<Object[]> list = new ArrayList<Object[]>();
         for (int i = 0; i < possibleColumns.length; i++) {
             String string = possibleColumns[i];
-             list.addAll(Arrays.asList( QueryHandler.instanceOf().clone(context, ROWLIMIT).select(resultingFieldNames, new String[]{string, where, "'"}, null, searchForLike)));
+            list.addAll(Arrays.asList(QueryHandler.instanceOf().clone(context, ROWLIMIT).select(resultingFieldNames, new String[]{string, where, "'"}, null, searchForLike)));
         }
-     return list.toArray(new Object[][]{});
+        return list.toArray(new Object[][]{});
     }
 
     /**
@@ -117,7 +124,7 @@ public class DatabaseSearch {
      * @return
      * @throws NodataFoundException If no data was found matching your search
      */
-    public Object[] searchFor(String[] columns, String what, String needle , boolean exactMatch) throws NodataFoundException {
+    public Object[] searchFor(String[] columns, String what, String needle, boolean exactMatch) throws NodataFoundException {
         Object[] data = QueryHandler.instanceOf().clone(context, ROWLIMIT).getValuesFor(columns, what, needle, exactMatch);
         if (data == null || data.length == 0) {
             throw new NodataFoundException();
@@ -125,6 +132,7 @@ public class DatabaseSearch {
             return data;
         }
     }
+
     /**
      * Get a single dimension list from a search after values from the column
      * where the value is LIKE the given needle
@@ -143,14 +151,13 @@ public class DatabaseSearch {
         }
     }
 
-
     /**
      * Search for an ID in this context
      * @param what The column which you like to search through
      * @param needle The value of the row in that column
      * @return An id if there is a matching dataset found, NULL otherwise
      */
-    public Integer searchForID( String what, String needle) {
+    public Integer searchForID(String what, String needle) {
         Object[] data;
         try {
             data = QueryHandler.instanceOf().clone(context, ROWLIMIT).selectLast("ids", new String[]{what, needle, "'"}, true);

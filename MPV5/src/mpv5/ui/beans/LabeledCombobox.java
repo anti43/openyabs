@@ -14,10 +14,13 @@ import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import javax.swing.ComboBoxEditor;
+import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.SwingUtilities;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseSearch;
+import mpv5.handler.MPEnum;
+import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.models.*;
 
 /**
@@ -32,6 +35,7 @@ public class LabeledCombobox extends javax.swing.JPanel {
     private Class clazz;
     public static boolean SEARCH_ON_ENTER = false;
     private Context context;
+    private int sortmode = 0;
 
     /** Creates new form LabeledTextField */
     public LabeledCombobox() {
@@ -78,7 +82,32 @@ public class LabeledCombobox extends javax.swing.JPanel {
     }
 
     /**
-     * Delegates to setModel(Object[][])
+     *
+     * @return The model
+     */
+    public MPComboboxModel getModel() {
+        return (MPComboboxModel) jComboBox1.getModel();
+    }
+
+    /**
+     *
+     * @param values
+     */
+    public void setModel(MPEnum[] values) {
+        jComboBox1.setModel(MPComboBoxModelItem.toModel(values));
+    }
+
+    /**
+     * 
+     * @param values
+     * @param compareMode
+     */
+    public void setModel(MPEnum[] values, int compareMode) {
+        jComboBox1.setModel(MPComboBoxModelItem.toModel(values, compareMode));
+    }
+
+    /**
+     * Uses enum.name() as ID, and enum.toString() as value.
      * @param values
      */
     public void setModel(Enum[] values) {
@@ -118,6 +147,14 @@ public class LabeledCombobox extends javax.swing.JPanel {
      */
     public void setModel(MPComboboxModel model) {
         jComboBox1.setModel(model);
+    }
+
+    /**
+     * Delegates to getComboBox().setSelectedIndex(itemID);
+     * @param itemID
+     */
+    public void setSelectedIndex(int itemID) {
+        getComboBox().setSelectedIndex(itemID);
     }
 
     /**

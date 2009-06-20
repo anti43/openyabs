@@ -199,6 +199,7 @@ public class QueryHandler implements Cloneable {
      */
     public QueryHandler setContext(Context context) {
         table = context.getDbIdentity();
+        this.context = context;
         return this;
     }
 
@@ -1043,18 +1044,18 @@ public class QueryHandler implements Cloneable {
 
     /**
      * 
-     * @param newTable
+     * @param tablename
      * @return a clone of this ConnectionHandler (with database connection)
      */
-    public QueryHandler clone(String newTable) {
+    public QueryHandler clone(String tablename) {
         QueryHandler theClone = null;
-        this.context = Context.getMatchingContext(newTable);
+        this.context = Context.getMatchingContext(tablename);
         if (context == null) {
             context = new Context(null);
         }
         try {
             theClone = (QueryHandler) this.clone();
-            theClone.setTable(newTable);
+            theClone.setTable(tablename);
         } catch (CloneNotSupportedException ex) {
             Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -1066,8 +1067,11 @@ public class QueryHandler implements Cloneable {
      * @return A QueryHandler object
      */
     public static QueryHandler getConnection() {
+        QueryHandler qh = null;
         try {
-            return (QueryHandler) QueryHandler.instanceOf().clone();
+            qh = (QueryHandler) QueryHandler.instanceOf().clone();
+            qh.setContext(new Context(null));
+            return qh;
         } catch (CloneNotSupportedException ex) {
             Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
             return null;

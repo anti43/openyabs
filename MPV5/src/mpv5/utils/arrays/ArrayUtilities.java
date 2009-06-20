@@ -856,6 +856,18 @@ public class ArrayUtilities {
         Arrays.sort(items);
         return items;
     }
+//
+//    public static Object[][] sort(Object[][] items, int columnToSortBy) {
+//
+//        for (int i = 0; i < items.length; i++) {
+//            Object[] objects = items[i];
+//
+//        }
+//
+//        Arrays.sort(items);
+//
+//        return items;
+//    }
 
     public static ArrayList<String[]> StringArrayToList(String[][] array) {
         ArrayList<String[]> list = new ArrayList<String[]>();

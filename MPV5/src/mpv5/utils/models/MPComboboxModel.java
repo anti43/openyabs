@@ -33,6 +33,18 @@ public class MPComboboxModel extends DefaultComboBoxModel {
         super(items);
     }
 
+    /**
+     * Returns all elements in the model
+     * @return
+     */
+    public MPComboBoxModelItem[] getElements() {
+        MPComboBoxModelItem[] m = new MPComboBoxModelItem[getSize()];
+        for (int i = 0; i < m.length; i++) {
+            m[i] = (MPComboBoxModelItem) getElementAt(i);
+        }
+        return m;
+    }
+
     @Override
     public MPComboBoxModelItem getSelectedItem() {
         if (super.getSelectedItem() != null) {
