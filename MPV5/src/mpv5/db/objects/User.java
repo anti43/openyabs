@@ -553,7 +553,8 @@ public class User extends DatabaseObject {
     }
 
     /**
-     * If this returns true, the User is only allowed to see, and use, data which belongs to the same Group as him.<br/>
+     * If this returns true, the User is only allowed to see, and use, data which belongs to the same Group as him
+     * <br/><b> and data from the Group with the ID 1.</b><br/><br/>
      * Use this method to implement multi-client capability.
      * @return
      */

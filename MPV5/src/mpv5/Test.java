@@ -20,7 +20,9 @@ import java.util.Date;
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
 import mpv5.db.common.Context;
+import mpv5.db.common.QueryHandler;
 import mpv5.server.MPServer;
+import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.models.*;
 
@@ -32,7 +34,7 @@ public class Test {
 
     public static void main(String[] args) {
 
-        mpv5.db.common.Context.getItems().getGroupRestrictionSQLString();
+       QueryHandler.getConnection().freeQuery("SELECT COUNT(ids) FROM items WHERE accountsids = 1 AND " + mpv5.db.common.Context.getItems().getGroupRestrictionSQLString(), MPSecurityManager.VIEW, "Items im Konto Irgendwas gezählt.");
 
 //        new MPServer();
 

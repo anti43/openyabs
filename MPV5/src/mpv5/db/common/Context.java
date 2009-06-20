@@ -671,6 +671,18 @@ public class Context {
     }
 
     /**
+     * Generates a SQL String (WHERE clause) which can be used to avoid having already trashed elements in the resulting data.
+     * @return
+     */
+    public String getNoTrashSQLString() {
+        if (getTrashableContexts().contains(this)) {
+            return " invisible = 0 ";
+        } else {
+            return " ";
+        }
+    }
+
+    /**
      * Define the owner of this Context
      * @param parentobject
      */
