@@ -199,6 +199,7 @@ public class LabeledCombobox extends javax.swing.JPanel {
 
         jLabel1.setText("text");
 
+        jComboBox1.setAutoscrolls(true);
         jComboBox1.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 jComboBox1KeyPressed(evt);

@@ -63,6 +63,7 @@ public class User extends DatabaseObject {
     private String language = "buildin_en";
     private int inthighestright = 4;
     private int intdefaultaccount = 1;
+    private int intdefaultstatus = 1;
     private boolean isenabled = true;
     private boolean isloggedin = true;
     private boolean isrgrouped = false;
@@ -560,5 +561,19 @@ public class User extends DatabaseObject {
      */
     public boolean isGroupRestricted() {
         return __getIsrgrouped();
+    }
+
+    /**
+     * @return the intdefaultstatus
+     */
+    public int __getIntdefaultstatus() {
+        return intdefaultstatus;
+    }
+
+    /**
+     * @param intdefaultstatus the intdefaultstatus to set
+     */
+    public void setIntdefaultstatus(int intdefaultstatus) {
+        this.intdefaultstatus = intdefaultstatus;
     }
 }

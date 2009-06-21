@@ -183,6 +183,15 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
         return new MPComboboxModel(toItems(data));
     }
 
+      /**
+     * Delegates to new MPComboboxModel(data);
+     * @param data
+     * @return
+     */
+    public static MPComboboxModel toModel(MPComboBoxModelItem[] data) {
+        return new MPComboboxModel(data);
+    }
+
      /**
      * Creates a {@link DefaultComBoxModel} containing an array of {@link MPComboBoxModelItem}
      * {enum id (hidden), value (shown in the list)}
