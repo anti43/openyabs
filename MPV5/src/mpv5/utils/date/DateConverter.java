@@ -34,7 +34,7 @@ import mpv5.ui.frames.MPV5View;
  */
 public class DateConverter {
 
-    public static String[] months = DateFormatSymbols.getInstance().getShortMonths();
+    public static String[] months = DateFormatSymbols.getInstance().getMonths();
     private static Calendar cl = Calendar.getInstance();
     public static DateFormat DEF_DATE_FORMAT = DateFormat.getDateInstance(DateFormat.SHORT);
     public static final DateFormat NATIVE_DATE_FORMAT = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z");
@@ -56,7 +56,7 @@ public class DateConverter {
             }));
 
     /**
-     * 
+     *
      * @param date
      * @param amount
      * @return
@@ -69,7 +69,7 @@ public class DateConverter {
     }
 
     /**
-     * 
+     *
      * @param date
      * @param amount
      * @return
@@ -164,7 +164,7 @@ public class DateConverter {
     }
 
     /**
-     * 
+     *
      * @param date
      * @return The next month
      */
@@ -180,7 +180,23 @@ public class DateConverter {
     }
 
     /**
-     * 
+     *
+     * @param date
+     * @return End of the quarter
+     */
+    public static Date addQuarter(Date date) {
+        Calendar cal = DateConverter.cl;
+
+        synchronized (cal) {
+            cal.setTime(date);
+            cal.add(Calendar.MONTH, 3);
+
+            return cal.getTime();
+        }
+    }
+
+    /**
+     *
      * @param date
      * @return The next day
      */
@@ -195,7 +211,7 @@ public class DateConverter {
     }
 
     /**
-     * 
+     *
      * @param date
      * @return SQL conform date String
      */
@@ -204,7 +220,7 @@ public class DateConverter {
     }
 
     /**
-     * 
+     *
      * @param date
      * @return Default date
      */
@@ -229,13 +245,13 @@ public class DateConverter {
     }
 
     /**
-     * Converts formated 
+     * Converts formated
      * Default date (dd.mm.yyyy) or variants
      * or
      * yyyy-mm-dd hh.mm.ss[.nnnnnn] - SQL DATE Timestamp
-     * 
+     *
      * to a Date object.
-     * 
+     *
      * @param date
      * @return Parsed date
      */
