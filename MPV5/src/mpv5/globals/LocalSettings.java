@@ -15,6 +15,7 @@ import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.QueryHandler;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
+import mpv5.ui.frames.MPV5View;
 import mpv5.utils.text.TypeConversion;
 import mpv5.utils.xml.XMLReader;
 import mpv5.utils.xml.XMLWriter;
@@ -44,6 +45,7 @@ public class LocalSettings {
     public static final String DBAUTOLOCK = "dbautolock";
     public static final String DBTYPE = "dbtype";
     public static final String SERVER_PORT = "serverport";
+    public static final String SCROLL_ALWAYS = "scrollpane";
     private static PropertyStore predefinedSettings = new PropertyStore(new String[][]{ //        {LAF,UIManager.getSystemLookAndFeelClassName()}
                 {DEFAULT_FONT, "Tahoma"}, {DBROW_LIMIT, "0"}, {DBAUTOLOCK, "false"}, {SERVER_PORT, "4343"}
             });
@@ -79,6 +81,9 @@ public class LocalSettings {
             DatabaseObject.AutoLockEnabled(TypeConversion.stringToBoolean(getProperty(DBAUTOLOCK)));
         } else {
             setProperty(DBAUTOLOCK, "0");
+        }
+        if (!getProperty(SCROLL_ALWAYS).equals("null")) {
+            MPV5View.setTabPaneScrolled(TypeConversion.stringToBoolean(getProperty(SCROLL_ALWAYS)));
         }
     }
 

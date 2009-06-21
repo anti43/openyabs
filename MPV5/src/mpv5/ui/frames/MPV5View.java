@@ -300,6 +300,7 @@ public class MPV5View extends FrameView {
         history.setRenderer(new ComboBoxRendererForTooltip());
         if (tabPaneScrolled) {
             tabpanePanel.add(new JScrollPane(tabPane), BorderLayout.CENTER);
+            jMenuItem25.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/yes.png")));
         } else {
             tabpanePanel.add(tabPane, BorderLayout.CENTER);
         }
@@ -457,6 +458,7 @@ public class MPV5View extends FrameView {
         jMenu2 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
+        jMenuItem25 = new javax.swing.JMenuItem();
         jMenuItem19 = new javax.swing.JMenuItem();
         jMenuItem4 = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
@@ -930,6 +932,15 @@ public class MPV5View extends FrameView {
 
         jMenu1.add(jMenu2);
 
+        jMenuItem25.setText(bundle.getString("MPV5View.jMenuItem25.text")); // NOI18N
+        jMenuItem25.setName("jMenuItem25"); // NOI18N
+        jMenuItem25.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem25ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem25);
+
         jMenuItem19.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0));
         jMenuItem19.setText(bundle.getString("MPV5View.jMenuItem19.text")); // NOI18N
         jMenuItem19.setName("jMenuItem19"); // NOI18N
@@ -1063,7 +1074,7 @@ public class MPV5View extends FrameView {
         statusPanel.setPreferredSize(new java.awt.Dimension(800, 20));
         statusPanel.setLayout(new javax.swing.BoxLayout(statusPanel, javax.swing.BoxLayout.LINE_AXIS));
 
-        statusMessageLabel.setFont(new java.awt.Font("Dialog", 0, 11)); // NOI18N
+        statusMessageLabel.setFont(new java.awt.Font("Dialog", 0, 11));
         statusMessageLabel.setText(bundle.getString("MPV5View.statusMessageLabel.text")); // NOI18N
         statusMessageLabel.setMaximumSize(new java.awt.Dimension(1000, 25));
         statusMessageLabel.setMinimumSize(new java.awt.Dimension(300, 14));
@@ -1466,6 +1477,12 @@ public class MPV5View extends FrameView {
         MPV5View.identifierView.showServerStatus(serv.isAlive());
     }//GEN-LAST:event_jMenuItem24ActionPerformed
 
+    private void jMenuItem25ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem25ActionPerformed
+        LocalSettings.setProperty(LocalSettings.SCROLL_ALWAYS, String.valueOf(!tabPaneScrolled));
+        LocalSettings.save();
+        Popup.notice(Messages.RESTART_REQUIRED);
+    }//GEN-LAST:event_jMenuItem25ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JMenu clipboardMenu;
     public javax.swing.JMenu favouritesMenu;
@@ -1506,6 +1523,7 @@ public class MPV5View extends FrameView {
     private javax.swing.JMenuItem jMenuItem22;
     private javax.swing.JMenuItem jMenuItem23;
     private javax.swing.JMenuItem jMenuItem24;
+    private javax.swing.JMenuItem jMenuItem25;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;

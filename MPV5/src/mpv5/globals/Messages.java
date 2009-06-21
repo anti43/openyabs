@@ -94,7 +94,7 @@ public enum Messages {
     REALLY_CLOSE("Do you really want to close the entire application?\nUnsaved data will be lost!"),
     USER_NOT_FOUND("User not found: "),
     NO_DATA_FOUND("Sorry, but there was no matching data in the database."),
-    REALLY_WIPE("Do you really want to wipe all data?\nYou may need to restart the application before changes take place."),
+    REALLY_WIPE("Do you really want to wipe all data?"),
     WIPED_LOCALSETTINGS("Local settings have been marked for deletion. Please close MP now."),
     NO_DB_CONNECTION("Could not connect to database, start configuration wizard?"),
     REALLY_CHANGE("Do you really want to alter the selected dataset? This may affect all users!"),
@@ -151,7 +151,8 @@ public enum Messages {
     RESTORED(" restored"),
     RELOAD("Reload"),
     LOADED(" loaded"),
-    UNLOAD("Unload");
+    UNLOAD("Unload"),
+    RESTART_REQUIRED("You need to restart the application before changes take place");
    
 
     private Messages(String message) {
@@ -179,4 +180,5 @@ public enum Messages {
     public String getValue() {
         return toString();
     }
+   
 }
