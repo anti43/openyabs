@@ -1265,7 +1265,9 @@ public class QueryHandler implements Cloneable {
         }
 
         start();
-        query = query.replace("%%tablename%%", table);
+        if(table!=null) {
+            query = query.replace("%%tablename%%", table);
+        }
         ReturnValue retval = null;
         String message = "Database Error (freeQuery) :";
         stm = null;
@@ -1392,10 +1394,11 @@ public class QueryHandler implements Cloneable {
         }
 
         start();
-        try {
+        
+        if(table!=null) {
             query = query.replace("%%tablename%%", table);
-        } catch (Exception e) {
         }
+        
         ReturnValue retval = null;
         String message = "Database Error (freeQuery) :";
         stm = null;
@@ -1477,7 +1480,9 @@ public class QueryHandler implements Cloneable {
     @SuppressWarnings({"unchecked"})
     public ReturnValue freeSelectQuery(String query, int action, String jobmessage) {
 
-        query = query.replace("%%tablename%%", table);
+        if(table!=null) {
+            query = query.replace("%%tablename%%", table);
+        }
 
         if (!mpv5.usermanagement.MPSecurityManager.check(context, action)) {
             Log.Debug(this, Messages.SECURITYMANAGER_DENIED +
