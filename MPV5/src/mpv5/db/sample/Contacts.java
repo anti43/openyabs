@@ -41,9 +41,10 @@ public class Contacts {
     /**
      *
      * @param factor
+     * @param defAccountID
      * @param withItems
      */
-    public Contacts(final int factor, final boolean withItems) {
+    public Contacts(final int factor, final int defAccountID, final boolean withItems) {
         this.multiplier = factor;
 
         Group g = new Group();
@@ -98,7 +99,7 @@ public class Contacts {
                             it.setContactsids(c.__getIDS());
                             it.setDateend(date);
                             it.setDatetodo(date);
-                            it.setDefaultaccountsids(1);
+                            it.setDefaultaccountsids(defAccountID);
                             it.setGroupsids(group);
                             it.setIntreminders(0);
                             it.setInttype(Item.TYPE_BILL);
@@ -116,7 +117,7 @@ public class Contacts {
                             it1.setContactsids(c.__getIDS());
                             it1.setDateend(date);
                             it1.setDatetodo(date);
-                            it1.setDefaultaccountsids(1);
+                            it1.setDefaultaccountsids(defAccountID);
                             it1.setGroupsids(group);
                             it1.setIntreminders(0);
                             it1.setInttype(Item.TYPE_BILL);
@@ -134,7 +135,7 @@ public class Contacts {
                             it2.setContactsids(c.__getIDS());
                             it2.setDateend(date);
                             it2.setDatetodo(date);
-                            it2.setDefaultaccountsids(1);
+                            it2.setDefaultaccountsids(defAccountID);
                             it2.setGroupsids(group);
                             it2.setIntreminders(0);
                             it2.setInttype(Item.TYPE_BILL);
@@ -151,4 +152,5 @@ public class Contacts {
         };
         SwingUtilities.invokeLater(runnable);
     }
+
 }
