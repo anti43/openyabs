@@ -260,7 +260,13 @@ public class MPV5View extends FrameView {
      * @return
      */
     public DataPanel getCurrentTab() {
-        return (DataPanel) tabPane.getSelectedComponent();
+        if (tabPane.getSelectedComponent() instanceof DataPanel) {
+            return (DataPanel) tabPane.getSelectedComponent();
+        } else if (tabPane.getSelectedComponent() instanceof JScrollPane) {
+            return (DataPanel) ((JScrollPane) tabPane.getSelectedComponent()).getComponent(0);
+        } else {
+            return null;
+        }
     }
 
     private static void fillFavouritesmenu() {
@@ -362,8 +368,9 @@ public class MPV5View extends FrameView {
      * @param name
      */
     public void addTab(JComponent tab, String name) {
-        tabPane.addTab(name, tab);
-        tabPane.setSelectedComponent(tab);
+        JScrollPane spane = new JScrollPane(tab);
+        tabPane.addTab(name, spane);
+        tabPane.setSelectedComponent(spane);
     }
 
     private void addTab(JComponent tab, Messages name) {
@@ -1390,10 +1397,11 @@ public class MPV5View extends FrameView {
         ClipboardMenuItem item;
         try {
             if (clipboardMenu.getItemCount() > 1) {
-                item = (ClipboardMenuItem) clipboardMenu.getItem(clipboardMenu.getItemCount());
+                item = (ClipboardMenuItem) clipboardMenu.getItem(clipboardMenu.getItemCount()-1);
                 getCurrentTab().paste(item.getItem());
             }
         } catch (Exception ignore) {
+            Log.Debug(ignore);
         }
 
     }//GEN-LAST:event_jMenuItem16ActionPerformed

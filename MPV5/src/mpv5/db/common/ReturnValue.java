@@ -57,7 +57,7 @@ public class ReturnValue {
     }
 
     /**
-     * All data retrived by a select query
+     * All data retrieved by a select query
      * @return the data
      */
     public Object[][] getData() {
