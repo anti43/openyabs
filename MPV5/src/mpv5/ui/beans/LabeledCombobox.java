@@ -60,7 +60,7 @@ public class LabeledCombobox extends javax.swing.JPanel {
                             jComboBox1.setSelectedItem(new MPComboBoxModelItem(-1, value.toString()));
                             Object[][] data = new DatabaseSearch(context, 50).getValuesFor("ids, cname", "cname", jComboBox1.getSelectedItem().toString(), true);
 //                    if (data.length > 0) {
-                            jComboBox1.setModel(MPComboBoxModelItem.toModel(data));
+                            jComboBox1.setModel(MPComboBoxModelItem.toModel(MPComboBoxModelItem.toItems(data, true)));
                             if (data.length > 1) {
                                 jComboBox1.setPopupVisible(true);
                             }

@@ -110,13 +110,38 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
      * @return
      */
     public static MPComboBoxModelItem[] toItems(Object[][] items) {
+        return toItems(items, COMPARE_BY_VALUE);
+    }
+
+    /**
+     * Converts an array to mp combo box items
+     * {id (hidden), value (shown in the list)}
+     * @param items
+     * @param compareMode
+     * @return
+     */
+    public static MPComboBoxModelItem[] toItems(Object[][] items, int compareMode) {
         MPComboBoxModelItem[] array = new MPComboBoxModelItem[items.length];
         for (int i = 0; i < array.length; i++) {
             array[i] = new MPComboBoxModelItem(items[i][0], String.valueOf(items[i][1]));
+            array[i].setCompareMode(compareMode);
         }
+        return array;
+    }
 
-        Arrays.sort(array);
-
+    /**
+     * Converts an array to mp combo box items
+     * {id (hidden), value (shown in the list)}
+     *
+     * @param items
+     * @param sortValuesNaturally If TRUE, sorts the Items into ascending order, according to the natural ordering of its values
+     * @return
+     */
+    public static MPComboBoxModelItem[] toItems(Object[][] items, boolean sortValuesNaturally) {
+        MPComboBoxModelItem[] array = toItems(items);
+        if (sortValuesNaturally) {
+            Arrays.sort(array);
+        }
         return array;
     }
 
@@ -127,13 +152,22 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
      * @return
      */
     public static MPComboBoxModelItem[] toItems(ArrayList<DatabaseObject> items) {
+        return toItems(items, COMPARE_BY_VALUE);
+    }
+
+    /**
+     * Converts an array to mp combo box items
+     * {id (hidden), value (shown in the list)}
+     * @param items
+     * @param compareMode
+     * @return
+     */
+    public static MPComboBoxModelItem[] toItems(ArrayList<DatabaseObject> items, int compareMode) {
         MPComboBoxModelItem[] array = new MPComboBoxModelItem[items.size()];
         for (int i = 0; i < array.length; i++) {
             array[i] = new MPComboBoxModelItem(items.get(i).__getIDS(), items.get(i).__getCName());
+            array[i].setCompareMode(compareMode);
         }
-
-        Arrays.sort(array);
-
         return array;
     }
 
@@ -144,22 +178,15 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
      * @return
      */
     public static MPComboBoxModelItem[] toItems(MPEnum[] items) {
-        MPComboBoxModelItem[] array = new MPComboBoxModelItem[items.length];
-        for (int i = 0; i < array.length; i++) {
-            array[i] = new MPComboBoxModelItem(items[i].getId(), items[i].getName());
-        }
-
-        Arrays.sort(array);
-
-        return array;
+        return toItems(items, COMPARE_BY_VALUE);
     }
 
-     /**
+    /**
      * Converts an enum<id, name> to mp combo box items
      * {id (hidden), value (shown in the list)}
      * @param items
-      * @param compareMode
-      * @return
+     * @param compareMode
+     * @return
      */
     public static MPComboBoxModelItem[] toItems(MPEnum[] items, int compareMode) {
         MPComboBoxModelItem[] array = new MPComboBoxModelItem[items.length];
@@ -167,9 +194,6 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
             array[i] = new MPComboBoxModelItem(items[i].getId(), items[i].getName());
             array[i].setCompareMode(compareMode);
         }
-
-        Arrays.sort(array);
-
         return array;
     }
 
@@ -183,7 +207,7 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
         return new MPComboboxModel(toItems(data));
     }
 
-      /**
+    /**
      * Delegates to new MPComboboxModel(data);
      * @param data
      * @return
@@ -192,12 +216,12 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
         return new MPComboboxModel(data);
     }
 
-     /**
+    /**
      * Creates a {@link DefaultComBoxModel} containing an array of {@link MPComboBoxModelItem}
      * {enum id (hidden), value (shown in the list)}
      * @param data
-      * @param compareMode
-      * @return
+     * @param compareMode
+     * @return
      */
     public static MPComboboxModel toModel(MPEnum[] data, int compareMode) {
         return new MPComboboxModel(toItems(data, compareMode));
