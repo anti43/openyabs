@@ -30,15 +30,13 @@ public class DateSelectorModel extends DefaultComboBoxModel {
 
   private ComboBoxModel model;
   private Object[][] boxData;
-  private int idx;
 
   /**
    * Creates a DateSelectorModel
    */
   public DateSelectorModel() {
     boxData = new Object[17][2];
-    idx = Integer.parseInt(DateConverter.getMonth());
-    setElements(DateConverter.getYear());
+    initElements();
   }
 
   /**
@@ -47,6 +45,31 @@ public class DateSelectorModel extends DefaultComboBoxModel {
    */
   public ComboBoxModel getModel() {
     return model;
+  }
+
+  /**
+   * Fills the model with date objects (months, quarters, year).
+   */
+  private void initElements() {
+    String year = DateConverter.getYear();
+    Date d = DateConverter.getDate(year);
+    for (int i = 0; i < boxData.length; i++) {
+      boxData[i][0] = "";
+    }
+    boxData[0][1] = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels").getString("entire_Year");
+    for (int i = 1; i < 13; i++) {
+      boxData[i][1] = DateConverter.getMonthName(d);
+      d = DateConverter.addMonth(d);
+    }
+    for (int i = 13; i < 17; i++) {
+      boxData[i][1] = (i - 12) + java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels").getString("._Quarter");
+    }
+    addDate(year);
+    model = MPComboBoxModelItem.toModel(boxData);
+    sortDate();
+    int idx = Integer.parseInt(DateConverter.getMonth());
+    MPComboBoxModelItem mcm = (MPComboBoxModelItem) model.getElementAt(idx);
+    model.setSelectedItem(mcm);
   }
 
   /**
@@ -66,45 +89,44 @@ public class DateSelectorModel extends DefaultComboBoxModel {
   }
 
   /**
-   * @param year the year to set
+   * Returns the selected element
+   * @return a StartEndDay object
    */
-  public void setYear(String year) {
-    getSelectedItem();
-    setElements(year);
-  }
-
   @Override
   public Object getSelectedItem() {
     StartEndDays sed = (StartEndDays) ((MPComboBoxModelItem) model.getSelectedItem()).getIdObject();
-    idx = MPComboBoxModelItem.getItemID(sed, model);
     return sed;
   }
 
   /**
-   * Fills the model with date objects (months, quarters, year)
+   * Change the year of the date objects in the model
    * @param year the year value for the date objects as a String (e.g. "1999")
    */
-  private void setElements(String year) {
+  public void setYear(String year) {
+    addDate(year);
+    for (int i = 0; i < model.getSize(); i++) {
+      ((MPComboBoxModelItem) model.getElementAt(i)).setId(boxData[i][0]);
+    }
+  }
+
+  private void addDate(String year) {
     Date d = DateConverter.getDate(year + "-01-01");
-    StartEndDays sed = new StartEndDays(d, StartEndDays.YEAR_MODE);
-    boxData[0][0] = sed;
-    boxData[0][1] = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Bundle").getString("entire_Year");
+    boxData[0][0] = new StartEndDays(d, StartEndDays.YEAR_MODE);
     Date dd = d;
     for (int i = 1; i < 13; i++) {
-      sed = new StartEndDays(dd, StartEndDays.MONTH_MODE);
-      boxData[i][0] = sed;
-      boxData[i][1] = DateConverter.getMonthName(sed.getStartDay());
+      boxData[i][0] = new StartEndDays(dd, StartEndDays.MONTH_MODE);
       dd = DateConverter.addMonth(dd);
     }
     for (int i = 13; i < 17; i++) {
-      sed = new StartEndDays(d, StartEndDays.QUARTER_MODE);
-      boxData[i][0] = sed;
-      boxData[i][1] = (i - 12) + java.util.ResourceBundle.getBundle("mpv5/resources/languages/Bundle").getString("._Quarter");
+      boxData[i][0] = new StartEndDays(d, StartEndDays.QUARTER_MODE);
       d = DateConverter.addQuarter(d);
     }
-    model = MPComboBoxModelItem.toModel(boxData);
-    MPComboBoxModelItem mcm = (MPComboBoxModelItem) model.getElementAt(idx);
-    model.setSelectedItem(mcm);
+  }
+
+  private void sortDate() {
+    for (int i = 0; i < model.getSize(); i++) {
+      ((MPComboBoxModelItem) model.getElementAt(i)).setCompareMode(MPComboBoxModelItem.COMPARE_BY_ID);
+    }
   }
 }
 

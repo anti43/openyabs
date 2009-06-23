@@ -65,7 +65,7 @@ public class EURPanel extends JPanel {
     formPane.setVisible(false);
     jTable1.setVisible(true);
     eurModel.getTableHtml(dateModel.getStartDay(), dateModel.getEndDay());
-
+jTextField1.setText(dateModel.getStartDay() + "   -   " + dateModel.getEndDay());
     try {
       jTable1.setModel(eurModel.getModel());
       TableFormat.format(jTable1, 0, 380);
@@ -143,9 +143,6 @@ public class EURPanel extends JPanel {
     return sb.toString();
   }
 
-  public static void main(String[] args) {
-    EURPanel ep = new EURPanel();
-  }
 
   /** This method is called from within the constructor to
    * initialize the form.
@@ -167,6 +164,7 @@ public class EURPanel extends JPanel {
     jScrollPane1 = new javax.swing.JScrollPane();
     jTable1 = new javax.swing.JTable();
     jComboBox2 = new javax.swing.JComboBox();
+    jTextField1 = new javax.swing.JTextField();
 
     jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Einnahmen-Überschuss Rechnung: Alle Angaben ohne Gewähr."));
 
@@ -256,7 +254,7 @@ public class EURPanel extends JPanel {
       jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(jPanel2Layout.createSequentialGroup()
         .addContainerGap()
-        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE)
+        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 107, Short.MAX_VALUE)
         .addContainerGap())
     );
 
@@ -279,9 +277,11 @@ public class EURPanel extends JPanel {
           .addComponent(jLabel3)
           .addGroup(jPanel1Layout.createSequentialGroup()
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+              .addComponent(jLabel1)
+              .addComponent(jLabel2))
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
               .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -290,9 +290,9 @@ public class EURPanel extends JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(6, 6, 6)
-                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
-              .addComponent(jLabel2))
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 104, Short.MAX_VALUE)))
+                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 104, Short.MAX_VALUE))
+              .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 548, Short.MAX_VALUE))))
         .addContainerGap())
     );
     jPanel1Layout.setVerticalGroup(
@@ -309,7 +309,9 @@ public class EURPanel extends JPanel {
           .addComponent(jButton2, 0, 0, Short.MAX_VALUE)
           .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, Short.MAX_VALUE))
         .addGap(14, 14, 14)
-        .addComponent(jLabel2)
+        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addComponent(jLabel2)
+          .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -342,8 +344,6 @@ public class EURPanel extends JPanel {
 
     private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
       dateModel.setYear((String) jComboBox2.getSelectedItem());
-      // the dateModel has completely changed, so we need the new one
-      jComboBox1.setModel(dateModel.getModel());
     }//GEN-LAST:event_jComboBox2ActionPerformed
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -359,5 +359,6 @@ public class EURPanel extends JPanel {
   private javax.swing.JPanel jPanel2;
   private javax.swing.JScrollPane jScrollPane1;
   private javax.swing.JTable jTable1;
+  private javax.swing.JTextField jTextField1;
   // End of variables declaration//GEN-END:variables
 }
