@@ -1,29 +1,41 @@
-
 package mpv5.ui.dialogs.subcomponents;
 
 import java.awt.Component;
+import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.FileReader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.text.BadLocationException;
 import mpv5.data.PropertyStore;
-import mpv5.globals.LocalSettings;
+import mpv5.db.common.QueryHandler;
+import mpv5.globals.Messages;
+import mpv5.logging.Log;
 import mpv5.ui.dialogs.ControlApplet;
-import mpv5.utils.text.TypeConversion;
-import mpv5.utils.ui.PanelUtils;
+import mpv5.ui.dialogs.Popup;
+import mpv5.ui.frames.MPV5View;
+import mpv5.ui.popups.CopyPasteMenu;
+import mpv5.usermanagement.MPSecurityManager;
+import mpv5.utils.files.FileDirectoryHandler;
+import mpv5.utils.files.FileReaderWriter;
 
 /**
  *
  * 
  */
 public class ControlPanel_Konsole extends javax.swing.JPanel implements ControlApplet {
-    private static final long serialVersionUID = 1L;
 
+    private static final long serialVersionUID = 1L;
     /**
      * This unique name identifies this control applet
      */
-    public final String UNAME = "internet";
+    public final String UNAME = "console";
     private PropertyStore oldvalues;
-    private static ControlPanel_Konsole  ident;
+    private static ControlPanel_Konsole ident;
 
     public ControlPanel_Konsole() {
         initComponents();
+        new CopyPasteMenu(jTextArea1);
         setVisible(true);
     }
 
@@ -33,13 +45,19 @@ public class ControlPanel_Konsole extends javax.swing.JPanel implements ControlA
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTextArea2 = new javax.swing.JTextArea();
+        jPanel2 = new javax.swing.JPanel();
+        jButton3 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Konsole.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 
@@ -48,25 +66,100 @@ public class ControlPanel_Konsole extends javax.swing.JPanel implements ControlA
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
         jTextArea1.setName("jTextArea1"); // NOI18N
+        jTextArea1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jTextArea1KeyPressed(evt);
+            }
+        });
         jScrollPane1.setViewportView(jTextArea1);
+
+        jScrollPane2.setName("jScrollPane2"); // NOI18N
+
+        jTextArea2.setBackground(new java.awt.Color(0, 24, 24));
+        jTextArea2.setColumns(20);
+        jTextArea2.setForeground(new java.awt.Color(255, 255, 204));
+        jTextArea2.setRows(5);
+        jTextArea2.setText(bundle.getString("ControlPanel_Konsole.jTextArea2.text")); // NOI18N
+        jTextArea2.setName("jTextArea2"); // NOI18N
+        jScrollPane2.setViewportView(jTextArea2);
+
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel2.setName("jPanel2"); // NOI18N
+        jPanel2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
+
+        jButton3.setText(bundle.getString("ControlPanel_Konsole.jButton3.text")); // NOI18N
+        jButton3.setName("jButton3"); // NOI18N
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+        jPanel2.add(jButton3);
+
+        jButton2.setText(bundle.getString("ControlPanel_Konsole.jButton2.text")); // NOI18N
+        jButton2.setName("jButton2"); // NOI18N
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+        jPanel2.add(jButton2);
+
+        jButton1.setText(bundle.getString("ControlPanel_Konsole.jButton1.text")); // NOI18N
+        jButton1.setName("jButton1"); // NOI18N
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jPanel2.add(jButton1);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 388, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 505, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 505, Short.MAX_VALUE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 505, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 273, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         add(jPanel1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jTextArea1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextArea1KeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            process();
+        }
+    }//GEN-LAST:event_jTextArea1KeyPressed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        File tf = FileDirectoryHandler.getTempFile("mp_konsole_export", "txt");
+        FileReaderWriter f = new FileReaderWriter(tf);
+        f.write(jTextArea1.getText());
+        MPV5View.showFilesaveDialogFor(tf);
+
+}//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        jTextArea1.setText("");
+        jTextArea2.setText("");
+}//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+
+        process();
+}//GEN-LAST:event_jButton1ActionPerformed
 
     public void setValues(PropertyStore values) {
-
     }
 
     public String getUname() {
@@ -77,22 +170,63 @@ public class ControlPanel_Konsole extends javax.swing.JPanel implements ControlA
         setValues(oldvalues);
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTextArea jTextArea2;
     // End of variables declaration//GEN-END:variables
 
-   
-     public ControlApplet instanceOf() {
+    @Override
+    public ControlApplet instanceOf() {
         if (ident == null) {
             ident = new ControlPanel_Konsole();
         }
         return ident;
     }
 
+    @Override
     public Component getActionPanel() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return jPanel2;
     }
 
+    private void process() {
+        if (MPSecurityManager.checkAdminAccess()) {
+            if (jTextArea1.getText().startsWith("sql")) {
+                jTextArea1.setText(null);
+                jTextArea2.setText("Please enter your sql code now..");
+            } else if (jTextArea1.getText().startsWith("mp")) {
+                jTextArea2.setText("MP server commands not supported yet.");
+                jTextArea1.setText(null);
+            } else if (jTextArea1.getText().startsWith("java")) {
+                jTextArea2.setText("Java commands not supported yet.");
+                jTextArea1.setText(null);
+            } else {
+                runSQL();//a little bit of faked interaction ;-)
+                jTextArea1.setText(null);
+            }
+            jTextArea1.setCaretPosition(0);
+        }
+    }
 
+    private void runSQL() {
+        for (int i = 0; i < jTextArea1.getLineCount(); i++) {
+            try {
+                String command = jTextArea1.getText().substring(jTextArea1.getLineStartOffset(i), jTextArea1.getLineEndOffset(i));
+                if (command.contains(";")) {
+                    command = command.substring(0, command.lastIndexOf(";"));
+                }
+                if (command.length() > 1) {
+                    QueryHandler.getConnection().freeUpdateQuery(command, jTextArea2, MPSecurityManager.CREATE_OR_DELETE, Messages.SEE_LOG.getValue());
+                }
+                jTextArea1.replaceRange(null, jTextArea1.getLineStartOffset(i), jTextArea1.getLineEndOffset(i));
+            } catch (Exception ex) {
+                Log.Debug(this, ex.getMessage());
+            }
+        }
+    }
 }
