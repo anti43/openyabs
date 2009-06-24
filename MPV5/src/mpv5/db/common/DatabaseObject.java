@@ -640,6 +640,29 @@ public abstract class DatabaseObject {
      * @param <T>
      * @param dataOwner
      * @param inReference
+     * @param targetType The type you like to get back, most likely {@link DatabaseObject.getObject(Context)}
+     * @return
+     * @throws mpv5.db.common.NodataFoundException
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends DatabaseObject> ArrayList<T> getReferencedObjects(DatabaseObject dataOwner, Context inReference, T targetType) throws NodataFoundException {
+
+        Object[][] allIds = QueryHandler.instanceOf().clone(inReference).select("ids", new String[]{dataOwner.getDbIdentity() + "ids", dataOwner.__getIDS().toString(), ""});
+        ArrayList<T> list = new ArrayList<T>();
+
+        for (int i = 0; i < allIds.length; i++) {
+            int id = Integer.valueOf(allIds[i][0].toString());
+            list.add((T) DatabaseObject.getObject(inReference, id));
+        }
+        return list;
+    }
+
+        /**
+     * Return objects which are referenced in the given Context@table
+     * <br/>As list of getObject(inReference, (SELECT ids FROM Context@table WHERE dataOwnerIDS = dataowner.ids))
+     * @param <T>
+     * @param dataOwner
+     * @param inReference
      * @return
      * @throws mpv5.db.common.NodataFoundException
      */

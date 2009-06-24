@@ -22,6 +22,7 @@ import javax.swing.table.DefaultTableModel;
 import mpv5.db.common.DatabaseObject;
 import mpv5.globals.Headers;
 import mpv5.logging.Log;
+import mpv5.utils.numberformat.FormatNumber;
 
 /**
  *
@@ -165,9 +166,27 @@ public class MPTableModel extends DefaultTableModel {
         return columnIdentifiers;
     }
 
-    private void setEditable(boolean b) {
-        setCanEdits(new boolean[]{b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b,
-                    b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b, b,
-                    b, b, b, b, b, b, b, b, b});
+    private void setEditable(boolean bool) {
+        setCanEdits(new boolean[]{bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool,
+                    bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool,
+                    bool, bool, bool, bool, bool, bool, bool, bool, bool});
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Object getValueAt(int row, int column) {
+        Object o = super.getValueAt(row, column);
+        if (!getColumnClass(column).getName().equals("java.lang.Object")) {
+            if (getColumnClass(column).isAssignableFrom(Double.class) ||
+                    getColumnClass(column).isAssignableFrom(double.class) ||
+                    getColumnClass(column).isAssignableFrom(float.class) ||
+                    getColumnClass(column).isAssignableFrom(Float.class)) {
+                return FormatNumber.formatDezimal(Double.valueOf(o.toString()));
+            } else {
+                return o;
+            }
+        } else {
+            return o;
+        }
     }
 }

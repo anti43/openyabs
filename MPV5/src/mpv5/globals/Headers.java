@@ -21,7 +21,8 @@ public enum Headers {
     IMPORT(new String[]{"Internal ID", "Import", "Type", "Name", "Data"}),
     JOURNAL(new String[]{"Internal ID", "Date", "Group", "Number", "Type", "Status", "Value", "Paid"}),
     TRASHBIN(new String[]{"Type", "Internal ID", "Description"}),
-    PRODUCT_DEFAULT(new String[]{"Internal ID", "Name", "Number","Description"});
+    PRODUCT_DEFAULT(new String[]{"Internal ID", "Name", "Number","Description"}),
+    SUBITEMS(new String[]{"Internal ID", "ID", "Count", "Measure", "Description", "Netto Price", "Tax Value", "Total Price"});
 
     private Headers(String[] header) {
         this.header = header;

@@ -16,13 +16,18 @@
  */
 package mpv5.db.objects;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.NodataFoundException;
 import mpv5.globals.Messages;
 import mpv5.handler.FormatHandler;
 import mpv5.handler.MPEnum;
+import mpv5.logging.Log;
 
 /**
  *
@@ -366,5 +371,23 @@ public class Item extends DatabaseObject {
     @Override
     public void ensureUniqueness() {
         setCName(getFormatHandler().toString(getFormatHandler().getNextNumber()));
+    }
+
+    /**
+     * Fetches all related {@link Subitem}s to this {@link Item}
+     * @return
+     */
+    public SubItem[] getSubitems() {
+        ArrayList<DatabaseObject> data = new ArrayList<DatabaseObject>();
+        try {
+            data = DatabaseObject.getReferencedObjects(this, Context.getSubItem(), DatabaseObject.getObject(Context.getSubItem()));
+        } catch (NodataFoundException ex) {
+            Log.Debug(ex);
+        }
+        SubItem[] t = new SubItem[data.size()];
+        for (int i = 0; i < data.size(); i++) {
+            t[i] = (SubItem) data.get(i);
+        }
+        return data.toArray(new SubItem[]{});
     }
 }

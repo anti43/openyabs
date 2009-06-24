@@ -19,6 +19,8 @@ package mpv5.db.objects;
 import java.util.Date;
 import javax.swing.JComponent;
 import mpv5.db.common.DatabaseObject;
+import mpv5.globals.Headers;
+import mpv5.utils.models.MPTableModel;
 
 /**
  *
@@ -32,7 +34,8 @@ public class SubItem extends DatabaseObject {
     private double quantityvalue;
     private String measure = "";
     private String description = "";
-    private double value;
+    private double internalvalue;
+    private double externalvalue;
     private double taxpercentvalue;
     private Date datedelivery;
 
@@ -131,20 +134,6 @@ public class SubItem extends DatabaseObject {
     }
 
     /**
-     * @return the value
-     */
-    public double __getValue() {
-        return value;
-    }
-
-    /**
-     * @param value the value to set
-     */
-    public void setValue(double value) {
-        this.value = value;
-    }
-
-    /**
      * @return the taxpercent
      */
     public double __getTaxpercentvalue() {
@@ -177,9 +166,62 @@ public class SubItem extends DatabaseObject {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-     @Override
+    @Override
     public mpv5.utils.images.MPIcon getIcon() {
         return null;
     }
 
+    /**
+     * Generates a table model out of the given SubItems
+     * @param items
+     * @return
+     */
+    public static MPTableModel toModel(SubItem[] items) {
+        //"Internal ID", "ID", "Count", "Measure", "Description", "Netto Price", "Tax Value", "Total Price"
+        Object[][] data = new Object[items.length][8];
+        for (int i = 0; i < data.length; i++) {
+            data[i][0] = items[i].__getIDS();
+            data[i][1] = Integer.valueOf(i);
+            data[i][2] = Integer.valueOf(1);
+            data[i][3] = items[i].__getMeasure();
+            data[i][4] = items[i].__getDescription();
+            data[i][5] = items[i].__getExternalvalue();
+            data[i][6] = items[i].__getTaxpercentvalue();
+            data[i][7] = items[i].__getCountvalue() * items[i].__getExternalvalue() * ((items[i].__getTaxpercentvalue() / 100) + 1);
+        }
+        MPTableModel model = new MPTableModel(
+                new Class[]{Integer.class, Integer.class, Double.class, String.class, String.class, Double.class, Double.class, Double.class},
+                new boolean[]{false, false, true, true, true, true, true, false},
+                data,
+                Headers.SUBITEMS.getValue());
+        return model;
+    }
+
+    /**
+     * @return the internalvalue
+     */
+    public double __getInternalvalue() {
+        return internalvalue;
+    }
+
+    /**
+     * @param internalvalue the internalvalue to set
+     */
+    public void setInternalvalue(double internalvalue) {
+        this.internalvalue = internalvalue;
+    }
+
+    /**
+     * @return the externalvalue
+     */
+    public double __getExternalvalue() {
+        return externalvalue;
+    }
+
+    /**
+     * @param externalvalue the externalvalue to set
+     */
+    public void setExternalvalue(double externalvalue) {
+        this.externalvalue = externalvalue;
+    }
 }
