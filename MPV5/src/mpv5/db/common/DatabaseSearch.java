@@ -91,7 +91,7 @@ public class DatabaseSearch {
 
     /**
      * Get multiple values from a search
-     * @param resultingFieldNames What do you like to get (columns)?
+     * @param resultingFieldNames What do you like to get (columns, comma separated)?
      * @param what Which column do you like to take for the condition?
      * @param where And what value should the column value have?
      * @param searchForLike Shall we search with "like" condition?

@@ -967,6 +967,97 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
+     *
+     * @param what
+     * @param where : {value, comparison, "'"}
+     * @param order
+     * @param like
+     * @return A {@link PreparedStatement}
+     */
+    public PreparedStatement buildPreparedStatement(String what, String[] where, String order, boolean like) throws SQLException {
+        String l1 = "";
+        String l2 = "";
+        String k = " = ";
+        String j = "";
+
+        if (order == null) {
+            order = "ids DESC ";
+        }
+
+        String ord = " ORDER BY " + table + "." + order;
+        String wher = "";
+        java.util.Date date;
+
+
+        if (like) {
+            if (where != null && where[0].endsWith("datum")) {
+                k = " BETWEEN ";
+                date = DateConverter.getDate(where[1]);
+                where[1] = "'" + DateConverter.getSQLDateString(date) + "'" + " AND " + "'" + DateConverter.getSQLDateString(DateConverter.addMonth(date)) + "'";
+                where[2] = " ";
+            } else {
+                l1 = "%";
+                l2 = "%";
+                k = " LIKE ";
+            }
+        }
+
+        if (where == null) {
+            wher = "  " + context.getConditions();
+        } else {
+            wher = " WHERE " + table + "." + where[0] + " " + k + " " + where[2] + l1 + where[1] + l2 + where[2] + " AND " + context.getConditions().substring(5, context.getConditions().length()) + " ";
+        }
+        String query = "SELECT " + what + " FROM " + table + " " + context.getReferences() + wher + ord;
+
+        return sqlConn.prepareStatement(query);
+    }
+
+    /**
+     * Executes the given statement
+     * @param statement
+     * @return
+     * @throws java.sql.SQLException
+     */
+    @SuppressWarnings("unchecked")
+    public ReturnValue executeStatement(PreparedStatement statement) throws SQLException {
+        ResultSet set = statement.executeQuery();
+        ReturnValue val = new ReturnValue();
+        ArrayList spalten = new ArrayList();
+        ArrayList zeilen = new ArrayList();
+        ResultSetMetaData rsmd = set.getMetaData();
+        ResultSet keys = statement.getGeneratedKeys();
+        int id = 0;
+        if (keys != null && keys.next()) {
+            id = keys.getInt(1);
+        }
+        String[] columnnames = new String[rsmd.getColumnCount()];
+        for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+            columnnames[i - 1] = rsmd.getColumnName(i);
+        }
+
+        while (set.next()) {
+            spalten = new ArrayList();
+            for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+                spalten.add(set.getObject(i));
+            }
+            zeilen.add(spalten);
+        }
+        Object[][] data = new Object[zeilen.size()][spalten.size()];
+        ArrayList z;
+
+        for (int h = 0; h < zeilen.size(); h++) {
+            z = (ArrayList) zeilen.get(h);
+            for (int i = 0; i < spalten.size(); i++) {
+                data[h][i] = z.get(i);
+            }
+        }
+        val.setData(data);
+        val.setColumnnames(columnnames);
+        val.setId(id);
+        return val;
+    }
+
+    /**
      * Deletes the given data permanently from the database
      * @param where : {value, comparison, "'"}
      *                eg new String[][]{{"ids", "8" , ""},{"ids", "9",""}}
@@ -1265,7 +1356,7 @@ public class QueryHandler implements Cloneable {
         }
 
         start();
-        if(table!=null) {
+        if (table != null) {
             query = query.replace("%%tablename%%", table);
         }
         ReturnValue retval = null;
@@ -1394,11 +1485,11 @@ public class QueryHandler implements Cloneable {
         }
 
         start();
-        
-        if(table!=null) {
+
+        if (table != null) {
             query = query.replace("%%tablename%%", table);
         }
-        
+
         ReturnValue retval = null;
         String message = "Database Error (freeQuery) :";
         stm = null;
@@ -1480,7 +1571,7 @@ public class QueryHandler implements Cloneable {
     @SuppressWarnings({"unchecked"})
     public ReturnValue freeSelectQuery(String query, int action, String jobmessage) {
 
-        if(table!=null) {
+        if (table != null) {
             query = query.replace("%%tablename%%", table);
         }
 
