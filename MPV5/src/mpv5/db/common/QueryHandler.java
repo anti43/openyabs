@@ -987,7 +987,7 @@ public class QueryHandler implements Cloneable {
         String cols = "";
         if (columns != null && columns.length > 0) {
             for (int i = 0; i < columns.length; i++) {
-                String column = conditionColumns[i];
+                String column = columns[i];
                 cols += "," + column;
             }
             cols = cols.substring(1);
