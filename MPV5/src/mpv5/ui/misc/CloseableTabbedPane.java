@@ -16,6 +16,7 @@
  */
 package mpv5.ui.misc;
 
+import java.awt.BorderLayout;
 import java.util.EventListener;
 
 import javax.swing.Icon;
@@ -93,7 +94,7 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseListener,
 
         setBorder(new EmptyBorder(0, 0,0, 0));
         this.parentv = view;
-
+        setLayout(new BorderLayout());
     }
 
     /**

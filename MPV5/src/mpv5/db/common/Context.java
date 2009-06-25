@@ -104,7 +104,7 @@ public class Context {
     public static String DEFAULT_SUBID = "ids, cname";
     public static String DEFAULT_CONTACT_SEARCH = "ids, cnumber, cname, city";
     public static String DEFAULT_USER_SEARCH = "ids, cname, mail, lastlogdate";
-    public static String DEFAULT_ITEM_SEARCH = "ids, cname, dateadded, netvalue, taxvalue";
+    public static String DEFAULT_ITEM_SEARCH = "ids, cname, dateadded, netvalue";
     public static String DEFAULT_PRODUCT_SEARCH = "ids, cname, cnumber, description";
 
     //********** table fields ********************************************************

@@ -49,7 +49,7 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
      * @return
      */
     public static int getItemID(Integer uid, ComboBoxModel model) {
-        return getItemID(String.valueOf(uid), model);
+        return getItemID((Object)uid, model);
     }
 
     /**
@@ -78,7 +78,7 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
     public static int getItemID(String uid, ComboBoxModel model) {
         for (int i = 0; i < model.getSize(); i++) {
 //            Log.Debug(MPComboBoxModelItem.class, ((MPComboBoxModelItem) model.getElementAt(i)).id + " comparing with: " + uid);
-            if (((MPComboBoxModelItem) model.getElementAt(i)).id.equals(uid)) {
+            if (((MPComboBoxModelItem) model.getElementAt(i)).id.toString().equals(uid)) {
 //                Log.Debug(MPComboBoxModelItem.class, "Found at Index:" + i);
                 return i;
             }

@@ -1227,29 +1227,29 @@ public class MPV5View extends FrameView {
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         ContactPanel tab = new ContactPanel(Context.getCustomer());
         tab.setType(ContactPanel.CUSTOMER);
-        tabPane.addTab(Messages.NEW_CUSTOMER.toString(), tab);
-        tabPane.setSelectedComponent(tab);
+        addTab(tab, Messages.NEW_CUSTOMER.toString());
+        
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         ContactPanel tab = new ContactPanel(Context.getSupplier());
         tab.setType(ContactPanel.SUPPLIER);
-        tabPane.addTab(Messages.NEW_SUPPLIER.toString(), tab);
-        tabPane.setSelectedComponent(tab);
+        addTab(tab, Messages.NEW_SUPPLIER.toString());
+        
 }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
         ContactsList tab = new ContactsList(Context.getContact());
-        tabPane.addTab(Messages.CONTACTS_LIST.toString(), tab);
-        tabPane.setSelectedComponent(tab);
+        addTab(tab, Messages.CONTACTS_LIST.toString());
+     
 }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
         ContactPanel tab = new ContactPanel(Context.getManufacturer());
         tab.setType(ContactPanel.MANUFACTURER);
-        tabPane.addTab(Messages.NEW_MANUFACTURER.toString(), tab);
-        tabPane.setSelectedComponent(tab);
+        addTab(tab, Messages.NEW_MANUFACTURER.toString());
+
     }//GEN-LAST:event_jButton18ActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
@@ -1265,8 +1265,8 @@ public class MPV5View extends FrameView {
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
-        tabPane.addTab(Messages.CONTROL_PANEL.toString(), MPControlPanel.instanceOf());
-        tabPane.setSelectedComponent(MPControlPanel.instanceOf());
+        addTab(MPControlPanel.instanceOf(), Messages.CONTROL_PANEL.toString());
+       
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void jButton25ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton25ActionPerformed
@@ -1343,8 +1343,8 @@ public class MPV5View extends FrameView {
     }//GEN-LAST:event_jMenuItem11ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        tabPane.addTab(Messages.HISTORY_PANEL.toString(), HistoryPanel.instanceOf());
-        tabPane.setSelectedComponent(HistoryPanel.instanceOf());
+       addTab(MPControlPanel.instanceOf(),Messages.HISTORY_PANEL.toString());
+        
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem12ActionPerformed
@@ -1428,7 +1428,7 @@ public class MPV5View extends FrameView {
     }//GEN-LAST:event_jMenuItem17ActionPerformed
 
     private void jMenuItem18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem18ActionPerformed
-        MPV5View.identifierView.addTab(new JCalendar(), Messages.CALENDAR.toString());
+        addTab(new JCalendar(), Messages.CALENDAR.toString());
     }//GEN-LAST:event_jMenuItem18ActionPerformed
 
     private void jMenuItem19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem19ActionPerformed

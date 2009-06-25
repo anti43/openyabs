@@ -14,7 +14,7 @@ public enum Headers {
     USER_DEFAULT(new String[]{"Internal ID", "ID", "User Name", "Mail", "Last logged in"}),
     USER_DETAILS(new String[]{"Internal ID", "User Name", "Fullname", "Mail", "Enabled", "Logged in"}),
     BABELFISH(new String[]{"Component", "Language Value", "New Value"}),
-    ITEM_DEFAULT(new String[]{"Internal ID", "ID", "Date", "Net Value", "Tax value"}),
+    ITEM_DEFAULT(new String[]{"Internal ID", "ID", "Date", "Net Value"}),
     ITEM_DETAIL(new String[]{"Internal ID", "ID", "Date", "Value"}),
     CONTACT_FILES(new String[]{"Internal ID", "Filename", "Date", "Description"}),
     HISTORY(new String[]{"Internal ID", "Description", "User", "Group", "Date"}),
