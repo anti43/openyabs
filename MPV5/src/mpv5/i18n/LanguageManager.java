@@ -247,6 +247,10 @@ public class LanguageManager {
      * @return A ComboBoxModel reflecting the available Countries
      */
     public static ComboBoxModel getCountriesAsComboBoxModel() {
+//            private PreparedStatement psc;
+//    public static ComboBoxModel getCountriesAsComboBoxModel() {
+//        if(psc ==null)psc = QueryHandler.instanceOf().clone(Context.getCountries()).
+//                buildPreparedStatement("iso, cname", null, null, true);
         Object[][] data = QueryHandler.instanceOf().clone(Context.getCountries()).select("iso, cname", (String[]) null);
         MPComboBoxModelItem[] t = null;
         Object[][] ldata;

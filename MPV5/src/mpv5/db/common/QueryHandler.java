@@ -20,7 +20,15 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -968,58 +976,63 @@ public class QueryHandler implements Cloneable {
 
     /**
      *
-     * @param what
-     * @param where : {value, comparison, "'"}
-     * @param order
-     * @param like
      * @return A {@link PreparedStatement}
      */
-    public PreparedStatement buildPreparedStatement(String what, String[] where, String order, boolean like) throws SQLException {
-        String l1 = "";
-        String l2 = "";
-        String k = " = ";
-        String j = "";
+    public PreparedStatement buildPreparedStatement(String columns[], String[] where, String order, boolean like) throws SQLException {
+//        String l1 = "";
+//        String l2 = "";
+//        String k = " = ";
+//        String j = "";
+//
+//        if (order == null) {
+//            order = "ids DESC ";
+//        }
+//
+//        String ord = " ORDER BY " + table + "." + order;
+//        String wher = "";
+//        java.util.Date date;
+//
+//
+//        if (like) {
+//            if (where != null && where[0].endsWith("datum")) {
+//                k = " BETWEEN ";
+//                date = DateConverter.getDate(where[1]);
+//                where[1] = "'" + DateConverter.getSQLDateString(date) + "'" + " AND " + "'" + DateConverter.getSQLDateString(DateConverter.addMonth(date)) + "'";
+//                where[2] = " ";
+//            } else {
+//                l1 = "%";
+//                l2 = "%";
+//                k = " LIKE ";
+//            }
+//        }
+//
+//        if (where == null) {
+//            wher = "  " + context.getConditions();
+//        } else {
+//            wher = " WHERE " + table + "." + where[0] + " " + k + " " + where[2] + l1 + where[1] + l2 + where[2] + " AND " + context.getConditions().substring(5, context.getConditions().length()) + " ";
+//        }
+//        String query = "SELECT " + what + " FROM " + table + " " + context.getReferences() + wher + ord;
 
-        if (order == null) {
-            order = "ids DESC ";
-        }
-
-        String ord = " ORDER BY " + table + "." + order;
-        String wher = "";
-        java.util.Date date;
-
-
-        if (like) {
-            if (where != null && where[0].endsWith("datum")) {
-                k = " BETWEEN ";
-                date = DateConverter.getDate(where[1]);
-                where[1] = "'" + DateConverter.getSQLDateString(date) + "'" + " AND " + "'" + DateConverter.getSQLDateString(DateConverter.addMonth(date)) + "'";
-                where[2] = " ";
-            } else {
-                l1 = "%";
-                l2 = "%";
-                k = " LIKE ";
-            }
-        }
-
-        if (where == null) {
-            wher = "  " + context.getConditions();
-        } else {
-            wher = " WHERE " + table + "." + where[0] + " " + k + " " + where[2] + l1 + where[1] + l2 + where[2] + " AND " + context.getConditions().substring(5, context.getConditions().length()) + " ";
-        }
-        String query = "SELECT " + what + " FROM " + table + " " + context.getReferences() + wher + ord;
-
-        return sqlConn.prepareStatement(query);
+        return sqlConn.prepareStatement("");
     }
 
     /**
      * Executes the given statement
      * @param statement
+     * @param values
      * @return
      * @throws java.sql.SQLException
      */
     @SuppressWarnings("unchecked")
-    public ReturnValue executeStatement(PreparedStatement statement) throws SQLException {
+    public ReturnValue executeStatement(PreparedStatement statement, Object[] values) throws SQLException {
+
+        if (values!=null) {
+            for (int i = 0; i < values.length; i++) {
+                Object object = values[i];
+                statement.setObject(i + 1, object);
+            }
+        }
+
         ResultSet set = statement.executeQuery();
         ReturnValue val = new ReturnValue();
         ArrayList spalten = new ArrayList();
@@ -1355,6 +1368,8 @@ public class QueryHandler implements Cloneable {
             return new ReturnValue(-1, new Object[0][0], new String[0]);
         }
 
+        updateStatistics(query);
+
         start();
         if (table != null) {
             query = query.replace("%%tablename%%", table);
@@ -1483,7 +1498,7 @@ public class QueryHandler implements Cloneable {
 //              Log.Debug(this, Messages.SECURITYMANAGER_ALLOWED+
 //                    mpv5.usermanagement.MPSecurityManager.getActionName(action) + Messages.CONTEXT + context.getDbIdentity());
         }
-
+        updateStatistics(query);
         start();
 
         if (table != null) {
@@ -1586,7 +1601,7 @@ public class QueryHandler implements Cloneable {
 //                    mpv5.usermanagement.MPSecurityManager.getActionName(action) + Messages.CONTEXT + context.getDbIdentity()
 //                    );
         }
-
+        updateStatistics(query);
         start();
         String message = "Database Error (selectFreeQuery) :";
 
@@ -1880,6 +1895,40 @@ public class QueryHandler implements Cloneable {
         } catch (Exception e) {
             return false;
         }
+    }
+    private static HashMap<String, Integer> stats = new HashMap<String, Integer>();
+
+    private synchronized  void updateStatistics(String query) {
+        if (Log.getLoglevel() == Log.LOGLEVEL_DEBUG) {
+            if (stats.containsKey(query)) {
+                int old = stats.get(query);
+                stats.put(query, old+1);
+            } else {
+                stats.put(query, 1);
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public synchronized String getStatistics() {
+        List keys = new LinkedList(stats.keySet());
+        Collections.sort(keys, new Comparator() {
+
+            @Override
+            public int compare(Object o1, Object o2) {
+                return ((Integer) stats.get(o1)).compareTo(((Integer) stats.get(o2)));
+            }
+        });
+        Iterator it = keys.iterator();
+        Log.Debug(this, "Database statistics:");
+        String str = "";
+        String s;
+        while (it.hasNext()) {
+            s=it.next().toString();
+            str += "Count: " + stats.get(s) + " for query: " +s + "\n";
+        }
+
+        return str;
     }
 
     class backgroundSqlQuery extends SwingWorker<Void, Void> {
