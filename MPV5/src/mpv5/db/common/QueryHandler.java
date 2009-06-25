@@ -975,58 +975,59 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
-     *
+     * Creates a {@link PreparedStatement}
+     * @param columns 
+     * @param conditionColumns 
+     * @param order 
+     * @param like 
      * @return A {@link PreparedStatement}
+     * @throws SQLException
      */
-    public PreparedStatement buildPreparedStatement(String columns[], String[] where, String order, boolean like) throws SQLException {
-//        String l1 = "";
-//        String l2 = "";
-//        String k = " = ";
-//        String j = "";
-//
-//        if (order == null) {
-//            order = "ids DESC ";
-//        }
-//
-//        String ord = " ORDER BY " + table + "." + order;
-//        String wher = "";
-//        java.util.Date date;
-//
-//
-//        if (like) {
-//            if (where != null && where[0].endsWith("datum")) {
-//                k = " BETWEEN ";
-//                date = DateConverter.getDate(where[1]);
-//                where[1] = "'" + DateConverter.getSQLDateString(date) + "'" + " AND " + "'" + DateConverter.getSQLDateString(DateConverter.addMonth(date)) + "'";
-//                where[2] = " ";
-//            } else {
-//                l1 = "%";
-//                l2 = "%";
-//                k = " LIKE ";
-//            }
-//        }
-//
-//        if (where == null) {
-//            wher = "  " + context.getConditions();
-//        } else {
-//            wher = " WHERE " + table + "." + where[0] + " " + k + " " + where[2] + l1 + where[1] + l2 + where[2] + " AND " + context.getConditions().substring(5, context.getConditions().length()) + " ";
-//        }
-//        String query = "SELECT " + what + " FROM " + table + " " + context.getReferences() + wher + ord;
+    public PreparedStatement buildPreparedSelectStatement(String columns[], String[] conditionColumns, String order, boolean like) throws SQLException {
+        String cols = "";
+        if (columns != null && columns.length > 0) {
+            for (int i = 0; i < columns.length; i++) {
+                String column = conditionColumns[i];
+                cols += "," + column;
+            }
+            cols = cols.substring(1);
+        } else {
+            cols = "*";
+        }
+        String conds = "";
+        if (conditionColumns != null && conditionColumns.length > 0) {
+            for (int i = 0; i < conditionColumns.length; i++) {
+                String string = conditionColumns[i];
+                if (!like) {
+                    conds += string + " LIKE ? AND ";
+                } else {
+                    conds += string + " = ? AND ";
+                }
+            }
+            conds = " WHERE " + conds.substring(0, conds.length() - 4);
+            if (context.getGroupRestrictionSQLString() != null) {
+                conds += " AND " + context.getGroupRestrictionSQLString();
+            }
+        }
+        String query = "SELECT " + cols + " FROM " + table + conds;
+        if (order != null) {
+            query += " ORDER BY " + order;
+        }
 
-        return sqlConn.prepareStatement("");
+        return sqlConn.prepareStatement(query);
     }
 
     /**
      * Executes the given statement
      * @param statement
-     * @param values
+     * @param values Length must match the conditionColumns argument of the build call of the statement
      * @return
      * @throws java.sql.SQLException
      */
     @SuppressWarnings("unchecked")
     public ReturnValue executeStatement(PreparedStatement statement, Object[] values) throws SQLException {
 
-        if (values!=null) {
+        if (values != null) {
             for (int i = 0; i < values.length; i++) {
                 Object object = values[i];
                 statement.setObject(i + 1, object);
@@ -1898,11 +1899,11 @@ public class QueryHandler implements Cloneable {
     }
     private static HashMap<String, Integer> stats = new HashMap<String, Integer>();
 
-    private synchronized  void updateStatistics(String query) {
+    private synchronized void updateStatistics(String query) {
         if (Log.getLoglevel() == Log.LOGLEVEL_DEBUG) {
             if (stats.containsKey(query)) {
                 int old = stats.get(query);
-                stats.put(query, old+1);
+                stats.put(query, old + 1);
             } else {
                 stats.put(query, 1);
             }
@@ -1924,8 +1925,8 @@ public class QueryHandler implements Cloneable {
         String str = "";
         String s;
         while (it.hasNext()) {
-            s=it.next().toString();
-            str += "Count: " + stats.get(s) + " for query: " +s + "\n";
+            s = it.next().toString();
+            str += "Count: " + stats.get(s) + " for query: " + s + "\n";
         }
 
         return str;

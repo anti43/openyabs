@@ -659,14 +659,14 @@ public class Context {
     /**
      * Generates a SQL String (WHERE clause) which can be used to implement multi-client capability.<br/>
      * <br/>
-     * <b>If the current Context does not support grouping, or the current user is not Group restricted, this will return " ".</b>
+     * <b>If the current Context does not support grouping, or the current user is not Group restricted, this will return NULL.</b>
      * @return
      */
     public String getGroupRestrictionSQLString() {
         if (MPV5View.getUser().isGroupRestricted() && getGroupableContexts().contains(this)) {
             return " (" + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids() + " OR " + dbIdentity + "." + "GROUPSIDS = 1)";
         } else {
-            return " ";
+            return null;
         }
     }
 

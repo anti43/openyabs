@@ -19,6 +19,8 @@ package mpv5.i18n;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URI;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -26,6 +28,8 @@ import java.util.Hashtable;
 import java.util.Locale;
 
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import mpv5.Main;
@@ -33,6 +37,7 @@ import mpv5.db.common.Context;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryData;
 import mpv5.db.common.QueryHandler;
+import mpv5.db.common.ReturnValue;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
@@ -209,7 +214,6 @@ public class LanguageManager {
             return java.util.ResourceBundle.getBundle(defLanguageBundle);
         }
     }
-    
 
     /**
      *
@@ -241,17 +245,28 @@ public class LanguageManager {
         t = MPComboBoxModelItem.toItems(ldata);
         return new DefaultComboBoxModel(t);
     }
+    private static PreparedStatement psc;
 
     /**
      *
      * @return A ComboBoxModel reflecting the available Countries
      */
-    public static ComboBoxModel getCountriesAsComboBoxModel() {
-//            private PreparedStatement psc;
-//    public static ComboBoxModel getCountriesAsComboBoxModel() {
-//        if(psc ==null)psc = QueryHandler.instanceOf().clone(Context.getCountries()).
-//                buildPreparedStatement("iso, cname", null, null, true);
-        Object[][] data = QueryHandler.instanceOf().clone(Context.getCountries()).select("iso, cname", (String[]) null);
+    public static synchronized ComboBoxModel getCountriesAsComboBoxModel() {
+
+        if (psc == null) {
+            try {
+                psc = QueryHandler.instanceOf().clone(Context.getCountries()).buildPreparedSelectStatement(new String[]{"iso", "cname"}, new String[]{"cname"}, null, true);
+            } catch (SQLException ex) {
+                Log.Debug(ex);
+            }
+        }
+//        Object[][] data = QueryHandler.instanceOf().clone(Context.getCountries()).select("iso, cname", (String[]) null);
+        Object[][] data = new Object[][]{};
+        try {
+            data = QueryHandler.instanceOf().clone(Context.getCountries()).executeStatement(psc, new Object[]{""}).getData();
+        } catch (SQLException ex) {
+            Logger.getLogger(LanguageManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
         MPComboBoxModelItem[] t = null;
         Object[][] ldata;
         ldata = ArrayUtilities.merge(new String[][]{{"", ""}}, data);
