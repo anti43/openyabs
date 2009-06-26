@@ -167,12 +167,13 @@ public class DatabaseConnection {
 //            stm.executeBatch();
             for (int i = 0; i < queries.length; i++) {
                 String string = queries[i];
-                Log.Debug(this, string);
+                Log.Print(string);
                 stm.execute(string);
             }
             return true;
         } catch (Exception sQLException) {
             Log.Debug(sQLException);
+            sQLException.printStackTrace();
             return false;
         }
     }

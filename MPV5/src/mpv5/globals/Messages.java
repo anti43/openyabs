@@ -121,7 +121,7 @@ public enum Messages {
     NEW_TAB("New Tab"),
     CALENDAR("Calendar"),
     USER_DISABLED("The user is disabled. Contact your Administrator."),
-    JOURNAL("Journal for "),
+    HISTORY_OF("History of "),
     ASSET("Asset"),
     COST("Cost"),
     EQUITY("Equity"),
@@ -152,6 +152,7 @@ public enum Messages {
     RELOAD("Reload"),
     LOADED(" loaded"),
     UNLOAD("Unload"),
+    FILES("Files"),
     RESTART_REQUIRED("You need to restart the application before changes take place");
    
 
@@ -180,5 +181,6 @@ public enum Messages {
     public String getValue() {
         return toString();
     }
+
    
 }

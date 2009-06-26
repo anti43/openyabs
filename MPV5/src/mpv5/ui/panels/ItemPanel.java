@@ -640,7 +640,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
         if (dataOwner.isExisting()) {
-            MPV5View.identifierView.addTab(new JournalPanel(), Messages.JOURNAL + getDataOwner().__getCName());
+            MPV5View.identifierView.addTab(new JournalPanel(), Messages.HISTORY_OF + getDataOwner().__getCName());
         }
 }//GEN-LAST:event_jButton2ActionPerformed
 

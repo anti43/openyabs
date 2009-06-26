@@ -102,7 +102,7 @@ public class QueryHandler implements Cloneable {
      * @param limit
      */
     public static synchronized void setRowLimit(int limit) {
-        if (limit > ROW_LIMIT.intValue() || limit < ROW_LIMIT.intValue()) {
+        if (ROW_LIMIT == null || limit > ROW_LIMIT.intValue() || limit < ROW_LIMIT.intValue()) {
             Log.Debug(QueryHandler.class, "Setting global row limit to: " + limit);
             ROW_LIMIT = limit;
         }

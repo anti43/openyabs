@@ -17,16 +17,13 @@
 package mpv5.db.objects;
 
 import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.Icon;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryHandler;
 import mpv5.logging.Log;
-import mpv5.ui.panels.ContactPanel;
+import mpv5.ui.panels.ItemPanel;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.images.MPIcon;
 
@@ -34,14 +31,14 @@ import mpv5.utils.images.MPIcon;
  *
  *  anti
  */
-public class ContactFile extends DatabaseObject {
+public class ItemFile extends DatabaseObject {
 
     private String description = "";
-    private int contactsids;
+    private int itemsids;
     private String filename = "";
 
-    public ContactFile() {
-        context.setDbIdentity(Context.IDENTITY_FILES_TO_CONTACTS);
+    public ItemFile() {
+        context.setDbIdentity(Context.IDENTITY_FILES_TO_ITEMS);
         context.setIdentityClass(this.getClass());
     }
 
@@ -52,10 +49,10 @@ public class ContactFile extends DatabaseObject {
 
     @Override
     public JComponent getView() {
-            try {
+        try {
             FileDirectoryHandler.open(QueryHandler.instanceOf().clone(Context.getFiles()).
                     retrieveFile(filename,
-                    new File(FileDirectoryHandler.getTempDir() +cname)));
+                    new File(FileDirectoryHandler.getTempDir() + cname)));
         } catch (Exception e) {
             Log.Debug(e);
         }
@@ -82,20 +79,6 @@ public class ContactFile extends DatabaseObject {
     }
 
     /**
-     * @return the contactsids
-     */
-    public int __getContactsids() {
-        return contactsids;
-    }
-
-    /**
-     * @param contactsids the contactsids to set
-     */
-    public void setContactsids(int contactsids) {
-        this.contactsids = contactsids;
-    }
-
-    /**
      * @return the filename
      */
     public String __getFilename() {
@@ -111,6 +94,20 @@ public class ContactFile extends DatabaseObject {
 
     @Override
     public mpv5.utils.images.MPIcon getIcon() {
-          return new MPIcon("/mpv5/resources/images/48/folder_tar.png");
+        return new MPIcon("/mpv5/resources/images/48/folder_tar.png");
+    }
+
+    /**
+     * @return the itemsids
+     */
+    public int __getItemsids() {
+        return itemsids;
+    }
+
+    /**
+     * @param itemsids the itemsids to set
+     */
+    public void setItemsids(int itemsids) {
+        this.itemsids = itemsids;
     }
 }

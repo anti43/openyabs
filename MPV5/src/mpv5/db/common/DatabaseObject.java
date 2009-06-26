@@ -44,7 +44,7 @@ import mpv5.utils.images.MPIcon;
  * non-graphical beans to update or create itself to the database
  * @author
  */
-public abstract class DatabaseObject {
+public abstract class DatabaseObject implements Comparable<DatabaseObject> {
 
     private static boolean AUTO_LOCK = false;
     /**
@@ -110,7 +110,8 @@ public abstract class DatabaseObject {
      * Some DatabaseObjects have unique fields, and calling this method shall ensure they are unique before saving.<br/>
      * The native implementation actually does nothing, you need to override the method if you define unique columns for a DO.
      */
-    public void ensureUniqueness() {}
+    public void ensureUniqueness() {
+    }
 
     public void setCName(String name) {
         cname = name;
@@ -657,7 +658,7 @@ public abstract class DatabaseObject {
         return list;
     }
 
-        /**
+    /**
      * Return objects which are referenced in the given Context@table
      * <br/>As list of getObject(inReference, (SELECT ids FROM Context@table WHERE dataOwnerIDS = dataowner.ids))
      * @param <T>
@@ -927,6 +928,38 @@ public abstract class DatabaseObject {
         } else {
             return hashCode() == databaseObject.hashCode();
         }
+    }
+
+    @Override
+    public int compareTo(DatabaseObject anotherObject) {
+        final int BEFORE = -1;
+        final int EQUAL = 0;
+        final int AFTER = 1;
+
+        if (this == anotherObject) {
+            return EQUAL;
+        }
+
+        if (this.equals(anotherObject)) {
+            return EQUAL;
+        }
+
+        //This should yield to items grouped by context..
+        if (this.getContext().getId() < anotherObject.getContext().getId()) {
+            return BEFORE;
+        }
+        if (this.getContext().getId() > anotherObject.getContext().getId()) {
+            return AFTER;
+        }
+
+        if (this.ids < anotherObject.ids) {
+            return BEFORE;
+        }
+        if (this.ids> anotherObject.ids) {
+            return AFTER;
+        }
+
+        return EQUAL;
     }
 
     /**

@@ -109,7 +109,8 @@ public class LogConsole extends javax.swing.JFrame {
                 jTextArea1.setCaretPosition(lineStart);
             }
         };
-        SwingUtilities.invokeLater(runnable);
+        Thread t = new Thread(runnable);
+        t.start();
     }
 
     /**

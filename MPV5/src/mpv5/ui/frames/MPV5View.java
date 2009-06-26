@@ -359,7 +359,9 @@ public class MPV5View extends FrameView {
      * @param item
      */
     public void addTab(DatabaseObject item) {
-        addTab(item.getView(), item.__getCName());
+        if (item.getView() !=null) {
+            addTab(item.getView(), item.__getCName());
+        }
     }
 
     /**

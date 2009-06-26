@@ -17,6 +17,7 @@ import mpv5.db.objects.Property;
 import mpv5.db.objects.Schedule;
 import mpv5.db.objects.ContactFile;
 import mpv5.db.objects.Item;
+import mpv5.db.objects.ItemFile;
 import mpv5.db.objects.ItemsList;
 import mpv5.db.objects.Message;
 import mpv5.db.objects.SubItem;
@@ -58,6 +59,7 @@ public class Context {
     public static String IDENTITY_MESSAGES_TO_ITEMS = "messagestoitems";
     public static String IDENTITY_ITEMSLIST = "itemslists";
     public static String IDENTITY_FORMATS_T_USERS = "formatstousers";
+    public static String IDENTITY_FILES_TO_ITEMS = "filestoitems";
 
     //********** identity classes **********************************************
     private static Class IDENTITY_CONTACTS_CLASS = Contact.class;
@@ -73,13 +75,15 @@ public class Context {
     private static Class IDENTITY_ACCOUNTS_CLASS = Account.class;
     private static Class IDENTITY_MESSAGES_CLASS = Message.class;
     private static Class IDENTITY_ITEMSLIST_CLASS = ItemsList.class;
+    private static Class IDENTITY_ITEMS_FILES_CLASS = ItemFile.class;
 
     //********** unique constraints *******************************************
     public static String UNIQUECOLUMNS_USER = "cname";
     public static String UNIQUECOLUMNS_ITEMS = "cname";
     public static String UNIQUECOLUMNS_GROUPS = "cname";
-    private static String UNIQUECOLUMNS_DEFAULT = "cname";
+    public static String UNIQUECOLUMNS_DEFAULT = "cname";
     public static String DETAIL_CONTACT_SEARCH = "prename,cname,street,city,country,notes";
+    
 
     //********** conditions ****************************************************
     private boolean isCompany = false;
@@ -1335,6 +1339,15 @@ public class Context {
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_FORMATS_T_USERS);
         c.setId(33);
+
+        return c;
+    }
+
+     public static Context getFilesToItems() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_FILES_TO_ITEMS);
+        c.setId(34);
 
         return c;
     }

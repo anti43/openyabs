@@ -16,6 +16,7 @@ import mpv5.globals.Constants;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 
+import mpv5.logging.Log;
 import mpv5.ui.dialogs.WizardMaster;
 import mpv5.ui.dialogs.Wizardable;
 
@@ -87,6 +88,7 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
             } catch (Exception ex) {
                 master.setMessage(Messages.CONNECTION_FAILED.toString());
                 this.master.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                Log.Debug(ex);
                 return false;
             }
             this.master.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -322,7 +324,6 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
 
     public boolean next() {
         if (DBVerification() & DirectoryCreate()) {
-
             Main.getApplication().go(true);
 //              try {
 //                Log.setLogLevel(Log.LOGLEVEL_NONE);

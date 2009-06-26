@@ -28,6 +28,7 @@ import mpv5.globals.Messages;
 import mpv5.handler.FormatHandler;
 import mpv5.handler.MPEnum;
 import mpv5.logging.Log;
+import mpv5.utils.images.MPIcon;
 
 /**
  *
@@ -355,7 +356,7 @@ public class Item extends DatabaseObject {
 
     @Override
     public mpv5.utils.images.MPIcon getIcon() {
-        return null;
+         return new MPIcon("/mpv5/resources/images/48/kontact_mail.png");
     }
 
     /**
