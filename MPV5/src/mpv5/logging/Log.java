@@ -128,7 +128,9 @@ public class Log {
      */
     public static void Print(Object message) {
         write(message);
-        System.out.println(message);
+        if (!LogConsole.CONSOLE_LOG_ENABLED) {
+            System.out.println(message);
+        }
     }
 
     /**
@@ -199,12 +201,9 @@ public class Log {
         }
     }
 
-    private static void write(Object obj) {
+    private static synchronized void write(Object obj) {
         try {
             logger.log(obj);
-            if (Log.getLoglevel() == Log.LOGLEVEL_DEBUG) {
-                System.out.println(obj);
-            }
         } catch (IOException ex) {
             ex.printStackTrace();
         }

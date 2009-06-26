@@ -98,12 +98,21 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
-     * Set the row limit for select queries. 0 is unlimited.
+     * Set the global row limit for select queries. 0 is unlimited.
      * @param limit
      */
-    public static void setRowLimit(Integer limit) {
-        Log.Debug(QueryHandler.class, "Setting row limit to: " + limit);
-        ROW_LIMIT = limit;
+    public static synchronized void setRowLimit(int limit) {
+        if (limit > ROW_LIMIT.intValue() || limit < ROW_LIMIT.intValue()) {
+            Log.Debug(QueryHandler.class, "Setting global row limit to: " + limit);
+            ROW_LIMIT = limit;
+        }
+    }
+
+    private void setLimit(int limit) {
+        if (limit > this.limit || limit < this.limit) {
+            Log.Debug(QueryHandler.class, "Setting row limit for this connection to: " + limit);
+            this.limit = limit;
+        }
     }
 
     /**
@@ -585,11 +594,6 @@ public class QueryHandler implements Cloneable {
     }
     private static int RUNNING_JOBS = 0;
 
-    private void setLimit(int limit) {
-        Log.Debug(QueryHandler.class, "Setting row limit to: " + limit);
-        this.limit = limit;
-    }
-
     private synchronized void stop() {
         Runnable runnable = new Runnable() {
 
@@ -1007,6 +1011,9 @@ public class QueryHandler implements Cloneable {
             conds = " WHERE " + conds.substring(0, conds.length() - 4);
             if (context.getGroupRestrictionSQLString() != null) {
                 conds += " AND " + context.getGroupRestrictionSQLString();
+            }
+            if (context.getNoTrashSQLString() != null) {
+                conds += " AND " + mpv5.db.common.Context.getItems().getNoTrashSQLString();
             }
         }
         String query = "SELECT " + cols + " FROM " + table + conds;

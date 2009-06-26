@@ -8,7 +8,10 @@ package mpv5.logging;
 import java.io.File;
 import mpv5.utils.files.*;
 import java.io.IOException;
+import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
+import javax.swing.text.Document;
+import javax.swing.text.Element;
 import mpv5.ui.misc.Position;
 
 /**
@@ -18,8 +21,23 @@ import mpv5.ui.misc.Position;
 public class LogConsole extends javax.swing.JFrame {
 
     private static File logfile = null;
-    private static boolean FILE_LOG_ENABLED = false;
+    public static boolean FILE_LOG_ENABLED = false;
+    public static boolean CONSOLE_LOG_ENABLED = false;
+    public static boolean WINDOW_LOG_ENABLED = false;
     private static FileReaderWriter logwriter;
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * Enable/disable log stream targets
+     * @param fileLog
+     * @param consoleLog
+     * @param windowLog
+     */
+    public static void setLogStreams(boolean fileLog, boolean consoleLog, boolean windowLog) {
+        FILE_LOG_ENABLED = fileLog;
+        CONSOLE_LOG_ENABLED = consoleLog;
+        WINDOW_LOG_ENABLED = windowLog;
+    }
 
     /**
      * Set a file to log to. A null value for file stops file logging
@@ -29,9 +47,7 @@ public class LogConsole extends javax.swing.JFrame {
     public static void setLogFile(String file) throws Exception {
         if (file != null) {
             LogConsole.logfile = new File(file);
-
             logfile.delete();
-
             if (logfile.createNewFile() && !logfile.canWrite()) {
                 throw new Exception("Fehler in " + logfile.getCanonicalPath());
             } else {
@@ -48,7 +64,6 @@ public class LogConsole extends javax.swing.JFrame {
     /** Creates new form Logger */
     public LogConsole() {
         initComponents();
-//        this.setExtendedState(ICONIFIED);
     }
 
     /**
@@ -68,29 +83,43 @@ public class LogConsole extends javax.swing.JFrame {
 
         Runnable runnable = new Runnable() {
 
+            @Override
             public void run() {
                 line++;
                 if (FILE_LOG_ENABLED) {
                     logwriter.write(line + ": " + object.toString());
                 }
-                if (object != null) {
-                    jTextArea1.append("\n" + line + ": " + object.toString());
-                } else {
-                    jTextArea1.append("\n" + line + ": " + "NULL");
+                if (CONSOLE_LOG_ENABLED) {
+                    System.out.println(object);
                 }
-//                jTextArea1.setCaretPosition(jTextArea1.getDocument().getLength() );
+                if (WINDOW_LOG_ENABLED) {
+                    if (object != null) {
+                        jTextArea1.append("\n" + line + ": " + object.toString());
+                    } else {
+                        jTextArea1.append("\n" + line + ": " + "NULL");
+                    }
+                }
+
+                Document document = jTextArea1.getDocument();
+                Element rootElem = document.getDefaultRootElement();
+                int numLines = rootElem.getElementCount();
+                Element lineElem = rootElem.getElement(numLines - 1);
+                int lineStart = lineElem.getStartOffset();
+                int lineEnd = lineElem.getEndOffset();
+                jTextArea1.setCaretPosition(lineStart);
             }
         };
         SwingUtilities.invokeLater(runnable);
     }
 
     /**
-     * Show the log konsole (will change the log level to DEBUG)
+     * Show the log konsole (will change the log level to DEBUG and enable Window logging)
+     * @return 
      */
-    public void open() {
+    public JComponent open() {
         Log.setLogLevel(Log.LOGLEVEL_DEBUG);
-        new Position(this);
-        this.setVisible(true);
+        WINDOW_LOG_ENABLED = true;
+        return getRootPane();
     }
 
     /** This method is called from within the constructor to
@@ -113,6 +142,8 @@ public class LogConsole extends javax.swing.JFrame {
         jScrollPane1.setAutoscrolls(true);
 
         jTextArea1.setColumns(20);
+        jTextArea1.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
+        jTextArea1.setForeground(new java.awt.Color(51, 0, 0));
         jTextArea1.setRows(5);
         jScrollPane1.setViewportView(jTextArea1);
 
@@ -129,16 +160,14 @@ public class LogConsole extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 375, Short.MAX_VALUE)
-                    .addComponent(jButton1))
-                .addContainerGap())
+                .addComponent(jButton1)
+                .addContainerGap(319, Short.MAX_VALUE))
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 399, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 205, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1)
                 .addContainerGap())
@@ -168,10 +197,9 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
      */
     public void flush() {
         if (FILE_LOG_ENABLED) {
-//            System.err.print(logwriter.read());
             logwriter.flush();
-        } else {
-            System.err.print(jTextArea1.getText());
+        }
+        if (WINDOW_LOG_ENABLED) {
             jTextArea1.setText(null);
         }
     }

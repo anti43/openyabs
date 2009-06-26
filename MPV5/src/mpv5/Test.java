@@ -34,8 +34,14 @@ public class Test {
 
     public static void main(String[] args) {
 
-       QueryHandler.getConnection().freeQuery("SELECT COUNT(ids) FROM items WHERE accountsids = 1 AND " + mpv5.db.common.Context.getItems().getGroupRestrictionSQLString(), MPSecurityManager.VIEW, "Items im Konto Irgendwas gezählt.");
+        System.out.println( Context.getItems().prepareSQLString("SELECT COUNT(ids) FROM items"));
 
+       QueryHandler.getConnection().freeQuery(
+               Context.getItems().prepareSQLString("SELECT COUNT(ids) FROM items WHERE accountsids = 1"),
+               MPSecurityManager.VIEW, "Items im Konto Irgendwas gezählt.");
+       QueryHandler.getConnection().freeQuery(
+               Context.getItems().prepareSQLString("SELECT COUNT(ids) FROM items WHERE accountsids = 1"),
+               MPSecurityManager.VIEW, "Items im Konto Irgendwas gezählt.");
 //        new MPServer();
 
 //        try {

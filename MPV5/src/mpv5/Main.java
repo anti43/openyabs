@@ -181,9 +181,9 @@ public class Main extends SingleFrameApplication {
         } catch (Exception e) {
             Log.Debug(e);
         }
-//        if(Log.getLoglevel() == Log.LOGLEVEL_DEBUG){
-//        Log.Debug(Main.class, QueryHandler.instanceOf().getStatistics());
-//        }
+        if (Log.getLoglevel() == Log.LOGLEVEL_DEBUG) {
+            Log.Debug(Main.class, QueryHandler.instanceOf().getStatistics());
+        }
         Log.Print(GOODBYE_MESSAGE);
         super.shutdown();
     }
@@ -289,6 +289,9 @@ public class Main extends SingleFrameApplication {
         Option removeplugins = obuilder.withShortName("removeplugins").withDescription("remove all plugins which would be loaded").create();
         Option logfile = obuilder.withShortName("logfile").withShortName("l").withDescription("use file for log").withArgument(filearg).create();
         Option connectionInstance = obuilder.withShortName("connectionInstance").withShortName("conn").withDescription("Use stored connection with this ID").withArgument(number).create();
+        Option windowlog = obuilder.withShortName("windowlog").withDescription("Enables logging to the MP Log Console").create();
+        Option consolelog = obuilder.withShortName("consolelog").withDescription("Enables logging to STDOUT").create();
+
 
         Group options = gbuilder.withName("options").
                 withOption(help).
@@ -303,6 +306,8 @@ public class Main extends SingleFrameApplication {
                 withOption(connectionInstance).
                 withOption(logfile).
                 withOption(server).
+                withOption(windowlog).
+                withOption(consolelog).
                 create();
 
         HelpFormatter hf = new HelpFormatter();
@@ -374,6 +379,8 @@ public class Main extends SingleFrameApplication {
             if (cl.hasOption(server)) {
                 START_SERVER = true;
             }
+
+            LogConsole.setLogStreams(cl.hasOption(logfile), cl.hasOption(consolelog), cl.hasOption(windowlog));
         }
 
         Log.Print("\nOptions used:");

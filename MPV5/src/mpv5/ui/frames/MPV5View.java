@@ -1228,21 +1228,21 @@ public class MPV5View extends FrameView {
         ContactPanel tab = new ContactPanel(Context.getCustomer());
         tab.setType(ContactPanel.CUSTOMER);
         addTab(tab, Messages.NEW_CUSTOMER.toString());
-        
+
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         ContactPanel tab = new ContactPanel(Context.getSupplier());
         tab.setType(ContactPanel.SUPPLIER);
         addTab(tab, Messages.NEW_SUPPLIER.toString());
-        
+
 }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
         ContactsList tab = new ContactsList(Context.getContact());
         addTab(tab, Messages.CONTACTS_LIST.toString());
-     
+
 }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
@@ -1266,7 +1266,7 @@ public class MPV5View extends FrameView {
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
         addTab(MPControlPanel.instanceOf(), Messages.CONTROL_PANEL.toString());
-       
+
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void jButton25ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton25ActionPerformed
@@ -1335,7 +1335,8 @@ public class MPV5View extends FrameView {
     }//GEN-LAST:event_jMenuItem9ActionPerformed
 
     private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
-        addTab(Log.getLogger().getRootPane(), "MP Logger");
+
+        addTab(Log.getLogger().open(), "MP Logger");
     }//GEN-LAST:event_jMenuItem10ActionPerformed
 
     private void jMenuItem11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem11ActionPerformed
@@ -1343,8 +1344,8 @@ public class MPV5View extends FrameView {
     }//GEN-LAST:event_jMenuItem11ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-       addTab(MPControlPanel.instanceOf(),Messages.HISTORY_PANEL.toString());
-        
+        addTab(MPControlPanel.instanceOf(), Messages.HISTORY_PANEL.toString());
+
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem12ActionPerformed
@@ -1397,7 +1398,7 @@ public class MPV5View extends FrameView {
         ClipboardMenuItem item;
         try {
             if (clipboardMenu.getItemCount() > 1) {
-                item = (ClipboardMenuItem) clipboardMenu.getItem(clipboardMenu.getItemCount()-1);
+                item = (ClipboardMenuItem) clipboardMenu.getItem(clipboardMenu.getItemCount() - 1);
                 getCurrentTab().paste(item.getItem());
             }
         } catch (Exception ignore) {

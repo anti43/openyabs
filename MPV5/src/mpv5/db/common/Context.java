@@ -672,14 +672,38 @@ public class Context {
 
     /**
      * Generates a SQL String (WHERE clause) which can be used to avoid having already trashed elements in the resulting data.
-     * @return
+     *
+     * @return  " invisible = 0 " or NULL if Context is not trashable
      */
     public String getNoTrashSQLString() {
         if (getTrashableContexts().contains(this)) {
             return " invisible = 0 ";
         } else {
-            return " ";
+            return null;
         }
+    }
+
+    /**
+     * Add MP specific conditions to a sql query
+     * @param query
+     * @return The query
+     */
+    public String prepareSQLString(String query) {
+        if (getGroupRestrictionSQLString() != null) {
+            if (query.contains("WHERE") || query.contains("where")) {
+                query = query + " AND" + getGroupRestrictionSQLString();
+            } else {
+                query = query + " WHERE" + getGroupRestrictionSQLString();
+            }
+        }
+        if (Context.getItems().getNoTrashSQLString() != null) {
+            if (query.contains("WHERE") || query.contains("where")) {
+                query = query + " AND" + getNoTrashSQLString();
+            } else {
+                query = query + " WHERE" + getNoTrashSQLString();
+            }
+        }
+        return query;
     }
 
     /**

@@ -84,7 +84,7 @@ public class MPServerRunner implements Runnable {
                 out.println(HANDSHAKE);
                 if (in.readLine().equals(HANDSHAKE_RESPONSE)) {
                     out.println(WAITING);
-                    while ((line = in.readLine()) != null && !line.equals(Main.GOODBYE_MESSAGE)) {
+                    while ((line = in.readLine()) != null && !line.equalsIgnoreCase("quit")) {
                         try {
                             if (!line.equals(QUIT)) {
                                 if (line.startsWith(RUN) && JOBS.containsKey(line.substring(RUN.length() + 1))) {
@@ -108,7 +108,7 @@ public class MPServerRunner implements Runnable {
                     }
                 } else {
                     out.println("Mellon!");
-                    out.println(Main.GOODBYE_MESSAGE);
+                    out.println("blfft!");
                 }
                 getSocket().close();
             } catch (IOException ioe) {

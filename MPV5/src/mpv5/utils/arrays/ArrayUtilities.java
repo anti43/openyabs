@@ -435,58 +435,7 @@ public class ArrayUtilities {
         return model;
     }
 
-    public static <T extends DatabaseObject> DefaultTreeModel toTreeModel(ArrayList<T> data, T rootNode) {
-
-        DefaultMutableTreeNode node1 = null;
-        if (data.size() > 0) {
-            node1 = new DefaultMutableTreeNode(rootNode);
-            data.remove(rootNode);//remove root if in list
-            try {
-                MPV5View.setWaiting(true);
-                node1 = addToParents(node1, data);
-
-            } catch (Exception e) {
-                Log.Debug(e);
-            } finally {
-                MPV5View.setWaiting(false);
-            }
-        }
-        DefaultTreeModel model = new DefaultTreeModel(node1);
-        return model;
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <T extends DatabaseObject> DefaultMutableTreeNode addToParents(DefaultMutableTreeNode firstnode, ArrayList<T> dobjlist) {
-
-        Log.Debug(ArrayUtilities.class, "Parent Node: " + firstnode);
-        for (int i = 0; i < dobjlist.size(); i++) {
-            T dobj = dobjlist.get(i);
-            Log.Debug(ArrayUtilities.class, "Node: " + dobj);
-
-            if (dobj.__getGroupsids() <= 0 && firstnode.isRoot()) {
-                Log.Debug(ArrayUtilities.class, "Node is root child, adding it to root and removing it from the list.");
-                firstnode.add(new DefaultMutableTreeNode(dobj));
-                dobjlist.remove(dobj);//First level groups
-                i--;
-            } else {
-                int parentid = dobj.__getGroupsids();
-                if (((T) firstnode.getUserObject()).__getIDS().intValue() == parentid) {
-                    Log.Debug(ArrayUtilities.class, "Node is child of parentnode, adding and removing it from the list.");
-                    firstnode.add(new DefaultMutableTreeNode(dobj));
-                    dobjlist.remove(dobj);
-                    i--;
-                } else {
-                    Log.Debug(ArrayUtilities.class, "Node is no child of parentnode, iterating over the parent node..");
-                    @SuppressWarnings("unchecked")
-                    Enumeration<DefaultMutableTreeNode> nodes = firstnode.children();
-                    while (nodes.hasMoreElements()) {
-                        addToParents(nodes.nextElement(), dobjlist);
-                    }
-                }
-            }
-        }
-        return firstnode;
-    }
+   
 
     public static ArrayList<String> getSelectionFromTree(JTree tree) {
         ArrayList<String> list = new ArrayList<String>();

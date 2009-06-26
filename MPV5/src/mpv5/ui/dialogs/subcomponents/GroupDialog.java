@@ -22,6 +22,7 @@ import mpv5.db.objects.Group;
 import mpv5.logging.Log;
 import mpv5.ui.panels.DataPanel;
 import mpv5.utils.arrays.ArrayUtilities;
+import mpv5.utils.models.MPTreeModel;
 import mpv5.utils.trees.TreeFormat;
 
 /**
@@ -94,7 +95,7 @@ public class GroupDialog extends javax.swing.JPanel {
         g.setCName(Messages.GROUPNAMES.toString());
         g.setIDS(-1);
 
-        tree.setModel(ArrayUtilities.toTreeModel(data, g));
+        tree.setModel(MPTreeModel.toTreeModel(data, g));
 
         TreeFormat.expandTree(tree);
     }
