@@ -112,16 +112,13 @@ public class ContactFile extends DatabaseObject {
 
     @Override
     public mpv5.utils.images.MPIcon getIcon() {
-        if (file != null) {
-            try {
-                JFileChooser chooser = new JFileChooser();
-                Icon icon = chooser.getIcon(file);
-                return new MPIcon(icon);
-            } catch (Exception e) {
-                //file is not yet fetched from db, we let it there
-                return null;
-            }
-        } else {
+
+        try {
+            JFileChooser chooser = new JFileChooser();
+            Icon icon = chooser.getIcon(new File(filename));
+            return new MPIcon(icon);
+        } catch (Exception e) {
+            //file is not yet fetched from db, we let it there
             return new MPIcon("/mpv5/resources/images/48/folder_tar.png");
         }
     }

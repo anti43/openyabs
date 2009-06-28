@@ -52,6 +52,7 @@ public class MPTreeModel extends DefaultTreeModel {
     private static final long serialVersionUID = 1L;
 
     private static DefaultMutableTreeNode getGroupHierarchy(DatabaseObject item) throws NodataFoundException {
+        DatabaseObject.cacheObjects(Context.getGroup());
         Group group = (Group) DatabaseObject.getObject(Context.getGroup(), item.__getGroupsids());
         return getGroupHierarchy(group, new DefaultMutableTreeNode(group));
     }

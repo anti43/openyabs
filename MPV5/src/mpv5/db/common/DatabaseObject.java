@@ -20,6 +20,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.logging.Level;
@@ -47,6 +48,35 @@ import mpv5.utils.images.MPIcon;
 public abstract class DatabaseObject implements Comparable<DatabaseObject> {
 
     private static boolean AUTO_LOCK = false;
+    private static HashMap<String, DatabaseObject> cache = new HashMap<String, DatabaseObject>();
+
+    /**
+     * caches the last 100 objects of this Context
+     * @param context 
+     */
+    public static void cacheObjects(Context context) throws NodataFoundException {
+        ReturnValue data = QueryHandler.instanceOf().clone(context, 100).select();
+        DatabaseObject[] dos = explode(data, null, false);
+        for (int i = 0; i < dos.length; i++) {
+            DatabaseObject databaseObject = dos[i];
+            cache.put(databaseObject.getDbIdentity() + "@" + databaseObject.__getIDS(), databaseObject);
+        }
+    }
+
+    private DatabaseObject getCachedObject(Context context, int id) {
+        if (cache.containsKey(context.getDbIdentity() + "@" + id)) {
+            Log.Debug(this, "Using cached object " + context + "@" + id);
+            return cache.get(context.getDbIdentity() + "@" + id);
+        } else {
+            try {
+                DatabaseObject dbo = DatabaseObject.getObject(context, id);
+                cache.put(context.getDbIdentity() + "@" + id, dbo);
+                return dbo;
+            } catch (NodataFoundException ex) {
+                return null;
+            }
+        }
+    }
     /**
      * The db context of this do
      */
@@ -955,7 +985,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
         if (this.ids < anotherObject.ids) {
             return BEFORE;
         }
-        if (this.ids> anotherObject.ids) {
+        if (this.ids > anotherObject.ids) {
             return AFTER;
         }
 

@@ -127,7 +127,7 @@ public class MPIcon extends ImageIcon {
      * @return
      */
     public Icon getIcon(int maxWidthHeigth) {
-        return getIcon(maxWidthHeigth, maxWidthHeigth);
+        return getIcon(maxWidthHeigth, -1);
     }
 
     /**
