@@ -1754,7 +1754,7 @@ public class QueryHandler implements Cloneable {
      * @return A list with temporary files
      * @throws IOException
      */
-    public ArrayList<File> retrieveFiles(String filename) throws IOException {
+    public synchronized ArrayList<File> retrieveFiles(String filename) throws IOException {
         start();
         String query = "SELECT data, filesize FROM " + table + " WHERE cname= '" + filename + "'";
         String jobmessage = null;
@@ -1836,7 +1836,7 @@ public class QueryHandler implements Cloneable {
      * @param targetFile 
      * @return The target file or NULL
      */
-    public File retrieveFile(String name, File targetFile) {
+    public synchronized File retrieveFile(String name, File targetFile) {
         ArrayList<File> list;
         try {
             list = retrieveFiles(name);
@@ -1851,7 +1851,7 @@ public class QueryHandler implements Cloneable {
             try {
                 k = FileDirectoryHandler.copyFile(list.get(0), targetFile.getParentFile(), targetFile.getName(), false);
             } catch (IOException ex) {
-                Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
+                Log.Debug(ex);
                 return null;
             }
             File f = new File(k);

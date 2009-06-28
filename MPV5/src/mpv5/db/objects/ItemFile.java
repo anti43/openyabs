@@ -17,7 +17,9 @@
 package mpv5.db.objects;
 
 import java.io.File;
+import javax.swing.Icon;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
@@ -36,6 +38,7 @@ public class ItemFile extends DatabaseObject {
     private String description = "";
     private int itemsids;
     private String filename = "";
+    private File file;
 
     public ItemFile() {
         context.setDbIdentity(Context.IDENTITY_FILES_TO_ITEMS);
@@ -50,9 +53,7 @@ public class ItemFile extends DatabaseObject {
     @Override
     public JComponent getView() {
         try {
-            FileDirectoryHandler.open(QueryHandler.instanceOf().clone(Context.getFiles()).
-                    retrieveFile(filename,
-                    new File(FileDirectoryHandler.getTempDir() + cname)));
+            FileDirectoryHandler.open(getFile());
         } catch (Exception e) {
             Log.Debug(e);
         }
@@ -94,7 +95,14 @@ public class ItemFile extends DatabaseObject {
 
     @Override
     public mpv5.utils.images.MPIcon getIcon() {
-        return new MPIcon("/mpv5/resources/images/48/folder_tar.png");
+        try {
+            JFileChooser chooser = new JFileChooser();
+            Icon icon = chooser.getIcon(file);
+            return new MPIcon(icon);
+        } catch (Exception e) {
+            //file is not yet fetched from db, we let it there
+            return new MPIcon("/mpv5/resources/images/48/folder_tar.png");
+        }
     }
 
     /**
@@ -109,5 +117,22 @@ public class ItemFile extends DatabaseObject {
      */
     public void setItemsids(int itemsids) {
         this.itemsids = itemsids;
+    }
+
+    /**
+     * Fetches the physical file from db
+     * @return
+     */
+    public File getFile() {
+        if (file == null) {
+            try {
+                file = QueryHandler.instanceOf().clone(Context.getFiles()).
+                        retrieveFile(filename,
+                        new File(FileDirectoryHandler.getTempDir() + cname));
+            } catch (Exception e) {
+                Log.Debug(e);
+            }
+        }
+        return file;
     }
 }

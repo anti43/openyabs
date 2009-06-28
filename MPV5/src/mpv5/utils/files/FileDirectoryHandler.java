@@ -246,12 +246,12 @@ public abstract class FileDirectoryHandler {
                 Popup.notice(Messages.FILE_OPEN_FAILED + file.getPath());
             }
         } else {
-            new DialogForFile().saveFile(file);
+            new DialogForFile(DialogForFile.FILES_ONLY).saveFile(file);
         }
     }
 
     public static void save(File file) {
-        DialogForFile d = new DialogForFile(new File(file.getName()));
+        DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY, new File(file.getName()));
         d.saveFile(file);
     }
 

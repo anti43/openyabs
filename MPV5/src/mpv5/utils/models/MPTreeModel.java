@@ -151,9 +151,10 @@ public class MPTreeModel extends DefaultTreeModel {
                     this.setIcon(obj.getIcon().getIcon(18));
                 } catch (Exception e) {
                     try {
-                        setIcon(new MPIcon("/mpv5/resources/images/48/folder_grey.png").getIcon(18));
+                        setIcon(new MPIcon("/mpv5/resources/images/48/folder_grey.png").getIcon(20));
                     } catch (Exception ef) {
                         setIcon(leafIcon);
+                        Log.Debug(ef);
                     }
                 }
                 return this;

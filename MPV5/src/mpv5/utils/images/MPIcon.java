@@ -29,6 +29,7 @@ import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.PixelGrabber;
+import java.util.HashMap;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import mpv5.logging.Log;
@@ -39,6 +40,23 @@ import mpv5.logging.Log;
 public class MPIcon extends ImageIcon {
 
     private static final long serialVersionUID = 1L;
+
+
+    /**
+     *
+     * @param icon
+     */
+    public MPIcon(Icon icon) {
+        super(iconToImage(icon));
+    }
+
+    /**
+     * 
+     * @param icon
+     */
+    public MPIcon(ImageIcon icon) {
+        super(icon.getImage());
+    }
 
     /**
      * 
@@ -54,6 +72,28 @@ public class MPIcon extends ImageIcon {
      */
     public MPIcon(String resource) {
         super(MPIcon.class.getResource(resource));
+    }
+
+    private MPIcon() {
+        super();
+    }
+
+    public static Image iconToImage(Icon icon) {
+        if (icon instanceof ImageIcon) {
+            return ((ImageIcon) icon).getImage();
+        } else {
+            int w = icon.getIconWidth();
+            int h = icon.getIconHeight();
+            GraphicsEnvironment ge =
+                    GraphicsEnvironment.getLocalGraphicsEnvironment();
+            GraphicsDevice gd = ge.getDefaultScreenDevice();
+            GraphicsConfiguration gc = gd.getDefaultConfiguration();
+            BufferedImage image = gc.createCompatibleImage(w, h);
+            Graphics2D g = image.createGraphics();
+            icon.paintIcon(null, g, 0, 0);
+            g.dispose();
+            return image;
+        }
     }
 
     /**
@@ -82,26 +122,32 @@ public class MPIcon extends ImageIcon {
     }
 
     /**
-     * 
-     * @param maxWidth
+     * Creates an Icon with the specified size, fast and ugly
+     * @param maxWidthHeigth
      * @return
      */
-    public Icon getIcon(int maxWidth) {
-        return getIcon(maxWidth, -1);
+    public Icon getIcon(int maxWidthHeigth) {
+        return getIcon(maxWidthHeigth, maxWidthHeigth);
     }
 
     /**
-     *
+     * Creates an Icon with the specified size, nice but slowly
      * @param maxWidth
      * @param maxHeight
      * @return
      */
     public Icon getIcon(int maxWidth, int maxHeight) {
-        BufferedImage bi = toBufferedImage(this.getImage());
-        bi = getScaledInstance(bi, maxWidth, maxHeight, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY, false);
-//         System.out.println(maxWidth);
-        return new ImageIcon(bi);
+        if (!cache.containsKey(maxWidth + "@" + maxHeight)) {
+            BufferedImage bi = toBufferedImage(this.getImage());
+            bi = getScaledInstance(bi, maxWidth, maxHeight, RenderingHints.VALUE_INTERPOLATION_BILINEAR, maxHeight > 0);
+            ImageIcon imic = new ImageIcon(bi);
+            cache.put(maxWidth + "@" + maxHeight, imic);
+            return imic;
+        } else {
+            return cache.get(maxWidth + "@" + maxHeight);
+        }
     }
+    private HashMap<String, Icon> cache = new HashMap<String, Icon>();
 
     /**
      * Convenience method that returns a scaled instance of the
@@ -160,7 +206,7 @@ public class MPIcon extends ImageIcon {
 
             BufferedImage tmp = new BufferedImage(w, h, type);
             Graphics2D g2 = tmp.createGraphics();
-            g2.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, hint);
+            g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, hint);
             g2.drawImage(ret, 0, 0, w, h, null);
             g2.dispose();
 

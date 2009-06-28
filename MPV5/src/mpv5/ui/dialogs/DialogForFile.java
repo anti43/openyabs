@@ -193,6 +193,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
      */
     public void saveFile(File fileToSave) {
 
+
         if (this.showSaveDialog(MPV5View.identifierFrame) == JFileChooser.APPROVE_OPTION) {
             this.file = this.getSelectedFile();
             if (!file.exists()) {
