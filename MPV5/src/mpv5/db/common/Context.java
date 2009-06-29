@@ -60,7 +60,6 @@ public class Context {
     public static String IDENTITY_ITEMSLIST = "itemslists";
     public static String IDENTITY_FORMATS_T_USERS = "formatstousers";
     public static String IDENTITY_FILES_TO_ITEMS = "filestoitems";
-
     //********** identity classes **********************************************
     private static Class IDENTITY_CONTACTS_CLASS = Contact.class;
     private static Class IDENTITY_ADDRESS_CLASS = Address.class;
@@ -76,16 +75,12 @@ public class Context {
     private static Class IDENTITY_ACCOUNTS_CLASS = Account.class;
     private static Class IDENTITY_MESSAGES_CLASS = Message.class;
     private static Class IDENTITY_ITEMSLIST_CLASS = ItemsList.class;
-
-
     //********** unique constraints *******************************************
     public static String UNIQUECOLUMNS_USER = "cname";
     public static String UNIQUECOLUMNS_ITEMS = "cname";
     public static String UNIQUECOLUMNS_GROUPS = "cname";
     public static String UNIQUECOLUMNS_DEFAULT = "cname";
     public static String DETAIL_CONTACT_SEARCH = "prename,cname,street,city,country,notes";
-    
-
     //********** conditions ****************************************************
     private boolean isCompany = false;
     private boolean isCustomer = false;
@@ -100,7 +95,6 @@ public class Context {
     public static final String CONDITION_CONTACTS_SUPPLIER = IDENTITY_CONTACTS + "." + "issupplier";
     public static final String CONDITION_ITEMS_TYPE = IDENTITY_ITEMS + "." + "inttype";
     public static final String CONDITION_ITEMS_STATUS = IDENTITY_ITEMS + "." + "intstatus";
-
     //********** searchfields **************************************************
     public static final String SEARCH_NAME = "cname";
     public static final String SEARCH_CONTACT_NUMBER = "cnumber";
@@ -111,7 +105,6 @@ public class Context {
     public static String DEFAULT_USER_SEARCH = "ids, cname, mail, lastlogdate";
     public static String DEFAULT_ITEM_SEARCH = "ids, cname, dateadded, netvalue";
     public static String DEFAULT_PRODUCT_SEARCH = "ids, cname, cnumber, description";
-
     //********** table fields ********************************************************
     public static String DETAILS_CONTACTS = IDENTITY_CONTACTS + "." + "IDS," + IDENTITY_CONTACTS + "." + "CNUMBER," +
             IDENTITY_CONTACTS + "." + "TITLE," + IDENTITY_CONTACTS + "." + "PRENAME," + IDENTITY_CONTACTS + "." + "CNAME," +
@@ -161,7 +154,8 @@ public class Context {
             IDENTITY_ITEMS + "." + "netvalue," +
             IDENTITY_ITEMS + "." + "taxvalue";
     public static String DETAILS_HISTORY = getHistory().getDbIdentity() + ".ids, " + getHistory().getDbIdentity() + ".cname, " + getHistory().getDbIdentity() + ".username, " + Context.getGroup().getDbIdentity() + "0.cname," + Context.getHistory().getDbIdentity() + ".dateadded";
-    public static String DETAILS_FILES = Context.getFiles().getDbIdentity() + "0.cname," + getFilesToContacts().getDbIdentity() + ".cname, " + Context.getFiles().getDbIdentity() + "0.dateadded," + Context.getFilesToContacts().getDbIdentity() + ".description,"+ Context.getFilesToContacts().getDbIdentity() + ".intsize,"+ Context.getFilesToContacts().getDbIdentity() + ".mimetype";
+    public static String DETAILS_FILES_TO_CONTACTS = Context.getFiles().getDbIdentity() + "0.cname," + getFilesToContacts().getDbIdentity() + ".cname, " + Context.getFiles().getDbIdentity() + "0.dateadded," + Context.getFilesToContacts().getDbIdentity() + ".description," + Context.getFilesToContacts().getDbIdentity() + ".intsize," + Context.getFilesToContacts().getDbIdentity() + ".mimetype";
+    public static String DETAILS_FILES_TO_ITEMS = Context.getFiles().getDbIdentity() + "0.cname," + getFilesToItems().getDbIdentity() + ".cname, " + Context.getFiles().getDbIdentity() + "0.dateadded," + Context.getFilesToItems().getDbIdentity() + ".description," + Context.getFilesToItems().getDbIdentity() + ".intsize," + Context.getFilesToItems().getDbIdentity() + ".mimetype";
 
     //**************************************************************************
     /**
@@ -192,7 +186,7 @@ public class Context {
         return list;
     }
 
-       /**
+    /**
      * Contexts which can get cached
      * @return
      */
@@ -944,7 +938,6 @@ public class Context {
 //    private void setIsDone(boolean isDone) {
 //        this.isDone = isDone;
 //    }
-
 //    /**
 //     * @return the isActive
 //     */
@@ -1367,7 +1360,7 @@ public class Context {
         return c;
     }
 
-       public static Context getFilesToItems() {
+    public static Context getFilesToItems() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_FILES_TO_ITEMS);
@@ -1376,7 +1369,6 @@ public class Context {
 
         return c;
     }
-
 
     /**
      *

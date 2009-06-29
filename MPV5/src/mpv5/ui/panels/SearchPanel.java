@@ -10,8 +10,12 @@
  */
 package mpv5.ui.panels;
 
+import java.awt.Component;
 import java.awt.Dimension;
+import javax.swing.JComponent;
+import javax.swing.JTable;
 import javax.swing.SwingUtilities;
+import javax.swing.table.TableCellRenderer;
 import mpv5.db.common.Context;
 
 import mpv5.db.common.DatabaseObject;
@@ -32,9 +36,8 @@ public class SearchPanel extends javax.swing.JPanel {
     private static final long serialVersionUID = 1L;
     private Context context;
     private DataPanel panel;
-    private int lasttype = 4;
+    private int lasttype = 1;
     private String lastneedle = "";
-    private int oldwitdth;
 
     /** Creates new form SearchPanel */
     public SearchPanel() {
@@ -84,7 +87,17 @@ public class SearchPanel extends javax.swing.JPanel {
         searchbutton1 = new javax.swing.JButton();
         results = new javax.swing.JPanel();
         resultsscrollpane = new javax.swing.JScrollPane();
-        resulttable = new javax.swing.JTable();
+        resulttable = new JTable() {
+            public Component prepareRenderer(TableCellRenderer renderer,
+                int rowIndex, int vColIndex) {
+                Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);
+                if (c instanceof JComponent) {
+                    JComponent jc = (JComponent)c;
+                    jc.setToolTipText(String.valueOf(getValueAt(rowIndex, vColIndex)));
+                }
+                return c;
+            }
+        };
 
         setName("Form"); // NOI18N
 
@@ -206,7 +219,7 @@ public class SearchPanel extends javax.swing.JPanel {
         );
         resultsLayout.setVerticalGroup(
             resultsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(resultsscrollpane, javax.swing.GroupLayout.DEFAULT_SIZE, 87, Short.MAX_VALUE)
+            .addComponent(resultsscrollpane, javax.swing.GroupLayout.DEFAULT_SIZE, 88, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -230,6 +243,7 @@ public class SearchPanel extends javax.swing.JPanel {
         if (isShowing()) {
             Runnable runnable = new Runnable() {
 
+                @Override
                 public void run() {
                     lasttype = searchtype;
                     lastneedle = value;
@@ -255,7 +269,7 @@ public class SearchPanel extends javax.swing.JPanel {
 
                             break;
                         case 4:
-                            resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 50).getValuesFor("ids,cname", "cname", context.getParent().__getCName(), true), Headers.SEARCH_DEFAULT.getValue()));
+                            resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 0).getValuesFor("ids,cname", "cname", context.getParent().__getCName(), true), Headers.SEARCH_DEFAULT.getValue()));
 
                     }
                     TableFormat.stripFirstColumn(resulttable);

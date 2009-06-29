@@ -1931,9 +1931,15 @@ public class QueryHandler implements Cloneable {
      * @param descriptiveText Describe the file
      * @return True if the insert was a success
      */
-    public boolean insertFile(File file, Contact dataOwner, SaveString descriptiveText) {
+    public boolean insertFile(File file, DatabaseObject dataOwner, SaveString descriptiveText) {
         try {
-            new backgroundFileInsert(file, dataOwner, descriptiveText).execute();
+            Context tc = null;
+            if(dataOwner.getContext().equals(Context.getContact())) {
+                tc = Context.getFilesToContacts();
+            } else if(dataOwner.getContext().equals(Context.getItems())) {
+                tc = Context.getFilesToItems();
+            }
+            new backgroundFileInsert(file, dataOwner, descriptiveText, tc).execute();
             return true;
         } catch (Exception e) {
             return false;
@@ -2035,12 +2041,14 @@ public class QueryHandler implements Cloneable {
         private String name;
         private DatabaseObject dataOwner;
         private String descriptiveText;
+        private final Context tcontext;
 
-        public backgroundFileInsert(File file, DatabaseObject owner, SaveString description) {
+        public backgroundFileInsert(File file, DatabaseObject owner, SaveString description, Context tcontext) {
             this.addPropertyChangeListener(new changeListener());
             this.file = file;
             this.dataOwner = owner;
             this.descriptiveText = description.toString();
+            this.tcontext = tcontext;
         }
 
         @Override
@@ -2089,11 +2097,11 @@ public class QueryHandler implements Cloneable {
                 String fileextension = (filename.lastIndexOf(".") == -1) ? "" : filename.substring(filename.lastIndexOf(".") + 1, filename.length());
 
                 x = new QueryData(new String[]{"cname,filename, description, dateadded", file.getName() + "," + get() + "," + descriptiveText + "," + DateConverter.getTodayDBDate()});
-                x.add("contactsids", dataOwner.__getIDS());
+                x.add(dataOwner.getType() + "sids", dataOwner.__getIDS());
                 x.add("intaddedby", MPV5View.getUser().__getIDS());
                 x.add("intsize", file.length());
                 x.add("mimetype", fileextension);
-                QueryHandler.instanceOf().clone(Context.getFilesToContacts()).insert(x, Messages.FILE_SAVED + file.getName());
+                QueryHandler.instanceOf().clone(tcontext).insert(x, Messages.FILE_SAVED + file.getName());
                 MPV5View.addMessage(Messages.FILE_SAVED + file.getName());
                 if (viewToBeNotified != null) {
                     viewToBeNotified.refresh();

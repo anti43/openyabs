@@ -57,7 +57,7 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jToolBar1" min="-2" pref="26" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jScrollPane1" pref="257" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" pref="258" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -185,6 +185,9 @@
                 </Property>
                 <Property name="name" type="java.lang.String" value="jTable1" noResource="true"/>
               </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new JTable() {&#xa;            public Component prepareRenderer(TableCellRenderer renderer,&#xa;                int rowIndex, int vColIndex) {&#xa;                Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);&#xa;                if (c instanceof JComponent) {&#xa;                    JComponent jc = (JComponent)c;&#xa;                    jc.setToolTipText(String.valueOf(getValueAt(rowIndex, vColIndex)));&#xa;                }&#xa;                return c;&#xa;            }&#xa;        }"/>
+              </AuxValues>
             </Component>
           </SubComponents>
         </Container>

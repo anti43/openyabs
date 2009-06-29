@@ -48,7 +48,7 @@ public class LocalSettings {
     public static final String SCROLL_ALWAYS = "scrollpane";
     public static final String CACHE_SIZE = "cachesize";
     private static PropertyStore predefinedSettings = new PropertyStore(new String[][]{ //        {LAF,UIManager.getSystemLookAndFeelClassName()}
-                {DEFAULT_FONT, "Tahoma"}, {DBROW_LIMIT, "0"}, {DBAUTOLOCK, "false"}, {SERVER_PORT, "4343"}, {CACHE_SIZE, "jj"}
+                {DEFAULT_FONT, "Tahoma"}, {DBROW_LIMIT, "0"}, {DBAUTOLOCK, "false"}, {SERVER_PORT, "4343"}, {CACHE_SIZE, "100"}
             });
 
     /**

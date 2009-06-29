@@ -26,7 +26,10 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComponent;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 import mpv5.db.common.Context;
 import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.DatabaseObject;
@@ -110,13 +113,23 @@ public class HistoryPanel extends javax.swing.JPanel implements ListPanel {
         prinitingComboBox1 = new mpv5.ui.beans.PrinitingComboBox();
         jSeparator3 = new javax.swing.JToolBar.Separator();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jTable1 = new JTable() {
+            public Component prepareRenderer(TableCellRenderer renderer,
+                int rowIndex, int vColIndex) {
+                Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);
+                if (c instanceof JComponent) {
+                    JComponent jc = (JComponent)c;
+                    jc.setToolTipText(String.valueOf(getValueAt(rowIndex, vColIndex)));
+                }
+                return c;
+            }
+        };
         jToolBar2 = new javax.swing.JToolBar();
         timeframeChooser1 = new mpv5.ui.beans.TimeframeChooser();
 
         setName("Form"); // NOI18N
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("HistoryPanel.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 
@@ -222,7 +235,7 @@ public class HistoryPanel extends javax.swing.JPanel implements ListPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 257, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);

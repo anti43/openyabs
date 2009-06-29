@@ -34,9 +34,11 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComponent;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
+import javax.swing.table.TableCellRenderer;
 import mpv5.db.common.*;
 import mpv5.globals.Headers;
 import mpv5.globals.Messages;
@@ -255,9 +257,9 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     private void fillFiles() {
         Context c = Context.getFilesToContacts();
         c.addReference(Context.getFiles().getDbIdentity(), "cname", "filename");
-        Object[][] data = new DatabaseSearch(c).getValuesFor(Context.DETAILS_FILES, "contactsids", dataOwner.__getIDS());
+        Object[][] data = new DatabaseSearch(c).getValuesFor(Context.DETAILS_FILES_TO_CONTACTS, "contactsids", dataOwner.__getIDS());
 
-        dataTable.setModel(new MPTableModel(data, Headers.CONTACT_FILES.getValue()));
+        dataTable.setModel(new MPTableModel(data, Headers.FILE_REFERENCES.getValue()));
         TableFormat.stripFirstColumn(dataTable);
     }
 
@@ -302,7 +304,17 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jLabel7 = new javax.swing.JLabel();
         jPanel9 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        dataTable = new javax.swing.JTable();
+        dataTable = new JTable() {
+            public Component prepareRenderer(TableCellRenderer renderer,
+                int rowIndex, int vColIndex) {
+                Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);
+                if (c instanceof JComponent) {
+                    JComponent jc = (JComponent)c;
+                    jc.setToolTipText(String.valueOf(getValueAt(rowIndex, vColIndex)));
+                }
+                return c;
+            }
+        };
         button_bills = new javax.swing.JButton();
         button_offers = new javax.swing.JButton();
         button_products = new javax.swing.JButton();
@@ -724,7 +736,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                     .addComponent(removefile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(addfile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 59, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 63, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -1008,7 +1020,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(leftpane, javax.swing.GroupLayout.DEFAULT_SIZE, 619, Short.MAX_VALUE)
+            .addComponent(leftpane, javax.swing.GroupLayout.DEFAULT_SIZE, 622, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(toolbarpane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)

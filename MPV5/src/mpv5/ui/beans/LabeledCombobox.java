@@ -166,6 +166,14 @@ public class LabeledCombobox extends javax.swing.JPanel {
     }
 
     /**
+     * Sets the item with the given ID as selected item
+     * @param ID
+     */
+    public void setSelectedItem(Object ID) {
+        jComboBox1.setSelectedIndex(MPComboBoxModelItem.getItemID(ID, jComboBox1.getModel()));
+    }
+
+    /**
      * If set to true, hitting "Enter" on the text field will trigger a search for the entered value and popup the results if any.
      * <br/>{@link LabeledCombobox#setContext(Context)} must be called before this can work.
      * @param enabled
@@ -231,7 +239,6 @@ public class LabeledCombobox extends javax.swing.JPanel {
 
     private void jComboBox1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jComboBox1KeyPressed
     }//GEN-LAST:event_jComboBox1KeyPressed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
@@ -269,5 +276,19 @@ public class LabeledCombobox extends javax.swing.JPanel {
     public void setEnabled(boolean enabled) {
         jLabel1.setEnabled(enabled);
         jComboBox1.setEnabled(enabled);
+    }
+
+    /**
+    Sets the selected item in the combo box display area to the object in the argument. If anObject is in the list, the display area shows anObject selected.
+    If anObject is not in the list and the combo box is uneditable, it will not change the current selection. For editable combo boxes, the selection will change to anObject.
+    If this constitutes a change in the selected item, ItemListeners added to the combo box will be notified with one or two ItemEvents. If there is a current selected item, an ItemEvent will be fired and the state change will be ItemEvent.DESELECTED. If anObject is in the list and is not currently selected then an ItemEvent will be fired and the state change will be ItemEvent.SELECTED.
+    ActionListeners added to the combo box will be notified with an ActionEvent when this method is called.
+    Parameters:
+    anObject - the list object to select; use null to clear the selection
+     * @param text
+     */
+    public void setValue(String text) {
+        jComboBox1.setSelectedItem(text);
+        jComboBox1.setPopupVisible(false);
     }
 }

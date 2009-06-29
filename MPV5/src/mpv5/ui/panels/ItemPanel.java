@@ -22,15 +22,20 @@ along with MP.  If not, see <http://www.gnu.org/licenses/>.
 package mpv5.ui.panels;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComponent;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
+import javax.swing.table.TableCellRenderer;
 import mpv5.db.common.*;
 import mpv5.globals.Headers;
 import mpv5.globals.Messages;
@@ -46,6 +51,7 @@ import mpv5.ui.frames.MPV5View;
 import mpv5.ui.popups.FileTablePopUp;
 import mpv5.ui.toolbars.DataPanelTB;
 import mpv5.db.objects.User;
+import mpv5.ui.dialogs.DialogForFile;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.models.MPComboBoxModelItem;
@@ -138,30 +144,33 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
         }
     }
 
+    @Override
     public void showRequiredFields() {
 //        TextFieldUtils.blinkerRed(cname);
 //        cname.requestFocus();
     }
 
     private void addFile() {
-//        DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY);
-//        if (d.chooseFile()) {
-//
-//            String s = Popup.Enter_Value(Messages.ENTER_A_DESCRIPTION);
-//
-//            if (s != null) {
-//                QueryHandler.instanceOf().clone(Context.getFiles(), this).insertFile(d.getFile(), dataOwner, QueryCriteria.getSaveStringFor(s));
-//            }
-//        }
+        if (dataOwner.isExisting()) {
+            DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY);
+            if (d.chooseFile()) {
+                String s = Popup.Enter_Value(Messages.ENTER_A_DESCRIPTION);
+                if (s != null) {
+                    QueryHandler.instanceOf().clone(Context.getFiles(), this).insertFile(d.getFile(), dataOwner, QueryCriteria.getSaveStringFor(s));
+                }
+            }
+        }
     }
 
     private void deleteFile() {
-        try {
-            QueryHandler.instanceOf().clone(Context.getFiles()).removeFile(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).toString());
-        } catch (Exception e) {
-            Log.Debug(this, e.getMessage());
+        if (dataOwner.isExisting()) {
+            try {
+                QueryHandler.instanceOf().clone(Context.getFiles()).removeFile(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).toString());
+            } catch (Exception e) {
+                Log.Debug(this, e.getMessage());
+            }
+            fillFiles();
         }
-        fillFiles();
     }
 
     private void fileTableClicked(MouseEvent evt) {
@@ -205,11 +214,11 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
     }
 
     private void fillFiles() {
-        Context c = Context.getFilesToContacts();
+        Context c = Context.getFilesToItems();
         c.addReference(Context.getFiles().getDbIdentity(), "cname", "filename");
-        Object[][] data = new DatabaseSearch(c).getValuesFor(Context.DETAILS_FILES, "contactsids", dataOwner.__getIDS());
+        Object[][] data = new DatabaseSearch(c).getValuesFor(Context.DETAILS_FILES_TO_ITEMS, "itemsids", dataOwner.__getIDS());
 
-        dataTable.setModel(new MPTableModel(data, Headers.CONTACT_FILES.getValue()));
+        dataTable.setModel(new MPTableModel(data, Headers.FILE_REFERENCES.getValue()));
         TableFormat.stripFirstColumn(dataTable);
     }
 
@@ -254,11 +263,22 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         notes = new javax.swing.JTextPane();
         jPanel5 = new javax.swing.JPanel();
-        labeledDateChooser1 = new mpv5.ui.beans.LabeledDateChooser();
-        labeledDateChooser2 = new mpv5.ui.beans.LabeledDateChooser();
-        labeledDateChooser3 = new mpv5.ui.beans.LabeledDateChooser();
+        date1 = new mpv5.ui.beans.LabeledDateChooser();
+        date2 = new mpv5.ui.beans.LabeledDateChooser();
+        date3 = new mpv5.ui.beans.LabeledDateChooser();
         jScrollPane2 = new javax.swing.JScrollPane();
-        dataTable = new javax.swing.JTable();
+        dataTable = new JTable() {
+            public Component prepareRenderer(TableCellRenderer renderer,
+                int rowIndex, int vColIndex) {
+                Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);
+                if (c instanceof JComponent) {
+                    JComponent jc = (JComponent)c;
+                    jc.setToolTipText(String.valueOf(getValueAt(rowIndex, vColIndex)));
+                }
+                return c;
+            }
+        }
+        ;
         addfile = new javax.swing.JButton();
         removefile = new javax.swing.JButton();
         toolbarpane = new javax.swing.JPanel();
@@ -504,14 +524,14 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
         jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ItemPanel.jPanel5.border.title"))); // NOI18N
         jPanel5.setName("jPanel5"); // NOI18N
 
-        labeledDateChooser1.set_Label(bundle.getString("ItemPanel.labeledDateChooser1._Label")); // NOI18N
-        labeledDateChooser1.setName("labeledDateChooser1"); // NOI18N
+        date1.set_Label(bundle.getString("ItemPanel.date1._Label")); // NOI18N
+        date1.setName("date1"); // NOI18N
 
-        labeledDateChooser2.set_Label(bundle.getString("ItemPanel.labeledDateChooser2._Label")); // NOI18N
-        labeledDateChooser2.setName("labeledDateChooser2"); // NOI18N
+        date2.set_Label(bundle.getString("ItemPanel.date2._Label")); // NOI18N
+        date2.setName("date2"); // NOI18N
 
-        labeledDateChooser3.set_Label(bundle.getString("ItemPanel.labeledDateChooser3._Label")); // NOI18N
-        labeledDateChooser3.setName("labeledDateChooser3"); // NOI18N
+        date3.set_Label(bundle.getString("ItemPanel.date3._Label")); // NOI18N
+        date3.setName("date3"); // NOI18N
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -519,18 +539,18 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(labeledDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(date1, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(labeledDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(date2, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(labeledDateChooser3, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(date3, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(1, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(labeledDateChooser1, javax.swing.GroupLayout.Alignment.CENTER, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(labeledDateChooser2, javax.swing.GroupLayout.Alignment.CENTER, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(labeledDateChooser3, javax.swing.GroupLayout.Alignment.CENTER, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(date1, javax.swing.GroupLayout.Alignment.CENTER, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(date2, javax.swing.GroupLayout.Alignment.CENTER, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(date3, javax.swing.GroupLayout.Alignment.CENTER, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         jScrollPane2.setName("jScrollPane2"); // NOI18N
@@ -544,6 +564,11 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
             }
         ));
         dataTable.setName("dataTable"); // NOI18N
+        dataTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                dataTableMouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(dataTable);
 
         addfile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/add.png"))); // NOI18N
@@ -629,7 +654,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(leftpane, javax.swing.GroupLayout.DEFAULT_SIZE, 505, Short.MAX_VALUE)
+            .addComponent(leftpane, javax.swing.GroupLayout.DEFAULT_SIZE, 508, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(toolbarpane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
@@ -657,10 +682,10 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
             addFile();
         }
 }//GEN-LAST:event_addfileActionPerformed
-    private static int FILES = 0;
-    private static int PRODUCTS = 1;
-    private static int ITEM = 2;
 
+    private void dataTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_dataTableMouseClicked
+        fileTableClicked(evt);
+    }//GEN-LAST:event_dataTableMouseClicked
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private mpv5.ui.beans.LabeledCombobox accountselect;
     private javax.swing.JLabel addedby;
@@ -675,6 +700,9 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
     private javax.swing.JTextField contactid;
     private mpv5.ui.beans.LabeledCombobox contactname;
     private javax.swing.JTable dataTable;
+    private mpv5.ui.beans.LabeledDateChooser date1;
+    private mpv5.ui.beans.LabeledDateChooser date2;
+    private mpv5.ui.beans.LabeledDateChooser date3;
     private javax.swing.JComboBox groupnameselect;
     private javax.swing.JTable itemtable;
     private javax.swing.JButton jButton2;
@@ -690,9 +718,6 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
     private javax.swing.JToolBar.Separator jSeparator2;
     private javax.swing.JToolBar.Separator jSeparator4;
     private javax.swing.JToolBar jToolBar1;
-    private mpv5.ui.beans.LabeledDateChooser labeledDateChooser1;
-    private mpv5.ui.beans.LabeledDateChooser labeledDateChooser2;
-    private mpv5.ui.beans.LabeledDateChooser labeledDateChooser3;
     private javax.swing.JPanel leftpane;
     private javax.swing.JTextPane notes;
     private mpv5.ui.beans.LabeledTextField number;
@@ -704,10 +729,20 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
     private javax.swing.JLabel type;
     // End of variables declaration//GEN-END:variables
     public String cname_;
+    public String description_;
     public int intaddedby_;
     public int ids_;
     public Date dateadded_;
     public int groupsids_ = 1;
+    public int contactsids_;
+    public int defaultaccountsids_;
+    public double netvalue_;
+    public double taxvalue_;
+    public Date datetodo_;
+    public Date dateend_;
+    public int intreminders_;
+    public int intstatus_;
+    public int inttype_;
 
     @Override
     public void collectData() {
@@ -728,20 +763,37 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
 //        cname_ = dataOwner.getFormatHandler().toString(dataOwner.getFormatHandler().getNextNumber());
     }
 
+    @Override
     public void exposeData() {
 
-//        cname.set_Text(cname_);
+        status.setSelectedItem(intstatus_);
+        number.setText(cname_);
+        date1.setDate(dateadded_);
+        date2.setDate(datetodo_);
+        date3.setDate(dateend_);
+        notes.setText(description_);
 
         try {
 
+            accountselect.setSelectedItem(defaultaccountsids_);
             groupnameselect.setSelectedIndex(MPComboBoxModelItem.getItemID(groupsids_, groupnameselect.getModel()));
 
         } catch (Exception e) {
         }
 
         addedby.setText(User.getUsername(intaddedby_));
+        try {
+            Contact owner = (Contact) DatabaseObject.getObject(Context.getContact(), contactsids_);
+            contactname.setValue(owner.__getCName());
+            contactcity.setText(owner.__getCity());
+            contactcompany.setText(owner.__getCompany());
+            contactid.setText(String.valueOf(owner.__getCNumber()));
 
-//        dataTable.setModel(new MPTableModel(new DatabaseSearch(Context.getCompany()).getValuesFor(prename_, fax_, phone_), header));
+        } catch (NodataFoundException ex) {
+            Logger.getLogger(ItemPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        fillFiles();
     }
 
     @Override
@@ -780,7 +832,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
                     accountselect.setModel(MPComboBoxModelItem.toModel(MPComboBoxModelItem.toItems(DatabaseObject.getObjects(Context.getAccounts(), c))));
                     accountselect.setSelectedIndex(MPComboBoxModelItem.getItemID(MPV5View.getUser().__getIntdefaultaccount(), accountselect.getModel()));
 
-                     fillFiles();
+                    fillFiles();
 
                     status.setModel(Item.getStatusStrings(), MPComboBoxModelItem.COMPARE_BY_ID);
                     status.setSelectedIndex(MPV5View.getUser().__getIntdefaultstatus());
