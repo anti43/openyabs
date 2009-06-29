@@ -22,7 +22,6 @@ import javax.swing.table.TableCellEditor;
 import mpv5.logging.Log;
 import mpv5.utils.models.MPTableModel;
 
-
 /**
  *
  *  
@@ -45,13 +44,13 @@ public class TableFormat {
 
             for (int idx = 0; idx < values.length; idx++) {
                 for (int k = 0; k < cols.length; k++) {
-                    if (aClass.getName().equalsIgnoreCase("java.lang.Boolean") ) {
+                    if (aClass.getName().equalsIgnoreCase("java.lang.Boolean")) {
                         if (String.valueOf(values[idx][cols[k]]).equalsIgnoreCase("1") || String.valueOf(values[idx][cols[k]]).equalsIgnoreCase("true")) {
                             data[idx][cols[k]] = true;
                         } else {
                             data[idx][cols[k]] = false;
                         }
-                    } 
+                    }
                 }
 
                 for (int h = 0; h < values[0].length; h++) {
@@ -67,13 +66,12 @@ public class TableFormat {
         }
     }
 
-
     public static void makeUneditable(JTable table) {
 
         try {
             ((MPTableModel) table.getModel()).setCanEdits(new boolean[]{false, false, false, false, false, false, false, false, false, false, false, false, false});
         } catch (Exception e) {
-            Log.Debug(TableFormat.class,"Can not change this table to uneditable.");
+            Log.Debug(TableFormat.class, "Can not change this table to uneditable.");
         }
     }
 
@@ -91,7 +89,7 @@ public class TableFormat {
 
             ((MPTableModel) table.getModel()).setCanEdits(unedits);
         } catch (Exception e) {
-            Log.Debug(TableFormat.class,"Can not change this table to uneditable.");
+            Log.Debug(TableFormat.class, "Can not change this table to uneditable.");
         }
     }
 
@@ -106,7 +104,6 @@ public class TableFormat {
         }
     }
 
-
     /**
      * Resizes a tables cols
      * @param table
@@ -114,21 +111,21 @@ public class TableFormat {
      * @param fixed Should the cols be non-resizable
      */
     public static void resizeCols(JTable table, Integer[] desiredColSizes, boolean fixed) {
-
         for (int i = 0; i < desiredColSizes.length; i++) {
             if (desiredColSizes[i] != null) {
                 table.getColumn(table.getColumnName(i)).setMinWidth(desiredColSizes[i]);
                 table.getColumn(table.getColumnName(i)).setPreferredWidth(desiredColSizes[i]);
                 if (fixed) {
                     table.getColumn(table.getColumnName(i)).setMaxWidth(desiredColSizes[i]);
+                } else {
+                    table.getColumn(table.getColumnName(i)).setMaxWidth(1000);
                 }
             }
         }
     }
 
-
     public static DefaultTableModel getUneditableTable(String[][] data, String[] header) {
-       return new javax.swing.table.DefaultTableModel(
+        return new javax.swing.table.DefaultTableModel(
                 data,
                 header) {
 
@@ -147,7 +144,6 @@ public class TableFormat {
             }
         };
     }
-
 
     /**
      * Hide a column of a table

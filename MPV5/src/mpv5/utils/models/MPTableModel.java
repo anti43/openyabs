@@ -166,7 +166,11 @@ public class MPTableModel extends DefaultTableModel {
         return columnIdentifiers;
     }
 
-    private void setEditable(boolean bool) {
+    /**
+     * Set the table editable
+     * @param bool
+     */
+    public void setEditable(boolean bool) {
         setCanEdits(new boolean[]{bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool,
                     bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool,
                     bool, bool, bool, bool, bool, bool, bool, bool, bool});

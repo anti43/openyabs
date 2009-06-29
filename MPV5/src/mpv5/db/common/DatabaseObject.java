@@ -36,6 +36,7 @@ import mpv5.ui.frames.MPV5View;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
 import javax.swing.JComponent;
+import mpv5.globals.LocalSettings;
 import mpv5.pluginhandling.MPPLuginLoader;
 import mpv5.utils.date.RandomDate;
 import mpv5.utils.images.MPIcon;
@@ -54,11 +55,11 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
      * Cache all Objects which are within the {@link Context#getCacheableContexts() }
      */
     public static void cacheObjects() {
-            DatabaseObject.cacheObjects(Context.getCacheableContexts().toArray(new Context[]{}));
+        DatabaseObject.cacheObjects(Context.getCacheableContexts().toArray(new Context[]{}));
     }
 
     /**
-     * Caches the last 100 objects of this Context
+     * Caches objects of this Context
      * @param contextArray
      */
     public static void cacheObjects(final Context[] contextArray) {
@@ -69,16 +70,25 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
             @Override
             public void run() {
                 int count = 0;
-                MPV5View.setProgressMaximumValue(contextArray.length-1);
+                MPV5View.setProgressMaximumValue(contextArray.length - 1);
                 for (int f = 0; f < contextArray.length; f++) {
                     try {
                         Context context = contextArray[f];
-                        ReturnValue data = QueryHandler.instanceOf().clone(context, 100, true).select();
-                        DatabaseObject[] dos = explode(data, DatabaseObject.getObject(context), false);
-                        for (int i = 0; i < dos.length; i++) {
-                            DatabaseObject databaseObject = dos[i];
-                            cacheObject(databaseObject);
-                            count++;
+                        boolean cacheable = true;
+                        if (AUTO_LOCK) {
+                            if (Context.getLockableContexts().contains(context)) {
+                                cacheable = false;
+                                Log.Debug(DatabaseObject.class, "AUTO_LOCK is enabled, not going to cache " + context);
+                            }
+                        }
+                        if (cacheable) {
+                            ReturnValue data = QueryHandler.instanceOf().clone(context, LocalSettings.getIntegerProperty(LocalSettings.CACHE_SIZE), true).select();
+                            DatabaseObject[] dos = explode(data, DatabaseObject.getObject(context), false);
+                            for (int i = 0; i < dos.length; i++) {
+                                DatabaseObject databaseObject = dos[i];
+                                cacheObject(databaseObject);
+                                count++;
+                            }
                         }
                         MPV5View.setProgressValue(f);
                     } catch (Exception nodataFoundException) {

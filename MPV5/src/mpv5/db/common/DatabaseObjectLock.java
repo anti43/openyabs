@@ -17,8 +17,6 @@
 package mpv5.db.common;
 
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mpv5.db.objects.User;
 import mpv5.logging.Log;
 

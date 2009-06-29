@@ -22,50 +22,47 @@
 package mpv5.ui.panels;
 
 import java.util.ArrayList;
-import mpv5.db.common.Context;
-import mpv5.db.common.DatabaseObject;
-import mpv5.db.common.NodataFoundException;
+import mpv5.globals.LocalSettings;
+import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.models.MPTableModel;
 
 /**
  *
  *  anti
  */
-public class GeneralListPanel extends javax.swing.JPanel {
+public class SettingsPanel extends javax.swing.JPanel {
     private static final long serialVersionUID = 1L;
     
-    private static GeneralListPanel ident;
+    private static SettingsPanel ident;
 
-    private static GeneralListPanel instanceOf() {
+    /**
+     * 
+     * @return
+     */
+    public static SettingsPanel instanceOf() {
         if (ident == null) {
-            ident = new GeneralListPanel();
+            ident = new SettingsPanel();
         }
         return ident;
     }
 
     /** Creates new form GeneralListPanel */
-    private GeneralListPanel() {
-        initComponents();
+    private SettingsPanel() {
+        if (MPSecurityManager.checkAdminAccess()) {
+            initComponents();
+            setData();
+        }
     }
 
-    public void setData(ArrayList<DatabaseObject> list){
-
-        Object[][] data = new Object[list.size()][3];
-
-        for (int i = 0; i < list.size(); i++) {
-            DatabaseObject databaseObject = list.get(i);
-            data[i][0] = databaseObject.__getIDS();
-            data[i][1] = databaseObject.getDbIdentity();
-            data[i][2] = databaseObject.__getCName();
-            data[i][3] = databaseObject.__getDateadded();
-            try {
-                data[i][4] = DatabaseObject.getObject(Context.getGroup(), databaseObject.__getGroupsids());
-            } catch (NodataFoundException ex) {
-                data[i][4] = "Error";
-            }
+    public void setData(){
+        ArrayList<String[]> data = LocalSettings.getPropertyStore().getList();
+        Object[][] list = new Object[data.size()][2];
+        for (int i = 0; i < data.size(); i++) {
+            String[] strings = data.get(i);
+            list[i][0] = strings[0];
+            list[i][1] = strings[1];
         }
-
-        jTable1.setModel(new MPTableModel(data));
+        jTable1.setModel(new MPTableModel(list));
     }
 
     /** This method is called from within the constructor to
@@ -80,8 +77,8 @@ public class GeneralListPanel extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
-        setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("GeneralListPanel.border.title"))); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("SettingsPanel.border.title"))); // NOI18N
         setName("Form"); // NOI18N
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
@@ -108,7 +105,7 @@ public class GeneralListPanel extends javax.swing.JPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables

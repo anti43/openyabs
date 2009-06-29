@@ -67,6 +67,10 @@ public class MPControlPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        details = new javax.swing.JPanel();
+        scroller = new javax.swing.JScrollPane();
+        actions = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
         buttons = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
@@ -81,22 +85,34 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton12 = new javax.swing.JButton();
         jButton13 = new javax.swing.JButton();
         jButton14 = new javax.swing.JButton();
-        details = new javax.swing.JPanel();
-        scroller = new javax.swing.JScrollPane();
-        actions = new javax.swing.JPanel();
 
         setName("Form"); // NOI18N
-        setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.PAGE_AXIS));
+
+        details.setBackground(new java.awt.Color(255, 255, 255));
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        details.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("MPControlPanel.details.border.title"))); // NOI18N
+        details.setMinimumSize(new java.awt.Dimension(300, 200));
+        details.setName("details"); // NOI18N
+        details.setLayout(new java.awt.BorderLayout());
+
+        scroller.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        scroller.setName("scroller"); // NOI18N
+        details.add(scroller, java.awt.BorderLayout.CENTER);
+
+        actions.setBackground(new java.awt.Color(255, 255, 255));
+        actions.setName("actions"); // NOI18N
+        actions.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
+
+        jScrollPane1.setName("jScrollPane1"); // NOI18N
 
         buttons.setBackground(new java.awt.Color(255, 255, 255));
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         buttons.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("MPControlPanel.buttons.border.title"))); // NOI18N
         buttons.setAutoscrolls(true);
         buttons.setMinimumSize(new java.awt.Dimension(300, 10));
         buttons.setName("buttons"); // NOI18N
         buttons.setPreferredSize(new java.awt.Dimension(340, 200));
 
-        jButton1.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton1.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/internet.png"))); // NOI18N
         jButton1.setText(bundle.getString("MPControlPanel.jButton1.text")); // NOI18N
         jButton1.setToolTipText(bundle.getString("MPControlPanel.jButton1.toolTipText")); // NOI18N
@@ -300,7 +316,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton12);
 
-        jButton13.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton13.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/blockdevice.png"))); // NOI18N
         jButton13.setText(bundle.getString("MPControlPanel.jButton13.text")); // NOI18N
         jButton13.setToolTipText(bundle.getString("MPControlPanel.jButton13.toolTipText")); // NOI18N
@@ -338,24 +354,25 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton14);
 
-        add(buttons);
+        jScrollPane1.setViewportView(buttons);
 
-        details.setBackground(new java.awt.Color(255, 255, 255));
-        details.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("MPControlPanel.details.border.title"))); // NOI18N
-        details.setMinimumSize(new java.awt.Dimension(300, 200));
-        details.setName("details"); // NOI18N
-        details.setLayout(new java.awt.BorderLayout());
-
-        scroller.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        scroller.setName("scroller"); // NOI18N
-        details.add(scroller, java.awt.BorderLayout.CENTER);
-
-        add(details);
-
-        actions.setBackground(new java.awt.Color(255, 255, 255));
-        actions.setName("actions"); // NOI18N
-        actions.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
-        add(actions);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(actions, javax.swing.GroupLayout.DEFAULT_SIZE, 755, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 755, Short.MAX_VALUE)
+            .addComponent(details, javax.swing.GroupLayout.DEFAULT_SIZE, 755, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(details, javax.swing.GroupLayout.PREFERRED_SIZE, 123, Short.MAX_VALUE)
+                .addGap(0, 0, 0)
+                .addComponent(actions, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -414,7 +431,7 @@ public class MPControlPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton12ActionPerformed
 
     private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
-           openDetails(new ControlPanel_Formats(MPV5View.getUser()));
+        openDetails(new ControlPanel_Formats(MPV5View.getUser()));
     }//GEN-LAST:event_jButton13ActionPerformed
 
     private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
@@ -438,6 +455,7 @@ public class MPControlPanel extends javax.swing.JPanel {
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton9;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane scroller;
     // End of variables declaration//GEN-END:variables
 
@@ -479,7 +497,7 @@ public class MPControlPanel extends javax.swing.JPanel {
     /**
      * This method adds a button to the Properties panel, with given
      * Icon and Text. A click on the generated button places the JPanel on the details pane.
-//     * <b>Bring your own scrollpane!<b>
+    //     * <b>Bring your own scrollpane!<b>
      * @param icon
      * @param text
      * @param panel 
@@ -518,17 +536,19 @@ public class MPControlPanel extends javax.swing.JPanel {
     public void openDetails(ControlApplet panel) {
         if (panel != null) {
             MPV5View.setWaiting(true);
-                scroller.setViewportView((Component) panel);
+            scroller.add((Component) panel);
+            scroller.setViewportView((Component) panel);
 
             try {
                 actions.removeAll();
                 actions.add(panel.getActionPanel());
                 actions.validate();
+
             } catch (Exception e) {
                 Log.Debug(this, e);
             }
 
-      
+
             ((Component) panel).validate();
             MPV5View.setWaiting(false);
             MPV5View.identifierFrame.validate();

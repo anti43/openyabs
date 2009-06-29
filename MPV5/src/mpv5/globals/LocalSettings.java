@@ -46,8 +46,9 @@ public class LocalSettings {
     public static final String DBTYPE = "dbtype";
     public static final String SERVER_PORT = "serverport";
     public static final String SCROLL_ALWAYS = "scrollpane";
+    public static final String CACHE_SIZE = "cachesize";
     private static PropertyStore predefinedSettings = new PropertyStore(new String[][]{ //        {LAF,UIManager.getSystemLookAndFeelClassName()}
-                {DEFAULT_FONT, "Tahoma"}, {DBROW_LIMIT, "0"}, {DBAUTOLOCK, "false"}, {SERVER_PORT, "4343"}
+                {DEFAULT_FONT, "Tahoma"}, {DBROW_LIMIT, "0"}, {DBAUTOLOCK, "false"}, {SERVER_PORT, "4343"}, {CACHE_SIZE, "jj"}
             });
 
     /**
@@ -87,8 +88,65 @@ public class LocalSettings {
         }
     }
 
+     /**
+      * Get a properties value, or 0 if N/A
+      * @param name
+      * @return
+     */
+    @SuppressWarnings("unchecked")
+    public  synchronized static int getIntegerProperty(String name) {
+
+            if (cookie.getProperty(name) != null) {
+                return Integer.valueOf(cookie.getProperty(name));
+            } else if (predefinedSettings.getProperty(name) != null) {
+                cookie.changeProperty(name, predefinedSettings.getProperty(name));
+            } else {
+                cookie.changeProperty(name, "0");
+            }
+
+            return Integer.valueOf(cookie.getProperty(name));
+    }
+
+      /**
+      * Get a properties value, or false if N/A
+      * @param name
+      * @return
+     */
+    @SuppressWarnings("unchecked")
+    public  synchronized static boolean getBooleanProperty(String name) {
+
+            if (cookie.getProperty(name) != null) {
+                return TypeConversion.stringToBoolean(cookie.getProperty(name));
+            } else if (predefinedSettings.getProperty(name) != null) {
+                cookie.changeProperty(name, predefinedSettings.getProperty(name));
+            } else {
+                cookie.changeProperty(name, "false");
+            }
+
+         return TypeConversion.stringToBoolean(cookie.getProperty(name));
+    }
+
+        /**
+      * Get a properties value, or 0 if N/A
+      * @param name
+      * @return
+     */
+    @SuppressWarnings("unchecked")
+    public  synchronized static double getDoubleProperty(String name) {
+
+            if (cookie.getProperty(name) != null) {
+                return Double.valueOf(cookie.getProperty(name));
+            } else if (predefinedSettings.getProperty(name) != null) {
+                cookie.changeProperty(name, predefinedSettings.getProperty(name));
+            } else {
+                cookie.changeProperty(name, "0");
+            }
+
+            return Double.valueOf(cookie.getProperty(name));
+    }
+    
     /**
-     * Get a properties value, or the String "null" of N/A
+     * Get a properties value, or the String "null" if N/A
      * @param name
      * @return
      */

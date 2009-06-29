@@ -16,11 +16,9 @@
  */
 package mpv5.data;
 
-import java.awt.AWTEvent;
 import java.util.ArrayList;
 import javax.swing.JComponent;
 import mpv5.logging.Log;
-import mpv5.ui.toolbars.DataPanelTB;
 
 /**
  * PropertyStores is used to store key-value pairs
@@ -86,7 +84,7 @@ public class PropertyStore {
     public String getProperty(String name) {
         if (list.size() > 0) {
             for (int i = list.size(); i > 0; i--) {
-                if (list.get(i - 1)[0].equals(name)) {
+                if (list.get(i - 1)[0].equalsIgnoreCase(name)) {
 //                    Log.Debug(this, "Found property: " +  list.get(i - 1)[1] + " for " + name);
                     return list.get(i - 1)[1];
                 }
@@ -190,7 +188,7 @@ public class PropertyStore {
         boolean found = false;
         if (list.size() > 0) {
             for (int i = list.size(); i > 0; i--) {
-                if (list.get(i - 1)[0].equals(name)) {
+                if (list.get(i - 1)[0].equalsIgnoreCase(name)) {
                     list.set(i - 1, new String[]{name, newvalue});
                     found = true;setChanged(true);
                     Log.Debug(this, "Change property: " +  list.get(i - 1)[1] + " for " + name);
@@ -214,7 +212,7 @@ public class PropertyStore {
         boolean found = false;
         if (list.size() > 0) {
             for (int i = list.size(); i > 0; i--) {
-                if (list.get(i - 1)[0].equals(comp.getClass().getName() + "$" + source)) {
+                if (list.get(i - 1)[0].equalsIgnoreCase(comp.getClass().getName() + "$" + source)) {
                     list.set(i - 1, new String[]{comp.getClass().getName() + "$" + source, String.valueOf(newvalue)});
                     found = true;setChanged(true);
                     Log.Debug(this, "Change property: " +  list.get(i - 1)[1] + " for " + comp.getClass().getName() + "$" + source);

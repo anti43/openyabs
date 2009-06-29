@@ -299,7 +299,6 @@ public class Context {
         list.add(getSchedule());
         list.add(getContact());
         list.add(getProducts());
-        list.add(getAccounts());
         list.add(getCompany());
         list.add(getCustomer());
         list.add(getSupplier());

@@ -34,9 +34,11 @@ public class ControlPanel_Konsole extends javax.swing.JPanel implements ControlA
     private static ControlPanel_Konsole ident;
 
     public ControlPanel_Konsole() {
-        initComponents();
-        new CopyPasteMenu(jTextArea1);
-        setVisible(true);
+        if (MPSecurityManager.checkAdminAccess()) {
+            initComponents();
+            new CopyPasteMenu(jTextArea1);
+            setVisible(true);
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

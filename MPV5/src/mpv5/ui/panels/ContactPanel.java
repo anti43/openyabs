@@ -134,6 +134,13 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         if (object.isReadOnly()) {
             Popup.notice(Messages.LOCKED_BY);
         }
+
+         if (dataOwner.isExisting()) {
+            dataTableContent = FILES;
+            addfile.setEnabled(true);
+            removefile.setEnabled(true);
+            fillFiles();
+        }
     }
 
     public void setType(int type) {
@@ -157,6 +164,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         }
     }
 
+    @Override
     public void showRequiredFields() {
         TextFieldUtils.blinkerRed(cname);
         cname.requestFocus();
