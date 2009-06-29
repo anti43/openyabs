@@ -32,7 +32,7 @@ public class FavouritesMenuItem extends JMenuItem {
     public FavouritesMenuItem(final DatabaseObject dbo) {
         this.item = dbo;
         this.setText(dbo.__getCName());
-        this.setIcon(dbo.getIcon().getIcon(22,22));
+        this.setIcon(dbo.getIcon());
 
         addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -45,6 +45,6 @@ public class FavouritesMenuItem extends JMenuItem {
     public FavouritesMenuItem(DatabaseObject dbo, String name) {
         this.item = dbo;
         this.setText(name);
-        this.setIcon(dbo.getIcon().getIcon(22,22));
+        this.setIcon(dbo.getIcon());
     }
 }

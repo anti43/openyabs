@@ -22,10 +22,8 @@ import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
-import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryHandler;
 import mpv5.logging.Log;
-import mpv5.ui.panels.ItemPanel;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.images.MPIcon;
 
@@ -33,15 +31,17 @@ import mpv5.utils.images.MPIcon;
  *
  *  anti
  */
-public class ItemFile extends DatabaseObject {
+public class FileToContact extends DatabaseObject {
 
     private String description = "";
-    private int itemsids;
+    private int contactsids;
     private String filename = "";
     private File file;
+    private int intsize;
+    private String mimetype;
 
-    public ItemFile() {
-        context.setDbIdentity(Context.IDENTITY_FILES_TO_ITEMS);
+    public FileToContact() {
+        context.setDbIdentity(Context.IDENTITY_FILES_TO_CONTACTS);
         context.setIdentityClass(this.getClass());
     }
 
@@ -80,6 +80,20 @@ public class ItemFile extends DatabaseObject {
     }
 
     /**
+     * @return the contactsids
+     */
+    public int __getContactsids() {
+        return contactsids;
+    }
+
+    /**
+     * @param contactsids the contactsids to set
+     */
+    public void setContactsids(int contactsids) {
+        this.contactsids = contactsids;
+    }
+
+    /**
      * @return the filename
      */
     public String __getFilename() {
@@ -92,38 +106,37 @@ public class ItemFile extends DatabaseObject {
     public void setFilename(String filename) {
         this.filename = filename;
     }
+    MPIcon icon;
 
     @Override
     public mpv5.utils.images.MPIcon getIcon() {
-        try {
-            JFileChooser chooser = new JFileChooser();
-            Icon icon = chooser.getIcon(file);
-            return new MPIcon(icon);
-        } catch (Exception e) {
-            //file is not yet fetched from db, we let it there
-            return new MPIcon("/mpv5/resources/images/48/folder_tar.png");
+        if (icon == null) {
+            try {
+                Log.Debug(this, "Determining Icon for " + __getCName());
+                icon = new MPIcon(MPIcon.ICON_DIRECTORY + __getCName().substring(__getCName().lastIndexOf(".") + 1, __getCName().length()) + ".png");
+                return icon;
+            } catch (Exception e) {
+                Log.Debug(this, "Icon file not existing in " + MPIcon.ICON_DIRECTORY);
+                try {
+                    JFileChooser chooser = new JFileChooser();
+                    icon = new MPIcon(chooser.getIcon(new File(filename)));
+                    return icon;
+                } catch (Exception ez) {
+                    Log.Debug(this, ez);
+                    icon = new MPIcon(MPIcon.ICON_DIRECTORY + "folder_tar.png");
+                    return icon;
+                }
+            }
+        } else {
+            return icon;
         }
-    }
-
-    /**
-     * @return the itemsids
-     */
-    public int __getItemsids() {
-        return itemsids;
-    }
-
-    /**
-     * @param itemsids the itemsids to set
-     */
-    public void setItemsids(int itemsids) {
-        this.itemsids = itemsids;
     }
 
     /**
      * Fetches the physical file from db
      * @return
      */
-    public File getFile() {
+    public synchronized File getFile() {
         if (file == null) {
             try {
                 file = QueryHandler.instanceOf().clone(Context.getFiles()).
@@ -134,5 +147,33 @@ public class ItemFile extends DatabaseObject {
             }
         }
         return file;
+    }
+
+    /**
+     * @return the mimetype
+     */
+    public String __getMimetype() {
+        return mimetype;
+    }
+
+    /**
+     * @param mimetype the mimetype to set
+     */
+    public void setMimetype(String mimetype) {
+        this.mimetype = mimetype;
+    }
+
+    /**
+     * @return the intsize
+     */
+    public int __getIntsize() {
+        return intsize;
+    }
+
+    /**
+     * @param intsize the intsize to set
+     */
+    public void setIntsize(int intsize) {
+        this.intsize = intsize;
     }
 }

@@ -394,7 +394,7 @@ public class Contact extends DatabaseObject {
 
     @Override
     public MPIcon getIcon() {
-        return new MPIcon("/mpv5/resources/images/48/evolution-contacts.png");
+        return new MPIcon("/mpv5/resources/images/22/evolution-contacts.png");
     }
 
     @Override

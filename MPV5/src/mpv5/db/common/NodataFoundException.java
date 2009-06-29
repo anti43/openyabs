@@ -23,8 +23,20 @@ import mpv5.globals.Messages;
  *  Anti
  */
 public class NodataFoundException extends Exception {
+    private static final long serialVersionUID = 1L;
 
+    /**
+     *
+     */
     public NodataFoundException() {
         super(Messages.NO_DATA_FOUND.toString());
+    }
+
+    /**
+     * 
+     * @param context
+     */
+    public NodataFoundException(Context context) {
+        super(Messages.NO_DATA_FOUND.toString() + " in Context: " +  context);
     }
 }

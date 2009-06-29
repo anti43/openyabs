@@ -51,30 +51,61 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
     private static HashMap<String, DatabaseObject> cache = new HashMap<String, DatabaseObject>();
 
     /**
-     * caches the last 100 objects of this Context
-     * @param context 
+     * Cache all Objects which are within the {@link Context#getCacheableContexts() }
      */
-    public static void cacheObjects(Context context) throws NodataFoundException {
-        ReturnValue data = QueryHandler.instanceOf().clone(context, 100).select();
-        DatabaseObject[] dos = explode(data, null, false);
-        for (int i = 0; i < dos.length; i++) {
-            DatabaseObject databaseObject = dos[i];
+    public static void cacheObjects() {
+            DatabaseObject.cacheObjects(Context.getCacheableContexts().toArray(new Context[]{}));
+    }
+
+    /**
+     * Caches the last 100 objects of this Context
+     * @param contextArray
+     */
+    public static void cacheObjects(final Context[] contextArray) {
+
+        MPV5View.addMessage(Messages.CACHE);
+        Runnable runnable = new Runnable() {
+
+            @Override
+            public void run() {
+                int count = 0;
+                MPV5View.setProgressMaximumValue(contextArray.length-1);
+                for (int f = 0; f < contextArray.length; f++) {
+                    try {
+                        Context context = contextArray[f];
+                        ReturnValue data = QueryHandler.instanceOf().clone(context, 100, true).select();
+                        DatabaseObject[] dos = explode(data, DatabaseObject.getObject(context), false);
+                        for (int i = 0; i < dos.length; i++) {
+                            DatabaseObject databaseObject = dos[i];
+                            cacheObject(databaseObject);
+                            count++;
+                        }
+                        MPV5View.setProgressValue(f);
+                    } catch (Exception nodataFoundException) {
+                        Log.Debug(DatabaseObject.class, nodataFoundException.getMessage());
+                    }
+                }
+                Log.Debug(DatabaseObject.class, "Cached objects: " + count);
+                MPV5View.addMessage(Messages.CACHED_OBJECTS + ": " + count);
+                MPV5View.setProgressReset();
+            }
+        };
+        Thread t = new Thread(runnable);
+        t.start();
+    }
+
+    private static void cacheObject(DatabaseObject databaseObject) {
+        if (databaseObject != null) {
             cache.put(databaseObject.getDbIdentity() + "@" + databaseObject.__getIDS(), databaseObject);
         }
     }
 
-    private DatabaseObject getCachedObject(Context context, int id) {
+    private synchronized static DatabaseObject getCachedObject(Context context, int id) {
         if (cache.containsKey(context.getDbIdentity() + "@" + id)) {
-            Log.Debug(this, "Using cached object " + context + "@" + id);
+            Log.Debug(DatabaseObject.class, "Using cached object " + context + "@" + id);
             return cache.get(context.getDbIdentity() + "@" + id);
         } else {
-            try {
-                DatabaseObject dbo = DatabaseObject.getObject(context, id);
-                cache.put(context.getDbIdentity() + "@" + id, dbo);
-                return dbo;
-            } catch (NodataFoundException ex) {
-                return null;
-            }
+            return null;
         }
     }
     /**
@@ -156,7 +187,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
     /**
      * This can be used to graphically represent a do.<br/>
      * The programmer has to take care of the icon size!
-     * See {@link MPIcon#getIcon(int width, int height)}
+     * See {@link MPIcon#getIcon(int width, int height)}<br/>
+     * It is recommended to use 22*22 sized icons which do not need to get resized for performance reasons.
      * @return An Icon representing the type of this do
      */
     public abstract MPIcon getIcon();
@@ -569,21 +601,27 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
     }
 
     /**
-     * Searches for a specific dataset
+     * Searches for a specific dataset, cached or non-cached
      * @param context The context to search under
      * @param id The id of the object
      * @return A database object with data, or null if none found
      * @throws NodataFoundException 
      */
     public static DatabaseObject getObject(Context context, int id) throws NodataFoundException {
-        try {
-            Object obj = context.getIdentityClass().newInstance();
-            ((DatabaseObject) obj).fetchDataOf(id);
-            return (DatabaseObject) obj;
-        } catch (InstantiationException ex) {
-            Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+        DatabaseObject cdo = DatabaseObject.getCachedObject(context, id);
+        if (cdo == null) {
+            try {
+                Object obj = context.getIdentityClass().newInstance();
+                ((DatabaseObject) obj).fetchDataOf(id);
+                cacheObject((DatabaseObject) obj);
+                return (DatabaseObject) obj;
+            } catch (InstantiationException ex) {
+                Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IllegalAccessException ex) {
+                Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            return cdo;
         }
         return null;
     }
@@ -764,7 +802,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
     }
 
     /**
-     * Fills the return value's data (rows) into an array of dos if target is NULL, if not fills target with the first row
+     * Fills the return value's data (rows) into an array of dos if singleExplode is false, if not fills target with the first row
      */
     private static DatabaseObject[] explode(ReturnValue select, DatabaseObject target, boolean singleExplode) {
 

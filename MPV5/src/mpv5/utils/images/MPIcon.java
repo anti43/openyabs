@@ -40,6 +40,7 @@ import mpv5.logging.Log;
 public class MPIcon extends ImageIcon {
 
     private static final long serialVersionUID = 1L;
+    public static String ICON_DIRECTORY = "/mpv5/resources/images/22/mimetypes/";
 
 
     /**
@@ -78,6 +79,11 @@ public class MPIcon extends ImageIcon {
         super();
     }
 
+    /**
+     *
+     * @param icon
+     * @return
+     */
     public static Image iconToImage(Icon icon) {
         if (icon instanceof ImageIcon) {
             return ((ImageIcon) icon).getImage();
@@ -96,30 +102,30 @@ public class MPIcon extends ImageIcon {
         }
     }
 
-    /**
-     * Paints the icon.
-     * The top-left corner of the icon is drawn at
-     * the point (<code>x</code>, <code>y</code>)
-     * in the coordinate space of the graphics context <code>g</code>.
-     * If this icon has no image observer,
-     * this method uses the <code>c</code> component
-     * as the observer.
-     *
-     * @param c the component to be used as the observer
-     *          if this icon has no image observer
-     * @param g the graphics context
-     * @param x the X coordinate of the icon's top-left corner
-     * @param y the Y coordinate of the icon's top-left corner
-     */
-    @Override
-    public synchronized void paintIcon(Component c, Graphics g, int x, int y) {
-        Image image = getImage();
-        if (super.getImageObserver() == null) {
-            g.drawImage(image, x, y, c);
-        } else {
-            g.drawImage(image, x, y, super.getImageObserver());
-        }
-    }
+//    /**
+//     * Paints the icon.
+//     * The top-left corner of the icon is drawn at
+//     * the point (<code>x</code>, <code>y</code>)
+//     * in the coordinate space of the graphics context <code>g</code>.
+//     * If this icon has no image observer,
+//     * this method uses the <code>c</code> component
+//     * as the observer.
+//     *
+//     * @param c the component to be used as the observer
+//     *          if this icon has no image observer
+//     * @param g the graphics context
+//     * @param x the X coordinate of the icon's top-left corner
+//     * @param y the Y coordinate of the icon's top-left corner
+//     */
+//    @Override
+//    public synchronized void paintIcon(Component c, Graphics g, int x, int y) {
+//        Image image = getImage();
+//        if (super.getImageObserver() == null) {
+//            g.drawImage(image, x, y, c);
+//        } else {
+//            g.drawImage(image, x, y, super.getImageObserver());
+//        }
+//    }
 
     /**
      * Creates an Icon with the specified size, fast and ugly

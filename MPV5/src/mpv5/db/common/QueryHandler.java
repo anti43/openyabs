@@ -87,6 +87,7 @@ public class QueryHandler implements Cloneable {
     private DataPanel viewToBeNotified = null;
     private static Integer ROW_LIMIT = null;
     private int limit = 0;
+    private boolean runInBackground = false;
 
     private QueryHandler() {
         try {
@@ -315,7 +316,7 @@ public class QueryHandler implements Cloneable {
     public ReturnValue select() throws NodataFoundException {
         ReturnValue data = freeSelectQuery("SELECT * FROM " + table + " " + context.getConditions(), mpv5.usermanagement.MPSecurityManager.VIEW, null);
         if (data.getData().length == 0) {
-            throw new NodataFoundException();
+            throw new NodataFoundException(context);
         } else {
             return data;
         }
@@ -595,34 +596,43 @@ public class QueryHandler implements Cloneable {
     private static int RUNNING_JOBS = 0;
 
     private synchronized void stop() {
-        Runnable runnable = new Runnable() {
+        if (!runInBackground) {
+            Runnable runnable = new Runnable() {
 
-            public void run() {
-                try {//Avoid Cursor flickering
-                    Thread.sleep(10);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
+                @Override
+                public void run() {
+                    try {//Avoid Cursor flickering
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    if (RUNNING_JOBS <= 1) {
+                        comp.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                        MPV5View.setProgressRunning(false);
+                    }
+                    RUNNING_JOBS--;
                 }
-                if (RUNNING_JOBS <= 1) {
-                    comp.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-                    MPV5View.setProgressRunning(false);
-                }
-                RUNNING_JOBS--;
-            }
-        };
-        SwingUtilities.invokeLater(runnable);
+            };
+            SwingUtilities.invokeLater(runnable);
+        }
     }
 
     private synchronized void start() {
-        RUNNING_JOBS++;
-        comp.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-        MPV5View.setProgressRunning(true);
+        if (!runInBackground) {
+            RUNNING_JOBS++;
+            comp.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+            MPV5View.setProgressRunning(true);
+        }
     }
 
 //    public String getNextStringNumber(String colName) {
 //        Integer s = getNextIndexOfStringCol(colName, null);
 //        return originalvalue.substring(0, substringcount) + s;
 //    }
+    /**
+     * Count the rows of the current table
+     * @return
+     */
     public Integer getCount() {
         int i = selectCount(null, null);
         i = (i < 0) ? -i : i;
@@ -637,10 +647,7 @@ public class QueryHandler implements Cloneable {
      * @return id of inserted row
      */
     public int insert(QueryData what, String jobmessage) {
-
         String query = query = "INSERT INTO " + table + " (" + what.getKeysString() + " ) VALUES (" + what.getValuesString() + ") ";
-
-
         return freeUpdateQuery(query, mpv5.usermanagement.MPSecurityManager.CREATE_OR_DELETE, jobmessage).getId();
     }
 
@@ -1207,6 +1214,12 @@ public class QueryHandler implements Cloneable {
         return theClone;
     }
 
+    /**
+     *
+     * @param context
+     * @param limit
+     * @return
+     */
     public QueryHandler clone(Context context, int limit) {
         QueryHandler theClone = null;
         this.context = context;
@@ -1214,6 +1227,27 @@ public class QueryHandler implements Cloneable {
             theClone = (QueryHandler) this.clone();
             theClone.setTable(context.getDbIdentity());
             theClone.setLimit(limit);
+        } catch (CloneNotSupportedException ex) {
+            Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return theClone;
+    }
+
+    /**
+     *
+     * @param context
+     * @param limit Set a (temporary) rowlimit
+     * @param inBackground If true, the main view is NOT notified about the jobs
+     * @return
+     */
+    public QueryHandler clone(Context context, int limit, boolean inBackground) {
+        QueryHandler theClone = null;
+        this.context = context;
+        try {
+            theClone = (QueryHandler) this.clone();
+            theClone.setTable(context.getDbIdentity());
+            theClone.setLimit(limit);
+            runInBackground = inBackground;
         } catch (CloneNotSupportedException ex) {
             Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -1307,7 +1341,7 @@ public class QueryHandler implements Cloneable {
         if (condition != null) {
             wher = " WHERE " + what + " " + condition;
         }
-        String query = "SELECT COUNT(*) AS rowcount FROM " + table + " " + wher;
+        String query = "SELECT COUNT(1) AS rowcount FROM " + table + " " + wher;
         String message = "Database Error (SelectCount:COUNT):";
         stm = null;
         resultSet = null;
@@ -2050,10 +2084,14 @@ public class QueryHandler implements Cloneable {
         public void done() {
             QueryData x;
             try {
+                String filename = file.getName();
+                String fileextension = (filename.lastIndexOf(".") == -1) ? "" : filename.substring(filename.lastIndexOf(".") + 1, filename.length());
 
                 x = new QueryData(new String[]{"cname,filename, description, dateadded", file.getName() + "," + get() + "," + descriptiveText + "," + DateConverter.getTodayDBDate()});
                 x.add("contactsids", dataOwner.__getIDS());
                 x.add("intaddedby", MPV5View.getUser().__getIDS());
+                x.add("intsize", file.length());
+                x.add("mimetype", fileextension);
                 QueryHandler.instanceOf().clone(Context.getFilesToContacts()).insert(x, Messages.FILE_SAVED + file.getName());
                 MPV5View.addMessage(Messages.FILE_SAVED + file.getName());
                 if (viewToBeNotified != null) {

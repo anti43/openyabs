@@ -356,7 +356,7 @@ public class Item extends DatabaseObject {
 
     @Override
     public mpv5.utils.images.MPIcon getIcon() {
-         return new MPIcon("/mpv5/resources/images/48/kontact_mail.png");
+         return new MPIcon("/mpv5/resources/images/22/kontact_mail.png");
     }
 
     /**

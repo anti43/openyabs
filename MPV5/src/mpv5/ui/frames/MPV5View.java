@@ -100,6 +100,14 @@ public class MPV5View extends FrameView {
      * Display a message at the bottom of the MP frame
      * @param message
      */
+    public static void addMessage(Messages message) {
+        addMessage(message.getValue());
+    }
+
+    /**
+     * Display a message at the bottom of the MP frame
+     * @param message
+     */
     public static synchronized void addMessage(final String message) {
         Runnable runnable = new Runnable() {
 
@@ -359,7 +367,7 @@ public class MPV5View extends FrameView {
      * @param item
      */
     public void addTab(DatabaseObject item) {
-        if (item.getView() !=null) {
+        if (item.getView() != null) {
             addTab(item.getView(), item.__getCName());
         }
     }

@@ -224,10 +224,12 @@ public class User extends DatabaseObject {
             Lock.unlock(MPV5View.identifierFrame);
             Runnable runnable = new Runnable() {
 
+                @Override
                 public void run() {
                     setDatelastlog(new Date());
                     setIsloggedin(true);
                     save();
+                   DatabaseObject.cacheObjects();
                 }
             };
 

@@ -16,7 +16,7 @@ public enum Headers {
     BABELFISH(new String[]{"Component", "Language Value", "New Value"}),
     ITEM_DEFAULT(new String[]{"Internal ID", "ID", "Date", "Net Value"}),
     ITEM_DETAIL(new String[]{"Internal ID", "ID", "Date", "Value"}),
-    CONTACT_FILES(new String[]{"Internal ID", "Filename", "Date", "Description"}),
+    CONTACT_FILES(new String[]{"Internal ID", "Filename", "Date", "Description","Size","Type"}),
     HISTORY(new String[]{"Internal ID", "Description", "User", "Group", "Date"}),
     IMPORT(new String[]{"Internal ID", "Import", "Type", "Name", "Data"}),
     JOURNAL(new String[]{"Internal ID", "Date", "Group", "Number", "Type", "Status", "Value", "Paid"}),

@@ -43,8 +43,7 @@ public class Popup {
      * @return
      */
     public static String Enter_Value(Object message) {
-        return JOptionPane.showInputDialog(MPV5View.identifierFrame,
-                message);
+        return JOptionPane.showInputDialog(message.toString());
     }
 
     /**

@@ -17,18 +17,13 @@
 package mpv5.db.objects;
 
 import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
-import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryHandler;
 import mpv5.logging.Log;
-import mpv5.ui.panels.ContactPanel;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.images.MPIcon;
 
@@ -36,15 +31,15 @@ import mpv5.utils.images.MPIcon;
  *
  *  anti
  */
-public class ContactFile extends DatabaseObject {
+public class FileToItem extends DatabaseObject {
 
     private String description = "";
     private int contactsids;
     private String filename = "";
     private File file;
 
-    public ContactFile() {
-        context.setDbIdentity(Context.IDENTITY_FILES_TO_CONTACTS);
+    public FileToItem() {
+        context.setDbIdentity(Context.IDENTITY_FILES_TO_ITEMS);
         context.setIdentityClass(this.getClass());
     }
 
@@ -110,16 +105,28 @@ public class ContactFile extends DatabaseObject {
         this.filename = filename;
     }
 
+    MPIcon icon;
     @Override
     public mpv5.utils.images.MPIcon getIcon() {
-
-        try {
-            JFileChooser chooser = new JFileChooser();
-            Icon icon = chooser.getIcon(new File(filename));
-            return new MPIcon(icon);
-        } catch (Exception e) {
-            //file is not yet fetched from db, we let it there
-            return new MPIcon("/mpv5/resources/images/48/folder_tar.png");
+        if (icon == null) {
+            try {
+                Log.Debug(this, "Determining Icon for " + __getCName());
+                icon = new MPIcon(MPIcon.ICON_DIRECTORY + __getCName().substring(__getCName().lastIndexOf(".") +1, __getCName().length()) + ".png");
+                return icon;
+            } catch (Exception e) {
+                Log.Debug(this, "Icon file not existing in " + MPIcon.ICON_DIRECTORY);
+                try {
+                    JFileChooser chooser = new JFileChooser();
+                    icon = new MPIcon(chooser.getIcon(new File(filename)));
+                    return icon;
+                } catch (Exception ez) {
+                    Log.Debug(this, ez);
+                    icon = new MPIcon(MPIcon.ICON_DIRECTORY + "folder_tar.png");
+                    return icon;
+                }
+            }
+        } else {
+            return icon;
         }
     }
 

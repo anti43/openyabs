@@ -35,10 +35,11 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.objects.Contact;
-import mpv5.db.objects.ContactFile;
+import mpv5.db.objects.FileToContact;
+import mpv5.db.objects.FileToItem;
 import mpv5.db.objects.Group;
 import mpv5.db.objects.Item;
-import mpv5.db.objects.ItemFile;
+
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPV5View;
@@ -52,7 +53,6 @@ public class MPTreeModel extends DefaultTreeModel {
     private static final long serialVersionUID = 1L;
 
     private static DefaultMutableTreeNode getGroupHierarchy(DatabaseObject item) throws NodataFoundException {
-        DatabaseObject.cacheObjects(Context.getGroup());
         Group group = (Group) DatabaseObject.getObject(Context.getGroup(), item.__getGroupsids());
         return getGroupHierarchy(group, new DefaultMutableTreeNode(group));
     }
@@ -103,7 +103,7 @@ public class MPTreeModel extends DefaultTreeModel {
                 try {
                     itemfiles = DatabaseObject.getReferencedObjects(item, Context.getFilesToItems(), DatabaseObject.getObject(Context.getFilesToItems()));
                     for (int j = 0; j < itemfiles.size(); j++) {
-                        ItemFile ifile = (ItemFile) itemfiles.get(j);
+                        FileToItem ifile = (FileToItem) itemfiles.get(j);
                         itemnode.add(new DefaultMutableTreeNode(ifile));
                     }
                 } catch (NodataFoundException ex) {
@@ -123,7 +123,7 @@ public class MPTreeModel extends DefaultTreeModel {
 
                 DefaultMutableTreeNode ifil = new DefaultMutableTreeNode(Messages.FILES);
                 for (int j = 0; j < contactFiles.size(); j++) {
-                    ContactFile ifile = (ContactFile) contactFiles.get(j);
+                    FileToContact ifile = (FileToContact) contactFiles.get(j);
                     ifil.add(new DefaultMutableTreeNode(ifile));
                 }
                 rootNode.add(ifil);
@@ -149,10 +149,14 @@ public class MPTreeModel extends DefaultTreeModel {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
                 try {
                     DatabaseObject obj = (DatabaseObject) node.getUserObject();
-                    this.setIcon(obj.getIcon().getIcon(18));
+                    this.setIcon(obj.getIcon());
                 } catch (Exception e) {
                     try {
-                        setIcon(new MPIcon("/mpv5/resources/images/48/folder_grey.png").getIcon(20));
+                        if (node.isLeaf()) {
+                            setIcon(new MPIcon("/mpv5/resources/images/22/folder_grey.png"));
+                        } else {
+                            setIcon(new MPIcon("/mpv5/resources/images/22/folder_green.png"));
+                        }
                     } catch (Exception ef) {
                         setIcon(leafIcon);
                         Log.Debug(ef);
@@ -174,7 +178,7 @@ public class MPTreeModel extends DefaultTreeModel {
             @Override
             public void mouseClicked(MouseEvent evt) {
                 evt.consume();
-                if (evt.getClickCount() >1) {
+                if (evt.getClickCount() > 1) {
                     DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
                     if (node != null) {
                         if (node.getUserObject() instanceof DatabaseObject) {

@@ -153,7 +153,8 @@ public enum Messages {
     LOADED(" loaded"),
     UNLOAD("Unload"),
     FILES("Files"),
-    RESTART_REQUIRED("You need to restart the application before changes take place");
+    RESTART_REQUIRED("You need to restart the application before changes take place"),
+    CACHED_OBJECTS("Objects cached");
    
 
     private Messages(String message) {
@@ -182,5 +183,4 @@ public enum Messages {
         return toString();
     }
 
-   
 }

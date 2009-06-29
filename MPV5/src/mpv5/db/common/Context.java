@@ -11,13 +11,14 @@ import mpv5.db.objects.Account;
 import mpv5.db.objects.Address;
 import mpv5.db.objects.Contact;
 import mpv5.db.objects.Favourite;
+import mpv5.db.objects.FileToContact;
 import mpv5.db.objects.Group;
 import mpv5.db.objects.HistoryItem;
 import mpv5.db.objects.Property;
 import mpv5.db.objects.Schedule;
-import mpv5.db.objects.ContactFile;
+import mpv5.db.objects.FileToItem;
 import mpv5.db.objects.Item;
-import mpv5.db.objects.ItemFile;
+
 import mpv5.db.objects.ItemsList;
 import mpv5.db.objects.Message;
 import mpv5.db.objects.SubItem;
@@ -45,7 +46,6 @@ public class Context {
     public static String IDENTITY_FAVS = "favourites";
     public static String IDENTITY_ADDRESS = "addresses";
     public static String IDENTITY_GROUPS = "groups";
-//    public static String IDENTITY_GROUPS_TO_PARENTGROUP = "groupstoparents";
     public static String IDENTITY_SCHEDULE = "schedule";
     public static String IDENTITY_HISTORY = "history";
     public static String IDENTITY_FILES_TO_CONTACTS = "filestocontacts";
@@ -66,7 +66,8 @@ public class Context {
     private static Class IDENTITY_ADDRESS_CLASS = Address.class;
     private static Class IDENTITY_USERS_CLASS = User.class;
     private static Class IDENTITY_ITEMS_CLASS = Item.class;
-    private static Class IDENTITY_CONTACTS_FILES_CLASS = ContactFile.class;
+    private static Class IDENTITY_CONTACTS_FILES_CLASS = FileToContact.class;
+    private static Class IDENTITY_ITEM_FILES_CLASS = FileToItem.class;
     private static Class HISTORY_ITEMS_CLASS = HistoryItem.class;
     private static Class IDENTITY_SUBITEMS_CLASS = SubItem.class;
     private static Class IDENTITY_USER_PLUGINS_CLASS = UserPlugin.class;
@@ -75,7 +76,7 @@ public class Context {
     private static Class IDENTITY_ACCOUNTS_CLASS = Account.class;
     private static Class IDENTITY_MESSAGES_CLASS = Message.class;
     private static Class IDENTITY_ITEMSLIST_CLASS = ItemsList.class;
-    private static Class IDENTITY_ITEMS_FILES_CLASS = ItemFile.class;
+
 
     //********** unique constraints *******************************************
     public static String UNIQUECOLUMNS_USER = "cname";
@@ -160,7 +161,7 @@ public class Context {
             IDENTITY_ITEMS + "." + "netvalue," +
             IDENTITY_ITEMS + "." + "taxvalue";
     public static String DETAILS_HISTORY = getHistory().getDbIdentity() + ".ids, " + getHistory().getDbIdentity() + ".cname, " + getHistory().getDbIdentity() + ".username, " + Context.getGroup().getDbIdentity() + "0.cname," + Context.getHistory().getDbIdentity() + ".dateadded";
-    public static String DETAILS_FILES = Context.getFiles().getDbIdentity() + "0.cname," + getFilesToContacts().getDbIdentity() + ".cname, " + Context.getFiles().getDbIdentity() + "0.dateadded," + Context.getFilesToContacts().getDbIdentity() + ".description";
+    public static String DETAILS_FILES = Context.getFiles().getDbIdentity() + "0.cname," + getFilesToContacts().getDbIdentity() + ".cname, " + Context.getFiles().getDbIdentity() + "0.dateadded," + Context.getFilesToContacts().getDbIdentity() + ".description,"+ Context.getFilesToContacts().getDbIdentity() + ".intsize,"+ Context.getFilesToContacts().getDbIdentity() + ".mimetype";
 
     //**************************************************************************
     /**
@@ -190,6 +191,30 @@ public class Context {
 
         return list;
     }
+
+       /**
+     * Contexts which can get cached
+     * @return
+     */
+    public static ArrayList<Context> getCacheableContexts() {
+        return cacheableContexts;
+    }
+    private static ArrayList<Context> cacheableContexts = new ArrayList<Context>(Arrays.asList(new Context[]{
+                getContact(),
+                getFavourites(),
+                getUser(),
+                getAddress(),
+                getItem(null, null),
+                getSubItem(),
+                getGroup(),
+                getSchedule(),
+                getFilesToContacts(),
+                getFilesToItems(),
+                getProducts(),
+                getAccounts(),
+                getMessages(),
+                getItemsList()
+            }));
 
     /**
      * Contexts which are groupable
@@ -1343,14 +1368,16 @@ public class Context {
         return c;
     }
 
-     public static Context getFilesToItems() {
+       public static Context getFilesToItems() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_FILES_TO_ITEMS);
+        c.setIdentityClass(IDENTITY_ITEM_FILES_CLASS);
         c.setId(34);
 
         return c;
     }
+
 
     /**
      *
