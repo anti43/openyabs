@@ -114,6 +114,10 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
 
         accountselect.setContext(Context.getAccounts());
         accountselect.setSearchOnEnterEnabled(true);
+
+        date1.setDate(new Date());
+        date2.setDate(new Date());
+        date3.setDate(new Date());
     }
 
     @Override
@@ -729,6 +733,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
     private javax.swing.JLabel type;
     // End of variables declaration//GEN-END:variables
     public String cname_;
+    public String cnumber_;
     public String description_;
     public int intaddedby_;
     public int ids_;
@@ -747,20 +752,34 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
     @Override
     public void collectData() {
 
+        try {
+            contactsids_ = Integer.valueOf(contactname.getSelectedItem().getId());
+            defaultaccountsids_ = Integer.valueOf(accountselect.getSelectedItem().getId());
+        } catch (Exception numberFormatException) {}
 
-        if (groupnameselect.getSelectedItem() != null) {
-            groupsids_ = Integer.valueOf(((MPComboBoxModelItem) groupnameselect.getSelectedItem()).getId());
-        } else {
+            if (groupnameselect.getSelectedItem() != null) {
+                groupsids_ = Integer.valueOf(((MPComboBoxModelItem) groupnameselect.getSelectedItem()).getId());
+            } else {
+                groupsids_ = 1;
+            }
+
+            if (dateadded_ == null) {
+                dateadded_ = new Date();
+            }
+            intaddedby_ = User.getUserId(addedby.getText());
+
+            description_ = notes.getText();
+            dateadded_ = date1.getDate();
             groupsids_ = 1;
-        }
 
-        if (dateadded_ == null) {
-            dateadded_ = new Date();
-        }
-        intaddedby_ = User.getUserId(addedby.getText());
-
-
-//        cname_ = dataOwner.getFormatHandler().toString(dataOwner.getFormatHandler().getNextNumber());
+//        netvalue_;
+//        taxvalue_;
+            datetodo_ = date2.getDate();
+            dateend_ = date3.getDate();
+            cname_ = "none";
+//        intreminders_;
+            intstatus_ = Integer.valueOf(status.getSelectedItem().getId());
+//        inttype_ = Item.g;
     }
 
     @Override
