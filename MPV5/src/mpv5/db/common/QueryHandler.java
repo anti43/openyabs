@@ -109,7 +109,6 @@ public class QueryHandler implements Cloneable {
         }
     }
 
-
     private void setLimit(int limit) {
         if (limit > this.limit || limit < this.limit) {
             Log.Debug(QueryHandler.class, "Setting row limit for this connection to: " + limit);
@@ -595,8 +594,9 @@ public class QueryHandler implements Cloneable {
         return checkUniqueness(t, new int[]{0});
     }
     private static int RUNNING_JOBS = 0;
+    private static Thread JOB_WATCHDOG;
 
-    private synchronized void stop() {
+    public synchronized void stop() {
         if (!runInBackground) {
             Runnable runnable = new Runnable() {
 
@@ -609,7 +609,7 @@ public class QueryHandler implements Cloneable {
                     }
                     if (RUNNING_JOBS <= 1) {
                         comp.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-                        MPV5View.setProgressRunning(false);
+                        MPV5View.setProgressReset();
                     }
                     RUNNING_JOBS--;
                 }
@@ -618,11 +618,34 @@ public class QueryHandler implements Cloneable {
         }
     }
 
-    private synchronized void start() {
+    public synchronized void start() {
+        if (JOB_WATCHDOG == null) {
+            JOB_WATCHDOG = new Thread(new Watchdog());
+            JOB_WATCHDOG.start();
+        }
         if (!runInBackground) {
             RUNNING_JOBS++;
             comp.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-            MPV5View.setProgressRunning(true);
+            MPV5View.setProgressMaximumValue(RUNNING_JOBS);
+        }
+    }
+
+    class Watchdog implements Runnable {
+
+        @Override
+        public void run() {
+            int oldValue = 0;
+            while (true) {
+                if (RUNNING_JOBS != oldValue) {
+                    MPV5View.setProgressValue(RUNNING_JOBS);
+                    oldValue = RUNNING_JOBS;
+                }
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
         }
     }
 
@@ -1176,6 +1199,7 @@ public class QueryHandler implements Cloneable {
         try {
             theClone = (QueryHandler) this.clone();
             theClone.setTable(tablename);
+            theClone.runInBackground = false;
         } catch (CloneNotSupportedException ex) {
             Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -1191,6 +1215,7 @@ public class QueryHandler implements Cloneable {
         try {
             qh = (QueryHandler) QueryHandler.instanceOf().clone();
             qh.setContext(new Context(null));
+            qh.runInBackground = false;
             return qh;
         } catch (CloneNotSupportedException ex) {
             Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
@@ -1209,6 +1234,7 @@ public class QueryHandler implements Cloneable {
         try {
             theClone = (QueryHandler) this.clone();
             theClone.setTable(context.getDbIdentity());
+            theClone.runInBackground = false;
         } catch (CloneNotSupportedException ex) {
             Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -1228,6 +1254,7 @@ public class QueryHandler implements Cloneable {
             theClone = (QueryHandler) this.clone();
             theClone.setTable(context.getDbIdentity());
             theClone.setLimit(limit);
+            theClone.runInBackground = false;
         } catch (CloneNotSupportedException ex) {
             Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -1248,7 +1275,7 @@ public class QueryHandler implements Cloneable {
             theClone = (QueryHandler) this.clone();
             theClone.setTable(context.getDbIdentity());
             theClone.setLimit(limit);
-            runInBackground = inBackground;
+            theClone.runInBackground = inBackground;
         } catch (CloneNotSupportedException ex) {
             Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -1268,6 +1295,7 @@ public class QueryHandler implements Cloneable {
         try {
             theClone = (QueryHandler) this.clone();
             theClone.setTable(context.getDbIdentity());
+            theClone.runInBackground = false;
         } catch (CloneNotSupportedException ex) {
             Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -1934,9 +1962,9 @@ public class QueryHandler implements Cloneable {
     public boolean insertFile(File file, DatabaseObject dataOwner, SaveString descriptiveText) {
         try {
             Context tc = null;
-            if(dataOwner.getContext().equals(Context.getContact())) {
+            if (dataOwner.getContext().equals(Context.getContact())) {
                 tc = Context.getFilesToContacts();
-            } else if(dataOwner.getContext().equals(Context.getItems())) {
+            } else if (dataOwner.getContext().equals(Context.getItems())) {
                 tc = Context.getFilesToItems();
             }
             new backgroundFileInsert(file, dataOwner, descriptiveText, tc).execute();

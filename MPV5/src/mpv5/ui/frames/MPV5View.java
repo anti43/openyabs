@@ -196,7 +196,7 @@ public class MPV5View extends FrameView {
      * Sets the max value for the progressbar
      * @param max
      */
-    public static void setProgressMaximumValue(int max) {
+    public synchronized static void setProgressMaximumValue(int max) {
         progressbar.setMaximum(max);
     }
 
@@ -204,14 +204,14 @@ public class MPV5View extends FrameView {
      *  Sets the current value for the progressbar
      * @param val
      */
-    public static void setProgressValue(int val) {
+    public synchronized static void setProgressValue(int val) {
         progressbar.setValue(val);
     }
 
     /**
      * Reset the progress bar
      */
-    public static void setProgressReset() {
+    public synchronized static void setProgressReset() {
         progressbar.setValue(0);
         progressbar.setIndeterminate(false);
     }
@@ -220,7 +220,7 @@ public class MPV5View extends FrameView {
      * Sets the indeterminate property of the progress bar.
      * @param b
      */
-    public static void setProgressRunning(boolean b) {
+    public synchronized static void setProgressRunning(boolean b) {
         progressbar.setIndeterminate(b);
     }
 
