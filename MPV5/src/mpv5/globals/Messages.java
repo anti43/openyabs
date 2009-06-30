@@ -155,7 +155,8 @@ public enum Messages {
     FILES("Files"),
     RESTART_REQUIRED("You need to restart the application before changes take place"),
     CACHED_OBJECTS("Objects cached"),
-    ADVANCED_SETTINGS("Advanced Settings");
+    ADVANCED_SETTINGS("Advanced Settings"),
+    ADVANCED_SETTINGS_SAVE("Changing this settings may lead to a non-functional application. Really save?");
    
 
     private Messages(String message) {

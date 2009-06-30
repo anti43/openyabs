@@ -77,6 +77,7 @@ public class Main extends SingleFrameApplication {
      * Is true if the application is running, false if in editor
      */
     public static boolean INSTANTIATED = false;
+    private static Integer FORCE_INSTALLER;
 
     /**
      * Use this method to (re) cache data from the database to avoid uneccessary db queries
@@ -90,7 +91,7 @@ public class Main extends SingleFrameApplication {
         MPV5View.setNavBarAnimated(false);
         MPV5View.setTabPaneScrolled(true);
     }
-    private File lockfile = new File(MPPATH + File.separator + "." + Constants.PROG_NAME + Constants.VERSION + "." + "lck");
+    private File lockfile = new File(MPPATH + File.separator + "." + Constants.PROG_NAME + "." + "lck");
 
     /**
      * Read in local settings and launch the application
@@ -109,6 +110,7 @@ public class Main extends SingleFrameApplication {
         splash.nextStep(Messages.LAUNCH.toString());
         Runnable runnable = new Runnable() {
 
+            @Override
             public void run() {
                 launch(Main.class, new String[]{});
             }
@@ -140,13 +142,17 @@ public class Main extends SingleFrameApplication {
             System.exit(1);
         }
         splash.nextStep(Messages.DB_CHECK.toString());
-        if (probeDatabaseConnection()) {
-            go(false);
-        } else if (Popup.Y_N_dialog(Messages.NO_DB_CONNECTION, Messages.ERROR_OCCURED.toString())) {
-            splash.dispose();
-            showDbWiz();
+        if (FORCE_INSTALLER == null) {
+            if (probeDatabaseConnection()) {
+                go(false);
+            } else if (Popup.Y_N_dialog(Messages.NO_DB_CONNECTION, Messages.ERROR_OCCURED.toString())) {
+                splash.dispose();
+                showDbWiz(null);
+            } else {
+                System.exit(1);
+            }
         } else {
-            System.exit(1);
+            showDbWiz(FORCE_INSTALLER);
         }
     }
 
@@ -185,6 +191,7 @@ public class Main extends SingleFrameApplication {
             Log.Debug(Main.class, QueryHandler.instanceOf().getStatistics());
         }
         Log.Print(GOODBYE_MESSAGE);
+        clearLockFile();
         super.shutdown();
     }
 
@@ -322,7 +329,15 @@ public class Main extends SingleFrameApplication {
         } else {
 
             if (cl.hasOption(connectionInstance)) {
-                LocalSettings.setConnectionID(Integer.valueOf(String.valueOf(cl.getValue(connectionInstance))));
+                try {
+                    if (!LocalSettings.hasConnectionID(Integer.valueOf(String.valueOf(cl.getValue(connectionInstance))))) {
+                        FORCE_INSTALLER = Integer.valueOf(String.valueOf(cl.getValue(connectionInstance)));
+                    }
+                    Log.Debug(Main.class, "Switching connection id to: " + Integer.valueOf(String.valueOf(cl.getValue(connectionInstance))));
+                    LocalSettings.setConnectionID(Integer.valueOf(String.valueOf(cl.getValue(connectionInstance))));
+                } catch (Exception ex) {
+                    Log.Debug(ex);
+                }
             }
 
             if (cl.hasOption(help)) {
@@ -517,28 +532,37 @@ public class Main extends SingleFrameApplication {
             return false;
         }
     }
+    private static final String instanceIdentifier = ". Instance[";
 
     private boolean firstInstance() {
         try {
+            FileReaderWriter x = new FileReaderWriter(lockfile);
             if (lockfile.exists()) {
-                Log.Debug(this, "Application already running.");
-                return false;
+                String[] xc = x.readLines();
+                for (int i = 0; i < xc.length; i++) {
+                    String line = xc[i];
+                    try {
+                        if (line.length() > 0 && line.substring(line.lastIndexOf(instanceIdentifier) + instanceIdentifier.length(), line.lastIndexOf("]")).equals(String.valueOf(LocalSettings.getConnectionID()))) {
+                            Log.Debug(this, "Application already running.");
+                            return false;
+                        }
+                    } catch (Exception e) {
+                        Log.Debug(this, line);
+                        Log.Debug(e);
+                    }
+                }
+                return writeLockFile(x);
             } else {
-                FileWriter x = new FileWriter(lockfile);
-                x.write("Locked on " + new Date() + ". Instance[0]");
-                x.close();
-                lockfile.deleteOnExit();
-                Log.Debug(this, "Application will start now.");
-                return true;
+                return writeLockFile(x);
             }
         } catch (Exception e) {
+            Log.Debug(e);
             Log.Debug(this, "Application encountered some problem. Will try to continue anyway.");
             return true;
         }
-
     }
 
-    private void showDbWiz() {
+    private void showDbWiz(Integer forConnId) {
         try {
             Log.setLogLevel(Log.LOGLEVEL_DEBUG);
             LogConsole.setLogFile("install.log");
@@ -547,7 +571,31 @@ public class Main extends SingleFrameApplication {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
         Wizard w = new Wizard(true);
-        w.addPanel(new wizard_DBSettings_1(w));
+        w.addPanel(new wizard_DBSettings_1(w, forConnId));
         w.showWiz();
+    }
+
+    private boolean writeLockFile(FileReaderWriter x) {
+        try {
+            x.write0("Locked on " + new Date() + instanceIdentifier + LocalSettings.getConnectionID() + "]");
+            Log.Debug(this, "Application will start now: " + lockfile);
+            return true;
+        } catch (Exception e) {
+            Log.Debug(e);
+            return false;
+        }
+    }
+
+    private void clearLockFile() {
+        FileReaderWriter x = new FileReaderWriter(lockfile);
+        String[] lines = x.readLines();
+        for (int i = 0; i < lines.length; i++) {
+            String line = lines[i];
+            if ((!line.contains(instanceIdentifier))||(line.length() > 0 && line.substring(line.lastIndexOf(instanceIdentifier) + instanceIdentifier.length(), line.lastIndexOf("]")).equals(String.valueOf(LocalSettings.getConnectionID())))) {
+                lines[i] = null;
+            }
+        }
+        x.flush();
+        x.write0(lines);
     }
 }

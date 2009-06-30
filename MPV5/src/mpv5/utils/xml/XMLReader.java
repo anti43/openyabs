@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import java.util.Vector;
 import mpv5.data.PropertyStore;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -208,11 +209,41 @@ public class XMLReader {
         return store;
     }
 
+      /**
+     * Reads all nodes with the given name into a property store list, with additional property "nodeid"
+     * @param type
+     * @param nodename
+     * @return
+     */
+    public synchronized List<PropertyStore> readInto(String type, String nodename) {
+        @SuppressWarnings("unchecked")
+        List<Element> list = (List<Element>) rootElement.getChild(type).getContent(new ElementFilter());
+        List<PropertyStore> plist = new Vector<PropertyStore>();
+        for (int i = 0; i < list.size(); i++) {
+            Element element = list.get(i);
+            if (element.getName().equals(nodename) ) {
+                PropertyStore st = new PropertyStore();
+                st.addProperty("nodeid", element.getAttribute("id").getValue());
+                @SuppressWarnings("unchecked")
+                List<Element> list2 = (List<Element>) element.getContent(new ElementFilter());
+                for (int j = 0; j < list2.size(); j++) {
+                    Element element1 = list2.get(j);
+                    st.addProperty(element1.getName(), element1.getValue());
+                }
+                plist.add(st);
+            }
+        }
+
+        return plist;
+    }
+
     private Document createDocument(File xmlfile, boolean validate) throws JDOMException, IOException {
         SAXBuilder parser = new SAXBuilder(validate);
         myDocument = parser.build(xmlfile);
         rootElement = myDocument.getRootElement();
-        Log.Debug(this, "Document validated: " + xmlfile);
+        if (validate) {
+            Log.Debug(this, "Document validated: " + xmlfile);
+        }
         return myDocument;
     }
 

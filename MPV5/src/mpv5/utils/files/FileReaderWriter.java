@@ -103,7 +103,6 @@ public class FileReaderWriter {
      * @return The array representing the file
      */
     public String[] readLines() {
-
         BufferedReader in = null;
         @SuppressWarnings("unchecked")
         ArrayList<String> arr = new ArrayList();
@@ -115,9 +114,9 @@ public class FileReaderWriter {
                 arr.add(s);
                 s = in.readLine();
             }
-
         } catch (IOException ex) {
-            Logger.getLogger(FileReaderWriter.class.getName()).log(Level.SEVERE, null, ex);
+            Log.Debug(this, ex.getMessage());
+            return null;
         } finally {
             try {
                 in.close();
@@ -139,8 +138,10 @@ public class FileReaderWriter {
 
         for (int i = 0; i < text.length; i++) {
             String string = text[i];
-            if (!write(string)) {
-                return false;
+            if (string!=null) {
+                if (!write(string)) {
+                    return false;
+                }
             }
         }
 
@@ -157,10 +158,58 @@ public class FileReaderWriter {
         FileWriter out;
         try {
             text = zeilenumbruch + text;
-
             out = new FileWriter(filer, true);
             BufferedWriter writer = new BufferedWriter(out);
             writer.write(text);
+            writer.close();
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Appends the String Array to a file (new line per array field) or creates it if needed.
+     * <li/>Starts from the beginning of the file.
+     * <li/>Skips empty lines.
+     * @param lines
+     * @return
+     */
+    public boolean write0(String[] lines) {
+       for (int i = 0; i < lines.length; i++) {
+            String string = lines[i];
+            if (string!=null && string.length()>0) {
+                if (!write0(string)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Appends the String to a file or creates it if needed. Writes from the beginning of the file.
+     * @param text
+     * @return
+     */
+    public boolean write0(String text) {
+       FileWriter out;
+        try {
+            String[] txt = this.readLines();
+        } catch (Exception e) {
+            try {
+                filer.createNewFile();
+            } catch (IOException ex) {
+                Log.Debug(e);
+            }
+        }
+        try {
+            out = new FileWriter(filer, true);
+            BufferedWriter writer = new BufferedWriter(out);
+            writer.write(text);
+            writer.newLine();
             writer.close();
         } catch (IOException ex) {
             System.out.println(ex.getMessage());

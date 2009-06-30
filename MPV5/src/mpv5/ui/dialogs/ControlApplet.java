@@ -29,7 +29,7 @@ public interface ControlApplet {
      * A panel containing the save, delete etc buttons
      * @return
      */
-    public Component getActionPanel();
+    public Component getAndRemoveActionPanel();
 
     /**
      * Fills the view with data
@@ -48,11 +48,6 @@ public interface ControlApplet {
      */
     public void reset();
 
-    /**
-     * Control panel applets should be singletons
-     * @return
-     */
-    public ControlApplet instanceOf();
 
 //    /**
 //     * The local type for properties - gets stored in a local cockie

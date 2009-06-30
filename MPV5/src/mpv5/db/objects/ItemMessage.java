@@ -26,11 +26,11 @@ import mpv5.db.common.QueryHandler;
 
 /**
  *
- *  anti
+ *  Messages to be printed on Bills etc
  */
-public class Message extends DatabaseObject {
+public class ItemMessage extends DatabaseObject {
 
-    public Message() {
+    public ItemMessage() {
         context.setDbIdentity(Context.IDENTITY_MESSAGES);
         context.setIdentityClass(this.getClass());
     }
@@ -57,13 +57,13 @@ public class Message extends DatabaseObject {
      * @return
      * @throws mpv5.db.common.NodataFoundException
      */
-    public static ArrayList<Message> getMessagesOfItem(Item item) throws NodataFoundException {
+    public static ArrayList<ItemMessage> getMessagesOfItem(Item item) throws NodataFoundException {
         Object[][] tmp = QueryHandler.instanceOf().clone(Context.getMessagesToItems()).select("messagesids", new String[]{"itemsids", item.__getIDS().toString(), ""});
-        ArrayList<Message> l = new ArrayList<Message>();
+        ArrayList<ItemMessage> l = new ArrayList<ItemMessage>();
 
         for (int i = 0; i < tmp.length; i++) {
             int id = Integer.valueOf(tmp[i][0].toString());
-            l.add((Message) DatabaseObject.getObject(Context.getMessages(), id));
+            l.add((ItemMessage) DatabaseObject.getObject(Context.getMessages(), id));
         }
 
         return l;

@@ -61,8 +61,8 @@ public class Popup {
      * @param label 
      * @return
      */
-    public static boolean Y_N_dialog(Object text, String label) {
-        if (JOptionPane.showConfirmDialog(identifier, prepareText(text.toString()), label, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, new javax.swing.ImageIcon(new Popup().getClass().getResource("/mpv5/resources/images/32/warning.png"))) == JOptionPane.YES_OPTION) {
+    public static boolean Y_N_dialog(Object text, Object label) {
+        if (JOptionPane.showConfirmDialog(identifier, prepareText(text.toString()), label.toString(), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, new javax.swing.ImageIcon(new Popup().getClass().getResource("/mpv5/resources/images/32/warning.png"))) == JOptionPane.YES_OPTION) {
             return true;
         } else {
             return false;

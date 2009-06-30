@@ -105,11 +105,21 @@ public class XMLWriter {
      * @param parent
      * @param name
      * @param attribute
-     * @return
+     * @return the generated element
      */
     public Element addNode(Element parent, Element name, String attribute) {
         Element elem = name;
         elem.setAttribute("id", attribute);
+        @SuppressWarnings("unchecked")
+        List<Element> list = (List<Element>) parent.getContent();
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i) instanceof Element) {
+                if (list.get(i).getName().equals(elem.getName()) && list.get(i).getAttribute("id") != null && list.get(i).getAttribute("id").getValue().equals(attribute)) {
+                    Log.Debug(this, "Node exists: " + elem.getName() + ": " + attribute);
+                    return null;
+                }
+            }
+        }
         parent.addContent(elem);
         return elem;
     }
@@ -223,8 +233,9 @@ public class XMLWriter {
      * @param attributevalue The ID of the node where this element shall be added
      * @param name The name of the new element
      * @param value The value of the element
+     * @return 
      */
-    public void addElement(Element parent, Element nodename, String attributevalue, String name, String value) {
+    public boolean addElement(Element parent, Element nodename, String attributevalue, String name, String value) {
         //add some child elements
         Element elem = new Element(name);
         elem.addContent(value);
@@ -234,14 +245,15 @@ public class XMLWriter {
             if (list.get(i) instanceof Element) {
                 if (list.get(i).getName().equals(nodename.getName()) && list.get(i).getAttribute("id") != null && list.get(i).getAttribute("id").getValue().equals(attributevalue)) {
                     list.get(i).addContent(elem);
+                    return true;//only add once
                 }
             }
         }
-
+        return false;//no matching parent node found
     }
 
     /**
-     * Parses a PropertyStore object.
+     * Parses a PropertyStore object. "nodeid" properties are ignored.
      * Make sure to call newDoc() first!
      * @param nodename
      * @param nodeid
@@ -256,6 +268,33 @@ public class XMLWriter {
             Object o = list.next();
 //            Log.Debug(this,((String[]) o)[0]);
             addElement(defaultSubRoot, e, nodeid, ((String[]) o)[0], ((String[]) o)[1]);
+        }
+    }
+
+    /**
+     * Parses a PropertyStore list. "nodeid" property is mandatory!
+     * Make sure to call newDoc() first.
+     * @param nodename
+     * @param cookie
+     */
+    public void parse(String nodename, List<PropertyStore> cookie) {
+
+        for (int i = 0; i < cookie.size(); i++) {
+            PropertyStore propertyStore = cookie.get(i);
+            Element e = new Element(nodename);
+            Element n = addNode(defaultSubRoot, e, propertyStore.getProperty("nodeid"));
+            if (n!=null) {
+                Iterator list = propertyStore.getList().iterator();
+                while (list.hasNext()) {
+                    Object o = list.next();
+                    if (!((String[]) o)[0].equals("nodeid")) {
+//                    addElement(defaultSubRoot, e, propertyStore.getProperty("nodeid"), ((String[]) o)[0], ((String[]) o)[1]);
+                        Element en = new Element(((String[]) o)[0]);
+                        en.addContent(((String[]) o)[1]);
+                        n.addContent(en);
+                    }
+                }
+            }
         }
     }
 }

@@ -66,7 +66,7 @@ import mpv5.ui.dialogs.Wizard;
 import mpv5.ui.dialogs.subcomponents.wizard_XMLImport_1;
 import mpv5.ui.dialogs.subcomponents.wizard_XMLImport_2;
 import mpv5.ui.panels.ItemPanel;
-import mpv5.ui.panels.SettingsPanel;
+import mpv5.ui.dialogs.subcomponents.ControlPanel_Advanced;
 import mpv5.ui.panels.TrashPanel;
 import mpv5.utils.files.TextDatFile;
 import mpv5.utils.images.MPIcon;
@@ -482,7 +482,6 @@ public class MPV5View extends FrameView {
         jMenuItem4 = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
-        jMenuItem26 = new javax.swing.JMenuItem();
         jMenuItem18 = new javax.swing.JMenuItem();
         jMenuItem23 = new javax.swing.JMenuItem();
         jMenuItem24 = new javax.swing.JMenuItem();
@@ -1014,16 +1013,6 @@ public class MPV5View extends FrameView {
         });
         jMenu3.add(jMenuItem3);
 
-        jMenuItem26.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/info.png"))); // NOI18N
-        jMenuItem26.setText(bundle.getString("MPV5View.jMenuItem26.text")); // NOI18N
-        jMenuItem26.setName("jMenuItem26"); // NOI18N
-        jMenuItem26.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem26ActionPerformed(evt);
-            }
-        });
-        jMenu3.add(jMenuItem26);
-
         jMenuItem18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/kalarm.png"))); // NOI18N
         jMenuItem18.setText(bundle.getString("MPV5View.jMenuItem18.text")); // NOI18N
         jMenuItem18.setName("jMenuItem18"); // NOI18N
@@ -1154,9 +1143,9 @@ public class MPV5View extends FrameView {
         statusPanel.add(separator);
 
         progressBar.setBorder(new javax.swing.border.LineBorder(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"), 1, true));
-        progressBar.setMaximumSize(new java.awt.Dimension(50, 25));
+        progressBar.setMaximumSize(new java.awt.Dimension(100, 25));
         progressBar.setName("progressBar"); // NOI18N
-        progressBar.setPreferredSize(new java.awt.Dimension(50, 14));
+        progressBar.setPreferredSize(new java.awt.Dimension(100, 14));
         statusPanel.add(progressBar);
 
         separator1.setMaximumSize(new java.awt.Dimension(10, 32767));
@@ -1540,10 +1529,6 @@ public class MPV5View extends FrameView {
         addTab(new mpv5.ui.panels.EURPanel(), Messages.COST);
     }//GEN-LAST:event_jButton9ActionPerformed
 
-    private void jMenuItem26ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem26ActionPerformed
-        addTab(SettingsPanel.instanceOf(), Messages.ADVANCED_SETTINGS);
-    }//GEN-LAST:event_jMenuItem26ActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JMenu clipboardMenu;
     public javax.swing.JMenu favouritesMenu;
@@ -1586,7 +1571,6 @@ public class MPV5View extends FrameView {
     private javax.swing.JMenuItem jMenuItem23;
     private javax.swing.JMenuItem jMenuItem24;
     private javax.swing.JMenuItem jMenuItem25;
-    private javax.swing.JMenuItem jMenuItem26;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;

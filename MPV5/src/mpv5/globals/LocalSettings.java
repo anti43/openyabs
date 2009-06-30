@@ -8,7 +8,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
+import java.util.List;
 import java.util.Properties;
+import java.util.Vector;
 import mpv5.Main;
 import mpv5.data.PropertyStore;
 import mpv5.db.common.DatabaseObject;
@@ -19,6 +21,7 @@ import mpv5.ui.frames.MPV5View;
 import mpv5.utils.text.TypeConversion;
 import mpv5.utils.xml.XMLReader;
 import mpv5.utils.xml.XMLWriter;
+import org.jdom.JDOMException;
 
 /**
  *
@@ -50,6 +53,7 @@ public class LocalSettings {
     private static PropertyStore predefinedSettings = new PropertyStore(new String[][]{ //        {LAF,UIManager.getSystemLookAndFeelClassName()}
                 {DEFAULT_FONT, "Tahoma"}, {DBROW_LIMIT, "0"}, {DBAUTOLOCK, "false"}, {SERVER_PORT, "4343"}, {CACHE_SIZE, "100"}
             });
+    private static Vector<PropertyStore> cookies;
 
     /**
      * Applies the environmental settings
@@ -88,63 +92,63 @@ public class LocalSettings {
         }
     }
 
-     /**
-      * Get a properties value, or 0 if N/A
-      * @param name
-      * @return
+    /**
+     * Get a properties value, or 0 if N/A
+     * @param name
+     * @return
      */
     @SuppressWarnings("unchecked")
-    public  synchronized static int getIntegerProperty(String name) {
+    public synchronized static int getIntegerProperty(String name) {
 
-            if (cookie.getProperty(name) != null) {
-                return Integer.valueOf(cookie.getProperty(name));
-            } else if (predefinedSettings.getProperty(name) != null) {
-                cookie.changeProperty(name, predefinedSettings.getProperty(name));
-            } else {
-                cookie.changeProperty(name, "0");
-            }
-
+        if (cookie.getProperty(name) != null) {
             return Integer.valueOf(cookie.getProperty(name));
+        } else if (predefinedSettings.getProperty(name) != null) {
+            cookie.changeProperty(name, predefinedSettings.getProperty(name));
+        } else {
+            cookie.changeProperty(name, "0");
+        }
+
+        return Integer.valueOf(cookie.getProperty(name));
     }
 
-      /**
-      * Get a properties value, or false if N/A
-      * @param name
-      * @return
+    /**
+     * Get a properties value, or false if N/A
+     * @param name
+     * @return
      */
     @SuppressWarnings("unchecked")
-    public  synchronized static boolean getBooleanProperty(String name) {
+    public synchronized static boolean getBooleanProperty(String name) {
 
-            if (cookie.getProperty(name) != null) {
-                return TypeConversion.stringToBoolean(cookie.getProperty(name));
-            } else if (predefinedSettings.getProperty(name) != null) {
-                cookie.changeProperty(name, predefinedSettings.getProperty(name));
-            } else {
-                cookie.changeProperty(name, "false");
-            }
+        if (cookie.getProperty(name) != null) {
+            return TypeConversion.stringToBoolean(cookie.getProperty(name));
+        } else if (predefinedSettings.getProperty(name) != null) {
+            cookie.changeProperty(name, predefinedSettings.getProperty(name));
+        } else {
+            cookie.changeProperty(name, "false");
+        }
 
-         return TypeConversion.stringToBoolean(cookie.getProperty(name));
+        return TypeConversion.stringToBoolean(cookie.getProperty(name));
     }
 
-        /**
-      * Get a properties value, or 0 if N/A
-      * @param name
-      * @return
+    /**
+     * Get a properties value, or 0 if N/A
+     * @param name
+     * @return
      */
     @SuppressWarnings("unchecked")
-    public  synchronized static double getDoubleProperty(String name) {
+    public synchronized static double getDoubleProperty(String name) {
 
-            if (cookie.getProperty(name) != null) {
-                return Double.valueOf(cookie.getProperty(name));
-            } else if (predefinedSettings.getProperty(name) != null) {
-                cookie.changeProperty(name, predefinedSettings.getProperty(name));
-            } else {
-                cookie.changeProperty(name, "0");
-            }
-
+        if (cookie.getProperty(name) != null) {
             return Double.valueOf(cookie.getProperty(name));
+        } else if (predefinedSettings.getProperty(name) != null) {
+            cookie.changeProperty(name, predefinedSettings.getProperty(name));
+        } else {
+            cookie.changeProperty(name, "0");
+        }
+
+        return Double.valueOf(cookie.getProperty(name));
     }
-    
+
     /**
      * Get a properties value, or the String "null" if N/A
      * @param name
@@ -168,6 +172,7 @@ public class LocalSettings {
      */
     public static void setConnectionID(Integer id) {
         connectionID = id;
+        Log.Debug(LocalSettings.class, "Using conn id: " + id);
     }
 
     /**
@@ -209,18 +214,10 @@ public class LocalSettings {
     }
 
     /**
-     * Save the local settings to disk
+     * Save the local settings to disk, default connection id
      */
     public static synchronized void save() {
-        XMLWriter x = new XMLWriter();
-        try {
-            x.newDoc("localsettings", false);
-            x.parse("connection", "1", cookie);
-            x.createOrReplace(new File(Main.SETTINGS_FILE));
-        } catch (Exception ex) {
-            Popup.warn(Messages.ERROR_SAVING_LOCALSETTINGS);
-            Log.Debug(LocalSettings.class, ex);
-        }
+        save(connectionID);
     }
 
     /**
@@ -233,7 +230,14 @@ public class LocalSettings {
             Log.Debug(LocalSettings.class, "Reading in local settings where ID =" + connectionID);
             XMLReader read = new XMLReader();
             read.newDoc(new File(Main.SETTINGS_FILE), false);
-            cookie = read.readInto("localsettings", "connection", String.valueOf(connectionID), cookie);
+            cookies = (Vector<PropertyStore>) read.readInto("localsettings", "connection");
+            for (int i = 0; i < cookies.size(); i++) {
+                PropertyStore propertyStore = cookies.get(i);
+                if (propertyStore.getProperty("nodeid").equals(String.valueOf(connectionID))) {
+                    Log.Debug(LocalSettings.class, "Requested connection id found: " + connectionID);
+                    cookie = propertyStore;
+                }
+            }
 //            cookie.print();
             Log.Debug(LocalSettings.class, "Finished local settings.");
         } catch (Exception e) {
@@ -247,5 +251,49 @@ public class LocalSettings {
      */
     public static synchronized File getLocalFile() {
         return new File(Main.SETTINGS_FILE);
+    }
+
+    /**
+     * Test if the current settings file contains the given connection id
+     * @param connectionID 
+     * @return
+     * @throws Exception
+     */
+    public static boolean hasConnectionID(Integer connectionID) throws Exception {
+        XMLReader read = new XMLReader();
+        read.newDoc(new File(Main.SETTINGS_FILE), false);
+        if (read.readInto("localsettings", "connection", String.valueOf(connectionID), new PropertyStore()).getList().size() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Save the local settings to disk
+     * @param forConnId
+     */
+    public synchronized static void save(Integer forConnId) {
+        if (cookies == null) {
+            cookies = new Vector<PropertyStore>();
+        }
+        if (forConnId != null) {
+            connectionID = forConnId;
+            cookie.changeProperty("nodeid", forConnId.toString());
+            cookies.add(cookie);
+        }
+        XMLWriter x = new XMLWriter();
+        try {
+            x.newDoc("localsettings", false);
+            if (cookies != null) {
+                x.parse("connection", cookies);
+            } else {
+                x.parse("localsettings", String.valueOf(connectionID), cookie);
+            }
+            x.createOrReplace(new File(Main.SETTINGS_FILE));
+        } catch (Exception ex) {
+            Popup.warn(Messages.ERROR_SAVING_LOCALSETTINGS);
+            Log.Debug(LocalSettings.class, ex);
+        }
     }
 }
