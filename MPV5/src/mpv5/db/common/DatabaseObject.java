@@ -110,6 +110,12 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
         }
     }
 
+     private static void uncacheObject(DatabaseObject databaseObject) {
+        if (databaseObject != null) {
+            cache.remove(databaseObject.getDbIdentity() + "@" + databaseObject.__getIDS());
+        }
+    }
+
     private synchronized static DatabaseObject getCachedObject(Context context, int id) {
         if (cache.containsKey(context.getDbIdentity() + "@" + id)) {
             Log.Debug(DatabaseObject.class, "Using cached object " + context + "@" + id);
@@ -305,12 +311,14 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
      */
     public boolean save() {
         String message = null;
+        uncacheObject(this);
 
         if (__getCName() != null && __getCName().length() > 0) {
             try {
                 if (ids <= 0) {
                     Log.Debug(this, "Inserting new dataset into: " + this.getContext());
                     dateadded = new Date();
+                    ensureUniqueness();
                     if (!this.getType().equals(new HistoryItem().getType())) {
                         message = this.__getCName() + Messages.INSERTED;
                     }
@@ -367,9 +375,6 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
             Log.Debug(this, "Setting groups to 'ungrouped'");
             groupsids = 1;
         }
-
-
-
         return save();
     }
 

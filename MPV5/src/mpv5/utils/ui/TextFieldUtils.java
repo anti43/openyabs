@@ -17,6 +17,7 @@
 package mpv5.utils.ui;
 
 import java.awt.Color;
+import java.awt.Component;
 import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 import mpv5.ui.beans.LabeledTextField;
@@ -47,12 +48,16 @@ public class TextFieldUtils {
         new blinker(lfield.getTextField(), 2, Color.RED).execute();
     }
 
+    public static void blink(Component component, Color color) {
+        new blinker(component, 2, Color.RED).execute();
+    }
+
     private static class blinker extends SwingWorker<Void, Void> {
-        private JTextField filed;
+        private Component filed;
         private int count;
         private Color color;
 
-        private blinker(JTextField field, int i, Color col) {
+        private blinker(Component field, int i, Color col) {
             filed = field;
             count = i;
             color = col;

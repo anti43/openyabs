@@ -235,6 +235,7 @@ public class Context {
         list.add(getMessages());
         list.add(getItemsList());
         list.add(getMail());
+        list.add(getSearchIndex());
 
         return list;
     }
@@ -618,28 +619,28 @@ public class Context {
             boolean first = true;
             if (isCompany()) {
                 if (first) {
-                    cond += "WHERE ";
+                    cond += "WHERE(";
                 }
                 first = false;
                 cond += " " + CONDITION_CONTACTS_COMPANY + "=1 OR ";
             }
             if (isCustomer()) {
                 if (first) {
-                    cond += "WHERE ";
+                    cond += "WHERE(";
                 }
                 first = false;
                 cond += " " + CONDITION_CONTACTS_CUSTOMER + "=1 OR ";
             }
             if (isManufacturer()) {
                 if (first) {
-                    cond += "WHERE ";
+                    cond += "WHERE(";
                 }
                 first = false;
                 cond += " " + CONDITION_CONTACTS_MANUFACTURER + "=1 OR ";
             }
             if (isSupplier()) {
                 if (first) {
-                    cond += "WHERE ";
+                    cond += "WHERE(";
                 }
                 first = false;
                 cond += " " + CONDITION_CONTACTS_SUPPLIER + "=1 OR ";
@@ -647,7 +648,7 @@ public class Context {
 
             if (itemType != null) {
                 if (first) {
-                    cond += "WHERE ";
+                    cond += "WHERE(";
                     first = false;
                 }
                 cond += " " + CONDITION_ITEMS_TYPE + "=" + getItemType() + " OR ";
@@ -655,7 +656,7 @@ public class Context {
 
             if (itemStatus != null) {
                 if (first) {
-                    cond += "WHERE ";
+                    cond += "WHERE(";
                     first = false;
                 }
                 cond += " " + CONDITION_ITEMS_STATUS + "=" + getItemStatus() + " OR ";
@@ -664,7 +665,7 @@ public class Context {
             if (!first) {
                 cond = cond.substring(4, cond.length() - 3);
                 if (MPV5View.getUser().isGroupRestricted() && getGroupableContexts().contains(this)) {
-                    cond += "AND   (" + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids() + " OR " + dbIdentity + "." + "GROUPSIDS = 1)";
+                    cond += ") AND (" + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids() + " OR " + dbIdentity + "." + "GROUPSIDS = 1)";
                 }
             } else {
 

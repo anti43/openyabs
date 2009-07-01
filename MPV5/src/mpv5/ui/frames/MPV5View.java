@@ -374,6 +374,36 @@ public class MPV5View extends FrameView {
     }
 
     /**
+     * Shows a tab or adds it if needed
+     * @param instanceOf
+     * @param label
+     */
+    public void addOrShowTab(JComponent instanceOf, String label) {
+        Component[] tabs = tabPane.getComponents();
+        boolean found = false;
+        JScrollPane scroll = null;
+        for (int i = 0; i < tabs.length; i++) {
+            JComponent component = (JComponent) tabs[i];
+            if (component instanceof JScrollPane) {
+                scroll = (JScrollPane) component;
+                component = (JComponent) ((JScrollPane) component).getComponent(0);
+            }
+            if (component.getComponent(0).equals(instanceOf)) {
+                if (scroll == null) {
+                    tabPane.setSelectedComponent(instanceOf);
+                } else {
+                    tabPane.setSelectedComponent(scroll);
+                }
+                found = true;
+            }
+        }
+
+        if (!found) {
+            addTab(instanceOf, label);
+        }
+    }
+
+    /**
      * Add a tab to the main tab pane, with new JScrollPane
      * @param tab
      * @param name
@@ -1276,7 +1306,7 @@ public class MPV5View extends FrameView {
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
-        addTab(MPControlPanel.instanceOf(), Messages.CONTROL_PANEL.toString());
+        addOrShowTab(MPControlPanel.instanceOf(), Messages.CONTROL_PANEL.toString());
 
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
@@ -1355,7 +1385,7 @@ public class MPV5View extends FrameView {
     }//GEN-LAST:event_jMenuItem11ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        addTab(MPControlPanel.instanceOf(), Messages.HISTORY_PANEL.toString());
+        addTab((JComponent) HistoryPanel.instanceOf(), Messages.HISTORY_PANEL.toString());
 
     }//GEN-LAST:event_jButton6ActionPerformed
 
@@ -1528,7 +1558,6 @@ public class MPV5View extends FrameView {
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
         addTab(new mpv5.ui.panels.EURPanel(), Messages.COST);
     }//GEN-LAST:event_jButton9ActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JMenu clipboardMenu;
     public javax.swing.JMenu favouritesMenu;

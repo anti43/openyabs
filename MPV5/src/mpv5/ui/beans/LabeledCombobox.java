@@ -13,12 +13,17 @@ package mpv5.ui.beans;
 import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Vector;
 import javax.swing.ComboBoxEditor;
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.SwingUtilities;
 import mpv5.db.common.Context;
+import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.DatabaseSearch;
+import mpv5.db.objects.Contact;
 import mpv5.handler.MPEnum;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.models.*;
@@ -147,6 +152,27 @@ public class LabeledCombobox extends javax.swing.JPanel {
      */
     public void setModel(MPComboboxModel model) {
         jComboBox1.setModel(model);
+    }
+
+
+    /**
+     * Convenience Method to set a single {@link DatabaseObject} as the model of the combobox.<br/>
+     * Will set the DO as the selected item after adding.
+     * @param obj
+     */
+    public void setModel(DatabaseObject obj) {
+        setModel(new Vector<DatabaseObject>(Arrays.asList(new DatabaseObject[]{
+        obj
+        })));
+        setSelectedIndex(0);
+    }
+
+    /**
+     * Convenience Method to set a {@link List} of {@link DatabaseObject}s as the model of the combobox.<br/>
+     * @param vector
+     */
+    public void setModel(List<DatabaseObject> vector) {
+        setModel(new MPComboboxModel(MPComboBoxModelItem.toItems(vector)));
     }
 
     /**
@@ -291,4 +317,6 @@ public class LabeledCombobox extends javax.swing.JPanel {
         jComboBox1.setSelectedItem(text);
         jComboBox1.setPopupVisible(false);
     }
+
+
 }

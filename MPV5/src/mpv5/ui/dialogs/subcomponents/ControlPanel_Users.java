@@ -570,7 +570,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
     public int intaddedby_ = 4343;
     public Date datelastlog_ = new Date();
     public int ids_;
-    public int groupsids_ = 1;
+    public int groupsids_ ;
     public java.util.Date dateadded_ = new java.util.Date();
 
     public void collectData() {
@@ -640,11 +640,11 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
             cname.set_Text(cname_);
             enabled.setSelected(isenabled_);
             rgroups.setSelected(isrgrouped_);
-            inthighestright.setSelectedIndex(MPComboBoxModelItem.getItemID(inthighestright_, inthighestright.getModel()));
+            inthighestright.setSelectedIndex(MPComboBoxModelItem.getItemID(String.valueOf(inthighestright_), inthighestright.getModel()));
             loggedin.setSelected(isloggedin_);
             datelastlog.setText(DateConverter.getDefDateString(datelastlog_));
-            groupname.setSelectedIndex(MPComboBoxModelItem.getItemID(groupsids_, groupname.getModel()));
-            accountlist.setSelectedIndex(MPComboBoxModelItem.getItemID(intdefaultaccount_, accountlist.getModel()));
+            groupname.setSelectedIndex(MPComboBoxModelItem.getItemID(String.valueOf(groupsids_), groupname.getModel()));
+            accountlist.setSelectedIndex(MPComboBoxModelItem.getItemID(String.valueOf(intdefaultaccount_), accountlist.getModel()));
             statuslist.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(Item.getStatusString(intdefaultstatus_) , statuslist.getModel()));
         } catch (Exception e) {
 //            Log.Debug(this, e);

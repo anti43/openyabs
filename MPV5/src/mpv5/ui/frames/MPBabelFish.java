@@ -492,6 +492,13 @@ public class MPBabelFish extends javax.swing.JFrame {
                         }
                     }
                 } catch (Exception ex) {
+                    Log.Debug(this,
+                            "\n'I refuse to prove that I exist', says God, \n" +
+                            "'for proof denies faith, and without faith I am nothing'. \n" +
+                            "'But,' says man, 'The Babel fish is a dead giveaway, isn't it? \n" +
+                            "It could not have evolved by chance. \n" +
+                            "It proves you exist, and so therefore, by your own arguments, you don't.\n" +
+                            "The Hitchhiker's Guide to the Galaxy: Babelfish\n");
                     Log.Debug(this, ex);
                 }
             }

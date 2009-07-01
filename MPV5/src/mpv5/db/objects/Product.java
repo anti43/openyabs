@@ -20,13 +20,15 @@ import java.util.Date;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.Formattable;
 import mpv5.globals.Messages;
+import mpv5.handler.FormatHandler;
 
 /**
  *
  *  anti
  */
-public class Product extends DatabaseObject {
+public class Product extends DatabaseObject  implements Formattable{
 
 
     /**
@@ -61,6 +63,7 @@ public class Product extends DatabaseObject {
   
     public static final int TYPE_PRODUCT = 0;
     public static final int TYPE_SERVICE = 1;
+    private FormatHandler formatHandler;
 
     public Product() {
         context.setDbIdentity(Context.IDENTITY_PRODUCTS);
@@ -244,5 +247,21 @@ public class Product extends DatabaseObject {
      */
     public void setReference(String reference) {
         this.reference = reference;
+    }
+
+       /**
+     * @return the formatHandler
+     */
+    @Override
+    public FormatHandler getFormatHandler() {
+        if (formatHandler == null) {
+            formatHandler = new FormatHandler(this);
+        }
+        return formatHandler;
+    }
+
+    @Override
+    public void ensureUniqueness() {
+        setCnumber(getFormatHandler().toString(getFormatHandler().getNextNumber()));
     }
 }

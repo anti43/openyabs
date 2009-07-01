@@ -2,6 +2,7 @@ package mpv5.db.common;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import mpv5.db.objects.User;
 
 /**
  *
@@ -88,6 +89,29 @@ public class DatabaseSearch {
         }
         return list.toArray(new Object[][]{});
     }
+
+//    /**
+//     * Get multiple values from a search<br/>
+//     * if the specified {@link User} is not null and is group -restricted, only results for his group will be returned
+//     * @param resultingFieldNames What do you like to get (columns)?
+//     * @param possibleColumns Which columns do you like to take for the condition?
+//     * @param where And what value should the column value have?
+//     * @param searchForLike Shall we search with "like" condition?
+//     * @param user
+//     * @return
+//     */
+//    public Object[][] getValuesFor(String resultingFieldNames, String[] possibleColumns, String where, boolean searchForLike, User user) {
+//        if (user == null || user.isGroupRestricted()) {
+//            ArrayList<Object[]> list = new ArrayList<Object[]>();
+//            for (int i = 0; i < possibleColumns.length; i++) {
+//                String string = possibleColumns[i];
+//                list.addAll(Arrays.asList(QueryHandler.instanceOf().clone(context, ROWLIMIT).select(resultingFieldNames, new String[]{string, where, "'"}, null, searchForLike)));
+//            }
+//            return list.toArray(new Object[][]{});
+//        } else {
+//            return getValuesFor(resultingFieldNames, possibleColumns, where, searchForLike);
+//        }
+//    }
 
     /**
      * Get multiple values from a search

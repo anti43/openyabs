@@ -228,7 +228,7 @@ public class QueryHandler implements Cloneable {
      * @throws NodataFoundException
      */
     public ReturnValue select(int id) throws NodataFoundException {
-        ReturnValue data = freeSelectQuery("SELECT * FROM " + table + " WHERE " + table + ".ids = " + id + " AND " + context.getConditions().substring(5, context.getConditions().length()), mpv5.usermanagement.MPSecurityManager.VIEW, null);
+        ReturnValue data = freeSelectQuery("SELECT * FROM " + table + " WHERE " + table + ".ids = " + id + " AND " + context.getConditions().substring(6, context.getConditions().length()), mpv5.usermanagement.MPSecurityManager.VIEW, null);
         if (data.getData().length == 0) {
             throw new NodataFoundException();
         } else {
@@ -270,7 +270,7 @@ public class QueryHandler implements Cloneable {
             if ((i + 1) != criterias.getValues().length) {
                 query += " AND ";
             } else {
-                query += " AND " + context.getConditions().substring(5, context.getConditions().length());
+                query += " AND " + context.getConditions().substring(6, context.getConditions().length());
             }
         }
         if (criterias.getKeys().length > 0 && !query.endsWith("AND ")) {
@@ -299,7 +299,7 @@ public class QueryHandler implements Cloneable {
             if ((i + 1) != criterias.getValues().length) {
                 query += " AND ";
             } else {
-                query += " AND " + context.getConditions().substring(5, context.getConditions().length());
+                query += " AND " + context.getConditions().substring(6, context.getConditions().length());
             }
         }
 
@@ -364,9 +364,9 @@ public class QueryHandler implements Cloneable {
 
         if (context != null) {
             if (value == null) {
-                return ArrayUtilities.ObjectToSingleColumnArray(freeSelectQuery("SELECT " + cols + " FROM " + table + " " + context.getReferences() + " WHERE " + context.getConditions().substring(5, context.getConditions().length()), mpv5.usermanagement.MPSecurityManager.VIEW, null).getData());
+                return ArrayUtilities.ObjectToSingleColumnArray(freeSelectQuery("SELECT " + cols + " FROM " + table + " " + context.getReferences() + " WHERE " + context.getConditions().substring(6, context.getConditions().length()), mpv5.usermanagement.MPSecurityManager.VIEW, null).getData());
             } else {
-                return ArrayUtilities.ObjectToSingleColumnArray(freeSelectQuery("SELECT " + cols + " FROM " + table + " " + context.getReferences() + " WHERE " + needle + f + value + g + " AND " + context.getConditions().substring(5, context.getConditions().length()), mpv5.usermanagement.MPSecurityManager.VIEW, null).getData());
+                return ArrayUtilities.ObjectToSingleColumnArray(freeSelectQuery("SELECT " + cols + " FROM " + table + " " + context.getReferences() + " WHERE " + needle + f + value + g + " AND " + context.getConditions().substring(6, context.getConditions().length()), mpv5.usermanagement.MPSecurityManager.VIEW, null).getData());
             }
         } else if (value == null) {
             return ArrayUtilities.ObjectToSingleColumnArray(freeSelectQuery("SELECT " + cols + " FROM " + table + " " + context.getReferences(), mpv5.usermanagement.MPSecurityManager.VIEW, null).getData());
@@ -932,9 +932,9 @@ public class QueryHandler implements Cloneable {
 //        start();
         String query;
         if (where != null && where[0] != null && where[1] != null) {
-            query = "SELECT " + what + " FROM " + table + " " + context.getReferences() + " WHERE " + table + "." + where[0] + " = " + where[2] + where[1] + where[2] + " AND " + context.getConditions().substring(5, context.getConditions().length());
+            query = "SELECT " + what + " FROM " + table + " " + context.getReferences() + " WHERE " + table + "." + where[0] + " = " + where[2] + where[1] + where[2] + " AND " + context.getConditions().substring(6, context.getConditions().length());
         } else {
-            query = "SELECT " + what + " FROM " + table + " " + context.getReferences() + " WHERE " + context.getConditions().substring(5, context.getConditions().length());
+            query = "SELECT " + what + " FROM " + table + " " + context.getReferences() + " WHERE " + context.getConditions().substring(6, context.getConditions().length());
         }
         return freeSelectQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null).getData();
     }
@@ -957,7 +957,7 @@ public class QueryHandler implements Cloneable {
             if ((i + 1) != haveValues.length) {
                 query += " AND ";
             } else {
-                query += " AND " + context.getConditions().substring(5, context.getConditions().length());
+                query += " AND " + context.getConditions().substring(6, context.getConditions().length());
             }
         }
         return freeSelectQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null).getData();
@@ -1004,7 +1004,7 @@ public class QueryHandler implements Cloneable {
         if (where == null) {
             wher = "  " + context.getConditions();
         } else {
-            wher = " WHERE " + table + "." + where[0] + " " + k + " " + where[2] + l1 + where[1] + l2 + where[2] + " AND " + context.getConditions().substring(5, context.getConditions().length()) + " ";
+            wher = " WHERE " + table + "." + where[0] + " " + k + " " + where[2] + l1 + where[1] + l2 + where[2] + " AND " + context.getConditions().substring(6, context.getConditions().length()) + " ";
         }
         String query = "SELECT " + what + " FROM " + table + " " + context.getReferences() + wher + ord;
 
@@ -1347,7 +1347,7 @@ public class QueryHandler implements Cloneable {
 
         if (where == null) {
         } else {
-            wher = where[0] + " " + k + " " + where[2] + l + where[1] + l + where[2] + " AND " + wher + " AND " + context.getConditions().substring(5, context.getConditions().length());
+            wher = where[0] + " " + k + " " + where[2] + l + where[1] + l + where[2] + " AND " + wher + " AND " + context.getConditions().substring(6, context.getConditions().length());
             if (where.length > 3) {
                 wher = wher + " AND " + where[3] + " " + k + " " + where[5] + l + where[4] + l + where[5] + " " + context.getConditions() + " ";
             }

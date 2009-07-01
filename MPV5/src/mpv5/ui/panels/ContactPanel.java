@@ -35,8 +35,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableCellRenderer;
 import mpv5.db.common.*;
@@ -120,10 +123,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         dataOwner.setPanelData(this);
         this.exposeData();
 
-        if (this.getParent() instanceof JTabbedPane) {
-            JTabbedPane jTabbedPane = (JTabbedPane) this.getParent();
-            jTabbedPane.setTitleAt(jTabbedPane.getSelectedIndex(), Messages.CONTACT + cname_);
-        }
+        setTitle();
 
         prinitingComboBox1.init(dataOwner);
 
@@ -137,7 +137,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             Popup.notice(Messages.LOCKED_BY);
         }
 
-         if (dataOwner.isExisting()) {
+        if (dataOwner.isExisting()) {
             dataTableContent = FILES;
             addfile.setEnabled(true);
             removefile.setEnabled(true);
@@ -1167,7 +1167,6 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         removefile.setEnabled(false);
 //        TableFormat.stripFirstColumn(dataTable);
     }//GEN-LAST:event_button_productsActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel addedby;
     private javax.swing.JButton addfile;
@@ -1322,7 +1321,6 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         cnumber_ = dataOwner.getFormatHandler().toString(dataOwner.getFormatHandler().getNextNumber());
     }
 
-
     @Override
     public void exposeData() {
         city.set_Text(city_);
@@ -1452,5 +1450,26 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         }
 
         validate();
+    }
+
+    private void setTitle() {
+         if (this.getParent() instanceof JViewport || this.getParent() instanceof JTabbedPane) {
+            JTabbedPane jTabbedPane = null;
+            String title1 = Messages.CONTACT + cname_;
+            //this->viewport->scrollpane->tabbedpane
+            if (this.getParent().getParent().getParent() instanceof JTabbedPane) {
+                jTabbedPane = (JTabbedPane) this.getParent().getParent().getParent();
+            } else {
+                try {
+                    jTabbedPane = (JTabbedPane) this.getParent();
+                } catch (Exception e) {
+                    //Free floating window
+                    ((JFrame)this.getRootPane().getParent()).setTitle(title1);
+                }
+            }
+            if (jTabbedPane != null) {
+                jTabbedPane.setTitleAt(jTabbedPane.getSelectedIndex(), title1);
+            }
+        }
     }
 }

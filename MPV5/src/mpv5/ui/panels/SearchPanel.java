@@ -23,6 +23,7 @@ import mpv5.db.common.DatabaseSearch;
 import mpv5.db.common.NodataFoundException;
 import mpv5.globals.Headers;
 import mpv5.logging.Log;
+import mpv5.ui.frames.MPV5View;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.tables.Selection;
 import mpv5.utils.tables.TableFormat;
@@ -36,8 +37,8 @@ public class SearchPanel extends javax.swing.JPanel {
     private static final long serialVersionUID = 1L;
     private Context context;
     private DataPanel panel;
-    private int lasttype = 1;
-    private String lastneedle = "";
+    private int lasttype = 5;
+    private String lastneedle = "0";
 
     /** Creates new form SearchPanel */
     public SearchPanel() {
@@ -46,14 +47,11 @@ public class SearchPanel extends javax.swing.JPanel {
 
     public SearchPanel(Context context, DataPanel panel) {
         initComponents();
-//        jToolBar1.setSize(jToolBar1.getWidth(), 41);
-//        jToolBar1.setPreferredSize(new Dimension(jToolBar1.getWidth(), 41));
-//        jToolBar1.setSize(jToolBar1.getWidth(), 41);
-//        jToolBar1.setMinimumSize(new Dimension(jToolBar1.getWidth(), 41));
         this.validate();
         this.context = context;
-        this.panel = panel;
-        search(1, context.getParent().__getCName());
+        this.panel = panel;  
+        lastneedle =  MPV5View.getUser().__getIDS().toString();
+        search(5, MPV5View.getUser().__getIDS().toString());
     }
 
     /**
@@ -270,7 +268,12 @@ public class SearchPanel extends javax.swing.JPanel {
                             break;
                         case 4:
                             resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 0).getValuesFor("ids,cname", "cname", context.getParent().__getCName(), true), Headers.SEARCH_DEFAULT.getValue()));
-
+                            break;
+                        case 5:
+                            resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 0).getValuesFor("ids,cname", "groupsids",
+                                        Integer.valueOf(value)), Headers.SEARCH_DEFAULT.getValue()));
+                            break;
+                            
                     }
                     TableFormat.stripFirstColumn(resulttable);
                     TableFormat.makeUneditable(resulttable);
@@ -307,7 +310,6 @@ public class SearchPanel extends javax.swing.JPanel {
             }
         }
     }//GEN-LAST:event_resulttableMouseClicked
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel label1;
     private javax.swing.JLabel label2;

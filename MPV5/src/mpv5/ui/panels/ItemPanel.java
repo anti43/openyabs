@@ -22,6 +22,7 @@ along with MP.  If not, see <http://www.gnu.org/licenses/>.
 package mpv5.ui.panels;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -32,8 +33,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableCellRenderer;
 import mpv5.db.common.*;
@@ -57,6 +61,7 @@ import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.tables.TableFormat;
+import mpv5.utils.ui.TextFieldUtils;
 
 /**
  *
@@ -77,11 +82,16 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
     public ItemPanel(Context context, int type) {
         initComponents();
         sp = new SearchPanel(context, this);
+        sp.setVisible(true);
         tb = new mpv5.ui.toolbars.DataPanelTB(this);
         toolbarpane.add(tb, BorderLayout.CENTER);
         dataOwner = new Item();
-        dataOwner.setInttype(type);
-        this.type.setText(Item.getTypeString(type));
+        if (type >= 0) {
+            dataOwner.setInttype(type);
+            this.type.setText(Item.getTypeString(type));
+        } else {
+            this.type.setText("");
+        }
 
         refresh();
 
@@ -120,6 +130,14 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
         date3.setDate(new Date());
     }
 
+    /**
+     * 
+     * @param items
+     */
+    public ItemPanel(Context items) {
+        this(items, -1);
+    }
+
     @Override
     public DatabaseObject getDataOwner() {
         return dataOwner;
@@ -131,10 +149,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
         dataOwner.setPanelData(this);
         this.exposeData();
 
-        if (this.getParent() instanceof JTabbedPane) {
-            JTabbedPane jTabbedPane = (JTabbedPane) this.getParent();
-            jTabbedPane.setTitleAt(jTabbedPane.getSelectedIndex(), cname_);
-        }
+        setTitle();
 
         prinitingComboBox1.init(dataOwner);
 
@@ -148,10 +163,31 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
         }
     }
 
+    private void setTitle() {
+        if (this.getParent() instanceof JViewport || this.getParent() instanceof JTabbedPane) {
+            JTabbedPane jTabbedPane = null;
+            String title1 = cname_;
+            //this->viewport->scrollpane->tabbedpane
+            if (this.getParent().getParent().getParent() instanceof JTabbedPane) {
+                jTabbedPane = (JTabbedPane) this.getParent().getParent().getParent();
+            } else {
+                try {
+                    jTabbedPane = (JTabbedPane) this.getParent();
+                } catch (Exception e) {
+                    //Free floating window
+                    ((JFrame) this.getRootPane().getParent()).setTitle(title1);
+                }
+            }
+            if (jTabbedPane != null) {
+                jTabbedPane.setTitleAt(jTabbedPane.getSelectedIndex(), title1);
+            }
+        }
+    }
+
     @Override
     public void showRequiredFields() {
-//        TextFieldUtils.blinkerRed(cname);
-//        cname.requestFocus();
+        TextFieldUtils.blink(contactname.getComboBox().getEditor().getEditorComponent(), Color.RED);
+        contactname.requestFocus();
     }
 
     private void addFile() {
@@ -197,25 +233,6 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
         }
     }
 
-    private void itemTableClicked(MouseEvent evt) {
-        if (evt.getClickCount() > 1) {
-            try {
-                MPV5View.identifierView.addTab(DatabaseObject.getObject(Context.getItems(), Integer.valueOf(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).toString())));
-            } catch (NodataFoundException ex) {
-                Log.Debug(ex);
-            }
-        }
-    }
-
-    private void productTableClicked(MouseEvent evt) {
-        if (evt.getClickCount() > 1) {
-            try {
-                MPV5View.identifierView.addTab(DatabaseObject.getObject(Context.getProducts(), Integer.valueOf(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).toString())));
-            } catch (NodataFoundException ex) {
-                Log.Debug(ex);
-            }
-        }
-    }
 
     private void fillFiles() {
         Context c = Context.getFilesToItems();
@@ -751,11 +768,18 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
 
     @Override
     public void collectData() {
-
         try {
             contactsids_ = Integer.valueOf(contactname.getSelectedItem().getId());
-            defaultaccountsids_ = Integer.valueOf(accountselect.getSelectedItem().getId());
-        } catch (Exception numberFormatException) {}
+        } catch (Exception numberFormatException) {
+            //Contact not set
+            Log.Debug(this, numberFormatException.getMessage());
+        }
+        if (contactsids_ > 0) {
+            try {
+                defaultaccountsids_ = Integer.valueOf(accountselect.getSelectedItem().getId());
+            } catch (Exception numberFormatException) {
+                defaultaccountsids_ = 1;
+            }
 
             if (groupnameselect.getSelectedItem() != null) {
                 groupsids_ = Integer.valueOf(((MPComboBoxModelItem) groupnameselect.getSelectedItem()).getId());
@@ -767,25 +791,29 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
                 dateadded_ = new Date();
             }
             intaddedby_ = User.getUserId(addedby.getText());
-
             description_ = notes.getText();
             dateadded_ = date1.getDate();
             groupsids_ = 1;
-
+            if (cnumber_ == null) {
+                cname_ = "<not set>";
+            } else {
+                cname_ = cnumber_;
+            }
 //        netvalue_;
 //        taxvalue_;
             datetodo_ = date2.getDate();
             dateend_ = date3.getDate();
-            cname_ = "none";
 //        intreminders_;
             intstatus_ = Integer.valueOf(status.getSelectedItem().getId());
-//        inttype_ = Item.g;
+        } else {
+            showRequiredFields();
+        }
     }
 
     @Override
     public void exposeData() {
 
-        status.setSelectedItem(intstatus_);
+        
         number.setText(cname_);
         date1.setDate(dateadded_);
         date2.setDate(datetodo_);
@@ -793,26 +821,27 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
         notes.setText(description_);
 
         try {
-
+            status.setSelectedItem(intstatus_);
             accountselect.setSelectedItem(defaultaccountsids_);
             groupnameselect.setSelectedIndex(MPComboBoxModelItem.getItemID(groupsids_, groupnameselect.getModel()));
-
         } catch (Exception e) {
+            Log.Debug(e);
         }
 
         addedby.setText(User.getUsername(intaddedby_));
         try {
             Contact owner = (Contact) DatabaseObject.getObject(Context.getContact(), contactsids_);
-            contactname.setValue(owner.__getCName());
+            contactname.setModel(owner);
             contactcity.setText(owner.__getCity());
             contactcompany.setText(owner.__getCompany());
             contactid.setText(String.valueOf(owner.__getCNumber()));
-
+            contactsids_ = owner.__getIDS();
         } catch (NodataFoundException ex) {
             Logger.getLogger(ItemPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         fillFiles();
+
     }
 
     @Override
@@ -841,14 +870,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
 
                     sp.refresh();
 
-//                    if (!MPV5View.getUser().isGroupRestricted()) {
-//                        accountselect.setModel(MPComboBoxModelItem.toModel(new DatabaseSearch(Context.getAccounts()).getValuesFor(Context.getAccounts().getSubID(), null, "")));
-//                    } else {
-//                        accountselect.setModel(MPComboBoxModelItem.toModel(new DatabaseSearch(Context.getAccounts()).getValuesFor(Context.getAccounts().getSubID(), "ids", MPV5View.getUser().__getGroupsids())));
-//
-//                    }
-                    QueryCriteria c = new QueryCriteria("ids", MPV5View.getUser().__getIntdefaultaccount());
-                    accountselect.setModel(MPComboBoxModelItem.toModel(MPComboBoxModelItem.toItems(DatabaseObject.getObjects(Context.getAccounts(), c))));
+                    accountselect.setModel(MPComboBoxModelItem.toModel(MPComboBoxModelItem.toItems(DatabaseObject.getObjects(Context.getAccounts()))));
                     accountselect.setSelectedIndex(MPComboBoxModelItem.getItemID(MPV5View.getUser().__getIntdefaultaccount(), accountselect.getModel()));
 
                     fillFiles();
@@ -863,7 +885,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
             }
         };
 
-        SwingUtilities.invokeLater(runnable);
+       SwingUtilities.invokeLater(runnable);
     }
 
     @Override

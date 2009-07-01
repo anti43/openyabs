@@ -18,6 +18,7 @@ package mpv5.utils.models;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ComboBoxModel;
@@ -49,7 +50,7 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
      * @return
      */
     public static int getItemID(Integer uid, ComboBoxModel model) {
-        return getItemID((Object)uid, model);
+        return getItemID((Object)new Integer(uid), model);
     }
 
     /**
@@ -147,25 +148,25 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
 
     /**
      * Converts an array to mp combo box items
-     * {id (hidden), value (shown in the list)}
+     * {Integer id (hidden), String value (shown in the list)}
      * @param items
      * @return
      */
-    public static MPComboBoxModelItem[] toItems(ArrayList<DatabaseObject> items) {
+    public static MPComboBoxModelItem[] toItems(List<DatabaseObject> items) {
         return toItems(items, COMPARE_BY_VALUE);
     }
 
     /**
      * Converts an array to mp combo box items
-     * {id (hidden), value (shown in the list)}
+     * {Integer id (hidden), String value (shown in the list)}
      * @param items
      * @param compareMode
      * @return
      */
-    public static MPComboBoxModelItem[] toItems(ArrayList<DatabaseObject> items, int compareMode) {
+    public static MPComboBoxModelItem[] toItems(List<DatabaseObject> items, int compareMode) {
         MPComboBoxModelItem[] array = new MPComboBoxModelItem[items.size()];
         for (int i = 0; i < array.length; i++) {
-            array[i] = new MPComboBoxModelItem(items.get(i).__getIDS(), items.get(i).__getCName());
+            array[i] = new MPComboBoxModelItem(new Integer(items.get(i).__getIDS()), items.get(i).__getCName());
             array[i].setCompareMode(compareMode);
         }
         return array;

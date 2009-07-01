@@ -8,6 +8,7 @@ package mpv5.ui.dialogs;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.security.NoSuchAlgorithmException;
+import mpv5.Main;
 import mpv5.db.common.NodataFoundException;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
@@ -49,10 +50,10 @@ public class LoginScreen extends javax.swing.JFrame {
 
             private void close() {
                 if (Popup.Y_N_dialog(Messages.REALLY_CLOSE)) {
-                    LocalSettings.setProperty("lastuser", null);
-                    LocalSettings.setProperty("lastuserpw", null);
+                    LocalSettings.setProperty(LocalSettings.LAST_USER, null);
+                    LocalSettings.setProperty(LocalSettings.LAST_USER_PW, null);
                     LocalSettings.save();
-                    System.exit(0);
+                    Main.cache();
                 }
             }
         });
@@ -81,8 +82,9 @@ public class LoginScreen extends javax.swing.JFrame {
         jCheckBox2 = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setTitle(bundle.getString("LoginScreen.title")); // NOI18N
+        setAlwaysOnTop(true);
         setFocusTraversalPolicyProvider(true);
         setResizable(false);
 
@@ -150,7 +152,7 @@ public class LoginScreen extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jButton1)
                         .addComponent(jCheckBox2)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(13, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());

@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
-import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
 import mpv5.Main;
@@ -21,7 +20,6 @@ import mpv5.ui.frames.MPV5View;
 import mpv5.utils.text.TypeConversion;
 import mpv5.utils.xml.XMLReader;
 import mpv5.utils.xml.XMLWriter;
-import org.jdom.JDOMException;
 
 /**
  *
@@ -50,8 +48,14 @@ public class LocalSettings {
     public static final String SERVER_PORT = "serverport";
     public static final String SCROLL_ALWAYS = "scrollpane";
     public static final String CACHE_SIZE = "cachesize";
+    public static final String LAST_USER = "lastuser";
+    public static final String LAST_USER_PW = "lastuserpw";
+
+
     private static PropertyStore predefinedSettings = new PropertyStore(new String[][]{ //        {LAF,UIManager.getSystemLookAndFeelClassName()}
-                {DEFAULT_FONT, "Tahoma"}, {DBROW_LIMIT, "0"}, {DBAUTOLOCK, "false"}, {SERVER_PORT, "4343"}, {CACHE_SIZE, "100"}
+                {DEFAULT_FONT, "Tahoma"}, {DBROW_LIMIT, "0"}, {DBAUTOLOCK, "false"}, 
+                {SERVER_PORT, "4343"}, {CACHE_SIZE, "100"},
+                {LAST_USER, "1"},{LAST_USER_PW, "5F4DCC3B5AA765D61D8327DEB882CF99"}
             });
     private static Vector<PropertyStore> cookies;
 

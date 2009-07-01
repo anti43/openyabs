@@ -84,6 +84,7 @@ public class Main extends SingleFrameApplication {
      */
     public static void cache() {
         User.cacheUser();
+//        DatabaseObject.cacheObjects();//Is called by User.login() later
     }
 
     private static void useNetbookOpt() {
@@ -458,11 +459,11 @@ public class Main extends SingleFrameApplication {
      * @param firststart
      */
     public void go(boolean firststart) {
-        splash.nextStep(Messages.CACHE.toString());
-        cache();
         setLaF(null);
         Main.splash.nextStep(Messages.INIT_LOGIN.toString());
         login();
+        splash.nextStep(Messages.CACHE.toString());
+        cache();
         Main.splash.nextStep(Messages.INIT_PLUGINS.toString());
         loadPlugins();
         Main.splash.nextStep(Messages.INIT_GUI.toString());

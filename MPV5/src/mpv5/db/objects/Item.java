@@ -23,18 +23,20 @@ import java.util.logging.Logger;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.Formattable;
 import mpv5.db.common.NodataFoundException;
 import mpv5.globals.Messages;
 import mpv5.handler.FormatHandler;
 import mpv5.handler.MPEnum;
 import mpv5.logging.Log;
+import mpv5.ui.panels.ItemPanel;
 import mpv5.utils.images.MPIcon;
 
 /**
  *
  *  anti
  */
-public class Item extends DatabaseObject {
+public class Item extends DatabaseObject implements Formattable{
 
     /**
      * Returns a localized string represenation of the given item status
@@ -166,6 +168,7 @@ public class Item extends DatabaseObject {
     private int intstatus;
     private int inttype;
     private String description = "";
+    private String cnumber = "";
     public static final int STATUS_QUEUED = 0;
     public static final int STATUS_IN_PROGRESS = 1;
     public static final int STATUS_PAUSED = 2;
@@ -267,7 +270,7 @@ public class Item extends DatabaseObject {
 
     @Override
     public JComponent getView() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new ItemPanel(Context.getItems(), __getInttype());
     }
 
     /**
@@ -371,7 +374,8 @@ public class Item extends DatabaseObject {
 
     @Override
     public void ensureUniqueness() {
-        setCName(getFormatHandler().toString(getFormatHandler().getNextNumber()));
+        setCnumber(getFormatHandler().toString(getFormatHandler().getNextNumber()));
+        setCName(__getCnumber());
     }
 
     /**
@@ -390,5 +394,19 @@ public class Item extends DatabaseObject {
             t[i] = (SubItem) data.get(i);
         }
         return data.toArray(new SubItem[]{});
+    }
+
+    /**
+     * @return the cnumber
+     */
+    public String __getCnumber() {
+        return cnumber;
+    }
+
+    /**
+     * @param cnumber the cnumber to set
+     */
+    public void setCnumber(String cnumber) {
+        this.cnumber = cnumber;
     }
 }

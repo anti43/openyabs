@@ -9,6 +9,7 @@ import javax.swing.Icon;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.Formattable;
 import mpv5.handler.FormatHandler;
 import mpv5.ui.panels.ContactPanel;
 import mpv5.utils.images.MPIcon;
@@ -17,7 +18,7 @@ import mpv5.utils.images.MPIcon;
  *
  * 
  */
-public class Contact extends DatabaseObject {
+public class Contact extends DatabaseObject  implements Formattable{
 
     private String cnumber = "";
     private String taxnumber = "";

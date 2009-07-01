@@ -229,7 +229,7 @@ public class User extends DatabaseObject {
                     setDatelastlog(new Date());
                     setIsloggedin(true);
                     save();
-                   DatabaseObject.cacheObjects();
+                    DatabaseObject.cacheObjects();//re-cache for user
                 }
             };
 

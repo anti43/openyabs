@@ -20,10 +20,14 @@ import java.text.MessageFormat;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Vector;
 import java.util.regex.Pattern;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.Formattable;
 import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryHandler;
 import mpv5.db.common.ReturnValue;
@@ -153,25 +157,37 @@ public class FormatHandler {
         c.add("inttype", this.getType());
         try {
             Object[][] frm = QueryHandler.instanceOf().clone(Context.getFormats()).select("cname, ids", c);
-            String val = frm[frm.length - 1][0].toString();
-            int id = Integer.valueOf(frm[frm.length - 1][1].toString());
-            try {
-                if (val.startsWith(START_VALUE_IDENTIFIER)) {
-                    startCount = Integer.valueOf(val.split(START_VALUE_IDENTIFIER)[1]);
-                    val = val.split(START_VALUE_IDENTIFIER)[2];
-                    QueryHandler.instanceOf().clone(Context.getFormats()).update("cname", id, val);
+            if (frm.length > 0) {
+                String val = frm[frm.length - 1][0].toString();
+                try {
+                    int id = Integer.valueOf(frm[frm.length - 1][1].toString());
+
+                    if (val.startsWith(START_VALUE_IDENTIFIER)) {
+                        startCount = Integer.valueOf(val.split(START_VALUE_IDENTIFIER)[1]);
+                        val = val.split(START_VALUE_IDENTIFIER)[2];
+                        QueryHandler.instanceOf().clone(Context.getFormats()).update("cname", id, val);
+                    }
+                } catch (NumberFormatException numberFormatException) {
+                    Log.Debug(this, numberFormatException);
+                    return DEFAULT_FORMAT;
                 }
-            } catch (NumberFormatException numberFormatException) {
-                Log.Debug(this, numberFormatException);
+                return new MessageFormat(VariablesHandler.parse(val, source));
+            } else {
+                Log.Debug(this, "Format not found, using default format instead!");
                 return DEFAULT_FORMAT;
             }
-            return new MessageFormat(VariablesHandler.parse(val, source));
         } catch (Exception ex) {
             Log.Debug(ex);
             Log.Debug(this, "Format not found, using default format instead!");
             return DEFAULT_FORMAT;
         }
     }
+    /**
+     * Contains all formattable Contexts
+     */
+    public static List<Context> FORMATTABLE_CONTEXTS = new Vector<Context>(Arrays.asList(new Context[]{
+                Context.getContact(), Context.getProducts(), Context.getItems()
+            }));
 
     /**
      * Fetches the next number from the database
@@ -181,14 +197,18 @@ public class FormatHandler {
         if (startCount == null) {
             int newN = 0;
             DatabaseObject forThis = source;
-            if (forThis.getContext().equals(Context.getContact())) {
+            if (FORMATTABLE_CONTEXTS.contains(forThis.getContext())) {
                 ReturnValue val = QueryHandler.getConnection().freeQuery(
                         //                    "LOCK TABLE " + forThis.getDbIdentity() + " IN EXCLUSIVE MODE;" +
                         "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + ")", MPSecurityManager.VIEW, null);
-                Log.Debug(FormatHandler.class, "Last number found: " + val.getData()[0][0]);
-                newN = ((Contact) forThis).getFormatHandler().getIntegerPartOf(val.getData()[0][0].toString());
-                Log.Debug(FormatHandler.class, "Counter part: " + newN);
-                return getNextNumber(newN);
+                if (val.hasData()) {
+                    Log.Debug(FormatHandler.class, "Last number found: " + val.getData()[0][0]);
+                    newN = ((Formattable) forThis).getFormatHandler().getIntegerPartOf(val.getData()[0][0].toString());
+                    Log.Debug(FormatHandler.class, "Counter part: " + newN);
+                    return getNextNumber(newN);
+                } else {
+                    return 1;
+                }
             } else {
                 throw new UnsupportedOperationException("FormatHandler#getNextNumber is not defined for " + forThis);
             }

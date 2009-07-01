@@ -288,7 +288,7 @@ public class DataPanelTB extends javax.swing.JPanel {
 
         dato.getPanelData(parents);
         if (dato.save()) {
-            parents.refresh();
+//            parents.refresh();
             parents.setDataOwner(dato);
         } else {
             parents.showRequiredFields();
