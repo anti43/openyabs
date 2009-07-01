@@ -202,13 +202,13 @@ public class ControlPanel_Localization extends javax.swing.JPanel implements Con
 
         jList1.setModel(xl);
     }
-//    public java.awt.Component getActionPanel() {
+//    public java.awt.Component getAndRemoveActionPanel() {
 //        jPanel1.remove(jPanel6);
 //        jPanel1.validate();
 //        return jPanel6;
 //    }
 
-    public Component getActionPanel() {
+    public Component getAndRemoveActionPanel() {
         JPanel jPanel2 = new JPanel();
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.setName("jPanel2"); // NOI18N
@@ -223,7 +223,7 @@ public class ControlPanel_Localization extends javax.swing.JPanel implements Con
             jPanel1.remove(jButton4);
         } catch (Exception e) {
         }
-
+        validate();
         return jPanel2;
 
     }

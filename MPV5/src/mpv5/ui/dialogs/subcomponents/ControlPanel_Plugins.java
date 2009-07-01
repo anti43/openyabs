@@ -104,7 +104,6 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
@@ -121,13 +120,10 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
         jButton1 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Plugins.border.title"))); // NOI18N
         setName("Form"); // NOI18N
-        setLayout(new java.awt.BorderLayout());
-
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Plugins.jPanel1.border.title"))); // NOI18N
-        jPanel1.setName("jPanel1"); // NOI18N
+        setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.PAGE_AXIS));
 
         jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel3.setName("jPanel3"); // NOI18N
@@ -158,7 +154,7 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 452, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 425, Short.MAX_VALUE)
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(jLabel3)
                         .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
@@ -172,12 +168,16 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 22, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
+        add(jPanel3);
+
         jPanel5.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel5.setMaximumSize(new java.awt.Dimension(32767, 150));
         jPanel5.setName("jPanel5"); // NOI18N
+        jPanel5.setPreferredSize(new java.awt.Dimension(453, 100));
 
         jLabel8.setFont(new java.awt.Font("Tahoma", 1, 12));
         jLabel8.setText(bundle.getString("ControlPanel_Plugins.jLabel8.text")); // NOI18N
@@ -222,7 +222,7 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButton3))
                     .addComponent(jLabel9))
-                .addContainerGap(39, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -238,8 +238,10 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
                         .addComponent(jLabel9)
                         .addGap(9, 9, 9)
                         .addComponent(labeledTextChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(16, 16, 16))
+                .addGap(276, 276, 276))
         );
+
+        add(jPanel5);
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.setName("jPanel2"); // NOI18N
@@ -263,47 +265,15 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
         });
         jPanel2.add(jButton1);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 480, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
-
-        add(jPanel1, java.awt.BorderLayout.CENTER);
+        add(jPanel2);
     }// </editor-fold>//GEN-END:initComponents
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-
-        Object[] plugs = list.getSelectedValues();
-        for (int i = 0; i < plugs.length; i++) {
-            Plugin gin = (Plugin) plugs[i];
-            MPV5View.identifierView.loadPlugin(gin);
-        }
-
-    }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
         try {
             ArrayList data = DatabaseObject.getReferencedObjects(MPV5View.getUser(), Context.getPluginsToUsers());
             for (int i = 0; i < data.size(); i++) {
-               ((UserPlugin) data.get(i)).delete();
+                ((UserPlugin) data.get(i)).delete();
             }
         } catch (NodataFoundException ex) {
             Log.Debug(ex);
@@ -320,17 +290,16 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
             up.setCName(gin.__getCName());
             up.save();
         }
-    }//GEN-LAST:event_jButton1ActionPerformed
+}//GEN-LAST:event_jButton1ActionPerformed
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        if (labeledTextChooser2.hasText()) {
-            try {
-                importf(new File(labeledTextChooser2.get_Text(true)));
-            } catch (FileNotFoundException ex) {
-                Popup.error(ex);
-            }
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+
+        Object[] plugs = list.getSelectedValues();
+        for (int i = 0; i < plugs.length; i++) {
+            Plugin gin = (Plugin) plugs[i];
+            MPV5View.identifierView.loadPlugin(gin);
         }
-    }//GEN-LAST:event_jButton4ActionPerformed
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         MP5Plugin p = null;
@@ -344,7 +313,17 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
         } catch (Exception e) {
             Popup.notice(Messages.ERROR_OCCURED);
         }
-    }//GEN-LAST:event_jButton3ActionPerformed
+}//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        if (labeledTextChooser2.hasText()) {
+            try {
+                importf(new File(labeledTextChooser2.get_Text(true)));
+            } catch (FileNotFoundException ex) {
+                Popup.error(ex);
+            }
+        }
+}//GEN-LAST:event_jButton4ActionPerformed
 
     private void listMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listMouseClicked
 
@@ -373,7 +352,6 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel5;
@@ -381,13 +359,6 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
     private mpv5.ui.beans.LabeledTextChooser labeledTextChooser2;
     private javax.swing.JList list;
     // End of variables declaration//GEN-END:variables
-
-    public ControlApplet instanceOf() {
-        if (ident == null) {
-            ident = new ControlPanel_Plugins();
-        }
-        return ident;
-    }
 
     private void refresh() {
         DefaultListModel xl = new DefaultListModel();
@@ -431,9 +402,9 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
         list.setSelectedIndices(sel);
     }
 
-    public Component getActionPanel() {
-        jPanel1.remove(jPanel2);
-        jPanel1.validate();
+    public Component getAndRemoveActionPanel() {
+        this.remove(jPanel2);
+        validate();
         return jPanel2;
     }
 }

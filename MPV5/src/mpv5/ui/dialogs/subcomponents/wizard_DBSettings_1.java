@@ -17,6 +17,7 @@ import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 
 import mpv5.logging.Log;
+import mpv5.ui.dialogs.Wizard;
 import mpv5.ui.dialogs.WizardMaster;
 import mpv5.ui.dialogs.Wizardable;
 
@@ -28,13 +29,14 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
 
     private static final long serialVersionUID = 1L;
     private WizardMaster master;
+    private Integer forConnId = null;
 
-    public wizard_DBSettings_1(WizardMaster w) {
+    public wizard_DBSettings_1(Wizard w, Integer forConnId) {
         this.master = w;
         initComponents();
         jComboBox1.setModel(new DefaultComboBoxModel(ConnectionTypeHandler.DRIVERS));
         load();
-
+        this.forConnId = forConnId;
     }
 
     private boolean DBVerification() {
@@ -69,7 +71,7 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
                         master.getStore().getProperty("dbname"),
                         true)) {
                     master.setMessage(Messages.CONNECTION_VERIFIED.toString());
-                    LocalSettings.save();
+                    LocalSettings.save(forConnId);
                     LocalSettings.apply();
 
                     if (!jCheckBox1.isSelected()) {
@@ -102,7 +104,7 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
     private boolean DirectoryCreate() {
         ////////////// The cache dir //////////////////////
         LocalSettings.setProperty(LocalSettings.CACHE_DIR, LocalSettings.getProperty(LocalSettings.DBPATH) + File.separator + "Cache");
-        LocalSettings.save();
+        LocalSettings.save(forConnId);
         File file1 = new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR));
         file1.mkdirs();
         ///////////////////////////////////////////////////////////
