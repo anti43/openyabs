@@ -4,8 +4,6 @@
     <description>Builds, tests, and runs the project MPV5.</description>
     <import file="nbproject/build-impl.xml"/>
     <import file="nbproject/profiler-build-impl.xml"/>
-    <import file="nbproject/profiler-build-impl.xml"/>
-    <import file="nbproject/profiler-build-impl.xml"/>
   <!-- Uncomment this section to build the rpm  
   <rpm
         specFile="mpv5.spec"

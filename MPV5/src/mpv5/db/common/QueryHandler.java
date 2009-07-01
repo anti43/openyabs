@@ -625,7 +625,9 @@ public class QueryHandler implements Cloneable {
         }
         if (!runInBackground) {
             RUNNING_JOBS++;
-            comp.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+            if(RUNNING_JOBS>5) {
+                comp.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+            }
             MPV5View.setProgressMaximumValue(RUNNING_JOBS);
         }
     }
