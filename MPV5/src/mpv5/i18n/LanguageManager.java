@@ -84,7 +84,7 @@ public class LanguageManager {
             if (MPSecurityManager.checkAdminAccess() && !MPV5View.getUser().isDefault()) {
                 if (doc != null) {
                     try {
-                        QueryHandler.instanceOf().clone(Context.getCountries()).delete(new String[][]{{"usersids", MPV5View.getUser().getID().toString(), ""}});
+                        QueryHandler.instanceOf().clone(Context.getCountries()).delete(new String[][]{{"groupsids", MPV5View.getUser().getID().toString(), ""}});
                     } catch (Exception ex) {
                         Log.Debug(ex);
                     }

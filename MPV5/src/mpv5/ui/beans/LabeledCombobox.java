@@ -27,6 +27,7 @@ import mpv5.db.objects.Contact;
 import mpv5.handler.MPEnum;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.models.*;
+import mpv5.utils.renderer.ComboBoxRendererForTooltip;
 
 /**
  *
@@ -80,6 +81,8 @@ public class LabeledCombobox extends javax.swing.JPanel {
             public void keyReleased(KeyEvent e) {
             }
         });
+
+        jComboBox1.setRenderer(new ComboBoxRendererForTooltip());
     }
 
     public JComboBox getComboBox() {

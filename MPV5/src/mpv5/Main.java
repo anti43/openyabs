@@ -44,6 +44,7 @@ import mpv5.db.common.DatabaseConnection;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.DatabaseObjectLock;
 import mpv5.db.common.QueryHandler;
+import mpv5.db.objects.Account;
 import mpv5.globals.Constants;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
@@ -83,7 +84,11 @@ public class Main extends SingleFrameApplication {
      * Use this method to (re) cache data from the database to avoid uneccessary db queries
      */
     public static void cache() {
+        MPV5View.addMessage(Messages.CACHE);
         User.cacheUser();
+        MPV5View.addMessage(Messages.CACHED_OBJECTS + ": " + Context.getUser());
+        Account.cacheAccounts();//pre cache accounts
+        MPV5View.addMessage(Messages.CACHED_OBJECTS + ": " + Context.getAccounts());
 //        DatabaseObject.cacheObjects();//Is called by User.login() later
     }
 

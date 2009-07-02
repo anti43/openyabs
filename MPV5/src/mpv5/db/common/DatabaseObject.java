@@ -110,7 +110,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
         }
     }
 
-     private static void uncacheObject(DatabaseObject databaseObject) {
+    private static void uncacheObject(DatabaseObject databaseObject) {
         if (databaseObject != null) {
             cache.remove(databaseObject.getDbIdentity() + "@" + databaseObject.__getIDS());
         }
@@ -664,15 +664,45 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
     }
 
     /**
-     * Returns all DBOs in the specific context,
+     * Returns all DBOs in the specific context, VERY SLOW!
      * @param <T>
      * @param context
      * @return A list of DBOs
      * @throws NodataFoundException
+     * @deprecated Use {@link getObjects(Context context, boolean withCached)} instead
      */
     @SuppressWarnings("unchecked")
+    @Deprecated
     public static <T extends DatabaseObject> ArrayList<T> getObjects(Context context) throws NodataFoundException {
         return (ArrayList<T>) getObjects(DatabaseObject.getObject(context), null);
+    }
+
+    /**
+     * Returns all DBOs in the specific context
+     * @param <T>
+     * @param context
+     * @param withCached If true, checks the cache first for matching objects (faster)
+     * @return A list of DBOs
+     * @throws NodataFoundException
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends DatabaseObject> ArrayList<T> getObjects(Context context, boolean withCached) throws NodataFoundException {
+        ArrayList<T> list = new ArrayList<T>();
+        if (!withCached) {
+            return (ArrayList<T>) getObjects(DatabaseObject.getObject(context), null);
+        } else {
+            Object[] ids = QueryHandler.instanceOf().clone(context).getColumn("ids", 0);
+            for (int i = 0; i < ids.length; i++) {
+                Integer id = Integer.valueOf(ids[i].toString());
+                DatabaseObject x = DatabaseObject.getCachedObject(context, id);
+                if (x != null) {
+                    list.add((T) x);
+                } else {
+                    list.add((T) getObject(context, id));
+                }
+            }
+        }
+        return list;
     }
 
     /**
@@ -689,7 +719,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
     }
 
     /**
-     *  Returns objects within the given context which match the criterias in the given QueryCriteria object
+     *  Returns objects within the given context which match the criterias in the given QueryCriteria object<br/>
+     *  May get very <b>slow</b> with some hundreds objects.
      * @param <T>
      * @param criterias If NULL returns ALL
      * @param template
@@ -736,7 +767,12 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
 
         for (int i = 0; i < allIds.length; i++) {
             int id = Integer.valueOf(allIds[i][0].toString());
-            list.add((T) DatabaseObject.getObject(inReference, id));
+            DatabaseObject x = DatabaseObject.getCachedObject(inReference, id);
+            if (x != null) {
+                list.add((T) x);
+            } else {
+                list.add((T) getObject(inReference, id));
+            }
         }
         return list;
     }
@@ -758,7 +794,12 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
 
         for (int i = 0; i < allIds.length; i++) {
             int id = Integer.valueOf(allIds[i][0].toString());
-            list.add((T) DatabaseObject.getObject(inReference, id));
+            DatabaseObject x = DatabaseObject.getCachedObject(inReference, id);
+            if (x != null) {
+                list.add((T) x);
+            } else {
+                list.add((T) getObject(inReference, id));
+            }
         }
         return list;
     }
@@ -856,8 +897,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                             } else {
                                 valx = "NULL VALUE!";
                             }
-//                        Log.Debug(DatabaseObject.class, "Explode: " + vars.get(k).toGenericString() + " with " + select.getData()[i][j] + "[" + valx + "]");
-                            //End Debug Section
+//                            Log.Debug(DatabaseObject.class, "Explode: " + vars.get(k).toGenericString() + " with " + select.getData()[i][j] + "[" + valx + "]");
+//                            //End Debug Section
 
                             try {
                                 if (name.startsWith("is") || name.toUpperCase().startsWith("BOOL") || name.toUpperCase().endsWith("BOOL")) {
@@ -869,22 +910,16 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                                 } else if (name.toUpperCase().startsWith("INT") || name.endsWith("uid") || name.endsWith("ids") || name.equals("ids")) {
                                     vars.get(k).invoke(dbo, new Object[]{Integer.valueOf(String.valueOf(select.getData()[i][j]))});
                                 } else if (name.toUpperCase().startsWith("DATE") || name.toUpperCase().endsWith("DATE")) {
-                                    vars.get(k).invoke(dbo, new Object[]{DateConverter.getDate(String.valueOf(select.getData()[i][j]))});
+                                    vars.get(k).invoke(dbo, new Object[]{DateConverter.getDate(select.getData()[i][j])});
                                 } else if (name.toUpperCase().startsWith("VALUE") || name.toUpperCase().endsWith("VALUE")) {
                                     vars.get(k).invoke(dbo, new Object[]{Double.valueOf(String.valueOf(select.getData()[i][j]))});
                                 } else {
                                     vars.get(k).invoke(dbo, new Object[]{String.valueOf(select.getData()[i][j])});
                                 }
-                            } catch (IllegalAccessException ex) {
-
-                                Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
-                            } catch (IllegalArgumentException ex) {
-                                Log.Debug(dbo, name + " " + String.valueOf(select.getData()[i][j]));
-                                Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
-                            } catch (InvocationTargetException ex) {
-
-                                Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
-                            }
+                            } catch (Exception ex) {
+                                Log.Debug(DatabaseObject.class, "Explode: " + vars.get(k).toGenericString() + " with " + select.getData()[i][j] + "[" + valx + "]");
+                                Log.Debug(ex);
+                            } 
                         }
                     }
                 }

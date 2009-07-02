@@ -18,6 +18,8 @@ package mpv5.db.objects;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.JComponent;
 
@@ -38,6 +40,28 @@ import mpv5.utils.images.MPIcon;
  */
 public class Account extends DatabaseObject {
 
+    private static ArrayList<DatabaseObject> accounts;
+
+    /**
+     * Cache accounts
+     * @return
+     */
+    public synchronized static ArrayList<DatabaseObject> cacheAccounts() {
+        Runnable runnable = new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    accounts = DatabaseObject.getObjects(Context.getAccounts(), false);
+                } catch (NodataFoundException ex) {
+                    Log.Debug(ex);
+                }
+            }
+        };
+        new Thread(runnable).start();
+
+        return accounts;
+    }
     private int intparentaccount;
     private int intaccountclass;
     public static int ASSET = 0;
@@ -76,6 +100,19 @@ public class Account extends DatabaseObject {
      */
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    /**
+     * A (preferably cached) view to the accounts
+     * @return
+     * @throws DataNotCachedException
+     */
+    public synchronized static ArrayList<DatabaseObject> getAccounts() throws DataNotCachedException {
+        if (accounts != null) {
+            return accounts;
+        } else {
+            throw new DataNotCachedException(Context.getAccounts());
+        }
     }
 
     /**

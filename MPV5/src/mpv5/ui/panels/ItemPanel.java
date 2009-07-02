@@ -41,9 +41,11 @@ import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableCellRenderer;
 import mpv5.db.common.*;
+import mpv5.db.objects.Account;
 import mpv5.globals.Headers;
 import mpv5.globals.Messages;
 import mpv5.db.objects.Contact;
+import mpv5.db.objects.DataNotCachedException;
 import mpv5.db.objects.Favourite;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.SubItem;
@@ -870,9 +872,12 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
 
                     sp.refresh();
 
-                    accountselect.setModel(MPComboBoxModelItem.toModel(MPComboBoxModelItem.toItems(DatabaseObject.getObjects(Context.getAccounts()))));
-                    accountselect.setSelectedIndex(MPComboBoxModelItem.getItemID(MPV5View.getUser().__getIntdefaultaccount(), accountselect.getModel()));
+                    try {
+                        accountselect.setModel(MPComboBoxModelItem.toModel(MPComboBoxModelItem.toItems(Account.getAccounts())));
+                        accountselect.setSelectedIndex(MPComboBoxModelItem.getItemID(MPV5View.getUser().__getIntdefaultaccount(), accountselect.getModel()));
+                    } catch (DataNotCachedException dataNotCachedException) {
 
+                    }
                     fillFiles();
 
                     status.setModel(Item.getStatusStrings(), MPComboBoxModelItem.COMPARE_BY_ID);

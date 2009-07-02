@@ -238,7 +238,7 @@ public class SearchPanel extends javax.swing.JPanel {
 
     private void search(final int searchtype, final String value) {
 
-        if (isShowing()) {
+        if (!MPV5View.getUser().getProperties().getProperty(this, "jToggleButton1", true)) {
             Runnable runnable = new Runnable() {
 
                 @Override

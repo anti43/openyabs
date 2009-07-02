@@ -270,6 +270,21 @@ public class DateConverter {
         return DATE;
     }
 
+    /**
+     * Triy to parse the given object to a date
+     * @param object
+     * @return
+     */
+    public static Date getDate(Object object) {
+        if (object instanceof Date) {
+            return (Date) object;
+        }else if (object instanceof java.sql.Date) {
+            return new Date(((java.sql.Date) object).getTime());
+        } else {
+            return getDate(object.toString());
+        }
+    }
+
     public static String getYear() {
         return String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
     }
