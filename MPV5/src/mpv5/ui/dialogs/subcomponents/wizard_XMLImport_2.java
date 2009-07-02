@@ -116,7 +116,7 @@ public class wizard_XMLImport_2 extends javax.swing.JPanel implements Wizardable
                 }
                 jProgressBar1.setString( imp + " " + Messages.IMPORTED);
             }
-        }; SwingUtilities.invokeLater(runnable);
+        }; new Thread(runnable).start();
 
         master.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
         master.isEnd(true);

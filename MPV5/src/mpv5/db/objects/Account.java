@@ -54,6 +54,10 @@ public class Account extends DatabaseObject {
     private String description = "";
     private double taxvalue;
     private int intaccounttype;
+    private int euruid;
+    private int ustvauid;
+    private int taxuid;
+    private String frame = "buildin";
 
     @Override
     public JComponent getView() {
@@ -73,7 +77,6 @@ public class Account extends DatabaseObject {
     public void setDescription(String description) {
         this.description = description;
     }
-
 
     /**
      * Get all Items which are assigned to this account
@@ -235,7 +238,6 @@ public class Account extends DatabaseObject {
         this.taxvalue = taxvalue;
     }
 
-
     @Override
     public boolean delete() {
         try {
@@ -257,4 +259,59 @@ public class Account extends DatabaseObject {
         return null;
     }
 
+    /**
+     * @return the euruid
+     */
+    public int __getEuruid() {
+        return euruid;
+    }
+
+    /**
+     * @param euruid the euruid to set
+     */
+    public void setEuruid(int euruid) {
+        this.euruid = euruid;
+    }
+
+    /**
+     * @return the ustvauid
+     */
+    public int __getUstvauid() {
+        return ustvauid;
+    }
+
+    /**
+     * @param ustvauid the ustvauid to set
+     */
+    public void setUstvauid(int ustvauid) {
+        this.ustvauid = ustvauid;
+    }
+
+    /**
+     * @return the taxuid
+     */
+    public int __getTaxuid() {
+        return taxuid;
+    }
+
+    /**
+     * @param taxuid the taxuid to set
+     */
+    public void setTaxuid(int taxuid) {
+        this.taxuid = taxuid;
+    }
+
+    /**
+     * @return the frame
+     */
+    public String __getFrame() {
+        return frame;
+    }
+
+    /**
+     * @param frame the frame to set
+     */
+    public void setFrame(String frame) {
+        this.frame = frame;
+    }
 }

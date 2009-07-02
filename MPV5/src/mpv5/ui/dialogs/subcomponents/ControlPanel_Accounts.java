@@ -161,7 +161,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 221, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE)
                     .addComponent(jLabel1))
                 .addContainerGap())
         );
@@ -171,7 +171,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 340, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -253,8 +253,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
                         .addGap(43, 43, 43)
                         .addGroup(rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(typeselect, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(groupnameselect, 0, 271, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(groupnameselect, 0, 271, Short.MAX_VALUE)))
                     .addComponent(parents, javax.swing.GroupLayout.PREFERRED_SIZE, 338, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(classv, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
@@ -285,7 +284,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
                 .addGroup(rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel5)
                     .addComponent(typeselect, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(18, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         add(rightpane, java.awt.BorderLayout.EAST);
@@ -364,20 +363,22 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
-        if (dataOwner == null) {
-            dataOwner = new Account();
-        }
-        DatabaseObject dato = dataOwner;
-        if (QueryHandler.instanceOf().clone(Context.getAccounts()).checkUniqueness(Context.getAccounts().getUniqueColumns(), new JTextField[]{cname.getTextField()})) {
-            dato.getPanelData(this);
-            dato.setIDS(-1);
-            if (dato.save()) {
-            } else {
-                showRequiredFields();
+        if (parents.hasText()) {
+            if (dataOwner == null) {
+                dataOwner = new Account();
             }
-        }
+            DatabaseObject dato = dataOwner;
+            if (QueryHandler.instanceOf().clone(Context.getAccounts()).checkUniqueness(Context.getAccounts().getUniqueColumns(), new JTextField[]{cname.getTextField()})) {
+                dato.getPanelData(this);
+                dato.setIDS(-1);
+                if (dato.save()) {
+                } else {
+                    showRequiredFields();
+                }
+            }
 
-        refresh();
+            refresh();
+        }else showRequiredFields();
 }//GEN-LAST:event_jButton1ActionPerformed
 
     private void treeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_treeMouseClicked
@@ -438,6 +439,11 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
     public int intaccountclass_ = 0;
     public int intaccounttype_ = 0;
     public int intparentaccount_ = 1;
+    public int euruid_;
+    public int taxuid_;
+    public int ustvauid_;
+    public String frame_;
+
 
     public void setValues(PropertyStore values) {
         throw new UnsupportedOperationException("Not supported yet.");
