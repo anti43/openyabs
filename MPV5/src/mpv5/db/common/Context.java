@@ -707,7 +707,36 @@ public class Context {
      */
     public String getNoTrashSQLString() {
         if (getTrashableContexts().contains(this)) {
-            return " invisible = 0 ";
+            return " " + dbIdentity + ".invisible = 0 ";
+        } else {
+            return null;
+        }
+    }
+
+        /**
+     * Generates a SQL String (WHERE clause) which can be used to implement multi-client capability.<br/>
+     * <br/>
+     * <b>If the current Context does not support grouping, or the current user is not Group restricted, this will return NULL.</b>
+         * @param tableName
+         * @return
+     */
+    public String getGroupRestrictionSQLString(String tableName) {
+        if (MPV5View.getUser().isGroupRestricted() && getGroupableContexts().contains(this)) {
+            return " (" + tableName+ "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids() + " OR " + tableName + "." + "GROUPSIDS = 1)";
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Generates a SQL String (WHERE clause) which can be used to avoid having already trashed elements in the resulting data.
+     *
+     * @param tableName
+     * @return  " invisible = 0 " or NULL if Context is not trashable
+     */
+    public String getNoTrashSQLString(String tableName) {
+        if (getTrashableContexts().contains(this)) {
+            return " " + tableName + ".invisible = 0 ";
         } else {
             return null;
         }
@@ -736,6 +765,30 @@ public class Context {
         return query;
     }
 
+
+    /**
+     * Add MP specific conditions to a sql query
+     * @param query
+     * @param tableName
+     * @return The query
+     */
+    public String prepareSQLString(String query, String tableName) {
+        if (getGroupRestrictionSQLString() != null) {
+            if (query.contains("WHERE") || query.contains("where")) {
+                query = query + " AND" + getGroupRestrictionSQLString(tableName);
+            } else {
+                query = query + " WHERE" + getGroupRestrictionSQLString(tableName);
+            }
+        }
+        if (Context.getItems().getNoTrashSQLString(tableName) != null) {
+            if (query.contains("WHERE") || query.contains("where")) {
+                query = query + " AND" + getNoTrashSQLString(tableName);
+            } else {
+                query = query + " WHERE" + getNoTrashSQLString(tableName);
+            }
+        }
+        return query;
+    }
     /**
      * Define the owner of this Context
      * @param parentobject
