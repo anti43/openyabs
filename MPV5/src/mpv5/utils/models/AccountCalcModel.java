@@ -29,6 +29,11 @@ public abstract class AccountCalcModel extends DefaultTableModel {
   private String htmlform;
   private String pdfform;
 
+     /**
+     * German SKR03 Account Frame
+     */
+  public static final String DE_SKR03 = "de_SKR03";
+
   public abstract String[] getHeader();
 
   public abstract void calculatePeriod();
@@ -47,7 +52,7 @@ public abstract class AccountCalcModel extends DefaultTableModel {
   protected void fillMap(String prefix) {
     resultMap.clear();
     if (resultValues.length > 0) {
-      int cols = resultValues[1].length;
+      int cols = resultValues[0].length;
       for (int i = 0; i < resultValues.length; i++) {
         resultMap.put(prefix + resultValues[i][cols - 2], resultValues[i][cols - 1].toString());
       }

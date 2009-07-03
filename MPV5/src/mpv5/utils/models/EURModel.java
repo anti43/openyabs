@@ -5,6 +5,7 @@
 package mpv5.utils.models;
 
 import java.io.ByteArrayOutputStream;
+import mpv5.db.common.Context;
 import mpv5.db.common.QueryHandler;
 import mpv5.db.common.ReturnValue;
 import mpv5.usermanagement.MPSecurityManager;
@@ -15,66 +16,65 @@ import mpv5.usermanagement.MPSecurityManager;
  */
 public class EURModel extends AccountCalcModel {
 
-  private boolean skr = false;
-  private DateSelectorModel dates;
+    private boolean skr = false;
+    private DateSelectorModel dates;
+ 
 
-  public EURModel(DateSelectorModel dateModel) {
-    super.setFilename("eurform");
-    this.dates = dateModel;
-    ReturnValue rv = QueryHandler.getConnection().freeSelectQuery(
-        "select max(INTPARENTACCOUNT) from ACCOUNTS",
-        MPSecurityManager.VIEW, null);
-    resultValues = rv.getData();
-    if ((Long) resultValues[0][0] > 0) {
-      skr = true;
+    public EURModel(DateSelectorModel dateModel) {
+        super.setFilename("eurform");
+        this.dates = dateModel;
+        ReturnValue rv = QueryHandler.getConnection().freeSelectQuery(
+                "select max(INTPARENTACCOUNT) from ACCOUNTS where frame = '" + EURModel.DE_SKR03 + "'",
+                MPSecurityManager.VIEW, null);
+        resultValues = rv.getData();
+        skr = rv.hasData();
     }
-  }
 
-  public void getTableHtml() {
-    calculatePeriod();
-    super.setDataVector(resultValues, getHeader());
-  }
-
-  @Override
-  public String[] getHeader() {
-    return new String[]{"", "Beschreibung", "Daten"};
-  }
-
-  @Override
-  public void calculatePeriod() {
-    String start = dates.getStartDay();
-    String end = dates.getEndDay();
-
-    if (!(start.equals(super.getStart()) || end.equals(super.getEnd()))) {
-      String query = "select a.INTACCOUNTCLASS, a.CNAME, a.eurid, sum(i.NETVALUE) " +
-          "from items i, accounts a where i.inttype = 0 and i.intstatus = 4 " +
-          "and i.DATEEND between '" + start + "' and '" + end +
-          "' and i.DEFAULTACCOUNTSIDS = " +
-          "a.IDS and a.INTACCOUNTCLASS > 0 group by a.INTACCOUNTCLASS, a.CNAME" +
-          ", a.eurid";
-      super.calculate(start, end, query);
-      if (skr) {
-        fillMap("euer");
-      }
+    public void getTableHtml() {
+        calculatePeriod();
+        super.setDataVector(resultValues, getHeader());
     }
-  }
 
-  public ByteArrayOutputStream getFormHtml() {
-    calculatePeriod();
-    return super.createHtml();
-  }
+    @Override
+    public String[] getHeader() {
+        return new String[]{"", "Beschreibung", "Daten"};
+    }
 
-  public void getPdf() {
-    calculatePeriod();
-    super.createPdf();
-  }
+    @Override
+    public void calculatePeriod() {
+        String start = dates.getStartDay();
+        String end = dates.getEndDay();
 
-  /**
-   * @return the skr
-   */
-  public boolean isSkr() {
-    return skr;
-  }
+        if (!(start.equals(super.getStart()) || end.equals(super.getEnd()))) {
+            String query = Context.getItems().prepareSQLString("select a.INTACCOUNTCLASS, a.CNAME, a.euruid, sum(i.NETVALUE) " +
+                    "from items i, accounts a where i.inttype = 0 and i.intstatus = 4 " +
+                    "and i.DATEEND between '" + start + "' and '" + end +
+                    "' and i.DEFAULTACCOUNTSIDS = " +
+                    "a.IDS and a.INTACCOUNTCLASS > 0 and a.frame = '" + EURModel.DE_SKR03 + "'", "a") +
+                    " group by a.INTACCOUNTCLASS, a.CNAME, a.euruid";
+            super.calculate(start, end, query);
+            if (skr) {
+                fillMap("euer");
+            }
+        }
+    }
+
+    public ByteArrayOutputStream getFormHtml() {
+        calculatePeriod();
+        return super.createHtml();
+    }
+
+    public void getPdf() {
+        calculatePeriod();
+        super.createPdf();
+    }
+
+    /**
+     * @return the skr
+     */
+    public boolean isSkr() {
+        return skr;
+    }
 //  
 //  select sum(i.TAXVALUE)
 // from items i, accounts a
