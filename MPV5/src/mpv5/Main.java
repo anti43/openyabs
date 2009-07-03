@@ -85,11 +85,17 @@ public class Main extends SingleFrameApplication {
      * Use this method to (re) cache data from the database to avoid uneccessary db queries
      */
     public static void cache() {
-        MPV5View.addMessage(Messages.CACHE);
-        User.cacheUser();
-        MPV5View.addMessage(Messages.CACHED_OBJECTS + ": " + Context.getUser());
-        LanguageManager.getCountriesAsComboBoxModel();
-        MPV5View.addMessage(Messages.CACHED_OBJECTS + ": " + Context.getCountries());
+        Runnable runnable = new Runnable() {
+
+            @Override
+            public void run() {
+                MPV5View.addMessage(Messages.CACHE);
+                User.cacheUser();
+                MPV5View.addMessage(Messages.CACHED_OBJECTS + ": " + Context.getUser());
+                LanguageManager.getCountriesAsComboBoxModel();
+                MPV5View.addMessage(Messages.CACHED_OBJECTS + ": " + Context.getCountries());
+            }
+        };new Thread(runnable).start();
 //        Account.cacheAccounts();//pre cache accounts
 //        MPV5View.addMessage(Messages.CACHED_OBJECTS + ": " + Context.getAccounts());
 //        DatabaseObject.cacheObjects();//Is called by User.login() later
