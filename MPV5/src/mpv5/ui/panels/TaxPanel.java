@@ -18,23 +18,24 @@ import mpv5.utils.date.DateConverter;
 import mpv5.utils.files.TableHtmlWriter;
 import mpv5.utils.models.DateSelectorModel;
 import mpv5.utils.models.EURModel;
+import mpv5.utils.models.TaxModel;
 import mpv5.utils.tables.TableFormat;
 
 /**
  *
  * @author  anti43
  */
-public class EURPanel extends JPanel {
+public class TaxPanel extends JPanel {
 
   private DateSelectorModel dateModel = new DateSelectorModel();
-  private EURModel eurModel;
+  private TaxModel eurModel;
   private String html;
   private JEditorPane formPane = new JEditorPane();
 
-  public EURPanel() {
+  public TaxPanel() {
     initComponents();
 
-    eurModel = new EURModel(dateModel);
+    eurModel = new TaxModel(dateModel);
     if (eurModel.isSkr() != true) {
       jButton2.setVisible(false);
     }
@@ -64,7 +65,7 @@ public class EURPanel extends JPanel {
     jScrollPane1.setViewportView(jTable1);
     formPane.setVisible(false);
     jTable1.setVisible(true);
-    eurModel.getTableHtml();
+    eurModel.getFormHtml();
 jTextField1.setText(dateModel.getStartDay() + "   -   " + dateModel.getEndDay());
     try {
       jTable1.setModel(eurModel.getModel());
@@ -254,7 +255,7 @@ jTextField1.setText(dateModel.getStartDay() + "   -   " + dateModel.getEndDay())
       jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(jPanel2Layout.createSequentialGroup()
         .addContainerGap()
-        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 107, Short.MAX_VALUE)
+        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE)
         .addContainerGap())
     );
 

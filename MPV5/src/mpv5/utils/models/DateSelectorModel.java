@@ -156,13 +156,13 @@ class StartEndDays {
     this.startDay = startDay;
     switch (modus) {
       case 1:
-        endDay = DateConverter.addMonth(startDay);
+        setEndDay(DateConverter.addMonth(startDay));
         break;
       case 3:
-        endDay = DateConverter.addQuarter(startDay);
+        setEndDay(DateConverter.addQuarter(startDay));
         break;
       case 12:
-        endDay = DateConverter.addYear(startDay);
+        setEndDay(DateConverter.addYear(startDay));
         break;
       default:
         endDay = startDay;
@@ -181,6 +181,10 @@ class StartEndDays {
    */
   public Date getEndDay() {
     return endDay;
+  }
+
+  private void setEndDay(Date d) {
+    this.endDay = DateConverter.addDays(d, -1);
   }
 }
 // </editor-fold>
