@@ -16,6 +16,7 @@
  */
 package mpv5;
 
+import java.awt.Component;
 import java.util.Date;
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
@@ -33,6 +34,14 @@ import mpv5.utils.models.*;
 public class Test {
 
     public static void main(String[] args) {
+
+        JComboBox j = new JComboBox();
+        Component[] f = j.getComponents();
+        for (int i = 0; i < f.length; i++) {
+            Component component = f[i];
+            System.out.println(component);
+        }
+
 //
 
 

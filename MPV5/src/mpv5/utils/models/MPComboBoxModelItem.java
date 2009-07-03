@@ -19,12 +19,15 @@ package mpv5.utils.models;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComponent;
 import mpv5.db.common.DatabaseObject;
 import mpv5.handler.MPEnum;
+import mpv5.utils.images.MPIcon;
 
 /**
  * A MPComboBoxModelItem consists of a visible "value" part and an invisible "ID" part.
@@ -38,6 +41,7 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
      * (default)
      */
     public static int COMPARE_BY_VALUE = 1;
+
     /**
      * The id field may have any class.
      */
@@ -50,7 +54,7 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
      * @return
      */
     public static int getItemID(Integer uid, ComboBoxModel model) {
-        return getItemID((Object)new Integer(uid), model);
+        return getItemID((Object) new Integer(uid), model);
     }
 
     /**
@@ -93,7 +97,7 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
      * @param model
      * @return
      */
-    public static int getItemIDfromValue(String value, ComboBoxModel model) {
+    public synchronized static int getItemIDfromValue(String value, ComboBoxModel model) {
         for (int i = 0; i < model.getSize(); i++) {
 //            Log.Debug(MPComboBoxModelItem.class, ((MPComboBoxModelItem) model.getElementAt(i)).name + " comparing with: " + value);
             if (((MPComboBoxModelItem) model.getElementAt(i)).name.equals(value)) {
@@ -199,7 +203,7 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
     }
 
     /**
-     * Creates a {@link DefaultComBoxModel} containing an array of {@link MPComboBoxModelItem}
+     * Creates a {@link MPComBoxModel} containing an array of {@link MPComboBoxModelItem}
      * {enum id (hidden), value (shown in the list)}
      * @param data
      * @return
@@ -209,12 +213,32 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
     }
 
     /**
+     * Creates a {@link MPComBoxModel} containing a {@link MPComboBoxModelItem}
+     * {ids (hidden), cname (shown in the list)}
+     * @param data
+     * @return
+     */
+    public static MPComboboxModel toModel(DatabaseObject data) {
+        return new MPComboboxModel(toItems(new Vector<DatabaseObject>(Arrays.asList(new DatabaseObject[]{data}))));
+    }
+
+    /**
      * Delegates to new MPComboboxModel(data);
      * @param data
      * @return
      */
     public static MPComboboxModel toModel(MPComboBoxModelItem[] data) {
         return new MPComboboxModel(data);
+    }
+
+
+    /**
+     *  Creates a {@link DefaultComBoxModel} containing an array of {@link MPComboBoxModelItem}
+     * @param list
+     * @return
+     */
+    public static MPComboboxModel toModel(List<MPComboBoxModelItem> list) {
+        return new MPComboboxModel(list.toArray(new MPComboBoxModelItem[]{}));
     }
 
     /**

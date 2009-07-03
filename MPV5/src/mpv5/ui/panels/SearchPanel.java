@@ -49,9 +49,9 @@ public class SearchPanel extends javax.swing.JPanel {
         initComponents();
         this.validate();
         this.context = context;
-        this.panel = panel;  
-        lastneedle =  MPV5View.getUser().__getIDS().toString();
-        search(5, MPV5View.getUser().__getIDS().toString());
+        this.panel = panel;
+        lastneedle =String.valueOf(MPV5View.getUser().__getGroupsids());
+        search(5, String.valueOf(MPV5View.getUser().__getGroupsids()));
     }
 
     /**
@@ -236,16 +236,16 @@ public class SearchPanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void search(final int searchtype, final String value) {
+    private synchronized  void search(final int searchtype, final String value) {
 
-        if (!MPV5View.getUser().getProperties().getProperty(this, "jToggleButton1", true)) {
+        if (this.isShowing()) {
             Runnable runnable = new Runnable() {
 
                 @Override
                 public void run() {
                     lasttype = searchtype;
                     lastneedle = value;
-
+                    Log.Debug(this, "Search parameters: " + searchtype + " " + value);
                     switch (searchtype) {
 
                         case 1:
@@ -271,15 +271,19 @@ public class SearchPanel extends javax.swing.JPanel {
                             break;
                         case 5:
                             resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 0).getValuesFor("ids,cname", "groupsids",
-                                        Integer.valueOf(value)), Headers.SEARCH_DEFAULT.getValue()));
+                                    Integer.valueOf(value)), Headers.SEARCH_DEFAULT.getValue()));
                             break;
-                            
+                        default:
+                            Log.Debug(this, "Invalid parameters!");
+                            ;
+
                     }
                     TableFormat.stripFirstColumn(resulttable);
                     TableFormat.makeUneditable(resulttable);
                 }
             };
-            SwingUtilities.invokeLater(runnable);
+            Log.Debug(this, "Starting search..");
+            new Thread(runnable).start();
         }
 
     }
@@ -336,5 +340,12 @@ public class SearchPanel extends javax.swing.JPanel {
      */
     public void setContext(Context context) {
         this.context = context;
+    }
+
+    /**
+     * repeat the last search
+     */
+    public void search() {
+        search(lasttype, lastneedle);
     }
 }

@@ -11,43 +11,127 @@
 package mpv5.ui.beans;
 
 import java.awt.Font;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
+import javax.swing.ComboBoxEditor;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
+import javax.swing.SwingUtilities;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.DatabaseSearch;
+import mpv5.db.objects.Contact;
 import mpv5.handler.MPEnum;
+import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.models.*;
+import mpv5.utils.renderer.ComboBoxRendererForTooltip;
 
 /**
  *
  *  
  */
-public class LabeledCombobox extends javax.swing.JPanel {
+public class MPCombobox extends javax.swing.JPanel {
 
     private static final long serialVersionUID = 1L;
-    private String _text;
-    private String _label;
-
+    public boolean SEARCH_ON_ENTER = false;
+    private Context context;
+    private int sortmode = 0;
 
     /** Creates new form LabeledTextField */
-    public LabeledCombobox() {
+    public MPCombobox() {
         initComponents();
+        jComboBox1.getEditor().getEditorComponent().addKeyListener(new KeyListener() {
+
+            @Override
+            public void keyTyped(KeyEvent e) {
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+                if (SEARCH_ON_ENTER && e.getKeyCode() == KeyEvent.VK_ENTER && context != null) {
+                    search();
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+            }
+        });
+
+
+        jComboBox1.getComponent(0).addMouseListener(new MouseListener() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                          if (SEARCH_ON_ENTER) {
+                    jComboBox1.setModel(new DefaultComboBoxModel(new String[]{""}));
+                    search();
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+      
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+            }
+        });
+
+
+        jComboBox1.setRenderer(new ComboBoxRendererForTooltip());
+        setModel();
     }
 
     public JComboBox getComboBox() {
-        return mPCombobox1.getComboBox();
+        return jComboBox1;
     }
 
-  
+    /**
+     * Triggers the search functionality
+     */
+    public void search() {
+        Runnable runnable = new Runnable() {
+
+            @Override
+            public void run() {
+                ComboBoxEditor cbField = jComboBox1.getEditor();
+                Object value = cbField.getItem();
+                jComboBox1.setSelectedItem(new MPComboBoxModelItem(-1, value.toString()));
+                Object[][] data = new DatabaseSearch(context, 50).getValuesFor("ids, cname", "cname", jComboBox1.getSelectedItem().toString(), true);
+                jComboBox1.setModel(MPComboBoxModelItem.toModel(MPComboBoxModelItem.toItems(data, true)));
+                if (data.length > 1) {
+                    jComboBox1.setPopupVisible(true);
+                }
+            }
+        };
+        SwingUtilities.invokeLater(runnable);
+    }
 
     /**
      *
      * @return The model
      */
     public MPComboboxModel getModel() {
-        return mPCombobox1.getModel();
+        return (MPComboboxModel) jComboBox1.getModel();
     }
 
     /**
@@ -55,7 +139,7 @@ public class LabeledCombobox extends javax.swing.JPanel {
      * @param values
      */
     public void setModel(MPEnum[] values) {
-       mPCombobox1.setModel(MPComboBoxModelItem.toModel(values));
+        jComboBox1.setModel(MPComboBoxModelItem.toModel(values));
     }
 
     /**
@@ -64,7 +148,7 @@ public class LabeledCombobox extends javax.swing.JPanel {
      * @param compareMode
      */
     public void setModel(MPEnum[] values, int compareMode) {
-        mPCombobox1.setModel(MPComboBoxModelItem.toModel(values, compareMode));
+        jComboBox1.setModel(MPComboBoxModelItem.toModel(values, compareMode));
     }
 
     /**
@@ -87,7 +171,7 @@ public class LabeledCombobox extends javax.swing.JPanel {
      * @param data
      */
     public void setModel(Object[][] data) {
-      mPCombobox1.setModel(MPComboBoxModelItem.toModel(data));
+        jComboBox1.setModel(MPComboBoxModelItem.toModel(data));
     }
 
     /**
@@ -95,8 +179,8 @@ public class LabeledCombobox extends javax.swing.JPanel {
      * @return An {@link MPComboBoxModelItem} or null if nothing is selected
      */
     public MPComboBoxModelItem getSelectedItem() {
-        if (mPCombobox1.getSelectedItem() instanceof MPComboBoxModelItem) {
-            return (MPComboBoxModelItem) mPCombobox1.getSelectedItem();
+        if (jComboBox1.getSelectedItem() instanceof MPComboBoxModelItem) {
+            return (MPComboBoxModelItem) jComboBox1.getSelectedItem();
         } else {
             return null;
         }
@@ -107,7 +191,7 @@ public class LabeledCombobox extends javax.swing.JPanel {
      * @param model
      */
     public void setModel(MPComboboxModel model) {
-      mPCombobox1.setModel(model);
+        jComboBox1.setModel(model);
     }
 
     /**
@@ -135,7 +219,9 @@ public class LabeledCombobox extends javax.swing.JPanel {
      * @param itemID
      */
     public void setSelectedIndex(int itemID) {
-        getComboBox().setSelectedIndex(itemID);
+        if (itemID<0 || itemID>getComboBox().getItemCount()) {
+            getComboBox().setSelectedIndex(itemID);
+        }
     }
 
     /**
@@ -143,7 +229,7 @@ public class LabeledCombobox extends javax.swing.JPanel {
      * @param valueOfItem
      */
     public void setSelectedItem(String valueOfItem) {
-      mPCombobox1.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(valueOfItem, mPCombobox1.getModel()));
+        jComboBox1.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(valueOfItem, jComboBox1.getModel()));
     }
 
     /**
@@ -151,7 +237,7 @@ public class LabeledCombobox extends javax.swing.JPanel {
      * @param ID
      */
     public void setSelectedItem(Object ID) {
-      mPCombobox1.setSelectedIndex(MPComboBoxModelItem.getItemID(ID, mPCombobox1.getModel()));
+        jComboBox1.setSelectedIndex(MPComboBoxModelItem.getItemID(ID, jComboBox1.getModel()));
     }
 
     /**
@@ -160,7 +246,8 @@ public class LabeledCombobox extends javax.swing.JPanel {
      * @param enabled
      */
     public void setSearchOnEnterEnabled(boolean enabled) {
-      mPCombobox1.setSearchOnEnterEnabled(enabled);
+        SEARCH_ON_ENTER = enabled;
+        jComboBox1.setEditable(true);
     }
 
     /**
@@ -168,7 +255,7 @@ public class LabeledCombobox extends javax.swing.JPanel {
      * @param c
      */
     public void setContext(Context c) {
-        mPCombobox1.setContext(c);
+        this.context = c;
     }
 
     /** This method is called from within the constructor to
@@ -180,59 +267,55 @@ public class LabeledCombobox extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
-        mPCombobox1 = new mpv5.ui.beans.MPCombobox();
+        jComboBox1 = new javax.swing.JComboBox();
 
         setOpaque(false);
 
-        jLabel1.setText("text");
+        jComboBox1.setAutoscrolls(true);
+        jComboBox1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jComboBox1MouseClicked(evt);
+            }
+        });
+        jComboBox1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jComboBox1KeyPressed(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jComboBox1KeyTyped(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(mPCombobox1, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE))
+            .addComponent(jComboBox1, 0, 114, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
-                    .addComponent(mPCombobox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 0, 0))
+            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jComboBox1KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jComboBox1KeyTyped
+    }//GEN-LAST:event_jComboBox1KeyTyped
+
+    private void jComboBox1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jComboBox1KeyPressed
+    }//GEN-LAST:event_jComboBox1KeyPressed
+
+    private void jComboBox1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jComboBox1MouseClicked
+        search();
+    }//GEN-LAST:event_jComboBox1MouseClicked
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
-    private mpv5.ui.beans.MPCombobox mPCombobox1;
+    private javax.swing.JComboBox jComboBox1;
     // End of variables declaration//GEN-END:variables
 
     /**
      * @return the _text
      */
     public MPComboBoxModelItem getValue() {
-        return (MPComboBoxModelItem) mPCombobox1.getSelectedItem();
-    }
-
-    /**
-     * @return the _label
-     */
-    public String get_Label() {
-        return jLabel1.getText();
-    }
-
-    /**
-     * @param label the _label to set
-     */
-    public void set_Label(String label) {
-        this._label = label;
-        jLabel1.setText(_label);
-        this.setToolTipText(_text);
-        jLabel1.setToolTipText(_text);
+        return (MPComboBoxModelItem) jComboBox1.getSelectedItem();
     }
 
     @Deprecated
@@ -241,8 +324,7 @@ public class LabeledCombobox extends javax.swing.JPanel {
 
     @Override
     public void setEnabled(boolean enabled) {
-        jLabel1.setEnabled(enabled);
-      mPCombobox1.setEnabled(enabled);
+        jComboBox1.setEnabled(enabled);
     }
 
     /**
@@ -255,6 +337,14 @@ public class LabeledCombobox extends javax.swing.JPanel {
      * @param text
      */
     public void setValue(String text) {
-      mPCombobox1.setValue(text);
+        jComboBox1.setSelectedItem(text);
+        jComboBox1.setPopupVisible(false);
+    }
+
+    /**
+     * Sets an empty model
+     */
+    public void setModel() {
+       setModel(new Vector<DatabaseObject>());
     }
 }

@@ -615,12 +615,12 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
         return vals;
     }
 
-    /**
+        /**
      * Searches for a specific dataset, cached or non-cached
      * @param context The context to search under
      * @param id The id of the object
      * @return A database object with data, or null if none found
-     * @throws NodataFoundException 
+     * @throws NodataFoundException
      */
     public static DatabaseObject getObject(Context context, int id) throws NodataFoundException {
         DatabaseObject cdo = DatabaseObject.getCachedObject(context, id);
@@ -638,6 +638,30 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
         } else {
             return cdo;
         }
+        return null;
+    }
+
+    /**
+     * Searches for a specific dataset by name
+     * @param context The context to search under
+     * @param cname
+     * @return A database object with data, or null if none found
+     * @throws NodataFoundException 
+     */
+    public static DatabaseObject getObject(Context context, String cname) throws NodataFoundException {
+            try {
+                Object obj = context.getIdentityClass().newInstance();
+                if(((DatabaseObject) obj).fetchDataOf(cname)){
+                cacheObject((DatabaseObject) obj);
+                return (DatabaseObject) obj;}else {
+                throw new NodataFoundException(context);
+            }
+            } catch (InstantiationException ex) {
+                Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IllegalAccessException ex) {
+                Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
         return null;
     }
 
@@ -665,14 +689,13 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
 
     /**
      * Returns all DBOs in the specific context, VERY SLOW!
+     * Use {@link getObjects(Context context, boolean withCached)} instead
      * @param <T>
      * @param context
      * @return A list of DBOs
      * @throws NodataFoundException
-     * @deprecated Use {@link getObjects(Context context, boolean withCached)} instead
      */
     @SuppressWarnings("unchecked")
-    @Deprecated
     public static <T extends DatabaseObject> ArrayList<T> getObjects(Context context) throws NodataFoundException {
         return (ArrayList<T>) getObjects(DatabaseObject.getObject(context), null);
     }

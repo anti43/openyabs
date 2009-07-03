@@ -78,6 +78,7 @@ public class DOTablePopUp extends JPopupMenu {
         JMenuItem i = new JMenuItem(Messages.ACTION_DELETE.getValue());
         i.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 try {
                     DatabaseObject.getObject(c, Integer.valueOf(to.getModel().getValueAt(to.getSelectedRow(), 0).toString())).delete();

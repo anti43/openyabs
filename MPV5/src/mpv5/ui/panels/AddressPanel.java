@@ -53,6 +53,8 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
     public AddressPanel() {
         initComponents();
         refresh();
+        companyselect.setSearchOnEnterEnabled(true);
+        companyselect.setContext(Context.getCompany());
     }
 
     /** This method is called from within the constructor to
@@ -67,7 +69,6 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
         jPanel2 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        companyselect = new javax.swing.JComboBox();
         department = new mpv5.ui.beans.LabeledTextField();
         male = new javax.swing.JRadioButton();
         female = new javax.swing.JRadioButton();
@@ -81,6 +82,7 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
         city = new mpv5.ui.beans.LabeledTextField();
         jLabel5 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        companyselect = new mpv5.ui.beans.MPCombobox();
 
         setBackground(new java.awt.Color(227, 219, 202));
         setName("Address#"); // NOI18N
@@ -111,13 +113,6 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
-            }
-        });
-
-        companyselect.setName("companyselect"); // NOI18N
-        companyselect.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                companyselectActionPerformed(evt);
             }
         });
 
@@ -165,13 +160,15 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
         city.set_Label(bundle.getString("AddressPanel.city._Label")); // NOI18N
         city.setName("city"); // NOI18N
 
-        jLabel5.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel5.setFont(new java.awt.Font("Dialog", 0, 12));
         jLabel5.setText(bundle.getString("AddressPanel.jLabel5.text")); // NOI18N
         jLabel5.setName("jLabel5"); // NOI18N
 
-        jLabel3.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Dialog", 0, 12));
         jLabel3.setText(bundle.getString("AddressPanel.jLabel3.text")); // NOI18N
         jLabel3.setName("jLabel3"); // NOI18N
+
+        companyselect.setName("companyselect"); // NOI18N
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -225,10 +222,9 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel5)
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(countryselect, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(companyselect, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel3))
+                            .addComponent(countryselect, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel3)
+                            .addComponent(companyselect, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(department, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -275,16 +271,12 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
 
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    private void companyselectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_companyselectActionPerformed
-}//GEN-LAST:event_companyselectActionPerformed
-
     private void countryselectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_countryselectActionPerformed
 }//GEN-LAST:event_countryselectActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private mpv5.ui.beans.LabeledTextField city;
     private mpv5.ui.beans.LabeledTextField cname;
-    private javax.swing.JComboBox companyselect;
+    private mpv5.ui.beans.MPCombobox companyselect;
     private javax.swing.JComboBox countryselect;
     private mpv5.ui.beans.LabeledTextField department;
     private javax.swing.JRadioButton female;
@@ -395,12 +387,8 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
 
             public void run() {
                 try {
-                    companyselect.setModel(new DefaultComboBoxModel(ArrayUtilities.merge(new Object[]{new MPComboBoxModelItem("<no_value>", "")},
-                            MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getCompany()).getValuesFor(Context.getCompany().getSubID(), null, "")))));
-
                     countryselect.setModel(LanguageManager.getCountriesAsComboBoxModel());
                     countryselect.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(MPV5View.getUser().__getDefcountry(), countryselect.getModel()));
-//                         groupnameselect.setSelectedItem(DatabaseObject.getObject(Context.getGroup(), MPV5View.getUser().__getIDS()));
                 } catch (Exception e) {
                     Log.Debug(this, e);
                 }

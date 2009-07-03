@@ -111,11 +111,9 @@
                       <Group type="102" attributes="0">
                           <Group type="103" groupAlignment="1" attributes="0">
                               <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
-                              <Group type="103" alignment="1" groupAlignment="3" attributes="0">
-                                  <Component id="countryselect" alignment="3" min="-2" pref="19" max="-2" attributes="0"/>
-                                  <Component id="companyselect" alignment="3" min="-2" pref="19" max="-2" attributes="0"/>
-                              </Group>
+                              <Component id="countryselect" alignment="1" min="-2" pref="19" max="-2" attributes="0"/>
                               <Component id="jLabel3" alignment="1" min="-2" max="-2" attributes="0"/>
+                              <Component id="companyselect" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="1" max="-2" attributes="0">
@@ -191,17 +189,6 @@
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton2ActionPerformed"/>
-          </Events>
-        </Component>
-        <Component class="javax.swing.JComboBox" name="companyselect">
-          <Properties>
-            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="0"/>
-            </Property>
-            <Property name="name" type="java.lang.String" value="companyselect" noResource="true"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="companyselectActionPerformed"/>
           </Events>
         </Component>
         <Component class="mpv5.ui.beans.LabeledTextField" name="department">
@@ -338,6 +325,11 @@
               <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="AddressPanel.jLabel3.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
             <Property name="name" type="java.lang.String" value="jLabel3" noResource="true"/>
+          </Properties>
+        </Component>
+        <Component class="mpv5.ui.beans.MPCombobox" name="companyselect">
+          <Properties>
+            <Property name="name" type="java.lang.String" value="companyselect" noResource="true"/>
           </Properties>
         </Component>
       </SubComponents>

@@ -1063,8 +1063,10 @@ public class QueryHandler implements Cloneable {
      * @param values Length must match the conditionColumns argument of the build call of the statement
      * @return
      * @throws java.sql.SQLException
+     * @deprecated possible not returning the desired results yet
      */
     @SuppressWarnings("unchecked")
+    @Deprecated
     public ReturnValue executeStatement(PreparedStatement statement, Object[] values) throws SQLException {
 
         if (values != null) {

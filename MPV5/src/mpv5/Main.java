@@ -56,6 +56,7 @@ import mpv5.ui.dialogs.subcomponents.wizard_DBSettings_1;
 
 
 import mpv5.db.objects.User;
+import mpv5.i18n.LanguageManager;
 import mpv5.pluginhandling.UserPlugin;
 import mpv5.server.MPServer;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Fonts;
@@ -87,8 +88,10 @@ public class Main extends SingleFrameApplication {
         MPV5View.addMessage(Messages.CACHE);
         User.cacheUser();
         MPV5View.addMessage(Messages.CACHED_OBJECTS + ": " + Context.getUser());
-        Account.cacheAccounts();//pre cache accounts
-        MPV5View.addMessage(Messages.CACHED_OBJECTS + ": " + Context.getAccounts());
+        LanguageManager.getCountriesAsComboBoxModel();
+        MPV5View.addMessage(Messages.CACHED_OBJECTS + ": " + Context.getCountries());
+//        Account.cacheAccounts();//pre cache accounts
+//        MPV5View.addMessage(Messages.CACHED_OBJECTS + ": " + Context.getAccounts());
 //        DatabaseObject.cacheObjects();//Is called by User.login() later
     }
 
