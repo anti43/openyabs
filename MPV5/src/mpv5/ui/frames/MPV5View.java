@@ -82,7 +82,7 @@ import org.jdesktop.application.FrameView;
 public class MPV5View extends FrameView {
 
     public static MPV5View identifierView;
-    public static Dimension initialSize = new Dimension(1000, 800);
+    public static Dimension initialSize = new Dimension(1100, 900);
     public static JFrame identifierFrame;
     public static CloseableTabbedPane tabPane;
     public static JLabel messagelabel = new FadeOnChangeLabel();

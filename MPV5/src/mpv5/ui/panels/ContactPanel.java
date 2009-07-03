@@ -1379,7 +1379,6 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
                     countryselect.setModel(LanguageManager.getCountriesAsComboBoxModel());
                     countryselect.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(MPV5View.getUser().__getDefcountry(), countryselect.getModel()));
-
                 } catch (Exception e) {
                     Log.Debug(this, e);
                 }

@@ -266,7 +266,7 @@ public class LanguageManager {
                 Log.Debug(LanguageManager.class, "Cached countries: " +countries.size());
                 return MPComboBoxModelItem.toModel(countries);
             } catch (NodataFoundException ex) {
-                Log.Debug(ex);
+                Log.Debug(LanguageManager.class, ex);
                 return new MPComboboxModel(new MPComboBoxModelItem[]{});
             }
         } else {

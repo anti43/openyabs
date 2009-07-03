@@ -38,7 +38,7 @@ public class DatabaseInstallation {
 "CREATE TABLE groups (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),cname VARCHAR(250) UNIQUE NOT NULL,description VARCHAR(750) DEFAULT NULL,defaults VARCHAR(250) DEFAULT NULL,groupsids BIGINT DEFAULT 0,dateadded DATE NOT NULL,reserve1 VARCHAR(500) default NULL,intaddedby BIGINT DEFAULT 0, reserve2 VARCHAR(500) default NULL, PRIMARY KEY  (ids))",
 "CREATE TABLE tax (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),cname VARCHAR(250), taxvalue DOUBLE DEFAULT 0,identifier VARCHAR(250) UNIQUE NOT NULL,reserve1 VARCHAR(500) default NULL,reserve2 VARCHAR(500) default NULL,dateadded DATE NOT NULL,intaddedby BIGINT DEFAULT 0,PRIMARY KEY  (ids))",
 "CREATE TABLE history (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),cname VARCHAR(250)  NOT NULL, username VARCHAR(250) NOT NULL,dbidentity VARCHAR(25)  NOT NULL, INTitem SMALLINT NOT NULL,groupsids BIGINT DEFAULT 0, dateadded DATE NOT NULL,intaddedby BIGINT DEFAULT 0,reserve1 VARCHAR(500) default NULL, reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (ids))",
-"CREATE TABLE countries (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),cname VARCHAR(250)  UNIQUE NOT NULL, iso SMALLINT  UNIQUE NOT NULL,groupsids BIGINT DEFAULT 0,reserve1 VARCHAR(500) default NULL, reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (ids))",
+"CREATE TABLE countries (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),cname VARCHAR(250)  UNIQUE NOT NULL, iso SMALLINT  UNIQUE NOT NULL,groupsids BIGINT DEFAULT 1,reserve1 VARCHAR(500) default NULL, reserve2 VARCHAR(500) default NULL,PRIMARY KEY  (ids))",
 "CREATE TABLE searchindex (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),dbidentity VARCHAR(25) NOT NULL, groupsids BIGINT, rowID BIGINT NOT NULL,text VARCHAR(5000) default NULL)",
 
 //Main tables, must have ids, cname, groupsids, dateadded, intaddedby, invisible
@@ -122,7 +122,8 @@ public class DatabaseInstallation {
 "INSERT INTO groups (cname,description, dateadded) VALUES ('"+Messages.GROUPNAMES+"','This group holds all yet ungrouped items.', '2009-04-03 09:31:33')",
 "INSERT INTO groups (cname,description, dateadded) VALUES ('ungrouped','This group holds all yet ungrouped items.', '2009-04-03 09:31:33')",
 "INSERT INTO accounts (cname,description, dateadded, taxvalue, intaccounttype, frame, euruid, ustvauid, taxuid) VALUES ('"+Messages.ACCOUNTNAMES+"','This account is the parent account of all account frames.', '2009-04-03 09:31:33', 0.0, 0, 'builtin',0,0,0)",
-"INSERT INTO users (fullname,password,cname,laf,locale,mail,language,inthighestright,datelastlog,isenabled, dateadded ) VALUES ('Administrator','5f4dcc3b5aa765d61d8327deb882cf99','admin','" + UIManager.getSystemLookAndFeelClassName() + "','en_GB','','buildin_en',0,'2009-04-03 09:31:33',1,'2009-04-03 09:31:33')"
+"INSERT INTO users (fullname,password,cname,laf,locale,mail,language,inthighestright,datelastlog,isenabled, dateadded ) VALUES ('Administrator','5f4dcc3b5aa765d61d8327deb882cf99','admin','" + UIManager.getSystemLookAndFeelClassName() + "','en_GB','','buildin_en',0,'2009-04-03 09:31:33',1,'2009-04-03 09:31:33')",
+"INSERT INTO countries (iso, cname ) VALUES (276,'Deutschland')"
 
     };
 
