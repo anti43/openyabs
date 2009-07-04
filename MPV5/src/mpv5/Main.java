@@ -95,7 +95,8 @@ public class Main extends SingleFrameApplication {
                 LanguageManager.getCountriesAsComboBoxModel();
                 MPV5View.addMessage(Messages.CACHED_OBJECTS + ": " + Context.getCountries());
             }
-        };new Thread(runnable).start();
+        };
+        new Thread(runnable).start();
 //        Account.cacheAccounts();//pre cache accounts
 //        MPV5View.addMessage(Messages.CACHED_OBJECTS + ": " + Context.getAccounts());
 //        DatabaseObject.cacheObjects();//Is called by User.login() later
@@ -206,7 +207,11 @@ public class Main extends SingleFrameApplication {
             Log.Debug(Main.class, QueryHandler.instanceOf().getStatistics());
         }
         Log.Print(GOODBYE_MESSAGE);
-        clearLockFile();
+        try {
+            clearLockFile();
+        } catch (Exception e) {
+            Log.Debug(Main.class, e);
+        }
         super.shutdown();
     }
 
@@ -225,7 +230,7 @@ public class Main extends SingleFrameApplication {
 
             splash.nextStep(Messages.INIT.toString());
             getOS();
-            setEnv();
+            setEnv(null);
             parseArgs(args);
             setDerbyLog();
             start();
@@ -246,10 +251,6 @@ public class Main extends SingleFrameApplication {
      */
     public static String SETTINGS_FILE = null;
     /**
-     * The directory where the application files go
-     */
-    public static String APP_DIR = null;
-    /**
      * The user home directory
      */
     public static String USER_HOME = null;
@@ -266,26 +267,25 @@ public class Main extends SingleFrameApplication {
         }
     }
 
-    public static void setEnv() {
+    /**
+     * Set the dirs
+     * @param rootDir The root dir or null, defaults to: USER_HOME + File.separator + ".mp"
+     */
+    public static void setEnv(String rootDir) {
 
         if (IS_WINDOWS) {
-
             USER_HOME = System.getenv("USERPROFILE");
-            DESKTOP = USER_HOME + File.separator + "Desktop";
-            MPPATH = USER_HOME + File.separator + ".mp";
-            SETTINGS_FILE = Main.MPPATH + File.separator + "settings" + Constants.RELEASE_VERSION + ".mp";
-            APP_DIR = USER_HOME + File.separator + Constants.PROG_NAME;
-
         } else {
-
             USER_HOME = System.getProperty("user.home");
-            DESKTOP = USER_HOME + File.separator + "Desktop";
-            MPPATH = USER_HOME + File.separator + ".mp";
-            SETTINGS_FILE = Main.MPPATH + File.separator + "settings" + Constants.RELEASE_VERSION + ".mp";
-            APP_DIR = USER_HOME + File.separator + Constants.PROG_NAME;
-
         }
 
+        DESKTOP = USER_HOME + File.separator + "Desktop";
+        if (rootDir == null) {
+            MPPATH = USER_HOME + File.separator + ".mp";
+        } else {
+            MPPATH = rootDir;
+        }
+        SETTINGS_FILE = Main.MPPATH + File.separator + "settings" + Constants.RELEASE_VERSION + ".mp";
     }
 
     private static void parseArgs(String[] args) {
@@ -294,9 +294,9 @@ public class Main extends SingleFrameApplication {
         ArgumentBuilder abuilder = new ArgumentBuilder();
         GroupBuilder gbuilder = new GroupBuilder();
 
-        Argument option = abuilder.withName("=option").withMinimum(1).withMaximum(1).create();
-        Argument filearg = abuilder.withName("=file").withMinimum(1).withMaximum(1).create();
-        Argument dirarg = abuilder.withName("=directory").withMinimum(1).withMaximum(1).create();
+        Argument option = abuilder.withName("option").withMinimum(1).withMaximum(1).create();
+        Argument filearg = abuilder.withName("file").withMinimum(1).withMaximum(1).create();
+        Argument dirarg = abuilder.withName("directory").withMinimum(1).withMaximum(1).create();
         Argument number = abuilder.withName("number").withMinimum(1).withMaximum(1).create();
 
         Option server = obuilder.withShortName("server").withShortName("serv").withDescription("start built-in server component").create();
@@ -310,6 +310,7 @@ public class Main extends SingleFrameApplication {
         Option debug = obuilder.withShortName("debug").withDescription("debug logging").create();
         Option removeplugins = obuilder.withShortName("removeplugins").withDescription("remove all plugins which would be loaded").create();
         Option logfile = obuilder.withShortName("logfile").withShortName("l").withDescription("use file for log").withArgument(filearg).create();
+        Option mpdir = obuilder.withShortName("appdir").withShortName("dir").withDescription("set the application main dir").withArgument(dirarg).create();
         Option connectionInstance = obuilder.withShortName("connectionInstance").withShortName("conn").withDescription("Use stored connection with this ID").withArgument(number).create();
         Option windowlog = obuilder.withShortName("windowlog").withDescription("Enables logging to the MP Log Console").create();
         Option consolelog = obuilder.withShortName("consolelog").withDescription("Enables logging to STDOUT").create();
@@ -330,6 +331,7 @@ public class Main extends SingleFrameApplication {
                 withOption(server).
                 withOption(windowlog).
                 withOption(consolelog).
+                withOption(mpdir).
                 create();
 
         HelpFormatter hf = new HelpFormatter();
@@ -342,6 +344,10 @@ public class Main extends SingleFrameApplication {
         if (cl == null) {
             System.err.println("Cannot parse arguments");
         } else {
+
+            if(cl.hasOption(mpdir)){
+            setEnv(cl.getValue(mpdir).toString());
+            }
 
             if (cl.hasOption(connectionInstance)) {
                 try {
@@ -606,7 +612,7 @@ public class Main extends SingleFrameApplication {
         String[] lines = x.readLines();
         for (int i = 0; i < lines.length; i++) {
             String line = lines[i];
-            if ((!line.contains(instanceIdentifier))||(line.length() > 0 && line.substring(line.lastIndexOf(instanceIdentifier) + instanceIdentifier.length(), line.lastIndexOf("]")).equals(String.valueOf(LocalSettings.getConnectionID())))) {
+            if ((!line.contains(instanceIdentifier)) || (line.length() > 0 && line.substring(line.lastIndexOf(instanceIdentifier) + instanceIdentifier.length(), line.lastIndexOf("]")).equals(String.valueOf(LocalSettings.getConnectionID())))) {
                 lines[i] = null;
             }
         }

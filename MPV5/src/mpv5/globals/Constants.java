@@ -73,6 +73,11 @@ public interface Constants {
      */
     public static final String DATABASENAME = "mpv" + Constants.RELEASE_VERSION + "db";
 
+     /**
+     * Name of main dir for user related files
+     */
+    public static final String MPPATH = "mpv" + Constants.RELEASE_VERSION + "db";
+
     public static String ICON_NAME_LIN = "mp.desktop";
     public static String ICON_NAME_WIN = "MP-Rechnungs-Kundenverwaltung.url";
     public static String XML_ROOT = "mpv5";
