@@ -6,7 +6,11 @@
 package mpv5.ui.dialogs.subcomponents;
 
 import java.awt.Cursor;
+import java.awt.Desktop;
 import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import mpv5.Main;
 import mpv5.db.common.ConnectionTypeHandler;
@@ -17,6 +21,8 @@ import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 
 import mpv5.logging.Log;
+import mpv5.logging.LogConsole;
+import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.Wizard;
 import mpv5.ui.dialogs.WizardMaster;
 import mpv5.ui.dialogs.Wizardable;
@@ -91,6 +97,13 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
                 master.setMessage(Messages.CONNECTION_FAILED.toString());
                 this.master.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                 Log.Debug(ex);
+                if(Popup.Y_N_dialog(this, Messages.ERROR_OCCURED + "\n" + Messages.SEE_LOG + "?", Messages.CONNECTION_FAILED)){
+                    try {
+                        Desktop.getDesktop().open(LogConsole.getLogfile());
+                    } catch (IOException ex1) {
+                        Popup.error(ex1);
+                    }
+                }
                 return false;
             }
             this.master.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));

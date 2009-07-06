@@ -47,19 +47,26 @@ public class LogConsole extends javax.swing.JFrame {
     public static void setLogFile(String file) throws Exception {
         if (file != null) {
             LogConsole.logfile = new File(file);
-            logfile.delete();
-            if (logfile.createNewFile() && !logfile.canWrite()) {
-                throw new Exception("Fehler in " + logfile.getCanonicalPath());
+            getLogfile().delete();
+            if (getLogfile().createNewFile() && !logfile.canWrite()) {
+                throw new Exception("Fehler in " + getLogfile().getCanonicalPath());
             } else {
                 FILE_LOG_ENABLED = true;
-                logwriter = new FileReaderWriter(logfile);
-                Log.Debug(LogConsole.class, "Logging to File: " + logfile.getPath());
+                logwriter = new FileReaderWriter(getLogfile());
+                Log.Debug(LogConsole.class, "Logging to File: " + getLogfile().getPath());
             }
         } else {
             FILE_LOG_ENABLED = false;
         }
     }
     private static int line = 0;
+
+    /**
+     * @return the logfile
+     */
+    public static File getLogfile() {
+        return logfile;
+    }
 
     /** Creates new form Logger */
     public LogConsole() {

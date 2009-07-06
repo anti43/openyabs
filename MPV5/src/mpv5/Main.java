@@ -161,7 +161,7 @@ public class Main extends SingleFrameApplication {
         if (FORCE_INSTALLER == null) {
             if (probeDatabaseConnection()) {
                 go(false);
-            } else if (Popup.Y_N_dialog(Messages.NO_DB_CONNECTION, Messages.ERROR_OCCURED.toString())) {
+            } else if (Popup.Y_N_dialog(splash, Messages.NO_DB_CONNECTION, Messages.ERROR_OCCURED.toString())) {
                 splash.dispose();
                 showDbWiz(null);
             } else {

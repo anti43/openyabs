@@ -18,11 +18,20 @@ package mpv5.ui.dialogs;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.Rectangle;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 import mpv5.globals.Messages;
+import mpv5.ui.dialogs.subcomponents.wizard_DBSettings_1;
 import mpv5.ui.frames.MPV5View;
 
 /**
@@ -35,7 +44,10 @@ public class Popup {
     public static String ERROR = Messages.ERROR_OCCURED.getValue();
     public static String NOTICE = Messages.NOTICE.getValue();
     public static String GENERAL_ERROR = Messages.ERROR_OCCURED.getValue();
-    public static Component identifier = null;
+    /**
+     * This identifier is the parent container opf popups, to keep them all in one screen
+     */
+    public static Component identifier = new Frame(GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration());
 
     /**
      * Prompts the user with a text box
@@ -63,6 +75,21 @@ public class Popup {
      */
     public static boolean Y_N_dialog(Object text, Object label) {
         if (JOptionPane.showConfirmDialog(identifier, prepareText(text.toString()), label.toString(), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, new javax.swing.ImageIcon(new Popup().getClass().getResource("/mpv5/resources/images/32/warning.png"))) == JOptionPane.YES_OPTION) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * A Y_N_dialog
+     * @param parent
+     * @param text
+     * @param label
+     * @return
+     */
+    public static boolean Y_N_dialog(Component parent, Object text, Object label) {
+        if (JOptionPane.showConfirmDialog(parent, prepareText(text.toString()), label.toString(), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, new javax.swing.ImageIcon(new Popup().getClass().getResource("/mpv5/resources/images/32/warning.png"))) == JOptionPane.YES_OPTION) {
             return true;
         } else {
             return false;
@@ -150,6 +177,7 @@ public class Popup {
         scroll.setPreferredSize(new Dimension(300, 80));
         return scroll;
     }
+
 //
 //    /**
 //     * A popup..
@@ -167,7 +195,6 @@ public class Popup {
 //    public Popup(String text, String label) {
 //        JOptionPane.showMessageDialog(identifier, prepareText(text), label, JOptionPane.INFORMATION_MESSAGE);
 //    }
-
     private Popup() {
     }
 }

@@ -18,7 +18,12 @@ package mpv5.ui.misc;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.HeadlessException;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
+import mpv5.logging.Log;
 
 /**
  * This is a helper class for visual component positioning
@@ -62,14 +67,25 @@ public class Position {
      * Centers the given Component
      */
     public void center() {
-        Dimension frameSize = new Dimension(comp.getSize());
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
-        int top = (screenSize.height - frameSize.height) / 2;
-        int left = (screenSize.width - frameSize.width) / 2;
+//        Dimension frameSize = new Dimension(comp.getSize());
+//        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+//
+//        int top = (screenSize.height - frameSize.height) / 2;
+//        int left = (screenSize.width - frameSize.width) / 2;
+//
+//        comp.setSize(frameSize);
+//        comp.setLocation(left, top);
 
-        comp.setSize(frameSize);
-        comp.setLocation(left, top);
+        try {
+            Dimension w = comp.getSize();
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            Rectangle r = ge.getDefaultScreenDevice().getDefaultConfiguration().getBounds();
+            Dimension d = new Dimension(r.width, r.height);
+            comp.setLocation((d.width - w.width) / 2, (d.height - w.height) / 2);
+        } catch (Exception e) {
+            Log.Debug(e);
+        }
     }
 
     /**
