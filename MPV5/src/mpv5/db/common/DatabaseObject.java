@@ -123,10 +123,12 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
         } else {
             Log.Debug(DatabaseObject.class, "" + context.getDbIdentity()  + "@" + id + " not found in cache.");
             return null;
+
         }
     }
     /**
      * The db context of this do
+     * 
      */
     public Context context = new Context(this) {
     };
