@@ -24,12 +24,15 @@ import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
+import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.DatabaseSearch;
 import mpv5.db.objects.Contact;
 import mpv5.handler.MPEnum;
+import mpv5.logging.Log;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.models.*;
 import mpv5.utils.renderer.ComboBoxRendererForTooltip;
@@ -44,6 +47,15 @@ public class MPCombobox extends javax.swing.JPanel {
     public boolean SEARCH_ON_ENTER = false;
     private Context context;
     private int sortmode = 0;
+    private JTable table;
+
+    /**
+     * If this combobox is within a table cell, set the table here
+     * @param table
+     */
+    public void setTable(JTable table) {
+        this.table = table;
+    }
 
     /** Creates new form LabeledTextField */
     public MPCombobox() {
@@ -57,9 +69,22 @@ public class MPCombobox extends javax.swing.JPanel {
             @Override
             public void keyPressed(KeyEvent e) {
 
-                if (SEARCH_ON_ENTER && e.getKeyCode() == KeyEvent.VK_ENTER && context != null) {
+                if (SEARCH_ON_ENTER && (e.getKeyCode() == KeyEvent.VK_ENTER) && context != null) {
                     search();
                 }
+                if (table != null) {
+                    jComboBox1.showPopup();
+                }
+
+//                if (table != null) {
+//                    JComboBox combobox = getComboBox();
+//                    if (!combobox.isPopupVisible()) {
+//                        combobox.hidePopup();
+//                    } else {
+//                        combobox.showPopup();
+//                    }
+//                }
+
             }
 
             @Override
@@ -76,15 +101,19 @@ public class MPCombobox extends javax.swing.JPanel {
 
             @Override
             public void mousePressed(MouseEvent e) {
-                          if (SEARCH_ON_ENTER) {
-                    jComboBox1.setModel(new DefaultComboBoxModel(new String[]{""}));
+                if (SEARCH_ON_ENTER) {
+                    if (table == null) {
+                        jComboBox1.setModel(new DefaultComboBoxModel(new String[]{""}));
+                    }
                     search();
+                    if (table != null) {
+                        jComboBox1.showPopup();
+                    }
                 }
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-      
             }
 
             @Override
@@ -99,6 +128,20 @@ public class MPCombobox extends javax.swing.JPanel {
 
         jComboBox1.setRenderer(new ComboBoxRendererForTooltip());
         setModel();
+    }
+
+    /**
+     * Creates a new ComboBox with {@link MPCombobox#setSearchOnEnterEnabled(boolean)} enabled and the given search {@link Context}
+     * 
+     * @param c
+     * @param table
+     */
+    public MPCombobox(Context c, JTable table) {
+        this();
+        setSearchOnEnterEnabled(true);
+        setContext(c);
+        setTable(table);
+        getComboBox().putClientProperty("JComboBox.isTableCellEditor", table != null);
     }
 
     public JComboBox getComboBox() {
@@ -119,7 +162,9 @@ public class MPCombobox extends javax.swing.JPanel {
                 Object[][] data = new DatabaseSearch(context, 50).getValuesFor("ids, cname", "cname", jComboBox1.getSelectedItem().toString(), true);
                 jComboBox1.setModel(MPComboBoxModelItem.toModel(MPComboBoxModelItem.toItems(data, true)));
                 if (data.length > 1) {
-                    jComboBox1.setPopupVisible(true);
+                    Log.Debug(this, jComboBox1.getItemCount());
+                    table.editCellAt(table.getSelectedRow(), 4);
+                    jComboBox1.showPopup();
                 }
             }
         };
@@ -219,7 +264,7 @@ public class MPCombobox extends javax.swing.JPanel {
      * @param itemID
      */
     public void setSelectedIndex(int itemID) {
-        if (itemID<0 || itemID>getComboBox().getItemCount()) {
+        if (itemID < 0 || itemID > getComboBox().getItemCount()) {
             getComboBox().setSelectedIndex(itemID);
         }
     }
@@ -237,7 +282,7 @@ public class MPCombobox extends javax.swing.JPanel {
      * @param ID
      */
     public void setSelectedItem(Object ID) {
-        jComboBox1.setSelectedIndex(MPComboBoxModelItem.getItemID(ID, jComboBox1.getModel()));
+            jComboBox1.setSelectedIndex(MPComboBoxModelItem.getItemID(ID, jComboBox1.getModel()));  
     }
 
     /**
@@ -345,6 +390,6 @@ public class MPCombobox extends javax.swing.JPanel {
      * Sets an empty model
      */
     public void setModel() {
-       setModel(new Vector<DatabaseObject>());
+        setModel(new Vector<DatabaseObject>());
     }
 }

@@ -62,6 +62,7 @@ import mpv5.utils.date.DateConverter;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
+import mpv5.utils.renderer.CellRendererWithMPComboBox;
 import mpv5.utils.tables.TableFormat;
 import mpv5.utils.ui.TextFieldUtils;
 
@@ -863,6 +864,10 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
 
                     status.setModel(Item.getStatusStrings(), MPComboBoxModelItem.COMPARE_BY_ID);
                     status.setSelectedIndex(MPV5View.getUser().__getIntdefaultstatus());
+
+                    itemtable.setModel(MPTableModel.ITEM_TABLE_MODEL);
+                    CellRendererWithMPComboBox r = new CellRendererWithMPComboBox(Context.getItems(), itemtable);
+                    r.setRendererTo(4);
                 } catch (Exception e) {
                     Log.Debug(this, e);
                 }

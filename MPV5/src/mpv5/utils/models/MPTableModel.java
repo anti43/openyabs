@@ -18,11 +18,14 @@ package mpv5.utils.models;
 
 import java.util.ArrayList;
 import java.util.Vector;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.globals.Headers;
 import mpv5.logging.Log;
 import mpv5.utils.numberformat.FormatNumber;
+import mpv5.utils.renderer.CellRendererWithMPComboBox;
 
 /**
  *
@@ -33,6 +36,7 @@ public class MPTableModel extends DefaultTableModel {
     private static final long serialVersionUID = 1L;
     private Class[] types;
     private boolean[] canEdits;
+    public static MPTableModel ITEM_TABLE_MODEL = new MPTableModel(Context.getItems());
 
     public MPTableModel() {
         super();
@@ -132,6 +136,27 @@ public class MPTableModel extends DefaultTableModel {
         super(data, columnNames);
         setTypes(types);
         setEditable(false);
+    }
+
+    /**
+     * Internal ID", "ID", "Count", "Measure", "Description", "Netto Price", "Tax Value", "Total Price"
+     * @param c
+     */
+    public MPTableModel(Context c) {
+        this(new Object[][]{
+        {0.0, 0, 1.0, null, null, 0.0, 0.0, 0.0},
+        {0.0, 1, 1.0, null, null, 0.0, 0.0, 0.0},
+        {0.0, 2, 1.0, null, null, 0.0, 0.0, 0.0},
+        {0.0, 3, 1.0, null, null, 0.0, 0.0, 0.0},
+        {0.0, 4, 1.0, null, null, 0.0, 0.0, 0.0},
+        {0.0, 5, 1.0, null, null, 0.0, 0.0, 0.0},
+        {0.0, 6, 1.0, null, null, 0.0, 0.0, 0.0},
+        }, Headers.SUBITEMS);
+        setCanEdits(new boolean[]{false, false, true, true, true, true, true, false});
+//        setTypes(new Class[]{Integer.class, Integer.class, Double.class,String.class,
+//        MPComboBoxModelItem.class, Double.class, Double.class, Double.class});
+        
+
     }
 
     @Override

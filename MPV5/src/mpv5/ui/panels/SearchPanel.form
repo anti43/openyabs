@@ -20,15 +20,15 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="searchfields" alignment="0" max="32767" attributes="0"/>
-          <Component id="results" alignment="1" max="32767" attributes="0"/>
+          <Component id="results" alignment="0" max="32767" attributes="1"/>
+          <Component id="searchfields" alignment="0" max="32767" attributes="1"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <Component id="searchfields" min="-2" pref="118" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
+              <Component id="searchfields" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
               <Component id="results" max="32767" attributes="0"/>
           </Group>
       </Group>
@@ -51,43 +51,60 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="label1" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Component id="label2" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Component id="label3" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Component id="label1" min="-2" pref="47" max="-2" attributes="0"/>
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="label3" alignment="0" max="32767" attributes="1"/>
+                              <Component id="label2" alignment="0" max="32767" attributes="1"/>
+                          </Group>
+                      </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="searchbutton1" alignment="1" pref="66" max="32767" attributes="0"/>
-                      <Component id="searchfield3" alignment="0" pref="66" max="32767" attributes="0"/>
-                      <Component id="searchfield2" alignment="0" pref="66" max="32767" attributes="0"/>
-                      <Component id="searchfield1" alignment="0" pref="66" max="32767" attributes="0"/>
+                  <Group type="103" groupAlignment="1" attributes="0">
+                      <Component id="searchbutton1" alignment="0" pref="68" max="32767" attributes="0"/>
+                      <Group type="102" alignment="1" attributes="0">
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="searchfield3" pref="44" max="32767" attributes="1"/>
+                              <Component id="searchfield2" pref="44" max="32767" attributes="1"/>
+                              <Component id="searchfield1" alignment="1" pref="44" max="32767" attributes="1"/>
+                          </Group>
+                          <EmptySpace min="-2" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="1" attributes="0">
+                              <Group type="103" alignment="1" groupAlignment="0" attributes="0">
+                                  <Component id="jButton2" min="-2" pref="18" max="-2" attributes="0"/>
+                                  <Component id="jButton1" alignment="0" min="-2" pref="18" max="-2" attributes="0"/>
+                              </Group>
+                              <Component id="jButton3" alignment="1" min="-2" pref="18" max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
                   </Group>
-                  <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="0" attributes="0">
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="label1" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="searchfield1" alignment="3" min="-2" max="-2" attributes="0"/>
+              <Group type="102" attributes="0">
+                  <Group type="103" groupAlignment="2" attributes="0">
+                      <Component id="searchfield1" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButton1" alignment="2" min="-2" pref="17" max="-2" attributes="0"/>
+                      <Component id="label1" alignment="2" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="2" attributes="0">
+                      <Component id="label2" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="searchfield2" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButton2" alignment="2" min="-2" pref="17" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="2" attributes="0">
+                      <Component id="label3" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="searchfield3" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButton3" alignment="2" min="-2" pref="17" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="label2" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="searchfield2" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="label3" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="searchfield3" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="searchbutton1" pref="19" max="32767" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="searchbutton1" min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -172,6 +189,48 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="searchbutton1ActionPerformed"/>
           </Events>
         </Component>
+        <Component class="javax.swing.JButton" name="jButton1">
+          <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/mpv5/resources/images/16/search.png"/>
+            </Property>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="SearchPanel.jButton1.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+            </Property>
+            <Property name="name" type="java.lang.String" value="jButton1" noResource="true"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="jButton2">
+          <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/mpv5/resources/images/16/search.png"/>
+            </Property>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="SearchPanel.jButton2.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+            </Property>
+            <Property name="name" type="java.lang.String" value="jButton2" noResource="true"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton2ActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="jButton3">
+          <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/mpv5/resources/images/16/search.png"/>
+            </Property>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="SearchPanel.jButton3.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+            </Property>
+            <Property name="name" type="java.lang.String" value="jButton3" noResource="true"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton3ActionPerformed"/>
+          </Events>
+        </Component>
       </SubComponents>
     </Container>
     <Container class="javax.swing.JPanel" name="results">
@@ -189,12 +248,12 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="resultsscrollpane" alignment="0" pref="151" max="32767" attributes="0"/>
+              <Component id="resultsscrollpane" alignment="0" pref="131" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="resultsscrollpane" alignment="0" pref="92" max="32767" attributes="0"/>
+              <Component id="resultsscrollpane" alignment="0" pref="101" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
       </Layout>
