@@ -116,11 +116,12 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
         }
     }
 
-    private synchronized static DatabaseObject getCachedObject(Context context, int id) {
+    private synchronized static DatabaseObject getCachedObject(final Context context, final int id) {
         if (cache.containsKey(context.getDbIdentity() + "@" + id)) {
-            Log.Debug(DatabaseObject.class, "Using cached object " + context + "@" + id);
+            Log.Debug(DatabaseObject.class, "Using cached object " + context.getDbIdentity()  + "@" + id);
             return cache.get(context.getDbIdentity() + "@" + id);
         } else {
+            Log.Debug(DatabaseObject.class, "" + context.getDbIdentity()  + "@" + id + " not found in cache.");
             return null;
         }
     }
@@ -615,14 +616,14 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
         return vals;
     }
 
-        /**
+    /**
      * Searches for a specific dataset, cached or non-cached
      * @param context The context to search under
      * @param id The id of the object
      * @return A database object with data, or null if none found
      * @throws NodataFoundException
      */
-    public static DatabaseObject getObject(Context context, int id) throws NodataFoundException {
+    public static DatabaseObject getObject(final Context context, final int id) throws NodataFoundException {
         DatabaseObject cdo = DatabaseObject.getCachedObject(context, id);
         if (cdo == null) {
             try {
@@ -923,26 +924,28 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
 //                            Log.Debug(DatabaseObject.class, "Explode: " + vars.get(k).toGenericString() + " with " + select.getData()[i][j] + "[" + valx + "]");
 //                            //End Debug Section
 
-                            try {
-                                if (name.startsWith("is") || name.toUpperCase().startsWith("BOOL") || name.toUpperCase().endsWith("BOOL")) {
-                                    if (String.valueOf(select.getData()[i][j]).equals("1")) {
-                                        vars.get(k).invoke(dbo, new Object[]{true});
+                            if (select.getData()[i][j] != null) {
+                                try {
+                                    if (name.startsWith("is") || name.toUpperCase().startsWith("BOOL") || name.toUpperCase().endsWith("BOOL")) {
+                                        if (String.valueOf(select.getData()[i][j]).equals("1")) {
+                                            vars.get(k).invoke(dbo, new Object[]{true});
+                                        } else {
+                                            vars.get(k).invoke(dbo, new Object[]{false});
+                                        }
+                                    } else if (name.toUpperCase().startsWith("INT") || name.endsWith("uid") || name.endsWith("ids") || name.equals("ids")) {
+                                        vars.get(k).invoke(dbo, new Object[]{Integer.valueOf(String.valueOf(select.getData()[i][j]))});
+                                    } else if (name.toUpperCase().startsWith("DATE") || name.toUpperCase().endsWith("DATE")) {
+                                        vars.get(k).invoke(dbo, new Object[]{DateConverter.getDate(select.getData()[i][j])});
+                                    } else if (name.toUpperCase().startsWith("VALUE") || name.toUpperCase().endsWith("VALUE")) {
+                                        vars.get(k).invoke(dbo, new Object[]{Double.valueOf(String.valueOf(select.getData()[i][j]))});
                                     } else {
-                                        vars.get(k).invoke(dbo, new Object[]{false});
+                                        vars.get(k).invoke(dbo, new Object[]{String.valueOf(select.getData()[i][j])});
                                     }
-                                } else if (name.toUpperCase().startsWith("INT") || name.endsWith("uid") || name.endsWith("ids") || name.equals("ids")) {
-                                    vars.get(k).invoke(dbo, new Object[]{Integer.valueOf(String.valueOf(select.getData()[i][j]))});
-                                } else if (name.toUpperCase().startsWith("DATE") || name.toUpperCase().endsWith("DATE")) {
-                                    vars.get(k).invoke(dbo, new Object[]{DateConverter.getDate(select.getData()[i][j])});
-                                } else if (name.toUpperCase().startsWith("VALUE") || name.toUpperCase().endsWith("VALUE")) {
-                                    vars.get(k).invoke(dbo, new Object[]{Double.valueOf(String.valueOf(select.getData()[i][j]))});
-                                } else {
-                                    vars.get(k).invoke(dbo, new Object[]{String.valueOf(select.getData()[i][j])});
+                                } catch (Exception ex) {
+                                    Log.Debug(DatabaseObject.class, "Explode: " + vars.get(k).toGenericString() + " with " + select.getData()[i][j] + "[" + valx + "]");
+                                    Log.Debug(ex);
                                 }
-                            } catch (Exception ex) {
-                                Log.Debug(DatabaseObject.class, "Explode: " + vars.get(k).toGenericString() + " with " + select.getData()[i][j] + "[" + valx + "]");
-                                Log.Debug(ex);
-                            } 
+                            }
                         }
                     }
                 }
@@ -1177,4 +1180,5 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
     public static void AutoLockEnabled(boolean active) {
         AUTO_LOCK = active;
     }
+
 }

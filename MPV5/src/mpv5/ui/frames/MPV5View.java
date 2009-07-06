@@ -308,7 +308,6 @@ public class MPV5View extends FrameView {
         tabPane = new CloseableTabbedPane(this);
         identifierFrame = this.getFrame();
         Popup.identifier = identifierFrame;
-        new Position(MPV5View.identifierFrame);
         progressbar = this.progressBar;
         progressbar.setMinimum(0);
         messagelabel = statusMessageLabel;

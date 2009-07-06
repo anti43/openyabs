@@ -36,14 +36,14 @@ public class ConnectionTypeHandler {
      * Use myql database driver
      */
     public static final int MYSQL = 1;
-    public static String MYSQL_DRIVER = "com.mysql.jdbc.Driver (specify path with <path>:port)";
+    public static String MYSQL_DRIVER = "com.mysql.jdbc.Driver";
     /**
      * Use custom database driver
      */
     public static final int CUSTOM = 2;
 
     //Available Drivers
-    public static String CUSTOM_DRIVER = "custom.driver (specify path with type declaration jdbc:sql://<path>:port)";
+    public static String CUSTOM_DRIVER = "custom.driver";// (specify path with type declaration jdbc:sql://<path>:port)
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public static String[] DRIVERS = {DERBY_DRIVER, MYSQL_DRIVER, CUSTOM_DRIVER};
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

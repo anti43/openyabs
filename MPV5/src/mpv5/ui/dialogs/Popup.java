@@ -19,20 +19,12 @@ package mpv5.ui.dialogs;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.awt.Rectangle;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 import mpv5.globals.Messages;
-import mpv5.ui.dialogs.subcomponents.wizard_DBSettings_1;
-import mpv5.ui.frames.MPV5View;
 
 /**
  *
@@ -55,7 +47,7 @@ public class Popup {
      * @return
      */
     public static String Enter_Value(Object message) {
-        return JOptionPane.showInputDialog(message.toString());
+        return JOptionPane.showInputDialog(identifier, message.toString());
     }
 
     /**

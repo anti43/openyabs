@@ -199,7 +199,11 @@ public class ControlPanel_Konsole extends javax.swing.JPanel implements ControlA
                     command = command.substring(0, command.lastIndexOf(";"));
                 }
                 if (command.length() > 1) {
-                    QueryHandler.getConnection().freeUpdateQuery(command, jTextArea2, MPSecurityManager.CREATE_OR_DELETE, Messages.SEE_LOG.getValue());
+                   if(command.toLowerCase().contains("update")) {
+                        QueryHandler.getConnection().freeUpdateQuery(command, jTextArea2, MPSecurityManager.CREATE_OR_DELETE, Messages.SEE_LOG.getValue());
+                    } else {
+                        QueryHandler.getConnection().freeQuery(command, jTextArea2, MPSecurityManager.CREATE_OR_DELETE, Messages.SEE_LOG.getValue());
+                    }
                 }
                 jTextArea1.replaceRange(null, jTextArea1.getLineStartOffset(i), jTextArea1.getLineEndOffset(i));
             } catch (Exception ex) {

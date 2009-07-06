@@ -29,32 +29,25 @@ import javax.swing.table.TableModel;
  */
 public class Selection {
 
-    private Integer id = null;
+    private final int id;
     private JTable table;
     private int removed = 0;
+    private final int r;
+    private boolean noerror;
 
     public Selection(JTable table) {
         this.table = table;
+        r=table.getSelectedRow();
+        id = Integer.valueOf(String.valueOf(table.getValueAt(r, 0)));
+        noerror = true;
         if (table.getCellEditor() != null) {
             table.getCellEditor().stopCellEditing();
         }
     }
 
-    public boolean checkID() {
-        try {
-            id = Integer.valueOf(String.valueOf(table.getValueAt(table.getSelectedRow(), 0)));
-            return true;
-        } catch (Exception numberFormatException) {
-            return false;
-        }
-    }
 
-    public int getId() {
-        if (checkID()) {
+    public synchronized int getId() {
             return id;
-        } else {
-            return -1;
-        }
     }
 
     public Object[] getRowData() {
@@ -94,5 +87,9 @@ public class Selection {
             }
         }
         return false;
+    }
+
+    public boolean checkID() {
+        return noerror;
     }
 }

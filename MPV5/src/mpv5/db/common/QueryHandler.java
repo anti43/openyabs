@@ -625,7 +625,7 @@ public class QueryHandler implements Cloneable {
         }
         if (!runInBackground) {
             RUNNING_JOBS++;
-            if(RUNNING_JOBS>5) {
+            if (RUNNING_JOBS > 5) {
                 comp.setCursor(new Cursor(Cursor.WAIT_CURSOR));
             }
             MPV5View.setProgressMaximumValue(RUNNING_JOBS);
@@ -690,7 +690,7 @@ public class QueryHandler implements Cloneable {
             if (psHistory == null) {
                 try {
                     String query = "INSERT INTO " + Context.getHistory().getDbIdentity() + " (cname, username, dbidentity, intitem, groupsids, dateadded) VALUES (?, ?, ?, ?, ?, ?)";
-                    psHistory = sqlConn.prepareStatement(query);
+                    psHistory = sqlConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
                 } catch (SQLException ex) {
                     Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -722,7 +722,7 @@ public class QueryHandler implements Cloneable {
             if (psLock == null) {
                 try {
                     String query = "INSERT INTO " + Context.getLock().getDbIdentity() + " (cname, rowid, usersids) VALUES (?, ?, ?)";
-                    psLock = sqlConn.prepareStatement(query);
+                    psLock = sqlConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
                 } catch (SQLException ex) {
                     Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -742,7 +742,7 @@ public class QueryHandler implements Cloneable {
             if (psUnLock == null) {
                 try {
                     String query = "DELETE FROM " + Context.getLock().getDbIdentity() + " WHERE cname = ? AND rowid = ? AND usersids = ?";
-                    psUnLock = sqlConn.prepareStatement(query);
+                    psUnLock = sqlConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
                 } catch (SQLException ex) {
                     Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -1054,7 +1054,7 @@ public class QueryHandler implements Cloneable {
             query += " ORDER BY " + order;
         }
 
-        return sqlConn.prepareStatement(query);
+        return sqlConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
     }
 
     /**
@@ -1464,18 +1464,19 @@ public class QueryHandler implements Cloneable {
             stm = sqlConn.createStatement();
             Log.Debug(this, query);
             if (log != null) {
-                log.append("\n " + query);
+                log.append("\n " + query + "\n\n_________________________________________________________________________________\n");
             }
             bool = stm.execute(query);
-            if (log != null) {
-                log.append("\n " + stm.getUpdateCount() + " rows affected.");
-            }
 
-            ResultSet keys = stm.getGeneratedKeys();
-            if (keys != null && keys.next()) {
-                id = keys.getInt(1);
-            }
 
+            try {
+                ResultSet keys = stm.getGeneratedKeys();
+                if (keys != null && keys.next()) {
+                    id = keys.getInt(1);
+                }
+            } catch (SQLException sQLException) {
+                Log.Debug(sQLException);
+            }
             if (bool) {
                 resultSet = stm.getResultSet();
                 ArrayList spalten = new ArrayList();
@@ -1500,10 +1501,19 @@ public class QueryHandler implements Cloneable {
                     z = (ArrayList) zeilen.get(h);
                     for (int i = 0; i < spalten.size(); i++) {
                         data[h][i] = z.get(i);
+                        if (log != null) {
+                            log.append("| " + data[h][i]+"\t");
+                        }
                     }
+                     if (log != null) {
+                            log.append("\n ");
+                        }
                 }
             }
             retval = new ReturnValue(id, data, columnnames);
+            if (log != null) {
+                log.append("\n " + stm.getUpdateCount() + " rows affected.");
+            }
 
         } catch (SQLException ex) {
 
@@ -1600,10 +1610,14 @@ public class QueryHandler implements Cloneable {
             }
 
 
-            keys = stm.getGeneratedKeys();
+            try {
+                keys = stm.getGeneratedKeys();
 
-            if (keys != null && keys.next()) {
-                id = keys.getInt(1);
+                if (keys != null && keys.next()) {
+                    id = keys.getInt(1);
+                }
+            } catch (SQLException sQLException) {
+                Log.Debug(sQLException);
             }
 
             retval = new ReturnValue(id, null, null);
@@ -1703,9 +1717,13 @@ public class QueryHandler implements Cloneable {
             ArrayList zeilen = new ArrayList();
             rsmd = resultSet.getMetaData();
 
-            ResultSet keys = stm.getGeneratedKeys();
-            if (keys != null && keys.next()) {
-                id = keys.getInt(1);
+            try {
+                ResultSet keys = stm.getGeneratedKeys();
+                if (keys != null && keys.next()) {
+                    id = keys.getInt(1);
+                }
+            } catch (SQLException sQLException) {
+                Log.Debug(sQLException);
             }
 
             columnnames = new String[rsmd.getColumnCount()];
@@ -1785,7 +1803,7 @@ public class QueryHandler implements Cloneable {
             int fileLength = (int) file.length();
             name = new RandomText(23).getString();
             java.io.InputStream fin = new java.io.FileInputStream(file);
-            PreparedStatement ps = sqlConn.prepareStatement(query);
+            PreparedStatement ps = sqlConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
             ps.setString(1, name);
             ps.setInt(5, MPV5View.getUser().getID());
             ps.setLong(4, file.length());
@@ -2029,7 +2047,9 @@ public class QueryHandler implements Cloneable {
                 Object obj = new Object();
                 synchronized (obj) {
                     ps.execute();
-                    sqlConn.commit();
+                      if (!sqlConn.getAutoCommit()) {
+                        sqlConn.commit();
+                    }
                 }
             } catch (SQLException ex) {
                 Log.Debug(this, ex);
@@ -2098,13 +2118,15 @@ public class QueryHandler implements Cloneable {
                     int fileLength = (int) file.length();
                     name = new RandomText(23).getString();
                     java.io.InputStream fin = new java.io.FileInputStream(file);
-                    PreparedStatement ps = sqlConn.prepareStatement(query);
+                    PreparedStatement ps = sqlConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
                     ps.setString(1, name);
                     ps.setLong(4, file.length());
                     ps.setDate(3, new java.sql.Date(new Date().getTime()));
                     ps.setBinaryStream(2, fin, fileLength);
                     ps.execute();
-                    sqlConn.commit();
+                    if (!sqlConn.getAutoCommit()) {
+                        sqlConn.commit();
+                    }
                 } catch (Exception ex) {
                     MPV5View.setProgressReset();
                     Log.Debug(this, "Datenbankfehler: " + query);

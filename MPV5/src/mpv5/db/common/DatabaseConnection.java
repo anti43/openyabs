@@ -4,6 +4,7 @@
  */
 package mpv5.db.common;
 
+import java.sql.Driver;
 import mpv5.logging.Log;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -62,18 +63,19 @@ public class DatabaseConnection {
         ctype.setDBName(dbname);
 
         try {
+
+            DriverManager.registerDriver( (Driver) Class.forName(ctype.getDriver()).newInstance());
             Log.Debug(this, "Datenbanktreiber: " + ctype.getDriver());
-//            Class.forName(ctype.getDriver()).newInstance();
         } catch (Exception ex) {
-            ex.printStackTrace();
-//            Popup.warn(ex.getMessage(), Popup.ERROR);
-            DatabaseConnection.shutdown();
+           Log.Debug(ex);
         }
 
         try {
             Log.Debug(this, "Datenbankverbindung: " + ctype.getConnectionString(create));
             conn = DriverManager.getConnection(ctype.getConnectionString(create), user, password);
-            if (conn != null && conn.isValid(10)) {
+            if (conn != null 
+//                    && conn.isValid(10)//does not work with MySQL 5.0
+                    ) {
                 connector = this;
                 return true;
             } else {
@@ -169,6 +171,7 @@ public class DatabaseConnection {
                 String string = queries[i];
                 Log.Print(string);
                 stm.execute(string);
+                Thread.sleep(100);
             }
             return true;
         } catch (Exception sQLException) {

@@ -215,9 +215,7 @@ public class Search extends javax.swing.JFrame {
         if (evt.getClickCount() > 1) {
             if (jCheckBox2.isSelected()) {
                 Selection s = new Selection(jTable1);
-                if (s.checkID()) {
-                    lastContext = Context.getMatchingContext(jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString());
-                }
+                lastContext = Context.getMatchingContext(jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString());
             }
             if (lastContext != null) {
                 try {
