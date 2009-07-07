@@ -21,6 +21,7 @@ import java.awt.Component;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import mpv5.db.common.Context;
@@ -30,7 +31,7 @@ import mpv5.utils.models.MPComboBoxModelItem;
 /**
  *
  */
-public class CellRendererWithMPComboBox extends mpv5.ui.beans.MPCombobox implements TableCellRenderer {
+public class CellRendererWithMPComboBox extends mpv5.ui.beans.LightMPComboBox implements TableCellRenderer {
 
     private final Context c;
     private final JTable table;
@@ -41,6 +42,7 @@ public class CellRendererWithMPComboBox extends mpv5.ui.beans.MPCombobox impleme
      * @param table
      */
     public CellRendererWithMPComboBox(Context c, JTable table) {
+        super();
         this.c = c;
         this.table = table;
     }
@@ -70,14 +72,17 @@ public class CellRendererWithMPComboBox extends mpv5.ui.beans.MPCombobox impleme
 //            Select the current value
             try {
 //                getComboBox().setSelectedIndex(1);
-                setSelectedItem(((MPComboBoxModelItem)value).getValue());
+                if (value!=null) {
+//                    setSelectedItem(((MPComboBoxModelItem) value).getValue());
+                    table.setValueAt(value.toString(), row, column);
+                }
             } catch (Exception e) {
                 Log.Debug(e);
             }
             return this;
 
         } else {
-            return new DefaultCellRenderer();
+            return new DefaultTableCellRenderer();
         }
     }
 
@@ -86,7 +91,7 @@ public class CellRendererWithMPComboBox extends mpv5.ui.beans.MPCombobox impleme
         private final Context c;
 
         public MPComboBoxEditor(Context c) {
-            super(new mpv5.ui.beans.MPCombobox(c, table).getComboBox());
+            super(new mpv5.ui.beans.LightMPComboBox(c, table).getComboBox());
             this.c = c;
         }
     }
