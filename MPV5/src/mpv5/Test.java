@@ -16,10 +16,18 @@
  */
 package mpv5;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.util.Date;
 import javax.swing.ComboBoxModel;
+import javax.swing.DefaultCellEditor;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
 import mpv5.db.common.Context;
 import mpv5.db.common.QueryHandler;
 import mpv5.server.MPServer;
@@ -35,12 +43,37 @@ public class Test {
 
     public static void main(String[] args) {
 
-        JComboBox j = new JComboBox();
-        Component[] f = j.getComponents();
-        for (int i = 0; i < f.length; i++) {
-            Component component = f[i];
-            System.out.println(component);
+        JFrame f = new JFrame("test");
+        JTable t = new JTable(new Object[][]{{null}, {null}, {null}, {null}, {null}}, new Object[]{"header"});
+
+        class renderer extends JComboBox implements TableCellRenderer {
+
+            public renderer() {
+                super(new String[]{"1", "2", "3"});
+            }
+
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                if (hasFocus) {
+                   return this;
+                } else {
+//                    return this;
+                    return new JLabel(String.valueOf(getSelectedItem()));
+                }
+            }
         }
+
+       class editor extends DefaultCellEditor {
+        public editor(ComboBoxModel m) {
+            super(new JComboBox(m));
+        }
+    }
+
+        t.setDefaultRenderer(Object.class, new renderer());
+        t.setDefaultEditor(Object.class, new editor(((JComboBox)t.getDefaultRenderer(Object.class)).getModel()));
+        f.add(t, BorderLayout.CENTER);
+        f.pack();
+        f.setVisible(true);
 
 //
 

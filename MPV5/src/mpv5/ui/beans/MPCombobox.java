@@ -163,7 +163,9 @@ public class MPCombobox extends javax.swing.JPanel {
                 jComboBox1.setModel(MPComboBoxModelItem.toModel(MPComboBoxModelItem.toItems(data, true)));
                 if (data.length > 1) {
                     Log.Debug(this, jComboBox1.getItemCount());
-                    table.editCellAt(table.getSelectedRow(), 4);
+                   if(table!=null) {
+                        table.editCellAt(table.getSelectedRow(), 4);
+                    }
                     jComboBox1.showPopup();
                 }
             }

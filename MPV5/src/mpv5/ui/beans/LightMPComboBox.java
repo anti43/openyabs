@@ -17,6 +17,8 @@
 package mpv5.ui.beans;
 
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -50,7 +52,7 @@ public class LightMPComboBox extends JComboBox{
     private Context context;
     private int sortmode = 0;
     private JTable table;
-    private JComboBox jComboBox1;
+
 
     /**
      * If this combobox is within a table cell, set the table here
@@ -58,14 +60,12 @@ public class LightMPComboBox extends JComboBox{
      */
     public void setTable(JTable table) {
         this.table = table;
-        jComboBox1 = this;
     }
-
+ private boolean initiated;
     /** Creates new form LabeledTextField */
     public LightMPComboBox() {
         super();
-        jComboBox1 = this;
-        jComboBox1.getEditor().getEditorComponent().addKeyListener(new KeyListener() {
+       getEditor().getEditorComponent().addKeyListener(new KeyListener() {
 
             @Override
             public void keyTyped(KeyEvent e) {
@@ -83,41 +83,41 @@ public class LightMPComboBox extends JComboBox{
             }
         });
 
-//
-//        jComboBox1.getComponent(0).addMouseListener(new MouseListener() {
-//
-//            @Override
-//            public void mouseClicked(MouseEvent e) {
-//            }
-//
-//            @Override
-//            public void mousePressed(MouseEvent e) {
-//                if (SEARCH_ON_ENTER) {
-//                    if (table == null) {
-//                        jComboBox1.setModel(new DefaultComboBoxModel(new String[]{""}));
-//                    }
-//                    search();
-//                    if (table != null) {
-//                        jComboBox1.showPopup();
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void mouseReleased(MouseEvent e) {
-//            }
-//
-//            @Override
-//            public void mouseEntered(MouseEvent e) {
-//            }
-//
-//            @Override
-//            public void mouseExited(MouseEvent e) {
-//            }
-//        });
 
+       getComponent(0).addMouseListener(new MouseListener() {
+           
 
-        jComboBox1.setRenderer(new ComboBoxRendererForTooltip());
+            @Override
+            public void mouseClicked(MouseEvent e) {
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (SEARCH_ON_ENTER && !initiated) {
+                    if (table == null) {
+                       setModel(new DefaultComboBoxModel(new String[]{""}));
+                    }
+                    search();
+                    if (table != null) {
+                       showPopup();
+                    }
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+            }
+        });
+
+       setRenderer(new ComboBoxRendererForTooltip());
         setModel();
     }
 
@@ -128,36 +128,38 @@ public class LightMPComboBox extends JComboBox{
      * @param table
      */
     public LightMPComboBox(Context c, JTable table) {
+//               super((MPComboBoxModelItem.toModel(new Object[][]{{1, 2}, {3, 4}})));
         this();
         setSearchOnEnterEnabled(true);
         setContext(c);
         setTable(table);
-        getComboBox().putClientProperty("JComboBox.isTableCellEditor", table != null);
+        putClientProperty("JComboBox.isTableCellEditor", Boolean.TRUE);
     }
 
     public JComboBox getComboBox() {
-        return jComboBox1;
+        return this;
     }
 
     /**
      * Triggers the search functionality
      */
     public void search() {
+        initiated = true;
         Runnable runnable = new Runnable() {
 
             @Override
             public void run() {
-                ComboBoxEditor cbField = jComboBox1.getEditor();
+                ComboBoxEditor cbField =getEditor();
                 Object value = cbField.getItem();
                 if(value==null ) {
                     value = "";
                 }
                 Object[][] data = new DatabaseSearch(context, 50).getValuesFor("ids, cname", "cname",  String.valueOf(value), true);
-                jComboBox1.setModel(MPComboBoxModelItem.toModel(MPComboBoxModelItem.toItems(data, true)));
+               setModel(MPComboBoxModelItem.toModel(MPComboBoxModelItem.toItems(data, true)));
                 if (data.length > 1) {
-                    Log.Debug(this, jComboBox1.getItemCount());
+                    Log.Debug(this,getItemCount());
                     table.editCellAt(table.getSelectedRow(), 4);
-                    jComboBox1.showPopup();
+                   showPopup();
 
                 }
             }
@@ -170,7 +172,7 @@ public class LightMPComboBox extends JComboBox{
      * @return The model
      */
     public MPComboboxModel getMPModel() {
-        return (MPComboboxModel) jComboBox1.getModel();
+        return (MPComboboxModel)getModel();
     }
 
     /**
@@ -178,7 +180,7 @@ public class LightMPComboBox extends JComboBox{
      * @param values
      */
     public void setModel(MPEnum[] values) {
-        jComboBox1.setModel(MPComboBoxModelItem.toModel(values));
+       setModel(MPComboBoxModelItem.toModel(values));
     }
 
     /**
@@ -187,7 +189,7 @@ public class LightMPComboBox extends JComboBox{
      * @param compareMode
      */
     public void setModel(MPEnum[] values, int compareMode) {
-        jComboBox1.setModel(MPComboBoxModelItem.toModel(values, compareMode));
+       setModel(MPComboBoxModelItem.toModel(values, compareMode));
     }
 
 
@@ -198,7 +200,7 @@ public class LightMPComboBox extends JComboBox{
      * @param data
      */
     public void setModel(Object[][] data) {
-        jComboBox1.setModel(MPComboBoxModelItem.toModel(data));
+       setModel(MPComboBoxModelItem.toModel(data));
     }
 
 
@@ -207,7 +209,7 @@ public class LightMPComboBox extends JComboBox{
      * @param model
      */
     public void setModel(MPComboboxModel model) {
-        jComboBox1.setModel(model);
+       super.setModel(model);
     }
 
     /**
@@ -230,32 +232,32 @@ public class LightMPComboBox extends JComboBox{
         setModel(new MPComboboxModel(MPComboBoxModelItem.toItems(vector)));
     }
 
-    /**
-     * Delegates to getComboBox().setSelectedIndex(itemID);
-     * @param itemID
-     */
-    @Override
-    public void setSelectedIndex(int itemID) {
-        if (itemID < 0 || itemID > getComboBox().getItemCount()) {
-            getComboBox().setSelectedIndex(itemID);
-        }
-    }
+//    /**
+//     * Delegates to getComboBox().setSelectedIndex(itemID);
+//     * @param itemID
+//     */
+//    @Override
+//    public void setSelectedIndex(int itemID) {
+//        if (itemID < 0 || itemID > getComboBox().getItemCount()) {
+//            getComboBox().setSelectedIndex(itemID);
+//        }
+//    }
 
     /**
      * Sets the item with the given value as selected item
      * @param valueOfItem
      */
     public void setSelectedItem(String valueOfItem) {
-        jComboBox1.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(valueOfItem, jComboBox1.getModel()));
+       setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(valueOfItem,getModel()));
     }
 
-    /**
-     * Sets the item with the given ID as selected item
-     * @param ID
-     */
-    public void setSelectedItem(Object ID) {
-            jComboBox1.setSelectedIndex(MPComboBoxModelItem.getItemID(ID, jComboBox1.getModel()));
-    }
+//    /**
+//     * Sets the item with the given ID as selected item
+//     * @param ID
+//     */
+//    public void setSelectedItem(Object ID) {
+//            setSelectedIndex(MPComboBoxModelItem.getItemID(ID,getModel()));
+//    }
 
     /**
      * If set to true, hitting "Enter" on the text field will trigger a search for the entered value and popup the results if any.
@@ -264,7 +266,7 @@ public class LightMPComboBox extends JComboBox{
      */
     public void setSearchOnEnterEnabled(boolean enabled) {
         SEARCH_ON_ENTER = enabled;
-        jComboBox1.setEditable(true);
+       setEditable(true);
     }
 
     /**
@@ -279,13 +281,13 @@ public class LightMPComboBox extends JComboBox{
      * @return the _text
      */
     public MPComboBoxModelItem getValue() {
-        return (MPComboBoxModelItem) jComboBox1.getSelectedItem();
+        return (MPComboBoxModelItem)getSelectedItem();
     }
 
 
     @Override
     public void setEnabled(boolean enabled) {
-        jComboBox1.setEnabled(enabled);
+       setEnabled(enabled);
     }
 
     /**
@@ -298,8 +300,8 @@ public class LightMPComboBox extends JComboBox{
      * @param text
      */
     public void setValue(String text) {
-        jComboBox1.setSelectedItem(text);
-        jComboBox1.setPopupVisible(false);
+       setSelectedItem(text);
+       setPopupVisible(false);
     }
 
     /**

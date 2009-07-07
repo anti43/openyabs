@@ -17,24 +17,30 @@
 package mpv5.utils.renderer;
 
 import com.l2fprod.common.swing.renderer.DefaultCellRenderer;
+import java.awt.Color;
 import java.awt.Component;
+import java.util.Vector;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import mpv5.db.common.Context;
 import mpv5.logging.Log;
+import mpv5.ui.beans.LightMPComboBox;
 import mpv5.utils.models.MPComboBoxModelItem;
 
 /**
  *
  */
-public class CellRendererWithMPComboBox extends mpv5.ui.beans.LightMPComboBox implements TableCellRenderer {
+public class CellRendererWithMPComboBox extends LightMPComboBox implements TableCellRenderer {
 
     private final Context c;
     private final JTable table;
+    private Vector<JLabel> labels = new Vector<JLabel>();
+    private DefaultTableCellRenderer rend = new DefaultTableCellRenderer();
 
     /**
      * Create a new CellRenderer which holds a MPComboBox. Will not assign itself to any column.
@@ -69,20 +75,22 @@ public class CellRendererWithMPComboBox extends mpv5.ui.beans.LightMPComboBox im
                 setBackground(table.getBackground());
             }
 
-//            Select the current value
-            try {
-//                getComboBox().setSelectedIndex(1);
-                if (value!=null) {
-//                    setSelectedItem(((MPComboBoxModelItem) value).getValue());
-                    table.setValueAt(value.toString(), row, column);
+            JLabel label = new JLabel();
+            if (getSelectedIndex() >= 0) {
+                label.setText(String.valueOf(getSelectedItem()));
+            } else {
+                if (value == null) {
+                    value = "";
                 }
-            } catch (Exception e) {
-                Log.Debug(e);
+                label.setText(value.toString());
             }
-            return this;
+
+            return label;
 
         } else {
-            return new DefaultTableCellRenderer();
+            JLabel l = new JLabel();
+            l.setText((value == null) ? "" : value.toString());
+            return l;
         }
     }
 
@@ -91,7 +99,8 @@ public class CellRendererWithMPComboBox extends mpv5.ui.beans.LightMPComboBox im
         private final Context c;
 
         public MPComboBoxEditor(Context c) {
-            super(new mpv5.ui.beans.LightMPComboBox(c, table).getComboBox());
+//            super(new JComboBox(MPComboBoxModelItem.toModel(new Object[][]{{1, 2}, {3, 4}})));
+            super(new LightMPComboBox(c, table));
             this.c = c;
         }
     }
