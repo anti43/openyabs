@@ -16,9 +16,15 @@
  */
 package mpv5.utils.tables;
 
+import com.l2fprod.common.swing.renderer.ColorCellRenderer;
+import java.awt.Color;
+import java.awt.Component;
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
 import mpv5.logging.Log;
 import mpv5.utils.models.MPTableModel;
 
@@ -185,4 +191,75 @@ public class TableFormat {
         } catch (Exception e) {
         }
     }
+
+    /**
+     *
+     * @param table
+     * @param desiredColSizes
+     * @param fixedCols
+     */
+    public static void resizeCols(JTable table, Integer[] desiredColSizes, Boolean[] fixedCols) {
+        for (int i = 0; i < desiredColSizes.length; i++) {
+            if (desiredColSizes[i] != null) {
+                table.getColumn(table.getColumnName(i)).setMinWidth(desiredColSizes[i]);
+                table.getColumn(table.getColumnName(i)).setPreferredWidth(desiredColSizes[i]);
+                if (fixedCols[i] != null && fixedCols[i]) {
+                    table.getColumn(table.getColumnName(i)).setMaxWidth(desiredColSizes[i]);
+                } else {
+                    table.getColumn(table.getColumnName(i)).setMaxWidth(1000);
+                }
+            }
+        }
+    }
+
+    /**
+     *
+     * @param table
+     * @param column
+     * @param color
+     */
+    public static void changeBackground(final JTable table,final  int column, final Color color) {
+        class ColorRenderer extends JLabel implements TableCellRenderer {
+
+            public ColorRenderer() {
+                this.setOpaque(true);
+                this.setHorizontalAlignment(JLabel.CENTER);
+            }
+
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
+                this.setText(value.toString());
+//
+//                // Verändern aufgrund der Position
+//                if ((row % 2 == 0 && col % 2 == 0) || (row % 2 == 1 && col % 2 == 1)) {
+//                    this.setBackground(Color.GREEN.darker());
+//                } else {
+//                    this.setBackground(Color.CYAN);
+//                }
+//
+//                //Verändern aufgrund des Zelleninhalts
+//                if (value.toString().endsWith("2")) {
+//                    this.setForeground(Color.BLUE);
+//                } else {
+//                    this.setForeground(Color.RED);
+//                }
+//                if (value.toString().equals("hurz")) {
+//                    this.setBackground(Color.ORANGE);
+//                }
+
+                this.setBackground(color);
+//
+//                // Verändern aufgrund der Selektion
+//                if (isSelected) {
+//                    this.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+//                } else {
+//                    this.setBorder(null);
+//                }
+                return this;
+            }
+    }
+
+          table.getColumn(table.getColumnName(column)).setCellRenderer(new ColorRenderer());
+}
+
 }
