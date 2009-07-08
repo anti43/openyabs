@@ -36,7 +36,7 @@ public class MPTableModel extends DefaultTableModel {
     private static final long serialVersionUID = 1L;
     private Class[] types;
     private boolean[] canEdits;
-    public static MPTableModel ITEM_TABLE_MODEL = new MPTableModel(Context.getItems());
+//    public static MPTableModel ITEM_TABLE_MODEL = new MPTableModel(Context.getItems());
 
     public MPTableModel() {
         super();
