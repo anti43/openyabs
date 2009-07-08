@@ -41,6 +41,7 @@ public class CellRendererWithMPComboBox extends LightMPComboBox implements Table
     private final JTable table;
     private Vector<JLabel> labels = new Vector<JLabel>();
     private DefaultTableCellRenderer rend = new DefaultTableCellRenderer();
+    private JLabel label = new JLabel();
 
     /**
      * Create a new CellRenderer which holds a MPComboBox. Will not assign itself to any column.
@@ -75,9 +76,9 @@ public class CellRendererWithMPComboBox extends LightMPComboBox implements Table
                 setBackground(table.getBackground());
             }
 
-            JLabel label = new JLabel();
             if (getSelectedIndex() >= 0) {
                 label.setText(String.valueOf(getSelectedItem()));
+                setSelectedIndex(-1);
             } else {
                 if (value == null) {
                     value = "";
@@ -88,9 +89,9 @@ public class CellRendererWithMPComboBox extends LightMPComboBox implements Table
             return label;
 
         } else {
-            JLabel l = new JLabel();
-            l.setText((value == null) ? "" : value.toString());
-            return l;
+           
+            label.setText((value == null) ? "" : value.toString());
+            return label;
         }
     }
 

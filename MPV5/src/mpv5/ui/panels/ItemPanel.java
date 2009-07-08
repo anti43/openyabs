@@ -867,7 +867,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
                     status.setSelectedIndex(MPV5View.getUser().__getIntdefaultstatus());
 
                     itemtable.setModel(MPTableModel.ITEM_TABLE_MODEL);
-                    CellRendererWithMPComboBox r = new CellRendererWithMPComboBox(Context.getContact(), itemtable);
+                    CellRendererWithMPComboBox r = new CellRendererWithMPComboBox(Context.getProducts(), itemtable);
                     r.setRendererTo(4);
                     TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 43, 63, 100, 63, 63, 63}, new Boolean[]{true, true, true, true, false, true, true, true});
                     TableFormat.changeBackground(itemtable, 1, Color.LIGHT_GRAY);

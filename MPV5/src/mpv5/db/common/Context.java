@@ -62,6 +62,7 @@ public class Context {
     public static String IDENTITY_FORMATS_T_USERS = "formatstousers";
     public static String IDENTITY_FILES_TO_ITEMS = "filestoitems";
     public static String IDENTITY_MAIL = "mails";
+    public static String IDENTITY_TAX = "tax";
     //********** identity classes **********************************************
     private static Class IDENTITY_CONTACTS_CLASS = Contact.class;
     private static Class IDENTITY_ADDRESS_CLASS = Address.class;
@@ -363,7 +364,8 @@ public class Context {
                 getMessagesToItems(),
                 getItemsList(),
                 getFormats(),
-                getMail()
+                getMail(),
+                getTaxes()
             }));
     private String[] searchHeaders;
     private ArrayList<String[]> references = new ArrayList<String[]>();
@@ -1437,6 +1439,15 @@ public class Context {
         c.setDbIdentity(IDENTITY_MAIL);
         c.setIdentityClass(IDENTITY_MAILS_CLASS);
         c.setId(35);
+
+        return c;
+    }
+
+    public static Context getTaxes() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_TAX);
+        c.setId(36);
 
         return c;
     }

@@ -25,7 +25,6 @@ public class DatabaseConnection {
     private static String user;
     private static String password;
 
-
     /**
      * 
      * @return Database connector
@@ -64,17 +63,16 @@ public class DatabaseConnection {
 
         try {
 
-            DriverManager.registerDriver( (Driver) Class.forName(ctype.getDriver()).newInstance());
+            DriverManager.registerDriver((Driver) Class.forName(ctype.getDriver()).newInstance());
             Log.Debug(this, "Datenbanktreiber: " + ctype.getDriver());
         } catch (Exception ex) {
-           Log.Debug(ex);
+            Log.Debug(this, ex.getMessage());
         }
 
         try {
             Log.Debug(this, "Datenbankverbindung: " + ctype.getConnectionString(create));
             conn = DriverManager.getConnection(ctype.getConnectionString(create), user, password);
-            if (conn != null 
-//                    && conn.isValid(10)//does not work with MySQL 5.0
+            if (conn != null //                    && conn.isValid(10)//does not work with MySQL 5.0
                     ) {
                 connector = this;
                 return true;

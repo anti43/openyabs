@@ -46,10 +46,10 @@ public class Product extends DatabaseObject  implements Formattable{
         return null;
     }
 
-    private int inttaxids;
+    private int taxids;
     private int inttype;
-    private String manufacturer;
-    private String supplier;
+    private int manufacturersids;
+    private int suppliersids;
     
     private double externalnetvalue;
     private double internalnetvalue;
@@ -84,15 +84,15 @@ public class Product extends DatabaseObject  implements Formattable{
     /**
      * @return the inttaxids
      */
-    public int __getInttaxids() {
-        return inttaxids;
+    public int __getTaxids() {
+        return taxids;
     }
 
     /**
      * @param inttaxids the inttaxids to set
      */
-    public void setInttaxids(int inttaxids) {
-        this.inttaxids = inttaxids;
+    public void setTaxids(int inttaxids) {
+        this.taxids = inttaxids;
     }
 
     /**
@@ -109,33 +109,7 @@ public class Product extends DatabaseObject  implements Formattable{
         this.inttype = inttype;
     }
 
-    /**
-     * @return the manufacturer
-     */
-    public String __getManufacturer() {
-        return manufacturer;
-    }
-
-    /**
-     * @param manufacturer the manufacturer to set
-     */
-    public void setManufacturer(String manufacturer) {
-        this.manufacturer = manufacturer;
-    }
-
-    /**
-     * @return the supplier
-     */
-    public String __getSupplier() {
-        return supplier;
-    }
-
-    /**
-     * @param supplier the supplier to set
-     */
-    public void setSupplier(String supplier) {
-        this.supplier = supplier;
-    }
+ 
 
     /**
      * @return the externalnetvalue
@@ -263,5 +237,33 @@ public class Product extends DatabaseObject  implements Formattable{
     @Override
     public void ensureUniqueness() {
         setCnumber(getFormatHandler().toString(getFormatHandler().getNextNumber()));
+    }
+
+    /**
+     * @return the manufacturersids
+     */
+    public int getManufacturersids() {
+        return manufacturersids;
+    }
+
+    /**
+     * @param manufacturersids the manufacturersids to set
+     */
+    public void setManufacturersids(int manufacturersids) {
+        this.manufacturersids = manufacturersids;
+    }
+
+    /**
+     * @return the suppliersids
+     */
+    public int getSuppliersids() {
+        return suppliersids;
+    }
+
+    /**
+     * @param suppliersids the suppliersids to set
+     */
+    public void setSuppliersids(int suppliersids) {
+        this.suppliersids = suppliersids;
     }
 }

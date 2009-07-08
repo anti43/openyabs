@@ -1524,9 +1524,9 @@ public class MPV5View extends FrameView {
             } catch (NumberFormatException numberFormatException) {
             }
             try {
-                new mpv5.db.sample.Contacts(Integer.valueOf(Popup.Enter_Value("Enter a valid Integer value [3]")), x, true);
+                new mpv5.db.sample.SampleData(Integer.valueOf(Popup.Enter_Value("Enter a valid Integer value [3]")), x, true,true);
             } catch (NumberFormatException numberFormatException) {
-                new mpv5.db.sample.Contacts(3, 1, true);
+                new mpv5.db.sample.SampleData(3, 1, true,true);
             }
         }
     }//GEN-LAST:event_jMenuItem22ActionPerformed

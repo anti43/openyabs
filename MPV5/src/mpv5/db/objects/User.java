@@ -45,6 +45,7 @@ import mpv5.pluginhandling.MP5Plugin;
 import mpv5.pluginhandling.MPPLuginLoader;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Fonts;
+import mpv5.ui.dialogs.subcomponents.ControlPanel_Userproperties;
 import mpv5.ui.frames.MPV5View;
 import mpv5.utils.text.TypeConversion;
 
@@ -446,7 +447,7 @@ public class User extends DatabaseObject {
      * @param value
      */
     public void changeProperty(String key, String value) {
-        properties.addProperty(key, value);
+        properties.changeProperty(key, value);
     }
 
     /**

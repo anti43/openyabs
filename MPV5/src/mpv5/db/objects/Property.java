@@ -62,22 +62,10 @@ public class Property extends DatabaseObject {
 
     @Override
     public boolean save() {
-//        QueryCriteria c = new QueryCriteria();
-//        c.add("cname", cname);
-//        c.add("usersids", usersids);
-//
-//        try {//delete old entries
-//             ArrayList<DatabaseObject> obj = DatabaseObject.getObjects(context, c);
-//            for (int i = 0; i < obj.size(); i++) {
-//                obj.get(i).delete();
-//            }
-//
         QueryCriteria c = new QueryCriteria();
         c.add("usersids", MPV5View.getUser().__getIDS());
         c.add("cname", cname);
         QueryHandler.instanceOf().clone(Context.getProperties()).delete(c);
-//        } catch (NodataFoundException ignore) { }
-
         return super.save();
     }
 

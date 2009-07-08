@@ -36,6 +36,7 @@ import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.DatabaseSearch;
 import mpv5.handler.MPEnum;
 import mpv5.logging.Log;
+import mpv5.ui.frames.MPV5View;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPComboboxModel;
 import mpv5.utils.renderer.ComboBoxRendererForTooltip;
@@ -43,16 +44,14 @@ import mpv5.utils.renderer.ComboBoxRendererForTooltip;
 /**
  *
  */
-public class LightMPComboBox extends JComboBox{
-
-
+public class LightMPComboBox extends JComboBox {
 
     private static final long serialVersionUID = 1L;
     public boolean SEARCH_ON_ENTER = false;
+    public static final String VALUE_SEARCHFIELDS = ".lightmpcomboboxsearchvalue";
     private Context context;
     private int sortmode = 0;
     private JTable table;
-
 
     /**
      * If this combobox is within a table cell, set the table here
@@ -61,11 +60,12 @@ public class LightMPComboBox extends JComboBox{
     public void setTable(JTable table) {
         this.table = table;
     }
- private boolean initiated;
+    private boolean initiated;
+
     /** Creates new form LabeledTextField */
     public LightMPComboBox() {
         super();
-       getEditor().getEditorComponent().addKeyListener(new KeyListener() {
+        getEditor().getEditorComponent().addKeyListener(new KeyListener() {
 
             @Override
             public void keyTyped(KeyEvent e) {
@@ -84,8 +84,7 @@ public class LightMPComboBox extends JComboBox{
         });
 
 
-       getComponent(0).addMouseListener(new MouseListener() {
-           
+        getComponent(0).addMouseListener(new MouseListener() {
 
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -95,11 +94,11 @@ public class LightMPComboBox extends JComboBox{
             public void mousePressed(MouseEvent e) {
                 if (SEARCH_ON_ENTER && !initiated) {
                     if (table == null) {
-                       setModel(new DefaultComboBoxModel(new String[]{""}));
+                        setModel(new DefaultComboBoxModel(new String[]{""}));
                     }
                     search();
                     if (table != null) {
-                       showPopup();
+                        showPopup();
                     }
                 }
             }
@@ -117,7 +116,7 @@ public class LightMPComboBox extends JComboBox{
             }
         });
 
-       setRenderer(new ComboBoxRendererForTooltip());
+        setRenderer(new ComboBoxRendererForTooltip());
         setModel();
     }
 
@@ -149,19 +148,33 @@ public class LightMPComboBox extends JComboBox{
 
             @Override
             public void run() {
-                ComboBoxEditor cbField =getEditor();
+                ComboBoxEditor cbField = getEditor();
                 Object value = cbField.getItem();
-                if(value==null ) {
+                if (value == null) {
                     value = "";
                 }
-                Object[][] data = new DatabaseSearch(context, 50).getValuesFor("ids, cname", "cname",  String.valueOf(value), true);
-               setModel(MPComboBoxModelItem.toModel(MPComboBoxModelItem.toItems(data, true)));
-                if (data.length > 1) {
-                    Log.Debug(this,getItemCount());
-                    table.editCellAt(table.getSelectedRow(), 4);
-                   showPopup();
-
+                String params = "ids, cname";
+                String vars = null;
+                if (MPV5View.getUser().getProperties().hasProperty(context + VALUE_SEARCHFIELDS)) {
+                   params = "ids";
+                   vars = MPV5View.getUser().getProperties().getProperty(context + VALUE_SEARCHFIELDS);
+                   String[] vaars = vars.split("_\\$");
+                 
+                    for (int i = 0; i < vaars.length; i++) {
+                         try {
+                             if (vaars[i]!=null && vaars[i].contains("$_")) {
+                                 params += "," + vaars[i].split("\\$_")[0].replace(",", "").replace("'", "`");
+                             }
+                        } catch (Exception e) {
+                            Log.Debug(e);
+                        }
+                    }
                 }
+
+                Object[][] data = new DatabaseSearch(context, 50).getValuesFor(params, "cname", String.valueOf(value), true);
+                setModel(MPComboBoxModelItem.toModel(MPComboBoxModelItem.toItems(data, true, MPComboBoxModelItem.COMPARE_BY_VALUE, vars)));
+                table.editCellAt(table.getSelectedRow(), 4);
+//                   showPopup();//avoid flickering
             }
         };
         SwingUtilities.invokeLater(runnable);
@@ -172,7 +185,7 @@ public class LightMPComboBox extends JComboBox{
      * @return The model
      */
     public MPComboboxModel getMPModel() {
-        return (MPComboboxModel)getModel();
+        return (MPComboboxModel) getModel();
     }
 
     /**
@@ -180,7 +193,7 @@ public class LightMPComboBox extends JComboBox{
      * @param values
      */
     public void setModel(MPEnum[] values) {
-       setModel(MPComboBoxModelItem.toModel(values));
+        setModel(MPComboBoxModelItem.toModel(values));
     }
 
     /**
@@ -189,10 +202,8 @@ public class LightMPComboBox extends JComboBox{
      * @param compareMode
      */
     public void setModel(MPEnum[] values, int compareMode) {
-       setModel(MPComboBoxModelItem.toModel(values, compareMode));
+        setModel(MPComboBoxModelItem.toModel(values, compareMode));
     }
-
-
 
     /**
      * Delegates to setModel(MPComboBoxModelItem.toModel(data));
@@ -200,16 +211,15 @@ public class LightMPComboBox extends JComboBox{
      * @param data
      */
     public void setModel(Object[][] data) {
-       setModel(MPComboBoxModelItem.toModel(data));
+        setModel(MPComboBoxModelItem.toModel(data));
     }
-
 
     /**
      * Set the model. Should contain only {@link MPComboBoxModelItem}s
      * @param model
      */
     public void setModel(MPComboboxModel model) {
-       super.setModel(model);
+        super.setModel(model);
     }
 
     /**
@@ -242,13 +252,12 @@ public class LightMPComboBox extends JComboBox{
 //            getComboBox().setSelectedIndex(itemID);
 //        }
 //    }
-
     /**
      * Sets the item with the given value as selected item
      * @param valueOfItem
      */
     public void setSelectedItem(String valueOfItem) {
-       setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(valueOfItem,getModel()));
+        setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(valueOfItem, getModel()));
     }
 
 //    /**
@@ -258,7 +267,6 @@ public class LightMPComboBox extends JComboBox{
 //    public void setSelectedItem(Object ID) {
 //            setSelectedIndex(MPComboBoxModelItem.getItemID(ID,getModel()));
 //    }
-
     /**
      * If set to true, hitting "Enter" on the text field will trigger a search for the entered value and popup the results if any.
      * <br/>{@link LabeledCombobox#setContext(Context)} must be called before this can work.
@@ -266,7 +274,7 @@ public class LightMPComboBox extends JComboBox{
      */
     public void setSearchOnEnterEnabled(boolean enabled) {
         SEARCH_ON_ENTER = enabled;
-       setEditable(true);
+        setEditable(true);
     }
 
     /**
@@ -281,13 +289,12 @@ public class LightMPComboBox extends JComboBox{
      * @return the _text
      */
     public MPComboBoxModelItem getValue() {
-        return (MPComboBoxModelItem)getSelectedItem();
+        return (MPComboBoxModelItem) getSelectedItem();
     }
-
 
     @Override
     public void setEnabled(boolean enabled) {
-       setEnabled(enabled);
+        setEnabled(enabled);
     }
 
     /**
@@ -300,8 +307,8 @@ public class LightMPComboBox extends JComboBox{
      * @param text
      */
     public void setValue(String text) {
-       setSelectedItem(text);
-       setPopupVisible(false);
+        setSelectedItem(text);
+        setPopupVisible(false);
     }
 
     /**

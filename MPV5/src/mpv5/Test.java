@@ -19,6 +19,8 @@ package mpv5;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
@@ -43,37 +45,46 @@ public class Test {
 
     public static void main(String[] args) {
 
-        JFrame f = new JFrame("test");
-        JTable t = new JTable(new Object[][]{{null}, {null}, {null}, {null}, {null}}, new Object[]{"header"});
+        String txt="_$dfgdfg$_";
 
-        class renderer extends JComboBox implements TableCellRenderer {
+    Pattern p = Pattern.compile("_\\$(.*?)\\$_");
+    Matcher m = p.matcher(txt);
+    if (m.find())
+    System.out.println(m);
 
-            public renderer() {
-                super(new String[]{"1", "2", "3"});
-            }
 
-            @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-                if (hasFocus) {
-                   return this;
-                } else {
-//                    return this;
-                    return new JLabel(String.valueOf(getSelectedItem()));
-                }
-            }
-        }
 
-       class editor extends DefaultCellEditor {
-        public editor(ComboBoxModel m) {
-            super(new JComboBox(m));
-        }
-    }
-
-        t.setDefaultRenderer(Object.class, new renderer());
-        t.setDefaultEditor(Object.class, new editor(((JComboBox)t.getDefaultRenderer(Object.class)).getModel()));
-        f.add(t, BorderLayout.CENTER);
-        f.pack();
-        f.setVisible(true);
+//        JFrame f = new JFrame("test");
+//        JTable t = new JTable(new Object[][]{{null}, {null}, {null}, {null}, {null}}, new Object[]{"header"});
+//
+//        class renderer extends JComboBox implements TableCellRenderer {
+//
+//            public renderer() {
+//                super(new String[]{"1", "2", "3"});
+//            }
+//
+//            @Override
+//            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+//                if (hasFocus) {
+//                   return this;
+//                } else {
+////                    return this;
+//                    return new JLabel(String.valueOf(getSelectedItem()));
+//                }
+//            }
+//        }
+//
+//       class editor extends DefaultCellEditor {
+//        public editor(ComboBoxModel m) {
+//            super(new JComboBox(m));
+//        }
+//    }
+//
+//        t.setDefaultRenderer(Object.class, new renderer());
+//        t.setDefaultEditor(Object.class, new editor(((JComboBox)t.getDefaultRenderer(Object.class)).getModel()));
+//        f.add(t, BorderLayout.CENTER);
+//        f.pack();
+//        f.setVisible(true);
 
 //
 

@@ -60,6 +60,7 @@ import mpv5.i18n.LanguageManager;
 import mpv5.pluginhandling.UserPlugin;
 import mpv5.server.MPServer;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Fonts;
+import mpv5.ui.dialogs.subcomponents.ControlPanel_Userproperties;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.files.FileReaderWriter;
 import mpv5.utils.text.TypeConversion;
@@ -209,9 +210,7 @@ public class Main extends SingleFrameApplication {
         Log.Print(GOODBYE_MESSAGE);
         try {
             clearLockFile();
-        } catch (Exception e) {
-            Log.Debug(Main.class, e);
-        }
+        } catch (Exception e) {}
         super.shutdown();
     }
 

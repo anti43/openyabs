@@ -27,6 +27,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
 import mpv5.db.common.DatabaseObject;
 import mpv5.handler.MPEnum;
+import mpv5.logging.Log;
 import mpv5.utils.images.MPIcon;
 
 /**
@@ -41,7 +42,6 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
      * (default)
      */
     public static int COMPARE_BY_VALUE = 1;
-
     /**
      * The id field may have any class.
      */
@@ -120,7 +120,7 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
 
     /**
      * Converts an array to mp combo box items
-     * {id (hidden), value (shown in the list)}
+     * {id (hidden), values (shown in the list)}
      * @param items
      * @param compareMode
      * @return
@@ -128,7 +128,51 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
     public static MPComboBoxModelItem[] toItems(Object[][] items, int compareMode) {
         MPComboBoxModelItem[] array = new MPComboBoxModelItem[items.length];
         for (int i = 0; i < array.length; i++) {
-            array[i] = new MPComboBoxModelItem(items[i][0], String.valueOf(items[i][1]));
+            String x = "";
+            for (int j = 0; j < items[i].length; j++) {
+                String k = String.valueOf(items[i][j]);
+                x += k + " ";
+            }
+
+            array[i] = new MPComboBoxModelItem(items[i][0], x);
+            array[i].setCompareMode(compareMode);
+        }
+        return array;
+    }
+
+    /**
+     * Converts an array to mp combo box items
+     * {id (hidden), values (shown in the list)}
+     * @param items
+     * @param compareMode
+     * @param formatString format _$value1$_ xx _$value2$_ etc.
+     * @return
+     */
+    public static MPComboBoxModelItem[] toItems(Object[][] items, int compareMode, String formatString) {
+        MPComboBoxModelItem[] array = new MPComboBoxModelItem[items.length];
+        String[] vaars = null;
+        if (formatString != null) {
+            vaars = formatString.split("_\\$");
+            Log.Debug(MPComboBoxModelItem.class, "Length of var string: " +vaars.length);
+        }
+        for (int i = 0; i < items.length; i++) {
+            String x = "";
+            String format = formatString;
+            for (int j = 1; j < items[i].length; j++) {
+                String k = String.valueOf(items[i][j]);
+                if (format == null) {
+                    x += k;
+                } else {
+                        try {
+                            format = format.replaceFirst("_\\$(.*?)\\$_", k);
+                        } catch (Exception e) {
+                            Log.Debug(e);
+                        }
+                    x = format;
+                }
+            }
+
+            array[i] = new MPComboBoxModelItem(items[i][0], x);
             array[i].setCompareMode(compareMode);
         }
         return array;
@@ -144,6 +188,24 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
      */
     public static MPComboBoxModelItem[] toItems(Object[][] items, boolean sortValuesNaturally) {
         MPComboBoxModelItem[] array = toItems(items);
+        if (sortValuesNaturally) {
+            Arrays.sort(array);
+        }
+        return array;
+    }
+
+    /**
+     * Converts an array to mp combo box items
+     * {id (hidden), value (shown in the list)}
+     *
+     * @param items
+     * @param sortValuesNaturally If TRUE, sorts the Items into ascending order, according to the natural ordering of its values
+     * @param compareMode 
+     * @param format _$value1$_ xx _$value2$_ etc.
+     * @return
+     */
+    public static MPComboBoxModelItem[] toItems(Object[][] items, boolean sortValuesNaturally, int compareMode, String format) {
+        MPComboBoxModelItem[] array = toItems(items, compareMode, format);
         if (sortValuesNaturally) {
             Arrays.sort(array);
         }
@@ -230,7 +292,6 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
     public static MPComboboxModel toModel(MPComboBoxModelItem[] data) {
         return new MPComboboxModel(data);
     }
-
 
     /**
      *  Creates a {@link DefaultComBoxModel} containing an array of {@link MPComboBoxModelItem}
@@ -361,7 +422,7 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
     }
 
     /**
-
+    
      * @param id the id to set
      */
     public void setId(Integer id) {

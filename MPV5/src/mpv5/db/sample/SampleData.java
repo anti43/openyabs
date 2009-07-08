@@ -23,6 +23,7 @@ import javax.swing.SwingUtilities;
 import mpv5.db.objects.Contact;
 import mpv5.db.objects.Group;
 import mpv5.db.objects.Item;
+import mpv5.db.objects.Product;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPV5View;
 import mpv5.utils.date.DateConverter;
@@ -34,7 +35,7 @@ import mpv5.utils.numberformat.FormatNumber;
  *
  *  anti
  */
-public class Contacts {
+public class SampleData {
 
     private int multiplier;
 
@@ -43,8 +44,9 @@ public class Contacts {
      * @param factor
      * @param defAccountID
      * @param withItems
+     * @param withProducts
      */
-    public Contacts(final int factor, final int defAccountID, final boolean withItems) {
+    public SampleData(final int factor, final int defAccountID, final boolean withItems, final boolean withProducts) {
         this.multiplier = factor;
 
         Group g = new Group();
@@ -56,6 +58,7 @@ public class Contacts {
 
         Runnable runnable = new Runnable() {
 
+            @Override
             public void run() {
                 for (int i = 0; i < factor * 6; i++) {
                     int seed = new Random().nextInt(factor * 43) + 1;
@@ -146,11 +149,59 @@ public class Contacts {
                             it2.save();
                         }
                     }
+
+                    if (withProducts) {
+                        for (int k = 0; k < i; k++) {
+
+                            double value = new Random().nextInt(100 * factor) + 1l;
+                            Date date = new RandomDate(new vTimeframe(DateConverter.getDate("01.01.2009"), new Date()));
+
+                            Product it = new Product();
+                            it.setCName("P" + seed + "-19-" + k);
+                            it.setCnumber("P" + seed + "-19-" + k);
+                            it.setDateadded(date);
+                            it.setDescription("sample product");
+                            it.setEan("1234567891011");
+                            it.setGroupsids(group);
+                            it.setExternalnetvalue(value * 1.3);
+                            it.setInternalnetvalue(value);
+                            it.setInttype(Product.TYPE_PRODUCT);
+                            it.setTaxids(1);
+                            it.setManufacturersids(c.__getIDS());
+                            it.setMeasure("pcs.");
+                            it.setReference("swqsd1221");
+                            it.setSuppliersids(c.__getIDS());
+                            it.setUrl("www.test.com");
+                            it.setIntaddedby(MPV5View.getUser().__getIDS());
+                            it.save();
+
+                            value = new Random().nextInt(100 * factor) + 1l;
+                            date = new RandomDate(new vTimeframe(DateConverter.getDate("01.01.2007"), new Date()));
+
+                            Product it1 = new Product();
+                            it1.setCName("PS" + seed + "-19-" + k);
+                            it1.setCnumber("PS" + seed + "-19-" + k);
+                            it1.setDateadded(date);
+                            it1.setDescription("sample product");
+                            it1.setEan("1234567891011");
+                            it1.setGroupsids(group);
+                            it1.setExternalnetvalue(value * 1.3);
+                            it1.setInternalnetvalue(value);
+                            it1.setInttype(Product.TYPE_SERVICE);
+                            it1.setTaxids(1);
+                            it1.setManufacturersids(c.__getIDS());
+                            it1.setMeasure("pcs.");
+                            it1.setReference("swqsd1221");
+                            it1.setSuppliersids(c.__getIDS());
+                            it1.setUrl("www.test.com");
+                            it1.setIntaddedby(MPV5View.getUser().__getIDS());
+                            it1.save();
+                        }
+                    }
                 }
                 Popup.notice("Sample data generated!");
             }
         };
-        SwingUtilities.invokeLater(runnable);
+        new Thread(runnable).start();
     }
-
 }
