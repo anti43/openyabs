@@ -35,7 +35,7 @@ import mpv5.utils.models.MPComboBoxModelItem;
 /**
  *
  */
-public class CellRendererWithMPComboBox extends LightMPComboBox implements TableCellRenderer {
+public class CellRendererWithMPComboBox extends JLabel implements TableCellRenderer {
 
     private final Context c;
     private final JTable table;
@@ -60,14 +60,14 @@ public class CellRendererWithMPComboBox extends LightMPComboBox implements Table
      */
     public void setRendererTo(int column) {
         TableColumn col = table.getColumnModel().getColumn(column);
-        col.setCellEditor(new MPComboBoxEditor(c));
+        col.setCellEditor(new MPComboBoxEditor(new LightMPComboBox(c, table)));
         col.setCellRenderer(this);
     }
 
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value,
             boolean isSelected, boolean hasFocus, int row, int column) {
-        if (hasFocus) {
+        if (hasFocus && isSelected) {
             if (isSelected) {
                 setForeground(table.getSelectionForeground());
                 super.setBackground(table.getSelectionBackground());
@@ -75,34 +75,23 @@ public class CellRendererWithMPComboBox extends LightMPComboBox implements Table
                 setForeground(table.getForeground());
                 setBackground(table.getBackground());
             }
-
-            if (getSelectedIndex() >= 0) {
-                label.setText(String.valueOf(getSelectedItem()));
-                setSelectedIndex(-1);
-            } else {
-                if (value == null) {
-                    value = "";
-                }
-                label.setText(value.toString());
-            }
-
+             label.setText((value == null) ? "" : value.toString());
+            ((MPComboBoxEditor) table.getCellEditor(row, column)).box.setSelectedIndex(-1);
             return label;
-
         } else {
-           
             label.setText((value == null) ? "" : value.toString());
+//            ((MPComboBoxEditor) table.getCellEditor(row, column)).box.setSelectedIndex(-1);
             return label;
         }
     }
 
     class MPComboBoxEditor extends DefaultCellEditor {
 
-        private final Context c;
+        private final LightMPComboBox box;
 
-        public MPComboBoxEditor(Context c) {
-//            super(new JComboBox(MPComboBoxModelItem.toModel(new Object[][]{{1, 2}, {3, 4}})));
-            super(new LightMPComboBox(c, table));
-            this.c = c;
+        public MPComboBoxEditor(LightMPComboBox b) {
+            super(b);
+            this.box = b;
         }
     }
 }

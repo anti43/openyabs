@@ -129,12 +129,12 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
         MPComboBoxModelItem[] array = new MPComboBoxModelItem[items.length];
         for (int i = 0; i < array.length; i++) {
             String x = "";
-            for (int j = 0; j < items[i].length; j++) {
+            for (int j = 1; j < items[i].length; j++) {
                 String k = String.valueOf(items[i][j]);
                 x += k + " ";
             }
 
-            array[i] = new MPComboBoxModelItem(items[i][0], x);
+            array[i] = new MPComboBoxModelItem(items[i][0], x.substring(0, x.length()-1));
             array[i].setCompareMode(compareMode);
         }
         return array;
