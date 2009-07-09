@@ -24,6 +24,7 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.globals.Headers;
 import mpv5.logging.Log;
+import mpv5.ui.frames.MPV5View;
 import mpv5.utils.numberformat.FormatNumber;
 import mpv5.utils.renderer.CellRendererWithMPComboBox;
 
@@ -143,19 +144,29 @@ public class MPTableModel extends DefaultTableModel {
      * @param c
      */
     public MPTableModel(Context c) {
-        this(new Object[][]{
-        {0.0, 0, 1.0, null, null, 0.0, 0.0, 0.0},
-        {0.0, 1, 1.0, null, null, 0.0, 0.0, 0.0},
-        {0.0, 2, 1.0, null, null, 0.0, 0.0, 0.0},
-        {0.0, 3, 1.0, null, null, 0.0, 0.0, 0.0},
-        {0.0, 4, 1.0, null, null, 0.0, 0.0, 0.0},
-        {0.0, 5, 1.0, null, null, 0.0, 0.0, 0.0},
-        {0.0, 6, 1.0, null, null, 0.0, 0.0, 0.0},
-        }, Headers.SUBITEMS);
-        setCanEdits(new boolean[]{false, false, true, true, true, true, true, false});
-//        setTypes(new Class[]{Integer.class, Integer.class, Double.class,String.class,
-//        MPComboBoxModelItem.class, Double.class, Double.class, Double.class});
-        
+        this();
+        if (c.equals(Context.getSubItem())) {
+            String defunit = null;
+            if (MPV5View.getUser().getProperties().hasProperty("defunit")) {
+                defunit = MPV5View.getUser().getProperties().getProperty("defunit");
+            }
+            Double deftax = 0d;
+            if (MPV5View.getUser().getProperties().hasProperty("deftax")) {
+                deftax = MPV5View.getUser().getProperties().getProperty("deftax", 0d);
+            }
+            setDataVector(new Object[][]{
+                        {0, 0, 1.0, defunit, null, 0.0, deftax, 0.0},
+                        {0, 1, 1.0, defunit, null, 0.0, deftax, 0.0},
+                        {0, 2, 1.0, defunit, null, 0.0, deftax, 0.0},
+                        {0, 3, 1.0, defunit, null, 0.0, deftax, 0.0},
+                        {0, 4, 1.0, defunit, null, 0.0, deftax, 0.0},
+                        {0, 5, 1.0, defunit, null, 0.0, deftax, 0.0},
+                        {0, 6, 1.0, defunit, null, 0.0, deftax, 0.0}}, Headers.SUBITEMS);
+            setCanEdits(new boolean[]{false, false, true, true, true, true, true, false});
+//            setTypes(new Class[]{Integer.class, Integer.class, Double.class, String.class,
+//                        MPComboBoxModelItem.class, Double.class, Double.class, Double.class});
+        }
+
 
     }
 
@@ -217,5 +228,9 @@ public class MPTableModel extends DefaultTableModel {
         } else {
             return o;
         }
+    }
+
+    private void setDataVector(Object[][] object, Headers head) {
+        super.setDataVector(object, head.getValue());
     }
 }

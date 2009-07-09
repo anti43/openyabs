@@ -868,9 +868,10 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
 
                     itemtable.setModel(new MPTableModel(Context.getSubItem()));
                     CellRendererWithMPComboBox r = new CellRendererWithMPComboBox(Context.getProducts(), itemtable);
-                    r.setRendererTo(4);
+                    r.setRendererTo(4);itemtable.setModel(new MPTableModel(Context.getSubItem()));
                     TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 43, 63, 100, 63, 63, 63}, new Boolean[]{true, true, true, true, false, true, true, true});
                     TableFormat.changeBackground(itemtable, 1, Color.LIGHT_GRAY);
+                    TableFormat.changeBackground(itemtable, 7, Color.LIGHT_GRAY);
                 } catch (Exception e) {
                     Log.Debug(this, e);
                 }

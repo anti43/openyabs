@@ -1712,7 +1712,12 @@ public class QueryHandler implements Cloneable {
             }
 
             Log.Debug(this, "freeSelectQuery::" + query);
-            resultSet = stm.executeQuery(query);
+            try {
+                resultSet = stm.executeQuery(query);
+            } catch (SQLException sQLException) {
+                Log.Debug(sQLException);
+                throw sQLException;
+            }
             ArrayList spalten = new ArrayList();
             ArrayList zeilen = new ArrayList();
             rsmd = resultSet.getMetaData();

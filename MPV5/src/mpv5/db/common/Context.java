@@ -85,7 +85,6 @@ public class Context {
     public static String UNIQUECOLUMNS_GROUPS = "cname";
     public static String UNIQUECOLUMNS_DEFAULT = "cname";
     public static String DETAIL_CONTACT_SEARCH = "prename,cname,street,city,country,notes";
-
     //********** conditions ****************************************************
     private boolean isCompany = false;
     private boolean isCustomer = false;
@@ -425,108 +424,8 @@ public class Context {
         setCompany(company);
     }
 
-//    /**
-//     * Set conditions to get exclusive data
-//     * @param done
-//     * @param active
-//     * @param bill
-//     * @param order
-//     * @param offer
-//     */
-//    public void setExclusiveItemConditions(boolean done, boolean active, boolean bill, boolean order, boolean offer) {
-//
-//        String cond = "    ";
-//        boolean first = true;
-//
-//        if (done) {
-//            if (first) {
-//                cond += "WHERE ";
-//            }
-//            first = false;
-//            cond += " " + CONDITION_ITEMS_DONE + "=1 AND ";
-//        } else {
-//            if (first) {
-//                cond += "WHERE ";
-//            }
-//            first = false;
-//            cond += " " + CONDITION_ITEMS_DONE + "=0 AND ";
-//        }
-//        if (active) {
-//            if (first) {
-//                cond += "WHERE ";
-//            }
-//            first = false;
-//            cond += " " + CONDITION_ITEMS_ACTIVE + "=1 AND ";
-//        } else {
-//            if (first) {
-//                cond += "WHERE ";
-//            }
-//            first = false;
-//            cond += " " + CONDITION_ITEMS_ACTIVE + "=0 AND ";
-//        }
-//        if (bill) {
-//            if (first) {
-//                cond += "WHERE ";
-//            }
-//            first = false;
-//            cond += " " + CONDITION_ITEMS_BILL + "=1 AND ";
-//        } else {
-//            if (first) {
-//                cond += "WHERE ";
-//            }
-//            first = false;
-//            cond += " " + CONDITION_ITEMS_BILL + "=0 AND ";
-//        }
-//        if (order) {
-//            if (first) {
-//                cond += "WHERE ";
-//            }
-//            first = false;
-//            cond += " " + CONDITION_ITEMS_ORDER + "=1 AND ";
-//        } else {
-//            if (first) {
-//                cond += "WHERE ";
-//            }
-//            first = false;
-//            cond += " " + CONDITION_ITEMS_ORDER + "=0 AND ";
-//        }
-//        if (offer) {
-//            if (first) {
-//                cond += "WHERE ";
-//            }
-//            first = false;
-//            cond += " " + CONDITION_ITEMS_OFFER + "=1 AND ";
-//        } else {
-//            if (first) {
-//                cond += "WHERE ";
-//            }
-//            first = false;
-//            cond += " " + CONDITION_ITEMS_OFFER + "=0 AND ";
-//        }
-//
-//
-//        if (!first) {
-//            cond = cond.substring(4, cond.length() - 4);
-//            if (MPV5View.getUser().__getIsrgrouped() && getGroupableContexts().contains(this)) {
-//                cond = "AND   " + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids();
-//            }
-//        } else {
-//
-//            if (MPV5View.getUser().__getIsrgrouped() && getGroupableContexts().contains(this)) {
-//                cond = "WHERE " + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids();
-//            } else {
-//                cond = "WHERE " + CONDITION_DEFAULT;
-//            }
-//        }
-//
-//        if (getTrashableContexts().contains(this)) {
-//            cond += " AND invisible = 0 ";
-//        }
-//
-//        exclusiveCondition = cond;
-//    }
     /**
-     * Set conditions to get exclusive data (customer = false results in all data without any customer)
+     * Set conditions to get exclusive data (e.g. customer = false results in all data without any customer)
      * @param customer
      * @param supplier
      * @param manufacturer
@@ -647,41 +546,37 @@ public class Context {
                 first = false;
                 cond += " " + CONDITION_CONTACTS_SUPPLIER + "=1 OR ";
             }
-
             if (itemType != null) {
                 if (first) {
                     cond += "WHERE(";
-                    first = false;
+
                 }
+                first = false;
                 cond += " " + CONDITION_ITEMS_TYPE + "=" + getItemType() + " OR ";
             }
-
             if (itemStatus != null) {
                 if (first) {
                     cond += "WHERE(";
-                    first = false;
+
                 }
+                first = false;
                 cond += " " + CONDITION_ITEMS_STATUS + "=" + getItemStatus() + " OR ";
             }
-
             if (!first) {
                 cond = cond.substring(4, cond.length() - 3);
                 if (MPV5View.getUser().isGroupRestricted() && getGroupableContexts().contains(this)) {
-                    cond += ") AND (" + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids() + " OR " + dbIdentity + "." + "GROUPSIDS = 1)";
+                    cond += " AND (" + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids() + " OR " + dbIdentity + "." + "GROUPSIDS = 1)";
                 }
             } else {
-
                 if (MPV5View.getUser().isGroupRestricted() && getGroupableContexts().contains(this)) {
                     cond = "WHERE (" + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids() + " OR " + dbIdentity + "." + "GROUPSIDS = 1)";
                 } else {
                     cond = "WHERE " + CONDITION_DEFAULT;
                 }
             }
-
             if (getTrashableContexts().contains(this)) {
                 cond += " AND invisible = 0 ";
             }
-
             return cond;
         } else {
             return exclusiveCondition.toString();
@@ -715,16 +610,16 @@ public class Context {
         }
     }
 
-        /**
+    /**
      * Generates a SQL String (WHERE clause) which can be used to implement multi-client capability.<br/>
      * <br/>
      * <b>If the current Context does not support grouping, or the current user is not Group restricted, this will return NULL.</b>
-         * @param tableName
-         * @return
+     * @param tableName
+     * @return
      */
     public String getGroupRestrictionSQLString(String tableName) {
         if (MPV5View.getUser().isGroupRestricted() && getGroupableContexts().contains(this)) {
-            return " (" + tableName+ "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids() + " OR " + tableName + "." + "GROUPSIDS = 1)";
+            return " (" + tableName + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids() + " OR " + tableName + "." + "GROUPSIDS = 1)";
         } else {
             return null;
         }
@@ -767,7 +662,6 @@ public class Context {
         return query;
     }
 
-
     /**
      * Add MP specific conditions to a sql query
      * @param query
@@ -791,6 +685,7 @@ public class Context {
         }
         return query;
     }
+
     /**
      * Define the owner of this Context
      * @param parentobject
@@ -1433,7 +1328,7 @@ public class Context {
         return c;
     }
 
-      public static Context getMail() {
+    public static Context getMail() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_MAIL);
