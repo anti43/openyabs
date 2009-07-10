@@ -16,7 +16,7 @@
  */
 package mpv5.utils.numbers;
 
-import mpv5.utils.numberformat.NumberCheck;
+import mpv5.utils.numberformat.FormatNumber;
 
 
 
@@ -25,26 +25,60 @@ import mpv5.utils.numberformat.NumberCheck;
  *  anti
  */
 public class vDouble{
-
-    public Double value = null;
-    public String svalue = null;
-    public boolean isVerified = false;
-    public boolean isPositive = false;
+    private Double value = null;
+    private String svalue = null;
+    private boolean isVerified = false;
+    private boolean isPositive = false;
     public String ovalue = "";
+    private String decValue=null;
 
     public vDouble(Object number) {
         if (number != null) {
             this.ovalue = number.toString();
-            if (NumberCheck.checkDouble(number) != null) {
-
-                this.value = NumberCheck.checkDouble(number);
+            if (FormatNumber.checkNumber(number)) {
+                this.value = FormatNumber.parseNumber(ovalue);
+                this.decValue = FormatNumber.formatDezimal(value);
                 this.svalue = this.value.toString();
                 this.isVerified = true;
-
                 if (this.value >= 0) {
                     this.isPositive = true;
                 }
             }
         }
+    }
+
+    /**
+     * @return the value
+     */
+    public Double getValue() {
+        return value;
+    }
+
+    /**
+     * @return the svalue
+     */
+    public String getSvalue() {
+        return svalue;
+    }
+
+    /**
+     * @return the isVerified
+     */
+    public boolean isIsVerified() {
+        return isVerified;
+    }
+
+    /**
+     * @return the isPositive
+     */
+    public boolean isIsPositive() {
+        return isPositive;
+    }
+
+    /**
+     * @return the decValue
+     */
+    public String getDecValue() {
+        return decValue;
     }
 }

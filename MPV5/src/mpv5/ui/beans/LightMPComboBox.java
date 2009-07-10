@@ -76,6 +76,9 @@ public class LightMPComboBox extends JComboBox {
                 if (SEARCH_ON_ENTER && (e.getKeyCode() == KeyEvent.VK_CONTROL) && context != null) {
                     search();
                 }
+                  if (SEARCH_ON_ENTER && (e.getKeyCode() == KeyEvent.VK_DOWN) && context != null) {
+                    showPopup();
+                }
             }
 
             @Override

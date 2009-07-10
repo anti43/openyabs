@@ -315,7 +315,7 @@ public class MPV5View extends FrameView {
         history.setRenderer(new ComboBoxRendererForTooltip());
         if (tabPaneScrolled) {
             tabpanePanel.add(new JScrollPane(tabPane), BorderLayout.CENTER);
-            jMenuItem25.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/yes.png")));
+            jMenuItem25.setIcon(MPIcon.ICON_ENABLED);
         } else {
             tabpanePanel.add(tabPane, BorderLayout.CENTER);
         }
@@ -340,10 +340,6 @@ public class MPV5View extends FrameView {
         QueryHandler.setWaitCursorFor(identifierFrame);
 
         loadPlugins();
-
-
-//        setStatusBar();
-//        setStatusBar(statusPanel);
     }
 
     /**

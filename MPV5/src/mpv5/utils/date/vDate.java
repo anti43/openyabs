@@ -27,12 +27,11 @@ import java.util.Date;
  * 
  */
 public class vDate {
-
-    public boolean isVerified = false;
-    public String defDate = null;
-    public String sqlDate = null;
-    public Date date = null;
-    public String ovalue = "";
+    private boolean isVerified = false;
+    private String defDate = null;
+    private String sqlDate = null;
+    private Date date = null;
+    private String ovalue = "";
 
     public vDate(String date) {
 
@@ -50,5 +49,40 @@ public class vDate {
             this.isVerified = false;
         }
 
+    }
+
+    /**
+     * @return the isVerified
+     */
+    public boolean isIsVerified() {
+        return isVerified;
+    }
+
+    /**
+     * @return the defDate
+     */
+    public String getDefDate() {
+        return defDate;
+    }
+
+    /**
+     * @return the sqlDate
+     */
+    public String getSqlDate() {
+        return sqlDate;
+    }
+
+    /**
+     * @return the date
+     */
+    public Date getDate() {
+        return date;
+    }
+
+    /**
+     * @return the ovalue
+     */
+    public String getOvalue() {
+        return ovalue;
     }
 }

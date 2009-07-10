@@ -18,6 +18,8 @@ package mpv5;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -36,6 +38,18 @@ import mpv5.server.MPServer;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.models.*;
+import com.sun.pdfview.PDFFile;
+import com.sun.pdfview.PDFPage;
+import com.sun.pdfview.PagePanel;
+import java.awt.Image;
+import java.awt.Rectangle;
+import java.io.File;
+import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
+import javax.swing.ImageIcon;
+import javax.swing.JPanel;
+
 
 /**
  *
@@ -43,14 +57,69 @@ import mpv5.utils.models.*;
  */
 public class Test {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException, IOException {
+        JPanel jPanel1 = new JPanel(new BorderLayout());
+        JFrame frame = new JFrame();
+        File file = new File("/home/anti/Desktop/ttt.pdf");
 
-        String txt="_$dfgdfg$_";
+        if (file.exists()) {
 
-    Pattern p = Pattern.compile("_\\$(.*?)\\$_");
-    Matcher m = p.matcher(txt);
-    if (m.find())
-    System.out.println(m);
+        RandomAccessFile raf = new RandomAccessFile(file, "r");
+        FileChannel channel = raf.getChannel();
+        ByteBuffer buf = channel.map(FileChannel.MapMode.READ_ONLY, 0, channel.size());
+        PDFFile pdffile = new PDFFile(buf);
+
+        // draw the first page to an image
+        PDFPage page = pdffile.getPage(0);
+
+        //get the width and height for the doc at the default zoom
+        Rectangle rect = new Rectangle(0,0,
+                (int)page.getBBox().getWidth(),
+                (int)page.getBBox().getHeight());
+
+        //generate the image
+        Image img = page.getImage(
+                rect.width, rect.height, //width & height
+                rect, // clip rect
+                null, // null for the ImageObserver
+                true, // fill background with white
+                true  // block until drawing is done
+                );
+
+        //show the image in a frame
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.add(new JLabel(new ImageIcon(img)));
+        frame.pack();
+        frame.setVisible(true);
+
+//            frame.add(jPanel1);
+//            frame.pack();
+//            frame.setVisible(true);
+//            // show the first page AFTER the frame is displayed!
+//            PDFPage page = pdffile.getPage(0);
+//            panel.showPage(page);
+//            panel.useZoomTool(true);
+
+        }
+//        Multivalent v = Multivalent.getInstance();
+//        Browser br = v.getBrowser("name", "Basic", false);
+//        PDF pdf = (PDF) Behavior.getInstance("AdobePDF", "AdobePDF", null, null, null);
+//        pdf.setInput(file);
+//        Document doc = new Document("doc", null, null);
+//        pdf.parse(doc);
+//
+//        br.setCurDocument(doc);
+//        frame.add(br);
+//        frame.pack();
+//        frame.setVisible(true);
+
+
+//        String txt="_$dfgdfg$_";
+//
+//    Pattern p = Pattern.compile("_\\$(.*?)\\$_");
+//    Matcher m = p.matcher(txt);
+//    if (m.find())
+//    System.out.println(m);
 
 
 
@@ -222,3 +291,4 @@ public class Test {
 
     }
 }
+

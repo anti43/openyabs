@@ -18,15 +18,13 @@ package mpv5.utils.models;
 
 import java.util.ArrayList;
 import java.util.Vector;
-import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
+import mpv5.db.objects.Item;
 import mpv5.globals.Headers;
-import mpv5.logging.Log;
 import mpv5.ui.frames.MPV5View;
 import mpv5.utils.numberformat.FormatNumber;
-import mpv5.utils.renderer.CellRendererWithMPComboBox;
 
 /**
  *
@@ -37,6 +35,9 @@ public class MPTableModel extends DefaultTableModel {
     private static final long serialVersionUID = 1L;
     private Class[] types;
     private boolean[] canEdits;
+    private Context context;
+    private Object[] predefinedRow;
+    private Integer autoCountColumn;
 //    public static MPTableModel ITEM_TABLE_MODEL = new MPTableModel(Context.getItems());
 
     public MPTableModel() {
@@ -140,34 +141,39 @@ public class MPTableModel extends DefaultTableModel {
     }
 
     /**
-     * Internal ID", "ID", "Count", "Measure", "Description", "Netto Price", "Tax Value", "Total Price"
-     * @param c
+     *
+     * @param context
      */
-    public MPTableModel(Context c) {
+    public MPTableModel(Context context) {
         this();
-        if (c.equals(Context.getSubItem())) {
+        this.context = context;
+        if (context.equals(Context.getSubItem())) {
             String defunit = null;
             if (MPV5View.getUser().getProperties().hasProperty("defunit")) {
                 defunit = MPV5View.getUser().getProperties().getProperty("defunit");
             }
             Double deftax = 0d;
             if (MPV5View.getUser().getProperties().hasProperty("deftax")) {
-                deftax = MPV5View.getUser().getProperties().getProperty("deftax", 0d);
+                int taxid = MPV5View.getUser().getProperties().getProperty("deftax", 0);
+                deftax = Item.getTaxValue(taxid);
             }
+            Double defcount = 0d;
+            if (MPV5View.getUser().getProperties().hasProperty("defcount")) {
+                defcount = MPV5View.getUser().getProperties().getProperty("defcount", 0d);
+            }
+
             setDataVector(new Object[][]{
-                        {0, 0, 1.0, defunit, null, 0.0, deftax, 0.0},
-                        {0, 1, 1.0, defunit, null, 0.0, deftax, 0.0},
-                        {0, 2, 1.0, defunit, null, 0.0, deftax, 0.0},
-                        {0, 3, 1.0, defunit, null, 0.0, deftax, 0.0},
-                        {0, 4, 1.0, defunit, null, 0.0, deftax, 0.0},
-                        {0, 5, 1.0, defunit, null, 0.0, deftax, 0.0},
-                        {0, 6, 1.0, defunit, null, 0.0, deftax, 0.0}}, Headers.SUBITEMS);
+                        {0, 0, defcount, defunit, null, 0.0, deftax/100, 0.0},
+                        {0, 1, defcount, defunit, null, 0.0, deftax/100, 0.0},
+                        {0, 2, defcount, defunit, null, 0.0, deftax/100, 0.0},
+                        {0, 3, defcount, defunit, null, 0.0, deftax/100, 0.0},
+                        {0, 4, defcount, defunit, null, 0.0, deftax/100, 0.0},
+                        {0, 5, defcount, defunit, null, 0.0, deftax/100, 0.0},
+                        {0, 6, defcount, defunit, null, 0.0, deftax/100, 0.0}}, Headers.SUBITEMS);
             setCanEdits(new boolean[]{false, false, true, true, true, true, true, false});
-//            setTypes(new Class[]{Integer.class, Integer.class, Double.class, String.class,
-//                        MPComboBoxModelItem.class, Double.class, Double.class, Double.class});
+            defineRow(new Object[]{0, 0, defcount, defunit, null, 0.0, deftax/100, 0.0});
+            autoCountColumn =1;
         }
-
-
     }
 
     @Override
@@ -232,5 +238,56 @@ public class MPTableModel extends DefaultTableModel {
 
     private void setDataVector(Object[][] object, Headers head) {
         super.setDataVector(object, head.getValue());
+    }
+
+    /**
+     * Checks if the model has empty rows
+     * @param columnsToCheck The columns to be checked for emptyness
+     * @return TRUE if the last row of the model has a NULL value at the specified columns
+     */
+    public boolean hasEmptyRows(int[] columnsToCheck) {
+        boolean empty = true;
+        for (int i = 0; i < columnsToCheck.length; i++) {
+            if (getValueAt(getRowCount()-1, columnsToCheck[i]) != null) {
+                empty = false;
+            }
+        }
+        return empty;
+    }
+
+    /**
+     * Adds rows to the end of the model. The new rows will contain null values.<br/>
+     * If this.context is defined, Context specific values may be added.
+     * @param count
+     */
+    public void addRow(int count) {
+        for (int i = 0; i < count; i++) {
+            if (predefinedRow == null) {
+                addRow((Object[]) null);
+            } else {
+                if(autoCountColumn!=null){
+                predefinedRow[autoCountColumn] = getRowCount();
+                }
+                addRow(predefinedRow);
+            }
+        }
+    }
+
+    /**
+     * @return the context
+     */
+    public Context getContext() {
+        return context;
+    }
+
+    /**
+     * @param context the context to set
+     */
+    public void setContext(Context context) {
+        this.context = context;
+    }
+
+    private void defineRow(Object[] object) {
+        predefinedRow = object;
     }
 }

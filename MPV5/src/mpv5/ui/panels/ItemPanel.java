@@ -62,7 +62,9 @@ import mpv5.utils.date.DateConverter;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
+import mpv5.utils.tables.TableCalculator;
 import mpv5.utils.renderer.CellRendererWithMPComboBox;
+import mpv5.utils.renderer.TableCellRendererForDezimal;
 import mpv5.utils.tables.TableFormat;
 import mpv5.utils.ui.TextFieldUtils;
 
@@ -417,6 +419,11 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
         ));
         itemtable.setCellSelectionEnabled(true);
         itemtable.setName("itemtable"); // NOI18N
+        itemtable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                itemtableMouseClicked(evt);
+            }
+        });
         jScrollPane3.setViewportView(itemtable);
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -427,7 +434,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE)
         );
 
         jToolBar1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -650,7 +657,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -680,7 +687,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(leftpane, javax.swing.GroupLayout.DEFAULT_SIZE, 524, Short.MAX_VALUE)
+            .addComponent(leftpane, javax.swing.GroupLayout.DEFAULT_SIZE, 375, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(toolbarpane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
@@ -712,6 +719,14 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
     private void dataTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_dataTableMouseClicked
         fileTableClicked(evt);
     }//GEN-LAST:event_dataTableMouseClicked
+
+    private void itemtableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_itemtableMouseClicked
+
+        MPTableModel m = (MPTableModel) itemtable.getModel();
+        if (!m.hasEmptyRows(new int[]{4})) {
+            m.addRow(2);
+        }
+    }//GEN-LAST:event_itemtableMouseClicked
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private mpv5.ui.beans.LabeledCombobox accountselect;
     private javax.swing.JLabel addedby;
@@ -866,10 +881,18 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
                     status.setModel(Item.getStatusStrings(), MPComboBoxModelItem.COMPARE_BY_ID);
                     status.setSelectedIndex(MPV5View.getUser().__getIntdefaultstatus());
 
+
                     itemtable.setModel(new MPTableModel(Context.getSubItem()));
+                    TableCellRendererForDezimal t = new TableCellRendererForDezimal(itemtable);
+                    t.setRendererTo(6);
+                    t.setRendererTo(5);
+                    t.setRendererTo(2);
                     CellRendererWithMPComboBox r = new CellRendererWithMPComboBox(Context.getProducts(), itemtable);
-                    r.setRendererTo(4);itemtable.setModel(new MPTableModel(Context.getSubItem()));
-                    TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 43, 63, 100, 63, 63, 63}, new Boolean[]{true, true, true, true, false, true, true, true});
+                    r.setRendererTo(4);
+                    TableCalculator cv = new TableCalculator(itemtable, new int[]{2,5,6}, new int[]{7}, TableCalculator.ACTION_MULTIPLY);
+                    cv.start();
+
+                    TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 53, 63, 100, 83, 63, 63}, new Boolean[]{true, true, true, true, false, true, true, true});
                     TableFormat.changeBackground(itemtable, 1, Color.LIGHT_GRAY);
                     TableFormat.changeBackground(itemtable, 7, Color.LIGHT_GRAY);
                 } catch (Exception e) {

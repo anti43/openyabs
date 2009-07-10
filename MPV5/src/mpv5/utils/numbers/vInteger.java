@@ -16,30 +16,67 @@
  */
 package mpv5.utils.numbers;
 
-import mpv5.utils.numberformat.NumberCheck;
+import mpv5.utils.numberformat.FormatNumber;
+
 
 /**
  *
  *  anti
  */
 public class vInteger {
-
-    public Integer value = null;
-    public boolean isVerified = false;
-    public boolean isPositive = false;
+    private Integer value = null;
+    private boolean isVerified = false;
+    private boolean isPositive = false;
     private String ovalue = "";
+    private String svalue;
 
     public vInteger(Object number) {
         if (number != null) {
             this.ovalue = number.toString();
-            if (NumberCheck.checkInteger(number) != null) {
-                this.value = NumberCheck.checkInteger(number);
+            this.ovalue = number.toString();
+             if (FormatNumber.checkNumber(number)) {
+                this.value = ((Number)FormatNumber.parseNumber(ovalue)).intValue();
+                this.svalue = this.value.toString();
                 this.isVerified = true;
-
                 if (this.value >= 0) {
                     this.isPositive = true;
                 }
             }
         }
+    }
+
+    /**
+     * @return the value
+     */
+    public Integer getValue() {
+        return value;
+    }
+
+    /**
+     * @return the isVerified
+     */
+    public boolean isIsVerified() {
+        return isVerified;
+    }
+
+    /**
+     * @return the isPositive
+     */
+    public boolean isIsPositive() {
+        return isPositive;
+    }
+
+    /**
+     * @return the ovalue
+     */
+    public String getOvalue() {
+        return ovalue;
+    }
+
+    /**
+     * @return the svalue
+     */
+    public String getSvalue() {
+        return svalue;
     }
 }

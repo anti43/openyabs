@@ -16,21 +16,16 @@
  */
 package mpv5.utils.renderer;
 
-import com.l2fprod.common.swing.renderer.DefaultCellRenderer;
-import java.awt.Color;
 import java.awt.Component;
 import java.util.Vector;
 import javax.swing.DefaultCellEditor;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import mpv5.db.common.Context;
-import mpv5.logging.Log;
 import mpv5.ui.beans.LightMPComboBox;
-import mpv5.utils.models.MPComboBoxModelItem;
 
 /**
  *
@@ -44,7 +39,7 @@ public class CellRendererWithMPComboBox extends JLabel implements TableCellRende
     private JLabel label = new JLabel();
 
     /**
-     * Create a new CellRenderer which holds a MPComboBox. Will not assign itself to any column.
+     * Create a new CellRenderer which holds a MPComboBox with the given Context's data as model. Will not assign itself to any column.
      * @param c
      * @param table
      */
@@ -80,7 +75,6 @@ public class CellRendererWithMPComboBox extends JLabel implements TableCellRende
             return label;
         } else {
             label.setText((value == null) ? "" : value.toString());
-//            ((MPComboBoxEditor) table.getCellEditor(row, column)).box.setSelectedIndex(-1);
             return label;
         }
     }

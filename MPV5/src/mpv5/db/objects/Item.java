@@ -18,6 +18,7 @@ package mpv5.db.objects;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComponent;
@@ -25,6 +26,7 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.Formattable;
 import mpv5.db.common.NodataFoundException;
+import mpv5.db.common.QueryHandler;
 import mpv5.globals.Messages;
 import mpv5.handler.FormatHandler;
 import mpv5.handler.MPEnum;
@@ -36,7 +38,7 @@ import mpv5.utils.images.MPIcon;
  *
  *  anti
  */
-public class Item extends DatabaseObject implements Formattable{
+public class Item extends DatabaseObject implements Formattable {
 
     /**
      * Returns a localized string represenation of the given item status
@@ -157,6 +159,26 @@ public class Item extends DatabaseObject implements Formattable{
                 return Messages.TYPE_ORDER.toString();
         }
         return null;
+    }
+    private static HashMap<Integer, Double> taxes = new HashMap<Integer, Double>();
+
+    /**
+     * Tries to fetch the value for the given tax id
+     * @param taxid
+     * @return A value or 0d if not found
+     */
+    public static Double getTaxValue(Integer taxid) {
+        if (taxes.containsKey(taxid)) {
+            return taxes.get(taxid);
+        } else {
+            try {
+                double v = Double.valueOf(QueryHandler.instanceOf().clone(Context.getTaxes()).select("taxvalue", new String[]{"ids", taxid.toString(), ""})[0][0].toString());
+                taxes.put(taxid, v);
+                return v;
+            } catch (NumberFormatException numberFormatException) {
+                return 0d;
+            }
+        }
     }
     private int contactsids;
     private int defaultaccountsids;
@@ -359,7 +381,7 @@ public class Item extends DatabaseObject implements Formattable{
 
     @Override
     public mpv5.utils.images.MPIcon getIcon() {
-         return new MPIcon("/mpv5/resources/images/22/kontact_mail.png");
+        return new MPIcon("/mpv5/resources/images/22/kontact_mail.png");
     }
 
     /**

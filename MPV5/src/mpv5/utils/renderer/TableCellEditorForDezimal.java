@@ -32,16 +32,18 @@ import mpv5.utils.numberformat.FormatNumber;
  * 
  */
 public class TableCellEditorForDezimal extends DefaultCellEditor {
-
     private static final long serialVersionUID = 1L;
 
+    /**
+     *
+     * @param tf
+     */
     public TableCellEditorForDezimal(final JFormattedTextField tf) {
         super(tf);
 
         tf.setFocusLostBehavior(JFormattedTextField.COMMIT);
-        tf.setHorizontalAlignment(SwingConstants.RIGHT);
+        tf.setHorizontalAlignment(SwingConstants.LEFT);
         tf.setBorder(null);
-
         delegate = new EditorDelegate() {
 
             @Override
@@ -68,7 +70,7 @@ public class TableCellEditorForDezimal extends DefaultCellEditor {
                         tf.setBackground(Color.white);
                         return d;
                     } else {
-                        tf.setBackground(Color.red);
+                         tf.setBackground(Color.white);
                         return new Double(0.0);
                     }
                 } catch (Exception e) {
@@ -78,8 +80,6 @@ public class TableCellEditorForDezimal extends DefaultCellEditor {
                 }
             }
         };
-
-
     }
 }
 

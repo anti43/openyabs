@@ -16,34 +16,75 @@
  */
 package mpv5.utils.numbers;
 
-import mpv5.utils.numberformat.NumberCheck;
+import mpv5.utils.numberformat.FormatNumber;
+
 
 /**
  *
  *  anti
  */
 public class vFloat {
-
-    public Float value = null;
-    public String svalue = null;
-    public boolean isVerified = false;
-    public boolean isPositive = false;
-    public String ovalue = "";
-    public String decValue;
+    private Float value = null;
+    private String svalue = null;
+    private boolean isVerified = false;
+    private boolean isPositive = false;
+    private String ovalue = "";
+    private String decValue;
 
     public vFloat(Object number) {
         if (number != null) {
             this.ovalue = number.toString();
-            if (NumberCheck.checkFloat(number) != null) {
-                this.value = NumberCheck.checkFloat(number);
-                this.svalue = this.value.toString();
+             if (FormatNumber.checkNumber(number)) {
+                this.value = ((Number)FormatNumber.parseNumber(ovalue)).floatValue();
                 this.decValue = FormatNumber.formatDezimal(value);
+                this.svalue = this.value.toString();
                 this.isVerified = true;
-
                 if (this.value >= 0) {
                     this.isPositive = true;
                 }
             }
         }
+    }
+
+    /**
+     * @return the value
+     */
+    public Float getValue() {
+        return value;
+    }
+
+    /**
+     * @return the svalue
+     */
+    public String getSvalue() {
+        return svalue;
+    }
+
+    /**
+     * @return the isVerified
+     */
+    public boolean isIsVerified() {
+        return isVerified;
+    }
+
+    /**
+     * @return the isPositive
+     */
+    public boolean isIsPositive() {
+        return isPositive;
+    }
+
+    /**
+     * @return the ovalue
+     */
+    public String getOvalue() {
+        return ovalue;
+    }
+
+    /**
+     * @return the decValue
+     */
+    public String getDecValue() {
+        return decValue;
     }
 }

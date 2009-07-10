@@ -111,17 +111,17 @@ public class FileToItem extends DatabaseObject {
         if (icon == null) {
             try {
                 Log.Debug(this, "Determining Icon for " + __getCName());
-                icon = new MPIcon(MPIcon.ICON_DIRECTORY + __getCName().substring(__getCName().lastIndexOf(".") +1, __getCName().length()) + ".png");
+                icon = new MPIcon(MPIcon.DIRECTORY_DEFAULT_ICONS + __getCName().substring(__getCName().lastIndexOf(".") +1, __getCName().length()) + ".png");
                 return icon;
             } catch (Exception e) {
-                Log.Debug(this, "Icon file not existing in " + MPIcon.ICON_DIRECTORY);
+                Log.Debug(this, "Icon file not existing in " + MPIcon.DIRECTORY_DEFAULT_ICONS);
                 try {
                     JFileChooser chooser = new JFileChooser();
                     icon = new MPIcon(chooser.getIcon(new File(filename)));
                     return icon;
                 } catch (Exception ez) {
                     Log.Debug(this, ez);
-                    icon = new MPIcon(MPIcon.ICON_DIRECTORY + "folder_tar.png");
+                    icon = new MPIcon(MPIcon.DIRECTORY_DEFAULT_ICONS + "folder_tar.png");
                     return icon;
                 }
             }

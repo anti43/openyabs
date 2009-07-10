@@ -23,8 +23,8 @@ public class vTimeframe {
     }
 
     public vTimeframe(vDate von, vDate bis){
-        this.start = von.date; 
-        this.end = bis.date;   
+        this.start = von.getDate();
+        this.end = bis.getDate();
         this.time = end.getTime() - start.getTime();   
     }
 

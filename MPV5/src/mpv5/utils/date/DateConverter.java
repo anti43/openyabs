@@ -26,7 +26,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import mpv5.logging.Log;
-import mpv5.ui.frames.MPV5View;
 
 /**
  *
@@ -83,7 +82,7 @@ public class DateConverter {
     }
 
     /**
-     * Get days difference
+     * Get DAYS difference
      * @param date1
      * @param date2
      * @return
