@@ -18,13 +18,16 @@ package mpv5.utils.models;
 
 import java.util.ArrayList;
 import java.util.Vector;
+import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableModel;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.objects.Item;
 import mpv5.globals.Headers;
+import mpv5.logging.Log;
 import mpv5.ui.frames.MPV5View;
 import mpv5.utils.numberformat.FormatNumber;
+import mpv5.utils.tables.TableCalculator;
 
 /**
  *
@@ -38,6 +41,7 @@ public class MPTableModel extends DefaultTableModel {
     private Context context;
     private Object[] predefinedRow;
     private Integer autoCountColumn;
+    private TableCalculator calculator;
 //    public static MPTableModel ITEM_TABLE_MODEL = new MPTableModel(Context.getItems());
 
     public MPTableModel() {
@@ -163,17 +167,25 @@ public class MPTableModel extends DefaultTableModel {
             }
 
             setDataVector(new Object[][]{
-                        {0, 0, defcount, defunit, null, 0.0, deftax, 0.0},
                         {0, 1, defcount, defunit, null, 0.0, deftax, 0.0},
                         {0, 2, defcount, defunit, null, 0.0, deftax, 0.0},
                         {0, 3, defcount, defunit, null, 0.0, deftax, 0.0},
                         {0, 4, defcount, defunit, null, 0.0, deftax, 0.0},
                         {0, 5, defcount, defunit, null, 0.0, deftax, 0.0},
-                        {0, 6, defcount, defunit, null, 0.0, deftax, 0.0}}, Headers.SUBITEMS);
+                        {0, 6, defcount, defunit, null, 0.0, deftax, 0.0},
+                        {0, 7, defcount, defunit, null, 0.0, deftax, 0.0}}, Headers.SUBITEMS);
             setCanEdits(new boolean[]{false, false, true, true, true, true, true, false});
             defineRow(new Object[]{0, 0, defcount, defunit, null, 0.0, deftax, 0.0});
-            autoCountColumn =1;
+            autoCountColumn = 1;
         }
+    }
+
+    /**
+     * Set the cell calculator for this model
+     * @param cv
+     */
+    public void setCalculator(TableCalculator cv) {
+        this.calculator = cv;
     }
 
     @Override
@@ -222,11 +234,12 @@ public class MPTableModel extends DefaultTableModel {
     @SuppressWarnings("unchecked")
     public Object getValueAt(int row, int column) {
         Object o = super.getValueAt(row, column);
-        if (!getColumnClass(column).getName().equals("java.lang.Object")) {
-            if (getColumnClass(column).isAssignableFrom(Double.class) ||
-                    getColumnClass(column).isAssignableFrom(double.class) ||
-                    getColumnClass(column).isAssignableFrom(float.class) ||
-                    getColumnClass(column).isAssignableFrom(Float.class)) {
+        Class t = getColumnClass(column);
+        if (!t.getName().equals("java.lang.Object")) {
+            if (t.isAssignableFrom(Double.class) ||
+                    t.isAssignableFrom(double.class) ||
+                    t.isAssignableFrom(float.class) ||
+                    t.isAssignableFrom(Float.class)) {
                 return FormatNumber.formatDezimal(Double.valueOf(o.toString()));
             } else {
                 return o;
@@ -240,6 +253,14 @@ public class MPTableModel extends DefaultTableModel {
         super.setDataVector(object, head.getValue());
     }
 
+    @Override
+    public void fireTableCellUpdated(int row, int column) {
+        if (calculator != null && !calculator.isTargetCell(row, column)) {
+            calculator.calculateOnce();
+        }
+        super.fireTableCellUpdated(row, column);
+    }
+
     /**
      * Checks if the model has empty rows
      * @param columnsToCheck The columns to be checked for emptyness
@@ -248,7 +269,7 @@ public class MPTableModel extends DefaultTableModel {
     public boolean hasEmptyRows(int[] columnsToCheck) {
         boolean empty = true;
         for (int i = 0; i < columnsToCheck.length; i++) {
-            if (getValueAt(getRowCount()-1, columnsToCheck[i]) != null) {
+            if (getValueAt(getRowCount() - 1, columnsToCheck[i]) != null) {
                 empty = false;
             }
         }
@@ -265,8 +286,8 @@ public class MPTableModel extends DefaultTableModel {
             if (predefinedRow == null) {
                 addRow((Object[]) null);
             } else {
-                if(autoCountColumn!=null){
-                predefinedRow[autoCountColumn] = getRowCount();
+                if (autoCountColumn != null) {
+                    predefinedRow[autoCountColumn] = getRowCount() + 1;
                 }
                 addRow(predefinedRow);
             }

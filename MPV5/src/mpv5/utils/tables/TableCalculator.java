@@ -81,7 +81,7 @@ public class TableCalculator implements Runnable {
                 case ACTION_SUM:
                     for (int i = 0; i < columnsToCalculate.length; i++) {
                         int j = columnsToCalculate[i];
-                        if (table.getValueAt(j, row) != null) {
+                        if (table.getValueAt(row, j) != null) {
                             if (table.getValueAt(j, row) != null) {
                                 val += Double.valueOf(table.getValueAt(row, j).toString());
                             }
@@ -91,7 +91,7 @@ public class TableCalculator implements Runnable {
                 case ACTION_SUBSTRACT:
                     for (int i = 0; i < columnsToCalculate.length; i++) {
                         int j = columnsToCalculate[i];
-                        if (table.getValueAt(j, row) != null) {
+                        if (table.getValueAt(row, j) != null) {
                             if (table.getValueAt(j, row) != null) {
                                 val -= Double.valueOf(table.getValueAt(row, j).toString());
                             }
@@ -101,7 +101,7 @@ public class TableCalculator implements Runnable {
                 case ACTION_DIVIDE:
                     for (int i = 0; i < columnsToCalculate.length; i++) {
                         int j = columnsToCalculate[i];
-                        if (table.getValueAt(j, row) != null) {
+                        if (table.getValueAt(row, j) != null) {
                             boolean percentagec = false;
                             for (int k = 0; k < percentageColumns.length; k++) {
                                 int l = percentageColumns[k];
@@ -128,7 +128,7 @@ public class TableCalculator implements Runnable {
                 case ACTION_MULTIPLY:
                     for (int i = 0; i < columnsToCalculate.length; i++) {
                         int j = columnsToCalculate[i];
-                        if (table.getValueAt(j, row) != null) {
+                        if (table.getValueAt(row, j) != null) {
                             boolean percentagec = false;
                             for (int k = 0; k < percentageColumns.length; k++) {
                                 int l = percentageColumns[k];
@@ -147,6 +147,7 @@ public class TableCalculator implements Runnable {
                                     val = ((Double.valueOf(table.getValueAt(row, j).toString()) / 100) + 1);
                                 } else {
                                     val = val * ((Double.valueOf(table.getValueAt(row, j).toString()) / 100) + 1);
+
                                 }
                             }
                         }
@@ -167,34 +168,41 @@ public class TableCalculator implements Runnable {
 
     @Override
     public void run() {
-        while (isOnScreen()) {
+        while (isUsed()) {
             while (table.isShowing()) {
                 if (!table.isEditing()) {
-                    for (int i = 0; i < table.getRowCount(); i++) {
-                        calculate(i);
-//                        Log.Debug(this, "Row " + i + " : " + calculate(i));
-                        try {
-                            Thread.sleep(200);
-                        } catch (InterruptedException ex) {
-                            Log.Debug(ex);
-                        }
-                    }
+                    calculateOnce();
                 }
             }
         }
     }
 
     /**
-     * Start calculating
+     * Start calculating, will run always while the table is showing on the screen
      */
     public void start() {
         new Thread(this).start();
     }
 
     /**
+     * Calculate once
+     */
+    public void calculateOnce() {
+        for (int i = 0; i < table.getRowCount(); i++) {
+            calculate(i);
+//                        Log.Debug(this, "Row " + i + " : " + calculate(i));
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException ex) {
+                Log.Debug(ex);
+            }
+        }
+    }
+
+    /**
      * @return the onScreen
      */
-    public boolean isOnScreen() {
+    public boolean isUsed() {
         return onScreen;
     }
 
@@ -203,5 +211,22 @@ public class TableCalculator implements Runnable {
      */
     public void setOnScreen(boolean onScreen) {
         this.onScreen = onScreen;
+    }
+
+    /**
+     * Checks whether the cell is not a target cell for this calculator
+     * @param row
+     * @param column
+     * @return
+     */
+    public boolean isTargetCell(int row, int column) {
+        for (int i = 0; i < targetColumns.length; i++) {
+            int col = targetColumns[i];
+            if (col == column) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
