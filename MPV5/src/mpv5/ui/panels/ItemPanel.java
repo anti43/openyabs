@@ -889,7 +889,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
                     t.setRendererTo(2);
                     CellRendererWithMPComboBox r = new CellRendererWithMPComboBox(Context.getProducts(), itemtable);
                     r.setRendererTo(4);
-                    TableCalculator cv = new TableCalculator(itemtable, new int[]{2,5,6}, new int[]{7}, TableCalculator.ACTION_MULTIPLY);
+                    TableCalculator cv = new TableCalculator(itemtable, new int[]{2,5,6}, new int[]{7}, new int[]{6}, TableCalculator.ACTION_MULTIPLY);
                     cv.start();
 
                     TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 53, 63, 100, 83, 63, 63}, new Boolean[]{true, true, true, true, false, true, true, true});

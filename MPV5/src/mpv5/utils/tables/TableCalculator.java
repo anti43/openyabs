@@ -30,6 +30,7 @@ public class TableCalculator implements Runnable {
     private final JTable table;
     private final int[] columnsToCalculate;
     private final int[] targetColumns;
+    private final int[] percentageColumns;
     private final int action;
     /**
      * <b>+</b>
@@ -47,19 +48,22 @@ public class TableCalculator implements Runnable {
      * <b>*</b>
      */
     public static final int ACTION_MULTIPLY = 3;
+    private boolean onScreen = true;
 
     /**
      *
      * @param table
      * @param columnsToCalculate
      * @param targetColumns
+     * @param percentageColumns
      * @param action
      */
-    public TableCalculator(JTable table, int[] columnsToCalculate, int[] targetColumns, int action) {
+    public TableCalculator(JTable table, int[] columnsToCalculate, int[] targetColumns, int[] percentageColumns, int action) {
         super();
         this.table = table;
         this.columnsToCalculate = columnsToCalculate;
         this.targetColumns = targetColumns;
+        this.percentageColumns = percentageColumns;
         this.action = action;
     }
 
@@ -68,16 +72,19 @@ public class TableCalculator implements Runnable {
      * @param row
      * @return 
      */
-    public double calculate(int row) {
+    public synchronized double calculate(int row) {
 
         Double val = 0d;
+
         try {
             switch (action) {
                 case ACTION_SUM:
                     for (int i = 0; i < columnsToCalculate.length; i++) {
                         int j = columnsToCalculate[i];
                         if (table.getValueAt(j, row) != null) {
-                            val += Double.valueOf(table.getValueAt(row,j).toString());
+                            if (table.getValueAt(j, row) != null) {
+                                val += Double.valueOf(table.getValueAt(row, j).toString());
+                            }
                         }
                     }
                     break;
@@ -85,7 +92,9 @@ public class TableCalculator implements Runnable {
                     for (int i = 0; i < columnsToCalculate.length; i++) {
                         int j = columnsToCalculate[i];
                         if (table.getValueAt(j, row) != null) {
-                            val -= Double.valueOf(table.getValueAt(row,j).toString());
+                            if (table.getValueAt(j, row) != null) {
+                                val -= Double.valueOf(table.getValueAt(row, j).toString());
+                            }
                         }
                     }
                     break;
@@ -93,7 +102,26 @@ public class TableCalculator implements Runnable {
                     for (int i = 0; i < columnsToCalculate.length; i++) {
                         int j = columnsToCalculate[i];
                         if (table.getValueAt(j, row) != null) {
-                            val = val / Double.valueOf(table.getValueAt(row,j).toString());
+                            boolean percentagec = false;
+                            for (int k = 0; k < percentageColumns.length; k++) {
+                                int l = percentageColumns[k];
+                                if (l == j) {
+                                    percentagec = true;
+                                }
+                            }
+                            if (!percentagec) {
+                                if (i == 0) {
+                                    val = Double.valueOf(table.getValueAt(row, j).toString());
+                                } else {
+                                    val = val / Double.valueOf(table.getValueAt(row, j).toString());
+                                }
+                            } else {
+                                if (i == 0) {
+                                    val = ((Double.valueOf(table.getValueAt(row, j).toString()) / 100) + 1);
+                                } else {
+                                    val = val / ((Double.valueOf(table.getValueAt(row, j).toString()) / 100) + 1);
+                                }
+                            }
                         }
                     }
                     break;
@@ -101,7 +129,26 @@ public class TableCalculator implements Runnable {
                     for (int i = 0; i < columnsToCalculate.length; i++) {
                         int j = columnsToCalculate[i];
                         if (table.getValueAt(j, row) != null) {
-                            val = val * Double.valueOf(table.getValueAt(row,j).toString());
+                            boolean percentagec = false;
+                            for (int k = 0; k < percentageColumns.length; k++) {
+                                int l = percentageColumns[k];
+                                if (l == j) {
+                                    percentagec = true;
+                                }
+                            }
+                            if (!percentagec) {
+                                if (i == 0) {
+                                    val = Double.valueOf(table.getValueAt(row, j).toString());
+                                } else {
+                                    val = val * Double.valueOf(table.getValueAt(row, j).toString());
+                                }
+                            } else {
+                                if (i == 0) {
+                                    val = ((Double.valueOf(table.getValueAt(row, j).toString()) / 100) + 1);
+                                } else {
+                                    val = val * ((Double.valueOf(table.getValueAt(row, j).toString()) / 100) + 1);
+                                }
+                            }
                         }
                     }
                     break;
@@ -109,7 +156,6 @@ public class TableCalculator implements Runnable {
 
             for (int i = 0; i < targetColumns.length; i++) {
                 int j = targetColumns[i];
-                Log.Debug(this, "Setting value " + val + " at " + row +"@" + j);
                 table.setValueAt(val, row, j);
             }
 
@@ -121,14 +167,18 @@ public class TableCalculator implements Runnable {
 
     @Override
     public void run() {
-        while (table.isShowing()) {
-            int rc = table.getRowCount();
-            for (int i = 0; i < rc; i++) {
-                calculate(i);
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException ex) {
-                    Log.Debug(ex);
+        while (isOnScreen()) {
+            while (table.isShowing()) {
+                if (!table.isEditing()) {
+                    for (int i = 0; i < table.getRowCount(); i++) {
+                        calculate(i);
+//                        Log.Debug(this, "Row " + i + " : " + calculate(i));
+                        try {
+                            Thread.sleep(200);
+                        } catch (InterruptedException ex) {
+                            Log.Debug(ex);
+                        }
+                    }
                 }
             }
         }
@@ -139,5 +189,19 @@ public class TableCalculator implements Runnable {
      */
     public void start() {
         new Thread(this).start();
+    }
+
+    /**
+     * @return the onScreen
+     */
+    public boolean isOnScreen() {
+        return onScreen;
+    }
+
+    /**
+     * @param onScreen the onScreen to set
+     */
+    public void setOnScreen(boolean onScreen) {
+        this.onScreen = onScreen;
     }
 }

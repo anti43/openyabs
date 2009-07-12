@@ -39,6 +39,7 @@ public class Address extends DatabaseObject {
     private String country = "";
     private boolean ismale = true;
     private int contactsids = 0;
+    private int inttype = 2;//[0 = billing adress, 1 = delivery adress, 2 = undefined]
 
     public Address(){
         context.setDbIdentity(Context.IDENTITY_ADDRESS);
@@ -208,5 +209,19 @@ public class Address extends DatabaseObject {
    @Override
     public MPIcon getIcon() {
         return null;
+    }
+
+    /**
+     * @return the inttype
+     */
+    public int __getInttype() {
+        return inttype;
+    }
+
+    /**
+     * @param inttype the inttype to set
+     */
+    public void setInttype(int inttype) {
+        this.inttype = inttype;
     }
 }

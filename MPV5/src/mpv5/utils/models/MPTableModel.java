@@ -163,15 +163,15 @@ public class MPTableModel extends DefaultTableModel {
             }
 
             setDataVector(new Object[][]{
-                        {0, 0, defcount, defunit, null, 0.0, deftax/100, 0.0},
-                        {0, 1, defcount, defunit, null, 0.0, deftax/100, 0.0},
-                        {0, 2, defcount, defunit, null, 0.0, deftax/100, 0.0},
-                        {0, 3, defcount, defunit, null, 0.0, deftax/100, 0.0},
-                        {0, 4, defcount, defunit, null, 0.0, deftax/100, 0.0},
-                        {0, 5, defcount, defunit, null, 0.0, deftax/100, 0.0},
-                        {0, 6, defcount, defunit, null, 0.0, deftax/100, 0.0}}, Headers.SUBITEMS);
+                        {0, 0, defcount, defunit, null, 0.0, deftax, 0.0},
+                        {0, 1, defcount, defunit, null, 0.0, deftax, 0.0},
+                        {0, 2, defcount, defunit, null, 0.0, deftax, 0.0},
+                        {0, 3, defcount, defunit, null, 0.0, deftax, 0.0},
+                        {0, 4, defcount, defunit, null, 0.0, deftax, 0.0},
+                        {0, 5, defcount, defunit, null, 0.0, deftax, 0.0},
+                        {0, 6, defcount, defunit, null, 0.0, deftax, 0.0}}, Headers.SUBITEMS);
             setCanEdits(new boolean[]{false, false, true, true, true, true, true, false});
-            defineRow(new Object[]{0, 0, defcount, defunit, null, 0.0, deftax/100, 0.0});
+            defineRow(new Object[]{0, 0, defcount, defunit, null, 0.0, deftax, 0.0});
             autoCountColumn =1;
         }
     }
