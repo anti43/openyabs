@@ -172,6 +172,11 @@ public class TableCalculator implements Runnable {
             while (table.isShowing()) {
                 if (!table.isEditing()) {
                     calculateOnce();
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException ex) {
+                        Log.Debug(ex);
+                    }
                 }
             }
         }
@@ -190,12 +195,6 @@ public class TableCalculator implements Runnable {
     public void calculateOnce() {
         for (int i = 0; i < table.getRowCount(); i++) {
             calculate(i);
-//                        Log.Debug(this, "Row " + i + " : " + calculate(i));
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException ex) {
-                Log.Debug(ex);
-            }
         }
     }
 
