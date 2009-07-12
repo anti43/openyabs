@@ -488,6 +488,8 @@ public class MPV5View extends FrameView {
         jMenu10 = new javax.swing.JMenu();
         jMenuItem20 = new javax.swing.JMenuItem();
         jMenuItem21 = new javax.swing.JMenuItem();
+        jMenu11 = new javax.swing.JMenu();
+        jMenuItem26 = new javax.swing.JMenuItem();
         jMenu8 = new javax.swing.JMenu();
         jMenuItem11 = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JSeparator();
@@ -882,6 +884,20 @@ public class MPV5View extends FrameView {
         jMenu10.add(jMenuItem21);
 
         jMenu4.add(jMenu10);
+
+        jMenu11.setText(bundle.getString("MPV5View.jMenu11.text")); // NOI18N
+        jMenu11.setName("jMenu11"); // NOI18N
+
+        jMenuItem26.setText(bundle.getString("MPV5View.jMenuItem26.text")); // NOI18N
+        jMenuItem26.setName("jMenuItem26"); // NOI18N
+        jMenuItem26.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem26ActionPerformed(evt);
+            }
+        });
+        jMenu11.add(jMenuItem26);
+
+        jMenu4.add(jMenu11);
 
         fileMenu.add(jMenu4);
 
@@ -1554,6 +1570,24 @@ public class MPV5View extends FrameView {
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
         addTab(new mpv5.ui.panels.EURPanel(), Messages.COST);
     }//GEN-LAST:event_jButton9ActionPerformed
+
+    private void jMenuItem26ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem26ActionPerformed
+
+
+        if (mpv5.usermanagement.MPSecurityManager.check(Context.getAccounts(), MPSecurityManager.EXPORT)) {
+            try {
+                XMLWriter xmlw = new XMLWriter();
+                xmlw.newDoc(true);
+                String name = Context.getItems().getDbIdentity();
+                ArrayList<DatabaseObject> dbobjarr = DatabaseObject.getObjects(Context.getItems());
+                xmlw.add(dbobjarr);
+                showFilesaveDialogFor(xmlw.createFile(name));
+            } catch (NodataFoundException ex) {
+                Log.Debug(this, ex);
+            }
+        }
+    }//GEN-LAST:event_jMenuItem26ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JMenu clipboardMenu;
     public javax.swing.JMenu favouritesMenu;
@@ -1570,6 +1604,7 @@ public class MPV5View extends FrameView {
     private javax.swing.JButton jButton9;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu10;
+    private javax.swing.JMenu jMenu11;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
@@ -1596,6 +1631,7 @@ public class MPV5View extends FrameView {
     private javax.swing.JMenuItem jMenuItem23;
     private javax.swing.JMenuItem jMenuItem24;
     private javax.swing.JMenuItem jMenuItem25;
+    private javax.swing.JMenuItem jMenuItem26;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
