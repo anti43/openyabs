@@ -228,7 +228,10 @@ public class TableFormat {
 
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
-                this.setText(value.toString());
+                try {
+                    this.setText(value.toString());
+                } catch (Exception e) {
+                }
 //
 //                // Verändern aufgrund der Position
 //                if ((row % 2 == 0 && col % 2 == 0) || (row % 2 == 1 && col % 2 == 1)) {

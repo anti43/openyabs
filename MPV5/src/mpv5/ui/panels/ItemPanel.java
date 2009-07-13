@@ -164,7 +164,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
         tb.setEditable(!object.isReadOnly());
 
         itemtable.setModel(SubItem.toModel(((Item) object).getSubitems()));
-        TableFormat.stripFirstColumn(itemtable);
+        formatTable();
         if (object.isReadOnly()) {
             Popup.notice(Messages.LOCKED_BY);
         }
@@ -882,19 +882,9 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
                     status.setSelectedIndex(MPV5View.getUser().__getIntdefaultstatus());
 
 
-                    itemtable.setModel(new MPTableModel(Context.getSubItem()));
-                    TableCellRendererForDezimal t = new TableCellRendererForDezimal(itemtable);
-                    t.setRendererTo(6);
-                    t.setRendererTo(5);
-                    t.setRendererTo(2);
-                    CellRendererWithMPComboBox r = new CellRendererWithMPComboBox(Context.getProducts(), itemtable);
-                    r.setRendererTo(4);
-                    TableCalculator cv = new TableCalculator(itemtable, new int[]{2,5,6}, new int[]{7}, new int[]{6}, TableCalculator.ACTION_MULTIPLY);
-                    ((MPTableModel)itemtable.getModel()).setCalculator(cv);
+                    itemtable.setModel(new MPTableModel(Context.getSubItem(), itemtable));
 
-                    TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 53, 63, 100, 83, 63, 63}, new Boolean[]{true, true, true, true, false, true, true, true});
-                    TableFormat.changeBackground(itemtable, 1, Color.LIGHT_GRAY);
-                    TableFormat.changeBackground(itemtable, 7, Color.LIGHT_GRAY);
+                    formatTable();
                 } catch (Exception e) {
                     Log.Debug(this, e);
                 }
@@ -902,6 +892,21 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
         };
 
         SwingUtilities.invokeLater(runnable);
+    }
+
+    private void formatTable() {
+        TableCellRendererForDezimal t = new TableCellRendererForDezimal(itemtable);
+        t.setRendererTo(6);
+        t.setRendererTo(5);
+        t.setRendererTo(2);
+        CellRendererWithMPComboBox r = new CellRendererWithMPComboBox(Context.getProducts(), itemtable);
+        r.setRendererTo(4);
+        TableCalculator cv = new TableCalculator(itemtable, new int[]{2, 5, 6}, new int[]{7}, new int[]{6}, TableCalculator.ACTION_MULTIPLY);
+        ((MPTableModel) itemtable.getModel()).setCalculator(cv);
+
+        TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 53, 63, 100, 83, 63, 63}, new Boolean[]{true, true, true, true, false, true, true, true});
+        TableFormat.changeBackground(itemtable, 1, Color.LIGHT_GRAY);
+        TableFormat.changeBackground(itemtable, 7, Color.LIGHT_GRAY);
     }
 
     @Override

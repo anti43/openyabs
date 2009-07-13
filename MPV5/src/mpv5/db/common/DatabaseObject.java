@@ -934,7 +934,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                                         } else {
                                             vars.get(k).invoke(dbo, new Object[]{false});
                                         }
-                                    } else if (name.toUpperCase().startsWith("INT") || name.endsWith("uid") || name.endsWith("ids") || name.equals("ids")) {
+                                    } else if ((name.toUpperCase().startsWith("INT") || name.endsWith("uid") || name.endsWith("ids") || name.equals("ids")) &&
+                                            !(name.toUpperCase().startsWith("VALUE") || name.toUpperCase().endsWith("VALUE"))) {
                                         vars.get(k).invoke(dbo, new Object[]{Integer.valueOf(String.valueOf(select.getData()[i][j]))});
                                     } else if (name.toUpperCase().startsWith("DATE") || name.toUpperCase().endsWith("DATE")) {
                                         vars.get(k).invoke(dbo, new Object[]{DateConverter.getDate(select.getData()[i][j])});

@@ -48,7 +48,7 @@ public class TableCellEditorForDezimal extends DefaultCellEditor {
 
             @Override
             public void setValue(Object param) {
-                Double _value = (Double) param;
+                Double _value = Double.valueOf(param.toString());
                 if (_value == null) {
                     tf.setValue(FormatNumber.formatDezimal(0.0));
                 } else {

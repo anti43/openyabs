@@ -18,12 +18,15 @@ package mpv5.db.sample;
 
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
+import java.util.Vector;
 import javax.swing.SwingUtilities;
 import mpv5.db.objects.Contact;
 import mpv5.db.objects.Group;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.Product;
+import mpv5.db.objects.SubItem;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPV5View;
 import mpv5.utils.date.DateConverter;
@@ -94,7 +97,6 @@ public class SampleData {
                     if (withItems) {
                         for (int k = 0; k < i; k++) {
 
-                            double value = new Random().nextInt(100 * factor) + 1l;
                             Date date = new RandomDate(new vTimeframe(DateConverter.getDate("01.01.2007"), new Date()));
 
                             Item it = new Item();
@@ -107,46 +109,40 @@ public class SampleData {
                             it.setIntreminders(0);
                             it.setInttype(Item.TYPE_BILL);
                             it.setIntstatus(Item.STATUS_PAID);
+                      
+
+                            double value = 0;
+                            double tvalue1;
+                            List<SubItem> l= new Vector<SubItem>();
+                            List<Item> lm= new Vector<Item>();
+                            for (int j = 0; j < 10; j++) {
+                                SubItem p = new SubItem();
+                                p.setCName("SPI" + seed + "-19-" + j);
+                                p.setCountvalue(1);
+                                p.setDateadded(date);
+                                p.setDatedelivery(date);
+                                p.setDescription("no description!");
+                                p.setExternalvalue(100);value+=100d;
+                                p.setGroupsids(group);
+                                p.setIntaddedby(MPV5View.getUser().ids);
+                                p.setInternalvalue(100);
+                                p.setMeasure("h");
+                                p.setQuantityvalue(1);
+                                p.setTaxpercentvalue(19);
+                                l.add(p);
+                            }
+
                             it.setTaxvalue(FormatNumber.round((value * 1.19) - value));
                             it.setNetvalue(FormatNumber.round(value));
                             it.setIntaddedby(MPV5View.getUser().__getIDS());
                             it.save();
 
-                            value = new Random().nextInt(100 * factor) + 1l;
-                            date = new RandomDate(new vTimeframe(DateConverter.getDate("01.01.2007"), new Date()));
+                            for (int j = 0; j < l.size(); j++) {
+                                SubItem subItem = l.get(j);
+                                subItem.setItemsids(it.__getIDS());
+                                subItem.save();
+                            }
 
-                            Item it1 = new Item();
-                            it1.setCName("SI" + seed + "-7-" + k);
-                            it1.setContactsids(c.__getIDS());
-                            it1.setDateend(date);
-                            it1.setDatetodo(date);
-                            it1.setDefaultaccountsids(defAccountID);
-                            it1.setGroupsids(group);
-                            it1.setIntreminders(0);
-                            it1.setInttype(Item.TYPE_BILL);
-                            it1.setIntstatus(Item.STATUS_PAID);
-                            it1.setTaxvalue(FormatNumber.round((value * 1.07) - value));
-                            it1.setNetvalue(FormatNumber.round(value));
-                            it1.setIntaddedby(MPV5View.getUser().__getIDS());
-                            it1.save();
-
-                            value = new Random().nextInt(100 * factor) + 1l;
-                            date = new RandomDate(new vTimeframe(DateConverter.getDate("01.01.2007"), new Date()));
-
-                            Item it2 = new Item();
-                            it2.setCName("SI" + seed + "-0-" + k);
-                            it2.setContactsids(c.__getIDS());
-                            it2.setDateend(date);
-                            it2.setDatetodo(date);
-                            it2.setDefaultaccountsids(defAccountID);
-                            it2.setGroupsids(group);
-                            it2.setIntreminders(0);
-                            it2.setInttype(Item.TYPE_BILL);
-                            it2.setIntstatus(Item.STATUS_PAID);
-                            it2.setTaxvalue(FormatNumber.round(0));
-                            it2.setNetvalue(FormatNumber.round(value));
-                            it2.setIntaddedby(MPV5View.getUser().__getIDS());
-                            it2.save();
                         }
                     }
 

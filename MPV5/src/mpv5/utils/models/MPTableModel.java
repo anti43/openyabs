@@ -16,9 +16,15 @@
  */
 package mpv5.utils.models;
 
+import java.text.DateFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Vector;
-import javax.swing.event.TableModelEvent;
+
+import javax.swing.Icon;
+import javax.swing.JLabel;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -31,7 +37,7 @@ import mpv5.utils.tables.TableCalculator;
 
 /**
  *
- *  
+ *  A custom table model which implements various convenience methods
  */
 public class MPTableModel extends DefaultTableModel {
 
@@ -44,6 +50,9 @@ public class MPTableModel extends DefaultTableModel {
     private TableCalculator calculator;
 //    public static MPTableModel ITEM_TABLE_MODEL = new MPTableModel(Context.getItems());
 
+    /**
+     * Creates an empty, uneditable model 
+     */
     public MPTableModel() {
         super();
         setEditable(false);
@@ -53,6 +62,10 @@ public class MPTableModel extends DefaultTableModel {
                     Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class});
     }
 
+    /**
+     * Creates an uneditable model out of the given data
+     * @param data
+     */
     public MPTableModel(Object[][] data) {
         super();
 
@@ -71,6 +84,11 @@ public class MPTableModel extends DefaultTableModel {
                     Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class});
     }
 
+    /**
+     * Creates an uneditable model out of the given data
+     * @param list
+     * @param header
+     */
     public MPTableModel(ArrayList<DatabaseObject> list, String[] header) {
         super();
         Object[][] data = new Object[0][0];
@@ -100,6 +118,11 @@ public class MPTableModel extends DefaultTableModel {
 
     }
 
+    /**
+     * Creates an uneditable model out of the given data
+     * @param datstr
+     * @param header
+     */
     public MPTableModel(Object[][] datstr, String[] header) {
         super(datstr, header);
         setEditable(false);
@@ -110,6 +133,11 @@ public class MPTableModel extends DefaultTableModel {
 
     }
 
+    /**
+     * Creates an uneditable model out of the given data
+     * @param data
+     * @param header
+     */
     public MPTableModel(Object[][] data, Headers header) {
         super(data, header.getValue());
         setEditable(false);
@@ -120,24 +148,49 @@ public class MPTableModel extends DefaultTableModel {
 
     }
 
+    /**
+     * Creates an uneditable model out of the given data
+     * @param datstr
+     * @param header
+     * @param types
+     */
     public MPTableModel(Object[][] datstr, String[] header, Class[] types) {
         super(datstr, header);
         setEditable(false);
         setTypes(types);
     }
 
+    /**
+     * Creates an uneditable model out of the given data
+     * @param types
+     * @param canEdits
+     * @param data
+     * @param columnNames
+     */
     public MPTableModel(Class[] types, boolean[] canEdits, Object[][] data, Object[] columnNames) {
         super(data, columnNames);
         setTypes(types);
         setCanEdits(canEdits);
     }
 
+    /**
+     * Creates a model out of the given data
+     * @param types
+     * @param canEdits
+     * @param columnNames
+     */
     public MPTableModel(Class[] types, boolean[] canEdits, Object[] columnNames) {
         super(columnNames, 1);
         setTypes(types);
         setCanEdits(canEdits);
     }
 
+    /**
+     * Creates an uneditable model out of the given data
+     * @param types
+     * @param data
+     * @param columnNames
+     */
     public MPTableModel(Class[] types, Object[][] data, Object[] columnNames) {
         super(data, columnNames);
         setTypes(types);
@@ -145,10 +198,11 @@ public class MPTableModel extends DefaultTableModel {
     }
 
     /**
-     *
+     * Creates a partially uneditable model out of the given data
      * @param context
+     * @param table (optional) If not null, custom renderers are registered for some column class values
      */
-    public MPTableModel(Context context) {
+    public MPTableModel(Context context, JTable table) {
         this();
         this.context = context;
         if (context.equals(Context.getSubItem())) {
@@ -161,7 +215,7 @@ public class MPTableModel extends DefaultTableModel {
                 int taxid = MPV5View.getUser().getProperties().getProperty("deftax", 0);
                 deftax = Item.getTaxValue(taxid);
             }
-            Double defcount = 0d;
+            Double defcount = 1d;
             if (MPV5View.getUser().getProperties().hasProperty("defcount")) {
                 defcount = MPV5View.getUser().getProperties().getProperty("defcount", 0d);
             }
@@ -175,10 +229,17 @@ public class MPTableModel extends DefaultTableModel {
                         {0, 6, defcount, defunit, null, 0.0, deftax, 0.0},
                         {0, 7, defcount, defunit, null, 0.0, deftax, 0.0}}, Headers.SUBITEMS);
             setCanEdits(new boolean[]{false, false, true, true, true, true, true, false});
+            setTypes( new Class[]{Integer.class, Integer.class, Double.class, String.class, String.class, Double.class, Double.class, Double.class});
             defineRow(new Object[]{0, 0, defcount, defunit, null, 0.0, deftax, 0.0});
             autoCountColumn = 1;
+            
+            if(table!=null){
+            table.setDefaultRenderer(Double.class, new DoubleRenderer());
+            
+            }
         }
     }
+
 
     /**
      * Set the cell calculator for this model
@@ -200,22 +261,42 @@ public class MPTableModel extends DefaultTableModel {
         return getCanEdits()[columnIndex];
     }
 
+    /**
+     * 
+     * @return
+     */
     public Class[] getTypes() {
         return types;
     }
 
+    /**
+     * 
+     * @param types
+     */
     public void setTypes(Class[] types) {
         this.types = types;
     }
 
+    /**
+     * 
+     * @return
+     */
     public boolean[] getCanEdits() {
         return canEdits;
     }
 
+    /**
+     * 
+     * @param canEdits
+     */
     public void setCanEdits(boolean[] canEdits) {
         this.canEdits = canEdits;
     }
 
+    /**
+     * 
+     * @return
+     */
     public Vector getColumnIdentifiers() {
         return columnIdentifiers;
     }
@@ -236,10 +317,10 @@ public class MPTableModel extends DefaultTableModel {
         Object o = super.getValueAt(row, column);
         Class t = getColumnClass(column);
         if (!t.getName().equals("java.lang.Object")) {
-            if (t.isAssignableFrom(Double.class) ||
+            if (o!=null && (t.isAssignableFrom(Double.class) ||
                     t.isAssignableFrom(double.class) ||
                     t.isAssignableFrom(float.class) ||
-                    t.isAssignableFrom(Float.class)) {
+                    t.isAssignableFrom(Float.class))) {
                 return FormatNumber.formatDezimal(Double.valueOf(o.toString()));
             } else {
                 return o;
@@ -310,5 +391,85 @@ public class MPTableModel extends DefaultTableModel {
 
     private void defineRow(Object[] object) {
         predefinedRow = object;
+    }
+
+    /**
+     * Default Renderers
+     **/
+    static class NumberRenderer extends DefaultTableCellRenderer.UIResource {
+
+        public NumberRenderer() {
+            super();
+            setHorizontalAlignment(JLabel.RIGHT);
+        }
+    }
+
+    /**
+     * 
+     */
+    static class DoubleRenderer extends NumberRenderer {
+
+        NumberFormat formatter;
+
+        public DoubleRenderer() {
+            super();
+        }
+
+        @Override
+        public void setValue(Object value) {
+            if (formatter == null) {
+                formatter = NumberFormat.getInstance();
+            }
+            try {
+                //Values already parsed in getValueAt(row, colum) of MPTablemodel
+                setText((value == null) ? "" : value.toString());
+            } catch (Exception e) {
+                Log.Debug(MPTableModel.class,"Error caused by: " + value);
+            }
+        }
+    }
+
+    /**
+     * 
+     */
+    static class DateRenderer extends DefaultTableCellRenderer.UIResource {
+
+        DateFormat formatter;
+
+        public DateRenderer() {
+            super();
+        }
+
+        @Override
+        public void setValue(Object value) {
+            if (formatter == null) {
+                formatter = DateFormat.getDateInstance();
+            }
+            try {
+                setText((value == null) ? "" : formatter.format(value));
+            } catch (Exception e) {
+                Log.Debug(e);
+            }
+        }
+    }
+
+    /**
+     * 
+     */
+    static class IconRenderer extends DefaultTableCellRenderer.UIResource {
+
+        public IconRenderer() {
+            super();
+            setHorizontalAlignment(JLabel.CENTER);
+        }
+
+        @Override
+        public void setValue(Object value) {
+            try {
+                setIcon((value instanceof Icon) ? (Icon) value : null);
+            } catch (Exception e) {
+                Log.Debug(e);
+            }
+        }
     }
 }

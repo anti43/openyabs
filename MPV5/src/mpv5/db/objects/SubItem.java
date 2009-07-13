@@ -18,6 +18,7 @@ package mpv5.db.objects;
 
 import java.util.Date;
 import javax.swing.JComponent;
+import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.globals.Headers;
 import mpv5.utils.models.MPTableModel;
@@ -38,6 +39,11 @@ public class SubItem extends DatabaseObject {
     private double externalvalue;
     private double taxpercentvalue;
     private Date datedelivery;
+
+    public SubItem() {
+        context.setDbIdentity(Context.IDENTITY_SUBITEMS);
+        context.setIdentityClass(SubItem.class);
+    }
 
     @Override
     public String __getCName() {
@@ -181,8 +187,8 @@ public class SubItem extends DatabaseObject {
         Object[][] data = new Object[items.length][8];
         for (int i = 0; i < data.length; i++) {
             data[i][0] = items[i].__getIDS();
-            data[i][1] = Integer.valueOf(i);
-            data[i][2] = Integer.valueOf(1);
+            data[i][1] = Integer.valueOf(i+1);
+            data[i][2] = items[i].__getCountvalue();
             data[i][3] = items[i].__getMeasure();
             data[i][4] = items[i].__getDescription();
             data[i][5] = items[i].__getExternalvalue();
