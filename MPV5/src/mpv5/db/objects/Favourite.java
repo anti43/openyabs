@@ -25,7 +25,7 @@ import mpv5.db.objects.User;
 
 /**
  *
- *  anti
+ *  
  */
 public class Favourite extends DatabaseObject {
 

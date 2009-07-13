@@ -47,7 +47,7 @@ import mpv5.utils.trees.TreeFormat;
 
 /**
  *
- *  anti
+ *  
  */
 public class JournalPanel extends javax.swing.JPanel implements ListPanel {
 

@@ -36,7 +36,7 @@ import mpv5.utils.numberformat.FormatNumber;
 
 /**
  *
- *  anti
+ *  
  */
 public class SampleData {
 

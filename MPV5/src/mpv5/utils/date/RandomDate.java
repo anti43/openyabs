@@ -21,7 +21,7 @@ import java.util.Random;
 
 /**
  * Creates a random date within the given timeframe
- *  anti
+ *  
  */
 public class RandomDate extends Date {
 

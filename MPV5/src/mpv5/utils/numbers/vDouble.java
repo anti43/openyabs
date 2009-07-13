@@ -22,7 +22,7 @@ import mpv5.utils.numberformat.FormatNumber;
 
 /**
  *
- *  anti
+ *  
  */
 public class vDouble{
     private Double value = null;

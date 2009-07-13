@@ -25,7 +25,7 @@ import mpv5.utils.images.MPIcon;
 
 /**
  * This is the bridge between MP5 Plugins and jars in the database
- *  anti
+ *  
  */
 public class Plugin extends DatabaseObject {
 

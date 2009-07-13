@@ -41,7 +41,7 @@ import mpv5.utils.ui.TextFieldUtils;
 
 /**
  *
- *  anti
+ *  
  */
 public class AddressPanel extends javax.swing.JPanel implements DataPanel {
 

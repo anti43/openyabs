@@ -21,7 +21,7 @@ import mpv5.utils.numberformat.FormatNumber;
 
 /**
  *
- *  anti
+ *  
  */
 public class vInteger {
     private Integer value = null;

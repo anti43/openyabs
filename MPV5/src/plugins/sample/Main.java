@@ -33,7 +33,7 @@ import mpv5.ui.frames.MPV5View;
 
 /**
  * Needs to go to a package named "plugin"
- *  anti
+ *  
  */
 public class Main extends JPanel implements MP5Plugin, Runnable {
     private static final long serialVersionUID = -2334458558298502643L;
@@ -67,7 +67,7 @@ public class Main extends JPanel implements MP5Plugin, Runnable {
     }
 
     public String getVendor() {
-        return "anti";
+        return "";
     }
 
     public Long getUID() {

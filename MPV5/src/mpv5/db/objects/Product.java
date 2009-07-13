@@ -26,7 +26,7 @@ import mpv5.handler.FormatHandler;
 
 /**
  *
- *  anti
+ *  
  */
 public class Product extends DatabaseObject  implements Formattable{
 

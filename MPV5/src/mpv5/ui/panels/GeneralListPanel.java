@@ -33,7 +33,7 @@ import mpv5.utils.models.MPTableModel;
 
 /**
  *
- *  anti
+ *  
  */
 public class GeneralListPanel extends javax.swing.JPanel {
     private static final long serialVersionUID = 1L;

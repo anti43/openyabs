@@ -22,7 +22,7 @@ import mpv5.ui.frames.MPV5View;
 
 /**
  *
- *  anti
+ *  
  */
 public class FavouritesMenuItem extends JMenuItem {
 

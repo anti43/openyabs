@@ -25,7 +25,7 @@ import mpv5.utils.models.MPTableModel;
 
 /**
  *
- *  anti
+ *  
  */
 public class SubItem extends DatabaseObject {
 

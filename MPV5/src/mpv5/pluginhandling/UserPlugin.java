@@ -23,7 +23,7 @@ import mpv5.utils.images.MPIcon;
 
 /**
  * This binds plugins to users
- *  anti
+ *  
  */
 public class UserPlugin extends DatabaseObject {
 

@@ -22,7 +22,7 @@ import mpv5.ui.frames.MPV5View;
 
 /**
  * This class is to be implemented on MP5 plugins
- *  anti
+ *  
  */
 public interface MP5Plugin {
 

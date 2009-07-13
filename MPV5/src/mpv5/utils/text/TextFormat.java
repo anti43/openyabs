@@ -22,7 +22,7 @@ import java.util.ArrayList;
 
 /**
  *
- *  anti
+ *  
  */
 public class TextFormat {
 

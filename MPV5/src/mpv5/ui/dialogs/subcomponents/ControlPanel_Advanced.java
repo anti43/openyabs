@@ -35,7 +35,7 @@ import mpv5.utils.tables.TableFormat;
 
 /**
  *
- *  anti
+ *  
  */
 public class ControlPanel_Advanced extends javax.swing.JPanel implements ControlApplet {
 

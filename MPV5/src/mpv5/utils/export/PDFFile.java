@@ -20,7 +20,7 @@ import java.io.File;
 
 /**
  *
- *  anti
+ *  
  */
 public class PDFFile extends File {
 

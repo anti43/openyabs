@@ -29,7 +29,7 @@ import mpv5.utils.images.MPIcon;
 
 /**
  *
- *  anti
+ *  
  */
 public class FileToContact extends DatabaseObject {
 

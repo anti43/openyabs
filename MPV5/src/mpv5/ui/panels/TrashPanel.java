@@ -32,7 +32,7 @@ import mpv5.utils.tables.TableFormat;
 
 /**
  *
- *  anti
+ *  
  */
 public class TrashPanel extends javax.swing.JPanel {
 

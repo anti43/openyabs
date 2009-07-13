@@ -53,14 +53,14 @@ import javax.swing.JPanel;
 
 /**
  *
- *  anti
+ *  
  */
 public class Test {
 
     public static void main(String[] args) throws FileNotFoundException, IOException {
         JPanel jPanel1 = new JPanel(new BorderLayout());
         JFrame frame = new JFrame();
-        File file = new File("/home/anti/Desktop/ttt.pdf");
+        File file = new File("/home//Desktop/ttt.pdf");
 
         if (file.exists()) {
 
@@ -170,7 +170,7 @@ public class Test {
 
 //        try {
 //        try {
-//            new PDFFormTest(new File("/home/anti/Desktop/euerformular.pdf")).fillFields();
+//            new PDFFormTest(new File("/home//Desktop/euerformular.pdf")).fillFields();
 ////        new SplashScreen(new ImageIcon(Test.class.getResource("/mpv5/resources/images/background.png")));
 ////        try {
 ////        try {

@@ -24,7 +24,7 @@ import mpv5.ui.panels.HistoryPanel;
 
 /**
  *
- *  anti
+ *  
  */
 public class HistoryItem extends DatabaseObject {
 

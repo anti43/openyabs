@@ -23,7 +23,7 @@ import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
 /**
  *
- *  anti
+ *  
  */
 public class ComboBoxRendererForTooltip extends BasicComboBoxRenderer {
     private static final long serialVersionUID = 2746090194775905713L;

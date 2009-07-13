@@ -47,7 +47,7 @@ import mpv5.utils.tables.TableFormat;
 
 /**
  *
- *  anti
+ *  
  */
 public class HistoryPanel extends javax.swing.JPanel implements ListPanel {
 

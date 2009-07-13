@@ -41,7 +41,7 @@ import mpv5.utils.print.PrintJob;
 
 /**
  *
- *  anti
+ *  
  */
 public class PrinitingComboBox extends javax.swing.JPanel {
 

@@ -24,7 +24,7 @@ import mpv5.utils.tables.TableFormat;
 
 /**
  *
- *  anti
+ *  
  */
 public class ScheduleDayEvents extends javax.swing.JFrame {
 

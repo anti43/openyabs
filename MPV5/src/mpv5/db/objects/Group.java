@@ -28,7 +28,7 @@ import mpv5.ui.panels.MPControlPanel;
 
 /**
  *
- *  anti
+ *  
  */
 public class Group extends DatabaseObject {
 
