@@ -59,5 +59,8 @@ public interface DataPanel {
      */
     public void showSearchBar(boolean show);
 
-   
+    /**
+     * Callthis after saving the dataowner of the panel
+     */
+    public void actionAfterSave();
 }

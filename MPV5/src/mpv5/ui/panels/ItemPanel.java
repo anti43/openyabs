@@ -928,4 +928,9 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
 
         validate();
     }
+
+    @Override
+    public void actionAfterSave() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

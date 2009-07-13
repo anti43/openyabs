@@ -457,4 +457,9 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
          this.remove(jPanel2);validate();
         return jPanel2;
     }
+
+    @Override
+    public void actionAfterSave() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

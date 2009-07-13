@@ -605,4 +605,9 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
         this.remove(jPanel6);validate();
         return jPanel6;
     }
+
+    @Override
+    public void actionAfterSave() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

@@ -1467,4 +1467,9 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             }
         }
     }
+
+    @Override
+    public void actionAfterSave() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

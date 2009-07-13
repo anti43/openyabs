@@ -290,6 +290,11 @@ public class DataPanelTB extends javax.swing.JPanel {
         if (dato.save()) {
 //            parents.refresh();
             parents.setDataOwner(dato);
+             try {
+                parents.actionAfterSave();
+            } catch (Exception e) {
+                Log.Debug(this, e.getMessage());
+            }
         } else {
             parents.showRequiredFields();
         }
@@ -302,8 +307,13 @@ public class DataPanelTB extends javax.swing.JPanel {
         dato.setIDS(-1);
 
         if (dato.save()) {
-            parents.refresh();
+//            parents.refresh();
             parents.setDataOwner(dato);
+            try {
+                parents.actionAfterSave();
+            } catch (Exception e) {
+                Log.Debug(this, e.getMessage());
+            }
         } else {
             parents.showRequiredFields();
         }

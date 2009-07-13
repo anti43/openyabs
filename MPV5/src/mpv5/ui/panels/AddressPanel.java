@@ -495,4 +495,9 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
     public void showSearchBar(boolean show) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    @Override
+    public void actionAfterSave() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }
