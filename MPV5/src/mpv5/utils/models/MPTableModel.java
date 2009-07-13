@@ -198,7 +198,7 @@ public class MPTableModel extends DefaultTableModel {
     }
 
     /**
-     * Creates a partially uneditable model out of the given data
+     * Creates a special table model for the given context
      * @param context
      * @param table (optional) If not null, custom renderers are registered for some column class values
      */
