@@ -20,7 +20,7 @@ import mpv5.globals.Messages;
 
 /**
  * Thrown if no matching data was found, the resultset is empty
- *  Anti
+ *  
  */
 public class NodataFoundException extends Exception {
     private static final long serialVersionUID = 1L;
