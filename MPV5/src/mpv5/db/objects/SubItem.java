@@ -17,17 +17,58 @@
 package mpv5.db.objects;
 
 import java.util.Date;
+import java.util.List;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.globals.Headers;
+import mpv5.logging.Log;
 import mpv5.utils.models.MPTableModel;
+import mpv5.utils.models.MPTableModelRow;
 
 /**
  *
  *  
  */
 public class SubItem extends DatabaseObject {
+
+    /**
+     * Save the model of SubItems
+     * @param dataOwner
+     * @param model
+     */
+    public static void saveModel(Item dataOwner, MPTableModel model) {
+         List<Object[]> rowsl = model.getValidRows(new int[]{4});
+         Log.Debug(SubItem.class, "Rows found: " + rowsl.size());
+            for (int i = 0; i < rowsl.size(); i++) {
+                Object[] row = rowsl.get(i);
+                SubItem it  = new SubItem();
+                try {
+                    if (Integer.valueOf(row[0].toString()).intValue() > 0) {
+                        it.setIDS(Integer.valueOf(row[0].toString()).intValue());
+                    }
+                } catch (Exception e) {
+                    Log.Debug(SubItem.class, e.getMessage());
+                }
+                it.setCName(row[4].toString());
+                it.setItemsids(dataOwner.__getIDS());
+                it.setCountvalue(Double.valueOf(row[2].toString()));
+                it.setDatedelivery(dataOwner.__getDatetodo());
+                it.setDescription(row[4].toString());
+                it.setExternalvalue(Double.valueOf(row[5].toString()));//Discount not supported yet
+                it.setInternalvalue(Double.valueOf(row[5].toString()));//Discount not supported yet
+                it.setMeasure(row[3].toString());
+                it.setOriginalproductsids(0);//not yet implemented
+                it.setQuantityvalue(Double.valueOf(row[2].toString()));
+                it.setTaxpercentvalue(Double.valueOf(row[6].toString()));
+
+                if(!it.isExisting()){
+                it.setDateadded(new Date());
+                it.setGroupsids(dataOwner.__getGroupsids());
+                }
+                it.save();
+            }
+    }
 
     private int itemsids;
     private int originalproductsids;
@@ -200,6 +241,7 @@ public class SubItem extends DatabaseObject {
                 new boolean[]{false, false, true, true, true, true, true, false},
                 data,
                 Headers.SUBITEMS.getValue());
+        model.setContext(Context.getSubItem());
         return model;
     }
 

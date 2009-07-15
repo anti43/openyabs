@@ -498,6 +498,6 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
 
     @Override
     public void actionAfterSave() {
-        throw new UnsupportedOperationException("Not supported yet.");
+  
     }
 }

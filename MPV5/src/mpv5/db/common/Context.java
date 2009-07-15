@@ -22,6 +22,7 @@ import mpv5.db.objects.Item;
 import mpv5.db.objects.ItemsList;
 import mpv5.db.objects.ItemMessage;
 import mpv5.db.objects.MailMessage;
+import mpv5.db.objects.Product;
 import mpv5.db.objects.SubItem;
 import mpv5.pluginhandling.Plugin;
 import mpv5.db.objects.User;
@@ -79,6 +80,7 @@ public class Context {
     private static Class IDENTITY_MESSAGES_CLASS = ItemMessage.class;
     private static Class IDENTITY_ITEMSLIST_CLASS = ItemsList.class;
     private static Class IDENTITY_MAILS_CLASS = MailMessage.class;
+     private static Class IDENTITY_PRODUCTS_CLASS = Product.class;
     //********** unique constraints *******************************************
     public static String UNIQUECOLUMNS_USER = "cname";
     public static String UNIQUECOLUMNS_ITEMS = "cname";
@@ -1215,6 +1217,7 @@ public class Context {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_PRODUCTS);
+        c.setIdentityClass(IDENTITY_PRODUCTS_CLASS);
         c.setId(23);
 
         return c;

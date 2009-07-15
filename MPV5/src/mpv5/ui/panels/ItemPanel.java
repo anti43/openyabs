@@ -62,6 +62,8 @@ import mpv5.utils.date.DateConverter;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
+import mpv5.utils.models.MPTableModelRow;
+import mpv5.utils.models.NativeModeNotSupportedException;
 import mpv5.utils.tables.TableCalculator;
 import mpv5.utils.renderer.CellRendererWithMPComboBox;
 import mpv5.utils.renderer.TableCellRendererForDezimal;
@@ -931,6 +933,11 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
 
     @Override
     public void actionAfterSave() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        saveSubItems();
+    }
+
+    private void saveSubItems() {
+        MPTableModel m = (MPTableModel) itemtable.getModel();
+        SubItem.saveModel(dataOwner, m);
     }
 }

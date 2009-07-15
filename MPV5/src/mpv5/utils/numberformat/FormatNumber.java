@@ -152,14 +152,18 @@ public class FormatNumber {
      * @return
      */
     public static Double parseNumber(Object number) {
-          if (number instanceof Number) {
-            return ((Number)number).doubleValue();
-        } else {
-              try {
-                  return Double.valueOf(number.toString());
-              } catch (NumberFormatException numberFormatException) {
-                  return parseDezimal(number.toString());
-              }
+         if (number!=null) {
+            if (number instanceof Number) {
+                return ((Number) number).doubleValue();
+            } else {
+                try {
+                    return Double.valueOf(number.toString());
+                } catch (NumberFormatException numberFormatException) {
+                    return parseDezimal(number.toString());
+                }
+            }
+        }else {
+            return 0d;
         }
     }
 }

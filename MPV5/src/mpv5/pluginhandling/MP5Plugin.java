@@ -60,31 +60,31 @@ public interface MP5Plugin {
 
     /**
      * Check whether this plugin is enabled
-     * @return True if the plugin is active
+     * @return True if the plugin is to be loaded
      */
     public abstract boolean isEnabled();
 
     /**
-     * Check whether this plugin inherits <code>JPanel</code> and can be displayed
+     * Check whether this plugin inherits <code>JPanel</code> and shall be displayed on the main tab pane
      * @return True if the plugin is to be displayed on the main tab pane
      */
     public abstract boolean isComponent();
 
     /**
      * Check whether this plugin is a <code>Runnable<code/>
-     * @return
+     * @return TRUE if this is a {@link Runnable}
      */
     public abstract boolean isRunnable();
 
     /**
      * Inidcates whether the plugin has bee previously loaded
-     * @return
+     * @return TRUE if {@link MP5Plugin#load(MP5View)} has been called
      */
     public abstract boolean isLoaded();
 
     /**
      * If this returns null, a default icon is used to represent this plugin
-     * @return
+     * @return An Icon which graphically represents the plugin
      */
     public abstract Image getIcon();
 }

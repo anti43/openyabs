@@ -48,13 +48,17 @@ public class TableCellEditorForDezimal extends DefaultCellEditor {
 
             @Override
             public void setValue(Object param) {
-                Double _value = Double.valueOf(param.toString());
-                if (_value == null) {
-                    tf.setValue(FormatNumber.formatDezimal(0.0));
+                if (param !=null) {
+                    Double _value = FormatNumber.parseNumber(value);
+                    if (_value == null) {
+                        tf.setValue(FormatNumber.formatDezimal(0.0));
+                    } else {
+                        double _d = _value.doubleValue();
+                        String _format = FormatNumber.formatDezimal(_d);
+                        tf.setValue(_format);
+                    }
                 } else {
-                    double _d = _value.doubleValue();
-                    String _format = FormatNumber.formatDezimal(_d);
-                    tf.setValue(_format);
+                    tf.setValue(FormatNumber.formatDezimal(0.0));
                 }
             }
 

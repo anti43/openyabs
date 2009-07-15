@@ -293,7 +293,7 @@ public class DataPanelTB extends javax.swing.JPanel {
              try {
                 parents.actionAfterSave();
             } catch (Exception e) {
-                Log.Debug(this, e.getMessage());
+                Log.Debug(this, e);
             }
         } else {
             parents.showRequiredFields();
@@ -312,7 +312,7 @@ public class DataPanelTB extends javax.swing.JPanel {
             try {
                 parents.actionAfterSave();
             } catch (Exception e) {
-                Log.Debug(this, e.getMessage());
+                Log.Debug(this, e);
             }
         } else {
             parents.showRequiredFields();

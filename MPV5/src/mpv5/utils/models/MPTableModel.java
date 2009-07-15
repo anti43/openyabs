@@ -19,15 +19,20 @@ package mpv5.utils.models;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.TableView.TableRow;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.NodataFoundException;
 import mpv5.db.objects.Item;
 import mpv5.globals.Headers;
 import mpv5.logging.Log;
@@ -48,7 +53,6 @@ public class MPTableModel extends DefaultTableModel {
     private Object[] predefinedRow;
     private Integer autoCountColumn;
     private TableCalculator calculator;
-//    public static MPTableModel ITEM_TABLE_MODEL = new MPTableModel(Context.getItems());
 
     /**
      * Creates an empty, uneditable model 
@@ -84,40 +88,17 @@ public class MPTableModel extends DefaultTableModel {
                     Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class});
     }
 
-    /**
-     * Creates an uneditable model out of the given data
-     * @param list
-     * @param header
-     */
-    public MPTableModel(ArrayList<DatabaseObject> list, String[] header) {
-        super();
-        Object[][] data = new Object[0][0];
-        if (list.size() > 0 && list.get(0) != null) {
-            data = new Object[list.size()][list.get(0).getValues().size()];
-        }
-        ArrayList<String[]> sdata;
-
-
-
-        for (int i = 0; i < list.size(); i++) {
-            DatabaseObject databaseObject = list.get(i);
-            sdata = databaseObject.getValues();
-            for (int j = 0; j < sdata.size(); j++) {
-                String[] strings = sdata.get(j);
-                data[i][j] = strings[1];
-            }
-        }
-
-        setDataVector(data, header);
-
-        setEditable(false);
-
-        setTypes(new Class[]{Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
-                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
-                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class});
-
-    }
-
+//    /**
+//     * Creates an uneditable model out of the given data
+//     * @param list
+//     * @param header
+//     */
+//    public MPTableModel(ArrayList<DatabaseObject> list, String[] header) {
+//        super();
+//        nativeMode = true;
+//        setDataVector(MPTableModelRow.toRows(list), header);
+//
+//    }
     /**
      * Creates an uneditable model out of the given data
      * @param datstr
@@ -196,15 +177,27 @@ public class MPTableModel extends DefaultTableModel {
         setTypes(types);
         setEditable(false);
     }
+//
+//    /**
+//     * Creates an editable model out of the given data and switches this model to native mode.<br/>
+//     * In native mode, all non NULL rows of the model are available as {@link MPTableModelRow}
+//     * @param nativerowdata
+//     * @param columnNames
+//     */
+//    public MPTableModel(MPTableModelRow[] nativerowdata, Object[] columnNames) {
+//        this();
+//    }
 
     /**
-     * Creates a special table model for the given context
+     * Creates a special table model for the given context and switches this model to native mode.<br/>
+     * In native mode, all non NULL rows of the model are available as {@link MPTableModelRow}
      * @param context
      * @param table (optional) If not null, custom renderers are registered for some column class values
      */
     public MPTableModel(Context context, JTable table) {
-        this();
+        super();
         this.context = context;
+
         if (context.equals(Context.getSubItem())) {
             String defunit = null;
             if (MPV5View.getUser().getProperties().hasProperty("defunit")) {
@@ -229,17 +222,15 @@ public class MPTableModel extends DefaultTableModel {
                         {0, 6, defcount, defunit, null, 0.0, deftax, 0.0},
                         {0, 7, defcount, defunit, null, 0.0, deftax, 0.0}}, Headers.SUBITEMS);
             setCanEdits(new boolean[]{false, false, true, true, true, true, true, false});
-            setTypes( new Class[]{Integer.class, Integer.class, Double.class, String.class, String.class, Double.class, Double.class, Double.class});
+            setTypes(new Class[]{Integer.class, Integer.class, Double.class, String.class, String.class, Double.class, Double.class, Double.class});
             defineRow(new Object[]{0, 0, defcount, defunit, null, 0.0, deftax, 0.0});
             autoCountColumn = 1;
-            
-            if(table!=null){
-            table.setDefaultRenderer(Double.class, new DoubleRenderer());
-            
+
+            if (table != null) {
+                table.setDefaultRenderer(Double.class, new DoubleRenderer());
             }
         }
     }
-
 
     /**
      * Set the cell calculator for this model
@@ -317,7 +308,7 @@ public class MPTableModel extends DefaultTableModel {
         Object o = super.getValueAt(row, column);
         Class t = getColumnClass(column);
         if (!t.getName().equals("java.lang.Object")) {
-            if (o!=null && (t.isAssignableFrom(Double.class) ||
+            if (o != null && (t.isAssignableFrom(Double.class) ||
                     t.isAssignableFrom(double.class) ||
                     t.isAssignableFrom(float.class) ||
                     t.isAssignableFrom(Float.class))) {
@@ -394,6 +385,34 @@ public class MPTableModel extends DefaultTableModel {
     }
 
     /**
+     * Returns all rows where the specified columns are not NULL. <br/>
+     * 
+     * @param columns
+     * @return
+     */
+    public  List<Object[]> getValidRows(int[] columns) {
+
+        List<Object[]> rows = new Vector<Object[]>();
+        for (int ki = 0; ki < getRowCount(); ki++) {
+            boolean valid = true;
+            for (int i = 0; i < columns.length; i++) {
+                int j = columns[i];
+                if (getValueAt(ki, j) == null) {
+                    valid = false;
+                }
+            }
+            if (valid) {
+                Object[] t = new Object[getColumnCount()];
+                for (int i = 0; i < getColumnCount(); i++) {
+                    t[i] = getValueAt(ki, i);
+                }
+                rows.add(t);
+            }
+        }
+        return rows;
+    }
+
+    /**
      * Default Renderers
      **/
     static class NumberRenderer extends DefaultTableCellRenderer.UIResource {
@@ -424,7 +443,7 @@ public class MPTableModel extends DefaultTableModel {
                 //Values already parsed in getValueAt(row, colum) of MPTablemodel
                 setText((value == null) ? "" : value.toString());
             } catch (Exception e) {
-                Log.Debug(MPTableModel.class,"Error caused by: " + value);
+                Log.Debug(MPTableModel.class, "Error caused by: " + value);
             }
         }
     }

@@ -23,7 +23,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Date;
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JPanel;
@@ -32,7 +31,8 @@ import mpv5.pluginhandling.MP5Plugin;
 import mpv5.ui.frames.MPV5View;
 
 /**
- * Needs to go to a package named "plugin"
+ * This is the sample of a plugin compatible with the MP5 Plugin system.<br/>
+ * <b>In real plugins, this needs to go to a package named "plugin"</b> to be recognized as a valid plugin.
  *  
  */
 public class Main extends JPanel implements MP5Plugin, Runnable {
@@ -42,6 +42,7 @@ public class Main extends JPanel implements MP5Plugin, Runnable {
     private JLabel clock =  new JLabel();
     private boolean loaded = false;
 
+    @Override
     public MP5Plugin load(MPV5View frame) {
         this.frame = frame;
         cmenu = new JMenu("what a crazy menu");
@@ -56,6 +57,7 @@ public class Main extends JPanel implements MP5Plugin, Runnable {
         return this;
     }
 
+    @Override
     public void unload() {
         frame.getMenuBar().remove(cmenu);
         loaded = false;
@@ -66,10 +68,12 @@ public class Main extends JPanel implements MP5Plugin, Runnable {
         return "Sample Plugin for MP5";
     }
 
+    @Override
     public String getVendor() {
         return "";
     }
 
+    @Override
     public Long getUID() {
         return serialVersionUID;
     }
@@ -79,14 +83,17 @@ public class Main extends JPanel implements MP5Plugin, Runnable {
         return true;
     }
 
+    @Override
     public boolean isComponent() {
         return false;
     }
 
+    @Override
     public boolean isRunnable() {
         return true;
     }
 
+    @Override
     public void run() {
        while(loaded){
            clock.setText(new Date().toString());
@@ -96,10 +103,12 @@ public class Main extends JPanel implements MP5Plugin, Runnable {
        }
     }
 
+    @Override
     public boolean isLoaded() {
        return loaded;
     }
 
+    @Override
     public Image getIcon() {
           BufferedImage img = null;
         try {

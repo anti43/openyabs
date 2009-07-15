@@ -112,6 +112,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
 
     private static void uncacheObject(DatabaseObject databaseObject) {
         if (databaseObject != null) {
+            Log.Debug(DatabaseObject.class, "Removing from cache: " + databaseObject.getDbIdentity() + "@" + databaseObject.__getIDS());
             cache.remove(databaseObject.getDbIdentity() + "@" + databaseObject.__getIDS());
         }
     }
@@ -123,7 +124,6 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
         } else {
             Log.Debug(DatabaseObject.class, "" + context.getDbIdentity()  + "@" + id + " not found in cache.");
             return null;
-
         }
     }
     /**
@@ -617,6 +617,32 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
 
         return vals;
     }
+
+    /**
+     *
+     * @return A list containing pairs of <b>VARNAME</b> and their <b>VALUE</b> of this Databaseobject,
+     * those which return in <code>getVars()</code>, as two-fields Object-Array.
+     * Example: new Object[]{"CName", "Michael"}
+     */
+    public ArrayList<Object[]> getValues2() {
+        ArrayList<Method> vars = getVars();
+        ArrayList<Object[]> vals = new ArrayList<Object[]>();
+
+        for (int i = 0; i < vars.size(); i++) {
+            try {
+                if (!vars.get(i).getName().substring(5, vars.get(i).getName().length()).toUpperCase().startsWith("DATE")) {
+                    vals.add(new Object[]{vars.get(i).getName().substring(5, vars.get(i).getName().length()),
+                                (vars.get(i).invoke(this, new Object[0]))});
+                }
+            } catch (Exception n) {
+                Log.Debug(this, n.getCause());
+                n.printStackTrace();
+            }
+        }
+
+        return vals;
+    }
+
 
     /**
      * Searches for a specific dataset, cached or non-cached
