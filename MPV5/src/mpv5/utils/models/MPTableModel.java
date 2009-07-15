@@ -405,6 +405,7 @@ public class MPTableModel extends DefaultTableModel {
                 Object[] t = new Object[getColumnCount()];
                 for (int i = 0; i < getColumnCount(); i++) {
                     t[i] = getValueAt(ki, i);
+                    Log.Debug(this, "getvalueat " + t[i]);
                 }
                 rows.add(t);
             }
