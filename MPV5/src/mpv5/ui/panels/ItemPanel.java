@@ -141,6 +141,35 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
         date1.setDate(new Date());
         date2.setDate(new Date());
         date3.setDate(new Date());
+
+        itemtable.getTableHeader().addMouseListener(new MouseListener() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                MPTableModel m = (MPTableModel) itemtable.getModel();
+                if (m.getRowCount() > 0) {
+                    m.addRow(5);
+                } else {
+                    itemtable.setModel(new MPTableModel(Context.getSubItem(), itemtable));
+                }
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+            }
+        });
     }
 
     /**
@@ -805,12 +834,14 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
         if (contactsids_ > 0) {
             try {
                 defaultaccountsids_ = Integer.valueOf(accountselect.getSelectedItem().getId());
-            } catch (Exception numberFormatException) {
+            } catch (Exception e) {
+                Log.Debug(e);
                 defaultaccountsids_ = 1;
             }
 
             if (groupnameselect.getSelectedItem() != null) {
-                groupsids_ = Integer.valueOf(((MPComboBoxModelItem) groupnameselect.getSelectedItem()).getId());
+                groupsids_ = Integer.valueOf(groupnameselect.getSelectedItem().getId());
+                Log.Debug(this, groupnameselect.getSelectedItem().getId());
             } else {
                 groupsids_ = 1;
             }
@@ -821,7 +852,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
             intaddedby_ = User.getUserId(addedby.getText());
             description_ = notes.getText();
             dateadded_ = date1.getDate();
-            groupsids_ = 1;
+
             if (cnumber_ == null) {
                 cname_ = "<not set>";
             } else {
@@ -849,7 +880,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
         notes.setText(description_);
 
         try {
-            status.setSelectedItem(intstatus_);
+            status.setSelectedIndex(intstatus_);
             accountselect.setModel(DatabaseObject.getObject(Context.getAccounts(), defaultaccountsids_));
             groupnameselect.setModel(DatabaseObject.getObject(Context.getGroup(), groupsids_));
         } catch (Exception e) {
@@ -920,7 +951,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
     @Override
     public void paste(DatabaseObject dbo) {
         if (dbo.getDbIdentity().equals(Context.getContact().getDbIdentity())) {
-            setDataOwner(dbo,true);
+            setDataOwner(dbo, true);
         } else {
             MPV5View.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());
         }
@@ -942,14 +973,16 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
         saveSubItems();
     }
 
-     @Override
+    @Override
     public void actionAfterCreate() {
         ArrayUtilities.replaceColumn(itemtable, 0, null);
         saveSubItems();
     }
 
     private void saveSubItems() {
-        if(itemtable.getCellEditor()!=null)itemtable.getCellEditor().stopCellEditing();
-        SubItem.saveModel(dataOwner,(MPTableModel) itemtable.getModel());
+        if (itemtable.getCellEditor() != null) {
+            itemtable.getCellEditor().stopCellEditing();
+        }
+        SubItem.saveModel(dataOwner, (MPTableModel) itemtable.getModel());
     }
 }
