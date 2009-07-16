@@ -107,7 +107,7 @@ public class GroupDialog extends javax.swing.JPanel {
         if (node != null) {
             Group g = (Group) node.getUserObject();
             view.getDataOwner().setGroupsids(g.__getIDS());
-            view.setDataOwner(view.getDataOwner());
+            view.setDataOwner(view.getDataOwner(),true);
         }
 }//GEN-LAST:event_treeMouseClicked
     // Variables declaration - do not modify//GEN-BEGIN:variables

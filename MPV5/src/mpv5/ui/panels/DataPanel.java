@@ -29,8 +29,9 @@ public interface DataPanel {
     /**
      * Assign this view to a database object
      * @param object
+     * @param populateData If true, the DOs data is populated into the view.
      */
-    public void setDataOwner(DatabaseObject object);
+    public void setDataOwner(DatabaseObject object, boolean populateData);
 
     /**
      * Reload the view from database, in background
@@ -60,7 +61,13 @@ public interface DataPanel {
     public void showSearchBar(boolean show);
 
     /**
-     * Callthis after saving the dataowner of the panel
+     * Callt his after saving the dataowner of the panel
      */
     public void actionAfterSave();
+
+       /**
+     * Callt his after creating a new dataowner on the panel
+     */
+    public void actionAfterCreate();
+
 }

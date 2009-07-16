@@ -18,80 +18,131 @@ package mpv5;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Date;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import javax.swing.ComboBoxModel;
 import javax.swing.DefaultCellEditor;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTable;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
-import mpv5.db.common.Context;
-import mpv5.db.common.QueryHandler;
-import mpv5.server.MPServer;
-import mpv5.usermanagement.MPSecurityManager;
-import mpv5.utils.date.DateConverter;
-import mpv5.utils.models.*;
-import com.sun.pdfview.PDFFile;
-import com.sun.pdfview.PDFPage;
-import com.sun.pdfview.PagePanel;
-import java.awt.Image;
-import java.awt.Rectangle;
-import java.io.File;
-import java.io.RandomAccessFile;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
-import javax.swing.ImageIcon;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.Vector;
 import javax.swing.JPanel;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
 
-
-/**
- *
- *  
- */
 public class Test {
 
-    public static void main(String[] args) throws FileNotFoundException, IOException {
+    public static void main(String[] args) {
         JPanel jPanel1 = new JPanel(new BorderLayout());
         JFrame frame = new JFrame();
-        File file = new File("/home//Desktop/ttt.pdf");
 
-        if (file.exists()) {
+        final JTable t = new JTable(new DefaultTableModel(new Object[][]{{null},{null},{null},{null}}, new String[]{"1"}));
+        new CellRendererBox(t).setRendererTo(0);
 
-        RandomAccessFile raf = new RandomAccessFile(file, "r");
-        FileChannel channel = raf.getChannel();
-        ByteBuffer buf = channel.map(FileChannel.MapMode.READ_ONLY, 0, channel.size());
-        PDFFile pdffile = new PDFFile(buf);
+        jPanel1.add(t, BorderLayout.CENTER);
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        frame.addWindowListener(new WindowAdapter() {
 
-        // draw the first page to an image
-        PDFPage page = pdffile.getPage(0);
-
-        //get the width and height for the doc at the default zoom
-        Rectangle rect = new Rectangle(0,0,
-                (int)page.getBBox().getWidth(),
-                (int)page.getBBox().getHeight());
-
-        //generate the image
-        Image img = page.getImage(
-                rect.width, rect.height, //width & height
-                rect, // clip rect
-                null, // null for the ImageObserver
-                true, // fill background with white
-                true  // block until drawing is done
-                );
-
-        //show the image in a frame
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.add(new JLabel(new ImageIcon(img)));
+            @Override
+            public void windowClosing(WindowEvent e) {
+               TableModel model =  t.getModel();
+                for (int i = 0; i < model.getRowCount(); i++) {
+                    System.out.println(model.getValueAt(i, 0));
+                    System.exit(0);
+                }
+            }
+        });
+        frame.add(jPanel1);
         frame.pack();
         frame.setVisible(true);
 
+
+    }
+
+    static class CellRendererBox extends JLabel implements TableCellRenderer {
+
+        private final JTable table;
+        private Vector<JLabel> labels = new Vector<JLabel>();
+        private JLabel label = new JLabel();
+
+        /**
+         * Create a new CellRenderer which holds a MPComboBox with the given Context's data as model. Will not assign itself to any column.
+         * @param c
+         * @param table
+         */
+        public CellRendererBox(JTable table) {
+            super();
+            this.table = table;
+        }
+
+        /**
+         * Set this renderer to the given column
+         * @param column
+         */
+        public void setRendererTo(int column) {
+            TableColumn col = table.getColumnModel().getColumn(column);
+            col.setCellEditor(new JComboBoxEditor(new JComboBox(new Object[]{"test1", "test2"})));
+            col.setCellRenderer(this);
+        }
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value,
+                boolean isSelected, boolean hasFocus, int row, int column) {
+            if (hasFocus && isSelected) {
+                if (isSelected) {
+                    setForeground(table.getSelectionForeground());
+                    super.setBackground(table.getSelectionBackground());
+                } else {
+                    setForeground(table.getForeground());
+                    setBackground(table.getBackground());
+                }
+                label.setText((value == null) ? "" : value.toString());
+                return label;
+            } else {
+                label.setText((value == null) ? "" : value.toString());
+                return label;
+            }
+        }
+
+        class JComboBoxEditor extends DefaultCellEditor {
+
+            private final JComboBox box;
+
+            public JComboBoxEditor(JComboBox b) {
+                super(b);
+                this.box = b;
+            }
+        }
+    }
+}
+//        File file = new File("/home//Desktop/ttt.pdf");
+//
+//        if (file.exists()) {
+//
+//        RandomAccessFile raf = new RandomAccessFile(file, "r");
+//        FileChannel channel = raf.getChannel();
+//        ByteBuffer buf = channel.map(FileChannel.MapMode.READ_ONLY, 0, channel.size());
+//        PDFFile pdffile = new PDFFile(buf);
+//
+//        // draw the first page to an image
+//        PDFPage page = pdffile.getPage(0);
+//
+//        //get the width and height for the doc at the default zoom
+//        Rectangle rect = new Rectangle(0,0,
+//                (int)page.getBBox().getWidth(),
+//                (int)page.getBBox().getHeight());
+//
+//        //generate the image
+//        Image img = page.getImage(
+//                rect.width, rect.height, //width & height
+//                rect, // clip rect
+//                null, // null for the ImageObserver
+//                true, // fill background with white
+//                true  // block until drawing is done
+//                );
+//show the image in a frame
 //            frame.add(jPanel1);
 //            frame.pack();
 //            frame.setVisible(true);
@@ -99,8 +150,6 @@ public class Test {
 //            PDFPage page = pdffile.getPage(0);
 //            panel.showPage(page);
 //            panel.useZoomTool(true);
-
-        }
 //        Multivalent v = Multivalent.getInstance();
 //        Browser br = v.getBrowser("name", "Basic", false);
 //        PDF pdf = (PDF) Behavior.getInstance("AdobePDF", "AdobePDF", null, null, null);
@@ -112,17 +161,12 @@ public class Test {
 //        frame.add(br);
 //        frame.pack();
 //        frame.setVisible(true);
-
-
 //        String txt="_$dfgdfg$_";
 //
 //    Pattern p = Pattern.compile("_\\$(.*?)\\$_");
 //    Matcher m = p.matcher(txt);
 //    if (m.find())
 //    System.out.println(m);
-
-
-
 //        JFrame f = new JFrame("test");
 //        JTable t = new JTable(new Object[][]{{null}, {null}, {null}, {null}, {null}}, new Object[]{"header"});
 //
@@ -154,10 +198,7 @@ public class Test {
 //        f.add(t, BorderLayout.CENTER);
 //        f.pack();
 //        f.setVisible(true);
-
 //
-
-
 //        System.out.println( Context.getItems().prepareSQLString("SELECT COUNT(ids) FROM items"));
 //
 //       QueryHandler.getConnection().freeQuery(
@@ -167,7 +208,6 @@ public class Test {
 //               Context.getItems().prepareSQLString("SELECT COUNT(ids) FROM items WHERE accountsids = 1"),
 //               MPSecurityManager.VIEW, "Items im Konto Irgendwas gezählt.");
 //        new MPServer();
-
 //        try {
 //        try {
 //            new PDFFormTest(new File("/home//Desktop/euerformular.pdf")).fillFields();
@@ -235,8 +275,6 @@ public class Test {
 //
 //        Date d = (Date) ((MPComboBoxModelItem)combobox.getSelectedItem()).getIdObject();
 //        System.out.println(d);
-
-
 //
 //        DateConverter.getQuarter();Locale.getDefault();
 //            new DecimalFormat("'#'#'#'''-000").format(1000l);
@@ -289,6 +327,6 @@ public class Test {
 //            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
 //        }
 
-    }
-}
+    
+
 

@@ -1416,7 +1416,7 @@ public class MPV5View extends FrameView {
                 dato.getPanelData(((DataPanel) pane));
                 if (dato.save()) {
                     ((DataPanel) pane).refresh();
-                    ((DataPanel) pane).setDataOwner(dato);
+                    ((DataPanel) pane).setDataOwner(dato,true);
                 } else {
                     ((DataPanel) pane).showRequiredFields();
                 }
@@ -1437,7 +1437,7 @@ public class MPV5View extends FrameView {
                 dato.setIDS(-1);
                 if (dato.save()) {
                     ((DataPanel) pane).refresh();
-                    ((DataPanel) pane).setDataOwner(dato);
+                    ((DataPanel) pane).setDataOwner(dato,true);
                 } else {
                     ((DataPanel) pane).showRequiredFields();
                 }
@@ -1469,7 +1469,7 @@ public class MPV5View extends FrameView {
                 dato.getPanelData((tab));
                 dato.reset();
                 tab.refresh();
-                tab.setDataOwner(dato);
+                tab.setDataOwner(dato,true);
             }
         } catch (Exception ignore) {
         }

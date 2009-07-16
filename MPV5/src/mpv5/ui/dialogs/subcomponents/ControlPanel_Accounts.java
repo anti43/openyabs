@@ -82,7 +82,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
             initComponents();
             tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
             refresh();
-            setDataOwner(aThis);
+            setDataOwner(aThis,true);
         }
 
         ((JSpinner.DefaultEditor) classv.getSpinner().getEditor()).getTextField().setEditable(false);
@@ -394,7 +394,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
             } else {
                 if (node != null) {
                     Account g = (Account) node.getUserObject();
-                    setDataOwner(g);
+                    setDataOwner(g,true);
                 }
             }
         } catch (Exception e) {
@@ -459,7 +459,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
 
             dato.getPanelData(this);
             dato.reset();
-            setDataOwner(dato);
+            setDataOwner(dato,true);
         }
     }
 
@@ -568,10 +568,12 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
         return dataOwner;
     }
 
-    public void setDataOwner(DatabaseObject object) {
+    public void setDataOwner(DatabaseObject object, boolean pop) {
         dataOwner = (Account) object;
-        dataOwner.setPanelData(this);
-        this.exposeData();
+        if (pop) {
+            dataOwner.setPanelData(this);
+            this.exposeData();
+        }
     }
 
     public void exposeData() {
@@ -591,7 +593,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
 
     public void paste(DatabaseObject dbo) {
         if (dbo.getDbIdentity().equals(Context.getAccounts().getDbIdentity())) {
-            setDataOwner(dbo);
+            setDataOwner(dbo,true);
         } else {
             MPV5View.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE);
         }
@@ -609,5 +611,8 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
     @Override
     public void actionAfterSave() {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+        @Override
+    public void actionAfterCreate() {
     }
 }

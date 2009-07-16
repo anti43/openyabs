@@ -412,14 +412,16 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
         return dataOwner;
     }
 
-    public void setDataOwner(DatabaseObject object) {
+    public void setDataOwner(DatabaseObject object, boolean populate) {
         dataOwner = (Address) object;
-        dataOwner.setPanelData(this);
-        this.exposeData();
+        if (populate) {
+            dataOwner.setPanelData(this);
+            this.exposeData();
 
-        if (this.getParent() instanceof JTabbedPane) {
-            JTabbedPane jTabbedPane = (JTabbedPane) this.getParent();
-            jTabbedPane.setTitleAt(jTabbedPane.getSelectedIndex(), Messages.CONTACT + cname_);
+            if (this.getParent() instanceof JTabbedPane) {
+                JTabbedPane jTabbedPane = (JTabbedPane) this.getParent();
+                jTabbedPane.setTitleAt(jTabbedPane.getSelectedIndex(), Messages.CONTACT + cname_);
+            }
         }
     }
 
@@ -442,7 +444,7 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
 
     public void paste(DatabaseObject dbo) {
         if (dbo.getDbIdentity().equals(Context.getAddress().getDbIdentity())) {
-            setDataOwner(dbo);
+            setDataOwner(dbo,true);
         } else {
             MPV5View.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());
         }
@@ -499,5 +501,8 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
     @Override
     public void actionAfterSave() {
   
+    }
+        @Override
+    public void actionAfterCreate() {
     }
 }

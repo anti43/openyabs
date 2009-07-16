@@ -268,7 +268,11 @@ public class ArrayUtilities {
                 if (i != column) {
                     data[idx][i] = model.getValueAt(idx, i);
                 } else {
-                    data[idx][i] = columndata[idx];
+                    if (columndata != null) {
+                        data[idx][i] = columndata[idx];
+                    } else {
+                        data[idx][i] = null;
+                    }
                 }
             }
         }
@@ -434,8 +438,6 @@ public class ArrayUtilities {
         DefaultTreeModel model = new DefaultTreeModel(node1);
         return model;
     }
-
-   
 
     public static ArrayList<String> getSelectionFromTree(JTree tree) {
         ArrayList<String> list = new ArrayList<String>();

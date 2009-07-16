@@ -26,7 +26,9 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.util.Date;
 import java.util.logging.Level;
@@ -40,6 +42,7 @@ import javax.swing.JTable;
 import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableModel;
 import mpv5.db.common.*;
 import mpv5.db.objects.Account;
 import mpv5.globals.Headers;
@@ -58,6 +61,7 @@ import mpv5.ui.popups.FileTablePopUp;
 import mpv5.ui.toolbars.DataPanelTB;
 import mpv5.db.objects.User;
 import mpv5.ui.dialogs.DialogForFile;
+import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.models.MPComboBoxModelItem;
@@ -153,22 +157,24 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
     }
 
     @Override
-    public void setDataOwner(DatabaseObject object) {
+    public void setDataOwner(DatabaseObject object, boolean populate) {
         dataOwner = (Item) object;
-        dataOwner.setPanelData(this);
-        this.exposeData();
+        if (populate) {
+            dataOwner.setPanelData(this);
+            this.exposeData();
 
-        setTitle();
+            setTitle();
 
-        prinitingComboBox1.init(dataOwner);
+            prinitingComboBox1.init(dataOwner);
 
-        tb.setFavourite(Favourite.isFavourite(object));
-        tb.setEditable(!object.isReadOnly());
+            tb.setFavourite(Favourite.isFavourite(object));
+            tb.setEditable(!object.isReadOnly());
 
-        itemtable.setModel(SubItem.toModel(((Item) object).getSubitems()));
-        formatTable();
-        if (object.isReadOnly()) {
-            Popup.notice(Messages.LOCKED_BY);
+            itemtable.setModel(SubItem.toModel(((Item) object).getSubitems()));
+            formatTable();
+            if (object.isReadOnly()) {
+                Popup.notice(Messages.LOCKED_BY);
+            }
         }
     }
 
@@ -914,7 +920,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
     @Override
     public void paste(DatabaseObject dbo) {
         if (dbo.getDbIdentity().equals(Context.getContact().getDbIdentity())) {
-            setDataOwner(dbo);
+            setDataOwner(dbo,true);
         } else {
             MPV5View.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());
         }
@@ -936,8 +942,14 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
         saveSubItems();
     }
 
+     @Override
+    public void actionAfterCreate() {
+        ArrayUtilities.replaceColumn(itemtable, 0, null);
+        saveSubItems();
+    }
+
     private void saveSubItems() {
-        MPTableModel m = (MPTableModel) itemtable.getModel();
-        SubItem.saveModel(dataOwner, m);
+        if(itemtable.getCellEditor()!=null)itemtable.getCellEditor().stopCellEditing();
+        SubItem.saveModel(dataOwner,(MPTableModel) itemtable.getModel());
     }
 }

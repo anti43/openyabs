@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.table.TableModel;
 import mpv5.Main;
 import mpv5.globals.Messages;
 import mpv5.utils.files.FileReaderWriter;
@@ -234,6 +235,18 @@ public class Log {
      */
     public static void setLogLevel(int level) {
         Log.loglevel = level;
+    }
+
+    /**
+     * Print a table model
+     * @param model
+     */
+    public static void PrintArray(TableModel model) {
+        for (int i = 0; i < model.getRowCount(); i++) {
+              for (int j = 0; j < model.getColumnCount(); j++) {
+                write(model.getValueAt(i, j));
+            }
+        }
     }
 
     private Log() {

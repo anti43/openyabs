@@ -105,13 +105,13 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
     }
 
     private static void cacheObject(DatabaseObject databaseObject) {
-        if (databaseObject != null) {
+        if (databaseObject != null&& databaseObject.__getIDS().intValue() > 0) {
             cache.put(databaseObject.getDbIdentity() + "@" + databaseObject.__getIDS(), databaseObject);
         }
     }
 
     private static void uncacheObject(DatabaseObject databaseObject) {
-        if (databaseObject != null) {
+        if (databaseObject != null && databaseObject.__getIDS().intValue() > 0) {
             Log.Debug(DatabaseObject.class, "Removing from cache: " + databaseObject.getDbIdentity() + "@" + databaseObject.__getIDS());
             cache.remove(databaseObject.getDbIdentity() + "@" + databaseObject.__getIDS());
         }
@@ -266,8 +266,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
      */
     public boolean isExisting() {
         if (ids <= 0) {
-            Popup.notice(Messages.NOT_POSSIBLE + "\n" + Messages.NOT_SAVED_YET);
-            Log.Debug(this, __getCName());
+            Log.Debug(this, Messages.NOT_POSSIBLE + "\n" + Messages.NOT_SAVED_YET);
             return false;
         } else {
             return true;

@@ -73,7 +73,7 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
             initComponents();
             tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
             refresh();
-            setDataOwner(aThis);
+            setDataOwner(aThis,true);
         }
     }
 
@@ -334,7 +334,7 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
         } else {
             if (node != null) {
                 Group g = (Group) node.getUserObject();
-                setDataOwner(g);
+                setDataOwner(g,true);
             }
         }
     }//GEN-LAST:event_treeMouseClicked
@@ -382,7 +382,7 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
 
             dato.getPanelData(this);
             dato.reset();
-            setDataOwner(dato);
+            setDataOwner(dato,true);
         }
     }
 
@@ -423,10 +423,12 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
         return dataOwner;
     }
 
-    public void setDataOwner(DatabaseObject object) {
+    public void setDataOwner(DatabaseObject object, boolean p) {
         dataOwner = (Group) object;
-        dataOwner.setPanelData(this);
-        this.exposeData();
+        if (p) {
+            dataOwner.setPanelData(this);
+            this.exposeData();
+        }
     }
 
     public void exposeData() {
@@ -442,7 +444,7 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
 
     public void paste(DatabaseObject dbo) {
         if (dbo.getDbIdentity().equals(Context.getGroup().getDbIdentity())) {
-            setDataOwner(dbo);
+            setDataOwner(dbo,true);
         } else {
             MPV5View.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE);
         }
@@ -461,5 +463,8 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
     @Override
     public void actionAfterSave() {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+        @Override
+    public void actionAfterCreate() {
     }
 }

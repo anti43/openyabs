@@ -24,7 +24,6 @@ import mpv5.db.common.DatabaseObject;
 import mpv5.globals.Headers;
 import mpv5.logging.Log;
 import mpv5.utils.models.MPTableModel;
-import mpv5.utils.models.MPTableModelRow;
 
 /**
  *
@@ -38,38 +37,39 @@ public class SubItem extends DatabaseObject {
      * @param model
      */
     public static void saveModel(Item dataOwner, MPTableModel model) {
-         List<Object[]> rowsl = model.getValidRows(new int[]{4});
-         Log.Debug(SubItem.class, "Rows found: " + rowsl.size());
-            for (int i = 0; i < rowsl.size(); i++) {
-                Object[] row = rowsl.get(i);
-                SubItem it  = new SubItem();
-                try {
-                    if (Integer.valueOf(row[0].toString()).intValue() > 0) {
-                        it.setIDS(Integer.valueOf(row[0].toString()).intValue());
-                    }
-                } catch (Exception e) {
-                    Log.Debug(SubItem.class, e.getMessage());
+        List<Object[]> rowsl = model.getValidRows(new int[]{4});
+        Log.Debug(SubItem.class, "Rows found: " + rowsl.size());
+        for (int i = 0; i < rowsl.size(); i++) {
+            Object[] row = rowsl.get(i);
+            SubItem it = new SubItem();
+            try {
+                if (row[0] != null && Integer.valueOf(row[0].toString()).intValue() > 0) {
+                    it.setIDS(Integer.valueOf(row[0].toString()).intValue());
+                } else {
+                    it.setIDS(-1);
                 }
-                it.setCName(row[4].toString());
-                it.setItemsids(dataOwner.__getIDS());
-                it.setCountvalue(Double.valueOf(row[2].toString()));
-                it.setDatedelivery(dataOwner.__getDatetodo());
-                it.setDescription(row[4].toString());
-                it.setExternalvalue(Double.valueOf(row[5].toString()));//Discount not supported yet
-                it.setInternalvalue(Double.valueOf(row[5].toString()));//Discount not supported yet
-                it.setMeasure(row[3].toString());
-                it.setOriginalproductsids(0);//not yet implemented
-                it.setQuantityvalue(Double.valueOf(row[2].toString()));
-                it.setTaxpercentvalue(Double.valueOf(row[6].toString()));
+            } catch (Exception e) {
+                Log.Debug(SubItem.class, e.getMessage());
+            }
+            it.setCName(row[4].toString());
+            it.setItemsids(dataOwner.__getIDS());
+            it.setCountvalue(Double.valueOf(row[2].toString()));
+            it.setDatedelivery(dataOwner.__getDatetodo());
+            it.setDescription(row[4].toString());
+            it.setExternalvalue(Double.valueOf(row[5].toString()));//Discount not supported yet
+            it.setInternalvalue(Double.valueOf(row[5].toString()));//Discount not supported yet
+            it.setMeasure(row[3].toString());
+            it.setOriginalproductsids(0);//not yet implemented
+            it.setQuantityvalue(Double.valueOf(row[2].toString()));
+            it.setTaxpercentvalue(Double.valueOf(row[6].toString()));
 
-                if(!it.isExisting()){
+            if (!it.isExisting()) {
                 it.setDateadded(new Date());
                 it.setGroupsids(dataOwner.__getGroupsids());
-                }
-                it.save();
             }
+            it.save();
+        }
     }
-
     private int itemsids;
     private int originalproductsids;
     private double countvalue;
@@ -228,7 +228,7 @@ public class SubItem extends DatabaseObject {
         Object[][] data = new Object[items.length][8];
         for (int i = 0; i < data.length; i++) {
             data[i][0] = items[i].__getIDS();
-            data[i][1] = Integer.valueOf(i+1);
+            data[i][1] = Integer.valueOf(i + 1);
             data[i][2] = items[i].__getCountvalue();
             data[i][3] = items[i].__getMeasure();
             data[i][4] = items[i].__getDescription();

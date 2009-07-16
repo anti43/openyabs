@@ -62,7 +62,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         if (MPSecurityManager.checkAdminAccess()) {
             initComponents();
             refresh();
-            setDataOwner(user);
+            setDataOwner(user,true);
             setVisible(true);
         }
     }
@@ -483,7 +483,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         if (s.checkID()) {
             try {
                 obj = DatabaseObject.getObject(Context.getUser(), s.getId());
-                setDataOwner(obj);
+                setDataOwner(obj,true);
             } catch (NodataFoundException ex) {
                 Log.Debug(this, ex);
             }
@@ -513,7 +513,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
 
         dato.getPanelData(this);
         dato.reset();
-        setDataOwner(dato);
+        setDataOwner(dato,true);
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox accountlist;
@@ -655,10 +655,12 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         return dataOwner;
     }
 
-    public void setDataOwner(DatabaseObject object) {
+    public void setDataOwner(DatabaseObject object, boolean p) {
         dataOwner = (User) object;
-        dataOwner.setPanelData(this);
-        this.exposeData();
+        if (p) {
+            dataOwner.setPanelData(this);
+            this.exposeData();
+        }
     }
 
     public void refresh() {
@@ -688,7 +690,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
 
     public void paste(DatabaseObject dbo) {
         if (dbo.getDbIdentity().equals(Context.getUser().getDbIdentity())) {
-            setDataOwner(dbo);
+            setDataOwner(dbo,true);
         } else {
             MPV5View.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE);
         }
@@ -710,5 +712,8 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
     @Override
     public void actionAfterSave() {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+        @Override
+    public void actionAfterCreate() {
     }
 }

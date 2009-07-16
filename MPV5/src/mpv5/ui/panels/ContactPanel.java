@@ -122,30 +122,32 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     }
 
     @Override
-    public void setDataOwner(DatabaseObject object) {
+    public void setDataOwner(DatabaseObject object, boolean populate) {
         dataOwner = (Contact) object;
-        dataOwner.setPanelData(this);
-        this.exposeData();
+        if (populate) {
+            dataOwner.setPanelData(this);
+            this.exposeData();
 
-        setTitle();
+            setTitle();
 
-        prinitingComboBox1.init(dataOwner);
+            prinitingComboBox1.init(dataOwner);
 
-        tb.setFavourite(Favourite.isFavourite(object));
-        tb.setEditable(!object.isReadOnly());
+            tb.setFavourite(Favourite.isFavourite(object));
+            tb.setEditable(!object.isReadOnly());
 
-        addAddresses();
-        dataTable.setModel(new MPTableModel());
+            addAddresses();
+            dataTable.setModel(new MPTableModel());
 
-        if (object.isReadOnly()) {
-            Popup.notice(Messages.LOCKED_BY);
-        }
+            if (object.isReadOnly()) {
+                Popup.notice(Messages.LOCKED_BY);
+            }
 
-        if (dataOwner.isExisting()) {
-            dataTableContent = FILES;
-            addfile.setEnabled(true);
-            removefile.setEnabled(true);
-            fillFiles();
+            if (dataOwner.isExisting()) {
+                dataTableContent = FILES;
+                addfile.setEnabled(true);
+                removefile.setEnabled(true);
+                fillFiles();
+            }
         }
     }
 
@@ -189,7 +191,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                 DatabaseObject databaseObject = data.get(i);
                 AddressPanel p = new AddressPanel();
                 p.setName(databaseObject.__getCName());
-                p.setDataOwner(databaseObject);
+                p.setDataOwner(databaseObject,true);
                 addresspanel.add(p);
             }
         } catch (NodataFoundException ex) {
@@ -1056,7 +1058,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         p.setName(Messages.NEW_VALUE.toString());
         ((Address) p.getDataOwner()).setCompany(dataOwner.__getCompany());
         ((Address) p.getDataOwner()).setTaxnumber(dataOwner.__getTaxnumber());
-        p.setDataOwner(p.getDataOwner());
+        p.setDataOwner(p.getDataOwner(),true);
         p.setDataParent(dataOwner);
         addresspanel.add(p);
         addresspanel.setSelectedComponent(p);
@@ -1430,7 +1432,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     @Override
     public void paste(DatabaseObject dbo) {
         if (dbo.getDbIdentity().equals(Context.getContact().getDbIdentity())) {
-            setDataOwner(dbo);
+            setDataOwner(dbo,true);
         } else {
             MPV5View.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());
         }
@@ -1472,4 +1474,8 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     public void actionAfterSave() {
     
     }
+    @Override
+    public void actionAfterCreate() {
+    }
+
 }

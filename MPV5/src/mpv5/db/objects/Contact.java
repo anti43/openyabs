@@ -389,7 +389,7 @@ public class Contact extends DatabaseObject  implements Formattable{
     @Override
     public JComponent getView() {
         ContactPanel x = new ContactPanel(getContext());
-        x.setDataOwner(this);
+        x.setDataOwner(this,true);
         return x;
     }
 

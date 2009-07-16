@@ -349,7 +349,7 @@ public class SearchPanel extends javax.swing.JPanel {
         Selection sel = new Selection(resulttable);
         if (sel.checkID()) {
             try {
-                panel.setDataOwner(DatabaseObject.getObject(context, sel.getId()));
+                panel.setDataOwner(DatabaseObject.getObject(context, sel.getId()),true);
             } catch (NodataFoundException ex) {
                 Log.Debug(ex);
             }

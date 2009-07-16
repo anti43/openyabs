@@ -275,12 +275,8 @@ public class DataPanelTB extends javax.swing.JPanel {
         if (dato.isExisting()) {
             dato.getPanelData((parents));
             dato.reset();
-            parents.refresh();
-            parents.setDataOwner(dato);
+            parents.setDataOwner(dato,true);
         }
-
-        Log.Debug(this, commonActionsToolbar.getSize());
-
 }//GEN-LAST:event_jButton22ActionPerformed
 
     private void jButton25ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton25ActionPerformed
@@ -288,10 +284,9 @@ public class DataPanelTB extends javax.swing.JPanel {
 
         dato.getPanelData(parents);
         if (dato.save()) {
-//            parents.refresh();
-            parents.setDataOwner(dato);
              try {
                 parents.actionAfterSave();
+                parents.setDataOwner(dato, true);
             } catch (Exception e) {
                 Log.Debug(this, e);
             }
@@ -307,10 +302,9 @@ public class DataPanelTB extends javax.swing.JPanel {
         dato.setIDS(-1);
 
         if (dato.save()) {
-//            parents.refresh();
-            parents.setDataOwner(dato);
             try {
-                parents.actionAfterSave();
+                parents.actionAfterCreate();
+                parents.setDataOwner(dato, true);
             } catch (Exception e) {
                 Log.Debug(this, e);
             }
@@ -349,7 +343,7 @@ public class DataPanelTB extends javax.swing.JPanel {
             dato.getPanelData(parents);
             dato.delete();
             parents.refresh();
-            parents.setDataOwner(dato);
+            parents.setDataOwner(dato,true);
         }
     }//GEN-LAST:event_jButton26ActionPerformed
 
@@ -389,7 +383,7 @@ public class DataPanelTB extends javax.swing.JPanel {
             if (dato.save()) {
                 Favourite.removeFavourite(dato);
                 MPV5View.identifierView.refreshFavouritesMenu();
-                parents.setDataOwner(dato);
+                parents.setDataOwner(dato,true);
             } else {
                 parents.showRequiredFields();
             }
@@ -407,7 +401,7 @@ public class DataPanelTB extends javax.swing.JPanel {
                     fav.save();
                     MPV5View.identifierView.refreshFavouritesMenu();
                     MPV5View.addMessage(Messages.ADDED_TO_FAVOURITES + dato.__getCName());
-                    parents.setDataOwner(dato);
+                    parents.setDataOwner(dato,true);
                 } else {
                     parents.showRequiredFields();
                 }
