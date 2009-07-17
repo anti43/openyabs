@@ -483,8 +483,6 @@ public class Main extends SingleFrameApplication {
         login();
         splash.nextStep(Messages.CACHE.toString());
         cache();
-        Main.splash.nextStep(Messages.INIT_PLUGINS.toString());
-        loadPlugins();
         Main.splash.nextStep(Messages.INIT_GUI.toString());
         super.show(new MPView(this));
         firstStart = firststart;
@@ -492,6 +490,8 @@ public class Main extends SingleFrameApplication {
             getApplication().getMainFrame().setSize(MPView.initialSize);
         }
         SwingUtilities.updateComponentTreeUI(MPView.identifierFrame);
+        Main.splash.nextStep(Messages.INIT_PLUGINS.toString());
+        loadPlugins();
         splash.dispose();
         if (START_SERVER) {
             MPServer serv = new MPServer();
@@ -505,15 +505,14 @@ public class Main extends SingleFrameApplication {
     private void loadPlugins() {
         if (!removeplugs) {
             try {
-                MPPLuginLoader loadr = new MPPLuginLoader();
-                MPView.queuePlugins(loadr.getPlugins());
+                MPPLuginLoader.queuePlugins(MPView.pluginLoader.getPlugins());
+                MPView.pluginLoader.loadPlugins();
             } catch (Exception e) {
                 Log.Debug(e);
             }
         } else {
             try {
                 ArrayList data = DatabaseObject.getReferencedObjects(MPView.getUser(), Context.getPluginsToUsers());
-
                 for (int i = 0; i < data.size(); i++) {
                     try {
                         ((UserPlugin) data.get(i)).delete();
@@ -521,7 +520,6 @@ public class Main extends SingleFrameApplication {
                         Log.Debug(e);
                     }
                 }
-
             } catch (NodataFoundException ex) {
                 Log.Debug(Main.class, ex.getMessage());
             }

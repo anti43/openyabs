@@ -16,17 +16,27 @@
  */
 package mpv5.pluginhandling;
 
+import java.awt.Component;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import mpv5.db.common.Context;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria;
@@ -35,9 +45,11 @@ import mpv5.db.common.DatabaseObjectModifier;
 import mpv5.db.common.QueryHandler;
 import mpv5.globals.Constants;
 import mpv5.globals.LocalSettings;
+import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPView;
+import mpv5.utils.images.MPIcon;
 
 /**
  *
@@ -155,5 +167,113 @@ public class MPPLuginLoader {
      */
     public MP5Plugin getPlugin(File file) {
         return checkPlugin(file);
+    }
+
+    /**
+     * Load all queued plugins
+     */
+    public void loadPlugins() {
+        for (int i = 0; i < pluginstoBeLoaded.size(); i++) {
+            MP5Plugin mP5Plugin = pluginstoBeLoaded.get(i);
+            loadPlugin(mP5Plugin);
+        }
+    }
+
+      /**
+     * Queues plugins to be loaded after the main Frame is showing.</br>
+     * Adding plugins AFTER the main Frame is constructed will result in nothing.</br>
+     * Use {@link loadPlugin(MP5Plugin)} instead.
+     * @param plugins
+     */
+    public static void queuePlugins(MP5Plugin[] plugins) {
+        pluginstoBeLoaded.addAll(Arrays.asList(plugins));
+    }
+     private static ArrayList<MP5Plugin> pluginstoBeLoaded = new ArrayList<MP5Plugin>();
+
+    /**
+     * Unloads the plugin and notifies the main view about the unload
+     * @param mP5Plugin
+     */
+    public void unLoadPlugin(MP5Plugin mP5Plugin) {
+        mP5Plugin.unload();
+        Component[] c = MPView.identifierView.pluginIcons.getComponents();
+        for (int i = 0; i < c.length; i++) {
+            Component component = c[i];
+            if (((JLabel) component).getToolTipText().contains(String.valueOf(mP5Plugin.getUID()))) {
+                MPView.identifierView.pluginIcons.remove(component);
+            }
+        }
+        MPView.identifierFrame.validate();
+        MPView.identifierFrame.repaint();
+    }
+
+    /**
+     * Loads the given plugin (by calling <code>plugin.load(this)<code/>). If the plugin is a visible plugin, adds it to the main tab pane.</br>
+     * If it is a <code>Runnable<code/>, it will be started on an new thread.
+     * @param gin
+     */
+    public void loadPlugin(Plugin gin) {
+        MP5Plugin plo = new mpv5.pluginhandling.MPPLuginLoader().getPlugin(QueryHandler.instanceOf().clone(Context.getFiles()).retrieveFile(gin.__getFilename()));
+        if (plo!=null) {
+            loadPlugin(plo);
+        } else {
+            Log.Debug(this, "Plugin not loaded: " + plo);
+        }
+    }
+
+    private static final List<Long> loadedPlugs = new Vector<Long>();
+    /**
+     * Loads the given plugin (by calling <code>plugin.load(this)<code/>). If the plugin is a visible plugin, adds it to the main tab pane.</br>
+     * If it is a <code>Runnable<code/>, it will be started on an new thread.
+     * @param mP5Plugin
+     */
+    public void loadPlugin(final MP5Plugin mP5Plugin) {
+        if (!loadedPlugs.contains(mP5Plugin.getUID()) && mP5Plugin.isEnabled()) {
+            loadedPlugs.add(mP5Plugin.getUID());
+            final JLabel plab = new JLabel();
+            plab.setDisabledIcon(new MPIcon(MPPLuginLoader.getErrorImage()).getIcon(18));
+            try {
+                mP5Plugin.load(MPView.identifierView);
+
+                if (mP5Plugin.isComponent()) {
+                    MPView.identifierView.addTab((JComponent) mP5Plugin, mP5Plugin.getName());
+                }
+                if (mP5Plugin.isRunnable() && mP5Plugin.isLoaded()) {
+                    Thread t = new Thread((Runnable) mP5Plugin);
+                    t.start();
+                }
+                if (mP5Plugin.getIcon() != null) {
+                    plab.setIcon(new MPIcon(mP5Plugin.getIcon()).getIcon(18));
+                } else {
+                    plab.setIcon(new MPIcon(MPPLuginLoader.getDefaultPluginImage()).getIcon(18));
+                }
+                plab.setToolTipText("<html><b>" + mP5Plugin.getName() + " " + Messages.LOADED + "</b><br/><font size=-3>[" + mP5Plugin.getUID() + "]</html>");
+                plab.addMouseListener(new MouseAdapter() {
+
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
+                        if (e.getButton() == MouseEvent.BUTTON2 || e.getButton() == MouseEvent.BUTTON3) {
+                            JLabel source = (JLabel) e.getSource();
+                            JPopupMenu m = new JPopupMenu();
+                            JMenuItem n = new JMenuItem(Messages.UNLOAD.getValue());
+                            n.addActionListener(new ActionListener() {
+
+                                public void actionPerformed(ActionEvent e) {
+                                    unLoadPlugin(mP5Plugin);
+                                }
+                            });
+                            m.add(n);
+                            m.show(plab, e.getX(), e.getY());
+                        }
+                    }
+                });
+                MPView.identifierView.pluginIcons.add(plab);
+            } catch (Exception e) {
+                Log.Debug(e);
+                plab.setEnabled(false);
+            }
+        } else {
+            Log.Debug(this, "Plugin does not allow multiple instances: " + mP5Plugin);
+        }
     }
 }

@@ -96,7 +96,7 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
 
             public void actionPerformed(ActionEvent e) {
                 Plugin gin = (Plugin) list.getSelectedValue();
-                MPView.identifierView.loadPlugin(gin);
+                MPView.pluginLoader.loadPlugin(gin);
             }
         });
     }
@@ -297,7 +297,7 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
         Object[] plugs = list.getSelectedValues();
         for (int i = 0; i < plugs.length; i++) {
             Plugin gin = (Plugin) plugs[i];
-            MPView.identifierView.loadPlugin(gin);
+            MPView.pluginLoader.loadPlugin(gin);
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -306,7 +306,7 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
         try {
             if (new MPPLuginLoader().checkPlugin(new File(labeledTextChooser2.get_Text(true))) != null) {
                 p = new MPPLuginLoader().checkPlugin(new File(labeledTextChooser2.get_Text(true)));
-                MPView.identifierView.loadPlugin(p);
+                MPView.pluginLoader.loadPlugin(p);
             } else {
                 Popup.notice(Messages.ERROR_OCCURED);
             }

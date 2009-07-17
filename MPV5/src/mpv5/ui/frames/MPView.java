@@ -93,7 +93,6 @@ public class MPView extends FrameView {
     private static String predefTitle;
     public static DialogForFile filedialog;
     public static SingleFrameApplication identifierApplication;
-    private static ArrayList<MP5Plugin> pluginstoBeLoaded = new ArrayList<MP5Plugin>();
     private static boolean navBarAnimated = true;
     private static boolean tabPaneScrolled = false;
 
@@ -129,15 +128,7 @@ public class MPView extends FrameView {
         return tabPane.getSelectedComponent();
     }
 
-    /**
-     * Queues plugins to be loaded after the main Frame is showing.</br>
-     * Adding plugins AFTER the main Frame is constructed will result in nothing.</br>
-     * Use {@link loadPlugin(MP5Plugin)} instead.
-     * @param plugins
-     */
-    public static void queuePlugins(MP5Plugin[] plugins) {
-        pluginstoBeLoaded.addAll(Arrays.asList(plugins));
-    }
+  
 
     /**
      * Change the navigation bar behavior
@@ -180,6 +171,10 @@ public class MPView extends FrameView {
     public static void show(JFrame c) {
         identifierApplication.show(c);
     }
+    /**
+     * The handler for all plugins
+     */
+    public static MPPLuginLoader pluginLoader;
 
     /**
      * Reloads fav menu
@@ -339,7 +334,7 @@ public class MPView extends FrameView {
         fillFavouritesmenu();
         QueryHandler.setWaitCursorFor(identifierFrame);
 
-        loadPlugins();
+       pluginLoader = new MPPLuginLoader();
     }
 
     /**
@@ -1654,7 +1649,7 @@ public class MPView extends FrameView {
     private javax.swing.JToolBar mainToolbar;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JPanel naviPanel;
-    private javax.swing.JPanel pluginIcons;
+    public javax.swing.JPanel pluginIcons;
     private javax.swing.JProgressBar progressBar;
     private javax.swing.JPanel separator;
     private javax.swing.JPanel separator1;
@@ -1725,55 +1720,8 @@ public class MPView extends FrameView {
         }
     }
 
-    /**
-     * Loads the given plugin (by calling <code>plugin.load(this)<code/>). If the plugin is a visible plugin, adds it to the main tab pane.</br>
-     * If it is a <code>Runnable<code/>, it will be started on an new thread.
-     * @param mP5Plugin
-     */
-    public void loadPlugin(final MP5Plugin mP5Plugin) {
-        final JLabel plab = new JLabel();
-        plab.setDisabledIcon(new MPIcon(MPPLuginLoader.getErrorImage()).getIcon(18));
-        try {
-            mP5Plugin.load(this);
 
-            if (mP5Plugin.isComponent()) {
-                addTab((JComponent) mP5Plugin, mP5Plugin.getName());
-            }
-            if (mP5Plugin.isRunnable() && mP5Plugin.isLoaded()) {
-                Thread t = new Thread((Runnable) mP5Plugin);
-                t.start();
-            }
-            if (mP5Plugin.getIcon() != null) {
-                plab.setIcon(new MPIcon(mP5Plugin.getIcon()).getIcon(18));
-            } else {
-                plab.setIcon(new MPIcon(MPPLuginLoader.getDefaultPluginImage()).getIcon(18));
-            }
-            plab.setToolTipText("<html><b>" + mP5Plugin.getName() + " " + Messages.LOADED + "</b><br/><font size=-3>[" + mP5Plugin.getUID() + "]</html>");
-            plab.addMouseListener(new MouseAdapter() {
-
-                @Override
-                public void mouseReleased(MouseEvent e) {
-                    if (e.getButton() == MouseEvent.BUTTON2 || e.getButton() == MouseEvent.BUTTON3) {
-                        JLabel source = (JLabel) e.getSource();
-                        JPopupMenu m = new JPopupMenu();
-                        JMenuItem n = new JMenuItem(Messages.UNLOAD.getValue());
-                        n.addActionListener(new ActionListener() {
-
-                            public void actionPerformed(ActionEvent e) {
-                                unLoadPlugin(mP5Plugin);
-                            }
-                        });
-                        m.add(n);
-                        m.show(plab, e.getX(), e.getY());
-                    }
-                }
-            });
-            pluginIcons.add(plab);
-        } catch (Exception e) {
-            Log.Debug(e);
-            plab.setEnabled(false);
-        }
-    }
+    
 
     /**
      * Triggers the MP Server notification to the view
@@ -1826,37 +1774,5 @@ public class MPView extends FrameView {
         MPView.identifierFrame.validate();
     }
 
-    private void loadPlugins() {
-        for (int i = 0; i < pluginstoBeLoaded.size(); i++) {
-            MP5Plugin mP5Plugin = pluginstoBeLoaded.get(i);
-            loadPlugin(mP5Plugin);
-        }
-    }
-
-    /**
-     * Unloads the plugin and notifies the main view about the unload
-     * @param mP5Plugin
-     */
-    public void unLoadPlugin(MP5Plugin mP5Plugin) {
-        mP5Plugin.unload();
-        Component[] c = pluginIcons.getComponents();
-        for (int i = 0; i < c.length; i++) {
-            Component component = c[i];
-            if (((JLabel) component).getToolTipText().contains(String.valueOf(mP5Plugin.getUID()))) {
-                pluginIcons.remove(component);
-            }
-        }
-        MPView.identifierFrame.validate();
-        MPView.identifierFrame.repaint();
-    }
-
-    /**
-     * Loads the given plugin (by calling <code>plugin.load(this)<code/>). If the plugin is a visible plugin, adds it to the main tab pane.</br>
-     * If it is a <code>Runnable<code/>, it will be started on an new thread.
-     * @param gin
-     */
-    public void loadPlugin(Plugin gin) {
-        MP5Plugin plo = new mpv5.pluginhandling.MPPLuginLoader().getPlugin(QueryHandler.instanceOf().clone(Context.getFiles()).retrieveFile(gin.__getFilename()));
-        loadPlugin(plo);
-    }
+  
 }
