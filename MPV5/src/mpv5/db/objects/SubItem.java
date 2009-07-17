@@ -87,6 +87,30 @@ public class SubItem extends DatabaseObject {
         context.setIdentityClass(SubItem.class);
     }
 
+    /**
+     *
+     * @return
+     */
+    public static SubItem getDefaultItem() {
+        SubItem i = new SubItem();
+        if (MPView.getUser().getProperties().hasProperty("defunit")) {
+            String defunit = MPView.getUser().getProperties().getProperty("defunit");
+            i.setMeasure(defunit);
+        }
+        Double deftax = 0d;
+        if (MPView.getUser().getProperties().hasProperty("deftax")) {
+            int taxid = MPView.getUser().getProperties().getProperty("deftax", 0);
+            deftax = Item.getTaxValue(taxid);
+            i.setTaxpercentvalue(deftax);
+        }
+        Double defcount = 1d;
+        if (MPView.getUser().getProperties().hasProperty("defcount")) {
+            defcount = MPView.getUser().getProperties().getProperty("defcount", 0d);
+            i.setCountvalue(defcount);
+        }
+        return i;
+    }
+
     @Override
     public String __getCName() {
         return cname;

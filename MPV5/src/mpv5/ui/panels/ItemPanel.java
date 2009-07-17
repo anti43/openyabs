@@ -151,10 +151,10 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
                     m.addRow(5);
                 } else {
                     itemtable.setModel(SubItem.toModel(new SubItem[]{
-                    new SubItem(),new SubItem(),
-                    new SubItem(),new SubItem(),
-                    new SubItem(),new SubItem(),
-                    }));
+                                SubItem.getDefaultItem(), SubItem.getDefaultItem(),
+                                SubItem.getDefaultItem(), SubItem.getDefaultItem(),
+                                SubItem.getDefaultItem(), SubItem.getDefaultItem()
+                            }));
 
                     formatTable();
                 }
@@ -970,10 +970,10 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
                     status.setSelectedIndex(MPView.getUser().__getIntdefaultstatus());
 
                     itemtable.setModel(SubItem.toModel(new SubItem[]{
-                    new SubItem(),new SubItem(),
-                    new SubItem(),new SubItem(),
-                    new SubItem(),new SubItem(),
-                    }));
+                                SubItem.getDefaultItem(), SubItem.getDefaultItem(),
+                                SubItem.getDefaultItem(), SubItem.getDefaultItem(),
+                                SubItem.getDefaultItem(), SubItem.getDefaultItem()
+                            }));
 
                     formatTable();
                 } catch (Exception e) {
