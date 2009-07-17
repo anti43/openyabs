@@ -23,7 +23,7 @@ import mpv5.db.common.DatabaseSearch;
 import mpv5.db.common.NodataFoundException;
 import mpv5.globals.Headers;
 import mpv5.logging.Log;
-import mpv5.ui.frames.MPV5View;
+import mpv5.ui.frames.MPView;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.tables.Selection;
 import mpv5.utils.tables.TableFormat;
@@ -50,8 +50,8 @@ public class SearchPanel extends javax.swing.JPanel {
         this.validate();
         this.context = context;
         this.panel = panel;
-        lastneedle =String.valueOf(MPV5View.getUser().__getGroupsids());
-        search(5, String.valueOf(MPV5View.getUser().__getGroupsids()));
+        lastneedle =String.valueOf(MPView.getUser().__getGroupsids());
+        search(5, String.valueOf(MPView.getUser().__getGroupsids()));
     }
 
     /**

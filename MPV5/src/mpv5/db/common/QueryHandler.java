@@ -41,7 +41,7 @@ import mpv5.db.objects.User;
 import mpv5.globals.Messages;
 import mpv5.db.objects.Contact;
 import mpv5.logging.Log;
-import mpv5.ui.frames.MPV5View;
+import mpv5.ui.frames.MPView;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.panels.DataPanel;
 import mpv5.usermanagement.MPSecurityManager;
@@ -574,7 +574,7 @@ public class QueryHandler implements Cloneable {
                 int j = uniquecols[i];
                 Object[][] val = select(values[j], new String[]{values[j], vals.getValue(values[j]).toString(), vals.getValue(values[j]).getWrapper()});
                 if (val != null && val.length > 0) {
-                    MPV5View.addMessage(Messages.VALUE_ALREADY_EXISTS + vals.getValue(values[j]).toString());
+                    MPView.addMessage(Messages.VALUE_ALREADY_EXISTS + vals.getValue(values[j]).toString());
                     return false;
                 }
             }
@@ -609,7 +609,7 @@ public class QueryHandler implements Cloneable {
                     }
                     if (RUNNING_JOBS <= 1) {
                         comp.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-                        MPV5View.setProgressReset();
+                        MPView.setProgressReset();
                     }
                     RUNNING_JOBS--;
                 }
@@ -628,7 +628,7 @@ public class QueryHandler implements Cloneable {
             if (RUNNING_JOBS > 5) {
                 comp.setCursor(new Cursor(Cursor.WAIT_CURSOR));
             }
-            MPV5View.setProgressMaximumValue(RUNNING_JOBS);
+            MPView.setProgressMaximumValue(RUNNING_JOBS);
         }
     }
 
@@ -639,7 +639,7 @@ public class QueryHandler implements Cloneable {
             int oldValue = 0;
             while (true) {
                 if (RUNNING_JOBS != oldValue) {
-                    MPV5View.setProgressValue(RUNNING_JOBS);
+                    MPView.setProgressValue(RUNNING_JOBS);
                     oldValue = RUNNING_JOBS;
                 }
                 try {
@@ -1552,7 +1552,7 @@ public class QueryHandler implements Cloneable {
         }
 
         if (jobmessage != null) {
-            MPV5View.addMessage(jobmessage);
+            MPView.addMessage(jobmessage);
             retval.setMessage(jobmessage);
         }
         return retval;
@@ -1658,7 +1658,7 @@ public class QueryHandler implements Cloneable {
         }
 
         if (jobmessage != null) {
-            MPV5View.addMessage(jobmessage);
+            MPView.addMessage(jobmessage);
             retval.setMessage(jobmessage);
         }
         return retval;
@@ -1783,7 +1783,7 @@ public class QueryHandler implements Cloneable {
         }
 
         if (jobmessage != null) {
-            MPV5View.addMessage(jobmessage);
+            MPView.addMessage(jobmessage);
         }
 //        Log.PrintArray(data);
         return new ReturnValue(id, data, columnnames, jobmessage);
@@ -1810,7 +1810,7 @@ public class QueryHandler implements Cloneable {
             java.io.InputStream fin = new java.io.FileInputStream(file);
             PreparedStatement ps = sqlConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
             ps.setString(1, name);
-            ps.setInt(5, MPV5View.getUser().getID());
+            ps.setInt(5, MPView.getUser().getID());
             ps.setLong(4, file.length());
             ps.setDate(3, new java.sql.Date(new Date().getTime()));
             ps.setBinaryStream(2, fin, fileLength);
@@ -1832,7 +1832,7 @@ public class QueryHandler implements Cloneable {
             viewToBeNotified.refresh();
         }
         if (jobmessage != null) {
-            MPV5View.addMessage(jobmessage);
+            MPView.addMessage(jobmessage);
         }
         return name;
 
@@ -1864,7 +1864,7 @@ public class QueryHandler implements Cloneable {
             Log.Debug(this, query);
             while (rs.next()) {
 
-                MPV5View.setProgressMaximumValue(rs.getInt(2));
+                MPView.setProgressMaximumValue(rs.getInt(2));
                 byte[] buffer = new byte[1024];
                 File f = FileDirectoryHandler.getTempFile();
                 BufferedInputStream inputStream = new BufferedInputStream(rs.getBinaryStream(1), 1024);
@@ -1877,12 +1877,12 @@ public class QueryHandler implements Cloneable {
                     if (readBytes != -1) {
                         outputStream.write(buffer, 0, readBytes);
                     }
-                    MPV5View.setProgressValue(read);
+                    MPView.setProgressValue(read);
                 }
                 inputStream.close();
                 outputStream.close();
                 list.add(f);
-                MPV5View.setProgressReset();
+                MPView.setProgressReset();
             }
 
         } catch (SQLException ex) {
@@ -1914,7 +1914,7 @@ public class QueryHandler implements Cloneable {
             viewToBeNotified.refresh();
         }
         if (jobmessage != null) {
-            MPV5View.addMessage(jobmessage);
+            MPView.addMessage(jobmessage);
         }
         return list;
     }
@@ -2060,7 +2060,7 @@ public class QueryHandler implements Cloneable {
                 Log.Debug(this, ex);
                 Popup.error(ex);
             } finally {
-                MPV5View.setProgressReset();
+                MPView.setProgressReset();
             }
             return null;
         }
@@ -2083,9 +2083,9 @@ public class QueryHandler implements Cloneable {
                     int progress = (Integer) evt.getNewValue();
                     Log.Debug(this, "Progress changed to: " + progress);
                     if (progress == 0) {
-                        MPV5View.setProgressRunning(true);
+                        MPView.setProgressRunning(true);
                     } else if (progress == 100) {
-                        MPV5View.setProgressReset();
+                        MPView.setProgressReset();
                     }
                 }
             }
@@ -2117,7 +2117,7 @@ public class QueryHandler implements Cloneable {
                 String query = "INSERT INTO " + table + "(cname, data, dateadded, filesize) VALUES (?, ?, ?, ?)";
                 String jobmessage = null;
                 Log.Debug(this, "Adding file: " + file.getName());
-                MPV5View.addMessage(Messages.PROCESSING + file.getName());
+                MPView.addMessage(Messages.PROCESSING + file.getName());
 
                 try {
                     int fileLength = (int) file.length();
@@ -2133,7 +2133,7 @@ public class QueryHandler implements Cloneable {
                         sqlConn.commit();
                     }
                 } catch (Exception ex) {
-                    MPV5View.setProgressReset();
+                    MPView.setProgressReset();
                     Log.Debug(this, "Datenbankfehler: " + query);
                     Log.Debug(this, ex);
                     Popup.error(ex);
@@ -2141,7 +2141,7 @@ public class QueryHandler implements Cloneable {
                 }
 
                 if (jobmessage != null) {
-                    MPV5View.addMessage(jobmessage);
+                    MPView.addMessage(jobmessage);
                 }
             }
 
@@ -2157,11 +2157,11 @@ public class QueryHandler implements Cloneable {
 
                 x = new QueryData(new String[]{"cname,filename, description, dateadded", file.getName() + "," + get() + "," + descriptiveText + "," + DateConverter.getTodayDBDate()});
                 x.add(dataOwner.getType() + "sids", dataOwner.__getIDS());
-                x.add("intaddedby", MPV5View.getUser().__getIDS());
+                x.add("intaddedby", MPView.getUser().__getIDS());
                 x.add("intsize", file.length());
                 x.add("mimetype", fileextension);
                 QueryHandler.instanceOf().clone(tcontext).insert(x, Messages.FILE_SAVED + file.getName());
-                MPV5View.addMessage(Messages.FILE_SAVED + file.getName());
+                MPView.addMessage(Messages.FILE_SAVED + file.getName());
                 if (viewToBeNotified != null) {
                     viewToBeNotified.refresh();
                 }
@@ -2183,9 +2183,9 @@ public class QueryHandler implements Cloneable {
 
                     Log.Debug(this, "Progress changed to: " + evt.getNewValue());
                     if (StateValue.STARTED == evt.getNewValue()) {
-                        MPV5View.setProgressRunning(true);
+                        MPView.setProgressRunning(true);
                     } else if (StateValue.DONE == evt.getNewValue()) {
-                        MPV5View.setProgressReset();
+                        MPView.setProgressReset();
                     }
                 }
             }

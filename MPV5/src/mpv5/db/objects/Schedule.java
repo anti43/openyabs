@@ -28,7 +28,7 @@ import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryHandler;
 import mpv5.db.objects.Item;
 import mpv5.logging.Log;
-import mpv5.ui.frames.MPV5View;
+import mpv5.ui.frames.MPView;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.date.vTimeframe;
 

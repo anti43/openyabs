@@ -29,7 +29,7 @@ import mpv5.ui.dialogs.subcomponents.ControlPanel_Locale;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Plugins;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Users;
 import mpv5.ui.frames.MPBabelFish;
-import mpv5.ui.frames.MPV5View;
+import mpv5.ui.frames.MPView;
 import mpv5.utils.files.FileDirectoryHandler;
 
 /**
@@ -422,10 +422,10 @@ public class MPControlPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        MPV5View.setWaiting(true);
+        MPView.setWaiting(true);
         TinyLookAndFeel.controlPanelInstantiated = true;
         new de.muntjak.tinylookandfeel.controlpanel.ControlPanel(Main.getApplication());
-        MPV5View.setWaiting(false);
+        MPView.setWaiting(false);
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
@@ -441,9 +441,9 @@ public class MPControlPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        MPV5View.setWaiting(true);
+        MPView.setWaiting(true);
         new MPBabelFish();
-        MPV5View.setWaiting(false);
+        MPView.setWaiting(false);
 
     }//GEN-LAST:event_jButton5ActionPerformed
 
@@ -471,7 +471,7 @@ public class MPControlPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton12ActionPerformed
 
     private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
-        openDetails(new ControlPanel_Formats(MPV5View.getUser()));
+        openDetails(new ControlPanel_Formats(MPView.getUser()));
     }//GEN-LAST:event_jButton13ActionPerformed
 
     private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
@@ -586,7 +586,7 @@ public class MPControlPanel extends javax.swing.JPanel {
      * @param panel
      */
     public synchronized  void openDetails(ControlApplet panel) {
-        MPV5View.setWaiting(true);
+        MPView.setWaiting(true);
 
         actions.removeAll();
         actions.add(((JPanel) panel.getAndRemoveActionPanel()));
@@ -595,7 +595,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         scroller.setViewportView((Component) panel);
 
         ((Component) panel).validate();
-        MPV5View.setWaiting(false);
-        MPV5View.identifierFrame.validate();
+        MPView.setWaiting(false);
+        MPView.identifierFrame.validate();
     }
 }

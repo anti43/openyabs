@@ -18,7 +18,7 @@ package mpv5.utils.jobs;
 
 import javax.swing.SwingWorker;
 import mpv5.logging.Log;
-import mpv5.ui.frames.MPV5View;
+import mpv5.ui.frames.MPView;
 
 /**
  * This is a convenience class for using SwingWorker
@@ -40,13 +40,13 @@ public class BackGroundJob extends SwingWorker<Void, Void> {
 
     @Override
     public Void doInBackground() {
-        MPV5View.setWaiting(true);
+        MPView.setWaiting(true);
         try {
             clazz.getConstructors()[0].newInstance((Object[]) null);
         } catch (Exception e) {
             Log.Debug(this, e.getMessage());
         } finally {
-            MPV5View.setWaiting(false);
+            MPView.setWaiting(false);
         }
         return null;
     }
@@ -54,6 +54,6 @@ public class BackGroundJob extends SwingWorker<Void, Void> {
     @Override
     public void done() {
 
-        MPV5View.setWaiting(false);
+        MPView.setWaiting(false);
     }
 }

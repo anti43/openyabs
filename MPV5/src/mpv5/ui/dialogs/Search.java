@@ -17,7 +17,7 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.DatabaseSearch;
 import mpv5.db.common.NodataFoundException;
-import mpv5.ui.frames.MPV5View;
+import mpv5.ui.frames.MPView;
 import mpv5.ui.misc.Position;
 import mpv5.utils.html.HtmlParser;
 import mpv5.utils.models.MPTableModel;
@@ -219,7 +219,7 @@ public class Search extends javax.swing.JFrame {
             }
             if (lastContext != null) {
                 try {
-                    MPV5View.identifierView.addTab(DatabaseObject.getObject(lastContext, Integer.valueOf(jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString())));
+                    MPView.identifierView.addTab(DatabaseObject.getObject(lastContext, Integer.valueOf(jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString())));
                 } catch (NodataFoundException ex) {
                     mpv5.logging.Log.Debug(ex);
                 }

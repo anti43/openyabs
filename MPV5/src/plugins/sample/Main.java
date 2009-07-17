@@ -28,7 +28,7 @@ import javax.swing.JMenu;
 import javax.swing.JPanel;
 import mpv5.logging.Log;
 import mpv5.pluginhandling.MP5Plugin;
-import mpv5.ui.frames.MPV5View;
+import mpv5.ui.frames.MPView;
 
 /**
  * This is the sample of a plugin compatible with the MP5 Plugin system.<br/>
@@ -37,17 +37,17 @@ import mpv5.ui.frames.MPV5View;
  */
 public class Main extends JPanel implements MP5Plugin, Runnable {
     private static final long serialVersionUID = -2334458558298502643L;
-    private MPV5View frame;
+    private MPView frame;
     private JMenu cmenu;
     private JLabel clock =  new JLabel();
     private boolean loaded = false;
 
     @Override
-    public MP5Plugin load(MPV5View frame) {
+    public MP5Plugin load(MPView frame) {
         this.frame = frame;
         cmenu = new JMenu("what a crazy menu");
         frame.getMenuBar().add(cmenu);
-        MPV5View.addMessage("added a crazy menu");
+        MPView.addMessage("added a crazy menu");
 
         setLayout(new BorderLayout());
         clock.setFont(new Font("Courier", Font.BOLD, 16));

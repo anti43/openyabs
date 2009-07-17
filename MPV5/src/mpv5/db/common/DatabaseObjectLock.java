@@ -64,7 +64,7 @@ public class DatabaseObjectLock {
     public void release() {
         if (LOCKED) {
             Log.Debug(this, "Releasing item " + dbo);
-            QueryHandler.instanceOf().clone(Context.getLock()).removeLock(dbo.getContext(), dbo.__getIDS(), mpv5.ui.frames.MPV5View.getUser());
+            QueryHandler.instanceOf().clone(Context.getLock()).removeLock(dbo.getContext(), dbo.__getIDS(), mpv5.ui.frames.MPView.getUser());
             lockedObjects.remove(dbo);
             LOCKED = false;
         }
@@ -74,7 +74,7 @@ public class DatabaseObjectLock {
         if (!LOCKED) {
             try {
                 Log.Debug(this, "Trying to lock item " + dbo);
-                QueryHandler.instanceOf().clone(Context.getLock()).insertLock(dbo.getContext(), dbo.__getIDS(), mpv5.ui.frames.MPV5View.getUser());
+                QueryHandler.instanceOf().clone(Context.getLock()).insertLock(dbo.getContext(), dbo.__getIDS(), mpv5.ui.frames.MPView.getUser());
                 lockedObjects.add(dbo);
                 LOCKED = true;
             } catch (UnableToLockException ex) {

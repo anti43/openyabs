@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mpv5.db.common.NodataFoundException;
-import mpv5.ui.frames.MPV5View;
+import mpv5.ui.frames.MPView;
 import mpv5.logging.*;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
@@ -90,23 +90,23 @@ public class Main extends SingleFrameApplication {
 
             @Override
             public void run() {
-                MPV5View.addMessage(Messages.CACHE);
+                MPView.addMessage(Messages.CACHE);
                 User.cacheUser();
-                MPV5View.addMessage(Messages.CACHED_OBJECTS + ": " + Context.getUser());
+                MPView.addMessage(Messages.CACHED_OBJECTS + ": " + Context.getUser());
                 LanguageManager.getCountriesAsComboBoxModel();
-                MPV5View.addMessage(Messages.CACHED_OBJECTS + ": " + Context.getCountries());
+                MPView.addMessage(Messages.CACHED_OBJECTS + ": " + Context.getCountries());
             }
         };
         new Thread(runnable).start();
 //        Account.cacheAccounts();//pre cache accounts
-//        MPV5View.addMessage(Messages.CACHED_OBJECTS + ": " + Context.getAccounts());
+//        MPView.addMessage(Messages.CACHED_OBJECTS + ": " + Context.getAccounts());
 //        DatabaseObject.cacheObjects();//Is called by User.login() later
     }
 
     private static void useNetbookOpt() {
         ControlPanel_Fonts.applyFont(new Font("Dialog", Font.PLAIN, 11));
-        MPV5View.setNavBarAnimated(false);
-        MPV5View.setTabPaneScrolled(true);
+        MPView.setNavBarAnimated(false);
+        MPView.setTabPaneScrolled(true);
     }
     private File lockfile = new File(MPPATH + File.separator + "." + Constants.PROG_NAME + "." + "lck");
 
@@ -193,13 +193,13 @@ public class Main extends SingleFrameApplication {
 
     @Override
     protected void shutdown() {
-        MPV5View.setWaiting(true);
-        MPV5View.setProgressRunning(true);
-        DatabaseObjectLock.releaseAllObjectsFor(MPV5View.getUser());
+        MPView.setWaiting(true);
+        MPView.setProgressRunning(true);
+        DatabaseObjectLock.releaseAllObjectsFor(MPView.getUser());
         try {
             LocalSettings.save();
-            if (!MPV5View.getUser().isDefault()) {
-                MPV5View.getUser().logout();
+            if (!MPView.getUser().isDefault()) {
+                MPView.getUser().logout();
             }
         } catch (Exception e) {
             Log.Debug(e);
@@ -445,10 +445,10 @@ public class Main extends SingleFrameApplication {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             }
             LookAndFeelAddons.setAddon(LookAndFeelAddons.getBestMatchAddonClassName());
-            if (MPV5View.identifierFrame != null && MPV5View.identifierFrame.isShowing()) {
-                MPV5View.identifierFrame.setVisible(false);
-                SwingUtilities.updateComponentTreeUI(MPV5View.identifierFrame);
-                MPV5View.identifierFrame.setVisible(true);
+            if (MPView.identifierFrame != null && MPView.identifierFrame.isShowing()) {
+                MPView.identifierFrame.setVisible(false);
+                SwingUtilities.updateComponentTreeUI(MPView.identifierFrame);
+                MPView.identifierFrame.setVisible(true);
             }
         } catch (Exception exe) {
             try {
@@ -486,19 +486,19 @@ public class Main extends SingleFrameApplication {
         Main.splash.nextStep(Messages.INIT_PLUGINS.toString());
         loadPlugins();
         Main.splash.nextStep(Messages.INIT_GUI.toString());
-        super.show(new MPV5View(this));
+        super.show(new MPView(this));
         firstStart = firststart;
         if (Main.firstStart) {
-            getApplication().getMainFrame().setSize(MPV5View.initialSize);
+            getApplication().getMainFrame().setSize(MPView.initialSize);
         }
-        SwingUtilities.updateComponentTreeUI(MPV5View.identifierFrame);
+        SwingUtilities.updateComponentTreeUI(MPView.identifierFrame);
         splash.dispose();
         if (START_SERVER) {
             MPServer serv = new MPServer();
             serv.start();
-            MPV5View.identifierView.showServerStatus(serv.isAlive());
+            MPView.identifierView.showServerStatus(serv.isAlive());
         } else {
-            MPV5View.identifierView.showServerStatus(false);
+            MPView.identifierView.showServerStatus(false);
         }
     }
 
@@ -506,13 +506,13 @@ public class Main extends SingleFrameApplication {
         if (!removeplugs) {
             try {
                 MPPLuginLoader loadr = new MPPLuginLoader();
-                MPV5View.queuePlugins(loadr.getPlugins());
+                MPView.queuePlugins(loadr.getPlugins());
             } catch (Exception e) {
                 Log.Debug(e);
             }
         } else {
             try {
-                ArrayList data = DatabaseObject.getReferencedObjects(MPV5View.getUser(), Context.getPluginsToUsers());
+                ArrayList data = DatabaseObject.getReferencedObjects(MPView.getUser(), Context.getPluginsToUsers());
 
                 for (int i = 0; i < data.size(); i++) {
                     try {

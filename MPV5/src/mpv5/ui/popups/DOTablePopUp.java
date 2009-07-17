@@ -29,7 +29,7 @@ import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
-import mpv5.ui.frames.MPV5View;
+import mpv5.ui.frames.MPView;
 
 /**
  *
@@ -93,7 +93,7 @@ public class DOTablePopUp extends JPopupMenu {
 
             public void actionPerformed(ActionEvent e) {
                 try {
-                    MPV5View.identifierView.addTab(DatabaseObject.getObject(c, Integer.valueOf(to.getModel().getValueAt(to.getSelectedRow(), 0).toString())));
+                    MPView.identifierView.addTab(DatabaseObject.getObject(c, Integer.valueOf(to.getModel().getValueAt(to.getSelectedRow(), 0).toString())));
                 } catch (NodataFoundException ex) {
                     Log.Debug(DOTablePopUp.class, ex);
                 }

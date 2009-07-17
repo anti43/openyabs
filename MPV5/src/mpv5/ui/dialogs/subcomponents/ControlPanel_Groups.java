@@ -39,7 +39,7 @@ import mpv5.db.objects.Group;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.Popup;
-import mpv5.ui.frames.MPV5View;
+import mpv5.ui.frames.MPView;
 import mpv5.ui.panels.DataPanel;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.arrays.ArrayUtilities;
@@ -446,7 +446,7 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
         if (dbo.getDbIdentity().equals(Context.getGroup().getDbIdentity())) {
             setDataOwner(dbo,true);
         } else {
-            MPV5View.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE);
+            MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE);
         }
     }
 

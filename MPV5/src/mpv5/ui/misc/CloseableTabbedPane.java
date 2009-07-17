@@ -42,7 +42,7 @@ import javax.swing.event.EventListenerList;
 
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import javax.swing.plaf.metal.MetalTabbedPaneUI;
-import mpv5.ui.frames.MPV5View;
+import mpv5.ui.frames.MPView;
 
 /**
  * A JTabbedPane which has a close ('X') icon on each tab.
@@ -78,13 +78,13 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseListener,
      * The closeicon when the mouse is pressed.
      */
     private Icon pressedCloseIcon = null;
-    private MPV5View parentv;
+    private MPView parentv;
 
     /**
      * Creates a new instance of <code>CloseableTabbedPane</code>
      * @param view
      */
-    public CloseableTabbedPane(MPV5View view) {
+    public CloseableTabbedPane(MPView view) {
         super();
         init(SwingUtilities.LEFT);
         setCloseIcons(new ImageIcon(CloseableTabbedPane.class.getResource("/mpv5/resources/images/close.png")),

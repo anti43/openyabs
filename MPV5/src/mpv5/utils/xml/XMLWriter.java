@@ -26,7 +26,7 @@ import mpv5.db.common.DatabaseObject;
 import mpv5.globals.Constants;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
-import mpv5.ui.frames.MPV5View;
+import mpv5.ui.frames.MPView;
 import mpv5.utils.files.FileDirectoryHandler;
 import org.jdom.DocType;
 import org.jdom.Document;
@@ -167,7 +167,7 @@ public class XMLWriter {
         }
         XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
         outputter.output(myDocument, fw);
-        MPV5View.addMessage(Messages.FILE_SAVED + file.getPath());
+        MPView.addMessage(Messages.FILE_SAVED + file.getPath());
     }
 
     /**
@@ -184,7 +184,7 @@ public class XMLWriter {
         }
 
     //add an attribute to the root element
-//        rootElement.setAttribute(new Attribute("userid", MPV5View.getUser().getID()));
+//        rootElement.setAttribute(new Attribute("userid", MPView.getUser().getID()));
     }
 
     /**

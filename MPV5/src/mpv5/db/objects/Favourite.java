@@ -20,7 +20,7 @@ import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.globals.Messages;
-import mpv5.ui.frames.MPV5View;
+import mpv5.ui.frames.MPView;
 import mpv5.db.objects.User;
 
 /**
@@ -39,7 +39,7 @@ public class Favourite extends DatabaseObject {
 
     public Favourite(DatabaseObject dato) {
         context.setDbIdentity(Context.IDENTITY_FAVS);
-        this.setUsersids(MPV5View.getUser().__getIDS());
+        this.setUsersids(MPView.getUser().__getIDS());
         setCName(dato.getDbIdentity());
         setItemsids(dato.__getIDS());
     }
@@ -82,7 +82,7 @@ public class Favourite extends DatabaseObject {
     public static boolean isFavourite(DatabaseObject dato) {
         if (!mpv5.db.common.QueryHandler.instanceOf().clone(Context.getFavourites()).
                 checkConstraint(new String[]{"cname", "usersids", "itemsids"},
-                    new Object[]{dato.getDbIdentity(), MPV5View.getUser().__getIDS(),dato.__getIDS()})) {
+                    new Object[]{dato.getDbIdentity(), MPView.getUser().__getIDS(),dato.__getIDS()})) {
             return true;
         } else {
             return false;
@@ -98,7 +98,7 @@ public class Favourite extends DatabaseObject {
         
             mpv5.db.common.QueryHandler.instanceOf().clone(Context.getFavourites()).
                     delete(new String[]{"cname", "usersids", "itemsids"},
-                    new Object[]{dato.getDbIdentity(), MPV5View.getUser().__getIDS(),dato.__getIDS()}, Messages.DONE.toString());
+                    new Object[]{dato.getDbIdentity(), MPView.getUser().__getIDS(),dato.__getIDS()}, Messages.DONE.toString());
         
     }
 
@@ -108,7 +108,7 @@ public class Favourite extends DatabaseObject {
      */
     public static Favourite[] getUserFavourites() {
 
-        Object[][] data = mpv5.db.common.QueryHandler.instanceOf().clone(Context.getFavourites()).select("cname, usersids, itemsids", new String[]{"usersids", MPV5View.getUser().__getIDS().toString(), ""});
+        Object[][] data = mpv5.db.common.QueryHandler.instanceOf().clone(Context.getFavourites()).select("cname, usersids, itemsids", new String[]{"usersids", MPView.getUser().__getIDS().toString(), ""});
         Favourite[] favs = new Favourite[data.length];
 
         for (int i = 0; i < favs.length; i++) {

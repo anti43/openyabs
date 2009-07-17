@@ -26,7 +26,7 @@ import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryHandler;
-import mpv5.ui.frames.MPV5View;
+import mpv5.ui.frames.MPView;
 
 /**
  *
@@ -63,7 +63,7 @@ public class Property extends DatabaseObject {
     @Override
     public boolean save() {
         QueryCriteria c = new QueryCriteria();
-        c.add("usersids", MPV5View.getUser().__getIDS());
+        c.add("usersids", MPView.getUser().__getIDS());
         c.add("cname", cname);
         QueryHandler.instanceOf().clone(Context.getProperties()).delete(c);
         return super.save();

@@ -22,7 +22,7 @@ import mpv5.db.common.DatabaseObject;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.DialogForFile;
-import mpv5.ui.frames.MPV5View;
+import mpv5.ui.frames.MPView;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.files.FileReaderWriter;
 import mpv5.utils.files.TextDatFile;
@@ -78,7 +78,7 @@ public class FilePrintJob {
 
         f.setHeader(head);
         f.setData(dat);
-        MPV5View.showFilesaveDialogFor(f.createFile(name));
+        MPView.showFilesaveDialogFor(f.createFile(name));
     }
 
     public void toVCF() {
@@ -130,7 +130,7 @@ public class FilePrintJob {
             }
         }
 
-        MPV5View.showFilesaveDialogFor(f);
+        MPView.showFilesaveDialogFor(f);
     }
 
     public void toXML() {
@@ -146,6 +146,6 @@ public class FilePrintJob {
         }
 
        
-        MPV5View.showFilesaveDialogFor(xmlw.createFile(name));
+        MPView.showFilesaveDialogFor(xmlw.createFile(name));
     }
 }

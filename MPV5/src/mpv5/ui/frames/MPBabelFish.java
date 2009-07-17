@@ -70,7 +70,7 @@ public class MPBabelFish extends javax.swing.JFrame {
 
     private void setLanguageSelection() {
         languages.setModel(LanguageManager.getLanguagesAsComboBoxModel());
-        languages.setSelectedIndex(MPComboBoxModelItem.getItemID(MPV5View.getUser().__getLanguage(),
+        languages.setSelectedIndex(MPComboBoxModelItem.getItemID(MPView.getUser().__getLanguage(),
                 languages.getModel()));
 
         setLanguage();
@@ -408,13 +408,13 @@ public class MPBabelFish extends javax.swing.JFrame {
             parent.setCursor(new Cursor(Cursor.WAIT_CURSOR));
             String[] dat = ArrayUtilities.SmallObjectToStringArray(ArrayUtilities.getColumnAsArray(data, 1));
             String[] translated = new String[dat.length];
-            MPV5View.setProgressMaximumValue(dat.length);
+            MPView.setProgressMaximumValue(dat.length);
             for (int i = 0; i < dat.length; i++) {
 
                 String string = dat[i];
                 try {
                     translated[i] = Translate.translate(string, from.getSelectedItem().toString(), to.getSelectedItem().toString());
-                    MPV5View.setProgressValue(i + 1);
+                    MPView.setProgressValue(i + 1);
                 } catch (Exception ex) {
                     Log.Debug(this, ex);
                 }
@@ -426,7 +426,7 @@ public class MPBabelFish extends javax.swing.JFrame {
         @Override
         public void done() {
             parent.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-            MPV5View.setProgressReset();
+            MPView.setProgressReset();
             Popup.notice(Messages.DONE);
         }
     }
@@ -449,7 +449,7 @@ public class MPBabelFish extends javax.swing.JFrame {
                     LanguageManager.getEditorModel(((MPComboBoxModelItem) languages.getSelectedItem()).getId()),
                     Headers.BABELFISH.getValue()));
             data.validate();
-//            langName.set_Text((((MPComboBoxModelItem) languages.getSelectedItem()).getName() + " (" + MPV5View.getUser().getName() + ")"));
+//            langName.set_Text((((MPComboBoxModelItem) languages.getSelectedItem()).getName() + " (" + MPView.getUser().getName() + ")"));
             parent.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
             return null;
         }
@@ -480,7 +480,7 @@ public class MPBabelFish extends javax.swing.JFrame {
             FileReaderWriter fr = new FileReaderWriter(f);
             String[] imported = fr.readLines();
 
-            MPV5View.setProgressMaximumValue(imported.length);
+            MPView.setProgressMaximumValue(imported.length);
             for (int i = 0; i < originallanguage.length; i++) {
                 String component = components[i];
                 try {
@@ -488,7 +488,7 @@ public class MPBabelFish extends javax.swing.JFrame {
                         String string = imported[j];
                         if (string.split("=")[0].equals(component)) {
                             originallanguage[i] = string.split("=")[1];
-                            MPV5View.setProgressValue(i + 1);
+                            MPView.setProgressValue(i + 1);
                         }
                     }
                 } catch (Exception ex) {
@@ -509,7 +509,7 @@ public class MPBabelFish extends javax.swing.JFrame {
         @Override
         public void done() {
             parent.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-            MPV5View.setProgressReset();
+            MPView.setProgressReset();
             Popup.notice(Messages.DONE);
         }
     }

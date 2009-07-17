@@ -32,7 +32,7 @@ import mpv5.db.objects.HistoryItem;
 import mpv5.logging.Log;
 import mpv5.ui.panels.DataPanel;
 import mpv5.ui.dialogs.Popup;
-import mpv5.ui.frames.MPV5View;
+import mpv5.ui.frames.MPView;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
 import javax.swing.JComponent;
@@ -64,13 +64,13 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
      */
     public static void cacheObjects(final Context[] contextArray) {
 
-        MPV5View.addMessage(Messages.CACHE);
+        MPView.addMessage(Messages.CACHE);
         Runnable runnable = new Runnable() {
 
             @Override
             public void run() {
                 int count = 0;
-                MPV5View.setProgressMaximumValue(contextArray.length - 1);
+                MPView.setProgressMaximumValue(contextArray.length - 1);
                 for (int f = 0; f < contextArray.length; f++) {
                     try {
                         Context context = contextArray[f];
@@ -90,14 +90,14 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                                 count++;
                             }
                         }
-                        MPV5View.setProgressValue(f);
+                        MPView.setProgressValue(f);
                     } catch (Exception nodataFoundException) {
                         Log.Debug(DatabaseObject.class, nodataFoundException.getMessage());
                     }
                 }
                 Log.Debug(DatabaseObject.class, "Cached objects: " + count);
-                MPV5View.addMessage(Messages.CACHED_OBJECTS + ": " + count);
-                MPV5View.setProgressReset();
+                MPView.addMessage(Messages.CACHED_OBJECTS + ": " + count);
+                MPView.setProgressReset();
             }
         };
         Thread t = new Thread(runnable);
@@ -344,7 +344,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
 
                         @Override
                         public void run() {
-                            QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, MPV5View.getUser().__getCName(), fdbid, fids, fgids);
+                            QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, MPView.getUser().__getCName(), fdbid, fids, fgids);
                         }
                     };
                     SwingUtilities.invokeLater(runnable);
@@ -370,8 +370,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
         Log.Debug(this, "Starting import..");
         Log.Debug(this, "Setting IDS to -1");
         ids = -1;
-        Log.Debug(this, "Setting intaddedby to " + MPV5View.getUser().__getIDS());
-        intaddedby = MPV5View.getUser().__getIDS();
+        Log.Debug(this, "Setting intaddedby to " + MPView.getUser().__getIDS());
+        intaddedby = MPView.getUser().__getIDS();
 
         if (groupsids <= 0 || !DatabaseObject.exists(Context.getGroup(), groupsids)) {
             Log.Debug(this, "Setting groups to 'ungrouped'");
@@ -428,7 +428,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                 Runnable runnable = new Runnable() {
 
                     public void run() {
-                        QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, MPV5View.getUser().__getCName(), fdbid, fids, fgids);
+                        QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, MPView.getUser().__getCName(), fdbid, fids, fgids);
                     }
                 };
                 SwingUtilities.invokeLater(runnable);

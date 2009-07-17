@@ -56,7 +56,7 @@ import mpv5.ui.dialogs.BigPopup;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Groups;
-import mpv5.ui.frames.MPV5View;
+import mpv5.ui.frames.MPView;
 import mpv5.ui.popups.FileTablePopUp;
 import mpv5.ui.toolbars.DataPanelTB;
 import mpv5.db.objects.User;
@@ -109,7 +109,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 //        showSearchBar(true);
         refresh();
         dateadded.setText(DateConverter.getTodayDefDate());
-        addedby.setText(MPV5View.getUser().getName());
+        addedby.setText(MPView.getUser().getName());
         groupnameselect.setSearchOnEnterEnabled(true);
         groupnameselect.setContext(Context.getGroup());
         companyselect.setSearchOnEnterEnabled(true);
@@ -243,7 +243,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     private void itemTableClicked(MouseEvent evt) {
         if (evt.getClickCount() > 1) {
             try {
-                MPV5View.identifierView.addTab(DatabaseObject.getObject(Context.getItems(), Integer.valueOf(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).toString())));
+                MPView.identifierView.addTab(DatabaseObject.getObject(Context.getItems(), Integer.valueOf(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).toString())));
             } catch (NodataFoundException ex) {
                 Log.Debug(ex);
             }
@@ -253,7 +253,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     private void productTableClicked(MouseEvent evt) {
         if (evt.getClickCount() > 1) {
             try {
-                MPV5View.identifierView.addTab(DatabaseObject.getObject(Context.getProducts(), Integer.valueOf(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).toString())));
+                MPView.identifierView.addTab(DatabaseObject.getObject(Context.getProducts(), Integer.valueOf(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).toString())));
             } catch (NodataFoundException ex) {
                 Log.Debug(ex);
             }
@@ -1111,7 +1111,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
         if (dataOwner.isExisting()) {
-            MPV5View.identifierView.addTab(new JournalPanel(dataOwner), Messages.HISTORY_OF + getDataOwner().__getCName());
+            MPView.identifierView.addTab(new JournalPanel(dataOwner), Messages.HISTORY_OF + getDataOwner().__getCName());
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -1372,7 +1372,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             @Override
             public void run() {
                 try {
-                    groupnameselect.setModel(DatabaseObject.getObject(Context.getGroup(), MPV5View.getUser().__getGroupsids()));
+                    groupnameselect.setModel(DatabaseObject.getObject(Context.getGroup(), MPView.getUser().__getGroupsids()));
                     sp.refresh();
 
                     if (jButton1.isEnabled()) {
@@ -1380,7 +1380,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                     }
 
                     countryselect.setModel(LanguageManager.getCountriesAsComboBoxModel());
-                    countryselect.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(MPV5View.getUser().__getDefcountry(), countryselect.getModel()));
+                    countryselect.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(MPView.getUser().__getDefcountry(), countryselect.getModel()));
                 } catch (Exception e) {
                     Log.Debug(this, e);
                 }
@@ -1434,7 +1434,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         if (dbo.getDbIdentity().equals(Context.getContact().getDbIdentity())) {
             setDataOwner(dbo,true);
         } else {
-            MPV5View.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());
+            MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());
         }
     }
 

@@ -13,7 +13,7 @@ import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.Popup;
-import mpv5.ui.frames.MPV5View;
+import mpv5.ui.frames.MPView;
 import mpv5.ui.popups.CopyPasteMenu;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.files.FileDirectoryHandler;
@@ -129,7 +129,7 @@ public class ControlPanel_Konsole extends javax.swing.JPanel implements ControlA
         File tf = FileDirectoryHandler.getTempFile("mp_konsole_export", "txt");
         FileReaderWriter f = new FileReaderWriter(tf);
         f.write(jTextArea1.getText());
-        MPV5View.showFilesaveDialogFor(tf);
+        MPView.showFilesaveDialogFor(tf);
 
 }//GEN-LAST:event_jButton3ActionPerformed
 

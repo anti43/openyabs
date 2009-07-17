@@ -28,7 +28,7 @@ import javax.swing.JTextField;
 import javax.swing.filechooser.FileFilter;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
-import mpv5.ui.frames.MPV5View;
+import mpv5.ui.frames.MPView;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.jobs.Waitable;
 import mpv5.utils.jobs.Waiter;
@@ -141,7 +141,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
      */
     public boolean chooseFile() {
         try {
-            if (this.showOpenDialog(MPV5View.identifierFrame) == JFileChooser.APPROVE_OPTION) {
+            if (this.showOpenDialog(MPView.identifierFrame) == JFileChooser.APPROVE_OPTION) {
                 try {
                     this.file = this.getSelectedFile();
                     CURRENT_DIR = file;
@@ -162,7 +162,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
      */
     public boolean saveFile() {
         try {
-            if (this.showSaveDialog(MPV5View.identifierFrame) == JFileChooser.APPROVE_OPTION) {
+            if (this.showSaveDialog(MPView.identifierFrame) == JFileChooser.APPROVE_OPTION) {
                 try {
                     if (!this.getSelectedFile().exists()) {
                         this.file = this.getSelectedFile();
@@ -194,7 +194,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
     public void saveFile(File fileToSave) {
 
 
-        if (this.showSaveDialog(MPV5View.identifierFrame) == JFileChooser.APPROVE_OPTION) {
+        if (this.showSaveDialog(MPView.identifierFrame) == JFileChooser.APPROVE_OPTION) {
             this.file = this.getSelectedFile();
             if (!file.exists()) {
                 try {
@@ -226,7 +226,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
                 }
                 fileToSave.delete();
                 CURRENT_DIR = file;
-                MPV5View.addMessage(Messages.FILE_SAVED + file.getCanonicalPath());
+                MPView.addMessage(Messages.FILE_SAVED + file.getCanonicalPath());
             } catch (IOException ex) {
                 Popup.error(ex);
 
@@ -259,7 +259,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
      * @return True if a file was selected
      */
     public boolean getFilePath(JTextField field) {
-        if (this.showOpenDialog(MPV5View.identifierFrame) == JFileChooser.APPROVE_OPTION) {
+        if (this.showOpenDialog(MPView.identifierFrame) == JFileChooser.APPROVE_OPTION) {
             try {
                 field.setText(this.getSelectedFile().getCanonicalPath());
                 this.file = this.getSelectedFile();

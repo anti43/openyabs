@@ -18,7 +18,7 @@ import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.objects.Schedule;
 import mpv5.logging.Log;
-import mpv5.ui.frames.MPV5View;
+import mpv5.ui.frames.MPView;
 import mpv5.ui.misc.Position;
 import mpv5.utils.tables.TableFormat;
 
@@ -134,7 +134,7 @@ public class ScheduleDayEvents extends javax.swing.JFrame {
         if (evt.getClickCount() > 1) {
             DatabaseObject d = (DatabaseObject) jTable1.getValueAt(jTable1.getSelectedRow(), 0);
             if (d != null) {
-                MPV5View.identifierView.addTab(d);
+                MPView.identifierView.addTab(d);
                 this.dispose();
             }
         }

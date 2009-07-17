@@ -11,7 +11,7 @@ import mpv5.db.common.DatabaseSearch;
 import mpv5.db.common.NodataFoundException;
 import mpv5.globals.Headers;
 import mpv5.logging.Log;
-import mpv5.ui.frames.MPV5View;
+import mpv5.ui.frames.MPView;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.tables.Selection;
 import mpv5.utils.tables.TableFormat;
@@ -304,7 +304,7 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
             Selection sel = new Selection(listTable);
             if (sel.checkID()) {
                 try {
-                    MPV5View.identifierView.addTab(DatabaseObject.getObject(context, sel.getId()));
+                    MPView.identifierView.addTab(DatabaseObject.getObject(context, sel.getId()));
                 } catch (NodataFoundException ex) {
                     Log.Debug(ex);
                 }

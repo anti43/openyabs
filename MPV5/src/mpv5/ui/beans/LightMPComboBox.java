@@ -36,7 +36,7 @@ import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.DatabaseSearch;
 import mpv5.handler.MPEnum;
 import mpv5.logging.Log;
-import mpv5.ui.frames.MPV5View;
+import mpv5.ui.frames.MPView;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPComboboxModel;
 import mpv5.utils.renderer.ComboBoxRendererForTooltip;
@@ -158,9 +158,9 @@ public class LightMPComboBox extends JComboBox {
                 }
                 String params = "ids, cname";
                 String vars = null;
-                if (MPV5View.getUser().getProperties().hasProperty(context + VALUE_SEARCHFIELDS)) {
+                if (MPView.getUser().getProperties().hasProperty(context + VALUE_SEARCHFIELDS)) {
                    params = "ids";
-                   vars = MPV5View.getUser().getProperties().getProperty(context + VALUE_SEARCHFIELDS);
+                   vars = MPView.getUser().getProperties().getProperty(context + VALUE_SEARCHFIELDS);
                    String[] vaars = vars.split("_\\$");
                  
                     for (int i = 0; i < vaars.length; i++) {

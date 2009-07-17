@@ -1,5 +1,5 @@
 /*
- * MPV5View.java
+ * MPView.java
  */
 package mpv5.ui.frames;
 
@@ -79,9 +79,9 @@ import org.jdesktop.application.FrameView;
 /**
  * The application's main frame.
  */
-public class MPV5View extends FrameView {
+public class MPView extends FrameView {
 
-    public static MPV5View identifierView;
+    public static MPView identifierView;
     public static Dimension initialSize = new Dimension(1100, 900);
     public static JFrame identifierFrame;
     public static CloseableTabbedPane tabPane;
@@ -230,12 +230,12 @@ public class MPV5View extends FrameView {
      */
     public static User getUser() {
         if (currentUser == null) {
-            Log.Debug(MPV5View.class, "There is no user logged in here, using default user.");
+            Log.Debug(MPView.class, "There is no user logged in here, using default user.");
             try {
                 currentUser = User.DEFAULT;
                 return currentUser;
             } catch (Exception ex) {
-                Log.Debug(MPV5View.class, "Default user is missing.");
+                Log.Debug(MPView.class, "Default user is missing.");
                 return new User();
             }
         } else {
@@ -298,10 +298,10 @@ public class MPV5View extends FrameView {
         clipboardMenu.add(new ClipboardMenuItem(obj));
     }
 
-    public MPV5View(SingleFrameApplication app) {
+    public MPView(SingleFrameApplication app) {
         super(app);
 
-        MPV5View.identifierApplication = app;
+        MPView.identifierApplication = app;
 
         initComponents();
 
@@ -560,8 +560,8 @@ public class MPV5View extends FrameView {
         jButton5.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/agt_family.png"))); // NOI18N
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
-        jButton5.setText(bundle.getString("MPV5View.jButton5.text_1")); // NOI18N
-        jButton5.setToolTipText(bundle.getString("MPV5View.jButton5.toolTipText_1")); // NOI18N
+        jButton5.setText(bundle.getString("MPView.jButton5.text_1")); // NOI18N
+        jButton5.setToolTipText(bundle.getString("MPView.jButton5.toolTipText_1")); // NOI18N
         jButton5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton5.setName("jButton5"); // NOI18N
         jButton5.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -573,8 +573,8 @@ public class MPV5View extends FrameView {
 
         jButton1.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/edit_group.png"))); // NOI18N
-        jButton1.setText(bundle.getString("MPV5View.jButton1.text_1")); // NOI18N
-        jButton1.setToolTipText(bundle.getString("MPV5View.jButton1.toolTipText_1")); // NOI18N
+        jButton1.setText(bundle.getString("MPView.jButton1.text_1")); // NOI18N
+        jButton1.setToolTipText(bundle.getString("MPView.jButton1.toolTipText_1")); // NOI18N
         jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton1.setName("jButton1"); // NOI18N
         jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -586,8 +586,8 @@ public class MPV5View extends FrameView {
 
         jButton2.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/edit_user.png"))); // NOI18N
-        jButton2.setText(bundle.getString("MPV5View.jButton2.text_1")); // NOI18N
-        jButton2.setToolTipText(bundle.getString("MPV5View.jButton2.toolTipText_1")); // NOI18N
+        jButton2.setText(bundle.getString("MPView.jButton2.text_1")); // NOI18N
+        jButton2.setToolTipText(bundle.getString("MPView.jButton2.toolTipText_1")); // NOI18N
         jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton2.setName("jButton2"); // NOI18N
         jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -599,8 +599,8 @@ public class MPV5View extends FrameView {
 
         jButton18.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/edit_group.png"))); // NOI18N
-        jButton18.setText(bundle.getString("MPV5View.jButton18.text_1")); // NOI18N
-        jButton18.setToolTipText(bundle.getString("MPV5View.jButton18.toolTipText_1")); // NOI18N
+        jButton18.setText(bundle.getString("MPView.jButton18.text_1")); // NOI18N
+        jButton18.setToolTipText(bundle.getString("MPView.jButton18.toolTipText_1")); // NOI18N
         jButton18.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton18.setName("jButton18"); // NOI18N
         jButton18.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -645,7 +645,7 @@ public class MPV5View extends FrameView {
                 .addGap(131, 131, 131))
         );
 
-        jOutlookBar1.addTab(bundle.getString("MPV5View.jPanel2.TabConstraints.tabTitle_1"), jPanel2); // NOI18N
+        jOutlookBar1.addTab(bundle.getString("MPView.jPanel2.TabConstraints.tabTitle_1"), jPanel2); // NOI18N
 
         jPanel3.setBackground(new java.awt.Color(153, 153, 153));
         jPanel3.setName("jPanel3"); // NOI18N
@@ -653,8 +653,8 @@ public class MPV5View extends FrameView {
 
         jButton8.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/binary.png"))); // NOI18N
-        jButton8.setText(bundle.getString("MPV5View.jButton8.text")); // NOI18N
-        jButton8.setToolTipText(bundle.getString("MPV5View.jButton8.toolTipText")); // NOI18N
+        jButton8.setText(bundle.getString("MPView.jButton8.text")); // NOI18N
+        jButton8.setToolTipText(bundle.getString("MPView.jButton8.toolTipText")); // NOI18N
         jButton8.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton8.setName("jButton8"); // NOI18N
         jButton8.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -666,8 +666,8 @@ public class MPV5View extends FrameView {
 
         jButton9.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/kspread.png"))); // NOI18N
-        jButton9.setText(bundle.getString("MPV5View.jButton9.text")); // NOI18N
-        jButton9.setToolTipText(bundle.getString("MPV5View.jButton9.toolTipText")); // NOI18N
+        jButton9.setText(bundle.getString("MPView.jButton9.text")); // NOI18N
+        jButton9.setToolTipText(bundle.getString("MPView.jButton9.toolTipText")); // NOI18N
         jButton9.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton9.setName("jButton9"); // NOI18N
         jButton9.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -702,7 +702,7 @@ public class MPV5View extends FrameView {
                     .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
 
-        jOutlookBar1.addTab(bundle.getString("MPV5View.jPanel3.TabConstraints.tabTitle_1"), jPanel3); // NOI18N
+        jOutlookBar1.addTab(bundle.getString("MPView.jPanel3.TabConstraints.tabTitle_1"), jPanel3); // NOI18N
 
         jPanel4.setBackground(new java.awt.Color(153, 153, 153));
         jPanel4.setName("jPanel4"); // NOI18N
@@ -719,7 +719,7 @@ public class MPV5View extends FrameView {
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
-        jOutlookBar1.addTab(bundle.getString("MPV5View.jPanel4.TabConstraints.tabTitle_1"), jPanel4); // NOI18N
+        jOutlookBar1.addTab(bundle.getString("MPView.jPanel4.TabConstraints.tabTitle_1"), jPanel4); // NOI18N
 
         jPanel6.setBackground(new java.awt.Color(153, 153, 153));
         jPanel6.setName("jPanel6"); // NOI18N
@@ -727,8 +727,8 @@ public class MPV5View extends FrameView {
 
         jButton6.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/kservices.png"))); // NOI18N
-        jButton6.setText(bundle.getString("MPV5View.jButton6.text")); // NOI18N
-        jButton6.setToolTipText(bundle.getString("MPV5View.jButton6.toolTipText")); // NOI18N
+        jButton6.setText(bundle.getString("MPView.jButton6.text")); // NOI18N
+        jButton6.setToolTipText(bundle.getString("MPView.jButton6.toolTipText")); // NOI18N
         jButton6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton6.setName("jButton6"); // NOI18N
         jButton6.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -740,8 +740,8 @@ public class MPV5View extends FrameView {
 
         jButton7.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/edittrash.png"))); // NOI18N
-        jButton7.setText(bundle.getString("MPV5View.jButton7.text")); // NOI18N
-        jButton7.setToolTipText(bundle.getString("MPV5View.jButton7.toolTipText")); // NOI18N
+        jButton7.setText(bundle.getString("MPView.jButton7.text")); // NOI18N
+        jButton7.setToolTipText(bundle.getString("MPView.jButton7.toolTipText")); // NOI18N
         jButton7.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton7.setName("jButton7"); // NOI18N
         jButton7.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -772,7 +772,7 @@ public class MPV5View extends FrameView {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jOutlookBar1.addTab(bundle.getString("MPV5View.jPanel6.TabConstraints.tabTitle"), jPanel6); // NOI18N
+        jOutlookBar1.addTab(bundle.getString("MPView.jPanel6.TabConstraints.tabTitle"), jPanel6); // NOI18N
 
         javax.swing.GroupLayout naviPanelLayout = new javax.swing.GroupLayout(naviPanel);
         naviPanel.setLayout(naviPanelLayout);
@@ -804,12 +804,12 @@ public class MPV5View extends FrameView {
 
         menuBar.setName("menuBar"); // NOI18N
 
-        fileMenu.setText(bundle.getString("MPV5View.fileMenu.text_1")); // NOI18N
+        fileMenu.setText(bundle.getString("MPView.fileMenu.text_1")); // NOI18N
         fileMenu.setName("fileMenu"); // NOI18N
 
         jMenuItem13.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/filesave.png"))); // NOI18N
-        jMenuItem13.setText(bundle.getString("MPV5View.jMenuItem13.text")); // NOI18N
+        jMenuItem13.setText(bundle.getString("MPView.jMenuItem13.text")); // NOI18N
         jMenuItem13.setName("jMenuItem13"); // NOI18N
         jMenuItem13.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -820,7 +820,7 @@ public class MPV5View extends FrameView {
 
         jMenuItem14.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/filesaveas.png"))); // NOI18N
-        jMenuItem14.setText(bundle.getString("MPV5View.jMenuItem14.text")); // NOI18N
+        jMenuItem14.setText(bundle.getString("MPView.jMenuItem14.text")); // NOI18N
         jMenuItem14.setName("jMenuItem14"); // NOI18N
         jMenuItem14.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -834,7 +834,7 @@ public class MPV5View extends FrameView {
 
         jMenuItem6.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/22/printer1.png"))); // NOI18N
-        jMenuItem6.setText(bundle.getString("MPV5View.jMenuItem6.text")); // NOI18N
+        jMenuItem6.setText(bundle.getString("MPView.jMenuItem6.text")); // NOI18N
         jMenuItem6.setName("jMenuItem6"); // NOI18N
         jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -843,15 +843,15 @@ public class MPV5View extends FrameView {
         });
         fileMenu.add(jMenuItem6);
 
-        jMenu4.setText(bundle.getString("MPV5View.jMenu4.text")); // NOI18N
+        jMenu4.setText(bundle.getString("MPView.jMenu4.text")); // NOI18N
         jMenu4.setName("jMenu4"); // NOI18N
 
         jMenu5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/kontact_contacts.png"))); // NOI18N
-        jMenu5.setText(bundle.getString("MPV5View.jMenu5.text")); // NOI18N
+        jMenu5.setText(bundle.getString("MPView.jMenu5.text")); // NOI18N
         jMenu5.setName("jMenu5"); // NOI18N
 
         jMenuItem8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/xml.png"))); // NOI18N
-        jMenuItem8.setText(bundle.getString("MPV5View.jMenuItem8.text")); // NOI18N
+        jMenuItem8.setText(bundle.getString("MPView.jMenuItem8.text")); // NOI18N
         jMenuItem8.setName("jMenuItem8"); // NOI18N
         jMenuItem8.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -862,10 +862,10 @@ public class MPV5View extends FrameView {
 
         jMenu4.add(jMenu5);
 
-        jMenu10.setText(bundle.getString("MPV5View.jMenu10.text")); // NOI18N
+        jMenu10.setText(bundle.getString("MPView.jMenu10.text")); // NOI18N
         jMenu10.setName("jMenu10"); // NOI18N
 
-        jMenuItem20.setText(bundle.getString("MPV5View.jMenuItem20.text")); // NOI18N
+        jMenuItem20.setText(bundle.getString("MPView.jMenuItem20.text")); // NOI18N
         jMenuItem20.setName("jMenuItem20"); // NOI18N
         jMenuItem20.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -874,7 +874,7 @@ public class MPV5View extends FrameView {
         });
         jMenu10.add(jMenuItem20);
 
-        jMenuItem21.setText(bundle.getString("MPV5View.jMenuItem21.text")); // NOI18N
+        jMenuItem21.setText(bundle.getString("MPView.jMenuItem21.text")); // NOI18N
         jMenuItem21.setName("jMenuItem21"); // NOI18N
         jMenuItem21.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -885,10 +885,10 @@ public class MPV5View extends FrameView {
 
         jMenu4.add(jMenu10);
 
-        jMenu11.setText(bundle.getString("MPV5View.jMenu11.text")); // NOI18N
+        jMenu11.setText(bundle.getString("MPView.jMenu11.text")); // NOI18N
         jMenu11.setName("jMenu11"); // NOI18N
 
-        jMenuItem26.setText(bundle.getString("MPV5View.jMenuItem26.text")); // NOI18N
+        jMenuItem26.setText(bundle.getString("MPView.jMenuItem26.text")); // NOI18N
         jMenuItem26.setName("jMenuItem26"); // NOI18N
         jMenuItem26.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -901,11 +901,11 @@ public class MPV5View extends FrameView {
 
         fileMenu.add(jMenu4);
 
-        jMenu8.setText(bundle.getString("MPV5View.jMenu8.text")); // NOI18N
+        jMenu8.setText(bundle.getString("MPView.jMenu8.text")); // NOI18N
         jMenu8.setName("jMenu8"); // NOI18N
 
         jMenuItem11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/xml.png"))); // NOI18N
-        jMenuItem11.setText(bundle.getString("MPV5View.jMenuItem11.text")); // NOI18N
+        jMenuItem11.setText(bundle.getString("MPView.jMenuItem11.text")); // NOI18N
         jMenuItem11.setName("jMenuItem11"); // NOI18N
         jMenuItem11.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -921,7 +921,7 @@ public class MPV5View extends FrameView {
 
         jMenuItem12.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/remove.png"))); // NOI18N
-        jMenuItem12.setText(bundle.getString("MPV5View.jMenuItem12.text")); // NOI18N
+        jMenuItem12.setText(bundle.getString("MPView.jMenuItem12.text")); // NOI18N
         jMenuItem12.setName("jMenuItem12"); // NOI18N
         jMenuItem12.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -932,11 +932,11 @@ public class MPV5View extends FrameView {
 
         menuBar.add(fileMenu);
 
-        jMenu9.setText(bundle.getString("MPV5View.jMenu9.text")); // NOI18N
+        jMenu9.setText(bundle.getString("MPView.jMenu9.text")); // NOI18N
         jMenu9.setName("jMenu9"); // NOI18N
 
         jMenuItem15.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItem15.setText(bundle.getString("MPV5View.jMenuItem15.text")); // NOI18N
+        jMenuItem15.setText(bundle.getString("MPView.jMenuItem15.text")); // NOI18N
         jMenuItem15.setName("jMenuItem15"); // NOI18N
         jMenuItem15.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -950,7 +950,7 @@ public class MPV5View extends FrameView {
 
         jMenuItem9.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/editcopy.png"))); // NOI18N
-        jMenuItem9.setText(bundle.getString("MPV5View.jMenuItem9.text")); // NOI18N
+        jMenuItem9.setText(bundle.getString("MPView.jMenuItem9.text")); // NOI18N
         jMenuItem9.setName("jMenuItem9"); // NOI18N
         jMenuItem9.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -960,7 +960,7 @@ public class MPV5View extends FrameView {
         jMenu9.add(jMenuItem9);
 
         jMenuItem16.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_B, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItem16.setText(bundle.getString("MPV5View.jMenuItem16.text")); // NOI18N
+        jMenuItem16.setText(bundle.getString("MPView.jMenuItem16.text")); // NOI18N
         jMenuItem16.setName("jMenuItem16"); // NOI18N
         jMenuItem16.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -973,7 +973,7 @@ public class MPV5View extends FrameView {
         jMenu9.add(jSeparator5);
 
         jMenuItem17.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItem17.setText(bundle.getString("MPV5View.jMenuItem17.text")); // NOI18N
+        jMenuItem17.setText(bundle.getString("MPView.jMenuItem17.text")); // NOI18N
         jMenuItem17.setName("jMenuItem17"); // NOI18N
         jMenuItem17.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -984,13 +984,13 @@ public class MPV5View extends FrameView {
 
         menuBar.add(jMenu9);
 
-        jMenu1.setText(bundle.getString("MPV5View.jMenu1.text_1")); // NOI18N
+        jMenu1.setText(bundle.getString("MPView.jMenu1.text_1")); // NOI18N
         jMenu1.setName("jMenu1"); // NOI18N
 
-        jMenu2.setText(bundle.getString("MPV5View.jMenu2.text_1")); // NOI18N
+        jMenu2.setText(bundle.getString("MPView.jMenu2.text_1")); // NOI18N
         jMenu2.setName("jMenu2"); // NOI18N
 
-        jMenuItem1.setText(bundle.getString("MPV5View.jMenuItem1.text_1")); // NOI18N
+        jMenuItem1.setText(bundle.getString("MPView.jMenuItem1.text_1")); // NOI18N
         jMenuItem1.setName("jMenuItem1"); // NOI18N
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -999,7 +999,7 @@ public class MPV5View extends FrameView {
         });
         jMenu2.add(jMenuItem1);
 
-        jMenuItem2.setText(bundle.getString("MPV5View.jMenuItem2.text_1")); // NOI18N
+        jMenuItem2.setText(bundle.getString("MPView.jMenuItem2.text_1")); // NOI18N
         jMenuItem2.setName("jMenuItem2"); // NOI18N
         jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1010,7 +1010,7 @@ public class MPV5View extends FrameView {
 
         jMenu1.add(jMenu2);
 
-        jMenuItem25.setText(bundle.getString("MPV5View.jMenuItem25.text")); // NOI18N
+        jMenuItem25.setText(bundle.getString("MPView.jMenuItem25.text")); // NOI18N
         jMenuItem25.setName("jMenuItem25"); // NOI18N
         jMenuItem25.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1020,7 +1020,7 @@ public class MPV5View extends FrameView {
         jMenu1.add(jMenuItem25);
 
         jMenuItem19.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0));
-        jMenuItem19.setText(bundle.getString("MPV5View.jMenuItem19.text")); // NOI18N
+        jMenuItem19.setText(bundle.getString("MPView.jMenuItem19.text")); // NOI18N
         jMenuItem19.setName("jMenuItem19"); // NOI18N
         jMenuItem19.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1031,7 +1031,7 @@ public class MPV5View extends FrameView {
 
         jMenuItem4.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F11, 0));
         jMenuItem4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/2uparrow.png"))); // NOI18N
-        jMenuItem4.setText(bundle.getString("MPV5View.jMenuItem4.text")); // NOI18N
+        jMenuItem4.setText(bundle.getString("MPView.jMenuItem4.text")); // NOI18N
         jMenuItem4.setName("jMenuItem4"); // NOI18N
         jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1042,11 +1042,11 @@ public class MPV5View extends FrameView {
 
         menuBar.add(jMenu1);
 
-        jMenu3.setText(bundle.getString("MPV5View.jMenu3.text_1")); // NOI18N
+        jMenu3.setText(bundle.getString("MPView.jMenu3.text_1")); // NOI18N
         jMenu3.setName("jMenu3"); // NOI18N
 
         jMenuItem3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/configure_shortcuts.png"))); // NOI18N
-        jMenuItem3.setText(bundle.getString("MPV5View.jMenuItem3.text_1")); // NOI18N
+        jMenuItem3.setText(bundle.getString("MPView.jMenuItem3.text_1")); // NOI18N
         jMenuItem3.setName("jMenuItem3"); // NOI18N
         jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1056,7 +1056,7 @@ public class MPV5View extends FrameView {
         jMenu3.add(jMenuItem3);
 
         jMenuItem18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/kalarm.png"))); // NOI18N
-        jMenuItem18.setText(bundle.getString("MPV5View.jMenuItem18.text")); // NOI18N
+        jMenuItem18.setText(bundle.getString("MPView.jMenuItem18.text")); // NOI18N
         jMenuItem18.setName("jMenuItem18"); // NOI18N
         jMenuItem18.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1066,7 +1066,7 @@ public class MPV5View extends FrameView {
         jMenu3.add(jMenuItem18);
 
         jMenuItem23.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/edittrash.png"))); // NOI18N
-        jMenuItem23.setText(bundle.getString("MPV5View.jMenuItem23.text")); // NOI18N
+        jMenuItem23.setText(bundle.getString("MPView.jMenuItem23.text")); // NOI18N
         jMenuItem23.setName("jMenuItem23"); // NOI18N
         jMenuItem23.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1076,7 +1076,7 @@ public class MPV5View extends FrameView {
         jMenu3.add(jMenuItem23);
 
         jMenuItem24.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/kwikdisk.png"))); // NOI18N
-        jMenuItem24.setText(bundle.getString("MPV5View.jMenuItem24.text")); // NOI18N
+        jMenuItem24.setText(bundle.getString("MPView.jMenuItem24.text")); // NOI18N
         jMenuItem24.setName("jMenuItem24"); // NOI18N
         jMenuItem24.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1088,7 +1088,7 @@ public class MPV5View extends FrameView {
         jSeparator6.setName("jSeparator6"); // NOI18N
         jMenu3.add(jSeparator6);
 
-        jMenuItem22.setText(bundle.getString("MPV5View.jMenuItem22.text")); // NOI18N
+        jMenuItem22.setText(bundle.getString("MPView.jMenuItem22.text")); // NOI18N
         jMenuItem22.setName("jMenuItem22"); // NOI18N
         jMenuItem22.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1099,11 +1099,11 @@ public class MPV5View extends FrameView {
 
         menuBar.add(jMenu3);
 
-        favouritesMenu.setText(bundle.getString("MPV5View.favouritesMenu.text")); // NOI18N
+        favouritesMenu.setText(bundle.getString("MPView.favouritesMenu.text")); // NOI18N
         favouritesMenu.setName("favouritesMenu"); // NOI18N
 
         jMenuItem5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/remove.png"))); // NOI18N
-        jMenuItem5.setText(bundle.getString("MPV5View.jMenuItem5.text")); // NOI18N
+        jMenuItem5.setText(bundle.getString("MPView.jMenuItem5.text")); // NOI18N
         jMenuItem5.setName("jMenuItem5"); // NOI18N
         jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1114,13 +1114,13 @@ public class MPV5View extends FrameView {
 
         menuBar.add(favouritesMenu);
 
-        clipboardMenu.setText(bundle.getString("MPV5View.clipboardMenu.text")); // NOI18N
+        clipboardMenu.setText(bundle.getString("MPView.clipboardMenu.text")); // NOI18N
         clipboardMenu.setName("clipboardMenu"); // NOI18N
 
-        jMenu6.setText(bundle.getString("MPV5View.jMenu6.text")); // NOI18N
+        jMenu6.setText(bundle.getString("MPView.jMenu6.text")); // NOI18N
         jMenu6.setName("jMenu6"); // NOI18N
 
-        jMenuItem7.setText(bundle.getString("MPV5View.jMenuItem7.text")); // NOI18N
+        jMenuItem7.setText(bundle.getString("MPView.jMenuItem7.text")); // NOI18N
         jMenuItem7.setName("jMenuItem7"); // NOI18N
         jMenuItem7.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1133,10 +1133,10 @@ public class MPV5View extends FrameView {
 
         menuBar.add(clipboardMenu);
 
-        jMenu7.setText(bundle.getString("MPV5View.jMenu7.text")); // NOI18N
+        jMenu7.setText(bundle.getString("MPView.jMenu7.text")); // NOI18N
         jMenu7.setName("jMenu7"); // NOI18N
 
-        jMenuItem10.setText(bundle.getString("MPV5View.jMenuItem10.text")); // NOI18N
+        jMenuItem10.setText(bundle.getString("MPView.jMenuItem10.text")); // NOI18N
         jMenuItem10.setName("jMenuItem10"); // NOI18N
         jMenuItem10.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1153,7 +1153,7 @@ public class MPV5View extends FrameView {
         statusPanel.setLayout(new javax.swing.BoxLayout(statusPanel, javax.swing.BoxLayout.LINE_AXIS));
 
         statusMessageLabel.setFont(new java.awt.Font("Dialog", 0, 11));
-        statusMessageLabel.setText(bundle.getString("MPV5View.statusMessageLabel.text")); // NOI18N
+        statusMessageLabel.setText(bundle.getString("MPView.statusMessageLabel.text")); // NOI18N
         statusMessageLabel.setMaximumSize(new java.awt.Dimension(1000, 25));
         statusMessageLabel.setMinimumSize(new java.awt.Dimension(300, 14));
         statusMessageLabel.setName("statusMessageLabel"); // NOI18N
@@ -1230,7 +1230,7 @@ public class MPV5View extends FrameView {
         mainToolbar.setName("mainToolbar"); // NOI18N
 
         jButton24.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/endturn.png"))); // NOI18N
-        jButton24.setToolTipText(bundle.getString("MPV5View.jButton24.toolTipText_1")); // NOI18N
+        jButton24.setToolTipText(bundle.getString("MPView.jButton24.toolTipText_1")); // NOI18N
         jButton24.setFocusable(false);
         jButton24.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton24.setName("jButton24"); // NOI18N
@@ -1243,7 +1243,7 @@ public class MPV5View extends FrameView {
         mainToolbar.add(jButton24);
 
         jButton26.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/lock.png"))); // NOI18N
-        jButton26.setToolTipText(bundle.getString("MPV5View.jButton26.toolTipText_1")); // NOI18N
+        jButton26.setToolTipText(bundle.getString("MPView.jButton26.toolTipText_1")); // NOI18N
         jButton26.setFocusable(false);
         jButton26.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton26.setName("jButton26"); // NOI18N
@@ -1259,7 +1259,7 @@ public class MPV5View extends FrameView {
         mainToolbar.add(jSeparator2);
 
         jButton25.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/kcalc.png"))); // NOI18N
-        jButton25.setToolTipText(bundle.getString("MPV5View.jButton25.toolTipText_1")); // NOI18N
+        jButton25.setToolTipText(bundle.getString("MPView.jButton25.toolTipText_1")); // NOI18N
         jButton25.setFocusable(false);
         jButton25.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton25.setName("jButton25"); // NOI18N
@@ -1558,7 +1558,7 @@ public class MPV5View extends FrameView {
     private void jMenuItem24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem24ActionPerformed
         MPServer serv = new MPServer();
         serv.start();
-        MPV5View.identifierView.showServerStatus(serv.isAlive());
+        MPView.identifierView.showServerStatus(serv.isAlive());
     }//GEN-LAST:event_jMenuItem24ActionPerformed
 
     private void jMenuItem25ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem25ActionPerformed
@@ -1823,7 +1823,7 @@ public class MPV5View extends FrameView {
             serverlabel.setMinimumSize(new Dimension(0, 0));
             serverlabel.setSize(0, 0);
         }
-        MPV5View.identifierFrame.validate();
+        MPView.identifierFrame.validate();
     }
 
     private void loadPlugins() {
@@ -1846,8 +1846,8 @@ public class MPV5View extends FrameView {
                 pluginIcons.remove(component);
             }
         }
-        MPV5View.identifierFrame.validate();
-        MPV5View.identifierFrame.repaint();
+        MPView.identifierFrame.validate();
+        MPView.identifierFrame.repaint();
     }
 
     /**

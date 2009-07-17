@@ -28,7 +28,7 @@ import mpv5.db.objects.Item;
 import mpv5.db.objects.Product;
 import mpv5.db.objects.SubItem;
 import mpv5.ui.dialogs.Popup;
-import mpv5.ui.frames.MPV5View;
+import mpv5.ui.frames.MPView;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.date.RandomDate;
 import mpv5.utils.date.vTimeframe;
@@ -91,7 +91,7 @@ public class SampleData {
                     c.setisSupplier(new Random().nextBoolean());
                     c.settaxnumber("123-" + seed);
                     c.setGroupsids(group);
-                    c.setIntaddedby(MPV5View.getUser().__getIDS());
+                    c.setIntaddedby(MPView.getUser().__getIDS());
                     c.save();
 
                     if (withItems) {
@@ -124,7 +124,7 @@ public class SampleData {
                                 p.setDescription("no description!");
                                 p.setExternalvalue(100);value+=100d;
                                 p.setGroupsids(group);
-                                p.setIntaddedby(MPV5View.getUser().ids);
+                                p.setIntaddedby(MPView.getUser().ids);
                                 p.setInternalvalue(100);
                                 p.setMeasure("h");
                                 p.setQuantityvalue(1);
@@ -134,7 +134,7 @@ public class SampleData {
 
                             it.setTaxvalue(FormatNumber.round((value * 1.19) - value));
                             it.setNetvalue(FormatNumber.round(value));
-                            it.setIntaddedby(MPV5View.getUser().__getIDS());
+                            it.setIntaddedby(MPView.getUser().__getIDS());
                             it.save();
 
                             for (int j = 0; j < l.size(); j++) {
@@ -168,7 +168,7 @@ public class SampleData {
                             it.setReference("swqsd1221");
                             it.setSuppliersids(c.__getIDS());
                             it.setUrl("www.test.com");
-                            it.setIntaddedby(MPV5View.getUser().__getIDS());
+                            it.setIntaddedby(MPView.getUser().__getIDS());
                             it.save();
 
                             value = new Random().nextInt(100 * factor) + 1l;
@@ -190,7 +190,7 @@ public class SampleData {
                             it1.setReference("swqsd1221");
                             it1.setSuppliersids(c.__getIDS());
                             it1.setUrl("www.test.com");
-                            it1.setIntaddedby(MPV5View.getUser().__getIDS());
+                            it1.setIntaddedby(MPView.getUser().__getIDS());
                             it1.save();
                         }
                     }

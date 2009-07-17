@@ -22,7 +22,7 @@ import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryData;
 import mpv5.db.common.QueryHandler;
 import mpv5.globals.Messages;
-import mpv5.ui.frames.MPV5View;
+import mpv5.ui.frames.MPView;
 
 /**
  *
@@ -39,7 +39,7 @@ public class TrashHandler {
         QueryHandler.instanceOf().clone(type).delete(new String[][]{{"ids", String.valueOf(id), ""}}, message);
         Runnable runnable = new Runnable() {
             public void run() {
-                QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(message, MPV5View.getUser().__getCName(), type, id, MPV5View.getUser().__getGroupsids());
+                QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(message, MPView.getUser().__getCName(), type, id, MPView.getUser().__getGroupsids());
             }
         };
         SwingUtilities.invokeLater(runnable);
@@ -76,7 +76,7 @@ public class TrashHandler {
         }
         Runnable runnable = new Runnable() {
             public void run() {
-                QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(message, MPV5View.getUser().__getCName(), type, id, MPV5View.getUser().__getGroupsids());
+                QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(message, MPView.getUser().__getCName(), type, id, MPView.getUser().__getGroupsids());
             }
         };
         SwingUtilities.invokeLater(runnable);

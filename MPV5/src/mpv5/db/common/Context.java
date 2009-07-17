@@ -27,7 +27,7 @@ import mpv5.db.objects.SubItem;
 import mpv5.pluginhandling.Plugin;
 import mpv5.db.objects.User;
 import mpv5.pluginhandling.UserPlugin;
-import mpv5.ui.frames.MPV5View;
+import mpv5.ui.frames.MPView;
 
 /**
  *
@@ -493,13 +493,13 @@ public class Context {
 
         if (!first) {
             cond = cond.substring(4, cond.length() - 4);
-            if (MPV5View.getUser().isGroupRestricted() && getGroupableContexts().contains(this)) {
-                cond += "AND   (" + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids() + " OR " + dbIdentity + "." + "GROUPSIDS = 1)";
+            if (MPView.getUser().isGroupRestricted() && getGroupableContexts().contains(this)) {
+                cond += "AND   (" + dbIdentity + "." + "GROUPSIDS = " + MPView.getUser().__getGroupsids() + " OR " + dbIdentity + "." + "GROUPSIDS = 1)";
             }
         } else {
 
-            if (MPV5View.getUser().isGroupRestricted() && getGroupableContexts().contains(this)) {
-                cond = "WHERE (" + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids() + " OR " + dbIdentity + "." + "GROUPSIDS = 1)";
+            if (MPView.getUser().isGroupRestricted() && getGroupableContexts().contains(this)) {
+                cond = "WHERE (" + dbIdentity + "." + "GROUPSIDS = " + MPView.getUser().__getGroupsids() + " OR " + dbIdentity + "." + "GROUPSIDS = 1)";
             } else {
                 cond = "WHERE " + CONDITION_DEFAULT;
             }
@@ -566,12 +566,12 @@ public class Context {
             }
             if (!first) {
                 cond = cond.substring(4, cond.length() - 3);
-                if (MPV5View.getUser().isGroupRestricted() && getGroupableContexts().contains(this)) {
-                    cond += " AND (" + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids() + " OR " + dbIdentity + "." + "GROUPSIDS = 1)";
+                if (MPView.getUser().isGroupRestricted() && getGroupableContexts().contains(this)) {
+                    cond += " AND (" + dbIdentity + "." + "GROUPSIDS = " + MPView.getUser().__getGroupsids() + " OR " + dbIdentity + "." + "GROUPSIDS = 1)";
                 }
             } else {
-                if (MPV5View.getUser().isGroupRestricted() && getGroupableContexts().contains(this)) {
-                    cond = "WHERE (" + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids() + " OR " + dbIdentity + "." + "GROUPSIDS = 1)";
+                if (MPView.getUser().isGroupRestricted() && getGroupableContexts().contains(this)) {
+                    cond = "WHERE (" + dbIdentity + "." + "GROUPSIDS = " + MPView.getUser().__getGroupsids() + " OR " + dbIdentity + "." + "GROUPSIDS = 1)";
                 } else {
                     cond = "WHERE " + CONDITION_DEFAULT;
                 }
@@ -592,8 +592,8 @@ public class Context {
      * @return
      */
     public String getGroupRestrictionSQLString() {
-        if (MPV5View.getUser().isGroupRestricted() && getGroupableContexts().contains(this)) {
-            return " (" + dbIdentity + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids() + " OR " + dbIdentity + "." + "GROUPSIDS = 1)";
+        if (MPView.getUser().isGroupRestricted() && getGroupableContexts().contains(this)) {
+            return " (" + dbIdentity + "." + "GROUPSIDS = " + MPView.getUser().__getGroupsids() + " OR " + dbIdentity + "." + "GROUPSIDS = 1)";
         } else {
             return null;
         }
@@ -620,8 +620,8 @@ public class Context {
      * @return
      */
     public String getGroupRestrictionSQLString(String tableName) {
-        if (MPV5View.getUser().isGroupRestricted() && getGroupableContexts().contains(this)) {
-            return " (" + tableName + "." + "GROUPSIDS = " + MPV5View.getUser().__getGroupsids() + " OR " + tableName + "." + "GROUPSIDS = 1)";
+        if (MPView.getUser().isGroupRestricted() && getGroupableContexts().contains(this)) {
+            return " (" + tableName + "." + "GROUPSIDS = " + MPView.getUser().__getGroupsids() + " OR " + tableName + "." + "GROUPSIDS = 1)";
         } else {
             return null;
         }

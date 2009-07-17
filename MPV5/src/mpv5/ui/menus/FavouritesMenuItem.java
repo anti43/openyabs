@@ -18,7 +18,7 @@ package mpv5.ui.menus;
 
 import javax.swing.JMenuItem;
 import mpv5.db.common.DatabaseObject;
-import mpv5.ui.frames.MPV5View;
+import mpv5.ui.frames.MPView;
 
 /**
  *
@@ -36,7 +36,7 @@ public class FavouritesMenuItem extends JMenuItem {
 
         addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                MPV5View.identifierView.addTab(item);
+                MPView.identifierView.addTab(item);
             }
         });
 

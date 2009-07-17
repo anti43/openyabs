@@ -21,7 +21,7 @@ import java.util.logging.Logger;
 import javax.swing.JProgressBar;
 import javax.swing.SwingWorker;
 import mpv5.logging.Log;
-import mpv5.ui.frames.MPV5View;
+import mpv5.ui.frames.MPView;
 
 /**
  *
@@ -44,7 +44,7 @@ public class Job extends SwingWorker<Object, Object> {
     public Job(Waitable waitable, Waiter waiter) {
         this.object = waitable;
         this.recipient = waiter;
-        this.bar = MPV5View.progressbar;
+        this.bar = MPView.progressbar;
     }
 
     /**
@@ -92,7 +92,7 @@ public class Job extends SwingWorker<Object, Object> {
             bar.setIndeterminate(false);
         }
         if (message != null) {
-            MPV5View.addMessage(message);
+            MPView.addMessage(message);
         }
     }
 }

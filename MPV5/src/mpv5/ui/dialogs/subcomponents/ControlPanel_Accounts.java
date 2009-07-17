@@ -44,7 +44,7 @@ import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.Popup;
-import mpv5.ui.frames.MPV5View;
+import mpv5.ui.frames.MPView;
 import mpv5.ui.panels.DataPanel;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.models.MPComboBoxModelItem;
@@ -481,7 +481,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
         }
 
         Account g = null;
-        if (!MPV5View.getUser().isGroupRestricted()) {
+        if (!MPView.getUser().isGroupRestricted()) {
             g = null;
             try {
                 g = (Account) DatabaseObject.getObject(Context.getAccounts(), 1);
@@ -494,7 +494,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
 
             if (data.size() == 0) {
                 g = new Account();
-                g.setCName(MPV5View.getUser().__getCName());
+                g.setCName(MPView.getUser().__getCName());
                 g.setIDS(-1);
                 g.setIntparentaccount(1);
             } else {
@@ -510,15 +510,15 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
             Log.Debug(this, e.getMessage());
         }
 
-        if (!MPV5View.getUser().isGroupRestricted()) {
+        if (!MPView.getUser().isGroupRestricted()) {
             groupnameselect.setModel(new DefaultComboBoxModel(
                     MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID(), null, ""))));
         } else {
             groupnameselect.setModel(new DefaultComboBoxModel(
-                    MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID(), "ids", MPV5View.getUser().__getGroupsids()))));
+                    MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID(), "ids", MPView.getUser().__getGroupsids()))));
         }
 
-        groupnameselect.setSelectedIndex(MPComboBoxModelItem.getItemID(MPV5View.getUser().__getGroupsids(), groupnameselect.getModel()));
+        groupnameselect.setSelectedIndex(MPComboBoxModelItem.getItemID(MPView.getUser().__getGroupsids(), groupnameselect.getModel()));
 
         typeselect.setModel(new DefaultComboBoxModel(MPComboBoxModelItem.toItems(
                 new Object[][]{
@@ -595,7 +595,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
         if (dbo.getDbIdentity().equals(Context.getAccounts().getDbIdentity())) {
             setDataOwner(dbo,true);
         } else {
-            MPV5View.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE);
+            MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE);
         }
     }
 

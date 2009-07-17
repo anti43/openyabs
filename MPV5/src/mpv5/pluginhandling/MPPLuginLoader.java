@@ -37,7 +37,7 @@ import mpv5.globals.Constants;
 import mpv5.globals.LocalSettings;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
-import mpv5.ui.frames.MPV5View;
+import mpv5.ui.frames.MPView;
 
 /**
  *
@@ -81,7 +81,7 @@ public class MPPLuginLoader {
             list = new ArrayList<MP5Plugin>();
             ArrayList<File> jars = new ArrayList<File>();
             QueryCriteria criterias = new QueryCriteria();
-            criterias.add("usersids", MPV5View.getUser().__getIDS());
+            criterias.add("usersids", MPView.getUser().__getIDS());
             try {
                 ArrayList<UserPlugin> data = DatabaseObject.getObjects(Context.getPluginsToUsers(), criterias);
                 for (int i = 0; i < data.size(); i++) {

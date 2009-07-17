@@ -36,7 +36,7 @@ import mpv5.db.objects.Item;
 import mpv5.db.objects.Product;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
-import mpv5.ui.frames.MPV5View;
+import mpv5.ui.frames.MPView;
 import mpv5.usermanagement.MPSecurityManager;
 
 /**
@@ -153,7 +153,7 @@ public class FormatHandler {
      */
     public synchronized MessageFormat getFormat() {
         QueryCriteria c = new QueryCriteria();
-        c.add("usersids", MPV5View.getUser().__getIDS());
+        c.add("usersids", MPView.getUser().__getIDS());
         c.add("inttype", this.getType());
         try {
             Object[][] frm = QueryHandler.instanceOf().clone(Context.getFormats()).select("cname, ids", c);

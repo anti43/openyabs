@@ -33,7 +33,7 @@ import mpv5.db.objects.Address;
 import mpv5.db.objects.Contact;
 import mpv5.logging.Log;
 import mpv5.i18n.LanguageManager;
-import mpv5.ui.frames.MPV5View;
+import mpv5.ui.frames.MPView;
 import mpv5.db.objects.User;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.models.MPComboBoxModelItem;
@@ -432,7 +432,7 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
             public void run() {
                 try {
                     countryselect.setModel(LanguageManager.getCountriesAsComboBoxModel());
-                    countryselect.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(MPV5View.getUser().__getDefcountry(), countryselect.getModel()));
+                    countryselect.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(MPView.getUser().__getDefcountry(), countryselect.getModel()));
                 } catch (Exception e) {
                     Log.Debug(this, e);
                 }
@@ -446,7 +446,7 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
         if (dbo.getDbIdentity().equals(Context.getAddress().getDbIdentity())) {
             setDataOwner(dbo,true);
         } else {
-            MPV5View.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());
+            MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());
         }
     }
 

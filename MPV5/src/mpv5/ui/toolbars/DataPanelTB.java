@@ -28,7 +28,7 @@ import mpv5.globals.Messages;
 import mpv5.db.objects.Favourite;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
-import mpv5.ui.frames.MPV5View;
+import mpv5.ui.frames.MPView;
 import mpv5.ui.panels.DataPanel;
 import mpv5.utils.print.PrintJob;
 
@@ -58,8 +58,8 @@ public class DataPanelTB extends javax.swing.JPanel {
     public DataPanelTB(DataPanel panel) {
         initComponents();
         parents = panel;
-        parents.showSearchBar(!MPV5View.getUser().getProperties().getProperty(this, "jToggleButton1", true));
-        jToggleButton1.setSelected(MPV5View.getUser().getProperties().getProperty(this, "jToggleButton1", true));
+        parents.showSearchBar(!MPView.getUser().getProperties().getProperty(this, "jToggleButton1", true));
+        jToggleButton1.setSelected(MPView.getUser().getProperties().getProperty(this, "jToggleButton1", true));
         jButton21.setEnabled(!DatabaseObject.isAutoLockEnabled());
     }
 
@@ -315,7 +315,7 @@ public class DataPanelTB extends javax.swing.JPanel {
 
     private void jButton21ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton21ActionPerformed
         DatabaseObject dato = parents.getDataOwner();
-        if (MPV5View.getUser().isDefault()) {
+        if (MPView.getUser().isDefault()) {
             Popup.notice(Messages.DEFAULT_USER);
         } else if (dato.isExisting()) {
             if (dato.lock()) {
@@ -356,7 +356,7 @@ public class DataPanelTB extends javax.swing.JPanel {
     }//GEN-LAST:event_jToggleButton1ActionPerformed
 
     private void jToggleButton1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jToggleButton1ItemStateChanged
-        MPV5View.getUser().getProperties().changeProperty(this, "jToggleButton1", jToggleButton1.isSelected());
+        MPView.getUser().getProperties().changeProperty(this, "jToggleButton1", jToggleButton1.isSelected());
     }//GEN-LAST:event_jToggleButton1ItemStateChanged
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -378,11 +378,11 @@ public class DataPanelTB extends javax.swing.JPanel {
     private void favRemover(java.awt.event.ActionEvent evt) {
 
         DatabaseObject dato = parents.getDataOwner();
-        if (!MPV5View.getUser().isDefault() && dato.isExisting()) {
+        if (!MPView.getUser().isDefault() && dato.isExisting()) {
             dato.getPanelData(parents);
             if (dato.save()) {
                 Favourite.removeFavourite(dato);
-                MPV5View.identifierView.refreshFavouritesMenu();
+                MPView.identifierView.refreshFavouritesMenu();
                 parents.setDataOwner(dato,true);
             } else {
                 parents.showRequiredFields();
@@ -393,14 +393,14 @@ public class DataPanelTB extends javax.swing.JPanel {
     private void favAdd(java.awt.event.ActionEvent evt) {
         DatabaseObject dato = parents.getDataOwner();
         Favourite fav = null;
-        if (!MPV5View.getUser().isDefault()) {
+        if (!MPView.getUser().isDefault()) {
             if (dato.isExisting()) {
                 dato.getPanelData(parents);
                 if (dato.save()) {
                     fav = new Favourite(dato);
                     fav.save();
-                    MPV5View.identifierView.refreshFavouritesMenu();
-                    MPV5View.addMessage(Messages.ADDED_TO_FAVOURITES + dato.__getCName());
+                    MPView.identifierView.refreshFavouritesMenu();
+                    MPView.addMessage(Messages.ADDED_TO_FAVOURITES + dato.__getCName());
                     parents.setDataOwner(dato,true);
                 } else {
                     parents.showRequiredFields();

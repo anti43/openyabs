@@ -42,7 +42,7 @@ import mpv5.db.objects.Item;
 
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
-import mpv5.ui.frames.MPV5View;
+import mpv5.ui.frames.MPView;
 import mpv5.utils.images.MPIcon;
 
 /**
@@ -182,7 +182,7 @@ public class MPTreeModel extends DefaultTreeModel {
                     DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
                     if (node != null) {
                         if (node.getUserObject() instanceof DatabaseObject) {
-                            MPV5View.identifierView.addTab((DatabaseObject) node.getUserObject());
+                            MPView.identifierView.addTab((DatabaseObject) node.getUserObject());
                         }
                     }
                 }
@@ -220,13 +220,13 @@ public class MPTreeModel extends DefaultTreeModel {
             node1 = new DefaultMutableTreeNode(rootNode);
             data.remove(rootNode);//remove root if in list
             try {
-                MPV5View.setWaiting(true);
+                MPView.setWaiting(true);
                 node1 = addToParents(node1, data);
 
             } catch (Exception e) {
                 Log.Debug(e);
             } finally {
-                MPV5View.setWaiting(false);
+                MPView.setWaiting(false);
             }
         }
         DefaultTreeModel model = new DefaultTreeModel(node1);

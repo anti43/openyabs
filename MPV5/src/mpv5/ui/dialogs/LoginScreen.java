@@ -13,7 +13,7 @@ import mpv5.db.common.NodataFoundException;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
-import mpv5.ui.frames.MPV5View;
+import mpv5.ui.frames.MPView;
 import mpv5.ui.misc.Position;
 import mpv5.db.objects.User;
 import mpv5.utils.text.MD5HashGenerator;
@@ -195,7 +195,7 @@ private void jPasswordField1ActionPerformed(java.awt.event.ActionEvent evt) {//G
         if (user != null) {
             user.login();
             if (jCheckBox1.isSelected()) {
-                LocalSettings.setProperty("lastuser", MPV5View.getUser().__getIDS().toString());
+                LocalSettings.setProperty("lastuser", MPView.getUser().__getIDS().toString());
                 LocalSettings.save();
             }
 

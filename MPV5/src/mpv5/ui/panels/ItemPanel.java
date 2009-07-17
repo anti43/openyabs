@@ -56,7 +56,7 @@ import mpv5.logging.Log;
 import mpv5.ui.dialogs.BigPopup;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Groups;
-import mpv5.ui.frames.MPV5View;
+import mpv5.ui.frames.MPView;
 import mpv5.ui.popups.FileTablePopUp;
 import mpv5.ui.toolbars.DataPanelTB;
 import mpv5.db.objects.User;
@@ -106,7 +106,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
 
         refresh();
 
-        addedby.setText(MPV5View.getUser().getName());
+        addedby.setText(MPView.getUser().getName());
         contactname.setSearchOnEnterEnabled(true);
         contactname.setContext(Context.getContact());
         contactname.getComboBox().addActionListener(new ActionListener() {
@@ -735,7 +735,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
         if (dataOwner.isExisting()) {
-            MPV5View.identifierView.addTab(new JournalPanel(), Messages.HISTORY_OF + getDataOwner().__getCName());
+            MPView.identifierView.addTab(new JournalPanel(), Messages.HISTORY_OF + getDataOwner().__getCName());
         }
 }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -910,15 +910,15 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
             @Override
             public void run() {
                 try {
-                    groupnameselect.setModel(MPComboBoxModelItem.toModel(DatabaseObject.getObject(Context.getGroup(), MPV5View.getUser().__getGroupsids())));
+                    groupnameselect.setModel(MPComboBoxModelItem.toModel(DatabaseObject.getObject(Context.getGroup(), MPView.getUser().__getGroupsids())));
                     groupnameselect.setSelectedIndex(0);
                     sp.refresh();
 
-                    accountselect.setModel(DatabaseObject.getObject(Context.getAccounts(), MPV5View.getUser().__getIntdefaultaccount()));
+                    accountselect.setModel(DatabaseObject.getObject(Context.getAccounts(), MPView.getUser().__getIntdefaultaccount()));
                     fillFiles();
 
                     status.setModel(Item.getStatusStrings(), MPComboBoxModelItem.COMPARE_BY_ID);
-                    status.setSelectedIndex(MPV5View.getUser().__getIntdefaultstatus());
+                    status.setSelectedIndex(MPView.getUser().__getIntdefaultstatus());
 
 
                     itemtable.setModel(new MPTableModel(Context.getSubItem(), itemtable));
@@ -953,7 +953,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
         if (dbo.getDbIdentity().equals(Context.getContact().getDbIdentity())) {
             setDataOwner(dbo, true);
         } else {
-            MPV5View.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());
+            MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());
         }
     }
 

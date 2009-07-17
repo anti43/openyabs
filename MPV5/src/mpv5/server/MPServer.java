@@ -23,7 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import mpv5.globals.LocalSettings;
 import mpv5.logging.Log;
-import mpv5.ui.frames.MPV5View;
+import mpv5.ui.frames.MPView;
 
 /**
  *This is a listening server which starts a new {@link MPServerRunner} on each connection.
@@ -68,7 +68,7 @@ public class MPServer extends Thread {
             serverSocket = new ServerSocket(Integer.valueOf(LocalSettings.getProperty(LocalSettings.SERVER_PORT)));
             SOCKETS.add(serverSocket);
             Log.Debug(this, "MP Server started!");
-            MPV5View.addMessage("MP Server started!");
+            MPView.addMessage("MP Server started!");
         } catch (IOException e) {
             running = false;
             Log.Debug(e);

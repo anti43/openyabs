@@ -46,7 +46,7 @@ import mpv5.pluginhandling.MPPLuginLoader;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Fonts;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Userproperties;
-import mpv5.ui.frames.MPV5View;
+import mpv5.ui.frames.MPView;
 import mpv5.utils.text.TypeConversion;
 
 /**
@@ -213,7 +213,7 @@ public class User extends DatabaseObject {
     public void login() {
         DatabaseObjectLock.releaseAllObjectsFor(this);
         if (isenabled) {
-            MPV5View.setUser(this);
+            MPView.setUser(this);
             setProperties();
             try {
                 Locale.setDefault(TypeConversion.stringToLocale(__getLocale()));
@@ -222,7 +222,7 @@ public class User extends DatabaseObject {
             } catch (Exception e) {
                 Log.Debug(e);
             }
-            Lock.unlock(MPV5View.identifierFrame);
+            Lock.unlock(MPView.identifierFrame);
             Runnable runnable = new Runnable() {
 
                 @Override
@@ -246,7 +246,7 @@ public class User extends DatabaseObject {
     public void logout() {
         DatabaseObjectLock.releaseAllObjectsFor(this);
         saveProperties();
-        MPV5View.setUser(DEFAULT);
+        MPView.setUser(DEFAULT);
         if (!isDefault()) {
             setIsloggedin(false);
             save();

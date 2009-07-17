@@ -18,7 +18,7 @@ package mpv5.pluginhandling;
 
 
 import java.awt.Image;
-import mpv5.ui.frames.MPV5View;
+import mpv5.ui.frames.MPView;
 
 /**
  * This class is to be implemented on MP5 plugins
@@ -32,7 +32,7 @@ public interface MP5Plugin {
      * @param frame
      * @return
      */
-    public abstract MP5Plugin load(MPV5View frame);
+    public abstract MP5Plugin load(MPView frame);
 
     /**
      * Unloads the plugin

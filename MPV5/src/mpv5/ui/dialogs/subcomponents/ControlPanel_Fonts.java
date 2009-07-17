@@ -8,7 +8,7 @@ import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.Popup;
-import mpv5.ui.frames.MPV5View;
+import mpv5.ui.frames.MPView;
 
 /**
  *
@@ -70,8 +70,8 @@ public class ControlPanel_Fonts extends javax.swing.JPanel implements ControlApp
         UIManager.put("ToolTip.font", font);
         UIManager.put("Tree.font", font);
 
-        if (MPV5View.identifierFrame != null) {
-            MPV5View.identifierFrame.validate();
+        if (MPView.identifierFrame != null) {
+            MPView.identifierFrame.validate();
         }
     }
 

@@ -44,7 +44,7 @@ import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
-import mpv5.ui.frames.MPV5View;
+import mpv5.ui.frames.MPView;
 
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.arrays.ArrayUtilities;
@@ -84,10 +84,10 @@ public class LanguageManager {
         try {
             Document doc = r.newDoc(file, true);
 
-            if (MPSecurityManager.checkAdminAccess() && !MPV5View.getUser().isDefault()) {
+            if (MPSecurityManager.checkAdminAccess() && !MPView.getUser().isDefault()) {
                 if (doc != null) {
                     try {
-                        QueryHandler.instanceOf().clone(Context.getCountries()).delete(new String[][]{{"groupsids", MPV5View.getUser().getID().toString(), ""}});
+                        QueryHandler.instanceOf().clone(Context.getCountries()).delete(new String[][]{{"groupsids", MPView.getUser().getID().toString(), ""}});
                     } catch (Exception ex) {
                         Log.Debug(ex);
                     }
@@ -97,10 +97,10 @@ public class LanguageManager {
                         QueryData t = new QueryData();
                         t.add("cname", country[1]);
                         t.add("iso", Integer.valueOf(country[2]));
-                        t.add("groupsids", MPV5View.getUser().__getGroupsids());
+                        t.add("groupsids", MPView.getUser().__getGroupsids());
                         QueryHandler.instanceOf().clone(Context.getCountries()).insert(t, Messages.DONE.toString());
                     }
-//                MPV5View.addMessage(langname + Messages.ROW_UPDATED);
+//                MPView.addMessage(langname + Messages.ROW_UPDATED);
                 }
             } else {
                 Popup.notice(Messages.ADMIN_ACCESS + "\n" + Messages.DEFAULT_USER);
@@ -212,7 +212,7 @@ public class LanguageManager {
      */
     public static ResourceBundle getBundle() {
         if (Main.INSTANTIATED) {
-            return getBundle(MPV5View.getUser().__getLanguage());
+            return getBundle(MPView.getUser().__getLanguage());
         } else {
             return java.util.ResourceBundle.getBundle(defLanguageBundle);
         }
@@ -313,10 +313,10 @@ public class LanguageManager {
                 Log.Debug(LanguageManager.class, "Adding language: " + langname);
                 int id = QueryHandler.instanceOf().clone(Context.getLanguage()).insert(t, "Imported language: " + langname);
                 if (id > 0) {
-                    MPV5View.addMessage(langname + Messages.INSERTED.toString());
+                    MPView.addMessage(langname + Messages.INSERTED.toString());
                     Popup.notice(langname + Messages.INSERTED.toString());
                 } else {
-                    MPV5View.addMessage(Messages.ERROR_OCCURED.toString());
+                    MPView.addMessage(Messages.ERROR_OCCURED.toString());
                     Popup.notice(Messages.ERROR_OCCURED.toString());
                 }
             } catch (FileNotFoundException ex) {
@@ -367,7 +367,7 @@ public class LanguageManager {
                 if (!found) {
                     failed = true;
                     Log.Debug(LanguageManager.class, "Key '" + string + "' not found in file " + file);
-                    MPV5View.addMessage(Messages.ERROR_OCCURED.toString());
+                    MPView.addMessage(Messages.ERROR_OCCURED.toString());
 
                     return false;
                 }

@@ -47,7 +47,7 @@ import javax.swing.tree.TreePath;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.objects.Group;
 import mpv5.logging.Log;
-import mpv5.ui.frames.MPV5View;
+import mpv5.ui.frames.MPView;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.files.FileReaderWriter;

@@ -36,7 +36,7 @@ import mpv5.db.common.NodataFoundException;
 import mpv5.db.objects.Item;
 import mpv5.globals.Headers;
 import mpv5.logging.Log;
-import mpv5.ui.frames.MPV5View;
+import mpv5.ui.frames.MPView;
 import mpv5.utils.numberformat.FormatNumber;
 import mpv5.utils.tables.TableCalculator;
 
@@ -200,17 +200,17 @@ public class MPTableModel extends DefaultTableModel {
 
         if (context.equals(Context.getSubItem())) {
             String defunit = null;
-            if (MPV5View.getUser().getProperties().hasProperty("defunit")) {
-                defunit = MPV5View.getUser().getProperties().getProperty("defunit");
+            if (MPView.getUser().getProperties().hasProperty("defunit")) {
+                defunit = MPView.getUser().getProperties().getProperty("defunit");
             }
             Double deftax = 0d;
-            if (MPV5View.getUser().getProperties().hasProperty("deftax")) {
-                int taxid = MPV5View.getUser().getProperties().getProperty("deftax", 0);
+            if (MPView.getUser().getProperties().hasProperty("deftax")) {
+                int taxid = MPView.getUser().getProperties().getProperty("deftax", 0);
                 deftax = Item.getTaxValue(taxid);
             }
             Double defcount = 1d;
-            if (MPV5View.getUser().getProperties().hasProperty("defcount")) {
-                defcount = MPV5View.getUser().getProperties().getProperty("defcount", 0d);
+            if (MPView.getUser().getProperties().hasProperty("defcount")) {
+                defcount = MPView.getUser().getProperties().getProperty("defcount", 0d);
             }
 
             setDataVector(new Object[][]{

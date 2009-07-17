@@ -32,7 +32,7 @@ import mpv5.logging.Log;
 import mpv5.i18n.LanguageManager;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.Popup;
-import mpv5.ui.frames.MPV5View;
+import mpv5.ui.frames.MPView;
 import mpv5.ui.panels.DataPanel;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.db.objects.User;
@@ -422,7 +422,7 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
 
     private void setUser() {
         if (currentUser == null) {
-            currentUser = MPV5View.getUser().getID();
+            currentUser = MPView.getUser().getID();
             jComboBox1.setSelectedIndex(MPComboBoxModelItem.getItemID(currentUser, jComboBox1.getModel()));
         }
 

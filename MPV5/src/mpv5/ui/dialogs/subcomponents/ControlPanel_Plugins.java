@@ -23,7 +23,7 @@ import mpv5.pluginhandling.MPPLuginLoader;
 import mpv5.pluginhandling.Plugin;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.Popup;
-import mpv5.ui.frames.MPV5View;
+import mpv5.ui.frames.MPView;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.pluginhandling.UserPlugin;
 
@@ -96,7 +96,7 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
 
             public void actionPerformed(ActionEvent e) {
                 Plugin gin = (Plugin) list.getSelectedValue();
-                MPV5View.identifierView.loadPlugin(gin);
+                MPView.identifierView.loadPlugin(gin);
             }
         });
     }
@@ -271,7 +271,7 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
         try {
-            ArrayList data = DatabaseObject.getReferencedObjects(MPV5View.getUser(), Context.getPluginsToUsers());
+            ArrayList data = DatabaseObject.getReferencedObjects(MPView.getUser(), Context.getPluginsToUsers());
             for (int i = 0; i < data.size(); i++) {
                 ((UserPlugin) data.get(i)).delete();
             }
@@ -285,7 +285,7 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
             Plugin gin = (Plugin) plugs[i];
 
             UserPlugin up = new UserPlugin();
-            up.setUsersids(MPV5View.getUser().__getIDS());
+            up.setUsersids(MPView.getUser().__getIDS());
             up.setPluginsids(gin.__getIDS());
             up.setCName(gin.__getCName());
             up.save();
@@ -297,7 +297,7 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
         Object[] plugs = list.getSelectedValues();
         for (int i = 0; i < plugs.length; i++) {
             Plugin gin = (Plugin) plugs[i];
-            MPV5View.identifierView.loadPlugin(gin);
+            MPView.identifierView.loadPlugin(gin);
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -306,7 +306,7 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
         try {
             if (new MPPLuginLoader().checkPlugin(new File(labeledTextChooser2.get_Text(true))) != null) {
                 p = new MPPLuginLoader().checkPlugin(new File(labeledTextChooser2.get_Text(true)));
-                MPV5View.identifierView.loadPlugin(p);
+                MPView.identifierView.loadPlugin(p);
             } else {
                 Popup.notice(Messages.ERROR_OCCURED);
             }

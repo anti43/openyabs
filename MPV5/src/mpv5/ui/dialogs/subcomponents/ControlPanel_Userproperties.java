@@ -9,7 +9,7 @@ import mpv5.globals.LocalSettings;
 import mpv5.logging.Log;
 import mpv5.ui.beans.LightMPComboBox;
 import mpv5.ui.dialogs.ControlApplet;
-import mpv5.ui.frames.MPV5View;
+import mpv5.ui.frames.MPView;
 
 /**
  *
@@ -242,7 +242,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         setSettings();
-        MPV5View.getUser().saveProperties();
+        MPView.getUser().saveProperties();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
@@ -296,11 +296,11 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
     private void setSettings() {
 
         try {
-            MPV5View.getUser().getProperties().changeProperty(Context.getProducts() + LightMPComboBox.VALUE_SEARCHFIELDS, order.getText());
-            MPV5View.getUser().getProperties().changeProperty(defcount.getName(), defcount.getText());
-            MPV5View.getUser().getProperties().changeProperty(defunit.getName(), defunit.getText());
+            MPView.getUser().getProperties().changeProperty(Context.getProducts() + LightMPComboBox.VALUE_SEARCHFIELDS, order.getText());
+            MPView.getUser().getProperties().changeProperty(defcount.getName(), defcount.getText());
+            MPView.getUser().getProperties().changeProperty(defunit.getName(), defunit.getText());
             if (deftax.getSelectedItem() != null) {
-                MPV5View.getUser().getProperties().changeProperty(deftax.getName(), deftax.getSelectedItem().getId());
+                MPView.getUser().getProperties().changeProperty(deftax.getName(), deftax.getSelectedItem().getId());
             }
         } catch (Exception e) {
             Log.Debug(e);
@@ -319,9 +319,9 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
 //        Component[] t = productstobillsproperties.getComponents();
 //        for (int i = 0; i < t.length; i++) {
 //            Component component = t[i];
-//            if (MPV5View.getUser().getProperties().hasProperty(Context.getBill() + LightMPComboBox.VALUE_SEARCHFIELDS)) {
+//            if (MPView.getUser().getProperties().hasProperty(Context.getBill() + LightMPComboBox.VALUE_SEARCHFIELDS)) {
 //                if(component instanceof JCheckBox) {
-//                    ((JCheckBox) component).setSelected(MPV5View.getUser().getProperties().getProperty(Context.getBill() + LightMPComboBox.VALUE_SEARCHFIELDS).contains(component.getName()));
+//                    ((JCheckBox) component).setSelected(MPView.getUser().getProperties().getProperty(Context.getBill() + LightMPComboBox.VALUE_SEARCHFIELDS).contains(component.getName()));
 //                }
 //            }
 //        }

@@ -93,7 +93,7 @@ public class Log {
                     write("\nCaused by:\n");
                     try {
                         ((Exception) message).getCause().printStackTrace();
-                        mpv5.ui.frames.MPV5View.addMessage(Messages.ERROR_OCCURED + ". " + Messages.SEE_LOG);
+                        mpv5.ui.frames.MPView.addMessage(Messages.ERROR_OCCURED + ". " + Messages.SEE_LOG);
                     } catch (Exception e) {
                     }
                 }
@@ -101,11 +101,11 @@ public class Log {
             case LOGLEVEL_NORMAL:
                 if (message != null && message.toString().contains("Exception")) {
                     write(sourcen + ": " + message);
-                    mpv5.ui.frames.MPV5View.addMessage(Messages.ERROR_OCCURED + ". " + Messages.SEE_LOG);
+                    mpv5.ui.frames.MPView.addMessage(Messages.ERROR_OCCURED + ". " + Messages.SEE_LOG);
                 }
                 break;
             case LOGLEVEL_NONE:
-                mpv5.ui.frames.MPV5View.addMessage(Messages.ERROR_OCCURED.getValue());
+                mpv5.ui.frames.MPView.addMessage(Messages.ERROR_OCCURED.getValue());
                 break;
             default:
                 write(sourcen + ": " + message);

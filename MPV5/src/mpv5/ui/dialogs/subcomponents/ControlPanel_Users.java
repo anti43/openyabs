@@ -22,7 +22,7 @@ import mpv5.logging.Log;
 import mpv5.i18n.LanguageManager;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.Popup;
-import mpv5.ui.frames.MPV5View;
+import mpv5.ui.frames.MPView;
 import mpv5.ui.panels.DataPanel;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.db.objects.User;
@@ -450,8 +450,8 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
             DatabaseObject dato = dataOwner;
             dato.getPanelData(this);
             if (dato.save()) {
-                if (MPV5View.getUser().equalTo((User) dato)) {
-                    MPV5View.getUser().reset();
+                if (MPView.getUser().equalTo((User) dato)) {
+                    MPView.getUser().reset();
                 }
             } else {
                 showRequiredFields();
@@ -692,7 +692,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         if (dbo.getDbIdentity().equals(Context.getUser().getDbIdentity())) {
             setDataOwner(dbo,true);
         } else {
-            MPV5View.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE);
+            MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE);
         }
     }
 

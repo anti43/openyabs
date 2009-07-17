@@ -25,7 +25,7 @@ import mpv5.db.common.Context;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
-import mpv5.ui.frames.MPV5View;
+import mpv5.ui.frames.MPView;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.text.MD5HashGenerator;
 
@@ -64,7 +64,7 @@ public class MPSecurityManager {
     public static Boolean check(Context context, int action) {
         for (Context item : securedContexts) {
             if (item.getDbIdentity().equals(context.getDbIdentity())) {
-                if (MPV5View.getUser().__getInthighestright() <= action) {
+                if (MPView.getUser().__getInthighestright() <= action) {
                     return true;
                 } else {
                     return false;
@@ -79,7 +79,7 @@ public class MPSecurityManager {
      * @return
      */
     public static boolean checkAdminAccess() {
-        if (MPV5View.getUser().__getInthighestright() <= RIGHT_TO_CREATE_OR_DELETE) {
+        if (MPView.getUser().__getInthighestright() <= RIGHT_TO_CREATE_OR_DELETE) {
             return true;
         } else {
             Popup.notice(Messages.ADMIN_ACCESS);
