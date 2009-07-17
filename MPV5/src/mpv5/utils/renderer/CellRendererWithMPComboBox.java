@@ -17,6 +17,9 @@
 package mpv5.utils.renderer;
 
 import java.awt.Component;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.Vector;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JLabel;
@@ -64,14 +67,13 @@ public class CellRendererWithMPComboBox extends JLabel implements TableCellRende
             boolean isSelected, boolean hasFocus, int row, int column) {
         if (hasFocus && isSelected) {
             if (isSelected) {
-                setForeground(table.getSelectionForeground());
-                super.setBackground(table.getSelectionBackground());
+                label.setForeground(table.getSelectionForeground());
+                label.setBackground(table.getSelectionBackground());
             } else {
-                setForeground(table.getForeground());
-                setBackground(table.getBackground());
+                label.setForeground(table.getForeground());
+                label.setBackground(table.getBackground());
             }
              label.setText((value == null) ? "" : value.toString());
-            ((MPComboBoxEditor) table.getCellEditor(row, column)).box.setSelectedIndex(-1);
             return label;
         } else {
             label.setText((value == null) ? "" : value.toString());
@@ -86,6 +88,26 @@ public class CellRendererWithMPComboBox extends JLabel implements TableCellRende
         public MPComboBoxEditor(LightMPComboBox b) {
             super(b);
             this.box = b;
+            b.setLightWeightPopupEnabled(false);
+//            b.addKeyListener(new KeyListener() {
+//
+//                @Override
+//                public void keyTyped(KeyEvent e) {
+//                   if(e.getKeyCode() == e.VK_DOWN){
+//
+//                   }
+//                }
+//
+//                @Override
+//                public void keyPressed(KeyEvent e) {
+//
+//                }
+//
+//                @Override
+//                public void keyReleased(KeyEvent e) {
+//
+//                }
+//            });
         }
 
     }

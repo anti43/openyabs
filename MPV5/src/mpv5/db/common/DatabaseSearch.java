@@ -3,6 +3,8 @@ package mpv5.db.common;
 import java.util.ArrayList;
 import java.util.Arrays;
 import mpv5.db.objects.User;
+import mpv5.usermanagement.MPSecurityManager;
+import mpv5.utils.arrays.ArrayUtilities;
 
 /**
  *
@@ -87,7 +89,32 @@ public class DatabaseSearch {
             String string = possibleColumns[i];
             list.addAll(Arrays.asList(QueryHandler.instanceOf().clone(context, ROWLIMIT).select(resultingFieldNames, new String[]{string, where, "'"}, null, searchForLike)));
         }
+        ArrayUtilities.removeDuplicates(list);
         return list.toArray(new Object[][]{});
+    }
+
+    /**
+     * Get multiple values from a search, ignores reference tables and is herewith faster
+     * @param resultingFieldNames What do you like to get (columns)?
+     * @param possibleColumns Which columns do you like to take for the condition?
+     * @param where And what value should the column value have?
+     * @param searchForLike Shall we search with "like" condition?
+     * @return
+     */
+    public Object[][] getValuesFor2(String resultingFieldNames, String[] possibleColumns, String where, boolean searchForLike) {
+        String w = "";
+        String like = "LIKE '%";
+        String like2 = "%'";
+        if (!searchForLike) {
+            like = "'";
+            like2 = "'";
+        }
+        for (int i = 0; i < possibleColumns.length; i++) {
+            w += possibleColumns[i] + " " + like + where + like2 +
+                    " OR ";
+        }
+        return QueryHandler.instanceOf().clone(context, ROWLIMIT).freeSelectQuery(context.prepareSQLString(
+                "SELECT " + resultingFieldNames + " FROM " + context.getDbIdentity() + " WHERE " + w.substring(0, w.length() - 4)), MPSecurityManager.VIEW, null).getData();
     }
 
 //    /**
