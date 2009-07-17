@@ -69,6 +69,7 @@ public class PDFFormTest {
       File f = new File(pdf.getParent() + File.separator + RandomText.getText() + ".pdf");
       System.out.println("Creating PDF File: " + f.getPath());
       PdfStamper pdfStamper = new PdfStamper(template, new FileOutputStream(f.getPath()));
+      pdfStamper.setFormFlattening(true);
       acroFields = pdfStamper.getAcroFields();
       HashMap PDFFields = acroFields.getFields();
       for (Iterator it = PDFFields.keySet().iterator(); it.hasNext();) {
@@ -98,6 +99,7 @@ public class PDFFormTest {
       f = new File(RandomText.getText() + ".pdf");
       System.out.println("Creating PDF File: " + f.getPath());
       PdfStamper pdfStamper = new PdfStamper(template, new FileOutputStream(f.getPath()));
+      pdfStamper.setFormFlattening(true);
       acroFields = pdfStamper.getAcroFields();
       HashMap PDFFields = acroFields.getFields();
       for (Iterator it = PDFFields.keySet().iterator(); it.hasNext();) {

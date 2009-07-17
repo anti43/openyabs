@@ -31,34 +31,35 @@ import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
+import mpv5.db.common.Context;
 
 public class Test {
 
     public static void main(String[] args) {
-        JPanel jPanel1 = new JPanel(new BorderLayout());
-        JFrame frame = new JFrame();
+//        JPanel jPanel1 = new JPanel(new BorderLayout());
+//        JFrame frame = new JFrame();
+//
+//        final JTable t = new JTable(new DefaultTableModel(new Object[][]{{null},{null},{null},{null}}, new String[]{"1"}));
+//        new CellRendererBox(t).setRendererTo(0);
+//
+//        jPanel1.add(t, BorderLayout.CENTER);
+//        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+//        frame.addWindowListener(new WindowAdapter() {
+//
+//            @Override
+//            public void windowClosing(WindowEvent e) {
+//               TableModel model =  t.getModel();
+//                for (int i = 0; i < model.getRowCount(); i++) {
+//                    System.out.println(model.getValueAt(i, 0));
+//                    System.exit(0);
+//                }
+//            }
+//        });
+//        frame.add(jPanel1);
+//        frame.pack();
+//        frame.setVisible(true);
 
-        final JTable t = new JTable(new DefaultTableModel(new Object[][]{{null},{null},{null},{null}}, new String[]{"1"}));
-        new CellRendererBox(t).setRendererTo(0);
-
-        jPanel1.add(t, BorderLayout.CENTER);
-        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        frame.addWindowListener(new WindowAdapter() {
-
-            @Override
-            public void windowClosing(WindowEvent e) {
-               TableModel model =  t.getModel();
-                for (int i = 0; i < model.getRowCount(); i++) {
-                    System.out.println(model.getValueAt(i, 0));
-                    System.exit(0);
-                }
-            }
-        });
-        frame.add(jPanel1);
-        frame.pack();
-        frame.setVisible(true);
-
-
+//new Context(null).prepareSQLString("");
     }
 
     static class CellRendererBox extends JLabel implements TableCellRenderer {
