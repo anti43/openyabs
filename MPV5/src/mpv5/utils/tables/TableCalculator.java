@@ -17,12 +17,18 @@
 package mpv5.utils.tables;
 
 import java.text.NumberFormat;
+import java.util.HashMap;
+import javax.swing.DefaultCellEditor;
 import javax.swing.JTable;
+import javax.swing.table.TableCellEditor;
 import mpv5.logging.Log;
+import mpv5.ui.beans.LabeledTextField;
+import mpv5.utils.models.MPTableModel;
 import mpv5.utils.numberformat.FormatNumber;
+import mpv5.utils.renderer.LazyCellEditor;
 
 /**
- * This class provides auto calculation functions for table cell values (Double.class required!)
+ * This class provides auto calculation functions for table cell values (Double.class required!), works only with {@link MPTableModel}s!
  */
 public class TableCalculator implements Runnable {
 
@@ -49,22 +55,25 @@ public class TableCalculator implements Runnable {
      */
     public static final int ACTION_MULTIPLY = 3;
     private boolean onScreen = true;
+    private int[] sumColumn;
 
     /**
      *
-     * @param table
-     * @param columnsToCalculate
-     * @param targetColumns
-     * @param percentageColumns
-     * @param action
+     * @param table the table which we want to calculate
+     * @param columnsToCalculate the columns to calculate
+     * @param targetColumns the columns which old the result of a row
+     * @param percentageColumns The columsn which shall be treatened as percent values
+     * @param action The action to take
+     * @param sumColumn The columns to sum up vertically (+)
      */
-    public TableCalculator(JTable table, int[] columnsToCalculate, int[] targetColumns, int[] percentageColumns, int action) {
+    public TableCalculator(JTable table, int[] columnsToCalculate, int[] targetColumns, int[] percentageColumns, int action, int[] sumColumn) {
         super();
         this.table = table;
         this.columnsToCalculate = columnsToCalculate;
         this.targetColumns = targetColumns;
         this.percentageColumns = percentageColumns;
         this.action = action;
+        this.sumColumn = sumColumn;
     }
 
     /**
@@ -82,9 +91,7 @@ public class TableCalculator implements Runnable {
                     for (int i = 0; i < columnsToCalculate.length; i++) {
                         int j = columnsToCalculate[i];
                         if (table.getValueAt(row, j) != null) {
-                            if (table.getValueAt(j, row) != null) {
-                                val += Double.valueOf(table.getValueAt(row, j).toString());
-                            }
+                            val += Double.valueOf(table.getValueAt(row, j).toString());
                         }
                     }
                     break;
@@ -92,9 +99,11 @@ public class TableCalculator implements Runnable {
                     for (int i = 0; i < columnsToCalculate.length; i++) {
                         int j = columnsToCalculate[i];
                         if (table.getValueAt(row, j) != null) {
-                            if (table.getValueAt(j, row) != null) {
-                                val -= Double.valueOf(table.getValueAt(row, j).toString());
-                            }
+                            if (i == 0) {
+                                    val = Double.valueOf(table.getValueAt(row, j).toString());
+                                } else {
+                                    val = val - Double.valueOf(table.getValueAt(row, j).toString());
+                                }
                         }
                     }
                     break;
@@ -157,7 +166,7 @@ public class TableCalculator implements Runnable {
 
             for (int i = 0; i < targetColumns.length; i++) {
                 int j = targetColumns[i];
-                table.setValueAt(val, row, j);
+                ((MPTableModel)table.getModel()).setValueAt(val, row, j, true);
             }
 
         } catch (NumberFormatException numberFormatException) {
@@ -196,6 +205,7 @@ public class TableCalculator implements Runnable {
         for (int i = 0; i < table.getRowCount(); i++) {
             calculate(i);
         }
+        sumUp();
     }
 
     /**
@@ -227,5 +237,46 @@ public class TableCalculator implements Runnable {
         }
 
         return false;
+    }
+    private HashMap<Integer, LabeledTextField> sumcols = new HashMap<Integer, LabeledTextField>();
+
+    /**
+     * Define where the values are displayed
+     * @param value
+     * @param sumColumn
+     */
+    public void setLabel(LabeledTextField value, int sumColumn) {
+        sumcols.put(new Integer(sumColumn), value);
+    }
+
+    private void sumUp() {
+        TableCellEditor e = table.getCellEditor();
+        if(e!=null && e instanceof LazyCellEditor) {
+            ((LazyCellEditor) e).stopCellEditingSilent();
+        }
+        for (int i = 0; i < sumColumn.length; i++) {
+            int k = sumColumn[i];
+
+            if (sumcols.containsKey(new Integer(k))) {
+                Double ovalue = 0d;
+
+                for (int j = 0; j < table.getRowCount(); j++) {
+                    if (table.getModel().getValueAt(j, k) != null) {
+                        ovalue += Double.valueOf(table.getModel().getValueAt(j, k).toString());
+                    }
+                }
+
+                sumcols.get(new Integer(k)).setText(FormatNumber.formatDezimal(ovalue));
+            }
+        }
+    }
+
+
+    /**
+     *
+     * @return
+     */
+    public JTable getTable() {
+       return table;
     }
 }

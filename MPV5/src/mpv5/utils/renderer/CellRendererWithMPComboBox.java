@@ -79,7 +79,7 @@ public class CellRendererWithMPComboBox extends JLabel implements TableCellRende
         }
     }
 
-    class MPComboBoxEditor extends DefaultCellEditor {
+    class MPComboBoxEditor extends LazyCellEditor {
 
         private final LightMPComboBox box;
 
@@ -87,6 +87,7 @@ public class CellRendererWithMPComboBox extends JLabel implements TableCellRende
             super(b);
             this.box = b;
         }
+
     }
 }
 

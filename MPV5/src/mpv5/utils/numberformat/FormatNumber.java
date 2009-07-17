@@ -28,7 +28,7 @@ public class FormatNumber {
      * @param text
      * @return If parsing would be successful
      */
-    public static boolean checkDezimal(String text) {
+    public  synchronized static boolean checkDezimal(String text) {
         if (parseDezimal(text) == null) {
             return false;
         } else {
@@ -40,7 +40,7 @@ public class FormatNumber {
      * The default number format
      * @return
      */
-    public static NumberFormat getDefaultDecimalFormat() {
+    public  synchronized static NumberFormat getDefaultDecimalFormat() {
         return new DecimalFormat(FORMAT_DECIMAL);
     }
 
@@ -49,7 +49,7 @@ public class FormatNumber {
      * @param number
      * @return
      */
-    public static String formatDezimal(Double number) {
+    public synchronized static String formatDezimal(Double number) {
         java.text.DecimalFormat n = (DecimalFormat) getDefaultDecimalFormat();
         n.setMaximumFractionDigits(2);
         return n.format(round(number));
@@ -60,7 +60,7 @@ public class FormatNumber {
      * @param number
      * @return
      */
-    public static Double round(double number) {
+    public  synchronized static Double round(double number) {
         BigDecimal b = BigDecimal.valueOf(number);
         b = b.setScale(2, BigDecimal.ROUND_HALF_UP);
         return b.doubleValue();
@@ -71,7 +71,7 @@ public class FormatNumber {
      * @param number
      * @return A double number or null if no matching number instance can be found
      */
-    public static Double parseDezimal(String number) {
+    public  synchronized static Double parseDezimal(String number) {
         java.text.DecimalFormat n = (DecimalFormat) getDefaultDecimalFormat();
         n.setMaximumFractionDigits(2);
         Locale[] Locales;
@@ -97,7 +97,7 @@ public class FormatNumber {
      * @param number
      * @return
      */
-    public static String formatDezimal(Float number) {
+    public  synchronized static String formatDezimal(Float number) {
         java.text.DecimalFormat n = (DecimalFormat) getDefaultDecimalFormat();
         n.setMaximumFractionDigits(2);
         return n.format(round(Double.valueOf(number)));
@@ -108,7 +108,7 @@ public class FormatNumber {
      * @param betrag
      * @return
      */
-    public static String formatLokalCurrency(Double betrag) {
+    public  synchronized static String formatLokalCurrency(Double betrag) {
         NumberFormat n = NumberFormat.getCurrencyInstance();
         return n.format(round(betrag));
     }
@@ -118,7 +118,7 @@ public class FormatNumber {
      * @param number
      * @return
      */
-    public static String formatPercent(double number) {
+    public  synchronized static String formatPercent(double number) {
         return NumberFormat.getPercentInstance().format(number);
     }
 
@@ -127,7 +127,7 @@ public class FormatNumber {
      * @param number
      * @return
      */
-    public static boolean checkNumber(Object number) {
+    public  synchronized static boolean checkNumber(Object number) {
        if (number instanceof Long || number instanceof Integer ||
                    number instanceof Short || number instanceof Byte ||
                    number instanceof AtomicInteger ||
@@ -151,7 +151,7 @@ public class FormatNumber {
      * @param number
      * @return
      */
-    public static Double parseNumber(Object number) {
+    public  synchronized static Double parseNumber(Object number) {
          if (number!=null) {
             if (number instanceof Number) {
                 return ((Number) number).doubleValue();

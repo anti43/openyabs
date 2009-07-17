@@ -31,9 +31,20 @@ import mpv5.utils.numberformat.FormatNumber;
  *
  * 
  */
-public class TableCellEditorForDezimal extends DefaultCellEditor {
+public class TableCellEditorForDezimal extends LazyCellEditor {
     private static final long serialVersionUID = 1L;
-
+//
+//    /**
+//        * Stops editing and
+//        * returns true to indicate that editing has stopped.
+//        * This method does NOT call <code>fireEditingStopped</code>.
+//        *
+//        * @return  true
+//        */
+//        @Override
+//        public boolean stopCellEditing() {
+//	    return true;
+//	}
     /**
      *
      * @param tf
@@ -84,6 +95,8 @@ public class TableCellEditorForDezimal extends DefaultCellEditor {
                 }
             }
         };
+
+
     }
 }
 

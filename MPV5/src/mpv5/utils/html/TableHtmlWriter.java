@@ -134,7 +134,7 @@ public class TableHtmlWriter {
 
     /**
      * This constructor initializes the HTMLWriter with the
-     * given datamodele.
+     * given datamodel.
      *
      * @param model A Default Table Model
      */

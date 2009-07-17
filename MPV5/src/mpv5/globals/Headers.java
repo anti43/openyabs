@@ -22,7 +22,7 @@ public enum Headers {
     JOURNAL(new String[]{"Internal ID", "Date", "Group", "Number", "Type", "Status", "Value", "Paid"}),
     TRASHBIN(new String[]{"Type", "Internal ID", "Description"}),
     PRODUCT_DEFAULT(new String[]{"Internal ID", "Name", "Number","Description"}),
-    SUBITEMS(new String[]{"Internal ID", "", "Count", "Measure", "Description", "Netto Price", "Tax Value", "Total Price"});
+    SUBITEMS(new String[]{"Internal ID", "", "Count", "Measure", "Description", "Netto Price", "Tax Rate", "Total Price", "Tax value"});
 
     private Headers(String[] header) {
         this.header = header;

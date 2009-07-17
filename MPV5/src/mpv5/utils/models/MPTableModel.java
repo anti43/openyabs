@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.TableView.TableRow;
@@ -34,6 +35,7 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.objects.Item;
+import mpv5.db.objects.SubItem;
 import mpv5.globals.Headers;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
@@ -52,7 +54,7 @@ public class MPTableModel extends DefaultTableModel {
     private Context context;
     private Object[] predefinedRow;
     private Integer autoCountColumn;
-    private TableCalculator calculator;
+    private List<TableCalculator> calculators = new Vector<TableCalculator>();
 
     /**
      * Creates an empty, uneditable model 
@@ -177,67 +179,14 @@ public class MPTableModel extends DefaultTableModel {
         setTypes(types);
         setEditable(false);
     }
-//
-//    /**
-//     * Creates an editable model out of the given data and switches this model to native mode.<br/>
-//     * In native mode, all non NULL rows of the model are available as {@link MPTableModelRow}
-//     * @param nativerowdata
-//     * @param columnNames
-//     */
-//    public MPTableModel(MPTableModelRow[] nativerowdata, Object[] columnNames) {
-//        this();
-//    }
+
 
     /**
-     * Creates a special table model for the given context and switches this model to native mode.<br/>
-     * In native mode, all non NULL rows of the model are available as {@link MPTableModelRow}
-     * @param context
-     * @param table (optional) If not null, custom renderers are registered for some column class values
-     */
-    public MPTableModel(Context context, JTable table) {
-        super();
-        this.context = context;
-
-        if (context.equals(Context.getSubItem())) {
-            String defunit = null;
-            if (MPView.getUser().getProperties().hasProperty("defunit")) {
-                defunit = MPView.getUser().getProperties().getProperty("defunit");
-            }
-            Double deftax = 0d;
-            if (MPView.getUser().getProperties().hasProperty("deftax")) {
-                int taxid = MPView.getUser().getProperties().getProperty("deftax", 0);
-                deftax = Item.getTaxValue(taxid);
-            }
-            Double defcount = 1d;
-            if (MPView.getUser().getProperties().hasProperty("defcount")) {
-                defcount = MPView.getUser().getProperties().getProperty("defcount", 0d);
-            }
-
-            setDataVector(new Object[][]{
-                        {0, 1, defcount, defunit, null, 0.0, deftax, 0.0},
-                        {0, 2, defcount, defunit, null, 0.0, deftax, 0.0},
-                        {0, 3, defcount, defunit, null, 0.0, deftax, 0.0},
-                        {0, 4, defcount, defunit, null, 0.0, deftax, 0.0},
-                        {0, 5, defcount, defunit, null, 0.0, deftax, 0.0},
-                        {0, 6, defcount, defunit, null, 0.0, deftax, 0.0},
-                        {0, 7, defcount, defunit, null, 0.0, deftax, 0.0}}, Headers.SUBITEMS);
-            setCanEdits(new boolean[]{false, false, true, true, true, true, true, false});
-            setTypes(new Class[]{Integer.class, Integer.class, Double.class, String.class, String.class, Double.class, Double.class, Double.class});
-            defineRow(new Object[]{0, 0, defcount, defunit, null, 0.0, deftax, 0.0});
-            autoCountColumn = 1;
-
-            if (table != null) {
-                table.setDefaultRenderer(Double.class, new DoubleRenderer());
-            }
-        }
-    }
-
-    /**
-     * Set the cell calculator for this model
+     * Add a cell calculator for this model
      * @param cv
      */
-    public void setCalculator(TableCalculator cv) {
-        this.calculator = cv;
+    public void addCalculator(TableCalculator cv) {
+        this.calculators.add(cv);
     }
 
     @Override
@@ -305,19 +254,30 @@ public class MPTableModel extends DefaultTableModel {
     @Override
     @SuppressWarnings("unchecked")
     public Object getValueAt(int row, int column) {
-        Object o = super.getValueAt(row, column);
-        Class t = getColumnClass(column);
-        if (!t.getName().equals("java.lang.Object")) {
-            if (o != null && (t.isAssignableFrom(Double.class) ||
-                    t.isAssignableFrom(double.class) ||
-                    t.isAssignableFrom(float.class) ||
-                    t.isAssignableFrom(Float.class))) {
-                return FormatNumber.formatDezimal(Double.valueOf(o.toString()));
+        if (column < getColumnCount()) {
+            if (row < getRowCount()) {
+                return super.getValueAt(row, column);
             } else {
-                return o;
+                throw new ArrayIndexOutOfBoundsException("The row " + row + " is not within the models row count of " + getRowCount());
             }
         } else {
-            return o;
+            throw new ArrayIndexOutOfBoundsException("The column " + column + " is not within the models column count of " + getColumnCount());
+        }
+    }
+
+    /**
+     * Behaves like setValueAt(row, column)
+     * @param aValue
+     * @param row
+     * @param column
+     * @param dontFire If true, does not fire table cell event!
+     */
+    @SuppressWarnings("unchecked")
+    public void setValueAt(Object aValue, int row, int column, boolean dontFire) {
+        Vector rowVector = (Vector) dataVector.elementAt(row);
+        rowVector.setElementAt(aValue, column);
+        if (!dontFire) {
+            fireTableCellUpdated(row, column);
         }
     }
 
@@ -326,11 +286,15 @@ public class MPTableModel extends DefaultTableModel {
     }
 
     @Override
-    public void fireTableCellUpdated(int row, int column) {
-        if (calculator != null && !calculator.isTargetCell(row, column)) {
-            calculator.calculateOnce();
+    public synchronized void fireTableCellUpdated(int row, int column) {
+
+        for (int i = 0; i < calculators.size(); i++) {
+            TableCalculator calculator = calculators.get(i);
+            if (calculator != null && !calculator.isTargetCell(row, column)) {
+                calculator.calculateOnce();
+            }
         }
-        super.fireTableCellUpdated(row, column);
+        fireTableChanged(new TableModelEvent(this, row, row, column));
     }
 
     /**
@@ -380,7 +344,11 @@ public class MPTableModel extends DefaultTableModel {
         this.context = context;
     }
 
-    private void defineRow(Object[] object) {
+    /**
+     * Define a row which is used in addRow(int)
+     * @param object
+     */
+    public void defineRow(Object[] object) {
         predefinedRow = object;
     }
 
@@ -390,7 +358,7 @@ public class MPTableModel extends DefaultTableModel {
      * @param columns
      * @return
      */
-    public  List<Object[]> getValidRows(int[] columns) {
+    public List<Object[]> getValidRows(int[] columns) {
 
         List<Object[]> rows = new Vector<Object[]>();
         for (int ki = 0; ki < getRowCount(); ki++) {
@@ -410,6 +378,14 @@ public class MPTableModel extends DefaultTableModel {
             }
         }
         return rows;
+    }
+
+    /**
+     * Set the auto increment column for addRows(int)
+     * @param column
+     */
+    public void setAutoCountColumn(int column) {
+        autoCountColumn = column;
     }
 
     /**
@@ -440,8 +416,7 @@ public class MPTableModel extends DefaultTableModel {
                 formatter = NumberFormat.getInstance();
             }
             try {
-                //Values already parsed in getValueAt(row, colum) of MPTablemodel
-                setText((value == null) ? "" : value.toString());
+                setText((value == null) ? "" : FormatNumber.formatDezimal(Double.valueOf(value.toString())));
             } catch (Exception e) {
                 Log.Debug(MPTableModel.class, "Error caused by: " + value);
             }

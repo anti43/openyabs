@@ -23,6 +23,7 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.globals.Headers;
 import mpv5.logging.Log;
+import mpv5.ui.frames.MPView;
 import mpv5.utils.models.MPTableModel;
 
 /**
@@ -237,11 +238,26 @@ public class SubItem extends DatabaseObject {
             data[i][7] = items[i].__getCountvalue() * items[i].__getExternalvalue() * ((items[i].__getTaxpercentvalue() / 100) + 1);
         }
         MPTableModel model = new MPTableModel(
-                new Class[]{Integer.class, Integer.class, Double.class, String.class, String.class, Double.class, Double.class, Double.class},
-                new boolean[]{false, false, true, true, true, true, true, false},
+                new Class[]{Integer.class, Integer.class, Double.class, String.class, String.class, Double.class, Double.class, Double.class, Double.class},
+                new boolean[]{false, false, true, true, true, true, true, false, false},
                 data,
                 Headers.SUBITEMS.getValue());
         model.setContext(Context.getSubItem());
+        String defunit = null;
+        if (MPView.getUser().getProperties().hasProperty("defunit")) {
+            defunit = MPView.getUser().getProperties().getProperty("defunit");
+        }
+        Double deftax = 0d;
+        if (MPView.getUser().getProperties().hasProperty("deftax")) {
+            int taxid = MPView.getUser().getProperties().getProperty("deftax", 0);
+            deftax = Item.getTaxValue(taxid);
+        }
+        Double defcount = 1d;
+        if (MPView.getUser().getProperties().hasProperty("defcount")) {
+            defcount = MPView.getUser().getProperties().getProperty("defcount", 0d);
+        }
+        model.defineRow(new Object[]{0, 0, defcount, defunit, null, 0.0, deftax, 0.0, 0.0});
+        model.setAutoCountColumn(1);
         return model;
     }
 

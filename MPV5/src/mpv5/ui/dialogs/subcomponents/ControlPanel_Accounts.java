@@ -74,7 +74,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
             refresh();
         }
 
-        ((JSpinner.DefaultEditor) classv.getSpinner().getEditor()).getTextField().setEditable(false);
+//        ((JSpinner.DefaultEditor) classv.getSpinner().getEditor()).getTextField().setEditable(false);
     }
 
     public ControlPanel_Accounts(Account aThis) {
@@ -529,17 +529,17 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
                     {Account.INCOME, Messages.INCOME},
                     {Account.LIABILITY, Messages.LIABILITY}
                 })));
-        try {
-            classv.getSpinner().setModel(new SpinnerListModel(QueryHandler.getConnection().clone(Context.getAccounts()).getColumn("intaccountclass", -1)));
-        } catch (NodataFoundException ex) {
-            Log.Debug(this, ex.getMessage());
-            classv.getSpinner().setModel(new SpinnerListModel());
-        }
-
-        try {
-            classv.getSpinner().setValue(0);
-        } catch (Exception e) {
-        }
+//        try {
+//            classv.getSpinner().setModel(new SpinnerListModel(QueryHandler.getConnection().clone(Context.getAccounts()).getColumn("intaccountclass", -1)));
+//        } catch (NodataFoundException ex) {
+//            Log.Debug(this, ex.getMessage());
+//            classv.getSpinner().setModel(new SpinnerListModel());
+//        }
+//
+//        try {
+//            classv.getSpinner().setValue(0);
+//        } catch (Exception e) {
+//        }
 
     }
 

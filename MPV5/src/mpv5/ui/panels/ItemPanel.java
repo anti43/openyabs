@@ -150,7 +150,11 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
                 if (m.getRowCount() > 0) {
                     m.addRow(5);
                 } else {
-                    itemtable.setModel(new MPTableModel(Context.getSubItem(), itemtable));
+                    itemtable.setModel(SubItem.toModel(new SubItem[]{
+                    new SubItem(),new SubItem(),
+                    new SubItem(),new SubItem(),
+                    new SubItem(),new SubItem(),
+                    }));
                 }
             }
 
@@ -345,6 +349,12 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
         ;
         addfile = new javax.swing.JButton();
         removefile = new javax.swing.JButton();
+        jToolBar2 = new javax.swing.JToolBar();
+        discountpercent = new mpv5.ui.beans.LabeledSpinner();
+        jSeparator3 = new javax.swing.JToolBar.Separator();
+        taxvalue = new mpv5.ui.beans.LabeledTextField();
+        jSeparator5 = new javax.swing.JToolBar.Separator();
+        value = new mpv5.ui.beans.LabeledTextField();
         toolbarpane = new javax.swing.JPanel();
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
@@ -471,7 +481,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 68, Short.MAX_VALUE)
         );
 
         jToolBar1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -659,6 +669,31 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
             }
         });
 
+        jToolBar2.setFloatable(false);
+        jToolBar2.setRollover(true);
+        jToolBar2.setName("jToolBar2"); // NOI18N
+        jToolBar2.setOpaque(false);
+
+        discountpercent.set_Label(bundle.getString("ItemPanel.discountpercent._Label")); // NOI18N
+        discountpercent.setName("discountpercent"); // NOI18N
+        jToolBar2.add(discountpercent);
+
+        jSeparator3.setName("jSeparator3"); // NOI18N
+        jSeparator3.setSeparatorSize(new java.awt.Dimension(15, 10));
+        jToolBar2.add(jSeparator3);
+
+        taxvalue.set_Label(bundle.getString("ItemPanel.taxvalue._Label")); // NOI18N
+        taxvalue.setName("taxvalue"); // NOI18N
+        jToolBar2.add(taxvalue);
+
+        jSeparator5.setName("jSeparator5"); // NOI18N
+        jSeparator5.setSeparatorSize(new java.awt.Dimension(15, 10));
+        jToolBar2.add(jSeparator5);
+
+        value.set_Label(bundle.getString("ItemPanel.value._Label")); // NOI18N
+        value.setName("value"); // NOI18N
+        jToolBar2.add(value);
+
         javax.swing.GroupLayout rightpaneLayout = new javax.swing.GroupLayout(rightpane);
         rightpane.setLayout(rightpaneLayout);
         rightpaneLayout.setHorizontalGroup(
@@ -671,6 +706,8 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
                         .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 69, Short.MAX_VALUE)
                         .addComponent(prinitingComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.LEADING, 0, 674, Short.MAX_VALUE)
                     .addGroup(rightpaneLayout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -679,8 +716,9 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
                         .addGroup(rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(removefile, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(addfile, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.LEADING, 0, 674, Short.MAX_VALUE))
+                    .addGroup(rightpaneLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jToolBar2, javax.swing.GroupLayout.PREFERRED_SIZE, 537, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         rightpaneLayout.setVerticalGroup(
@@ -697,7 +735,9 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(0, 0, 0)
+                .addComponent(jToolBar2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
                 .addGroup(rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(rightpaneLayout.createSequentialGroup()
                         .addComponent(addfile)
@@ -724,7 +764,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(leftpane, javax.swing.GroupLayout.DEFAULT_SIZE, 375, Short.MAX_VALUE)
+            .addComponent(leftpane, javax.swing.GroupLayout.DEFAULT_SIZE, 436, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(toolbarpane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
@@ -781,6 +821,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
     private mpv5.ui.beans.LabeledDateChooser date1;
     private mpv5.ui.beans.LabeledDateChooser date2;
     private mpv5.ui.beans.LabeledDateChooser date3;
+    private mpv5.ui.beans.LabeledSpinner discountpercent;
     private mpv5.ui.beans.MPCombobox groupnameselect;
     private javax.swing.JTable itemtable;
     private javax.swing.JButton jButton2;
@@ -794,8 +835,11 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JToolBar.Separator jSeparator2;
+    private javax.swing.JToolBar.Separator jSeparator3;
     private javax.swing.JToolBar.Separator jSeparator4;
+    private javax.swing.JToolBar.Separator jSeparator5;
     private javax.swing.JToolBar jToolBar1;
+    private javax.swing.JToolBar jToolBar2;
     private javax.swing.JPanel leftpane;
     private javax.swing.JTextPane notes;
     private mpv5.ui.beans.LabeledTextField number;
@@ -803,8 +847,10 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
     private javax.swing.JButton removefile;
     private javax.swing.JPanel rightpane;
     private mpv5.ui.beans.LabeledCombobox status;
+    private mpv5.ui.beans.LabeledTextField taxvalue;
     private javax.swing.JPanel toolbarpane;
     private javax.swing.JLabel type;
+    private mpv5.ui.beans.LabeledTextField value;
     // End of variables declaration//GEN-END:variables
     public String cname_;
     public String cnumber_;
@@ -920,8 +966,11 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
                     status.setModel(Item.getStatusStrings(), MPComboBoxModelItem.COMPARE_BY_ID);
                     status.setSelectedIndex(MPView.getUser().__getIntdefaultstatus());
 
-
-                    itemtable.setModel(new MPTableModel(Context.getSubItem(), itemtable));
+                    itemtable.setModel(SubItem.toModel(new SubItem[]{
+                    new SubItem(),new SubItem(),
+                    new SubItem(),new SubItem(),
+                    new SubItem(),new SubItem(),
+                    }));
 
                     formatTable();
                 } catch (Exception e) {
@@ -940,10 +989,15 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
         t.setRendererTo(2);
         CellRendererWithMPComboBox r = new CellRendererWithMPComboBox(Context.getProducts(), itemtable);
         r.setRendererTo(4);
-        TableCalculator cv = new TableCalculator(itemtable, new int[]{2, 5, 6}, new int[]{7}, new int[]{6}, TableCalculator.ACTION_MULTIPLY);
-        ((MPTableModel) itemtable.getModel()).setCalculator(cv);
+        TableCalculator cv = new TableCalculator(itemtable, new int[]{2, 5, 6}, new int[]{7}, new int[]{6}, TableCalculator.ACTION_MULTIPLY, new int[]{7});
+        ((MPTableModel) itemtable.getModel()).addCalculator(cv);
+        cv.setLabel(value, 7);
 
-        TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 53, 63, 100, 83, 63, 63}, new Boolean[]{true, true, true, true, false, true, true, true});
+        TableCalculator cv1 = new TableCalculator(itemtable, new int[]{7, 5}, new int[]{8}, new int[]{}, TableCalculator.ACTION_SUBSTRACT, new int[]{8});
+        ((MPTableModel) itemtable.getModel()).addCalculator(cv1);
+        cv1.setLabel(taxvalue, 8);
+
+        TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 53, 63, 100, 83, 63, 63, 0}, new Boolean[]{true, true, true, true, false, true, true, true, true});
         TableFormat.changeBackground(itemtable, 1, Color.LIGHT_GRAY);
         TableFormat.changeBackground(itemtable, 7, Color.LIGHT_GRAY);
     }
