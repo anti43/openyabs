@@ -78,9 +78,9 @@ public class Account extends DatabaseObject {
     private String description = "";
     private double taxvalue;
     private int intaccounttype;
-    private int profitfid;
-    private int taxfid;
-    private int taxuid;
+    private int intprofitfid;
+    private int inttaxfid;
+    private int inttaxuid;
     private String frame = "buildin";
 
     @Override
@@ -296,47 +296,6 @@ public class Account extends DatabaseObject {
         return null;
     }
 
-    /**
-     * @return the profitfid
-     */
-    public int __getProfitfid() {
-        return profitfid;
-    }
-
-    /**
-     * @param profitfid the profitfid to set
-     */
-    public void setProfitfid(int profitfid) {
-        this.profitfid = profitfid;
-    }
-
-    /**
-     * @return the taxfid
-     */
-    public int __getTaxfid() {
-        return taxfid;
-    }
-
-    /**
-     * @param taxfid the taxfid to set
-     */
-    public void setTaxfid(int taxfid) {
-        this.taxfid = taxfid;
-    }
-
-    /**
-     * @return the taxuid
-     */
-    public int __getTaxuid() {
-        return taxuid;
-    }
-
-    /**
-     * @param taxuid the taxuid to set
-     */
-    public void setTaxuid(int taxuid) {
-        this.taxuid = taxuid;
-    }
 
     /**
      * @return the frame
@@ -350,5 +309,47 @@ public class Account extends DatabaseObject {
      */
     public void setFrame(String frame) {
         this.frame = frame;
+    }
+
+    /**
+     * @return the intprofitfid
+     */
+    public int __getIntprofitfid() {
+        return intprofitfid;
+    }
+
+    /**
+     * @param intprofitfid the intprofitfid to set
+     */
+    public void setIntprofitfid(int intprofitfid) {
+        this.intprofitfid = intprofitfid;
+    }
+
+    /**
+     * @return the inttaxfid
+     */
+    public int __getInttaxfid() {
+        return inttaxfid;
+    }
+
+    /**
+     * @param inttaxfid the inttaxfid to set
+     */
+    public void setInttaxfid(int inttaxfid) {
+        this.inttaxfid = inttaxfid;
+    }
+
+    /**
+     * @return the inttaxuid
+     */
+    public int __getInttaxuid() {
+        return inttaxuid;
+    }
+
+    /**
+     * @param inttaxuid the inttaxuid to set
+     */
+    public void setInttaxuid(int inttaxuid) {
+        this.inttaxuid = inttaxuid;
     }
 }
