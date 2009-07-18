@@ -1563,7 +1563,7 @@ public class MPView extends FrameView {
     }//GEN-LAST:event_jMenuItem25ActionPerformed
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
-        addTab(new mpv5.ui.panels.EURPanel(), Messages.COST);
+        addTab(new mpv5.ui.panels.ProfitPanel(), Messages.COST);
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void jMenuItem26ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem26ActionPerformed

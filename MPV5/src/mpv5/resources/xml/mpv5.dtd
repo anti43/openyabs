@@ -60,11 +60,11 @@
 <!ELEMENT description ( #PCDATA ) >
 <!ELEMENT intparentaccount ( #PCDATA ) >
 <!ELEMENT taxvalue ( #PCDATA ) >
-<!ELEMENT euruid ( #PCDATA ) >
-<!ELEMENT ustvauid ( #PCDATA ) >
+<!ELEMENT profitfid ( #PCDATA ) >
+<!ELEMENT taxfid ( #PCDATA ) >
 <!ELEMENT taxuid ( #PCDATA ) >
 <!ELEMENT frame ( #PCDATA ) >
-<!ELEMENT account ( intaccountclass | taxvalue | cname | intaccounttype | taxvalue | description | intparentaccount | groupsids? | intaddedby? | dateadded? | euruid | ustvauid | taxuid | frame )* >
+<!ELEMENT account ( intaccountclass | taxvalue | cname | intaccounttype | taxvalue | description | intparentaccount | groupsids? | intaddedby? | dateadded? | profitfid | taxfid | taxuid | frame )* >
 <!ELEMENT accounts ( account* ) >
 <!ATTLIST account id CDATA #IMPLIED>
 <!--END ACCOUNTS-->

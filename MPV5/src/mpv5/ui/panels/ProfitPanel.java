@@ -1,5 +1,5 @@
 /*
- * EURPanel.java
+ * ProfitPanel.java
  *
  * Created on 21. Februar 2008, 21:50
  */
@@ -8,72 +8,67 @@ package mpv5.ui.panels;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import javax.swing.JEditorPane;
 import javax.swing.JPanel;
+import javax.xml.parsers.DocumentBuilderFactory;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.DialogForFile;
+import mpv5.ui.dialogs.TaxAddressDialog;
+import mpv5.ui.frames.MPView;
 import mpv5.utils.date.DateConverter;
+import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.files.TableHtmlWriter;
 import mpv5.utils.models.DateSelectorModel;
-import mpv5.utils.models.EURModel;
+import mpv5.utils.models.ProfitModel;
 import mpv5.utils.tables.TableFormat;
+import org.xhtmlrenderer.pdf.ITextRenderer;
 
 /**
  *
  * @author  anti43
  */
-public class EURPanel extends JPanel {
+public class ProfitPanel extends JPanel {
 
   private DateSelectorModel dateModel = new DateSelectorModel();
-  private EURModel eurModel;
+  private ProfitModel profitModel;
   private String html;
   private JEditorPane formPane = new JEditorPane();
 
-  public EURPanel() {
+  public ProfitPanel() {
     initComponents();
 
-    eurModel = new EURModel(dateModel);
-    if (eurModel.isSkr() != true) {
+    profitModel = new ProfitModel(dateModel);
+    if (profitModel.isSkr() != true) {
       jButton2.setVisible(false);
     }
-    jTable1.setModel(eurModel);
+    jTable1.setModel(profitModel);
   }
 
   private String[] getYears() {
     String[] ys = new String[7];
     int actYear = Integer.parseInt(DateConverter.getYear());
     for (int i = 0; i < ys.length; i++) {
-      ys[i] = (actYear - 3 + i) + "";
+      ys[i] = (actYear - 3 + i + "");
     }
     return ys;
-  }
-
-  private void showPane() {
-    formPane.setContentType("text/html");
-    formPane.setEditable(false);
-    jScrollPane1.setViewportView(formPane);
-    formPane.setBackground(java.awt.Color.WHITE);
-    formPane.setText(html.substring(38));
-    jTable1.setVisible(false);
-    formPane.setVisible(true);
   }
 
   private void showTable() {
     jScrollPane1.setViewportView(jTable1);
     formPane.setVisible(false);
     jTable1.setVisible(true);
-    eurModel.getTableHtml();
-jTextField1.setText(dateModel.getStartDay() + "   -   " + dateModel.getEndDay());
+    profitModel.fetchResults();
+    jTextField1.setText(dateModel.getStartDay() + "   -   " + dateModel.getEndDay());
     try {
-      jTable1.setModel(eurModel.getModel());
+      jTable1.setModel(profitModel.getModel());
       TableFormat.format(jTable1, 0, 380);
       jTable1.doLayout();
-
       jButton2.setEnabled(true);
       jButton3.setEnabled(true);
-
     } catch (Exception ex) {
       ex.printStackTrace();
       Log.Debug(ex);
@@ -81,38 +76,43 @@ jTextField1.setText(dateModel.getStartDay() + "   -   " + dateModel.getEndDay())
   }
 
   private void printToFile() {
-    String filename = "";
+    File target = new File(profitModel.getOutFileName());
 
     try {
-//          TableHtmlWriter writ = new TableHtmlWriter((DefaultTableModel) jTable1.getModel(), new File(month + "_" + year + ".html"), "Beschreibung,Daten".split(","), "Einnahmen / Ausgaben " + month + "/" + year);
-//
-//          dialog = new DialogForFile(new File(Main.DESKTOP + File.separator + writ.getFile().getName()));
-//          dialog.saveFile(writ.createHtml(1, Color.LIGHT_GRAY));
-//          new Browser(dialog.getFile());
-      if (eurModel.isSkr()) {
-        eurModel.getPdf();
+      if (!profitModel.isSkr()) {
+        profitModel.getPdf();
       } else {
+        TableHtmlWriter thw = new TableHtmlWriter(profitModel);
+        thw.setHeader(profitModel.getHeader());
+        File tempfile = thw.createHtml2(1, java.awt.Color.BLACK);
 
-        TableHtmlWriter thw = new TableHtmlWriter(eurModel);
-        thw.setHeader(eurModel.getHeader());
-        File tempfile = thw.createHtml();
-        DialogForFile d = new DialogForFile();
+        DialogForFile d = new DialogForFile(target);
         d.setFileFilter(DialogForFile.PDF_FILES);
-        d.saveFile(tempfile);
+//        d.saveFile(tempfile); /* save as html */
 
-//                OutputStream os = new FileOutputStream(tempfile);
-//          ITextRenderer renderer = new ITextRenderer();
-//          renderer.setDocument(url);
-//          renderer.layout();
-//          renderer.createPDF(os);
-//          os.close();
+        DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+        builderFactory.setFeature(
+            "http://apache.org/xml/features/nonvalidating/load-external-dtd",
+            false);
+        String url = tempfile.toURI().toURL().toString();
+        if (d.showSaveDialog(this) == DialogForFile.APPROVE_OPTION) {
+          File t = d.getSelectedFile();
+          FileDirectoryHandler.copyFile(tempfile, t);
+          OutputStream os = new FileOutputStream(t);
+          ITextRenderer renderer = new ITextRenderer();
+          renderer.setDocument(url);
+          renderer.layout();
+          renderer.createPDF(os);
+          os.close();
+//          ((mainframe) mainframe).setInfoText("Datei gespeichert: " + t);
+        }
       }
-
     } catch (Exception ex) {
       Log.Debug(this, ex);
     }
   }
 
+  // <editor-fold defaultstate="collapsed" desc="html form display - remove when pdf display works">
   /**
    * Gets the final HTML form from the XML Parser and opens it in the
    * JEditorPane. The JEditorPane needs some older HTML code, so the
@@ -121,7 +121,7 @@ jTextField1.setText(dateModel.getStartDay() + "   -   " + dateModel.getEndDay())
    * input stream.
    */
   private void showHtmlForm() {
-    ByteArrayOutputStream os = eurModel.getFormHtml();
+    ByteArrayOutputStream os = profitModel.getFormHtml();
     InputStream in = new ByteArrayInputStream(os.toByteArray());
     try {
       html = streamToString(in);
@@ -143,6 +143,16 @@ jTextField1.setText(dateModel.getStartDay() + "   -   " + dateModel.getEndDay())
     return sb.toString();
   }
 
+  private void showPane() {
+    formPane.setContentType("text/html");
+    formPane.setEditable(false);
+    jScrollPane1.setViewportView(formPane);
+    formPane.setBackground(java.awt.Color.WHITE);
+    formPane.setText(html.substring(38));
+    jTable1.setVisible(false);
+    formPane.setVisible(true);
+  }
+// </editor-fold>
 
   /** This method is called from within the constructor to
    * initialize the form.
@@ -158,6 +168,7 @@ jTextField1.setText(dateModel.getStartDay() + "   -   " + dateModel.getEndDay())
     jButton1 = new javax.swing.JButton();
     jButton2 = new javax.swing.JButton();
     jButton3 = new javax.swing.JButton();
+    jButton4 = new javax.swing.JButton();
     jLabel2 = new javax.swing.JLabel();
     jLabel3 = new javax.swing.JLabel();
     jPanel2 = new javax.swing.JPanel();
@@ -168,12 +179,13 @@ jTextField1.setText(dateModel.getStartDay() + "   -   " + dateModel.getEndDay())
 
     jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Einnahmen-Überschuss Rechnung: Alle Angaben ohne Gewähr."));
 
-    jLabel1.setText("Zeitraum:");
+    java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+    jLabel1.setText(bundle.getString("ProfitPanel.Period")); // NOI18N
 
     jComboBox1.setModel(dateModel.getModel());
 
     jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/kspread.png"))); // NOI18N
-    jButton1.setToolTipText("Show Data");
+    jButton1.setToolTipText(bundle.getString("ProfitPanel.ShowData")); // NOI18N
     jButton1.setContentAreaFilled(false);
     jButton1.setFocusable(false);
     jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -187,7 +199,7 @@ jTextField1.setText(dateModel.getStartDay() + "   -   " + dateModel.getEndDay())
     });
 
     jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/knode.png"))); // NOI18N
-    jButton2.setToolTipText("Form Preview");
+    jButton2.setToolTipText(bundle.getString("ProfitPanel.FormPreview")); // NOI18N
     jButton2.setContentAreaFilled(false);
     jButton2.setEnabled(false);
     jButton2.setFocusable(false);
@@ -204,7 +216,7 @@ jTextField1.setText(dateModel.getStartDay() + "   -   " + dateModel.getEndDay())
 
     jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/3floppy_unmount.png"))); // NOI18N
     jButton3.setMnemonic('P');
-    jButton3.setToolTipText("Save (PDF)");
+    jButton3.setToolTipText(bundle.getString("ProfitPanel.SavePdf")); // NOI18N
     jButton3.setContentAreaFilled(false);
     jButton3.setEnabled(false);
     jButton3.setFocusable(false);
@@ -219,7 +231,14 @@ jTextField1.setText(dateModel.getStartDay() + "   -   " + dateModel.getEndDay())
       }
     });
 
-    jLabel2.setText("Zahlen:");
+    jButton4.setText(bundle.getString("TaxAddressDialog.companydata")); // NOI18N
+    jButton4.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jButton4ActionPerformed(evt);
+      }
+    });
+
+    jLabel2.setText(bundle.getString("ProfitPanel.Data")); // NOI18N
 
     jLabel3.setText("Achtung! Überprüfen Sie die Daten in jedem Fall auf Richtigkeit, Vollständigkeit und Plausibilität!");
 
@@ -248,13 +267,13 @@ jTextField1.setText(dateModel.getStartDay() + "   -   " + dateModel.getEndDay())
     jPanel2.setLayout(jPanel2Layout);
     jPanel2Layout.setHorizontalGroup(
       jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 619, Short.MAX_VALUE)
+      .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 883, Short.MAX_VALUE)
     );
     jPanel2Layout.setVerticalGroup(
       jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(jPanel2Layout.createSequentialGroup()
         .addContainerGap()
-        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 107, Short.MAX_VALUE)
+        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 111, Short.MAX_VALUE)
         .addContainerGap())
     );
 
@@ -289,17 +308,18 @@ jTextField1.setText(dateModel.getStartDay() + "   -   " + dateModel.getEndDay())
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(6, 6, 6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 104, Short.MAX_VALUE))
-              .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 548, Short.MAX_VALUE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton4))
+              .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 820, Short.MAX_VALUE))))
         .addContainerGap())
     );
     jPanel1Layout.setVerticalGroup(
       jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(jPanel1Layout.createSequentialGroup()
         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-          .addComponent(jButton3, 0, 0, Short.MAX_VALUE)
+          .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
           .addGroup(jPanel1Layout.createSequentialGroup()
             .addContainerGap()
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -307,7 +327,8 @@ jTextField1.setText(dateModel.getStartDay() + "   -   " + dateModel.getEndDay())
               .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
               .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
           .addComponent(jButton2, 0, 0, Short.MAX_VALUE)
-          .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, Short.MAX_VALUE))
+          .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, Short.MAX_VALUE)
+          .addComponent(jButton3, 0, 0, Short.MAX_VALUE))
         .addGap(14, 14, 14)
         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
           .addComponent(jLabel2)
@@ -346,10 +367,21 @@ jTextField1.setText(dateModel.getStartDay() + "   -   " + dateModel.getEndDay())
       dateModel.setYear((String) jComboBox2.getSelectedItem());
     }//GEN-LAST:event_jComboBox2ActionPerformed
 
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+      TaxAddressDialog taxformDialog = new TaxAddressDialog(MPView.identifierFrame,
+          java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels").getString("TaxAddressDialog.companydata"), profitModel);
+      taxformDialog.setVisible(true);
+      String[][] arr = taxformDialog.getData();
+//      for (int i = 0; i < arr.length; i++) {
+//        System.out.println(arr[i][0] + "  " + arr[i][1]);
+//      }
+    }//GEN-LAST:event_jButton4ActionPerformed
+
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private javax.swing.JButton jButton1;
   private javax.swing.JButton jButton2;
   private javax.swing.JButton jButton3;
+  private javax.swing.JButton jButton4;
   private javax.swing.JComboBox jComboBox1;
   private javax.swing.JComboBox jComboBox2;
   private javax.swing.JLabel jLabel1;

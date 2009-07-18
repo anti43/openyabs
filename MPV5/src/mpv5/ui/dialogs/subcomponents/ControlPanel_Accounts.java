@@ -439,9 +439,9 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
     public int intaccountclass_ = 0;
     public int intaccounttype_ = 0;
     public int intparentaccount_ = 1;
-    public int euruid_;
+    public int profitfid_;
     public int taxuid_;
-    public int ustvauid_;
+    public int taxfid_;
     public String frame_;
 
 

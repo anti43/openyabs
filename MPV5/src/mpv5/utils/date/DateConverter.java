@@ -144,6 +144,18 @@ public class DateConverter {
         return quarter;
     }
 
+    /**
+     * Quarter of a given date as 1, 2, 3, 4
+     * @return Quarter as 1, 2, 3, 4
+     */
+    public static int getQuarter(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        int month = cal.get(Calendar.MONTH); /* 0 through 11 */
+        int quarter = (month / 3) + 1;
+        return quarter;
+    }
+
     public static String getTodayDefDate() {
         return DE_DATE_FORMAT.format(new Date());
     }
@@ -229,6 +241,12 @@ public class DateConverter {
 
     public static String getDay(Date datum) {
         return DE_DATE_FORMAT.format(datum);
+    }
+
+    public static String getMonth(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        return String.valueOf(cal.get(Calendar.MONTH) + 1);
     }
 
     public static String getMonthName(Date date) {

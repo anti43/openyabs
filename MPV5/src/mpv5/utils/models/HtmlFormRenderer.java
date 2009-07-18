@@ -42,7 +42,8 @@ public class HtmlFormRenderer {
 
   private XMLEventFactory fact = XMLEventFactory.newInstance();
   private String htmlform;
-  private Map map;
+  private Map<String, String> map;
+  private double sum;
 
   /**
    * StaxParser for reading, filling and writing of a given HTML file.
@@ -50,7 +51,7 @@ public class HtmlFormRenderer {
    * @param model The model including the values to write to the HTML file
    * @return An OutputStream with the resulting HTML file.
    */
-  public OutputStream parseHtml(String htmlform, Map map) {
+  public OutputStream parseHtml(String htmlform, Map<String, String> map) {
     this.htmlform = htmlform;
     this.map = map;
 
@@ -108,18 +109,27 @@ public class HtmlFormRenderer {
   }
 
   /**
-   * Transforms a value from the TaxModel's taxMap to a character event.<br />
+   * Transforms a value from the result map to a character event.<br />
    * @param att The name of the id-attribute in the HTML document
    * @return A character event
    */
   private Characters getValues(String att) {
     String value = null;
-    if (att.equals("datum_heute")) {
-      Calendar cal = Calendar.getInstance();
-//      value = model.calDate(cal, cal.getTime(), 0);
+    if (att.contains("+")) {
+      String[] arr = att.substring(4, att.length()).split("\\+");
+      sum = 0;
+      for (int i = 0; i < arr.length; i++) {
+        String s = att.substring(0, 4) + arr[i];
+        if (map.containsKey(s)) {
+          String ir = map.get(s);
+          sum = sum + Double.parseDouble(ir);
+        }
+        map.put(att, sum + "");
+        value = sum + "";
+      }
     } else {
       if (map.containsKey(att)) {
-        value = (String) map.get(att);
+        value = map.get(att);
       }
     }
     return fact.createCharacters(value);

@@ -389,4 +389,86 @@ public class TableHtmlWriter {
     public void setBorderColor(Color borderColor) {
         this.borderColor = borderColor;
     }
+
+///////////////////////////////////// xhtml-writer start
+
+        /**
+     * This method creates the HTML file
+     *
+     * @param border The border thickness of the created HTML table
+     * @param bordercolor The bordercolor of the created HTML table
+     * @return The HTML file
+     */
+    public File createHtml2(Integer border, Color bordercolor) {
+
+        if (getModel() != null) {
+            try {
+                write2(border, bordercolor);
+            } catch (IOException ex) {
+                Logger.getLogger(TableHtmlWriter.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            System.err.println("No datamodel given.");
+        }
+
+        return getFile();
+    }
+
+       private void write2(Integer border, Color borderc) throws IOException {
+
+        String bo = "";
+        if (!showHorizontalLines || !showVerticalLines) {
+            if (!showHorizontalLines && !showVerticalLines) {
+                border = 0;
+            } else if (showHorizontalLines) {
+                bo = "RULES=COLS";
+            } else if (showHorizontalLines) {
+                bo = " RULES=ROWS";
+            }
+        }
+
+
+        BufferedWriter out = new BufferedWriter(new FileWriter(getFile()));
+        String rgb = Integer.toHexString(borderc.getRGB());
+        rgb = rgb.substring(2, rgb.length());
+        out.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+        out.write("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n");
+        out.write("<html xmlns=\"http://www.w3.org/1999/xhtml\">\n<head>\n<meta http-equiv='Content-Type' content='text/html;charset=UTF-8' />\n<title />\n");
+        out.write("<style type='text/css'>\ntd{font-family: Arial; font-size:10pt;}\n" +
+                "table {border:" + border + "px solid #" + rgb + "; border-collapse:collapse;}\n" +
+                "td {border:" + border + "px solid #" + rgb + "; padding:7pt 5pt;}\n" +
+                "th {border:" + border + "px solid #" + rgb + "; padding:10pt;}\n" +
+                "h2 {margin:10pt 0 20pt;}" +
+                "</style>\n</head><body>\n");
+        if (getPrefix() != null) {
+            out.write("<h2>" + getPrefix() + "</h2>\n");
+        }
+        out.write("<table style='empty-cells:show;border-color:#" + rgb + " " + bo +
+            ";' \nwidth = '100%' cellpadding = '1' cellspacing = '0'>\n");
+        if (getHeader() != null) {
+            out.write("<thead>\n<tr valign='top'>\n");
+            for (int k = 0; k < getHeader().length; k++) {
+                out.write("<th>" + getHeader()[k] + "</th>\n");
+            }
+            out.write("</tr></thead>\n");
+        }
+        out.write("<tbody>\n");
+        for (int k = 0; k < getModel().length; k++) {
+            out.write("<tr valign = 'top'>\n");
+            for (int l = 0; l < getModel()[k].length; l++) {
+                out.write("<td>");
+                if (getModel()[k][l] != null && !String.valueOf(getModel()[k][l]).equals("null")) {
+                    out.write(String.valueOf(getModel()[k][l]).replaceAll("<html>|<pre>|&nbsp;", "") + "&nbsp;");
+                }
+                out.write("</td>\n");
+            }
+            out.write("</tr>\n");
+        }
+        out.write("</tbody></table>\n");
+        out.write("<p style='margin-top:20pt;font-size:small;'>");
+        out.write(DateConverter.getDefDateString(new Date()));
+        out.write("</p>\n</body></html>");
+        out.close();
+    }
+//////////////////////////////// xhtml-writer end
 }

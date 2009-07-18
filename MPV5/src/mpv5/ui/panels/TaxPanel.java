@@ -1,5 +1,5 @@
 /*
- * EURPanel.java
+ * TaxPanel.java
  *
  * Created on 21. Februar 2008, 21:50
  */
@@ -17,7 +17,7 @@ import mpv5.ui.dialogs.DialogForFile;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.files.TableHtmlWriter;
 import mpv5.utils.models.DateSelectorModel;
-import mpv5.utils.models.EURModel;
+import mpv5.utils.models.ProfitModel;
 import mpv5.utils.models.TaxModel;
 import mpv5.utils.tables.TableFormat;
 
@@ -28,18 +28,18 @@ import mpv5.utils.tables.TableFormat;
 public class TaxPanel extends JPanel {
 
   private DateSelectorModel dateModel = new DateSelectorModel();
-  private TaxModel eurModel;
+  private TaxModel taxModel;
   private String html;
   private JEditorPane formPane = new JEditorPane();
 
   public TaxPanel() {
     initComponents();
 
-    eurModel = new TaxModel(dateModel);
-    if (eurModel.isSkr() != true) {
+    taxModel = new TaxModel(dateModel);
+    if (taxModel.isSkr() != true) {
       jButton2.setVisible(false);
     }
-    jTable1.setModel(eurModel);
+    jTable1.setModel(taxModel);
   }
 
   private String[] getYears() {
@@ -65,10 +65,10 @@ public class TaxPanel extends JPanel {
     jScrollPane1.setViewportView(jTable1);
     formPane.setVisible(false);
     jTable1.setVisible(true);
-    eurModel.getFormHtml();
+    taxModel.getFormHtml();
 jTextField1.setText(dateModel.getStartDay() + "   -   " + dateModel.getEndDay());
     try {
-      jTable1.setModel(eurModel.getModel());
+      jTable1.setModel(taxModel.getModel());
       TableFormat.format(jTable1, 0, 380);
       jTable1.doLayout();
 
@@ -90,12 +90,12 @@ jTextField1.setText(dateModel.getStartDay() + "   -   " + dateModel.getEndDay())
 //          dialog = new DialogForFile(new File(Main.DESKTOP + File.separator + writ.getFile().getName()));
 //          dialog.saveFile(writ.createHtml(1, Color.LIGHT_GRAY));
 //          new Browser(dialog.getFile());
-      if (eurModel.isSkr()) {
-        eurModel.getPdf();
+      if (taxModel.isSkr()) {
+        taxModel.getPdf();
       } else {
 
-        TableHtmlWriter thw = new TableHtmlWriter(eurModel);
-        thw.setHeader(eurModel.getHeader());
+        TableHtmlWriter thw = new TableHtmlWriter(taxModel);
+        thw.setHeader(taxModel.getHeader());
         File tempfile = thw.createHtml();
         DialogForFile d = new DialogForFile();
         d.setFileFilter(DialogForFile.PDF_FILES);
@@ -122,7 +122,7 @@ jTextField1.setText(dateModel.getStartDay() + "   -   " + dateModel.getEndDay())
    * input stream.
    */
   private void showHtmlForm() {
-    ByteArrayOutputStream os = eurModel.getFormHtml();
+    ByteArrayOutputStream os = taxModel.getFormHtml();
     InputStream in = new ByteArrayInputStream(os.toByteArray());
     try {
       html = streamToString(in);

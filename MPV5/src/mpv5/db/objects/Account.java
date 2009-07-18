@@ -78,8 +78,8 @@ public class Account extends DatabaseObject {
     private String description = "";
     private double taxvalue;
     private int intaccounttype;
-    private int euruid;
-    private int ustvauid;
+    private int profitfid;
+    private int taxfid;
     private int taxuid;
     private String frame = "buildin";
 
@@ -297,31 +297,31 @@ public class Account extends DatabaseObject {
     }
 
     /**
-     * @return the euruid
+     * @return the profitfid
      */
-    public int __getEuruid() {
-        return euruid;
+    public int __getProfitfid() {
+        return profitfid;
     }
 
     /**
-     * @param euruid the euruid to set
+     * @param profitfid the profitfid to set
      */
-    public void setEuruid(int euruid) {
-        this.euruid = euruid;
+    public void setProfitfid(int profitfid) {
+        this.profitfid = profitfid;
     }
 
     /**
-     * @return the ustvauid
+     * @return the taxfid
      */
-    public int __getUstvauid() {
-        return ustvauid;
+    public int __getTaxfid() {
+        return taxfid;
     }
 
     /**
-     * @param ustvauid the ustvauid to set
+     * @param taxfid the taxfid to set
      */
-    public void setUstvauid(int ustvauid) {
-        this.ustvauid = ustvauid;
+    public void setTaxfid(int taxfid) {
+        this.taxfid = taxfid;
     }
 
     /**
