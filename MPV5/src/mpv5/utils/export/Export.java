@@ -20,15 +20,17 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import mpv5.db.common.NodataFoundException;
+import mpv5.logging.Log;
 
 /**
- * This is a dummy class for exporting data to template documents
+ * The Export class handles the export of data using templatefiles
  *  
  */
 public class Export extends HashMap<String, String> {
 
     private static final long serialVersionUID = 1L;
-    private File file;
+    private Exportable file;
+    private Thread t;
 
     /**
      * Add the data, must be key - value pairs
@@ -46,36 +48,43 @@ public class Export extends HashMap<String, String> {
      * @param <T>
      * @param templateFile 
      */
-    public <T extends File> void setFile(T templateFile) {
+    public <T extends Exportable> void setFile(T templateFile) {
         this.file = templateFile;
     }
 
     /**
-     * Exports the given data to a newly created temp file using the given template file
-     * @return true if no error was encountered during processing the data
+     * Exports the given data to the target file using the given template file
+     * @param toFile The target file. If the file exists, will be overwritten if possible.
      * @throws NodataFoundException If no data has been previously added
      * @throws FileNotFoundException If no file was given as template
      */
-    public boolean processData() throws NodataFoundException, FileNotFoundException {
+    public void processData(File toFile) throws NodataFoundException, FileNotFoundException {
         if (this.isEmpty()) {
             throw new NodataFoundException();
         }
 
-        if (file == null ) {
-            throw new FileNotFoundException();
-        }else if (!this.file.exists()) {
+        if (file == null) {
+            throw new FileNotFoundException("You must call setFile(Exportable file) first!");
+        } else if (!this.file.exists()) {
             throw new FileNotFoundException(file.getPath());
         }
 
-      
-        return false;
+        if(toFile.exists()) {
+            toFile.delete();
+            Log.Debug(this, "File exists, will be replaced: " + toFile);
+        }
+
+        toFile.mkdirs();
+
+        file.setData(this);
+        file.setTarget(toFile);
+
+        try {
+          t = new Thread(file);
+                    t.start();
+        } catch (Exception e) {
+            Log.Debug(e);
+        }
     }
 
-    /**
-     * After processing the data, the created file is a temporary file
-     * @return The created file or NULL if no file has been created yet.
-     */
-    public File getFile() {
-        return null;
-    }
 }

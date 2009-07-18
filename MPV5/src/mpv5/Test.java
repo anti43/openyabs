@@ -16,26 +16,37 @@
  */
 package mpv5;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.Vector;
-import javax.swing.JPanel;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
-import mpv5.db.common.Context;
+import mpv5.logging.Log;
+import mpv5.ui.dialogs.DialogForFile;
+import mpv5.utils.export.Export;
+import mpv5.utils.export.PDFFile;
 
 public class Test {
 
     public static void main(String[] args) {
+
+        Export e = new Export();
+        e.put("some pdf form field", "some value#");
+        e.setFile(new PDFFile("template.pdf"));
+
+        DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY);
+        d.setFileFilter(DialogForFile.PDF_FILES);
+
+        if (d.saveFile()) {
+            try {
+                e.processData(d.getFile());
+            } catch (Exception ex) {
+                Log.Debug(ex);
+            }
+        }
 //        JPanel jPanel1 = new JPanel(new BorderLayout());
 //        JFrame frame = new JFrame();
 //

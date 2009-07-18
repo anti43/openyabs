@@ -16,15 +16,52 @@
  */
 package mpv5.utils.export;
 
-import java.io.File;
+import com.lowagie.text.pdf.AcroFields;
+import com.lowagie.text.pdf.PdfReader;
+import com.lowagie.text.pdf.PdfStamper;
+import java.io.FileOutputStream;
+import java.util.HashMap;
+import java.util.Iterator;
+import mpv5.logging.Log;
 
 /**
  *
  *  
  */
-public class PDFFile extends File {
+public class PDFFile extends Exportable {
+
+    private PdfReader template;
+    private AcroFields acroFields;
 
     public PDFFile(String pathToFile) {
         super(pathToFile);
+    }
+
+    @Override
+    public void run() {
+        try {
+            try {
+                template = new PdfReader(getPath());
+            } catch (Exception iOException) {
+                Log.Debug(iOException);
+            }
+            Log.Debug(this, "Checking PDF File: " + getPath());
+            acroFields = template.getAcroFields();
+            Log.Debug(this, "Creating PDF File: " + getTarget().getPath());
+            PdfStamper pdfStamper = new PdfStamper(template, new FileOutputStream(getTarget().getPath()));
+            pdfStamper.setFormFlattening(true);
+            acroFields = pdfStamper.getAcroFields();
+            HashMap PDFFields = acroFields.getFields();
+            for (Iterator it = PDFFields.keySet().iterator(); it.hasNext();) {
+                Object object = it.next();
+                Log.Debug(this, "Filling Field: " + object);
+                acroFields.setField(object.toString(), getData().get(object.toString()));
+            }
+            pdfStamper.close();
+            Log.Debug(this, "Done file: " + getTarget().getPath());
+        } catch (Exception ex) {
+            Log.Debug(ex);
+        }
+
     }
 }

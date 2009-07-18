@@ -16,17 +16,50 @@
  */
 package mpv5.utils.export;
 
-/**
- *
- *  
- */
-public class ODTFile extends Exportable {
+import java.io.File;
+import java.util.HashMap;
 
-    public ODTFile(String pathToFile) {
+/**
+ *This interface specifies export specific methods
+ */
+public abstract class Exportable extends File implements Runnable {
+
+    private File target;
+    private HashMap<String, String> data;
+
+    public Exportable(String pathToFile) {
         super(pathToFile);
     }
 
-    @Override
-    public void run() {
+    /**
+     * Define the target file
+     * @param target
+     */
+    public void setTarget(File target) {
+        this.target = target;
     }
+
+    /**
+     * @return the target
+     */
+    public File getTarget() {
+        return target;
+    }
+
+    /**
+     * 
+     * @param data
+     */
+    public void setData(final HashMap<String, String> data) {
+        this.data = data;
+    }
+
+    /**
+     * @return the data
+     */
+    public HashMap<String, String> getData() {
+        return data;
+    }
+
 }
+
