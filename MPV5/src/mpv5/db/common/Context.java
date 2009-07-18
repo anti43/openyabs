@@ -64,6 +64,7 @@ public class Context {
     public static String IDENTITY_FILES_TO_ITEMS = "filestoitems";
     public static String IDENTITY_MAIL = "mails";
     public static String IDENTITY_TAX = "tax";
+    public static String IDENTITY_GLOBALSETTINGS = "globalsettings";
     //********** identity classes **********************************************
     private static Class IDENTITY_CONTACTS_CLASS = Contact.class;
     private static Class IDENTITY_ADDRESS_CLASS = Address.class;
@@ -87,6 +88,7 @@ public class Context {
     public static String UNIQUECOLUMNS_GROUPS = "cname";
     public static String UNIQUECOLUMNS_DEFAULT = "cname";
     public static String DETAIL_CONTACT_SEARCH = "prename,cname,street,city,country,notes";
+
     //********** conditions ****************************************************
     private boolean isCompany = false;
     private boolean isCustomer = false;
@@ -238,6 +240,7 @@ public class Context {
         list.add(getItemsList());
         list.add(getMail());
         list.add(getSearchIndex());
+        list.add(getGlobalSettings());
 
         return list;
     }
@@ -366,7 +369,8 @@ public class Context {
                 getItemsList(),
                 getFormats(),
                 getMail(),
-                getTaxes()
+                getTaxes(),
+                getGlobalSettings()
             }));
     private String[] searchHeaders;
     private ArrayList<String[]> references = new ArrayList<String[]>();
@@ -591,7 +595,7 @@ public class Context {
      * <b>If the current Context does not support grouping, or the current user is not Group restricted, this will return NULL.</b>
      * @return
      */
-    public String getGroupRestrictionSQLString() {
+    public synchronized String getGroupRestrictionSQLString() {
         if (MPView.getUser().isGroupRestricted() && getGroupableContexts().contains(this)) {
             return " (" + dbIdentity + "." + "GROUPSIDS = " + MPView.getUser().__getGroupsids() + " OR " + dbIdentity + "." + "GROUPSIDS = 1)";
         } else {
@@ -604,7 +608,7 @@ public class Context {
      *
      * @return  " invisible = 0 " or NULL if Context is not trashable
      */
-    public String getNoTrashSQLString() {
+    public synchronized String getNoTrashSQLString() {
         if (getTrashableContexts().contains(this)) {
             return " " + dbIdentity + ".invisible = 0 ";
         } else {
@@ -619,7 +623,7 @@ public class Context {
      * @param tableName
      * @return
      */
-    public String getGroupRestrictionSQLString(String tableName) {
+    public synchronized String getGroupRestrictionSQLString(String tableName) {
         if (MPView.getUser().isGroupRestricted() && getGroupableContexts().contains(this)) {
             return " (" + tableName + "." + "GROUPSIDS = " + MPView.getUser().__getGroupsids() + " OR " + tableName + "." + "GROUPSIDS = 1)";
         } else {
@@ -633,7 +637,7 @@ public class Context {
      * @param tableName
      * @return  " invisible = 0 " or NULL if Context is not trashable
      */
-    public String getNoTrashSQLString(String tableName) {
+    public synchronized String getNoTrashSQLString(String tableName) {
         if (getTrashableContexts().contains(this)) {
             return " " + tableName + ".invisible = 0 ";
         } else {
@@ -646,16 +650,17 @@ public class Context {
      * @param query
      * @return The query
      */
-    public String prepareSQLString(String query) {
+    public synchronized String prepareSQLString(String query) {
+
         if (getGroupRestrictionSQLString() != null) {
-            if (query.contains("WHERE") || query.contains("where")) {
+            if (query.toUpperCase().contains("WHERE")) {
                 query = query + " AND" + getGroupRestrictionSQLString();
             } else {
                 query = query + " WHERE" + getGroupRestrictionSQLString();
             }
         }
-        if (Context.getItems().getNoTrashSQLString() != null) {
-            if (query.contains("WHERE") || query.contains("where")) {
+        if (getNoTrashSQLString() != null) {
+            if (query.toUpperCase().contains("WHERE")) {
                 query = query + " AND" + getNoTrashSQLString();
             } else {
                 query = query + " WHERE" + getNoTrashSQLString();
@@ -670,16 +675,17 @@ public class Context {
      * @param tableName
      * @return The query
      */
-    public String prepareSQLString(String query, String tableName) {
-        if (getGroupRestrictionSQLString() != null) {
-            if (query.contains("WHERE") || query.contains("where")) {
+    public synchronized String prepareSQLString(String query, String tableName) {
+       
+        if (getGroupRestrictionSQLString(tableName) != null) {
+            if (query.toUpperCase().contains("WHERE")) {
                 query = query + " AND" + getGroupRestrictionSQLString(tableName);
             } else {
                 query = query + " WHERE" + getGroupRestrictionSQLString(tableName);
             }
         }
-        if (Context.getItems().getNoTrashSQLString(tableName) != null) {
-            if (query.contains("WHERE") || query.contains("where")) {
+        if (getNoTrashSQLString(tableName) != null) {
+            if (query.toUpperCase().contains("WHERE")) {
                 query = query + " AND" + getNoTrashSQLString(tableName);
             } else {
                 query = query + " WHERE" + getNoTrashSQLString(tableName);
@@ -1346,6 +1352,15 @@ public class Context {
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_TAX);
         c.setId(36);
+
+        return c;
+    }
+
+    public static Context getGlobalSettings() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_GLOBALSETTINGS);
+        c.setId(37);
 
         return c;
     }

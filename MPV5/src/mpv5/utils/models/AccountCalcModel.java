@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.table.DefaultTableModel;
+import mpv5.db.common.Context;
 import mpv5.db.common.QueryHandler;
 import mpv5.db.common.ReturnValue;
 import mpv5.usermanagement.MPSecurityManager;
@@ -57,6 +58,8 @@ public abstract class AccountCalcModel extends DefaultTableModel {
 
   private void fetchCompData(String prefix) {
     addressMap = new HashMap<String, String>();
+              String query = Context.getGlobalSettings().prepareSQLString("select CNAME, " +
+                  "TAX_COMPNAME from globalsettings where cname = 'tax_compname'");
 //    String query = new Context(null).prepareSQLString("select CNAME, " +
 //        "TAX_COMPNAME from globalsettings where cname = 'tax_compname'", "globalsettings");
 //    ReturnValue rv = QueryHandler.getConnection().freeSelectQuery(query, MPSecurityManager.VIEW, null);

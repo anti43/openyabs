@@ -43,13 +43,13 @@ public class ProfitModel extends AccountCalcModel {
 
     if (!(start.equals(super.getStart()) || end.equals(super.getEnd()))) {
       String query = Context.getItems().prepareSQLString(
-          "select a.INTACCOUNTCLASS, a.CNAME, sum(i.NETVALUE), a.profitfid " +
+          "select a.INTACCOUNTCLASS, a.CNAME, sum(i.NETVALUE), a.intprofitfid " +
           "from items i, accounts a where i.inttype = 0 and i.intstatus = 4 " +
           "and i.DATEEND between '" + start + "' and '" + end +
           "' and i.DEFAULTACCOUNTSIDS = " +
           "a.IDS and a.INTACCOUNTCLASS > 0 and a.frame = '" +
           super.getSkr() + "'", "a") +
-          " group by a.INTACCOUNTCLASS, a.CNAME, a.profitfid";
+          " group by a.INTACCOUNTCLASS, a.CNAME, a.intprofitfid";
       super.calculate(start, end, query);
       if (super.isSkr()) {
         fillMap("euer");

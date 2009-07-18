@@ -62,11 +62,9 @@
 <!ELEMENT taxvalue ( #PCDATA ) >
 <!ELEMENT intprofitfid ( #PCDATA ) >
 <!ELEMENT inttaxfid ( #PCDATA ) >
-<!ELEMENT taxuid ( #PCDATA ) >
-<!ELEMENT intframe ( #PCDATA ) >
-<!ELEMENT account ( intaccountclass | taxvalue | cname | intaccounttype | taxvalue | description | intparentaccount | groupsids? | intaddedby? | dateadded? | profitfid | taxfid | taxuid | frame )* >
+<!ELEMENT inttaxuid ( #PCDATA ) >
+<!ELEMENT frame ( #PCDATA ) >
+<!ELEMENT account ( intaccountclass | taxvalue | cname | intaccounttype | taxvalue | description | intparentaccount | groupsids? | intaddedby? | dateadded? | intprofitfid | inttaxfid | inttaxuid | frame )* >
 <!ELEMENT accounts ( account* ) >
 <!ATTLIST account id CDATA #IMPLIED>
 <!--END ACCOUNTS-->
-
-
