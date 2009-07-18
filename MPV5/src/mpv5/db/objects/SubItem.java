@@ -68,7 +68,7 @@ public class SubItem extends DatabaseObject {
                 it.setDateadded(new Date());
                 it.setGroupsids(dataOwner.__getGroupsids());
             }
-            it.save();
+            it.save(true);
         }
     }
     private int itemsids;

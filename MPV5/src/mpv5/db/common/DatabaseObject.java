@@ -105,7 +105,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
     }
 
     private static void cacheObject(DatabaseObject databaseObject) {
-        if (databaseObject != null&& databaseObject.__getIDS().intValue() > 0) {
+        if (databaseObject != null && databaseObject.__getIDS().intValue() > 0) {
             cache.put(databaseObject.getDbIdentity() + "@" + databaseObject.__getIDS(), databaseObject);
         }
     }
@@ -119,10 +119,10 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
 
     private synchronized static DatabaseObject getCachedObject(final Context context, final int id) {
         if (cache.containsKey(context.getDbIdentity() + "@" + id)) {
-            Log.Debug(DatabaseObject.class, "Using cached object " + context.getDbIdentity()  + "@" + id);
+            Log.Debug(DatabaseObject.class, "Using cached object " + context.getDbIdentity() + "@" + id);
             return cache.get(context.getDbIdentity() + "@" + id);
         } else {
-            Log.Debug(DatabaseObject.class, "" + context.getDbIdentity()  + "@" + id + " not found in cache.");
+            Log.Debug(DatabaseObject.class, "" + context.getDbIdentity() + "@" + id + " not found in cache.");
             return null;
         }
     }
@@ -312,6 +312,15 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
      * @return
      */
     public boolean save() {
+        return save(false);
+    }
+
+    /**
+     * Save this do to db, or update if it has a valid uid already
+     * @param silent If true, no notifications are sent to the history handler regarding this call to save
+     * @return true if the save did not throw any errors
+     */
+    public boolean save(boolean silent) {
         String message = null;
         uncacheObject(this);
 
@@ -321,7 +330,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                     Log.Debug(this, "Inserting new dataset into: " + this.getContext());
                     dateadded = new Date();
                     ensureUniqueness();
-                    if (!this.getType().equals(new HistoryItem().getType())) {
+                    if (!silent && !this.getType().equals(new HistoryItem().getType())) {
                         message = this.__getCName() + Messages.INSERTED;
                     }
                     ids = QueryHandler.instanceOf().clone(context).insert(collect(), message);
@@ -329,8 +338,10 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
 
                 } else {
                     Log.Debug(this, "Updating dataset: " + ids + " within context '" + context + "'");
-                    message = this.__getCName() + Messages.UPDATED;
-                    QueryHandler.instanceOf().clone(context).update(collect(), ids, this.__getCName() + Messages.UPDATED);
+                    if (!silent) {
+                        message = this.__getCName() + Messages.UPDATED;
+                    }
+                    QueryHandler.instanceOf().clone(context).update(collect(), ids, message);
                 }
 
                 final String fmessage = message;
@@ -339,7 +350,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                 final int fgids = this.groupsids;
                 //Ignore History and User events
 
-                if (Context.getArchivableContexts().contains(context)) {
+                if (!silent && Context.getArchivableContexts().contains(context)) {
                     Runnable runnable = new Runnable() {
 
                         @Override
@@ -642,7 +653,6 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
         return vals;
     }
 
-
     /**
      * Searches for a specific dataset, cached or non-cached
      * @param context The context to search under
@@ -677,18 +687,19 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
      * @throws NodataFoundException 
      */
     public static DatabaseObject getObject(Context context, String cname) throws NodataFoundException {
-            try {
-                Object obj = context.getIdentityClass().newInstance();
-                if(((DatabaseObject) obj).fetchDataOf(cname)){
+        try {
+            Object obj = context.getIdentityClass().newInstance();
+            if (((DatabaseObject) obj).fetchDataOf(cname)) {
                 cacheObject((DatabaseObject) obj);
-                return (DatabaseObject) obj;}else {
+                return (DatabaseObject) obj;
+            } else {
                 throw new NodataFoundException(context);
             }
-            } catch (InstantiationException ex) {
-                Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IllegalAccessException ex) {
-                Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        } catch (InstantiationException ex) {
+            Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         return null;
     }
@@ -1208,5 +1219,4 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
     public static void AutoLockEnabled(boolean active) {
         AUTO_LOCK = active;
     }
-
 }
