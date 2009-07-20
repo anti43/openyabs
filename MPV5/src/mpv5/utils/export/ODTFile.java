@@ -39,10 +39,13 @@ import com.sun.star.uno.XComponentContext;
 import com.sun.star.frame.*;
 import com.sun.star.text.XTextDocument;
 import com.sun.star.form.XFormComponent;
+import com.sun.star.lang.XServiceInfo;
 import com.sun.star.uno.UnoRuntime;
 import com.sun.star.util.DateTime;
+import com.sun.star.util.URL;
 import java.io.*;
 import java.net.MalformedURLException;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import javax.swing.JPanel;
@@ -57,86 +60,25 @@ import ooo.connector.BootstrapSocketConnector;
  */
 public class ODTFile extends Exportable {
 
+    private final String officeVal;
+    private final String[] officeVals;
+
     public ODTFile(String pathToFile) {
         super(pathToFile);
-        try {
-            ClasspathTools.addPath(LocalSettings.getProperty(LocalSettings.OFFICE_HOME));
-            ClasspathTools.addPath(LocalSettings.getProperty(LocalSettings.OFFICE_HOME) + "/program");
 
-            Object desktop = connect();
-            if (Log.getLoglevel() == Log.LOGLEVEL_DEBUG) {
-                printDocumentInfo(desktop, this);
-            }
+        officeVal = LocalSettings.getProperty(LocalSettings.OFFICE_HOME);
+        officeVals = officeVal.split(":");
+
+        try {
+            ClasspathTools.addPath(officeVals[1]);
+            ClasspathTools.addPath(officeVals[1] + "program");
         } catch (java.lang.Exception exception) {
         }
     }
 
     @Override
     public void run() {
-        try {
-            Log.Debug(this, "Running export for template file: " + getPath() + "  to file: " + getTarget());
-
-            IOfficeApplication officeApplication = null;
-            ITextDocument textDocument;
-            HashMap<String, String> configuration = new HashMap<String, String>();
-
-            String officeVal = LocalSettings.getProperty(LocalSettings.OFFICE_HOME);
-            Log.Debug(this, "Creating connection to OpenOffice at " + officeVal);
-            String[] officeVals = LocalSettings.getProperty(LocalSettings.OFFICE_HOME).split(":");
-            XComponentContext xContext = null;
-
-            if (officeVals[0].equalsIgnoreCase(IOfficeApplication.LOCAL_APPLICATION)) {
-                configuration.put(IOfficeApplication.APPLICATION_HOME_KEY, officeVals[1]);
-                configuration.put(IOfficeApplication.APPLICATION_TYPE_KEY, IOfficeApplication.LOCAL_APPLICATION);// path
-                Log.Debug(this, "Creating local connection with " + officeVals[1]);
-                 xContext = BootstrapSocketConnector.bootstrap(officeVals[1]);
-            } else if (officeVals[0].equalsIgnoreCase(IOfficeApplication.REMOTE_APPLICATION)) {
-                configuration.put(IOfficeApplication.APPLICATION_TYPE_KEY, IOfficeApplication.REMOTE_APPLICATION);
-                configuration.put(IOfficeApplication.APPLICATION_HOME_KEY, officeVals[1]);//path
-                configuration.put(IOfficeApplication.APPLICATION_HOST_KEY, officeVals[2]); //IP des anderen PCs
-                configuration.put(IOfficeApplication.APPLICATION_PORT_KEY, officeVals[3]); //port
-                xContext = BootstrapSocketConnector.bootstrap(officeVals[1],officeVals[2], Integer.valueOf(officeVals[3]));
-            } else {
-                throw new Exception("OpenOffice installation not configured!");
-            }
-
-            XMultiComponentFactory xMultiComponentFactory = xContext.getServiceManager();
-            XComponentLoader xcomponentloader = (XComponentLoader) UnoRuntime.queryInterface(XComponentLoader.class, xMultiComponentFactory.createInstanceWithContext("com.sun.star.frame.Desktop", xContext));
-
-            Log.Debug(this, "Connection established.. ");
-            officeApplication = OfficeApplicationRuntime.getApplication(configuration);
-            officeApplication.setConfiguration(configuration);
-            officeApplication.activate();
-            IDocument document = officeApplication.getDocumentService().loadDocument(getPath());
-            textDocument = (ITextDocument) document;
-
-            Log.Debug(this, "Filling fields..");
-            fillFields(textDocument, getData());
-
-            Object objectDocumentToStore = xcomponentloader.loadComponentFromURL(toURI().toURL().toString(), "_blank", 0, new PropertyValue[0]);
-
-            PropertyValue[] conversionProperties = new PropertyValue[1];
-            conversionProperties[0] = new PropertyValue();
-            conversionProperties[0].Name = "FilterName";
-            conversionProperties[0].Value = "writer_pdf_Export";
-
-            Log.Debug(this, "Save to pdf..");
-            XStorable xstorable = (XStorable) UnoRuntime.queryInterface(XStorable.class, objectDocumentToStore);
-            xstorable.storeToURL(getTarget().toURI().toURL().toString(), conversionProperties);
-            Log.Debug(this, "Saved: " + getTarget());
-        } catch (NOAException ex) {
-            Log.Debug(ex);
-        } catch (DocumentException ex) {
-            Log.Debug(ex);
-        } catch (OfficeApplicationException ex) {
-            Log.Debug(ex);
-        } catch (MalformedURLException ex) {
-            Log.Debug(ex);
-        } catch (BootstrapException ex) {
-            Log.Debug(ex);
-        } catch (Exception ex) {
-            Log.Debug(ex);
-        }
+        throw new UnsupportedOperationException("ODT background export is currently not supported. Use constructOOOPanel(JPanel) instead. ");
     }
 
     /**

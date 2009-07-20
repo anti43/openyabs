@@ -25,6 +25,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import mpv5.logging.Log;
 
 /**
  * Useful classpath tools
@@ -41,6 +42,8 @@ public class ClasspathTools {
     }
 
     public static void addPath(URI s) {
+
+        Log.Debug(ClasspathTools.class, "Adding path: " + s);
         try {
             URL u = s.toURL();
             URLClassLoader urlClassLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
