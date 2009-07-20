@@ -1,4 +1,3 @@
-
 package mpv5.ui.dialogs;
 
 import com.michaelbaranov.microba.calendar.CalendarPane;
@@ -8,6 +7,8 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JComponent;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import mpv5.ui.misc.Position;
 import mpv5.utils.date.DateConverter;
@@ -17,10 +18,10 @@ import mpv5.utils.date.DateConverter;
  *  
  */
 public class MiniCalendar extends javax.swing.JFrame {
-    private static final long serialVersionUID = 1L;
 
+    private static final long serialVersionUID = 1L;
     private CalendarPane xc;
-    private JTextField t;
+    private JComponent t;
 
     /**
      * 
@@ -28,6 +29,31 @@ public class MiniCalendar extends javax.swing.JFrame {
      * @param visible
      */
     public MiniCalendar(JTextField t, boolean visible) {
+        try {
+            initComponents();
+
+            xc = new com.michaelbaranov.microba.calendar.CalendarPane();
+            xc.setShowTodayButton(true);
+            xc.setDate(new Date());
+            xc.addActionListener(new java.awt.event.ActionListener() {
+
+                @Override
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    jButton1ActionPerformed(evt);
+                }
+            });
+
+            this.t = t;
+            this.jPanel1.add(xc, BorderLayout.CENTER);
+            new Position(this);
+            this.setVisible(visible);
+            this.setAlwaysOnTop(visible);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(MiniCalendar.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public MiniCalendar(JSpinner t, boolean visible) {
         try {
             initComponents();
 
@@ -68,7 +94,12 @@ public class MiniCalendar extends javax.swing.JFrame {
     private void go() {
         DateFormat format = DateConverter.DEF_DATE_FORMAT;
         if (xc.getDate() != null) {
-            t.setText(format.format(xc.getDate()));
+
+            if (t instanceof JTextField) {
+                ((JTextField) t).setText(format.format(xc.getDate()));
+            } else if (t instanceof JSpinner) {
+                ((JSpinner) t).setValue(xc.getDate());
+            }
             this.setVisible(false);
         } else {
             this.setVisible(false);
@@ -171,7 +202,6 @@ public class MiniCalendar extends javax.swing.JFrame {
     private void jButton1MouseClicked (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
         go();
     }//GEN-LAST:event_jButton1MouseClicked
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton jButton1;
     public javax.swing.JPanel jPanel1;

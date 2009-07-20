@@ -40,6 +40,7 @@ public class PDFFile extends Exportable {
     @Override
     public void run() {
         try {
+            Log.Debug(this, "Running export for template file: " + getPath() + "  to file: " + getTarget());
             try {
                 template = new PdfReader(getPath());
             } catch (Exception iOException) {

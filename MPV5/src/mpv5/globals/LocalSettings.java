@@ -4,6 +4,7 @@
  */
 package mpv5.globals;
 
+import ag.ion.bion.officelayer.application.IOfficeApplication;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.Authenticator;
@@ -36,7 +37,7 @@ public class LocalSettings {
     public static final String PROXYPORT = "proxyport";
     public static final String PROXYUSER = "proxyuser";
     public static final String PROXYPASSWORD = "proxypassword";
-    public static final String OFFICE_HOME = "/opt/openoffice.org3/";
+    public static final String OFFICE_HOME = "ooohome";
     public static final String CACHE_DIR = "cachedir";
     public static final String DEFAULT_FONT = "defaultfont";
     public static final String PRINT_DEVAPP = "devappprint";
@@ -53,9 +54,14 @@ public class LocalSettings {
 
 
     private static PropertyStore predefinedSettings = new PropertyStore(new String[][]{ //        {LAF,UIManager.getSystemLookAndFeelClassName()}
-                {DEFAULT_FONT, "Tahoma"}, {DBROW_LIMIT, "0"}, {DBAUTOLOCK, "false"}, 
-                {SERVER_PORT, "4343"}, {CACHE_SIZE, "100"},
-                {LAST_USER, "1"},{LAST_USER_PW, "5F4DCC3B5AA765D61D8327DEB882CF99"}
+                {DEFAULT_FONT, "Tahoma"}, 
+                {DBROW_LIMIT, "0"},
+                {DBAUTOLOCK, "false"},
+                {SERVER_PORT, "4343"},
+                {CACHE_SIZE, "100"},
+                {LAST_USER, "1"},
+                {LAST_USER_PW, "5F4DCC3B5AA765D61D8327DEB882CF99"},
+                {OFFICE_HOME, IOfficeApplication.LOCAL_APPLICATION  + ":/opt/openoffice.org3/"}
             });
     private static Vector<PropertyStore> cookies;
 

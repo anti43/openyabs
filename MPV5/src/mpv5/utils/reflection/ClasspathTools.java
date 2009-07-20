@@ -27,7 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * Useful classpath tools
  * 
  */
 public class ClasspathTools {

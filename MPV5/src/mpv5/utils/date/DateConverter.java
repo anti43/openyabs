@@ -29,21 +29,48 @@ import mpv5.logging.Log;
 
 /**
  *
- *  
+ *  This class provides date formatting methods and default date formats
  */
 public class DateConverter {
 
+    /**
+     * Gets month strings. For example: "January", "February", etc.
+     */
     public static String[] months = DateFormatSymbols.getInstance().getMonths();
     private static Calendar cl = Calendar.getInstance();
+    /**
+     * The date formatter with the short formatting style for the default locale.
+     */
     public static DateFormat DEF_DATE_FORMAT = DateFormat.getDateInstance(DateFormat.SHORT);
+    /**
+     * "EEE, dd MMM yyyy HH:mm:ss z"
+     */
     public static final DateFormat NATIVE_DATE_FORMAT = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z");
+    /**
+     * "dd.MM.yyy - HH:mm:ss"
+     */
     public static final DateFormat DE_FULL_DATE_FORMAT = new SimpleDateFormat("dd.MM.yyy - HH:mm:ss");
+    /**
+     * "yyyy-MM-dd HH:mm:ss"
+     */
     public static final DateFormat DB_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     //DE format
+    /**
+     *
+     */
     public static final DateFormat DE_DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN);
     //US format
+    /**
+     * "yyyy-MM-dd"
+     */
     public static final DateFormat ENG_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+    /**
+     * YYYY
+     */
     public static final DateFormat YEAR_DATE_FORMAT = new SimpleDateFormat("yyyy");
+    /**
+     * Contains all available default date formats
+     */
     public static final ArrayList<DateFormat> DATE_FORMATS = new ArrayList<DateFormat>(Arrays.asList(new DateFormat[]{
                 DB_DATE_FORMAT,
                 ENG_DATE_FORMAT,
@@ -146,6 +173,7 @@ public class DateConverter {
 
     /**
      * Quarter of a given date as 1, 2, 3, 4
+     * @param date 
      * @return Quarter as 1, 2, 3, 4
      */
     public static int getQuarter(Date date) {
@@ -156,10 +184,18 @@ public class DateConverter {
         return quarter;
     }
 
+    /**
+     *
+     * @return
+     */
     public static String getTodayDefDate() {
         return DE_DATE_FORMAT.format(new Date());
     }
 
+    /**
+     *
+     * @return
+     */
     public static String getTodayDBDate() {
         return DB_DATE_FORMAT.format(new Date());
     }
@@ -239,22 +275,42 @@ public class DateConverter {
         return DEF_DATE_FORMAT.format(date);
     }
 
+    /**
+     *
+     * @param datum
+     * @return
+     */
     public static String getDay(Date datum) {
         return DE_DATE_FORMAT.format(datum);
     }
 
+    /**
+     *
+     * @param date
+     * @return
+     */
     public static String getMonth(Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         return String.valueOf(cal.get(Calendar.MONTH) + 1);
     }
 
+    /**
+     *
+     * @param date
+     * @return
+     */
     public static String getMonthName(Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         return months[cal.get(Calendar.MONTH)];
     }
 
+    /**
+     *
+     * @param date
+     * @return
+     */
     public static String getDayOfMonth(Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
@@ -302,28 +358,64 @@ public class DateConverter {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public static String getYear() {
         return String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
     }
 
+    /**
+     *
+     * @return
+     */
     public static String getDayOfMonth() {
         return String.valueOf(Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
     }
 
+    /**
+     *
+     * @return
+     */
     public static String getDayMonthAndYear() {
         return DateConverter.getDefDateString(new Date());
     }
 
+    /**
+     *
+     * @return
+     */
     public static String getMonth() {
         return String.valueOf(Calendar.getInstance().get(Calendar.MONTH) + 1);
     }
 
+    /**
+     *
+     * @return
+     */
     public static String getMonthName() {
         Calendar cal = Calendar.getInstance();
         return months[cal.get(Calendar.MONTH)];
     }
 
+    /**
+     *
+     * @param df
+     */
     public static void setDefaultFormat(DateFormat df) {
         DEF_DATE_FORMAT = df;
+    }
+
+    /**
+     * 
+     * @return
+     */
+    public static String getDefaultFormatString() {
+        if (DEF_DATE_FORMAT instanceof  SimpleDateFormat) {
+            return ((SimpleDateFormat)DEF_DATE_FORMAT).toPattern();
+        } else {
+            return "dd.MM.yyyy";
+        }
     }
 }

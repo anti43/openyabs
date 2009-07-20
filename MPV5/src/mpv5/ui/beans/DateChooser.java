@@ -1,6 +1,8 @@
 package mpv5.ui.beans;
 
+import com.toedter.calendar.JSpinnerDateEditor;
 import java.util.Date;
+import javax.swing.JSpinner.DateEditor;
 import mpv5.ui.dialogs.MiniCalendar;
 import mpv5.utils.date.DateConverter;
 
@@ -16,7 +18,7 @@ public class DateChooser extends javax.swing.JPanel {
     /** Creates new form LabeledTextField */
     public DateChooser() {
         initComponents();
-        jTextField1.setText(DateConverter.getTodayDefDate());
+        jSpinner1.setEditor(new DateEditor(jSpinner1, DateConverter.getDefaultFormatString()));
     }
 
     /**
@@ -25,9 +27,7 @@ public class DateChooser extends javax.swing.JPanel {
      */
     public DateChooser(boolean nullDate) {
         initComponents();
-        if (!nullDate) {
-            jTextField1.setText(DateConverter.getTodayDefDate());
-        }
+        jSpinner1.setEditor(new DateEditor(jSpinner1, DateConverter.getDefaultFormatString()));
     }
 
     /**
@@ -40,7 +40,7 @@ public class DateChooser extends javax.swing.JPanel {
 
     public void setDate(Date date) {
         if (d == null) {
-            d = new MiniCalendar(jTextField1, false);
+            d = new MiniCalendar(jSpinner1, false);
         }
 
         d.setDate(date);
@@ -63,15 +63,10 @@ public class DateChooser extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTextField1 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
+        jSpinner1 = new javax.swing.JSpinner();
 
         setOpaque(false);
-
-        jTextField1.setEditable(false);
-        jTextField1.setForeground(new java.awt.Color(0, 0, 0));
-        jTextField1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jTextField1.setDisabledTextColor(new java.awt.Color(0, 0, 0));
 
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/cal.png"))); // NOI18N
         jButton1.setText("...");
@@ -83,32 +78,35 @@ public class DateChooser extends javax.swing.JPanel {
             }
         });
 
+        jSpinner1.setModel(new javax.swing.SpinnerDateModel());
+        jSpinner1.setEditor(new javax.swing.JSpinner.DateEditor(jSpinner1, ""));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addComponent(jSpinner1, javax.swing.GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                 .addComponent(jButton1)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         if (d == null) {
-            d = new MiniCalendar(jTextField1, true);
+            d = new MiniCalendar(jSpinner1, true);
         }
         d.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JSpinner jSpinner1;
     // End of variables declaration//GEN-END:variables
 }

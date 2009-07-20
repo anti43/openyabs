@@ -17,6 +17,7 @@
 package mpv5;
 
 import java.awt.Component;
+import java.io.File;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -25,19 +26,24 @@ import javax.swing.table.TableCellRenderer;
 import java.util.Vector;
 import javax.swing.table.TableColumn;
 import mpv5.logging.Log;
+import mpv5.logging.LogConsole;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.utils.export.Export;
+import mpv5.utils.export.ODTFile;
 import mpv5.utils.export.PDFFile;
 
 public class Test {
 
     public static void main(String[] args) {
 
-        Export e = new Export();
-        e.put("some pdf form field", "some value#");
-        e.setFile(new PDFFile("template.pdf"));
+        LogConsole.setLogStreams(false, true, false);
+        Log.setLogLevel(Log.LOGLEVEL_DEBUG);
 
-        DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY);
+        Export e = new Export();
+        e.put("number", "some value#");
+        e.setFile(new ODTFile("/home/anti/aaa.odt"));
+
+        DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY, new File("export.pdf"));
         d.setFileFilter(DialogForFile.PDF_FILES);
 
         if (d.saveFile()) {

@@ -71,14 +71,14 @@ public class DialogForFile extends JFileChooser implements Waiter {
         }
     };
 
-     public static FileFilter ODT_FILES = new FileFilter() {
+     public static FileFilter OOO_FILES = new FileFilter() {
 
         public boolean accept(File f) {
-            return f.getName().toLowerCase().endsWith(".odt") || f.isDirectory();
+            return f.getName().toLowerCase().matches( ".*sxw$|.*doc$|.*xls$|.*odt$|.*ods$|.*pps$|.*odt$|.*ppt$|.*odp$") || f.isDirectory();
         }
 
         public String getDescription() {
-            return "ODT Format(*.odt)";
+            return "Open Office Formats(*.odt etc.)";
         }
     };
     private File file = null;

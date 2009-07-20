@@ -35,24 +35,23 @@ public class PropertyStore {
     public PropertyStore() {
     }
 
-
     /**
      * Creates a new property store and initially adds the given values
      * @param data
      */
     public PropertyStore(Object[][] data) {
-       addAll(data);
+        addAll(data);
     }
 
     /**
      * Adds all
      * @param data {key, value}
      */
-    public void addAll(Object[][] data) {
-       for (int i = 0; i < data.length; i++) {
+    public synchronized void addAll(Object[][] data) {
+        for (int i = 0; i < data.length; i++) {
             addProperty(data[i][0].toString(), String.valueOf(data[i][1]));
         }
-       setChanged(true);
+        setChanged(true);
     }
 
     /**
@@ -60,13 +59,11 @@ public class PropertyStore {
      * @param name
      * @param value
      */
-    public void addProperty(String name, String value) {
+    public synchronized void addProperty(String name, String value) {
         Log.Debug(this, "Adding property: " + name + " = " + value);
         list.add(new String[]{name, value});
         setChanged(true);
     }
-
-
 
     /**
      *  Generate a List of String(key-value.toString()) pairs
@@ -81,7 +78,7 @@ public class PropertyStore {
      * @param name
      * @return the value
      */
-    public String getProperty(String name) {
+    public synchronized String getProperty(String name) {
         if (list.size() > 0) {
             for (int i = list.size(); i > 0; i--) {
                 if (list.get(i - 1)[0].equalsIgnoreCase(name)) {
@@ -99,7 +96,7 @@ public class PropertyStore {
      * @param desiredClass
      * @return
      */
-    public double getProperty(String key, double desiredClass) {
+    public synchronized double getProperty(String key, double desiredClass) {
         String t = getProperty(key);
         if (t == null) {
             return 0d;
@@ -111,7 +108,8 @@ public class PropertyStore {
             }
         }
     }
-  /**
+
+    /**
      * Convenience method to retrieve visual component properties stored as
      * <br/>comp.getClass().getName() + "$" + evt.getSource()
      * @param comp
@@ -119,16 +117,17 @@ public class PropertyStore {
      * @param b
      * @return
      */
-    public double getProperty(JComponent comp, String source, double b) {
+    public synchronized double getProperty(JComponent comp, String source, double b) {
         return getProperty(comp.getClass().getName() + "$" + source, b);
     }
-       /**
+
+    /**
      * Return a Integer property. Will return 0 if the property is not parseable as Integer
      * @param key
      * @param desiredClass
      * @return
      */
-    public int getProperty(String key, int desiredClass) {
+    public synchronized int getProperty(String key, int desiredClass) {
         String t = getProperty(key);
         if (t == null) {
             return 0;
@@ -140,7 +139,8 @@ public class PropertyStore {
             }
         }
     }
-  /**
+
+    /**
      * Convenience method to retrieve visual component properties stored as
      * <br/>comp.getClass().getName() + "$" + evt.getSource()
      * @param comp
@@ -148,16 +148,17 @@ public class PropertyStore {
      * @param b
      * @return
      */
-    public int getProperty(JComponent comp, String source, int b) {
+    public synchronized int getProperty(JComponent comp, String source, int b) {
         return getProperty(comp.getClass().getName() + "$" + source, b);
     }
-       /**
+
+    /**
      * Return a boolean property. Will return false if the property is not parseable as boolean
      * @param key
      * @param desiredClass
      * @return
      */
-    public boolean getProperty(String key, boolean desiredClass) {
+    public synchronized boolean getProperty(String key, boolean desiredClass) {
         String t = getProperty(key);
         if (t == null) {
             return false;
@@ -174,7 +175,7 @@ public class PropertyStore {
      * @param b
      * @return
      */
-    public boolean getProperty(JComponent comp, String source, boolean b) {
+    public synchronized boolean getProperty(JComponent comp, String source, boolean b) {
         return getProperty(comp.getClass().getName() + "$" + source, b);
     }
 
@@ -184,21 +185,22 @@ public class PropertyStore {
      * @param name
      * @param newvalue
      */
-    public void changeProperty(String name, String newvalue) {
+    public synchronized void changeProperty(String name, String newvalue) {
         boolean found = false;
         if (list.size() > 0) {
             for (int i = list.size(); i > 0; i--) {
                 if (list.get(i - 1)[0].equalsIgnoreCase(name)) {
                     list.set(i - 1, new String[]{name, newvalue});
-                    found = true;setChanged(true);
-                    Log.Debug(this, "Change property: " +  list.get(i - 1)[1] + " for " + name);
+                    found = true;
+                    setChanged(true);
+                    Log.Debug(this, "Change property: " + list.get(i - 1)[1] + " for " + name);
                 }
             }
         }
         if (!found) {
             addProperty(name, newvalue);
         }
-        
+
     }
 
     /**
@@ -208,14 +210,15 @@ public class PropertyStore {
      * @param source
      * @param newvalue
      */
-    public void changeProperty(JComponent comp, String source,  Object newvalue) {
+    public synchronized void changeProperty(JComponent comp, String source, Object newvalue) {
         boolean found = false;
         if (list.size() > 0) {
             for (int i = list.size(); i > 0; i--) {
                 if (list.get(i - 1)[0].equalsIgnoreCase(comp.getClass().getName() + "$" + source)) {
                     list.set(i - 1, new String[]{comp.getClass().getName() + "$" + source, String.valueOf(newvalue)});
-                    found = true;setChanged(true);
-                    Log.Debug(this, "Change property: " +  list.get(i - 1)[1] + " for " + comp.getClass().getName() + "$" + source);
+                    found = true;
+                    setChanged(true);
+                    Log.Debug(this, "Change property: " + list.get(i - 1)[1] + " for " + comp.getClass().getName() + "$" + source);
                 }
             }
         }
@@ -229,7 +232,7 @@ public class PropertyStore {
      * @param propertyname
      * @return True if the key exists
      */
-    public boolean hasProperty(String propertyname) {
+    public synchronized boolean hasProperty(String propertyname) {
         if (getProperty(propertyname) == null) {
             return false;
         } else {
@@ -248,14 +251,14 @@ public class PropertyStore {
         return str;
     }
 
-    public void setChanged(boolean b) {
+    public synchronized void setChanged(boolean b) {
         this.changed = b;
     }
 
     /**
      * @return the changed
      */
-    public boolean isChanged() {
+    public synchronized boolean isChanged() {
         return changed;
     }
 }
