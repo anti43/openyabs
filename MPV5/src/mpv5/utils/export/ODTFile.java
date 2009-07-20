@@ -54,21 +54,30 @@ import mpv5.logging.Log;
 import mpv5.utils.reflection.ClasspathTools;
 import ooo.connector.BootstrapSocketConnector;
 
+
 /**
  *
  *  
  */
 public class ODTFile extends Exportable {
-
-    private final String officeVal;
-    private final String[] officeVals;
+    private String oootype;
+    private String ooohome;
+    private String ooohost;
+    private String oooport;
 
     public ODTFile(String pathToFile) {
         super(pathToFile);
-
-        officeVal = LocalSettings.getProperty(LocalSettings.OFFICE_HOME);
-        officeVals = officeVal.split(":");
-
+        String officeVal = LocalSettings.getProperty(LocalSettings.OFFICE_HOME);
+        String[] officeVals = officeVal.split(":");
+        try {
+            oootype = officeVals[0];
+            ooohome = officeVals[1];
+            ooohost = officeVals[2];
+            oooport = officeVals[3];
+        } catch (ArrayIndexOutOfBoundsException e) {
+        }
+        
+        
         try {
             ClasspathTools.addPath(officeVals[1]);
             ClasspathTools.addPath(officeVals[1] + "program");
@@ -78,11 +87,11 @@ public class ODTFile extends Exportable {
 
     @Override
     public void run() {
-        throw new UnsupportedOperationException("ODT background export is currently not supported. Use constructOOOPanel(JPanel) instead. ");
+        Log.Debug(this, "ODT background export is currently not supported. Use constructOOOPanel(JPanel) instead. ");
     }
 
     /**
-     * Loads the given template into the panel and fills the form fileds with data
+     * Loads the given template into the panel and fills the form fields with data
      * @param panel
      * @return
      * @throws OfficeApplicationException
@@ -99,13 +108,14 @@ public class ODTFile extends Exportable {
         panel.setVisible(true);
         HashMap<String, String> configuration = new HashMap<String, String>();
 
-        if (!LocalSettings.getProperty(LocalSettings.OFFICE_HOME).equals("null") && LocalSettings.getProperty(LocalSettings.OFFICE_HOME).split(":")[0].equalsIgnoreCase(IOfficeApplication.LOCAL_APPLICATION)) {
-            configuration.put(IOfficeApplication.APPLICATION_HOME_KEY, LocalSettings.getProperty(LocalSettings.OFFICE_HOME.split(":")[1]));
+        if (oootype.equalsIgnoreCase(IOfficeApplication.LOCAL_APPLICATION)) {
+            configuration.put(IOfficeApplication.APPLICATION_HOME_KEY, ooohome);
             configuration.put(IOfficeApplication.APPLICATION_TYPE_KEY, IOfficeApplication.LOCAL_APPLICATION);
-        } else if (!LocalSettings.getProperty(LocalSettings.OFFICE_HOME).equals("null") && LocalSettings.getProperty(LocalSettings.OFFICE_HOME).split(":")[0].equalsIgnoreCase(IOfficeApplication.REMOTE_APPLICATION)) {
+        } else if (oootype.equalsIgnoreCase(IOfficeApplication.REMOTE_APPLICATION)) {
             configuration.put(IOfficeApplication.APPLICATION_TYPE_KEY, IOfficeApplication.REMOTE_APPLICATION);
-            configuration.put(IOfficeApplication.APPLICATION_HOST_KEY, LocalSettings.getProperty(LocalSettings.OFFICE_HOME.split(":")[1])); //IP des anderen PCs
-            configuration.put(IOfficeApplication.APPLICATION_PORT_KEY, LocalSettings.getProperty(LocalSettings.OFFICE_HOME.split(":")[2]));
+            configuration.put(IOfficeApplication.APPLICATION_HOST_KEY, ooohost); //IP des anderen PCs
+            configuration.put(IOfficeApplication.APPLICATION_PORT_KEY, oooport);
+            configuration.put(IOfficeApplication.APPLICATION_HOME_KEY, ooohome);
         } else {
             throw new Exception("OpenOffice installation not configured!");
         }
@@ -240,7 +250,6 @@ public class ODTFile extends Exportable {
         return desktop;
     }
 }
-
 class OfficeFileFilter implements FileFilter {
 
     public static final String EXTENSION = ".*sxw$|.*doc$|.*xls$|.*odt$|.*ods$|.*pps$|.*odt$|.*ppt$|.*odp$";

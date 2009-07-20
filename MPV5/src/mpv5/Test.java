@@ -16,15 +16,26 @@
  */
 package mpv5;
 
+import ag.ion.bion.officelayer.application.OfficeApplicationException;
+import ag.ion.bion.officelayer.desktop.DesktopException;
+import ag.ion.bion.officelayer.document.DocumentException;
+import ag.ion.noa.NOAException;
+import com.sun.star.uno.Exception;
 import java.awt.Component;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 import java.util.Vector;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.table.TableColumn;
+import mpv5.db.common.NodataFoundException;
 import mpv5.logging.Log;
 import mpv5.logging.LogConsole;
 import mpv5.ui.dialogs.DialogForFile;
@@ -34,25 +45,82 @@ import mpv5.utils.export.PDFFile;
 
 public class Test {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws NodataFoundException, FileNotFoundException {
 
         LogConsole.setLogStreams(false, true, false);
         Log.setLogLevel(Log.LOGLEVEL_DEBUG);
 
         Export e = new Export();
+        ODTFile f = new ODTFile("/home/anti/aaa.odt");
         e.put("number", "some value#");
-        e.setFile(new ODTFile("/home/anti/aaa.odt"));
+        e.setFile(f);
+        e.processData(null);
 
-        DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY, new File("export.pdf"));
-        d.setFileFilter(DialogForFile.PDF_FILES);
 
-        if (d.saveFile()) {
-            try {
-                e.processData(d.getFile());
-            } catch (Exception ex) {
-                Log.Debug(ex);
-            }
+        JFrame x = new JFrame();
+        JPanel p = new JPanel();
+        x.add(p);
+        x.pack();
+        x.setVisible(true);
+        try {
+            f.constructOOOPanel(p);
+
+         
+//        DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY, new File("export.pdf"));
+//        d.setFileFilter(DialogForFile.PDF_FILES);
+//
+//        if (d.saveFile()) {
+//            try {
+//                e.processData(d.getFile());
+//            } catch (Exception ex) {
+//                Log.Debug(ex);
+//            }
+//        }
+//        JPanel jPanel1 = new JPanel(new BorderLayout());
+//        JFrame frame = new JFrame();
+//
+//        final JTable t = new JTable(new DefaultTableModel(new Object[][]{{null},{null},{null},{null}}, new String[]{"1"}));
+//        new CellRendererBox(t).setRendererTo(0);
+//
+//        jPanel1.add(t, BorderLayout.CENTER);
+//        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+//        frame.addWindowListener(new WindowAdapter() {
+//
+//            @Override
+//            public void windowClosing(WindowEvent e) {
+//               TableModel model =  t.getModel();
+//                for (int i = 0; i < model.getRowCount(); i++) {
+//                    System.out.println(model.getValueAt(i, 0));
+//                    System.exit(0);
+//                }
+//            }
+//        });
+//        frame.add(jPanel1);
+//        frame.pack();
+//        frame.setVisible(true);
+//new Context(null).prepareSQLString("");
+        } catch (OfficeApplicationException ex) {
+            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (DesktopException ex) {
+            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (DocumentException ex) {
+            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NOAException ex) {
+            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
         }
+
+//        DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY, new File("export.pdf"));
+//        d.setFileFilter(DialogForFile.PDF_FILES);
+//
+//        if (d.saveFile()) {
+//            try {
+//                e.processData(d.getFile());
+//            } catch (Exception ex) {
+//                Log.Debug(ex);
+//            }
+//        }
 //        JPanel jPanel1 = new JPanel(new BorderLayout());
 //        JFrame frame = new JFrame();
 //

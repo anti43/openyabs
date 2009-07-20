@@ -69,15 +69,16 @@ public class Export extends HashMap<String, String> {
             throw new FileNotFoundException(file.getPath());
         }
 
-        if(toFile.exists()) {
-            toFile.delete();
-            Log.Debug(this, "File exists, will be replaced: " + toFile);
+        if (toFile!=null) {
+            if (toFile.exists()) {
+                toFile.delete();
+                Log.Debug(this, "File exists, will be replaced: " + toFile);
+            }
+
+            toFile.mkdirs();
+            file.setTarget(toFile);
         }
-
-        toFile.mkdirs();
-
         file.setData(this);
-        file.setTarget(toFile);
 
         try {
           t = new Thread(file);
