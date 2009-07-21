@@ -249,6 +249,7 @@ public class Log {
         }
     }
 
+
     private Log() {
     }
 

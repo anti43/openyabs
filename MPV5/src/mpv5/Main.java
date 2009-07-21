@@ -16,6 +16,9 @@
  */
 package mpv5;
 
+import ag.ion.bion.officelayer.application.IOfficeApplication;
+import ag.ion.bion.officelayer.application.OfficeApplicationException;
+import ag.ion.noa.NOAException;
 import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -34,7 +37,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Properties;
+import java.util.Vector;
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -108,6 +113,15 @@ public class Main extends SingleFrameApplication {
         MPView.setNavBarAnimated(false);
         MPView.setTabPaneScrolled(true);
     }
+
+    /**
+     * Add the office instance to close on exit
+     * @param officeApplication
+     */
+    public static void addOfficeApplicationToClose(IOfficeApplication officeApplication) {
+        oap.add(officeApplication);
+    }
+    private static List<IOfficeApplication> oap = new Vector<IOfficeApplication>();
     private File lockfile = new File(MPPATH + File.separator + "." + Constants.PROG_NAME + "." + "lck");
 
     /**
@@ -200,6 +214,14 @@ public class Main extends SingleFrameApplication {
             LocalSettings.save();
             if (!MPView.getUser().isDefault()) {
                 MPView.getUser().logout();
+            }
+            for (int i = 0; i < oap.size(); i++) {
+                IOfficeApplication iOfficeApplication = oap.get(i);
+                try {
+                    iOfficeApplication.getDesktopService().terminate();
+                } catch (Exception n) {
+                    Log.Debug(this, n.getMessage());
+                }
             }
         } catch (Exception e) {
             Log.Debug(e);

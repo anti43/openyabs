@@ -25,6 +25,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
@@ -70,6 +71,7 @@ import mpv5.ui.dialogs.subcomponents.ControlPanel_Advanced;
 import mpv5.ui.panels.TrashPanel;
 import mpv5.utils.files.TextDatFile;
 import mpv5.utils.images.MPIcon;
+import mpv5.utils.ooo.OOOPanel;
 import mpv5.utils.print.PrintJob;
 import mpv5.utils.renderer.ComboBoxRendererForTooltip;
 import mpv5.utils.xml.XMLWriter;
@@ -510,6 +512,7 @@ public class MPView extends FrameView {
         jMenuItem24 = new javax.swing.JMenuItem();
         jSeparator6 = new javax.swing.JSeparator();
         jMenuItem22 = new javax.swing.JMenuItem();
+        jMenuItem27 = new javax.swing.JMenuItem();
         favouritesMenu = new javax.swing.JMenu();
         jMenuItem5 = new javax.swing.JMenuItem();
         clipboardMenu = new javax.swing.JMenu();
@@ -1092,6 +1095,15 @@ public class MPView extends FrameView {
         });
         jMenu3.add(jMenuItem22);
 
+        jMenuItem27.setText(bundle.getString("MPView.jMenuItem27.text")); // NOI18N
+        jMenuItem27.setName("jMenuItem27"); // NOI18N
+        jMenuItem27.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem27ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItem27);
+
         menuBar.add(jMenu3);
 
         favouritesMenu.setText(bundle.getString("MPView.favouritesMenu.text")); // NOI18N
@@ -1583,6 +1595,13 @@ public class MPView extends FrameView {
         }
     }//GEN-LAST:event_jMenuItem26ActionPerformed
 
+    private void jMenuItem27ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem27ActionPerformed
+      
+        OOOPanel p = new OOOPanel();
+        addTab(p, "OOO");
+        p.constructOOOPanel(null);
+    }//GEN-LAST:event_jMenuItem27ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JMenu clipboardMenu;
     public javax.swing.JMenu favouritesMenu;
@@ -1627,6 +1646,7 @@ public class MPView extends FrameView {
     private javax.swing.JMenuItem jMenuItem24;
     private javax.swing.JMenuItem jMenuItem25;
     private javax.swing.JMenuItem jMenuItem26;
+    private javax.swing.JMenuItem jMenuItem27;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
