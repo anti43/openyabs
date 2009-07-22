@@ -16,65 +16,231 @@
  */
 package mpv5;
 
-import ag.ion.bion.officelayer.application.OfficeApplicationException;
-import ag.ion.bion.officelayer.desktop.DesktopException;
-import ag.ion.bion.officelayer.document.DocumentException;
-import ag.ion.noa.NOAException;
 import com.sun.star.uno.Exception;
 import java.awt.Component;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 import java.util.Vector;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.table.TableColumn;
 import mpv5.db.common.NodataFoundException;
 import mpv5.logging.Log;
 import mpv5.logging.LogConsole;
-import mpv5.ui.dialogs.DialogForFile;
 import mpv5.utils.export.Export;
 import mpv5.utils.export.ODTFile;
-import mpv5.utils.export.PDFFile;
+
+import ag.ion.bion.officelayer.application.IOfficeApplication;
+import ag.ion.bion.officelayer.application.OfficeApplicationException;
+import ag.ion.bion.officelayer.application.OfficeApplicationRuntime;
+import ag.ion.bion.officelayer.desktop.DesktopException;
+import ag.ion.bion.officelayer.desktop.IFrame;
+import ag.ion.bion.officelayer.document.DocumentDescriptor;
+import ag.ion.bion.officelayer.document.DocumentException;
+import ag.ion.bion.officelayer.document.IDocument;
+import ag.ion.bion.officelayer.document.IDocumentDescriptor;
+import ag.ion.bion.officelayer.filter.PDFFilter;
+import ag.ion.bion.officelayer.form.IFormComponent;
+import ag.ion.bion.officelayer.text.ITextDocument;
+import ag.ion.bion.officelayer.text.ITextField;
+import ag.ion.bion.officelayer.text.ITextFieldService;
+import ag.ion.bion.officelayer.text.IVariableTextFieldMaster;
+import ag.ion.bion.officelayer.text.TextException;
+import ag.ion.noa.NOAException;
+import com.sun.star.awt.XTextComponent;
+import com.sun.star.beans.*;
+import com.sun.star.comp.helper.BootstrapException;
+import com.sun.star.document.XDocumentInfoSupplier;
+import com.sun.star.io.IOException;
+import com.sun.star.lang.XMultiComponentFactory;
+import com.sun.star.uno.Exception;
+import com.sun.star.uno.XComponentContext;
+import com.sun.star.frame.*;
+import com.sun.star.text.XTextDocument;
+import com.sun.star.form.XFormComponent;
+import com.sun.star.uno.UnoRuntime;
+import com.sun.star.util.DateTime;
+import java.io.*;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JPanel;
+import mpv5.globals.LocalSettings;
+import mpv5.logging.Log;
+import mpv5.utils.reflection.ClasspathTools;
+import ooo.connector.BootstrapSocketConnector;
 
 public class Test {
 
-    public static void main(String[] args) throws NodataFoundException, FileNotFoundException {
+    private static String oootype;
+    private static String ooohome;
+    private static String ooohost;
+    private static String oooport;
+
+    public static void main(String[] args) throws NodataFoundException, FileNotFoundException, OfficeApplicationException, NOAException, DocumentException, InterruptedException {
 
         LogConsole.setLogStreams(false, true, false);
         Log.setLogLevel(Log.LOGLEVEL_DEBUG);
 
-        Export e = new Export();
-        ODTFile f = new ODTFile("/home/anti/aaa.odt");
-        e.put("number", "some value#");
-        e.setFile(f);
-        e.processData(null);
+//        Export e = new Export();
+//        ODTFile f = new ODTFile("/home/anti/aaa.odt");
+//        e.put("number", "some value#");
+//        e.setFile(f);
 
-
-        JFrame x = new JFrame();
-        JPanel p = new JPanel();
-        x.add(p);
-        x.pack();
-        x.setVisible(true);
+        String officeVal = LocalSettings.getProperty(LocalSettings.OFFICE_HOME);
+        String[] officeVals = officeVal.split(":");
         try {
-            f.constructOOOPanel(p);
+            oootype = officeVals[0];
+            ooohome = officeVals[1];
+            ooohost = officeVals[2];
+            oooport = officeVals[3];
+        } catch (ArrayIndexOutOfBoundsException eg) {
+        }
 
-         
+        try {
+            ClasspathTools.addPath(officeVals[1]);
+            ClasspathTools.addPath(officeVals[1] + "program");
+        } catch (java.lang.Exception exception) {
+        }
+
+
+        IOfficeApplication officeApplication = null;
+        HashMap<String, String> configuration = new HashMap<String, String>();
+        if (oootype.equalsIgnoreCase(IOfficeApplication.LOCAL_APPLICATION)) {
+            configuration.put(IOfficeApplication.APPLICATION_HOME_KEY, ooohome);
+            configuration.put(IOfficeApplication.APPLICATION_TYPE_KEY, IOfficeApplication.LOCAL_APPLICATION);
+        } else if (oootype.equalsIgnoreCase(IOfficeApplication.REMOTE_APPLICATION)) {
+            configuration.put(IOfficeApplication.APPLICATION_TYPE_KEY, IOfficeApplication.REMOTE_APPLICATION);
+            configuration.put(IOfficeApplication.APPLICATION_HOST_KEY, ooohost); //IP des anderen PCs
+            configuration.put(IOfficeApplication.APPLICATION_PORT_KEY, oooport);
+            configuration.put(IOfficeApplication.APPLICATION_HOME_KEY, ooohome);
+        }
+
+        officeApplication = OfficeApplicationRuntime.getApplication(configuration);
+        officeApplication.activate();
+
+        IDocumentDescriptor d = new DocumentDescriptor(true);
+        IDocument document = officeApplication.getDocumentService().loadDocument("/home/anti/aaa.odt", d);
+
+        IFormComponent[] formComponents = document.getFormService().getFormComponents();
+        HashMap<String,String> e =new HashMap<String, String>();
+        e.put("number", "some value#");
+        // iterate over hashtable and insert values into field masters
+        Iterator<String> keys = e.keySet().iterator();
+        String key = null;
+        while (keys.hasNext()) {
+            try {
+                // get column name
+                key = keys.next();
+
+                for (int i = 0; i < formComponents.length; i++) {
+
+                    XFormComponent xFormComponent = formComponents[i].getXFormComponent();
+                    XTextComponent xTextComponent = formComponents[i].getXTextComponent();
+                    XPropertySet propertySet = (XPropertySet) UnoRuntime.queryInterface(XPropertySet.class,
+                            xFormComponent);
+
+                    if (propertySet != null && propertySet.getPropertySetInfo().hasPropertyByName("Name")) {
+                        String n = propertySet.getPropertyValue("Name").toString();
+                        if (n.matches(key)) {
+                            Log.Debug(Test.class, "Found field: " + key);
+                            xTextComponent.setText("huyiuiuyiuyiuyiuyiuyi");
+                        }
+                    }
+                }
+
+            } catch (Exception ex) {
+                Log.Debug(Test.class, ex.getMessage() + " for key: " + key);
+            }
+        }
+
+
+        // iterate over hashtable and insert values into field masters
+        keys = e.keySet().iterator();
+        key = null;
+        while (keys.hasNext()) {
+            // get column name
+            key = keys.next();
+
+            try {
+                try {
+                    ITextFieldService textFieldService =( (ITextDocument)document).getTextFieldService();
+                    ITextField[] placeholders = textFieldService.getPlaceholderFields();
+                    for (int i = 0; i < placeholders.length; i++) {
+                        String placeholderDisplayText = placeholders[i].getDisplayText();
+                        if (placeholderDisplayText.matches(key)) {
+                            Log.Debug(Test.class, "Found placeholder: " + key);
+                            placeholders[i].getTextRange().setText(e.get(key));
+                        }
+                    }
+                } catch (java.lang.Exception ex) {
+                    Log.Debug(Test.class, ex.getMessage() + " for key: " + key);
+                }
+                ((ITextDocument)document).getTextFieldService().refresh();
+            } catch (TextException ex) {
+                Log.Debug(Test.class, ex.getMessage() + " for key: " + key);
+            }
+        }
+
+
+
+        // iterate over hashtable and insert values into field masters
+        keys = e.keySet().iterator();
+        key = null;
+        IVariableTextFieldMaster x;
+        while (keys.hasNext()) {
+            // get column name
+            key = keys.next();
+            try {
+                ITextFieldService textFieldService =((ITextDocument)document).getTextFieldService();
+                x = textFieldService.getVariableTextFieldMaster(key);
+                if (x != null) {
+                    ITextField[] variables = x.getVariableTextFields();
+                    for (int i = 0; i < variables.length; i++) {
+                        XPropertySet xPropertySetField = (XPropertySet) UnoRuntime.queryInterface(XPropertySet.class, variables[i].getXTextContent());
+                        if (xPropertySetField.getPropertyValue("CurrentPresentation").toString().matches(key)) {
+                            Log.Debug(Test.class, "Found variable: " + key);
+                            xPropertySetField.setPropertyValue("Content", e.get(key));
+                        }
+                    }
+                    ((ITextDocument)document).getTextFieldService().refresh();
+                }
+            } catch (TextException ex) {
+                Log.Debug(Test.class, ex.getMessage() + " for key: " + key);
+            } catch (Exception ex) {
+                Log.Debug(Test.class, ex.getMessage() + " for key: " + key);
+            }
+        }
+
+//
+//        document.reformat();
+//        document.update();
+
+//
+//        Thread.sleep(1000);
+        document.getPersistenceService().export("/home/anti/ex.pdf", PDFFilter.FILTER);
+
+        officeApplication.deactivate();
+        System.exit(0);
+
+//
+//        JFrame x = new JFrame();
+//       OOOPanel p = new OOOPanel();
+//        x.add(p);
+//        x.setVisible(true);
+//        p.constructOOOPanel(f);
+
+//
 //        DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY, new File("export.pdf"));
 //        d.setFileFilter(DialogForFile.PDF_FILES);
 //
 //        if (d.saveFile()) {
-//            try {
-//                e.processData(d.getFile());
-//            } catch (Exception ex) {
-//                Log.Debug(ex);
-//            }
+//             e.processData(d.getFile());
 //        }
 //        JPanel jPanel1 = new JPanel(new BorderLayout());
 //        JFrame frame = new JFrame();
@@ -99,17 +265,7 @@ public class Test {
 //        frame.pack();
 //        frame.setVisible(true);
 //new Context(null).prepareSQLString("");
-        } catch (OfficeApplicationException ex) {
-            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (DesktopException ex) {
-            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (DocumentException ex) {
-            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (Exception ex) {
-            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NOAException ex) {
-            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
 
 //        DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY, new File("export.pdf"));
 //        d.setFileFilter(DialogForFile.PDF_FILES);
@@ -296,7 +452,7 @@ public class Test {
 //        new MPServer();
 //        try {
 //        try {
-//            new PDFFormTest(new File("/home//Desktop/euerformular.pdf")).fillFields();
+//            new PDFFormTest(new File("/home//Desktop/euerformular.pdf")).fillFields1();
 ////        new SplashScreen(new ImageIcon(Test.class.getResource("/mpv5/resources/images/background.png")));
 ////        try {
 ////        try {

@@ -23,7 +23,7 @@ import mpv5.db.common.NodataFoundException;
 import mpv5.logging.Log;
 
 /**
- * The Export class handles the export of data using templatefiles
+ * The Export class handles the export of data using templatefiles to PDF
  *  
  */
 public class Export extends HashMap<String, String> {
@@ -75,7 +75,7 @@ public class Export extends HashMap<String, String> {
                 Log.Debug(this, "File exists, will be replaced: " + toFile);
             }
 
-            toFile.mkdirs();
+            toFile.getParentFile().mkdirs();
             file.setTarget(toFile);
         }
         file.setData(this);

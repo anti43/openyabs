@@ -32,6 +32,9 @@ import java.io.File;
 import java.util.Hashtable;
 
 import javax.swing.JFrame;
+import mpv5.db.common.Context;
+import mpv5.db.common.QueryHandler;
+import mpv5.db.common.SaveString;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
@@ -116,72 +119,25 @@ public class OOOPanel extends JPanel {
         }
         MPView.addMessage(Messages.DONE_LOADING_OOO);
     }
-//
-//    @SuppressWarnings("unchecked")
-//    public static void main(String[] args) {
-//
-//        LogConsole.setLogStreams(false, true, false);
-//        Log.setLogLevel(Log.LOGLEVEL_DEBUG);
-//        try {
-//            HashMap configuration = new HashMap();
-//            configuration.put(IOfficeApplication.APPLICATION_HOME_KEY, OFFICE_HOME);
-//            configuration.put(IOfficeApplication.APPLICATION_TYPE_KEY, IOfficeApplication.LOCAL_APPLICATION);
-//            final IOfficeApplication officeAplication = OfficeApplicationRuntime.getApplication(configuration);
-//
-//            officeAplication.setConfiguration(configuration);
-//            officeAplication.activate();
-//
-//            final Frame frame = new Frame();
-//            frame.setVisible(true);
-//            frame.setSize(400, 400);
-//            frame.validate();
-//            Panel panel = new Panel(new BorderLayout());
-//            frame.add(panel);
-//            panel.setVisible(true);
-//            frame.addWindowListener(new WindowAdapter() {
-//
-//                public void windowClosing(WindowEvent windowEvent) {
-//                    frame.dispose();
-//                    try {
-//                        officeAplication.deactivate();
-//                        officeAplication.getDesktopService().terminate();
-//                    } catch (Exception applicationException) {
-//                    }
-//                }
-//            });
-//
-//            IFrame officeFrame = officeAplication.getDesktopService().constructNewOfficeFrame(panel);
-//            officeAplication.getDocumentService().constructNewDocument(officeFrame, IDocument.WRITER, DocumentDescriptor.DEFAULT);
-//            frame.validate();
-//
-//            //Now it is time to disable two commands in the frame
-//            officeFrame.disableDispatch(GlobalCommands.CLOSE_DOCUMENT);
-//            officeFrame.disableDispatch(GlobalCommands.QUIT_APPLICATION);
-//            officeFrame.updateDispatches();
-//        } catch (Throwable throwable) {
-//            throwable.printStackTrace();
-//        }
-//    }
 
     /**
      * Configures the given IFrame to print the closed document's path to System.out on close<br/>
      * and removes the Close and Quit capabilites of the frame
-     * @param officeFrame
-     * @param officeApplication
      */
     public void configureFrame() {
 
         officeFrame.addDispatchDelegate(GlobalCommands.SAVE, new IDispatchDelegate() {
 
+            @Override
             public void dispatch(Object[] arg0) {
-                System.out.println("save");
                 try {
                     try {
-                        System.out.println(officeApplication.getDocumentService().getCurrentDocuments()[0].getPersistenceService().getLocation());
-                    } catch (DocumentException ex) {
+                        QueryHandler.instanceOf().clone(Context.getFiles()).insertFile(new File(officeApplication.getDocumentService().getCurrentDocuments()[0].getPersistenceService().getLocation().getPath()),
+                                MPView.getUser(), new SaveString("Template", true));
+                    } catch (OfficeApplicationException ex) {
                         Log.Debug(ex);
                     }
-                } catch (OfficeApplicationException ex) {
+                } catch (DocumentException ex) {
                     Log.Debug(ex);
                 }
             }
@@ -189,6 +145,7 @@ public class OOOPanel extends JPanel {
 
         officeFrame.addDispatchDelegate(GlobalCommands.OPEN_DOCUMENT, new IDispatchDelegate() {
 
+            @Override
             public void dispatch(Object[] arg0) {
 //                try {
 //
@@ -202,6 +159,7 @@ public class OOOPanel extends JPanel {
         officeFrame.updateDispatches();
         officeFrame.disableDispatch(GlobalCommands.CLOSE_DOCUMENT);
         officeFrame.disableDispatch(GlobalCommands.QUIT_APPLICATION);
+        officeFrame.disableDispatch(GlobalCommands.OPEN_DOCUMENT);
     }
 
     /**

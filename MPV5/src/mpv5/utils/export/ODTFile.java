@@ -20,14 +20,19 @@ import ag.ion.bion.officelayer.application.IOfficeApplication;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.application.OfficeApplicationRuntime;
 import ag.ion.bion.officelayer.desktop.DesktopException;
-import ag.ion.bion.officelayer.desktop.GlobalCommands;
 import ag.ion.bion.officelayer.desktop.IFrame;
+import ag.ion.bion.officelayer.document.DocumentDescriptor;
 import ag.ion.bion.officelayer.document.DocumentException;
 import ag.ion.bion.officelayer.document.IDocument;
+import ag.ion.bion.officelayer.document.IDocumentDescriptor;
+import ag.ion.bion.officelayer.filter.PDFFilter;
 import ag.ion.bion.officelayer.form.IFormComponent;
 import ag.ion.bion.officelayer.text.ITextDocument;
+import ag.ion.bion.officelayer.text.ITextField;
+import ag.ion.bion.officelayer.text.ITextFieldService;
+import ag.ion.bion.officelayer.text.IVariableTextFieldMaster;
+import ag.ion.bion.officelayer.text.TextException;
 import ag.ion.noa.NOAException;
-import ag.ion.noa.frame.IDispatchDelegate;
 import com.sun.star.awt.XTextComponent;
 import com.sun.star.beans.*;
 import com.sun.star.comp.helper.BootstrapException;
@@ -39,27 +44,26 @@ import com.sun.star.uno.XComponentContext;
 import com.sun.star.frame.*;
 import com.sun.star.text.XTextDocument;
 import com.sun.star.form.XFormComponent;
-import com.sun.star.lang.XServiceInfo;
 import com.sun.star.uno.UnoRuntime;
 import com.sun.star.util.DateTime;
-import com.sun.star.util.URL;
 import java.io.*;
-import java.net.MalformedURLException;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JPanel;
 import mpv5.globals.LocalSettings;
 import mpv5.logging.Log;
 import mpv5.utils.reflection.ClasspathTools;
 import ooo.connector.BootstrapSocketConnector;
 
-
 /**
  *
  *  
  */
 public class ODTFile extends Exportable {
+
     private String oootype;
     private String ooohome;
     private String ooohost;
@@ -76,8 +80,7 @@ public class ODTFile extends Exportable {
             oooport = officeVals[3];
         } catch (ArrayIndexOutOfBoundsException e) {
         }
-        
-        
+
         try {
             ClasspathTools.addPath(officeVals[1]);
             ClasspathTools.addPath(officeVals[1] + "program");
@@ -87,100 +90,55 @@ public class ODTFile extends Exportable {
 
     @Override
     public void run() {
-        Log.Debug(this, "ODT background export is currently not supported. Use constructOOOPanel(JPanel) instead. ");
-    }
-
-    /**
-     * Loads the given template into the panel and fills the form fields with data
-     * @param panel
-     * @return
-     * @throws OfficeApplicationException
-     * @throws DesktopException
-     * @throws DocumentException
-     * @throws Exception
-     * @throws NOAException 
-     */
-    public JPanel constructOOOPanel(final JPanel panel) throws OfficeApplicationException, DesktopException, DocumentException, Exception, NOAException {
-        IOfficeApplication officeApplication = null;
-        ITextDocument textDocument;
-
-
-        panel.setVisible(true);
-        HashMap<String, String> configuration = new HashMap<String, String>();
-
-        if (oootype.equalsIgnoreCase(IOfficeApplication.LOCAL_APPLICATION)) {
-            configuration.put(IOfficeApplication.APPLICATION_HOME_KEY, ooohome);
-            configuration.put(IOfficeApplication.APPLICATION_TYPE_KEY, IOfficeApplication.LOCAL_APPLICATION);
-        } else if (oootype.equalsIgnoreCase(IOfficeApplication.REMOTE_APPLICATION)) {
-            configuration.put(IOfficeApplication.APPLICATION_TYPE_KEY, IOfficeApplication.REMOTE_APPLICATION);
-            configuration.put(IOfficeApplication.APPLICATION_HOST_KEY, ooohost); //IP des anderen PCs
-            configuration.put(IOfficeApplication.APPLICATION_PORT_KEY, oooport);
-            configuration.put(IOfficeApplication.APPLICATION_HOME_KEY, ooohome);
-        } else {
-            throw new Exception("OpenOffice installation not configured!");
-        }
-
-        officeApplication = OfficeApplicationRuntime.getApplication(configuration);
-        officeApplication.setConfiguration(configuration);
-        officeApplication.activate();
-
-        IFrame officeFrame = officeApplication.getDesktopService().constructNewOfficeFrame(panel);
-        officeFrame.setFocus();
-        IDocument document = officeApplication.getDocumentService().loadDocument(officeFrame, getPath());
-        textDocument = (ITextDocument) document;
-
-        fillFields(textDocument, getData());
-
-        configureFrame(officeFrame, officeApplication);
-        panel.getParent().validate();
-        return panel;
-    }
-
-    /**
-     * Configures the given IFrame to print the closed document's path to System.out on close<br/>
-     * and removes the Close and Quit capabilites of the frame
-     * @param officeFrame
-     * @param officeApplication
-     */
-    private void configureFrame(final IFrame officeFrame, final IOfficeApplication officeApplication) {
-
-        officeFrame.addDispatchDelegate(GlobalCommands.SAVE, new IDispatchDelegate() {
-
-            @Override
-            public void dispatch(Object[] arg0) {
-                System.out.println("save");
-                try {
-                    try {
-                        System.out.println(officeApplication.getDocumentService().getCurrentDocuments()[0].getPersistenceService().getLocation());
-                    } catch (DocumentException ex) {
-                        Log.Debug(ex);
-                    }
-                } catch (OfficeApplicationException ex) {
-                    Log.Debug(ex);
-                }
+        try {
+            IOfficeApplication officeApplication = null;
+            HashMap<String, String> configuration = new HashMap<String, String>();
+            if (oootype.equalsIgnoreCase(IOfficeApplication.LOCAL_APPLICATION)) {
+                configuration.put(IOfficeApplication.APPLICATION_HOME_KEY, ooohome);
+                configuration.put(IOfficeApplication.APPLICATION_TYPE_KEY, IOfficeApplication.LOCAL_APPLICATION);
+            } else if (oootype.equalsIgnoreCase(IOfficeApplication.REMOTE_APPLICATION)) {
+                configuration.put(IOfficeApplication.APPLICATION_TYPE_KEY, IOfficeApplication.REMOTE_APPLICATION);
+                configuration.put(IOfficeApplication.APPLICATION_HOST_KEY, ooohost); //IP des anderen PCs
+                configuration.put(IOfficeApplication.APPLICATION_PORT_KEY, oooport);
+                configuration.put(IOfficeApplication.APPLICATION_HOME_KEY, ooohome);
             }
-        });
 
-        officeFrame.updateDispatches();
-        officeFrame.disableDispatch(GlobalCommands.CLOSE_DOCUMENT);
-        officeFrame.disableDispatch(GlobalCommands.QUIT_APPLICATION);
+            officeApplication = OfficeApplicationRuntime.getApplication(configuration);
+            officeApplication.activate();
+
+            IDocumentDescriptor d = new DocumentDescriptor(true);
+            IDocument document = officeApplication.getDocumentService().loadDocument(getPath(), d);
+            fillFields1((ITextDocument) document, getData());
+            fillFields2((ITextDocument) document, getData());
+            fillFields3((ITextDocument) document, getData());
+
+            document.getPersistenceService().export(getTarget().getPath(), PDFFilter.FILTER);
+            officeApplication.deactivate();
+        } catch (Exception ex) {
+            Log.Debug(ex);
+        } catch (NOAException ex) {
+            Log.Debug(ex);
+        } catch (DocumentException ex) {
+            Log.Debug(ex);
+        } catch (OfficeApplicationException ex) {
+            Log.Debug(ex);
+        }
     }
 
     /**
-     * Fill the form fields of the template with values
+     * Fill the Form Fields of the template with values
      * @param textDocument
      * @param data
      * @throws Exception
      * @throws NOAException
      */
-    public void fillFields(ITextDocument textDocument, HashMap<String, String> data) throws Exception, NOAException {
+    public void fillFields1(ITextDocument textDocument, HashMap<String, String> data) throws Exception, NOAException {
 
         IFormComponent[] formComponents = textDocument.getFormService().getFormComponents();
         // iterate over hashtable and insert values into field masters
         Iterator<String> keys = data.keySet().iterator();
         String key = null;
         while (keys.hasNext()) {
-
             try {
                 // get column name
                 key = keys.next();
@@ -194,13 +152,90 @@ public class ODTFile extends Exportable {
 
                     if (propertySet != null && propertySet.getPropertySetInfo().hasPropertyByName("Name")) {
                         String n = propertySet.getPropertyValue("Name").toString();
-                        if (n.equalsIgnoreCase(key)) {
+                        if (n.matches(key)) {
+                            Log.Debug(this, "Found field: " + key);
                             xTextComponent.setText(data.get(key));
                         }
                     }
                 }
-            } catch (Exception noSuchElementException) {
-                System.err.println(noSuchElementException.getMessage());
+                textDocument.getTextFieldService().refresh();
+            } catch (TextException ex) {
+                Log.Debug(this, ex.getMessage() + " for key: " + key);
+            } catch (Exception ex) {
+                Log.Debug(this, ex.getMessage() + " for key: " + key);
+            }
+        }
+    }
+
+    /**
+     * Fill the Placeholder Fields of the template with values
+     * @param textDocument
+     * @param data
+     * @throws Exception
+     * @throws NOAException
+     */
+    public void fillFields2(ITextDocument textDocument, HashMap<String, String> data) throws Exception, NOAException {
+        // iterate over hashtable and insert values into field masters
+        Iterator<String> keys = data.keySet().iterator();
+        String key = null;
+        while (keys.hasNext()) {
+            // get column name
+            key = keys.next();
+
+            try {
+                try {
+                    ITextFieldService textFieldService = textDocument.getTextFieldService();
+                    ITextField[] placeholders = textFieldService.getPlaceholderFields();
+                    for (int i = 0; i < placeholders.length; i++) {
+                        String placeholderDisplayText = placeholders[i].getDisplayText();
+                        if (placeholderDisplayText.matches(key)) {
+                            Log.Debug(this, "Found placeholder: " + key);
+                            placeholders[i].getTextRange().setText(data.get(key));
+                        }
+                    }
+                } catch (java.lang.Exception ex) {
+                    Log.Debug(this, ex.getMessage() + " for key: " + key);
+                }
+                textDocument.getTextFieldService().refresh();
+            } catch (TextException ex) {
+                Log.Debug(this, ex.getMessage() + " for key: " + key);
+            }
+        }
+    }
+
+    /**
+     * Fill the Variable Text Fields of the template with values
+     * @param textDocument
+     * @param data
+     * @throws Exception
+     * @throws NOAException
+     */
+    public void fillFields3(ITextDocument textDocument, HashMap<String, String> data) throws Exception, NOAException {
+        // iterate over hashtable and insert values into field masters
+        Iterator<String> keys = data.keySet().iterator();
+        String key = null;
+        IVariableTextFieldMaster x;
+        while (keys.hasNext()) {
+            // get column name
+            key = keys.next();
+            try {
+                ITextFieldService textFieldService = textDocument.getTextFieldService();
+                x = textFieldService.getVariableTextFieldMaster(key);
+                if (x != null) {
+                    ITextField[] variables = x.getVariableTextFields();
+                    for (int i = 0; i < variables.length; i++) {
+                        XPropertySet xPropertySetField = (XPropertySet) UnoRuntime.queryInterface(XPropertySet.class, variables[i].getXTextContent());
+                        if (xPropertySetField.getPropertyValue("CurrentPresentation").toString().matches(key)) {
+                            Log.Debug(this, "Found variable: " + key);
+                            xPropertySetField.setPropertyValue("Content", data.get(key));
+                        }
+                    }
+                    textDocument.getTextFieldService().refresh();
+                }
+            } catch (TextException ex) {
+                Log.Debug(this, ex.getMessage() + " for key: " + key);
+            } catch (Exception ex) {
+                Log.Debug(this, ex.getMessage() + " for key: " + key);
             }
         }
     }
@@ -250,6 +285,7 @@ public class ODTFile extends Exportable {
         return desktop;
     }
 }
+
 class OfficeFileFilter implements FileFilter {
 
     public static final String EXTENSION = ".*sxw$|.*doc$|.*xls$|.*odt$|.*ods$|.*pps$|.*odt$|.*ppt$|.*odp$";
