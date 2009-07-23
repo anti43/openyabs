@@ -61,7 +61,8 @@ public class LocalSettings {
                 {CACHE_SIZE, "100"},
                 {LAST_USER, "1"},
                 {LAST_USER_PW, "5F4DCC3B5AA765D61D8327DEB882CF99"},
-                {OFFICE_HOME, IOfficeApplication.LOCAL_APPLICATION  + ":/opt/openoffice.org3/"}
+                {OFFICE_HOME, IOfficeApplication.REMOTE_APPLICATION  + ":/opt/openoffice.org3/:172.0.0.1ms08-055" +
+                         ":8100"}
             });
     private static Vector<PropertyStore> cookies;
 

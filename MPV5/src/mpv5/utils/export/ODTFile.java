@@ -33,6 +33,10 @@ import ag.ion.bion.officelayer.text.ITextFieldService;
 import ag.ion.bion.officelayer.text.IVariableTextFieldMaster;
 import ag.ion.bion.officelayer.text.TextException;
 import ag.ion.noa.NOAException;
+import com.artofsolving.jodconverter.DocumentConverter;
+import com.artofsolving.jodconverter.openoffice.connection.OpenOfficeConnection;
+import com.artofsolving.jodconverter.openoffice.connection.SocketOpenOfficeConnection;
+import com.artofsolving.jodconverter.openoffice.converter.OpenOfficeDocumentConverter;
 import com.sun.star.awt.XTextComponent;
 import com.sun.star.beans.*;
 import com.sun.star.comp.helper.BootstrapException;
@@ -48,15 +52,23 @@ import com.sun.star.uno.UnoRuntime;
 import com.sun.star.util.DateTime;
 import java.io.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
 import mpv5.globals.LocalSettings;
 import mpv5.logging.Log;
+import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.reflection.ClasspathTools;
 import ooo.connector.BootstrapSocketConnector;
+import org.jdom.JDOMException;
+import org.jopendocument.dom.OOUtils;
+import org.jopendocument.dom.template.RhinoFileTemplate;
+import org.jopendocument.dom.template.TemplateException;
 
 /**
  *
@@ -90,7 +102,13 @@ public class ODTFile extends Exportable {
 
     @Override
     public void run() {
+        Log.Debug(this, "run: ");
         try {
+            // Load the template.
+            RhinoFileTemplate template = new RhinoFileTemplate(this);
+            // Fill with sample values.Log.Debug(this, "run: ");Log.Debug(this, "run: ");
+            fillFields4(template, getData());
+
             IOfficeApplication officeApplication = null;
             HashMap<String, String> configuration = new HashMap<String, String>();
             if (oootype.equalsIgnoreCase(IOfficeApplication.LOCAL_APPLICATION)) {
@@ -100,8 +118,13 @@ public class ODTFile extends Exportable {
                 configuration.put(IOfficeApplication.APPLICATION_TYPE_KEY, IOfficeApplication.REMOTE_APPLICATION);
                 configuration.put(IOfficeApplication.APPLICATION_HOST_KEY, ooohost); //IP des anderen PCs
                 configuration.put(IOfficeApplication.APPLICATION_PORT_KEY, oooport);
-                configuration.put(IOfficeApplication.APPLICATION_HOME_KEY, ooohome);
+//                configuration.put(IOfficeApplication.APPLICATION_HOME_KEY, ooohome);
             }
+
+            Log.Debug(this, "OOO Properties: " + ooohome);
+            Log.Debug(this, "OOO Properties: " + ooohost);
+            Log.Debug(this, "OOO Properties: " + oooport);
+            Log.Debug(this, "OOO Properties: " + oootype);
 
             officeApplication = OfficeApplicationRuntime.getApplication(configuration);
             officeApplication.activate();
@@ -112,17 +135,62 @@ public class ODTFile extends Exportable {
             fillFields2((ITextDocument) document, getData());
             fillFields3((ITextDocument) document, getData());
 
-            document.getPersistenceService().export(getTarget().getPath(), PDFFilter.FILTER);
-            officeApplication.deactivate();
-        } catch (Exception ex) {
-            Log.Debug(ex);
-        } catch (NOAException ex) {
-            Log.Debug(ex);
-        } catch (DocumentException ex) {
-            Log.Debug(ex);
-        } catch (OfficeApplicationException ex) {
-            Log.Debug(ex);
+            File f = FileDirectoryHandler.getTempFile("odt");
+            template.saveAs(f);
+
+            File inputFile = f;
+            File outputFile = getTarget();
+
+// connect to an OpenOffice.org instance running on port 8100
+            OpenOfficeConnection connection = new SocketOpenOfficeConnection(8100);
+            connection.connect();
+
+// convert
+            DocumentConverter converter = new OpenOfficeDocumentConverter(connection);
+            converter.convert(inputFile, outputFile);
+
+// close the connection
+            connection.disconnect();
+
+        } catch (IOException ex) {
+            Logger.getLogger(ODTFile.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (java.lang.Exception ex) {
+            Logger.getLogger(ODTFile.class.getName()).log(Level.SEVERE, null, ex);
         }
+
+//        try {
+//            IOfficeApplication officeApplication = null;
+//            HashMap<String, String> configuration = new HashMap<String, String>();
+//            if (oootype.equalsIgnoreCase(IOfficeApplication.LOCAL_APPLICATION)) {
+//                configuration.put(IOfficeApplication.APPLICATION_HOME_KEY, ooohome);
+//                configuration.put(IOfficeApplication.APPLICATION_TYPE_KEY, IOfficeApplication.LOCAL_APPLICATION);
+//            } else if (oootype.equalsIgnoreCase(IOfficeApplication.REMOTE_APPLICATION)) {
+//                configuration.put(IOfficeApplication.APPLICATION_TYPE_KEY, IOfficeApplication.REMOTE_APPLICATION);
+//                configuration.put(IOfficeApplication.APPLICATION_HOST_KEY, ooohost); //IP des anderen PCs
+//                configuration.put(IOfficeApplication.APPLICATION_PORT_KEY, oooport);
+//                configuration.put(IOfficeApplication.APPLICATION_HOME_KEY, ooohome);
+//            }
+//
+//            officeApplication = OfficeApplicationRuntime.getApplication(configuration);
+//            officeApplication.activate();
+//
+//            IDocumentDescriptor d = new DocumentDescriptor(true);
+//            IDocument document = officeApplication.getDocumentService().loadDocument(getPath(), d);
+//            fillFields1((ITextDocument) document, getData());
+//            fillFields2((ITextDocument) document, getData());
+//            fillFields3((ITextDocument) document, getData());
+//
+//            document.getPersistenceService().export(getTarget().getPath(), PDFFilter.FILTER);
+//            officeApplication.deactivate();
+//        } catch (Exception ex) {
+//            Log.Debug(ex);
+//        } catch (NOAException ex) {
+//            Log.Debug(ex);
+//        } catch (DocumentException ex) {
+//            Log.Debug(ex);
+//        } catch (OfficeApplicationException ex) {
+//            Log.Debug(ex);
+//        }
     }
 
     /**
@@ -241,7 +309,28 @@ public class ODTFile extends Exportable {
     }
 
     /**
-     * 
+     * Fill the Inputgra Fields of the template with values
+     * @param template
+     * @param data
+     */
+    public void fillFields4(RhinoFileTemplate template, HashMap<String, String> data) {
+        Iterator<String> keys = data.keySet().iterator();
+        String key = null;
+
+        while (keys.hasNext()) {
+            // get column name
+            key = keys.next();
+            try {
+                Log.Debug(this, "Found field: " + key);
+                template.setField(key, data.get(key));
+            } catch (java.lang.Exception ex) {
+                Log.Debug(this, ex.getMessage() + " for key: " + key);
+            }
+        }
+    }
+
+    /**
+     *
      * @param dir
      * @return
      * @throws Exception
@@ -258,12 +347,15 @@ public class ODTFile extends Exportable {
     public void printDocumentInfo(Object desktop, File officeFile) throws IOException {
         com.sun.star.lang.XComponent xComponent = null;
         try {
+
             com.sun.star.frame.XComponentLoader componentLoader = (com.sun.star.frame.XComponentLoader) UnoRuntime.queryInterface(XComponentLoader.class, desktop);
             //XMultiServiceFactory multiServiceFactory = (XMultiServiceFactory) UnoRuntime.queryInterface(XMultiServiceFactory.class, multiComponentFactory);
             // Load the document, which will be displayed.
             String officeFilename = officeFile.toURI().toString().replaceFirst("/", "///");
+
             Log.Debug(this, "\tdir  = " + officeFile.getParent());
-            Log.Debug(this, "\tfile = " + officeFile.getName());
+            Log.Debug(
+                    this, "\tfile = " + officeFile.getName());
             xComponent = componentLoader.loadComponentFromURL(officeFilename, "_blank", 0, new com.sun.star.beans.PropertyValue[0]);
             // Get the textdocument
             XTextDocument xtd = (XTextDocument) UnoRuntime.queryInterface(XTextDocument.class, xComponent);
@@ -271,10 +363,10 @@ public class ODTFile extends Exportable {
             com.sun.star.document.XDocumentInfo xdi = xdis.getDocumentInfo();
             com.sun.star.beans.XPropertySet xps = (com.sun.star.beans.XPropertySet) UnoRuntime.queryInterface(XPropertySet.class, xdi);
             DateTime dt = (DateTime) xps.getPropertyValue("ModifyDate");
-
         } catch (Exception ex) {
             Log.Debug(ex);
         }
+
     }
 
     private Object connect() throws com.sun.star.io.IOException, BootstrapException, Exception {
@@ -284,22 +376,22 @@ public class ODTFile extends Exportable {
         Object desktop = x.createInstanceWithContext("com.sun.star.frame.Desktop", xContext);
         return desktop;
     }
-}
 
-class OfficeFileFilter implements FileFilter {
+    class OfficeFileFilter implements FileFilter {
 
-    public static final String EXTENSION = ".*sxw$|.*doc$|.*xls$|.*odt$|.*ods$|.*pps$|.*odt$|.*ppt$|.*odp$";
+        public static final String EXTENSION = ".*sxw$|.*doc$|.*xls$|.*odt$|.*ods$|.*pps$|.*odt$|.*ppt$|.*odp$";
 
-    @Override
-    public boolean accept(File pathname) {
-        return pathname.getName().matches(EXTENSION);
+        @Override
+        public boolean accept(File pathname) {
+            return pathname.getName().matches(EXTENSION);
+        }
     }
-}
 
-class DirFilter implements FileFilter {
+    class DirFilter implements FileFilter {
 
-    @Override
-    public boolean accept(File pathname) {
-        return pathname.isDirectory() && !pathname.getName().startsWith(".");
+        @Override
+        public boolean accept(File pathname) {
+            return pathname.isDirectory() && !pathname.getName().startsWith(".");
+        }
     }
 }
