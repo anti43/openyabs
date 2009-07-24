@@ -17,7 +17,7 @@ public class ProfitModel extends AccountCalcModel {
   private DateSelectorModel dates;
 
   public ProfitModel(DateSelectorModel dateModel) {
-    super.setFilename("profitform");
+    super("profit");
     this.dates = dateModel;
   }
 
@@ -52,7 +52,7 @@ public class ProfitModel extends AccountCalcModel {
           " group by a.INTACCOUNTCLASS, a.CNAME, a.intprofitfid";
       super.calculate(start, end, query);
       if (super.isSkr()) {
-        fillMap("euer");
+        fillMap();
       }
     }
   }
@@ -68,7 +68,7 @@ public class ProfitModel extends AccountCalcModel {
   }
 
   public String getOutFileName() {
-    return createPrintName(dates, "profit");
+    return createPrintName(dates);
   }
 
 //
@@ -79,6 +79,6 @@ public class ProfitModel extends AccountCalcModel {
 // where i.CNAME like '%-7%'
 // and  i.DATEEND between '2008-01-01' and '2008-12-31';
 //
-//  update accounts set PROFITFID = 112 where PROFITFID = 1;
+//  update accounts set INTPROFITFID = 112 where INTPROFITFID = 1;
 //  update accounts set frame = 'de_skr03' where frame = 'SKR03 HN';
 }

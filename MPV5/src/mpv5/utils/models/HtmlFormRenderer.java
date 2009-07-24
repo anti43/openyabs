@@ -116,10 +116,10 @@ public class HtmlFormRenderer {
   private Characters getValues(String att) {
     String value = null;
     if (att.contains("+")) {
-      String[] arr = att.substring(4, att.length()).split("\\+");
+      String[] arr = att.substring(6, att.length()).split("\\+");
       sum = 0;
       for (int i = 0; i < arr.length; i++) {
-        String s = att.substring(0, 4) + arr[i];
+        String s = att.substring(0, 6) + arr[i];
         if (map.containsKey(s)) {
           String ir = map.get(s);
           sum = sum + Double.parseDouble(ir);

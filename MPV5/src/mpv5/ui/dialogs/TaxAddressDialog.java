@@ -22,8 +22,11 @@ package mpv5.ui.dialogs;
 
 import java.awt.Component;
 import java.awt.Frame;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import javax.swing.JScrollPane;
 import javax.swing.text.JTextComponent;
-import mpv5.utils.models.AccountCalcModel;
 
 /**
  * The dialog frame for personal data.
@@ -31,20 +34,22 @@ import mpv5.utils.models.AccountCalcModel;
  */
 public class TaxAddressDialog extends javax.swing.JDialog {
 
-  private AccountCalcModel model;
+  private List<JTextComponent> inputfields = new ArrayList<JTextComponent>();
+  private Map<String, String> map;
 
   /** Creates new form TaxFormDialog
    * @param The root pane
    * @param The visible frame title
    * @param model The taxModel to use
    */
-  public TaxAddressDialog(Frame parent, String title, AccountCalcModel model) {
+  public TaxAddressDialog(Frame parent, String title, Map<String, String> m) {
     super(parent, title, true);
     super.setBounds(200, 200, 200, 200);
     super.setResizable(false);
-    this.model = model;
+    this.map = m;
     initComponents();
-    getData();
+    collectInputfields();
+    setData();
   }
 
   /** This method is called from within the constructor to
@@ -85,7 +90,9 @@ public class TaxAddressDialog extends javax.swing.JDialog {
     nameField2 = new javax.swing.JTextField();
     jLabel12 = new javax.swing.JLabel();
     mandantField1 = new javax.swing.JTextField();
-    zipcodefield = new javax.swing.JFormattedTextField();
+    jTextField1 = new javax.swing.JTextField();
+    taxnumberField1 = new javax.swing.JTextField();
+    jLabel13 = new javax.swing.JLabel();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -94,56 +101,63 @@ public class TaxAddressDialog extends javax.swing.JDialog {
     jLabel1.setText(bundle.getString("TaxAddressDialog.compname")); // NOI18N
 
     nameField.setToolTipText("Name des Unternehmers/Firma");
-    nameField.setName("compname"); // NOI18N
+    nameField.setName("comp_name"); // NOI18N
 
     jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-    jLabel2.setText("Straße, Hausnr.");
+    jLabel2.setText(bundle.getString("TaxAddressDialog.compstreet")); // NOI18N
 
     streetField.setToolTipText("Straße und Hausnummer des Unternehmens");
-    streetField.setName("street"); // NOI18N
+    streetField.setName("comp_street"); // NOI18N
 
     jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-    jLabel3.setText("Finanzamt");
+    jLabel3.setText(bundle.getString("TaxAddressDialog.comptaxauthority")); // NOI18N
 
     jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-    jLabel4.setText("Bundesland");
+    jLabel4.setText(bundle.getString("TaxAddressDialog.compstate")); // NOI18N
 
     jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-    jLabel5.setText("Steuernummer");
+    jLabel5.setText(bundle.getString("TaxAddressDialog.comptaxnumber")); // NOI18N
 
     taxnumberField.setToolTipText("Beispiel: 123/123/12345");
+    taxnumberField.setName("comp_state"); // NOI18N
 
     jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-    jLabel6.setText("Berufsbez. falls Berater");
+    jLabel6.setText(bundle.getString("TaxAddressDialog.comptaxadvjob")); // NOI18N
 
-    profField.setToolTipText("Nur von Steuerberatern o. ä. auszufüllen");
+    profField.setName("comp_taxadvjob"); // NOI18N
 
     jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-    jLabel7.setText("Mandantenname falls Berater");
+    jLabel7.setText(bundle.getString("TaxAddressDialog.comptaxadvmandant")); // NOI18N
 
-    mandantField.setToolTipText("Nur ausfüllen, falls die Meldung von einem Steuerberater o. ä. erstellt wurde");
+    mandantField.setName("comp_taxadvmandant"); // NOI18N
 
     jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-    jLabel8.setText("Tel.-Vorwahl, Tel.-Nr.");
+    jLabel8.setText(bundle.getString("TaxAddressDialog.compphone")); // NOI18N
 
     jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-    jLabel9.setText("PLZ, Ort");
+    jLabel9.setText(bundle.getString("TaxAddressDialog.compcity")); // NOI18N
 
     cityField.setToolTipText("Firmenort");
+    cityField.setName("comp_city"); // NOI18N
 
     faArea.setColumns(20);
     faArea.setRows(5);
-    faArea.setToolTipText("Anschrift des zust. Finanzamtes (mehrzeilig)");
-    faArea.setName("fa"); // NOI18N
+    faArea.setToolTipText(bundle.getString("TaxAddressDialog.taxoffice.tooltip")); // NOI18N
+    faArea.setName("comp_taxauthority"); // NOI18N
     jScrollPane1.setViewportView(faArea);
 
     stbArea.setColumns(20);
     stbArea.setRows(5);
-    stbArea.setToolTipText("Anschrift des zust. Steuerberaters (mehrzeilig)");
+    stbArea.setToolTipText(bundle.getString("TaxAddressDialog.taxadvisor.tooltip")); // NOI18N
+    stbArea.setName("comp_taxadvisor"); // NOI18N
     jScrollPane2.setViewportView(stbArea);
 
     jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-    jLabel10.setText("Steuerberater");
+    jLabel10.setText(bundle.getString("TaxAddressDialog.comptaxadvisor")); // NOI18N
+
+    phone2Field.setName("comp_phone"); // NOI18N
+
+    phone1Field.setName("comp_phoneprefix"); // NOI18N
 
     cancelButton.setText("Abbrechen");
     cancelButton.addActionListener(new java.awt.event.ActionListener() {
@@ -160,80 +174,80 @@ public class TaxAddressDialog extends javax.swing.JDialog {
     });
 
     nameField1.setToolTipText("Name des Unternehmers/Firma");
-    nameField1.setName("firstname"); // NOI18N
+    nameField1.setName("comp_firstname"); // NOI18N
 
     jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-    jLabel11.setText(bundle.getString("TaxAddressDialog.firstname")); // NOI18N
+    jLabel11.setText(bundle.getString("TaxAddressDialog.compfirstname")); // NOI18N
 
     nameField2.setToolTipText("Name des Unternehmers/Firma");
+    nameField2.setName("comp_business"); // NOI18N
 
     jLabel12.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-    jLabel12.setText("Name");
+    jLabel12.setText(bundle.getString("TaxAddressDialog.compbusiness")); // NOI18N
 
     mandantField1.setToolTipText("Nur ausfüllen, falls die Meldung von einem Steuerberater o. ä. erstellt wurde");
+    mandantField1.setName("comp_taxnumber"); // NOI18N
 
-    try {
-      zipcodefield.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("#####")));
-    } catch (java.text.ParseException ex) {
-      ex.printStackTrace();
-    }
-    zipcodefield.setName("zipcode"); // NOI18N
+    jTextField1.setName("comp_zipcode"); // NOI18N
+
+    taxnumberField1.setToolTipText("Beispiel: 123/123/12345");
+    taxnumberField1.setName("comp_email"); // NOI18N
+
+    jLabel13.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+    jLabel13.setText(bundle.getString("TaxAddressDialog.compemail")); // NOI18N
 
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
     getContentPane().setLayout(layout);
     layout.setHorizontalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(layout.createSequentialGroup()
-        .addContainerGap()
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
           .addGroup(layout.createSequentialGroup()
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
+            .addContainerGap()
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-              .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
-              .addComponent(jLabel11)
-              .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
+              .addComponent(jLabel8)
+              .addComponent(jLabel13)
+              .addComponent(jLabel5)
+              .addComponent(jLabel10, 0, 194, Short.MAX_VALUE)
               .addComponent(jLabel1)
-              .addComponent(jLabel9))
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-              .addComponent(profField)
-              .addComponent(nameField)
-              .addComponent(streetField)
-              .addGroup(layout.createSequentialGroup()
-                .addComponent(zipcodefield, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cityField, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE))
-              .addGroup(layout.createSequentialGroup()
-                .addComponent(phone1Field)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(phone2Field, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE))
-              .addComponent(taxnumberField)
-              .addComponent(nameField1)
-              .addComponent(nameField2))
-            .addGap(12, 12, 12))
-          .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+              .addComponent(jLabel3)
+              .addComponent(jLabel11)
+              .addComponent(jLabel12)
+              .addComponent(jLabel2)
+              .addComponent(jLabel9)
+              .addComponent(jLabel7)
+              .addComponent(jLabel6))
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
               .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                  .addComponent(jLabel7)
-                  .addComponent(jLabel6)
-                  .addComponent(jLabel8)
-                  .addComponent(jLabel5)
-                  .addComponent(jLabel4)
-                  .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                  .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE)
-                  .addComponent(mandantField, javax.swing.GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE)
-                  .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE)
-                  .addComponent(mandantField1, javax.swing.GroupLayout.PREFERRED_SIZE, 314, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addComponent(phone1Field, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(phone2Field, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE))
+              .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE)
+              .addComponent(mandantField, javax.swing.GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE)
+              .addComponent(profField, javax.swing.GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE)
+              .addComponent(mandantField1, javax.swing.GroupLayout.PREFERRED_SIZE, 314, javax.swing.GroupLayout.PREFERRED_SIZE)
+              .addComponent(nameField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE)
+              .addComponent(streetField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE)
               .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(cancelButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(okButton, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)))
-            .addContainerGap())))
+                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cityField, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE))
+              .addComponent(nameField1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE)
+              .addComponent(nameField2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE)
+              .addComponent(taxnumberField1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE)
+              .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE)))
+          .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGap(167, 167, 167)
+            .addComponent(jLabel4)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(taxnumberField, javax.swing.GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE))
+          .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addContainerGap(336, Short.MAX_VALUE)
+            .addComponent(cancelButton)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+            .addComponent(okButton, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)))
+        .addContainerGap())
     );
 
     layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jScrollPane1, jScrollPane2, mandantField, mandantField1, nameField, profField, streetField, taxnumberField});
@@ -242,19 +256,17 @@ public class TaxAddressDialog extends javax.swing.JDialog {
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(layout.createSequentialGroup()
         .addContainerGap()
-        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-          .addGroup(layout.createSequentialGroup()
-            .addComponent(nameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-              .addGroup(layout.createSequentialGroup()
-                .addComponent(nameField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                  .addComponent(nameField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                  .addComponent(jLabel12)))
-              .addComponent(jLabel11)))
+        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addComponent(nameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
           .addComponent(jLabel1))
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addComponent(nameField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+          .addComponent(jLabel11))
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addComponent(nameField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+          .addComponent(jLabel12))
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
           .addComponent(streetField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -262,29 +274,32 @@ public class TaxAddressDialog extends javax.swing.JDialog {
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
           .addComponent(cityField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-          .addComponent(jLabel9)
-          .addComponent(zipcodefield, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-          .addComponent(phone1Field, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-          .addComponent(phone2Field, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-          .addComponent(jLabel8))
+          .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+          .addComponent(jLabel9))
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
           .addComponent(taxnumberField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+          .addComponent(jLabel4))
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addComponent(jLabel8)
+          .addComponent(phone1Field, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+          .addComponent(phone2Field, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addComponent(taxnumberField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+          .addComponent(jLabel13))
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addComponent(mandantField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
           .addComponent(jLabel5))
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
           .addComponent(profField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
           .addComponent(jLabel6))
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-          .addGroup(layout.createSequentialGroup()
-            .addComponent(mandantField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-              .addComponent(mandantField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-              .addComponent(jLabel4)))
+        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addComponent(mandantField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
           .addComponent(jLabel7))
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -292,13 +307,12 @@ public class TaxAddressDialog extends javax.swing.JDialog {
           .addComponent(jLabel3))
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-          .addGroup(layout.createSequentialGroup()
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-              .addComponent(okButton)
-              .addComponent(cancelButton)))
+          .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
           .addComponent(jLabel10))
+        .addGap(18, 18, 18)
+        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addComponent(okButton)
+          .addComponent(cancelButton))
         .addContainerGap())
     );
 
@@ -306,7 +320,7 @@ public class TaxAddressDialog extends javax.swing.JDialog {
   }// </editor-fold>//GEN-END:initComponents
 
   private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
-    setData();
+    getValues();
     setVisible(false);
 }//GEN-LAST:event_okButtonActionPerformed
 
@@ -314,52 +328,38 @@ public class TaxAddressDialog extends javax.swing.JDialog {
     setVisible(false);
   }//GEN-LAST:event_cancelButtonActionPerformed
 
-  public  String[][] getData() {
+  private void collectInputfields() {
     Component[] comps = getContentPane().getComponents();
-    String[][] arr = new String[(comps.length/2)][2];
-    int j = 0;
     for (int i = 0; i < comps.length; i++) {
       if (comps[i] instanceof JTextComponent) {
         JTextComponent comp = (JTextComponent) comps[i];
-        arr[j][0] = comp.getName();
-        arr[j][1] = comp.getText();
-//        System.out.println(arr[j][0] + ":  " + arr[j][1]);
-      j++;
-//      }  if (comps[i] instanceof JTextArea) {
-//        System.out.println("testarea");
+        inputfields.add(comp);
+      }
+      if (comps[i] instanceof JScrollPane) {
+        JScrollPane sp = (JScrollPane) comps[i];
+        JTextComponent comp = (JTextComponent) sp.getViewport().getView();
+        inputfields.add(comp);
       }
     }
-    return arr;
-//    }
   }
 
+  /**
+   * Fills the input text components
+   */
   private void setData() {
-//    model.setCompany(nameField.getText());
-//    model.setCompany_street(streetField.getText());
-//    model.setCompany_plz(zipcodeField.getText());
-//    model.setCompany_city(cityField.getText());
-//    model.setPhone1(phone1Field.getText());
-//    model.setPhone2(phone2Field.getText());
-//    model.setSteuernr(taxnumberField.getText());
-//    model.setProfession(profField.getText());
-//    model.setMandant(mandantField.getText());
-//    model.setFa_address(faArea.getText());
-//    model.setStb_address(stbArea.getText());
-//    for (int i = 0; i < model.getRegions().length; i++) {
-//      if (regionSpinner.getValue().equals(model.getRegions()[i])) {
-//        model.setRegion(i + "");
-//      }
-//    }
-//    model.saveAddress();
-
-    Component[] comps = getContentPane().getComponents();
-    for (int i = 0; i < comps.length; i++) {
-      if (comps[i] instanceof JTextComponent) {
-        JTextComponent comp = (JTextComponent) comps[i];
-//        System.out.println(comp.getName() + ":  " + comp.getText());
+    for (int i = 0; i < inputfields.size(); i++) {
+      JTextComponent comp = inputfields.get(i);
+      if (map.containsKey(comp.getName())) {
+        comp.setText(map.get(comp.getName()));
       }
     }
+  }
 
+  private void getValues() {
+    for (int i = 0; i < inputfields.size(); i++) {
+      JTextComponent comp = inputfields.get(i);
+      map.put(comp.getName(), comp.getText());
+    }
   }
 
   /**
@@ -392,6 +392,7 @@ public class TaxAddressDialog extends javax.swing.JDialog {
   private javax.swing.JLabel jLabel10;
   private javax.swing.JLabel jLabel11;
   private javax.swing.JLabel jLabel12;
+  private javax.swing.JLabel jLabel13;
   private javax.swing.JLabel jLabel2;
   private javax.swing.JLabel jLabel3;
   private javax.swing.JLabel jLabel4;
@@ -402,6 +403,7 @@ public class TaxAddressDialog extends javax.swing.JDialog {
   private javax.swing.JLabel jLabel9;
   private javax.swing.JScrollPane jScrollPane1;
   private javax.swing.JScrollPane jScrollPane2;
+  private javax.swing.JTextField jTextField1;
   private javax.swing.JTextField mandantField;
   private javax.swing.JTextField mandantField1;
   private javax.swing.JTextField nameField;
@@ -414,6 +416,6 @@ public class TaxAddressDialog extends javax.swing.JDialog {
   private javax.swing.JTextArea stbArea;
   private javax.swing.JTextField streetField;
   private javax.swing.JTextField taxnumberField;
-  private javax.swing.JFormattedTextField zipcodefield;
+  private javax.swing.JTextField taxnumberField1;
   // End of variables declaration//GEN-END:variables
 }

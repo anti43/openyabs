@@ -12,6 +12,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -20,6 +22,8 @@ import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.TaxAddressDialog;
 import mpv5.ui.frames.MPView;
 import mpv5.utils.date.DateConverter;
+import mpv5.utils.export.Export;
+import mpv5.utils.export.PDFFile;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.files.TableHtmlWriter;
 import mpv5.utils.models.DateSelectorModel;
@@ -37,8 +41,17 @@ public class ProfitPanel extends JPanel {
   private ProfitModel profitModel;
   private String html;
   private JEditorPane formPane = new JEditorPane();
+  private Map<String, String> map;
 
   public ProfitPanel() {
+
+    map = new HashMap<String, String>();
+    map.put("comp_name", "Müller, Meier, Schmidt");
+    map.put("comp_street", "Sackgasse 44");
+    map.put("comp_business", "Kohlen und Briketts");
+    map.put("comp_taxnumber", "236/578/3245");
+    map.put("comp_stb", "StB Sepp");
+
     initComponents();
 
     profitModel = new ProfitModel(dateModel);
@@ -75,12 +88,28 @@ public class ProfitPanel extends JPanel {
     }
   }
 
+  /**
+   * Generates a pdf file from a template or - if no complete account
+   * scheme is used - from table values.
+   */
   private void printToFile() {
     File target = new File(profitModel.getOutFileName());
 
     try {
       if (!profitModel.isSkr()) {
-        profitModel.getPdf();
+        Export e = new Export();
+        e.putAll(profitModel.getResultMap());
+        e.setFile(new PDFFile(profitModel.getPdfform()));
+        DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY, target);
+        d.setFileFilter(DialogForFile.PDF_FILES);
+        if (d.saveFile()) {
+          try {
+            e.processData(d.getFile());
+          } catch (Exception ex) {
+            Log.Debug(ex);
+          }
+        }
+
       } else {
         TableHtmlWriter thw = new TableHtmlWriter(profitModel);
         thw.setHeader(profitModel.getHeader());
@@ -88,14 +117,14 @@ public class ProfitPanel extends JPanel {
 
         DialogForFile d = new DialogForFile(target);
         d.setFileFilter(DialogForFile.PDF_FILES);
-//        d.saveFile(tempfile); /* save as html */
+        d.saveFile(tempfile); /* save as html */
 
         DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
         builderFactory.setFeature(
             "http://apache.org/xml/features/nonvalidating/load-external-dtd",
             false);
         String url = tempfile.toURI().toURL().toString();
-        if (d.showSaveDialog(this) == DialogForFile.APPROVE_OPTION) {
+        if (d.saveFile()) {
           File t = d.getSelectedFile();
           FileDirectoryHandler.copyFile(tempfile, t);
           OutputStream os = new FileOutputStream(t);
@@ -369,12 +398,12 @@ public class ProfitPanel extends JPanel {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
       TaxAddressDialog taxformDialog = new TaxAddressDialog(MPView.identifierFrame,
-          java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels").getString("TaxAddressDialog.companydata"), profitModel);
+          java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels").
+          getString("TaxAddressDialog.companydata"), map);
       taxformDialog.setVisible(true);
-      String[][] arr = taxformDialog.getData();
-//      for (int i = 0; i < arr.length; i++) {
-//        System.out.println(arr[i][0] + "  " + arr[i][1]);
-//      }
+      for (Map.Entry<String, String> entry : map.entrySet()) {
+        System.out.println(entry.getKey() + "   ---   " + entry.getValue());
+      }
     }//GEN-LAST:event_jButton4ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

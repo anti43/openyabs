@@ -5,16 +5,14 @@
 package mpv5.utils.models;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.table.DefaultTableModel;
 import mpv5.db.common.Context;
 import mpv5.db.common.QueryHandler;
 import mpv5.db.common.ReturnValue;
+import mpv5.ui.frames.MPView;
 import mpv5.usermanagement.MPSecurityManager;
-import mpv5.utils.pdf.PDFFormTest;
 
 /**
  *
@@ -24,28 +22,30 @@ public abstract class AccountCalcModel extends DefaultTableModel {
 
   private String end;
   private String start;
+  private String prefix;
   private Map<String, String> resultMap = new HashMap<String, String>();
   public Object[][] resultValues;
   private String htmlform;
   private String pdfform;
-//  public static final String DE_SKR03 = "de_skr03";
   private boolean skr = false;
   private String accScheme;
   private Map<String, String> addressMap;
 
-  public AccountCalcModel() {
+  public AccountCalcModel(String prefix) {
+    this.prefix = prefix;
 //    if (DatabaseObject.getObject(
 //        Context.getGroups(), MPV5View.getUser().getGroupsids).
 //        getDefaultAccountframe().equals(DE_SKR03)) {
 //      skr = true;
 //    } //beispielhafter Code
     ReturnValue rv = QueryHandler.getConnection().freeSelectQuery("select " +
-        "max(INTPARENTACCOUNT) from accounts where INTPARENTACCOUNT > 0",
+        "distinct FRAME from accounts where GROUPSIDS = 1",
         MPSecurityManager.VIEW, null);
     resultValues = rv.getData();
     skr = rv.hasData();
-    accScheme = "de_skr03";
-    fetchCompData("euer");
+    accScheme = (String) resultValues[1][0];
+    setFilename();
+    fetchCompData();
   }
 
   public abstract String[] getHeader();
@@ -56,20 +56,18 @@ public abstract class AccountCalcModel extends DefaultTableModel {
     return this;
   }
 
-  private void fetchCompData(String prefix) {
+  private void fetchCompData() {
     addressMap = new HashMap<String, String>();
-              String query = Context.getGlobalSettings().prepareSQLString("select CNAME, " +
-                  "TAX_COMPNAME from globalsettings where cname = 'tax_compname'");
-//    String query = new Context(null).prepareSQLString("select CNAME, " +
-//        "TAX_COMPNAME from globalsettings where cname = 'tax_compname'", "globalsettings");
-//    ReturnValue rv = QueryHandler.getConnection().freeSelectQuery(query, MPSecurityManager.VIEW, null);
-//    resultValues = rv.getData();
-//    if (resultValues.length > 0) {
-//      for (int i = 0; i < resultValues.length; i++) {
-//        String s = (String) resultValues[i][0];
-//        addressMap.put(s.replace("tax_", prefix), resultValues[i][1].toString());
-//      }
-//    }
+    String query = Context.getGlobalSettings().prepareSQLString(
+        "select CNAME, VALUE from globalsettings where cname like 'comp_%'");
+    ReturnValue rv = QueryHandler.getConnection().freeSelectQuery(query, MPSecurityManager.VIEW, null);
+    resultValues = rv.getData();
+    if (resultValues.length > 0) {
+      for (int i = 0; i < resultValues.length; i++) {
+        String s = (String) resultValues[i][0];
+        addressMap.put(s.replace("comp_", prefix), resultValues[i][1].toString());
+      }
+    }
   }
 
   /**
@@ -87,9 +85,8 @@ public abstract class AccountCalcModel extends DefaultTableModel {
 
   /**
    * Fills a Map with form field names as keys and their values
-   * @param prefix The prefix for the key name
    */
-  protected void fillMap(String prefix) {
+  protected void fillMap() {
     resultMap.clear();
     resultMap.putAll(addressMap);
     if (resultValues.length > 0) {
@@ -105,26 +102,12 @@ public abstract class AccountCalcModel extends DefaultTableModel {
    * @return A ByteArrayOutputStream of the generated XHTML file
    */
   public ByteArrayOutputStream createHtml() {
-    return (ByteArrayOutputStream) new HtmlFormRenderer().parseHtml(htmlform, getResultMap());
-  }
-
-  /**
-   * Fills a PDF file with the resulting values.
-   * @return The generated PDF file
-   */
-  public File createPdf() {
-    try {
-      new PDFFormTest(new File(pdfform)).fillFields((HashMap) getResultMap());
-    } catch (com.lowagie.text.DocumentException ex) {
-      ex.printStackTrace();
-    } catch (IOException ex) {
-      ex.printStackTrace();
-    }
-    return null;
+    return (ByteArrayOutputStream) new HtmlFormRenderer().parseHtml(getHtmlform(), getResultMap());
   }
 
   protected void simpleHtml(String select) {
-    ReturnValue rv = QueryHandler.getConnection().freeSelectQuery(select, MPSecurityManager.VIEW, null);
+    ReturnValue rv = QueryHandler.getConnection().freeSelectQuery(
+        select, MPSecurityManager.VIEW, null);
     resultValues = rv.getData();
   }
 
@@ -172,11 +155,14 @@ public abstract class AccountCalcModel extends DefaultTableModel {
 
   /**
    * The file names for html and pdf templates
-   * @param name of the chart of accounts without appendix
    */
-  public void setFilename(String string) {
-    this.htmlform = "/mpv5/resources/de_" + string + ".html";
-    this.pdfform = "/mpv5/resources/de_" + string + ".pdf";
+  private void setFilename() {
+    String lang = MPView.getUser().__getLocale();
+    lang = lang.substring(lang.length() - 2).toLowerCase() + "_";
+    lang = "de_";
+    String s = "/mpv5/resources/" + lang + prefix + "form.";
+    this.htmlform = s + "html";
+    this.pdfform = s + "pdf";
   }
 
   /**
@@ -194,25 +180,37 @@ public abstract class AccountCalcModel extends DefaultTableModel {
   }
 
   /**
+   * @return the htmlform
+   */
+  public String getHtmlform() {
+    return htmlform;
+  }
+
+  /**
+   * @return the pdfform
+   */
+  public String getPdfform() {
+    return pdfform;
+  }
+
+  /**
    * Creates a useful name for an output file
    * @param dates DateSelectorModel to get the date values
-   * @param prefix something like "tax" or "income"
    * @return a name for a pdf file
    */
-  public String createPrintName(DateSelectorModel dates, String prefix) {
+  public String createPrintName(DateSelectorModel dates) {
     String s = prefix + dates.getYear();
-    String printName;
     switch (dates.getMode()) {
       case 1:
         int mon = Integer.parseInt(dates.getMonth());
-        printName = s + "_" + String.format("%1$0,2d", mon);
+        this.prefix = s + "_" + String.format("%1$0,2d", mon);
         break;
       case 3:
-        printName = s + "q" + dates.getQuarter();
+        this.prefix = s + "q" + dates.getQuarter();
         break;
       default:
-        printName = s;
+        this.prefix = s;
     }
-    return printName + ".pdf";
+    return this.prefix + ".pdf";
   }
 }

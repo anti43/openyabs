@@ -6,9 +6,6 @@ package mpv5.utils.models;
 
 import java.io.ByteArrayOutputStream;
 import mpv5.db.common.Context;
-import mpv5.db.common.QueryHandler;
-import mpv5.db.common.ReturnValue;
-import mpv5.usermanagement.MPSecurityManager;
 
 /**
  *
@@ -20,12 +17,8 @@ public class TaxModel extends AccountCalcModel {
   private DateSelectorModel dates;
 
   public TaxModel(DateSelectorModel dateModel) {
+    super("tax");
     this.dates = dateModel;
-    ReturnValue rv = QueryHandler.getConnection().freeSelectQuery(
-        "select max(INTPARENTACCOUNT) from ACCOUNTS where frame = '" + super.getSkr() + "'",
-        MPSecurityManager.VIEW, null);
-    resultValues = rv.getData();
-    skr = rv.hasData();
   }
 
   @Override
@@ -40,7 +33,7 @@ public class TaxModel extends AccountCalcModel {
           super.getSkr() + "'") +
           " group by a.INTPROFITFD";
       super.calculate(start, end, query);
-      fillMap("tax");
+      fillMap();
     }
   }
 
