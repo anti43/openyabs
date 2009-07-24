@@ -43,8 +43,10 @@ import java.util.Iterator;
  *
  */
 public class DocumentHandler {
-public static final String EXTENSION = ".*ott$|.*sxw$|.*doc$|.*xls$|.*odt$|.*ods$|.*pps$|.*odt$|.*ppt$|.*odp$";
+
+    public static final String EXTENSION = ".*ott$|.*sxw$|.*doc$|.*xls$|.*odt$|.*ods$|.*pps$|.*odt$|.*ppt$|.*odp$";
     public static FileFilter OFFICE_FILE_FILTER = new FileFilter() {
+
         @Override
         public boolean accept(File pathname) {
             return pathname.getName().matches(EXTENSION);
@@ -54,8 +56,12 @@ public static final String EXTENSION = ".*ott$|.*sxw$|.*doc$|.*xls$|.*odt$|.*ods
     private final DocumentDescriptor descriptor;
 
     public DocumentHandler(NoaConnection connection) {
-        this.connection = connection;
-        descriptor = DocumentDescriptor.DEFAULT_HIDDEN;
+        if (connection != null) {
+            this.connection = connection;
+            descriptor = DocumentDescriptor.DEFAULT_HIDDEN;
+        } else {
+            throw new NullPointerException("Connection can not be null");
+        }
     }
 
     public IDocument loadDocument(File file, boolean asTemplate) throws Exception {

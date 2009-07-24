@@ -96,7 +96,7 @@ public class Test {
             numberFormatException.printStackTrace();
         }
 
-        Thread.sleep(4000);
+        Thread.sleep(5000);
 
         Export e = new Export();
         ODTFile f = new ODTFile("/home/anti/aaa.ott");

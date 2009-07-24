@@ -110,6 +110,8 @@ public class NoaConnection {
             officeAplication = OfficeApplicationRuntime.getApplication(configuration);
             officeAplication.setConfiguration(configuration);
             officeAplication.activate();
+            documentService = officeAplication.getDocumentService();
+            desktopService = officeAplication.getDesktopService();
             setType(TYPE_LOCAL);
         } else {
             throw new InvalidArgumentException("Path to OO cannot be null: " + OOOPath);
