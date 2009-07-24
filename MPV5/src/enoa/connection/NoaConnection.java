@@ -54,7 +54,7 @@ public class NoaConnection {
                 if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_REMOTE)) {
                     Connection = new NoaConnection(TYPE_REMOTE, LocalSettings.getProperty(LocalSettings.OFFICE_HOST), Integer.valueOf(LocalSettings.getProperty(LocalSettings.OFFICE_PORT)));
                 } else {
-                    Connection = new NoaConnection(TYPE_LOCAL, LocalSettings.getProperty(LocalSettings.OFFICE_HOST), Integer.valueOf(LocalSettings.getProperty(LocalSettings.OFFICE_PORT)));
+                    Connection = new NoaConnection(TYPE_LOCAL, LocalSettings.getProperty(LocalSettings.OFFICE_HOME), Integer.valueOf(LocalSettings.getProperty(LocalSettings.OFFICE_PORT)));
                 }
             } catch (Exception ex) {
                 Logger.getLogger(NoaConnection.class.getName()).log(Level.SEVERE, null, ex);
