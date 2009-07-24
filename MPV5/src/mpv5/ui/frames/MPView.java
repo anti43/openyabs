@@ -319,6 +319,7 @@ public class MPView extends FrameView {
         favMenu = favouritesMenu;
         identifierView = this;
         filedialog = new DialogForFile(DialogForFile.FILES_ONLY);
+        jMenuItem24.setEnabled(!LocalSettings.getBooleanProperty(LocalSettings.OFFICE_REMOTE));
 
         jOutlookBar1.setAnimated(navBarAnimated);
         getFrame().addComponentListener(new ComponentAdapter() {

@@ -63,6 +63,7 @@ import com.sun.star.text.XTextDocument;
 import com.sun.star.form.XFormComponent;
 import com.sun.star.uno.UnoRuntime;
 import com.sun.star.util.DateTime;
+import enoa.connection.NoaConnection;
 import java.io.*;
 
 import java.util.HashMap;
@@ -82,13 +83,23 @@ public class Test {
     private static String ooohost;
     private static String oooport;
 
-    public static void main(String[] args) throws NodataFoundException, FileNotFoundException, OfficeApplicationException, NOAException, DocumentException, InterruptedException {
+    public static void main(String[] args) throws NodataFoundException, FileNotFoundException, OfficeApplicationException, NOAException, DocumentException, InterruptedException, IOException {
 
+//        System.out.println("ff.hh".substring("ff.hh".lastIndexOf(".")+1));
         LogConsole.setLogStreams(false, true, false);
         Log.setLogLevel(Log.LOGLEVEL_DEBUG);
 
+        try {
+            NoaConnection.startOOServer(LocalSettings.getProperty(LocalSettings.OFFICE_HOME),
+                    Integer.valueOf(LocalSettings.getProperty(LocalSettings.OFFICE_PORT)));
+        } catch (java.lang.Exception numberFormatException) {
+            numberFormatException.printStackTrace();
+        }
+
+        Thread.sleep(4000);
+
         Export e = new Export();
-        ODTFile f = new ODTFile("/home/anti/aaa.odt");
+        ODTFile f = new ODTFile("/home/anti/aaa.ott");
         e.put("number", "some value#");
         e.setFile(f);
         e.processData(new File("/home/anti/exp" + Math.random() + ".pdf"));

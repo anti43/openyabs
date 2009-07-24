@@ -38,6 +38,9 @@ public class LocalSettings {
     public static final String PROXYUSER = "proxyuser";
     public static final String PROXYPASSWORD = "proxypassword";
     public static final String OFFICE_HOME = "ooohome";
+    public static final String OFFICE_PORT = "oooport";
+    public static final String OFFICE_HOST = "ooohost";
+    public static final String OFFICE_REMOTE = "oootremoteserver";
     public static final String CACHE_DIR = "cachedir";
     public static final String DEFAULT_FONT = "defaultfont";
     public static final String PRINT_DEVAPP = "devappprint";
@@ -61,8 +64,10 @@ public class LocalSettings {
                 {CACHE_SIZE, "100"},
                 {LAST_USER, "1"},
                 {LAST_USER_PW, "5F4DCC3B5AA765D61D8327DEB882CF99"},
-                {OFFICE_HOME, IOfficeApplication.REMOTE_APPLICATION  + ":/opt/openoffice.org3/:172.0.0.1ms08-055" +
-                         ":8100"}
+                {OFFICE_HOME, "/opt/openoffice.org3"},
+                {OFFICE_PORT, "8100"},
+                {OFFICE_HOST, "127.0.0.1"},
+                {OFFICE_REMOTE, "false"}
             });
     private static Vector<PropertyStore> cookies;
 

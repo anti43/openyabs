@@ -31,10 +31,12 @@ import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
 
 import com.l2fprod.common.swing.plaf.LookAndFeelAddons;
+import enoa.connection.NoaConnection;
 import java.awt.Font;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
@@ -232,7 +234,8 @@ public class Main extends SingleFrameApplication {
         Log.Print(GOODBYE_MESSAGE);
         try {
             clearLockFile();
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
         super.shutdown();
     }
 
@@ -366,8 +369,8 @@ public class Main extends SingleFrameApplication {
             System.err.println("Cannot parse arguments");
         } else {
 
-            if(cl.hasOption(mpdir)){
-            setEnv(cl.getValue(mpdir).toString());
+            if (cl.hasOption(mpdir)) {
+                setEnv(cl.getValue(mpdir).toString());
             }
 
             if (cl.hasOption(connectionInstance)) {
@@ -521,6 +524,21 @@ public class Main extends SingleFrameApplication {
             MPView.identifierView.showServerStatus(serv.isAlive());
         } else {
             MPView.identifierView.showServerStatus(false);
+        }
+        if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_REMOTE)) {
+            Runnable runnable = new Runnable() {
+
+                @Override
+                public void run() {
+                    try {
+                        NoaConnection.startOOServer(LocalSettings.getProperty(LocalSettings.OFFICE_HOME),
+                                Integer.valueOf(LocalSettings.getProperty(LocalSettings.OFFICE_PORT)));
+                    } catch (Exception n) {
+                        Log.Debug(n);
+                    }
+                }
+            };
+            new Thread(runnable).start();
         }
     }
 

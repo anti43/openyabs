@@ -44,7 +44,6 @@ import mpv5.utils.reflection.ClasspathTools;
 
 public class OOOPanel extends JPanel {
 
-    private String oootype;
     private String ooohome;
     private String ooohost;
     private String oooport;
@@ -53,18 +52,15 @@ public class OOOPanel extends JPanel {
 
     public OOOPanel() {
         super(new BorderLayout());
-        String officeVal = LocalSettings.getProperty(LocalSettings.OFFICE_HOME);
-        String[] officeVals = officeVal.split(":");
         try {
-            oootype = officeVals[0];
-            ooohome = officeVals[1];
-            ooohost = officeVals[2];
-            oooport = officeVals[3];
+            ooohome = LocalSettings.getProperty(LocalSettings.OFFICE_HOME);
+            ooohost = LocalSettings.getProperty(LocalSettings.OFFICE_HOST);
+            oooport = LocalSettings.getProperty(LocalSettings.OFFICE_PORT);
         } catch (ArrayIndexOutOfBoundsException e) {
         }
         try {
-            ClasspathTools.addPath(officeVals[1]);
-            ClasspathTools.addPath(officeVals[1] + "program");
+            ClasspathTools.addPath(ooohome);
+            ClasspathTools.addPath(ooohome + "program");
         } catch (java.lang.Exception exception) {
         }
     }
@@ -82,17 +78,8 @@ public class OOOPanel extends JPanel {
 
         try {
             HashMap<String, String> configuration = new HashMap<String, String>();
-            if (oootype.equalsIgnoreCase(IOfficeApplication.LOCAL_APPLICATION)) {
-                configuration.put(IOfficeApplication.APPLICATION_HOME_KEY, ooohome);
-                configuration.put(IOfficeApplication.APPLICATION_TYPE_KEY, IOfficeApplication.LOCAL_APPLICATION);
-            } else if (oootype.equalsIgnoreCase(IOfficeApplication.REMOTE_APPLICATION)) {
-                configuration.put(IOfficeApplication.APPLICATION_TYPE_KEY, IOfficeApplication.REMOTE_APPLICATION);
-                configuration.put(IOfficeApplication.APPLICATION_HOST_KEY, ooohost); //IP des anderen PCs
-                configuration.put(IOfficeApplication.APPLICATION_PORT_KEY, oooport);
-                configuration.put(IOfficeApplication.APPLICATION_HOME_KEY, ooohome);
-            } else {
-                throw new Exception("OpenOffice installation not configured!");
-            }
+            configuration.put(IOfficeApplication.APPLICATION_TYPE_KEY, IOfficeApplication.LOCAL_APPLICATION);
+            configuration.put(IOfficeApplication.APPLICATION_HOME_KEY, ooohome);
 
             officeApplication = OfficeApplicationRuntime.getApplication(configuration);
             officeApplication.setConfiguration(configuration);
