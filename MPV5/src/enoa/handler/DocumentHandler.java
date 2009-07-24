@@ -83,6 +83,8 @@ public class DocumentHandler {
 
     public synchronized static void saveAs(IDocument doc, File file) throws DocumentException {
 
+        doc.reformat();
+
         if (file.getName().split("\\.").length < 2) {
             throw new UnsupportedOperationException("The file must have an extension: " + file);
         }

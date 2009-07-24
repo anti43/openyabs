@@ -44,6 +44,8 @@ public class ODTFile extends Exportable {
         try {
             IDocument df = dh.loadDocument(this, true);
             DocumentHandler.fillFormFields((ITextDocument) df, getData());
+            DocumentHandler.fillPlaceholderFields((ITextDocument) df, getData());
+            DocumentHandler.fillTextVariableFields((ITextDocument) df, getData());
             DocumentHandler.saveAs(df, getTarget());
         } catch (Exception ex) {
             Log.Debug(ex);
