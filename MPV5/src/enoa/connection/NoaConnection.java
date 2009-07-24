@@ -73,7 +73,6 @@ public class NoaConnection {
         return Connection;
     }
 
-
     /**
      * New NoaConnection instance, connects to OO using the given parameters.
      * @param connectionString The connection String. Can be a <b>Path<b/> or an <b>IP<b/>
@@ -81,16 +80,12 @@ public class NoaConnection {
      * @throws Exception If any Exception is thrown during the connection attempt
      */
     public NoaConnection(String connectionString, int port) throws Exception {
-        switch (port) {
-            case TYPE_LOCAL:
-                createLocalConnection(connectionString);
-                break;
-            case TYPE_REMOTE:
-                createServerConnection(connectionString, port);
-                break;
-            default:
-                throw new Exception("Connection not possible with the given parameters: [" + connectionString + ":" +
-                        port + "]");
+        if (connectionString != null && connectionString.length() > 1 && port <= 0) {
+            createLocalConnection(connectionString);
+        } else if (connectionString != null && connectionString.length() > 1 && port > 0 && port > 9999) {
+            createServerConnection(connectionString, port);
+        } else {
+            throw new Exception("Connection not possible with the given parameters: [" + connectionString + ":" + port + "]");
         }
     }
 
@@ -111,11 +106,14 @@ public class NoaConnection {
             configuration.put(IOfficeApplication.APPLICATION_HOST_KEY, host);
             configuration.put(IOfficeApplication.APPLICATION_PORT_KEY, String.valueOf(port));
 
-            officeAplication = OfficeApplicationRuntime.getApplication(configuration);
+            officeAplication =
+                    OfficeApplicationRuntime.getApplication(configuration);
             officeAplication.setConfiguration(configuration);
             officeAplication.activate();
-            documentService = officeAplication.getDocumentService();
-            desktopService = officeAplication.getDesktopService();
+            documentService =
+                    officeAplication.getDocumentService();
+            desktopService =
+                    officeAplication.getDesktopService();
             setType(TYPE_REMOTE);
         } else {
             throw new InvalidArgumentException("Host cannot be null and port must be > 0: " + host + ":" + port);
@@ -125,7 +123,7 @@ public class NoaConnection {
     }
 
     /**
-     * 
+     *
      * @param OOOPath
      * @return
      * @throws OfficeApplicationException
@@ -139,11 +137,14 @@ public class NoaConnection {
             configuration.put(IOfficeApplication.APPLICATION_TYPE_KEY,
                     IOfficeApplication.LOCAL_APPLICATION);
 
-            officeAplication = OfficeApplicationRuntime.getApplication(configuration);
+            officeAplication =
+                    OfficeApplicationRuntime.getApplication(configuration);
             officeAplication.setConfiguration(configuration);
             officeAplication.activate();
-            documentService = officeAplication.getDocumentService();
-            desktopService = officeAplication.getDesktopService();
+            documentService =
+                    officeAplication.getDocumentService();
+            desktopService =
+                    officeAplication.getDesktopService();
             setType(TYPE_LOCAL);
         } else {
             throw new InvalidArgumentException("Path to OO cannot be null: " + OOOPath);
@@ -197,10 +198,12 @@ public class NoaConnection {
         environment.put("path", ";"); // Clearing the path variable;
         environment.put("path", path.replace("\\", "\\\\") + File.pathSeparator);
 
-        for (int i = 0; i < builder.command().size(); i++) {
+        for (int i = 0; i <
+                builder.command().size(); i++) {
             Object object = builder.command().get(i);
             System.err.print(object + " ");
         }
+
         System.out.print("\n");
         Runnable runnable = new Runnable() {
 
@@ -212,9 +215,12 @@ public class NoaConnection {
                     InputStreamReader isr = new InputStreamReader(is);
                     BufferedReader br = new BufferedReader(isr);
                     String line;
+
                     while ((line = br.readLine()) != null) {
                         System.out.println(line);
                     }
+
+
                 } catch (IOException ex) {
                     Logger.getLogger(NoaConnection.class.getName()).log(Level.SEVERE, null, ex);
                 }
