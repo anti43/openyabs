@@ -213,4 +213,8 @@ public abstract class AccountCalcModel extends DefaultTableModel {
     }
     return this.prefix + ".pdf";
   }
+
+    void createPdf() {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
 }
