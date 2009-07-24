@@ -27,7 +27,7 @@ import ag.ion.bion.officelayer.text.TextException;
 import java.awt.Font;
 
 /**
- *
+ *This class handles text inside OO documents
  */
 public class TextHandler {
 
@@ -35,28 +35,55 @@ public class TextHandler {
     private final ITextService textservice;
     private final ITextFieldService textfieldservice;
 
+    /**
+     * Creates a new text handler for the given document
+     * @param doc
+     */
     public TextHandler(ITextDocument doc) {
         this.doc = doc;
         this.textservice = doc.getTextService();
         this.textfieldservice = doc.getTextFieldService();
     }
 
+    /**
+     * Append some text to the document
+     * @param text
+     * @throws TextException
+     */
     public void append(String text) throws TextException {
         ITextCursor textCursor = getTextservice().getText().getTextCursorService().getTextCursor();
         textCursor.getEnd().setText(text);
     }
 
+    /**
+     * Append some text to the beginning of the document
+     * @param text
+     * @throws TextException
+     */
     public void appendBefore(String text) throws TextException {
         ITextCursor textCursor = getTextservice().getText().getTextCursorService().getTextCursor();
         textCursor.getStart().setText(text);
     }
 
+    /**
+     * Set the align of the given paragraph inside this document
+     * @param paragraph
+     * @param align
+     * @throws TextException
+     */
     public void setAlign(int paragraph, short align) throws TextException {
         IParagraph[] paragraphs = getDoc().getTextService().getText().getTextContentEnumeration().getParagraphs();
         IParagraphProperties paragraphPropoerties = paragraphs[paragraph].getParagraphProperties();
         paragraphPropoerties.setParaAdjust(align);
     }
 
+    /**
+     * Set the text format of the given paragraph inside this document
+     * @param paragraph
+     * @param font
+     * @param color
+     * @throws TextException
+     */
     public void setTextFormat(int paragraph, Font font, int color) throws TextException {
         IParagraph[] paragraphs = getTextservice().getText().getTextContentEnumeration().getParagraphs();
         IParagraphProperties paragraphPropoerties = paragraphs[paragraph].getParagraphProperties();
@@ -66,6 +93,11 @@ public class TextHandler {
         paragraphPropoerties.getCharacterProperties().setFontColor(color);
     }
 
+    /**
+     * Add paragraphs, each array row symbolizes a new paragraph
+     * @param text
+     * @throws TextException
+     */
     public void addParagraphs(String[] text) throws TextException {
         for (int i = 0; i < text.length; i++) {
             ITextCursor textCursor = getTextservice().getText().getTextCursorService().getTextCursor();
@@ -75,6 +107,16 @@ public class TextHandler {
             getTextservice().getTextContentService().insertTextContent(textCursor.getEnd(), paragraph);
             paragraph.setParagraphText(text[i]);
         }
+    }
+
+    /**
+     * Returns the text of the given paragraph
+     * @param paragraph
+     * @return
+     * @throws TextException
+     */
+    public String getParagraph(int paragraph) throws TextException {
+        return getTextservice().getText().getTextContentEnumeration().getParagraphs()[paragraph].getParagraphText();
     }
 
     /**

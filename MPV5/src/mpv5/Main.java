@@ -221,9 +221,7 @@ public class Main extends SingleFrameApplication {
                 IOfficeApplication iOfficeApplication = oap.get(i);
                 try {
                     iOfficeApplication.getDesktopService().terminate();
-                } catch (Exception n) {
-                    Log.Debug(this, n.getMessage());
-                }
+                } catch (Exception n){}
             }
         } catch (Exception e) {
             Log.Debug(e);

@@ -36,11 +36,17 @@ import java.util.logging.Logger;
 import mpv5.globals.LocalSettings;
 
 /**
- *
+ *This class handles connections to remote and local OpenOffice installations
  */
 public class NoaConnection {
 
+    /**
+     * Indicates a Local OO Installation
+     */
     public static final int TYPE_LOCAL = 0;
+    /**
+     * Indicates a remote OO installation
+     */
     public static final int TYPE_REMOTE = 1;
     private IOfficeApplication officeAplication;
     private int type = -1;
@@ -48,13 +54,17 @@ public class NoaConnection {
     private IDesktopService desktopService;
     private static NoaConnection Connection;
 
+    /**
+     * Creates a connection, depending on the current local config.
+     * @return
+     */
     public static NoaConnection getConnection() {
         if (Connection == null) {
             try {
                 if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_REMOTE)) {
-                    Connection = new NoaConnection(TYPE_REMOTE, LocalSettings.getProperty(LocalSettings.OFFICE_HOST), Integer.valueOf(LocalSettings.getProperty(LocalSettings.OFFICE_PORT)));
+                    Connection = new NoaConnection(LocalSettings.getProperty(LocalSettings.OFFICE_HOST), Integer.valueOf(LocalSettings.getProperty(LocalSettings.OFFICE_PORT)));
                 } else {
-                    Connection = new NoaConnection(TYPE_LOCAL, LocalSettings.getProperty(LocalSettings.OFFICE_HOME), Integer.valueOf(LocalSettings.getProperty(LocalSettings.OFFICE_PORT)));
+                    Connection = new NoaConnection(LocalSettings.getProperty(LocalSettings.OFFICE_HOME), 0);
                 }
             } catch (Exception ex) {
                 Logger.getLogger(NoaConnection.class.getName()).log(Level.SEVERE, null, ex);
@@ -63,11 +73,15 @@ public class NoaConnection {
         return Connection;
     }
 
-    public NoaConnection() {
-    }
 
-    public NoaConnection(int type, String connectionString, int port) throws Exception {
-        switch (type) {
+    /**
+     * New NoaConnection instance, connects to OO using the given parameters.
+     * @param connectionString The connection String. Can be a <b>Path<b/> or an <b>IP<b/>
+     * @param port The port to connect to. A port value of zero (0) indicates a <b>local<b/> connection
+     * @throws Exception If any Exception is thrown during the connection attempt
+     */
+    public NoaConnection(String connectionString, int port) throws Exception {
+        switch (port) {
             case TYPE_LOCAL:
                 createLocalConnection(connectionString);
                 break;
@@ -75,11 +89,21 @@ public class NoaConnection {
                 createServerConnection(connectionString, port);
                 break;
             default:
-                throw new Exception("Connection not possible with the given parameters: " + type + " [" + connectionString + "]");
+                throw new Exception("Connection not possible with the given parameters: [" + connectionString + ":" +
+                        port + "]");
         }
     }
 
-    public boolean createServerConnection(String host, int port) throws OfficeApplicationException, NOAException, InvalidArgumentException {
+    /**
+     * Creates a new connection
+     * @param host
+     * @param port
+     * @return
+     * @throws OfficeApplicationException
+     * @throws NOAException
+     * @throws InvalidArgumentException
+     */
+    private boolean createServerConnection(String host, int port) throws OfficeApplicationException, NOAException, InvalidArgumentException {
         if (host != null && port > 0) {
             Map<String, String> configuration = new HashMap<String, String>();
             configuration.put(IOfficeApplication.APPLICATION_TYPE_KEY,
@@ -100,7 +124,15 @@ public class NoaConnection {
         return true;
     }
 
-    public boolean createLocalConnection(String OOOPath) throws OfficeApplicationException, NOAException, InvalidArgumentException {
+    /**
+     * 
+     * @param OOOPath
+     * @return
+     * @throws OfficeApplicationException
+     * @throws NOAException
+     * @throws InvalidArgumentException
+     */
+    private boolean createLocalConnection(String OOOPath) throws OfficeApplicationException, NOAException, InvalidArgumentException {
         if (OOOPath != null) {
             Map<String, String> configuration = new HashMap<String, String>();
             configuration.put(IOfficeApplication.APPLICATION_HOME_KEY, OOOPath);
@@ -130,7 +162,7 @@ public class NoaConnection {
     /**
      * @param type the type to set
      */
-    public void setType(int type) {
+    private void setType(int type) {
         this.type = type;
     }
 
@@ -148,6 +180,12 @@ public class NoaConnection {
         return desktopService;
     }
 
+    /**
+     * Tries to start OO in headless server mode. <code>Give it at least 3-4 seconds before attempting to use the server.</code>
+     * @param path The path where the OO installation resides
+     * @param port The port the server shall listen to
+     * @throws IOException
+     */
     public static void startOOServer(String path, int port) throws IOException {
         final ProcessBuilder builder = new ProcessBuilder(
                 path.replace("\\", "\\\\") + File.separator + "program" + File.separator + "soffice",
@@ -161,7 +199,7 @@ public class NoaConnection {
 
         for (int i = 0; i < builder.command().size(); i++) {
             Object object = builder.command().get(i);
-            System.out.print(object + " ");
+            System.err.print(object + " ");
         }
         System.out.print("\n");
         Runnable runnable = new Runnable() {

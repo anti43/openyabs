@@ -40,11 +40,17 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 /**
- *
+ * This class OpenOffice Documents IO
  */
 public class DocumentHandler {
 
+    /**
+     * All known OO file extensions
+     */
     public static final String EXTENSION = ".*ott$|.*sxw$|.*doc$|.*xls$|.*odt$|.*ods$|.*pps$|.*odt$|.*ppt$|.*odp$";
+    /**
+     * A FileFilter looking for OO files
+     */
     public static FileFilter OFFICE_FILE_FILTER = new FileFilter() {
 
         @Override
@@ -55,6 +61,10 @@ public class DocumentHandler {
     private final NoaConnection connection;
     private final DocumentDescriptor descriptor;
 
+    /**
+     * Creates a new Document Handler on top of the given connection
+     * @param connection The OO connection to use
+     */
     public DocumentHandler(NoaConnection connection) {
         if (connection != null) {
             this.connection = connection;
@@ -64,6 +74,13 @@ public class DocumentHandler {
         }
     }
 
+    /**
+     * Load an existing document into the Document Handler and return an IDocument
+     * @param file The file to load
+     * @param asTemplate If true, the file is treatened as template (.ott)
+     * @return
+     * @throws Exception Any error thrown
+     */
     public IDocument loadDocument(File file, boolean asTemplate) throws Exception {
         if (!OFFICE_FILE_FILTER.accept(file)) {
             throw new UnsupportedOperationException("The file extension must match: " + EXTENSION);
@@ -75,12 +92,23 @@ public class DocumentHandler {
         return connection.getDocumentService().loadDocument(file.getPath());
     }
 
+    /**
+     * Creates a new, empty text document (.odt)
+     * @return
+     * @throws Exception
+     */
     public ITextDocument newTextDocument() throws Exception {
         IDocument document = connection.getDocumentService().constructNewDocument(IDocument.WRITER, descriptor);
         ITextDocument textDocument = (ITextDocument) document;
         return textDocument;
     }
 
+    /**
+     * Save the given document to the physical location of the given file.
+     * @param doc
+     * @param file
+     * @throws DocumentException
+     */
     public synchronized static void saveAs(IDocument doc, File file) throws DocumentException {
 
         doc.reformat();
