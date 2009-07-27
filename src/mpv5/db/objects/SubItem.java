@@ -57,10 +57,10 @@ public class SubItem extends DatabaseObject {
             it.setCountvalue(Double.valueOf(row[2].toString()));
             it.setDatedelivery(dataOwner.__getDatetodo());
             it.setDescription(row[4].toString());
-            it.setExternalvalue(Double.valueOf(row[5].toString()));//Discount not supported yet
-            it.setInternalvalue(Double.valueOf(row[5].toString()));//Discount not supported yet
+            it.setExternalvalue(Double.valueOf(row[5].toString()));
+            it.setInternalvalue(Double.valueOf(row[5].toString()));//not supported yet
             it.setMeasure(row[3].toString());
-            it.setOriginalproductsids(0);//not yet implemented
+            it.setOriginalproductsids(Integer.valueOf(row[10].toString()));
             it.setQuantityvalue(Double.valueOf(row[2].toString()));
             it.setTaxpercentvalue(Double.valueOf(row[6].toString()));
 
@@ -250,7 +250,7 @@ public class SubItem extends DatabaseObject {
      */
     public static MPTableModel toModel(SubItem[] items) {
         //"Internal ID", "ID", "Count", "Measure", "Description", "Netto Price", "Tax Value", "Total Price"
-        Object[][] data = new Object[items.length][8];
+        Object[][] data = new Object[items.length][11];
         for (int i = 0; i < data.length; i++) {
             data[i][0] = items[i].__getIDS();
             data[i][1] = Integer.valueOf(i + 1);
@@ -260,10 +260,13 @@ public class SubItem extends DatabaseObject {
             data[i][5] = items[i].__getExternalvalue();
             data[i][6] = items[i].__getTaxpercentvalue();
             data[i][7] = items[i].__getCountvalue() * items[i].__getExternalvalue() * ((items[i].__getTaxpercentvalue() / 100) + 1);
+            data[i][8] = 0.0;
+            data[i][9] = 0.0;
+            data[i][10] = Integer.valueOf(items[i].__getOriginalproductsids());
         }
         MPTableModel model = new MPTableModel(
-                new Class[]{Integer.class, Integer.class, Double.class, String.class, String.class, Double.class, Double.class, Double.class, Double.class},
-                new boolean[]{false, false, true, true, true, true, true, false, false},
+                new Class[]{Integer.class, Integer.class, Double.class, String.class, String.class, Double.class, Double.class, Double.class, Double.class, Double.class, Integer.class},
+                new boolean[]{false, false, true, true, true, true, true, false, false, false, false},
                 data,
                 Headers.SUBITEMS.getValue());
         model.setContext(Context.getSubItem());
@@ -280,7 +283,7 @@ public class SubItem extends DatabaseObject {
         if (MPView.getUser().getProperties().hasProperty("defcount")) {
             defcount = MPView.getUser().getProperties().getProperty("defcount", 0d);
         }
-        model.defineRow(new Object[]{0, 0, defcount, defunit, null, 0.0, deftax, 0.0, 0.0});
+        model.defineRow(new Object[]{0, 0, defcount, defunit, null, 0.0, deftax, 0.0, 0.0, 0.0, 0});
         model.setAutoCountColumn(1);
         return model;
     }

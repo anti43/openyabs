@@ -245,7 +245,7 @@ public class TableCalculator implements Runnable {
      * @param value
      * @param sumColumn
      */
-    public void setLabel(LabeledTextField value, int sumColumn) {
+    public void addLabel(LabeledTextField value, int sumColumn) {
         sumcols.put(new Integer(sumColumn), value);
     }
 

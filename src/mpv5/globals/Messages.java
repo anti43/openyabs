@@ -158,6 +158,7 @@ public enum Messages {
     ADVANCED_SETTINGS("Advanced Settings"),
     ADVANCED_SETTINGS_SAVE("Changing this settings may lead to a non-functional application. Really save?"),
     LOADING_OOO("Loading OpenOffice.."),
+    REMINDERS("Times called: "),
     DONE_LOADING_OOO("OpenOffice loaded.")
     ;
    

@@ -60,6 +60,7 @@ import mpv5.ui.frames.MPView;
 import mpv5.ui.popups.FileTablePopUp;
 import mpv5.ui.toolbars.DataPanelTB;
 import mpv5.db.objects.User;
+import mpv5.ui.beans.MPCBSelectionChangeReceiver;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
@@ -78,13 +79,16 @@ import mpv5.utils.ui.TextFieldUtils;
  *
  * 
  */
-public class ItemPanel extends javax.swing.JPanel implements DataPanel {
+public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSelectionChangeReceiver{
 
     private static final long serialVersionUID = 1L;
     private Item dataOwner;
     private DataPanelTB tb;
     private SearchPanel sp;
     private Integer dataTableContent = null;
+    private TableCalculator itemMultiplier;
+    private TableCalculator netCalculator;
+    private TableCalculator netCalculator2;
 
     /** Creates new form ContactPanel
      * @param context
@@ -207,6 +211,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
 
             itemtable.setModel(SubItem.toModel(((Item) object).getSubitems()));
             formatTable();
+            ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
             if (object.isReadOnly()) {
                 Popup.notice(Messages.LOCKED_BY);
             }
@@ -318,11 +323,9 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
         jToolBar1 = new javax.swing.JToolBar();
         type = new javax.swing.JLabel();
         jSeparator4 = new javax.swing.JToolBar.Separator();
-        button_offer = new javax.swing.JButton();
-        button_order = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JToolBar.Separator();
-        button_product = new javax.swing.JButton();
         jSeparator2 = new javax.swing.JToolBar.Separator();
+        button_reminders = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         prinitingComboBox1 = new mpv5.ui.beans.PrinitingComboBox();
         jPanel2 = new javax.swing.JPanel();
@@ -354,6 +357,8 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
         jToolBar2 = new javax.swing.JToolBar();
         discountpercent = new mpv5.ui.beans.LabeledSpinner();
         jSeparator3 = new javax.swing.JToolBar.Separator();
+        netvalue = new mpv5.ui.beans.LabeledTextField();
+        jSeparator6 = new javax.swing.JToolBar.Separator();
         taxvalue = new mpv5.ui.beans.LabeledTextField();
         jSeparator5 = new javax.swing.JToolBar.Separator();
         value = new mpv5.ui.beans.LabeledTextField();
@@ -420,7 +425,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
                     .addComponent(accountselect, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(status, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(number, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 69, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 81, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(groupnameselect, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -480,7 +485,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 670, Short.MAX_VALUE)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 682, Short.MAX_VALUE)
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -504,35 +509,18 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
         jSeparator4.setName("jSeparator4"); // NOI18N
         jToolBar1.add(jSeparator4);
 
-        button_offer.setText(bundle.getString("ItemPanel.button_offer.text")); // NOI18N
-        button_offer.setEnabled(false);
-        button_offer.setFocusable(false);
-        button_offer.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        button_offer.setName("button_offer"); // NOI18N
-        button_offer.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(button_offer);
-
-        button_order.setText(bundle.getString("ItemPanel.button_order.text")); // NOI18N
-        button_order.setEnabled(false);
-        button_order.setFocusable(false);
-        button_order.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        button_order.setName("button_order"); // NOI18N
-        button_order.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(button_order);
-
         jSeparator1.setName("jSeparator1"); // NOI18N
         jToolBar1.add(jSeparator1);
 
-        button_product.setText(bundle.getString("ItemPanel.button_product.text")); // NOI18N
-        button_product.setEnabled(false);
-        button_product.setFocusable(false);
-        button_product.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        button_product.setName("button_product"); // NOI18N
-        button_product.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(button_product);
-
         jSeparator2.setName("jSeparator2"); // NOI18N
         jToolBar1.add(jSeparator2);
+
+        button_reminders.setText(bundle.getString("ItemPanel.button_reminders.text")); // NOI18N
+        button_reminders.setFocusable(false);
+        button_reminders.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        button_reminders.setName("button_reminders"); // NOI18N
+        button_reminders.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(button_reminders);
 
         jButton2.setText(bundle.getString("ItemPanel.jButton2.text")); // NOI18N
         jButton2.setEnabled(false);
@@ -581,7 +569,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
                 .addComponent(contactcompany, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(8, 8, 8)
                 .addComponent(contactid, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 12, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -627,7 +615,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
                 .addComponent(date2, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(date3, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(1, Short.MAX_VALUE))
+                .addContainerGap(13, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -672,11 +660,13 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
             }
         });
 
+        jToolBar2.setBackground(new java.awt.Color(255, 255, 255));
+        jToolBar2.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 102, 102), 1, true));
         jToolBar2.setFloatable(false);
         jToolBar2.setRollover(true);
         jToolBar2.setName("jToolBar2"); // NOI18N
-        jToolBar2.setOpaque(false);
 
+        discountpercent.setToolTipText(bundle.getString("ItemPanel.discountpercent.toolTipText")); // NOI18N
         discountpercent.set_Label(bundle.getString("ItemPanel.discountpercent._Label")); // NOI18N
         discountpercent.setName("discountpercent"); // NOI18N
         jToolBar2.add(discountpercent);
@@ -684,6 +674,14 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
         jSeparator3.setName("jSeparator3"); // NOI18N
         jSeparator3.setSeparatorSize(new java.awt.Dimension(15, 10));
         jToolBar2.add(jSeparator3);
+
+        netvalue.set_Label(bundle.getString("ItemPanel.netvalue._Label")); // NOI18N
+        netvalue.setName("netvalue"); // NOI18N
+        jToolBar2.add(netvalue);
+
+        jSeparator6.setName("jSeparator6"); // NOI18N
+        jSeparator6.setSeparatorSize(new java.awt.Dimension(15, 10));
+        jToolBar2.add(jSeparator6);
 
         taxvalue.set_Label(bundle.getString("ItemPanel.taxvalue._Label")); // NOI18N
         taxvalue.setName("taxvalue"); // NOI18N
@@ -707,21 +705,21 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
                     .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, rightpaneLayout.createSequentialGroup()
                         .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 69, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 265, Short.MAX_VALUE)
                         .addComponent(prinitingComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.LEADING, 0, 674, Short.MAX_VALUE)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(rightpaneLayout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 268, Short.MAX_VALUE)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(removefile, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(addfile, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(rightpaneLayout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jToolBar2, javax.swing.GroupLayout.PREFERRED_SIZE, 537, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jToolBar2, javax.swing.GroupLayout.PREFERRED_SIZE, 635, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         rightpaneLayout.setVerticalGroup(
@@ -740,7 +738,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
                 .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(0, 0, 0)
                 .addComponent(jToolBar2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
+                .addGap(1, 1, 1)
                 .addGroup(rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(rightpaneLayout.createSequentialGroup()
                         .addComponent(addfile)
@@ -761,13 +759,14 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
                 .addComponent(leftpane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(rightpane, javax.swing.GroupLayout.DEFAULT_SIZE, 686, Short.MAX_VALUE)
-                    .addComponent(toolbarpane, javax.swing.GroupLayout.DEFAULT_SIZE, 686, Short.MAX_VALUE))
-                .addGap(0, 0, 0))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(toolbarpane, javax.swing.GroupLayout.DEFAULT_SIZE, 686, Short.MAX_VALUE)
+                        .addContainerGap())
+                    .addComponent(rightpane, javax.swing.GroupLayout.DEFAULT_SIZE, 698, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(leftpane, javax.swing.GroupLayout.DEFAULT_SIZE, 439, Short.MAX_VALUE)
+            .addComponent(leftpane, javax.swing.GroupLayout.DEFAULT_SIZE, 440, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(toolbarpane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
@@ -812,10 +811,8 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
     private javax.swing.JLabel addedby;
     private javax.swing.JButton addfile;
     private javax.swing.ButtonGroup buttonGroup1;
-    private javax.swing.JButton button_offer;
-    private javax.swing.JButton button_order;
     private javax.swing.JButton button_order2;
-    private javax.swing.JButton button_product;
+    private javax.swing.JButton button_reminders;
     private javax.swing.JTextField contactcity;
     private javax.swing.JTextField contactcompany;
     private javax.swing.JTextField contactid;
@@ -841,9 +838,11 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
     private javax.swing.JToolBar.Separator jSeparator3;
     private javax.swing.JToolBar.Separator jSeparator4;
     private javax.swing.JToolBar.Separator jSeparator5;
+    private javax.swing.JToolBar.Separator jSeparator6;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JToolBar jToolBar2;
     private javax.swing.JPanel leftpane;
+    private mpv5.ui.beans.LabeledTextField netvalue;
     private javax.swing.JTextPane notes;
     private mpv5.ui.beans.LabeledTextField number;
     private mpv5.ui.beans.PrinitingComboBox prinitingComboBox1;
@@ -907,12 +906,14 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
             } else {
                 cname_ = cnumber_;
             }
-//        netvalue_;
-//        taxvalue_;
+
+            netvalue_ = Double.valueOf(netvalue.getText());
+            taxvalue_ = Double.valueOf(taxvalue.getText());
+
             datetodo_ = date2.getDate();
             dateend_ = date3.getDate();
-//        intreminders_;
             intstatus_ = Integer.valueOf(status.getSelectedItem().getId());
+
         } else {
             showRequiredFields();
         }
@@ -921,12 +922,12 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
     @Override
     public void exposeData() {
 
-
         number.setText(cname_);
         date1.setDate(dateadded_);
         date2.setDate(datetodo_);
         date3.setDate(dateend_);
         notes.setText(description_);
+        button_reminders.setToolTipText(Messages.REMINDERS + String.valueOf(intreminders_));
 
         try {
             status.setSelectedIndex(intstatus_);
@@ -945,11 +946,10 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
             contactid.setText(String.valueOf(owner.__getCNumber()));
             contactsids_ = owner.__getIDS();
         } catch (NodataFoundException ex) {
-            Logger.getLogger(ItemPanel.class.getName()).log(Level.SEVERE, null, ex);
+            Log.Debug(ex);
         }
 
         fillFiles();
-
     }
 
     @Override
@@ -992,15 +992,19 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
         t.setRendererTo(2);
         CellRendererWithMPComboBox r = new CellRendererWithMPComboBox(Context.getProducts(), itemtable);
         r.setRendererTo(4);
-        TableCalculator cv = new TableCalculator(itemtable, new int[]{2, 5, 6}, new int[]{7}, new int[]{6}, TableCalculator.ACTION_MULTIPLY, new int[]{7});
-        ((MPTableModel) itemtable.getModel()).addCalculator(cv);
-        cv.setLabel(value, 7);
+        itemMultiplier = new TableCalculator(itemtable, new int[]{2, 5, 6}, new int[]{7}, new int[]{6}, TableCalculator.ACTION_MULTIPLY, new int[]{7});
+        ((MPTableModel) itemtable.getModel()).addCalculator(itemMultiplier);
+        itemMultiplier.addLabel(value, 7);
 
-        TableCalculator cv1 = new TableCalculator(itemtable, new int[]{7, 5}, new int[]{8}, new int[]{}, TableCalculator.ACTION_SUBSTRACT, new int[]{8});
-        ((MPTableModel) itemtable.getModel()).addCalculator(cv1);
-        cv1.setLabel(taxvalue, 8);
+        netCalculator = new TableCalculator(itemtable, new int[]{7, 5}, new int[]{8}, new int[]{}, TableCalculator.ACTION_SUBSTRACT, new int[]{8});
+        ((MPTableModel) itemtable.getModel()).addCalculator(netCalculator);
+        netCalculator.addLabel(taxvalue, 8);
+        
+        netCalculator2 = new TableCalculator(itemtable, new int[]{5}, new int[]{9}, new int[]{}, TableCalculator.ACTION_SUM, new int[]{9});
+        ((MPTableModel) itemtable.getModel()).addCalculator(netCalculator2);
+        netCalculator2.addLabel(netvalue, 9);
 
-        TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 53, 63, 100, 83, 63, 63, 0}, new Boolean[]{true, true, true, true, false, true, true, true, true});
+        TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 53, 63, 100, 83, 63, 63, 0, 0}, new Boolean[]{true, true, true, true, false, true, true, true, true, true});
         TableFormat.changeBackground(itemtable, 1, Color.LIGHT_GRAY);
         TableFormat.changeBackground(itemtable, 7, Color.LIGHT_GRAY);
     }
@@ -1041,5 +1045,11 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel {
             itemtable.getCellEditor().stopCellEditing();
         }
         SubItem.saveModel(dataOwner, (MPTableModel) itemtable.getModel());
+    }
+
+    @Override
+    public void changeSelection(MPComboBoxModelItem to) {
+
+        
     }
 }

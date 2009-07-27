@@ -130,7 +130,6 @@ public class LightMPComboBox extends JComboBox {
      * @param table
      */
     public LightMPComboBox(Context c, JTable table) {
-//               super((MPComboBoxModelItem.toModel(new Object[][]{{1, 2}, {3, 4}})));
         this();
         setSearchOnEnterEnabled(true);
         setContext(c);
@@ -159,15 +158,15 @@ public class LightMPComboBox extends JComboBox {
                 String params = "ids, cname";
                 String vars = null;
                 if (MPView.getUser().getProperties().hasProperty(context + VALUE_SEARCHFIELDS)) {
-                   params = "ids";
-                   vars = MPView.getUser().getProperties().getProperty(context + VALUE_SEARCHFIELDS);
-                   String[] vaars = vars.split("_\\$");
-                 
+                    params = "ids";
+                    vars = MPView.getUser().getProperties().getProperty(context + VALUE_SEARCHFIELDS);
+                    String[] vaars = vars.split("_\\$");
+
                     for (int i = 0; i < vaars.length; i++) {
-                         try {
-                             if (vaars[i]!=null && vaars[i].contains("$_")) {
-                                 params += "," + vaars[i].split("\\$_")[0].replace(",", "").replace("'", "`");
-                             }
+                        try {
+                            if (vaars[i] != null && vaars[i].contains("$_")) {
+                                params += "," + vaars[i].split("\\$_")[0].replace(",", "").replace("'", "`");
+                            }
                         } catch (Exception e) {
                             Log.Debug(e);
                         }
@@ -245,22 +244,30 @@ public class LightMPComboBox extends JComboBox {
         setModel(new MPComboboxModel(MPComboBoxModelItem.toItems(vector)));
     }
 
-//    /**
-//     * Delegates to getComboBox().setSelectedIndex(itemID);
-//     * @param itemID
-//     */
-//    @Override
-//    public void setSelectedIndex(int itemID) {
-//        if (itemID < 0 || itemID > getComboBox().getItemCount()) {
-//            getComboBox().setSelectedIndex(itemID);
-//        }
-//    }
     /**
      * Sets the item with the given value as selected item
      * @param valueOfItem
      */
     public void setSelectedItem(String valueOfItem) {
         setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(valueOfItem, getModel()));
+    }
+
+    @Override
+    public void setSelectedIndex(int index) {
+        super.setSelectedIndex(index);
+        for (int i = 0; i < receiver.size(); i++) {
+            MPCBSelectionChangeReceiver mPCBSelectionChangeReceiver = receiver.get(i);
+            mPCBSelectionChangeReceiver.changeSelection((MPComboBoxModelItem) getSelectedItem());
+        }
+    }
+    List<MPCBSelectionChangeReceiver> receiver = new Vector<MPCBSelectionChangeReceiver>();
+
+    /**
+     *
+     * @param rec
+     */
+    public void addSelectionChangeReceiver(MPCBSelectionChangeReceiver rec) {
+        receiver.add(rec);
     }
 
 //    /**
