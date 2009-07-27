@@ -71,7 +71,7 @@
                       <Component id="taxnumberField" linkSize="1" pref="334" max="32767" attributes="1"/>
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace pref="336" max="32767" attributes="0"/>
+                      <EmptySpace pref="371" max="32767" attributes="0"/>
                       <Component id="cancelButton" min="-2" max="-2" attributes="1"/>
                       <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
                       <Component id="okButton" min="-2" pref="94" max="-2" attributes="1"/>
@@ -326,7 +326,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="cancelButton">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Abbrechen"/>
+        <Property name="text" type="java.lang.String" value="Cancel"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cancelButtonActionPerformed"/>
@@ -334,7 +334,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="okButton">
       <Properties>
-        <Property name="text" type="java.lang.String" value="OK"/>
+        <Property name="text" type="java.lang.String" value="Save"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="okButtonActionPerformed"/>

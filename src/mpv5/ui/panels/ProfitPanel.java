@@ -19,7 +19,7 @@ import javax.swing.JPanel;
 import javax.xml.parsers.DocumentBuilderFactory;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.DialogForFile;
-import mpv5.ui.dialogs.TaxAddressDialog;
+import mpv5.ui.dialogs.CompanyInfo;
 import mpv5.ui.frames.MPView;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.export.Export;
@@ -199,14 +199,14 @@ public class ProfitPanel extends JPanel {
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
+        legalText = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jComboBox2 = new javax.swing.JComboBox();
         jTextField1 = new javax.swing.JTextField();
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Einnahmen-Überschuss Rechnung: Alle Angaben ohne Gewähr."));
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Cash receipts and disbursement: No liability assumed."));
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jLabel1.setText(bundle.getString("ProfitPanel.Period")); // NOI18N
@@ -269,7 +269,7 @@ public class ProfitPanel extends JPanel {
 
         jLabel2.setText(bundle.getString("ProfitPanel.Data")); // NOI18N
 
-        jLabel3.setText("Achtung! Überprüfen Sie die Daten in jedem Fall auf Richtigkeit, Vollständigkeit und Plausibilität!");
+        legalText.setText("No liability can be assumed for the accuracy, integrity, and the topicality of the information.");
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -296,14 +296,13 @@ public class ProfitPanel extends JPanel {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 636, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 658, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE))
         );
 
         jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(getYears()));
@@ -322,7 +321,6 @@ public class ProfitPanel extends JPanel {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel3)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1)
@@ -341,7 +339,8 @@ public class ProfitPanel extends JPanel {
                                 .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jButton4))
-                            .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 582, Short.MAX_VALUE))))
+                            .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 604, Short.MAX_VALUE)))
+                    .addComponent(legalText, javax.swing.GroupLayout.DEFAULT_SIZE, 658, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -365,7 +364,7 @@ public class ProfitPanel extends JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel3))
+                .addComponent(legalText))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -397,7 +396,7 @@ public class ProfitPanel extends JPanel {
     }//GEN-LAST:event_jComboBox2ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-      TaxAddressDialog taxformDialog = new TaxAddressDialog(MPView.identifierFrame,
+      CompanyInfo taxformDialog = new CompanyInfo(MPView.identifierFrame,
           java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels").
           getString("TaxAddressDialog.companydata"), map);
       taxformDialog.setVisible(true);
@@ -415,11 +414,11 @@ public class ProfitPanel extends JPanel {
     private javax.swing.JComboBox jComboBox2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JLabel legalText;
     // End of variables declaration//GEN-END:variables
 }
