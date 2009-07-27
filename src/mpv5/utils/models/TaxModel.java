@@ -14,9 +14,9 @@ import mpv5.db.common.Context;
 public class TaxModel extends AccountCalcModel {
 
   private boolean skr = false;
-  private DateSelectorModel dates;
+  private DateComboBoxModel dates;
 
-  public TaxModel(DateSelectorModel dateModel) {
+  public TaxModel(DateComboBoxModel dateModel) {
     super("tax");
     this.dates = dateModel;
   }

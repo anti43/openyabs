@@ -17,7 +17,7 @@ import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.WizardMaster;
 import mpv5.ui.dialogs.Wizardable;
-import mpv5.utils.models.ImportModel;
+import mpv5.utils.models.ImportTableModel;
 import mpv5.utils.tables.TableFormat;
 import mpv5.utils.xml.XMLReader;
 
@@ -51,7 +51,7 @@ public class wizard_XMLImport_2 extends javax.swing.JPanel implements Wizardable
 
                 x.newDoc(new File(master.getStore().getProperty("file")), true);
                 objs = x.getObjects();
-                jTable1.setModel(ImportModel.getModel(objs, !master.getStore().getProperty("overwrite", true)));
+                jTable1.setModel(ImportTableModel.getModel(objs, !master.getStore().getProperty("overwrite", true)));
                 jLabel2.setText(jLabel2.getText() + " " + master.getStore().getProperty("file") + " (" + jTable1.getRowCount() + ")");
                 TableFormat.format(jTable1, 0, 0);
                 TableFormat.format(jTable1, 1, 33);

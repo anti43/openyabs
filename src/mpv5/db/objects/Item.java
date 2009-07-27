@@ -168,16 +168,21 @@ public class Item extends DatabaseObject implements Formattable {
      * @return A value or 0d if not found
      */
     public static Double getTaxValue(Integer taxid) {
-        if (taxes.containsKey(taxid)) {
-            return taxes.get(taxid);
-        } else {
-            try {
-                double v = Double.valueOf(QueryHandler.instanceOf().clone(Context.getTaxes()).select("taxvalue", new String[]{"ids", taxid.toString(), ""})[0][0].toString());
-                taxes.put(taxid, v);
-                return v;
-            } catch (NumberFormatException numberFormatException) {
-                return 0d;
+   
+        if (taxid.intValue() > 0) {
+            if (taxes.containsKey(taxid)) {
+                return taxes.get(taxid);
+            } else {
+                try {
+                    double v = Double.valueOf(QueryHandler.instanceOf().clone(Context.getTaxes()).select("taxvalue", new String[]{"ids", taxid.toString(), ""})[0][0].toString());
+                    taxes.put(taxid, v);
+                    return v;
+                } catch (NumberFormatException numberFormatException) {
+                    return 0d;
+                }
             }
+        } else {
+            return 0.0;
         }
     }
     private int contactsids;

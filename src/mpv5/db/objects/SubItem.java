@@ -19,6 +19,7 @@ package mpv5.db.objects;
 import java.util.Date;
 import java.util.List;
 import javax.swing.JComponent;
+import javax.swing.table.TableModel;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.globals.Headers;
@@ -109,6 +110,26 @@ public class SubItem extends DatabaseObject {
             i.setCountvalue(defcount);
         }
         return i;
+    }
+
+    /**
+     *
+     * @param o
+     */
+    public SubItem(Product o) {
+        this();
+        setCName(o.__getCName());
+        setDateadded(new Date());
+        setDatedelivery(new Date());
+        setDescription(o.__getDescription());
+        setExternalvalue(o.__getExternalnetvalue());
+        setGroupsids(MPView.getUser().__getGroupsids());
+        setIntaddedby(MPView.getUser().__getIDS());
+        setInternalvalue(o.__getInternalnetvalue());
+        setMeasure(o.__getMeasure());
+        setOriginalproductsids(o.__getIDS());
+        setQuantityvalue(1);
+        setTaxpercentvalue(Item.getTaxValue(o.__getTaxids()));
     }
 
     @Override
@@ -252,17 +273,7 @@ public class SubItem extends DatabaseObject {
         //"Internal ID", "ID", "Count", "Measure", "Description", "Netto Price", "Tax Value", "Total Price"
         Object[][] data = new Object[items.length][11];
         for (int i = 0; i < data.length; i++) {
-            data[i][0] = items[i].__getIDS();
-            data[i][1] = Integer.valueOf(i + 1);
-            data[i][2] = items[i].__getCountvalue();
-            data[i][3] = items[i].__getMeasure();
-            data[i][4] = items[i].__getDescription();
-            data[i][5] = items[i].__getExternalvalue();
-            data[i][6] = items[i].__getTaxpercentvalue();
-            data[i][7] = items[i].__getCountvalue() * items[i].__getExternalvalue() * ((items[i].__getTaxpercentvalue() / 100) + 1);
-            data[i][8] = 0.0;
-            data[i][9] = 0.0;
-            data[i][10] = Integer.valueOf(items[i].__getOriginalproductsids());
+            data[i] = items[i].getRowData(i);
         }
         MPTableModel model = new MPTableModel(
                 new Class[]{Integer.class, Integer.class, Double.class, String.class, String.class, Double.class, Double.class, Double.class, Double.class, Double.class, Integer.class},
@@ -285,7 +296,31 @@ public class SubItem extends DatabaseObject {
         }
         model.defineRow(new Object[]{0, 0, defcount, defunit, null, 0.0, deftax, 0.0, 0.0, 0.0, 0});
         model.setAutoCountColumn(1);
+
         return model;
+    }
+
+    /**
+     * Turn this SubItem into table row data
+     * @param row
+     * @return
+     */
+    public synchronized Object[] getRowData(int row) {
+        Object[] data = new Object[11];
+        for (int i = 0; i < data.length; i++) {
+            data[0] = __getIDS();
+            data[1] = Integer.valueOf(row);
+            data[2] = __getQuantityvalue();
+            data[3] = __getMeasure();
+            data[4] = __getDescription();
+            data[5] = __getExternalvalue();
+            data[6] = __getTaxpercentvalue();
+            data[7] = __getQuantityvalue() * __getExternalvalue() * ((__getTaxpercentvalue() / 100) + 1);
+            data[8] = 0.0;
+            data[9] = 0.0;
+            data[10] = Integer.valueOf(__getOriginalproductsids());
+        }
+        return data;
     }
 
     /**

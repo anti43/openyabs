@@ -213,12 +213,12 @@ public class TableFormat {
     }
 
     /**
-     *
+     * Overwrites any other renderer for this column..
      * @param table
      * @param column
      * @param color
      */
-    public static void changeBackground(final JTable table,final  int column, final Color color) {
+    public static void changeBackground(final JTable table, final int column, final Color color) {
         class ColorRenderer extends JLabel implements TableCellRenderer {
 
             public ColorRenderer() {
@@ -232,37 +232,10 @@ public class TableFormat {
                     this.setText(value.toString());
                 } catch (Exception e) {
                 }
-//
-//                // Verändern aufgrund der Position
-//                if ((row % 2 == 0 && col % 2 == 0) || (row % 2 == 1 && col % 2 == 1)) {
-//                    this.setBackground(Color.GREEN.darker());
-//                } else {
-//                    this.setBackground(Color.CYAN);
-//                }
-//
-//                //Verändern aufgrund des Zelleninhalts
-//                if (value.toString().endsWith("2")) {
-//                    this.setForeground(Color.BLUE);
-//                } else {
-//                    this.setForeground(Color.RED);
-//                }
-//                if (value.toString().equals("hurz")) {
-//                    this.setBackground(Color.ORANGE);
-//                }
-
                 this.setBackground(color);
-//
-//                // Verändern aufgrund der Selektion
-//                if (isSelected) {
-//                    this.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
-//                } else {
-//                    this.setBorder(null);
-//                }
                 return this;
             }
+        }
+        table.getColumn(table.getColumnName(column)).setCellRenderer(new ColorRenderer());
     }
-
-          table.getColumn(table.getColumnName(column)).setCellRenderer(new ColorRenderer());
-}
-
 }

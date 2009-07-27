@@ -198,7 +198,7 @@ public abstract class AccountCalcModel extends DefaultTableModel {
    * @param dates DateSelectorModel to get the date values
    * @return a name for a pdf file
    */
-  public String createPrintName(DateSelectorModel dates) {
+  public String createPrintName(DateComboBoxModel dates) {
     String s = prefix + dates.getYear();
     switch (dates.getMode()) {
       case 1:

@@ -24,12 +24,14 @@ import mpv5.utils.date.DateConverter;
 /** A StartEndDay object holds a date object of a given start day and a
  * date object of the end day.
  */
+
+// <editor-fold defaultstate="collapsed" desc="class StartEndDays">
 /**
  * A DateSelectorModel is a DefaultComboBoxModel for a List
  * of months, quarters and the year.
  * @author hnauheim
  */
-public class DateSelectorModel extends DefaultComboBoxModel {
+public class DateComboBoxModel extends DefaultComboBoxModel {
 
   private String year;
   private String month;
@@ -41,7 +43,7 @@ public class DateSelectorModel extends DefaultComboBoxModel {
   /**
    * Creates a DateSelectorModel
    */
-  public DateSelectorModel() {
+  public DateComboBoxModel() {
     boxData = new Object[17][2];
     initElements();
   }
@@ -170,8 +172,6 @@ public class DateSelectorModel extends DefaultComboBoxModel {
     return quarter;
   }
 }
-
-// <editor-fold defaultstate="collapsed" desc="class StartEndDays">
 class StartEndDays {
 
   public static final int MONTH_MODE = 1;

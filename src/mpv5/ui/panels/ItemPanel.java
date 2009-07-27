@@ -45,6 +45,7 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 import mpv5.db.common.*;
 import mpv5.db.objects.Account;
+import mpv5.db.objects.Product;
 import mpv5.globals.Headers;
 import mpv5.globals.Messages;
 import mpv5.db.objects.Contact;
@@ -990,8 +991,11 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         t.setRendererTo(6);
         t.setRendererTo(5);
         t.setRendererTo(2);
+        TableCellRendererForDezimal tc = new TableCellRendererForDezimal(itemtable, Color.LIGHT_GRAY);
+        tc.setRendererTo(7);
+
         CellRendererWithMPComboBox r = new CellRendererWithMPComboBox(Context.getProducts(), itemtable);
-        r.setRendererTo(4);
+        r.setRendererTo(4, this);
         itemMultiplier = new TableCalculator(itemtable, new int[]{2, 5, 6}, new int[]{7}, new int[]{6}, TableCalculator.ACTION_MULTIPLY, new int[]{7});
         ((MPTableModel) itemtable.getModel()).addCalculator(itemMultiplier);
         itemMultiplier.addLabel(value, 7);
@@ -1004,9 +1008,8 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         ((MPTableModel) itemtable.getModel()).addCalculator(netCalculator2);
         netCalculator2.addLabel(netvalue, 9);
 
-        TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 53, 63, 100, 83, 63, 63, 0, 0}, new Boolean[]{true, true, true, true, false, true, true, true, true, true});
+        TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 53, 63, 100, 83, 63, 63, 0, 0, 0}, new Boolean[]{true, true, true, true, false, true, true, true, true, true, true});
         TableFormat.changeBackground(itemtable, 1, Color.LIGHT_GRAY);
-        TableFormat.changeBackground(itemtable, 7, Color.LIGHT_GRAY);
     }
 
     @Override
@@ -1048,8 +1051,13 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     }
 
     @Override
-    public void changeSelection(MPComboBoxModelItem to) {
-
-        
+    public void changeSelection(MPComboBoxModelItem to, Context c) {
+        try {
+            DatabaseObject o = DatabaseObject.getObject(c, Integer.valueOf(to.getId()));
+            int i = itemtable.getSelectedRow();
+            if(i>=0){
+             ((MPTableModel)itemtable.getModel()).setRowAt(new SubItem((Product) o).getRowData(i), i, 4);
+            }
+        } catch (Exception ex) {}  
     }
 }

@@ -99,6 +99,7 @@ public class DatabaseSearch {
      * @param possibleColumns Which columns do you like to take for the condition?
      * @param where And what value should the column value have?
      * @param searchForLike Shall we search with "like" condition?
+     * @param withIds If true, the first column is alway the IDS field
      * @return
      */
     public Object[][] getValuesFor2(String resultingFieldNames, String[] possibleColumns, String where, boolean searchForLike) {

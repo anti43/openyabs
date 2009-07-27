@@ -26,7 +26,7 @@ import mpv5.utils.export.Export;
 import mpv5.utils.export.PDFFile;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.files.TableHtmlWriter;
-import mpv5.utils.models.DateSelectorModel;
+import mpv5.utils.models.DateComboBoxModel;
 import mpv5.utils.models.ProfitModel;
 import mpv5.utils.tables.TableFormat;
 import org.xhtmlrenderer.pdf.ITextRenderer;
@@ -37,7 +37,7 @@ import org.xhtmlrenderer.pdf.ITextRenderer;
  */
 public class ProfitPanel extends JPanel {
 
-  private DateSelectorModel dateModel = new DateSelectorModel();
+  private DateComboBoxModel dateModel = new DateComboBoxModel();
   private ProfitModel profitModel;
   private String html;
   private JEditorPane formPane = new JEditorPane();

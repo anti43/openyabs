@@ -16,6 +16,7 @@
  */
 package mpv5.ui.beans;
 
+import mpv5.db.common.Context;
 import mpv5.utils.models.MPComboBoxModelItem;
 
 /**
@@ -24,7 +25,8 @@ import mpv5.utils.models.MPComboBoxModelItem;
 public interface MPCBSelectionChangeReceiver {
     /**
      * Invoked after selection change
-     * @param to 
+     * @param to
+     * @param c
      */
-    public void changeSelection(MPComboBoxModelItem to);
+    public void changeSelection(MPComboBoxModelItem to, Context c);
 }

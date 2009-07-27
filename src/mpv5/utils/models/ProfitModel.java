@@ -14,9 +14,9 @@ import mpv5.db.common.Context;
  */
 public class ProfitModel extends AccountCalcModel {
 
-  private DateSelectorModel dates;
+  private DateComboBoxModel dates;
 
-  public ProfitModel(DateSelectorModel dateModel) {
+  public ProfitModel(DateComboBoxModel dateModel) {
     super("profit");
     this.dates = dateModel;
   }

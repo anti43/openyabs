@@ -29,6 +29,7 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import mpv5.db.common.Context;
 import mpv5.ui.beans.LightMPComboBox;
+import mpv5.ui.beans.MPCBSelectionChangeReceiver;
 
 /**
  *
@@ -55,10 +56,15 @@ public class CellRendererWithMPComboBox extends JLabel implements TableCellRende
     /**
      * Set this renderer to the given column
      * @param column
+     * @param r 
      */
-    public void setRendererTo(int column) {
+    public void setRendererTo(int column, MPCBSelectionChangeReceiver r) {
         TableColumn col = table.getColumnModel().getColumn(column);
-        col.setCellEditor(new MPComboBoxEditor(new LightMPComboBox(c, table)));
+        LightMPComboBox xc = new LightMPComboBox(c, table);
+        if (r != null) {
+            xc.addSelectionChangeReceiver(r);
+        }
+        col.setCellEditor(new MPComboBoxEditor(xc));
         col.setCellRenderer(this);
     }
 
@@ -73,7 +79,7 @@ public class CellRendererWithMPComboBox extends JLabel implements TableCellRende
                 label.setForeground(table.getForeground());
                 label.setBackground(table.getBackground());
             }
-             label.setText((value == null) ? "" : value.toString());
+            label.setText((value == null) ? "" : value.toString());
             return label;
         } else {
             label.setText((value == null) ? "" : value.toString());
@@ -109,7 +115,6 @@ public class CellRendererWithMPComboBox extends JLabel implements TableCellRende
 //                }
 //            });
         }
-
     }
 }
 

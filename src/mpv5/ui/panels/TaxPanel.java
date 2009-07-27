@@ -16,7 +16,7 @@ import mpv5.logging.Log;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.files.TableHtmlWriter;
-import mpv5.utils.models.DateSelectorModel;
+import mpv5.utils.models.DateComboBoxModel;
 import mpv5.utils.models.ProfitModel;
 import mpv5.utils.models.TaxModel;
 import mpv5.utils.tables.TableFormat;
@@ -27,7 +27,7 @@ import mpv5.utils.tables.TableFormat;
  */
 public class TaxPanel extends JPanel {
 
-  private DateSelectorModel dateModel = new DateSelectorModel();
+  private DateComboBoxModel dateModel = new DateComboBoxModel();
   private TaxModel taxModel;
   private String html;
   private JEditorPane formPane = new JEditorPane();

@@ -209,6 +209,8 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
         if (sortValuesNaturally) {
             Arrays.sort(array);
         }
+
+//        Log.PrintArray(items);
         return array;
     }
 

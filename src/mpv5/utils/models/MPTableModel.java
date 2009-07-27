@@ -180,7 +180,6 @@ public class MPTableModel extends DefaultTableModel {
         setEditable(false);
     }
 
-
     /**
      * Add a cell calculator for this model
      * @param cv
@@ -381,6 +380,21 @@ public class MPTableModel extends DefaultTableModel {
     }
 
     /**
+     * Set/replace the given rows data
+     * @param rowData
+     * @param row
+     * @param columnToIgnore
+     */
+    public synchronized void setRowAt(Object[] rowData, int row, int columnToIgnore) {
+        for (int i = 0; i < rowData.length; i++) {
+            if (i != columnToIgnore) {
+                Object object = rowData[i];
+                setValueAt(object, row, i);
+            }
+        }
+    }
+
+    /**
      * Set the auto increment column for addRows(int)
      * @param column
      */
@@ -391,7 +405,7 @@ public class MPTableModel extends DefaultTableModel {
     /**
      * Default Renderers
      **/
-    static class NumberRenderer extends DefaultTableCellRenderer.UIResource {
+    public static class NumberRenderer extends DefaultTableCellRenderer.UIResource {
 
         public NumberRenderer() {
             super();
@@ -402,19 +416,14 @@ public class MPTableModel extends DefaultTableModel {
     /**
      * 
      */
-    static class DoubleRenderer extends NumberRenderer {
-
-        NumberFormat formatter;
-
+    public static class DoubleRenderer extends NumberRenderer {
         public DoubleRenderer() {
             super();
         }
 
         @Override
         public void setValue(Object value) {
-            if (formatter == null) {
-                formatter = NumberFormat.getInstance();
-            }
+ 
             try {
                 setText((value == null) ? "" : FormatNumber.formatDezimal(Double.valueOf(value.toString())));
             } catch (Exception e) {
@@ -426,7 +435,7 @@ public class MPTableModel extends DefaultTableModel {
     /**
      * 
      */
-    static class DateRenderer extends DefaultTableCellRenderer.UIResource {
+    public static class DateRenderer extends DefaultTableCellRenderer.UIResource {
 
         DateFormat formatter;
 
@@ -450,7 +459,7 @@ public class MPTableModel extends DefaultTableModel {
     /**
      * 
      */
-    static class IconRenderer extends DefaultTableCellRenderer.UIResource {
+   public static class IconRenderer extends DefaultTableCellRenderer.UIResource {
 
         public IconRenderer() {
             super();

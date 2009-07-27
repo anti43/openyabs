@@ -162,7 +162,7 @@ public class SampleData {
                             it.setExternalnetvalue(value * 1.3);
                             it.setInternalnetvalue(value);
                             it.setInttype(Product.TYPE_PRODUCT);
-                            it.setTaxids(1);
+                            it.setTaxids(2);
                             it.setManufacturersids(c.__getIDS());
                             it.setMeasure("pcs.");
                             it.setReference("swqsd1221");

@@ -39,14 +39,14 @@
                       <Component id="toolbarpane" pref="686" max="32767" attributes="2"/>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="rightpane" pref="698" max="32767" attributes="0"/>
+                  <Component id="rightpane" max="32767" attributes="0"/>
               </Group>
           </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="leftpane" alignment="0" pref="440" max="32767" attributes="1"/>
+          <Component id="leftpane" alignment="0" pref="442" max="32767" attributes="1"/>
           <Group type="102" alignment="0" attributes="0">
               <Component id="toolbarpane" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
@@ -84,15 +84,15 @@
                       <Component id="jPanel1" alignment="0" max="32767" attributes="2"/>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="jToolBar1" min="-2" max="-2" attributes="1"/>
-                          <EmptySpace pref="265" max="32767" attributes="0"/>
+                          <EmptySpace pref="255" max="32767" attributes="0"/>
                           <Component id="prinitingComboBox1" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Component id="jPanel2" alignment="0" max="32767" attributes="2"/>
-                      <Component id="jPanel5" alignment="0" min="0" max="32767" attributes="2"/>
+                      <Component id="jPanel5" alignment="0" min="0" pref="676" max="32767" attributes="2"/>
                       <Group type="102" alignment="1" attributes="0">
-                          <Component id="jScrollPane1" pref="376" max="32767" attributes="0"/>
+                          <Component id="jScrollPane1" pref="371" max="32767" attributes="0"/>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
-                          <Component id="jScrollPane2" pref="274" max="32767" attributes="0"/>
+                          <Component id="jScrollPane2" pref="269" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="1" attributes="0">
                               <Component id="removefile" min="-2" pref="24" max="-2" attributes="0"/>
@@ -120,7 +120,7 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
-                  <Component id="jPanel5" min="-2" pref="44" max="-2" attributes="0"/>
+                  <Component id="jPanel5" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jPanel4" max="32767" attributes="0"/>
                   <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
@@ -163,7 +163,7 @@
                           <Component id="status" alignment="0" min="-2" pref="216" max="-2" attributes="0"/>
                           <Component id="number" alignment="0" min="-2" pref="214" max="-2" attributes="1"/>
                       </Group>
-                      <EmptySpace pref="81" max="32767" attributes="0"/>
+                      <EmptySpace pref="71" max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="1" attributes="0">
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
                               <Component id="groupnameselect" alignment="0" max="32767" attributes="1"/>
@@ -315,12 +315,12 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jScrollPane3" alignment="0" pref="682" max="32767" attributes="0"/>
+                  <Component id="jScrollPane3" alignment="0" pref="672" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jScrollPane3" alignment="1" pref="70" max="32767" attributes="0"/>
+                  <Component id="jScrollPane3" alignment="1" pref="73" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
           </Layout>
@@ -475,7 +475,7 @@
                       <Component id="contactcompany" min="-2" pref="131" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
                       <Component id="contactid" min="-2" pref="131" max="-2" attributes="0"/>
-                      <EmptySpace min="0" pref="12" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="2" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -585,7 +585,7 @@
                       <Component id="date2" min="-2" pref="214" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="date3" min="-2" pref="216" max="-2" attributes="0"/>
-                      <EmptySpace pref="13" max="32767" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -699,9 +699,6 @@
           <SubComponents>
             <Component class="mpv5.ui.beans.LabeledSpinner" name="discountpercent">
               <Properties>
-                <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                  <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ItemPanel.discountpercent.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
-                </Property>
                 <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                   <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ItemPanel.discountpercent._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                 </Property>

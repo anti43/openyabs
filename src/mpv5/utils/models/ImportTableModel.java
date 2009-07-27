@@ -25,7 +25,7 @@ import mpv5.globals.Headers;
  *
  *  
  */
-public class ImportModel extends MPTableModel {
+public class ImportTableModel extends MPTableModel {
 
     private static final long serialVersionUID = 1L;
 
@@ -35,7 +35,7 @@ public class ImportModel extends MPTableModel {
      * @param selectOnlyNonExisting
      * @return
      */
-    public static ImportModel getModel(ArrayList<ArrayList<DatabaseObject>> objs, boolean selectOnlyNonExisting) {
+    public static ImportTableModel getModel(ArrayList<ArrayList<DatabaseObject>> objs, boolean selectOnlyNonExisting) {
         ArrayList<DatabaseObject> l = new ArrayList<DatabaseObject>();
 
         for (int i = 0; i < objs.size(); i++) {
@@ -45,7 +45,7 @@ public class ImportModel extends MPTableModel {
                 l.add(databaseObject);
             }
         }
-        return new ImportModel(l, selectOnlyNonExisting);
+        return new ImportTableModel(l, selectOnlyNonExisting);
     }
 
     /**
@@ -53,7 +53,7 @@ public class ImportModel extends MPTableModel {
      * @param list
      * @param selectOnlyNonExisting
      */
-    public ImportModel(ArrayList<DatabaseObject> list, boolean selectOnlyNonExisting) {
+    public ImportTableModel(ArrayList<DatabaseObject> list, boolean selectOnlyNonExisting) {
         super();
 
         Object[][] data = new Object[list.size()][5];

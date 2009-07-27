@@ -135,6 +135,16 @@ public class LightMPComboBox extends JComboBox {
         setContext(c);
         setTable(table);
         putClientProperty("JComboBox.isTableCellEditor", Boolean.TRUE);
+        addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                for (int i = 0; i < receiver.size(); i++) {
+                    MPCBSelectionChangeReceiver mPCBSelectionChangeReceiver = receiver.get(i);
+                    mPCBSelectionChangeReceiver.changeSelection((MPComboBoxModelItem) getItemAt(getSelectedIndex()), context);
+                }
+            }
+        });
     }
 
     public JComboBox getComboBox() {
@@ -255,10 +265,10 @@ public class LightMPComboBox extends JComboBox {
     @Override
     public void setSelectedIndex(int index) {
         super.setSelectedIndex(index);
-        for (int i = 0; i < receiver.size(); i++) {
-            MPCBSelectionChangeReceiver mPCBSelectionChangeReceiver = receiver.get(i);
-            mPCBSelectionChangeReceiver.changeSelection((MPComboBoxModelItem) getSelectedItem());
-        }
+//        for (int i = 0; i < receiver.size(); i++) {
+//            MPCBSelectionChangeReceiver mPCBSelectionChangeReceiver = receiver.get(i);
+//            mPCBSelectionChangeReceiver.changeSelection((MPComboBoxModelItem) getItemAt(index), context);
+//        }
     }
     List<MPCBSelectionChangeReceiver> receiver = new Vector<MPCBSelectionChangeReceiver>();
 
