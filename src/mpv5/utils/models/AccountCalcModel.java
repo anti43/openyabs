@@ -43,7 +43,7 @@ public abstract class AccountCalcModel extends DefaultTableModel {
         MPSecurityManager.VIEW, null);
     resultValues = rv.getData();
     skr = rv.hasData();
-    accScheme = (String) resultValues[1][0];
+    accScheme = (String) resultValues[1][0];//will not work if NO account frame is available
     setFilename();
     fetchCompData();
   }

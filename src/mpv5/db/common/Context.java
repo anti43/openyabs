@@ -17,12 +17,14 @@ import mpv5.db.objects.HistoryItem;
 import mpv5.db.objects.Property;
 import mpv5.db.objects.Schedule;
 import mpv5.db.objects.FileToItem;
+import mpv5.db.objects.FileToProduct;
 import mpv5.db.objects.Item;
 
 import mpv5.db.objects.ItemsList;
 import mpv5.db.objects.ItemMessage;
 import mpv5.db.objects.MailMessage;
 import mpv5.db.objects.Product;
+import mpv5.db.objects.ProductGroup;
 import mpv5.db.objects.SubItem;
 import mpv5.pluginhandling.Plugin;
 import mpv5.db.objects.User;
@@ -48,9 +50,11 @@ public class Context {
     public static String IDENTITY_FAVS = "favourites";
     public static String IDENTITY_ADDRESS = "addresses";
     public static String IDENTITY_GROUPS = "groups";
+    public static String IDENTITY_PGROUPS = "productgroups";
     public static String IDENTITY_SCHEDULE = "schedule";
     public static String IDENTITY_HISTORY = "history";
     public static String IDENTITY_FILES_TO_CONTACTS = "filestocontacts";
+    public static String IDENTITY_FILES_TO_PRODUCTS = "filestoproducts";
     public static String IDENTITY_SEARCHINDEX = "searchindex";
     public static String IDENTITY_PLUGINS_TO_USERS = "pluginstousers";
     public static String IDENTITY_PLUGINS = "plugins";
@@ -81,14 +85,16 @@ public class Context {
     private static Class IDENTITY_MESSAGES_CLASS = ItemMessage.class;
     private static Class IDENTITY_ITEMSLIST_CLASS = ItemsList.class;
     private static Class IDENTITY_MAILS_CLASS = MailMessage.class;
-     private static Class IDENTITY_PRODUCTS_CLASS = Product.class;
+    private static Class IDENTITY_PRODUCTS_CLASS = Product.class;
+    private static Class IDENTITY_GROUPS_CLASS = Group.class;
+    private static Class IDENTITY_PGROUPS_CLASS = ProductGroup.class;
+    private static Class IDENTITY_PRODUCTS_FILES_CLASS = FileToProduct.class;
     //********** unique constraints *******************************************
     public static String UNIQUECOLUMNS_USER = "cname";
     public static String UNIQUECOLUMNS_ITEMS = "cname";
     public static String UNIQUECOLUMNS_GROUPS = "cname";
     public static String UNIQUECOLUMNS_DEFAULT = "cname";
     public static String DETAIL_CONTACT_SEARCH = "prename,cname,street,city,country,notes";
-
     //********** conditions ****************************************************
     private boolean isCompany = false;
     private boolean isCustomer = false;
@@ -676,7 +682,7 @@ public class Context {
      * @return The query
      */
     public synchronized String prepareSQLString(String query, String tableName) {
-       
+
         if (getGroupRestrictionSQLString(tableName) != null) {
             if (query.toUpperCase().contains("WHERE")) {
                 query = query + " AND" + getGroupRestrictionSQLString(tableName);
@@ -1365,6 +1371,28 @@ public class Context {
         return c;
     }
 
+    public static Context getPGroup() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_PGROUPS);
+        c.setIdentityClass(IDENTITY_PGROUPS_CLASS);
+        c.uniqueColumns = UNIQUECOLUMNS_GROUPS;
+        c.setId(38);
+
+        return c;
+    }
+
+    public static Context getFilesToProducts() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_FILES_TO_PRODUCTS);
+        c.setIdentityClass(IDENTITY_PRODUCTS_FILES_CLASS);
+        c.setId(20);
+
+        return c;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////
     /**
      *
      * @param contextdbidentity

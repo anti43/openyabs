@@ -1502,12 +1502,12 @@ public class QueryHandler implements Cloneable {
                     for (int i = 0; i < spalten.size(); i++) {
                         data[h][i] = z.get(i);
                         if (log != null) {
-                            log.append("| " + data[h][i]+"\t");
+                            log.append("| " + data[h][i] + "\t");
                         }
                     }
-                     if (log != null) {
-                            log.append("\n ");
-                        }
+                    if (log != null) {
+                        log.append("\n ");
+                    }
                 }
             }
             retval = new ReturnValue(id, data, columnnames);
@@ -1980,9 +1980,9 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
-     * This is a convenience method to insert files associated with contacts
+     * This is a convenience method to insert files associated with contacts or Items
      * @param file The file
-     * @param dataOwner The contact
+     * @param dataOwner The contact or Item
      * @param descriptiveText Describe the file
      * @return True if the insert was a success
      */
@@ -1993,6 +1993,10 @@ public class QueryHandler implements Cloneable {
                 tc = Context.getFilesToContacts();
             } else if (dataOwner.getContext().equals(Context.getItems())) {
                 tc = Context.getFilesToItems();
+            } else if (dataOwner.getContext().equals(Context.getProducts())) {
+                tc = Context.getFilesToProducts();
+            } else {
+                throw new UnsupportedOperationException("Not yet implemented for " + dataOwner.getContext());
             }
             new backgroundFileInsert(file, dataOwner, descriptiveText, tc).execute();
             return true;
@@ -2052,7 +2056,7 @@ public class QueryHandler implements Cloneable {
                 Object obj = new Object();
                 synchronized (obj) {
                     ps.execute();
-                      if (!sqlConn.getAutoCommit()) {
+                    if (!sqlConn.getAutoCommit()) {
                         sqlConn.commit();
                     }
                 }

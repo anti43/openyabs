@@ -308,7 +308,7 @@ public class SearchPanel extends javax.swing.JPanel {
 
                             break;
                         case 4:
-                            resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 0).getValuesFor("ids,cname", "cname", context.getParent().__getCName(), true), Headers.SEARCH_DEFAULT.getValue()));
+                            resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 0).getValuesFor("ids,cname", "cname", "", true), Headers.SEARCH_DEFAULT.getValue()));
                             break;
                         case 5:
                             resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 0).getValuesFor("ids,cname", "groupsids",
@@ -342,7 +342,7 @@ public class SearchPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_searchfield2ActionPerformed
 
     private void searchbutton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchbutton1ActionPerformed
-        search(4, context.getParent().__getCName());
+        search(4, "");
     }//GEN-LAST:event_searchbutton1ActionPerformed
 
     private void resulttableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_resulttableMouseClicked

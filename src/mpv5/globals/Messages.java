@@ -45,8 +45,11 @@ public enum Messages {
     NEW_SUPPLIER("New Supplier"),
     NEW_MANUFACTURER("New Manufacturer"),
     NEW_OFFER("New Offer"),
+    NEW_ORDER("New Order"),
     NEW_BILL("New Bill"),
     NEW_VALUE("New Value"),
+    NEW_PRODUCT("New Product"),
+    NEW_SERVICE("New Service"),
     NEW_COMPANY("New Company"),
     ACCESS_DENIED("Access denied."),
     /**
@@ -159,9 +162,7 @@ public enum Messages {
     ADVANCED_SETTINGS_SAVE("Changing this settings may lead to a non-functional application. Really save?"),
     LOADING_OOO("Loading OpenOffice.."),
     REMINDERS("Times called: "),
-    DONE_LOADING_OOO("OpenOffice loaded.")
-    ;
-   
+    DONE_LOADING_OOO("OpenOffice loaded.");
 
     private Messages(String message) {
         this.message = message;
@@ -188,5 +189,4 @@ public enum Messages {
     public String getValue() {
         return toString();
     }
-
 }

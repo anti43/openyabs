@@ -39,6 +39,7 @@ import mpv5.db.common.QueryHandler;
 import mpv5.globals.Messages;
 import mpv5.db.objects.Favourite;
 import mpv5.db.objects.Item;
+import mpv5.db.objects.Product;
 import mpv5.logging.Log;
 import mpv5.pluginhandling.MP5Plugin;
 import mpv5.pluginhandling.Plugin;
@@ -68,6 +69,7 @@ import mpv5.ui.dialogs.subcomponents.wizard_XMLImport_1;
 import mpv5.ui.dialogs.subcomponents.wizard_XMLImport_2;
 import mpv5.ui.panels.ItemPanel;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Advanced;
+import mpv5.ui.panels.ProductPanel;
 import mpv5.ui.panels.TrashPanel;
 import mpv5.utils.files.TextDatFile;
 import mpv5.utils.images.MPIcon;
@@ -470,7 +472,11 @@ public class MPView extends FrameView {
         jPanel3 = new javax.swing.JPanel();
         jButton8 = new javax.swing.JButton();
         jButton9 = new javax.swing.JButton();
+        jButton10 = new javax.swing.JButton();
+        jButton11 = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
+        jButton12 = new javax.swing.JButton();
+        jButton13 = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         jButton6 = new javax.swing.JButton();
         jButton7 = new javax.swing.JButton();
@@ -650,8 +656,8 @@ public class MPView extends FrameView {
         jPanel3.setName("jPanel3"); // NOI18N
         jPanel3.setPreferredSize(new java.awt.Dimension(110, 400));
 
-        jButton8.setFont(new java.awt.Font("Tahoma", 0, 10));
-        jButton8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/binary.png"))); // NOI18N
+        jButton8.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/folder_blue.png"))); // NOI18N
         jButton8.setText(bundle.getString("MPView.jButton8.text")); // NOI18N
         jButton8.setToolTipText(bundle.getString("MPView.jButton8.toolTipText")); // NOI18N
         jButton8.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -663,8 +669,8 @@ public class MPView extends FrameView {
             }
         });
 
-        jButton9.setFont(new java.awt.Font("Tahoma", 0, 10));
-        jButton9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/kspread.png"))); // NOI18N
+        jButton9.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/news_subscribe.png"))); // NOI18N
         jButton9.setText(bundle.getString("MPView.jButton9.text")); // NOI18N
         jButton9.setToolTipText(bundle.getString("MPView.jButton9.toolTipText")); // NOI18N
         jButton9.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -676,29 +682,64 @@ public class MPView extends FrameView {
             }
         });
 
+        jButton10.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/folder_grey.png"))); // NOI18N
+        jButton10.setText(bundle.getString("MPView.jButton10.text")); // NOI18N
+        jButton10.setToolTipText(bundle.getString("MPView.jButton10.toolTipText")); // NOI18N
+        jButton10.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton10.setName("jButton10"); // NOI18N
+        jButton10.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton10ActionPerformed(evt);
+            }
+        });
+
+        jButton11.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/folder_green.png"))); // NOI18N
+        jButton11.setText(bundle.getString("MPView.jButton11.text")); // NOI18N
+        jButton11.setToolTipText(bundle.getString("MPView.jButton11.toolTipText")); // NOI18N
+        jButton11.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton11.setName("jButton11"); // NOI18N
+        jButton11.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton11.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton11ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel3Layout.createSequentialGroup()
-                    .addGap(11, 11, 11)
-                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jButton8, javax.swing.GroupLayout.DEFAULT_SIZE, 79, Short.MAX_VALUE)
-                        .addComponent(jButton9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGap(11, 11, 11)))
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jButton8, javax.swing.GroupLayout.DEFAULT_SIZE, 88, Short.MAX_VALUE)
+                        .addGap(10, 10, 10))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jButton10, javax.swing.GroupLayout.DEFAULT_SIZE, 88, Short.MAX_VALUE)
+                        .addGap(10, 10, 10))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jButton11, javax.swing.GroupLayout.DEFAULT_SIZE, 86, Short.MAX_VALUE)
+                        .addContainerGap())
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jButton9, javax.swing.GroupLayout.DEFAULT_SIZE, 88, Short.MAX_VALUE)
+                        .addGap(10, 10, 10))))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 136, Short.MAX_VALUE)
-            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel3Layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(jButton8)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(jButton9)
-                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jButton8)
+                .addGap(5, 5, 5)
+                .addComponent(jButton10)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton11)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton9)
+                .addContainerGap(134, Short.MAX_VALUE))
         );
 
         jOutlookBar1.addTab(bundle.getString("MPView.jPanel3.TabConstraints.tabTitle_1"), jPanel3); // NOI18N
@@ -707,15 +748,51 @@ public class MPView extends FrameView {
         jPanel4.setName("jPanel4"); // NOI18N
         jPanel4.setPreferredSize(new java.awt.Dimension(110, 400));
 
+        jButton12.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/gear.png"))); // NOI18N
+        jButton12.setText(bundle.getString("MPView.jButton12.text")); // NOI18N
+        jButton12.setToolTipText(bundle.getString("MPView.jButton12.toolTipText")); // NOI18N
+        jButton12.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton12.setName("jButton12"); // NOI18N
+        jButton12.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton12.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton12ActionPerformed(evt);
+            }
+        });
+
+        jButton13.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/external.png"))); // NOI18N
+        jButton13.setText(bundle.getString("MPView.jButton13.text")); // NOI18N
+        jButton13.setToolTipText(bundle.getString("MPView.jButton13.toolTipText")); // NOI18N
+        jButton13.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton13.setName("jButton13"); // NOI18N
+        jButton13.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton13.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton13ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton13, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 86, Short.MAX_VALUE)
+                    .addComponent(jButton12, javax.swing.GroupLayout.DEFAULT_SIZE, 86, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jButton13)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton12)
+                .addContainerGap(269, Short.MAX_VALUE))
         );
 
         jOutlookBar1.addTab(bundle.getString("MPView.jPanel4.TabConstraints.tabTitle_1"), jPanel4); // NOI18N
@@ -1603,10 +1680,31 @@ public class MPView extends FrameView {
         p.constructOOOPanel(null);
     }//GEN-LAST:event_jMenuItem27ActionPerformed
 
+    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
+
+        addTab(new ItemPanel(Context.getOffer(), Item.TYPE_OFFER), Messages.NEW_OFFER);
+    }//GEN-LAST:event_jButton10ActionPerformed
+
+    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
+       addTab(new ItemPanel(Context.getOrder(), Item.TYPE_ORDER), Messages.NEW_ORDER);
+    }//GEN-LAST:event_jButton11ActionPerformed
+
+    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
+       addTab(new ProductPanel(Context.getProducts(), Product.TYPE_PRODUCT), Messages.NEW_PRODUCT);
+    }//GEN-LAST:event_jButton12ActionPerformed
+
+    private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
+       addTab(new ProductPanel(Context.getProducts(), Product.TYPE_SERVICE), Messages.NEW_SERVICE );
+    }//GEN-LAST:event_jButton13ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JMenu clipboardMenu;
     public javax.swing.JMenu favouritesMenu;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton10;
+    private javax.swing.JButton jButton11;
+    private javax.swing.JButton jButton12;
+    private javax.swing.JButton jButton13;
     private javax.swing.JButton jButton18;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton24;
