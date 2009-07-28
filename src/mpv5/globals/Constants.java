@@ -30,6 +30,10 @@ public interface Constants {
      */
     public static final String VERSION = "1.00-SVN";
     /**
+     * The minimal Database Version which is compatible with this release
+     */
+    public static final Double DATABASE_VERSION = 1.0;
+    /**
      * Will be dynamically changed by SVN.
      */
     public static final String REVISION = "$Rev: 831 $";
@@ -79,4 +83,5 @@ public interface Constants {
     public static String XML_DOCTYPE_ID = "-//http://code.google.com/p/mp-rechnungs-und-kundenverwaltung//DTD mpv5 V 1.0//EN";
     public static String XML_DOCTYPE_URL = "http://mp-rechnungs-und-kundenverwaltung.googlecode.com/files/mpv5.dtd";
     public static String SPLASH_IMAGE = "/mpv5/resources/images/background.png";
+    
 }

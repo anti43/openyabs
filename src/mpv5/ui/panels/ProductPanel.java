@@ -983,7 +983,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                 externalnetvalue_ = 0;
             }
 
-//            intstatus_ = Integer.valueOf(status.getSelectedItem().getId());
+            taxids_ = Integer.valueOf(selecttax.getSelectedItem().getId());
         } else {
             showRequiredFields();
         }
@@ -1054,7 +1054,9 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                     status.setModel(Item.getStatusStrings(), MPComboBoxModelItem.COMPARE_BY_ID);
                     status.setSelectedIndex(MPView.getUser().__getIntdefaultstatus());
 
-
+                    selecttax.setSearchOnEnterEnabled(true);
+                    selecttax.setContext(Context.getTaxes());
+                    selecttax.triggerSearch();
                 } catch (Exception e) {
                     Log.Debug(this, e);
                 }

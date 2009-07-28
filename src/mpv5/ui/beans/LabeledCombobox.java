@@ -257,4 +257,11 @@ public class LabeledCombobox extends javax.swing.JPanel {
     public void setValue(String text) {
       mPCombobox1.setValue(text);
     }
+
+    /**
+     * Trigger a search on the combo box
+     */
+    public void triggerSearch() {
+        mPCombobox1.search(true);
+    }
 }

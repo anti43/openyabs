@@ -152,6 +152,14 @@ public class MPCombobox extends javax.swing.JPanel {
      * Triggers the search functionality
      */
     public void search() {
+       search(false);
+    }
+
+    /**
+     * Triggers the search functionality
+     * @param hidePopup
+     */
+    public void search(final boolean hidePopup) {
         Runnable runnable = new Runnable() {
 
             @Override
@@ -166,7 +174,7 @@ public class MPCombobox extends javax.swing.JPanel {
                    if(table!=null) {
                         table.editCellAt(table.getSelectedRow(), 4);
                     }
-                    jComboBox1.showPopup();
+                    if(!hidePopup)jComboBox1.showPopup();
                 }
             }
         };
@@ -394,4 +402,6 @@ public class MPCombobox extends javax.swing.JPanel {
     public void setModel() {
         setModel(new Vector<DatabaseObject>());
     }
+
+ 
 }

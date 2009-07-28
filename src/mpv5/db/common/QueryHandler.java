@@ -40,6 +40,7 @@ import javax.swing.SwingWorker;
 import mpv5.db.objects.User;
 import mpv5.globals.Messages;
 import mpv5.db.objects.Contact;
+import mpv5.globals.Constants;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
 import mpv5.ui.dialogs.Popup;
@@ -93,8 +94,21 @@ public class QueryHandler implements Cloneable {
         try {
             conn = DatabaseConnection.instanceOf();
             sqlConn = conn.getConnection();
+            Statement versionCheck = sqlConn.createStatement();
+            Log.Debug(this, "Checking database version..");
+            ResultSet versionData = versionCheck.executeQuery("SELECT value FROM globalsettings WHERE cname = 'yabs_dbversion'");
+            if (versionData.next()) {
+                double dbversion = Double.valueOf(versionData.getString(1));
+                if (dbversion < Constants.DATABASE_VERSION.doubleValue()) {
+                    throw new UnsupportedOperationException("Database version is too low! Found version: " + dbversion + ". Required version: " + Constants.DATABASE_VERSION);
+                }
+                Log.Debug(this, "Database version found: " + dbversion);
+            } else {
+                Log.Debug(this, "Database version info can not be found.");
+            }
         } catch (Exception ex) {
-            Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
+            Log.Debug(ex);
+            Popup.error(ex);
         }
     }
 
@@ -1468,7 +1482,6 @@ public class QueryHandler implements Cloneable {
             }
             bool = stm.execute(query);
 
-
             try {
                 ResultSet keys = stm.getGeneratedKeys();
                 if (keys != null && keys.next()) {
@@ -1555,6 +1568,19 @@ public class QueryHandler implements Cloneable {
             MPView.addMessage(jobmessage);
             retval.setMessage(jobmessage);
         }
+//
+//        if (log != null && retval.hasData()) {
+//            Object[][] data1 = retval.getData();
+//            for (int i = 0; i < data1.length; i++) {
+//                Object[] objects = data1[i];
+//                log.append(" \n");
+//                for (int j = 0; j < objects.length; j++) {
+//                    Object object = objects[j];
+//                    log.append("\t" + object);
+//                }
+//            }
+//        }
+
         return retval;
 
     }
