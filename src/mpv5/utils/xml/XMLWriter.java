@@ -175,16 +175,12 @@ public class XMLWriter {
      * @param withDocTypeDeclaration 
      */
     public void newDoc(boolean withDocTypeDeclaration) {
-        // Create the root element
-//        rootElement = new Element(rootElementName);
         if (withDocTypeDeclaration) {
             myDocument = new Document(rootElement, (DocType) DEFAULT_DOCTYPE.clone());
+            Log.Debug(this, "Using doctype: " + DEFAULT_DOCTYPE);
         } else {
             myDocument = new Document(rootElement);
         }
-
-    //add an attribute to the root element
-//        rootElement.setAttribute(new Attribute("userid", MPView.getUser().getID()));
     }
 
     /**

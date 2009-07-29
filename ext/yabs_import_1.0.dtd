@@ -1,6 +1,6 @@
-<!--Root element of any MPv5 XML file-->
+<!--Root element of any YABS XML file-->
 <!ELEMENT mpv5 ( contacts|countries|accounts )* >
-<!--END Root element of any MPv5 XML file-->
+<!--END Root element of any YABS XML file-->
 
 
 <!--CONTACTS-->
@@ -68,3 +68,66 @@
 <!ELEMENT accounts ( account* ) >
 <!ATTLIST account id CDATA #IMPLIED>
 <!--END ACCOUNTS-->
+
+<!--ORDERS-->
+<!ELEMENT contactsids ( #PCDATA ) >
+<!ELEMENT netvalue ( #PCDATA ) >
+<!ELEMENT taxvalue ( #PCDATA ) >
+<!ELEMENT description ( #PCDATA ) >
+<!ELEMENT cnumber ( #PCDATA ) >
+<!ELEMENT intstatus ( #PCDATA ) >
+<!ELEMENT item ( cname | intaccounttype | contactsids | netvalue | taxvalue | dateadded? | description? | cnumber? | intstatus? )* >
+<!ELEMENT items ( item* ) >
+<!ATTLIST item id CDATA #IMPLIED>
+<!--END ACCOUNTS-->
+
+<!--ORDERS ROWS-->
+<!ELEMENT itemsids ( #PCDATA ) >
+<!ELEMENT originalproductsids ( #PCDATA ) >
+<!ELEMENT countvalue ( #PCDATA ) >
+<!ELEMENT quantityvalue ( #PCDATA ) >
+<!ELEMENT measure ( #PCDATA ) >
+<!ELEMENT internalvalue ( #PCDATA ) >
+<!ELEMENT externalvalue ( #PCDATA ) >
+<!ELEMENT taxpercentvalue ( #PCDATA ) >
+<!ELEMENT datedelivery ( #PCDATA ) >
+<!ELEMENT subitem ( cname | itemsids | originalproductsids? | countvalue | quantityvalue | measure | description? | internalvalue | externalvalue | taxpercentvalue | datedelivery? )* >
+<!ELEMENT subitems ( subitem* ) >
+<!ATTLIST subitem id CDATA #IMPLIED>
+<!--END ORDER ROWS-->
+
+<!--ADRESSES-->
+<!ELEMENT title ( #PCDATA ) >
+<!ELEMENT taxnumber  ( #PCDATA ) >
+<!ELEMENT prename ( #PCDATA ) >
+<!ELEMENT street ( #PCDATA ) >
+<!ELEMENT zip  ( #PCDATA ) >
+<!ELEMENT city ( #PCDATA ) >
+<!ELEMENT company  ( #PCDATA ) >
+<!ELEMENT department ( #PCDATA ) >
+<!ELEMENT country  ( #PCDATA ) >
+<!ELEMENT ismale  ( #PCDATA ) >
+<!ELEMENT inttype ( #PCDATA ) >
+<!ELEMENT adress ( cname | contactsids | title? | taxnumber? | prename? | street? | zip? | city? | company?| department?| country?| ismale?| inttype?)* >
+<!ELEMENT adresses ( adress* ) >
+<!ATTLIST adress id CDATA #IMPLIED>
+<!--END ADRESSES-->
+
+
+<!--PRODUCTS-->
+<!ELEMENT taxvalue ( #PCDATA ) >
+<!ELEMENT inttype ( #PCDATA ) >
+<!ELEMENT manufacturersids ( #PCDATA ) >
+<!ELEMENT suppliersids ( #PCDATA ) >
+<!ELEMENT externalnetvalue ( #PCDATA ) >
+<!ELEMENT internalnetvalue ( #PCDATA ) >
+<!ELEMENT cnumber ( #PCDATA ) >
+<!ELEMENT measure ( #PCDATA ) >
+<!ELEMENT url ( #PCDATA ) >
+<!ELEMENT ean ( #PCDATA ) >
+<!ELEMENT reference ( #PCDATA ) >
+<!ELEMENT product ( cname | inttype? | manufacturersids? | suppliersids? | externalnetvalue | internalnetvalue? | description? | cnumber? | measure?| url?| ean?| reference? )* >
+<!ELEMENT products ( product* ) >
+<!ATTLIST product id CDATA #IMPLIED>
+<!--END PRODUCTS-->
+
