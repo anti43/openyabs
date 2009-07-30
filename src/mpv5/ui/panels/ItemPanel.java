@@ -70,6 +70,7 @@ import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.models.MPTableModelRow;
 import mpv5.utils.models.NativeModeNotSupportedException;
+import mpv5.utils.numberformat.FormatNumber;
 import mpv5.utils.tables.TableCalculator;
 import mpv5.utils.renderer.CellRendererWithMPComboBox;
 import mpv5.utils.renderer.TableCellRendererForDezimal;
@@ -921,8 +922,8 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 cname_ = cnumber_;
             }
 
-            netvalue_ = Double.valueOf(netvalue.getText());
-            taxvalue_ = Double.valueOf(taxvalue.getText());
+            netvalue_ = FormatNumber.parseDezimal(netvalue.getText());
+            taxvalue_ = FormatNumber.parseDezimal(taxvalue.getText());
 
             datetodo_ = date2.getDate();
             dateend_ = date3.getDate();

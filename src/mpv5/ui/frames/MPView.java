@@ -29,6 +29,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
+import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import mpv5.Main;
@@ -271,8 +272,13 @@ public class MPView extends FrameView {
         if (tabPane.getSelectedComponent() instanceof DataPanel) {
             return (DataPanel) tabPane.getSelectedComponent();
         } else if (tabPane.getSelectedComponent() instanceof JScrollPane) {
-            return (DataPanel) ((JScrollPane) tabPane.getSelectedComponent()).getComponent(0);
-        } else {
+            try {
+                return (DataPanel) ((JScrollPane) tabPane.getSelectedComponent()).getComponent(0);
+            } catch (ClassCastException e) {
+                  return (DataPanel)((JViewport) ((JScrollPane) tabPane.getSelectedComponent()).getComponent(0)).getComponent(0);
+
+            }
+   } else {
             return null;
         }
     }
