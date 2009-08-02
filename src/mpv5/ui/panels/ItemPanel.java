@@ -71,6 +71,7 @@ import mpv5.utils.models.MPTableModel;
 import mpv5.utils.models.MPTableModelRow;
 import mpv5.utils.models.NativeModeNotSupportedException;
 import mpv5.utils.numberformat.FormatNumber;
+import mpv5.utils.ooo.OOOPanel;
 import mpv5.utils.tables.TableCalculator;
 import mpv5.utils.renderer.CellRendererWithMPComboBox;
 import mpv5.utils.renderer.TableCellRendererForDezimal;
@@ -81,7 +82,7 @@ import mpv5.utils.ui.TextFieldUtils;
  *
  * 
  */
-public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSelectionChangeReceiver{
+public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSelectionChangeReceiver {
 
     private static final long serialVersionUID = 1L;
     private Item dataOwner;
@@ -493,7 +494,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 87, Short.MAX_VALUE)
         );
 
         jToolBar1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -547,6 +548,11 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         button_reminders1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         button_reminders1.setName("button_reminders1"); // NOI18N
         button_reminders1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        button_reminders1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_reminders1ActionPerformed(evt);
+            }
+        });
         jToolBar1.add(button_reminders1);
 
         prinitingComboBox1.setName("prinitingComboBox1"); // NOI18N
@@ -779,7 +785,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(leftpane, javax.swing.GroupLayout.DEFAULT_SIZE, 446, Short.MAX_VALUE)
+            .addComponent(leftpane, javax.swing.GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(toolbarpane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
@@ -819,6 +825,13 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             m.addRow(2);
         }
     }//GEN-LAST:event_itemtableMouseClicked
+
+    private void button_reminders1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_reminders1ActionPerformed
+
+        OOOPanel p = new OOOPanel();
+        BigPopup.showPopup(this, p);
+        p.constructOOOPanel(new File("/home/anti/aaa.odt"));
+    }//GEN-LAST:event_button_reminders1ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private mpv5.ui.beans.LabeledCombobox accountselect;
     private javax.swing.JLabel addedby;
@@ -1017,7 +1030,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         netCalculator = new TableCalculator(itemtable, new int[]{7, 5}, new int[]{8}, new int[]{}, TableCalculator.ACTION_SUBSTRACT, new int[]{8});
         ((MPTableModel) itemtable.getModel()).addCalculator(netCalculator);
         netCalculator.addLabel(taxvalue, 8);
-        
+
         netCalculator2 = new TableCalculator(itemtable, new int[]{5}, new int[]{9}, new int[]{}, TableCalculator.ACTION_SUM, new int[]{9});
         ((MPTableModel) itemtable.getModel()).addCalculator(netCalculator2);
         netCalculator2.addLabel(netvalue, 9);
@@ -1069,9 +1082,10 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         try {
             DatabaseObject o = DatabaseObject.getObject(c, Integer.valueOf(to.getId()));
             int i = itemtable.getSelectedRow();
-            if(i>=0){
-             ((MPTableModel)itemtable.getModel()).setRowAt(new SubItem((Product) o).getRowData(i), i, 4);
+            if (i >= 0) {
+                ((MPTableModel) itemtable.getModel()).setRowAt(new SubItem((Product) o).getRowData(i), i, 4);
             }
-        } catch (Exception ex) {}  
+        } catch (Exception ex) {
+        }
     }
 }

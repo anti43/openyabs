@@ -20,6 +20,7 @@ import ag.ion.bion.officelayer.document.IDocument;
 import ag.ion.bion.officelayer.text.ITextDocument;
 import enoa.connection.NoaConnection;
 import enoa.handler.DocumentHandler;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mpv5.logging.Log;
@@ -34,6 +35,13 @@ public class ODTFile extends Exportable {
 
     public ODTFile(String pathToFile) {
         super(pathToFile);
+        if (!exists()) {
+            try {
+                createNewFile();
+            } catch (IOException ex) {
+                Log.Debug(ex);
+            }
+        }
         nc = NoaConnection.getConnection();
     }
 

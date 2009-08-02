@@ -73,6 +73,7 @@ import java.util.logging.Logger;
 import javax.swing.JPanel;
 import mpv5.globals.LocalSettings;
 import mpv5.logging.Log;
+import mpv5.ui.panels.PreviewPanel;
 import mpv5.utils.reflection.ClasspathTools;
 import ooo.connector.BootstrapSocketConnector;
 
@@ -83,7 +84,7 @@ public class Test {
     private static String ooohost;
     private static String oooport;
 
-    public static void main(String[] args) throws NodataFoundException, FileNotFoundException, OfficeApplicationException, NOAException, DocumentException, InterruptedException, IOException {
+    public static void main(String[] args) throws NodataFoundException, FileNotFoundException, OfficeApplicationException, NOAException, DocumentException, InterruptedException {
 
 //        System.out.println("ff.hh".substring("ff.hh".lastIndexOf(".")+1));
         LogConsole.setLogStreams(false, true, false);
@@ -99,10 +100,21 @@ public class Test {
         Thread.sleep(5000);
 
         Export e = new Export();
-        ODTFile f = new ODTFile("/home/anti/aaa.ott");
+        ODTFile f = new ODTFile("/home/anti/aaa.odt");
         e.put("number", "some value#");
         e.setFile(f);
-        e.processData(new File("/home/anti/exp" + Math.random() + ".pdf"));
+        File g = new File("/home/anti/exp" + Math.random() + ".pdf");
+        File g2 = new File("/home/anti/exp0.01511272191122559.pdf");
+
+        e.processData(g);
+
+
+
+        Thread.sleep(15000);
+
+        NoaConnection.stopOOOServer();
+        System.exit(0);
+
 
 
 //        System.exit(0);

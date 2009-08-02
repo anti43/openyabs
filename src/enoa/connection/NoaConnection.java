@@ -30,10 +30,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mpv5.globals.LocalSettings;
+import ooo.connector.server.OOoServer;
 
 /**
  *This class handles connections to remote and local OpenOffice installations
@@ -146,6 +149,7 @@ public class NoaConnection {
             desktopService =
                     officeAplication.getDesktopService();
             setType(TYPE_LOCAL);
+            mpv5.Main.addOfficeApplicationToClose(officeAplication);
         } else {
             throw new InvalidArgumentException("Path to OO cannot be null: " + OOOPath);
         }
@@ -211,6 +215,7 @@ public class NoaConnection {
             public void run() {
                 try {
                     Process oos = builder.start();
+                    OOOServers.add(oos);
                     InputStream is = oos.getErrorStream();
                     InputStreamReader isr = new InputStreamReader(is);
                     BufferedReader br = new BufferedReader(isr);
@@ -227,5 +232,16 @@ public class NoaConnection {
             }
         };
         new Thread(runnable).start();
+    }
+    static List<Process> OOOServers = new Vector<Process>();
+
+    /**
+     * Stops all OOO servers instances started by this instance
+     */
+    public static void stopOOOServer() {
+        for (int i = 0; i < OOOServers.size(); i++) {
+            Process process = OOOServers.get(i);
+            process.destroy();
+        }
     }
 }

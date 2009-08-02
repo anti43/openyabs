@@ -158,7 +158,10 @@ public enum Messages {
     ADVANCED_SETTINGS_SAVE("Changing this settings may lead to a non-functional application. Really save?"),
     LOADING_OOO("Loading OpenOffice.."),
     REMINDERS("Times called: "),
-    DONE_LOADING_OOO("OpenOffice loaded.");
+    DONE_LOADING_OOO("OpenOffice loaded"),
+    OONOTLOCAL("To open OpenOffice files within Yabs, a local OO installation must be configured.")
+            ;
+
 
     private Messages(String message) {
         this.message = message;

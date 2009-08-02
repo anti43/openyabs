@@ -46,7 +46,7 @@
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="leftpane" alignment="0" pref="446" max="32767" attributes="1"/>
+          <Component id="leftpane" alignment="0" pref="450" max="32767" attributes="1"/>
           <Group type="102" alignment="0" attributes="0">
               <Component id="toolbarpane" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
@@ -320,7 +320,7 @@
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jScrollPane3" alignment="1" pref="83" max="32767" attributes="0"/>
+                  <Component id="jScrollPane3" alignment="1" pref="87" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
           </Layout>
@@ -456,6 +456,9 @@
                 <Property name="name" type="java.lang.String" value="button_reminders1" noResource="true"/>
                 <Property name="verticalTextPosition" type="int" value="3"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="button_reminders1ActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>

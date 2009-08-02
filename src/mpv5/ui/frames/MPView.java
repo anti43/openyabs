@@ -257,10 +257,12 @@ public class MPView extends FrameView {
      * @param truee
      */
     public static void setWaiting(boolean truee) {
-        if (truee) {
-            identifierFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-        } else {
-            identifierFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+        if (Main.INSTANTIATED) {
+            if (truee) {
+                identifierFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+            } else {
+                identifierFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            }
         }
     }
 

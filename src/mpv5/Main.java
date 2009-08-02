@@ -223,6 +223,7 @@ public class Main extends SingleFrameApplication {
                     iOfficeApplication.getDesktopService().terminate();
                 } catch (Exception n){}
             }
+            NoaConnection.stopOOOServer();
         } catch (Exception e) {
             Log.Debug(e);
         }
@@ -523,21 +524,18 @@ public class Main extends SingleFrameApplication {
         } else {
             MPView.identifierView.showServerStatus(false);
         }
-        if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_REMOTE)) {
+        
             Runnable runnable = new Runnable() {
-
                 @Override
                 public void run() {
                     try {
-                        NoaConnection.startOOServer(LocalSettings.getProperty(LocalSettings.OFFICE_HOME),
-                                Integer.valueOf(LocalSettings.getProperty(LocalSettings.OFFICE_PORT)));
+                        NoaConnection.getConnection();
                     } catch (Exception n) {
                         Log.Debug(n);
                     }
                 }
             };
             new Thread(runnable).start();
-        }
     }
 
     private void loadPlugins() {
