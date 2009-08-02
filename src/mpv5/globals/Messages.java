@@ -4,10 +4,6 @@
  */
 package mpv5.globals;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map.Entry;
-import java.util.Set;
 import mpv5.logging.Log;
 import mpv5.i18n.LanguageManager;
 
@@ -20,7 +16,7 @@ public enum Messages {
 
     START_MESSAGE(
     "\n" +
-    "\n  MP " + Constants.VERSION + " Copyright (C) 2006-2009 A. Weber\n" +
+    "\n  YaBS " + Constants.VERSION + " Copyright (C) 2006-2009 A. Weber\n" +
     "\n  This program comes with ABSOLUTELY NO WARRANTY." +
     "\n  MP is free software, and you are welcome to redistribute it " +
     "\n  under certain conditions;" +

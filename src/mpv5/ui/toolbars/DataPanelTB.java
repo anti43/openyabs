@@ -130,6 +130,7 @@ public class DataPanelTB extends javax.swing.JPanel {
         jButton24 = new javax.swing.JButton();
         jSeparator2 = new javax.swing.JToolBar.Separator();
         jButton23 = new javax.swing.JButton();
+        jButton27 = new javax.swing.JButton();
 
         commonActionsToolbar.setFloatable(false);
         commonActionsToolbar.setRollover(true);
@@ -257,6 +258,20 @@ public class DataPanelTB extends javax.swing.JPanel {
         });
         commonActionsToolbar.add(jButton23);
 
+        jButton27.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/mail_reply.png"))); // NOI18N
+        jButton27.setText(bundle.getString("DataPanelTB.jButton27.text")); // NOI18N
+        jButton27.setToolTipText(bundle.getString("DataPanelTB.jButton27.toolTipText")); // NOI18N
+        jButton27.setContentAreaFilled(false);
+        jButton27.setFocusable(false);
+        jButton27.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton27.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton27.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton27ActionPerformed(evt);
+            }
+        });
+        commonActionsToolbar.add(jButton27);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -359,6 +374,14 @@ public class DataPanelTB extends javax.swing.JPanel {
         MPView.getUser().getProperties().changeProperty(this, "jToggleButton1", jToggleButton1.isSelected());
     }//GEN-LAST:event_jToggleButton1ItemStateChanged
 
+    private void jButton27ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton27ActionPerformed
+
+       DatabaseObject dato = parents.getDataOwner();
+        if (dato.isExisting()) {
+           throw new UnsupportedOperationException("Mail not supported yet..");
+        }
+    }//GEN-LAST:event_jButton27ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToolBar commonActionsToolbar;
     private javax.swing.JButton jButton21;
@@ -367,6 +390,7 @@ public class DataPanelTB extends javax.swing.JPanel {
     private javax.swing.JButton jButton24;
     private javax.swing.JButton jButton25;
     private javax.swing.JButton jButton26;
+    private javax.swing.JButton jButton27;
     private javax.swing.JButton jButton4;
     private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JToolBar.Separator jSeparator2;
