@@ -244,4 +244,38 @@ public class DocumentHandler {
             }
         }
     }
+
+    /**
+     * Export a file to another format/file. Supported target formats:
+     * <li>pdf
+     * <li>odt
+     * <li>txt
+     * @param source The file to export
+     * @param target The target file
+     * @return The target file
+     * @throws DocumentException
+     */
+    public File export(File source, File target) throws DocumentException {
+        if (target.getName().split("\\.").length < 2) {
+            throw new UnsupportedOperationException("The file must have an extension: " + target);
+        }
+
+        IFilter filter = null;
+        String extension = target.getName().substring(target.getName().lastIndexOf("."), target.getName().length());
+        if (extension.equalsIgnoreCase(".pdf")) {
+            filter = PDFFilter.FILTER;
+        } else if (extension.equalsIgnoreCase(".doc")) {
+            filter = MSOffice97Filter.FILTER;
+        } else if (extension.equalsIgnoreCase(".txt")) {
+            filter = TextFilter.FILTER;
+        }
+
+        if (filter != null) {
+            NoaConnection.getConnection().getDocumentService().loadDocument(source.getAbsolutePath()).getPersistenceService().export(target.getPath(), filter);
+        } else {
+            throw new UnsupportedOperationException("File extension not supported: " + extension);
+        }
+
+        return target;
+    }
 }

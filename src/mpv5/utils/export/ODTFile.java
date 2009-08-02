@@ -50,7 +50,7 @@ public class ODTFile extends Exportable {
         Log.Debug(this, "run: ");
         DocumentHandler dh = new DocumentHandler(nc);
         try {
-            IDocument df = dh.loadDocument(this, true);
+            IDocument df = dh.loadDocument(this, false);
             DocumentHandler.fillFormFields((ITextDocument) df, getData());
             DocumentHandler.fillPlaceholderFields((ITextDocument) df, getData());
             DocumentHandler.fillTextVariableFields((ITextDocument) df, getData());

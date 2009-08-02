@@ -3,23 +3,31 @@ package mpv5.ui.panels;
 import com.sun.pdfview.PDFFile;
 import com.sun.pdfview.PDFPage;
 import com.sun.pdfview.PagePanel;
+import enoa.connection.NoaConnection;
+import enoa.handler.DocumentHandler;
 import java.awt.BorderLayout;
-import java.awt.ScrollPane;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
+import mpv5.db.common.Context;
+import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.QueryCriteria;
+import mpv5.db.common.QueryHandler;
+import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.BigPopup;
+import mpv5.ui.dialogs.DialogForFile;
+import mpv5.ui.dialogs.Popup;
+import mpv5.ui.frames.MPView;
+import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.files.FileReaderWriter;
 import mpv5.utils.ooo.OOOPanel;
+import mpv5.utils.print.PrintJob;
 
 /**
  *
@@ -28,6 +36,8 @@ import mpv5.utils.ooo.OOOPanel;
 public class PreviewPanel extends javax.swing.JPanel {
 
     private static final long serialVersionUID = 1L;
+    private File file;
+    private DatabaseObject dataOwner;
 
     /** Creates new form
      */
@@ -79,20 +89,21 @@ public class PreviewPanel extends javax.swing.JPanel {
      * Shows the given pdf file in the preview panel
      * @param pdf
      */
-    public void openPdf(File pdf){
+    public void openPdf(File pdf) {
+        this.file = pdf;
         if (pdf.isFile() && pdf.exists()) {
             try {
-                
+
                 PagePanel panel = new PagePanel();
                 ppanel.removeAll();
                 JScrollPane sp = new JScrollPane(panel);
                 ppanel.add(sp, BorderLayout.CENTER);
                 ppanel.validate();
 
-                if(getParent() instanceof  JFrame){
-                        JFrame p = (JFrame) getParent();
-                        p.pack();
-                        p.setVisible(true);
+                if (getParent() instanceof JFrame) {
+                    JFrame p = (JFrame) getParent();
+                    p.pack();
+                    p.setVisible(true);
                 }
 
                 RandomAccessFile raf = new RandomAccessFile(pdf, "r");
@@ -128,7 +139,6 @@ public class PreviewPanel extends javax.swing.JPanel {
         toolbar = new javax.swing.JToolBar();
         jButton27 = new javax.swing.JButton();
         jButton28 = new javax.swing.JButton();
-        jButton29 = new javax.swing.JButton();
         jButton30 = new javax.swing.JButton();
         jButton31 = new javax.swing.JButton();
         jButton32 = new javax.swing.JButton();
@@ -175,21 +185,6 @@ public class PreviewPanel extends javax.swing.JPanel {
             }
         });
         toolbar.add(jButton28);
-
-        jButton29.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/ximian-openoffice-writer.png"))); // NOI18N
-        jButton29.setText(bundle.getString("PreviewPanel.jButton29.text")); // NOI18N
-        jButton29.setToolTipText(bundle.getString("PreviewPanel.jButton29.toolTipText")); // NOI18N
-        jButton29.setContentAreaFilled(false);
-        jButton29.setFocusable(false);
-        jButton29.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton29.setName("jButton29"); // NOI18N
-        jButton29.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton29.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton29ActionPerformed(evt);
-            }
-        });
-        toolbar.add(jButton29);
 
         jButton30.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/acroread.png"))); // NOI18N
         jButton30.setText(bundle.getString("PreviewPanel.jButton30.text")); // NOI18N
@@ -248,7 +243,7 @@ public class PreviewPanel extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(toolbar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(ppanel, javax.swing.GroupLayout.DEFAULT_SIZE, 407, Short.MAX_VALUE))
+                .addComponent(ppanel, javax.swing.GroupLayout.DEFAULT_SIZE, 408, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -264,35 +259,73 @@ public class PreviewPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton27ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton27ActionPerformed
-//        DatabaseObject dato = parents.getDataOwner();
-//        if (dato.isExisting()) {
-//            throw new UnsupportedOperationException("Mail not supported yet..");
-//        }
+        if (file != null) {
+            try {
+                new PrintJob().print(file);
+            } catch (Exception ex) {
+                Log.Debug(ex);
+            }
+        }
 }//GEN-LAST:event_jButton27ActionPerformed
 
     private void jButton28ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton28ActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_jButton28ActionPerformed
 
-    private void jButton29ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton29ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton29ActionPerformed
-
-    private void jButton30ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton30ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton30ActionPerformed
-
     private void jButton31ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton31ActionPerformed
-        // TODO add your handling code here:
+        if (dataOwner != null && dataOwner.isExisting()) {
+            if (QueryHandler.instanceOf().clone(Context.getFiles()).insertFile(file, dataOwner, QueryCriteria.getSaveStringFor(dataOwner.__getCName()))) {
+                Popup.notice(Messages.FILE_SAVED.toString() + file);
+            }
+        } else {
+            Popup.notice(Messages.NOT_POSSIBLE);
+        }
     }//GEN-LAST:event_jButton31ActionPerformed
 
     private void jButton32ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton32ActionPerformed
-        // TODO add your handling code here:
+       DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY);
+       d.setSelectedFile(new File(file.getName()));
+       d.saveFile(file);
     }//GEN-LAST:event_jButton32ActionPerformed
+
+    private void jButton30ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton30ActionPerformed
+        DocumentHandler d = new DocumentHandler(NoaConnection.getConnection());
+
+        if (file.getName().split("\\.").length < 2) {
+            throw new UnsupportedOperationException("The file must have an extension: " + file);
+        }
+
+        String extension = file.getName().substring(file.getName().lastIndexOf("."), file.getName().length());
+
+        Log.Debug(this, "Found extension: " + extension);
+
+        if (extension.equalsIgnoreCase(".pdf")) {
+            try {
+                FileDirectoryHandler.open(file);
+            } catch (Exception ex) {
+                Log.Debug(ex);
+            }
+        } else if (extension.equalsIgnoreCase(".odt")) {
+            try {
+                File f = d.export(file, FileDirectoryHandler.getTempFile("pdf"));
+                FileDirectoryHandler.open(f);
+            } catch (Exception ex) {
+                Log.Debug(ex);
+            }
+        } else if (extension.equalsIgnoreCase(".txt")) {
+            try {
+                File f = d.export(file, FileDirectoryHandler.getTempFile("pdf"));
+                FileDirectoryHandler.open(f);
+            } catch (Exception ex) {
+                Log.Debug(ex);
+            }
+        } else {
+            throw new UnsupportedOperationException("Extension not supported: " + extension);
+        }
+
+}//GEN-LAST:event_jButton30ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton27;
     private javax.swing.JButton jButton28;
-    private javax.swing.JButton jButton29;
     private javax.swing.JButton jButton30;
     private javax.swing.JButton jButton31;
     private javax.swing.JButton jButton32;
@@ -302,6 +335,7 @@ public class PreviewPanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     public void openOdt(File file) {
+        this.file = file;
         Log.Debug(this, "Preparing preview for: " + file);
         OOOPanel op = new OOOPanel();
         ppanel.removeAll();
@@ -313,6 +347,7 @@ public class PreviewPanel extends javax.swing.JPanel {
     }
 
     public void open(File file) {
+        this.file = file;
         FileReaderWriter f = new FileReaderWriter(file);
         String t = f.read();
         JEditorPane p = new JEditorPane();
@@ -328,5 +363,19 @@ public class PreviewPanel extends javax.swing.JPanel {
     public void showInNewFrame() {
         BigPopup p = new BigPopup();
         BigPopup.showPopup(this, jPanel1);
+    }
+
+    /**
+     * @return the dataOwner
+     */
+    public DatabaseObject getDataOwner() {
+        return dataOwner;
+    }
+
+    /**
+     * @param dataOwner the dataOwner to set
+     */
+    public void setDataOwner(DatabaseObject dataOwner) {
+        this.dataOwner = dataOwner;
     }
 }

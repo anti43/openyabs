@@ -38,7 +38,7 @@ import mpv5.ui.frames.MPView;
 public class OOOPanel extends JPanel {
 
     public OOOPanel() {
-        super(new BorderLayout());  
+        super(new BorderLayout());
     }
 
     /**
@@ -81,32 +81,32 @@ public class OOOPanel extends JPanel {
      * @param officeFrame
      */
     public void configureFrame(IFrame officeFrame) {
-
-        officeFrame.addDispatchDelegate(GlobalCommands.SAVE, new IDispatchDelegate() {
-
-            @Override
-            public void dispatch(Object[] arg0) {
-                try {
-                    QueryHandler.instanceOf().clone(Context.getFiles()).insertFile(new File(NoaConnection.getConnection().getDocumentService().getCurrentDocuments()[0].getPersistenceService().getLocation().getPath()),
-                            MPView.getUser(), new SaveString("Template", true));
-                } catch (DocumentException ex) {
-                    Log.Debug(ex);
-                }
-            }
-        });
-
-        officeFrame.addDispatchDelegate(GlobalCommands.OPEN_DOCUMENT, new IDispatchDelegate() {
-
-            @Override
-            public void dispatch(Object[] arg0) {
-//                try {
 //
-////                    officeApplication.getDocumentService().loadDocument(officeFrame, officeFrame.);
-//                } catch (OfficeApplicationException ex) {
+//        officeFrame.addDispatchDelegate(GlobalCommands.SAVE, new IDispatchDelegate() {
+//
+//            @Override
+//            public void dispatch(Object[] arg0) {
+//                try {
+//                    QueryHandler.instanceOf().clone(Context.getFiles()).insertFile(new File(NoaConnection.getConnection().getDocumentService().getCurrentDocuments()[0].getPersistenceService().getLocation().getPath()),
+//                            MPView.getUser(), new SaveString("Template", true));
+//                } catch (DocumentException ex) {
 //                    Log.Debug(ex);
 //                }
-            }
-        });
+//            }
+//        });
+//
+//        officeFrame.addDispatchDelegate(GlobalCommands.OPEN_DOCUMENT, new IDispatchDelegate() {
+//
+//            @Override
+//            public void dispatch(Object[] arg0) {
+////                try {
+////
+//////                    officeApplication.getDocumentService().loadDocument(officeFrame, officeFrame.);
+////                } catch (OfficeApplicationException ex) {
+////                    Log.Debug(ex);
+////                }
+//            }
+//        });
 
         officeFrame.updateDispatches();
         officeFrame.disableDispatch(GlobalCommands.CLOSE_DOCUMENT);
