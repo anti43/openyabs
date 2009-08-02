@@ -45,8 +45,8 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="ppanel" alignment="0" max="32767" attributes="0"/>
-              <Component id="toolbar" alignment="1" pref="539" max="32767" attributes="0"/>
+              <Component id="ppanel" alignment="0" pref="729" max="32767" attributes="0"/>
+              <Component id="toolbar" alignment="1" pref="729" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
@@ -54,7 +54,7 @@
               <Group type="102" alignment="0" attributes="0">
                   <Component id="toolbar" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="ppanel" max="32767" attributes="0"/>
+                  <Component id="ppanel" pref="407" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -70,18 +70,7 @@
             <Property name="name" type="java.lang.String" value="ppanel" noResource="true"/>
           </Properties>
 
-          <Layout>
-            <DimensionLayout dim="0">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <EmptySpace min="0" pref="535" max="32767" attributes="0"/>
-              </Group>
-            </DimensionLayout>
-            <DimensionLayout dim="1">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <EmptySpace min="0" pref="130" max="32767" attributes="0"/>
-              </Group>
-            </DimensionLayout>
-          </Layout>
+          <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
         </Container>
         <Container class="javax.swing.JToolBar" name="toolbar">
           <Properties>

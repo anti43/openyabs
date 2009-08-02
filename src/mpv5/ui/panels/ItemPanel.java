@@ -828,9 +828,9 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
     private void button_reminders1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_reminders1ActionPerformed
 
-        OOOPanel p = new OOOPanel();
-        BigPopup.showPopup(this, p);
-        p.constructOOOPanel(new File("/home/anti/aaa.odt"));
+        PreviewPanel pr = new PreviewPanel();
+        BigPopup.showPopup(this, pr);
+        pr.openPdf(new File("/home/anti/aaa.pdf"));
     }//GEN-LAST:event_button_reminders1ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private mpv5.ui.beans.LabeledCombobox accountselect;

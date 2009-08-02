@@ -4,6 +4,7 @@ import com.sun.pdfview.PDFFile;
 import com.sun.pdfview.PDFPage;
 import com.sun.pdfview.PagePanel;
 import java.awt.BorderLayout;
+import java.awt.ScrollPane;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -14,6 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
+import javax.swing.JScrollPane;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.BigPopup;
 import mpv5.utils.files.FileReaderWriter;
@@ -80,10 +82,11 @@ public class PreviewPanel extends javax.swing.JPanel {
     public void openPdf(File pdf){
         if (pdf.isFile() && pdf.exists()) {
             try {
-                initComponents();
+                
                 PagePanel panel = new PagePanel();
                 ppanel.removeAll();
-                ppanel.add(panel, BorderLayout.CENTER);
+                JScrollPane sp = new JScrollPane(panel);
+                ppanel.add(sp, BorderLayout.CENTER);
                 ppanel.validate();
 
                 if(getParent() instanceof  JFrame){
@@ -138,17 +141,7 @@ public class PreviewPanel extends javax.swing.JPanel {
 
         ppanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         ppanel.setName("ppanel"); // NOI18N
-
-        javax.swing.GroupLayout ppanelLayout = new javax.swing.GroupLayout(ppanel);
-        ppanel.setLayout(ppanelLayout);
-        ppanelLayout.setHorizontalGroup(
-            ppanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 535, Short.MAX_VALUE)
-        );
-        ppanelLayout.setVerticalGroup(
-            ppanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 130, Short.MAX_VALUE)
-        );
+        ppanel.setLayout(new java.awt.BorderLayout());
 
         toolbar.setRollover(true);
         toolbar.setName("toolbar"); // NOI18N
@@ -247,15 +240,15 @@ public class PreviewPanel extends javax.swing.JPanel {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(ppanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(toolbar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 539, Short.MAX_VALUE)
+            .addComponent(ppanel, javax.swing.GroupLayout.DEFAULT_SIZE, 729, Short.MAX_VALUE)
+            .addComponent(toolbar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 729, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(toolbar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(ppanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(ppanel, javax.swing.GroupLayout.DEFAULT_SIZE, 407, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -312,10 +305,11 @@ public class PreviewPanel extends javax.swing.JPanel {
         Log.Debug(this, "Preparing preview for: " + file);
         OOOPanel op = new OOOPanel();
         ppanel.removeAll();
+        ppanel.setLayout(new BorderLayout());
         ppanel.add(op, BorderLayout.CENTER);
 
         op.constructOOOPanel(file);
-        ppanel.validate();
+        this.validate();
     }
 
     public void open(File file) {
