@@ -368,9 +368,9 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
         try {
             return getIDClass().newInstance();
         } catch (InstantiationException ex) {
-            Logger.getLogger(MPComboBoxModelItem.class.getName()).log(Level.SEVERE, null, ex);
+            mpv5.logging.Log.Debug(ex);//Logger.getLogger(MPComboBoxModelItem.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            Logger.getLogger(MPComboBoxModelItem.class.getName()).log(Level.SEVERE, null, ex);
+            mpv5.logging.Log.Debug(ex);//Logger.getLogger(MPComboBoxModelItem.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }

@@ -70,7 +70,7 @@ public class NoaConnection {
                     Connection = new NoaConnection(LocalSettings.getProperty(LocalSettings.OFFICE_HOME), 0);
                 }
             } catch (Exception ex) {
-                Logger.getLogger(NoaConnection.class.getName()).log(Level.SEVERE, null, ex);
+                mpv5.logging.Log.Debug(ex);//Logger.getLogger(NoaConnection.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         return Connection;
@@ -227,7 +227,7 @@ public class NoaConnection {
 
 
                 } catch (IOException ex) {
-                    Logger.getLogger(NoaConnection.class.getName()).log(Level.SEVERE, null, ex);
+                    mpv5.logging.Log.Debug(ex);//Logger.getLogger(NoaConnection.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         };

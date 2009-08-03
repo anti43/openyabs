@@ -86,12 +86,12 @@ public class FileReaderWriter {
                 s = in.readLine();
             }
         } catch (IOException ex) {
-            Logger.getLogger(FileReaderWriter.class.getName()).log(Level.SEVERE, null, ex);
+            mpv5.logging.Log.Debug(ex);//Logger.getLogger(FileReaderWriter.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
                 in.close();
             } catch (IOException ex) {
-                Logger.getLogger(FileReaderWriter.class.getName()).log(Level.SEVERE, null, ex);
+                mpv5.logging.Log.Debug(ex);//Logger.getLogger(FileReaderWriter.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
@@ -121,7 +121,7 @@ public class FileReaderWriter {
             try {
                 in.close();
             } catch (IOException ex) {
-                Logger.getLogger(FileReaderWriter.class.getName()).log(Level.SEVERE, null, ex);
+                mpv5.logging.Log.Debug(ex);//Logger.getLogger(FileReaderWriter.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 

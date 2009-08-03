@@ -350,9 +350,9 @@ public class Test {
 ////            new XMLReader().newDoc(new File("contacts.xml"), true);
 ////
 ////        } catch (JDOMException ex) {
-////            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
+////            mpv5.logging.Log.Debug(ex);//Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
 ////        } catch (IOException ex) {
-////            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
+////            mpv5.logging.Log.Debug(ex);//Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
 ////        }
 ////            XMLReader r = new XMLReader();
 ////            r.newDoc(new File("contacts.xml"), true);
@@ -368,9 +368,9 @@ public class Test {
 ////           ex.printStackTrace();
 ////        }
 //        } catch (IOException ex) {
-//            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
+//            mpv5.logging.Log.Debug(ex);//Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
 //        } catch (DocumentException ex) {
-//            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
+//            mpv5.logging.Log.Debug(ex);//Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
 //        }
 //        new SplashScreen(new ImageIcon(Test.class.getResource("/mpv5/resources/images/background.png")));
 //        try {
@@ -378,9 +378,9 @@ public class Test {
 //            new XMLReader().newDoc(new File("contacts.xml"), true);
 //
 //        } catch (JDOMException ex) {
-//            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
+//            mpv5.logging.Log.Debug(ex);//Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
 //        } catch (IOException ex) {
-//            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
+//            mpv5.logging.Log.Debug(ex);//Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
 //        }
 //            XMLReader r = new XMLReader();
 //            r.newDoc(new File("contacts.xml"), true);
@@ -457,7 +457,7 @@ public class Test {
 //                } // end forChuck Norris doesn’t deploy web applications, he roundhouse kicks them into the server.
 //            } // end tryA synchronize doesn’t protect against Chuck Norris, if he wants the object, he takes it.
 //        } catch (Exception ex) {
-//            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
+//            mpv5.logging.Log.Debug(ex);//Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
 //        }
 
     

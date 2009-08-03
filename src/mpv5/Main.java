@@ -622,7 +622,7 @@ public class Main extends SingleFrameApplication {
             LogConsole.setLogFile("install.log");
             Log.Debug(this, new Date());
         } catch (Exception ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            mpv5.logging.Log.Debug(ex);//Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
         Wizard w = new Wizard(true);
         w.addPanel(new wizard_DBSettings_1(w, forConnId));

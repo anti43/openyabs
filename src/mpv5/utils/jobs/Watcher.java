@@ -31,7 +31,7 @@ public class Watcher implements Runnable {
             try {
                 Thread.sleep(interval);
             } catch (InterruptedException ex) {
-                Logger.getLogger(Watcher.class.getName()).log(Level.SEVERE, null, ex);
+                mpv5.logging.Log.Debug(ex);//Logger.getLogger(Watcher.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }

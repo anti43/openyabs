@@ -201,7 +201,7 @@ public class TableHtmlWriter {
             try {
                 write(border, bordercolor);
             } catch (IOException ex) {
-                Logger.getLogger(TableHtmlWriter.class.getName()).log(Level.SEVERE, null, ex);
+                mpv5.logging.Log.Debug(ex);//Logger.getLogger(TableHtmlWriter.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
             System.err.println("No datamodel given.");
@@ -220,7 +220,7 @@ public class TableHtmlWriter {
             try {
                 write(0, Color.BLACK);
             } catch (IOException ex) {
-                Logger.getLogger(TableHtmlWriter.class.getName()).log(Level.SEVERE, null, ex);
+                mpv5.logging.Log.Debug(ex);//Logger.getLogger(TableHtmlWriter.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
             System.err.println("No datamodel given.");
@@ -405,7 +405,7 @@ public class TableHtmlWriter {
             try {
                 write2(border, bordercolor);
             } catch (IOException ex) {
-                Logger.getLogger(TableHtmlWriter.class.getName()).log(Level.SEVERE, null, ex);
+                mpv5.logging.Log.Debug(ex);//Logger.getLogger(TableHtmlWriter.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
             System.err.println("No datamodel given.");

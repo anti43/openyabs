@@ -53,17 +53,17 @@ public class ClasspathTools {
             method.setAccessible(true);
             method.invoke(urlClassLoader, new Object[]{u});
         } catch (IllegalAccessException ex) {
-            Logger.getLogger(ClasspathTools.class.getName()).log(Level.SEVERE, null, ex);
+            mpv5.logging.Log.Debug(ex);//Logger.getLogger(ClasspathTools.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IllegalArgumentException ex) {
-            Logger.getLogger(ClasspathTools.class.getName()).log(Level.SEVERE, null, ex);
+            mpv5.logging.Log.Debug(ex);//Logger.getLogger(ClasspathTools.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InvocationTargetException ex) {
-            Logger.getLogger(ClasspathTools.class.getName()).log(Level.SEVERE, null, ex);
+            mpv5.logging.Log.Debug(ex);//Logger.getLogger(ClasspathTools.class.getName()).log(Level.SEVERE, null, ex);
         } catch (NoSuchMethodException ex) {
-            Logger.getLogger(ClasspathTools.class.getName()).log(Level.SEVERE, null, ex);
+            mpv5.logging.Log.Debug(ex);//Logger.getLogger(ClasspathTools.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SecurityException ex) {
-            Logger.getLogger(ClasspathTools.class.getName()).log(Level.SEVERE, null, ex);
+            mpv5.logging.Log.Debug(ex);//Logger.getLogger(ClasspathTools.class.getName()).log(Level.SEVERE, null, ex);
         } catch (MalformedURLException ex) {
-            Logger.getLogger(ClasspathTools.class.getName()).log(Level.SEVERE, null, ex);
+            mpv5.logging.Log.Debug(ex);//Logger.getLogger(ClasspathTools.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

@@ -78,17 +78,17 @@ public class PDFFormTest {
         try {
           acroFields.setField(object.toString(), "test_" + RandomText.getText());
         } catch (IOException ex) {
-          Logger.getLogger(PDFFormTest.class.getName()).log(Level.SEVERE, null, ex);
+          mpv5.logging.Log.Debug(ex);//Logger.getLogger(PDFFormTest.class.getName()).log(Level.SEVERE, null, ex);
         } catch (DocumentException ex) {
-          Logger.getLogger(PDFFormTest.class.getName()).log(Level.SEVERE, null, ex);
+          mpv5.logging.Log.Debug(ex);//Logger.getLogger(PDFFormTest.class.getName()).log(Level.SEVERE, null, ex);
         }
       }
 
       pdfStamper.close();
     } catch (DocumentException ex) {
-      Logger.getLogger(PDFFormTest.class.getName()).log(Level.SEVERE, null, ex);
+      mpv5.logging.Log.Debug(ex);//Logger.getLogger(PDFFormTest.class.getName()).log(Level.SEVERE, null, ex);
     } catch (IOException ex) {
-      Logger.getLogger(PDFFormTest.class.getName()).log(Level.SEVERE, null, ex);
+      mpv5.logging.Log.Debug(ex);//Logger.getLogger(PDFFormTest.class.getName()).log(Level.SEVERE, null, ex);
     }
 
   }
@@ -108,17 +108,17 @@ public class PDFFormTest {
         try {
           acroFields.setField(object.toString(),(String) map.get(object.toString()));
         } catch (IOException ex) {
-          Logger.getLogger(PDFFormTest.class.getName()).log(Level.SEVERE, null, ex);
+          mpv5.logging.Log.Debug(ex);//Logger.getLogger(PDFFormTest.class.getName()).log(Level.SEVERE, null, ex);
         } catch (DocumentException ex) {
-          Logger.getLogger(PDFFormTest.class.getName()).log(Level.SEVERE, null, ex);
+          mpv5.logging.Log.Debug(ex);//Logger.getLogger(PDFFormTest.class.getName()).log(Level.SEVERE, null, ex);
         }
       }
 
       pdfStamper.close();
     } catch (DocumentException ex) {
-      Logger.getLogger(PDFFormTest.class.getName()).log(Level.SEVERE, null, ex);
+      mpv5.logging.Log.Debug(ex);//Logger.getLogger(PDFFormTest.class.getName()).log(Level.SEVERE, null, ex);
     } catch (IOException ex) {
-      Logger.getLogger(PDFFormTest.class.getName()).log(Level.SEVERE, null, ex);
+      mpv5.logging.Log.Debug(ex);//Logger.getLogger(PDFFormTest.class.getName()).log(Level.SEVERE, null, ex);
     }
 
   }

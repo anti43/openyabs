@@ -49,7 +49,7 @@ public class MiniCalendar extends javax.swing.JFrame {
             this.setVisible(visible);
             this.setAlwaysOnTop(visible);
         } catch (PropertyVetoException ex) {
-            Logger.getLogger(MiniCalendar.class.getName()).log(Level.SEVERE, null, ex);
+            mpv5.logging.Log.Debug(ex);//Logger.getLogger(MiniCalendar.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -73,7 +73,7 @@ public class MiniCalendar extends javax.swing.JFrame {
             this.setVisible(visible);
             this.setAlwaysOnTop(visible);
         } catch (PropertyVetoException ex) {
-            Logger.getLogger(MiniCalendar.class.getName()).log(Level.SEVERE, null, ex);
+            mpv5.logging.Log.Debug(ex);//Logger.getLogger(MiniCalendar.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -86,7 +86,7 @@ public class MiniCalendar extends javax.swing.JFrame {
             xc.setDate(date);
             go();
         } catch (PropertyVetoException ex) {
-            Logger.getLogger(MiniCalendar.class.getName()).log(Level.SEVERE, null, ex);
+            mpv5.logging.Log.Debug(ex);//Logger.getLogger(MiniCalendar.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }

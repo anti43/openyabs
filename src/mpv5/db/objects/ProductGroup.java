@@ -90,7 +90,7 @@ public class ProductGroup extends DatabaseObject {
                 }
             }
         } catch (NodataFoundException ex) {
-            Logger.getLogger(ProductGroup.class.getName()).log(Level.SEVERE, null, ex);
+            mpv5.logging.Log.Debug(ex);//Logger.getLogger(ProductGroup.class.getName()).log(Level.SEVERE, null, ex);
         }
         return super.delete();
     }

@@ -200,7 +200,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
                 try {
                     file.createNewFile();
                 } catch (IOException ex) {
-                    Logger.getLogger(DialogForFile.class.getName()).log(Level.SEVERE, null, ex);
+                    mpv5.logging.Log.Debug(ex);//Logger.getLogger(DialogForFile.class.getName()).log(Level.SEVERE, null, ex);
                 }
             } else {
                 if (!Popup.Y_N_dialog(Messages.FILE_EXISTS + "\n" + file)) {
@@ -213,12 +213,12 @@ public class DialogForFile extends JFileChooser implements Waiter {
             try {
                 out = new FileWriter(file);
             } catch (IOException ex) {
-                Logger.getLogger(DialogForFile.class.getName()).log(Level.SEVERE, null, ex);
+                mpv5.logging.Log.Debug(ex);//Logger.getLogger(DialogForFile.class.getName()).log(Level.SEVERE, null, ex);
             }
             try {
                 in = new FileReader(fileToSave);
             } catch (FileNotFoundException ex) {
-                Logger.getLogger(DialogForFile.class.getName()).log(Level.SEVERE, null, ex);
+                mpv5.logging.Log.Debug(ex);//Logger.getLogger(DialogForFile.class.getName()).log(Level.SEVERE, null, ex);
             }
             try {
                 while ((c = in.read()) != -1) {
@@ -234,12 +234,12 @@ public class DialogForFile extends JFileChooser implements Waiter {
                 try {
                     in.close();
                 } catch (IOException ex) {
-                    Logger.getLogger(DialogForFile.class.getName()).log(Level.SEVERE, null, ex);
+                    mpv5.logging.Log.Debug(ex);//Logger.getLogger(DialogForFile.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 try {
                     out.close();
                 } catch (IOException ex) {
-                    Logger.getLogger(DialogForFile.class.getName()).log(Level.SEVERE, null, ex);
+                    mpv5.logging.Log.Debug(ex);//Logger.getLogger(DialogForFile.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }

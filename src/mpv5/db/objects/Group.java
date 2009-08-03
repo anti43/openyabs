@@ -90,7 +90,7 @@ public class Group extends DatabaseObject {
                 }
             }
         } catch (NodataFoundException ex) {
-            Logger.getLogger(Group.class.getName()).log(Level.SEVERE, null, ex);
+            mpv5.logging.Log.Debug(ex);//Logger.getLogger(Group.class.getName()).log(Level.SEVERE, null, ex);
         }
         return super.delete();
     }

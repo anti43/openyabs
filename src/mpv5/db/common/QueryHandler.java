@@ -619,7 +619,7 @@ public class QueryHandler implements Cloneable {
                     try {//Avoid Cursor flickering
                         Thread.sleep(10);
                     } catch (InterruptedException ex) {
-                        Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
+                        mpv5.logging.Log.Debug(ex);//Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     if (RUNNING_JOBS <= 1) {
                         comp.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -659,7 +659,7 @@ public class QueryHandler implements Cloneable {
                 try {
                     Thread.sleep(10);
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
+                    mpv5.logging.Log.Debug(ex);//Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
@@ -706,7 +706,7 @@ public class QueryHandler implements Cloneable {
                     String query = "INSERT INTO " + Context.getHistory().getDbIdentity() + " (cname, username, dbidentity, intitem, groupsids, dateadded) VALUES (?, ?, ?, ?, ?, ?)";
                     psHistory = sqlConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
                 } catch (SQLException ex) {
-                    Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
+                    mpv5.logging.Log.Debug(ex);//Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             psHistory.setString(1, message);
@@ -717,7 +717,7 @@ public class QueryHandler implements Cloneable {
             psHistory.setDate(6, new java.sql.Date(new java.util.Date().getTime()));
             psHistory.execute();
         } catch (SQLException ex) {
-            Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
+            mpv5.logging.Log.Debug(ex);//Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -738,7 +738,7 @@ public class QueryHandler implements Cloneable {
                     String query = "INSERT INTO " + Context.getLock().getDbIdentity() + " (cname, rowid, usersids) VALUES (?, ?, ?)";
                     psLock = sqlConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
                 } catch (SQLException ex) {
-                    Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
+                    mpv5.logging.Log.Debug(ex);//Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             psLock.setString(1, context.getDbIdentity());
@@ -758,7 +758,7 @@ public class QueryHandler implements Cloneable {
                     String query = "DELETE FROM " + Context.getLock().getDbIdentity() + " WHERE cname = ? AND rowid = ? AND usersids = ?";
                     psUnLock = sqlConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
                 } catch (SQLException ex) {
-                    Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
+                    mpv5.logging.Log.Debug(ex);//Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             psUnLock.setString(1, context.getDbIdentity());
@@ -1219,7 +1219,7 @@ public class QueryHandler implements Cloneable {
             theClone.setTable(tablename);
             theClone.runInBackground = false;
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
+            mpv5.logging.Log.Debug(ex);//Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
         return theClone;
     }
@@ -1236,7 +1236,7 @@ public class QueryHandler implements Cloneable {
             qh.runInBackground = false;
             return qh;
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
+            mpv5.logging.Log.Debug(ex);//Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
     }
@@ -1254,7 +1254,7 @@ public class QueryHandler implements Cloneable {
             theClone.setTable(context.getDbIdentity());
             theClone.runInBackground = false;
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
+            mpv5.logging.Log.Debug(ex);//Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
         return theClone;
     }
@@ -1274,7 +1274,7 @@ public class QueryHandler implements Cloneable {
             theClone.setLimit(limit);
             theClone.runInBackground = false;
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
+            mpv5.logging.Log.Debug(ex);//Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
         return theClone;
     }
@@ -1295,7 +1295,7 @@ public class QueryHandler implements Cloneable {
             theClone.setLimit(limit);
             theClone.runInBackground = inBackground;
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
+            mpv5.logging.Log.Debug(ex);//Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
         return theClone;
     }
@@ -1315,7 +1315,7 @@ public class QueryHandler implements Cloneable {
             theClone.setTable(context.getDbIdentity());
             theClone.runInBackground = false;
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
+            mpv5.logging.Log.Debug(ex);//Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
         return theClone;
     }
@@ -2196,9 +2196,9 @@ public class QueryHandler implements Cloneable {
                     viewToBeNotified.refresh();
                 }
             } catch (InterruptedException ex) {
-                Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
+                mpv5.logging.Log.Debug(ex);//Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ExecutionException ex) {
-                Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
+                mpv5.logging.Log.Debug(ex);//Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 

@@ -276,9 +276,9 @@ public class TextDatFile extends File implements Waitable {
             print();
             FileDirectoryHandler.copyFile(this, f);
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(TextDatFile.class.getName()).log(Level.SEVERE, null, ex);
+            mpv5.logging.Log.Debug(ex);//Logger.getLogger(TextDatFile.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Logger.getLogger(TextDatFile.class.getName()).log(Level.SEVERE, null, ex);
+            mpv5.logging.Log.Debug(ex);//Logger.getLogger(TextDatFile.class.getName()).log(Level.SEVERE, null, ex);
         }
         return f;
     }

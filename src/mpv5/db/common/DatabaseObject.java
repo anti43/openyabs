@@ -174,14 +174,14 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                         }
                     }
                 } catch (IllegalArgumentException ex) {
-                    Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+                    mpv5.logging.Log.Debug(ex);//Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (InvocationTargetException ex) {
-                    Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+                    mpv5.logging.Log.Debug(ex);//Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
                 }
             } catch (InstantiationException ex) {
-                Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+                mpv5.logging.Log.Debug(ex);//Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IllegalAccessException ex) {
-                Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+                mpv5.logging.Log.Debug(ex);//Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -218,9 +218,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
             Object obj = context.getIdentityClass().newInstance();
             return (DatabaseObject) obj;
         } catch (InstantiationException ex) {
-            Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+            mpv5.logging.Log.Debug(ex);//Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+            mpv5.logging.Log.Debug(ex);//Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return null;
@@ -525,11 +525,11 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                         t.add(left, (Double) tempval);
                     }
                 } catch (IllegalAccessException ex) {
-                    Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+                    mpv5.logging.Log.Debug(ex);//Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (IllegalArgumentException ex) {
-                    Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+                    mpv5.logging.Log.Debug(ex);//Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (InvocationTargetException ex) {
-                    Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+                    mpv5.logging.Log.Debug(ex);//Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
 //            else if (this.getClass().getMethods()[i].getName().startsWith("is")) {
@@ -543,11 +543,11 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
 //                    }
 //                    right += "(;;2#4#1#1#8#0#;;)" + intval + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
 //                } catch (IllegalAccessException ex) {
-//                    Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+//                    mpv5.logging.Log.Debug(ex);//Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
 //                } catch (IllegalArgumentException ex) {
-//                    Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+//                    mpv5.logging.Log.Debug(ex);//Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
 //                } catch (InvocationTargetException ex) {
-//                    Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+//                    mpv5.logging.Log.Debug(ex);//Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
 //                }
 //            }
         }
@@ -669,9 +669,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                 cacheObject((DatabaseObject) obj);
                 return (DatabaseObject) obj;
             } catch (InstantiationException ex) {
-                Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+                mpv5.logging.Log.Debug(ex);//Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IllegalAccessException ex) {
-                Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+                mpv5.logging.Log.Debug(ex);//Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
             return cdo;
@@ -696,9 +696,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                 throw new NodataFoundException(context);
             }
         } catch (InstantiationException ex) {
-            Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+            mpv5.logging.Log.Debug(ex);//Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+            mpv5.logging.Log.Debug(ex);//Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return null;
@@ -716,9 +716,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                 Object obj = context.getIdentityClass().newInstance();
                 return (DatabaseObject) obj;
             } catch (InstantiationException ex) {
-                Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+                mpv5.logging.Log.Debug(ex);//Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IllegalAccessException ex) {
-                Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+                mpv5.logging.Log.Debug(ex);//Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
             Log.Debug(DatabaseObject.class, "No identity class found for: " + context);

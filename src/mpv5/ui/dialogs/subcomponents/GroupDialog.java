@@ -38,7 +38,7 @@ public class GroupDialog extends javax.swing.JPanel {
         try {
             refresh();
         } catch (NodataFoundException ex) {
-            Logger.getLogger(GroupDialog.class.getName()).log(Level.SEVERE, null, ex);
+            mpv5.logging.Log.Debug(ex);//Logger.getLogger(GroupDialog.class.getName()).log(Level.SEVERE, null, ex);
         }
         this.view = view;
     }
