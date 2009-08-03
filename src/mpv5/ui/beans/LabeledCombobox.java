@@ -30,7 +30,6 @@ public class LabeledCombobox extends javax.swing.JPanel {
     private String _text;
     private String _label;
 
-
     /** Creates new form LabeledTextField */
     public LabeledCombobox() {
         initComponents();
@@ -39,8 +38,6 @@ public class LabeledCombobox extends javax.swing.JPanel {
     public JComboBox getComboBox() {
         return mPCombobox1.getComboBox();
     }
-
-  
 
     /**
      *
@@ -55,7 +52,7 @@ public class LabeledCombobox extends javax.swing.JPanel {
      * @param values
      */
     public void setModel(MPEnum[] values) {
-       mPCombobox1.setModel(MPComboBoxModelItem.toModel(values));
+        mPCombobox1.setModel(MPComboBoxModelItem.toModel(values));
     }
 
     /**
@@ -87,7 +84,7 @@ public class LabeledCombobox extends javax.swing.JPanel {
      * @param data
      */
     public void setModel(Object[][] data) {
-      mPCombobox1.setModel(MPComboBoxModelItem.toModel(data));
+        mPCombobox1.setModel(MPComboBoxModelItem.toModel(data));
     }
 
     /**
@@ -107,7 +104,7 @@ public class LabeledCombobox extends javax.swing.JPanel {
      * @param model
      */
     public void setModel(MPComboboxModel model) {
-      mPCombobox1.setModel(model);
+        mPCombobox1.setModel(model);
     }
 
     /**
@@ -132,10 +129,14 @@ public class LabeledCombobox extends javax.swing.JPanel {
 
     /**
      * Delegates to getComboBox().setSelectedIndex(itemID);
-     * @param itemID
+     * @param itemindex
      */
-    public void setSelectedIndex(int itemID) {
-        getComboBox().setSelectedIndex(itemID);
+    public void setSelectedIndex(int itemindex) {
+        if (itemindex < getComboBox().getItemCount()) {
+            getComboBox().setSelectedIndex(itemindex);
+        } else {
+            throw new IndexOutOfBoundsException(itemindex + " must be lower than " + getComboBox().getItemCount());
+        }
     }
 
     /**
@@ -143,7 +144,7 @@ public class LabeledCombobox extends javax.swing.JPanel {
      * @param valueOfItem
      */
     public void setSelectedItem(String valueOfItem) {
-      mPCombobox1.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(valueOfItem, mPCombobox1.getModel()));
+        mPCombobox1.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(valueOfItem, mPCombobox1.getModel()));
     }
 
     /**
@@ -151,7 +152,7 @@ public class LabeledCombobox extends javax.swing.JPanel {
      * @param ID
      */
     public void setSelectedItem(Object ID) {
-      mPCombobox1.setSelectedIndex(MPComboBoxModelItem.getItemID(ID, mPCombobox1.getModel()));
+        mPCombobox1.setSelectedIndex(MPComboBoxModelItem.getItemID(ID, mPCombobox1.getModel()));
     }
 
     /**
@@ -160,7 +161,7 @@ public class LabeledCombobox extends javax.swing.JPanel {
      * @param enabled
      */
     public void setSearchOnEnterEnabled(boolean enabled) {
-      mPCombobox1.setSearchOnEnterEnabled(enabled);
+        mPCombobox1.setSearchOnEnterEnabled(enabled);
     }
 
     /**
@@ -205,7 +206,6 @@ public class LabeledCombobox extends javax.swing.JPanel {
                 .addGap(0, 0, 0))
         );
     }// </editor-fold>//GEN-END:initComponents
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private mpv5.ui.beans.MPCombobox mPCombobox1;
@@ -242,7 +242,7 @@ public class LabeledCombobox extends javax.swing.JPanel {
     @Override
     public void setEnabled(boolean enabled) {
         jLabel1.setEnabled(enabled);
-      mPCombobox1.setEnabled(enabled);
+        mPCombobox1.setEnabled(enabled);
     }
 
     /**
@@ -255,7 +255,7 @@ public class LabeledCombobox extends javax.swing.JPanel {
      * @param text
      */
     public void setValue(String text) {
-      mPCombobox1.setValue(text);
+        mPCombobox1.setValue(text);
     }
 
     /**

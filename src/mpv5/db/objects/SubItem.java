@@ -18,13 +18,17 @@ package mpv5.db.objects;
 
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.table.TableModel;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.NodataFoundException;
 import mpv5.globals.Headers;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
+import mpv5.ui.panels.ItemPanel;
 import mpv5.utils.models.MPTableModel;
 
 /**
@@ -256,7 +260,15 @@ public class SubItem extends DatabaseObject {
 
     @Override
     public JComponent getView() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        try {
+            Item dos = (Item) DatabaseObject.getObject(Context.getItems(), __getItemsids());  
+            ItemPanel ip = new ItemPanel(Context.getItems(), dos.__getInttype());
+            ip.setDataOwner(dos, true);
+            return ip;
+        } catch (Exception ex) {
+            Log.Debug(ex);
+            return null;
+        }
     }
 
     @Override

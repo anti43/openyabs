@@ -72,8 +72,8 @@ public class Item extends DatabaseObject implements Formattable {
         en[0] = new MPEnum() {
 
             @Override
-            public int getId() {
-                return STATUS_QUEUED;
+            public Integer getId() {
+                return new Integer(STATUS_QUEUED);
             }
 
             @Override
@@ -84,8 +84,8 @@ public class Item extends DatabaseObject implements Formattable {
         en[1] = new MPEnum() {
 
             @Override
-            public int getId() {
-                return STATUS_IN_PROGRESS;
+            public Integer getId() {
+                return new Integer(STATUS_IN_PROGRESS);
             }
 
             @Override
@@ -96,8 +96,8 @@ public class Item extends DatabaseObject implements Formattable {
         en[2] = new MPEnum() {
 
             @Override
-            public int getId() {
-                return STATUS_PAUSED;
+            public Integer getId() {
+                return new Integer(STATUS_PAUSED);
             }
 
             @Override
@@ -108,8 +108,8 @@ public class Item extends DatabaseObject implements Formattable {
         en[3] = new MPEnum() {
 
             @Override
-            public int getId() {
-                return STATUS_FINISHED;
+            public Integer getId() {
+                return new Integer(STATUS_FINISHED);
             }
 
             @Override
@@ -120,8 +120,8 @@ public class Item extends DatabaseObject implements Formattable {
         en[4] = new MPEnum() {
 
             @Override
-            public int getId() {
-                return STATUS_PAID;
+            public Integer getId() {
+                return new Integer(STATUS_PAID);
             }
 
             @Override
@@ -132,8 +132,8 @@ public class Item extends DatabaseObject implements Formattable {
         en[5] = new MPEnum() {
 
             @Override
-            public int getId() {
-                return STATUS_CANCELLED;
+            public Integer  getId() {
+                return new Integer(STATUS_CANCELLED);
             }
 
             @Override

@@ -74,7 +74,7 @@ public class FormatHandler {
         }
 
         @Override
-        public int getId() {
+        public Integer getId() {
             return ids;
         }
 

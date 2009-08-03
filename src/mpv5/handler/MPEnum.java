@@ -25,7 +25,7 @@ public interface MPEnum {
      * The id
      * @return An int representing the id
      */
-    public int getId();
+    public Integer getId();
 
     /**
      * The value
