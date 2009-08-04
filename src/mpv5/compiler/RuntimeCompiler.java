@@ -34,14 +34,11 @@ package mpv5.compiler;
  */
 
 import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
 import javax.tools.SimpleJavaFileObject;
 import javax.tools.ToolProvider;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -49,8 +46,6 @@ import java.net.URLClassLoader;
 import java.util.Arrays;
 import mpv5.globals.LocalSettings;
 import mpv5.logging.Log;
-import mpv5.utils.files.FileDirectoryHandler;
-import mpv5.utils.reflection.ClasspathTools;
 
 /**
  * Demonstrate generating Java source code on the fly, compiling it and executing it. Demonstrate generating Java source.
@@ -141,7 +136,7 @@ public final class RuntimeCompiler {
 }
 
 /**
- * Represents the source text of a Java program in RAM.
+ * Represents the source text of a Java program in a temp dir
  */
 class TempResidentJavaFileObject extends SimpleJavaFileObject {
     // ------------------------------ FIELDS ------------------------------
@@ -163,11 +158,6 @@ class TempResidentJavaFileObject extends SimpleJavaFileObject {
     @SuppressWarnings({"SameParameterValue"})
     public TempResidentJavaFileObject(String className, String programText) throws URISyntaxException {
         super(new URI(className + ".java"), Kind.SOURCE);
-//        try {
-//            ClasspathTools.addPath("/home/anti/NetBeansProjects/trunk/");
-//        } catch (Exception ex) {
-//            Logger.getLogger(TempResidentJavaFileObject.class.getName()).log(Level.SEVERE, null, ex);
-//        }
         this.programText = programText;
     }
 
