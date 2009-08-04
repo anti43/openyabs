@@ -67,7 +67,8 @@ public class LocalSettings {
                 {OFFICE_HOME, "/opt/openoffice.org3"},
                 {OFFICE_PORT, "8100"},
                 {OFFICE_HOST, "127.0.0.1"},
-                {OFFICE_REMOTE, "false"}
+                {OFFICE_REMOTE, "false"},
+                {CACHE_DIR, "Cache"}
             });
     private static Vector<PropertyStore> cookies;
 

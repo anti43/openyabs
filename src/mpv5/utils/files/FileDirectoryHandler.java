@@ -316,10 +316,18 @@ public abstract class FileDirectoryHandler {
 
     /**
      *
-     * @return
+     * @return The temporary directory + File.separator
      */
     public static String getTempDir() {
         return System.getProperty("java.io.tmpdir") + File.separator;
+    }
+
+    /**
+     *
+     * @return The temporary directory
+     */
+    public static String getTempDir2() {
+        return System.getProperty("java.io.tmpdir");
     }
 
     /**

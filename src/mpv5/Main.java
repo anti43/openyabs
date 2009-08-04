@@ -52,6 +52,7 @@ import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.DatabaseObjectLock;
 import mpv5.db.common.QueryHandler;
 import mpv5.db.objects.Account;
+import mpv5.db.objects.Contact;
 import mpv5.globals.Constants;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
@@ -63,6 +64,8 @@ import mpv5.ui.dialogs.subcomponents.wizard_DBSettings_1;
 
 
 import mpv5.db.objects.User;
+import mpv5.handler.SDBObjectGenerator;
+import mpv5.handler.SimpleDatabaseObject;
 import mpv5.i18n.LanguageManager;
 import mpv5.pluginhandling.UserPlugin;
 import mpv5.server.MPServer;

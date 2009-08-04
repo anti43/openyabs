@@ -16,10 +16,7 @@
  */
 package mpv5;
 
-import com.sun.star.uno.Exception;
 import java.awt.Component;
-import java.io.File;
-import java.io.FileNotFoundException;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -28,54 +25,29 @@ import javax.swing.table.TableCellRenderer;
 import java.util.Vector;
 import javax.swing.table.TableColumn;
 import mpv5.db.common.NodataFoundException;
-import mpv5.logging.Log;
 import mpv5.logging.LogConsole;
-import mpv5.utils.export.Export;
-import mpv5.utils.export.ODTFile;
 
-import ag.ion.bion.officelayer.application.IOfficeApplication;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
-import ag.ion.bion.officelayer.application.OfficeApplicationRuntime;
-import ag.ion.bion.officelayer.desktop.DesktopException;
-import ag.ion.bion.officelayer.desktop.IFrame;
-import ag.ion.bion.officelayer.document.DocumentDescriptor;
 import ag.ion.bion.officelayer.document.DocumentException;
-import ag.ion.bion.officelayer.document.IDocument;
-import ag.ion.bion.officelayer.document.IDocumentDescriptor;
-import ag.ion.bion.officelayer.filter.PDFFilter;
-import ag.ion.bion.officelayer.form.IFormComponent;
-import ag.ion.bion.officelayer.text.ITextDocument;
-import ag.ion.bion.officelayer.text.ITextField;
-import ag.ion.bion.officelayer.text.ITextFieldService;
-import ag.ion.bion.officelayer.text.IVariableTextFieldMaster;
-import ag.ion.bion.officelayer.text.TextException;
 import ag.ion.noa.NOAException;
-import com.sun.star.awt.XTextComponent;
-import com.sun.star.beans.*;
-import com.sun.star.comp.helper.BootstrapException;
-import com.sun.star.document.XDocumentInfoSupplier;
-import com.sun.star.io.IOException;
-import com.sun.star.lang.XMultiComponentFactory;
-import com.sun.star.uno.Exception;
-import com.sun.star.uno.XComponentContext;
-import com.sun.star.frame.*;
-import com.sun.star.text.XTextDocument;
-import com.sun.star.form.XFormComponent;
-import com.sun.star.uno.UnoRuntime;
-import com.sun.star.util.DateTime;
-import enoa.connection.NoaConnection;
+
 import java.io.*;
 
-import java.util.HashMap;
-import java.util.Iterator;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JPanel;
-import mpv5.globals.LocalSettings;
+import javax.tools.JavaCompiler;
+import javax.tools.JavaFileObject;
+import javax.tools.JavaFileObject.Kind;
+import javax.tools.SimpleJavaFileObject;
+import javax.tools.ToolProvider;
+import mpv5.db.objects.Contact;
+import mpv5.handler.SDBObjectGenerator;
+import mpv5.handler.SimpleDatabaseObject;
 import mpv5.logging.Log;
-import mpv5.ui.panels.PreviewPanel;
-import mpv5.utils.reflection.ClasspathTools;
-import ooo.connector.BootstrapSocketConnector;
 
 public class Test {
 
@@ -84,37 +56,46 @@ public class Test {
     private static String ooohost;
     private static String oooport;
 
+
     public static void main(String[] args) throws NodataFoundException, FileNotFoundException, OfficeApplicationException, NOAException, DocumentException, InterruptedException {
 
 //        System.out.println("ff.hh".substring("ff.hh".lastIndexOf(".")+1));
         LogConsole.setLogStreams(false, true, false);
         Log.setLogLevel(Log.LOGLEVEL_DEBUG);
-
+        
+        Contact c = new Contact();
+        SimpleDatabaseObject d = SDBObjectGenerator.getObjectFrom(c);
         try {
-            NoaConnection.startOOServer(LocalSettings.getProperty(LocalSettings.OFFICE_HOME),
-                    Integer.valueOf(LocalSettings.getProperty(LocalSettings.OFFICE_PORT)));
-        } catch (java.lang.Exception numberFormatException) {
-            numberFormatException.printStackTrace();
+            c.parse(d);
+        } catch (java.lang.Exception ex) {
+            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        Thread.sleep(5000);
 
-        Export e = new Export();
-        ODTFile f = new ODTFile("/home/anti/aaa.odt");
-        e.put("number", "some value#");
-        e.setFile(f);
-        File g = new File("/home/anti/exp" + Math.random() + ".pdf");
-        File g2 = new File("/home/anti/exp0.01511272191122559.pdf");
-
-        e.processData(g);
-
-
-
-        Thread.sleep(15000);
-
-        NoaConnection.stopOOOServer();
+//        try {
+//            NoaConnection.startOOServer(LocalSettings.getProperty(LocalSettings.OFFICE_HOME),
+//                    Integer.valueOf(LocalSettings.getProperty(LocalSettings.OFFICE_PORT)));
+//        } catch (java.lang.Exception numberFormatException) {
+//            numberFormatException.printStackTrace();
+//        }
+//
+//        Thread.sleep(5000);
+//
+//        Export e = new Export();
+//        ODTFile f = new ODTFile("/home/anti/aaa.odt");
+//        e.put("number", "some value#");
+//        e.setFile(f);
+//        File g = new File("/home/anti/exp" + Math.random() + ".pdf");
+//        File g2 = new File("/home/anti/exp0.01511272191122559.pdf");
+//
+//        e.processData(g);
+//
+//
+//
+//        Thread.sleep(15000);
+//
+//        NoaConnection.stopOOOServer();
         System.exit(0);
-
 
 
 //        System.exit(0);
@@ -461,5 +442,6 @@ public class Test {
 //        }
 
     
+
 
 

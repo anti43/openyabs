@@ -56,6 +56,11 @@ public class MPServer extends Thread {
     public MPServer() {
         Log.Debug(this, "Initialising MP Server..");
         INSTANCES.add(this);
+        try {
+            new XMLRPCServer();//Conveniently start the XML RPC server along the native MP server
+        } catch (Exception ex) {
+            Log.Debug(ex);
+        }
     }
 
     @Override

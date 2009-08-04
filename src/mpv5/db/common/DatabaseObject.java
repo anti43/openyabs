@@ -37,6 +37,7 @@ import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
 import javax.swing.JComponent;
 import mpv5.globals.LocalSettings;
+import mpv5.handler.SimpleDatabaseObject;
 import mpv5.pluginhandling.MPPLuginLoader;
 import mpv5.utils.date.RandomDate;
 import mpv5.utils.images.MPIcon;
@@ -965,7 +966,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                             if (select.getData()[i][j] != null) {
                                 try {
                                     if (name.startsWith("is") || name.toUpperCase().startsWith("BOOL") || name.toUpperCase().endsWith("BOOL")) {
-                                        if (String.valueOf(select.getData()[i][j]).equals("1")) {
+                                        if (String.valueOf(select.getData()[i][j]).equals("1") || String.valueOf(select.getData()[i][j]).equalsIgnoreCase("true")) {
                                             vars.get(k).invoke(dbo, new Object[]{true});
                                         } else {
                                             vars.get(k).invoke(dbo, new Object[]{false});
@@ -1045,6 +1046,35 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
     }
 
     /**
+     * Tries to reflect the {@link SimpleDatabaseObject} into this do.
+     * The simple objects name must match the DatabaseObjects's {@link Context#getDbIdentity()}
+     * @param sdo
+     * @throws Exception
+     */
+    public void parse(SimpleDatabaseObject sdo) throws Exception {
+
+        Log.Debug(this, "Parsing " + sdo);
+        if (sdo.getClass().getSimpleName().equalsIgnoreCase(getType())) {
+            Hashtable<String, Object> data = new Hashtable<String, Object>();
+            Method[] m = sdo.getClass().getMethods();
+
+            for (int i = 0; i < m.length; i++) {
+                Method method = m[i];
+                if (method.getName().startsWith("get")) {
+                    Object o =method.invoke(sdo, new Object[]{});
+                    if (o!=null) {
+                        data.put(method.getName().substring(3), o);
+                    }
+                }
+            }
+
+            parse(data);
+        } else {
+            throw new IllegalArgumentException(sdo.getClass().getSimpleName() + " does not equal " + getType());
+        }
+    }
+
+    /**
      * @return the groupsids
      */
     public int __getGroupsids() {
@@ -1094,8 +1124,10 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 83 * hash + (this.context != null ? this.context.hashCode() : 0);
-        hash = 83 * hash + (this.ids != null ? this.ids.hashCode() : 0);
+        hash =
+                83 * hash + (this.context != null ? this.context.hashCode() : 0);
+        hash =
+                83 * hash + (this.ids != null ? this.ids.hashCode() : 0);
         return hash;
     }
 
@@ -1111,6 +1143,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
         } else {
             return hashCode() == databaseObject.hashCode();
         }
+
     }
 
     @Override
@@ -1127,10 +1160,11 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
             return EQUAL;
         }
 
-        //This should yield to items grouped by context..
+//This should yield to items grouped by context..
         if (this.getContext().getId() < anotherObject.getContext().getId()) {
             return BEFORE;
         }
+
         if (this.getContext().getId() > anotherObject.getContext().getId()) {
             return AFTER;
         }
@@ -1138,6 +1172,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
         if (this.ids < anotherObject.ids) {
             return BEFORE;
         }
+
         if (this.ids > anotherObject.ids) {
             return AFTER;
         }
@@ -1158,9 +1193,11 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
             } else {
                 return false;
             }
+
         } catch (NodataFoundException ex) {
             return false;
         }
+
     }
 
     /**
