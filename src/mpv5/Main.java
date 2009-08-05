@@ -534,7 +534,7 @@ public class Main extends SingleFrameApplication {
                     try {
                         NoaConnection.getConnection();
                     } catch (Exception n) {
-                        Log.Debug(n);
+                        Log.Debug(Main.class, n.getMessage());
                     }
                 }
             };

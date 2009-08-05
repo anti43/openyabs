@@ -21,13 +21,15 @@
  */
 package mpv5.bugtracker;
 
-import java.net.InetAddress;
+import java.awt.Desktop;
+import java.net.URI;
+import java.net.URLEncoder;
 import java.util.List;
+
 import mpv5.globals.Constants;
-import mpv5.globals.LocalSettings;
 import mpv5.logging.Log;
-import mpv5.mail.SimpleMail;
-import mpv5.ui.frames.MPView;
+import mpv5.ui.dialogs.BigPopup;
+import mpv5.ui.dialogs.Popup;
 
 /**
  *
@@ -39,8 +41,6 @@ public class SubmitForm extends javax.swing.JPanel {
      */
     public SubmitForm(List<Exception> exceptions) {
         initComponents();
-        String mail = MPView.getUser().__getMail();
-        mailadr.setText(mail);
 
         String exc = "";
         for (int i = 0; i < exceptions.size(); i++) {
@@ -79,9 +79,9 @@ public class SubmitForm extends javax.swing.JPanel {
         jScrollPane3 = new javax.swing.JScrollPane();
         trace = new javax.swing.JTextArea();
         jButton1 = new javax.swing.JButton();
-        mailadr = new mpv5.ui.beans.LabeledTextField();
         jScrollPane4 = new javax.swing.JScrollPane();
         optional = new javax.swing.JTextArea();
+        google = new javax.swing.JCheckBox();
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("SubmitForm.border.title"))); // NOI18N
@@ -133,9 +133,6 @@ public class SubmitForm extends javax.swing.JPanel {
             }
         });
 
-        mailadr.set_Label(bundle.getString("SubmitForm.mailadr._Label")); // NOI18N
-        mailadr.setName("mailadr"); // NOI18N
-
         jScrollPane4.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jScrollPane4.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
         jScrollPane4.setName("jScrollPane4"); // NOI18N
@@ -149,6 +146,10 @@ public class SubmitForm extends javax.swing.JPanel {
         optional.setWrapStyleWord(true);
         optional.setName("optional"); // NOI18N
         jScrollPane4.setViewportView(optional);
+
+        google.setSelected(true);
+        google.setText(bundle.getString("SubmitForm.google.text")); // NOI18N
+        google.setName("google"); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -164,8 +165,8 @@ public class SubmitForm extends javax.swing.JPanel {
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 430, Short.MAX_VALUE)
                     .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 430, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(mailadr, javax.swing.GroupLayout.PREFERRED_SIZE, 323, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 43, Short.MAX_VALUE)
+                        .addComponent(google, javax.swing.GroupLayout.DEFAULT_SIZE, 358, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButton1)))
                 .addContainerGap())
         );
@@ -180,30 +181,49 @@ public class SubmitForm extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 79, Short.MAX_VALUE)
+                .addComponent(jScrollPane3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
-                    .addComponent(mailadr, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(google)))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        String submitter = mailadr.getText();
-        String mail = "yabs@automated-mail.com";
-        if (submitter != null && submitter.length() > 0 && submitter.contains("@") && submitter.contains(".")) {
-            mail = submitter;
+
+        if (google.isSelected()) {
+            try {
+                String message = "This is a generated issue report for Yabs Version " + Constants.VERSION;
+                message += "\n\n" + steps.getText() + "\n\n" + trace.getText();
+                message = URLEncoder.encode(message, "UTF-8");
+                if (message.length() > 1800) {
+                    message = message.substring(0, 1800);
+                }
+
+                String url = "http://code.google.com/p/mp-rechnungs-und-kundenverwaltung/issues/entry?" +
+                        "labels=Type-Defect,Priority-Medium&template=User+defect+report&summary=Unexpected+error+in+YaBS" +
+                        "+Version+" + Constants.VERSION + "&" +
+                        "comment=" + message +
+                        "";
+
+                Desktop.getDesktop().browse(new URI(url));
+                BigPopup.close(this);
+            } catch (Exception x) {
+                Log.Debug(x);
+            }
+        } else {
+            String message = "This is a generated issue report for Yabs Version " + Constants.VERSION;
+            message += "\n\n" + steps.getText() + "\n\n" + trace.getText();
+            Popup.notice("Please send this message to mp-rechnungs-und-kundenverwaltung@googlegroups.com: \n\nThank you!\n\n" +
+                    message, 500, 500);
+            BigPopup.close(this);
         }
-
-        String message = "This is a generated issue report for Yabs Version " + Constants.VERSION;
-        message += "\n\n" + steps.getText() + "\n\n" + trace.getText();
-
-        new SimpleMail("Yabs issue report", message, mail, "mp-rechnungs-und-kundenverwaltung-subscribe@googlegroups.com");
     }//GEN-LAST:event_jButton1ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea description;
+    private javax.swing.JCheckBox google;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -211,7 +231,6 @@ public class SubmitForm extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
-    private mpv5.ui.beans.LabeledTextField mailadr;
     private javax.swing.JTextArea optional;
     private javax.swing.JTextArea steps;
     private javax.swing.JTextArea trace;

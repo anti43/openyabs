@@ -62,18 +62,22 @@ public class NoaConnection {
      * @return
      */
     public static NoaConnection getConnection() {
-        if (Connection == null) {
-            try {
-                if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_REMOTE)) {
-                    Connection = new NoaConnection(LocalSettings.getProperty(LocalSettings.OFFICE_HOST), Integer.valueOf(LocalSettings.getProperty(LocalSettings.OFFICE_PORT)));
-                } else {
-                    Connection = new NoaConnection(LocalSettings.getProperty(LocalSettings.OFFICE_HOME), 0);
+        if (LocalSettings.hasProperty(LocalSettings.OFFICE_HOST)) {
+            if (Connection == null) {
+                try {
+                    if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_REMOTE)) {
+                        Connection = new NoaConnection(LocalSettings.getProperty(LocalSettings.OFFICE_HOST), Integer.valueOf(LocalSettings.getProperty(LocalSettings.OFFICE_PORT)));
+                    } else {
+                        Connection = new NoaConnection(LocalSettings.getProperty(LocalSettings.OFFICE_HOME), 0);
+                    }
+                } catch (Exception ex) {
+                    mpv5.logging.Log.Debug(ex);//Logger.getLogger(NoaConnection.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            } catch (Exception ex) {
-                mpv5.logging.Log.Debug(ex);//Logger.getLogger(NoaConnection.class.getName()).log(Level.SEVERE, null, ex);
             }
+            return Connection;
+        } else {
+            throw new UnsupportedOperationException("OpenOffice is not configured yet.");
         }
-        return Connection;
     }
 
     /**

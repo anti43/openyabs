@@ -148,6 +148,17 @@ public class Popup {
     }
 
     /**
+     * A convenience method to show a notice popup with
+     * the mainframe as parent
+     * @param text
+     * @param boxWidth
+     * @param boxLength
+     */
+    public static void notice(Object text, int boxWidth, int boxLength) {
+         JOptionPane.showMessageDialog(identifier, prepareText(text.toString(), boxWidth, boxLength), Popup.NOTICE, JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    /**
      * A convenience method to show an error popup with
      * the mainframe as parent
      * @param x
@@ -157,6 +168,10 @@ public class Popup {
     }
 
     private static Object prepareText(String s) {
+        return prepareText(s, 300, 80);
+    }
+
+      private static Object prepareText(String s, int boxWidth, int boxLength) {
         JTextArea text = new JTextArea(s);
         JScrollPane scroll = new JScrollPane(text);
         text.setLineWrap(true);
@@ -166,27 +181,11 @@ public class Popup {
         text.setBackground(JOptionPane.getRootFrame().getBackground());
         scroll.setBackground(JOptionPane.getRootFrame().getBackground());
         scroll.setBorder(new EmptyBorder(0, 0, 0, 0));
-        scroll.setPreferredSize(new Dimension(300, 80));
+        scroll.setPreferredSize(new Dimension(boxWidth, boxLength));
         return scroll;
     }
 
-//
-//    /**
-//     * A popup..
-//     * @param text
-//     */
-//    public Popup(String text) {
-//        JOptionPane.showMessageDialog(identifier, prepareText(text), Popup.NOTICE, JOptionPane.INFORMATION_MESSAGE);
-//    }
-//
-//    /**
-//     *  A popup..
-//     * @param text
-//     * @param label
-//     */
-//    public Popup(String text, String label) {
-//        JOptionPane.showMessageDialog(identifier, prepareText(text), label, JOptionPane.INFORMATION_MESSAGE);
-//    }
+
     private Popup() {
     }
 }
