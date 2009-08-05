@@ -1732,6 +1732,8 @@ public class MPView extends FrameView {
     private void errorlabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_errorlabelMouseClicked
         SubmitForm submitForm = new SubmitForm(ExceptionHandler.getExceptions());
         BigPopup.showPopup(MPView.identifierFrame.getRootPane(), submitForm);
+        errorlabel.setIcon(null);
+        identifierFrame.validate();
     }//GEN-LAST:event_errorlabelMouseClicked
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JMenu clipboardMenu;

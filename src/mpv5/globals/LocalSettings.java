@@ -64,9 +64,9 @@ public class LocalSettings {
                 {CACHE_SIZE, "100"},
                 {LAST_USER, "1"},
                 {LAST_USER_PW, "5F4DCC3B5AA765D61D8327DEB882CF99"},
-//                {OFFICE_HOME, "/opt/openoffice.org3"},
-//                {OFFICE_PORT, "8100"},
-//                {OFFICE_HOST, "127.0.0.1"},
+                {OFFICE_HOME, "/opt/openoffice.org3"},
+                {OFFICE_PORT, "8100"},
+                {OFFICE_HOST, "127.0.0.1"},
                 {OFFICE_REMOTE, "false"},
                 {CACHE_DIR, "Cache"}
             });
@@ -214,7 +214,7 @@ public class LocalSettings {
      * @return True if the key exists
      */
     public static boolean hasProperty(String propertyname) {
-        return cookie.hasProperty(propertyname);
+        return cookie.hasProperty(propertyname) | predefinedSettings.hasProperty(propertyname);
     }
 
     /**

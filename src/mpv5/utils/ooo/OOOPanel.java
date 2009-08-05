@@ -111,7 +111,7 @@ public class OOOPanel extends JPanel {
         officeFrame.updateDispatches();
         officeFrame.disableDispatch(GlobalCommands.CLOSE_DOCUMENT);
         officeFrame.disableDispatch(GlobalCommands.QUIT_APPLICATION);
-        officeFrame.disableDispatch(GlobalCommands.OPEN_DOCUMENT);
+
     }
 
     /**

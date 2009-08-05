@@ -43,7 +43,7 @@ public class SubmitForm extends javax.swing.JPanel {
         initComponents();
 
         String exc = "";
-        for (int i = 0; i < exceptions.size(); i++) {
+        for (int i = exceptions.size()-1; i >=0 ; i--) {
             Exception exception = exceptions.get(i);
             exc += "Exception " + i + ":\n";
             exc += Log.getStackTrace(exception);
