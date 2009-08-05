@@ -276,9 +276,9 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
     }
 
     private void fillFiles() {
-        Context c = Context.getFilesToItems();
+        Context c = Context.getFilesToProducts();
         c.addReference(Context.getFiles().getDbIdentity(), "cname", "filename");
-        Object[][] data = new DatabaseSearch(c).getValuesFor(Context.DETAILS_FILES_TO_ITEMS, "itemsids", dataOwner.__getIDS());
+        Object[][] data = new DatabaseSearch(c).getValuesFor(Context.DETAILS_FILES_TO_PRODUCTS, "productsids", dataOwner.__getIDS());
 
         dataTable.setModel(new MPTableModel(data, Headers.FILE_REFERENCES.getValue()));
         TableFormat.stripFirstColumn(dataTable);
