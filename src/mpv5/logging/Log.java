@@ -18,6 +18,8 @@ package mpv5.logging;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.table.TableModel;
@@ -263,5 +265,19 @@ public class Log {
      */
     public static int getLoglevel() {
         return loglevel;
+    }
+
+    /**
+     * Writes the stacktrace to a String
+     * @param t
+     * @return
+     */
+    public static String getStackTrace(Throwable t) {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw, true);
+        t.printStackTrace(pw);
+        pw.flush();
+        sw.flush();
+        return sw.toString();
     }
 }

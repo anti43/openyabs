@@ -18,6 +18,7 @@ package mpv5.bugtracker;
 
 import java.util.List;
 import java.util.Vector;
+import mpv5.ui.frames.MPView;
 
 /**
  * This class handles unexpected exceptions thrown during the use of Yabs
@@ -30,7 +31,17 @@ public class ExceptionHandler {
      */
     public static void add(Exception exception) {
         exc.add(exception);
+        MPView.showError();
     }
     static List<Exception> exc = new Vector<Exception>();
 
+    /**
+     * Returns the Excpetions and flushes the list
+     * @return A list of Exceptions
+     */
+    public static List<Exception> getExceptions() {
+        Vector<Exception> t = new Vector<Exception>(exc);
+        exc.clear();
+        return t;
+    }
 }
