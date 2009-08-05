@@ -1,18 +1,18 @@
 /*
- *  This file is part of MP.
+ *  This file is part of YaBS.
  *  
- *      MP is free software: you can redistribute it and/or modify
+ *      YaBS is free software: you can redistribute it and/or modify
  *      it under the terms of the GNU General Public License as published by
  *      the Free Software Foundation, either version 3 of the License, or
  *      (at your option) any later version.
  *  
- *      MP is distributed in the hope that it will be useful,
+ *      YaBS is distributed in the hope that it will be useful,
  *      but WITHOUT ANY WARRANTY; without even the implied warranty of
  *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *      GNU General Public License for more details.
  *  
  *      You should have received a copy of the GNU General Public License
- *      along with MP.  If not, see <http://www.gnu.org/licenses/>.
+ *      along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
  */
 package mpv5.logging;
 
@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.table.TableModel;
 import mpv5.Main;
+import mpv5.bugtracker.ExceptionHandler;
 import mpv5.globals.Messages;
 import mpv5.utils.files.FileReaderWriter;
 
@@ -83,6 +84,10 @@ public class Log {
             sourcen = ((Class) source).getName();
         } else {
             sourcen = source.getClass().getName();
+        }
+
+        if (message instanceof Exception) {
+            ExceptionHandler.add((Exception) message);
         }
 
         switch (loglevel) {
@@ -243,12 +248,11 @@ public class Log {
      */
     public static void PrintArray(TableModel model) {
         for (int i = 0; i < model.getRowCount(); i++) {
-              for (int j = 0; j < model.getColumnCount(); j++) {
+            for (int j = 0; j < model.getColumnCount(); j++) {
                 write(model.getValueAt(i, j));
             }
         }
     }
-
 
     private Log() {
     }
