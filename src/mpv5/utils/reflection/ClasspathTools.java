@@ -23,8 +23,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mpv5.logging.Log;
 
 /**
@@ -33,14 +31,27 @@ import mpv5.logging.Log;
  */
 public class ClasspathTools {
 
+    /**
+     * Adds a path temporary to the Classpath
+     * @param file
+     */
     public static void addPath(File file) {
         addPath(file.toURI());
     }
 
+    /**
+     * Adds a path temporary to the Classpath
+     * @param s
+     * @throws Exception
+     */
     public static void addPath(String s) throws Exception {
         addPath(new File(s));
     }
 
+    /**
+     * Adds a path temporary to the Classpath
+     * @param s
+     */
     public static void addPath(URI s) {
 
         Log.Debug(ClasspathTools.class, "Adding path: " + s);

@@ -32,7 +32,6 @@ package mpv5.compiler;
  * Version History:
  *  1.1 2008-02-19
  */
-
 import java.io.File;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
@@ -59,7 +58,6 @@ import mpv5.logging.Log;
  * @since 2009
  */
 public final class RuntimeCompiler {
-    // -------------------------- STATIC METHODS --------------------------
 
     /**
      * Compile from within this JVM without spawning javac.exe or a separate JVM.
@@ -106,11 +104,9 @@ public final class RuntimeCompiler {
 
         //Do dont recompile the same file over and over again
         if (!new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR) + File.separator + packageName.replace(".", File.separator)  + File.separator + className + ".class").exists()) {
-            // compile item
             final boolean status = compile(new TempResidentJavaFileObject(className, classString));
             Log.Debug(RuntimeCompiler.class, "Compiled class: " + className + " Status: " + status);
         }
-        // Load class and create an instance.
         ClassLoader oldCL = Thread.currentThread().getContextClassLoader();
         ClassLoader newCL = new URLClassLoader(new URL[]{new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR) + File.separator).toURI().toURL()}, oldCL);
         Class tempFileClass = null;
@@ -139,14 +135,12 @@ public final class RuntimeCompiler {
  * Represents the source text of a Java program in a temp dir
  */
 class TempResidentJavaFileObject extends SimpleJavaFileObject {
-    // ------------------------------ FIELDS ------------------------------
 
     /**
      * source text of the program to be compiled
      */
     private final String programText;
 
-    // -------------------------- PUBLIC INSTANCE  METHODS --------------------------
     /**
      * constructor
      *
