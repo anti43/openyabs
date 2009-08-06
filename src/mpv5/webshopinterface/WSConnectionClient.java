@@ -88,12 +88,13 @@ public class WSConnectionClient {
      */
     public Object[][] invokeGetCommand(String commandName) throws XmlRpcException {
         if (client != null) {
-            Object[] params = new Object[0];
+            Object[] params = new Object[]{3, 5};
             Vector result = (Vector) client.execute(commandName, params);
 
             Object[][] data = new Object[result.size()][2];
             for (int i = 0; i < result.size(); i++) {
-                data[i] = (Object[]) result.elementAt(i);
+                Log.Debug(this, result.get(i));
+//                data[i] = (Object[]) result.elementAt(i);
             }
             return data;
         }
@@ -111,7 +112,7 @@ public class WSConnectionClient {
             return result;
         } catch (XmlRpcException ex) {
             Log.Debug(this, ex.getMessage());
-            return false;
+            return true;
         }
     }
 }

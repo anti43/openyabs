@@ -17,6 +17,7 @@
 package mpv5;
 
 import java.awt.Component;
+import java.net.MalformedURLException;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -35,6 +36,7 @@ import java.io.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.logging.Level;
@@ -48,6 +50,9 @@ import mpv5.db.objects.Contact;
 import mpv5.handler.SDBObjectGenerator;
 import mpv5.handler.SimpleDatabaseObject;
 import mpv5.logging.Log;
+import mpv5.webshopinterface.NoCompatibleHostFoundException;
+import mpv5.webshopinterface.WSConnectionClient;
+import org.apache.xmlrpc.XmlRpcException;
 
 public class Test {
 
@@ -57,19 +62,21 @@ public class Test {
     private static String oooport;
 
 
-    public static void main(String[] args) throws NodataFoundException, FileNotFoundException, OfficeApplicationException, NOAException, DocumentException, InterruptedException {
+    public static void main(String[] args) throws NodataFoundException, FileNotFoundException, OfficeApplicationException, NOAException, DocumentException, InterruptedException, NoCompatibleHostFoundException, MalformedURLException, XmlRpcException {
 
 //        System.out.println("ff.hh".substring("ff.hh".lastIndexOf(".")+1));
         LogConsole.setLogStreams(false, true, false);
         Log.setLogLevel(Log.LOGLEVEL_DEBUG);
+
+        new WSConnectionClient(new URL("http://yabs.copy-left.de/files/test.php")).invokeGetCommand("sample.sumAndDifference");
         
-        Contact c = new Contact();
-        SimpleDatabaseObject d = SDBObjectGenerator.getObjectFrom(c);
-        try {
-            c.parse(d);
-        } catch (java.lang.Exception ex) {
-            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        Contact c = new Contact();
+//        SimpleDatabaseObject d = SDBObjectGenerator.getObjectFrom(c);
+//        try {
+//            c.parse(d);
+//        } catch (java.lang.Exception ex) {
+//            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
+//        }
 
 
 //        try {
