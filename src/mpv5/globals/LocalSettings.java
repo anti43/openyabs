@@ -214,7 +214,7 @@ public class LocalSettings {
      * @return True if the key exists
      */
     public static boolean hasProperty(String propertyname) {
-        return cookie.hasProperty(propertyname) | predefinedSettings.hasProperty(propertyname);
+        return (cookie.hasProperty(propertyname) && !cookie.getProperty(propertyname).equals("null")) || (predefinedSettings.hasProperty(propertyname) && !predefinedSettings.getProperty(propertyname).equals("null"));
     }
 
     /**

@@ -44,11 +44,11 @@ import ooo.connector.server.OOoServer;
 public class NoaConnection {
 
     /**
-     * Indicates a Local OO Installation
+     * Indicates a Local OO Installation.
      */
     public static final int TYPE_LOCAL = 0;
     /**
-     * Indicates a remote OO installation
+     * Indicates a remote OO installation.
      */
     public static final int TYPE_REMOTE = 1;
     private IOfficeApplication officeAplication;
@@ -162,6 +162,7 @@ public class NoaConnection {
     }
 
     /**
+     *  -1 indicates no connection.
      * @return the type
      */
     public int getType() {

@@ -97,9 +97,11 @@ public class Log {
                 write(sourcen + ": " + message);
                 if (message != null && message.toString().contains("Exception")) {
                     ((Exception) message).printStackTrace();
+                    write(getStackTrace(((Exception) message)));
                     write("\nCaused by:\n");
                     try {
                         ((Exception) message).getCause().printStackTrace();
+                        write(getStackTrace(((Exception) message).getCause()));
                         mpv5.ui.frames.MPView.addMessage(Messages.ERROR_OCCURED + ". " + Messages.SEE_LOG);
                     } catch (Exception e) {
                     }

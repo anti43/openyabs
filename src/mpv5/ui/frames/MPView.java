@@ -3,6 +3,7 @@
  */
 package mpv5.ui.frames;
 
+import enoa.connection.NoaConnection;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -362,6 +363,13 @@ public class MPView extends FrameView {
         QueryHandler.setWaitCursorFor(identifierFrame);
 
         pluginLoader = new MPPLuginLoader();
+        Runnable runnable = new Runnable() {
+
+            @Override
+            public void run() {
+                jMenuItem27.setEnabled(NoaConnection.getConnection().getType() == NoaConnection.TYPE_LOCAL);
+            }
+        };SwingUtilities.invokeLater(runnable);
     }
 
     /**
