@@ -168,6 +168,22 @@ public class TableFormat {
         }
     }
 
+
+    /**
+     *  Hide the columns
+     * @param resulttable
+     * @param i
+     */
+    public static void stripColumns(JTable resulttable, int[] i) {
+        for (int j = 0; j < i.length; j++) {
+            int k = i[j];
+            try {
+                stripColumn(resulttable, k);
+            } catch (Exception e) {
+            }
+        }
+    }
+
     /**
      * Hide the first column of a table
      * @param table
@@ -238,4 +254,5 @@ public class TableFormat {
         }
         table.getColumn(table.getColumnName(column)).setCellRenderer(new ColorRenderer());
     }
+
 }

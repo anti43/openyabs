@@ -31,6 +31,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
+import java.net.URL;
 import java.text.NumberFormat;
 import java.util.Date;
 import java.util.logging.Level;
@@ -38,6 +39,8 @@ import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
@@ -68,6 +71,7 @@ import mpv5.ui.dialogs.DialogForFile;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.files.FileDirectoryHandler;
+import mpv5.utils.images.MPIcon;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.models.MPTableModelRow;
@@ -89,10 +93,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
     private Product dataOwner;
     private DataPanelTB tb;
     private SearchPanel sp;
-    private Integer dataTableContent = null;
-    private TableCalculator itemMultiplier;
-    private TableCalculator netCalculator;
-    private TableCalculator netCalculator2;
+    private FileTablePopUp fil;
 
     /** Creates new form ContactPanel
      * @param context
@@ -161,7 +162,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
             }
         });
 
-        familyselect.setContext(Context.getPGroup());
+        familyselect.setContext(Context.getProductGroup());
         familyselect.setSearchOnEnterEnabled(true);
         groupnameselect.setContext(Context.getGroup());
         groupnameselect.setSearchOnEnterEnabled(true);
@@ -171,6 +172,28 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
 
         netvalue.set_ValueClass(Double.class);
         netvalue.set_ValueClass(Double.class);
+
+
+        JMenuItem x = new JMenuItem(Messages.SET_AS_DEFAULT.getValue());
+        x.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                final String fname = dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).toString();
+                File f = QueryHandler.instanceOf().clone(Context.getFiles()).retrieveFile(fname, new File(FileDirectoryHandler.getTempDir() + dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 1).toString()));
+                try {
+                    imageprev.setIcon(new MPIcon(f.toURI().toURL()));
+                    defaultimage_ = fname;
+                } catch (Exception ef) {
+                    Log.Debug(this, ef);
+                }
+            }
+        });
+
+        fil = new FileTablePopUp();
+        fil.addDefaultPopupMenu(dataTable);
+        fil.addSeparator();
+        fil.add(x);
     }
 
     /**
@@ -229,7 +252,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
 
     @Override
     public void showRequiredFields() {
-        TextFieldUtils.blink(number, Color.RED);
+        TextFieldUtils.blink(cname, Color.RED);
     }
 
     private void addFile() {
@@ -271,7 +294,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                 source.changeSelection(row, column, false, false);
             }
 
-            FileTablePopUp.instanceOf(dataTable).show(source, evt.getX(), evt.getY());
+            fil.show(source, evt.getX(), evt.getY());
         }
     }
 
@@ -297,15 +320,15 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         leftpane = new javax.swing.JPanel();
         rightpane = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
-        number = new mpv5.ui.beans.LabeledTextField();
+        cnumber = new mpv5.ui.beans.LabeledTextField();
         addedby = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         button_order2 = new javax.swing.JButton();
-        status = new mpv5.ui.beans.LabeledCombobox();
+        stype = new mpv5.ui.beans.LabeledCombobox();
         familyselect = new mpv5.ui.beans.LabeledCombobox();
         groupnameselect = new mpv5.ui.beans.MPCombobox();
         jPanel4 = new javax.swing.JPanel();
-        cnumber = new mpv5.ui.beans.LabeledTextField();
+        cname = new mpv5.ui.beans.LabeledTextField();
         ean = new mpv5.ui.beans.LabeledTextField();
         url = new mpv5.ui.beans.LabeledTextField();
         netvalue = new mpv5.ui.beans.LabeledTextField();
@@ -369,10 +392,10 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel1.setName("jPanel1"); // NOI18N
 
-        number.set_Label(bundle.getString("ProductPanel.number._Label")); // NOI18N
-        number.setFocusable(false);
-        number.setFont(number.getFont());
-        number.setName("number"); // NOI18N
+        cnumber.set_Label(bundle.getString("ProductPanel.cnumber._Label")); // NOI18N
+        cnumber.setFocusable(false);
+        cnumber.setFont(cnumber.getFont());
+        cnumber.setName("cnumber"); // NOI18N
 
         addedby.setFont(addedby.getFont());
         addedby.setText(bundle.getString("ProductPanel.addedby.text")); // NOI18N
@@ -397,8 +420,8 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
             }
         });
 
-        status.set_Label(bundle.getString("ProductPanel.status._Label")); // NOI18N
-        status.setName("status"); // NOI18N
+        stype.set_Label(bundle.getString("ProductPanel.stype._Label")); // NOI18N
+        stype.setName("stype"); // NOI18N
 
         familyselect.set_Label(bundle.getString("ProductPanel.familyselect._Label")); // NOI18N
         familyselect.setName("familyselect"); // NOI18N
@@ -414,8 +437,8 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(familyselect, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(status, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(number, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(stype, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cnumber, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 81, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -434,7 +457,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(status, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(stype, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                             .addComponent(familyselect, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -444,7 +467,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(groupnameselect, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(number, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cnumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(12, 12, 12))
         );
 
@@ -453,8 +476,8 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         jPanel4.setFocusCycleRoot(true);
         jPanel4.setName("jPanel4"); // NOI18N
 
-        cnumber.set_Label(bundle.getString("ProductPanel.cnumber._Label_1")); // NOI18N
-        cnumber.setName("cnumber"); // NOI18N
+        cname.set_Label(bundle.getString("ProductPanel.cname._Label_1")); // NOI18N
+        cname.setName("cname"); // NOI18N
 
         ean.set_Label(bundle.getString("ProductPanel.ean._Label_1")); // NOI18N
         ean.setName("ean"); // NOI18N
@@ -517,7 +540,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addComponent(cnumber, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(cname, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(netvalue, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel4Layout.createSequentialGroup()
@@ -565,7 +588,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                         .addGap(51, 51, 51))
                     .addGroup(javax.swing.GroupLayout.Alignment.CENTER, jPanel4Layout.createSequentialGroup()
                         .addGap(14, 14, 14)
-                        .addComponent(cnumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(76, 76, 76)))
                 .addContainerGap())
         );
@@ -753,9 +776,9 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 76, Short.MAX_VALUE)
+            .addGap(0, 90, Short.MAX_VALUE)
             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 76, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout rightpaneLayout = new javax.swing.GroupLayout(rightpane);
@@ -791,9 +814,9 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -803,7 +826,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(removefile))
                     .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 76, Short.MAX_VALUE)))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)))
         );
 
         toolbarpane.setName("toolbarpane"); // NOI18N
@@ -824,7 +847,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(leftpane, javax.swing.GroupLayout.DEFAULT_SIZE, 456, Short.MAX_VALUE)
+            .addComponent(leftpane, javax.swing.GroupLayout.DEFAULT_SIZE, 471, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(toolbarpane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
@@ -862,6 +885,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton button_order2;
     private javax.swing.JButton button_reminders1;
+    private mpv5.ui.beans.LabeledTextField cname;
     private mpv5.ui.beans.LabeledTextField cnumber;
     private javax.swing.JTextField contactcity;
     private javax.swing.JTextField contactcity1;
@@ -897,13 +921,12 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JPanel leftpane;
     private mpv5.ui.beans.LabeledTextField netvalue;
-    private mpv5.ui.beans.LabeledTextField number;
     private mpv5.ui.beans.PrinitingComboBox prinitingComboBox1;
     private mpv5.ui.beans.LabeledTextField reference;
     private javax.swing.JButton removefile;
     private javax.swing.JPanel rightpane;
     private mpv5.ui.beans.LabeledCombobox selecttax;
-    private mpv5.ui.beans.LabeledCombobox status;
+    private mpv5.ui.beans.LabeledCombobox stype;
     private javax.swing.JPanel toolbarpane;
     private mpv5.ui.beans.LabeledTextField unit;
     private mpv5.ui.beans.LabeledTextField url;
@@ -925,11 +948,12 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
     public String measure_ = "";
     public String url_ = "";
     public String ean_ = "";
+    public String defaultimage_ = "";
     public String reference_ = "";//herstellernummer
 
     @Override
     public void collectData() {
-        if (number.getText() != null && number.getText().length() > 0) {
+        if (cname.getText() != null && cname.getText().length() > 0) {
 
             try {
                 suppliersids_ = Integer.valueOf(contactname.getSelectedItem().getId());
@@ -964,7 +988,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
             }
             intaddedby_ = User.getUserId(addedby.getText());
             description_ = description.getText();
-            cname_ = number.getText();
+            cname_ = cname.getText();
 
             measure_ = unit.getText();
             url_ = url.getText();
@@ -984,6 +1008,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
             }
 
             taxids_ = Integer.valueOf(selecttax.getSelectedItem().getId());
+            inttype_ = Integer.valueOf(stype.getSelectedItem().getId());
         } else {
             showRequiredFields();
         }
@@ -992,11 +1017,12 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
     @Override
     public void exposeData() {
 
-        number.setText(cname_);
+        cname.setText(cname_);
+        cnumber.setText(cnumber_);
         description.setText(description_);
 
         try {
-//            status.setSelectedIndex(intstatus_);
+            stype.setSelectedIndex(inttype_);
             familyselect.setModel(DatabaseObject.getObject(Context.getAccounts(), pgroupsids_));
             groupnameselect.setModel(DatabaseObject.getObject(Context.getGroup(), groupsids_));
         } catch (Exception e) {
@@ -1004,26 +1030,38 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         }
 
         addedby.setText(User.getUsername(intaddedby_));
-        try {
-            Contact owner = (Contact) DatabaseObject.getObject(Context.getContact(), suppliersids_);
-            contactname.setModel(owner);
-            contactcity.setText(owner.__getCity());
-            contactcompany.setText(owner.__getCompany());
-            contactid.setText(String.valueOf(owner.__getCNumber()));
-            suppliersids_ = owner.__getIDS();
-        } catch (NodataFoundException ex) {
-            Log.Debug(ex);
+        if (suppliersids_ > 0) {
+            try {
+                Contact owner = (Contact) DatabaseObject.getObject(Context.getContact(), suppliersids_);
+                contactname.setModel(owner);
+                contactcity.setText(owner.__getCity());
+                contactcompany.setText(owner.__getCompany());
+                contactid.setText(String.valueOf(owner.__getCNumber()));
+            } catch (NodataFoundException ex) {
+                Log.Debug(ex);
+            }
+        } else {
+            contactname.setModel(new Object[0][0]);
+            contactcity.setText("");
+            contactcompany.setText("");
+            contactid.setText(String.valueOf(""));
         }
 
-        try {
-            Contact owner1 = (Contact) DatabaseObject.getObject(Context.getContact(), manufacturersids_);
-            contactname1.setModel(owner1);
-            contactcity1.setText(owner1.__getCity());
-            contactcompany1.setText(owner1.__getCompany());
-            contactid1.setText(String.valueOf(owner1.__getCNumber()));
-            manufacturersids_ = owner1.__getIDS();
-        } catch (NodataFoundException ex) {
-            Log.Debug(ex);
+        if (manufacturersids_ > 0) {
+            try {
+                Contact owner1 = (Contact) DatabaseObject.getObject(Context.getContact(), manufacturersids_);
+                contactname1.setModel(owner1);
+                contactcity1.setText(owner1.__getCity());
+                contactcompany1.setText(owner1.__getCompany());
+                contactid1.setText(String.valueOf(owner1.__getCNumber()));
+            } catch (NodataFoundException ex) {
+                Log.Debug(ex);
+            }
+        } else {
+            contactname1.setModel(new Object[0][0]);
+            contactcity1.setText("");
+            contactcompany1.setText("");
+            contactid1.setText(String.valueOf(""));
         }
 
         unit.setText(measure_);
@@ -1035,6 +1073,29 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         extvalue.setText(FormatNumber.formatDezimal(externalnetvalue_));
 
         fillFiles();
+
+        Runnable runnable = new Runnable() {
+
+            @Override
+            public void run() {
+                if (!defaultimage_.equals("")) {
+                    File f = QueryHandler.instanceOf().clone(Context.getFiles()).retrieveFile(defaultimage_, FileDirectoryHandler.getTempFile("jpg"));
+                    if (f != null) {
+                        try {
+                            imageprev.setIcon(new MPIcon(f.toURI().toURL()));
+                        } catch (Exception ef) {
+                            imageprev.setIcon(null);
+                            Log.Debug(this, ef);
+                        }
+                    } else {
+                        imageprev.setIcon(null);
+                    }
+                } else {
+                    imageprev.setIcon(null);
+                }
+            }
+        };
+        SwingUtilities.invokeLater(runnable);
     }
 
     @Override
@@ -1048,11 +1109,11 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                     groupnameselect.setSelectedIndex(0);
                     sp.refresh();
 
-                    familyselect.setModel(DatabaseObject.getObject(Context.getAccounts(), MPView.getUser().__getIntdefaultaccount()));
+                    familyselect.setModel(DatabaseObject.getObject(Context.getProductGroup(), MPView.getUser().__getIntdefaultaccount()));
                     fillFiles();
 
-                    status.setModel(Item.getStatusStrings(), MPComboBoxModelItem.COMPARE_BY_ID);
-                    status.setSelectedIndex(MPView.getUser().__getIntdefaultstatus());
+                    stype.setModel(Item.getStatusStrings(), MPComboBoxModelItem.COMPARE_BY_ID);
+                    stype.setSelectedIndex(MPView.getUser().__getIntdefaultstatus());
 
                     selecttax.setSearchOnEnterEnabled(true);
                     selecttax.setContext(Context.getTaxes());

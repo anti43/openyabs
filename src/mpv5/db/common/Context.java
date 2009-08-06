@@ -1232,6 +1232,7 @@ public class Context {
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_PRODUCTS);
         c.setIdentityClass(IDENTITY_PRODUCTS_CLASS);
+        c.setSearchFields(DEFAULT_PRODUCT_SEARCH);
         c.setId(23);
 
         return c;
@@ -1373,7 +1374,7 @@ public class Context {
         return c;
     }
 
-    public static Context getPGroup() {
+    public static Context getProductGroup() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_PGROUPS);

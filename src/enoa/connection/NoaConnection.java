@@ -61,7 +61,7 @@ public class NoaConnection {
      * Creates a connection, depending on the current local config.
      * @return
      */
-    public static NoaConnection getConnection() {
+    public synchronized static NoaConnection getConnection() {
         if (LocalSettings.hasProperty(LocalSettings.OFFICE_HOST)) {
             if (Connection == null) {
                 try {
@@ -105,7 +105,7 @@ public class NoaConnection {
      * @throws NOAException
      * @throws InvalidArgumentException
      */
-    private boolean createServerConnection(String host, int port) throws OfficeApplicationException, NOAException, InvalidArgumentException {
+    private synchronized boolean createServerConnection(String host, int port) throws OfficeApplicationException, NOAException, InvalidArgumentException {
         if (host != null && port > 0) {
             Map<String, String> configuration = new HashMap<String, String>();
             configuration.put(IOfficeApplication.APPLICATION_TYPE_KEY,
@@ -137,7 +137,7 @@ public class NoaConnection {
      * @throws NOAException
      * @throws InvalidArgumentException
      */
-    private boolean createLocalConnection(String OOOPath) throws OfficeApplicationException, NOAException, InvalidArgumentException {
+    private synchronized  boolean createLocalConnection(String OOOPath) throws OfficeApplicationException, NOAException, InvalidArgumentException {
         if (OOOPath != null) {
             Map<String, String> configuration = new HashMap<String, String>();
             configuration.put(IOfficeApplication.APPLICATION_HOME_KEY, OOOPath);
@@ -165,28 +165,28 @@ public class NoaConnection {
      *  -1 indicates no connection.
      * @return the type
      */
-    public int getType() {
+    public synchronized  int getType() {
         return type;
     }
 
     /**
      * @param type the type to set
      */
-    private void setType(int type) {
+    private  synchronized void setType(int type) {
         this.type = type;
     }
 
     /**
      * @return the documentService
      */
-    public IDocumentService getDocumentService() {
+    public synchronized  IDocumentService getDocumentService() {
         return documentService;
     }
 
     /**
      * @return the desktopService
      */
-    public IDesktopService getDesktopService() {
+    public  synchronized IDesktopService getDesktopService() {
         return desktopService;
     }
 
@@ -196,7 +196,7 @@ public class NoaConnection {
      * @param port The port the server shall listen to
      * @throws IOException
      */
-    public static void startOOServer(String path, int port) throws IOException {
+    public  synchronized static void startOOServer(String path, int port) throws IOException {
         final ProcessBuilder builder = new ProcessBuilder(
                 path.replace("\\", "\\\\") + File.separator + "program" + File.separator + "soffice",
                 "-headless",
@@ -243,7 +243,7 @@ public class NoaConnection {
     /**
      * Stops all OOO servers instances started by this instance
      */
-    public static void stopOOOServer() {
+    public  synchronized static void stopOOOServer() {
         for (int i = 0; i < OOOServers.size(); i++) {
             Process process = OOOServers.get(i);
             process.destroy();

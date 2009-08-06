@@ -29,6 +29,7 @@ import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.PixelGrabber;
+import java.net.URL;
 import java.util.HashMap;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -69,11 +70,18 @@ public class MPIcon extends ImageIcon {
     }
 
     /**
-     * 
+     * Internal resources only!
      * @param resource
      */
     public MPIcon(String resource) {
         super(MPIcon.class.getResource(resource));
+    }
+
+     /**
+      *  @param pathToImage
+      */
+    public MPIcon(URL pathToImage) {
+        super(pathToImage);
     }
 
     private MPIcon() {

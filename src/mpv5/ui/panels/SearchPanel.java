@@ -50,7 +50,7 @@ public class SearchPanel extends javax.swing.JPanel {
         this.validate();
         this.context = context;
         this.panel = panel;
-        lastneedle =String.valueOf(MPView.getUser().__getGroupsids());
+        lastneedle = String.valueOf(MPView.getUser().__getGroupsids());
         search(5, String.valueOf(MPView.getUser().__getGroupsids()));
     }
 
@@ -277,30 +277,36 @@ public class SearchPanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private synchronized  void search(final int searchtype, final String value) {
+    private synchronized void search(final int searchtype, final String value) {
 
         if (this.isShowing()) {
             Runnable runnable = new Runnable() {
 
                 @Override
                 public void run() {
+
+                    String sf = context.getSearchFields();
+                    if (sf == null) {
+                        sf = "ids,cname";
+                    }
+
                     lasttype = searchtype;
                     lastneedle = value;
                     Log.Debug(this, "Search parameters: " + searchtype + " " + value);
                     switch (searchtype) {
 
                         case 1:
-                            resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 500).getValuesFor("ids,cname", "cname", value, true), Headers.SEARCH_DEFAULT.getValue()));
+                            resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 500).getValuesFor(sf, "cname", value, true), Headers.SEARCH_DEFAULT.getValue()));
 
                             break;
                         case 2:
-                            resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 500).getValuesFor("ids,cname", "cnumber", value, true), Headers.SEARCH_DEFAULT.getValue()));
+                            resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 500).getValuesFor(sf, "cnumber", value, true), Headers.SEARCH_DEFAULT.getValue()));
 
                             break;
                         case 3:
                             Integer id = new DatabaseSearch(Context.getGroup()).searchForID("cname", value);
                             if (id != null) {
-                                resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 500).getValuesFor("ids,cname", "groupsids",
+                                resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 500).getValuesFor(sf, "groupsids",
                                         id), Headers.SEARCH_DEFAULT.getValue()));
                             } else {
                                 resulttable.setModel(new MPTableModel(new String[][]{}, Headers.SEARCH_DEFAULT.getValue()));
@@ -308,10 +314,10 @@ public class SearchPanel extends javax.swing.JPanel {
 
                             break;
                         case 4:
-                            resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 0).getValuesFor("ids,cname", "cname", "", true), Headers.SEARCH_DEFAULT.getValue()));
+                            resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 0).getValuesFor(sf, "cname", "", true), Headers.SEARCH_DEFAULT.getValue()));
                             break;
                         case 5:
-                            resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 0).getValuesFor("ids,cname", "groupsids",
+                            resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 0).getValuesFor(sf, "groupsids",
                                     Integer.valueOf(value)), Headers.SEARCH_DEFAULT.getValue()));
                             break;
                         default:
@@ -319,8 +325,8 @@ public class SearchPanel extends javax.swing.JPanel {
                             ;
 
                     }
-                    TableFormat.stripFirstColumn(resulttable);
                     TableFormat.makeUneditable(resulttable);
+                    TableFormat.stripColumns(resulttable, new int[]{0,3,4,5,6,7,8,9});
                 }
             };
             Log.Debug(this, "Starting search..");
@@ -349,7 +355,7 @@ public class SearchPanel extends javax.swing.JPanel {
         Selection sel = new Selection(resulttable);
         if (sel.checkID()) {
             try {
-                panel.setDataOwner(DatabaseObject.getObject(context, sel.getId()),true);
+                panel.setDataOwner(DatabaseObject.getObject(context, sel.getId()), true);
             } catch (NodataFoundException ex) {
                 Log.Debug(ex);
             }
@@ -367,7 +373,6 @@ public class SearchPanel extends javax.swing.JPanel {
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         searchfield3ActionPerformed(evt);
     }//GEN-LAST:event_jButton3ActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;

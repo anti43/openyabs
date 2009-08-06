@@ -82,7 +82,7 @@ public class ProductGroup extends DatabaseObject {
     @Override
     public boolean delete() {
         try {
-            ArrayList<ProductGroup> childs = DatabaseObject.getReferencedObjects(this, Context.getPGroup());
+            ArrayList<ProductGroup> childs = DatabaseObject.getReferencedObjects(this, Context.getProductGroup());
             for (int i = 0; i < childs.size(); i++) {
                 DatabaseObject databaseObject = childs.get(i);
                 if (!databaseObject.delete()) {

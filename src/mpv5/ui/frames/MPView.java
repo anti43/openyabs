@@ -363,13 +363,7 @@ public class MPView extends FrameView {
         QueryHandler.setWaitCursorFor(identifierFrame);
 
         pluginLoader = new MPPLuginLoader();
-        Runnable runnable = new Runnable() {
 
-            @Override
-            public void run() {
-                jMenuItem27.setEnabled(NoaConnection.getConnection().getType() == NoaConnection.TYPE_LOCAL);
-            }
-        };SwingUtilities.invokeLater(runnable);
     }
 
     /**
@@ -1715,9 +1709,13 @@ public class MPView extends FrameView {
 
     private void jMenuItem27ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem27ActionPerformed
 
-        OOOPanel p = new OOOPanel();
-        addTab(p, "OOO");
-        p.constructOOOPanel(null);
+        if (NoaConnection.getConnection().getType() == NoaConnection.TYPE_LOCAL) {
+            OOOPanel p = new OOOPanel();
+            addTab(p, "OOO");
+            p.constructOOOPanel(null);
+        } else {
+            jMenuItem27.setEnabled(false);
+        }
     }//GEN-LAST:event_jMenuItem27ActionPerformed
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed

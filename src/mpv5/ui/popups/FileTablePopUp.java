@@ -41,7 +41,6 @@ import mpv5.utils.files.FileDirectoryHandler;
 public class FileTablePopUp extends JPopupMenu {
 
     private static final long serialVersionUID = 1L;
-    private static JTable source;
     private static MouseListener pop;
     private static FileTablePopUp p;
 
@@ -52,66 +51,15 @@ public class FileTablePopUp extends JPopupMenu {
      */
     public static FileTablePopUp instanceOf(final JTable t) {
         if (p == null) {
-            p = FileTablePopUp.getDefaultPopupMenu();
+            p = FileTablePopUp.getDefaultPopupMenu(t);
         }
-        source = t;
         return p;
     }
 
-    private static FileTablePopUp getDefaultPopupMenu() {
-
-         JMenuItem x = new JMenuItem(Messages.SAVE_AS.getValue());
-         x.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                JTable dataTable = source;
-                FileDirectoryHandler.save(QueryHandler.instanceOf().clone(Context.getFiles()).
-                        retrieveFile(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).
-                        toString(), new File(FileDirectoryHandler.getTempDir() + dataTable.getModel().
-                        getValueAt(dataTable.getSelectedRow(), 1).toString())));
-            }
-        });
-
-        JMenuItem i = new JMenuItem(Messages.ACTION_OPEN.getValue());
-        i.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                JTable dataTable = source;
-                FileDirectoryHandler.open(QueryHandler.instanceOf().clone(Context.getFiles()).
-                        retrieveFile(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).
-                        toString(), new File(FileDirectoryHandler.getTempDir() + dataTable.getModel().
-                        getValueAt(dataTable.getSelectedRow(), 1).toString())));
-            }
-        });
-
-        JMenuItem h = new JMenuItem(Messages.ACTION_EDIT.getValue());
-       h.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                JTable dataTable = source;
-                FileDirectoryHandler.edit(QueryHandler.instanceOf().clone(Context.getFiles()).
-                        retrieveFile(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).
-                        toString(), new File(FileDirectoryHandler.getTempDir() + dataTable.getModel().
-                        getValueAt(dataTable.getSelectedRow(), 1).toString())));
-            }
-        });
-
-        JMenuItem g = new JMenuItem(Messages.ACTION_DELETE.getValue());
-        g.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                JTable dataTable = source;
-                try {
-                    QueryHandler.instanceOf().clone(Context.getFiles()).removeFile(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).toString());
-            
-                  ( (DataPanel) MPView.getShowingTab()).refresh();
-                } catch (Exception ex) {
-                    mpv5.logging.Log.Debug(ex);//Logger.getLogger(FileTablePopUp.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        });
-
-        return new FileTablePopUp(new JMenuItem[]{i, x, h, g});
+    private static FileTablePopUp getDefaultPopupMenu(final JTable dataTable) {
+        FileTablePopUp t = new FileTablePopUp();
+        t.addDefaultPopupMenu(dataTable);
+        return t;
     }
 
     /**
@@ -126,12 +74,6 @@ public class FileTablePopUp extends JPopupMenu {
             item.setHorizontalTextPosition(JMenuItem.LEFT);
             this.add(item);
         }
-//
-//        if (pop == null) {
-//            pop = new MousePopupListener();
-//        }
-//
-//        source.addMouseListener(pop);
     }
 
     /**
@@ -140,13 +82,27 @@ public class FileTablePopUp extends JPopupMenu {
      * @param dataTable A table holding File Objects, first column MUST be the ID, <br/>
      * second column the desired file name
      */
-    public static void addDefaultPopupMenu(final JTable dataTable) {
+    public void addDefaultPopupMenu(final JTable dataTable) {
 
+        JMenuItem x = new JMenuItem(Messages.SAVE_AS.getValue());
+        x.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                FileDirectoryHandler.save(QueryHandler.instanceOf().clone(Context.getFiles()).
+                        retrieveFile(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).
+                        toString(), new File(FileDirectoryHandler.getTempDir() + dataTable.getModel().
+                        getValueAt(dataTable.getSelectedRow(), 1).toString())));
+            }
+        });
 
         JMenuItem i = new JMenuItem(Messages.ACTION_OPEN.getValue());
         i.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
+
                 FileDirectoryHandler.open(QueryHandler.instanceOf().clone(Context.getFiles()).
                         retrieveFile(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).
                         toString(), new File(FileDirectoryHandler.getTempDir() + dataTable.getModel().
@@ -155,9 +111,11 @@ public class FileTablePopUp extends JPopupMenu {
         });
 
         JMenuItem h = new JMenuItem(Messages.ACTION_EDIT.getValue());
-        i.addActionListener(new ActionListener() {
+        h.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
+
                 FileDirectoryHandler.edit(QueryHandler.instanceOf().clone(Context.getFiles()).
                         retrieveFile(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).
                         toString(), new File(FileDirectoryHandler.getTempDir() + dataTable.getModel().
@@ -165,19 +123,26 @@ public class FileTablePopUp extends JPopupMenu {
             }
         });
 
-        JMenuItem g = new JMenuItem(Messages.ACTION_OPEN.getValue());
-        i.addActionListener(new ActionListener() {
+        JMenuItem g = new JMenuItem(Messages.ACTION_DELETE.getValue());
+        g.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
+
                 try {
                     QueryHandler.instanceOf().clone(Context.getFiles()).removeFile(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).toString());
+
+                    ((DataPanel) MPView.getShowingTab()).refresh();
                 } catch (Exception ex) {
                     mpv5.logging.Log.Debug(ex);//Logger.getLogger(FileTablePopUp.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
 
-        new FileTablePopUp(new JMenuItem[]{i, h, g});
+        this.add(x);
+        this.add(i);
+        this.add(h);
+        this.add(g);
     }
 
     /**
@@ -186,6 +151,13 @@ public class FileTablePopUp extends JPopupMenu {
      */
     public static void clear(final JTable to) {
         to.removeMouseListener(pop);
+    }
+
+    /**
+     * Create a new, empty popup
+     */
+    public FileTablePopUp() {
+        super();
     }
 
     class MousePopupListener extends MouseAdapter {

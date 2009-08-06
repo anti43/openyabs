@@ -59,6 +59,7 @@ public class Product extends DatabaseObject  implements Formattable{
     private String url = "";
     private String ean = "";
     private String reference = "";//herstellernummer
+    private String defaultimage = "";
 
   
     public static final int TYPE_PRODUCT = 0;
@@ -242,7 +243,7 @@ public class Product extends DatabaseObject  implements Formattable{
     /**
      * @return the manufacturersids
      */
-    public int getManufacturersids() {
+    public int __getManufacturersids() {
         return manufacturersids;
     }
 
@@ -256,7 +257,7 @@ public class Product extends DatabaseObject  implements Formattable{
     /**
      * @return the suppliersids
      */
-    public int getSuppliersids() {
+    public int __getSuppliersids() {
         return suppliersids;
     }
 
@@ -265,5 +266,19 @@ public class Product extends DatabaseObject  implements Formattable{
      */
     public void setSuppliersids(int suppliersids) {
         this.suppliersids = suppliersids;
+    }
+
+    /**
+     * @return the defaultimage
+     */
+    public String __getDefaultimage() {
+        return defaultimage;
+    }
+
+    /**
+     * @param defaultimage the defaultimage to set
+     */
+    public void setDefaultimage(String defaultimage) {
+        this.defaultimage = defaultimage;
     }
 }

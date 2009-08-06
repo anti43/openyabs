@@ -2099,7 +2099,13 @@ public class QueryHandler implements Cloneable {
         public void done() {
             setProgress(100);
             if (viewToBeNotified != null) {
-                viewToBeNotified.refresh();
+                Runnable runnable = new Runnable() {
+
+                    @Override
+                    public void run() {
+                        viewToBeNotified.refresh();
+                    }
+                };SwingUtilities.invokeLater(runnable);
             }
         }
 
