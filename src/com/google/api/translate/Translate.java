@@ -67,8 +67,8 @@ public class Translate {
      * @throws Exception
      */
     private static String retrieveTranslation(String text, String from, String to) throws Exception {
+        StringBuilder url = new StringBuilder();
         try {
-            StringBuilder url = new StringBuilder();
             url.append(URL_STRING).append(from).append("%7C").append(to);
             url.append(TEXT_VAR).append(URLEncoder.encode(text, ENCODING));
 
@@ -85,7 +85,7 @@ public class Translate {
                 }
             }
         } catch (Exception ex) {
-            throw new Exception("[google-api-translate-java] Error retrieving translation.", ex);
+            throw new Exception("[google-api-translate-java] Error retrieving translation." + url, ex);
         }
     }
 
