@@ -18,6 +18,7 @@ package mpv5.webshopinterface;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mpv5.logging.Log;
@@ -26,6 +27,7 @@ import org.apache.http.*;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
+import org.omg.CORBA.DATA_CONVERSION;
 
 /**
  *This class acts as connector to webshops using the WebShopAPI specified at
@@ -39,15 +41,6 @@ public class WSConnectionClient {
      * Contains all known xml-rpc commands
      */
     public static enum COMMANDS {
-        //    * new contacts
-//    * new adresses
-//    * new ordersitems?
-//
-//    * changed contacts
-//    * changed adresses
-//    * changed ordersitems?
-//
-//    * system messages
 
         GETVERSION("getYWSIVersion"),
         GET_NEW_CONTACTS("getNewContacts"),
@@ -55,7 +48,6 @@ public class WSConnectionClient {
         GET_NEW_ORDERS("getNewOrders"),
         GET_NEW_ORDER_ROWS("getOrderRows"),
         GET_NEW_SYSTEM_MESSAGES("getNewSystemMessages"),
-
         GET_CHANGED_CONTACTS("getUpdatedContacts"),
         GET_CHANGED_ADRESSES("getUpdatedAdresses"),
         GET_CHANGED_ORDERS("getUpdatedOrders"),
@@ -88,15 +80,25 @@ public class WSConnectionClient {
         }
     }
 
-//    public Object[][] invokeGetCommand(String commandName) throws XmlRpcException {
-//        if (client != null) {
-//            Object[] params = new Object[0];
-//            client.execute("gtYWSIVersion", params);
-//
-//        }
-//
-//    }
+    /**
+     * Invoke a get command
+     * @param commandName
+     * @return
+     * @throws XmlRpcException
+     */
+    public Object[][] invokeGetCommand(String commandName) throws XmlRpcException {
+        if (client != null) {
+            Object[] params = new Object[0];
+            Vector result = (Vector) client.execute(commandName, params);
 
+            Object[][] data = new Object[result.size()][2];
+            for (int i = 0; i < result.size(); i++) {
+                data[i] = (Object[]) result.elementAt(i);
+            }
+            return data;
+        }
+        return null;
+    }
 
     private boolean connect(URL host) {
         XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
