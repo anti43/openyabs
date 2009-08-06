@@ -97,7 +97,7 @@ public class CompanyInfo extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         jLabel1.setText(bundle.getString("TaxAddressDialog.compname")); // NOI18N
 
         nameField.setToolTipText("Name des Unternehmers/Firma");

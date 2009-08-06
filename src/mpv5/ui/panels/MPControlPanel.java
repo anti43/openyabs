@@ -92,7 +92,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         setName("Form"); // NOI18N
 
         details.setBackground(new java.awt.Color(255, 255, 255));
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         details.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("MPControlPanel.details.border.title"))); // NOI18N
         details.setMinimumSize(new java.awt.Dimension(300, 200));
         details.setName("details"); // NOI18N

@@ -97,7 +97,7 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
         jToolBar1.setOpaque(false);
 
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/filesave.png"))); // NOI18N
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         jButton2.setText(bundle.getString("AddressPanel.jButton2.text")); // NOI18N
         jButton2.setToolTipText(bundle.getString("AddressPanel.jButton2.toolTipText")); // NOI18N
         jButton2.setName("jButton2"); // NOI18N

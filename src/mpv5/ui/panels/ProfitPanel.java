@@ -208,7 +208,7 @@ public class ProfitPanel extends JPanel {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Cash receipts and disbursement: No liability assumed."));
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         jLabel1.setText(bundle.getString("ProfitPanel.Period")); // NOI18N
 
         jComboBox1.setModel(dateModel.getModel());

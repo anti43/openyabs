@@ -369,7 +369,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         value = new mpv5.ui.beans.LabeledTextField();
         toolbarpane = new javax.swing.JPanel();
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ItemPanel.border.title_1"))); // NOI18N
         setName("Form"); // NOI18N
 
