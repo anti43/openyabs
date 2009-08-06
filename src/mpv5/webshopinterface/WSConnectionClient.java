@@ -18,9 +18,14 @@ package mpv5.webshopinterface;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mpv5.logging.Log;
 import mpv5.utils.http.HttpClient;
 import org.apache.http.*;
+import org.apache.xmlrpc.XmlRpcException;
+import org.apache.xmlrpc.client.XmlRpcClient;
+import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 
 /**
  *This class acts as connector to webshops using the WebShopAPI specified at
@@ -28,28 +33,83 @@ import org.apache.http.*;
  */
 public class WSConnectionClient {
 
-    private HttpClient client;
-    private final String toHost;
-    public static String APPLICATION_FILE = "yabswsi.php";
+    private XmlRpcClient client;
 
     /**
-     * Create a new connection to the specified url
-     * @param toHost
+     * Contains all known xml-rpc commands
      */
-    public WSConnectionClient(final String toHost) {
-        try {
-            connect(toHost);
-        } catch (Exception ex) {
-            Log.Debug(ex);
+    public static enum COMMANDS {
+        //    * new contacts
+//    * new adresses
+//    * new ordersitems?
+//
+//    * changed contacts
+//    * changed adresses
+//    * changed ordersitems?
+//
+//    * system messages
+
+        GETVERSION("getYWSIVersion"),
+        GET_NEW_CONTACTS("getNewContacts"),
+        GET_NEW_ADRESSES("getNewAdresses"),
+        GET_NEW_ORDERS("getNewOrders"),
+        GET_NEW_ORDER_ROWS("getOrderRows"),
+        GET_NEW_SYSTEM_MESSAGES("getNewSystemMessages"),
+
+        GET_CHANGED_CONTACTS("getUpdatedContacts"),
+        GET_CHANGED_ADRESSES("getUpdatedAdresses"),
+        GET_CHANGED_ORDERS("getUpdatedOrders"),
+        GET_CHANGED_ORDER_ROWS("getUpdatedOrderRows");
+
+        private COMMANDS(String command) {
+            this.command = command;
         }
-        this.toHost = toHost;
+        String command;
+
+        /**
+         * Overriden to return the actual command
+         * @return The command specified in this enum
+         */
+        @Override
+        public String toString() {
+            return command;
+        }
     }
 
-    private void connect(String host) throws IOException, HttpException {
-        client = new HttpClient(host, 80);
-        HttpResponse req = client.request(APPLICATION_FILE + "?user=mpadmin&token=md5hash&keep-alive");
+    /**
+     * Create a new connection to the specified url.<br/>
+     * e.g. new URL("http://127.0.0.1:8080/xmlrpc")
+     * @param host
+     * @throws NoCompatibleHostFoundException 
+     */
+    public WSConnectionClient(final URL host) throws NoCompatibleHostFoundException {
+        if (!connect(host)) {
+            throw new NoCompatibleHostFoundException(host);
+        }
+    }
+
+//    public Object[][] invokeGetCommand(String commandName) throws XmlRpcException {
+//        if (client != null) {
+//            Object[] params = new Object[0];
+//            client.execute("gtYWSIVersion", params);
+//
+//        }
+//
+//    }
 
 
-
+    private boolean connect(URL host) {
+        XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
+        config.setServerURL(host);
+        client = new XmlRpcClient();
+        client.setConfig(config);
+        Object[] params = new Object[0];
+        try {
+            Boolean result = (Boolean) client.execute(COMMANDS.GETVERSION.toString(), params);
+            return result;
+        } catch (XmlRpcException ex) {
+            Log.Debug(this, ex.getMessage());
+            return false;
+        }
     }
 }
