@@ -413,8 +413,14 @@ public class MPBabelFish extends javax.swing.JFrame {
 
                 String string = dat[i];
                 try {
-                    translated[i] = Translate.translate(string, from.getSelectedItem().toString(), to.getSelectedItem().toString());
-                    MPView.setProgressValue(i + 1);
+                    if (string!=null &&string.length()>0) {
+                        Log.Debug(this, "Translating: " + string);
+                        translated[i] = Translate.translate(string, from.getSelectedItem().toString(), to.getSelectedItem().toString());
+                        MPView.setProgressValue(i + 1);
+                    }else{
+                         translated[i] = "";
+                        MPView.setProgressValue(i + 1);
+                    }
                 } catch (Exception ex) {
                     Log.Debug(this, ex);
                 }
