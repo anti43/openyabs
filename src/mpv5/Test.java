@@ -62,14 +62,21 @@ public class Test {
     private static String ooohost;
     private static String oooport;
 
-
     public static void main(String[] args) throws NodataFoundException, FileNotFoundException, OfficeApplicationException, NOAException, DocumentException, InterruptedException, NoCompatibleHostFoundException, MalformedURLException, XmlRpcException {
 
 //        System.out.println("ff.hh".substring("ff.hh".lastIndexOf(".")+1));
-        LogConsole.setLogStreams(false, true, false);
-        Log.setLogLevel(Log.LOGLEVEL_DEBUG);
-        HashMap f = new WSConnectionClient(new URL("http://localhost/test.php")).invokeGetCommand("sumAndDifference", new Object[]{3, 5}, new HashMap());
-        Log.Debug(Main.class, f);
+        try {
+            LogConsole.setLogStreams(false, true, false);
+            Log.setLogLevel(Log.LOGLEVEL_DEBUG);
+            boolean f = new WSConnectionClient(new URL("http://localhost/server.php")).getClient().invokeSetCommand(WSConnectionClient.COMMANDS.ADD_NEW_CONTACTS.toString(), new Object[]{
+                        new Object[]{"cname", "mustermann1"},
+                        new Object[]{"cname", "mustermann2"},});
+            Log.Debug(Main.class, f);
+        } catch (Exception malformedURLException) {
+            malformedURLException.printStackTrace();
+        } finally {
+            System.exit(0);
+        }
 //        Contact c = new Contact();
 //        SimpleDatabaseObject d = SDBObjectGenerator.getObjectFrom(c);
 //        try {
@@ -102,7 +109,7 @@ public class Test {
 //        Thread.sleep(15000);
 //
 //        NoaConnection.stopOOOServer();
-        System.exit(0);
+
 
 
 //        System.exit(0);

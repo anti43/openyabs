@@ -191,8 +191,10 @@ public class MPView extends FrameView {
      * Let the view notify the user about an unexpected error
      */
     public static void showError() {
-        staterrorlabel.setIcon(new javax.swing.ImageIcon(MPView.class.getResource("/mpv5/resources/images/16/remove.png"))); // NOI18N
-        identifierFrame.validate();
+         if (Main.INSTANTIATED) {
+             staterrorlabel.setIcon(new javax.swing.ImageIcon(MPView.class.getResource("/mpv5/resources/images/16/remove.png"))); // NOI18N
+            identifierFrame.validate();
+        }
     }
 
     /**

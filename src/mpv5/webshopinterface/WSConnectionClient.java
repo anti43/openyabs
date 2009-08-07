@@ -24,9 +24,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import mpv5.logging.Log;
 import mpv5.utils.http.HttpClient;
+import mpv5.utils.xml.XMLRpcClient;
 import org.apache.http.*;
 import org.apache.xmlrpc.XmlRpcException;
-import org.apache.xmlrpc.client.XmlRpcClient;
+
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 import org.omg.CORBA.DATA_CONVERSION;
 
@@ -36,7 +37,15 @@ import org.omg.CORBA.DATA_CONVERSION;
  */
 public class WSConnectionClient {
 
-    private XmlRpcClient client;
+    private XMLRpcClient client;
+
+    /**
+     * @return the client
+     */
+    public XMLRpcClient getClient() {
+        return client;
+    }
+
 
     /**
      * Contains all known xml-rpc commands
@@ -52,7 +61,13 @@ public class WSConnectionClient {
         GET_CHANGED_CONTACTS("getUpdatedContacts"),
         GET_CHANGED_ADRESSES("getUpdatedAdresses"),
         GET_CHANGED_ORDERS("getUpdatedOrders"),
-        GET_CHANGED_ORDER_ROWS("getUpdatedOrderRows");
+        GET_CHANGED_ORDER_ROWS("getUpdatedOrderRows"),
+        ////////////////////////////////////////////////////////////////////////
+        ADD_NEW_PRODUCTS("addNewProducts"),
+        ADD_NEW_CONTACTS("addNewContacts"),
+        SET_ORDER_STATUS("setOrderStatus"),
+        SET_DISABLED_CONTACTS("setDisabledContacts"),
+        SET_DISABLED_PRODUCTS("setDisabledProducts");
 
         private COMMANDS(String command) {
             this.command = command;
@@ -81,33 +96,13 @@ public class WSConnectionClient {
         }
     }
 
-    /**
-     * Invoke a remote get command
-     * @param <T> 
-     * @param commandName The name of the remote procedure
-     * @param params The parameters to the remote procedure
-     * @param expectedReturnType The type you expect to get back
-     * @return The response
-     * @throws XmlRpcException If any error occurs
-     */
-    @SuppressWarnings("unchecked")
-    public <T extends Object>T invokeGetCommand(String commandName, Object[] params, T expectedReturnType) throws XmlRpcException {
-        if (client != null) {
-            Object data = client.execute(commandName, params);
-            Log.Debug(this, "RPC call to '" + ((XmlRpcClientConfigImpl)client.getClientConfig()).getServerURL() + "#" + commandName + "' returned a: " + data.getClass().getSimpleName());
-            return (T) data;
-        }
-        return null;
-    }
+  
 
     private boolean connect(URL host) {
-        XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
-        config.setServerURL(host);
-        client = new XmlRpcClient();
-        client.setConfig(config);
+        client = new XMLRpcClient(host);
         Object[] params = new Object[0];
         try {
-            Integer v = (Integer) client.execute(COMMANDS.GETVERSION.toString(), params);
+            Integer v = (Integer) getClient().execute(COMMANDS.GETVERSION.toString(), params);
             Log.Debug(this, "Server XML RPC Yabs Version : " + v);
             return true;
         } catch (XmlRpcException ex) {
