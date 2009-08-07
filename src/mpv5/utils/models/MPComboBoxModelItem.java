@@ -71,7 +71,7 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
                 return i;
             }
         }
-        return 0;
+        return -1;
     }
 
     /**
@@ -126,6 +126,18 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
      * @return
      */
     public static MPComboBoxModelItem[] toItems(Object[][] items, int compareMode) {
+        return toItems(items, compareMode, false);
+    }
+
+    /**
+     * Converts an array to mp combo box items
+     * {id (hidden), values (shown in the list)}
+     * @param items
+     * @param compareMode
+     * @param convertIndexToInteger
+     * @return
+     */
+    public static MPComboBoxModelItem[] toItems(Object[][] items, int compareMode, boolean convertIndexToInteger) {
         MPComboBoxModelItem[] array = new MPComboBoxModelItem[items.length];
         for (int i = 0; i < array.length; i++) {
             String x = "";
@@ -134,7 +146,11 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
                 x += k + " ";
             }
 
-            array[i] = new MPComboBoxModelItem(items[i][0], x.substring(0, x.length()-1));
+            if (convertIndexToInteger) {
+                array[i] = new MPComboBoxModelItem(Integer.valueOf(items[i][0].toString()), x.substring(0, x.length() - 1));
+            } else {
+                array[i] = new MPComboBoxModelItem((items[i][0].toString()), x.substring(0, x.length() - 1));
+            }
             array[i].setCompareMode(compareMode);
         }
         return array;
@@ -153,7 +169,7 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
         String[] vaars = null;
         if (formatString != null) {
             vaars = formatString.split("_\\$");
-            Log.Debug(MPComboBoxModelItem.class, "Length of var string: " +vaars.length);
+            Log.Debug(MPComboBoxModelItem.class, "Length of var string: " + vaars.length);
         }
         for (int i = 0; i < items.length; i++) {
             String x = "";
@@ -163,11 +179,11 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
                 if (format == null) {
                     x += k;
                 } else {
-                        try {
-                            format = format.replaceFirst("_\\$(.*?)\\$_", k);
-                        } catch (Exception e) {
-                            Log.Debug(e);
-                        }
+                    try {
+                        format = format.replaceFirst("_\\$(.*?)\\$_", k);
+                    } catch (Exception e) {
+                        Log.Debug(e);
+                    }
                     x = format;
                 }
             }
@@ -188,6 +204,23 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
      */
     public static MPComboBoxModelItem[] toItems(Object[][] items, boolean sortValuesNaturally) {
         MPComboBoxModelItem[] array = toItems(items);
+        if (sortValuesNaturally) {
+            Arrays.sort(array);
+        }
+        return array;
+    }
+
+    /**
+     * Converts an array to mp combo box items
+     * {id (hidden), value (shown in the list)}
+     *
+     * @param items
+     * @param sortValuesNaturally If TRUE, sorts the Items into ascending order, according to the natural ordering of its values
+     * @param convertIndexToInteger
+     * @return
+     */
+    public static MPComboBoxModelItem[] toItems(Object[][] items, boolean sortValuesNaturally, boolean convertIndexToInteger) {
+        MPComboBoxModelItem[] array = toItems(items, COMPARE_BY_VALUE, convertIndexToInteger);
         if (sortValuesNaturally) {
             Arrays.sort(array);
         }

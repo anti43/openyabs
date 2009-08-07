@@ -148,7 +148,7 @@ public class LabeledCombobox extends javax.swing.JPanel {
     }
 
     /**
-     * Sets the item with the given ID as selected item
+     * Sets the item with the given ID object as selected item
      * @param ID
      */
     public void setSelectedItem(Object ID) {

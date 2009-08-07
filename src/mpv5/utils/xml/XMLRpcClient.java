@@ -27,7 +27,7 @@ import org.apache.xmlrpc.client.XmlRpcCommonsTransportFactory;
  * Our XML RPC Client implementation
  */
 public class XMLRpcClient extends XmlRpcClient {
-    private final XmlRpcCommonsTransportFactory transport;
+//    private final XmlRpcCommonsTransportFactory transport;
 
     /**
      * Generate a new client for the given host
@@ -37,8 +37,8 @@ public class XMLRpcClient extends XmlRpcClient {
         super();
         XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
         config.setServerURL(host);
-        transport = new XmlRpcCommonsTransportFactory(this);
-        setTransportFactory(transport);
+//        transport = new XmlRpcCommonsTransportFactory(this);
+//        setTransportFactory(transport);
         setConfig(config);
 
     }

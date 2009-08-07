@@ -112,6 +112,7 @@ public enum Messages {
     UNGROUPED("Ungrouped"),
     ADMIN_USER("User Administrator can not be deleted."),
     GROUPNAMES("All Groups"),
+    PRODUCTGROUPNAMES("All Products"),
     ACCOUNTNAMES("All Accounts"),
     IN_USE("The dataset is in use, locked or has subitems assigned to it."),
     ENTER_A_DESCRIPTION("Please enter a description:"),

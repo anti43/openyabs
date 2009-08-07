@@ -50,6 +50,7 @@ public class Product extends DatabaseObject  implements Formattable{
     private int inttype;
     private int manufacturersids;
     private int suppliersids;
+    private int productgroupsids;
     
     private double externalnetvalue;
     private double internalnetvalue;
@@ -280,5 +281,19 @@ public class Product extends DatabaseObject  implements Formattable{
      */
     public void setDefaultimage(String defaultimage) {
         this.defaultimage = defaultimage;
+    }
+
+    /**
+     * @return the productgroupsids
+     */
+    public int __getProductgroupsids() {
+        return productgroupsids;
+    }
+
+    /**
+     * @param productgroupsids the productgroupsids to set
+     */
+    public void setProductgroupsids(int productgroupsids) {
+        this.productgroupsids = productgroupsids;
     }
 }

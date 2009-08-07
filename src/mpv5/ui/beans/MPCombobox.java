@@ -168,7 +168,7 @@ public class MPCombobox extends javax.swing.JPanel {
                 Object value = cbField.getItem();
                 jComboBox1.setSelectedItem(new MPComboBoxModelItem(-1, value.toString()));
                 Object[][] data = new DatabaseSearch(context, 50).getValuesFor("ids, cname", "cname", jComboBox1.getSelectedItem().toString(), true);
-                jComboBox1.setModel(MPComboBoxModelItem.toModel(MPComboBoxModelItem.toItems(data, true)));
+                jComboBox1.setModel(MPComboBoxModelItem.toModel(MPComboBoxModelItem.toItems(data, true, true)));
                 if (data.length > 1) {
                     Log.Debug(this, jComboBox1.getItemCount());
                    if(table!=null) {
@@ -274,7 +274,7 @@ public class MPCombobox extends javax.swing.JPanel {
      * @param itemID
      */
     public void setSelectedIndex(int itemID) {
-        if (itemID < 0 || itemID > getComboBox().getItemCount()) {
+        if (itemID >= 0 || itemID < getComboBox().getItemCount()) {
             getComboBox().setSelectedIndex(itemID);
         }
     }

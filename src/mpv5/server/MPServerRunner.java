@@ -21,6 +21,7 @@ import java.io.*;
 import java.util.HashMap;
 import mpv5.Main;
 import mpv5.logging.Log;
+import mpv5.usermanagement.MPSecurityManager;
 
 /**
  * This server-thread handles connections to the {@link MPServer}
@@ -32,7 +33,6 @@ public class MPServerRunner implements Runnable {
     public static final String JOB_DONE = "MP server finished a job.";
     private BufferedReader in;
     private PrintStream out;
-
     //************************* Responses from us *************************
     public static final String HANDSHAKE = "Speak, friend, and enter [100]";
     public static final String WAITING = "Awaiting your advise.. [200]";
@@ -47,7 +47,11 @@ public class MPServerRunner implements Runnable {
             "foul-smelling, vile, codependent villain and that’s just not what I’m " +
             "looking for in a romantic relationship right now. [800]";
     //************ Commands from clients ***********************************
-    public static final String HANDSHAKE_RESPONSE = "friend";
+
+    /**
+     * friend:username:password
+     */
+    public static final String HANDSHAKE_RESPONSE = "friend:";
     public static final String RUN = "run";
     public static final String QUIT = "quit";
     //**** Jobs
@@ -82,7 +86,8 @@ public class MPServerRunner implements Runnable {
                 in = new BufferedReader(new InputStreamReader(getSocket().getInputStream()));
                 out = new PrintStream(getSocket().getOutputStream());
                 out.println(HANDSHAKE);
-                if (in.readLine().equals(HANDSHAKE_RESPONSE)) {
+                String fline = in.readLine();
+                if (fline.startsWith(HANDSHAKE_RESPONSE) && fline.split(":").length == 3 && MPSecurityManager.checkAuth(fline.split(":")[1], fline.split(":")[2]) != null) {
                     out.println(WAITING);
                     while ((line = in.readLine()) != null && !line.equalsIgnoreCase("quit")) {
                         try {

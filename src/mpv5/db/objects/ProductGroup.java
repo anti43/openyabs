@@ -17,14 +17,19 @@
 package mpv5.db.objects;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComponent;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
+import mpv5.logging.Log;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Groups;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_ProductGroups;
+import mpv5.ui.frames.MPView;
 import mpv5.ui.panels.MPControlPanel;
 
 /**
@@ -36,6 +41,7 @@ public class ProductGroup extends DatabaseObject {
     private String description = "";
     private String defaults = "";
     private String hierarchypath = "";
+    private int productgroupsids;
 
     public ProductGroup() {
         context.setDbIdentity(Context.IDENTITY_PGROUPS);
@@ -94,7 +100,11 @@ public class ProductGroup extends DatabaseObject {
         } catch (NodataFoundException ex) {
             mpv5.logging.Log.Debug(ex);//Logger.getLogger(ProductGroup.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return super.delete();
+        try {
+            return super.delete();
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override
@@ -119,5 +129,76 @@ public class ProductGroup extends DatabaseObject {
      */
     public void setHierarchypath(String hierarchypath) {
         this.hierarchypath = hierarchypath;
+    }
+
+    /**
+     * @return the productgroupsids
+     */
+    public int __getProductgroupsids() {
+        return productgroupsids;
+    }
+
+    /**
+     * @param productgroupsids the productgroupsids to set
+     */
+    public void setProductgroupsids(int productgroupsids) {
+        this.productgroupsids = productgroupsids;
+    }
+
+    /**
+     * Create a tree model
+     * @param data
+     * @param rootNode
+     * @return
+     */
+    public static DefaultTreeModel toTreeModel(ArrayList<ProductGroup> data, ProductGroup rootNode) {
+
+        DefaultMutableTreeNode node1 = null;
+        if (data.size() > 0) {
+            node1 = new DefaultMutableTreeNode(rootNode);
+            data.remove(rootNode);//remove root if in list
+            try {
+                MPView.setWaiting(true);
+                node1 = addToParents(node1, data);
+
+            } catch (Exception e) {
+                Log.Debug(e);
+            } finally {
+                MPView.setWaiting(false);
+            }
+        }
+        DefaultTreeModel model = new DefaultTreeModel(node1);
+        return model;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static DefaultMutableTreeNode addToParents(DefaultMutableTreeNode firstnode, ArrayList<ProductGroup> dobjlist) {
+
+        for (int i = 0; i < dobjlist.size(); i++) {
+            ProductGroup dobj = dobjlist.get(i);
+
+            if (dobj.__getProductgroupsids() <= 0 && firstnode.isRoot()) {
+//                Log.Debug(ArrayUtilities.class, "Node is root child, adding it to root and removing it from the list.");
+                firstnode.add(new DefaultMutableTreeNode(dobj));
+                dobjlist.remove(dobj);//First level groups
+                i--;
+            } else {
+                int parentid = dobj.__getProductgroupsids();
+                if (((ProductGroup) firstnode.getUserObject()).__getIDS().intValue() == parentid) {
+//                    Log.Debug(ArrayUtilities.class, "Node is child of parentnode, adding and removing it from the list.");
+                    firstnode.add(new DefaultMutableTreeNode(dobj));
+                    dobjlist.remove(dobj);
+                    i--;
+                } else {
+//                    Log.Debug(ArrayUtilities.class, "Node is no child of parentnode, iterating over the parent node..");
+                    @SuppressWarnings("unchecked")
+                    Enumeration<DefaultMutableTreeNode> nodes = firstnode.children();
+                    while (nodes.hasMoreElements()) {
+                        addToParents(nodes.nextElement(), dobjlist);
+                    }
+                }
+            }
+        }
+        return firstnode;
     }
 }

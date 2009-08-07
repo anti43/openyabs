@@ -27,6 +27,7 @@ import mpv5.ui.dialogs.subcomponents.ControlPanel_Konsole;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Local;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Locale;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Plugins;
+import mpv5.ui.dialogs.subcomponents.ControlPanel_ProductGroups;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Users;
 import mpv5.ui.frames.MPBabelFish;
 import mpv5.ui.frames.MPView;
@@ -507,7 +508,7 @@ public class MPControlPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton16ActionPerformed
 
     private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton17ActionPerformed
-        // TODO add your handling code here:
+        openDetails(new ControlPanel_ProductGroups());
     }//GEN-LAST:event_jButton17ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

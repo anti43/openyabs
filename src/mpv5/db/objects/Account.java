@@ -211,6 +211,12 @@ public class Account extends DatabaseObject {
         this.intparentaccount = intparentaccount;
     }
 
+    /**
+     * Create a tree model
+     * @param data
+     * @param rootNode
+     * @return
+     */
     public static DefaultTreeModel toTreeModel(ArrayList<Account> data, Account rootNode) {
 
         DefaultMutableTreeNode node1 = null;
@@ -289,7 +295,11 @@ public class Account extends DatabaseObject {
         } catch (NodataFoundException ex) {
             Log.Debug(ex);
         }
-        return super.delete();
+        try {
+            return super.delete();
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override

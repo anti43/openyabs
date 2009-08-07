@@ -48,11 +48,21 @@ public class TextFieldUtils {
         new blinker(lfield.getTextField(), 2, Color.RED).execute();
     }
 
+    /**
+     *
+     * @param component
+     * @param color
+     */
     public static void blink(Component component, Color color) {
-        new blinker(component, 2, Color.RED).execute();
+        if (component instanceof LabeledTextField) {
+            new blinker((LabeledTextField)component, 2, Color.RED).execute();
+        } else {
+            new blinker(component, 2, Color.RED).execute();
+        }
     }
 
     private static class blinker extends SwingWorker<Void, Void> {
+
         private Component filed;
         private int count;
         private Color color;

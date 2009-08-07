@@ -252,7 +252,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
 
     @Override
     public void showRequiredFields() {
-        TextFieldUtils.blink(cname, Color.RED);
+        TextFieldUtils.blink(cname.getTextField(), Color.RED);
     }
 
     private void addFile() {
@@ -938,7 +938,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
     public int ids_;
     public Date dateadded_;
     public int groupsids_ = 1;
-    public int pgroupsids_ = 1;
+    public int productgroupsids_ = 1;
     public int taxids_;
     public int inttype_;
     public int manufacturersids_;
@@ -970,10 +970,10 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
             }
 
             try {
-                pgroupsids_ = Integer.valueOf(familyselect.getSelectedItem().getId());
+                productgroupsids_ = Integer.valueOf(familyselect.getSelectedItem().getId());
             } catch (Exception e) {
                 Log.Debug(e);
-                pgroupsids_ = 1;
+                productgroupsids_ = 1;
             }
 
             if (groupnameselect.getSelectedItem() != null) {
@@ -1023,7 +1023,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
 
         try {
             stype.setSelectedIndex(inttype_);
-            familyselect.setModel(DatabaseObject.getObject(Context.getAccounts(), pgroupsids_));
+            familyselect.setModel(DatabaseObject.getObject(Context.getProductGroup(), productgroupsids_));
             groupnameselect.setModel(DatabaseObject.getObject(Context.getGroup(), groupsids_));
         } catch (Exception e) {
             Log.Debug(e);
@@ -1071,6 +1071,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
 
         netvalue.setText(FormatNumber.formatDezimal(internalnetvalue_));
         extvalue.setText(FormatNumber.formatDezimal(externalnetvalue_));
+        selecttax.setSelectedItem(Integer.valueOf(taxids_));
 
         fillFiles();
 

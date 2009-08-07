@@ -1564,7 +1564,7 @@ public class QueryHandler implements Cloneable {
             }
         }
 
-        if (jobmessage != null) {
+        if (jobmessage != null && retval!=null) {
             MPView.addMessage(jobmessage);
             retval.setMessage(jobmessage);
         }

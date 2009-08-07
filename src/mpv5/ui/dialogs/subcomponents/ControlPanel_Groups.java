@@ -367,7 +367,7 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
     public int groupsids_ = 1;
     public int intaddedby_ = 1;
     public java.util.Date dateadded_ = new java.util.Date();
-    public String hierarchypath_;
+    public String hierarchypath_ = "";
 
     @Override
     public void setValues(PropertyStore values) {
@@ -415,9 +415,8 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
     public void collectData() {
         cname_ = cname.get_Text();
         description_ = desc.getText();
-//        defaults_ = defaults.get_Text();
         try {
-            groupsids_ = Integer.valueOf(new DatabaseSearch(Context.getGroup()).searchFor(new String[]{"ids"}, "cname", parents.get_Text(), true)[0].toString());
+            groupsids_ = DatabaseObject.getObject(Context.getGroup(), parents.get_Text()).__getIDS();
         } catch (NodataFoundException ex) {
             groupsids_ = 1;
         }

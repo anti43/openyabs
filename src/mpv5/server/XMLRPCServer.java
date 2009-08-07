@@ -31,19 +31,43 @@ import org.apache.xmlrpc.server.XmlRpcHandlerMapping;
 import org.apache.xmlrpc.server.XmlRpcServer;
 import org.apache.xmlrpc.server.XmlRpcServerConfigImpl;
 import org.apache.xmlrpc.webserver.WebServer;
+
+
+//Client-Side:
+//XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
+//config.setServerUrl("http://127.0.0.1:8080/xmlrpc");
+//config.setBasicUserName("adst-test");
+//config.setBasicPassword("adst-test#@!");
+//XmlRpcClient client = new XmlRpcClient();
+//client.setConfig(config);
 /**
  * This class implements an XML-RPC server which is bound to all importable {@link Context}s
  */
 public class XMLRPCServer {
 
     private static final int port = 8484;
+    private WebServer webServer;
+
+    /**
+     * @return the port
+     */
+    public static int getPort() {
+        return port;
+    }
+
+    /**
+     * @return the webServer
+     */
+    public WebServer getWebServer() {
+        return webServer;
+    }
 
     /**
      * Starts the server
      * @throws Exception
      */
     public XMLRPCServer() throws Exception {
-        WebServer webServer = new WebServer(port);
+        webServer = new WebServer(getPort());
         XmlRpcServer xmlRpcServer = webServer.getXmlRpcServer();
         PropertyHandlerMapping phm = new XPropertyHandlerMapping();
 
@@ -74,15 +98,6 @@ public class XMLRPCServer {
         }
     }
 }
-
-
-//Client-Side:
-//XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
-//config.setServerUrl("http://127.0.0.1:8080/xmlrpc");
-//config.setBasicUserName("adst-test");
-//config.setBasicPassword("adst-test#@!");
-//XmlRpcClient client = new XmlRpcClient();
-//client.setConfig(config);
 class XPropertyHandlerMapping extends PropertyHandlerMapping {
 
     private boolean isAuthenticated(String pUserName, String pPassword) {

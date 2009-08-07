@@ -34,6 +34,7 @@ public class MPServer extends Thread {
      *
      */
     public static void stopAllInstances() {
+        xmlrpcs.getWebServer().shutdown();
         for (int i = 0; i < SOCKETS.size(); i++) {
             try {
                 SOCKETS.get(i).close();
@@ -52,14 +53,17 @@ public class MPServer extends Thread {
     private static Vector<Thread> INSTANCES = new Vector<Thread>();
     private ServerSocket serverSocket;
     private static Vector<ServerSocket> SOCKETS = new Vector<ServerSocket>();
+    private static XMLRPCServer xmlrpcs;
 
     public MPServer() {
         Log.Debug(this, "Initialising MP Server..");
         INSTANCES.add(this);
-        try {
-            new XMLRPCServer();//Conveniently start the XML RPC server along the native MP server
-        } catch (Exception ex) {
-            Log.Debug(ex);
+        if (xmlrpcs == null) {
+            try {
+                xmlrpcs = new XMLRPCServer();//Conveniently start the XML RPC server along the native MP server
+            } catch (Exception ex) {
+                Log.Debug(ex);
+            }
         }
     }
 
@@ -67,7 +71,7 @@ public class MPServer extends Thread {
     public void run() {
         ALLOWED_TO_RUN = true;
         serverSocket = null;
-        
+
         boolean running = true;
         try {
             serverSocket = new ServerSocket(Integer.valueOf(LocalSettings.getProperty(LocalSettings.SERVER_PORT)));

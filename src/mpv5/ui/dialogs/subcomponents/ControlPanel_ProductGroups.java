@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeSelectionModel;
 import mpv5.data.PropertyStore;
@@ -36,7 +37,7 @@ import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryHandler;
 import mpv5.db.objects.ProductGroup;
 import mpv5.globals.Messages;
-import mpv5.db.objects.Group;
+
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.Popup;
@@ -47,6 +48,7 @@ import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.models.MPTreeModel;
 import mpv5.utils.trees.TreeFormat;
 import mpv5.utils.ui.TextFieldUtils;
+
 
 /**
  *
@@ -65,6 +67,10 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
         if (MPSecurityManager.checkAdminAccess()) {
             initComponents();
             tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+            
+            gcombobox.setSearchOnEnterEnabled(true);
+            gcombobox.setContext(Context.getGroup());
+            
             refresh();
         }
     }
@@ -73,6 +79,10 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
         if (MPSecurityManager.checkAdminAccess()) {
             initComponents();
             tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+                
+            gcombobox.setSearchOnEnterEnabled(true);
+            gcombobox.setContext(Context.getGroup());
+            
             refresh();
             setDataOwner(aThis,true);
         }
@@ -108,6 +118,7 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
         jScrollPane2 = new javax.swing.JScrollPane();
         desc = new javax.swing.JTextArea();
         jLabel3 = new javax.swing.JLabel();
+        gcombobox = new mpv5.ui.beans.LabeledCombobox();
         jPanel2 = new javax.swing.JPanel();
         jButton4 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
@@ -156,7 +167,7 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -201,6 +212,9 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
         jLabel3.setText(bundle.getString("ControlPanel_ProductGroups.jLabel3.text")); // NOI18N
         jLabel3.setName("jLabel3"); // NOI18N
 
+        gcombobox.set_Label(bundle.getString("ControlPanel_ProductGroups.gcombobox._Label")); // NOI18N
+        gcombobox.setName("gcombobox"); // NOI18N
+
         javax.swing.GroupLayout rightpaneLayout = new javax.swing.GroupLayout(rightpane);
         rightpane.setLayout(rightpaneLayout);
         rightpaneLayout.setHorizontalGroup(
@@ -208,12 +222,13 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
             .addGroup(rightpaneLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel3)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(cname, javax.swing.GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE)
                     .addComponent(jLabel2)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE)
-                    .addComponent(parents, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE))
+                    .addComponent(parents, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE)
+                    .addComponent(gcombobox, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE))
                 .addContainerGap())
         );
         rightpaneLayout.setVerticalGroup(
@@ -230,7 +245,9 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(parents, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(83, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(gcombobox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(55, Short.MAX_VALUE))
         );
 
         add(rightpane, java.awt.BorderLayout.EAST);
@@ -331,12 +348,12 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
 
         if (evt.getClickCount() == 1) {
             if (node != null) {
-                Group g = (Group) node.getUserObject();
+                ProductGroup g = (ProductGroup) node.getUserObject();
                 parents.set_Text(g.__getCName());
             }
         } else {
             if (node != null) {
-                Group g = (Group) node.getUserObject();
+                ProductGroup g = (ProductGroup) node.getUserObject();
                 setDataOwner(g,true);
             }
         }
@@ -346,6 +363,7 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
     private javax.swing.ButtonGroup buttonGroup1;
     private mpv5.ui.beans.LabeledTextField cname;
     private javax.swing.JTextArea desc;
+    private mpv5.ui.beans.LabeledCombobox gcombobox;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
@@ -369,17 +387,21 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
     public int ids_;
     public int groupsids_ = 1;
     public int intaddedby_ = 1;
+    public int productgroupsids_;
     public java.util.Date dateadded_ = new java.util.Date();
-    public String hierarchypath_;
+    public String hierarchypath_ = "";
 
+    @Override
     public void setValues(PropertyStore values) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
     public String getUname() {
-        return "Groups";
+        return "ProductGroups";
     }
 
+    @Override
     public void reset() {
         if (dataOwner.isExisting()) {
             DatabaseObject dato = dataOwner;
@@ -391,42 +413,57 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
     }
 
 
+    @Override
     public void refresh() {
 
-        ArrayList<Group> data = null;
+        ArrayList<ProductGroup> data = null;
         try {
-            data = DatabaseObject.getObjects(Context.getGroup());
+            data = DatabaseObject.getObjects(Context.getProductGroup());
         } catch (NodataFoundException ex) {
             Log.Debug(this, ex.getMessage());
         }
 
-        Group g;
+        ProductGroup g;
         try {
-            g = (Group) DatabaseObject.getObject(Context.getGroup(), 1);
+            g = (ProductGroup) DatabaseObject.getObject(Context.getProductGroup(), 1);
         } catch (NodataFoundException ex) {
-            g= new Group(Messages.GROUPNAMES.toString());
+            g = new ProductGroup(Messages.GROUPNAMES.toString());
             g.setIDS(-1);
         }
 
-        tree.setModel(MPTreeModel.toTreeModel(data, g));
-        TreeFormat.expandTree(tree);
+        tree.setModel(ProductGroup.toTreeModel(data, g));
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {   
+                gcombobox.triggerSearch();
+                TreeFormat.expandTree(tree);
+            }
+        };SwingUtilities.invokeLater(runnable);
     }
 
+    @Override
     public void collectData() {
         cname_ = cname.get_Text();
         description_ = desc.getText();
-//        defaults_ = defaults.get_Text();
         try {
-            groupsids_ = Integer.valueOf(new DatabaseSearch(Context.getGroup()).searchFor(new String[]{"ids"}, "cname", parents.get_Text(), true)[0].toString());
+            productgroupsids_ = DatabaseObject.getObject(Context.getProductGroup(), parents.get_Text()).__getIDS();
         } catch (NodataFoundException ex) {
+            productgroupsids_ = 1;
+        }
+
+        try {
+            groupsids_ = Integer.valueOf(gcombobox.getSelectedItem().getId());
+        } catch (NumberFormatException numberFormatException) {
             groupsids_ = 1;
         }
     }
 
+    @Override
     public DatabaseObject getDataOwner() {
         return dataOwner;
     }
 
+    @Override
     public void setDataOwner(DatabaseObject object, boolean p) {
         dataOwner = (ProductGroup) object;
         if (p) {
@@ -435,17 +472,24 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
         }
     }
 
+    @Override
     public void exposeData() {
         cname.set_Text(cname_);
         desc.setText(description_);
         try {
-            parents.set_Text(DatabaseObject.getObject(Context.getGroup(), groupsids_).__getCName());
+            parents.set_Text(DatabaseObject.getObject(Context.getProductGroup(), productgroupsids_).__getCName());
         } catch (NodataFoundException ex) {
             Log.Debug(this, ex);
         }
+        try {
 //        defaults.set_Text(defaults_);
+            gcombobox.setModel(DatabaseObject.getObject(Context.getGroup(), groupsids_));
+        } catch (NodataFoundException ex) {
+            Log.Debug(this, ex.getMessage());
+        }
     }
 
+    @Override
     public void paste(DatabaseObject dbo) {
         if (dbo.getDbIdentity().equals(Context.getGroup().getDbIdentity())) {
             setDataOwner(dbo,true);
@@ -454,11 +498,13 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
         }
     }
 
+    @Override
     public void showSearchBar(boolean show) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
 
+    @Override
     public Component getAndRemoveActionPanel() {
          this.remove(jPanel2);validate();
         return jPanel2;

@@ -93,7 +93,11 @@ public class Group extends DatabaseObject {
         } catch (NodataFoundException ex) {
             mpv5.logging.Log.Debug(ex);//Logger.getLogger(Group.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return super.delete();
+        try {
+            return super.delete();
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override

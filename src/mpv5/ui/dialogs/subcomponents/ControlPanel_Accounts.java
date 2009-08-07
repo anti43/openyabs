@@ -442,8 +442,8 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
     public int profitfid_;
     public int taxuid_;
     public int taxfid_;
-    public String frame_;
-    public String hierarchypath_;
+    public String frame_ = "";
+    public String hierarchypath_ = "";
 
 
     public void setValues(PropertyStore values) {
