@@ -55,7 +55,7 @@ public class XMLRpcClient extends XmlRpcClient {
     @SuppressWarnings("unchecked")
     public <T extends Object> T invokeGetCommand(String commandName, Object[] params, T expectedReturnType) throws XmlRpcException {
         Object data = execute(commandName, params);
-        Log.Debug(this, "RPC call to '" + ((XmlRpcClientConfigImpl) getClientConfig()).getServerURL() + "#" + commandName + "' returned a: " + data.getClass().getSimpleName());
+        Log.Debug(this, "RPC call to '" + ((XmlRpcClientConfigImpl) getClientConfig()).getServerURL() + "#" + commandName + "' returned a: " + data.getClass().getSimpleName()+ " [" + data + "]");
         return (T) data;
     }
 
@@ -68,7 +68,7 @@ public class XMLRpcClient extends XmlRpcClient {
      */
     public boolean invokeSetCommand(String commandName, Object[] params) throws XmlRpcException {
             Boolean result = (Boolean) execute(commandName, params);
-            Log.Debug(this, "RPC call to '" + ((XmlRpcClientConfigImpl) getClientConfig()).getServerURL() + "#" + commandName + "' returned a: " + result.getClass().getSimpleName());
+            Log.Debug(this, "RPC call to '" + ((XmlRpcClientConfigImpl) getClientConfig()).getServerURL() + "#" + commandName + "' returned a: " + result.getClass().getSimpleName() + " [" + result + "]");
             return result;
     }
 }

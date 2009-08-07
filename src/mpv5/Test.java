@@ -64,13 +64,16 @@ public class Test {
 
     public static void main(String[] args) throws NodataFoundException, FileNotFoundException, OfficeApplicationException, NOAException, DocumentException, InterruptedException, NoCompatibleHostFoundException, MalformedURLException, XmlRpcException {
 
-//        System.out.println("ff.hh".substring("ff.hh".lastIndexOf(".")+1));
+
         try {
             LogConsole.setLogStreams(false, true, false);
             Log.setLogLevel(Log.LOGLEVEL_DEBUG);
-            boolean f = new WSConnectionClient(new URL("http://localhost/server.php")).getClient().invokeSetCommand(WSConnectionClient.COMMANDS.ADD_NEW_CONTACTS.toString(), new Object[]{
-                        new Object[]{"cname", "mustermann1"},
-                        new Object[]{"cname", "mustermann2"},});
+        Log.PrintArray(WSConnectionClient.COMMANDS.values());
+            boolean f = new WSConnectionClient(new URL("http://localhost/server.php")).getClient().invokeSetCommand(WSConnectionClient.COMMANDS.ADD_NEW_CONTACTS.toString(),
+                    new Object[][]{
+                        {"1", "cname", "mustermann1"}, {"1","city", "mustermannhausen"},
+                        {"2", "cname", "mustermann2"}, {"2","city", "mustermannhausen2"}
+                        });
             Log.Debug(Main.class, f);
         } catch (Exception malformedURLException) {
             malformedURLException.printStackTrace();

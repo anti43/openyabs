@@ -94,7 +94,7 @@ public class WSConnectionClient {
         if (!connect(host)) {
             throw new NoCompatibleHostFoundException(host);
         }
-    }
+      }
 
   
 
