@@ -18,6 +18,7 @@ package mpv5.webshopinterface;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -81,22 +82,20 @@ public class WSConnectionClient {
     }
 
     /**
-     * Invoke a get command
-     * @param commandName
-     * @return
-     * @throws XmlRpcException
+     * Invoke a remote get command
+     * @param <T> 
+     * @param commandName The name of the remote procedure
+     * @param params The parameters to the remote procedure
+     * @param expectedReturnType The type you expect to get back
+     * @return The response
+     * @throws XmlRpcException If any error occurs
      */
-    public Object[][] invokeGetCommand(String commandName) throws XmlRpcException {
+    @SuppressWarnings("unchecked")
+    public <T extends Object>T invokeGetCommand(String commandName, Object[] params, T expectedReturnType) throws XmlRpcException {
         if (client != null) {
-            Object[] params = new Object[]{3, 5};
-            Vector result = (Vector) client.execute(commandName, params);
-
-            Object[][] data = new Object[result.size()][2];
-            for (int i = 0; i < result.size(); i++) {
-                Log.Debug(this, result.get(i));
-//                data[i] = (Object[]) result.elementAt(i);
-            }
-            return data;
+            Object data = client.execute(commandName, params);
+            Log.Debug(this, "RPC call to '" + ((XmlRpcClientConfigImpl)client.getClientConfig()).getServerURL() + "#" + commandName + "' returned a: " + data.getClass().getSimpleName());
+            return (T) data;
         }
         return null;
     }
@@ -108,11 +107,12 @@ public class WSConnectionClient {
         client.setConfig(config);
         Object[] params = new Object[0];
         try {
-            Boolean result = (Boolean) client.execute(COMMANDS.GETVERSION.toString(), params);
-            return result;
+            Integer v = (Integer) client.execute(COMMANDS.GETVERSION.toString(), params);
+            Log.Debug(this, "Server XML RPC Yabs Version : " + v);
+            return true;
         } catch (XmlRpcException ex) {
             Log.Debug(this, ex.getMessage());
-            return true;
+            return false;
         }
     }
 }

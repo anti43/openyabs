@@ -39,6 +39,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.tools.JavaCompiler;
@@ -67,9 +68,8 @@ public class Test {
 //        System.out.println("ff.hh".substring("ff.hh".lastIndexOf(".")+1));
         LogConsole.setLogStreams(false, true, false);
         Log.setLogLevel(Log.LOGLEVEL_DEBUG);
-
-        new WSConnectionClient(new URL("http://yabs.copy-left.de/files/test.php")).invokeGetCommand("sample.sumAndDifference");
-        
+        HashMap f = new WSConnectionClient(new URL("http://localhost/test.php")).invokeGetCommand("sumAndDifference", new Object[]{3, 5}, new HashMap());
+        Log.Debug(Main.class, f);
 //        Contact c = new Contact();
 //        SimpleDatabaseObject d = SDBObjectGenerator.getObjectFrom(c);
 //        try {

@@ -34,6 +34,7 @@ public class Group extends DatabaseObject {
 
     private String description = "";
     private String defaults = "";
+    private String hierarchypath = "";
 
     public Group() {
         context.setDbIdentity(Context.IDENTITY_GROUPS);
@@ -105,5 +106,19 @@ public class Group extends DatabaseObject {
      @Override
     public mpv5.utils.images.MPIcon getIcon() {
         return null;
+    }
+
+    /**
+     * @return the hierarchypath
+     */
+    public String __getHierarchypath() {
+        return hierarchypath;
+    }
+
+    /**
+     * @param hierarchypath the hierarchypath to set
+     */
+    public void setHierarchypath(String hierarchypath) {
+        this.hierarchypath = hierarchypath;
     }
 }

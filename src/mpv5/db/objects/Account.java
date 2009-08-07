@@ -82,6 +82,7 @@ public class Account extends DatabaseObject {
     private int inttaxfid;
     private int inttaxuid;
     private String frame = "buildin";
+    private String hierarchypath = "";
 
     @Override
     public JComponent getView() {
@@ -351,5 +352,19 @@ public class Account extends DatabaseObject {
      */
     public void setInttaxuid(int inttaxuid) {
         this.inttaxuid = inttaxuid;
+    }
+
+    /**
+     * @return the hierarchypath
+     */
+    public String __getHierarchypath() {
+        return hierarchypath;
+    }
+
+    /**
+     * @param hierarchypath the hierarchypath to set
+     */
+    public void setHierarchypath(String hierarchypath) {
+        this.hierarchypath = hierarchypath;
     }
 }

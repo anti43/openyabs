@@ -24,6 +24,7 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Groups;
+import mpv5.ui.dialogs.subcomponents.ControlPanel_ProductGroups;
 import mpv5.ui.panels.MPControlPanel;
 
 /**
@@ -34,6 +35,7 @@ public class ProductGroup extends DatabaseObject {
 
     private String description = "";
     private String defaults = "";
+    private String hierarchypath = "";
 
     public ProductGroup() {
         context.setDbIdentity(Context.IDENTITY_PGROUPS);
@@ -97,14 +99,25 @@ public class ProductGroup extends DatabaseObject {
 
     @Override
     public JComponent getView() {
-//       MPControlPanel p = (MPControlPanel) MPControlPanel.instanceOf();
-//       p.openDetails(new ControlPanel_Groups(this));
-//        return new ControlPanel_Groups(this);
-        return null;
+       return new ControlPanel_ProductGroups(this);
     }
 
      @Override
     public mpv5.utils.images.MPIcon getIcon() {
         return null;
+    }
+
+    /**
+     * @return the hierarchypath
+     */
+    public String __getHierarchypath() {
+        return hierarchypath;
+    }
+
+    /**
+     * @param hierarchypath the hierarchypath to set
+     */
+    public void setHierarchypath(String hierarchypath) {
+        this.hierarchypath = hierarchypath;
     }
 }

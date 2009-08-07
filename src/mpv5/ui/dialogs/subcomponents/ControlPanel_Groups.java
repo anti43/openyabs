@@ -367,15 +367,19 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
     public int groupsids_ = 1;
     public int intaddedby_ = 1;
     public java.util.Date dateadded_ = new java.util.Date();
+    public String hierarchypath_;
 
+    @Override
     public void setValues(PropertyStore values) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
     public String getUname() {
         return "Groups";
     }
 
+    @Override
     public void reset() {
         if (dataOwner.isExisting()) {
             DatabaseObject dato = dataOwner;
