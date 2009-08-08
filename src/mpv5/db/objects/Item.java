@@ -33,6 +33,7 @@ import mpv5.handler.MPEnum;
 import mpv5.logging.Log;
 import mpv5.ui.panels.ItemPanel;
 import mpv5.utils.images.MPIcon;
+import mpv5.utils.numberformat.FormatNumber;
 
 /**
  *
@@ -132,7 +133,7 @@ public class Item extends DatabaseObject implements Formattable {
         en[5] = new MPEnum() {
 
             @Override
-            public Integer  getId() {
+            public Integer getId() {
                 return new Integer(STATUS_CANCELLED);
             }
 
@@ -168,7 +169,7 @@ public class Item extends DatabaseObject implements Formattable {
      * @return A value or 0d if not found
      */
     public static Double getTaxValue(Integer taxid) {
-   
+
         if (taxid.intValue() > 0) {
             if (taxes.containsKey(taxid)) {
                 return taxes.get(taxid);
@@ -435,5 +436,64 @@ public class Item extends DatabaseObject implements Formattable {
      */
     public void setCnumber(String cnumber) {
         this.cnumber = cnumber;
+    }
+
+    @Override
+    public HashMap<String, Object> resolveReferences(HashMap<String, Object> map) {
+        super.resolveReferences(map);
+
+        try {
+            if (map.containsKey("intstatus")) {
+                map.put("status", getStatusString(Integer.valueOf(map.get("intstatus").toString())));
+            }
+        } catch (NumberFormatException numberFormatException) {
+            //already resolved?
+            Log.Debug(numberFormatException);
+        }
+
+        try {
+            if (map.containsKey("inttype")) {
+                map.put("type", getTypeString(Integer.valueOf(map.get("inttype").toString())));
+            }
+        } catch (NumberFormatException numberFormatException) {
+            //already resolved?
+            Log.Debug(numberFormatException);
+        }
+
+        if (map.containsKey("defaultaccountsids")) {
+            try {
+                try {
+                    map.put("defaultaccount", DatabaseObject.getObject(Context.getAccounts(), Integer.valueOf(map.get("defaultaccountsids").toString())));
+                } catch (NodataFoundException ex) {
+                    map.put("defaultaccount", "N/A");
+                    Log.Debug(ex);
+                }
+            } catch (NumberFormatException numberFormatException) {
+                //already resolved?
+            }
+        }
+
+        if (map.containsKey("contactsids")) {
+            try {
+                try {
+                    map.put("contact", DatabaseObject.getObject(Context.getContact(), Integer.valueOf(map.get("contactsids").toString())));
+                } catch (NodataFoundException ex) {
+                    map.put("contact", "N/A");
+                    Log.Debug(ex);
+                }
+            } catch (NumberFormatException numberFormatException) {
+                //already resolved?
+            }
+        }
+
+        if (map.containsKey("taxids")) {
+            try {
+                map.put("tax", FormatNumber.formatPercent(Item.getTaxValue(Integer.valueOf(map.get("taxids").toString()))));
+            } catch (NumberFormatException numberFormatException) {
+                Log.Debug(numberFormatException);
+            }
+        }
+
+        return map;
     }
 }

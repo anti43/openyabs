@@ -151,18 +151,12 @@ public class DocumentHandler {
 
             // get column name
             key = keys.next();
-
-            for (int i = 0; i <
-                    formComponents.length; i++) {
+            for (int i = 0; i < formComponents.length; i++) {
 
                 XFormComponent xFormComponent = formComponents[i].getXFormComponent();
                 XTextComponent xTextComponent = formComponents[i].getXTextComponent();
                 XPropertySet propertySet = (XPropertySet) UnoRuntime.queryInterface(XPropertySet.class,
                         xFormComponent);
-
-
-
-
 
                 if (propertySet != null && propertySet.getPropertySetInfo().hasPropertyByName("Name")) {
                     String n = propertySet.getPropertyValue("Name").toString();
@@ -171,10 +165,8 @@ public class DocumentHandler {
                     }
                 }
             }
-
             textDocument.getTextFieldService().refresh();
         }
-
     }
 
     /**

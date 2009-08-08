@@ -18,6 +18,9 @@ package mpv5;
 
 import java.awt.Component;
 import java.net.MalformedURLException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -26,7 +29,6 @@ import javax.swing.table.TableCellRenderer;
 import java.util.Vector;
 import javax.swing.table.TableColumn;
 import mpv5.db.common.NodataFoundException;
-import mpv5.logging.LogConsole;
 
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.document.DocumentException;
@@ -34,23 +36,11 @@ import ag.ion.noa.NOAException;
 
 import java.io.*;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.tools.JavaCompiler;
-import javax.tools.JavaFileObject;
-import javax.tools.JavaFileObject.Kind;
-import javax.tools.SimpleJavaFileObject;
-import javax.tools.ToolProvider;
-import mpv5.db.objects.Contact;
-import mpv5.handler.SDBObjectGenerator;
-import mpv5.handler.SimpleDatabaseObject;
-import mpv5.logging.Log;
+import mpv5.db.common.Context;
+import mpv5.db.common.DatabaseObject;
+import mpv5.handler.FormFieldsHandler;
+import mpv5.logging.*;
 import mpv5.webshopinterface.NoCompatibleHostFoundException;
 import mpv5.webshopinterface.WSConnectionClient;
 import org.apache.xmlrpc.XmlRpcException;
@@ -63,7 +53,6 @@ public class Test {
     private static String oooport;
 
     public static void main(String[] args) throws NodataFoundException, FileNotFoundException, OfficeApplicationException, NOAException, DocumentException, InterruptedException, NoCompatibleHostFoundException, MalformedURLException, XmlRpcException {
-
 
         try {
             LogConsole.setLogStreams(false, true, false);

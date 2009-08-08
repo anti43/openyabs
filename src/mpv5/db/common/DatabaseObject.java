@@ -36,11 +36,14 @@ import mpv5.ui.frames.MPView;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
 import javax.swing.JComponent;
+import mpv5.db.objects.User;
 import mpv5.globals.LocalSettings;
 import mpv5.handler.SimpleDatabaseObject;
+import mpv5.handler.VariablesHandler;
 import mpv5.pluginhandling.MPPLuginLoader;
 import mpv5.utils.date.RandomDate;
 import mpv5.utils.images.MPIcon;
+import mpv5.utils.numberformat.FormatNumber;
 
 /**
  * Database Objects reflect a row in a table, and can parse graphical and
@@ -439,6 +442,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
             if (!this.getType().equals(new HistoryItem().getType())) {
                 Runnable runnable = new Runnable() {
 
+                    @Override
                     public void run() {
                         QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, MPView.getUser().__getCName(), fdbid, fids, fgids);
                     }
@@ -573,9 +577,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                         source.getClass().getField(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_").get(source) + "]");
                 vars.get(i).invoke(this, source.getClass().getField(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_").get(source));
             } catch (Exception n) {
-                Log.Debug(this, n.getCause());
-                n.printStackTrace();
-
+                Log.Debug(this, n);
             }
         }
     }
@@ -596,16 +598,16 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                 target.getClass().getField(vars.get(i).getName().toLowerCase().substring(5, vars.get(i).getName().length()) + "_").set(target, vars.get(i).invoke(this, new Object[0]));
             } catch (Exception n) {
                 Log.Debug(this, n.getMessage() + " in " + target);
-                n.printStackTrace();
+                Log.Debug(n);
             }
         }
     }
 
     /**
      *
-     * @return A list containing pairs of <b>VARNAME</b> and their <b>VALUE</b> of this Databaseobject,
+     * @return A list containing pairs of <b>VARNAME</b> and their  <b>VALUE</b> (as formatted String) of this Databaseobject,
      * those which return in <code>getVars()</code>, as two-fields String-Array.
-     * Example: new String[]{CName, Michael}
+     * Example: new String[]{"CName", "Michael"}
      */
     public ArrayList<String[]> getValues() {
         ArrayList<Method> vars = getVars();
@@ -621,11 +623,46 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                                 DateConverter.getDefDateString((Date) vars.get(i).invoke(this, new Object[0]))});
                 }
             } catch (Exception n) {
-                Log.Debug(this, n.getCause());
-                n.printStackTrace();
+                Log.Debug(this, n);
             }
         }
+        return vals;
+    }
 
+    /**
+     *
+     * @return A list containing pairs of <b>VARNAME</b> and their  <b>VALUE (as formatted String)</b>  of this Databaseobject,
+     * those which return in <code>getVars()</code>, as two-fields String-Array.
+     * Example: new String[]{"dateadded", "24.22.2980"}
+     */
+    public ArrayList<String[]> getValues3() {
+        ArrayList<Method> vars = getVars();
+        ArrayList<String[]> vals = new ArrayList<String[]>();
+
+        for (int i = 0; i < vars.size(); i++) {
+            try {
+                String name = vars.get(i).getName().substring(5, vars.get(i).getName().length());
+                Object value = vars.get(i).invoke(this, new Object[0]);
+
+                if (name.startsWith("is") || name.toUpperCase().startsWith("BOOL")) {
+                    if (String.valueOf(value).equals("1") || String.valueOf(value).toUpperCase().equals("TRUE")) {
+                        vals.add(new String[]{name, "1"});
+                    } else {
+                        vals.add(new String[]{name, "0"});
+                    }
+                } else if (name.toUpperCase().startsWith("INT") || name.endsWith("uid") || name.endsWith("ids") || name.equals("ids")) {
+                    vals.add(new String[]{name, value.toString()});
+                } else if (name.toUpperCase().startsWith("DATE") || name.toUpperCase().endsWith("DATE")) {
+                    vals.add(new String[]{name, DateConverter.getDefDateString(DateConverter.getDate(value))});
+                } else if (name.toUpperCase().startsWith("VALUE") || name.toUpperCase().endsWith("VALUE")) {
+                    vals.add(new String[]{name, FormatNumber.formatDezimal(FormatNumber.parseDezimal(name))});
+                } else {
+                    vals.add(new String[]{name, VariablesHandler.parse(String.valueOf(value), this)});
+                }
+            } catch (Exception n) {
+                Log.Debug(this, n);
+            }
+        }
         return vals;
     }
 
@@ -633,7 +670,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
      *
      * @return A list containing pairs of <b>VARNAME</b> and their <b>VALUE</b> of this Databaseobject,
      * those which return in <code>getVars()</code>, as two-fields Object-Array.
-     * Example: new Object[]{"CName", "Michael"}
+     * Example: new Object[]{"dateadded", java.util.Date }
      */
     public ArrayList<Object[]> getValues2() {
         ArrayList<Method> vars = getVars();
@@ -641,13 +678,12 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
 
         for (int i = 0; i < vars.size(); i++) {
             try {
-                if (!vars.get(i).getName().substring(5, vars.get(i).getName().length()).toUpperCase().startsWith("DATE")) {
-                    vals.add(new Object[]{vars.get(i).getName().substring(5, vars.get(i).getName().length()),
-                                (vars.get(i).invoke(this, new Object[0]))});
-                }
+//                if (!vars.get(i).getName().substring(5, vars.get(i).getName().length()).toUpperCase().startsWith("DATE")) {
+                vals.add(new Object[]{vars.get(i).getName().substring(5, vars.get(i).getName().length()),
+                            (vars.get(i).invoke(this, new Object[0]))});
+//                }
             } catch (Exception n) {
-                Log.Debug(this, n.getCause());
-                n.printStackTrace();
+                Log.Debug(this, n);
             }
         }
 
@@ -1061,8 +1097,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
             for (int i = 0; i < m.length; i++) {
                 Method method = m[i];
                 if (method.getName().startsWith("get")) {
-                    Object o =method.invoke(sdo, new Object[]{});
-                    if (o!=null) {
+                    Object o = method.invoke(sdo, new Object[]{});
+                    if (o != null) {
                         data.put(method.getName().substring(3), o);
                     }
                 }
@@ -1255,5 +1291,35 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
      */
     public static void AutoLockEnabled(boolean active) {
         AUTO_LOCK = active;
+    }
+
+    /**
+     * Resolves referencing ids in the map to their named values.<br/>
+     * Child classes should override this and call super.resolveReferences(HashMap<String, String> map) in the overriding method
+     * @param map
+     * @return
+     */
+    public HashMap<String, Object> resolveReferences(HashMap<String, Object> map) {
+        if (map.containsKey("groupsids")) {
+            try {
+                try {
+                    map.put("group", DatabaseObject.getObject(Context.getGroup(), Integer.valueOf(map.get("groupsids").toString())));
+                } catch (NodataFoundException ex) {
+                    map.put("group", "N/A");
+                    Log.Debug(ex);
+                }
+            } catch (NumberFormatException numberFormatException) {
+                //already resolved?
+            }
+        }
+        try {
+            if (map.containsKey("intaddedby")) {
+                map.put("addedby", User.getUsername(Integer.valueOf(map.get("intaddedby").toString())));
+            }
+        } catch (NumberFormatException numberFormatException) {
+             //already resolved?
+        }
+
+        return map;
     }
 }

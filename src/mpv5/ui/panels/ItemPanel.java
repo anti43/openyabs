@@ -31,6 +31,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
@@ -61,10 +63,12 @@ import mpv5.ui.frames.MPView;
 import mpv5.ui.popups.FileTablePopUp;
 import mpv5.ui.toolbars.DataPanelTB;
 import mpv5.db.objects.User;
+import mpv5.handler.FormFieldsHandler;
 import mpv5.ui.beans.MPCBSelectionChangeReceiver;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
+import mpv5.utils.export.Export;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
@@ -827,11 +831,95 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     }//GEN-LAST:event_itemtableMouseClicked
 
     private void button_reminders1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_reminders1ActionPerformed
+        try {
+//        PreviewPanel pr = new PreviewPanel();
+//        pr.setDataOwner(dataOwner);
+//        BigPopup.showPopup(this, pr);
+//        pr.openOdt(new File("/home/anti/aaa.odt"));
+//
+//        System.out.println("\n-----------------------Product----------------------------\n\n");
+//
+            HashMap<String, String> hm = FormFieldsHandler.getFormattedFormFieldsFor(DatabaseObject.getObject(Context.getProducts(), 1));
+            for (Iterator it = hm.keySet().iterator(); it.hasNext();) {
+                Object object = it.next();
+                System.out.println(object + " [" + hm.get(object) + "]");
+            }
+//        System.out.println("\n-----------------------Subitem----------------------------\n\n");
+//
+//        HashMap<String, Object> hm1 = FormFieldsHandler.getFormFieldsFor(DatabaseObject.getObject(Context.getSubItem()));
+//
+//        for (Iterator it = hm1.keySet().iterator(); it.hasNext();) {
+//            Object object = it.next();
+//            System.out.println(object);
+//        }
+//
+//        System.out.println("\n-----------------------Contact-----------------------------\n\n");
+//
+//        HashMap<String, Object> hm2 = FormFieldsHandler.getFormFieldsFor(DatabaseObject.getObject(Context.getContact()));
+//
+//        for (Iterator it = hm2.keySet().iterator(); it.hasNext();) {
+//            Object object = it.next();
+//            System.out.println(object);
+//        }
+//
+//           System.out.println("\n-----------------------Item-----------------------------\n\n");
+//
+//        HashMap<String, Object> hm3 = FormFieldsHandler.getFormFieldsFor(DatabaseObject.getObject(Context.getItems()));
+//
+//        for (Iterator it = hm3.keySet().iterator(); it.hasNext();) {
+//            Object object = it.next();
+//            System.out.println(object);
+//        }
+//
+//        System.out.println("\n-----------------------Group-----------------------------\n\n");
+//
+//        HashMap<String, Object> hm4 = FormFieldsHandler.getFormFieldsFor(DatabaseObject.getObject(Context.getGroup()));
+//
+//        for (Iterator it = hm4.keySet().iterator(); it.hasNext();) {
+//            Object object = it.next();
+//            System.out.println(object);
+//        }
+        } catch (NodataFoundException ex) {
+            Logger.getLogger(ItemPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
-        PreviewPanel pr = new PreviewPanel();
-        pr.setDataOwner(dataOwner);
-        BigPopup.showPopup(this, pr);
-        pr.openOdt(new File("/home/anti/aaa.odt"));
+//        System.out.println("\n-----------------------Subitem----------------------------\n\n");
+//
+//        HashMap<String, Object> hm1 = FormFieldsHandler.getFormFieldsFor(DatabaseObject.getObject(Context.getSubItem()));
+//
+//        for (Iterator it = hm1.keySet().iterator(); it.hasNext();) {
+//            Object object = it.next();
+//            System.out.println(object);
+//        }
+//
+//        System.out.println("\n-----------------------Contact-----------------------------\n\n");
+//
+//        HashMap<String, Object> hm2 = FormFieldsHandler.getFormFieldsFor(DatabaseObject.getObject(Context.getContact()));
+//
+//        for (Iterator it = hm2.keySet().iterator(); it.hasNext();) {
+//            Object object = it.next();
+//            System.out.println(object);
+//        }
+//
+//           System.out.println("\n-----------------------Item-----------------------------\n\n");
+//
+//        HashMap<String, Object> hm3 = FormFieldsHandler.getFormFieldsFor(DatabaseObject.getObject(Context.getItems()));
+//
+//        for (Iterator it = hm3.keySet().iterator(); it.hasNext();) {
+//            Object object = it.next();
+//            System.out.println(object);
+//        }
+//
+//        System.out.println("\n-----------------------Group-----------------------------\n\n");
+//
+//        HashMap<String, Object> hm4 = FormFieldsHandler.getFormFieldsFor(DatabaseObject.getObject(Context.getGroup()));
+//
+//        for (Iterator it = hm4.keySet().iterator(); it.hasNext();) {
+//            Object object = it.next();
+//            System.out.println(object);
+//        }
+
+
     }//GEN-LAST:event_button_reminders1ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private mpv5.ui.beans.LabeledCombobox accountselect;

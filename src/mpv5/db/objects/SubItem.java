@@ -17,6 +17,7 @@
 package mpv5.db.objects;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,6 +31,7 @@ import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
 import mpv5.ui.panels.ItemPanel;
 import mpv5.utils.models.MPTableModel;
+import mpv5.utils.numberformat.FormatNumber;
 
 /**
  *
@@ -361,5 +363,49 @@ public class SubItem extends DatabaseObject {
      */
     public void setExternalvalue(double externalvalue) {
         this.externalvalue = externalvalue;
+    }
+
+//    private int itemsids;
+//    private int originalproductsids;
+//    private double countvalue;
+//    private double quantityvalue;
+//    private String measure = "";
+//    private String description = "";
+//    private double internalvalue;
+//    private double externalvalue;
+//    private double taxpercentvalue;
+//    private Date datedelivery;
+        @Override
+    public HashMap<String, Object> resolveReferences(HashMap<String, Object> map) {
+        super.resolveReferences(map);
+
+        if (map.containsKey("originalproductsids")) {
+            try {
+                try {
+                    map.put("originalproduct", DatabaseObject.getObject(Context.getProducts(), Integer.valueOf(map.get("originalproductsids").toString())));
+                } catch (NodataFoundException ex) {
+                    map.put("originalproduct", "N/A");
+                    Log.Debug(ex);
+                }
+            } catch (NumberFormatException numberFormatException) {
+                //already resolved?
+            }
+        }
+        
+//        would create an endless loop
+//        if (map.containsKey("itemsids")) {
+//            try {
+//                try {
+//                    map.put("item", DatabaseObject.getObject(Context.getContact(), Integer.valueOf(map.get("itemsids").toString())));
+//                } catch (NodataFoundException ex) {
+//                    map.put("item", "N/A");
+//                    Log.Debug(ex);
+//                }
+//            } catch (NumberFormatException numberFormatException) {
+//                //already resolved?
+//            }
+//        }
+
+        return map;
     }
 }

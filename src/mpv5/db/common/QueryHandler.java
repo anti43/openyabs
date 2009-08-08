@@ -646,6 +646,25 @@ public class QueryHandler implements Cloneable {
         }
     }
 
+    /**
+     * Returns exactly one value from a column
+     * @param columnName The column where to take the result from
+     * @param compareColumn The column to compare
+     * @param compareValue The value to compare to
+     * @return A value
+     * @throws NodataFoundException
+     */
+    public Object getValue(String columnName, String compareColumn, Object compareValue) throws NodataFoundException {
+        String quote = "";
+        if (compareValue instanceof String) {
+            quote = "'";
+        } else if (compareValue instanceof Date) {
+            quote = "'";
+            compareValue = DateConverter.getSQLDateString((Date) compareValue);
+        }
+        return selectLast(columnName, new String[]{compareColumn, compareValue.toString(), quote})[0];
+    }
+
     class Watchdog implements Runnable {
 
         @Override
@@ -1564,7 +1583,7 @@ public class QueryHandler implements Cloneable {
             }
         }
 
-        if (jobmessage != null && retval!=null) {
+        if (jobmessage != null && retval != null) {
             MPView.addMessage(jobmessage);
             retval.setMessage(jobmessage);
         }
@@ -2105,7 +2124,8 @@ public class QueryHandler implements Cloneable {
                     public void run() {
                         viewToBeNotified.refresh();
                     }
-                };SwingUtilities.invokeLater(runnable);
+                };
+                SwingUtilities.invokeLater(runnable);
             }
         }
 

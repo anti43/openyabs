@@ -17,19 +17,23 @@
 package mpv5.db.objects;
 
 import java.util.Date;
+import java.util.HashMap;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.Formattable;
+import mpv5.db.common.NodataFoundException;
+import mpv5.db.common.QueryHandler;
 import mpv5.globals.Messages;
 import mpv5.handler.FormatHandler;
+import mpv5.logging.Log;
+import mpv5.utils.numberformat.FormatNumber;
 
 /**
  *
  *  
  */
-public class Product extends DatabaseObject  implements Formattable{
-
+public class Product extends DatabaseObject implements Formattable {
 
     /**
      * Returns a localized string represenation of the given product type
@@ -45,13 +49,11 @@ public class Product extends DatabaseObject  implements Formattable{
         }
         return null;
     }
-
     private int taxids;
     private int inttype;
     private int manufacturersids;
     private int suppliersids;
     private int productgroupsids;
-    
     private double externalnetvalue;
     private double internalnetvalue;
     private String description = "";
@@ -61,8 +63,6 @@ public class Product extends DatabaseObject  implements Formattable{
     private String ean = "";
     private String reference = "";//herstellernummer
     private String defaultimage = "";
-
-  
     public static final int TYPE_PRODUCT = 0;
     public static final int TYPE_SERVICE = 1;
     private FormatHandler formatHandler;
@@ -72,8 +72,7 @@ public class Product extends DatabaseObject  implements Formattable{
         context.setIdentityClass(Product.class);
     }
 
-
-     @Override
+    @Override
     public mpv5.utils.images.MPIcon getIcon() {
         return null;
     }
@@ -110,8 +109,6 @@ public class Product extends DatabaseObject  implements Formattable{
     public void setInttype(int inttype) {
         this.inttype = inttype;
     }
-
- 
 
     /**
      * @return the externalnetvalue
@@ -225,7 +222,7 @@ public class Product extends DatabaseObject  implements Formattable{
         this.reference = reference;
     }
 
-       /**
+    /**
      * @return the formatHandler
      */
     @Override
@@ -295,5 +292,68 @@ public class Product extends DatabaseObject  implements Formattable{
      */
     public void setProductgroupsids(int productgroupsids) {
         this.productgroupsids = productgroupsids;
+    }
+
+    @Override
+    public HashMap<String, Object> resolveReferences(HashMap<String, Object> map) {
+        super.resolveReferences(map);
+
+        if (map.containsKey("productgroupsids")) {
+            try {
+                try {
+                    map.put("productgroup", DatabaseObject.getObject(Context.getContact(), Integer.valueOf(map.get("productgroupsids").toString())));
+                } catch (NodataFoundException ex) {
+                    map.put("productgroup", "N/A");
+                    Log.Debug(ex);
+                }
+            } catch (NumberFormatException numberFormatException) {
+                //already resolved?
+            }
+        }
+
+        if (map.containsKey("suppliersids")) {
+            try {
+                try {
+                    map.put("supplier", DatabaseObject.getObject(Context.getContact(), Integer.valueOf(map.get("suppliersids").toString())));
+                } catch (NodataFoundException ex) {
+                    map.put("supplier", "N/A");
+                    Log.Debug(ex);
+                }
+            } catch (NumberFormatException numberFormatException) {
+                //already resolved?
+            }
+        }
+
+        if (map.containsKey("manufacturersids")) {
+            try {
+                try {
+                    map.put("manufacturer", DatabaseObject.getObject(Context.getContact(), Integer.valueOf(map.get("manufacturersids").toString())));
+                } catch (NodataFoundException ex) {
+                    map.put("manufacturer", "N/A");
+                    Log.Debug(ex);
+                }
+            } catch (NumberFormatException numberFormatException) {
+                //already resolved?
+            }
+        }
+
+        if (map.containsKey("taxids")) {
+            try {
+                map.put("tax", FormatNumber.formatPercent(Item.getTaxValue(Integer.valueOf(map.get("taxids").toString()))));
+            } catch (NumberFormatException numberFormatException) {
+                Log.Debug(numberFormatException);
+            }
+        }
+
+        try {
+            if (map.containsKey("inttype")) {
+                map.put("type", getTypeString(Integer.valueOf(map.get("inttype").toString())));
+            }
+        } catch (NumberFormatException numberFormatException) {
+            //already resolved?
+            Log.Debug(numberFormatException);
+        }
+
+        return map;
     }
 }
