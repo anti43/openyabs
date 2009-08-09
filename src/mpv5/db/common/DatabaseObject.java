@@ -36,6 +36,7 @@ import mpv5.ui.frames.MPView;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
 import javax.swing.JComponent;
+import mpv5.db.objects.Group;
 import mpv5.db.objects.User;
 import mpv5.globals.LocalSettings;
 import mpv5.handler.SimpleDatabaseObject;
@@ -1303,9 +1304,15 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
         if (map.containsKey("groupsids")) {
             try {
                 try {
-                    map.put("group", DatabaseObject.getObject(Context.getGroup(), Integer.valueOf(map.get("groupsids").toString())));
+                    Group g = (Group) DatabaseObject.getObject(Context.getGroup(), Integer.valueOf(map.get("groupsids").toString()));
+                 
+                    map.put("group", g.__getCName());
+                    map.put("grouppath", g.__getHierarchypath());
+                    map.put("groupdescription", g.__getDescription());
                 } catch (NodataFoundException ex) {
                     map.put("group", "N/A");
+                    map.put("grouppath", "N/A");
+                    map.put("groupdescription", "N/A");
                     Log.Debug(ex);
                 }
             } catch (NumberFormatException numberFormatException) {

@@ -839,11 +839,13 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 //
 //        System.out.println("\n-----------------------Product----------------------------\n\n");
 //
-            HashMap<String, String> hm = FormFieldsHandler.getFormattedFormFieldsFor(DatabaseObject.getObject(Context.getProducts(), 1));
-            for (Iterator it = hm.keySet().iterator(); it.hasNext();) {
-                Object object = it.next();
-                System.out.println(object + " [" + hm.get(object) + "]");
-            }
+            HashMap<String, String> hm0 = new FormFieldsHandler(DatabaseObject.getObject(Context.getProducts(), 1)).getFormattedFormFields();
+            System.out.println("\n-----------------------item---------------------------\n\n");
+            HashMap<String, String> hm1 = new FormFieldsHandler(DatabaseObject.getObject(Context.getItems(), 1)).getFormattedFormFields();
+//            for (Iterator it = hm.keySet().iterator(); it.hasNext();) {
+//                Object object = it.next();
+//                System.out.println(object + " [" + hm.get(object) + "]");
+//            }
 //        System.out.println("\n-----------------------Subitem----------------------------\n\n");
 //
 //        HashMap<String, Object> hm1 = FormFieldsHandler.getFormFieldsFor(DatabaseObject.getObject(Context.getSubItem()));
