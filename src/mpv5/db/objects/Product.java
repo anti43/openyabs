@@ -326,6 +326,8 @@ public class Product extends DatabaseObject implements Formattable {
 
         if (map.containsKey("manufacturersids")) {
             try {
+
+                //if Integer.valueOf(map.get("manufacturersids")>0
                 try {
                     map.put("manufacturer", DatabaseObject.getObject(Context.getContact(), Integer.valueOf(map.get("manufacturersids").toString())));
                 } catch (NodataFoundException ex) {
