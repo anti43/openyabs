@@ -82,7 +82,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
             initComponents();
             tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
             refresh();
-            setDataOwner(aThis,true);
+            setDataOwner(aThis, true);
         }
 
         ((JSpinner.DefaultEditor) classv.getSpinner().getEditor()).getTextField().setEditable(false);
@@ -378,7 +378,9 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
             }
 
             refresh();
-        }else showRequiredFields();
+        } else {
+            showRequiredFields();
+        }
 }//GEN-LAST:event_jButton1ActionPerformed
 
     private void treeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_treeMouseClicked
@@ -394,13 +396,12 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
             } else {
                 if (node != null) {
                     Account g = (Account) node.getUserObject();
-                    setDataOwner(g,true);
+                    setDataOwner(g, true);
                 }
             }
         } catch (Exception e) {
         }
     }//GEN-LAST:event_treeMouseClicked
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
     private mpv5.ui.beans.LabeledSpinner classv;
@@ -444,7 +445,9 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
     public int taxfid_;
     public String frame_ = "";
     public String hierarchypath_ = "";
-
+    public int inttaxfid_;
+    public int inttaxuid_;
+    public int intprofitfid_;
 
     public void setValues(PropertyStore values) {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -460,7 +463,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
 
             dato.getPanelData(this);
             dato.reset();
-            setDataOwner(dato,true);
+            setDataOwner(dato, true);
         }
     }
 
@@ -594,7 +597,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
 
     public void paste(DatabaseObject dbo) {
         if (dbo.getDbIdentity().equals(Context.getAccounts().getDbIdentity())) {
-            setDataOwner(dbo,true);
+            setDataOwner(dbo, true);
         } else {
             MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE);
         }
@@ -605,7 +608,8 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
     }
 
     public Component getAndRemoveActionPanel() {
-        this.remove(jPanel6);validate();
+        this.remove(jPanel6);
+        validate();
         return jPanel6;
     }
 
@@ -613,7 +617,8 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
     public void actionAfterSave() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-        @Override
+
+    @Override
     public void actionAfterCreate() {
     }
 }

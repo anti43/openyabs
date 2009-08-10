@@ -34,15 +34,17 @@ import mpv5.utils.text.TypeConversion;
  * This class holds all form field names and maps them to {@link DatabaseObject}s
  */
 public class FormFieldsHandler {
+
     private final DatabaseObject obj;
 
     /**
      * Create a new handler for the given object
      * @param obj
      */
-    public FormFieldsHandler(DatabaseObject obj){
+    public FormFieldsHandler(DatabaseObject obj) {
         this.obj = obj;
     }
+
     /**
      * Creates a hash map view to all the object's form fields and their values (which may be other {@link DatabaseObject}s)
      * @return A HashMap<key,value/>
@@ -65,9 +67,10 @@ public class FormFieldsHandler {
     /**
      * Creates a hash map view to all the object's form fields and their values, including their referenced objects resolved to keys and values.<br/>
      * This method is safe to never return null values.
+     * @param identifier
      * @return A HashMap<key,value/>
      */
-    public synchronized HashMap<String, String> getFormattedFormFields() {
+    public synchronized HashMap<String, String> getFormattedFormFields(final String identifier) {
         HashMap<String, Object> map = getFormFields();
         HashMap<String, String> maps = new HashMap<String, String>();
         List l = new Vector();
@@ -75,12 +78,18 @@ public class FormFieldsHandler {
         for (Iterator<String> it = map.keySet().iterator(); it.hasNext();) {
             String key = it.next();
             Object o = map.get(key);
-            String skey = skey = obj.getType() + "." + key;
+
+            String skey = null;
+            if (identifier == null) {
+                skey = obj.getType() + "." + key;
+            } else {
+                skey = identifier + "." + key;
+            }
 
             if (o == null || String.valueOf(o).equals("null")) {
                 maps.put(skey, "");
             } else if (o instanceof DatabaseObject && !(o instanceof Group)) {
-                maps.putAll(new FormFieldsHandler((DatabaseObject) o).getFormattedFormFields());
+                maps.putAll(new FormFieldsHandler((DatabaseObject) o).getFormattedFormFields(obj.getType() + "." + key));
             } else if (o instanceof Boolean) {
                 maps.put(skey, TypeConversion.booleanToString((Boolean) o));
             } else if (o instanceof Double || o.getClass() == double.class) {
@@ -90,14 +99,9 @@ public class FormFieldsHandler {
             } else {
                 maps.put(skey, String.valueOf(o));
             }
-//            Log.Debug(FormFieldsHandler.class, "Created field: " + skey + " [" + maps.get(skey) + "]");
-            l.add(skey + " [" + maps.get(skey) + "]");
+           System.err.println(skey);
         }
 
-        for (int i = 0; i < l.size(); i++) {
-            Object object = l.get(i);
-            System.err.println(object);
-        }
 
         return maps;
     }

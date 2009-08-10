@@ -507,7 +507,11 @@ public class Main extends SingleFrameApplication {
     public void go(boolean firststart) {
         setLaF(null);
         Main.splash.nextStep(Messages.INIT_LOGIN.toString());
-        login();
+        try {
+            login();
+        } catch (NodataFoundException nodataFoundException) {
+            Log.Debug(nodataFoundException);
+        }
         splash.nextStep(Messages.CACHE.toString());
         cache();
         Main.splash.nextStep(Messages.INIT_GUI.toString());
@@ -565,7 +569,7 @@ public class Main extends SingleFrameApplication {
         }
     }
 
-    private void login() {
+    private void login() throws NodataFoundException {
         if (!LocalSettings.getProperty("lastuser").equals("null") && !LocalSettings.getProperty("lastuserpw").equals("null")) {
             User usern1 = new User();
             Log.Debug(this, "Checking for auto login.. ");

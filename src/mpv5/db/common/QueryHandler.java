@@ -244,7 +244,7 @@ public class QueryHandler implements Cloneable {
     public ReturnValue select(int id) throws NodataFoundException {
         ReturnValue data = freeSelectQuery("SELECT * FROM " + table + " WHERE " + table + ".ids = " + id + " AND " + context.getConditions().substring(6, context.getConditions().length()), mpv5.usermanagement.MPSecurityManager.VIEW, null);
         if (data.getData().length == 0) {
-            throw new NodataFoundException();
+            throw new NodataFoundException(context, id);
         } else {
             return data;
         }

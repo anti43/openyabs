@@ -61,7 +61,7 @@ public class Item extends DatabaseObject implements Formattable {
             case (STATUS_CANCELLED):
                 return Messages.STATUS_CANCELLED.toString();
         }
-        return null;
+        return "";
     }
 
     /**
@@ -159,7 +159,7 @@ public class Item extends DatabaseObject implements Formattable {
             case (TYPE_ORDER):
                 return Messages.TYPE_ORDER.toString();
         }
-        return null;
+        return "";
     }
     private static HashMap<Integer, Double> taxes = new HashMap<Integer, Double>();
 
@@ -443,30 +443,31 @@ public class Item extends DatabaseObject implements Formattable {
         super.resolveReferences(map);
 
         try {
-            if (map.containsKey("intstatus")) {
+            if (map.containsKey("intstatus")) {map.remove("intstatus");
                 map.put("status", getStatusString(Integer.valueOf(map.get("intstatus").toString())));
+                map.remove("intstatus");
             }
-        } catch (NumberFormatException numberFormatException) {
+        } catch (Exception numberFormatException) {
             //already resolved?
-            Log.Debug(numberFormatException);
         }
 
         try {
             if (map.containsKey("inttype")) {
                 map.put("type", getTypeString(Integer.valueOf(map.get("inttype").toString())));
+                map.remove("inttype");
             }
-        } catch (NumberFormatException numberFormatException) {
+        } catch (Exception numberFormatException) {
             //already resolved?
-            Log.Debug(numberFormatException);
         }
 
         if (map.containsKey("defaultaccountsids")) {
             try {
                 try {
-                    map.put("defaultaccount", DatabaseObject.getObject(Context.getAccounts(), Integer.valueOf(map.get("defaultaccountsids").toString())));
+                    map.put("account", DatabaseObject.getObject(Context.getAccounts(), Integer.valueOf(map.get("defaultaccountsids").toString())));
+                    map.remove("defaultaccountsids");
                 } catch (NodataFoundException ex) {
-                    map.put("defaultaccount", "N/A");
-                    Log.Debug(ex);
+                    map.put("account", null);
+                    Log.Debug(this, ex.getMessage());
                 }
             } catch (NumberFormatException numberFormatException) {
                 //already resolved?
@@ -477,9 +478,10 @@ public class Item extends DatabaseObject implements Formattable {
             try {
                 try {
                     map.put("contact", DatabaseObject.getObject(Context.getContact(), Integer.valueOf(map.get("contactsids").toString())));
+                    map.remove("contactsids");
                 } catch (NodataFoundException ex) {
-                    map.put("contact", "N/A");
-                    Log.Debug(ex);
+                    map.put("contact", null);
+                    Log.Debug(this, ex.getMessage());
                 }
             } catch (NumberFormatException numberFormatException) {
                 //already resolved?
@@ -489,6 +491,7 @@ public class Item extends DatabaseObject implements Formattable {
         if (map.containsKey("taxids")) {
             try {
                 map.put("tax", FormatNumber.formatPercent(Item.getTaxValue(Integer.valueOf(map.get("taxids").toString()))));
+                map.remove("taxids");
             } catch (NumberFormatException numberFormatException) {
                 Log.Debug(numberFormatException);
             }

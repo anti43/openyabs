@@ -301,10 +301,11 @@ public class Product extends DatabaseObject implements Formattable {
         if (map.containsKey("productgroupsids")) {
             try {
                 try {
-                    map.put("productgroup", DatabaseObject.getObject(Context.getContact(), Integer.valueOf(map.get("productgroupsids").toString())));
+                    map.put("productgroup", DatabaseObject.getObject(Context.getProductGroup(), Integer.valueOf(map.get("productgroupsids").toString())));
+                    map.remove("productgroupsids");
                 } catch (NodataFoundException ex) {
-                    map.put("productgroup", "N/A");
-                    Log.Debug(ex);
+                    map.put("productgroup", null);
+                    Log.Debug(this, ex.getMessage());
                 }
             } catch (NumberFormatException numberFormatException) {
                 //already resolved?
@@ -315,9 +316,10 @@ public class Product extends DatabaseObject implements Formattable {
             try {
                 try {
                     map.put("supplier", DatabaseObject.getObject(Context.getContact(), Integer.valueOf(map.get("suppliersids").toString())));
+                    map.remove("suppliersids");
                 } catch (NodataFoundException ex) {
-                    map.put("supplier", "N/A");
-                    Log.Debug(ex);
+                    map.put("supplier", null);
+                    Log.Debug(this, ex.getMessage());
                 }
             } catch (NumberFormatException numberFormatException) {
                 //already resolved?
@@ -330,9 +332,10 @@ public class Product extends DatabaseObject implements Formattable {
                 //if Integer.valueOf(map.get("manufacturersids")>0
                 try {
                     map.put("manufacturer", DatabaseObject.getObject(Context.getContact(), Integer.valueOf(map.get("manufacturersids").toString())));
+                    map.remove("manufacturersids");
                 } catch (NodataFoundException ex) {
-                    map.put("manufacturer", "N/A");
-                    Log.Debug(ex);
+                    map.put("manufacturer", null);
+                    Log.Debug(this, ex.getMessage());
                 }
             } catch (NumberFormatException numberFormatException) {
                 //already resolved?
@@ -342,6 +345,7 @@ public class Product extends DatabaseObject implements Formattable {
         if (map.containsKey("taxids")) {
             try {
                 map.put("tax", FormatNumber.formatPercent(Item.getTaxValue(Integer.valueOf(map.get("taxids").toString()))));
+                map.remove("taxids");
             } catch (NumberFormatException numberFormatException) {
                 Log.Debug(numberFormatException);
             }
@@ -350,6 +354,7 @@ public class Product extends DatabaseObject implements Formattable {
         try {
             if (map.containsKey("inttype")) {
                 map.put("type", getTypeString(Integer.valueOf(map.get("inttype").toString())));
+                map.remove("inttype");
             }
         } catch (NumberFormatException numberFormatException) {
             //already resolved?

@@ -836,12 +836,12 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 //        pr.setDataOwner(dataOwner);
 //        BigPopup.showPopup(this, pr);
 //        pr.openOdt(new File("/home/anti/aaa.odt"));
-//
-//        System.out.println("\n-----------------------Product----------------------------\n\n");
-//
-            HashMap<String, String> hm0 = new FormFieldsHandler(DatabaseObject.getObject(Context.getProducts(), 1)).getFormattedFormFields();
+
+        System.out.println("\n-----------------------Product----------------------------\n\n");
+
+//            HashMap<String, String> hm0 = new FormFieldsHandler(DatabaseObject.getObject(Context.getProducts(), 3)).getFormattedFormFields(null);
             System.out.println("\n-----------------------item---------------------------\n\n");
-            HashMap<String, String> hm1 = new FormFieldsHandler(DatabaseObject.getObject(Context.getItems(), 1)).getFormattedFormFields();
+            HashMap<String, String> hm1 = new FormFieldsHandler(DatabaseObject.getObject(Context.getItems(), 1)).getFormattedFormFields(null);
 //            for (Iterator it = hm.keySet().iterator(); it.hasNext();) {
 //                Object object = it.next();
 //                System.out.println(object + " [" + hm.get(object) + "]");

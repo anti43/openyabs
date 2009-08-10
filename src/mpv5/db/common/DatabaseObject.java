@@ -403,7 +403,11 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
     public boolean reset() {
         if (ids > 0) {
             Log.Debug(this, "Reloading dataset: " + ids);
-            return fetchDataOf(ids);
+            try {
+                return fetchDataOf(ids);
+            } catch (NodataFoundException ex) {
+                Log.Debug(ex);
+            }
         }
         return false;
     }
@@ -907,15 +911,12 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
     /**
      * Fills this do with the data of the given dataset id
      * @param id
-     * @return 
+     * @return
+     * @throws NodataFoundException
      */
-    public boolean fetchDataOf(int id) {
-        try {
+    public boolean fetchDataOf(int id) throws NodataFoundException {
             explode(QueryHandler.instanceOf().clone(context).select(id), this, true);
             return true;
-        } catch (NodataFoundException ex) {
-            return false;
-        }
     }
 
     /**
@@ -1310,10 +1311,10 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                     map.put("grouppath", g.__getHierarchypath());
                     map.put("groupdescription", g.__getDescription());
                 } catch (NodataFoundException ex) {
-                    map.put("group", "N/A");
-                    map.put("grouppath", "N/A");
-                    map.put("groupdescription", "N/A");
-                    Log.Debug(ex);
+                    map.put("group", null);
+                    map.put("grouppath", null);
+                    map.put("groupdescription", null);
+                    Log.Debug(this, ex.getMessage());
                 }
             } catch (NumberFormatException numberFormatException) {
                 //already resolved?

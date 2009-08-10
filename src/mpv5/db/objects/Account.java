@@ -18,6 +18,7 @@ package mpv5.db.objects;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Icon;
@@ -30,6 +31,7 @@ import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryHandler;
+import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
 import mpv5.utils.images.MPIcon;
@@ -41,6 +43,30 @@ import mpv5.utils.images.MPIcon;
 public class Account extends DatabaseObject {
 
     private static ArrayList<DatabaseObject> accounts;
+
+    /**
+     *
+     * @param type
+     * @return
+     */
+    public static String getTypeString(int type) {
+        switch (type) {
+            case Account.ASSET:
+                return Messages.ASSET.toString();
+            case Account.COST:
+                return Messages.COST.toString();
+            case Account.EQUITY:
+                return Messages.EQUITY.toString();
+            case Account.EXPENSE:
+                return Messages.EXPENSE.toString();
+            case Account.INCOME:
+                return Messages.INCOME.toString();
+            case Account.LIABILITY:
+                return Messages.LIABILITY.toString();
+            default:
+                return "N/A";
+        }
+    }
 
     /**
      * Cache accounts
@@ -62,19 +88,19 @@ public class Account extends DatabaseObject {
 
         return accounts;
     }
-    private int intparentaccount;
-    private int intaccountclass;
-    public static int ASSET = 0;
-    public static int COST = 1;
-    public static int EXPENSE = 2;
-    public static int INCOME = 3;
-    public static int LIABILITY = 4;
-    public static int EQUITY = 5;
 
     public Account() {
         context.setDbIdentity(Context.IDENTITY_ACCOUNTS);
         context.setIdentityClass(this.getClass());
     }
+    private int intparentaccount;
+    private int intaccountclass;
+    public final static int ASSET = 0;
+    public final static int COST = 1;
+    public final static int EXPENSE = 2;
+    public final static int INCOME = 3;
+    public final static int LIABILITY = 4;
+    public final static int EQUITY = 5;
     private String description = "";
     private double taxvalue;
     private int intaccounttype;
@@ -307,7 +333,6 @@ public class Account extends DatabaseObject {
         return null;
     }
 
-
     /**
      * @return the frame
      */
@@ -376,5 +401,36 @@ public class Account extends DatabaseObject {
      */
     public void setHierarchypath(String hierarchypath) {
         this.hierarchypath = hierarchypath;
+    }
+
+    @Override
+    public HashMap<String, Object> resolveReferences(HashMap<String, Object> map) {
+        super.resolveReferences(map);
+
+        try {
+            if (map.containsKey("intaccounttype")) {
+                map.put("type", getTypeString(Integer.valueOf(map.get("intaccounttype").toString()))); 
+                map.remove("intaccounttype");
+            }
+        } catch (NumberFormatException numberFormatException) {
+            //already resolved?
+            Log.Debug(numberFormatException);
+        }
+
+        if (map.containsKey("intparentaccount")) {
+            try {
+                try {
+                    map.put("parentaccount", DatabaseObject.getObject(Context.getAccounts(), Integer.valueOf(map.get("intparentaccount").toString())).__getCName());
+                    map.remove("intparentaccount");
+                } catch (NodataFoundException ex) {
+                    map.put("parentaccount", null);
+                    Log.Debug(this, ex.getMessage());
+                }
+            } catch (NumberFormatException numberFormatException) {
+                //already resolved?
+            }
+        }
+
+        return map;
     }
 }
