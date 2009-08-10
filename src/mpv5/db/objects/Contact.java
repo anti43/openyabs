@@ -4,13 +4,19 @@
  */
 package mpv5.db.objects;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.Formattable;
+import mpv5.db.common.NodataFoundException;
 import mpv5.handler.FormatHandler;
+import mpv5.ui.panels.AddressPanel;
 import mpv5.ui.panels.ContactPanel;
 import mpv5.utils.images.MPIcon;
 
@@ -18,7 +24,7 @@ import mpv5.utils.images.MPIcon;
  *
  * 
  */
-public class Contact extends DatabaseObject  implements Formattable{
+public class Contact extends DatabaseObject implements Formattable {
 
     private String cnumber = "";
     private String taxnumber = "";
@@ -389,7 +395,7 @@ public class Contact extends DatabaseObject  implements Formattable{
     @Override
     public JComponent getView() {
         ContactPanel x = new ContactPanel(getContext());
-        x.setDataOwner(this,true);
+        x.setDataOwner(this, true);
         return x;
     }
 
@@ -414,7 +420,25 @@ public class Contact extends DatabaseObject  implements Formattable{
     }
 
     @Override
-    public void ensureUniqueness(){
+    public void ensureUniqueness() {
         setCNumber(getFormatHandler().toString(getFormatHandler().getNextNumber()));
     }
+
+    @Override
+    public HashMap<String, Object> resolveReferences(HashMap<String, Object> map) {
+        super.resolveReferences(map);
+        ArrayList<Address> data;
+        try {
+            data = DatabaseObject.getReferencedObjects(this, Context.getAddress(), new Address());
+            for (int i = 0; i < data.size(); i++) {
+                map.put("address" + i, data.get(i));
+            }
+        } catch (NodataFoundException ex) {
+            Logger.getLogger(Contact.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return map;
+    }
 }
+
+

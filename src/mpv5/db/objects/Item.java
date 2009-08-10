@@ -497,6 +497,17 @@ public class Item extends DatabaseObject implements Formattable {
             }
         }
 
+        ArrayList<SubItem> data;
+        try {
+            data = DatabaseObject.getReferencedObjects(this, Context.getSubItem(), new SubItem());
+            for (int i = 0; i < data.size(); i++) {
+                map.put("row" + i, data.get(i));
+            }
+        } catch (NodataFoundException ex) {
+            Logger.getLogger(Contact.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
         return map;
+
     }
 }

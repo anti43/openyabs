@@ -70,6 +70,7 @@ public class SubItem extends DatabaseObject {
             it.setOriginalproductsids(Integer.valueOf(row[10].toString()));
             it.setQuantityvalue(Double.valueOf(row[2].toString()));
             it.setTaxpercentvalue(Double.valueOf(row[6].toString()));
+            calculate(it);
 
             if (!it.isExisting()) {
                 it.setDateadded(new Date());
@@ -87,6 +88,8 @@ public class SubItem extends DatabaseObject {
     private double internalvalue;
     private double externalvalue;
     private double taxpercentvalue;
+    private double totalnetvalue;
+    private double totalbrutvalue;
     private Date datedelivery;
 
     public SubItem() {
@@ -136,6 +139,7 @@ public class SubItem extends DatabaseObject {
         setOriginalproductsids(o.__getIDS());
         setQuantityvalue(1);
         setTaxpercentvalue(Item.getTaxValue(o.__getTaxids()));
+        calculate(this);
     }
 
     @Override
@@ -263,7 +267,7 @@ public class SubItem extends DatabaseObject {
     @Override
     public JComponent getView() {
         try {
-            Item dos = (Item) DatabaseObject.getObject(Context.getItems(), __getItemsids());  
+            Item dos = (Item) DatabaseObject.getObject(Context.getItems(), __getItemsids());
             ItemPanel ip = new ItemPanel(Context.getItems(), dos.__getInttype());
             ip.setDataOwner(dos, true);
             return ip;
@@ -365,17 +369,7 @@ public class SubItem extends DatabaseObject {
         this.externalvalue = externalvalue;
     }
 
-//    private int itemsids;
-//    private int originalproductsids;
-//    private double countvalue;
-//    private double quantityvalue;
-//    private String measure = "";
-//    private String description = "";
-//    private double internalvalue;
-//    private double externalvalue;
-//    private double taxpercentvalue;
-//    private Date datedelivery;
-        @Override
+    @Override
     public HashMap<String, Object> resolveReferences(HashMap<String, Object> map) {
         super.resolveReferences(map);
 
@@ -383,29 +377,54 @@ public class SubItem extends DatabaseObject {
             try {
                 try {
                     map.put("originalproduct", DatabaseObject.getObject(Context.getProducts(), Integer.valueOf(map.get("originalproductsids").toString())));
+                    map.remove("originalproductsids");
                 } catch (NodataFoundException ex) {
-                    map.put("originalproduct", "N/A");
-                    Log.Debug(ex);
+                    map.put("originalproduct", null);
                 }
             } catch (NumberFormatException numberFormatException) {
                 //already resolved?
             }
         }
-        
-//        would create an endless loop
-//        if (map.containsKey("itemsids")) {
-//            try {
-//                try {
-//                    map.put("item", DatabaseObject.getObject(Context.getContact(), Integer.valueOf(map.get("itemsids").toString())));
-//                } catch (NodataFoundException ex) {
-//                    map.put("item", "N/A");
-//                    Log.Debug(ex);
-//                }
-//            } catch (NumberFormatException numberFormatException) {
-//                //already resolved?
-//            }
-//        }
 
         return map;
+    }
+
+    /**
+     * @return the totalnetvalue
+     */
+    public double __getTotalnetvalue() {
+        return totalnetvalue;
+    }
+
+    /**
+     * @param totalnetvalue the totalnetvalue to set
+     */
+    public void setTotalnetvalue(double totalnetvalue) {
+        this.totalnetvalue = totalnetvalue;
+    }
+
+    /**
+     * @return the totalbrutvalue
+     */
+    public double __getTotalbrutvalue() {
+        return totalbrutvalue;
+    }
+
+    /**
+     * @param totalbrutvalue the totalbrutvalue to set
+     */
+    public void setTotalbrutvalue(double totalbrutvalue) {
+        this.totalbrutvalue = totalbrutvalue;
+    }
+
+    private static void calculate(SubItem s) {
+        s.setTotalbrutvalue(s.quantityvalue * s.externalvalue * s.taxpercentvalue / 100);
+        s.setTotalnetvalue(s.quantityvalue * s.externalvalue);
+    }
+
+    @Override
+    public boolean save() {
+        calculate(this);
+        return super.save();
     }
 }

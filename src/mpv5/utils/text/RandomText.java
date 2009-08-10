@@ -16,6 +16,9 @@
  */
 package mpv5.utils.text;
 
+import java.util.List;
+import java.util.Vector;
+
 /**
  * A random text generator
  *  
@@ -159,8 +162,14 @@ public class RandomText {
      */
     public synchronized String getString() {
         string = RandomStringUtils.random(length, source);
-        return string;
+        if (!usedStrings.contains(string)) {
+            usedStrings.add(string);
+            return string;
+        } else {
+            return getString();
+        }
     }
+    static List<String> usedStrings = new Vector<String>();
 
     /**
      * Equal to new RandomText(8).getString()
