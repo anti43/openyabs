@@ -183,7 +183,7 @@ public class Context {
      */
     public static ArrayList<Context> getSecuredContexts() {
         ArrayList<Context> list = new ArrayList<Context>();
-        list.add(getCompany());
+        list.add(getContactsCompanies());
 //        list.add(getUser()); Needs to be non-secure, to update user details on close
         list.add(getCustomer());
         list.add(getManufacturer());
@@ -237,7 +237,7 @@ public class Context {
      */
     public static ArrayList<Context> getGroupableContexts() {
         ArrayList<Context> list = new ArrayList<Context>();
-        list.add(getCompany());
+        list.add(getContactsCompanies());
         list.add(getCustomer());
         list.add(getManufacturer());
         list.add(getSupplier());
@@ -265,7 +265,7 @@ public class Context {
      */
     public static ArrayList<Context> getTrashableContexts() {
         ArrayList<Context> list = new ArrayList<Context>();
-        list.add(getCompany());
+        list.add(getContactsCompanies());
         list.add(getCustomer());
         list.add(getManufacturer());
         list.add(getSupplier());
@@ -319,7 +319,7 @@ public class Context {
         list.add(getSchedule());
         list.add(getContact());
         list.add(getProducts());
-        list.add(getCompany());
+        list.add(getContactsCompanies());
         list.add(getCustomer());
         list.add(getSupplier());
         list.add(getManufacturer());
@@ -351,7 +351,7 @@ public class Context {
      * A list of all available contexts
      */
     private static ArrayList<Context> allContexts = new ArrayList<Context>(Arrays.asList(new Context[]{
-                getCompany(),
+                getContactsCompanies(),
                 getContact(),
                 getCustomer(),
                 getFavourites(),
@@ -974,7 +974,7 @@ public class Context {
 //    public void setIsOffer(boolean isOffer) {
 //        this.isOffer = isOffer;
 //    }
-    public static Context getCompany() {
+    public static Context getContactsCompanies() {
         Context c = new Context(new Contact());
         c.setCompany(true);
         c.setSubID(DEFAULT_SUBID);

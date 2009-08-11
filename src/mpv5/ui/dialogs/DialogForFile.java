@@ -21,16 +21,12 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileFilter;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
-import mpv5.utils.files.FileDirectoryHandler;
-import mpv5.utils.jobs.Waitable;
 import mpv5.utils.jobs.Waiter;
 
 /**
@@ -40,6 +36,18 @@ import mpv5.utils.jobs.Waiter;
 public class DialogForFile extends JFileChooser implements Waiter {
 
     private static final long serialVersionUID = 1L;
+
+    public static FileFilter HTML_FILES = new FileFilter() {
+
+        public boolean accept(File f) {
+            return f.getName().toLowerCase().endsWith(".html") || f.getName().toLowerCase().endsWith(".htm") || f.isDirectory();
+        }
+
+        public String getDescription() {
+            return "HTML Format(*.htm[l])";
+        }
+    };
+
     public static FileFilter XML_FILES = new FileFilter() {
 
         public boolean accept(File f) {

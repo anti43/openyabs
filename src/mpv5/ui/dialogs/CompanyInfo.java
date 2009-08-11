@@ -50,7 +50,7 @@ public class CompanyInfo extends javax.swing.JDialog implements DataPanel {
     public long serialVersionUID = 1L;
     private List<JTextField> inputfields = new ArrayList<JTextField>();
     private Company dataOwner;
-    private final User u;
+    private final User user;
 
     /** Creates new form TaxFormDialog
      * @param u
@@ -62,7 +62,7 @@ public class CompanyInfo extends javax.swing.JDialog implements DataPanel {
         super.setResizable(false);
         initComponents();
         labeledCombobox1.setSearchOnEnterEnabled(true);
-        labeledCombobox1.setContext(Context.getCompany());
+        labeledCombobox1.setContext(Context.getCompanies());
         labeledCombobox1.getComboBox().addActionListener(new java.awt.event.ActionListener() {
 
             @Override
@@ -84,7 +84,10 @@ public class CompanyInfo extends javax.swing.JDialog implements DataPanel {
                 }
             }
         });
-        this.u = u;
+        this.user = u;
+        refresh();
+
+
     }
 
     /** This method is called from within the constructor to
@@ -138,14 +141,13 @@ public class CompanyInfo extends javax.swing.JDialog implements DataPanel {
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jLabel1.setText(bundle.getString("TaxAddressDialog.compname")); // NOI18N
 
-        java.util.ResourceBundle bundle1 = java.util.ResourceBundle.getBundle("mpv5/ui/dialogs/Bundle"); // NOI18N
-        nameField.setToolTipText(bundle1.getString("CompanyInfo.nameField.toolTipText")); // NOI18N
+        nameField.setToolTipText(bundle.getString("CompanyInfo.nameField.toolTipText")); // NOI18N
         nameField.setName("comp_name"); // NOI18N
 
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
         jLabel2.setText(bundle.getString("TaxAddressDialog.compstreet")); // NOI18N
 
-        streetField.setToolTipText(bundle1.getString("CompanyInfo.streetField.toolTipText")); // NOI18N
+        streetField.setToolTipText(bundle.getString("CompanyInfo.streetField.toolTipText")); // NOI18N
         streetField.setName("comp_street"); // NOI18N
 
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
@@ -157,7 +159,7 @@ public class CompanyInfo extends javax.swing.JDialog implements DataPanel {
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
         jLabel5.setText(bundle.getString("TaxAddressDialog.comptaxnumber")); // NOI18N
 
-        taxnumberField.setToolTipText(bundle1.getString("CompanyInfo.taxnumberField.toolTipText")); // NOI18N
+        taxnumberField.setToolTipText(bundle.getString("CompanyInfo.taxnumberField.toolTipText")); // NOI18N
         taxnumberField.setName("comp_state"); // NOI18N
 
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
@@ -176,7 +178,7 @@ public class CompanyInfo extends javax.swing.JDialog implements DataPanel {
         jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
         jLabel9.setText(bundle.getString("TaxAddressDialog.compcity")); // NOI18N
 
-        cityField.setToolTipText(bundle1.getString("CompanyInfo.cityField.toolTipText")); // NOI18N
+        cityField.setToolTipText(bundle.getString("CompanyInfo.cityField.toolTipText")); // NOI18N
         cityField.setName("comp_city"); // NOI18N
 
         faArea.setColumns(20);
@@ -198,53 +200,53 @@ public class CompanyInfo extends javax.swing.JDialog implements DataPanel {
 
         phone1Field.setName("comp_phoneprefix"); // NOI18N
 
-        cancelButton.setText(bundle1.getString("CompanyInfo.cancelButton.text")); // NOI18N
+        cancelButton.setText(bundle.getString("CompanyInfo.cancelButton.text")); // NOI18N
         cancelButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cancelButtonActionPerformed(evt);
             }
         });
 
-        okButton.setText(bundle1.getString("CompanyInfo.okButton.text")); // NOI18N
+        okButton.setText(bundle.getString("CompanyInfo.okButton.text")); // NOI18N
         okButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 okButtonActionPerformed(evt);
             }
         });
 
-        nameField1.setToolTipText(bundle1.getString("CompanyInfo.nameField1.toolTipText")); // NOI18N
+        nameField1.setToolTipText(bundle.getString("CompanyInfo.nameField1.toolTipText")); // NOI18N
         nameField1.setName("comp_firstname"); // NOI18N
 
         jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
         jLabel11.setText(bundle.getString("TaxAddressDialog.compfirstname")); // NOI18N
 
-        nameField2.setToolTipText(bundle1.getString("CompanyInfo.nameField2.toolTipText")); // NOI18N
+        nameField2.setToolTipText(bundle.getString("CompanyInfo.nameField2.toolTipText")); // NOI18N
         nameField2.setName("comp_business"); // NOI18N
 
         jLabel12.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
         jLabel12.setText(bundle.getString("TaxAddressDialog.compbusiness")); // NOI18N
 
-        mandantField1.setToolTipText(bundle1.getString("CompanyInfo.mandantField1.toolTipText")); // NOI18N
+        mandantField1.setToolTipText(bundle.getString("CompanyInfo.mandantField1.toolTipText")); // NOI18N
         mandantField1.setName("comp_taxnumber"); // NOI18N
 
         jTextField1.setName("comp_zipcode"); // NOI18N
 
-        taxnumberField1.setToolTipText(bundle1.getString("CompanyInfo.taxnumberField1.toolTipText")); // NOI18N
+        taxnumberField1.setToolTipText(bundle.getString("CompanyInfo.taxnumberField1.toolTipText")); // NOI18N
         taxnumberField1.setName("comp_email"); // NOI18N
 
         jLabel13.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
         jLabel13.setText(bundle.getString("TaxAddressDialog.compemail")); // NOI18N
 
-        labeledCombobox1.set_Label(bundle1.getString("CompanyInfo.labeledCombobox1._Label")); // NOI18N
+        labeledCombobox1.set_Label(bundle.getString("CompanyInfo.labeledCombobox1._Label")); // NOI18N
 
-        jButton1.setText(bundle1.getString("CompanyInfo.jButton1.text")); // NOI18N
+        jButton1.setText(bundle.getString("CompanyInfo.jButton1.text")); // NOI18N
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
 
-        okButton1.setText(bundle1.getString("CompanyInfo.okButton1.text")); // NOI18N
+        okButton1.setText(bundle.getString("CompanyInfo.okButton1.text")); // NOI18N
         okButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 okButton1ActionPerformed(evt);
@@ -264,26 +266,26 @@ public class CompanyInfo extends javax.swing.JDialog implements DataPanel {
                         .addComponent(taxnumberField, javax.swing.GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel8)
-                            .addComponent(jLabel13)
-                            .addComponent(jLabel5)
-                            .addComponent(jLabel10, 0, 194, Short.MAX_VALUE)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel11)
-                            .addComponent(jLabel12)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel9)
-                            .addComponent(jLabel7)
-                            .addComponent(jLabel6))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel13, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.TRAILING, 0, 194, Short.MAX_VALUE)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(cancelButton))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(cancelButton)
-                                .addGap(18, 18, 18)
+                                .addGap(87, 87, 87)
                                 .addComponent(jButton1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
                                 .addComponent(okButton1)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(okButton))
@@ -372,10 +374,10 @@ public class CompanyInfo extends javax.swing.JDialog implements DataPanel {
                 .addComponent(labeledCombobox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(cancelButton)
                     .addComponent(okButton)
                     .addComponent(okButton1)
-                    .addComponent(jButton1))
+                    .addComponent(jButton1)
+                    .addComponent(cancelButton))
                 .addContainerGap())
         );
 
@@ -394,6 +396,8 @@ public class CompanyInfo extends javax.swing.JDialog implements DataPanel {
           dato.save();
       }
 
+      refresh();
+
 }//GEN-LAST:event_okButtonActionPerformed
 
   private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
@@ -404,21 +408,23 @@ public class CompanyInfo extends javax.swing.JDialog implements DataPanel {
   private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
       if (dataOwner != null) {
-          DatabaseObject dato = dataOwner;
+          Company dato = dataOwner;
           dato.delete();
       }
+      refresh();
 
   }//GEN-LAST:event_jButton1ActionPerformed
 
   private void okButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButton1ActionPerformed
 
-      DatabaseObject dato = new Company();
+      Company dato = new Company();
 
       dato.getPanelData(this);
       dato.save();
 
       setDataOwner(dato, true);
 
+      refresh();
   }//GEN-LAST:event_okButton1ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;
@@ -457,23 +463,23 @@ public class CompanyInfo extends javax.swing.JDialog implements DataPanel {
     private javax.swing.JTextField taxnumberField;
     private javax.swing.JTextField taxnumberField1;
     // End of variables declaration//GEN-END:variables
-    public String state_;
-    public String phoneprefix_;
-    public String business_;
-    public String taxadvisor_;
-    public String city_;
-    public String taxadvjob_;
-    public String street_;
-    public String stb_;
-    public String email_;
-    public String name_;
-    public String zipcode_;
-    public String phone_;
-    public String firstname_;
-    public String taxauthority_;
-    public String taxnumber_;
-    public String taxadvmandant_;
-    public String cname_;
+    public String state_ ="";
+    public String phoneprefix_ ="";
+    public String business_ ="";
+    public String taxadvisor_ ="";
+    public String city_ ="";
+    public String taxadvjob_ ="";
+    public String street_ ="";
+    public String stb_ ="";
+    public String email_ ="";
+    public String name_ ="";
+    public String zipcode_ ="";
+    public String phone_ ="";
+    public String firstname_ ="";
+    public String taxauthority_ ="";
+    public String taxnumber_ ="";
+    public String taxadvmandant_ ="";
+    public String cname_ ="";
     public int intaddedby_ = 4343;
     public int ids_;
     public int groupsids_;
@@ -482,23 +488,23 @@ public class CompanyInfo extends javax.swing.JDialog implements DataPanel {
     @Override
     public void collectData() {
         cname_ = nameField.getText();
+        firstname_ = nameField1.getText();
         city_ = cityField.getText();
         zipcode_ = jTextField1.getText();
         taxadvmandant_ = mandantField.getText();
         taxnumber_ = mandantField1.getText();
         business_ = nameField.getText();
-        street_ = nameField1.getText();
+        street_ = streetField.getText();
         business_ = nameField2.getText();
         phoneprefix_ = phone1Field.getText();
         phone_ = phone2Field.getText();
         taxadvisor_ = profField.getText();
-        street_ = streetField.getText();
         state_ = taxnumberField.getText();
         email_ = taxnumberField1.getText();
         taxauthority_ = faArea.getText();
         stb_ = stbArea.getText();
-        if (u != null) {
-            groupsids_ = u.__getGroupsids();
+        if (user != null) {
+            groupsids_ = user.__getGroupsids();
         } else {
             groupsids_ = 1;
         }
@@ -520,6 +526,7 @@ public class CompanyInfo extends javax.swing.JDialog implements DataPanel {
 
     @Override
     public void refresh() {
+        labeledCombobox1.triggerSearch();
     }
 
     @Override
@@ -528,8 +535,8 @@ public class CompanyInfo extends javax.swing.JDialog implements DataPanel {
         jTextField1.setText(zipcode_);
         mandantField.setText(taxadvmandant_);
         mandantField1.setText(taxnumber_);
-        nameField.setText(business_);
-        nameField1.setText(street_);
+        nameField.setText(cname_);
+        nameField1.setText(firstname_);
         nameField2.setText(business_);
         phone1Field.setText(phoneprefix_);
         phone2Field.setText(phone_);
@@ -558,9 +565,11 @@ public class CompanyInfo extends javax.swing.JDialog implements DataPanel {
 
     @Override
     public void actionAfterSave() {
+        refresh();
     }
 
     @Override
     public void actionAfterCreate() {
+        refresh();
     }
 }

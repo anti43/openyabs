@@ -22,26 +22,26 @@ import mpv5.db.common.DatabaseObject;
 import mpv5.utils.images.MPIcon;
 
 /**
- *
+ * Represents a user company
  */
 public class Company extends DatabaseObject {
 
-    private String state;
-    private String phoneprefix;
-    private String business;
-    private String taxadvisor;
-    private String city;
-    private String taxadvjob;
-    private String street;
-    private String stb;
-    private String email;
-    private String name;
-    private String zipcode;
-    private String phone;
-    private String firstname;
-    private String taxauthority;
-    private String taxnumber;
-    private String taxadvmandant;
+    private String state ="";
+    private String phoneprefix ="";
+    private String business ="";
+    private String taxadvisor ="";
+    private String city ="";
+    private String taxadvjob ="";
+    private String street ="";
+    private String stb ="";
+    private String email ="";
+    private String name ="";
+    private String zipcode ="";
+    private String phone ="";
+    private String firstname ="";
+    private String taxauthority ="";
+    private String taxnumber ="";
+    private String taxadvmandant ="";
 
         public Company(){
         context.setDbIdentity(Context.IDENTITY_COMPANIES);
@@ -62,7 +62,7 @@ public class Company extends DatabaseObject {
     /**
      * @return the state
      */
-    public String getState() {
+    public String __getState() {
         return state;
     }
 
@@ -76,7 +76,7 @@ public class Company extends DatabaseObject {
     /**
      * @return the phoneprefix
      */
-    public String getPhoneprefix() {
+    public String __getPhoneprefix() {
         return phoneprefix;
     }
 
@@ -90,7 +90,7 @@ public class Company extends DatabaseObject {
     /**
      * @return the business
      */
-    public String getBusiness() {
+    public String __getBusiness() {
         return business;
     }
 
@@ -104,7 +104,7 @@ public class Company extends DatabaseObject {
     /**
      * @return the taxadvisor
      */
-    public String getTaxadvisor() {
+    public String __getTaxadvisor() {
         return taxadvisor;
     }
 
@@ -118,7 +118,7 @@ public class Company extends DatabaseObject {
     /**
      * @return the city
      */
-    public String getCity() {
+    public String __getCity() {
         return city;
     }
 
@@ -132,7 +132,7 @@ public class Company extends DatabaseObject {
     /**
      * @return the taxadvjob
      */
-    public String getTaxadvjob() {
+    public String __getTaxadvjob() {
         return taxadvjob;
     }
 
@@ -146,7 +146,7 @@ public class Company extends DatabaseObject {
     /**
      * @return the street
      */
-    public String getStreet() {
+    public String __getStreet() {
         return street;
     }
 
@@ -160,7 +160,7 @@ public class Company extends DatabaseObject {
     /**
      * @return the stb
      */
-    public String getStb() {
+    public String __getStb() {
         return stb;
     }
 
@@ -174,7 +174,7 @@ public class Company extends DatabaseObject {
     /**
      * @return the email
      */
-    public String getEmail() {
+    public String __getEmail() {
         return email;
     }
 
@@ -188,7 +188,7 @@ public class Company extends DatabaseObject {
     /**
      * @return the name
      */
-    public String getName() {
+    public String __getName() {
         return name;
     }
 
@@ -202,7 +202,7 @@ public class Company extends DatabaseObject {
     /**
      * @return the zipcode
      */
-    public String getZipcode() {
+    public String __getZipcode() {
         return zipcode;
     }
 
@@ -216,7 +216,7 @@ public class Company extends DatabaseObject {
     /**
      * @return the phone
      */
-    public String getPhone() {
+    public String __getPhone() {
         return phone;
     }
 
@@ -230,7 +230,7 @@ public class Company extends DatabaseObject {
     /**
      * @return the firstname
      */
-    public String getFirstname() {
+    public String __getFirstname() {
         return firstname;
     }
 
@@ -244,7 +244,7 @@ public class Company extends DatabaseObject {
     /**
      * @return the taxauthority
      */
-    public String getTaxauthority() {
+    public String __getTaxauthority() {
         return taxauthority;
     }
 
@@ -258,7 +258,7 @@ public class Company extends DatabaseObject {
     /**
      * @return the taxnumber
      */
-    public String getTaxnumber() {
+    public String __getTaxnumber() {
         return taxnumber;
     }
 
@@ -272,7 +272,7 @@ public class Company extends DatabaseObject {
     /**
      * @return the taxadvmandant
      */
-    public String getTaxadvmandant() {
+    public String __getTaxadvmandant() {
         return taxadvmandant;
     }
 

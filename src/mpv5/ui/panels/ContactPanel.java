@@ -113,7 +113,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         groupnameselect.setSearchOnEnterEnabled(true);
         groupnameselect.setContext(Context.getGroup());
         companyselect.setSearchOnEnterEnabled(true);
-        companyselect.setContext(Context.getCompany());
+        companyselect.setContext(Context.getContactsCompanies());
     }
 
     @Override
@@ -1326,7 +1326,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         try {
             try {
                 if (company_ != null && company_.length() > 0) {
-                    companyselect.setModel(DatabaseObject.getObject(Context.getCompany(), company_));
+                    companyselect.setModel(DatabaseObject.getObject(Context.getContactsCompanies(), company_));
                 } else {
                     companyselect.setModel();
                 }

@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
+import mpv5.logging.Log;
 import mpv5.utils.date.DateConverter;
 
 /**
@@ -469,6 +470,7 @@ public class TableHtmlWriter {
         out.write(DateConverter.getDefDateString(new Date()));
         out.write("</p>\n</body></html>");
         out.close();
+        Log.Debug(this, getFile());
     }
 //////////////////////////////// xhtml-writer end
 }

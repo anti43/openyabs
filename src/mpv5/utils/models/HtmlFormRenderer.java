@@ -32,6 +32,7 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.Characters;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
+import mpv5.logging.Log;
 
 /**
  * This class reads and writes a HTML document with StAX. Tags with an id

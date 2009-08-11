@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
@@ -663,6 +664,23 @@ public class QueryHandler implements Cloneable {
             compareValue = DateConverter.getSQLDateString((Date) compareValue);
         }
         return selectLast(columnName, new String[]{compareColumn, compareValue.toString(), quote})[0];
+    }
+
+    /**
+     * Returns map view of the found {@link DatabaseObject} with the given ID in the current {@link Context}
+     * @param id
+     * @return  A HashMap
+     * @throws NodataFoundException If no Object with the given ID was found in the current Context
+     */
+    public Map<String, String> getValuesFor(int id) throws NodataFoundException{
+        ReturnValue rv = select(id);
+        String[] cols = rv.getColumnnames();
+        Object[][] data = rv.getData();
+        HashMap<String, String> map = new HashMap<String, String>(data[0].length);
+        for (int i = 0; i < data[0].length; i++) {
+            map.put(cols[i], String.valueOf(data[0][i]));
+        }
+        return map;
     }
 
     class Watchdog implements Runnable {
@@ -1779,8 +1797,6 @@ public class QueryHandler implements Cloneable {
             columnnames = new String[rsmd.getColumnCount()];
             for (int i = 1; i <= rsmd.getColumnCount(); i++) {
                 columnnames[i - 1] = rsmd.getColumnName(i);
-
-//                System.out.print( rsmd.getColumnName(i) +",");
             }
 
 //            Log.PrintArray(columnnames);

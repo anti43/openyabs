@@ -17,6 +17,7 @@ import java.util.Map;
 import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 import javax.xml.parsers.DocumentBuilderFactory;
+import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.CompanyInfo;
@@ -114,26 +115,19 @@ public class ProfitPanel extends JPanel {
         TableHtmlWriter thw = new TableHtmlWriter(profitModel);
         thw.setHeader(profitModel.getHeader());
         File tempfile = thw.createHtml2(1, java.awt.Color.BLACK);
-
-        DialogForFile d = new DialogForFile(target);
+ 
+        DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY, target);
         d.setFileFilter(DialogForFile.PDF_FILES);
-        d.saveFile(tempfile); /* save as html */
-
-        DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-        builderFactory.setFeature(
-            "http://apache.org/xml/features/nonvalidating/load-external-dtd",
-            false);
-        String url = tempfile.toURI().toURL().toString();
+        
         if (d.saveFile()) {
-          File t = d.getSelectedFile();
-          FileDirectoryHandler.copyFile(tempfile, t);
-          OutputStream os = new FileOutputStream(t);
+          File targe = d.getFile();
+          OutputStream os = new FileOutputStream(targe);
           ITextRenderer renderer = new ITextRenderer();
-          renderer.setDocument(url);
+          renderer.setDocument(tempfile);
           renderer.layout();
           renderer.createPDF(os);
           os.close();
-//          ((mainframe) mainframe).setInfoText("Datei gespeichert: " + t);
+          MPView.addMessage(Messages.FILE_SAVED + targe.getPath());
         }
       }
     } catch (Exception ex) {

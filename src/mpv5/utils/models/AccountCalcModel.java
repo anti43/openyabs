@@ -6,7 +6,9 @@ package mpv5.utils.models;
 
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import javax.swing.table.DefaultTableModel;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -35,7 +37,7 @@ public abstract class AccountCalcModel extends DefaultTableModel {
     private String pdfform;
     private boolean skr = false;
     private String accScheme;
-    private Map<String, String> addressMap;
+    private Map<String, String> addressMap = new HashMap<String, String>();
     private Company company;
 
     public AccountCalcModel(String prefix) {
@@ -51,6 +53,7 @@ public abstract class AccountCalcModel extends DefaultTableModel {
             fetchCompanyData();
         } catch (Exception e) {
             Popup.notice(Messages.NO_ACCOUNTS);
+            Log.Debug(e);
         }
     }
 
@@ -65,18 +68,20 @@ public abstract class AccountCalcModel extends DefaultTableModel {
     private void fetchCompanyData() throws NodataFoundException {
         //Check if the company is existing
         company = (Company) DatabaseObject.getObject(Context.getCompanies(), MPView.getUser().__getCompsids());
-        addressMap = new HashMap<String, String>();
-        String query = Context.getGlobalSettings().prepareSQLString(
-                "select CNAME, VALUE from comps where ids =" + MPView.getUser().__getCompsids());
-        ReturnValue rv = QueryHandler.getConnection().freeSelectQuery(query, MPSecurityManager.VIEW, null);
-        resultValues = rv.getData();
-        if (resultValues.length > 0) {
-            for (int i = 0; i < resultValues.length; i++) {
-                String s = (String) resultValues[i][0];
-                addressMap.put(prefix + s, resultValues[i][1].toString());
-                Log.Debug(this, s);
-            }
+        addressMap = QueryHandler.instanceOf().clone(Context.getCompanies()).getValuesFor(MPView.getUser().__getCompsids());
+
+        // Wofür ist der prefix ? //////////////////////////////////////////////
+        HashMap<String, String> temp = new HashMap<String, String>();
+        Set<String> k = addressMap.keySet();
+        String[] arr = k.toArray(new String[0]);
+        for (int i = 0; i < arr.length; i++) {
+            String string = arr[i];
+            temp.put(prefix + "_" + string, addressMap.get(string));//mit oder ohne Unterstrich?
         }
+        addressMap = temp;
+        /// ? ////////////////////////////////////////////////////////////////
+
+        Log.Print(addressMap);
     }
 
     /**
@@ -96,12 +101,14 @@ public abstract class AccountCalcModel extends DefaultTableModel {
      * Fills a Map with form field names as keys and their values
      */
     protected void fillMap() {
-        resultMap.clear();
-        resultMap.putAll(addressMap);
-        if (resultValues.length > 0) {
-            int cols = resultValues[0].length;
-            for (int i = 0; i < resultValues.length; i++) {
-                resultMap.put(prefix + resultValues[i][cols - 1], resultValues[i][cols - 2].toString());
+        if (company != null) {
+            resultMap.clear();
+            resultMap.putAll(addressMap);
+            if (resultValues.length > 0) {
+                int cols = resultValues[0].length;
+                for (int i = 0; i < resultValues.length; i++) {
+                    resultMap.put(prefix + resultValues[i][cols - 1], resultValues[i][cols - 2].toString());
+                }
             }
         }
     }
