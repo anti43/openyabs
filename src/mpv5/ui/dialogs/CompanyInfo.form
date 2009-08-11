@@ -8,11 +8,11 @@
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
   </SyntheticProperties>
   <AuxValues>
-    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="1"/>
     <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true"/>
     <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
-    <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="true"/>
     <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="1"/>
     <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
@@ -24,7 +24,13 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
+                  <Group type="102" alignment="1" attributes="0">
+                      <EmptySpace min="-2" pref="167" max="-2" attributes="0"/>
+                      <Component id="jLabel4" min="-2" max="-2" attributes="1"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="taxnumberField" linkSize="1" pref="334" max="32767" attributes="1"/>
+                  </Group>
+                  <Group type="102" alignment="1" attributes="0">
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" attributes="0">
                           <Component id="jLabel8" min="-2" max="-2" attributes="0"/>
@@ -42,6 +48,16 @@
                       </Group>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="cancelButton" min="-2" max="-2" attributes="1"/>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Component id="jButton1" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace pref="38" max="32767" attributes="0"/>
+                              <Component id="okButton1" min="-2" max="-2" attributes="1"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="okButton" min="-2" max="-2" attributes="1"/>
+                          </Group>
+                          <Component id="labeledCombobox1" alignment="1" pref="334" max="32767" attributes="0"/>
                           <Group type="102" attributes="1">
                               <Component id="phone1Field" pref="180" max="32767" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
@@ -50,7 +66,7 @@
                           <Component id="jScrollPane1" linkSize="1" pref="334" max="32767" attributes="1"/>
                           <Component id="mandantField" linkSize="1" pref="334" max="32767" attributes="1"/>
                           <Component id="profField" linkSize="1" pref="334" max="32767" attributes="1"/>
-                          <Component id="mandantField1" linkSize="1" min="-2" pref="314" max="-2" attributes="1"/>
+                          <Component id="mandantField1" linkSize="1" alignment="1" pref="334" max="32767" attributes="1"/>
                           <Component id="nameField" linkSize="1" alignment="1" pref="334" max="32767" attributes="1"/>
                           <Component id="streetField" linkSize="1" alignment="1" pref="334" max="32767" attributes="1"/>
                           <Group type="102" alignment="1" attributes="0">
@@ -63,18 +79,6 @@
                           <Component id="taxnumberField1" alignment="1" pref="334" max="32767" attributes="1"/>
                           <Component id="jScrollPane2" linkSize="1" alignment="0" pref="334" max="32767" attributes="1"/>
                       </Group>
-                  </Group>
-                  <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace min="-2" pref="167" max="-2" attributes="0"/>
-                      <Component id="jLabel4" min="-2" max="-2" attributes="1"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="taxnumberField" linkSize="1" pref="334" max="32767" attributes="1"/>
-                  </Group>
-                  <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace pref="371" max="32767" attributes="0"/>
-                      <Component id="cancelButton" min="-2" max="-2" attributes="1"/>
-                      <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
-                      <Component id="okButton" min="-2" pref="94" max="-2" attributes="1"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -151,12 +155,16 @@
                   <Component id="jScrollPane2" min="-2" max="-2" attributes="0"/>
                   <Component id="jLabel10" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="okButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="cancelButton" alignment="3" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="labeledCombobox1" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
+              <Group type="103" groupAlignment="2" attributes="0">
+                  <Component id="cancelButton" alignment="2" min="-2" max="-2" attributes="0"/>
+                  <Component id="okButton" alignment="2" min="-2" max="-2" attributes="0"/>
+                  <Component id="okButton1" alignment="2" min="-2" max="-2" attributes="0"/>
+                  <Component id="jButton1" alignment="2" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -172,7 +180,9 @@
     </Component>
     <Component class="javax.swing.JTextField" name="nameField">
       <Properties>
-        <Property name="toolTipText" type="java.lang.String" value="Name des Unternehmers/Firma"/>
+        <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="mpv5/ui/dialogs/Bundle.properties" key="CompanyInfo.nameField.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+        </Property>
         <Property name="name" type="java.lang.String" value="comp_name" noResource="true"/>
       </Properties>
     </Component>
@@ -186,7 +196,9 @@
     </Component>
     <Component class="javax.swing.JTextField" name="streetField">
       <Properties>
-        <Property name="toolTipText" type="java.lang.String" value="Stra&#xdf;e und Hausnummer des Unternehmens"/>
+        <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="mpv5/ui/dialogs/Bundle.properties" key="CompanyInfo.streetField.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+        </Property>
         <Property name="name" type="java.lang.String" value="comp_street" noResource="true"/>
       </Properties>
     </Component>
@@ -216,7 +228,9 @@
     </Component>
     <Component class="javax.swing.JTextField" name="taxnumberField">
       <Properties>
-        <Property name="toolTipText" type="java.lang.String" value="Beispiel: 123/123/12345"/>
+        <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="mpv5/ui/dialogs/Bundle.properties" key="CompanyInfo.taxnumberField.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+        </Property>
         <Property name="name" type="java.lang.String" value="comp_state" noResource="true"/>
       </Properties>
     </Component>
@@ -264,7 +278,9 @@
     </Component>
     <Component class="javax.swing.JTextField" name="cityField">
       <Properties>
-        <Property name="toolTipText" type="java.lang.String" value="Firmenort"/>
+        <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="mpv5/ui/dialogs/Bundle.properties" key="CompanyInfo.cityField.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+        </Property>
         <Property name="name" type="java.lang.String" value="comp_city" noResource="true"/>
       </Properties>
     </Component>
@@ -326,7 +342,9 @@
     </Component>
     <Component class="javax.swing.JButton" name="cancelButton">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Cancel"/>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="mpv5/ui/dialogs/Bundle.properties" key="CompanyInfo.cancelButton.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+        </Property>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cancelButtonActionPerformed"/>
@@ -334,7 +352,9 @@
     </Component>
     <Component class="javax.swing.JButton" name="okButton">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Save"/>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="mpv5/ui/dialogs/Bundle.properties" key="CompanyInfo.okButton.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+        </Property>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="okButtonActionPerformed"/>
@@ -342,7 +362,9 @@
     </Component>
     <Component class="javax.swing.JTextField" name="nameField1">
       <Properties>
-        <Property name="toolTipText" type="java.lang.String" value="Name des Unternehmers/Firma"/>
+        <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="mpv5/ui/dialogs/Bundle.properties" key="CompanyInfo.nameField1.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+        </Property>
         <Property name="name" type="java.lang.String" value="comp_firstname" noResource="true"/>
       </Properties>
     </Component>
@@ -356,7 +378,9 @@
     </Component>
     <Component class="javax.swing.JTextField" name="nameField2">
       <Properties>
-        <Property name="toolTipText" type="java.lang.String" value="Name des Unternehmers/Firma"/>
+        <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="mpv5/ui/dialogs/Bundle.properties" key="CompanyInfo.nameField2.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+        </Property>
         <Property name="name" type="java.lang.String" value="comp_business" noResource="true"/>
       </Properties>
     </Component>
@@ -370,7 +394,9 @@
     </Component>
     <Component class="javax.swing.JTextField" name="mandantField1">
       <Properties>
-        <Property name="toolTipText" type="java.lang.String" value="Nur ausf&#xfc;llen, falls die Meldung von einem Steuerberater o. &#xe4;. erstellt wurde"/>
+        <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="mpv5/ui/dialogs/Bundle.properties" key="CompanyInfo.mandantField1.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+        </Property>
         <Property name="name" type="java.lang.String" value="comp_taxnumber" noResource="true"/>
       </Properties>
     </Component>
@@ -381,7 +407,9 @@
     </Component>
     <Component class="javax.swing.JTextField" name="taxnumberField1">
       <Properties>
-        <Property name="toolTipText" type="java.lang.String" value="Beispiel: 123/123/12345"/>
+        <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="mpv5/ui/dialogs/Bundle.properties" key="CompanyInfo.taxnumberField1.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+        </Property>
         <Property name="name" type="java.lang.String" value="comp_email" noResource="true"/>
       </Properties>
     </Component>
@@ -392,6 +420,33 @@
           <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="TaxAddressDialog.compemail" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
         </Property>
       </Properties>
+    </Component>
+    <Component class="mpv5.ui.beans.LabeledCombobox" name="labeledCombobox1">
+      <Properties>
+        <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="mpv5/ui/dialogs/Bundle.properties" key="CompanyInfo.labeledCombobox1._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+        </Property>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="jButton1">
+      <Properties>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="mpv5/ui/dialogs/Bundle.properties" key="CompanyInfo.jButton1.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+        </Property>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="okButton1">
+      <Properties>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="mpv5/ui/dialogs/Bundle.properties" key="CompanyInfo.okButton1.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+        </Property>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="okButton1ActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

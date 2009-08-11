@@ -4,6 +4,7 @@ import java.awt.Component;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Map;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
 import javax.swing.JPasswordField;
@@ -26,6 +27,7 @@ import mpv5.ui.frames.MPView;
 import mpv5.ui.panels.DataPanel;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.db.objects.User;
+import mpv5.ui.dialogs.CompanyInfo;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.models.MPComboBoxModelItem;
@@ -62,11 +64,10 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         if (MPSecurityManager.checkAdminAccess()) {
             initComponents();
             refresh();
-            setDataOwner(user,true);
+            setDataOwner(user, true);
             setVisible(true);
         }
     }
-
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -98,6 +99,9 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         groupname = new javax.swing.JComboBox();
         jLabel6 = new javax.swing.JLabel();
         rgroups = new javax.swing.JCheckBox();
+        jLabel10 = new javax.swing.JLabel();
+        companyselect = new javax.swing.JComboBox();
+        jButton5 = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         datelastlog = new javax.swing.JTextField();
@@ -109,7 +113,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         jButton1 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Users.border.title"))); // NOI18N
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());
@@ -189,7 +193,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(laf, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
+                    .addComponent(laf, javax.swing.GroupLayout.DEFAULT_SIZE, 383, Short.MAX_VALUE)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel4)
@@ -197,17 +201,17 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
                             .addComponent(jLabel7))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(countrylist, 0, 254, Short.MAX_VALUE)
-                            .addComponent(locale, javax.swing.GroupLayout.Alignment.TRAILING, 0, 254, Short.MAX_VALUE)
-                            .addComponent(language, 0, 254, Short.MAX_VALUE)))
+                            .addComponent(countrylist, 0, 299, Short.MAX_VALUE)
+                            .addComponent(locale, javax.swing.GroupLayout.Alignment.TRAILING, 0, 299, Short.MAX_VALUE)
+                            .addComponent(language, 0, 299, Short.MAX_VALUE)))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel8)
                             .addComponent(jLabel9))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(statuslist, 0, 253, Short.MAX_VALUE)
-                            .addComponent(accountlist, 0, 253, Short.MAX_VALUE))))
+                            .addComponent(statuslist, 0, 298, Short.MAX_VALUE)
+                            .addComponent(accountlist, 0, 298, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -263,19 +267,33 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
 
         inthighestright.setName("inthighestright"); // NOI18N
 
-        jLabel3.setFont(new java.awt.Font("Dialog", 0, 12));
+        jLabel3.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
         jLabel3.setText(bundle.getString("ControlPanel_Users.jLabel3.text")); // NOI18N
         jLabel3.setName("jLabel3"); // NOI18N
 
         groupname.setName("groupname"); // NOI18N
 
-        jLabel6.setFont(new java.awt.Font("Dialog", 0, 12));
+        jLabel6.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
         jLabel6.setText(bundle.getString("ControlPanel_Users.jLabel6.text")); // NOI18N
         jLabel6.setName("jLabel6"); // NOI18N
 
         rgroups.setBackground(new java.awt.Color(255, 255, 255));
         rgroups.setText(bundle.getString("ControlPanel_Users.rgroups.text")); // NOI18N
         rgroups.setName("rgroups"); // NOI18N
+
+        jLabel10.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel10.setText(bundle.getString("ControlPanel_Users.jLabel10.text")); // NOI18N
+        jLabel10.setName("jLabel10"); // NOI18N
+
+        companyselect.setName("companyselect"); // NOI18N
+
+        jButton5.setText(bundle.getString("ControlPanel_Users.jButton5.text")); // NOI18N
+        jButton5.setName("jButton5"); // NOI18N
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -284,27 +302,31 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(rgroups, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(fullname, javax.swing.GroupLayout.DEFAULT_SIZE, 307, Short.MAX_VALUE)
+                            .addComponent(mail, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 307, Short.MAX_VALUE)
+                            .addComponent(cname, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 307, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addGap(24, 24, 24)
+                                .addComponent(password, javax.swing.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(enabled))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 86, Short.MAX_VALUE)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 86, Short.MAX_VALUE)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 86, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(rgroups, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(fullname, javax.swing.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE)
-                                    .addComponent(mail, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE)
-                                    .addComponent(cname, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
-                                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel2)
-                                            .addComponent(jLabel6))
-                                        .addGap(24, 24, 24)
-                                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(password, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 182, Short.MAX_VALUE)
-                                            .addComponent(inthighestright, javax.swing.GroupLayout.Alignment.TRAILING, 0, 182, Short.MAX_VALUE)
-                                            .addComponent(groupname, 0, 182, Short.MAX_VALUE))))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(enabled)))
-                        .addContainerGap())
-                    .addComponent(jLabel3)))
+                            .addComponent(groupname, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(companyselect, javax.swing.GroupLayout.Alignment.TRAILING, 0, 197, Short.MAX_VALUE)
+                            .addComponent(inthighestright, 0, 197, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton5)))
+                .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -323,17 +345,22 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
                                 .addComponent(password, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(2, 2, 2)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(rgroups)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(groupname, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel6))
-                        .addGap(4, 4, 4)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(inthighestright, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3)))
+                        .addComponent(rgroups))
                     .addComponent(enabled))
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(groupname, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(inthighestright, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(companyselect, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel10)
+                    .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
 
         jPanel5.setBackground(new java.awt.Color(255, 255, 255));
@@ -363,7 +390,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(loggedin)
                     .addComponent(datelastlog, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(93, Short.MAX_VALUE))
+                .addContainerGap(138, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -380,19 +407,19 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(19, Short.MAX_VALUE))
         );
 
         add(jPanel2, java.awt.BorderLayout.EAST);
@@ -483,7 +510,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         if (s.checkID()) {
             try {
                 obj = DatabaseObject.getObject(Context.getUser(), s.getId());
-                setDataOwner(obj,true);
+                setDataOwner(obj, true);
             } catch (NodataFoundException ex) {
                 Log.Debug(this, ex);
             }
@@ -501,6 +528,16 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         }
     }//GEN-LAST:event_jButton4ActionPerformed
 
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        CompanyInfo taxformDialog = new CompanyInfo(dataOwner,
+                java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels").
+                getString("TaxAddressDialog.companydata"));
+        taxformDialog.setVisible(true);
+//      for (Map.Entry<String, String> entry : map.entrySet()) {
+//        System.out.println(entry.getKey() + "   ---   " + entry.getValue());
+//      }
+    }//GEN-LAST:event_jButton5ActionPerformed
+
     public void setValues(PropertyStore values) {
     }
 
@@ -513,11 +550,12 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
 
         dato.getPanelData(this);
         dato.reset();
-        setDataOwner(dato,true);
+        setDataOwner(dato, true);
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox accountlist;
     private mpv5.ui.beans.LabeledTextField cname;
+    private javax.swing.JComboBox companyselect;
     private javax.swing.JComboBox countrylist;
     private javax.swing.JTextField datelastlog;
     private javax.swing.JCheckBox enabled;
@@ -528,7 +566,9 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -570,7 +610,8 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
     public int intaddedby_ = 4343;
     public Date datelastlog_ = new Date();
     public int ids_;
-    public int groupsids_ ;
+    public int groupsids_;
+    public int compsids_;
     public java.util.Date dateadded_ = new java.util.Date();
 
     public void collectData() {
@@ -587,6 +628,12 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
 
         if (locale.getSelectedItem() != null) {
             locale_ = String.valueOf(((MPComboBoxModelItem) locale.getSelectedItem()).getId());
+        }
+
+        if (companyselect.getSelectedItem() != null) {
+            compsids_ = Integer.valueOf(((MPComboBoxModelItem) companyselect.getSelectedItem()).getId());
+        } else {
+            compsids_ = 0;
         }
 
         fullname_ = fullname.get_Text();
@@ -645,9 +692,11 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
             datelastlog.setText(DateConverter.getDefDateString(datelastlog_));
             groupname.setSelectedIndex(MPComboBoxModelItem.getItemID(String.valueOf(groupsids_), groupname.getModel()));
             accountlist.setSelectedIndex(MPComboBoxModelItem.getItemID(String.valueOf(intdefaultaccount_), accountlist.getModel()));
-            statuslist.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(Item.getStatusString(intdefaultstatus_) , statuslist.getModel()));
+            statuslist.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(Item.getStatusString(intdefaultstatus_), statuslist.getModel()));
+            companyselect.setSelectedIndex(MPComboBoxModelItem.getItemID(String.valueOf(compsids_), companyselect.getModel()));
+
         } catch (Exception e) {
-//            Log.Debug(this, e);
+            Log.Debug(this, e.getMessage());
         }
     }
 
@@ -678,6 +727,8 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
 
         groupname.setModel(new DefaultComboBoxModel(
                 MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID(), null, ""))));
+        companyselect.setModel(new DefaultComboBoxModel(
+                MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getCompanies()).getValuesFor(Context.getCompanies().getSubID(), null, ""))));
         accountlist.setModel(new DefaultComboBoxModel(
                 MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getAccounts()).getValuesFor(Context.getAccounts().getSubID(), null, ""))));
         statuslist.setModel(MPComboBoxModelItem.toModel(Item.getStatusStrings()));
@@ -690,7 +741,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
 
     public void paste(DatabaseObject dbo) {
         if (dbo.getDbIdentity().equals(Context.getUser().getDbIdentity())) {
-            setDataOwner(dbo,true);
+            setDataOwner(dbo, true);
         } else {
             MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE);
         }
@@ -705,7 +756,8 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
     }
 
     public Component getAndRemoveActionPanel() {
-         this.remove(jPanel6);validate();
+        this.remove(jPanel6);
+        validate();
         return jPanel6;
     }
 
@@ -713,7 +765,8 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
     public void actionAfterSave() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-        @Override
+
+    @Override
     public void actionAfterCreate() {
     }
 }

@@ -197,7 +197,6 @@ public class ProfitPanel extends JPanel {
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         legalText = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
@@ -208,7 +207,7 @@ public class ProfitPanel extends JPanel {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Cash receipts and disbursement: No liability assumed."));
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jLabel1.setText(bundle.getString("ProfitPanel.Period")); // NOI18N
 
         jComboBox1.setModel(dateModel.getModel());
@@ -260,13 +259,6 @@ public class ProfitPanel extends JPanel {
             }
         });
 
-        jButton4.setText(bundle.getString("TaxAddressDialog.companydata")); // NOI18N
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
-            }
-        });
-
         jLabel2.setText(bundle.getString("ProfitPanel.Data")); // NOI18N
 
         legalText.setText("No liability can be assumed for the accuracy, integrity, and the topicality of the information.");
@@ -302,7 +294,7 @@ public class ProfitPanel extends JPanel {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 134, Short.MAX_VALUE))
         );
 
         jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(getYears()));
@@ -336,9 +328,7 @@ public class ProfitPanel extends JPanel {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jButton4))
+                                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 604, Short.MAX_VALUE)))
                     .addComponent(legalText, javax.swing.GroupLayout.DEFAULT_SIZE, 658, Short.MAX_VALUE))
                 .addContainerGap())
@@ -347,7 +337,6 @@ public class ProfitPanel extends JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -395,21 +384,10 @@ public class ProfitPanel extends JPanel {
       dateModel.setYear((String) jComboBox2.getSelectedItem());
     }//GEN-LAST:event_jComboBox2ActionPerformed
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-      CompanyInfo taxformDialog = new CompanyInfo(MPView.identifierFrame,
-          java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels").
-          getString("TaxAddressDialog.companydata"), map);
-      taxformDialog.setVisible(true);
-      for (Map.Entry<String, String> entry : map.entrySet()) {
-        System.out.println(entry.getKey() + "   ---   " + entry.getValue());
-      }
-    }//GEN-LAST:event_jButton4ActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JComboBox jComboBox2;
     private javax.swing.JLabel jLabel1;

@@ -9,6 +9,7 @@ import java.util.Arrays;
 import mpv5.globals.Headers;
 import mpv5.db.objects.Account;
 import mpv5.db.objects.Address;
+import mpv5.db.objects.Company;
 import mpv5.db.objects.Contact;
 import mpv5.db.objects.Favourite;
 import mpv5.db.objects.FileToContact;
@@ -68,6 +69,7 @@ public class Context {
     public static String IDENTITY_FILES_TO_ITEMS = "filestoitems";
     public static String IDENTITY_MAIL = "mails";
     public static String IDENTITY_TAX = "tax";
+    public static String IDENTITY_COMPANIES = "comps";
     public static String IDENTITY_GLOBALSETTINGS = "globalsettings";
     //********** identity classes **********************************************
     private static Class IDENTITY_CONTACTS_CLASS = Contact.class;
@@ -87,6 +89,7 @@ public class Context {
     private static Class IDENTITY_MAILS_CLASS = MailMessage.class;
     private static Class IDENTITY_PRODUCTS_CLASS = Product.class;
     private static Class IDENTITY_GROUPS_CLASS = Group.class;
+    private static Class IDENTITY_COMPANY_CLASS = Company.class;
     private static Class IDENTITY_PGROUPS_CLASS = ProductGroup.class;
     private static Class IDENTITY_PRODUCTS_FILES_CLASS = FileToProduct.class;
     //********** unique constraints *******************************************
@@ -198,6 +201,7 @@ public class Context {
         list.add(getAccounts());
         list.add(getMessages());
         list.add(getItemsList());
+        list.add(getCompanies());
 
         return list;
     }
@@ -223,7 +227,8 @@ public class Context {
                 getProducts(),
                 getAccounts(),
                 getMessages(),
-                getItemsList()
+                getItemsList(),
+                getCompanies()
             }));
 
     /**
@@ -249,6 +254,7 @@ public class Context {
         list.add(getMail());
         list.add(getSearchIndex());
         list.add(getGlobalSettings());
+        list.add(getCompanies());
 
         return list;
     }
@@ -378,7 +384,8 @@ public class Context {
                 getFormats(),
                 getMail(),
                 getTaxes(),
-                getGlobalSettings()
+                getGlobalSettings(),
+                getCompanies()
             }));
     private String[] searchHeaders;
     private ArrayList<String[]> references = new ArrayList<String[]>();
@@ -1391,6 +1398,16 @@ public class Context {
         c.setDbIdentity(IDENTITY_FILES_TO_PRODUCTS);
         c.setIdentityClass(IDENTITY_PRODUCTS_FILES_CLASS);
         c.setId(20);
+
+        return c;
+    }
+
+     public static Context getCompanies() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_COMPANIES);
+        c.setIdentityClass(IDENTITY_COMPANY_CLASS);
+        c.setId(39);
 
         return c;
     }

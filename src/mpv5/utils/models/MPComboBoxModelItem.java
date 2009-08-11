@@ -149,7 +149,7 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
             if (convertIndexToInteger) {
                 array[i] = new MPComboBoxModelItem(Integer.valueOf(items[i][0].toString()), x.substring(0, x.length() - 1));
             } else {
-                array[i] = new MPComboBoxModelItem((items[i][0].toString()), x.substring(0, x.length() - 1));
+                array[i] = new MPComboBoxModelItem((items[i][0]), x.substring(0, x.length() - 1));
             }
             array[i].setCompareMode(compareMode);
         }

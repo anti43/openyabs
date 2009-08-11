@@ -65,6 +65,7 @@ public class User extends DatabaseObject {
     private int inthighestright = 4;
     private int intdefaultaccount = 1;
     private int intdefaultstatus = 1;
+    private int compsids = 0;
     private boolean isenabled = true;
     private boolean isloggedin = true;
     private boolean isrgrouped = false;
@@ -578,5 +579,19 @@ public class User extends DatabaseObject {
      */
     public void setIntdefaultstatus(int intdefaultstatus) {
         this.intdefaultstatus = intdefaultstatus;
+    }
+
+    /**
+     * @return the compsids
+     */
+    public int __getCompsids() {
+        return compsids;
+    }
+
+    /**
+     * @param compsids the compsids to set
+     */
+    public void setCompsids(int compsids) {
+        this.compsids = compsids;
     }
 }

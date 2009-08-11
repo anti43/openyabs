@@ -161,7 +161,8 @@ public enum Messages {
     REMINDERS("Times called: "),
     DONE_LOADING_OOO("OpenOffice loaded"),
     OONOTLOCAL("To open OpenOffice files within Yabs, a local OO installation must be configured."),
-    SET_AS_DEFAULT("Set as default");
+    SET_AS_DEFAULT("Set as default"),
+    NO_ACCOUNTS("No accounts or companies are configured for you.");
 
     private Messages(String message) {
         this.message = message;
