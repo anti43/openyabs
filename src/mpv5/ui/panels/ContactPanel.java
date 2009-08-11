@@ -1336,7 +1336,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             groupnameselect.setModel(DatabaseObject.getObject(Context.getGroup(), groupsids_));
             countryselect.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(country_, countryselect.getModel()));
         } catch (Exception e) {
-            Log.Debug(e);
+            Log.Debug(this, e.getMessage());
         }
         customer.setSelected(iscustomer_);
         enabled.setSelected(isenabled_);

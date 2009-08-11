@@ -46,7 +46,7 @@ public interface Constants {
      *
      * Alias
      */
-    public static final String TITLE = "[Foxy YaBS]";
+    public static final String TITLE = "[Foxy YaBS Pre]";
     /**
      *
      * Name of the main JAR

@@ -1053,7 +1053,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             accountselect.setModel(DatabaseObject.getObject(Context.getAccounts(), defaultaccountsids_));
             groupnameselect.setModel(DatabaseObject.getObject(Context.getGroup(), groupsids_));
         } catch (Exception e) {
-            Log.Debug(e);
+            Log.Debug(this, e.getMessage());
         }
 
         addedby.setText(User.getUsername(intaddedby_));

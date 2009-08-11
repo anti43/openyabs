@@ -1026,7 +1026,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
             familyselect.setModel(DatabaseObject.getObject(Context.getProductGroup(), productgroupsids_));
             groupnameselect.setModel(DatabaseObject.getObject(Context.getGroup(), groupsids_));
         } catch (Exception e) {
-            Log.Debug(e);
+            Log.Debug(this, e.getMessage());
         }
 
         addedby.setText(User.getUsername(intaddedby_));
@@ -1105,12 +1105,19 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
 
             @Override
             public void run() {
+
                 try {
-                    groupnameselect.setModel(MPComboBoxModelItem.toModel(DatabaseObject.getObject(Context.getGroup(), MPView.getUser().__getGroupsids())));
-                    groupnameselect.setSelectedIndex(0);
+                    try {
+                        groupnameselect.setModel(MPComboBoxModelItem.toModel(DatabaseObject.getObject(Context.getGroup(), MPView.getUser().__getGroupsids())));
+                        groupnameselect.setSelectedIndex(0);
+                    } catch (NodataFoundException nodataFoundException) {
+                    }
                     sp.refresh();
 
-                    familyselect.setModel(DatabaseObject.getObject(Context.getProductGroup(), MPView.getUser().__getIntdefaultaccount()));
+                    try {
+                        familyselect.setModel(DatabaseObject.getObject(Context.getProductGroup(), MPView.getUser().__getIntdefaultaccount()));
+                    } catch (NodataFoundException nodataFoundException) {
+                    }
                     fillFiles();
 
                     stype.setModel(Item.getStatusStrings(), MPComboBoxModelItem.COMPARE_BY_ID);

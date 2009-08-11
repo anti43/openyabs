@@ -27,6 +27,7 @@ import mpv5.db.common.QueryHandler;
 import mpv5.globals.Messages;
 import mpv5.handler.FormatHandler;
 import mpv5.logging.Log;
+import mpv5.ui.panels.ProductPanel;
 import mpv5.utils.numberformat.FormatNumber;
 
 /**
@@ -79,7 +80,8 @@ public class Product extends DatabaseObject implements Formattable {
 
     @Override
     public JComponent getView() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        ProductPanel p = new ProductPanel(context);
+        return p;
     }
 
     /**

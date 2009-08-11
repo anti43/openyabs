@@ -11,6 +11,7 @@ import javax.swing.table.DefaultTableModel;
 import mpv5.db.common.Context;
 import mpv5.db.common.QueryHandler;
 import mpv5.db.common.ReturnValue;
+import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPView;
 import mpv5.usermanagement.MPSecurityManager;
 
@@ -38,14 +39,18 @@ public abstract class AccountCalcModel extends DefaultTableModel {
 //        getDefaultAccountframe().equals(DE_SKR03)) {
 //      skr = true;
 //    } //beispielhafter Code
-    ReturnValue rv = QueryHandler.getConnection().freeSelectQuery("select " +
-        "distinct FRAME from accounts where GROUPSIDS = 1",
-        MPSecurityManager.VIEW, null);
-    resultValues = rv.getData();
-    skr = rv.hasData();
-    accScheme = (String) resultValues[1][0];//will not work if NO account frame is available
-    setFilename();
-    fetchCompData();
+ try {
+          ReturnValue rv = QueryHandler.getConnection().freeSelectQuery("select " +
+                  "distinct FRAME from accounts where GROUPSIDS = 1",
+                  MPSecurityManager.VIEW, null);
+          resultValues = rv.getData();
+          skr = rv.hasData();
+          accScheme = (String) resultValues[1][0];//will not work if NO account frame is available
+          setFilename();
+          fetchCompData();
+      } catch (Exception e) {
+          Popup.notice("No accounts available");
+      }
   }
 
   public abstract String[] getHeader();

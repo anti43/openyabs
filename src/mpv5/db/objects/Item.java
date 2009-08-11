@@ -298,7 +298,8 @@ public class Item extends DatabaseObject implements Formattable {
 
     @Override
     public JComponent getView() {
-        return new ItemPanel(Context.getItems(), __getInttype());
+        ItemPanel p = new ItemPanel(Context.getItems(), __getInttype());
+        return p;
     }
 
     /**

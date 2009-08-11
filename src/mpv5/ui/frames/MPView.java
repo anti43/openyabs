@@ -392,6 +392,7 @@ public class MPView extends FrameView {
     public void addTab(DatabaseObject item) {
         if (item.getView() != null) {
             addTab(item.getView(), item.__getCName());
+            getCurrentTab().setDataOwner(item, true);
         }
     }
 
