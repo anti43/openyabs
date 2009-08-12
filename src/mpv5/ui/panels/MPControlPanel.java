@@ -537,7 +537,7 @@ public class MPControlPanel extends javax.swing.JPanel {
 
           CompanyInfo taxformDialog = new CompanyInfo(MPView.identifierFrame,
           java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels").
-          getString("TaxAddressDialog.companydata"), ProfitPanel.map);
+          getString("TaxAddressDialog.companydata"), new ProfitPanel().map);
           taxformDialog.setVisible(true);
     }//GEN-LAST:event_jButton18ActionPerformed
 
