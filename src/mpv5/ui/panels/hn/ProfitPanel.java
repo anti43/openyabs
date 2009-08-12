@@ -3,7 +3,7 @@
  *
  * Created on 21. Februar 2008, 21:50
  */
-package mpv5.ui.panels;
+package mpv5.ui.panels.hn;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -20,168 +20,177 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.DialogForFile;
-import mpv5.ui.dialogs.CompanyInfo;
 import mpv5.ui.frames.MPView;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.export.Export;
 import mpv5.utils.export.PDFFile;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.files.TableHtmlWriter;
-import mpv5.utils.models.DateComboBoxModel;
-import mpv5.utils.models.ProfitModel;
+import mpv5.utils.models.hn.DateComboBoxModel;
+import mpv5.utils.models.hn.ProfitModel;
 import mpv5.utils.tables.TableFormat;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
-/**
- *
- * @author  anti43
- */
 public class ProfitPanel extends JPanel {
 
-  private DateComboBoxModel dateModel = new DateComboBoxModel();
-  private ProfitModel profitModel;
-  private String html;
-  private JEditorPane formPane = new JEditorPane();
-  private Map<String, String> map;
+    private DateComboBoxModel dateModel = new DateComboBoxModel();
+    private ProfitModel profitModel;
+    private String html;
+    private JEditorPane formPane = new JEditorPane();
+    private Map<String, String> map;
 
-  public ProfitPanel() {
+    public ProfitPanel() {
 
-    map = new HashMap<String, String>();
-    map.put("comp_name", "Müller, Meier, Schmidt");
-    map.put("comp_street", "Sackgasse 44");
-    map.put("comp_business", "Kohlen und Briketts");
-    map.put("comp_taxnumber", "236/578/3245");
-    map.put("comp_stb", "StB Sepp");
 
-    initComponents();
+        map = new HashMap<String, String>();
+        map.put("comp_name", "Müller, Meier, Schmidt");
+        map.put("comp_street", "Sackgasse 44");
+        map.put("comp_business", "Kohlen und Briketts");
+        map.put("comp_taxnumber", "236/578/3245");
+        map.put("comp_stb", "StB Sepp");
 
-    profitModel = new ProfitModel(dateModel);
-    if (profitModel.isSkr() != true) {
-      jButton2.setVisible(false);
+
+        initComponents();
+
+
+        profitModel = new ProfitModel(dateModel);
+        if (profitModel.isSkr() != true) {
+            jButton2.setVisible(false);
+        }
+        jTable1.setModel(profitModel);
     }
-    jTable1.setModel(profitModel);
-  }
 
-  private String[] getYears() {
-    String[] ys = new String[7];
-    int actYear = Integer.parseInt(DateConverter.getYear());
-    for (int i = 0; i < ys.length; i++) {
-      ys[i] = (actYear - 3 + i + "");
+    private String[] getYears() {
+        String[] ys = new String[7];
+        int actYear = Integer.parseInt(DateConverter.getYear());
+        for (int i = 0; i < ys.length; i++) {
+            ys[i] = (actYear - 3 + i + "");
+        }
+        return ys;
     }
-    return ys;
-  }
 
-  private void showTable() {
-    jScrollPane1.setViewportView(jTable1);
-    formPane.setVisible(false);
-    jTable1.setVisible(true);
-    profitModel.fetchResults();
-    jTextField1.setText(dateModel.getStartDay() + "   -   " + dateModel.getEndDay());
-    try {
-      jTable1.setModel(profitModel.getModel());
-      TableFormat.format(jTable1, 0, 380);
-      jTable1.doLayout();
-      jButton2.setEnabled(true);
-      jButton3.setEnabled(true);
-    } catch (Exception ex) {
-      ex.printStackTrace();
-      Log.Debug(ex);
-    }
-  }
-
-  /**
-   * Generates a pdf file from a template or - if no complete account
-   * scheme is used - from table values.
-   */
-  private void printToFile() {
-    File target = new File(profitModel.getOutFileName());
-
-    try {
-      if (!profitModel.isSkr()) {
-        Export e = new Export();
-        e.putAll(profitModel.getResultMap());
-        e.setFile(new PDFFile(profitModel.getPdfform()));
-        DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY, target);
-        d.setFileFilter(DialogForFile.PDF_FILES);
-        if (d.saveFile()) {
-          try {
-            e.processData(d.getFile());
-          } catch (Exception ex) {
+    private void showTable() {
+        jScrollPane1.setViewportView(jTable1);
+        formPane.setVisible(false);
+        jTable1.setVisible(true);
+        profitModel.fetchResults();
+        jTextField1.setText(dateModel.getStartDay() + "   -   " + dateModel.getEndDay());
+        try {
+            jTable1.setModel(profitModel.getModel());
+            TableFormat.format(jTable1, 0, 380);
+            jTable1.doLayout();
+            jButton2.setEnabled(true);
+            jButton3.setEnabled(true);
+        } catch (Exception ex) {
+            ex.printStackTrace();
             Log.Debug(ex);
-          }
         }
+    }
 
-      } else {
-        TableHtmlWriter thw = new TableHtmlWriter(profitModel);
-        thw.setHeader(profitModel.getHeader());
-        File tempfile = thw.createHtml2(1, java.awt.Color.BLACK);
- 
-        DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY, target);
-        d.setFileFilter(DialogForFile.PDF_FILES);
-        
-        if (d.saveFile()) {
-          File targe = d.getFile();
-          OutputStream os = new FileOutputStream(targe);
-          ITextRenderer renderer = new ITextRenderer();
-          renderer.setDocument(tempfile);
-          renderer.layout();
-          renderer.createPDF(os);
-          os.close();
-          MPView.addMessage(Messages.FILE_SAVED + targe.getPath());
+    /**
+     * Generates a pdf file from a template or - if no complete account
+     * scheme is used - from table values.
+     */
+    private void printToFile() {
+        File target = new File(profitModel.getOutFileName());
+
+
+        try {
+            if (!profitModel.isSkr()) {
+                Export e = new Export();
+                e.putAll(profitModel.getResultMap());
+                e.setFile(new PDFFile(profitModel.getPdfform()));
+                DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY, target);
+                d.setFileFilter(DialogForFile.PDF_FILES);
+                if (d.saveFile()) {
+                    try {
+                        e.processData(d.getFile());
+                    } catch (Exception ex) {
+                        Log.Debug(ex);
+                    }
+                }
+
+
+            } else {
+                TableHtmlWriter thw = new TableHtmlWriter(profitModel);
+                thw.setHeader(profitModel.getHeader());
+                File tempfile = thw.createHtml2(1, java.awt.Color.BLACK);
+
+
+                DialogForFile d = new DialogForFile(target);
+                d.setFileFilter(DialogForFile.PDF_FILES);
+                d.saveFile(tempfile); /* save as html */
+
+
+                DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+                builderFactory.setFeature(
+                        "http://apache.org/xml/features/nonvalidating/load-external-dtd",
+                        false);
+                String url = tempfile.toURI().toURL().toString();
+                if (d.saveFile()) {
+                    File t = d.getSelectedFile();
+                    FileDirectoryHandler.copyFile(tempfile, t);
+                    OutputStream os = new FileOutputStream(t);
+                    ITextRenderer renderer = new ITextRenderer();
+                    renderer.setDocument(url);
+                    renderer.layout();
+                    renderer.createPDF(os);
+                    os.close();
+//          ((mainframe) mainframe).setInfoText("Datei gespeichert: " + t);
+                }
+            }
+        } catch (Exception ex) {
+            Log.Debug(this, ex);
         }
-      }
-    } catch (Exception ex) {
-      Log.Debug(this, ex);
     }
-  }
+    // <editor-fold defaultstate="collapsed" desc="html form display - remove when pdf display works">
 
-  // <editor-fold defaultstate="collapsed" desc="html form display - remove when pdf display works">
-  /**
-   * Gets the final HTML form from the XML Parser and opens it in the
-   * JEditorPane. The JEditorPane needs some older HTML code, so the
-   * XML input stream has to be modified.
-   * The PDF parser needs valid XHTML as it comes from the XML
-   * input stream.
-   */
-  private void showHtmlForm() {
-    ByteArrayOutputStream os = profitModel.getFormHtml();
-    InputStream in = new ByteArrayInputStream(os.toByteArray());
-    try {
-      html = streamToString(in);
-      showPane();
-      in.close();
-      os.close();
-    } catch (IOException ex) {
-      ex.printStackTrace();
+    /**
+     * Gets the final HTML form from the XML Parser and opens it in the
+     * JEditorPane. The JEditorPane needs some older HTML code, so the
+     * XML input stream has to be modified.
+     * The PDF parser needs valid XHTML as it comes from the XML
+     * input stream.
+     */
+    private void showHtmlForm() {
+        ByteArrayOutputStream os = profitModel.getFormHtml();
+        InputStream in = new ByteArrayInputStream(os.toByteArray());
+        try {
+            html = streamToString(in);
+            showPane();
+            in.close();
+            os.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        formPane.setCaretPosition(0);
     }
-    formPane.setCaretPosition(0);
-  }
 
-  private String streamToString(InputStream in) throws IOException {
-    StringBuilder sb = new StringBuilder();
-    byte[] b = new byte[4096];
-    for (int n; (n = in.read(b)) != -1;) {
-      sb.append(new String(b, 0, n));
+    private String streamToString(InputStream in) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        byte[] b = new byte[4096];
+        for (int n; (n = in.read(b)) != -1;) {
+            sb.append(new String(b, 0, n));
+        }
+        return sb.toString();
     }
-    return sb.toString();
-  }
 
-  private void showPane() {
-    formPane.setContentType("text/html");
-    formPane.setEditable(false);
-    jScrollPane1.setViewportView(formPane);
-    formPane.setBackground(java.awt.Color.WHITE);
-    formPane.setText(html.substring(38));
-    jTable1.setVisible(false);
-    formPane.setVisible(true);
-  }
+    private void showPane() {
+        formPane.setContentType("text/html");
+        formPane.setEditable(false);
+        jScrollPane1.setViewportView(formPane);
+        formPane.setBackground(java.awt.Color.WHITE);
+        formPane.setText(html.substring(38));
+        jTable1.setVisible(false);
+        formPane.setVisible(true);
+    }
 // </editor-fold>
 
-  /** This method is called from within the constructor to
-   * initialize the form.
-   * WARNING: Do NOT modify this code. The content of this method is
-   * always regenerated by the Form Editor.
-   */
+    /** This method is called from within the constructor to
+     * initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is
+     * always regenerated by the Form Editor.
+     */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -288,7 +297,7 @@ public class ProfitPanel extends JPanel {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 134, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 137, Short.MAX_VALUE))
         );
 
         jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(getYears()));
@@ -363,21 +372,20 @@ public class ProfitPanel extends JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-      showTable();
+        showTable();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-      showHtmlForm();
+        showHtmlForm();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-      printToFile();
+        printToFile();
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
-      dateModel.setYear((String) jComboBox2.getSelectedItem());
+        dateModel.setYear((String) jComboBox2.getSelectedItem());
     }//GEN-LAST:event_jComboBox2ActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;

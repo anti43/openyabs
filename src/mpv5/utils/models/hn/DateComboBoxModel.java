@@ -14,8 +14,9 @@
  *  You should have received a copy of the GNU General Public License
  *  along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mpv5.utils.models;
+package mpv5.utils.models.hn;
 
+import mpv5.utils.models.*;
 import java.util.Date;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
