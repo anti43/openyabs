@@ -37,7 +37,7 @@ public class ProfitPanel extends JPanel {
     private ProfitModel profitModel;
     private String html;
     private JEditorPane formPane = new JEditorPane();
-    private Map<String, String> map;
+    public static  Map<String, String> map;
 
     public ProfitPanel() {
 

@@ -18,6 +18,7 @@ import mpv5.logging.Log;
 import mpv5.i18n.LanguageManager;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.Popup;
+import mpv5.ui.dialogs.hn.CompanyInfo;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Accounts;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Advanced;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Userproperties;
@@ -31,6 +32,7 @@ import mpv5.ui.dialogs.subcomponents.ControlPanel_ProductGroups;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Users;
 import mpv5.ui.frames.MPBabelFish;
 import mpv5.ui.frames.MPView;
+import mpv5.ui.panels.hn.ProfitPanel;
 import mpv5.utils.files.FileDirectoryHandler;
 
 /**
@@ -90,6 +92,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton15 = new javax.swing.JButton();
         jButton16 = new javax.swing.JButton();
         jButton11 = new javax.swing.JButton();
+        jButton18 = new javax.swing.JButton();
 
         setName("Form"); // NOI18N
 
@@ -264,7 +267,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton9);
 
-        jButton10.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton10.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/flag.png"))); // NOI18N
         jButton10.setText(bundle.getString("MPControlPanel.jButton10.text")); // NOI18N
         jButton10.setToolTipText(bundle.getString("MPControlPanel.jButton10.toolTipText")); // NOI18N
@@ -283,7 +286,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton10);
 
-        jButton17.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton17.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/flag.png"))); // NOI18N
         jButton17.setText(bundle.getString("MPControlPanel.jButton17.text")); // NOI18N
         jButton17.setToolTipText(bundle.getString("MPControlPanel.jButton17.toolTipText")); // NOI18N
@@ -302,7 +305,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton17);
 
-        jButton12.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton12.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/gkrellm2.png"))); // NOI18N
         jButton12.setText(bundle.getString("MPControlPanel.jButton12.text")); // NOI18N
         jButton12.setToolTipText(bundle.getString("MPControlPanel.jButton12.toolTipText")); // NOI18N
@@ -416,6 +419,25 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton11);
 
+        jButton18.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/usb.png"))); // NOI18N
+        jButton18.setText(bundle.getString("MPControlPanel.jButton18.text")); // NOI18N
+        jButton18.setToolTipText(bundle.getString("MPControlPanel.jButton18.toolTipText")); // NOI18N
+        jButton18.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jButton18.setContentAreaFilled(false);
+        jButton18.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton18.setMaximumSize(new java.awt.Dimension(90, 90));
+        jButton18.setMinimumSize(new java.awt.Dimension(90, 80));
+        jButton18.setName("jButton18"); // NOI18N
+        jButton18.setPreferredSize(new java.awt.Dimension(90, 80));
+        jButton18.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton18.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton18ActionPerformed(evt);
+            }
+        });
+        buttons.add(jButton18);
+
         jScrollPane1.setViewportView(buttons);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -511,6 +533,14 @@ public class MPControlPanel extends javax.swing.JPanel {
         openDetails(new ControlPanel_ProductGroups());
     }//GEN-LAST:event_jButton17ActionPerformed
 
+    private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
+
+          CompanyInfo taxformDialog = new CompanyInfo(MPView.identifierFrame,
+          java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels").
+          getString("TaxAddressDialog.companydata"), ProfitPanel.map);
+          taxformDialog.setVisible(true);
+    }//GEN-LAST:event_jButton18ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel actions;
     private javax.swing.JPanel buttons;
@@ -524,6 +554,7 @@ public class MPControlPanel extends javax.swing.JPanel {
     private javax.swing.JButton jButton15;
     private javax.swing.JButton jButton16;
     private javax.swing.JButton jButton17;
+    private javax.swing.JButton jButton18;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton5;
