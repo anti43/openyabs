@@ -46,7 +46,6 @@ public class WSConnectionClient {
         return client;
     }
 
-
     /**
      * Contains all known xml-rpc commands
      */
@@ -94,9 +93,7 @@ public class WSConnectionClient {
         if (!connect(host)) {
             throw new NoCompatibleHostFoundException(host);
         }
-      }
-
-  
+    }
 
     private boolean connect(URL host) {
         client = new XMLRpcClient(host);
@@ -110,4 +107,5 @@ public class WSConnectionClient {
             return false;
         }
     }
+
 }

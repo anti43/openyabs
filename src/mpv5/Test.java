@@ -57,12 +57,12 @@ public class Test {
         try {
             LogConsole.setLogStreams(false, true, false);
             Log.setLogLevel(Log.LOGLEVEL_DEBUG);
-        Log.PrintArray(WSConnectionClient.COMMANDS.values());
+            Log.PrintArray(WSConnectionClient.COMMANDS.values());
             boolean f = new WSConnectionClient(new URL("http://localhost/server.php")).getClient().invokeSetCommand(WSConnectionClient.COMMANDS.ADD_NEW_CONTACTS.toString(),
                     new Object[][]{
-                        {"1", "cname", "mustermann1"}, {"1","city", "mustermannhausen"},
-                        {"2", "cname", "mustermann2"}, {"2","city", "mustermannhausen2"}
-                        });
+                        {"1", "cname", "mustermann1"}, {"1", "city", "mustermannhausen"},
+                        {"2", "cname", "mustermann2"}, {"2", "city", "mustermannhausen2"}
+                    });
             Log.Debug(Main.class, f);
         } catch (Exception malformedURLException) {
             malformedURLException.printStackTrace();

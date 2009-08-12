@@ -17,6 +17,7 @@
 package mpv5.utils.xml;
 
 import java.net.URL;
+import java.util.HashMap;
 import mpv5.logging.Log;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
@@ -57,6 +58,20 @@ public class XMLRpcClient extends XmlRpcClient {
         Object data = execute(commandName, params);
         Log.Debug(this, "RPC call to '" + ((XmlRpcClientConfigImpl) getClientConfig()).getServerURL() + "#" + commandName + "' returned a: " + data.getClass().getSimpleName()+ " [" + data + "]");
         return (T) data;
+    }
+    
+    /**
+     * Invoke a remote get command
+     * @param commandName The name of the remote procedure
+     * @param params The parameters to the remote procedure
+     * @return The response
+     * @throws XmlRpcException If any error occurs
+     */
+    @SuppressWarnings("unchecked")
+    public HashMap<String, Object> invokeGetCommand(String commandName, Object[] params) throws XmlRpcException {
+        HashMap<String, Object> data = (HashMap<String, Object>)execute(commandName, params);
+        Log.Debug(this, "RPC call to '" + ((XmlRpcClientConfigImpl) getClientConfig()).getServerURL() + "#" + commandName + "' returned " + data.size() + " values.");
+        return data;
     }
 
     /**
