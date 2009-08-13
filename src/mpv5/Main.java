@@ -74,6 +74,7 @@ import mpv5.ui.dialogs.subcomponents.ControlPanel_Userproperties;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.files.FileReaderWriter;
 import mpv5.utils.text.TypeConversion;
+import mpv5.webshopinterface.WSIManager;
 import org.apache.commons.cli2.*;
 import org.apache.commons.cli2.builder.*;
 import org.apache.commons.cli2.commandline.Parser;
@@ -540,6 +541,8 @@ public class Main extends SingleFrameApplication {
                     } catch (Exception n) {
                         Log.Debug(Main.class, n.getMessage());
                     }
+
+                    WSIManager.instanceOf().start();
                 }
             };
             new Thread(runnable).start();

@@ -30,6 +30,7 @@ import mpv5.ui.dialogs.subcomponents.ControlPanel_Locale;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Plugins;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_ProductGroups;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Users;
+import mpv5.ui.dialogs.subcomponents.ControlPanel_WebShopManager;
 import mpv5.ui.frames.MPBabelFish;
 import mpv5.ui.frames.MPView;
 import mpv5.ui.panels.hn.ProfitPanel;
@@ -93,6 +94,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton16 = new javax.swing.JButton();
         jButton11 = new javax.swing.JButton();
         jButton18 = new javax.swing.JButton();
+        jButton19 = new javax.swing.JButton();
 
         setName("Form"); // NOI18N
 
@@ -400,7 +402,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton16);
 
-        jButton11.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton11.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/usb.png"))); // NOI18N
         jButton11.setText(bundle.getString("MPControlPanel.jButton11.text")); // NOI18N
         jButton11.setToolTipText(bundle.getString("MPControlPanel.jButton11.toolTipText")); // NOI18N
@@ -437,6 +439,25 @@ public class MPControlPanel extends javax.swing.JPanel {
             }
         });
         buttons.add(jButton18);
+
+        jButton19.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton19.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/usb.png"))); // NOI18N
+        jButton19.setText(bundle.getString("MPControlPanel.jButton19.text")); // NOI18N
+        jButton19.setToolTipText(bundle.getString("MPControlPanel.jButton19.toolTipText")); // NOI18N
+        jButton19.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jButton19.setContentAreaFilled(false);
+        jButton19.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton19.setMaximumSize(new java.awt.Dimension(90, 90));
+        jButton19.setMinimumSize(new java.awt.Dimension(90, 80));
+        jButton19.setName("jButton19"); // NOI18N
+        jButton19.setPreferredSize(new java.awt.Dimension(90, 80));
+        jButton19.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton19.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton19ActionPerformed(evt);
+            }
+        });
+        buttons.add(jButton19);
 
         jScrollPane1.setViewportView(buttons);
 
@@ -541,6 +562,10 @@ public class MPControlPanel extends javax.swing.JPanel {
           taxformDialog.setVisible(true);
     }//GEN-LAST:event_jButton18ActionPerformed
 
+    private void jButton19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton19ActionPerformed
+        openDetails(new ControlPanel_WebShopManager());
+    }//GEN-LAST:event_jButton19ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel actions;
     private javax.swing.JPanel buttons;
@@ -555,6 +580,7 @@ public class MPControlPanel extends javax.swing.JPanel {
     private javax.swing.JButton jButton16;
     private javax.swing.JButton jButton17;
     private javax.swing.JButton jButton18;
+    private javax.swing.JButton jButton19;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton5;

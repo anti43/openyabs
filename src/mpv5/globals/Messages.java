@@ -18,7 +18,7 @@ public enum Messages {
     "\n" +
     "\n  YaBS " + Constants.VERSION + " Copyright (C) 2006-2009 A. Weber\n" +
     "\n  This program comes with ABSOLUTELY NO WARRANTY." +
-    "\n  MP is free software, and you are welcome to redistribute it " +
+    "\n  YaBS is free software, and you are welcome to redistribute it " +
     "\n  under certain conditions;" +
     "\n  Start with -license for details.\n" +
     "\n  Start with -help for command line options.\n" +

@@ -29,6 +29,8 @@ import mpv5.db.objects.ProductGroup;
 import mpv5.db.objects.SubItem;
 import mpv5.pluginhandling.Plugin;
 import mpv5.db.objects.User;
+import mpv5.db.objects.WSContactsMapping;
+import mpv5.db.objects.WebShop;
 import mpv5.pluginhandling.UserPlugin;
 import mpv5.ui.frames.MPView;
 
@@ -71,6 +73,8 @@ public class Context {
     public static String IDENTITY_TAX = "tax";
     public static String IDENTITY_COMPANIES = "comps";
     public static String IDENTITY_GLOBALSETTINGS = "globalsettings";
+    public static String IDENTITY_WEBSHOPS = "webshops";
+    public static String IDENTITY_WSMAPPING = "wscontactsmapping";
     //********** identity classes **********************************************
     private static Class IDENTITY_CONTACTS_CLASS = Contact.class;
     private static Class IDENTITY_ADDRESS_CLASS = Address.class;
@@ -92,13 +96,13 @@ public class Context {
     private static Class IDENTITY_COMPANY_CLASS = Company.class;
     private static Class IDENTITY_PGROUPS_CLASS = ProductGroup.class;
     private static Class IDENTITY_PRODUCTS_FILES_CLASS = FileToProduct.class;
+    private static Class IDENTITY_WEBSHOP_CLASS = WebShop.class;
     //********** unique constraints *******************************************
     public static String UNIQUECOLUMNS_USER = "cname";
     public static String UNIQUECOLUMNS_ITEMS = "cname";
     public static String UNIQUECOLUMNS_GROUPS = "cname";
     public static String UNIQUECOLUMNS_DEFAULT = "cname";
     public static String DETAIL_CONTACT_SEARCH = "prename,cname,street,city,country,notes";
-    
     //********** conditions ****************************************************
     private boolean isCompany = false;
     private boolean isCustomer = false;
@@ -131,30 +135,11 @@ public class Context {
             IDENTITY_CONTACTS + "." + "WORKPHONE," + IDENTITY_CONTACTS + "." + "COMPANY," + IDENTITY_CONTACTS + "." + "MAILADDRESS," +
             IDENTITY_CONTACTS + "." + "WEBSITE," + IDENTITY_CONTACTS + "." + "NOTES," +
             IDENTITY_CONTACTS + "." + "TAXNUMBER";
-//            + IDENTITY_CONTACTS + "." +
-//            "DATEADDED," + IDENTITY_CONTACTS + "." + "ISACTIVE," +
-//            IDENTITY_CONTACTS + "." + "ISCUSTOMER," + IDENTITY_CONTACTS + "." + "ISMANUFACTURER," + IDENTITY_CONTACTS + "." + "ISSUPPLIER," +
-//            IDENTITY_CONTACTS + "." + "ISCOMPANY," + IDENTITY_CONTACTS + "." + "ISMALE," + IDENTITY_CONTACTS + "." + "ISENABLED," +
-//            IDENTITY_CONTACTS + "." + "ADDEDBY," + IDENTITY_CONTACTS + "." + "RESERVE1," + IDENTITY_CONTACTS + "." + "RESERVE2," +
-//            IDENTITY_CONTACTS + "." + "IDS," + IDENTITY_CONTACTS + "." + "CNUMBER," + IDENTITY_CONTACTS + "." + "TITLE," +
-//            IDENTITY_CONTACTS + "." + "PRENAME," + IDENTITY_CONTACTS + "." + "CNAME," + IDENTITY_CONTACTS + "." + "STREET," +
-//            IDENTITY_CONTACTS + "." + "ZIP," + IDENTITY_CONTACTS + "." + "CITY," + IDENTITY_CONTACTS + "." + "MAINPHONE," +
-//            IDENTITY_CONTACTS + "." + "FAX," + IDENTITY_CONTACTS + "." + "MOBILEPHONE," + IDENTITY_CONTACTS + "." + "WORKPHONE," +
-//            IDENTITY_CONTACTS + "." + "MAILADDRESS," + IDENTITY_CONTACTS + "." + "company," + IDENTITY_CONTACTS + "." + "WEBSITE," +
-//            IDENTITY_CONTACTS + "." + "NOTES," + IDENTITY_CONTACTS + "." + "taxnumber," + IDENTITY_CONTACTS + "." + "DATEADDED," ;
-//            IDENTITY_CONTACTS + "." + "ISACTIVE," + IDENTITY_CONTACTS + "." + "ISCUSTOMER," + IDENTITY_CONTACTS + "." + "ISMANUFACTURER," +
-//            IDENTITY_CONTACTS + "." + "ISSUPPLIER," + IDENTITY_CONTACTS + "." + "ISCOMPANY," + IDENTITY_CONTACTS + "." + "ISMALE," +
-//            IDENTITY_CONTACTS + "." + "ISENABLED," + IDENTITY_CONTACTS + "." + "ADDEDBY";
     public static String DETAILS_USERS = IDENTITY_USERS + "." + "IDS," + IDENTITY_USERS + "." + "CNAME," +
             IDENTITY_USERS + "." + "fullname," +
             IDENTITY_USERS + "." + "mail," +
             IDENTITY_USERS + "." + "isenabled," +
             IDENTITY_USERS + "." + "isloggedin";
-//            IDENTITY_USERS + "." + "locale," +
-//            IDENTITY_USERS + "." + "language," +
-//            IDENTITY_USERS + "." + "laf," +
-//            IDENTITY_USERS + "." + "inthighestright," +
-//            IDENTITY_USERS + "." + "datelastlog";
     public static String DETAILS_ITEMS =
             IDENTITY_ITEMS + "." + "IDS," +
             IDENTITY_ITEMS + "." + "CNAME," +
@@ -162,7 +147,6 @@ public class Context {
             IDENTITY_ITEMS + "." + "netvalue," +
             IDENTITY_ITEMS + "." + "taxvalue, " +
             IDENTITY_ITEMS + "." + "datetodo";
-    //ids date group number type status value
     public static String DETAILS_JOURNAL = IDENTITY_ITEMS + "." + "IDS," +
             IDENTITY_ITEMS + "." + "dateadded," +
             IDENTITY_GROUPS + "0." + "CNAME," +
@@ -202,6 +186,7 @@ public class Context {
         list.add(getMessages());
         list.add(getItemsList());
         list.add(getCompanies());
+        list.add(getWebShops());
 
         return list;
     }
@@ -228,7 +213,8 @@ public class Context {
                 getAccounts(),
                 getMessages(),
                 getItemsList(),
-                getCompanies()
+                getCompanies(),
+                getWebShops()
             }));
 
     /**
@@ -255,6 +241,7 @@ public class Context {
         list.add(getSearchIndex());
         list.add(getGlobalSettings());
         list.add(getCompanies());
+        list.add(getWebShops());
 
         return list;
     }
@@ -323,6 +310,7 @@ public class Context {
         list.add(getCustomer());
         list.add(getSupplier());
         list.add(getManufacturer());
+        list.add(getWebShops());
         return list;
     }
 
@@ -385,7 +373,8 @@ public class Context {
                 getMail(),
                 getTaxes(),
                 getGlobalSettings(),
-                getCompanies()
+                getCompanies(),
+                getWebShops()
             }));
     private String[] searchHeaders;
     private ArrayList<String[]> references = new ArrayList<String[]>();
@@ -1402,12 +1391,32 @@ public class Context {
         return c;
     }
 
-     public static Context getCompanies() {
+    public static Context getCompanies() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_COMPANIES);
         c.setIdentityClass(IDENTITY_COMPANY_CLASS);
         c.setId(39);
+
+        return c;
+    }
+
+    public static Context getWebShops() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_WEBSHOPS);
+        c.setIdentityClass(IDENTITY_WEBSHOP_CLASS);
+        c.setId(40);
+
+        return c;
+    }
+
+    public static Context getWebShopContactMapping() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_WSMAPPING);
+        c.setIdentityClass(WSContactsMapping.class);
+        c.setId(41);
 
         return c;
     }

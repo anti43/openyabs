@@ -16,20 +16,11 @@
  */
 package mpv5.webshopinterface;
 
-import java.io.IOException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mpv5.logging.Log;
-import mpv5.utils.http.HttpClient;
 import mpv5.utils.xml.XMLRpcClient;
-import org.apache.http.*;
 import org.apache.xmlrpc.XmlRpcException;
 
-import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
-import org.omg.CORBA.DATA_CONVERSION;
 
 /**
  *This class acts as connector to webshops using the WebShopAPI specified at

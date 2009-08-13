@@ -16,17 +16,52 @@
  */
 package mpv5.webshopinterface;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Vector;
+import mpv5.db.objects.WebShop;
+import mpv5.logging.Log;
 
 /**
  * This service runs in background and polls the registered web shops in a defined interval
  */
-public class WSDaemon implements Runnable {
+public class WSDaemon extends Thread {
+
+
     private WSConnectionClient client;
     private long waitTime = 3000;
     private List<WSDaemonJob> jobs = new Vector<WSDaemonJob>();
+    private int wsid;
+
+    /**
+     *
+     * @param webShop
+     * @throws NoCompatibleHostFoundException
+     * @throws MalformedURLException
+     */
+    public WSDaemon(WebShop webShop) throws NoCompatibleHostFoundException, MalformedURLException {
+        this(new URL(webShop.__getUrl()));
+        setWaitTime(webShop.__getInterval());
+        wsid = webShop.__getIDS();
+    }
+
+
+    /**
+     * Returns the unique id of the web shop used
+     * @return
+     */
+    public int getWebShopID() {
+       return wsid;
+    }
+
+    /**
+     * Adds a job
+     * @param job
+     */
+    public void addJob(WSDaemonJob job) {
+        jobs.add(job);
+    }
 
     /**
      * Create a new background service
@@ -34,18 +69,20 @@ public class WSDaemon implements Runnable {
      * @throws NoCompatibleHostFoundException
      */
     public WSDaemon(URL url) throws NoCompatibleHostFoundException {
-        client =  new WSConnectionClient(url);
+        client = new WSConnectionClient(url);
         new Thread(this).start();
     }
 
     @Override
     public void run() {
-       while (true){
-           checkForWork();
+        while (true) {
+            Log.Debug(this, "Polling WebShop: " + client);
+            checkForWork();
             try {
                 Thread.sleep(getWaitTime());
-            } catch (InterruptedException ex) {}
-       }
+            } catch (InterruptedException ex) {
+            }
+        }
     }
 
     /**
@@ -64,8 +101,14 @@ public class WSDaemon implements Runnable {
 
     private void checkForWork() {
         for (int i = 0; i < jobs.size(); i++) {
-            WSDaemonJob wSDaemonJob = jobs.get(i);
-            wSDaemonJob.work(client);
+            try {
+                jobs.get(i).work(client);
+                if (jobs.get(i).isOneTimeJob() || jobs.get(i).isDone()) {
+                    jobs.remove(jobs.get(i));
+                }
+            } catch (Exception e) {
+                Log.Debug(e);
+            }
         }
     }
 }

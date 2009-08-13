@@ -17,43 +17,24 @@
 package mpv5.webshopinterface;
 
 /**
- * Jobs for the WSDaemon
+ * This interface describes a WS Daemon Job
  */
-public class WSDaemonJob {
+public interface WSDaemonJob {
+    /**
+     * Returns true if the job shall be run only once
+     * @return
+     */
+    public boolean isOneTimeJob();
+
+     /**
+     * Returns true if the job is done
+     * @return
+     */
+    public boolean isDone();
 
     /**
-     * Defines a getter job
+     * Do the actual work
+     * @param client The client to use
      */
-    public static final int TYPE_GET = 0;
-    /**
-     * Defines a setter job
-     */
-    public static final int TYPE_SET = 1;
-    private final int type;
-    private final String commandName;
-    private final Object[] params;
-
-    /**
-     * Create a new job
-     * @param type
-     * @param commandName
-     * @param params
-     */
-    public WSDaemonJob(int type, String commandName, Object[] params) {
-        this.type = type;
-        this.commandName = commandName;
-        this.params = params;
-    }
-
-    public void work(WSConnectionClient client) {
-        switch (type) {
-            case TYPE_GET:
-
-//                client.getClient().invokeGetCommand(commandName, params);
-
-                break;
-            case TYPE_SET:
-                break;
-        }
-    }
+    public void work(WSConnectionClient client);
 }
