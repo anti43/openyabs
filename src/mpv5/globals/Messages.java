@@ -60,6 +60,7 @@ public enum Messages {
     ACTION_DELETE("Delete"),
     ACTION_OPEN("Open"),
     ACTION_REMOVE("Remove"),
+    ACTION_TEST("Test"),
     SECURITYMANAGER_DENIED("The Security Manager has DENIED your request.\nAction "),
     SECURITYMANAGER_ALLOWED("The Security Manager has ALLOWED your request.\nAction "),
     THE_RESULT("The resulting value will look like:\n\n"),

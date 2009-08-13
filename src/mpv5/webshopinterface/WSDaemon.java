@@ -30,7 +30,7 @@ public class WSDaemon extends Thread {
 
 
     private WSConnectionClient client;
-    private long waitTime = 3000;
+    private long waitTime = 30000;
     private List<WSDaemonJob> jobs = new Vector<WSDaemonJob>();
     private int wsid;
 

@@ -21,7 +21,6 @@ import mpv5.logging.Log;
 import mpv5.utils.xml.XMLRpcClient;
 import org.apache.xmlrpc.XmlRpcException;
 
-
 /**
  *This class acts as connector to webshops using the WebShopAPI specified at
  * http://code.google.com/p/mp-rechnungs-und-kundenverwaltung/wiki/WebShopInterfaceSpecs
@@ -35,6 +34,12 @@ public class WSConnectionClient {
      */
     public XMLRpcClient getClient() {
         return client;
+    }
+
+    public String test() throws XmlRpcException {
+         Object[] params = new Object[0];
+         Integer v = (Integer) getClient().execute(COMMANDS.GETVERSION.toString(), params);
+         return "Server XML RPC Yabs Version : " + v;
     }
 
     /**
@@ -88,15 +93,12 @@ public class WSConnectionClient {
 
     private boolean connect(URL host) {
         client = new XMLRpcClient(host);
-        Object[] params = new Object[0];
         try {
-            Integer v = (Integer) getClient().execute(COMMANDS.GETVERSION.toString(), params);
-            Log.Debug(this, "Server XML RPC Yabs Version : " + v);
+            Log.Debug(this, test());
             return true;
         } catch (XmlRpcException ex) {
             Log.Debug(this, ex.getMessage());
             return false;
         }
     }
-
 }

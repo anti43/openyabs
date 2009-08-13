@@ -75,7 +75,6 @@ public class MPCombobox extends javax.swing.JPanel {
                 if (table != null) {
                     jComboBox1.showPopup();
                 }
-
 //                if (table != null) {
 //                    JComboBox combobox = getComboBox();
 //                    if (!combobox.isPopupVisible()) {
@@ -84,9 +83,7 @@ public class MPCombobox extends javax.swing.JPanel {
 //                        combobox.showPopup();
 //                    }
 //                }
-
             }
-
             @Override
             public void keyReleased(KeyEvent e) {
             }
@@ -106,9 +103,9 @@ public class MPCombobox extends javax.swing.JPanel {
                         jComboBox1.setModel(new DefaultComboBoxModel(new String[]{""}));
                     }
                     search();
-                    if (table != null) {
+//                    if (table != null) {
                         jComboBox1.showPopup();
-                    }
+//                    }
                 }
             }
 
@@ -170,7 +167,6 @@ public class MPCombobox extends javax.swing.JPanel {
                 Object[][] data = new DatabaseSearch(context, 50).getValuesFor("ids, cname", "cname", jComboBox1.getSelectedItem().toString(), true);
                 jComboBox1.setModel(MPComboBoxModelItem.toModel(MPComboBoxModelItem.toItems(data, true, true)));
                 if (data.length > 1) {
-                    Log.Debug(this, jComboBox1.getItemCount());
                    if(table!=null) {
                         table.editCellAt(table.getSelectedRow(), 4);
                     }

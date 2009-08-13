@@ -164,7 +164,7 @@ public class Popup {
      * @param x
      */
     public static void error(Exception x) {
-        error(identifier, Messages.ERROR_OCCURED + "\n" + x.getMessage());
+        error(identifier, x.toString());
     }
 
     private static Object prepareText(String s) {
