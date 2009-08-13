@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -49,11 +50,7 @@ public class WSIManager {
     private ArrayList<WebShop> shops = new ArrayList<WebShop>();
 
     private WSIManager() {
-        try {
-            shops.addAll(DatabaseObject.getObjects(new WebShop(), null));
-        } catch (NodataFoundException ex) {
-            Log.Debug(this, ex.getMessage());
-        }
+        reset();
     }
 
     /**
@@ -68,21 +65,15 @@ public class WSIManager {
                 d.addJob(new newContactsJob(d));
                 d.start();
                 shopDeamons.put(webShop, d);
-                 Log.Debug(this, "WebShop client: " + d +" started.");
+                Log.Debug(this, "WebShop client: " + d + " started.");
             } catch (Exception ex) {
                 Log.Debug(ex);
-                Popup.error(ex);
             }
         }
         Log.Debug(this, "Done with initiating WebShop clients.");
     }
     private HashMap<WebShop, WSDaemon> shopDeamons = new HashMap<WebShop, WSDaemon>();
 
-    /**
-     * Stops the WSI Manager
-     */
-    public void stop() {
-    }
 
     /**
      * @return the shops
@@ -91,7 +82,7 @@ public class WSIManager {
         return shops;
     }
 
-        /**
+    /**
      * Creates objects from the given map
      * @param <T>
      * @param data
@@ -113,5 +104,21 @@ public class WSIManager {
             throw new IllegalArgumentException("Only List and HashMap are supported here! You provided: " + data.getClass());
         }
         return list;
+    }
+
+    /**
+     * Reset. Call start() afterwards.
+     */
+    public void reset() {
+        try {
+            shops.clear();
+            Set<WebShop> k = shopDeamons.keySet();
+            for (Iterator i = k.iterator(); i.hasNext();) {
+                shopDeamons.get(i.next()).kill();
+            }
+            shops.addAll(DatabaseObject.getObjects(new WebShop(), null));
+        } catch (NodataFoundException ex) {
+            Log.Debug(this, ex.getMessage());
+        }
     }
 }

@@ -28,11 +28,11 @@ import mpv5.logging.Log;
  */
 public class WSDaemon extends Thread {
 
-
     private WSConnectionClient client;
-    private long waitTime = 30000;
+    private long waitTime = 30;
     private List<WSDaemonJob> jobs = new Vector<WSDaemonJob>();
     private int wsid;
+    private boolean running;
 
     /**
      *
@@ -44,15 +44,15 @@ public class WSDaemon extends Thread {
         this(new URL(webShop.__getUrl()));
         setWaitTime(webShop.__getInterval());
         wsid = webShop.__getIDS();
+        running = true;
     }
-
 
     /**
      * Returns the unique id of the web shop used
      * @return
      */
     public int getWebShopID() {
-       return wsid;
+        return wsid;
     }
 
     /**
@@ -61,6 +61,13 @@ public class WSDaemon extends Thread {
      */
     public void addJob(WSDaemonJob job) {
         jobs.add(job);
+    }
+
+    /**
+     * Stop this deamon
+     */
+    public void kill() {
+        running = false;
     }
 
     /**
@@ -75,11 +82,11 @@ public class WSDaemon extends Thread {
 
     @Override
     public void run() {
-        while (true) {
+        while (running) {
             Log.Debug(this, "Polling WebShop: " + client);
             checkForWork();
             try {
-                Thread.sleep(getWaitTime());
+                Thread.sleep(getWaitTime() * 1000);
             } catch (InterruptedException ex) {
             }
         }
