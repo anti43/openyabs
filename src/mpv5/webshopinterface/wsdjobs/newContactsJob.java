@@ -16,6 +16,7 @@
  */
 package mpv5.webshopinterface.wsdjobs;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
@@ -61,7 +62,7 @@ public class newContactsJob implements WSDaemonJob {
     @Override
     public void work(WSConnectionClient client) {
         try {
-            Object d = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_NEW_CONTACTS.toString(), new Object[]{}, new Object());
+            Object d = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_NEW_CONTACTS.toString(), new Object[]{new Date(0l), new Date()}, new Object());
             List<Contact> obs = WSIManager.createObjects(d, new Contact());
             for (int i = 0; i < obs.size(); i++) {
                 Contact contact = obs.get(i);
@@ -77,7 +78,7 @@ public class newContactsJob implements WSDaemonJob {
                 m.save();
             }
 
-            Object da = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_NEW_ADRESSES.toString(), new Object[]{}, new Object());
+            Object da = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_NEW_ADRESSES.toString(), new Object[]{new Date(0l), new Date()}, new Object());
             List<Address> aobs = WSIManager.createObjects(da, new Address());
 
             for (int i = 0; i < aobs.size(); i++) {
