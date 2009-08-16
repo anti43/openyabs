@@ -16,21 +16,13 @@
  */
 package mpv5.compiler;
 /*
- * @(#)TestJavaCompiler.java
- *
- * Summary: Demonstrate generating Java source code on the fly, compiling it and executing it. Demonstrate generating Java source.
+ * Original code:
  *
  * Copyright: (c) 2009 Roedy Green, Canadian Mind Products, http://mindprod.com
  *
  * Licence: This software may be copied and used freely for any purpose but military.
  *          http://mindprod.com/contact/nonmil.html
- *
- * Requires: JDK 1.6+
- *
- * Created with: IntelliJ IDEA IDE.
- *
- * Version History:
- *  1.1 2008-02-19
+
  */
 import java.io.File;
 import javax.tools.JavaCompiler;
@@ -47,15 +39,8 @@ import mpv5.globals.LocalSettings;
 import mpv5.logging.Log;
 
 /**
- * Demonstrate generating Java source code on the fly, compiling it and executing it. Demonstrate generating Java source.
- * <p/>
- * code on the fly, compiling it with the JavaCompiler class and executing it. Note JavaCompiler is quite different from
- * JavaCompilerTool that was released with JDK 1.6 beta, now withdrawn. The source code is generated in RAM and never
- * written to disk.
- *
- * @author Roedy Green, Canadian Mind Products
- * @version 1.1 2008-02-19
- * @since 2009
+ * Writes class files on the fly to disk, and makes them available for the JVM.
+ * <li/>Added caching of class files
  */
 public final class RuntimeCompiler {
 
@@ -75,7 +60,7 @@ public final class RuntimeCompiler {
                 If we wrote our own we could control the location
                 of the generated  class files. */,
                 null /* standard DiagnosticListener */,
-                Arrays.asList(new String[]{"-d", LocalSettings.getProperty(LocalSettings.CACHE_DIR)}),
+                Arrays.asList(new String[]{"-d", LocalSettings.getProperty(LocalSettings.CACHE_DIR)}),// specify dir for class files
                 null /* no annotation classes */,
                 // we must convert JavaFileObject... to Iterable<? extends JavaFileObject>
                 Arrays.asList(source) /* source code */);

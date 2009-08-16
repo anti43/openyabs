@@ -419,7 +419,7 @@ public class Main extends SingleFrameApplication {
                 try {
                     LogConsole.setLogFile(((String) cl.getValue(logfile)).split("=")[1]);
                 } catch (Exception e) {
-                    Log.Debug(Main.class, "Fehler beim Schreiben der Logdatei: " + e.getMessage());
+                    Log.Debug(Main.class, "Error while writing to: " + e.getMessage());
                 }
             }
 
@@ -607,7 +607,7 @@ public class Main extends SingleFrameApplication {
                     String line = xc[i];
                     try {
                         if (line.length() > 0 && line.substring(line.lastIndexOf(instanceIdentifier) + instanceIdentifier.length(), line.lastIndexOf("]")).equals(String.valueOf(LocalSettings.getConnectionID()))) {
-                            Log.Debug(this, "Application already running.");
+                            Log.Debug(this, "Application already running. \nYou might want to delete " + lockfile);
                             return false;
                         }
                     } catch (Exception e) {

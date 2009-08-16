@@ -398,10 +398,8 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
         try {
             dataParent = (Contact) DatabaseObject.getObject(Context.getContact(), contactsids_);
         } catch (NodataFoundException ex) {
-            Log.Debug(this, ex);
-            removeAddress();
+            Log.Debug(this, ex.getMessage());
         }
-
 
         badress.setSelected(inttype_ == 0 || inttype_ == 2);
         dadress.setSelected(inttype_ == 1 || inttype_ == 2);

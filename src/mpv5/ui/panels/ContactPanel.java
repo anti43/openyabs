@@ -1058,8 +1058,8 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         p.setName(Messages.NEW_VALUE.toString());
         ((Address) p.getDataOwner()).setCompany(dataOwner.__getCompany());
         ((Address) p.getDataOwner()).setTaxnumber(dataOwner.__getTaxnumber());
-        p.setDataOwner(p.getDataOwner(),true);
         p.setDataParent(dataOwner);
+        p.setDataOwner(p.getDataOwner(),true);
         addresspanel.add(p);
         addresspanel.setSelectedComponent(p);
 }//GEN-LAST:event_button_order1ActionPerformed
