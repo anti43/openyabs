@@ -199,11 +199,13 @@ public class SubmitForm extends javax.swing.JPanel {
                 message += "\n\n" + steps.getText() + "\n\n" + trace.getText();
                 message = URLEncoder.encode(message, "UTF-8");
                 if (message.length() > 1800) {
-                    message = message.substring(0, 1800);
+                    message = message.substring(0, 1790);
+                    message+="\n [...]";
                 }
 
                 String url = "http://code.google.com/p/mp-rechnungs-und-kundenverwaltung/issues/entry?" +
-                        "labels=Type-Defect,Priority-Medium&template=User+defect+report&summary=Unexpected+error+in+YaBS" +
+                        "labels=Type-Defect,Priority-Medium,Milestone-Release_" + Constants.VERSION +
+                        "&template=User+defect+report&summary=Unexpected+error+in+YaBS" +
                         "+Version+" + Constants.VERSION + "&" +
                         "comment=" + message +
                         "";

@@ -21,6 +21,7 @@ import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.hn.CompanyInfo;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Accounts;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Advanced;
+import mpv5.ui.dialogs.subcomponents.ControlPanel_Fonts;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Userproperties;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Formats;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Groups;
@@ -250,7 +251,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton8);
 
-        jButton9.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton9.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/fonts.png"))); // NOI18N
         jButton9.setText(bundle.getString("MPControlPanel.jButton9.text")); // NOI18N
         jButton9.setToolTipText(bundle.getString("MPControlPanel.jButton9.toolTipText")); // NOI18N
@@ -427,6 +428,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton18.setToolTipText(bundle.getString("MPControlPanel.jButton18.toolTipText")); // NOI18N
         jButton18.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jButton18.setContentAreaFilled(false);
+        jButton18.setEnabled(false);
         jButton18.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton18.setMaximumSize(new java.awt.Dimension(90, 90));
         jButton18.setMinimumSize(new java.awt.Dimension(90, 80));
@@ -440,7 +442,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton18);
 
-        jButton19.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton19.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton19.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/usb.png"))); // NOI18N
         jButton19.setText(bundle.getString("MPControlPanel.jButton19.text")); // NOI18N
         jButton19.setToolTipText(bundle.getString("MPControlPanel.jButton19.toolTipText")); // NOI18N
@@ -513,7 +515,7 @@ public class MPControlPanel extends javax.swing.JPanel {
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
 
-        openDetails(new ControlPanel_Userproperties());
+        openDetails(new ControlPanel_Fonts());
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed

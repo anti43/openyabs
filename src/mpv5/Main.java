@@ -251,7 +251,7 @@ public class Main extends SingleFrameApplication {
 
         INSTANTIATED = true;
         try {
-            splash = new SplashScreen(new ImageIcon(Test.class.getResource(mpv5.globals.Constants.SPLASH_IMAGE)));
+            splash = new SplashScreen(new ImageIcon(Main.class.getResource(mpv5.globals.Constants.SPLASH_IMAGE)));
             splash.init(8);
             Log.Print(Messages.START_MESSAGE);
 

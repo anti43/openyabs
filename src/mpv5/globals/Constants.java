@@ -28,7 +28,7 @@ public interface Constants {
      * 
      * Full Version number
      */
-    public static final String VERSION = "1.00-SVN";
+    public static final String VERSION = "Yabs-1.0-alpha-1";
     /**
      * The minimal Database Version which is compatible with this release
      */
@@ -36,7 +36,7 @@ public interface Constants {
     /**
      * Will be dynamically changed by SVN.
      */
-    public static final String REVISION = "$Rev: 831 $";
+    public static final String REVISION = "$Rev: 983 $";
     /**
      *
      * The Release version
