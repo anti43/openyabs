@@ -32,7 +32,7 @@ public class WSDaemon extends Thread {
     private long waitTime = 300;
     private List<WSDaemonJob> jobs = new Vector<WSDaemonJob>();
     private int wsid;
-    private boolean running;
+    private boolean running = false;
 
     /**
      *
@@ -77,7 +77,6 @@ public class WSDaemon extends Thread {
      */
     public WSDaemon(URL url) throws NoCompatibleHostFoundException {
         client = new WSConnectionClient(url);
-        new Thread(this).start();
     }
 
     @Override
@@ -108,13 +107,9 @@ public class WSDaemon extends Thread {
 
     private void checkForWork() {
         for (int i = 0; i < jobs.size(); i++) {
-            try {
-                jobs.get(i).work(client);
-                if (jobs.get(i).isOneTimeJob() || jobs.get(i).isDone()) {
-                    jobs.remove(jobs.get(i));
-                }
-            } catch (Exception e) {
-                Log.Debug(e);
+            jobs.get(i).work(client);
+            if (jobs.get(i).isOneTimeJob() || jobs.get(i).isDone()) {
+                jobs.remove(jobs.get(i));
             }
         }
     }
@@ -124,7 +119,7 @@ public class WSDaemon extends Thread {
      * @param runOnce
      */
     public void start(boolean runOnce) {
-        running = false;
+        running = !runOnce;
         super.start();
     }
 }
