@@ -1,7 +1,6 @@
 <html>
 
 <body>
-<h1>XML-RPC PHP Demo</h1>
 
 <?php
 error_reporting(E_ALL);
@@ -9,14 +8,15 @@ ini_set('display_errors', '1');
 include 'xmlrpc.inc';
 
 // Make an object to represent our server.
-$server = new xmlrpc_client('/server.php',
+$client = new xmlrpc_client('/~anti/PhpProject1/server.php',
                             'localhost', 80);
+$client->setdebug(1);
 
 // Send a message to the server.
-$message = new xmlrpcmsg('sumAndDifference',
-                         array(new xmlrpcval(5, 'int'),
-                               new xmlrpcval(3, 'int')));
-$result = $server->send($message);
+$message = new xmlrpcmsg('getNewContacts',
+                         array(new xmlrpcval("20010716T18:16:18", 'dateTime.iso8601'),
+                               new xmlrpcval("20010716T18:16:18", 'dateTime.iso8601')));
+$result = $client->send($message);
 
 // Process the response.
 if (!$result) {
@@ -25,13 +25,9 @@ if (!$result) {
     print "<p>XML-RPC Fault #" . $result->faultCode() . ": " .
         $result->faultString();
 } else {
-    $struct = $result->value();
-    $sumval = $struct->structmem('sum');
-    $sum = $sumval->scalarval();
-    $differenceval = $struct->structmem('difference');
-    $difference = $differenceval->scalarval();
-    print "<p>Sum: " . htmlentities($sum) .
-        ", Difference: " . htmlentities($difference) . "</p>";
+
+   print "<p>XML-RPC Response : " .$result-> serialize()."</p>";
+
 }
 ?>
 

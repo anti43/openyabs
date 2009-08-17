@@ -2970,8 +2970,8 @@ xmlrpc_encode_entitites($this->errstr, $GLOBALS['xmlrpc_internalencoding'], $cha
 					foreach($val as $key2 => $val2)
 					{
 						$rs.='<member><name>'.xmlrpc_encode_entitites($key2, $GLOBALS['xmlrpc_internalencoding'], $charset_encoding)."</name>\n";
-						//$rs.=$this->serializeval($val2);
-						$rs.=$val2->serialize($charset_encoding);
+						$rs.=$this->serializeval($val2);
+//						$rs.=$val2->serialize($charset_encoding);
 						$rs.="</member>\n";
 					}
 					$rs.='</struct>';
@@ -2981,8 +2981,8 @@ xmlrpc_encode_entitites($this->errstr, $GLOBALS['xmlrpc_internalencoding'], $cha
 					$rs.="<array>\n<data>\n";
 					for($i=0; $i<count($val); $i++)
 					{
-						//$rs.=$this->serializeval($val[$i]);
-						$rs.=$val[$i]->serialize($charset_encoding);
+						$rs.=$this->serializeval($val[$i]);
+//						$rs.=$val[$i]->serialize($charset_encoding);
 					}
 					$rs.="</data>\n</array>";
 					break;
