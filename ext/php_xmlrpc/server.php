@@ -76,12 +76,13 @@ function getNewContacts($zeitraum) {
 }
 
 
-
 new xmlrpc_server(array('addNewContacts' =>
     array('function' => 'addNewContacts')
     ,
     'getNewContacts' =>
     array('function' => 'getNewContacts')
-    )
+    ,
+    'getYWSIVersion' =>
+    array('function'=> 'getYWSIVersion'))
 );
 ?>
