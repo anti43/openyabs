@@ -18,9 +18,12 @@ package mpv5.webshopinterface.wsdjobs;
 
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
+import mpv5.db.common.QueryCriteria;
 import mpv5.db.objects.Address;
 import mpv5.db.objects.Contact;
 import mpv5.db.objects.WSContactsMapping;
@@ -33,9 +36,9 @@ import mpv5.webshopinterface.WSIManager;
 import org.apache.xmlrpc.XmlRpcException;
 
 /**
- * This job tries to fetch new contacts + adresses of them
+ * This job tries to fetch updated contacts + adresses of them
  */
-public class newContactsJob implements WSDaemonJob {
+public class updatedContactsJob implements WSDaemonJob {
 
     private final WSDaemon daemon;
 
@@ -43,10 +46,9 @@ public class newContactsJob implements WSDaemonJob {
      *  Create a new job
      * @param ddaemon 
      */
-    public newContactsJob(WSDaemon ddaemon) {
+    public updatedContactsJob(WSDaemon ddaemon) {
         this.daemon = ddaemon;
     }
-
 
     @Override
     public boolean isOneTimeJob() {
@@ -66,15 +68,15 @@ public class newContactsJob implements WSDaemonJob {
             for (int i = 0; i < obs.size(); i++) {
                 Contact contact = obs.get(i);
                 int id = contact.__getIDS();
-                contact.setIDS(-1);
-                contact.save();
-                WSContactsMapping m = new WSContactsMapping();
-                m.setContactsids(contact.__getIDS());
-                m.setWscontact(String.valueOf(id));
-                m.setCName( String.valueOf(id) + "@" + daemon.getWebShopID());
-                m.setWebshopsids(daemon.getWebShopID());
-                m.setGroupsids(MPView.getUser().__getGroupsids());
-                m.save();
+                WSContactsMapping m;
+                try {
+                    m = WSContactsMapping.getMapping(daemon.getWebShopID(), id);
+                    contact.setIDS(m.__getContactsids());
+                    contact.save();
+                } catch (NodataFoundException ex) {
+                    Log.Debug(ex);
+                }
+           
             }
 
             Object da = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_NEW_ADRESSES.toString(), new Object[]{new Date(0l), new Date()}, new Object());
@@ -82,6 +84,15 @@ public class newContactsJob implements WSDaemonJob {
 
             for (Address address : aobs) {
                 try {
+                    QueryCriteria qs = new QueryCriteria();
+                    qs.add("cname", address.__getCName());
+                    qs.add("prename", address.__getPrename());
+                    qs.add("contactsids", address.__getContactsids());
+                    List<DatabaseObject> old = DatabaseObject.getObjects(Context.getAddress(), qs);
+                    for (int i = 0; i < old.size(); i++) {
+                         old.get(i).delete();
+                    }
+
                     WSContactsMapping m = WSContactsMapping.getMapping(daemon.getWebShopID(), address.__getContactsids());
                     address.setContactsids(m.__getContactsids());
                     address.save();

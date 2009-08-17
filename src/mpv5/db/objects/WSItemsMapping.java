@@ -17,8 +17,6 @@
 package mpv5.db.objects;
 
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -29,31 +27,31 @@ import mpv5.utils.images.MPIcon;
 /**
  * Maps Contacts to WebShop Contacts
  */
-public class WSContactsMapping extends DatabaseObject {
+public class WSItemsMapping extends DatabaseObject {
 
-    /**
+     /**
      * Fetches a mapping from db
      * @param webShopID
-     * @param contactsids
+      * @param itemsids
      * @return
-     * @throws NodataFoundException 
+     * @throws NodataFoundException
      */
-    public static WSContactsMapping getMapping(int webShopID, int contactsids) throws NodataFoundException {
+    public static WSItemsMapping getMapping(int webShopID, int itemsids) throws NodataFoundException {
             QueryCriteria qs = new QueryCriteria();
             qs.add("webshopid", webShopID);
-            qs.add("contactsids", contactsids);
+            qs.add("itemsids", itemsids);
             List old = DatabaseObject.getObjects(Context.getAddress(), qs);
-            return (WSContactsMapping) old.get(0);
+            return (WSItemsMapping) old.get(0);
     }
 
     private int webshopsids;
-    private int contactsids;
-    private String wscontact = "";
+    private int itemsids;
+    private String wsitem = "";
 
     /**
      * Create a new mapping
      */
-    public WSContactsMapping() {
+    public WSItemsMapping() {
         context.setIdentityClass(this.getClass());
         context.setDbIdentity(Context.IDENTITY_WSMAPPING);
     }
@@ -83,30 +81,32 @@ public class WSContactsMapping extends DatabaseObject {
     }
 
     /**
-     * @return the contactsids
+     * @return the itemsids
      */
-    public int __getContactsids() {
-        return contactsids;
+    public int __getItemsids() {
+        return itemsids;
     }
 
     /**
-     * @param contactsids the contactsids to set
+     * @param itemsids the itemsids to set
      */
-    public void setContactsids(int contactsids) {
-        this.contactsids = contactsids;
+    public void setItemsids(int itemsids) {
+        this.itemsids = itemsids;
     }
 
     /**
-     * @return the wscontact
+     * @return the wsitem
      */
-    public String __getWscontact() {
-        return wscontact;
+    public String __getWsitem() {
+        return wsitem;
     }
 
     /**
-     * @param wscontact the wscontact to set
+     * @param wsitem the wsitem to set
      */
-    public void setWscontact(String wscontact) {
-        this.wscontact = wscontact;
+    public void setWsitem(String wsitem) {
+        this.wsitem = wsitem;
     }
+
+
 }

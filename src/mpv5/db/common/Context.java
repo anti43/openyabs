@@ -30,6 +30,7 @@ import mpv5.db.objects.SubItem;
 import mpv5.pluginhandling.Plugin;
 import mpv5.db.objects.User;
 import mpv5.db.objects.WSContactsMapping;
+import mpv5.db.objects.WSItemsMapping;
 import mpv5.db.objects.WebShop;
 import mpv5.pluginhandling.UserPlugin;
 import mpv5.ui.frames.MPView;
@@ -75,6 +76,7 @@ public class Context {
     public static String IDENTITY_GLOBALSETTINGS = "globalsettings";
     public static String IDENTITY_WEBSHOPS = "webshops";
     public static String IDENTITY_WSMAPPING = "wscontactsmapping";
+    public static String IDENTITY_WSIMAPPING = "wsitemsmapping";
     //********** identity classes **********************************************
     private static Class IDENTITY_CONTACTS_CLASS = Contact.class;
     private static Class IDENTITY_ADDRESS_CLASS = Address.class;
@@ -374,7 +376,9 @@ public class Context {
                 getTaxes(),
                 getGlobalSettings(),
                 getCompanies(),
-                getWebShops()
+                getWebShops(),
+                getWebShopItemMapping(),
+                getWebShopContactMapping()
             }));
     private String[] searchHeaders;
     private ArrayList<String[]> references = new ArrayList<String[]>();
@@ -1420,6 +1424,17 @@ public class Context {
 
         return c;
     }
+
+       public static Context getWebShopItemMapping() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_WSIMAPPING);
+        c.setIdentityClass(WSItemsMapping.class);
+        c.setId(42);
+
+        return c;
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////////////////////////
     /**

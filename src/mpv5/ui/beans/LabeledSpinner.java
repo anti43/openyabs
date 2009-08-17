@@ -129,5 +129,13 @@ public class LabeledSpinner extends javax.swing.JPanel {
         jSpinner1.setEnabled(enabled);
     }
 
+    /**
+     *
+     * @param i
+     */
+    public void setValue(int i) {
+        set_Value(i);
+    }
+
 
 }

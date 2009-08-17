@@ -27,7 +27,13 @@ import mpv5.utils.text.RandomStringUtils;
 import mpv5.utils.text.RandomText;
 import mpv5.webshopinterface.NoCompatibleHostFoundException;
 import mpv5.webshopinterface.WSConnectionClient;
+import mpv5.webshopinterface.WSDaemon;
 import mpv5.webshopinterface.WSIManager;
+import mpv5.webshopinterface.wsdjobs.newContactsJob;
+import mpv5.webshopinterface.wsdjobs.newOrdersJob;
+import mpv5.webshopinterface.wsdjobs.newSystemMessages;
+import mpv5.webshopinterface.wsdjobs.updatedContactsJob;
+import mpv5.webshopinterface.wsdjobs.updatedOrdersJob;
 
 /**
  *
@@ -228,7 +234,7 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
                 .addContainerGap()
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 51, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -296,6 +302,13 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         try {
             mpv5.ui.dialogs.Popup.notice(new WSConnectionClient(new URL(urls.getText())).test());
+            WSDaemon d = new WSDaemon(new URL(urls.getText()));
+                d.addJob(new newContactsJob(d));
+                d.addJob(new newOrdersJob(d));
+                d.addJob(new newSystemMessages(d));
+                d.addJob(new updatedContactsJob(d));
+                d.addJob(new updatedOrdersJob(d));
+                d.start(true);
         } catch (Exception x) {
             Log.Debug(x);
             mpv5.ui.dialogs.Popup.error(x);
@@ -354,7 +367,7 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
 
     private void refresh() {
 
-        intervals.set_Value(30);
+        intervals.setValue(300);
 
         try {
             ArrayList<DatabaseObject> data = DatabaseObject.getObjects(Context.getWebShops());

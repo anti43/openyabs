@@ -32,6 +32,10 @@ import mpv5.db.objects.WebShop;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
 import mpv5.webshopinterface.wsdjobs.newContactsJob;
+import mpv5.webshopinterface.wsdjobs.newOrdersJob;
+import mpv5.webshopinterface.wsdjobs.newSystemMessages;
+import mpv5.webshopinterface.wsdjobs.updatedContactsJob;
+import mpv5.webshopinterface.wsdjobs.updatedOrdersJob;
 
 /**
  * Manages the web shops and related tasks
@@ -63,6 +67,10 @@ public class WSIManager {
             try {
                 WSDaemon d = new WSDaemon(webShop);
                 d.addJob(new newContactsJob(d));
+                d.addJob(new newOrdersJob(d));
+                d.addJob(new newSystemMessages(d));
+                d.addJob(new updatedContactsJob(d));
+                d.addJob(new updatedOrdersJob(d));
                 d.start();
                 shopDeamons.put(webShop, d);
                 Log.Debug(this, "WebShop client: " + d + " started.");
@@ -114,7 +122,7 @@ public class WSIManager {
             shops.clear();
             Set<WebShop> k = shopDeamons.keySet();
             for (Iterator i = k.iterator(); i.hasNext();) {
-                shopDeamons.get(i.next()).kill();
+               shopDeamons.get((WebShop)i.next()).kill();
             }
             shops.addAll(DatabaseObject.getObjects(new WebShop(), null));
         } catch (NodataFoundException ex) {

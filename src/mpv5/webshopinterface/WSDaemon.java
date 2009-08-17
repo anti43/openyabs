@@ -29,7 +29,7 @@ import mpv5.logging.Log;
 public class WSDaemon extends Thread {
 
     private WSConnectionClient client;
-    private long waitTime = 30;
+    private long waitTime = 300;
     private List<WSDaemonJob> jobs = new Vector<WSDaemonJob>();
     private int wsid;
     private boolean running;
@@ -82,14 +82,14 @@ public class WSDaemon extends Thread {
 
     @Override
     public void run() {
-        while (running) {
+        do {
             Log.Debug(this, "Polling WebShop: " + client);
             checkForWork();
             try {
                 Thread.sleep(getWaitTime() * 1000);
             } catch (InterruptedException ex) {
             }
-        }
+        } while (running);
     }
 
     /**
@@ -117,5 +117,14 @@ public class WSDaemon extends Thread {
                 Log.Debug(e);
             }
         }
+    }
+
+    /**
+     * Run the the {@link WSDaemon#run()} method only once
+     * @param runOnce
+     */
+    public void start(boolean runOnce) {
+        running = false;
+        super.start();
     }
 }

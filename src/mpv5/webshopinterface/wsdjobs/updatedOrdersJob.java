@@ -21,11 +21,11 @@ import java.util.List;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
-import mpv5.db.objects.Address;
-import mpv5.db.objects.Contact;
-import mpv5.db.objects.WSContactsMapping;
+import mpv5.db.common.QueryCriteria;
+import mpv5.db.objects.Item;
+import mpv5.db.objects.SubItem;
+import mpv5.db.objects.WSItemsMapping;
 import mpv5.logging.Log;
-import mpv5.ui.frames.MPView;
 import mpv5.webshopinterface.WSConnectionClient;
 import mpv5.webshopinterface.WSDaemon;
 import mpv5.webshopinterface.WSDaemonJob;
@@ -33,9 +33,9 @@ import mpv5.webshopinterface.WSIManager;
 import org.apache.xmlrpc.XmlRpcException;
 
 /**
- * This job tries to fetch new contacts + adresses of them
+ * This job tries to fetch updated contacts + adresses of them
  */
-public class newContactsJob implements WSDaemonJob {
+public class updatedOrdersJob implements WSDaemonJob {
 
     private final WSDaemon daemon;
 
@@ -43,10 +43,9 @@ public class newContactsJob implements WSDaemonJob {
      *  Create a new job
      * @param ddaemon 
      */
-    public newContactsJob(WSDaemon ddaemon) {
+    public updatedOrdersJob(WSDaemon ddaemon) {
         this.daemon = ddaemon;
     }
-
 
     @Override
     public boolean isOneTimeJob() {
@@ -62,29 +61,36 @@ public class newContactsJob implements WSDaemonJob {
     public void work(WSConnectionClient client) {
         try {
             Object d = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_NEW_CONTACTS.toString(), new Object[]{new Date(0l), new Date()}, new Object());
-            List<Contact> obs = WSIManager.createObjects(d, new Contact());
+            List<Item> obs = WSIManager.createObjects(d, new Item());
             for (int i = 0; i < obs.size(); i++) {
-                Contact contact = obs.get(i);
+                Item contact = obs.get(i);
                 int id = contact.__getIDS();
-                contact.setIDS(-1);
-                contact.save();
-                WSContactsMapping m = new WSContactsMapping();
-                m.setContactsids(contact.__getIDS());
-                m.setWscontact(String.valueOf(id));
-                m.setCName( String.valueOf(id) + "@" + daemon.getWebShopID());
-                m.setWebshopsids(daemon.getWebShopID());
-                m.setGroupsids(MPView.getUser().__getGroupsids());
-                m.save();
+                WSItemsMapping m;
+                try {
+                    m = WSItemsMapping.getMapping(daemon.getWebShopID(), id);
+                    contact.setIDS(m.__getItemsids());
+                    contact.save();
+                } catch (NodataFoundException ex) {
+                    Log.Debug(ex);
+                }
+           
             }
 
             Object da = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_NEW_ADRESSES.toString(), new Object[]{new Date(0l), new Date()}, new Object());
-            List<Address> aobs = WSIManager.createObjects(da, new Address());
+            List<SubItem> aobs = WSIManager.createObjects(da, new SubItem());
 
-            for (Address address : aobs) {
+            for (SubItem orderRow : aobs) {
                 try {
-                    WSContactsMapping m = WSContactsMapping.getMapping(daemon.getWebShopID(), address.__getContactsids());
-                    address.setContactsids(m.__getContactsids());
-                    address.save();
+                    QueryCriteria qs = new QueryCriteria();
+                    qs.add("itemsids", orderRow.__getItemsids());
+                    List<DatabaseObject> old = DatabaseObject.getObjects(Context.getAddress(), qs);
+                    for (int i = 0; i < old.size(); i++) {
+                         old.get(i).delete();
+                    }
+
+                    WSItemsMapping m = WSItemsMapping.getMapping(daemon.getWebShopID(), orderRow.__getItemsids());
+                    orderRow.setItemsids(m.__getItemsids());
+                    orderRow.save();
                 } catch (NodataFoundException ex) {
                     Log.Debug(ex);
                 }
