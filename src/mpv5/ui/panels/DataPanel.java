@@ -4,12 +4,11 @@
  */
 package mpv5.ui.panels;
 
-import java.util.Date;
 import mpv5.db.common.DatabaseObject;
 
 
 /**
- *
+ *Represents a view for {@link DatabaseObject}s
  *  
  */
 public interface DataPanel {

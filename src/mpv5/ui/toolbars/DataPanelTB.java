@@ -58,8 +58,8 @@ public class DataPanelTB extends javax.swing.JPanel {
     public DataPanelTB(DataPanel panel) {
         initComponents();
         parents = panel;
-        parents.showSearchBar(!MPView.getUser().getProperties().getProperty(this, "jToggleButton1", true));
-        jToggleButton1.setSelected(MPView.getUser().getProperties().getProperty(this, "jToggleButton1", true));
+        parents.showSearchBar(!MPView.getUser().getProperties().getProperty(this, "jToggleButton1"));
+        jToggleButton1.setSelected(MPView.getUser().getProperties().getProperty(this, "jToggleButton1"));
         jButton21.setEnabled(!DatabaseObject.isAutoLockEnabled());
     }
 

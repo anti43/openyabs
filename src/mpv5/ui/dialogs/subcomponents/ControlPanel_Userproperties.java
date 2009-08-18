@@ -51,6 +51,8 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         defunit = new mpv5.ui.beans.LabeledTextField();
         deftax = new mpv5.ui.beans.LabeledCombobox();
         order = new mpv5.ui.beans.LabeledTextField();
+        jPanel3 = new javax.swing.JPanel();
+        tabs = new javax.swing.JCheckBox();
         jPanel6 = new javax.swing.JPanel();
         jButton2 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
@@ -60,7 +62,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         setLayout(new java.awt.BorderLayout());
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Userproperties.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 
@@ -191,20 +193,47 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
                 .addComponent(defs, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Userproperties.jPanel3.border.title"))); // NOI18N
+        jPanel3.setName("jPanel3"); // NOI18N
+
+        tabs.setText(bundle.getString("ControlPanel_Userproperties.tabs.text")); // NOI18N
+        tabs.setName("tabs"); // NOI18N
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(tabs)
+                .addContainerGap(389, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(tabs)
+                .addContainerGap(69, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(101, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         add(jPanel1, java.awt.BorderLayout.CENTER);
@@ -287,10 +316,12 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
     private javax.swing.JButton jButton3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel6;
     private mpv5.ui.beans.LabeledTextField order;
     private javax.swing.JPanel productstobillsproperties;
     private javax.swing.JCheckBox reference;
+    private javax.swing.JCheckBox tabs;
     // End of variables declaration//GEN-END:variables
 
     private void setSettings() {
@@ -299,6 +330,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
             MPView.getUser().getProperties().changeProperty(Context.getProducts() + LightMPComboBox.VALUE_SEARCHFIELDS, order.getText());
             MPView.getUser().getProperties().changeProperty(defcount.getName(), defcount.getText());
             MPView.getUser().getProperties().changeProperty(defunit.getName(), defunit.getText());
+            MPView.getUser().getProperties().changeProperty(MPView.tabPane, "recycletabs", tabs.isSelected());
             if (deftax.getSelectedItem() != null) {
                 MPView.getUser().getProperties().changeProperty(deftax.getName(), deftax.getSelectedItem().getId());
             }
@@ -316,14 +348,18 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
     }
 
     private void loadSettings() {
-//        Component[] t = productstobillsproperties.getComponents();
-//        for (int i = 0; i < t.length; i++) {
-//            Component component = t[i];
-//            if (MPView.getUser().getProperties().hasProperty(Context.getBill() + LightMPComboBox.VALUE_SEARCHFIELDS)) {
-//                if(component instanceof JCheckBox) {
-//                    ((JCheckBox) component).setSelected(MPView.getUser().getProperties().getProperty(Context.getBill() + LightMPComboBox.VALUE_SEARCHFIELDS).contains(component.getName()));
-//                }
-//            }
-//        }
+        tabs.setSelected(MPView.getUser().getProperties().getProperty(MPView.tabPane, "recycletabs"));
+        Component[] t = productstobillsproperties.getComponents();
+        for (int i = 0; i < t.length; i++) {
+            Component component = t[i];
+            if (MPView.getUser().getProperties().hasProperty(Context.getProducts() + LightMPComboBox.VALUE_SEARCHFIELDS)) {
+                if(component instanceof JCheckBox) {
+                    try {
+                        ((JCheckBox) component).setSelected(MPView.getUser().getProperties().getProperty(Context.getProducts() + LightMPComboBox.VALUE_SEARCHFIELDS).contains(component.getName()));
+                    } catch (Exception e) {
+                    }
+}
+            }
+        }
     }
 }

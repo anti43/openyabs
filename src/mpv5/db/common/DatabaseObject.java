@@ -189,6 +189,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                 mpv5.logging.Log.Debug(ex);//Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        Saved(false);
     }
 
     /**
@@ -271,7 +272,6 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
      */
     public boolean isExisting() {
         if (ids <= 0) {
-            Log.Debug(this, Messages.NOT_POSSIBLE + "\n" + Messages.NOT_SAVED_YET);
             return false;
         } else {
             return true;
@@ -572,6 +572,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
      * @param source The DataPanel to parse.
      */
     public void getPanelData(DataPanel source) {
+        Saved(false);
         source.collectData();
         ArrayList<Method> vars = setVars();
         for (int i = 0; i < vars.size(); i++) {

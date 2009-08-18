@@ -111,9 +111,9 @@ public class PropertyStore {
 
     /**
      * Convenience method to retrieve visual component properties stored as
-     * <br/>comp.getClass().getName() + "$" + evt.getSource()
+     * <br/>comp.getClass().getName() + "$" + source
      * @param comp
-     * @param evt
+     * @param source
      * @param b
      * @return
      */
@@ -142,9 +142,9 @@ public class PropertyStore {
 
     /**
      * Convenience method to retrieve visual component properties stored as
-     * <br/>comp.getClass().getName() + "$" + evt.getSource()
+     * <br/>comp.getClass().getName() + "$" + source
      * @param comp
-     * @param evt
+     * @param source
      * @param b
      * @return
      */
@@ -168,15 +168,14 @@ public class PropertyStore {
     }
 
     /**
-     * Convenience method to retrieve visual component properties stored as
-     * <br/>comp.getClass().getName() + "$" + evt.getSource()
+     * Convenience method to retrieve (boolean) visual component properties stored as
+     * <br/>comp.getClass().getName() + "$" + source
      * @param comp
      * @param source
-     * @param b
      * @return
      */
-    public synchronized boolean getProperty(JComponent comp, String source, boolean b) {
-        return getProperty(comp.getClass().getName() + "$" + source, b);
+    public synchronized boolean getProperty(JComponent comp, String source) {
+        return getProperty(comp.getClass().getName() + "$" + source, true);
     }
 
     /**
@@ -205,7 +204,7 @@ public class PropertyStore {
 
     /**
      * Changes the given property, if exists and
-     * creates a new, if not. Stored as comp.getClass().getName() + "$" + evt.getSource()
+     * creates a new, if not. Stored as comp.getClass().getName() + "$" + source
      * @param comp
      * @param source
      * @param newvalue

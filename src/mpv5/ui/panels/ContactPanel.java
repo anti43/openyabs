@@ -74,22 +74,6 @@ import mpv5.utils.ui.TextFieldUtils;
  */
 public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
-    /**
-     * Represents a Contact in general
-     */
-    public static final int CONTACT = 0;
-    /**
-     * Is a customer
-     */
-    public static final int CUSTOMER = 1;
-    /**
-     * Is a supplier
-     */
-    public static final int SUPPLIER = 2;
-    /**
-     * Is a manufacturer
-     */
-    public static final int MANUFACTURER = 3;
     private static final long serialVersionUID = 1L;
     public static final int COMPANY = 4;
     private Contact dataOwner;
@@ -128,7 +112,9 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             dataOwner.setPanelData(this);
             this.exposeData();
 
-            setTitle();
+            if (object.isExisting() && populate) {
+                setTitle(object.__getCName());
+            }
 
             prinitingComboBox1.init(dataOwner);
 
@@ -151,27 +137,6 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         }
     }
 
-    public void setType(int type) {
-        switch (type) {
-            case CONTACT:
-                break;
-            case CUSTOMER:
-                isCustomer(true);
-                break;
-            case SUPPLIER:
-                isSupplier(true);
-                break;
-            case MANUFACTURER:
-                isManufacturer(true);
-                break;
-            case COMPANY:
-                isCompany(true);
-                break;
-            default:
-                ;
-        }
-    }
-
     @Override
     public void showRequiredFields() {
         TextFieldUtils.blinkerRed(cname);
@@ -191,7 +156,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                 DatabaseObject databaseObject = data.get(i);
                 AddressPanel p = new AddressPanel();
                 p.setName(databaseObject.__getCName());
-                p.setDataOwner(databaseObject,true);
+                p.setDataOwner(databaseObject, true);
                 addresspanel.add(p);
             }
         } catch (NodataFoundException ex) {
@@ -1059,7 +1024,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         ((Address) p.getDataOwner()).setCompany(dataOwner.__getCompany());
         ((Address) p.getDataOwner()).setTaxnumber(dataOwner.__getTaxnumber());
         p.setDataParent(dataOwner);
-        p.setDataOwner(p.getDataOwner(),true);
+        p.setDataOwner(p.getDataOwner(), true);
         addresspanel.add(p);
         addresspanel.setSelectedComponent(p);
 }//GEN-LAST:event_button_order1ActionPerformed
@@ -1331,7 +1296,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                     companyselect.setModel();
                 }
             } catch (NodataFoundException nodataFoundException) {
-                 companyselect.setModel();
+                companyselect.setModel();
             }
             groupnameselect.setModel(DatabaseObject.getObject(Context.getGroup(), groupsids_));
             countryselect.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(country_, countryselect.getModel()));
@@ -1430,7 +1395,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     @Override
     public void paste(DatabaseObject dbo) {
         if (dbo.getDbIdentity().equals(Context.getContact().getDbIdentity())) {
-            setDataOwner(dbo,true);
+            setDataOwner(dbo, true);
         } else {
             MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());
         }
@@ -1447,10 +1412,10 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         validate();
     }
 
-    private void setTitle() {
+    private void setTitle(String title) {
         if (this.getParent() instanceof JViewport || this.getParent() instanceof JTabbedPane) {
             JTabbedPane jTabbedPane = null;
-            String title1 = Messages.CONTACT + cname_;
+            String title1 = title;
             //this->viewport->scrollpane->tabbedpane
             if (this.getParent().getParent().getParent() instanceof JTabbedPane) {
                 jTabbedPane = (JTabbedPane) this.getParent().getParent().getParent();
@@ -1470,10 +1435,9 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
     @Override
     public void actionAfterSave() {
-    
     }
+
     @Override
     public void actionAfterCreate() {
     }
-
 }

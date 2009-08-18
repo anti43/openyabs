@@ -191,9 +191,9 @@ public class MPView extends FrameView {
      * Let the view notify the user about an unexpected error
      */
     public static void showError() {
-         if (Main.INSTANTIATED) {
-             staterrorlabel.setIcon(new javax.swing.ImageIcon(MPView.class.getResource("/mpv5/resources/images/16/remove.png"))); // NOI18N
-             identifierFrame.validate();
+        if (Main.INSTANTIATED) {
+            staterrorlabel.setIcon(new javax.swing.ImageIcon(MPView.class.getResource("/mpv5/resources/images/16/remove.png"))); // NOI18N
+            identifierFrame.validate();
         }
     }
 
@@ -301,6 +301,29 @@ public class MPView extends FrameView {
         }
     }
 
+    /**
+     * Returns the tab at the specified position, or NULL if the tab is not existing OR not a {@link DataPanel}
+     * @param position
+     * @return
+     */
+    public DataPanel getTabAt(int position) {
+        if (tabPane.getComponent(position) instanceof DataPanel) {
+            return (DataPanel) tabPane.getComponent(position);
+        } else if (tabPane.getComponent(position) instanceof JScrollPane) {
+            try {
+                return (DataPanel) ((JScrollPane) tabPane.getComponent(position)).getComponent(0);
+            } catch (ClassCastException e) {
+                try {
+                    return (DataPanel) ((JViewport) ((JScrollPane) tabPane.getComponent(position)).getComponent(0)).getComponent(0);
+                } catch (Exception et) {
+                    return null;
+                }
+            }
+        } else {
+            return null;
+        }
+    }
+
     private static void fillFavouritesmenu() {
         Favourite[] favs = Favourite.getUserFavourites();
         for (int i = 0; i < favs.length; i++) {
@@ -388,12 +411,61 @@ public class MPView extends FrameView {
     /**
      * Add a tab to the main tab pane, automatically determines the needed View
      * @param item
+     * @param tabTitle
+     */
+    public void addTab(DatabaseObject item, Object tabTitle) {
+        boolean found = false;
+        if (item.getView() != null && !MPView.getUser().getProperties().getProperty(MPView.tabPane, "recycletabs")) {
+            if (tabTitle == null) {
+                addTab(item.getView(), item.__getCName());
+            } else {
+                addTab(item.getView(), tabTitle + ": " + item.__getCName());
+            }
+            getCurrentTab().setDataOwner(item, true);
+        } else if (item.getView() != null) {
+            int count = tabPane.getTabCount();
+            for (int i = 0; i < count; i++) {
+                if (getTabAt(i) != null) {
+                    DataPanel panel = getTabAt(i);
+                    if (!panel.getDataOwner().isExisting() && panel.getDataOwner().getContext().equals(item.getContext())) {
+                        tabPane.setSelectedIndex(i);
+                        panel.setDataOwner(item, true);
+                        if (tabTitle == null) {
+                            tabPane.setTitleAt(i, item.__getCName());
+                        } else {
+                            tabPane.setTitleAt(i, tabTitle + ": " + item.__getCName());
+                        }
+                        found = true;
+                        break;
+                    }
+                }
+            }
+            if (!found) {
+                try {
+                    DataPanel p = (DataPanel) item.getView();
+                    p.setDataOwner(item, true);
+                    if (tabTitle == null) {
+                        addTab((JComponent) p, item.__getCName());
+                    } else {
+                        addTab((JComponent) p, tabTitle + ": " + item.__getCName());
+                    }
+                } catch (ClassCastException e) {
+                    if (tabTitle == null) {
+                        addTab(item.getView(), item.__getCName());
+                    } else {
+                        addTab(item.getView(), tabTitle + ": " + item.__getCName());
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Add a tab to the main tab pane, automatically determines the needed View
+     * @param item
      */
     public void addTab(DatabaseObject item) {
-        if (item.getView() != null) {
-            addTab(item.getView(), item.__getCName());
-            getCurrentTab().setDataOwner(item, true);
-        }
+        addTab(item, null);
     }
 
     /**
@@ -430,11 +502,13 @@ public class MPView extends FrameView {
      * Add a tab to the main tab pane, with new JScrollPane
      * @param tab
      * @param name
+     * @return The now selected index
      */
-    public void addTab(JComponent tab, String name) {
+    public int addTab(JComponent tab, String name) {
         JScrollPane spane = new JScrollPane(tab);
         tabPane.addTab(name, spane);
         tabPane.setSelectedComponent(spane);
+        return tabPane.getSelectedIndex();
     }
 
     private void addTab(JComponent tab, Messages name) {
@@ -1401,31 +1475,23 @@ public class MPView extends FrameView {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        ContactPanel tab = new ContactPanel(Context.getCustomer());
-        tab.setType(ContactPanel.CUSTOMER);
-        addTab(tab, Messages.NEW_CUSTOMER.toString());
-
+        addTab(DatabaseObject.getObject(Context.getCustomer()), Messages.NEW_CUSTOMER);
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        ContactPanel tab = new ContactPanel(Context.getSupplier());
-        tab.setType(ContactPanel.SUPPLIER);
-        addTab(tab, Messages.NEW_SUPPLIER.toString());
-
+        addTab(DatabaseObject.getObject(Context.getSupplier()), Messages.NEW_SUPPLIER);
 }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
-        ContactsList tab = new ContactsList(Context.getContact());
-        addTab(tab, Messages.CONTACTS_LIST.toString());
-
+        if (clisttab == null) {
+            clisttab = new ContactsList(Context.getContact());
+        }
+        addOrShowTab(clisttab, Messages.CONTACTS_LIST.toString());
 }//GEN-LAST:event_jButton2ActionPerformed
-
+    static ContactsList clisttab;
     private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
-        ContactPanel tab = new ContactPanel(Context.getManufacturer());
-        tab.setType(ContactPanel.MANUFACTURER);
-        addTab(tab, Messages.NEW_MANUFACTURER.toString());
-
+        addTab(DatabaseObject.getObject(Context.getManufacturer()), Messages.NEW_MANUFACTURER);
     }//GEN-LAST:event_jButton18ActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
@@ -1667,11 +1733,11 @@ public class MPView extends FrameView {
     }//GEN-LAST:event_jMenuItem22ActionPerformed
 
     private void jMenuItem23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem23ActionPerformed
-        addTab(TrashPanel.instanceOf(), Messages.TRASHBIN);
+        addOrShowTab(TrashPanel.instanceOf(), Messages.TRASHBIN.getValue());
     }//GEN-LAST:event_jMenuItem23ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-        addTab(TrashPanel.instanceOf(), Messages.TRASHBIN);
+        addOrShowTab(TrashPanel.instanceOf(), Messages.TRASHBIN.toString());
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
@@ -1691,7 +1757,7 @@ public class MPView extends FrameView {
     }//GEN-LAST:event_jMenuItem25ActionPerformed
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
-        addTab(new mpv5.ui.panels.hn.ProfitPanel(), Messages.COST);
+        addOrShowTab(new mpv5.ui.panels.hn.ProfitPanel(), Messages.COST.toString());
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void jMenuItem26ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem26ActionPerformed
