@@ -29,21 +29,20 @@ import mpv5.utils.images.MPIcon;
  */
 public class WSItemsMapping extends DatabaseObject {
 
-     /**
+    /**
      * Fetches a mapping from db
      * @param webShopID
-      * @param itemsids
+     * @param itemsids
      * @return
      * @throws NodataFoundException
      */
     public static WSItemsMapping getMapping(int webShopID, int itemsids) throws NodataFoundException {
-            QueryCriteria qs = new QueryCriteria();
-            qs.add("webshopid", webShopID);
-            qs.add("itemsids", itemsids);
-            List old = DatabaseObject.getObjects(Context.getAddress(), qs);
-            return (WSItemsMapping) old.get(0);
+        QueryCriteria qs = new QueryCriteria();
+        qs.add("webshopid", webShopID);
+        qs.add("itemsids", itemsids);
+        List old = DatabaseObject.getObjects(Context.getWebShopItemMapping(), qs);
+        return (WSItemsMapping) old.get(0);
     }
-
     private int webshopsids;
     private int itemsids;
     private String wsitem = "";
@@ -108,5 +107,8 @@ public class WSItemsMapping extends DatabaseObject {
         this.wsitem = wsitem;
     }
 
-
+    @Override
+    public boolean save() {
+        return super.save(true);
+    }
 }

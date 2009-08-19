@@ -16,17 +16,14 @@
  */
 package mpv5.webshopinterface.wsdjobs;
 
-import java.util.Date;
 import java.util.List;
-import mpv5.db.common.Context;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mpv5.db.common.DatabaseObject;
-import mpv5.db.common.NodataFoundException;
-import mpv5.db.objects.Item;
-import mpv5.db.objects.ItemMessage;
-import mpv5.db.objects.SubItem;
-import mpv5.db.objects.WSItemsMapping;
+import mpv5.db.objects.Contact;
+import mpv5.db.objects.WSContactsMapping;
+import mpv5.db.objects.WebShop;
 import mpv5.logging.Log;
-import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPView;
 import mpv5.webshopinterface.WSConnectionClient;
 import mpv5.webshopinterface.WSDaemon;
@@ -35,41 +32,44 @@ import mpv5.webshopinterface.WSIManager;
 import org.apache.xmlrpc.XmlRpcException;
 
 /**
- * This job tries to fetch new msgs
+ * Pushes contacts to a webshop
  */
-public class newSystemMessages implements WSDaemonJob {
+public class addContactJob implements WSDaemonJob {
 
+    private boolean done;
     private final WSDaemon daemon;
 
     /**
      *  Create a new job
-     * @param ddaemon 
+     * @param ddaemon
      */
-    public newSystemMessages(WSDaemon ddaemon) {
+    public addContactJob(WSDaemon ddaemon) {
         this.daemon = ddaemon;
     }
 
-    @Override
     public boolean isOneTimeJob() {
-        return false;
+        return true;
     }
 
-    @Override
     public boolean isDone() {
-        return false;
+        return done;
     }
 
-    @Override
     public void work(WSConnectionClient client) {
+        List<Contact> data = WSContactsMapping.getUnmappedContacts(daemon.getWebShop());
         try {
-            Object d = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_NEW_SYSTEM_MESSAGES.toString(), new Object[]{new Date(0l), new Date()}, new Object());
-            List<ItemMessage> obs = WSIManager.createObjects(d, new ItemMessage());
-
-            for (ItemMessage itemMessage : obs) {
-                Popup.notice(itemMessage);
+            for (Contact c : data) {
+                Object id = client.getClient().invokeSetCommand(WSConnectionClient.COMMANDS.ADD_NEW_CONTACT.toString(), c.getValues2().toArray(new Object[0][]));
+                WSContactsMapping ws = new WSContactsMapping();
+                ws.setContactsids(c.__getIDS());
+                ws.setCName( String.valueOf(id) + "@" + daemon.getWebShopID());
+                ws.setWebshopsids(daemon.getWebShopID());
+                ws.setWscontact(String.valueOf(id));
+                ws.setGroupsids(MPView.getUser().__getGroupsids());
+                ws.save();
             }
         } catch (XmlRpcException ex) {
-           Log.Debug(this, ex.getMessage());
+            Log.Debug(this, ex.getMessage());
         }
     }
 }

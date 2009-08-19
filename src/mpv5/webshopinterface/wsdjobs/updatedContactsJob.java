@@ -101,7 +101,7 @@ public class updatedContactsJob implements WSDaemonJob {
                 }
             }
         } catch (XmlRpcException ex) {
-            Log.Debug(ex);
+            Log.Debug(this, ex.getMessage());
         }
     }
 }

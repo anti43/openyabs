@@ -31,8 +31,8 @@ public class WSDaemon extends Thread {
     private WSConnectionClient client;
     private long waitTime = 300;
     private List<WSDaemonJob> jobs = new Vector<WSDaemonJob>();
-    private int wsid;
     private boolean running = false;
+    private WebShop wes;
 
     /**
      *
@@ -41,9 +41,9 @@ public class WSDaemon extends Thread {
      * @throws MalformedURLException
      */
     public WSDaemon(WebShop webShop) throws NoCompatibleHostFoundException, MalformedURLException {
-        this(new URL(webShop.__getUrl()));
+        client = new WSConnectionClient(new URL(webShop.__getUrl()));
         setWaitTime(webShop.__getInterval());
-        wsid = webShop.__getIDS();
+        wes = webShop;
         running = true;
     }
 
@@ -52,7 +52,7 @@ public class WSDaemon extends Thread {
      * @return
      */
     public int getWebShopID() {
-        return wsid;
+        return getWebShop().__getIDS();
     }
 
     /**
@@ -77,6 +77,8 @@ public class WSDaemon extends Thread {
      */
     public WSDaemon(URL url) throws NoCompatibleHostFoundException {
         client = new WSConnectionClient(url);
+        wes = new WebShop();
+        running = true;
     }
 
     @Override
@@ -121,5 +123,12 @@ public class WSDaemon extends Thread {
     public void start(boolean runOnce) {
         running = !runOnce;
         super.start();
+    }
+
+    /**
+     * @return the wes
+     */
+    public WebShop getWebShop() {
+        return wes;
     }
 }

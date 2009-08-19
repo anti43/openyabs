@@ -86,11 +86,11 @@ public class newContactsJob implements WSDaemonJob {
                     address.setContactsids(m.__getContactsids());
                     address.save();
                 } catch (NodataFoundException ex) {
-                    Log.Debug(ex);
+                    Log.Debug(this, ex.getMessage());
                 }
             }
         } catch (XmlRpcException ex) {
-            Log.Debug(ex);
+            Log.Debug(this, ex.getMessage());
         }
     }
 }

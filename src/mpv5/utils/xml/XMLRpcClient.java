@@ -81,8 +81,8 @@ public class XMLRpcClient extends XmlRpcClient {
      * @return
      * @throws XmlRpcException
      */
-    public boolean invokeSetCommand(String commandName, Object[] params) throws XmlRpcException {
-            Boolean result = (Boolean) execute(commandName, params);
+    public Object invokeSetCommand(String commandName, Object[] params) throws XmlRpcException {
+            Object result =  execute(commandName, params);
             Log.Debug(this, "RPC call to '" + ((XmlRpcClientConfigImpl) getClientConfig()).getServerURL() + "#" + commandName + "' returned a: " + result.getClass().getSimpleName() + " [" + result + "]");
             return result;
     }

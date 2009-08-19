@@ -413,7 +413,7 @@ public class DatabaseObjectTest {
         System.out.println("getValues3");
         DatabaseObject instance = new DatabaseObjectImpl();
         ArrayList expResult = null;
-        ArrayList result = instance.getValues3();
+        ArrayList result = instance.getValues();
         assertEquals(expResult, result);
         
         fail("The test case is a prototype.");

@@ -329,52 +329,52 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
         String message = null;
         uncacheObject(this);
 
-        if (__getCName() != null && __getCName().length() > 0) {
-            try {
-                if (ids <= 0) {
+        try {
+            if (ids <= 0) {
+                ensureUniqueness();
+                if (__getCName() != null && __getCName().length() > 0) {
                     Log.Debug(this, "Inserting new dataset into: " + this.getContext());
                     dateadded = new Date();
-                    ensureUniqueness();
                     if (!silent && !this.getType().equals(new HistoryItem().getType())) {
                         message = this.__getCName() + Messages.INSERTED;
                     }
                     ids = QueryHandler.instanceOf().clone(context).insert(collect(), message);
                     Log.Debug(this, "The inserted row has id: " + ids);
-
                 } else {
-                    Log.Debug(this, "Updating dataset: " + ids + " within context '" + context + "'");
-                    if (!silent) {
-                        message = this.__getCName() + Messages.UPDATED;
-                    }
-                    QueryHandler.instanceOf().clone(context).update(collect(), ids, message);
+                    Popup.notice(Messages.CNAME_CANNOT_BE_NULL);
+                    return false;
                 }
-
-                final String fmessage = message;
-                final String fdbid = this.getDbIdentity();
-                final int fids = this.ids;
-                final int fgids = this.groupsids;
-                //Ignore History and User events
-
-                if (!silent && Context.getArchivableContexts().contains(context)) {
-                    Runnable runnable = new Runnable() {
-
-                        @Override
-                        public void run() {
-                            QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, MPView.getUser().__getCName(), fdbid, fids, fgids);
-                        }
-                    };
-                    SwingUtilities.invokeLater(runnable);
+            } else {
+                Log.Debug(this, "Updating dataset: " + ids + " within context '" + context + "'");
+                if (!silent) {
+                    message = this.__getCName() + Messages.UPDATED;
                 }
-                this.Saved(true);
-                return true;
-            } catch (Exception e) {
-                Log.Debug(e);
-                return false;
+                QueryHandler.instanceOf().clone(context).update(collect(), ids, message);
             }
-        } else {
-            Popup.notice(Messages.CNAME_CANNOT_BE_NULL);
+
+            final String fmessage = message;
+            final String fdbid = this.getDbIdentity();
+            final int fids = this.ids;
+            final int fgids = this.groupsids;
+            //Ignore History and User events
+
+            if (!silent && Context.getArchivableContexts().contains(context)) {
+                Runnable runnable = new Runnable() {
+
+                    @Override
+                    public void run() {
+                        QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, MPView.getUser().__getCName(), fdbid, fids, fgids);
+                    }
+                };
+                SwingUtilities.invokeLater(runnable);
+            }
+            this.Saved(true);
+            return true;
+        } catch (Exception e) {
+            Log.Debug(e);
             return false;
         }
+
     }
 
     /**
@@ -611,7 +611,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
 
     /**
      *
-     * @return A list containing pairs of <b>VARNAME</b> and their  <b>VALUE</b> (as formatted String) of this Databaseobject,
+     * @return A list containing pairs of <b>VARNAME</b> and their  <b>VALUE</b> (as unformatted String) of this Databaseobject,
      * those which return in <code>getVars()</code>, as two-fields String-Array.
      * Example: new String[]{"CName", "Michael"}
      */
@@ -637,7 +637,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
 
     /**
      *
-     * @return A list containing pairs of <b>VARNAME</b> and their  <b>VALUE (as formatted String)</b>  of this Databaseobject,
+     * @return A list containing pairs of <b>VARNAME</b> and their  <b>VALUE (as formatted String, and variables resolved)</b>  of this Databaseobject,
      * those which return in <code>getVars()</code>, as two-fields String-Array.
      * Example: new String[]{"dateadded", "24.22.2980"}
      */
@@ -916,8 +916,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
      * @throws NodataFoundException
      */
     public boolean fetchDataOf(int id) throws NodataFoundException {
-            explode(QueryHandler.instanceOf().clone(context).select(id), this, true);
-            return true;
+        explode(QueryHandler.instanceOf().clone(context).select(id), this, true);
+        return true;
     }
 
     /**
@@ -1307,7 +1307,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
             try {
                 try {
                     Group g = (Group) DatabaseObject.getObject(Context.getGroup(), Integer.valueOf(map.get("groupsids").toString()));
-                 
+
                     map.put("group", g.__getCName());
                     map.put("grouppath", g.__getHierarchypath());
                     map.put("groupdescription", g.__getDescription());
@@ -1326,7 +1326,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                 map.put("addedby", User.getUsername(Integer.valueOf(map.get("intaddedby").toString())));
             }
         } catch (NumberFormatException numberFormatException) {
-             //already resolved?
+            //already resolved?
         }
 
         return map;

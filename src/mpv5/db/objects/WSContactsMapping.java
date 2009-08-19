@@ -17,6 +17,7 @@
 package mpv5.db.objects;
 
 import java.util.List;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComponent;
@@ -24,6 +25,10 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria;
+import mpv5.db.common.QueryHandler;
+import mpv5.db.common.ReturnValue;
+import mpv5.logging.Log;
+import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.images.MPIcon;
 
 /**
@@ -42,8 +47,36 @@ public class WSContactsMapping extends DatabaseObject {
             QueryCriteria qs = new QueryCriteria();
             qs.add("webshopid", webShopID);
             qs.add("contactsids", contactsids);
-            List old = DatabaseObject.getObjects(Context.getAddress(), qs);
+            List old = DatabaseObject.getObjects(Context.getWebShopContactMapping(), qs);
             return (WSContactsMapping) old.get(0);
+    }
+
+    /**
+     * Fetches all contacts from the db which:
+     * <li>Have no current mapping to the given webshop
+     * <li>Are in the same group as the webshop (ignored if shop is in "All" group)
+     * @param webShop
+     * @return A list of Contacts
+     */
+    public static List<Contact> getUnmappedContacts(WebShop webShop) {
+       String query = Context.getContact().prepareSQLString( "SELECT contacts.ids FROM contacts WHERE contacts.ids NOT IN (SELECT contactsids FROM wscontactsmapping WHERE webshopsids = "  + webShop.__getIDS() + ") ");
+        if(webShop.__getGroupsids()>1) {
+            query += " AND groupsids = " + webShop.__getGroupsids();
+        }
+        ReturnValue ads = QueryHandler.instanceOf().clone(Context.getContact()).freeSelectQuery(query, MPSecurityManager.VIEW, null);
+        Object[][] data = ads.getData();
+        List<Contact> l = new Vector<Contact>();
+        for (int i = 0; i < data.length; i++) {
+            int ig  = Integer.valueOf(data[i][0].toString());
+            try {
+                l.add((Contact) DatabaseObject.getObject(Context.getContact(), ig));
+            } catch (NodataFoundException ex) {
+                Log.Debug(WSContactsMapping.class, ex.getMessage());
+            }
+        }
+
+        Log.Debug(WSContactsMapping.class, "Found unmapped contacts: " + l);
+        return l;
     }
 
     private int webshopsids;
@@ -108,5 +141,10 @@ public class WSContactsMapping extends DatabaseObject {
      */
     public void setWscontact(String wscontact) {
         this.wscontact = wscontact;
+    }
+
+    @Override
+    public boolean save() {
+        return super.save(true);
     }
 }

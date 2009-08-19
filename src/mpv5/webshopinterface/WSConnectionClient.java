@@ -36,6 +36,11 @@ public class WSConnectionClient {
         return client;
     }
 
+    /**
+     * Test the shop
+     * @return The shop impl version
+     * @throws XmlRpcException If the test fails
+     */
     public String test() throws XmlRpcException {
          Object[] params = new Object[0];
          Integer v = (Integer) getClient().execute(COMMANDS.GETVERSION.toString(), params);
@@ -58,8 +63,8 @@ public class WSConnectionClient {
         GET_CHANGED_ORDERS("getUpdatedOrders"),
         GET_CHANGED_ORDER_ROWS("getUpdatedOrderRows"),
         ////////////////////////////////////////////////////////////////////////
-        ADD_NEW_PRODUCTS("addNewProducts"),
-        ADD_NEW_CONTACTS("addNewContacts"),
+        ADD_NEW_PRODUCT("addNewProduct"),
+        ADD_NEW_CONTACT("addNewContact"),
         SET_ORDER_STATUS("setOrderStatus"),
         SET_DISABLED_CONTACTS("setDisabledContacts"),
         SET_DISABLED_PRODUCTS("setDisabledProducts");

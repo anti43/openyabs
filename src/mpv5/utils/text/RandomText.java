@@ -128,6 +128,8 @@ public class RandomText {
             "nceeverybodyontheshiphadlosttheirmindsnooneknewwhotheChiefStrategicOfficerwasorevenifhecouldhave" +
             "beenidentifiedhowhewassupposedtogoaboutgainsayingtheshipsStrateejOMatAsfarasfindingsomethingt" +
             "omonitorwasconcernedthoughtheyhitsolidgold");
+
+
     private String string;
     private int length = 5;
 
@@ -177,5 +179,13 @@ public class RandomText {
      */
     public static String getText() {
         return new RandomText(8).getString();
+    }
+
+    /**
+     * Generates a random text containing only numbers
+     * @return A random 8- char text
+     */
+    public static String getNumberText() {
+       return RandomStringUtils.randomNumeric(8);
     }
 }

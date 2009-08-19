@@ -92,11 +92,11 @@ public class updatedOrdersJob implements WSDaemonJob {
                     orderRow.setItemsids(m.__getItemsids());
                     orderRow.save();
                 } catch (NodataFoundException ex) {
-                    Log.Debug(ex);
+                    Log.Debug(this, ex.getMessage());
                 }
             }
         } catch (XmlRpcException ex) {
-            Log.Debug(ex);
+           Log.Debug(this, ex.getMessage());
         }
     }
 }

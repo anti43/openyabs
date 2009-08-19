@@ -31,6 +31,7 @@ import mpv5.db.common.NodataFoundException;
 import mpv5.db.objects.WebShop;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
+import mpv5.webshopinterface.wsdjobs.addContactJob;
 import mpv5.webshopinterface.wsdjobs.newContactsJob;
 import mpv5.webshopinterface.wsdjobs.newOrdersJob;
 import mpv5.webshopinterface.wsdjobs.newSystemMessages;
@@ -71,6 +72,7 @@ public class WSIManager {
                 d.addJob(new newSystemMessages(d));
                 d.addJob(new updatedContactsJob(d));
                 d.addJob(new updatedOrdersJob(d));
+                d.addJob(new addContactJob(d));
                 d.start();
                 shopDeamons.put(webShop, d);
                 Log.Debug(this, "WebShop client: " + d + " started.");

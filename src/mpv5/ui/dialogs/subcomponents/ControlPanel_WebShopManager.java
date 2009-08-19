@@ -23,12 +23,14 @@ import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPView;
 import mpv5.usermanagement.MPSecurityManager;
+import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.text.RandomStringUtils;
 import mpv5.utils.text.RandomText;
 import mpv5.webshopinterface.NoCompatibleHostFoundException;
 import mpv5.webshopinterface.WSConnectionClient;
 import mpv5.webshopinterface.WSDaemon;
 import mpv5.webshopinterface.WSIManager;
+import mpv5.webshopinterface.wsdjobs.addContactJob;
 import mpv5.webshopinterface.wsdjobs.newContactsJob;
 import mpv5.webshopinterface.wsdjobs.newOrdersJob;
 import mpv5.webshopinterface.wsdjobs.newSystemMessages;
@@ -53,10 +55,12 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
     public ControlPanel_WebShopManager() {
         initComponents();
         addPopupMenu();
+
+        groupselect.setSearchOnEnterEnabled(true);
+        groupselect.setContext(Context.getGroup());
         refresh();
 
         setVisible(true);
-
     }
 
     private void addPopupMenu() {
@@ -108,6 +112,7 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
         jLabel1 = new javax.swing.JLabel();
         intervals = new mpv5.ui.beans.LabeledSpinner();
         jLabel2 = new javax.swing.JLabel();
+        groupselect = new mpv5.ui.beans.LabeledCombobox();
         jPanel3 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -158,22 +163,26 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
         jLabel2.setText(bundle.getString("ControlPanel_WebShopManager.jLabel2.text")); // NOI18N
         jLabel2.setName("jLabel2"); // NOI18N
 
+        groupselect.set_Label(bundle.getString("ControlPanel_WebShopManager.groupselect._Label")); // NOI18N
+        groupselect.setName("groupselect"); // NOI18N
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(groupselect, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 343, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
                         .addComponent(intervals, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 138, Short.MAX_VALUE))
-                    .addGroup(jPanel5Layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane2))
-                    .addComponent(urls, javax.swing.GroupLayout.DEFAULT_SIZE, 343, Short.MAX_VALUE))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE))
+                    .addComponent(urls, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 343, Short.MAX_VALUE))
                 .addGap(10, 10, 10)
                 .addComponent(jButton3)
                 .addGap(142, 142, 142))
@@ -181,7 +190,9 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(21, 21, 21)
+                .addContainerGap()
+                .addComponent(groupselect, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jLabel2)
                     .addComponent(intervals, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -192,7 +203,7 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 22, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 15, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -224,7 +235,7 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 544, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE)
                     .addComponent(jLabel3))
                 .addContainerGap())
         );
@@ -234,7 +245,7 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
                 .addContainerGap()
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 22, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -268,11 +279,7 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         if (list.getSelectedValue() != null) {
             try {
-                WebShop ws = (WebShop) list.getSelectedValue();
-                ws.setUrl(urls.getText());
-                ws.setDescription(descr.getText());
-                ws.setInterval(Integer.valueOf(intervals.getSpinner().getValue().toString()));
-                ws.save();
+                save((WebShop) list.getSelectedValue());
                 refresh();
                 WSIManager.instanceOf().reset();
                 WSIManager.instanceOf().start();
@@ -294,6 +301,8 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
                 intervals.set_Value(Integer.valueOf(ws.__getInterval()));
                 descr.setText(ws.__getDescription());
                 urls.setText(ws.__getUrl());
+                groupselect.setSelectedIndex(MPComboBoxModelItem.getItemID(String.valueOf(ws.__getGroupsids()), groupselect.getModel()));
+
             }
         }
 
@@ -303,12 +312,13 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
         try {
             mpv5.ui.dialogs.Popup.notice(new WSConnectionClient(new URL(urls.getText())).test());
             WSDaemon d = new WSDaemon(new URL(urls.getText()));
-                d.addJob(new newContactsJob(d));
-                d.addJob(new newOrdersJob(d));
-                d.addJob(new newSystemMessages(d));
-                d.addJob(new updatedContactsJob(d));
-                d.addJob(new updatedOrdersJob(d));
-                d.start(true);
+            d.addJob(new newContactsJob(d));
+            d.addJob(new newOrdersJob(d));
+            d.addJob(new newSystemMessages(d));
+            d.addJob(new updatedContactsJob(d));
+            d.addJob(new updatedOrdersJob(d));
+            d.addJob(new addContactJob(d));
+            d.start(true);
         } catch (Exception x) {
             Log.Debug(x);
             mpv5.ui.dialogs.Popup.error(x);
@@ -319,12 +329,7 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
 
         try {
             WebShop ws = new WebShop();
-            ws.setUrl(urls.getText());
-            ws.setDescription(descr.getText());
-            ws.setCName(new URL(urls.getText()).getHost() + " [ " + RandomText.getText() + " ]");
-            ws.setInterval(Integer.valueOf(intervals.getSpinner().getValue().toString()));
-            ws.save();
-            refresh();
+            save(ws);
             WSIManager.instanceOf().reset();
             WSIManager.instanceOf().start();
         } catch (Exception x) {
@@ -349,6 +354,7 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea descr;
+    private mpv5.ui.beans.LabeledCombobox groupselect;
     private mpv5.ui.beans.LabeledSpinner intervals;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton3;
@@ -366,9 +372,10 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
     // End of variables declaration//GEN-END:variables
 
     private void refresh() {
-
+        groupselect.triggerSearch();
         intervals.setValue(300);
-
+        list.setModel(new DefaultListModel());
+        list.validate();
         try {
             ArrayList<DatabaseObject> data = DatabaseObject.getObjects(Context.getWebShops());
             DefaultListModel xl = new DefaultListModel();
@@ -388,5 +395,19 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
         this.remove(jPanel2);
         validate();
         return jPanel2;
+    }
+
+    private void save(WebShop ws) throws MalformedURLException {
+        new URL(urls.getText());//test 
+        ws.setUrl(urls.getText());
+        ws.setDescription(descr.getText());
+        ws.setInterval(Integer.valueOf(intervals.getSpinner().getValue().toString()));
+        if (groupselect.getSelectedItem() != null) {
+            ws.setGroupsids(Integer.valueOf((groupselect.getSelectedItem()).getId()));
+        } else {
+            ws.setGroupsids(1);
+        }
+        ws.save();
+        refresh();
     }
 }

@@ -16,10 +16,12 @@
  */
 package mpv5.db.objects;
 
+import java.net.URL;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.utils.images.MPIcon;
+import mpv5.utils.text.RandomText;
 
 /**
  * Represents a WebShop
@@ -85,5 +87,10 @@ public class WebShop extends DatabaseObject {
      */
     public void setUrl(String url) {
         this.url = url;
+    }
+
+        @Override
+    public void ensureUniqueness() {
+         setCName("-" + RandomText.getNumberText()  + "- (" + __getUrl() +")");
     }
 }

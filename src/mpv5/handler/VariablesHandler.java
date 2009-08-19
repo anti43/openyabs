@@ -133,7 +133,7 @@ public abstract class VariablesHandler {
         String[][] c = resolveVarsFor(source);
         for (int i = 0; i < c.length; i++) {
             String[] data = c[i];
-            Log.Debug(VariablesHandler.class, source + ": replacing key: " + data[0] + " with value: " + data[1]);
+//            Log.Debug(VariablesHandler.class, source + ": replacing key: " + data[0] + " with value: " + data[1]);
             if (data[1] != null) {
                 text = text.replace(data[0], data[1]);
             }
