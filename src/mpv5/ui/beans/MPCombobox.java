@@ -270,7 +270,7 @@ public class MPCombobox extends javax.swing.JPanel {
      * @param itemID
      */
     public void setSelectedIndex(int itemID) {
-        if (itemID >= 0 || itemID < getComboBox().getItemCount()) {
+        if (itemID >= 0 && itemID < getComboBox().getItemCount()) {
             getComboBox().setSelectedIndex(itemID);
         }
     }

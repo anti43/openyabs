@@ -291,7 +291,7 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
      * @return
      */
     public static MPComboBoxModelItem[] toItems(MPEnum[] items, int compareMode) {
-        Log.PrintArray(items);
+//        Log.PrintArray(items);
 
         MPComboBoxModelItem[] array = new MPComboBoxModelItem[items.length];
         for (int i = 0; i < array.length; i++) {

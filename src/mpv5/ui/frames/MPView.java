@@ -413,13 +413,27 @@ public class MPView extends FrameView {
      * @param item
      * @param tabTitle
      */
-    public void addTab(DatabaseObject item, Object tabTitle) {
+    public void addTab(final DatabaseObject item, Object tabTitle) {
         boolean found = false;
-        if (item.getView() != null && !MPView.getUser().getProperties().getProperty(MPView.tabPane, "recycletabs")) {
+        if (item.getView() != null && MPView.getUser().getProperties().getProperty(MPView.tabPane, "norecycletabs")) {
             if (tabTitle == null) {
-                addTab(item.getView(), item.__getCName());
+                final DataPanel p = ((DataPanel) item.getView());
+                addTab((JComponent) p, item.__getCName());
+                Runnable runnable = new Runnable() {
+                    public void run() {
+                        p.setDataOwner(item, true);
+                    }
+                };
+                SwingUtilities.invokeLater(runnable);
             } else {
-                addTab(item.getView(), tabTitle + ": " + item.__getCName());
+                final DataPanel p = ((DataPanel) item.getView());
+                addTab((JComponent) p, tabTitle + ": " + item.__getCName());
+                Runnable runnable = new Runnable() {
+                    public void run() {
+                        p.setDataOwner(item, true);
+                    }
+                };
+                SwingUtilities.invokeLater(runnable);
             }
             getCurrentTab().setDataOwner(item, true);
         } else if (item.getView() != null) {
@@ -442,13 +456,19 @@ public class MPView extends FrameView {
             }
             if (!found) {
                 try {
-                    DataPanel p = (DataPanel) item.getView();
-                    p.setDataOwner(item, true);
+                    final DataPanel p = (DataPanel) item.getView();
+
                     if (tabTitle == null) {
                         addTab((JComponent) p, item.__getCName());
                     } else {
                         addTab((JComponent) p, tabTitle + ": " + item.__getCName());
                     }
+                    Runnable runnable = new Runnable() {
+                        public void run() {
+                            p.setDataOwner(item, true);
+                        }
+                    };
+                    SwingUtilities.invokeLater(runnable);
                 } catch (ClassCastException e) {
                     if (tabTitle == null) {
                         addTab(item.getView(), item.__getCName());
