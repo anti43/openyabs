@@ -1,14 +1,8 @@
 package mpv5.utils.ooo;
 
-import ag.ion.bion.officelayer.desktop.DesktopException;
-import ag.ion.bion.officelayer.document.DocumentException;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
-import ag.ion.bion.officelayer.application.IOfficeApplication;
-import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.desktop.GlobalCommands;
 import ag.ion.bion.officelayer.desktop.IFrame;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
@@ -16,7 +10,6 @@ import ag.ion.bion.officelayer.document.IDocument;
 import ag.ion.bion.officelayer.form.IFormComponent;
 
 import ag.ion.bion.officelayer.text.ITextDocument;
-import ag.ion.noa.frame.IDispatchDelegate;
 import com.sun.star.awt.XTextComponent;
 import com.sun.star.beans.XPropertySet;
 import com.sun.star.form.XFormComponent;
@@ -26,13 +19,8 @@ import java.io.File;
 import java.util.Hashtable;
 
 
-import mpv5.db.common.Context;
-import mpv5.db.common.QueryHandler;
-import mpv5.db.common.SaveString;
-import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
-import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPView;
 
 public class OOOPanel extends JPanel {
@@ -42,11 +30,13 @@ public class OOOPanel extends JPanel {
     }
 
     /**
-     * Loads the given template into this panel
+     * Loads the given template into this panel.
+     *
      * @param odtFile
+     * @deprecated Do not use this, needs a local OO installation and has never worked well.
      */
+    @Deprecated
     public void constructOOOPanel(final File odtFile) {
-        if (!LocalSettings.getBooleanProperty(LocalSettings.OFFICE_REMOTE)) {
             MPView.setWaiting(true);
 
             ITextDocument textDocument;
@@ -70,9 +60,7 @@ public class OOOPanel extends JPanel {
                 MPView.setWaiting(false);
             }
             MPView.addMessage(Messages.DONE_LOADING_OOO);
-        } else {
-            Popup.notice(Messages.OONOTLOCAL);
-        }
+        
     }
 
     /**

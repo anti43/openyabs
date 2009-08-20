@@ -58,8 +58,10 @@ public class LabeledSpinner extends javax.swing.JPanel {
 
         setOpaque(false);
 
+        jLabel1.setFont(jLabel1.getFont());
         jLabel1.setText("text");
 
+        jSpinner1.setFont(jSpinner1.getFont());
         jSpinner1.setModel(new javax.swing.SpinnerNumberModel());
         jSpinner1.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinner1, ""));
 

@@ -78,6 +78,7 @@ public class DateChooser extends javax.swing.JPanel {
             }
         });
 
+        jSpinner1.setFont(jSpinner1.getFont());
         jSpinner1.setModel(new javax.swing.SpinnerDateModel());
         jSpinner1.setEditor(new javax.swing.JSpinner.DateEditor(jSpinner1, ""));
 

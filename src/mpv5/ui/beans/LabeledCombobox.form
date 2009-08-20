@@ -46,6 +46,13 @@
       </Properties>
     </Component>
     <Component class="mpv5.ui.beans.MPCombobox" name="mPCombobox1">
+      <Properties>
+        <Property name="font" type="java.awt.Font" noResource="true" editor="org.netbeans.modules.form.editors2.FontEditor">
+          <FontInfo relative="true">
+            <Font component="mPCombobox1" property="font" relativeSize="true" size="0"/>
+          </FontInfo>
+        </Property>
+      </Properties>
     </Component>
   </SubComponents>
 </Form>

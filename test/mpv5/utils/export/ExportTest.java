@@ -55,7 +55,7 @@ public class ExportTest {
         System.out.println("setFile");
         Exportable templateFile = null;
         Export instance = new Export();
-        instance.setFile(templateFile);
+        instance.setTemplate(templateFile);
         
         fail("The test case is a prototype.");
     }

@@ -1067,7 +1067,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     }//GEN-LAST:event_removefileActionPerformed
 
     private void button_order2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_order2ActionPerformed
-        BigPopup.showPopup(this, new ControlPanel_Groups());
+        BigPopup.showPopup(this, new ControlPanel_Groups(), null);
     }//GEN-LAST:event_button_order2ActionPerformed
 
     private void countryselectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_countryselectActionPerformed

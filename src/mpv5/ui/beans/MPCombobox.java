@@ -320,6 +320,7 @@ public class MPCombobox extends javax.swing.JPanel {
 
         jComboBox1 = new javax.swing.JComboBox();
 
+        setFont(getFont());
         setOpaque(false);
 
         jComboBox1.setAutoscrolls(true);

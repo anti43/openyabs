@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mpv5.logging.Log;
+import mpv5.ui.frames.MPView;
 
 /**
  *
@@ -48,15 +49,18 @@ public class ODTFile extends Exportable {
     @Override
     public void run() {
         Log.Debug(this, "run: ");
+        MPView.setWaiting(true);
         DocumentHandler dh = new DocumentHandler(nc);
         try {
             IDocument df = dh.loadDocument(this, false);
-            DocumentHandler.fillFormFields((ITextDocument) df, getData());
-            DocumentHandler.fillPlaceholderFields((ITextDocument) df, getData());
-            DocumentHandler.fillTextVariableFields((ITextDocument) df, getData());
-            DocumentHandler.saveAs(df, getTarget());
+            dh.fillFormFields((ITextDocument) df, getData());
+            dh.fillPlaceholderFields((ITextDocument) df, getData());
+            dh.fillTextVariableFields((ITextDocument) df, getData());
+            dh.saveAs(df, getTarget());
         } catch (Exception ex) {
             Log.Debug(ex);
+        } finally {
+            MPView.setWaiting(false);
         }
     }
 }

@@ -863,7 +863,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
 }//GEN-LAST:event_jButton2ActionPerformed
 
     private void button_order2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_order2ActionPerformed
-        BigPopup.showPopup(this, new ControlPanel_Groups());
+        BigPopup.showPopup(this, new ControlPanel_Groups(), null);
 }//GEN-LAST:event_button_order2ActionPerformed
 
     private void removefileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removefileActionPerformed

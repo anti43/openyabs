@@ -62,7 +62,7 @@ public class DocumentHandler {
     private final DocumentDescriptor descriptor;
 
     /**
-     * Creates a new Document Handler on top of the given connection
+     * Creates a new (hidden) Document Handler on top of the given connection
      * @param connection The OO connection to use
      */
     public DocumentHandler(NoaConnection connection) {
@@ -70,7 +70,7 @@ public class DocumentHandler {
             this.connection = connection;
             descriptor = DocumentDescriptor.DEFAULT_HIDDEN;
         } else {
-            throw new NullPointerException("Connection can not be null");
+            throw new NullPointerException("Connection cannot be null");
         }
     }
 
@@ -88,6 +88,8 @@ public class DocumentHandler {
         if (asTemplate) {
             descriptor.setAsTemplate(asTemplate);
         }
+
+        descriptor.setHidden(true);
 
         return connection.getDocumentService().loadDocument(file.getPath());
     }
@@ -109,7 +111,7 @@ public class DocumentHandler {
      * @param file
      * @throws DocumentException
      */
-    public synchronized static void saveAs(IDocument doc, File file) throws DocumentException {
+    public synchronized void saveAs(IDocument doc, File file) throws DocumentException {
 
         doc.reformat();
 
@@ -142,7 +144,7 @@ public class DocumentHandler {
      * @throws Exception
      * @throws NOAException
      */
-    public synchronized static void fillFormFields(ITextDocument textDocument, HashMap<String, String> data) throws Exception, NOAException {
+    public synchronized void fillFormFields(ITextDocument textDocument, HashMap<String, String> data) throws Exception, NOAException {
 
         IFormComponent[] formComponents = textDocument.getFormService().getFormComponents();
         Iterator<String> keys = data.keySet().iterator();
@@ -176,7 +178,7 @@ public class DocumentHandler {
      * @throws Exception
      * @throws NOAException
      */
-    public synchronized static void fillPlaceholderFields(ITextDocument textDocument, HashMap<String, String> data) throws Exception, NOAException {
+    public synchronized void fillPlaceholderFields(ITextDocument textDocument, HashMap<String, String> data) throws Exception, NOAException {
         Iterator<String> keys = data.keySet().iterator();
         String key = null;
         while (keys.hasNext()) {
@@ -207,7 +209,7 @@ public class DocumentHandler {
      * @throws Exception
      * @throws NOAException
      */
-    public synchronized static void fillTextVariableFields(ITextDocument textDocument, HashMap<String, String> data) throws Exception, NOAException {
+    public synchronized void fillTextVariableFields(ITextDocument textDocument, HashMap<String, String> data) throws Exception, NOAException {
         Iterator<String> keys = data.keySet().iterator();
         String key = null;
         IVariableTextFieldMaster x;

@@ -20,7 +20,7 @@ import java.io.File;
 import java.util.HashMap;
 
 /**
- *This interface specifies export specific methods
+ *This class specifies export specific methods
  */
 public abstract class Exportable extends File implements Runnable {
 

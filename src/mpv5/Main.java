@@ -533,11 +533,13 @@ public class Main extends SingleFrameApplication {
             MPView.identifierView.showServerStatus(false);
         }
         
+            if (!LocalSettings.getBooleanProperty(LocalSettings.OFFICE_REMOTE)) {
             Runnable runnable = new Runnable() {
+
                 @Override
                 public void run() {
                     try {
-                        NoaConnection.getConnection();
+                        NoaConnection.startOOServer(LocalSettings.getProperty(LocalSettings.OFFICE_HOME), LocalSettings.getIntegerProperty(LocalSettings.OFFICE_PORT));
                     } catch (Exception n) {
                         Log.Debug(Main.class, n.getMessage());
                     }
@@ -546,6 +548,7 @@ public class Main extends SingleFrameApplication {
                 }
             };
             new Thread(runnable).start();
+        }
     }
 
     private void loadPlugins() {

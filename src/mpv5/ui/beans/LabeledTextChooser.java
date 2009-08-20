@@ -72,6 +72,8 @@ public class LabeledTextChooser extends javax.swing.JPanel {
         jLabel1.setFont(jLabel1.getFont());
         jLabel1.setText("text");
 
+        jTextField1.setFont(jTextField1.getFont());
+
         jButton1.setText("...");
         jButton1.setToolTipText("Choose");
         jButton1.setBorder(javax.swing.BorderFactory.createEtchedBorder());

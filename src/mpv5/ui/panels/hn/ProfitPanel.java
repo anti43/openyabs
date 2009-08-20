@@ -99,7 +99,7 @@ public class ProfitPanel extends JPanel {
             if (!profitModel.isSkr()) {
                 Export e = new Export();
                 e.putAll(profitModel.getResultMap());
-                e.setFile(new PDFFile(profitModel.getPdfform()));
+                e.setTemplate(new PDFFile(profitModel.getPdfform()));
                 DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY, target);
                 d.setFileFilter(DialogForFile.PDF_FILES);
                 if (d.saveFile()) {

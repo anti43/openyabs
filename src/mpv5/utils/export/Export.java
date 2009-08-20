@@ -19,18 +19,24 @@ package mpv5.utils.export;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.SwingUtilities;
 import mpv5.db.common.NodataFoundException;
 import mpv5.logging.Log;
+import mpv5.ui.frames.MPView;
+import mpv5.utils.jobs.Waitable;
 
 /**
  * The Export class handles the export of data using templatefiles to PDF
  *  
  */
-public class Export extends HashMap<String, String> {
+public class Export extends HashMap<String, String> implements Waitable {
 
     private static final long serialVersionUID = 1L;
     private Exportable file;
-    private Thread t;
+//    private Thread t;
+    private File toFile;
 
     /**
      * Add the data, must be key - value pairs
@@ -48,12 +54,13 @@ public class Export extends HashMap<String, String> {
      * @param <T>
      * @param templateFile 
      */
-    public <T extends Exportable> void setFile(T templateFile) {
+    public <T extends Exportable> void setTemplate(T templateFile) {
         this.file = templateFile;
     }
 
     /**
-     * Exports the given data to the target file using the given template file
+     * Exports the given data to the target file using the given template file.
+     * <br/>
      * @param toFile The target file. If the file exists, will be overwritten if possible.
      * @throws NodataFoundException If no data has been previously added
      * @throws FileNotFoundException If no file was given as template
@@ -69,7 +76,7 @@ public class Export extends HashMap<String, String> {
             throw new FileNotFoundException(file.getPath());
         }
 
-        if (toFile!=null) {
+        if (toFile != null) {
             if (toFile.exists()) {
                 toFile.delete();
                 Log.Debug(this, "File exists, will be replaced: " + toFile);
@@ -81,11 +88,33 @@ public class Export extends HashMap<String, String> {
         file.setData(this);
 
         try {
-          t = new Thread(file);
-                    t.start();
+            SwingUtilities.invokeAndWait(file);// we need to wait for OO to perform the task
         } catch (Exception e) {
             Log.Debug(e);
         }
     }
 
+    public Exception waitFor() {
+        try {
+            processData(getTargetFile());
+        } catch (Exception ex) {
+            return ex;
+        }
+        return null;
+    }
+
+    /**
+     * The target file. If the file exists, will be overwritten if possible.
+     * @param toFile the toFile to set
+     */
+    public void setTargetFile(File toFile) {
+        this.toFile = toFile;
+    }
+
+    /**
+     * @return the toFile
+     */
+    public File getTargetFile() {
+        return toFile;
+    }
 }

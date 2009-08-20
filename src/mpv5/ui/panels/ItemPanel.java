@@ -30,6 +30,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -69,7 +70,9 @@ import mpv5.ui.dialogs.DialogForFile;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.export.Export;
+import mpv5.utils.export.ODTFile;
 import mpv5.utils.files.FileDirectoryHandler;
+import mpv5.utils.jobs.Job;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.models.MPTableModelRow;
@@ -335,7 +338,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         button_reminders = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jSeparator7 = new javax.swing.JToolBar.Separator();
-        button_reminders1 = new javax.swing.JButton();
+        button_preview = new javax.swing.JButton();
         prinitingComboBox1 = new mpv5.ui.beans.PrinitingComboBox();
         jPanel2 = new javax.swing.JPanel();
         contactname = new mpv5.ui.beans.LabeledCombobox();
@@ -373,7 +376,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         value = new mpv5.ui.beans.LabeledTextField();
         toolbarpane = new javax.swing.JPanel();
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ItemPanel.border.title_1"))); // NOI18N
         setName("Form"); // NOI18N
 
@@ -498,7 +501,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 87, Short.MAX_VALUE)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 101, Short.MAX_VALUE)
         );
 
         jToolBar1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -547,17 +550,17 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         jSeparator7.setName("jSeparator7"); // NOI18N
         jToolBar1.add(jSeparator7);
 
-        button_reminders1.setText(bundle.getString("ItemPanel.button_reminders1.text")); // NOI18N
-        button_reminders1.setFocusable(false);
-        button_reminders1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        button_reminders1.setName("button_reminders1"); // NOI18N
-        button_reminders1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        button_reminders1.addActionListener(new java.awt.event.ActionListener() {
+        button_preview.setText(bundle.getString("ItemPanel.button_preview.text")); // NOI18N
+        button_preview.setFocusable(false);
+        button_preview.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        button_preview.setName("button_preview"); // NOI18N
+        button_preview.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        button_preview.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                button_reminders1ActionPerformed(evt);
+                button_previewActionPerformed(evt);
             }
         });
-        jToolBar1.add(button_reminders1);
+        jToolBar1.add(button_preview);
 
         prinitingComboBox1.setName("prinitingComboBox1"); // NOI18N
 
@@ -756,7 +759,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(0, 0, 0)
@@ -789,7 +792,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(leftpane, javax.swing.GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE)
+            .addComponent(leftpane, javax.swing.GroupLayout.DEFAULT_SIZE, 465, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(toolbarpane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
@@ -805,7 +808,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 }//GEN-LAST:event_jButton2ActionPerformed
 
     private void button_order2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_order2ActionPerformed
-        BigPopup.showPopup(this, new ControlPanel_Groups());
+        BigPopup.showPopup(this, new ControlPanel_Groups(), null);
 }//GEN-LAST:event_button_order2ActionPerformed
 
     private void removefileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removefileActionPerformed
@@ -830,107 +833,32 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         }
     }//GEN-LAST:event_itemtableMouseClicked
 
-    private void button_reminders1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_reminders1ActionPerformed
-        try {
-//        PreviewPanel pr = new PreviewPanel();
-//        pr.setDataOwner(dataOwner);
-//        BigPopup.showPopup(this, pr);
-//        pr.openOdt(new File("/home/anti/aaa.odt"));
+    private void button_previewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_previewActionPerformed
+        if (dataOwner!=null) {
+            try {
+                HashMap<String, String> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
+                File f = new File("/home/anti/aaa.odt");
+                File f2 = new File("/home/anti/aaa3.pdf");
+                Export ex = new Export();
+                ex.putAll(hm1);
+                ex.setTemplate(new ODTFile(f.getPath()));
+                ex.setTargetFile(f2);
 
-        System.out.println("\n-----------------------Product----------------------------\n\n");
-
-//            HashMap<String, String> hm0 = new FormFieldsHandler(DatabaseObject.getObject(Context.getProducts(), 3)).getFormattedFormFields(null);
-            System.out.println("\n-----------------------item---------------------------\n\n");
-            HashMap<String, String> hm1 = new FormFieldsHandler(DatabaseObject.getObject(Context.getItems(), 1)).getFormattedFormFields(null);
-//            for (Iterator it = hm.keySet().iterator(); it.hasNext();) {
-//                Object object = it.next();
-//                System.out.println(object + " [" + hm.get(object) + "]");
-//            }
-//        System.out.println("\n-----------------------Subitem----------------------------\n\n");
-//
-//        HashMap<String, Object> hm1 = FormFieldsHandler.getFormFieldsFor(DatabaseObject.getObject(Context.getSubItem()));
-//
-//        for (Iterator it = hm1.keySet().iterator(); it.hasNext();) {
-//            Object object = it.next();
-//            System.out.println(object);
-//        }
-//
-//        System.out.println("\n-----------------------Contact-----------------------------\n\n");
-//
-//        HashMap<String, Object> hm2 = FormFieldsHandler.getFormFieldsFor(DatabaseObject.getObject(Context.getContact()));
-//
-//        for (Iterator it = hm2.keySet().iterator(); it.hasNext();) {
-//            Object object = it.next();
-//            System.out.println(object);
-//        }
-//
-//           System.out.println("\n-----------------------Item-----------------------------\n\n");
-//
-//        HashMap<String, Object> hm3 = FormFieldsHandler.getFormFieldsFor(DatabaseObject.getObject(Context.getItems()));
-//
-//        for (Iterator it = hm3.keySet().iterator(); it.hasNext();) {
-//            Object object = it.next();
-//            System.out.println(object);
-//        }
-//
-//        System.out.println("\n-----------------------Group-----------------------------\n\n");
-//
-//        HashMap<String, Object> hm4 = FormFieldsHandler.getFormFieldsFor(DatabaseObject.getObject(Context.getGroup()));
-//
-//        for (Iterator it = hm4.keySet().iterator(); it.hasNext();) {
-//            Object object = it.next();
-//            System.out.println(object);
-//        }
-        } catch (NodataFoundException ex) {
-            Logger.getLogger(ItemPanel.class.getName()).log(Level.SEVERE, null, ex);
+                new Job(ex, new PreviewPanel()).execute();
+            } catch (Exception ex1) {
+                Log.Debug(ex1);
+                Popup.error(ex1);
+            }
         }
-
-//        System.out.println("\n-----------------------Subitem----------------------------\n\n");
-//
-//        HashMap<String, Object> hm1 = FormFieldsHandler.getFormFieldsFor(DatabaseObject.getObject(Context.getSubItem()));
-//
-//        for (Iterator it = hm1.keySet().iterator(); it.hasNext();) {
-//            Object object = it.next();
-//            System.out.println(object);
-//        }
-//
-//        System.out.println("\n-----------------------Contact-----------------------------\n\n");
-//
-//        HashMap<String, Object> hm2 = FormFieldsHandler.getFormFieldsFor(DatabaseObject.getObject(Context.getContact()));
-//
-//        for (Iterator it = hm2.keySet().iterator(); it.hasNext();) {
-//            Object object = it.next();
-//            System.out.println(object);
-//        }
-//
-//           System.out.println("\n-----------------------Item-----------------------------\n\n");
-//
-//        HashMap<String, Object> hm3 = FormFieldsHandler.getFormFieldsFor(DatabaseObject.getObject(Context.getItems()));
-//
-//        for (Iterator it = hm3.keySet().iterator(); it.hasNext();) {
-//            Object object = it.next();
-//            System.out.println(object);
-//        }
-//
-//        System.out.println("\n-----------------------Group-----------------------------\n\n");
-//
-//        HashMap<String, Object> hm4 = FormFieldsHandler.getFormFieldsFor(DatabaseObject.getObject(Context.getGroup()));
-//
-//        for (Iterator it = hm4.keySet().iterator(); it.hasNext();) {
-//            Object object = it.next();
-//            System.out.println(object);
-//        }
-
-
-    }//GEN-LAST:event_button_reminders1ActionPerformed
+    }//GEN-LAST:event_button_previewActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private mpv5.ui.beans.LabeledCombobox accountselect;
     private javax.swing.JLabel addedby;
     private javax.swing.JButton addfile;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton button_order2;
+    private javax.swing.JButton button_preview;
     private javax.swing.JButton button_reminders;
-    private javax.swing.JButton button_reminders1;
     private javax.swing.JTextField contactcity;
     private javax.swing.JTextField contactcompany;
     private javax.swing.JTextField contactid;

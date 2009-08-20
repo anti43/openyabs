@@ -6,6 +6,7 @@ import com.sun.pdfview.PagePanel;
 import enoa.connection.NoaConnection;
 import enoa.handler.DocumentHandler;
 import java.awt.BorderLayout;
+import java.awt.Cursor;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -24,8 +25,10 @@ import mpv5.ui.dialogs.BigPopup;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPView;
+import mpv5.utils.export.Export;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.files.FileReaderWriter;
+import mpv5.utils.jobs.Waiter;
 import mpv5.utils.ooo.OOOPanel;
 import mpv5.utils.print.PrintJob;
 
@@ -33,7 +36,7 @@ import mpv5.utils.print.PrintJob;
  *
  * 
  */
-public class PreviewPanel extends javax.swing.JPanel {
+public class PreviewPanel extends javax.swing.JPanel implements Waiter {
 
     private static final long serialVersionUID = 1L;
     private File file;
@@ -54,35 +57,7 @@ public class PreviewPanel extends javax.swing.JPanel {
     public PreviewPanel(File file) {
         initComponents();
 
-        if (file.getName().split("\\.").length < 2) {
-            throw new UnsupportedOperationException("The file must have an extension: " + file);
-        }
-
-        String extension = file.getName().substring(file.getName().lastIndexOf("."), file.getName().length());
-
-        Log.Debug(this, "Found extension: " + extension);
-
-        if (extension.equalsIgnoreCase(".pdf")) {
-            try {
-                openPdf(file);
-            } catch (Exception ex) {
-                Log.Debug(ex);
-            }
-        } else if (extension.equalsIgnoreCase(".odt")) {
-            try {
-                openOdt(file);
-            } catch (Exception ex) {
-                Log.Debug(ex);
-            }
-        } else if (extension.equalsIgnoreCase(".txt")) {
-            try {
-                open(file);
-            } catch (Exception ex) {
-                Log.Debug(ex);
-            }
-        } else {
-            throw new UnsupportedOperationException("Extension not supported: " + extension);
-        }
+        openl(file);
     }
 
     /**
@@ -121,7 +96,7 @@ public class PreviewPanel extends javax.swing.JPanel {
                 Log.Debug(ex);
             }
         } else {
-            throw new IllegalArgumentException("File is not valid: " + pdf);
+            throw new IllegalArgumentException("File is not existing or a directory: " + pdf);
         }
     }
 
@@ -282,9 +257,9 @@ public class PreviewPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton31ActionPerformed
 
     private void jButton32ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton32ActionPerformed
-       DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY);
-       d.setSelectedFile(new File(file.getName()));
-       d.saveFile(file);
+        DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY);
+        d.setSelectedFile(new File(file.getName()));
+        d.saveFile(file);
     }//GEN-LAST:event_jButton32ActionPerformed
 
     private void jButton30ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton30ActionPerformed
@@ -334,18 +309,17 @@ public class PreviewPanel extends javax.swing.JPanel {
     private javax.swing.JToolBar toolbar;
     // End of variables declaration//GEN-END:variables
 
-    public void openOdt(File file) {
-        this.file = file;
-        Log.Debug(this, "Preparing preview for: " + file);
-        OOOPanel op = new OOOPanel();
-        ppanel.removeAll();
-        ppanel.setLayout(new BorderLayout());
-        ppanel.add(op, BorderLayout.CENTER);
-
-        op.constructOOOPanel(file);
-        this.validate();
-    }
-
+//    public void openOdt(File file) {
+//        this.file = file;
+//        Log.Debug(this, "Preparing preview for: " + file);
+//        OOOPanel op = new OOOPanel();
+//        ppanel.removeAll();
+//        ppanel.setLayout(new BorderLayout());
+//        ppanel.add(op, BorderLayout.CENTER);
+//
+//        op.constructOOOPanel(file);
+//        this.validate();
+//    }
     public void open(File file) {
         this.file = file;
         FileReaderWriter f = new FileReaderWriter(file);
@@ -360,9 +334,9 @@ public class PreviewPanel extends javax.swing.JPanel {
     /**
      * Show this panel in a new frame
      */
-    public void showInNewFrame() {
+    public void showInNewFrame(String title) {
         BigPopup p = new BigPopup();
-        BigPopup.showPopup(this, jPanel1);
+        BigPopup.showPopup(this, jPanel1, title);
     }
 
     /**
@@ -377,5 +351,58 @@ public class PreviewPanel extends javax.swing.JPanel {
      */
     public void setDataOwner(DatabaseObject dataOwner) {
         this.dataOwner = dataOwner;
+    }
+
+    public void set(Object object, Exception exception) throws Exception {
+        if (exception == null) {
+            try {
+                setCursor(new Cursor(Cursor.WAIT_CURSOR));
+                if (object instanceof Export) {
+                    showInNewFrame(((Export) object).getTargetFile().getName());
+                    openl(((Export) object).getTargetFile());
+                } else {
+                    showInNewFrame(((File) object).getName());
+                    openl((File) object);
+                }
+            } catch (Exception e) {
+                throw e;
+            } finally {
+                setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            }
+        } else {
+            throw exception;
+        }
+    }
+
+    private void openl(File file) {
+        if (file.getName().split("\\.").length < 2) {
+            throw new UnsupportedOperationException("The file must have an extension: " + file);
+        }
+
+        String extension = file.getName().substring(file.getName().lastIndexOf("."), file.getName().length());
+
+        Log.Debug(this, "Found extension: " + extension);
+
+        if (extension.equalsIgnoreCase(".pdf")) {
+            try {
+                openPdf(file);
+            } catch (Exception ex) {
+                Log.Debug(ex);
+            }
+        } else if (extension.equalsIgnoreCase(".odt")) {
+            try {
+                FileDirectoryHandler.open(file);
+            } catch (Exception ex) {
+                Log.Debug(ex);
+            }
+        } else if (extension.equalsIgnoreCase(".txt")) {
+            try {
+                open(file);
+            } catch (Exception ex) {
+                Log.Debug(ex);
+            }
+        } else {
+            throw new UnsupportedOperationException("Extension not supported: " + extension);
+        }
     }
 }

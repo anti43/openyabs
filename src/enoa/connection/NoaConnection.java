@@ -36,6 +36,9 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mpv5.globals.LocalSettings;
+import mpv5.globals.Messages;
+import mpv5.ui.dialogs.Popup;
+import mpv5.ui.frames.MPView;
 import ooo.connector.server.OOoServer;
 
 /**
@@ -65,13 +68,14 @@ public class NoaConnection {
         if (LocalSettings.hasProperty(LocalSettings.OFFICE_HOST)) {
             if (Connection == null) {
                 try {
-                    if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_REMOTE)) {
+//                    if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_REMOTE)) {
                         Connection = new NoaConnection(LocalSettings.getProperty(LocalSettings.OFFICE_HOST), Integer.valueOf(LocalSettings.getProperty(LocalSettings.OFFICE_PORT)));
-                    } else {
-                        Connection = new NoaConnection(LocalSettings.getProperty(LocalSettings.OFFICE_HOME), 0);
-                    }
+//                    } else {
+//                        Connection = new NoaConnection(LocalSettings.getProperty(LocalSettings.OFFICE_HOST), 0);
+//                    }
                 } catch (Exception ex) {
                     mpv5.logging.Log.Debug(ex);//Logger.getLogger(NoaConnection.class.getName()).log(Level.SEVERE, null, ex);
+               Popup.error(MPView.identifierFrame, Messages.OOCONNERROR + "\n" + ex);
                 }
             }
             return Connection;
@@ -89,7 +93,7 @@ public class NoaConnection {
     public NoaConnection(String connectionString, int port) throws Exception {
         if (connectionString != null && connectionString.length() > 1 && port <= 0) {
             createLocalConnection(connectionString);
-        } else if (connectionString != null && connectionString.length() > 1 && port > 0 && port > 9999) {
+        } else if (connectionString != null && connectionString.length() > 1 && port > 0 && port < 9999) {
             createServerConnection(connectionString, port);
         } else {
             throw new Exception("Connection not possible with the given parameters: [" + connectionString + ":" + port + "]");
@@ -196,7 +200,7 @@ public class NoaConnection {
      * @param port The port the server shall listen to
      * @throws IOException
      */
-    public  synchronized static void startOOServer(String path, int port) throws IOException {
+    public synchronized static void startOOServer(String path, int port) throws IOException {
         final ProcessBuilder builder = new ProcessBuilder(
                 path.replace("\\", "\\\\") + File.separator + "program" + File.separator + "soffice",
                 "-headless",

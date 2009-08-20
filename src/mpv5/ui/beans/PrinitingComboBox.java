@@ -95,6 +95,7 @@ public class PrinitingComboBox extends javax.swing.JPanel {
 
         setName("Form"); // NOI18N
 
+        jComboBox1.setFont(jComboBox1.getFont());
         jComboBox1.setName("jComboBox1"); // NOI18N
         jComboBox1.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -103,7 +104,7 @@ public class PrinitingComboBox extends javax.swing.JPanel {
         });
 
         jLabel1.setFont(jLabel1.getFont());
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jLabel1.setText(bundle.getString("PrinitingComboBox.jLabel1.text")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
 

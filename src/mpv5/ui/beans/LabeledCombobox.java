@@ -188,6 +188,8 @@ public class LabeledCombobox extends javax.swing.JPanel {
 
         jLabel1.setText("text");
 
+        mPCombobox1.setFont(mPCombobox1.getFont());
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(

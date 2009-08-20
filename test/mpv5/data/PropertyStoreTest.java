@@ -184,8 +184,8 @@ public class PropertyStoreTest {
         boolean b = false;
         PropertyStore instance = new PropertyStore();
         boolean expResult = false;
-        boolean result = instance.getProperty(comp, source, b);
-        assertEquals(expResult, result);
+//        boolean result = instance.getProperty(comp, source, b);
+//        assertEquals(expResult, result);
         
         fail("The test case is a prototype.");
     }

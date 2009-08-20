@@ -56,7 +56,10 @@ public class LabeledDateChooser extends javax.swing.JPanel {
 
         setOpaque(false);
 
+        jLabel1.setFont(jLabel1.getFont());
         jLabel1.setText("text");
+
+        dateChooser1.setFont(dateChooser1.getFont());
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);

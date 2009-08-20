@@ -67,7 +67,7 @@ public class FormFieldsHandler {
     /**
      * Creates a hash map view to all the object's form fields and their values, including their referenced objects resolved to keys and values.<br/>
      * This method is safe to never return null values.
-     * @param identifier
+     * @param identifier or NULL
      * @return A HashMap<key,value/>
      */
     public synchronized HashMap<String, String> getFormattedFormFields(final String identifier) {
@@ -99,10 +99,7 @@ public class FormFieldsHandler {
             } else {
                 maps.put(skey, String.valueOf(o));
             }
-           System.err.println(skey);
         }
-
-
         return maps;
     }
 }

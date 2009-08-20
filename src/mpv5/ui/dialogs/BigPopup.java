@@ -15,6 +15,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import mpv5.bugtracker.SubmitForm;
 import mpv5.ui.misc.Position;
+import mpv5.ui.panels.PreviewPanel;
 
 /**
  *
@@ -28,7 +29,7 @@ public class BigPopup {
      * @param parent
      * @param content
      */
-    public static void showPopup(JComponent parent, JPanel content) {
+    public static void showPopup(JComponent parent, JPanel content, String title) {
        
         final JFrame window = new JFrame();
         window.getContentPane().setLayout(new BorderLayout());
@@ -36,6 +37,7 @@ public class BigPopup {
         window.pack();
         window.setAlwaysOnTop(true);
         window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        window.setTitle(title);
 
         window.addKeyListener(new KeyListener() {
             @Override
@@ -68,4 +70,5 @@ public class BigPopup {
         contents.get(panel).dispose();
         contents.remove(panel);
     }
+
 }

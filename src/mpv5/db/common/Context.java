@@ -27,6 +27,7 @@ import mpv5.db.objects.MailMessage;
 import mpv5.db.objects.Product;
 import mpv5.db.objects.ProductGroup;
 import mpv5.db.objects.SubItem;
+import mpv5.db.objects.Template;
 import mpv5.pluginhandling.Plugin;
 import mpv5.db.objects.User;
 import mpv5.db.objects.WSContactsMapping;
@@ -77,6 +78,7 @@ public class Context {
     public static String IDENTITY_WEBSHOPS = "webshops";
     public static String IDENTITY_WSMAPPING = "wscontactsmapping";
     public static String IDENTITY_WSIMAPPING = "wsitemsmapping";
+    public static String IDENTITY_TEMPLATES = "templates";
     //********** identity classes **********************************************
     private static Class IDENTITY_CONTACTS_CLASS = Contact.class;
     private static Class IDENTITY_ADDRESS_CLASS = Address.class;
@@ -99,6 +101,7 @@ public class Context {
     private static Class IDENTITY_PGROUPS_CLASS = ProductGroup.class;
     private static Class IDENTITY_PRODUCTS_FILES_CLASS = FileToProduct.class;
     private static Class IDENTITY_WEBSHOP_CLASS = WebShop.class;
+    private static Class IDENTITY_TEMPLATE_CLASS = Template.class;
     //********** unique constraints *******************************************
     public static String UNIQUECOLUMNS_USER = "cname";
     public static String UNIQUECOLUMNS_ITEMS = "cname";
@@ -161,6 +164,8 @@ public class Context {
     public static String DETAILS_FILES_TO_CONTACTS = Context.getFiles().getDbIdentity() + "0.cname," + getFilesToContacts().getDbIdentity() + ".cname, " + Context.getFiles().getDbIdentity() + "0.dateadded," + Context.getFilesToContacts().getDbIdentity() + ".description," + Context.getFilesToContacts().getDbIdentity() + ".intsize," + Context.getFilesToContacts().getDbIdentity() + ".mimetype";
     public static String DETAILS_FILES_TO_ITEMS = Context.getFiles().getDbIdentity() + "0.cname," + getFilesToItems().getDbIdentity() + ".cname, " + Context.getFiles().getDbIdentity() + "0.dateadded," + Context.getFilesToItems().getDbIdentity() + ".description," + Context.getFilesToItems().getDbIdentity() + ".intsize," + Context.getFilesToItems().getDbIdentity() + ".mimetype";
     public static String DETAILS_FILES_TO_PRODUCTS = Context.getFiles().getDbIdentity() + "0.cname," + getFilesToProducts().getDbIdentity() + ".cname, " + Context.getFiles().getDbIdentity() + "0.dateadded," + Context.getFilesToProducts().getDbIdentity() + ".description," + Context.getFilesToProducts().getDbIdentity() + ".intsize," + Context.getFilesToProducts().getDbIdentity() + ".mimetype";
+    public static String DETAILS_FILES_TO_TEMPLATES = Context.getFiles().getDbIdentity() + "0.cname," + getTemplate().getDbIdentity() + ".cname, " + Context.getFiles().getDbIdentity() + "0.dateadded," + Context.getTemplate().getDbIdentity() + ".description," + Context.getTemplate().getDbIdentity() + ".intsize," + Context.getTemplate().getDbIdentity() + ".mimetype";
+
 
     //**************************************************************************
     /**
@@ -189,6 +194,7 @@ public class Context {
         list.add(getItemsList());
         list.add(getCompanies());
         list.add(getWebShops());
+        list.add(getTemplate());
 
         return list;
     }
@@ -216,7 +222,8 @@ public class Context {
                 getMessages(),
                 getItemsList(),
                 getCompanies(),
-                getWebShops()
+                getWebShops(),
+                getTemplate()
             }));
 
     /**
@@ -244,6 +251,7 @@ public class Context {
         list.add(getGlobalSettings());
         list.add(getCompanies());
         list.add(getWebShops());
+        list.add(getTemplate());
 
         return list;
     }
@@ -378,7 +386,8 @@ public class Context {
                 getCompanies(),
                 getWebShops(),
                 getWebShopItemMapping(),
-                getWebShopContactMapping()
+                getWebShopContactMapping(),
+                getTemplate()
             }));
     private String[] searchHeaders;
     private ArrayList<String[]> references = new ArrayList<String[]>();
@@ -1425,7 +1434,7 @@ public class Context {
         return c;
     }
 
-       public static Context getWebShopItemMapping() {
+    public static Context getWebShopItemMapping() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_WSIMAPPING);
@@ -1434,6 +1443,17 @@ public class Context {
 
         return c;
     }
+
+    public static Context getTemplate() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_TEMPLATES);
+        c.setIdentityClass(IDENTITY_TEMPLATE_CLASS);
+        c.setId(43);
+
+        return c;
+    }
+
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////
