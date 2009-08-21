@@ -56,7 +56,7 @@ public class PreviewPanelTest {
         System.out.println("openOdt");
         File file = null;
         PreviewPanel instance = new PreviewPanel();
-        instance.openOdt(file);
+//        instance.openOdt(file);
         
         fail("The test case is a prototype.");
     }
@@ -81,7 +81,7 @@ public class PreviewPanelTest {
     public void testShowInNewFrame() {
         System.out.println("showInNewFrame");
         PreviewPanel instance = new PreviewPanel();
-        instance.showInNewFrame();
+//        instance.showInNewFrame();
         
         fail("The test case is a prototype.");
     }

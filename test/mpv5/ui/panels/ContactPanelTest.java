@@ -70,7 +70,7 @@ public class ContactPanelTest {
         System.out.println("setType");
         int type = 0;
         ContactPanel instance = null;
-        instance.setType(type);
+//        instance.setType(type);
         
         fail("The test case is a prototype.");
     }

@@ -75,7 +75,7 @@ public class DocumentHandlerTest {
         System.out.println("saveAs");
         IDocument doc = null;
         File file = null;
-        DocumentHandler.saveAs(doc, file);
+//        DocumentHandler.saveAs(doc, file);
         
         fail("The test case is a prototype.");
     }
@@ -87,8 +87,8 @@ public class DocumentHandlerTest {
     public void testFillFormFields() throws Exception {
         System.out.println("fillFormFields");
         ITextDocument textDocument = null;
-        HashMap<String, String> data = null;
-        DocumentHandler.fillFormFields(textDocument, data);
+//        HashMap<String, String> data = null;
+//        DocumentHandler.fillFormFields(textDocument, data);
         
         fail("The test case is a prototype.");
     }
@@ -101,7 +101,7 @@ public class DocumentHandlerTest {
         System.out.println("fillPlaceholderFields");
         ITextDocument textDocument = null;
         HashMap<String, String> data = null;
-        DocumentHandler.fillPlaceholderFields(textDocument, data);
+//        DocumentHandler.fillPlaceholderFields(textDocument, data);
         
         fail("The test case is a prototype.");
     }
@@ -114,7 +114,7 @@ public class DocumentHandlerTest {
         System.out.println("fillTextVariableFields");
         ITextDocument textDocument = null;
         HashMap<String, String> data = null;
-        DocumentHandler.fillTextVariableFields(textDocument, data);
+//        DocumentHandler.fillTextVariableFields(textDocument, data);
         
         fail("The test case is a prototype.");
     }

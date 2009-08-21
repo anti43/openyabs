@@ -43,7 +43,7 @@ public class BigPopupTest {
         System.out.println("showPopup");
         JComponent parent = null;
         JPanel content = null;
-        BigPopup.showPopup(parent, content);
+//        BigPopup.showPopup(parent, content);
         
         fail("The test case is a prototype.");
     }

@@ -77,8 +77,8 @@ public class XMLRpcClientTest {
         Object[] params = null;
         XMLRpcClient instance = null;
         boolean expResult = false;
-        boolean result = instance.invokeSetCommand(commandName, params);
-        assertEquals(expResult, result);
+//        boolean result = instance.invokeSetCommand(commandName, params);
+//        assertEquals(expResult, result);
         
         fail("The test case is a prototype.");
     }
