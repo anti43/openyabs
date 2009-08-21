@@ -421,13 +421,16 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
     }
 
     private void setUser() {
-        if (currentUser == null) {
-            currentUser = MPView.getUser().getID();
-            jComboBox1.setSelectedIndex(MPComboBoxModelItem.getItemID(currentUser, jComboBox1.getModel()));
+        try {
+            if (currentUser == null) {
+                currentUser = MPView.getUser().getID();
+                jComboBox1.setSelectedIndex(MPComboBoxModelItem.getItemID(currentUser, jComboBox1.getModel()));
+            } currentUser = Integer.valueOf(((MPComboBoxModelItem) jComboBox1.getSelectedItem()).getId());
+
+        } catch (Exception e) {
         }
 
-        currentUser = Integer.valueOf(((MPComboBoxModelItem) jComboBox1.getSelectedItem()).getId());
-
+       
     }
 
     private void setacL() {
