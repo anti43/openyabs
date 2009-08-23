@@ -14,38 +14,38 @@ function getYWSIVersion () {
 
 function addNewContact ($params) {
 
-    //Parse our parameters. *should be a loop through $params instead*
-    //Writing to a file as echoing will break the operation
-    if (!$handle = fopen("test.txt", 'w+')){ 
-            exit; 
-        } 
+//Parse our parameters. *should be a loop through $params instead*
+//Writing to a file as echoing will break the operation
+    if (!$handle = fopen("test.txt", 'w+')) {
+        exit;
+    }
 
-	//getParam(0) returns a 'xmlrpcval'
+    //getParam(0) returns a 'xmlrpcval'
 
-	//serialized it looks like this:
-	//<value><array>
-	//<data>
-	//<value><string>1</string></value>
-	//<value><string>cname</string></value>
-	//<value><string>mustermann1</string></value>
-	//</data>
-	//</array></value>
+    //serialized it looks like this:
+    //<value><array>
+    //<data>
+    //<value><string>1</string></value>
+    //<value><string>cname</string></value>
+    //<value><string>mustermann1</string></value>
+    //</data>
+    //</array></value>
 
-        //getParam(1) returns a 'xmlrpcval'
-	//<value><array>
-	//<data>
-	//<value><string>1</string></value>
-	//<value><string>city</string></value>
-	//<value><string>mustermannhausen</string></value>
-	//</data>
-	//</array></value>
+    //getParam(1) returns a 'xmlrpcval'
+    //<value><array>
+    //<data>
+    //<value><string>1</string></value>
+    //<value><string>city</string></value>
+    //<value><string>mustermannhausen</string></value>
+    //</data>
+    //</array></value>
 
-        fwrite($handle, $params->getParam(0)->serialize());
-	fwrite($handle, $params->getParam(1)->serialize());
-        fwrite($handle, $params->getParam(2)->serialize());
-	fwrite($handle, $params->getParam(3)->serialize());
+    fwrite($handle, $params->getParam(0)->serialize());
+    fwrite($handle, $params->getParam(1)->serialize());
+    fwrite($handle, $params->getParam(2)->serialize());
+    fwrite($handle, $params->getParam(3)->serialize());
 
-        fclose($handle); 
+    fclose($handle);
 
     // Build our response.
     return new xmlrpcresp(new xmlrpcval(rand(), 'int'));
@@ -57,6 +57,14 @@ function getNewContacts($zeitraum) {
 
     $arr =
         array(
+
+        new xmlrpcval(array('id' => new xmlrpcval(0, 'int'),
+        'key' => new xmlrpcval('ids', 'int'),
+        'value' => new xmlrpcval(2000, 'int')), 'struct'),
+
+        new xmlrpcval(array('id' => new xmlrpcval(1, 'int'),
+        'key' => new xmlrpcval('ids', 'int'),
+        'value' => new xmlrpcval(2001, 'int')), 'struct'),
 
         new xmlrpcval(array('id' => new xmlrpcval(0, 'int'),
         'key' => new xmlrpcval('contactsids', 'int'),

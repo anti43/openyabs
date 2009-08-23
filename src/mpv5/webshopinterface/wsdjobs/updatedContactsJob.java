@@ -96,7 +96,7 @@ public class updatedContactsJob implements WSDaemonJob {
 
                     WSContactsMapping m = WSContactsMapping.getMapping(daemon.getWebShopID(), address.__getContactsids());
                     address.setContactsids(m.__getContactsids());
-                    address.save();
+                    address.saveImport();
                 } catch (NodataFoundException ex) {
                     Log.Debug(ex);
                 }

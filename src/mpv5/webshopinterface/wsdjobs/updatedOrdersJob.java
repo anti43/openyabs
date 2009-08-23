@@ -91,7 +91,7 @@ public class updatedOrdersJob implements WSDaemonJob {
 
                     WSItemsMapping m = WSItemsMapping.getMapping(daemon.getWebShopID(), orderRow.__getItemsids());
                     orderRow.setItemsids(m.__getItemsids());
-                    orderRow.save();
+                    orderRow.saveImport();
                 } catch (NodataFoundException ex) {
                     Log.Debug(this, ex.getMessage());
                 }

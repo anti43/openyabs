@@ -259,7 +259,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
 
     /**
      * Sets the unique id of this do,
-     * should never be called manually
+     * usually not called manually.
      * @param ids
      */
     public void setIDS(int ids) {
@@ -1046,13 +1046,13 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
     /**
      * Tries to reflect the hash table into this do.
      * The hashtable's keys must match the methods retrieved by do.setVars()
-     * @param toHashTable
+     * @param values
      * @throws Exception
      */
-    public void parse(Hashtable<String, Object> toHashTable) throws Exception {
+    public void parse(Hashtable<String, Object> values) throws Exception {
         ArrayList<Method> vars = setVars();
 //        Log.Debug(this, " ?? : " +  toHashTable.size());
-        Object[][] data = ArrayUtilities.hashTableToArray(toHashTable);
+        Object[][] data = ArrayUtilities.hashTableToArray(values);
 //        Log.Debug(this, " ?? : " +  data[0]);
         for (int row = 0; row < data.length; row++) {
             String name = data[row][0].toString().toLowerCase();
@@ -1330,5 +1330,18 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
         }
 
         return map;
+    }
+
+    /**
+     * Tries to reflect the given key and value to a setter of this database object at runtime. Does convert nulls to the String "null".
+     * @param key
+     * @param value
+     * @throws Exception
+     */
+    public void set(String key, Object value) throws Exception {
+        Hashtable<String, Object> map = new Hashtable<String, Object>();
+        map.put(key, value);
+        parse(map);
+        Log.Debug(this, "Set: " + key + " to: " + value);
     }
 }

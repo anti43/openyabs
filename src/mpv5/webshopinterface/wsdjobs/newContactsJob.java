@@ -18,6 +18,8 @@ package mpv5.webshopinterface.wsdjobs;
 
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
@@ -26,6 +28,7 @@ import mpv5.db.objects.Contact;
 import mpv5.db.objects.WSContactsMapping;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
+import mpv5.utils.text.RandomStringUtils;
 import mpv5.webshopinterface.WSConnectionClient;
 import mpv5.webshopinterface.WSDaemon;
 import mpv5.webshopinterface.WSDaemonJob;
@@ -47,7 +50,6 @@ public class newContactsJob implements WSDaemonJob {
         this.daemon = ddaemon;
     }
 
-
     @Override
     public boolean isOneTimeJob() {
         return false;
@@ -62,31 +64,38 @@ public class newContactsJob implements WSDaemonJob {
     public void work(WSConnectionClient client) {
         Object itd = WSContactsMapping.getLastWsID(daemon.getWebShop());
         try {
-            Object d = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_NEW_CONTACTS.toString(), 
+            Object d = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_NEW_CONTACTS.toString(),
                     new Object[]{itd}, new Object());
             List<Contact> obs = WSIManager.createObjects(d, new Contact());
             for (int i = 0; i < obs.size(); i++) {
                 Contact contact = obs.get(i);
                 int id = contact.__getIDS();
-                contact.setIDS(-1);
-                contact.save();
-                WSContactsMapping m = new WSContactsMapping();
-                m.setContactsids(contact.__getIDS());
-                m.setWscontact(String.valueOf(id));
-                m.setCName( String.valueOf(id) + "@" + daemon.getWebShopID());
-                m.setWebshopsids(daemon.getWebShopID());
-                m.setGroupsids(MPView.getUser().__getGroupsids());
-                m.save();
+                WSContactsMapping m;
+                try {//Check if the mapping already exists
+                    m = (WSContactsMapping) WSContactsMapping.getObject(Context.getWebShopContactMapping(), String.valueOf(id) + "@" + daemon.getWebShopID());
+                    Log.Debug(this, "Using exiting mapping to: " + contact.__getIDS() + ". Not going to create " + contact);
+                } catch (NodataFoundException ex) {
+                    contact.setIDS(-1);
+                    contact.save();
+                    //If not, create one
+                    m = new WSContactsMapping();
+                    m.setContactsids(contact.__getIDS());
+                    m.setWscontact(String.valueOf(id));
+                    m.setCName(String.valueOf(id) + "@" + daemon.getWebShopID());
+                    m.setWebshopsids(daemon.getWebShopID());
+                    m.setGroupsids(MPView.getUser().__getGroupsids());
+                    m.save();
+                }
             }
 
-            Object da = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_NEW_ADRESSES.toString(),  new Object[]{itd}, new Object());
+            Object da = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_NEW_ADRESSES.toString(), new Object[]{itd}, new Object());
             List<Address> aobs = WSIManager.createObjects(da, new Address());
 
             for (Address address : aobs) {
                 try {
                     WSContactsMapping m = WSContactsMapping.getMapping(daemon.getWebShopID(), address.__getContactsids());
                     address.setContactsids(m.__getContactsids());
-                    address.save();
+                    address.saveImport();
                 } catch (NodataFoundException ex) {
                     Log.Debug(this, ex.getMessage());
                 }

@@ -73,7 +73,7 @@ public class newOrdersJob implements WSDaemonJob {
                 m.setCName(String.valueOf(order.__getIDS()));
                 m.setWebshopsids(daemon.getWebShopID());
                 m.setGroupsids(MPView.getUser().__getGroupsids());
-                m.save();
+                m.saveImport();
             }
 
             Object da = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_NEW_ORDER_ROWS.toString(),  new Object[]{itd}, new Object());
@@ -83,7 +83,7 @@ public class newOrdersJob implements WSDaemonJob {
                 try {
                     WSItemsMapping m = (WSItemsMapping) DatabaseObject.getObject(Context.getWebShopItemMapping(), String.valueOf(orderRow.__getItemsids()));
                     orderRow.setItemsids(m.__getItemsids());
-                    orderRow.save();
+                    orderRow.saveImport();
                 } catch (NodataFoundException ex) {
                     Log.Debug(ex);
                 }

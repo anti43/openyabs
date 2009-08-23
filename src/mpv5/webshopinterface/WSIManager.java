@@ -18,6 +18,7 @@ package mpv5.webshopinterface;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -25,6 +26,7 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.naming.OperationNotSupportedException;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
@@ -84,7 +86,6 @@ public class WSIManager {
     }
     private HashMap<WebShop, WSDaemon> shopDeamons = new HashMap<WebShop, WSDaemon>();
 
-
     /**
      * @return the shops
      */
@@ -93,26 +94,51 @@ public class WSIManager {
     }
 
     /**
-     * Creates objects from the given map
+     * Creates objects from the given map/list. Assumes data in the format [int id, String key, String value].
      * @param <T>
      * @param data
      * @param template
      * @return
      */
+    @SuppressWarnings("unchecked")
     public static <T extends DatabaseObject> List<T> createObjects(Object data, T template) {
         Vector<T> list = new Vector<T>();
+        List<String[]> rawlist = new Vector<String[]>();
         if (data instanceof HashMap) {
             HashMap m = (HashMap) data;
-            for (Iterator i = m.keySet().iterator(); i.hasNext();) {
-                Log.Debug(WSDaemon.class, i.next());
+            Collection<HashMap> d = m.values();
+            for (Iterator<HashMap> it = d.iterator(); it.hasNext();) {
+                HashMap hashMap = it.next();
+                rawlist.add(new String[]{String.valueOf(hashMap.get("id")), String.valueOf(hashMap.get("key")), String.valueOf(hashMap.get("value"))});
             }
         } else if (data instanceof List) {
-            for (int i = 0; i < ((List) data).size(); i++) {
-                Log.Debug(WSDaemon.class, ((List) data).get(i));
+            List n = (List) data;
+            for (int i = 0; i < n.size(); i++) {
+                rawlist.add(new String[]{String.valueOf(((Object[]) n.get(i))[0]), String.valueOf(((Object[]) n.get(i))[1]), String.valueOf(((Object[]) n.get(i))[2])});
             }
         } else {
             throw new IllegalArgumentException("Only List and HashMap are supported here! You provided: " + data.getClass());
         }
+
+        HashMap<String, T> result = new HashMap<String, T>();
+        for (int i = 0; i < rawlist.size(); i++) {
+            String[] strings = rawlist.get(i);
+            String id = strings[0];
+            String key = strings[1];
+            String value = strings[2];
+
+            if (!result.containsKey(id)) {
+                result.put(id,(T) DatabaseObject.getObject(template.getContext()));
+            }
+            try {
+                result.get(id).set(key, value);
+            } catch (Exception ex) {
+                Log.Debug(ex);
+            }
+        }
+
+        list.addAll(result.values());
+
         return list;
     }
 
@@ -124,7 +150,7 @@ public class WSIManager {
             shops.clear();
             Set<WebShop> k = shopDeamons.keySet();
             for (Iterator i = k.iterator(); i.hasNext();) {
-               shopDeamons.get((WebShop)i.next()).kill();
+                shopDeamons.get((WebShop) i.next()).kill();
             }
             shops.addAll(DatabaseObject.getObjects(new WebShop(), null));
         } catch (NodataFoundException ex) {
