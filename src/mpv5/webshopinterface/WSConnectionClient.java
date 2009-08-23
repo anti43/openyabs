@@ -17,6 +17,7 @@
 package mpv5.webshopinterface;
 
 import java.net.URL;
+import mpv5.globals.Constants;
 import mpv5.logging.Log;
 import mpv5.utils.xml.XMLRpcClient;
 import org.apache.xmlrpc.XmlRpcException;
@@ -42,7 +43,7 @@ public class WSConnectionClient {
      * @throws XmlRpcException If the test fails
      */
     public String test() throws XmlRpcException {
-         Object[] params = new Object[0];
+         Object[] params = new Object[]{Constants.RELEASE_VERSION};
          Integer v = (Integer) getClient().execute(COMMANDS.GETVERSION.toString(), params);
          return "Server XML RPC Yabs Version : " + v;
     }

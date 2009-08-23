@@ -528,22 +528,37 @@ public class ArrayUtilities {
         m.addRow(o);
     }
 
+    /**
+     * 
+     * @param original_array
+     * @param value
+     * @param place If < 0, value will be placed before all others
+     * @return
+     */
     public static Object[][] inserValue(Object[][] original_array, Object value, int place) {
         Object[][] array_formatiert = null;
         if (original_array.length > 0) {
             array_formatiert = new Object[original_array.length][original_array[0].length + 1];
             for (int zeile = 0; zeile < array_formatiert.length; zeile++) {
                 int merker = 0;
-                for (int spalte = 0; spalte < array_formatiert[zeile].length; spalte++, merker++) {
-                    if (spalte == place) {
-                        array_formatiert[zeile][place] = value;
-                        merker--;
-                    } else {
-                        array_formatiert[zeile][spalte] = original_array[zeile][merker];
+                if (place > 0) {
+                    for (int spalte = 0; spalte < array_formatiert[zeile].length; spalte++, merker++) {
+                        if (spalte == place) {
+                            array_formatiert[zeile][place] = value;
+                            merker--;
+                        } else {
+                            array_formatiert[zeile][spalte] = original_array[zeile][merker];
+                        }
+                    }
+                } else {
+                    array_formatiert[zeile][0] = value;
+                    for (int spalte = 0; spalte < original_array[zeile].length; spalte++) {
+                        array_formatiert[zeile][spalte + 1] = original_array[zeile][spalte];
                     }
                 }
             }
         }
+        Log.PrintArray(array_formatiert);
         return array_formatiert;
     }
 

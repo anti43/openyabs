@@ -60,8 +60,9 @@ public class newOrdersJob implements WSDaemonJob {
     @Override
     public void work(WSConnectionClient client) {
         try {
+            Object itd = WSItemsMapping.getLastWsID(daemon.getWebShop());
             Object d = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_NEW_ORDERS.toString(), 
-                    new Object[]{WSItemsMapping.getLastWsID(daemon.getWebShop())}, new Object());
+                     new Object[]{itd}, new Object());
             List<Item> obs = WSIManager.createObjects(d, new Item());
 
             for (Item order : obs) {
@@ -75,7 +76,7 @@ public class newOrdersJob implements WSDaemonJob {
                 m.save();
             }
 
-            Object da = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_NEW_ORDER_ROWS.toString(), new Object[0], new Object());
+            Object da = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_NEW_ORDER_ROWS.toString(),  new Object[]{itd}, new Object());
             List<SubItem> aobs = WSIManager.createObjects(da, new SubItem());
 
             for (SubItem orderRow : aobs) {

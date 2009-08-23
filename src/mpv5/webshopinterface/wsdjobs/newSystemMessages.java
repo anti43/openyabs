@@ -61,8 +61,9 @@ public class newSystemMessages implements WSDaemonJob {
 
     @Override
     public void work(WSConnectionClient client) {
+        Object itd = "0";
         try {
-            Object d = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_NEW_SYSTEM_MESSAGES.toString(), new Object[0], new Object());
+            Object d = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_NEW_SYSTEM_MESSAGES.toString(),  new Object[]{itd}, new Object());
             List<ItemMessage> obs = WSIManager.createObjects(d, new ItemMessage());
 
             for (ItemMessage itemMessage : obs) {

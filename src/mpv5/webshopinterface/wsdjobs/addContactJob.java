@@ -25,6 +25,7 @@ import mpv5.db.objects.WSContactsMapping;
 import mpv5.db.objects.WebShop;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
+import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.webshopinterface.WSConnectionClient;
 import mpv5.webshopinterface.WSDaemon;
 import mpv5.webshopinterface.WSDaemonJob;
@@ -59,7 +60,7 @@ public class addContactJob implements WSDaemonJob {
         List<Contact> data = WSContactsMapping.getUnmappedContacts(daemon.getWebShop());
         try {
             for (Contact c : data) {
-                Object id = client.getClient().invokeSetCommand(WSConnectionClient.COMMANDS.ADD_NEW_CONTACT.toString(), c.getValues2().toArray(new Object[0][]));
+                Object id = client.getClient().invokeSetCommand(WSConnectionClient.COMMANDS.ADD_NEW_CONTACT.toString(), ArrayUtilities.inserValue(c.getValues2().toArray(new Object[0][]), c.__getIDS(), -1));
                 WSContactsMapping ws = new WSContactsMapping();
                 ws.setContactsids(c.__getIDS());
                 ws.setCName( String.valueOf(id) + "@" + daemon.getWebShopID());

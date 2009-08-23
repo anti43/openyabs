@@ -59,8 +59,9 @@ public class updatedOrdersJob implements WSDaemonJob {
 
     @Override
     public void work(WSConnectionClient client) {
+        Object itd = "0";
         try {
-            Object d = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_CHANGED_ORDERS.toString(), new Object[0], new Object());
+            Object d = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_CHANGED_ORDERS.toString(),  new Object[]{itd}, new Object());
             List<Item> obs = WSIManager.createObjects(d, new Item());
             for (int i = 0; i < obs.size(); i++) {
                 Item contact = obs.get(i);
@@ -76,7 +77,7 @@ public class updatedOrdersJob implements WSDaemonJob {
            
             }
 
-            Object da = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_CHANGED_ORDER_ROWS.toString(), new Object[0], new Object());
+            Object da = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_CHANGED_ORDER_ROWS.toString(),  new Object[]{itd}, new Object());
             List<SubItem> aobs = WSIManager.createObjects(da, new SubItem());
 
             for (SubItem orderRow : aobs) {

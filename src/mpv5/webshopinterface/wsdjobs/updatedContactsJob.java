@@ -62,8 +62,9 @@ public class updatedContactsJob implements WSDaemonJob {
 
     @Override
     public void work(WSConnectionClient client) {
+        Object itd = "0";
         try {
-            Object d = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_CHANGED_CONTACTS.toString(), new Object[0], new Object());
+            Object d = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_CHANGED_CONTACTS.toString(),  new Object[]{itd}, new Object());
             List<Contact> obs = WSIManager.createObjects(d, new Contact());
             for (int i = 0; i < obs.size(); i++) {
                 Contact contact = obs.get(i);
@@ -79,7 +80,7 @@ public class updatedContactsJob implements WSDaemonJob {
            
             }
 
-            Object da = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_CHANGED_ADRESSES.toString(), new Object[0], new Object());
+            Object da = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_CHANGED_ADRESSES.toString(),  new Object[]{itd}, new Object());
             List<Address> aobs = WSIManager.createObjects(da, new Address());
 
             for (Address address : aobs) {
