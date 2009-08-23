@@ -71,7 +71,6 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
             setTable();
             setVisible(true);
             setacL();
-
         }
     }
 
@@ -84,7 +83,6 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
             setacL();
         }
     }
-
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -350,8 +348,7 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
     public void refresh() {
 
         labeledSpinner1.getSpinner().setModel(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
-         labeledSpinner1.getSpinner().setEditor(new JSpinner.NumberEditor(labeledSpinner1.getSpinner()));
-//        ((JFormattedTextField) labeledSpinner1.getSpinner().getEditor()).setEditable(false);
+        labeledSpinner1.getSpinner().setEditor(new JSpinner.NumberEditor(labeledSpinner1.getSpinner()));
         labeledSpinner1.getSpinner().updateUI();
 
         try {
@@ -370,11 +367,10 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
         setTable();
     }
 
-
-
     @Override
     public Component getAndRemoveActionPanel() {
-         this.remove(jPanel6);validate();
+        this.remove(jPanel6);
+        validate();
         return jPanel6;
     }
 
@@ -424,13 +420,12 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
         try {
             if (currentUser == null) {
                 currentUser = MPView.getUser().getID();
-                jComboBox1.setSelectedIndex(MPComboBoxModelItem.getItemID(currentUser, jComboBox1.getModel()));
-            } currentUser = Integer.valueOf(((MPComboBoxModelItem) jComboBox1.getSelectedItem()).getId());
-
+                jComboBox1.setSelectedIndex(MPComboBoxModelItem.getItemID(String.valueOf(currentUser), jComboBox1.getModel()));
+            } else {
+                currentUser = Integer.valueOf(((MPComboBoxModelItem) jComboBox1.getSelectedItem()).getId());
+            }
         } catch (Exception e) {
         }
-
-       
     }
 
     private void setacL() {
@@ -453,7 +448,7 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
     }
 
     private void setdata(User user) {
-        jComboBox1.setSelectedIndex(MPComboBoxModelItem.getItemID(user.getID(), jComboBox1.getModel()));
+        jComboBox1.setSelectedIndex(MPComboBoxModelItem.getItemID(String.valueOf(user.getID()), jComboBox1.getModel()));
 
     }
 

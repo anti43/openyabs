@@ -61,7 +61,8 @@ public class newContactsJob implements WSDaemonJob {
     @Override
     public void work(WSConnectionClient client) {
         try {
-            Object d = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_NEW_CONTACTS.toString(), new Object[]{new Date(0l), new Date()}, new Object());
+            Object d = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_NEW_CONTACTS.toString(), 
+                    new Object[]{WSContactsMapping.getLastWsID(daemon.getWebShop())}, new Object());
             List<Contact> obs = WSIManager.createObjects(d, new Contact());
             for (int i = 0; i < obs.size(); i++) {
                 Contact contact = obs.get(i);
@@ -77,7 +78,7 @@ public class newContactsJob implements WSDaemonJob {
                 m.save();
             }
 
-            Object da = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_NEW_ADRESSES.toString(), new Object[]{new Date(0l), new Date()}, new Object());
+            Object da = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_NEW_ADRESSES.toString(), new Object[0], new Object());
             List<Address> aobs = WSIManager.createObjects(da, new Address());
 
             for (Address address : aobs) {

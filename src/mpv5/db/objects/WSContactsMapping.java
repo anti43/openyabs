@@ -16,6 +16,7 @@
  */
 package mpv5.db.objects;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -44,11 +45,11 @@ public class WSContactsMapping extends DatabaseObject {
      * @throws NodataFoundException 
      */
     public static WSContactsMapping getMapping(int webShopID, int contactsids) throws NodataFoundException {
-            QueryCriteria qs = new QueryCriteria();
-            qs.add("webshopid", webShopID);
-            qs.add("contactsids", contactsids);
-            List old = DatabaseObject.getObjects(Context.getWebShopContactMapping(), qs);
-            return (WSContactsMapping) old.get(0);
+        QueryCriteria qs = new QueryCriteria();
+        qs.add("webshopid", webShopID);
+        qs.add("contactsids", contactsids);
+        List old = DatabaseObject.getObjects(Context.getWebShopContactMapping(), qs);
+        return (WSContactsMapping) old.get(0);
     }
 
     /**
@@ -59,15 +60,16 @@ public class WSContactsMapping extends DatabaseObject {
      * @return A list of Contacts
      */
     public static List<Contact> getUnmappedContacts(WebShop webShop) {
-       String query = Context.getContact().prepareSQLString( "SELECT contacts.ids FROM contacts WHERE contacts.ids NOT IN (SELECT contactsids FROM wscontactsmapping WHERE webshopsids = "  + webShop.__getIDS() + ") ");
-        if(webShop.__getGroupsids()>1) {
+        String query = Context.getContact().prepareSQLString("SELECT contacts.ids FROM contacts WHERE contacts.ids NOT IN " +
+                "(SELECT contactsids FROM wscontactsmapping WHERE webshopsids = " + webShop.__getIDS() + ") ");
+        if (webShop.__getGroupsids() > 1) {
             query += " AND groupsids = " + webShop.__getGroupsids();
         }
         ReturnValue ads = QueryHandler.instanceOf().clone(Context.getContact()).freeSelectQuery(query, MPSecurityManager.VIEW, null);
         Object[][] data = ads.getData();
         List<Contact> l = new Vector<Contact>();
         for (int i = 0; i < data.length; i++) {
-            int ig  = Integer.valueOf(data[i][0].toString());
+            int ig = Integer.valueOf(data[i][0].toString());
             try {
                 l.add((Contact) DatabaseObject.getObject(Context.getContact(), ig));
             } catch (NodataFoundException ex) {
@@ -79,6 +81,42 @@ public class WSContactsMapping extends DatabaseObject {
         return l;
     }
 
+    /**
+     * Tries to find the highest WS id, in the following order:
+     * <li>If the IDs are {@link Number} values, returns the highest number
+     * <li>If the values are non-number values, returns the highest values such as Collections.sort(List<String>, String.CASE_INSENSITIVE_ORDER) would return as last value
+     * @param webShop 
+     * @return The String representation of the highest found number
+     */
+    public static String getLastWsID(WebShop webShop) {
+        String query = Context.getWebShopContactMapping().prepareSQLString("SELECT wscontact FROM wscontactsmapping WHERE webshopsids = " + webShop.__getIDS());
+        ReturnValue ads = QueryHandler.instanceOf().clone(Context.getWebShopContactMapping()).freeSelectQuery(query, MPSecurityManager.VIEW, null);
+
+        Object[][] data = ads.getData();
+        List<String> l = new Vector<String>();
+        boolean stringvals = false;
+        Integer hn = 0;
+        for (int i = 0; i < data.length; i++) {
+            try {
+                Integer d = Integer.valueOf(data[i][0].toString());
+                if (d > hn) {
+                    hn = d;
+                }
+            } catch (NumberFormatException numberFormatException) {
+                stringvals = true;
+            }
+            l.add(String.valueOf(data[i][0].toString()));
+        }
+
+        if (stringvals) {
+            Collections.sort(l, String.CASE_INSENSITIVE_ORDER);
+            Log.Debug(WSContactsMapping.class, "Last String id: " + l.get(l.size()));
+            return String.valueOf(l.get(l.size()));
+        } else {
+            Log.Debug(WSContactsMapping.class, "Last Number id: " + hn);
+            return String.valueOf(hn);
+        }
+    }
     private int webshopsids;
     private int contactsids;
     private String wscontact = "";

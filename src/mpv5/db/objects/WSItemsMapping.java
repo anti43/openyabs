@@ -16,12 +16,18 @@
  */
 package mpv5.db.objects;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Vector;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria;
+import mpv5.db.common.QueryHandler;
+import mpv5.db.common.ReturnValue;
+import mpv5.logging.Log;
+import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.images.MPIcon;
 
 /**
@@ -42,6 +48,43 @@ public class WSItemsMapping extends DatabaseObject {
         qs.add("itemsids", itemsids);
         List old = DatabaseObject.getObjects(Context.getWebShopItemMapping(), qs);
         return (WSItemsMapping) old.get(0);
+    }
+
+        /**
+     * Tries to find the highest WS id, in the following order:
+     * <li>If the IDs are {@link Number} values, returns the highest number
+     * <li>If the values are non-number values, returns the highest values such as Collections.sort(List<String>, String.CASE_INSENSITIVE_ORDER) would return as last value
+     * @param webShop
+     * @return The String representation of the highest found number
+     */
+    public static String getLastWsID(WebShop webShop) {
+        String query = Context.getWebShopItemMapping().prepareSQLString("SELECT wsitem FROM wsitemsmapping WHERE webshopsids = " + webShop.__getIDS());
+        ReturnValue ads = QueryHandler.instanceOf().clone(Context.getWebShopItemMapping() ).freeSelectQuery(query, MPSecurityManager.VIEW, null);
+
+        Object[][] data = ads.getData();
+        List<String> l = new Vector<String>();
+        boolean stringvals = false;
+        Integer hn = 0;
+        for (int i = 0; i < data.length; i++) {
+            try {
+                Integer d = Integer.valueOf(data[i][0].toString());
+                if (d > hn) {
+                    hn = d;
+                }
+            } catch (NumberFormatException numberFormatException) {
+                stringvals = true;
+            }
+            l.add(String.valueOf(data[i][0].toString()));
+        }
+
+        if (stringvals) {
+            Collections.sort(l, String.CASE_INSENSITIVE_ORDER);
+            Log.Debug(WSContactsMapping.class, "Last String id: " + l.get(l.size()));
+            return String.valueOf(l.get(l.size()));
+        } else {
+            Log.Debug(WSContactsMapping.class, "Last Number id: " + hn);
+            return String.valueOf(hn);
+        }
     }
     private int webshopsids;
     private int itemsids;
