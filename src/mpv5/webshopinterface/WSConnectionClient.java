@@ -55,11 +55,12 @@ public class WSConnectionClient {
 
         GETVERSION("getYWSIVersion"),
         GET_NEW_CONTACTS("getNewContacts"),
-        GET_CONTACT("getNewContacts"),
+        GET_CONTACT("getContact"),
         GET_NEW_ADDRESSES("getNewAddresses"),
         GET_ADDRESSES("getAddresses"),
         GET_NEW_ORDERS("getNewOrders"),
         GET_ORDER_ROWS("getOrderRows"),
+        ////////////////////////////////////////////////////////////////////////
         GET_NEW_SYSTEM_MESSAGES("getNewSystemMessages"),
         GET_CHANGED_CONTACTS("getUpdatedContacts"),
         GET_CHANGED_ADRESSES("getUpdatedAdresses"),
@@ -69,8 +70,8 @@ public class WSConnectionClient {
         ADD_NEW_PRODUCT("addNewProduct"),
         ADD_NEW_CONTACT("addNewContact"),
         SET_ORDER_STATUS("setOrderStatus"),
-        SET_DISABLED_CONTACTS("setDisabledContacts"),
-        SET_DISABLED_PRODUCTS("setDisabledProducts");
+        SET_DISABLED_CONTACT("setDisabledContact"),
+        SET_DISABLED_PRODUCT("setDisabledProduct");
 
         private COMMANDS(String command) {
             this.command = command;

@@ -80,7 +80,7 @@ public class newOrdersJob implements WSDaemonJob {
                 int id = order.__getContactsids();
                 if (id == -1) {//Guestaccount
                     Object d2 = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_CONTACT.toString(),
-                            new Object[]{id, Boolean.FALSE
+                            new Object[]{order.__getIDS(), Boolean.FALSE
                             }, new Object());
                     List<Contact> obs2 = WSIManager.createObjects(d2, new Contact());
 
