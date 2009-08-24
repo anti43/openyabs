@@ -39,6 +39,7 @@ import mpv5.db.objects.SubItem;
 import mpv5.globals.Headers;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
+import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.numberformat.FormatNumber;
 import mpv5.utils.tables.TableCalculator;
 
@@ -107,7 +108,9 @@ public class MPTableModel extends DefaultTableModel {
      * @param header
      */
     public MPTableModel(Object[][] datstr, String[] header) {
-        super(datstr, header);
+        super();
+
+        setDataVector(datstr,header);
         setEditable(false);
 
         setTypes(new Class[]{Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
@@ -178,6 +181,37 @@ public class MPTableModel extends DefaultTableModel {
         super(data, columnNames);
         setTypes(types);
         setEditable(false);
+    }
+
+    /**
+     * Creates an uneditable model out of the given data
+     * @param types
+     * @param data
+     * @param columnNames
+     */
+    public MPTableModel(List<Object[]> list, String[] header) {
+        super();
+        int width = 0;
+        for (int i = 0; i < list.size(); i++) {
+                Object[] objects = list.get(i);
+                if(objects.length > width)width = objects.length;
+            }
+
+        if (list.size() > 0) {
+            if (header == null) {
+                header = new String[width];
+                for (int i = 0; i < header.length; i++) {
+                    header[i] = String.valueOf(i);
+                }
+            }
+            Object[][] arr = ArrayUtilities.listToTableArray(list);
+            setDataVector(arr, header);
+        }
+
+        setEditable(false);
+        setTypes(new Class[]{Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
+                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
+                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class});
     }
 
     /**
@@ -417,13 +451,14 @@ public class MPTableModel extends DefaultTableModel {
      * 
      */
     public static class DoubleRenderer extends NumberRenderer {
+
         public DoubleRenderer() {
             super();
         }
 
         @Override
         public void setValue(Object value) {
- 
+
             try {
                 setText((value == null) ? "" : FormatNumber.formatDezimal(Double.valueOf(value.toString())));
             } catch (Exception e) {
@@ -459,7 +494,7 @@ public class MPTableModel extends DefaultTableModel {
     /**
      * 
      */
-   public static class IconRenderer extends DefaultTableCellRenderer.UIResource {
+    public static class IconRenderer extends DefaultTableCellRenderer.UIResource {
 
         public IconRenderer() {
             super();

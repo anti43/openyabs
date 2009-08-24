@@ -390,8 +390,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
         intaddedby = MPView.getUser().__getIDS();
 
         if (groupsids <= 0 || !DatabaseObject.exists(Context.getGroup(), groupsids)) {
-            Log.Debug(this, "Setting groups to 'ungrouped'");
-            groupsids = 1;
+            Log.Debug(this, "Setting groups to users group.");
+            groupsids = MPView.getUser().__getGroupsids();
         }
         return save();
     }

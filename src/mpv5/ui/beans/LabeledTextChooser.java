@@ -167,14 +167,15 @@ public class LabeledTextChooser extends javax.swing.JPanel {
     }
 
     /**
-     * @return the _mode
+     * @return the selection mode
      */
     public int getMode() {
         return _mode;
     }
 
     /**
-     * @param mode the _mode to set
+     * Default: javax.​swing.​JFileChooser.FILES_AND_DIRECTORIES
+     * @param mode the selection mode to set
      */
     public void setMode(int mode) {
         this._mode = mode;

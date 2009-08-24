@@ -22,12 +22,16 @@ along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
 package mpv5.ui.dialogs.subcomponents;
 
 import java.awt.Component;
+import java.awt.event.MouseEvent;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFileChooser;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreeSelectionModel;
 import mpv5.data.PropertyStore;
 import mpv5.db.common.Context;
@@ -40,11 +44,14 @@ import mpv5.globals.Messages;
 
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.ControlApplet;
+import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.Popup;
+import mpv5.ui.dialogs.Wizard;
 import mpv5.ui.frames.MPView;
 import mpv5.ui.panels.DataPanel;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.arrays.ArrayUtilities;
+import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.models.MPTreeModel;
 import mpv5.utils.trees.TreeFormat;
 import mpv5.utils.ui.TextFieldUtils;
@@ -111,7 +118,6 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
         jLabel1 = new javax.swing.JLabel();
         rightpane = new javax.swing.JPanel();
         cname = new mpv5.ui.beans.LabeledTextField();
-        parents = new mpv5.ui.beans.LabeledTextField();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTextArea2 = new javax.swing.JTextArea();
         jLabel2 = new javax.swing.JLabel();
@@ -119,7 +125,11 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
         desc = new javax.swing.JTextArea();
         jLabel3 = new javax.swing.JLabel();
         gcombobox = new mpv5.ui.beans.LabeledCombobox();
+        path = new mpv5.ui.beans.LabeledTextField();
+        parents = new mpv5.ui.beans.LabeledTextField();
         jPanel2 = new javax.swing.JPanel();
+        jButton5 = new javax.swing.JButton();
+        jSeparator1 = new javax.swing.JSeparator();
         jButton4 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
@@ -157,7 +167,7 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 134, Short.MAX_VALUE)
                     .addComponent(jLabel1))
                 .addContainerGap())
         );
@@ -167,7 +177,7 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 319, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -178,9 +188,6 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
 
         cname.set_Label(bundle.getString("ControlPanel_ProductGroups.cname._Label")); // NOI18N
         cname.setName("cname"); // NOI18N
-
-        parents.set_Label(bundle.getString("ControlPanel_ProductGroups.parents._Label")); // NOI18N
-        parents.setName("parents"); // NOI18N
 
         jScrollPane3.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         jScrollPane3.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
@@ -208,12 +215,19 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
         desc.setName("desc"); // NOI18N
         jScrollPane2.setViewportView(desc);
 
-        jLabel3.setFont(new java.awt.Font("Dialog", 0, 12));
+        jLabel3.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
         jLabel3.setText(bundle.getString("ControlPanel_ProductGroups.jLabel3.text")); // NOI18N
         jLabel3.setName("jLabel3"); // NOI18N
 
         gcombobox.set_Label(bundle.getString("ControlPanel_ProductGroups.gcombobox._Label")); // NOI18N
         gcombobox.setName("gcombobox"); // NOI18N
+
+        path.set_Label(bundle.getString("ControlPanel_ProductGroups.path._Label")); // NOI18N
+        path.setName("path"); // NOI18N
+
+        parents.set_Label(bundle.getString("ControlPanel_ProductGroups.parents._Label")); // NOI18N
+        parents.setEnabled(false);
+        parents.setName("parents"); // NOI18N
 
         javax.swing.GroupLayout rightpaneLayout = new javax.swing.GroupLayout(rightpane);
         rightpane.setLayout(rightpaneLayout);
@@ -222,13 +236,14 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
             .addGroup(rightpaneLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(cname, javax.swing.GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 340, Short.MAX_VALUE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 340, Short.MAX_VALUE)
+                    .addComponent(cname, javax.swing.GroupLayout.DEFAULT_SIZE, 340, Short.MAX_VALUE)
                     .addComponent(jLabel2)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE)
-                    .addComponent(parents, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE)
-                    .addComponent(gcombobox, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 340, Short.MAX_VALUE)
+                    .addComponent(gcombobox, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 340, Short.MAX_VALUE)
+                    .addComponent(path, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 340, Short.MAX_VALUE)
+                    .addComponent(parents, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 340, Short.MAX_VALUE))
                 .addContainerGap())
         );
         rightpaneLayout.setVerticalGroup(
@@ -242,9 +257,11 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(parents, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(path, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(gcombobox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(55, Short.MAX_VALUE))
@@ -255,6 +272,18 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.setName("jPanel2"); // NOI18N
         jPanel2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
+
+        jButton5.setText(bundle.getString("ControlPanel_ProductGroups.jButton5.text")); // NOI18N
+        jButton5.setName("jButton5"); // NOI18N
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+        jPanel2.add(jButton5);
+
+        jSeparator1.setName("jSeparator1"); // NOI18N
+        jPanel2.add(jSeparator1);
 
         jButton4.setText(bundle.getString("ControlPanel_ProductGroups.jButton4.text")); // NOI18N
         jButton4.setName("jButton4"); // NOI18N
@@ -329,16 +358,18 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
         if (dataOwner == null) {
             dataOwner = new ProductGroup();
         }
-        DatabaseObject dato = dataOwner;
-        if (QueryHandler.instanceOf().clone(Context.getGroup()).checkUniqueness(Context.getGroup().getUniqueColumns(), new JTextField[]{cname.getTextField()})) {
-            dato.getPanelData(this);
-            dato.setIDS(-1);
-            if (dato.save()) {
-            } else {
-                showRequiredFields();
+        try {
+            DatabaseObject dato = dataOwner;
+            if (QueryHandler.instanceOf().clone(Context.getGroup()).checkUniqueness(Context.getGroup().getUniqueColumns(), new JTextField[]{cname.getTextField()})) {
+                dato.getPanelData(this);
+                dato.setIDS(-1);
+                if (dato.save()) {
+                } else {
+                    showRequiredFields();
+                }
             }
+        } catch (Exception e) {
         }
-
         refresh();
 }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -346,18 +377,24 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
         evt.consume();
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
 
-        if (evt.getClickCount() == 1) {
+        if (evt.getButton() == MouseEvent.BUTTON2 || evt.getButton() == MouseEvent.BUTTON3) {
             if (node != null) {
                 ProductGroup g = (ProductGroup) node.getUserObject();
                 parents.set_Text(g.__getCName());
+                path.setText(getPath(node, 0));
             }
         } else {
             if (node != null) {
                 ProductGroup g = (ProductGroup) node.getUserObject();
-                setDataOwner(g,true);
+                setDataOwner(g, true);
+                path.setText(getPath(node, 1));
             }
         }
     }//GEN-LAST:event_treeMouseClicked
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+      importf();
+    }//GEN-LAST:event_jButton5ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
@@ -368,6 +405,7 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -376,8 +414,10 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextArea jTextArea2;
     private mpv5.ui.beans.LabeledTextField parents;
+    private mpv5.ui.beans.LabeledTextField path;
     private javax.swing.JPanel rightpane;
     private javax.swing.JTree tree;
     // End of variables declaration//GEN-END:variables
@@ -445,6 +485,7 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
     public void collectData() {
         cname_ = cname.get_Text();
         description_ = desc.getText();
+        hierarchypath_ = path.getText();
         try {
             productgroupsids_ = DatabaseObject.getObject(Context.getProductGroup(), parents.get_Text()).__getIDS();
         } catch (NodataFoundException ex) {
@@ -476,10 +517,11 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
     public void exposeData() {
         cname.set_Text(cname_);
         desc.setText(description_);
+        path.setText(hierarchypath_);
         try {
             parents.set_Text(DatabaseObject.getObject(Context.getProductGroup(), productgroupsids_).__getCName());
         } catch (NodataFoundException ex) {
-            Log.Debug(this, ex);
+            Log.Debug(this, ex.getMessage());
         }
         try {
 //        defaults.set_Text(defaults_);
@@ -516,5 +558,23 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
     }
         @Override
     public void actionAfterCreate() {
+    }
+
+           private String getPath(DefaultMutableTreeNode node, int shift) {
+        TreeNode[] p = node.getPath();
+        String path1 = "";
+        for (int i = 0; i < p.length-shift; i++) {
+            TreeNode treeNode = p[i];
+            path1 += treeNode.toString() + File.separator;
+        }
+
+        return path1;
+    }
+
+    private void importf() {
+        Wizard w = new Wizard(false);
+        w.addPanel(new wizard_CSVImport_1(w));
+        w.addPanel(new wizard_CSV_ProductGroups_Import_1(w));
+        w.showWiz();
     }
 }

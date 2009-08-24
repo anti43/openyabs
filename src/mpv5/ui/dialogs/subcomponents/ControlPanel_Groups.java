@@ -22,6 +22,7 @@ along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
 package mpv5.ui.dialogs.subcomponents;
 
 import java.awt.Component;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -198,12 +199,11 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
         desc.setName("desc"); // NOI18N
         jScrollPane2.setViewportView(desc);
 
-        jLabel3.setFont(new java.awt.Font("Dialog", 0, 12));
+        jLabel3.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
         jLabel3.setText(bundle.getString("ControlPanel_Groups.jLabel3.text")); // NOI18N
         jLabel3.setName("jLabel3"); // NOI18N
 
         path.set_Label(bundle.getString("ControlPanel_Groups.path._Label")); // NOI18N
-        path.setEnabled(false);
         path.setName("path"); // NOI18N
 
         javax.swing.GroupLayout rightpaneLayout = new javax.swing.GroupLayout(rightpane);
@@ -337,13 +337,19 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
         evt.consume();
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
 
-        
+        if (evt.getButton() == MouseEvent.BUTTON2 || evt.getButton() == MouseEvent.BUTTON3) {
+            if (node != null) {
+                Group g = (Group) node.getUserObject();
+                parents.set_Text(g.__getCName());
+                path.setText(getPath(node, 0));
+            }
+        } else {
             if (node != null) {
                 Group g = (Group) node.getUserObject();
                 setDataOwner(g, true);
-                path.setText(getPath(node));
+                path.setText(getPath(node, 1));
             }
-        
+        }
     }//GEN-LAST:event_treeMouseClicked
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
@@ -421,6 +427,7 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
     public void collectData() {
         cname_ = cname.get_Text();
         description_ = desc.getText();
+        hierarchypath_ = path.getText();
         try {
             groupsids_ = DatabaseObject.getObject(Context.getGroup(), parents.get_Text()).__getIDS();
         } catch (NodataFoundException ex) {
@@ -478,10 +485,10 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
     public void actionAfterCreate() {
     }
 
-    private String getPath(DefaultMutableTreeNode node) {
+    private String getPath(DefaultMutableTreeNode node, int shift) {
         TreeNode[] p = node.getPath();
         String path1 = "";
-        for (int i = 0; i < p.length-1; i++) {
+        for (int i = 0; i < p.length-shift; i++) {
             TreeNode treeNode = p[i];
             path1 += treeNode.toString() + File.separator;
         }
