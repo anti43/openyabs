@@ -131,7 +131,7 @@ public class WSIManager {
                 result.put(id,(T) DatabaseObject.getObject(template.getContext()));
             }
             try {
-                result.get(id).set(key, value);
+                result.get(id).parse(key, value);
             } catch (Exception ex) {
                 Log.Debug(ex);
             }

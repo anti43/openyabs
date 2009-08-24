@@ -54,6 +54,9 @@
             <Font component="jTextField1" property="font" relativeSize="true" size="0"/>
           </FontInfo>
         </Property>
+        <Property name="disabledTextColor" type="java.awt.Color" noResource="true" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="99" green="99" red="99" type="rgb"/>
+        </Property>
       </Properties>
     </Component>
   </SubComponents>

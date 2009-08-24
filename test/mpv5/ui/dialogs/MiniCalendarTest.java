@@ -40,7 +40,7 @@ public class MiniCalendarTest {
     @Test
     public void testGetDate() {
         System.out.println("getDate");
-        MiniCalendar instance = null;
+        MiniCalendarFrame instance = null;
         Date expResult = null;
         Date result = instance.getDate();
         assertEquals(expResult, result);
@@ -55,7 +55,7 @@ public class MiniCalendarTest {
     public void testSetDate() {
         System.out.println("setDate");
         Date date = null;
-        MiniCalendar instance = null;
+        MiniCalendarFrame instance = null;
         instance.setDate(date);
         
         fail("The test case is a prototype.");

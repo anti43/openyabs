@@ -344,7 +344,7 @@ public class DateConverter {
     }
 
     /**
-     * Triy to parse the given object to a date
+     * Try to parse the given object to a date
      * @param object
      * @return
      */

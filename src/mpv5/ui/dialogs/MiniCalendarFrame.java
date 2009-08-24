@@ -17,7 +17,7 @@ import mpv5.utils.date.DateConverter;
  *
  *  
  */
-public class MiniCalendar extends javax.swing.JFrame {
+public class MiniCalendarFrame extends javax.swing.JFrame {
 
     private static final long serialVersionUID = 1L;
     private CalendarPane xc;
@@ -28,7 +28,7 @@ public class MiniCalendar extends javax.swing.JFrame {
      * @param t
      * @param visible
      */
-    public MiniCalendar(JTextField t, boolean visible) {
+    public MiniCalendarFrame(JTextField t, boolean visible) {
         try {
             initComponents();
 
@@ -53,7 +53,7 @@ public class MiniCalendar extends javax.swing.JFrame {
         }
     }
 
-    public MiniCalendar(JSpinner t, boolean visible) {
+    public MiniCalendarFrame(JSpinner t, boolean visible) {
         try {
             initComponents();
 

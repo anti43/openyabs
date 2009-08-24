@@ -3,7 +3,8 @@ package mpv5.ui.beans;
 import com.toedter.calendar.JSpinnerDateEditor;
 import java.util.Date;
 import javax.swing.JSpinner.DateEditor;
-import mpv5.ui.dialogs.MiniCalendar;
+import mpv5.ui.dialogs.MiniCalendarDialog;
+import mpv5.ui.dialogs.MiniCalendarFrame;
 import mpv5.utils.date.DateConverter;
 
 /**
@@ -13,7 +14,8 @@ import mpv5.utils.date.DateConverter;
 public class DateChooser extends javax.swing.JPanel {
 
     private static final long serialVersionUID = 1L;
-    private MiniCalendar d;
+    private MiniCalendarDialog d;
+    private boolean asAPopup = false;
 
     /** Creates new form LabeledTextField */
     public DateChooser() {
@@ -23,11 +25,11 @@ public class DateChooser extends javax.swing.JPanel {
 
     /**
      *
-     * @param nullDate
      */
-    public DateChooser(boolean nullDate) {
+    public DateChooser(boolean asAPopup) {
         initComponents();
         jSpinner1.setEditor(new DateEditor(jSpinner1, DateConverter.getDefaultFormatString()));
+        this.asAPopup = asAPopup;
     }
 
     /**
@@ -35,20 +37,21 @@ public class DateChooser extends javax.swing.JPanel {
      * @return
      */
     public boolean hasDate() {
-        return (d.getDate() != null);
+        return (DateConverter.getDate(jSpinner1.getValue()) != null);
     }
 
     public void setDate(Date date) {
         if (d == null) {
-            d = new MiniCalendar(jSpinner1, false);
+            d = new MiniCalendarDialog(jSpinner1, asAPopup);
         }
 
+        jSpinner1.setValue(date);
         d.setDate(date);
     }
 
     public Date getDate() {
         if (hasDate()) {
-            return d.getDate();
+            return DateConverter.getDate(jSpinner1.getValue());
         } else {
             return new Date();
         }
@@ -72,6 +75,11 @@ public class DateChooser extends javax.swing.JPanel {
         jButton1.setText("...");
         jButton1.setToolTipText("Choose");
         jButton1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton1MouseClicked(evt);
+            }
+        });
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -101,11 +109,19 @@ public class DateChooser extends javax.swing.JPanel {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         if (d == null) {
-            d = new MiniCalendar(jSpinner1, true);
+            d = new MiniCalendarDialog(jSpinner1, asAPopup);
         }
+
         d.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
+        if (d == null) {
+            d = new MiniCalendarDialog(jSpinner1, asAPopup);
+        }
+        d.setLocation(evt.getLocationOnScreen());
+        d.setVisible(true);
+    }//GEN-LAST:event_jButton1MouseClicked
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JSpinner jSpinner1;

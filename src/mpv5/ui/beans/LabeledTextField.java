@@ -75,6 +75,7 @@ public class LabeledTextField extends javax.swing.JPanel {
         jLabel1.setText("text");
 
         jTextField1.setFont(jTextField1.getFont());
+        jTextField1.setDisabledTextColor(new java.awt.Color(153, 153, 153));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -138,7 +139,7 @@ public class LabeledTextField extends javax.swing.JPanel {
 
     @Override
     public void setEnabled(boolean enabled) {
-        jLabel1.setEnabled(enabled);
+//        jLabel1.setEnabled(enabled);
         jTextField1.setEnabled(enabled);
     }
 

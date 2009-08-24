@@ -1338,7 +1338,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
      * @param value
      * @throws Exception
      */
-    public void set(String key, Object value) throws Exception {
+    public void parse(String key, Object value) throws Exception {
         Hashtable<String, Object> map = new Hashtable<String, Object>();
         map.put(key, value);
         parse(map);

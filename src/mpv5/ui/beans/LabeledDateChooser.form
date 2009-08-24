@@ -59,7 +59,7 @@
         </Property>
       </Properties>
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new mpv5.ui.beans.DateChooser(true)"/>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new mpv5.ui.beans.DateChooser()"/>
       </AuxValues>
     </Component>
   </SubComponents>

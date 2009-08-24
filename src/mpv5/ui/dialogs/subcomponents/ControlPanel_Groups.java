@@ -22,11 +22,13 @@ along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
 package mpv5.ui.dialogs.subcomponents;
 
 import java.awt.Component;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JTextField;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreeSelectionModel;
 import mpv5.data.PropertyStore;
 import mpv5.db.common.Context;
@@ -73,7 +75,7 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
             initComponents();
             tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
             refresh();
-            setDataOwner(aThis,true);
+            setDataOwner(aThis, true);
         }
     }
 
@@ -105,13 +107,14 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
         jScrollPane2 = new javax.swing.JScrollPane();
         desc = new javax.swing.JTextArea();
         jLabel3 = new javax.swing.JLabel();
+        path = new mpv5.ui.beans.LabeledTextField();
         jPanel2 = new javax.swing.JPanel();
         jButton4 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Groups.border.title"))); // NOI18N
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());
@@ -153,7 +156,7 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -166,6 +169,7 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
         cname.setName("cname"); // NOI18N
 
         parents.set_Label(bundle.getString("ControlPanel_Groups.parents._Label")); // NOI18N
+        parents.setEnabled(false);
         parents.setName("parents"); // NOI18N
 
         jScrollPane3.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
@@ -198,6 +202,10 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
         jLabel3.setText(bundle.getString("ControlPanel_Groups.jLabel3.text")); // NOI18N
         jLabel3.setName("jLabel3"); // NOI18N
 
+        path.set_Label(bundle.getString("ControlPanel_Groups.path._Label")); // NOI18N
+        path.setEnabled(false);
+        path.setName("path"); // NOI18N
+
         javax.swing.GroupLayout rightpaneLayout = new javax.swing.GroupLayout(rightpane);
         rightpane.setLayout(rightpaneLayout);
         rightpaneLayout.setHorizontalGroup(
@@ -210,7 +218,8 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
                     .addComponent(jLabel2)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE)
-                    .addComponent(parents, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE))
+                    .addComponent(parents, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE)
+                    .addComponent(path, javax.swing.GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE))
                 .addContainerGap())
         );
         rightpaneLayout.setVerticalGroup(
@@ -227,7 +236,9 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(parents, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(83, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(path, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(56, Short.MAX_VALUE))
         );
 
         add(rightpane, java.awt.BorderLayout.EAST);
@@ -280,7 +291,7 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
             if (dataOwner != null) {
                 DatabaseObject dato = dataOwner;
                 dato.getPanelData(this);
-                if (dato.__getIDS().intValue() == 1|| !dato.delete()) {
+                if (dato.__getIDS().intValue() == 1 || !dato.delete()) {
                     Popup.notice(Messages.NOT_POSSIBLE + "\n" + Messages.IN_USE);
                 }
             }
@@ -326,19 +337,14 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
         evt.consume();
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
 
-        if (evt.getClickCount() == 1) {
+        
             if (node != null) {
                 Group g = (Group) node.getUserObject();
-                parents.set_Text(g.__getCName());
+                setDataOwner(g, true);
+                path.setText(getPath(node));
             }
-        } else {
-            if (node != null) {
-                Group g = (Group) node.getUserObject();
-                setDataOwner(g,true);
-            }
-        }
+        
     }//GEN-LAST:event_treeMouseClicked
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
     private mpv5.ui.beans.LabeledTextField cname;
@@ -357,6 +363,7 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextArea jTextArea2;
     private mpv5.ui.beans.LabeledTextField parents;
+    private mpv5.ui.beans.LabeledTextField path;
     private javax.swing.JPanel rightpane;
     private javax.swing.JTree tree;
     // End of variables declaration//GEN-END:variables
@@ -386,10 +393,9 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
 
             dato.getPanelData(this);
             dato.reset();
-            setDataOwner(dato,true);
+            setDataOwner(dato, true);
         }
     }
-
 
     public void refresh() {
 
@@ -404,7 +410,7 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
         try {
             g = (Group) DatabaseObject.getObject(Context.getGroup(), 1);
         } catch (NodataFoundException ex) {
-            g= new Group(Messages.GROUPNAMES.toString());
+            g = new Group(Messages.GROUPNAMES.toString());
             g.setIDS(-1);
         }
 
@@ -437,17 +443,18 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
     public void exposeData() {
         cname.set_Text(cname_);
         desc.setText(description_);
+        path.setText(hierarchypath_);
         try {
             parents.set_Text(DatabaseObject.getObject(Context.getGroup(), groupsids_).__getCName());
         } catch (NodataFoundException ex) {
-            Log.Debug(this, ex);
+//            Log.Debug(this, ex);
         }
 //        defaults.set_Text(defaults_);
     }
 
     public void paste(DatabaseObject dbo) {
         if (dbo.getDbIdentity().equals(Context.getGroup().getDbIdentity())) {
-            setDataOwner(dbo,true);
+            setDataOwner(dbo, true);
         } else {
             MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE);
         }
@@ -457,17 +464,28 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-
     public Component getAndRemoveActionPanel() {
-         this.remove(jPanel2);validate();
+        this.remove(jPanel2);
+        validate();
         return jPanel2;
     }
 
     @Override
     public void actionAfterSave() {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
-        @Override
+
+    @Override
     public void actionAfterCreate() {
+    }
+
+    private String getPath(DefaultMutableTreeNode node) {
+        TreeNode[] p = node.getPath();
+        String path1 = "";
+        for (int i = 0; i < p.length-1; i++) {
+            TreeNode treeNode = p[i];
+            path1 += treeNode.toString() + File.separator;
+        }
+
+        return path1;
     }
 }

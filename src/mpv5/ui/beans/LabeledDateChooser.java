@@ -52,7 +52,7 @@ public class LabeledDateChooser extends javax.swing.JPanel {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        dateChooser1 = new mpv5.ui.beans.DateChooser(true);
+        dateChooser1 = new mpv5.ui.beans.DateChooser();
 
         setOpaque(false);
 
