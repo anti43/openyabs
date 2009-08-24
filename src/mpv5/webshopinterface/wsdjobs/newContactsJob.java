@@ -76,6 +76,7 @@ public class newContactsJob implements WSDaemonJob {
                     Log.Debug(this, "Using exiting mapping to: " + contact.__getIDS() + ". Not going to create " + contact);
                 } catch (NodataFoundException ex) {
                     contact.setIDS(-1);
+                    contact.setGroupsids(daemon.getWebShop().__getGroupsids());
                     contact.save();
                     //If not, create one
                     m = new WSContactsMapping();
@@ -95,6 +96,7 @@ public class newContactsJob implements WSDaemonJob {
                 try {
                     WSContactsMapping m = WSContactsMapping.getMapping(daemon.getWebShopID(), address.__getContactsids());
                     address.setContactsids(m.__getContactsids());
+                    address.setGroupsids(daemon.getWebShop().__getGroupsids());
                     address.saveImport();
                 } catch (NodataFoundException ex) {
                     Log.Debug(this, ex.getMessage());

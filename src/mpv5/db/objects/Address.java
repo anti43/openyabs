@@ -39,7 +39,7 @@ public class Address extends DatabaseObject {
     private String country = "";
     private boolean ismale = true;
     private int contactsids = 0;
-    private int inttype = 2;//[0 = billing adress, 1 = delivery adress, 2 = undefined]
+    private int inttype = 2;// [0 = billing adress, 1 = delivery adress, 2 = both, 3 = undefined]
 
     public Address(){
         context.setDbIdentity(Context.IDENTITY_ADDRESS);

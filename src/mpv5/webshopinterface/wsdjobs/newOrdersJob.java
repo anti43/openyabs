@@ -87,6 +87,7 @@ public class newOrdersJob implements WSDaemonJob {
                     c = obs2.get(0);
                     c.setNotes(c.__getNotes() + "\nAuto generated guest account for webshop: " + daemon.getWebShop().__getCName());
                     c.setMailaddress("NO-MAILS " + c.__getMailaddress());
+                    c.setGroupsids(daemon.getWebShop().__getGroupsids());
                     c.saveImport();
                 } else {
                     try {//Look the contact up
@@ -104,6 +105,7 @@ public class newOrdersJob implements WSDaemonJob {
                                 }, new Object());
                         List<Contact> obs2 = WSIManager.createObjects(d2, new Contact());
                         c = obs2.get(0);
+                        c.setGroupsids(daemon.getWebShop().__getGroupsids());
                         c.saveImport();
 
                         md = new WSContactsMapping();
@@ -117,6 +119,8 @@ public class newOrdersJob implements WSDaemonJob {
                 }
                 int wsitemids = order.__getIDS();
                 order.setContactsids(c.__getIDS());
+                order.setDescription(order.__getDescription() + "\nImport: " + daemon.getWebShop());
+                order.setGroupsids(daemon.getWebShop().__getGroupsids());
                 order.save();
                 savedOrders.add(order);
 
@@ -137,6 +141,7 @@ public class newOrdersJob implements WSDaemonJob {
                     try {
                         WSItemsMapping mk = (WSItemsMapping) DatabaseObject.getObject(Context.getWebShopItemMapping(), String.valueOf(orderRow.__getItemsids()));
                         orderRow.setItemsids(mk.__getItemsids());
+                        orderRow.setGroupsids(daemon.getWebShop().__getGroupsids());
                         orderRow.saveImport();
                     } catch (NodataFoundException ex) {
                         Log.Debug(ex);

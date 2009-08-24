@@ -76,6 +76,7 @@ public class getContactJob implements WSDaemonJob {
                     m = (WSContactsMapping) WSContactsMapping.getObject(Context.getWebShopContactMapping(), String.valueOf(id) + "@" + daemon.getWebShopID());
                     Log.Debug(this, "Using exiting mapping to: " + contact.__getIDS() + ". Not going to create " + contact);
                 } catch (NodataFoundException ex) {
+                    contact.setGroupsids(daemon.getWebShop().__getGroupsids());
                     contact.saveImport();
                     //If not, create one
                     m = new WSContactsMapping();
