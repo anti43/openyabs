@@ -55,9 +55,11 @@ public class WSConnectionClient {
 
         GETVERSION("getYWSIVersion"),
         GET_NEW_CONTACTS("getNewContacts"),
-        GET_NEW_ADRESSES("getNewAdresses"),
+        GET_CONTACT("getNewContacts"),
+        GET_NEW_ADDRESSES("getNewAddresses"),
+        GET_ADDRESSES("getAddresses"),
         GET_NEW_ORDERS("getNewOrders"),
-        GET_NEW_ORDER_ROWS("getOrderRows"),
+        GET_ORDER_ROWS("getOrderRows"),
         GET_NEW_SYSTEM_MESSAGES("getNewSystemMessages"),
         GET_CHANGED_CONTACTS("getUpdatedContacts"),
         GET_CHANGED_ADRESSES("getUpdatedAdresses"),

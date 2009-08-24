@@ -163,7 +163,10 @@ public enum Messages {
     DONE_LOADING_OOO("OpenOffice loaded"),
     OOCONNERROR("Could not open a connection to OpenOffice."),
     SET_AS_DEFAULT("Set as default"),
-    NO_ACCOUNTS("No accounts or companies are configured for you.");
+    NO_ACCOUNTS("No accounts or companies are configured for you."),
+    CONTACTS_TRANSMITTED("contacts have been transmitted to"),
+    ORDERS_RECEIVED("orders have been received from"),
+    LOAD_NOW("Load now?");
 
     private Messages(String message) {
         this.message = message;

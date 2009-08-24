@@ -38,16 +38,18 @@ import org.apache.xmlrpc.XmlRpcException;
 /**
  * This job tries to fetch new contacts + adresses of them
  */
-public class newContactsJob implements WSDaemonJob {
+public class getContactJob implements WSDaemonJob {
 
     private final WSDaemon daemon;
+    private final String wscontactid;
 
     /**
      *  Create a new job
      * @param ddaemon 
      */
-    public newContactsJob(WSDaemon ddaemon) {
+    public getContactJob(WSDaemon ddaemon, String wscontactid) {
         this.daemon = ddaemon;
+        this.wscontactid = wscontactid;
     }
 
     @Override
@@ -62,10 +64,9 @@ public class newContactsJob implements WSDaemonJob {
 
     @Override
     public void work(WSConnectionClient client) {
-        Object itd = WSContactsMapping.getLastWsID(daemon.getWebShop());
         try {
-            Object d = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_NEW_CONTACTS.toString(),
-                    new Object[]{itd}, new Object());
+            Object d = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_CONTACT.toString(),
+                    new Object[]{wscontactid, Boolean.TRUE}, new Object());
             List<Contact> obs = WSIManager.createObjects(d, new Contact());
             for (int i = 0; i < obs.size(); i++) {
                 Contact contact = obs.get(i);
@@ -75,8 +76,7 @@ public class newContactsJob implements WSDaemonJob {
                     m = (WSContactsMapping) WSContactsMapping.getObject(Context.getWebShopContactMapping(), String.valueOf(id) + "@" + daemon.getWebShopID());
                     Log.Debug(this, "Using exiting mapping to: " + contact.__getIDS() + ". Not going to create " + contact);
                 } catch (NodataFoundException ex) {
-                    contact.setIDS(-1);
-                    contact.save();
+                    contact.saveImport();
                     //If not, create one
                     m = new WSContactsMapping();
                     m.setContactsids(contact.__getIDS());
@@ -88,7 +88,8 @@ public class newContactsJob implements WSDaemonJob {
                 }
             }
 
-            Object da = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_NEW_ADDRESSES.toString(), new Object[]{itd}, new Object());
+            Object da = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_ADDRESSES.toString(),
+                    new Object[]{wscontactid}, new Object());
             List<Address> aobs = WSIManager.createObjects(da, new Address());
 
             for (Address address : aobs) {

@@ -18,13 +18,20 @@ package mpv5.webshopinterface.wsdjobs;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
+import mpv5.db.objects.Contact;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.SubItem;
+import mpv5.db.objects.WSContactsMapping;
 import mpv5.db.objects.WSItemsMapping;
+import mpv5.globals.Messages;
 import mpv5.logging.Log;
+import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPView;
 import mpv5.webshopinterface.WSConnectionClient;
 import mpv5.webshopinterface.WSDaemon;
@@ -59,37 +66,97 @@ public class newOrdersJob implements WSDaemonJob {
 
     @Override
     public void work(WSConnectionClient client) {
+        WSContactsMapping md;
+        Contact c;
+        List<Item> savedOrders = new Vector<Item>();
         try {
             Object itd = WSItemsMapping.getLastWsID(daemon.getWebShop());
-            Object d = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_NEW_ORDERS.toString(), 
-                     new Object[]{itd}, new Object());
+            Object d = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_NEW_ORDERS.toString(),
+                    new Object[]{itd}, new Object());
             List<Item> obs = WSIManager.createObjects(d, new Item());
 
             for (Item order : obs) {
+
+                int id = order.__getContactsids();
+                if (id == -1) {//Guestaccount
+                    Object d2 = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_CONTACT.toString(),
+                            new Object[]{id, Boolean.FALSE
+                            }, new Object());
+                    List<Contact> obs2 = WSIManager.createObjects(d2, new Contact());
+
+                    c = obs2.get(0);
+                    c.setNotes(c.__getNotes() + "\nAuto generated guest account for webshop: " + daemon.getWebShop().__getCName());
+                    c.setMailaddress("NO-MAILS " + c.__getMailaddress());
+                    c.saveImport();
+                } else {
+                    try {//Look the contact up
+                        md = (WSContactsMapping) WSContactsMapping.getObject(Context.getWebShopContactMapping(),
+                                String.valueOf(id) + "@" + daemon.getWebShopID());
+                        try {
+                            c = (Contact) DatabaseObject.getObject(Context.getContact(), md.__getContactsids());
+                        } catch (NodataFoundException nodataFoundException) {
+                            throw new UnsupportedOperationException("Invalid contact mapping found: " + md);
+                        }
+                    } catch (NodataFoundException ex) {
+                        // Not yet created
+                        Object d2 = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_CONTACT.toString(),
+                                new Object[]{id, Boolean.TRUE
+                                }, new Object());
+                        List<Contact> obs2 = WSIManager.createObjects(d2, new Contact());
+                        c = obs2.get(0);
+                        c.saveImport();
+
+                        md = new WSContactsMapping();
+                        md.setContactsids(c.__getIDS());
+                        md.setWscontact(String.valueOf(id));
+                        md.setCName(String.valueOf(id) + "@" + daemon.getWebShopID());
+                        md.setWebshopsids(daemon.getWebShopID());
+                        md.setGroupsids(MPView.getUser().__getGroupsids());
+                        md.save();
+                    }
+                }
+                int wsitemids = order.__getIDS();
+                order.setContactsids(c.__getIDS());
                 order.save();
+                savedOrders.add(order);
+
                 WSItemsMapping m = new WSItemsMapping();
                 m.setItemsids(order.__getIDS());
-                m.setWsitem(String.valueOf(order.__getIDS()));
-                m.setCName(String.valueOf(order.__getIDS()));
+                m.setWsitem(String.valueOf(wsitemids));
+                m.setCName(String.valueOf(order.__getIDS() + "@" + daemon.getWebShopID()));
                 m.setWebshopsids(daemon.getWebShopID());
                 m.setGroupsids(MPView.getUser().__getGroupsids());
                 m.saveImport();
+
+                //Fetch the order details
+                Object da = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_ORDER_ROWS.toString(),
+                        new Object[]{String.valueOf(wsitemids)}, new Object());
+                List<SubItem> aobs = WSIManager.createObjects(da, new SubItem());
+
+                for (SubItem orderRow : aobs) {
+                    try {
+                        WSItemsMapping mk = (WSItemsMapping) DatabaseObject.getObject(Context.getWebShopItemMapping(), String.valueOf(orderRow.__getItemsids()));
+                        orderRow.setItemsids(mk.__getItemsids());
+                        orderRow.saveImport();
+                    } catch (NodataFoundException ex) {
+                        Log.Debug(ex);
+                    }
+                }
             }
 
-            Object da = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_NEW_ORDER_ROWS.toString(),  new Object[]{itd}, new Object());
-            List<SubItem> aobs = WSIManager.createObjects(da, new SubItem());
-
-            for (SubItem orderRow : aobs) {
-                try {
-                    WSItemsMapping m = (WSItemsMapping) DatabaseObject.getObject(Context.getWebShopItemMapping(), String.valueOf(orderRow.__getItemsids()));
-                    orderRow.setItemsids(m.__getItemsids());
-                    orderRow.saveImport();
-                } catch (NodataFoundException ex) {
-                    Log.Debug(ex);
+            MPView.addMessage(obs.size() + " " + Messages.ORDERS_RECEIVED + " " + daemon.getWebShop());
+            if (Popup.Y_N_dialog(obs.size() + " " + Messages.ORDERS_RECEIVED + " " + daemon.getWebShop() + "\n" + Messages.LOAD_NOW)) {
+                for (Item s : savedOrders) {
+                    try {
+                        MPView.identifierView.addTab(DatabaseObject.getObject(Context.getItems(), s.__getIDS()));
+                    } catch (NodataFoundException ex) {
+                        Log.Debug(ex);//Something must have failed during the import process
+                        Popup.error(ex);
+                    }
                 }
             }
         } catch (XmlRpcException ex) {
-           Log.Debug(this, ex.getMessage());
+            Log.Debug(this, ex.getMessage());
         }
     }
 }

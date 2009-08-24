@@ -23,6 +23,7 @@ import mpv5.db.common.DatabaseObject;
 import mpv5.db.objects.Contact;
 import mpv5.db.objects.WSContactsMapping;
 import mpv5.db.objects.WebShop;
+import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
 import mpv5.utils.arrays.ArrayUtilities;
@@ -69,6 +70,8 @@ public class addContactJob implements WSDaemonJob {
                 ws.setGroupsids(MPView.getUser().__getGroupsids());
                 ws.save();
             }
+
+            MPView.addMessage(data.size() + " " + Messages.CONTACTS_TRANSMITTED.toString() + " " + daemon.getWebShop() );
         } catch (XmlRpcException ex) {
             Log.Debug(this, ex.getMessage());
         }
