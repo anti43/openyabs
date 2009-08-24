@@ -144,14 +144,16 @@ public class newOrdersJob implements WSDaemonJob {
                 }
             }
 
-            MPView.addMessage(obs.size() + " " + Messages.ORDERS_RECEIVED + " " + daemon.getWebShop());
-            if (Popup.Y_N_dialog(obs.size() + " " + Messages.ORDERS_RECEIVED + " " + daemon.getWebShop() + "\n" + Messages.LOAD_NOW)) {
-                for (Item s : savedOrders) {
-                    try {
-                        MPView.identifierView.addTab(DatabaseObject.getObject(Context.getItems(), s.__getIDS()));
-                    } catch (NodataFoundException ex) {
-                        Log.Debug(ex);//Something must have failed during the import process
-                        Popup.error(ex);
+            if (obs.size()>0) {
+                MPView.addMessage(obs.size() + " " + Messages.ORDERS_RECEIVED + " " + daemon.getWebShop());
+                if (Popup.Y_N_dialog(obs.size() + " " + Messages.ORDERS_RECEIVED + " " + daemon.getWebShop() + "\n" + Messages.LOAD_NOW)) {
+                    for (Item s : savedOrders) {
+                        try {
+                            MPView.identifierView.addTab(DatabaseObject.getObject(Context.getItems(), s.__getIDS()));
+                        } catch (NodataFoundException ex) {
+                            Log.Debug(ex);//Something must have failed during the import process
+                            Popup.error(ex);
+                        }
                     }
                 }
             }

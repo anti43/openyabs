@@ -71,8 +71,10 @@ public class addContactJob implements WSDaemonJob {
                 ws.save();
             }
 
-            MPView.addMessage(data.size() + " " + Messages.CONTACTS_TRANSMITTED.toString() + " " + daemon.getWebShop() );
-        } catch (XmlRpcException ex) {
+            if (!data.isEmpty()) {
+                MPView.addMessage(data.size() + " " + Messages.CONTACTS_TRANSMITTED.toString() + " " + daemon.getWebShop());
+            }
+  } catch (XmlRpcException ex) {
             Log.Debug(this, ex.getMessage());
         }
     }
