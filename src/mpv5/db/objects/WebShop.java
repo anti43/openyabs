@@ -17,9 +17,12 @@
 package mpv5.db.objects;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.NodataFoundException;
 import mpv5.utils.images.MPIcon;
 import mpv5.utils.text.RandomText;
 
@@ -31,6 +34,7 @@ public class WebShop extends DatabaseObject {
     private String description = "";
     private int interval;
     private String url = "";
+    private boolean isrequestCompression;
 
     public WebShop() {
         context.setIdentityClass(this.getClass());
@@ -93,4 +97,21 @@ public class WebShop extends DatabaseObject {
     public void ensureUniqueness() {
          setCName("-" + RandomText.getNumberText()  + "- (" + __getUrl() +")");
     }
+
+    /**
+     * @return the isrequestCompression
+     */
+    public boolean __getIsrequestCompression() {
+        return isrequestCompression;
+    }
+
+    /**
+     * @param isrequestCompression the isrequestCompression to set
+     */
+    public void setIsrequestCompression(boolean isrequestCompression) {
+        this.isrequestCompression = isrequestCompression;
+    }
+
+
+
 }

@@ -39,6 +39,7 @@ public class wizard_CSV_ProductGroups_Import_1 extends javax.swing.JPanel implem
 
     }
 
+    @SuppressWarnings("unchecked")
     private void importCsv() {
         master.setCursor(new Cursor(Cursor.WAIT_CURSOR));
         isConsumed = true;

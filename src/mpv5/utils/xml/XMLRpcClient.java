@@ -33,16 +33,21 @@ public class XMLRpcClient extends XmlRpcClient {
     /**
      * Generate a new client for the given host
      * @param host
+     * @param requCompression
      */
-    public XMLRpcClient(URL host) {
+    public XMLRpcClient(URL host, boolean requCompression) {
         super();
         XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
         config.setServerURL(host);
+        config.setGzipRequesting(requCompression);
+        config.setEnabledForExtensions(requCompression);
 //        transport = new XmlRpcCommonsTransportFactory(this);
 //        setTransportFactory(transport);
         setConfig(config);
 
     }
+
+
 
     /**
      * Invoke a remote get command

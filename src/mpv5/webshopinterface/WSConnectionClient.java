@@ -92,16 +92,17 @@ public class WSConnectionClient {
      * Create a new connection to the specified url.<br/>
      * e.g. new URL("http://127.0.0.1:8080/xmlrpc")
      * @param host
-     * @throws NoCompatibleHostFoundException 
+     * @param requCompression
+     * @throws NoCompatibleHostFoundException
      */
-    public WSConnectionClient(final URL host) throws NoCompatibleHostFoundException {
-        if (!connect(host)) {
+    public WSConnectionClient(final URL host, boolean requCompression) throws NoCompatibleHostFoundException {
+        if (!connect(host,requCompression)) {
             throw new NoCompatibleHostFoundException(host);
         }
     }
 
-    private boolean connect(URL host) {
-        client = new XMLRpcClient(host);
+    private boolean connect(URL host, boolean requCompression) {
+        client = new XMLRpcClient(host, requCompression);
         try {
             Log.Debug(this, test());
             return true;

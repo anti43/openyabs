@@ -41,7 +41,7 @@ public class WSDaemon extends Thread {
      * @throws MalformedURLException
      */
     public WSDaemon(WebShop webShop) throws NoCompatibleHostFoundException, MalformedURLException {
-        client = new WSConnectionClient(new URL(webShop.__getUrl()));
+        client = new WSConnectionClient(new URL(webShop.__getUrl()), webShop.__getIsrequestCompression());
         setWaitTime(webShop.__getInterval());
         wes = webShop;
         running = true;
@@ -73,10 +73,11 @@ public class WSDaemon extends Thread {
     /**
      * Create a new background service
      * @param url The web shop url
+     * @param requCompression
      * @throws NoCompatibleHostFoundException
      */
-    public WSDaemon(URL url) throws NoCompatibleHostFoundException {
-        client = new WSConnectionClient(url);
+    public WSDaemon(URL url, boolean requCompression) throws NoCompatibleHostFoundException {
+        client = new WSConnectionClient(url,requCompression);
         wes = new WebShop();
         running = true;
     }

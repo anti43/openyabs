@@ -11,6 +11,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import mpv5.globals.LocalSettings;
+import mpv5.logging.LogConsole;
 import mpv5.ui.dialogs.Popup;
 
 /**
@@ -166,10 +167,15 @@ public class DatabaseConnection {
         try {
 //            stm.executeBatch();
             for (int i = 0; i < queries.length; i++) {
-                String string = queries[i];
-                Log.Print(string);
-                stm.execute(string);
-                Thread.sleep(100);
+                try {
+                    String string = queries[i];
+                    Log.Print(string);
+                    stm.execute(string);
+                    Thread.sleep(100);
+                } catch (Exception ex) {
+                    Log.Debug(ex);
+                    ex.printStackTrace();
+                }
             }
             return true;
         } catch (Exception sQLException) {

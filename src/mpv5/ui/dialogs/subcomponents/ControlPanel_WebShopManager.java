@@ -6,8 +6,6 @@ import java.awt.event.ActionListener;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -20,22 +18,11 @@ import mpv5.db.objects.WebShop;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.ControlApplet;
-import mpv5.ui.dialogs.Popup;
-import mpv5.ui.frames.MPView;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.models.MPComboBoxModelItem;
-import mpv5.utils.text.RandomStringUtils;
-import mpv5.utils.text.RandomText;
-import mpv5.webshopinterface.NoCompatibleHostFoundException;
 import mpv5.webshopinterface.WSConnectionClient;
 import mpv5.webshopinterface.WSDaemon;
 import mpv5.webshopinterface.WSIManager;
-import mpv5.webshopinterface.wsdjobs.addContactJob;
-import mpv5.webshopinterface.wsdjobs.newContactsJob;
-import mpv5.webshopinterface.wsdjobs.newOrdersJob;
-import mpv5.webshopinterface.wsdjobs.newSystemMessages;
-import mpv5.webshopinterface.wsdjobs.updatedContactsJob;
-import mpv5.webshopinterface.wsdjobs.updatedOrdersJob;
 
 /**
  *
@@ -92,7 +79,7 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
             public void actionPerformed(ActionEvent e) {
                 WebShop gin = (WebShop) list.getSelectedValue();
                 try {
-                    mpv5.ui.dialogs.Popup.notice(new WSConnectionClient(new URL(gin.__getUrl())).test());
+                    mpv5.ui.dialogs.Popup.notice(new WSConnectionClient(new URL(gin.__getUrl()), isrequestCompression.isSelected()).test());
                 } catch (Exception x) {
                     Log.Debug(x);
                     mpv5.ui.dialogs.Popup.error(x);
@@ -113,6 +100,7 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
         intervals = new mpv5.ui.beans.LabeledSpinner();
         jLabel2 = new javax.swing.JLabel();
         groupselect = new mpv5.ui.beans.LabeledCombobox();
+        isrequestCompression = new javax.swing.JCheckBox();
         jPanel3 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -166,25 +154,32 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
         groupselect.set_Label(bundle.getString("ControlPanel_WebShopManager.groupselect._Label")); // NOI18N
         groupselect.setName("groupselect"); // NOI18N
 
+        isrequestCompression.setText(bundle.getString("ControlPanel_WebShopManager.isrequestCompression.text")); // NOI18N
+        isrequestCompression.setName("isrequestCompression"); // NOI18N
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(groupselect, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 343, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(groupselect, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 343, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE))
+                            .addComponent(urls, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE))
+                        .addGap(10, 10, 10)
+                        .addComponent(jButton3))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(intervals, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 138, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE))
-                    .addComponent(urls, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 343, Short.MAX_VALUE))
-                .addGap(10, 10, 10)
-                .addComponent(jButton3)
+                        .addComponent(isrequestCompression)))
                 .addGap(136, 136, 136))
         );
         jPanel5Layout.setVerticalGroup(
@@ -195,7 +190,8 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
                 .addGap(12, 12, 12)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jLabel2)
-                    .addComponent(intervals, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(intervals, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(isrequestCompression))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(urls, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -235,7 +231,7 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 417, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 448, Short.MAX_VALUE)
                     .addComponent(jLabel3))
                 .addContainerGap())
         );
@@ -245,7 +241,7 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
                 .addContainerGap()
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 102, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -295,14 +291,14 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
 
         if (SwingUtilities.isRightMouseButton(evt) && !list.isSelectionEmpty() && list.locationToIndex(evt.getPoint()) == list.getSelectedIndex()) {
             popup.show(list, evt.getX(), evt.getY());
-        } else if (evt.getClickCount() > 1) {
+        } else if (evt.getClickCount() >= 1) {
             if (list.getSelectedValue() != null) {
                 WebShop ws = (WebShop) list.getSelectedValue();
                 intervals.set_Value(Integer.valueOf(ws.__getInterval()));
                 descr.setText(ws.__getDescription());
                 urls.setText(ws.__getUrl());
                 groupselect.setSelectedIndex(MPComboBoxModelItem.getItemID(String.valueOf(ws.__getGroupsids()), groupselect.getModel()));
-
+                isrequestCompression.setSelected(ws.__getIsrequestCompression());
             }
         }
 
@@ -310,9 +306,7 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         try {
-            mpv5.ui.dialogs.Popup.notice(new WSConnectionClient(new URL(urls.getText())).test());
-            WSDaemon d = new WSDaemon(new URL(urls.getText()));
-            d.start(true);
+            mpv5.ui.dialogs.Popup.notice(new WSConnectionClient(new URL(urls.getText()), isrequestCompression.isSelected()).test());
         } catch (Exception x) {
             Log.Debug(x);
             mpv5.ui.dialogs.Popup.error(x);
@@ -350,6 +344,7 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
     private javax.swing.JTextArea descr;
     private mpv5.ui.beans.LabeledCombobox groupselect;
     private mpv5.ui.beans.LabeledSpinner intervals;
+    private javax.swing.JCheckBox isrequestCompression;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
@@ -396,6 +391,7 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
         ws.setUrl(urls.getText());
         ws.setDescription(descr.getText());
         ws.setInterval(Integer.valueOf(intervals.getSpinner().getValue().toString()));
+        ws.setIsrequestCompression(isrequestCompression.isSelected());
         if (groupselect.getSelectedItem() != null) {
             ws.setGroupsids(Integer.valueOf((groupselect.getSelectedItem()).getId()));
         } else {
