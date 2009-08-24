@@ -62,45 +62,46 @@ public class updatedContactsJob implements WSDaemonJob {
 
     @Override
     public void work(WSConnectionClient client) {
-        Object itd = "0";
+
         try {
-            Object d = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_CHANGED_CONTACTS.toString(),  new Object[]{itd}, new Object());
+            Object d = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_CHANGED_CONTACTS.toString(),
+                    new Object[]{}, new Object());
             List<Contact> obs = WSIManager.createObjects(d, new Contact());
             for (int i = 0; i < obs.size(); i++) {
                 Contact contact = obs.get(i);
                 int id = contact.__getIDS();
-                WSContactsMapping m;
+                WSContactsMapping m = null;
                 try {
                     m = WSContactsMapping.getMapping(daemon.getWebShopID(), id);
                     contact.setIDS(m.__getContactsids());
                     contact.save();
                 } catch (NodataFoundException ex) {
-                    Log.Debug(ex);
+                    throw new UnsupportedOperationException("Invalid contact mapping found: " + id);
                 }
-           
-            }
 
-            Object da = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_CHANGED_ADRESSES.toString(),  new Object[]{itd}, new Object());
-            List<Address> aobs = WSIManager.createObjects(da, new Address());
+                Object da = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_CHANGED_ADRESSES.toString(),
+                        new Object[]{m.__getWscontact()}, new Object());
+                List<Address> aobs = WSIManager.createObjects(da, new Address());
 
-            for (Address address : aobs) {
-                try {
-                    QueryCriteria qs = new QueryCriteria();
-                    qs.add("cname", address.__getCName());
-                    qs.add("prename", address.__getPrename());
-                    qs.add("contactsids", address.__getContactsids());
-                    List<DatabaseObject> old = DatabaseObject.getObjects(Context.getAddress(), qs);
-                    for (int i = 0; i < old.size(); i++) {
-                         old.get(i).delete();
+                for (Address address : aobs) {
+                    try {
+                        QueryCriteria qs = new QueryCriteria();
+                        qs.add("cname", address.__getCName());
+                        qs.add("prename", address.__getPrename());
+                        qs.add("contactsids", address.__getContactsids());
+                        List<DatabaseObject> old = DatabaseObject.getObjects(Context.getAddress(), qs);
+                        for (int ix = 0; ix < old.size(); ix++) {
+                            old.get(ix).delete();
+                        }
+                        address.setContactsids(m.__getContactsids());
+                        address.saveImport();
+                    } catch (NodataFoundException ex) {
+                        Log.Debug(ex);
                     }
-
-                    WSContactsMapping m = WSContactsMapping.getMapping(daemon.getWebShopID(), address.__getContactsids());
-                    address.setContactsids(m.__getContactsids());
-                    address.saveImport();
-                } catch (NodataFoundException ex) {
-                    Log.Debug(ex);
                 }
             }
+
+
         } catch (XmlRpcException ex) {
             Log.Debug(this, ex.getMessage());
         }

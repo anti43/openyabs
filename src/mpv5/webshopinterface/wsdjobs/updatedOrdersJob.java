@@ -59,45 +59,45 @@ public class updatedOrdersJob implements WSDaemonJob {
 
     @Override
     public void work(WSConnectionClient client) {
-        Object itd = "0";
         try {
-            Object d = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_CHANGED_ORDERS.toString(),  new Object[]{itd}, new Object());
+            Object d = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_CHANGED_ORDERS.toString(),
+                    new Object[]{}, new Object());
             List<Item> obs = WSIManager.createObjects(d, new Item());
             for (int i = 0; i < obs.size(); i++) {
                 Item contact = obs.get(i);
                 int id = contact.__getIDS();
-                WSItemsMapping m;
+                WSItemsMapping m = null;
                 try {
                     m = WSItemsMapping.getMapping(daemon.getWebShopID(), id);
                     contact.setIDS(m.__getItemsids());
                     contact.save();
                 } catch (NodataFoundException ex) {
-                    Log.Debug(ex);
+                    throw new UnsupportedOperationException("Invalid contact mapping found: " + id);
                 }
-           
-            }
+                Object da = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_CHANGED_ORDER_ROWS.toString(),
+                        new Object[]{m.__getWsitem()}, new Object());
+                List<SubItem> aobs = WSIManager.createObjects(da, new SubItem());
 
-            Object da = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_CHANGED_ORDER_ROWS.toString(),  new Object[]{itd}, new Object());
-            List<SubItem> aobs = WSIManager.createObjects(da, new SubItem());
+                for (SubItem orderRow : aobs) {
+                    try {
+                        QueryCriteria qs = new QueryCriteria();
+                        qs.add("itemsids", orderRow.__getItemsids());
+                        List<DatabaseObject> old = DatabaseObject.getObjects(Context.getAddress(), qs);
+                        for (int ix = 0; ix < old.size(); ix++) {
+                            old.get(ix).delete();
+                        }
 
-            for (SubItem orderRow : aobs) {
-                try {
-                    QueryCriteria qs = new QueryCriteria();
-                    qs.add("itemsids", orderRow.__getItemsids());
-                    List<DatabaseObject> old = DatabaseObject.getObjects(Context.getAddress(), qs);
-                    for (int i = 0; i < old.size(); i++) {
-                         old.get(i).delete();
+                        orderRow.setItemsids(m.__getItemsids());
+                        orderRow.saveImport();
+                    } catch (NodataFoundException ex) {
+                        Log.Debug(this, ex.getMessage());
                     }
-
-                    WSItemsMapping m = WSItemsMapping.getMapping(daemon.getWebShopID(), orderRow.__getItemsids());
-                    orderRow.setItemsids(m.__getItemsids());
-                    orderRow.saveImport();
-                } catch (NodataFoundException ex) {
-                    Log.Debug(this, ex.getMessage());
                 }
             }
+
+
         } catch (XmlRpcException ex) {
-           Log.Debug(this, ex.getMessage());
+            Log.Debug(this, ex.getMessage());
         }
     }
 }
