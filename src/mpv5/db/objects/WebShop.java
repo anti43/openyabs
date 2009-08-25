@@ -35,6 +35,9 @@ public class WebShop extends DatabaseObject {
     private int interval;
     private String url = "";
     private boolean isrequestCompression;
+    private boolean isauthenticated;
+    private String username = "";
+    private String password = "";
 
     public WebShop() {
         context.setIdentityClass(this.getClass());
@@ -110,6 +113,48 @@ public class WebShop extends DatabaseObject {
      */
     public void setIsrequestCompression(boolean isrequestCompression) {
         this.isrequestCompression = isrequestCompression;
+    }
+
+    /**
+     * @return the isauthenticated
+     */
+    public boolean __getIsauthenticated() {
+        return isauthenticated;
+    }
+
+    /**
+     * @param isauthenticated the isauthenticated to set
+     */
+    public void setIsauthenticated(boolean isauthenticated) {
+        this.isauthenticated = isauthenticated;
+    }
+
+    /**
+     * @return the username
+     */
+    public String __getUsername() {
+        return username;
+    }
+
+    /**
+     * @param username the username to set
+     */
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    /**
+     * @return the password
+     */
+    public String __getPassword() {
+        return password;
+    }
+
+    /**
+     * @param password the password to set
+     */
+    public void setPassword(String password) {
+        this.password = password;
     }
 
 

@@ -48,6 +48,7 @@ public class WSConnectionClient {
          return "Server XML RPC Yabs Version : " + v;
     }
 
+
     /**
      * Contains all known xml-rpc commands
      */
@@ -95,14 +96,14 @@ public class WSConnectionClient {
      * @param requCompression
      * @throws NoCompatibleHostFoundException
      */
-    public WSConnectionClient(final URL host, boolean requCompression) throws NoCompatibleHostFoundException {
-        if (!connect(host,requCompression)) {
+    public WSConnectionClient(final URL host, boolean requCompression, String user, String pw) throws NoCompatibleHostFoundException {
+        if (!connect(host,requCompression, user, pw)) {
             throw new NoCompatibleHostFoundException(host);
         }
     }
 
-    private boolean connect(URL host, boolean requCompression) {
-        client = new XMLRpcClient(host, requCompression);
+    private boolean connect(URL host, boolean requCompression, String user, String pw) {
+        client = new XMLRpcClient(host, requCompression, user, pw);
         try {
             Log.Debug(this, test());
             return true;

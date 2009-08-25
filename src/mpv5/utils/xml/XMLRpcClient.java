@@ -22,7 +22,6 @@ import mpv5.logging.Log;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
-import org.apache.xmlrpc.client.XmlRpcCommonsTransportFactory;
 
 /**
  * Our XML RPC Client implementation
@@ -35,19 +34,22 @@ public class XMLRpcClient extends XmlRpcClient {
      * @param host
      * @param requCompression
      */
-    public XMLRpcClient(URL host, boolean requCompression) {
+    public XMLRpcClient(URL host, boolean requCompression, String basicAuthUsername, String basicAuthPaswword) {
         super();
         XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
         config.setServerURL(host);
         config.setGzipRequesting(requCompression);
         config.setEnabledForExtensions(requCompression);
+        if (basicAuthUsername != null && basicAuthPaswword != null) {
+            Log.Debug(this, "Using basic authentication, with username: " + basicAuthUsername);
+            config.setBasicUserName(basicAuthUsername);
+            config.setBasicPassword(basicAuthPaswword);
+        }
 //        transport = new XmlRpcCommonsTransportFactory(this);
 //        setTransportFactory(transport);
         setConfig(config);
 
     }
-
-
 
     /**
      * Invoke a remote get command
@@ -61,10 +63,10 @@ public class XMLRpcClient extends XmlRpcClient {
     @SuppressWarnings("unchecked")
     public <T extends Object> T invokeGetCommand(String commandName, Object[] params, T expectedReturnType) throws XmlRpcException {
         Object data = execute(commandName, params);
-        Log.Debug(this, "RPC call to '" + ((XmlRpcClientConfigImpl) getClientConfig()).getServerURL() + "#" + commandName + "' returned a: " + data.getClass().getSimpleName()+ " [" + data + "]");
+        Log.Debug(this, "RPC call to '" + ((XmlRpcClientConfigImpl) getClientConfig()).getServerURL() + "#" + commandName + "' returned a: " + data.getClass().getSimpleName() + " [" + data + "]");
         return (T) data;
     }
-    
+
     /**
      * Invoke a remote get command
      * @param commandName The name of the remote procedure
@@ -74,7 +76,7 @@ public class XMLRpcClient extends XmlRpcClient {
      */
     @SuppressWarnings("unchecked")
     public HashMap<String, Object> invokeGetCommand(String commandName, Object[] params) throws XmlRpcException {
-        HashMap<String, Object> data = (HashMap<String, Object>)execute(commandName, params);
+        HashMap<String, Object> data = (HashMap<String, Object>) execute(commandName, params);
         Log.Debug(this, "RPC call to '" + ((XmlRpcClientConfigImpl) getClientConfig()).getServerURL() + "#" + commandName + "' returned " + data.size() + " values.");
         return data;
     }
@@ -87,8 +89,8 @@ public class XMLRpcClient extends XmlRpcClient {
      * @throws XmlRpcException
      */
     public Object invokeSetCommand(String commandName, Object[] params) throws XmlRpcException {
-            Object result =  execute(commandName, params);
-            Log.Debug(this, "RPC call to '" + ((XmlRpcClientConfigImpl) getClientConfig()).getServerURL() + "#" + commandName + "' returned a: " + result.getClass().getSimpleName() + " [" + result + "]");
-            return result;
+        Object result = execute(commandName, params);
+        Log.Debug(this, "RPC call to '" + ((XmlRpcClientConfigImpl) getClientConfig()).getServerURL() + "#" + commandName + "' returned a: " + result.getClass().getSimpleName() + " [" + result + "]");
+        return result;
     }
 }

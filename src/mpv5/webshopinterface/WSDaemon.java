@@ -41,7 +41,11 @@ public class WSDaemon extends Thread {
      * @throws MalformedURLException
      */
     public WSDaemon(WebShop webShop) throws NoCompatibleHostFoundException, MalformedURLException {
-        client = new WSConnectionClient(new URL(webShop.__getUrl()), webShop.__getIsrequestCompression());
+        if (webShop.__getIsauthenticated()) {
+            client = new WSConnectionClient(new URL(webShop.__getUrl()), webShop.__getIsrequestCompression(), webShop.__getUsername(), webShop.__getPassword());
+        } else {
+            client = new WSConnectionClient(new URL(webShop.__getUrl()), webShop.__getIsrequestCompression(), null, null);
+        }
         setWaitTime(webShop.__getInterval());
         wes = webShop;
         running = true;
@@ -76,8 +80,8 @@ public class WSDaemon extends Thread {
      * @param requCompression
      * @throws NoCompatibleHostFoundException
      */
-    public WSDaemon(URL url, boolean requCompression) throws NoCompatibleHostFoundException {
-        client = new WSConnectionClient(url,requCompression);
+    public WSDaemon(URL url, boolean requCompression, String user, String pw) throws NoCompatibleHostFoundException {
+        client = new WSConnectionClient(url, requCompression, user, pw);
         wes = new WebShop();
         running = true;
     }

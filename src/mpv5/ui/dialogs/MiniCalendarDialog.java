@@ -74,12 +74,11 @@ public class MiniCalendarDialog extends javax.swing.JDialog {
         setName("Form"); // NOI18N
         setUndecorated(true);
 
-        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(mpv5.Main.class).getContext().getResourceMap(MiniCalendarDialog.class);
-        jPanel2.setBackground(resourceMap.getColor("jPanel2.background")); // NOI18N
+        jPanel2.setBackground(new java.awt.Color(227, 219, 202));
         jPanel2.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
         jPanel2.setName("jPanel2"); // NOI18N
 
-        jButton1.setText(resourceMap.getString("jButton1.text")); // NOI18N
+        jButton1.setText("Ok");
         jButton1.setName("jButton1"); // NOI18N
         jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -97,7 +96,7 @@ public class MiniCalendarDialog extends javax.swing.JDialog {
             }
         });
 
-        jPanel1.setBackground(resourceMap.getColor("jPanel1.background")); // NOI18N
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel1.setName("jPanel1"); // NOI18N
         jPanel1.addKeyListener(new java.awt.event.KeyAdapter() {

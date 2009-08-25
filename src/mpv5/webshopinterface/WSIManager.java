@@ -111,13 +111,14 @@ public class WSIManager {
                 HashMap hashMap = it.next();
                 rawlist.add(new String[]{String.valueOf(hashMap.get("id")), String.valueOf(hashMap.get("key")), String.valueOf(hashMap.get("value"))});
             }
-        } else if (data instanceof List) {
-            List n = (List) data;
-            for (int i = 0; i < n.size(); i++) {
-                rawlist.add(new String[]{String.valueOf(((Object[]) n.get(i))[0]), String.valueOf(((Object[]) n.get(i))[1]), String.valueOf(((Object[]) n.get(i))[2])});
-            }
-        } else {
-            throw new IllegalArgumentException("Only List and HashMap are supported here! You provided: " + data.getClass());
+        } else //        else if (data instanceof List) {
+        //            List n = (List) data;
+        //            for (int i = 0; i < n.size(); i++) {
+        //                rawlist.add(new String[]{String.valueOf(((Object[]) n.get(i))[0]), String.valueOf(((Object[]) n.get(i))[1]), String.valueOf(((Object[]) n.get(i))[2])});
+        //            }
+        //        } else
+        {
+            throw new IllegalArgumentException("Only HashMap is supported here! You provided: " + data.getClass());
         }
 
         HashMap<String, T> result = new HashMap<String, T>();
@@ -128,7 +129,7 @@ public class WSIManager {
             String value = strings[2];
 
             if (!result.containsKey(id)) {
-                result.put(id,(T) DatabaseObject.getObject(template.getContext()));
+                result.put(id, (T) DatabaseObject.getObject(template.getContext()));
             }
             try {
                 result.get(id).parse(key, value);
@@ -138,7 +139,7 @@ public class WSIManager {
         }
 
         list.addAll(result.values());
-
+        Log.Debug(WSIManager.class, "Found sets: " + list.size());
         return list;
     }
 
