@@ -847,7 +847,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             try {
                 HashMap<String, String> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
                 File f = new File("/home/anti/aaa.odt");
-                File f2 = new File("/home/anti/aaa3.doc");
+                File f2 = new File("/home/anti/aaa3.pdf");
                 Export ex = new Export();
                 ex.putAll(hm1);
                 ex.setTemplate(new ODTFile(f.getPath()));

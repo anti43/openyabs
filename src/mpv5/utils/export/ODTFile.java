@@ -57,8 +57,8 @@ public class ODTFile extends Exportable {
             dh.fillFormFields((ITextDocument) df, getData());
             dh.fillPlaceholderFields((ITextDocument) df, getData());
             dh.fillTextVariableFields((ITextDocument) df, getData());
-//            dh.saveAs(df, getTarget());
-            dh.print((ITextDocument)df);
+            dh.saveAs(df, getTarget());
+//            dh.print((ITextDocument)df);
         } catch (Exception ex) {
             Log.Debug(ex);
         } finally {
