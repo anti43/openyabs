@@ -53,10 +53,12 @@ public class ODTFile extends Exportable {
         DocumentHandler dh = new DocumentHandler(nc);
         try {
             IDocument df = dh.loadDocument(this, false);
+            Log.Debug(this, "Loaded odt file: " + this);
             dh.fillFormFields((ITextDocument) df, getData());
             dh.fillPlaceholderFields((ITextDocument) df, getData());
             dh.fillTextVariableFields((ITextDocument) df, getData());
-            dh.saveAs(df, getTarget());
+//            dh.saveAs(df, getTarget());
+            dh.print((ITextDocument)df);
         } catch (Exception ex) {
             Log.Debug(ex);
         } finally {

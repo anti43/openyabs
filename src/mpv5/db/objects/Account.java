@@ -16,6 +16,7 @@
  */
 package mpv5.db.objects;
 
+import mpv5.db.common.DataNotCachedException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;

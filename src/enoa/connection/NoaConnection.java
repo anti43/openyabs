@@ -156,6 +156,7 @@ public class NoaConnection {
                     officeAplication.getDocumentService();
             desktopService =
                     officeAplication.getDesktopService();
+
             setType(TYPE_LOCAL);
             mpv5.Main.addOfficeApplicationToClose(officeAplication);
         } else {
@@ -253,4 +254,5 @@ public class NoaConnection {
             process.destroy();
         }
     }
+
 }

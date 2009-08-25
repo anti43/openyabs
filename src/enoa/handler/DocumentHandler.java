@@ -38,6 +38,9 @@ import java.io.File;
 import java.io.FileFilter;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import mpv5.logging.Log;
 
 /**
  * This class OpenOffice Documents IO
@@ -114,6 +117,7 @@ public class DocumentHandler {
     public synchronized void saveAs(IDocument doc, File file) throws DocumentException {
 
         doc.reformat();
+        doc.update();
 
         if (file.getName().split("\\.").length < 2) {
             throw new UnsupportedOperationException("The file must have an extension: " + file);
@@ -145,7 +149,7 @@ public class DocumentHandler {
      * @throws NOAException
      */
     public synchronized void fillFormFields(ITextDocument textDocument, HashMap<String, String> data) throws Exception, NOAException {
-
+        Log.Debug(this, "Looking for form fields in: " + textDocument);
         IFormComponent[] formComponents = textDocument.getFormService().getFormComponents();
         Iterator<String> keys = data.keySet().iterator();
         String key = null;
@@ -153,6 +157,7 @@ public class DocumentHandler {
 
             // get column name
             key = keys.next();
+//            Log.Debug(this, "Found key: " + key + " [" + data.get(key) + "]");
             for (int i = 0; i < formComponents.length; i++) {
 
                 XFormComponent xFormComponent = formComponents[i].getXFormComponent();
@@ -162,12 +167,14 @@ public class DocumentHandler {
 
                 if (propertySet != null && propertySet.getPropertySetInfo().hasPropertyByName("Name")) {
                     String n = propertySet.getPropertyValue("Name").toString();
-                    if (n.matches(key)) {
+//                    Log.Debug(this, "Found form field: " + n);
+                    if (n.equalsIgnoreCase(key) || key.endsWith(n)) {
+                        Log.Debug(this, "Form field matches key: " + key + " [" + data.get(key) + "]");
                         xTextComponent.setText(data.get(key));
                     }
                 }
             }
-            textDocument.getTextFieldService().refresh();
+//            textDocument.getTextFieldService().refresh();
         }
     }
 
@@ -179,6 +186,7 @@ public class DocumentHandler {
      * @throws NOAException
      */
     public synchronized void fillPlaceholderFields(ITextDocument textDocument, HashMap<String, String> data) throws Exception, NOAException {
+       Log.Debug(this, "Looking for placeholder fields in: " + textDocument);
         Iterator<String> keys = data.keySet().iterator();
         String key = null;
         while (keys.hasNext()) {
@@ -190,7 +198,8 @@ public class DocumentHandler {
                 for (int i = 0; i <
                         placeholders.length; i++) {
                     String placeholderDisplayText = placeholders[i].getDisplayText();
-                    if (placeholderDisplayText.matches(key)) {
+                    if (placeholderDisplayText.equalsIgnoreCase(key) || key.endsWith(placeholderDisplayText)) {
+                        Log.Debug(this, "Found placeholder key: " + key + " [" + data.get(key) + "]");
                         placeholders[i].getTextRange().setText(data.get(key));
                     }
 
@@ -210,6 +219,7 @@ public class DocumentHandler {
      * @throws NOAException
      */
     public synchronized void fillTextVariableFields(ITextDocument textDocument, HashMap<String, String> data) throws Exception, NOAException {
+       Log.Debug(this, "Looking for variable fields in: " + textDocument);
         Iterator<String> keys = data.keySet().iterator();
         String key = null;
         IVariableTextFieldMaster x;
@@ -227,9 +237,9 @@ public class DocumentHandler {
 
                     XPropertySet xPropertySetField = (XPropertySet) UnoRuntime.queryInterface(XPropertySet.class, variables[i].getXTextContent());
 
-
                     if (xPropertySetField.getPropertyValue(
-                            "CurrentPresentation").toString().matches(key)) {
+                            "CurrentPresentation").toString().equalsIgnoreCase(key)) {
+                        Log.Debug(this, "Found variable key: " + key + " [" + data.get(key) + "]");
                         xPropertySetField.setPropertyValue("Content", data.get(key));
                     }
                 }
@@ -271,5 +281,13 @@ public class DocumentHandler {
         }
 
         return target;
+    }
+
+    public void print(ITextDocument iTextDocument) {
+        try {
+            iTextDocument.getPrintService().print();
+        } catch (DocumentException ex) {
+            Log.Debug(ex);
+        }
     }
 }

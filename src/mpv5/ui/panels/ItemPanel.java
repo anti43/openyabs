@@ -52,7 +52,7 @@ import mpv5.db.objects.Product;
 import mpv5.globals.Headers;
 import mpv5.globals.Messages;
 import mpv5.db.objects.Contact;
-import mpv5.db.objects.DataNotCachedException;
+import mpv5.db.common.DataNotCachedException;
 import mpv5.db.objects.Favourite;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.SubItem;
@@ -119,6 +119,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         }
 
         refresh();
+        shipping.set_ValueClass(Double.class);
 
         addedby.setText(MPView.getUser().getName());
         contactname.setSearchOnEnterEnabled(true);
@@ -367,6 +368,8 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         addfile = new javax.swing.JButton();
         removefile = new javax.swing.JButton();
         jToolBar2 = new javax.swing.JToolBar();
+        shipping = new mpv5.ui.beans.LabeledTextField();
+        jSeparator8 = new javax.swing.JToolBar.Separator();
         discountpercent = new mpv5.ui.beans.LabeledSpinner();
         jSeparator3 = new javax.swing.JToolBar.Separator();
         netvalue = new mpv5.ui.beans.LabeledTextField();
@@ -501,7 +504,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 101, Short.MAX_VALUE)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 96, Short.MAX_VALUE)
         );
 
         jToolBar1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -693,6 +696,14 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         jToolBar2.setRollover(true);
         jToolBar2.setName("jToolBar2"); // NOI18N
 
+        shipping.set_Label(bundle.getString("ItemPanel.shipping._Label")); // NOI18N
+        shipping.setName("shipping"); // NOI18N
+        jToolBar2.add(shipping);
+
+        jSeparator8.setName("jSeparator8"); // NOI18N
+        jSeparator8.setSeparatorSize(new java.awt.Dimension(15, 10));
+        jToolBar2.add(jSeparator8);
+
         discountpercent.set_Label(bundle.getString("ItemPanel.discountpercent._Label")); // NOI18N
         discountpercent.setName("discountpercent"); // NOI18N
         jToolBar2.add(discountpercent);
@@ -743,9 +754,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                         .addGroup(rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(removefile, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(addfile, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(rightpaneLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jToolBar2, javax.swing.GroupLayout.PREFERRED_SIZE, 635, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jToolBar2, javax.swing.GroupLayout.DEFAULT_SIZE, 686, Short.MAX_VALUE))
                 .addContainerGap())
         );
         rightpaneLayout.setVerticalGroup(
@@ -762,7 +771,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(0, 0, 0)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jToolBar2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(1, 1, 1)
                 .addGroup(rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -792,7 +801,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(leftpane, javax.swing.GroupLayout.DEFAULT_SIZE, 465, Short.MAX_VALUE)
+            .addComponent(leftpane, javax.swing.GroupLayout.DEFAULT_SIZE, 466, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(toolbarpane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
@@ -834,11 +843,11 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     }//GEN-LAST:event_itemtableMouseClicked
 
     private void button_previewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_previewActionPerformed
-        if (dataOwner!=null) {
+        if (dataOwner != null) {
             try {
                 HashMap<String, String> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
                 File f = new File("/home/anti/aaa.odt");
-                File f2 = new File("/home/anti/aaa3.pdf");
+                File f2 = new File("/home/anti/aaa3.doc");
                 Export ex = new Export();
                 ex.putAll(hm1);
                 ex.setTemplate(new ODTFile(f.getPath()));
@@ -886,6 +895,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     private javax.swing.JToolBar.Separator jSeparator5;
     private javax.swing.JToolBar.Separator jSeparator6;
     private javax.swing.JToolBar.Separator jSeparator7;
+    private javax.swing.JToolBar.Separator jSeparator8;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JToolBar jToolBar2;
     private javax.swing.JPanel leftpane;
@@ -895,6 +905,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     private mpv5.ui.beans.PrinitingComboBox prinitingComboBox1;
     private javax.swing.JButton removefile;
     private javax.swing.JPanel rightpane;
+    private mpv5.ui.beans.LabeledTextField shipping;
     private mpv5.ui.beans.LabeledCombobox status;
     private mpv5.ui.beans.LabeledTextField taxvalue;
     private javax.swing.JPanel toolbarpane;
@@ -912,6 +923,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     public int defaultaccountsids_;
     public double netvalue_;
     public double taxvalue_;
+    public double shippingvalue_;
     public Date datetodo_;
     public Date dateend_;
     public int intreminders_;
@@ -956,6 +968,11 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
             netvalue_ = FormatNumber.parseDezimal(netvalue.getText());
             taxvalue_ = FormatNumber.parseDezimal(taxvalue.getText());
+            try {
+                shippingvalue_ = FormatNumber.parseDezimal(shipping.getText());
+            } catch (Exception e) {
+                shippingvalue_ = 0;
+            }
 
             datetodo_ = date2.getDate();
             dateend_ = date3.getDate();
@@ -974,6 +991,9 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         date2.setDate(datetodo_);
         date3.setDate(dateend_);
         notes.setText(description_);
+
+        shipping.setText(FormatNumber.formatDezimal(shippingvalue_));
+
         button_reminders.setToolTipText(Messages.REMINDERS + String.valueOf(intreminders_));
 
         try {

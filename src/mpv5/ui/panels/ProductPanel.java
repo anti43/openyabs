@@ -54,7 +54,7 @@ import mpv5.db.objects.Product;
 import mpv5.globals.Headers;
 import mpv5.globals.Messages;
 import mpv5.db.objects.Contact;
-import mpv5.db.objects.DataNotCachedException;
+import mpv5.db.common.DataNotCachedException;
 import mpv5.db.objects.Favourite;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.SubItem;

@@ -398,7 +398,7 @@ public class MPTableModel extends DefaultTableModel {
             boolean valid = true;
             for (int i = 0; i < columns.length; i++) {
                 int j = columns[i];
-                if (getValueAt(ki, j) == null) {
+                if (getValueAt(ki, j) == null || getValueAt(ki, j).toString().length()==0) {
                     valid = false;
                 }
             }

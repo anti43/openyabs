@@ -190,6 +190,7 @@ public class Item extends DatabaseObject implements Formattable {
     private int defaultaccountsids;
     private double netvalue;
     private double taxvalue;
+    private double shippingvalue;
     private Date datetodo;
     private Date dateend;
     private int intreminders;
@@ -510,5 +511,19 @@ public class Item extends DatabaseObject implements Formattable {
 
         return map;
 
+    }
+
+    /**
+     * @return the shippingvalue
+     */
+    public double __getShippingvalue() {
+        return shippingvalue;
+    }
+
+    /**
+     * @param shippingvalue the shippingvalue to set
+     */
+    public void setShippingvalue(double shippingvalue) {
+        this.shippingvalue = shippingvalue;
     }
 }

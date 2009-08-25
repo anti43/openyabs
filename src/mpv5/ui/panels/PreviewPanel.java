@@ -402,7 +402,7 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
                 Log.Debug(ex);
             }
         } else {
-            throw new UnsupportedOperationException("Extension not supported: " + extension);
+            FileDirectoryHandler.open(file);
         }
     }
 }
