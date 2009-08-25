@@ -931,12 +931,11 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     public int inttype_;
 
     @Override
-    public void collectData() {
+    public boolean collectData() {
         try {
             contactsids_ = Integer.valueOf(contactname.getSelectedItem().getId());
         } catch (Exception numberFormatException) {
-            //Contact not set
-            Log.Debug(this, numberFormatException.getMessage());
+            return false;
         }
         if (contactsids_ > 0) {
             try {
@@ -981,6 +980,8 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         } else {
             showRequiredFields();
         }
+
+        return true;
     }
 
     @Override
@@ -1043,6 +1044,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                             }));
 
                     formatTable();
+                    shipping.setText(FormatNumber.formatDezimal(0d));
                 } catch (Exception e) {
                     Log.Debug(this, e);
                 }

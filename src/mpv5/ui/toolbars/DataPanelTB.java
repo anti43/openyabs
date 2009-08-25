@@ -297,8 +297,7 @@ public class DataPanelTB extends javax.swing.JPanel {
     private void jButton25ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton25ActionPerformed
         DatabaseObject dato = parents.getDataOwner();
 
-        dato.getPanelData(parents);
-        if (dato.save()) {
+        if (dato.getPanelData(parents) && dato.save()) {
              try {
                 parents.actionAfterSave();
                 parents.setDataOwner(dato, true);
@@ -313,10 +312,10 @@ public class DataPanelTB extends javax.swing.JPanel {
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         DatabaseObject dato = parents.getDataOwner();
 
-        dato.getPanelData(parents);
+        boolean d = dato.getPanelData(parents);
         dato.setIDS(-1);
 
-        if (dato.save()) {
+        if (d && dato.save()) {
             try {
                 parents.actionAfterCreate();
                 parents.setDataOwner(dato, true);

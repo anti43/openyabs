@@ -14,6 +14,7 @@ import java.awt.Color;
 import java.awt.Font;
 import javax.swing.JTextField;
 import mpv5.globals.LocalSettings;
+import mpv5.utils.ui.TextFieldUtils;
 
 /**
  *
@@ -159,7 +160,7 @@ public class LabeledTextField extends javax.swing.JPanel {
                 Integer.valueOf(jTextField1.getText());
                 jTextField1.setBackground(Color.WHITE);
             } catch (NumberFormatException numberFormatException) {
-                jTextField1.setBackground(Color.RED);
+                TextFieldUtils.blinker(jTextField1, Color.gray);
                 jTextField1.setText("0");
             }
         } else if (clazz == Double.class) {
@@ -167,7 +168,7 @@ public class LabeledTextField extends javax.swing.JPanel {
                 Double.valueOf(jTextField1.getText());
                 jTextField1.setBackground(Color.WHITE);
             } catch (NumberFormatException numberFormatException) {
-                jTextField1.setBackground(Color.RED);
+                TextFieldUtils.blinker(jTextField1, Color.gray);
                 jTextField1.setText("0.0");
             }
         }

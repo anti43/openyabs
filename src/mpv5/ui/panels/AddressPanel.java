@@ -293,9 +293,7 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void countryselectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_countryselectActionPerformed
-
 }//GEN-LAST:event_countryselectActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox badress;
     private mpv5.ui.beans.LabeledTextField city;
@@ -337,7 +335,10 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
     public int intaddedby_ = 4343;
     public int inttype_;
 
-    public void collectData() {
+    public boolean collectData() {
+        if (cname.getText().length() == 0) {
+            return false;
+        }
         city_ = city.get_Text();
         cname_ = cname.get_Text();
         taxnumber_ = taxnumber.get_Text();
@@ -371,7 +372,7 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
             inttype_ = 1;
         }
 
-
+        return true;
     }
 
     public void exposeData() {
@@ -442,7 +443,7 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
 
     public void paste(DatabaseObject dbo) {
         if (dbo.getDbIdentity().equals(Context.getAddress().getDbIdentity())) {
-            setDataOwner(dbo,true);
+            setDataOwner(dbo, true);
         } else {
             MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());
         }
@@ -498,9 +499,9 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
 
     @Override
     public void actionAfterSave() {
-  
     }
-        @Override
+
+    @Override
     public void actionAfterCreate() {
     }
 }

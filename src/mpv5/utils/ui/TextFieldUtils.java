@@ -55,20 +55,24 @@ public class TextFieldUtils {
      */
     public static void blink(Component component, Color color) {
         if (component instanceof LabeledTextField) {
-            new blinker((LabeledTextField)component, 2, Color.RED).execute();
+            new blinker((LabeledTextField)component, 2, color).execute();
         } else {
-            new blinker(component, 2, Color.RED).execute();
+            new blinker(component, 2, color).execute();
         }
+    }
+
+    public static void blinker(JTextField jTextField1, Color color) {
+        blink(jTextField1, color);
     }
 
     private static class blinker extends SwingWorker<Void, Void> {
 
-        private Component filed;
+        private Component fi;
         private int count;
         private Color color;
 
         private blinker(Component field, int i, Color col) {
-            filed = field;
+            fi = field;
             count = i;
             color = col;
         }
@@ -76,9 +80,9 @@ public class TextFieldUtils {
         @Override
         protected Void doInBackground() throws Exception {
             for (int i = 0; i < count; i++) {
-                filed.setBackground(color);
+                fi.setBackground(color);
                 Thread.sleep(550);
-                filed.setBackground(Color.LIGHT_GRAY);
+                fi.setBackground(Color.LIGHT_GRAY);
                 Thread.sleep(550);
             }
             return null;

@@ -353,13 +353,24 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
             }
         }
 
-        defcount.setText(MPView.getUser().getProperties().getProperty(defcount.getName()));
-        defunit.setText(MPView.getUser().getProperties().getProperty(defunit.getName()));
+        if (MPView.getUser().getProperties().hasProperty(defcount.getName())) {
+            defcount.setText(MPView.getUser().getProperties().getProperty(defcount.getName()));
+        } else {
+            defcount.setText("1");
+        }
+        if (MPView.getUser().getProperties().hasProperty(defunit.getName())) {
+            defunit.setText(MPView.getUser().getProperties().getProperty(defunit.getName()));
+        } else {
+            defunit.setText("");
+        }
         try {
             Runnable runnable = new Runnable() {
 
                 public void run() {
-                    deftax.setSelectedItem(Integer.valueOf(MPView.getUser().getProperties().getProperty(deftax.getName())));
+                    try {
+                        deftax.setSelectedItem(Integer.valueOf(MPView.getUser().getProperties().getProperty(deftax.getName())));
+                    } catch (NumberFormatException numberFormatException) {
+                    }
                 }
             };
             SwingUtilities.invokeLater(runnable);

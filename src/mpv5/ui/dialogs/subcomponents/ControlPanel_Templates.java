@@ -62,7 +62,6 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
         }
     }
 
-
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -383,27 +382,25 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
     private mpv5.ui.beans.LabeledCombobox labeledCombobox1;
     private mpv5.ui.beans.LabeledTextField mail;
     // End of variables declaration//GEN-END:variables
-    public  String description = "";
-    public  int usersids;
-    public  String filename = "";
-    public  File file;
-    public  int intsize;
-    public  String mimetype;
+    public String description = "";
+    public int usersids;
+    public String filename = "";
+    public File file;
+    public int intsize;
+    public String mimetype;
     public int intaddedby_ = 4343;
     public int ids_;
     public int groupsids_;
     public int compsids_;
     public java.util.Date dateadded_ = new java.util.Date();
 
-    public void collectData() {
-
-
+    public boolean collectData() {
         if (groupname.getSelectedItem() != null) {
             groupsids_ = Integer.valueOf(((MPComboBoxModelItem) groupname.getSelectedItem()).getId());
         } else {
             groupsids_ = 1;
         }
-
+        return true;
     }
 
     public void exposeData() {
@@ -411,7 +408,7 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
         try {
 
             groupname.setSelectedIndex(MPComboBoxModelItem.getItemID(String.valueOf(groupsids_), groupname.getModel()));
-  
+
         } catch (Exception e) {
             Log.Debug(this, e);
         }
@@ -440,7 +437,7 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
 
         groupname.setModel(new DefaultComboBoxModel(
                 MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID(), null, ""))));
-  
+
         TableFormat.stripFirstColumn(jTable1);
         TableFormat.format(jTable1, 1, 120);
         TableFormat.format(jTable1, 4, 80);

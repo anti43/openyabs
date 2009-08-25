@@ -482,7 +482,10 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
     }
 
     @Override
-    public void collectData() {
+    public boolean collectData() {
+        if (cname.getText().length() == 0) {
+            return false;
+        }
         cname_ = cname.get_Text();
         description_ = desc.getText();
         hierarchypath_ = path.getText();
@@ -497,6 +500,8 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
         } catch (NumberFormatException numberFormatException) {
             groupsids_ = 1;
         }
+
+        return true;
     }
 
     @Override

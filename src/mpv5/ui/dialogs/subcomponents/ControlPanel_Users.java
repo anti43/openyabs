@@ -592,8 +592,10 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
     public int compsids_;
     public java.util.Date dateadded_ = new java.util.Date();
 
-    public void collectData() {
-
+    public boolean collectData() {
+        if (cname.getText().length() == 0) {
+            return false;
+        }
         laf_ = laf.get_Text();
 
         if (language.getSelectedItem() != null) {
@@ -650,6 +652,8 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         }
 
         isrgrouped_ = rgroups.isSelected();
+
+        return true;
     }
 
     public void exposeData() {

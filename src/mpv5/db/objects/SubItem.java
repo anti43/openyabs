@@ -116,7 +116,7 @@ public class SubItem extends DatabaseObject {
         Double defcount = 1d;
         if (MPView.getUser().getProperties().hasProperty("defcount")) {
             defcount = MPView.getUser().getProperties().getProperty("defcount", 0d);
-            i.setCountvalue(defcount);
+            i.setQuantityvalue(defcount);
         }
         return i;
     }

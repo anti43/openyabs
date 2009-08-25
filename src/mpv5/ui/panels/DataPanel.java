@@ -17,7 +17,7 @@ public interface DataPanel {
     /**
      * Collect the view data
      */
-    public void collectData();
+    public boolean collectData();
 
     /**
      * Get the database objec twhich owns the view

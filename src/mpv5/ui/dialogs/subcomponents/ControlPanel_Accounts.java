@@ -559,7 +559,10 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
 
     }
 
-    public void collectData() {
+    public boolean collectData() {
+        if (cname.getText().length() == 0) {
+            return false;
+        }
         cname_ = cname.get_Text();
         description_ = desc.getText();
 //        defaults_ = defaults.get_Text();
@@ -578,6 +581,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
         taxvalue_ = Double.valueOf(tax.getText());
         intaccountclass_ = Integer.valueOf(String.valueOf(classv.getSpinner().getValue()));
         intaccounttype_ = Integer.valueOf(((MPComboBoxModelItem) typeselect.getSelectedItem()).getId());
+    return true;
     }
 
     public DatabaseObject getDataOwner() {

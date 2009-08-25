@@ -1230,7 +1230,10 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     public String country_;
 
     @Override
-    public void collectData() {
+    public boolean collectData() {
+        if (cname.getText().length() == 0) {
+            return false;
+        }
         city_ = city.get_Text();
         cname_ = cname.get_Text();
         taxnumber_ = taxnumber.get_Text();
@@ -1280,6 +1283,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         dataOwner.setisCustomer(iscustomer_);
         dataOwner.setisManufacturer(ismanufacturer_);
         dataOwner.setisSupplier(issupplier_);
+        return true;
     }
 
     @Override

@@ -952,7 +952,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
     public String reference_ = "";//herstellernummer
 
     @Override
-    public void collectData() {
+    public boolean collectData() {
         if (cname.getText() != null && cname.getText().length() > 0) {
 
             try {
@@ -1009,8 +1009,11 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
 
             taxids_ = Integer.valueOf(selecttax.getSelectedItem().getId());
             inttype_ = Integer.valueOf(stype.getSelectedItem().getId());
+
+            return true;
         } else {
             showRequiredFields();
+        return false;
         }
     }
 

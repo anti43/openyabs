@@ -23,9 +23,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.Icon;
 import javax.swing.SwingUtilities;
 import mpv5.globals.Messages;
 import mpv5.db.objects.HistoryItem;
@@ -54,7 +51,7 @@ import mpv5.utils.numberformat.FormatNumber;
 public abstract class DatabaseObject implements Comparable<DatabaseObject> {
 
     private static boolean AUTO_LOCK = false;
-    private static HashMap<String, DatabaseObject> cache = new HashMap<String, DatabaseObject>();
+    private static Hashtable<String, DatabaseObject> cache = new Hashtable<String, DatabaseObject>();
 
     /**
      * Cache all Objects which are within the {@link Context#getCacheableContexts() }
@@ -109,23 +106,28 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
         t.start();
     }
 
-    private static void cacheObject(DatabaseObject databaseObject) {
+    private static void cacheObject(final DatabaseObject databaseObject) {
         if (databaseObject != null && databaseObject.__getIDS().intValue() > 0) {
+            if (cache.contains(databaseObject.getDbIdentity() + "@" + databaseObject.__getIDS())) {
+                Log.Debug(DatabaseObject.class, "Replacing cached object: " + databaseObject.getDbIdentity() + "@" + databaseObject.__getIDS());
+            }
             cache.put(databaseObject.getDbIdentity() + "@" + databaseObject.__getIDS(), databaseObject);
         }
     }
 
-    private static void uncacheObject(DatabaseObject databaseObject) {
-        if (databaseObject != null && databaseObject.__getIDS().intValue() > 0) {
-            Log.Debug(DatabaseObject.class, "Removing from cache: " + databaseObject.getDbIdentity() + "@" + databaseObject.__getIDS());
-            cache.remove(databaseObject.getDbIdentity() + "@" + databaseObject.__getIDS());
+    private static void uncacheObject(final DatabaseObject databaseObject) {
+        if (databaseObject != null) {
+            if (cache.remove(databaseObject.getDbIdentity() + "@" + databaseObject.__getIDS()) != null) {
+                Log.Debug(DatabaseObject.class, "Removed from cache: " + databaseObject.getDbIdentity() + "@" + databaseObject.__getIDS());
+            }
         }
     }
 
     private synchronized static DatabaseObject getCachedObject(final Context context, final int id) {
         if (cache.containsKey(context.getDbIdentity() + "@" + id)) {
-            Log.Debug(DatabaseObject.class, "Using cached object " + context.getDbIdentity() + "@" + id);
-            return cache.get(context.getDbIdentity() + "@" + id);
+            DatabaseObject o = cache.get(context.getDbIdentity() + "@" + id);
+            Log.Debug(DatabaseObject.class, "Using cached object " + context.getDbIdentity() + "@" + id + " [" + o + "]");
+            return o;
         } else {
             Log.Debug(DatabaseObject.class, "" + context.getDbIdentity() + "@" + id + " not found in cache.");
             return null;
@@ -263,6 +265,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
      * @param ids
      */
     public void setIDS(int ids) {
+        uncacheObject(this);
         this.ids = ids;
     }
 
@@ -571,9 +574,11 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
      * one of the fields in this do child (without underscore)
      * @param source The DataPanel to parse.
      */
-    public void getPanelData(DataPanel source) {
+    public boolean getPanelData(DataPanel source) {
         Saved(false);
-        source.collectData();
+        if (!source.collectData()) {
+            return false;
+        }
         ArrayList<Method> vars = setVars();
         for (int i = 0; i < vars.size(); i++) {
             try {
@@ -586,6 +591,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                 Log.Debug(this, n);
             }
         }
+
+        return true;
     }
 
     /**
@@ -1191,6 +1198,10 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
         final int EQUAL = 0;
         final int AFTER = 1;
 
+        if (anotherObject == null) {
+            return BEFORE;
+        }
+        
         if (this == anotherObject) {
             return EQUAL;
         }
@@ -1232,11 +1243,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
             } else {
                 return false;
             }
-
         } catch (NodataFoundException ex) {
             return false;
         }
-
     }
 
     /**
@@ -1307,7 +1316,6 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
             try {
                 try {
                     Group g = (Group) DatabaseObject.getObject(Context.getGroup(), Integer.valueOf(map.get("groupsids").toString()));
-
                     map.put("group", g.__getCName());
                     map.put("grouppath", g.__getHierarchypath());
                     map.put("groupdescription", g.__getDescription());
@@ -1328,7 +1336,6 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
         } catch (NumberFormatException numberFormatException) {
             //already resolved?
         }
-
         return map;
     }
 

@@ -424,7 +424,10 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
         TreeFormat.expandTree(tree);
     }
 
-    public void collectData() {
+    public boolean collectData() {
+        if (cname.getText().length() == 0) {
+            return false;
+        }
         cname_ = cname.get_Text();
         description_ = desc.getText();
         hierarchypath_ = path.getText();
@@ -433,6 +436,7 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
         } catch (NodataFoundException ex) {
             groupsids_ = 1;
         }
+        return true;
     }
 
     public DatabaseObject getDataOwner() {
