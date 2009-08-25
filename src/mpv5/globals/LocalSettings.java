@@ -57,7 +57,7 @@ public class LocalSettings {
 
 
     private static PropertyStore predefinedSettings = new PropertyStore(new String[][]{ //        {LAF,UIManager.getSystemLookAndFeelClassName()}
-                {DEFAULT_FONT, "Tahoma"}, 
+                {DEFAULT_FONT, "DejaVu Sans 11"},
                 {DBROW_LIMIT, "0"},
                 {DBAUTOLOCK, "false"},
                 {SERVER_PORT, "4343"},
