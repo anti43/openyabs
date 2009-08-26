@@ -29,6 +29,10 @@ public class TableHandler {
     private final ITextDocument doc;
     private final ITextTableService tableService;
     private final ITextTable table;
+    /**
+     * "xtable"
+     */
+    public static String KEY_TABLE = "xtable";
 
     /**
      * Creates a new TableHandler with a new table in it, containing the given values
@@ -52,7 +56,11 @@ public class TableHandler {
     public TableHandler(ITextDocument doc, String tableName) throws TextException {
         this.doc = doc;
         this.tableService = doc.getTextTableService();
-        table = tableService.getTextTable(tableName);
+        try {
+            table = tableService.getTextTable(tableName);
+        } catch (TextException textException) {
+            throw new IllegalArgumentException("Table not in document: " + tableName);
+        }
     }
 
     /**

@@ -19,19 +19,16 @@ package mpv5.utils.export;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 import mpv5.db.common.NodataFoundException;
 import mpv5.logging.Log;
-import mpv5.ui.frames.MPView;
 import mpv5.utils.jobs.Waitable;
 
 /**
  * The Export class handles the export of data using templatefiles to PDF
  *  
  */
-public class Export extends HashMap<String, String> implements Waitable {
+public class Export extends HashMap<String, Object> implements Waitable {
 
     private static final long serialVersionUID = 1L;
     private Exportable file;

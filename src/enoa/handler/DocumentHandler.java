@@ -28,6 +28,7 @@ import ag.ion.bion.officelayer.text.ITextDocument;
 import ag.ion.bion.officelayer.text.ITextField;
 import ag.ion.bion.officelayer.text.ITextFieldService;
 import ag.ion.bion.officelayer.text.IVariableTextFieldMaster;
+import ag.ion.bion.officelayer.text.TextException;
 import ag.ion.noa.NOAException;
 import com.sun.star.awt.XTextComponent;
 import com.sun.star.beans.XPropertySet;
@@ -38,6 +39,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mpv5.logging.Log;
@@ -148,7 +150,7 @@ public class DocumentHandler {
      * @throws Exception
      * @throws NOAException
      */
-    public synchronized void fillFormFields(ITextDocument textDocument, HashMap<String, String> data) throws Exception, NOAException {
+    public synchronized void fillFormFields(ITextDocument textDocument, HashMap<String, Object> data) throws Exception, NOAException {
         Log.Debug(this, "Looking for form fields in: " + textDocument);
         IFormComponent[] formComponents = textDocument.getFormService().getFormComponents();
         Iterator<String> keys = data.keySet().iterator();
@@ -170,7 +172,7 @@ public class DocumentHandler {
 //                    Log.Debug(this, "Found form field: " + n);
                     if (n.equalsIgnoreCase(key) || key.endsWith(n)) {
                         Log.Debug(this, "Form field matches key: " + key + " [" + data.get(key) + "]");
-                        xTextComponent.setText(data.get(key));
+                        xTextComponent.setText(String.valueOf(data.get(key)));
                     }
                 }
             }
@@ -185,30 +187,27 @@ public class DocumentHandler {
      * @throws Exception
      * @throws NOAException
      */
-    public synchronized void fillPlaceholderFields(ITextDocument textDocument, HashMap<String, String> data) throws Exception, NOAException {
-       Log.Debug(this, "Looking for placeholder fields in: " + textDocument);
+    public synchronized void fillPlaceholderFields(ITextDocument textDocument, HashMap<String, Object> data) throws Exception, NOAException {
+        Log.Debug(this, "Looking for placeholder fields in: " + textDocument);
         Iterator<String> keys = data.keySet().iterator();
         String key = null;
         while (keys.hasNext()) {
-            // get column name
+            //                    Log.Debug(this, "Found placeholder: " + placeholderDisplayText);  // get column name
             key = keys.next();
             try {
                 ITextFieldService textFieldService = textDocument.getTextFieldService();
                 ITextField[] placeholders = textFieldService.getPlaceholderFields();
-                for (int i = 0; i <
-                        placeholders.length; i++) {
+                for (int i = 0; i < placeholders.length; i++) {
                     String placeholderDisplayText = placeholders[i].getDisplayText();
-                    if (placeholderDisplayText.equalsIgnoreCase(key) || key.endsWith(placeholderDisplayText)) {
+                    if (placeholderDisplayText.equalsIgnoreCase(key) || placeholderDisplayText.equalsIgnoreCase("<" + key + ">")) {
                         Log.Debug(this, "Found placeholder key: " + key + " [" + data.get(key) + "]");
-                        placeholders[i].getTextRange().setText(data.get(key));
+                        placeholders[i].getTextRange().setText(String.valueOf(data.get(key)));
                     }
-
                 }
             } catch (java.lang.Exception ex) {
             }
             textDocument.getTextFieldService().refresh();
         }
-
     }
 
     /**
@@ -218,8 +217,8 @@ public class DocumentHandler {
      * @throws Exception
      * @throws NOAException
      */
-    public synchronized void fillTextVariableFields(ITextDocument textDocument, HashMap<String, String> data) throws Exception, NOAException {
-       Log.Debug(this, "Looking for variable fields in: " + textDocument);
+    public synchronized void fillTextVariableFields(ITextDocument textDocument, HashMap<String, Object> data) throws Exception, NOAException {
+        Log.Debug(this, "Looking for variable fields in: " + textDocument);
         Iterator<String> keys = data.keySet().iterator();
         String key = null;
         IVariableTextFieldMaster x;
@@ -228,22 +227,17 @@ public class DocumentHandler {
             // get column name
             key = keys.next();
             ITextFieldService textFieldService = textDocument.getTextFieldService();
-            x =
-                    textFieldService.getVariableTextFieldMaster(key);
+            x = textFieldService.getVariableTextFieldMaster(key);
+
             if (x != null) {
                 ITextField[] variables = x.getVariableTextFields();
-                for (int i = 0; i <
-                        variables.length; i++) {
-
+                for (int i = 0; i < variables.length; i++) {
                     XPropertySet xPropertySetField = (XPropertySet) UnoRuntime.queryInterface(XPropertySet.class, variables[i].getXTextContent());
-
-                    if (xPropertySetField.getPropertyValue(
-                            "CurrentPresentation").toString().equalsIgnoreCase(key)) {
+                    if (xPropertySetField.getPropertyValue("CurrentPresentation").toString().equalsIgnoreCase(key)) {
                         Log.Debug(this, "Found variable key: " + key + " [" + data.get(key) + "]");
                         xPropertySetField.setPropertyValue("Content", data.get(key));
                     }
                 }
-
                 textDocument.getTextFieldService().refresh();
             }
         }
@@ -283,11 +277,40 @@ public class DocumentHandler {
         return target;
     }
 
+    /**
+     * Print the document directly
+     * @param iTextDocument
+     */
     public void print(ITextDocument iTextDocument) {
         try {
             iTextDocument.getPrintService().print();
         } catch (DocumentException ex) {
             Log.Debug(ex);
+        }
+    }
+
+    /**
+     * Fill the tables in the document
+     * @param iTextDocument
+     * @param data
+     */
+    public void fillTables(ITextDocument iTextDocument, HashMap<String, Object> data) throws TextException {
+
+        Log.Debug(this, "Looking for tables in: " + iTextDocument);
+        for (Iterator<String> it = data.keySet().iterator(); it.hasNext();) {
+            String key = it.next();
+            if (key.startsWith(TableHandler.KEY_TABLE)) {//Table found
+
+                List<String[]> value = (List<String[]>) data.get(key);
+                TableHandler tablehandler = new TableHandler(iTextDocument, key);
+                for (int i = 0; i < value.size(); i++) {
+                    String[] strings = value.get(i);
+                    for (int j = 0; j < strings.length; j++) {
+                        String cellValue = strings[j];
+                        tablehandler.setValueAt(cellValue, j, i);
+                    }
+                }
+            }
         }
     }
 }

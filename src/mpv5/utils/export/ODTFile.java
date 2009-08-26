@@ -20,6 +20,7 @@ import ag.ion.bion.officelayer.document.IDocument;
 import ag.ion.bion.officelayer.text.ITextDocument;
 import enoa.connection.NoaConnection;
 import enoa.handler.DocumentHandler;
+import enoa.handler.TableHandler;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -54,9 +55,9 @@ public class ODTFile extends Exportable {
         try {
             IDocument df = dh.loadDocument(this, false);
             Log.Debug(this, "Loaded odt file: " + this);
-            dh.fillFormFields((ITextDocument) df, getData());
             dh.fillPlaceholderFields((ITextDocument) df, getData());
             dh.fillTextVariableFields((ITextDocument) df, getData());
+            dh.fillTables((ITextDocument)df, getData());
             dh.saveAs(df, getTarget());
 //            dh.print((ITextDocument)df);
         } catch (Exception ex) {

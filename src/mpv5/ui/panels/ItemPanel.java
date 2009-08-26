@@ -21,6 +21,7 @@ along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
  */
 package mpv5.ui.panels;
 
+import enoa.handler.TableHandler;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -34,6 +35,7 @@ import java.io.FileNotFoundException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
@@ -850,6 +852,15 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 File f2 = new File("/home/anti/aaa3.pdf");
                 Export ex = new Export();
                 ex.putAll(hm1);
+
+                Vector<String[]> l = new Vector<String[]>();
+                l.add(new String[]{"1", "22", "333", "4444"});
+                l.add(new String[]{"a1", "a22", "a333", "a4444"});
+                l.add(new String[]{"b1", "b22", "b333", "b4444"});
+                l.add(new String[]{"c1", "c22", "c333", "c4444"});
+               
+                ex.put(TableHandler.KEY_TABLE + "1", l);
+
                 ex.setTemplate(new ODTFile(f.getPath()));
                 ex.setTargetFile(f2);
 

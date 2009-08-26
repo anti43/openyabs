@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Random;
 import javax.swing.SwingUtilities;
 import mpv5.globals.Messages;
 import mpv5.db.objects.HistoryItem;
@@ -42,6 +43,8 @@ import mpv5.pluginhandling.MPPLuginLoader;
 import mpv5.utils.date.RandomDate;
 import mpv5.utils.images.MPIcon;
 import mpv5.utils.numberformat.FormatNumber;
+import mpv5.utils.text.RandomStringUtils;
+import mpv5.utils.text.RandomText;
 
 /**
  * Database Objects reflect a row in a table, and can parse graphical and
@@ -1201,7 +1204,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
         if (anotherObject == null) {
             return BEFORE;
         }
-        
+
         if (this == anotherObject) {
             return EQUAL;
         }
@@ -1350,5 +1353,32 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
         map.put(key, value);
         parse(map);
         Log.Debug(this, "Set: " + key + " to: " + value);
+    }
+
+    /**
+     * Fill the do with (senseless) sample data
+     */
+    public void fillSampleData() {
+        ArrayList<Method> vars = setVars();
+        for (int k = 0; k < vars.size(); k++) {
+
+            try {
+                String name = vars.get(k).getName().toLowerCase().substring(3);
+                if (name.startsWith("is") || name.toUpperCase().startsWith("BOOL")) {
+                    vars.get(k).invoke(this, new Object[]{new Random().nextBoolean()});
+                } else if (name.toUpperCase().startsWith("INT") || name.endsWith("uid") || name.endsWith("ids") || name.equals("ids")) {
+                    vars.get(k).invoke(this, new Object[]{new Random().nextInt(10000)});
+                } else if (name.toUpperCase().startsWith("DATE") || name.toUpperCase().endsWith("DATE")) {
+                    vars.get(k).invoke(this, new Object[]{new Date(new Random().nextLong())});
+                } else if (name.toUpperCase().startsWith("VALUE") || name.toUpperCase().endsWith("VALUE")) {
+                    vars.get(k).invoke(this, new Object[]{new Random().nextDouble()});
+                } else {
+                    vars.get(k).invoke(this, new Object[]{new RandomText().getString()});
+                }
+            } catch (IllegalAccessException illegalAccessException) {
+            } catch (IllegalArgumentException illegalArgumentException) {
+            } catch (InvocationTargetException invocationTargetException) {
+            }
+        }
     }
 }

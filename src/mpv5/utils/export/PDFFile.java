@@ -56,7 +56,7 @@ public class PDFFile extends Exportable {
             for (Iterator it = PDFFields.keySet().iterator(); it.hasNext();) {
                 Object object = it.next();
                 Log.Debug(this, "Filling Field: " + object);
-                acroFields.setField(object.toString(), getData().get(object.toString()));
+                acroFields.setField(object.toString(), String.valueOf(getData().get(object.toString())));
             }
             pdfStamper.close();
             Log.Debug(this, "Done file: " + getTarget().getPath());

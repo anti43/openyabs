@@ -25,7 +25,7 @@ import java.util.HashMap;
 public abstract class Exportable extends File implements Runnable {
 
     private File target;
-    private HashMap<String, String> data;
+    private HashMap<String, Object> data;
 
     public Exportable(String pathToFile) {
         super(pathToFile);
@@ -50,14 +50,14 @@ public abstract class Exportable extends File implements Runnable {
      * 
      * @param data
      */
-    public void setData(final HashMap<String, String> data) {
+    public void setData(final HashMap<String, Object> data) {
         this.data = data;
     }
 
     /**
      * @return the data
      */
-    public HashMap<String, String> getData() {
+    public HashMap<String, Object> getData() {
         return data;
     }
 

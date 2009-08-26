@@ -1,11 +1,15 @@
 package mpv5.ui.dialogs.subcomponents;
 
+import enoa.handler.TableHandler;
 import java.awt.Component;
 import java.io.File;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
+import java.util.Vector;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
 import javax.swing.JPasswordField;
@@ -30,13 +34,20 @@ import mpv5.ui.panels.DataPanel;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.db.objects.User;
 
+import mpv5.handler.FormFieldsHandler;
+import mpv5.ui.panels.PreviewPanel;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
+import mpv5.utils.export.Export;
+import mpv5.utils.export.ODTFile;
+import mpv5.utils.files.FileDirectoryHandler;
+import mpv5.utils.jobs.Job;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.tables.Selection;
 import mpv5.utils.tables.TableFormat;
 import mpv5.utils.text.MD5HashGenerator;
+import mpv5.utils.text.RandomText;
 import mpv5.utils.ui.TextFieldUtils;
 
 /**
@@ -82,10 +93,13 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
         jList1 = new javax.swing.JList();
         labeledCombobox1 = new mpv5.ui.beans.LabeledCombobox();
         jPanel6 = new javax.swing.JPanel();
+        jButton5 = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
+        jSeparator1 = new javax.swing.JSeparator();
+        jSeparator2 = new javax.swing.JSeparator();
         jButton4 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
@@ -145,13 +159,13 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
             }
         });
 
-        jLabel3.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Dialog", 0, 12));
         jLabel3.setText(bundle.getString("ControlPanel_Templates.jLabel3.text")); // NOI18N
         jLabel3.setName("jLabel3"); // NOI18N
 
         groupname.setName("groupname"); // NOI18N
 
-        jLabel6.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel6.setFont(new java.awt.Font("Dialog", 0, 12));
         jLabel6.setText(bundle.getString("ControlPanel_Templates.jLabel6.text")); // NOI18N
         jLabel6.setName("jLabel6"); // NOI18N
 
@@ -224,7 +238,7 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
                     .addComponent(jLabel6))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 101, Short.MAX_VALUE)
                     .addComponent(jLabel3))
                 .addContainerGap())
         );
@@ -245,6 +259,30 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
         jPanel6.setBackground(new java.awt.Color(255, 255, 255));
         jPanel6.setName("jPanel6"); // NOI18N
         jPanel6.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
+
+        jButton5.setText(bundle.getString("ControlPanel_Templates.jButton5.text")); // NOI18N
+        jButton5.setName("jButton5"); // NOI18N
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+        jPanel6.add(jButton5);
+
+        jButton1.setText(bundle.getString("ControlPanel_Templates.jButton1.text")); // NOI18N
+        jButton1.setName("jButton1"); // NOI18N
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jPanel6.add(jButton1);
+
+        jSeparator1.setName("jSeparator1"); // NOI18N
+        jPanel6.add(jSeparator1);
+
+        jSeparator2.setName("jSeparator2"); // NOI18N
+        jPanel6.add(jSeparator2);
 
         jButton4.setText(bundle.getString("ControlPanel_Templates.jButton4.text")); // NOI18N
         jButton4.setName("jButton4"); // NOI18N
@@ -272,15 +310,6 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
             }
         });
         jPanel6.add(jButton2);
-
-        jButton1.setText(bundle.getString("ControlPanel_Templates.jButton1.text")); // NOI18N
-        jButton1.setName("jButton1"); // NOI18N
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-        jPanel6.add(jButton1);
 
         add(jPanel6, java.awt.BorderLayout.PAGE_END);
     }// </editor-fold>//GEN-END:initComponents
@@ -345,6 +374,10 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
         // TODO add your handling code here:
     }//GEN-LAST:event_cnameComponentShown
 
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        test();
+    }//GEN-LAST:event_jButton5ActionPerformed
+
     public void setValues(PropertyStore values) {
     }
 
@@ -367,6 +400,7 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel6;
@@ -377,6 +411,8 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextArea jTextArea1;
     private mpv5.ui.beans.LabeledCombobox labeledCombobox1;
@@ -473,5 +509,42 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
 
     @Override
     public void actionAfterCreate() {
+    }
+
+    private void test() {
+        DatabaseObject t = new Item();
+        t.avoidNulls();
+        t.fillSampleData();
+
+        try {
+            HashMap<String, String> hm1 = new FormFieldsHandler(t).getFormattedFormFields(null);
+            File f = dataOwner.getFile();
+            File f2 = FileDirectoryHandler.getTempFile("pdf");
+            Export ex = new Export();
+            ex.putAll(hm1);
+
+            Vector<String[]> l = new Vector<String[]>();
+
+            for (int i = 0; i < 20; i++) {
+                l.add(new String[]{
+                String.valueOf(i),
+                String.valueOf(i),
+                String.valueOf(new Random().nextInt(10)),
+                new RandomText(3).getString(),
+                new RandomText(10).getString(),
+                String.valueOf(new Random().nextInt(1000)),
+                String.valueOf(new Random().nextInt(1000))});
+            }
+
+            ex.put(TableHandler.KEY_TABLE + "1", l);
+
+            ex.setTemplate(new ODTFile(f.getPath()));
+            ex.setTargetFile(f2);
+
+            new Job(ex, new PreviewPanel()).execute();
+        } catch (Exception ex1) {
+            Log.Debug(ex1);
+            Popup.error(ex1);
+        }
     }
 }
