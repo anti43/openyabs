@@ -34,8 +34,6 @@ import mpv5.utils.images.MPIcon;
 public class Template extends DatabaseObject {
 
     private String description = "";
-    private int usersids;
-    private String filename = "";
     private File file;
     private int intsize;
     private String mimetype;
@@ -52,11 +50,6 @@ public class Template extends DatabaseObject {
 
     @Override
     public JComponent getView() {
-        try {
-            FileDirectoryHandler.open(getFile());
-        } catch (Exception e) {
-            Log.Debug(e);
-        }
         return null;
     }
 
@@ -80,62 +73,6 @@ public class Template extends DatabaseObject {
     }
 
    
-
-    /**
-     * @return the filename
-     */
-    public String __getFilename() {
-        return filename;
-    }
-
-    /**
-     * @param filename the filename to set
-     */
-    public void setFilename(String filename) {
-        this.filename = filename;
-    }
-    MPIcon icon;
-
-    @Override
-    public mpv5.utils.images.MPIcon getIcon() {
-        if (icon == null) {
-            try {
-                Log.Debug(this, "Determining Icon for " + __getCName());
-                icon = new MPIcon(MPIcon.DIRECTORY_DEFAULT_ICONS + __getCName().substring(__getCName().lastIndexOf(".") + 1, __getCName().length()) + ".png");
-                return icon;
-            } catch (Exception e) {
-                Log.Debug(this, "Icon file not existing in " + MPIcon.DIRECTORY_DEFAULT_ICONS);
-                try {
-                    JFileChooser chooser = new JFileChooser();
-                    icon = new MPIcon(chooser.getIcon(new File(filename)));
-                    return icon;
-                } catch (Exception ez) {
-                    Log.Debug(this, ez);
-                    icon = new MPIcon(MPIcon.DIRECTORY_DEFAULT_ICONS + "folder_tar.png");
-                    return icon;
-                }
-            }
-        } else {
-            return icon;
-        }
-    }
-
-    /**
-     * Fetches the physical file from db
-     * @return
-     */
-    public synchronized File getFile() {
-        if (file == null) {
-            try {
-                file = QueryHandler.instanceOf().clone(Context.getFiles()).
-                        retrieveFile(filename,
-                        new File(FileDirectoryHandler.getTempDir() + cname));
-            } catch (Exception e) {
-                Log.Debug(e);
-            }
-        }
-        return file;
-    }
 
     /**
      * @return the mimetype
@@ -165,17 +102,10 @@ public class Template extends DatabaseObject {
         this.intsize = intsize;
     }
 
-    /**
-     * @return the usersids
-     */
-    public int __getUsersids() {
-        return usersids;
+    @Override
+    public MPIcon getIcon() {
+        return null;
     }
 
-    /**
-     * @param usersids the usersids to set
-     */
-    public void setUsersids(int usersids) {
-        this.usersids = usersids;
-    }
+
 }

@@ -19,10 +19,7 @@ package mpv5.db.objects;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JComponent;
-import javax.swing.table.TableModel;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
@@ -31,7 +28,6 @@ import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
 import mpv5.ui.panels.ItemPanel;
 import mpv5.utils.models.MPTableModel;
-import mpv5.utils.numberformat.FormatNumber;
 
 /**
  *
@@ -140,6 +136,47 @@ public class SubItem extends DatabaseObject {
         setQuantityvalue(1);
         setTaxpercentvalue(Item.getTaxValue(o.__getTaxids()));
         calculate(this);
+    }
+
+    /**
+     * Generates a SubItem with useless sample data
+     * @return
+     */
+    public static SubItem getRandomItem() {
+        SubItem i = new SubItem();
+        i.fillSampleData();
+        if (MPView.getUser().getProperties().hasProperty("defunit")) {
+            String defunit = MPView.getUser().getProperties().getProperty("defunit");
+            i.setMeasure(defunit);
+        }
+        Double deftax = 0d;
+        if (MPView.getUser().getProperties().hasProperty("deftax")) {
+            int taxid = MPView.getUser().getProperties().getProperty("deftax", 0);
+            deftax = Item.getTaxValue(taxid);
+            i.setTaxpercentvalue(deftax);
+        }
+        Double defcount = 1d;
+        if (MPView.getUser().getProperties().hasProperty("defcount")) {
+            defcount = MPView.getUser().getProperties().getProperty("defcount", 0d);
+            i.setQuantityvalue(defcount);
+        }
+        return i;
+    }
+
+    /**
+     * Generates a String array out of this SubItem
+     * @return
+     */
+    public String[] toStringArray() {
+        return new String[]{
+            String.valueOf(this.__getCountvalue()),
+            String.valueOf(this.__getCountvalue()),
+            __getMeasure(),
+            __getDescription(),
+            String.valueOf(this.__getExternalvalue()),
+            String.valueOf(this.__getTotalnetvalue()),
+            String.valueOf(this.__getTaxpercentvalue()),
+            String.valueOf(this.__getTotalbrutvalue())};
     }
 
     @Override

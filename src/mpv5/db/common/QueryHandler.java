@@ -2041,9 +2041,9 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
-     * This is a convenience method to insert files associated with contacts or Items
+     * This is a convenience method to insert files
      * @param file The file
-     * @param dataOwner The contact or Item
+     * @param dataOwner The owner
      * @param descriptiveText Describe the file
      * @return True if the insert was a success
      */
@@ -2056,12 +2056,15 @@ public class QueryHandler implements Cloneable {
                 tc = Context.getFilesToItems();
             } else if (dataOwner.getContext().equals(Context.getProducts())) {
                 tc = Context.getFilesToProducts();
+            } else if (dataOwner.getContext().equals(Context.getTemplate())) {
+                tc = Context.getFilesToTemplates();
             } else {
                 throw new UnsupportedOperationException("Not yet implemented for " + dataOwner.getContext());
             }
             new backgroundFileInsert(file, dataOwner, descriptiveText, tc).execute();
             return true;
         } catch (Exception e) {
+            Log.Debug(e);
             return false;
         }
     }

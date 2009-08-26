@@ -3,30 +3,26 @@ package mpv5.ui.dialogs.subcomponents;
 import enoa.handler.TableHandler;
 import java.awt.Component;
 import java.io.File;
-import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.List;
 import java.util.Vector;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComponent;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.DefaultListModel;
 import mpv5.data.PropertyStore;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.DatabaseSearch;
 import mpv5.db.common.NodataFoundException;
+import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryHandler;
+import mpv5.db.common.SaveString;
 import mpv5.db.objects.Item;
+import mpv5.db.objects.SubItem;
 import mpv5.db.objects.Template;
 import mpv5.globals.Headers;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
-import mpv5.i18n.LanguageManager;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPView;
@@ -35,9 +31,8 @@ import mpv5.usermanagement.MPSecurityManager;
 import mpv5.db.objects.User;
 
 import mpv5.handler.FormFieldsHandler;
+import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.panels.PreviewPanel;
-import mpv5.utils.arrays.ArrayUtilities;
-import mpv5.utils.date.DateConverter;
 import mpv5.utils.export.Export;
 import mpv5.utils.export.ODTFile;
 import mpv5.utils.files.FileDirectoryHandler;
@@ -46,8 +41,6 @@ import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.tables.Selection;
 import mpv5.utils.tables.TableFormat;
-import mpv5.utils.text.MD5HashGenerator;
-import mpv5.utils.text.RandomText;
 import mpv5.utils.ui.TextFieldUtils;
 
 /**
@@ -68,6 +61,7 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
     public ControlPanel_Templates() {
         if (MPSecurityManager.checkAdminAccess()) {
             initComponents();
+            type.getComboBox().setModel(new DefaultComboBoxModel(new String[]{".odt", ".pdf"}));
             refresh();
             setVisible(true);
         }
@@ -81,17 +75,16 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
         jPanel2 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         fullname = new mpv5.ui.beans.LabeledTextField();
-        mail = new mpv5.ui.beans.LabeledTextField();
-        cname = new mpv5.ui.beans.LabeledTextField();
+        size = new mpv5.ui.beans.LabeledTextField();
         jLabel3 = new javax.swing.JLabel();
         groupname = new javax.swing.JComboBox();
         jLabel6 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        descr = new javax.swing.JTextArea();
         jScrollPane3 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList();
-        labeledCombobox1 = new mpv5.ui.beans.LabeledCombobox();
+        type = new mpv5.ui.beans.LabeledCombobox();
         jPanel6 = new javax.swing.JPanel();
         jButton5 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
@@ -148,24 +141,16 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
         fullname.setFont(fullname.getFont());
         fullname.setName("fullname"); // NOI18N
 
-        mail.set_Label(bundle.getString("ControlPanel_Templates.mail._Label")); // NOI18N
-        mail.setName("mail"); // NOI18N
+        size.set_Label(bundle.getString("ControlPanel_Templates.size._Label")); // NOI18N
+        size.setName("size"); // NOI18N
 
-        cname.set_Label(bundle.getString("ControlPanel_Templates.cname._Label")); // NOI18N
-        cname.setName("cname"); // NOI18N
-        cname.addComponentListener(new java.awt.event.ComponentAdapter() {
-            public void componentShown(java.awt.event.ComponentEvent evt) {
-                cnameComponentShown(evt);
-            }
-        });
-
-        jLabel3.setFont(new java.awt.Font("Dialog", 0, 12));
+        jLabel3.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
         jLabel3.setText(bundle.getString("ControlPanel_Templates.jLabel3.text")); // NOI18N
         jLabel3.setName("jLabel3"); // NOI18N
 
         groupname.setName("groupname"); // NOI18N
 
-        jLabel6.setFont(new java.awt.Font("Dialog", 0, 12));
+        jLabel6.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
         jLabel6.setText(bundle.getString("ControlPanel_Templates.jLabel6.text")); // NOI18N
         jLabel6.setName("jLabel6"); // NOI18N
 
@@ -175,18 +160,18 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
 
         jScrollPane2.setName("jScrollPane2"); // NOI18N
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jTextArea1.setName("jTextArea1"); // NOI18N
-        jScrollPane2.setViewportView(jTextArea1);
+        descr.setColumns(20);
+        descr.setRows(5);
+        descr.setName("descr"); // NOI18N
+        jScrollPane2.setViewportView(descr);
 
         jScrollPane3.setName("jScrollPane3"); // NOI18N
 
         jList1.setName("jList1"); // NOI18N
         jScrollPane3.setViewportView(jList1);
 
-        labeledCombobox1.set_Label(bundle.getString("ControlPanel_Templates.labeledCombobox1._Label")); // NOI18N
-        labeledCombobox1.setName("labeledCombobox1"); // NOI18N
+        type.set_Label(bundle.getString("ControlPanel_Templates.type._Label")); // NOI18N
+        type.setName("type"); // NOI18N
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -195,23 +180,26 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 72, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE))
                     .addComponent(fullname, javax.swing.GroupLayout.DEFAULT_SIZE, 381, Short.MAX_VALUE)
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(mail, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(cname, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(labeledCombobox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(size, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
+                        .addComponent(type, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 72, Short.MAX_VALUE))
-                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 72, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE)
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 72, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(jLabel6)
+                                .addGap(48, 48, 48)))
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(groupname, 0, 297, Short.MAX_VALUE)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE))))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -219,27 +207,21 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addComponent(fullname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(mail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(type, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(size, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(labeledCombobox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(9, 9, 9)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGap(3, 3, 3)
-                        .addComponent(jLabel1)))
+                    .addComponent(jLabel1)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(groupname, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 101, Short.MAX_VALUE)
-                    .addComponent(jLabel3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -324,9 +306,6 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
             DatabaseObject dato = dataOwner;
             dato.getPanelData(this);
             if (dato.save()) {
-                if (MPView.getUser().equalTo((User) dato)) {
-                    MPView.getUser().reset();
-                }
             } else {
                 showRequiredFields();
             }
@@ -334,16 +313,24 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
 }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY);
+        d.setFileFilter(DialogForFile.TEMPLATE_FILES);
 
-        if (dataOwner == null) {
-            dataOwner = new Template();
+        if (d.chooseFile()) {
+            Template t = new Template();
+            t.setDescription(d.getFile().getPath());
+            t.setCName("Template: " + d.getFile().getName());
+            t.setIntsize((int) d.getFile().length());
+            t.setMimetype(d.getFile().getName().substring(d.getFile().getName().lastIndexOf(".")));
+            t.setGroupsids(MPView.getUser().__getGroupsids());
+            t.save();
+
+            if (QueryHandler.instanceOf().clone(Context.getFiles()).insertFile(d.getFile(), t, new SaveString(d.getFile().getName(), true))) {
+                refresh();
+            } else {
+                t.delete();
+            }
         }
-        DatabaseObject dato = dataOwner;
-        dato.getPanelData(this);
-        dato.setIDS(-1);
-        dato.save();
-
-        refresh();
 }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
@@ -370,10 +357,6 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
         }
     }//GEN-LAST:event_jButton4ActionPerformed
 
-    private void cnameComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_cnameComponentShown
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cnameComponentShown
-
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         test();
     }//GEN-LAST:event_jButton5ActionPerformed
@@ -393,7 +376,7 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
         setDataOwner(dato, true);
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private mpv5.ui.beans.LabeledTextField cname;
+    private javax.swing.JTextArea descr;
     private mpv5.ui.beans.LabeledTextField fullname;
     private javax.swing.JComboBox groupname;
     private javax.swing.JButton jButton1;
@@ -414,16 +397,15 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextArea jTextArea1;
-    private mpv5.ui.beans.LabeledCombobox labeledCombobox1;
-    private mpv5.ui.beans.LabeledTextField mail;
+    private mpv5.ui.beans.LabeledTextField size;
+    private mpv5.ui.beans.LabeledCombobox type;
     // End of variables declaration//GEN-END:variables
-    public String description = "";
-    public int usersids;
-    public String filename = "";
-    public File file;
-    public int intsize;
-    public String mimetype;
+    public String description_ = "";
+    public String filename_ = "";
+    public String cname_;
+    public File file_;
+    public int intsize_;
+    public String mimetype_;
     public int intaddedby_ = 4343;
     public int ids_;
     public int groupsids_;
@@ -442,8 +424,41 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
     public void exposeData() {
 
         try {
-
             groupname.setSelectedIndex(MPComboBoxModelItem.getItemID(String.valueOf(groupsids_), groupname.getModel()));
+
+            fullname.setText(cname_);
+            descr.setText(description_);
+            type.getComboBox().setSelectedItem(mimetype_);
+            size.setText(String.valueOf(intsize_));
+
+            DefaultListModel m = new DefaultListModel();
+            ArrayList<DatabaseObject> li = DatabaseObject.getObjects(Context.getUser());
+
+            QueryCriteria c = new QueryCriteria("templatesids", dataOwner.__getIDS());
+            Object[][] data = QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).select("userids", c);
+
+            List<Integer> l = new Vector<Integer>();
+            for (int i = 0; i < li.size(); i++) {
+                User databaseObject = (User) li.get(i);
+
+                for (int j = 0; j < data.length; j++) {
+                    int id = Integer.valueOf(data[j][0].toString());
+                    if (id == databaseObject.__getIDS().intValue()) {
+                        l.add(Integer.valueOf(i));
+                    }
+                }
+                m.addElement(databaseObject);
+            }
+
+            jList1.setModel(m);
+
+            int[] ix = new int[l.size()];
+            for (int i = 0; i < l.size(); i++) {
+                Integer integer = l.get(i);
+                ix[i] = integer.intValue();
+            }
+
+            jList1.setSelectedIndices(ix);
 
         } catch (Exception e) {
             Log.Debug(this, e);
@@ -512,39 +527,32 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
     }
 
     private void test() {
-        DatabaseObject t = new Item();
-        t.avoidNulls();
-        t.fillSampleData();
-
-        try {
-            HashMap<String, String> hm1 = new FormFieldsHandler(t).getFormattedFormFields(null);
-            File f = dataOwner.getFile();
-            File f2 = FileDirectoryHandler.getTempFile("pdf");
-            Export ex = new Export();
-            ex.putAll(hm1);
-
-            Vector<String[]> l = new Vector<String[]>();
-
-            for (int i = 0; i < 20; i++) {
-                l.add(new String[]{
-                String.valueOf(i),
-                String.valueOf(i),
-                String.valueOf(new Random().nextInt(10)),
-                new RandomText(3).getString(),
-                new RandomText(10).getString(),
-                String.valueOf(new Random().nextInt(1000)),
-                String.valueOf(new Random().nextInt(1000))});
-            }
-
-            ex.put(TableHandler.KEY_TABLE + "1", l);
-
-            ex.setTemplate(new ODTFile(f.getPath()));
-            ex.setTargetFile(f2);
-
-            new Job(ex, new PreviewPanel()).execute();
-        } catch (Exception ex1) {
-            Log.Debug(ex1);
-            Popup.error(ex1);
-        }
+//        DatabaseObject t = new Item();
+//        t.avoidNulls();
+//        t.fillSampleData();
+//
+//        try {
+//            HashMap<String, String> hm1 = new FormFieldsHandler(t).getFormattedFormFields(null);
+//            File f = dataOwner.getFile();
+//            File f2 = FileDirectoryHandler.getTempFile("pdf");
+//            Export ex = new Export();
+//            ex.putAll(hm1);
+//
+//            Vector<String[]> l = new Vector<String[]>();
+//
+//            for (int i = 0; i < 20; i++) {
+//                l.add(SubItem.getRandomItem().toStringArray());
+//            }
+//
+//            ex.put(TableHandler.KEY_TABLE + "1", l);
+//
+//            ex.setTemplate(new ODTFile(f.getPath()));
+//            ex.setTargetFile(f2);
+//
+//            new Job(ex, new PreviewPanel()).execute();
+//        } catch (Exception ex1) {
+//            Log.Debug(ex1);
+//            Popup.error(ex1);
+//        }
     }
 }

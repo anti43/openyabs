@@ -37,6 +37,17 @@ public class DialogForFile extends JFileChooser implements Waiter {
 
     private static final long serialVersionUID = 1L;
 
+    public static FileFilter TEMPLATE_FILES = new FileFilter() {
+
+        public boolean accept(File f) {
+            return f.getName().toLowerCase().endsWith(".odt") || f.getName().toLowerCase().endsWith(".pdf") || f.isDirectory();
+        }
+
+        public String getDescription() {
+            return "Templates";
+        }
+    };
+
     public static FileFilter HTML_FILES = new FileFilter() {
 
         public boolean accept(File f) {

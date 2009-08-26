@@ -200,7 +200,7 @@ public class SubmitForm extends javax.swing.JPanel {
                 message = URLEncoder.encode(message, "UTF-8");
                 if (message.length() > 1800) {
                     message = message.substring(0, 1790);
-                    message+="\n [...]";
+                    message+="CUTOFF";
                 }
 
                 String url = "http://code.google.com/p/mp-rechnungs-und-kundenverwaltung/issues/entry?" +

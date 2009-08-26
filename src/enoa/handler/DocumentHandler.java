@@ -293,6 +293,7 @@ public class DocumentHandler {
      * Fill the tables in the document
      * @param iTextDocument
      * @param data
+     * @throws TextException
      */
     public void fillTables(ITextDocument iTextDocument, HashMap<String, Object> data) throws TextException {
 
@@ -301,6 +302,7 @@ public class DocumentHandler {
             String key = it.next();
             if (key.startsWith(TableHandler.KEY_TABLE)) {//Table found
 
+                @SuppressWarnings("unchecked")
                 List<String[]> value = (List<String[]>) data.get(key);
                 TableHandler tablehandler = new TableHandler(iTextDocument, key);
                 for (int i = 0; i < value.size(); i++) {

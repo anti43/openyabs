@@ -29,19 +29,23 @@ import javax.swing.table.TableModel;
  */
 public class Selection {
 
-    private final int id;
+    private int id;
     private JTable table;
     private int removed = 0;
-    private final int r;
+    private int r;
     private boolean noerror;
 
     public Selection(JTable table) {
-        this.table = table;
-        r=table.getSelectedRow();
-        id = Integer.valueOf(String.valueOf(table.getValueAt(r, 0)));
-        noerror = true;
-        if (table.getCellEditor() != null) {
-            table.getCellEditor().stopCellEditing();
+        try {
+            this.table = table;
+            r = table.getSelectedRow();
+            id = Integer.valueOf(String.valueOf(table.getValueAt(r, 0)));
+            noerror = true;
+            if (table.getCellEditor() != null) {
+                table.getCellEditor().stopCellEditing();
+            }
+        } catch (Exception numberFormatException) {
+            noerror = false;
         }
     }
 
