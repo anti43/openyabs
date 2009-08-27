@@ -672,7 +672,7 @@ public class QueryHandler implements Cloneable {
      * @return  A HashMap
      * @throws NodataFoundException If no Object with the given ID was found in the current Context
      */
-    public Map<String, String> getValuesFor(int id) throws NodataFoundException{
+    public Map<String, String> getValuesFor(int id) throws NodataFoundException {
         ReturnValue rv = select(id);
         String[] cols = rv.getColumnnames();
         Object[][] data = rv.getData();
@@ -2057,7 +2057,7 @@ public class QueryHandler implements Cloneable {
             } else if (dataOwner.getContext().equals(Context.getProducts())) {
                 tc = Context.getFilesToProducts();
             } else if (dataOwner.getContext().equals(Context.getTemplate())) {
-                tc = Context.getFilesToTemplates();
+                tc = Context.getTemplate();
             } else {
                 throw new UnsupportedOperationException("Not yet implemented for " + dataOwner.getContext());
             }
@@ -2231,7 +2231,9 @@ public class QueryHandler implements Cloneable {
                 String fileextension = (filename.lastIndexOf(".") == -1) ? "" : filename.substring(filename.lastIndexOf(".") + 1, filename.length());
 
                 x = new QueryData(new String[]{"cname,filename, description, dateadded", file.getName() + "," + get() + "," + descriptiveText + "," + DateConverter.getTodayDBDate()});
-                x.add(dataOwner.getType() + "sids", dataOwner.__getIDS());
+                if (!dataOwner.getContext().equals(Context.getTemplate())) {
+                    x.add(dataOwner.getType() + "sids", dataOwner.__getIDS());
+                }
                 x.add("intaddedby", MPView.getUser().__getIDS());
                 x.add("intsize", file.length());
                 x.add("mimetype", fileextension);

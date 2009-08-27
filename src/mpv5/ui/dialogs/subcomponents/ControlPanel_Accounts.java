@@ -607,7 +607,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
             Log.Debug(this, ex);
         }
 
-        tax.set_Text(taxvalue_);
+        tax.setText(taxvalue_);
         classv.set_Value(intaccountclass_);
         idtf.setText(String.valueOf(ids_));
     }

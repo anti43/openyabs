@@ -28,6 +28,7 @@ import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
 import mpv5.ui.panels.ItemPanel;
 import mpv5.utils.models.MPTableModel;
+import mpv5.utils.numberformat.FormatNumber;
 
 /**
  *
@@ -165,18 +166,44 @@ public class SubItem extends DatabaseObject {
 
     /**
      * Generates a String array out of this SubItem
+     * @param template
      * @return
      */
-    public String[] toStringArray() {
-        return new String[]{
-            String.valueOf(this.__getCountvalue()),
-            String.valueOf(this.__getCountvalue()),
-            __getMeasure(),
-            __getDescription(),
-            String.valueOf(this.__getExternalvalue()),
-            String.valueOf(this.__getTotalnetvalue()),
-            String.valueOf(this.__getTaxpercentvalue()),
-            String.valueOf(this.__getTotalbrutvalue())};
+    public String[] toStringArray(Template template) {
+        String format = template.__getFormat();
+        int[] intcols;
+        try {
+            String[] cols = format.split(",");
+            intcols = new int[cols.length];
+            for (int i = 0; i < cols.length; i++) {
+                String string = cols[i];
+                intcols[i] = Integer.valueOf(string).intValue();
+            }
+        } catch (Exception ex) {
+            Log.Debug(ex);
+            Log.Debug(this, "An error occured, using default format now.");
+            intcols = new int[8];
+            for (int i = 1; i <= intcols.length; i++) {
+                intcols[i] = i;
+            }
+        }
+
+        String[] possibleCols =new String[]{
+                    String.valueOf(FormatNumber.formatDezimal(this.__getCountvalue())),
+                    String.valueOf(FormatNumber.formatDezimal(this.__getCountvalue())),
+                    __getMeasure(),
+                    __getDescription(),
+                    String.valueOf(FormatNumber.formatDezimal(this.__getExternalvalue())),
+                    String.valueOf(FormatNumber.formatDezimal(this.__getTotalnetvalue())),
+                    String.valueOf(FormatNumber.formatDezimal(this.__getTaxpercentvalue())),
+                    String.valueOf(FormatNumber.formatDezimal(this.__getTotalbrutvalue()))};
+
+        String[] form = new String[intcols.length];
+        for (int i = 0; i < form.length; i++) {
+            form[i] = possibleCols[intcols[i]];
+        }
+
+        return form;
     }
 
     @Override

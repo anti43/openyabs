@@ -15,7 +15,6 @@ import mpv5.db.objects.Property;
 import mpv5.db.objects.Schedule;
 import mpv5.db.objects.FileToItem;
 import mpv5.db.objects.FileToProduct;
-import mpv5.db.objects.FileToTemplate;
 import mpv5.db.objects.Item;
 
 import mpv5.db.objects.ItemsList;
@@ -59,7 +58,7 @@ public class Context {
     public static String IDENTITY_FILES_TO_PRODUCTS = "filestoproducts";
     public static String IDENTITY_SEARCHINDEX = "searchindex";
     public static String IDENTITY_PLUGINS_TO_USERS = "pluginstousers";
-    public static String IDENTITY_TEMPLATES_TO_USERS = "pluginstousers";
+    public static String IDENTITY_TEMPLATES_TO_USERS = "templatestousers";
     public static String IDENTITY_PLUGINS = "plugins";
     public static String IDENTITY_PROPERTIES_TO_USERS = "userproperties";
     public static String IDENTITY_ACCOUNTS = "accounts";
@@ -77,7 +76,7 @@ public class Context {
     public static String IDENTITY_WSMAPPING = "wscontactsmapping";
     public static String IDENTITY_WSIMAPPING = "wsitemsmapping";
     public static String IDENTITY_TEMPLATES = "templates";
-    public static String IDENTITY_FILES_TO_TEMPLATES = "filestotemplates";
+
     //********** identity classes **********************************************
     private static Class IDENTITY_CONTACTS_CLASS = Contact.class;
     private static Class IDENTITY_ADDRESS_CLASS = Address.class;
@@ -163,7 +162,7 @@ public class Context {
     public static String DETAILS_FILES_TO_CONTACTS = Context.getFiles().getDbIdentity() + "0.cname," + getFilesToContacts().getDbIdentity() + ".cname, " + Context.getFiles().getDbIdentity() + "0.dateadded," + Context.getFilesToContacts().getDbIdentity() + ".description," + Context.getFilesToContacts().getDbIdentity() + ".intsize," + Context.getFilesToContacts().getDbIdentity() + ".mimetype";
     public static String DETAILS_FILES_TO_ITEMS = Context.getFiles().getDbIdentity() + "0.cname," + getFilesToItems().getDbIdentity() + ".cname, " + Context.getFiles().getDbIdentity() + "0.dateadded," + Context.getFilesToItems().getDbIdentity() + ".description," + Context.getFilesToItems().getDbIdentity() + ".intsize," + Context.getFilesToItems().getDbIdentity() + ".mimetype";
     public static String DETAILS_FILES_TO_PRODUCTS = Context.getFiles().getDbIdentity() + "0.cname," + getFilesToProducts().getDbIdentity() + ".cname, " + Context.getFiles().getDbIdentity() + "0.dateadded," + Context.getFilesToProducts().getDbIdentity() + ".description," + Context.getFilesToProducts().getDbIdentity() + ".intsize," + Context.getFilesToProducts().getDbIdentity() + ".mimetype";
-    public static String DETAILS_FILES_TO_TEMPLATES = Context.getFiles().getDbIdentity() + "0.cname," + getTemplate().getDbIdentity() + ".cname, " + Context.getFiles().getDbIdentity() + "0.dateadded," + Context.getTemplate().getDbIdentity() + ".description," + Context.getTemplate().getDbIdentity() + ".intsize," + Context.getTemplate().getDbIdentity() + ".mimetype";
+    public static String DETAILS_FILES_TO_TEMPLATES = Context.getTemplate().getDbIdentity() + ".ids," + getTemplate().getDbIdentity() + ".cname, " + Context.getTemplate().getDbIdentity() + ".dateadded," + Context.getTemplate().getDbIdentity() + ".description," + Context.getTemplate().getDbIdentity() + ".intsize," + Context.getTemplate().getDbIdentity() + ".mimetype";
 
     //**************************************************************************
     /**
@@ -216,7 +215,6 @@ public class Context {
                 getFilesToContacts(),
                 getFilesToItems(),
                 getFilesToProducts(),
-                getFilesToTemplates(),
                 getProducts(),
                 getAccounts(),
                 getMessages(),
@@ -368,7 +366,6 @@ public class Context {
                 getGroup(),
                 getSchedule(),
                 getFilesToContacts(),
-                getFilesToTemplates(),
                 getHistory(),
                 getCountries(),
                 getProducts(),
@@ -1456,21 +1453,11 @@ public class Context {
         return c;
     }
 
-    public static Context getFilesToTemplates() {
-        Context c = new Context();
-        c.setSubID(DEFAULT_SUBID);
-        c.setDbIdentity(IDENTITY_FILES_TO_TEMPLATES);
-        c.setIdentityClass(FileToTemplate.class);
-        c.setId(44);
-
-        return c;
-    }
-
      public static Context getTemplatesToUsers() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_TEMPLATES_TO_USERS);
-        c.setId(45);
+        c.setId(44);
 
         return c;
     }

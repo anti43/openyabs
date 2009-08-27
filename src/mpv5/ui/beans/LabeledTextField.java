@@ -109,10 +109,17 @@ public class LabeledTextField extends javax.swing.JPanel {
     /**
      * @param text the _text to set
      */
-    public void set_Text(Object text) {
+    public void setText(Object text) {
         this._text = String.valueOf(text);
         jTextField1.setText(_text);
+    }
 
+     /**
+     * @param text the _text to set
+     */
+    public void set_Text(String text) {
+        this._text = String.valueOf(text);
+        jTextField1.setText(_text);
     }
 
     /**

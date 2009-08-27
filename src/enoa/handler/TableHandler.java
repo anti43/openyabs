@@ -20,6 +20,7 @@ import ag.ion.bion.officelayer.text.ITextDocument;
 import ag.ion.bion.officelayer.text.ITextTable;
 import ag.ion.bion.officelayer.text.ITextTableService;
 import ag.ion.bion.officelayer.text.TextException;
+import mpv5.webshopinterface.wsdjobs.addContactJob;
 
 /**
  * This class handles tables withinh OO files
@@ -88,6 +89,16 @@ public class TableHandler {
         getTable().addRow(count);
     }
 
+      /**
+     * Append the specified amount of cols to the table
+     * @param count
+     * @throws TextException
+     */
+    public void addColumns(int count) throws TextException {
+        getTable().addColumn(count);
+    }
+
+
     /**
      * Specify how many lines shall be formatted in header style
      * @param lines
@@ -108,6 +119,10 @@ public class TableHandler {
 
         if (getRowCount() <= row) {
             addRows(row - getRowCount() + 1);
+        }
+
+        if (getColumnCount() <= column) {
+            addColumns(column - getColumnCount() + 1);
         }
 
         if (value != null && value instanceof Double) {

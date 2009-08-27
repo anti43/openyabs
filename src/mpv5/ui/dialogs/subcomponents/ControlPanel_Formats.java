@@ -434,7 +434,7 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                labeledTextField1.set_Text(labeledCombobox1.getSelectedItem());
+                labeledTextField1.setText(labeledCombobox1.getSelectedItem());
             }
         });
 

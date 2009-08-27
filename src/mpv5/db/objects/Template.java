@@ -17,11 +17,11 @@
 package mpv5.db.objects;
 
 import java.io.File;
-import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryHandler;
 import mpv5.logging.Log;
 import mpv5.utils.files.FileDirectoryHandler;
@@ -34,9 +34,11 @@ import mpv5.utils.images.MPIcon;
 public class Template extends DatabaseObject {
 
     private String description = "";
-    private File file;
+    private String filename = "";
     private int intsize;
     private String mimetype;
+    private File file;
+    private String format ="";
 
     public Template() {
         context.setDbIdentity(Context.IDENTITY_TEMPLATES);
@@ -72,8 +74,6 @@ public class Template extends DatabaseObject {
         this.description = description;
     }
 
-   
-
     /**
      * @return the mimetype
      */
@@ -101,11 +101,82 @@ public class Template extends DatabaseObject {
     public void setIntsize(int intsize) {
         this.intsize = intsize;
     }
+    MPIcon icon;
 
     @Override
-    public MPIcon getIcon() {
-        return null;
+    public mpv5.utils.images.MPIcon getIcon() {
+        if (icon == null) {
+            try {
+                Log.Debug(this, "Determining Icon for " + __getCName());
+                icon = new MPIcon(MPIcon.DIRECTORY_DEFAULT_ICONS + __getCName().substring(__getCName().lastIndexOf(".") + 1, __getCName().length()) + ".png");
+                return icon;
+            } catch (Exception e) {
+                Log.Debug(this, "Icon file not existing in " + MPIcon.DIRECTORY_DEFAULT_ICONS);
+                try {
+                    JFileChooser chooser = new JFileChooser();
+                    icon = new MPIcon(chooser.getIcon(new File(filename)));
+                    return icon;
+                } catch (Exception ez) {
+                    Log.Debug(this, ez);
+                    icon = new MPIcon(MPIcon.DIRECTORY_DEFAULT_ICONS + "folder_tar.png");
+                    return icon;
+                }
+            }
+        } else {
+            return icon;
+        }
     }
 
+    /**
+     * Fetches the physical file from db
+     * @return
+     */
+    public synchronized File getFile() {
+        if (file == null) {
+            try {
+                file = QueryHandler.instanceOf().clone(Context.getFiles()).
+                        retrieveFile(filename,
+                        new File(FileDirectoryHandler.getTempDir() + cname));
+            } catch (Exception e) {
+                Log.Debug(e);
+            }
+        }
+        return file;
+    }
 
+    /**
+     * @return the filename
+     */
+    public String __getFilename() {
+        return filename;
+    }
+
+    /**
+     * @param filename the filename to set
+     */
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+
+    @Override
+    public boolean delete() {
+        QueryCriteria c = new QueryCriteria();
+        c.add("filename", filename);
+        QueryHandler.instanceOf().clone(Context.getFiles()).delete(c);
+        return super.delete();
+    }
+
+    /**
+     * @return the format
+     */
+    public String __getFormat() {
+        return format;
+    }
+
+    /**
+     * @param format the format to set
+     */
+    public void setFormat(String format) {
+        this.format = format;
+    }
 }
