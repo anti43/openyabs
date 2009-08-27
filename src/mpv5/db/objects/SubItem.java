@@ -19,6 +19,7 @@ package mpv5.db.objects;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Vector;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -75,6 +76,53 @@ public class SubItem extends DatabaseObject {
             }
             it.save(true);
         }
+    }
+
+    /**
+     *
+     * @param dataOwner
+     * @param model
+     * @param t
+     * @return
+     */
+    public static Vector<String[]> convertModel(Item dataOwner, MPTableModel model, Template t) {
+        List<Object[]> rowsl = model.getValidRows(new int[]{4});
+        Vector<String[]> rowsk = new Vector<String[]>();
+        Log.Debug(SubItem.class, "Rows found: " + rowsl.size());
+        for (int i = 0; i < rowsl.size(); i++) {
+            Object[] row = rowsl.get(i);
+            SubItem it = new SubItem();
+            try {
+                if (row[0] != null && Integer.valueOf(row[0].toString()).intValue() > 0) {
+                    it.setIDS(Integer.valueOf(row[0].toString()).intValue());
+                } else {
+                    it.setIDS(-1);
+                }
+            } catch (Exception e) {
+                Log.Debug(SubItem.class, e.getMessage());
+            }
+            it.setCName(row[4].toString());
+            it.setItemsids(dataOwner.__getIDS());
+            it.setCountvalue(Double.valueOf(row[2].toString()));
+            it.setDatedelivery(dataOwner.__getDatetodo());
+            it.setDescription(row[4].toString());
+            it.setExternalvalue(Double.valueOf(row[5].toString()));
+            it.setInternalvalue(Double.valueOf(row[5].toString()));//not supported yet
+            it.setMeasure(row[3].toString());
+            it.setOriginalproductsids(Integer.valueOf(row[10].toString()));
+            it.setQuantityvalue(Double.valueOf(row[2].toString()));
+            it.setTaxpercentvalue(Double.valueOf(row[6].toString()));
+            calculate(it);
+
+            if (!it.isExisting()) {
+                it.setDateadded(new Date());
+                it.setGroupsids(dataOwner.__getGroupsids());
+            }
+            it.save(true);
+            rowsk.add(it.toStringArray(t));
+        }
+
+        return rowsk;
     }
     private int itemsids;
     private int originalproductsids;

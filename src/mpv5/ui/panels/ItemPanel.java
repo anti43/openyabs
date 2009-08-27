@@ -58,6 +58,7 @@ import mpv5.db.common.DataNotCachedException;
 import mpv5.db.objects.Favourite;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.SubItem;
+import mpv5.db.objects.Template;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.BigPopup;
 import mpv5.ui.dialogs.Popup;
@@ -69,10 +70,13 @@ import mpv5.db.objects.User;
 import mpv5.handler.FormFieldsHandler;
 import mpv5.ui.beans.MPCBSelectionChangeReceiver;
 import mpv5.ui.dialogs.DialogForFile;
+import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.export.Export;
 import mpv5.utils.export.ODTFile;
+import mpv5.utils.export.PDFFile;
+import mpv5.utils.export.PDFFile;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.jobs.Job;
 import mpv5.utils.models.MPComboBoxModelItem;
@@ -845,31 +849,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     }//GEN-LAST:event_itemtableMouseClicked
 
     private void button_previewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_previewActionPerformed
-        if (dataOwner != null) {
-            try {
-                HashMap<String, String> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
-                File f = new File("/home/anti/aaa.odt");
-                File f2 = new File("/home/anti/aaa3.pdf");
-                Export ex = new Export();
-                ex.putAll(hm1);
-
-                Vector<String[]> l = new Vector<String[]>();
-                l.add(new String[]{"1", "22", "333", "4444"});
-                l.add(new String[]{"a1", "a22", "a333", "a4444"});
-                l.add(new String[]{"b1", "b22", "b333", "b4444"});
-                l.add(new String[]{"c1", "c22", "c333", "c4444"});
-               
-                ex.put(TableHandler.KEY_TABLE + "1", l);
-
-                ex.setTemplate(new ODTFile(f.getPath()));
-                ex.setTargetFile(f2);
-
-                new Job(ex, new PreviewPanel()).execute();
-            } catch (Exception ex1) {
-                Log.Debug(ex1);
-                Popup.error(ex1);
-            }
-        }
+        preview();
     }//GEN-LAST:event_button_previewActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private mpv5.ui.beans.LabeledCombobox accountselect;
@@ -1138,6 +1118,58 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 ((MPTableModel) itemtable.getModel()).setRowAt(new SubItem((Product) o).getRowData(i), i, 4);
             }
         } catch (Exception ex) {
+        }
+    }
+
+    private void preview() {
+
+        if (itemtable.getCellEditor() != null) {
+            itemtable.getCellEditor().stopCellEditing();
+        }
+
+  
+        if (dataOwner != null) {
+//                Context co = Context.getTemplatesToUsers();
+//                co.addReference(Context.getTemplate());
+//                QueryCriteria c = new QueryCriteria("usersids", dataOwner.__getIDS());
+//                c.add("mimetype", Item.getTypeString(dataOwner.__getInttype()));
+            ReturnValue data = QueryHandler.getConnection().freeQuery(
+                    "SELECT templatesids FROM templatestousers  LEFT OUTER JOIN templates AS templates0 ON " +
+                    "templates0.ids = templatestousers.templatesids WHERE templatestousers.usersids=1 AND " +
+                    "templates0.mimetype='Bill' AND templatestousers.IDS>0"
+                    , MPSecurityManager.VIEW, null);
+            
+            if (data.hasData()) {
+                Template t;
+                try {
+                    t = (Template) DatabaseObject.getObject(Context.getTemplate(), Integer.valueOf(data.getData()[data.getData().length-1][0].toString()));
+       
+                    HashMap<String, String> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
+                    File f = t.getFile();
+                    File f2 = FileDirectoryHandler.getTempFile("pdf");
+                    Export ex = new Export();
+                    ex.putAll(hm1);
+                    
+                    Vector<String[]> l = SubItem.convertModel(dataOwner, (MPTableModel) itemtable.getModel(), t);
+                    
+                    ex.put(TableHandler.KEY_TABLE + "1", l);
+
+                    if (f.getName().endsWith("odt")) {
+                        ex.setTemplate(new ODTFile(f.getPath()));
+                    } else {
+                        ex.setTemplate(new PDFFile(f.getPath()));
+                    }
+
+                    ex.setTargetFile(f2);
+
+                    new Job(ex, new PreviewPanel()).execute();
+                    setDataOwner(dataOwner, true);
+                } catch (Exception ex1) {
+                    Log.Debug(ex1);
+                    Popup.error(ex1);
+                }
+            }
+
         }
     }
 }
