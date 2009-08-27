@@ -17,6 +17,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -68,6 +69,7 @@ import mpv5.ui.misc.Position;
 import mpv5.ui.panels.calendar.JCalendar;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.db.objects.User;
+import mpv5.globals.Constants;
 import mpv5.globals.LocalSettings;
 import mpv5.pluginhandling.MPPLuginLoader;
 import mpv5.server.MPServer;
@@ -647,6 +649,7 @@ public class MPView extends FrameView {
         jMenuItem7 = new javax.swing.JMenuItem();
         jMenu7 = new javax.swing.JMenu();
         jMenuItem10 = new javax.swing.JMenuItem();
+        jMenuItem27 = new javax.swing.JMenuItem();
         statusPanel = new javax.swing.JPanel();
         statusMessageLabel = new FadeOnChangeLabel();
         pluginIcons = new javax.swing.JPanel();
@@ -1334,6 +1337,8 @@ public class MPView extends FrameView {
         jMenu7.setText(bundle.getString("MPView.jMenu7.text")); // NOI18N
         jMenu7.setName("jMenu7"); // NOI18N
 
+        jMenuItem10.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/cal.png"))); // NOI18N
         jMenuItem10.setText(bundle.getString("MPView.jMenuItem10.text")); // NOI18N
         jMenuItem10.setName("jMenuItem10"); // NOI18N
         jMenuItem10.addActionListener(new java.awt.event.ActionListener() {
@@ -1342,6 +1347,17 @@ public class MPView extends FrameView {
             }
         });
         jMenu7.add(jMenuItem10);
+
+        jMenuItem27.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
+        jMenuItem27.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/info.png"))); // NOI18N
+        jMenuItem27.setText(bundle.getString("MPView.jMenuItem27.text")); // NOI18N
+        jMenuItem27.setName("jMenuItem27"); // NOI18N
+        jMenuItem27.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem27ActionPerformed(evt);
+            }
+        });
+        jMenu7.add(jMenuItem27);
 
         menuBar.add(jMenu7);
 
@@ -1587,8 +1603,7 @@ public class MPView extends FrameView {
     }//GEN-LAST:event_jMenuItem9ActionPerformed
 
     private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
-
-        addTab(Log.getLogger().open(), "MP Logger");
+        addOrShowTab(Log.getLogger().open(), "Logs");
     }//GEN-LAST:event_jMenuItem10ActionPerformed
 
     private void jMenuItem11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem11ActionPerformed
@@ -1810,6 +1825,16 @@ public class MPView extends FrameView {
         errorlabel.setIcon(null);
         identifierFrame.validate();
     }//GEN-LAST:event_errorlabelMouseClicked
+
+    private void jMenuItem27ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem27ActionPerformed
+
+         try {
+            java.awt.Desktop.getDesktop().browse(new URI(Constants.WEBSITE));
+        } catch (Exception ex) {
+            Log.Debug(ex);
+        }
+    }//GEN-LAST:event_jMenuItem27ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JMenu clipboardMenu;
     private javax.swing.JLabel errorlabel;
@@ -1859,6 +1884,7 @@ public class MPView extends FrameView {
     private javax.swing.JMenuItem jMenuItem24;
     private javax.swing.JMenuItem jMenuItem25;
     private javax.swing.JMenuItem jMenuItem26;
+    private javax.swing.JMenuItem jMenuItem27;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;

@@ -2,7 +2,10 @@ package mpv5.ui.dialogs.subcomponents;
 
 import enoa.handler.TableHandler;
 import java.awt.Component;
+import java.awt.Desktop;
 import java.io.File;
+import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +37,7 @@ import mpv5.ui.panels.DataPanel;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.db.objects.User;
 
+import mpv5.globals.Constants;
 import mpv5.handler.FormFieldsHandler;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.panels.PreviewPanel;
@@ -242,7 +246,7 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 44, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -265,6 +269,11 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
 
         jButton6.setText(bundle.getString("ControlPanel_Templates.jButton6.text")); // NOI18N
         jButton6.setName("jButton6"); // NOI18N
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
         jPanel6.add(jButton6);
 
         jButton5.setText(bundle.getString("ControlPanel_Templates.jButton5.text")); // NOI18N
@@ -377,6 +386,14 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         test();
     }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        try {
+            Desktop.getDesktop().browse(new URI(Constants.WEBSITE));
+        } catch (Exception ex) {
+            Log.Debug(ex);
+        }
+    }//GEN-LAST:event_jButton6ActionPerformed
 
     public void setValues(PropertyStore values) {
     }
