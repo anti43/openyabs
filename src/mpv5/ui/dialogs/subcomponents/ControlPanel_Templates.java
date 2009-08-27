@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import mpv5.data.PropertyStore;
@@ -18,6 +20,7 @@ import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryData;
 import mpv5.db.common.QueryHandler;
 import mpv5.db.common.SaveString;
+import mpv5.db.objects.Contact;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.SubItem;
 import mpv5.db.objects.Template;
@@ -36,6 +39,7 @@ import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.panels.PreviewPanel;
 import mpv5.utils.export.Export;
 import mpv5.utils.export.ODTFile;
+import mpv5.utils.export.PDFFile;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.jobs.Job;
 import mpv5.utils.models.MPComboBoxModelItem;
@@ -328,6 +332,7 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
             dato.getPanelData(this);
             if (dato.save()) {
                 actionAfterSave();
+                refresh();
             } else {
                 showRequiredFields();
             }
@@ -515,8 +520,7 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
 
         TableFormat.stripFirstColumn(jTable1);
         TableFormat.format(jTable1, 1, 120);
-        TableFormat.format(jTable1, 4, 80);
-        TableFormat.format(jTable1, 5, 80);
+        TableFormat.format(jTable1, 5, 120);
     }
 
     public void paste(DatabaseObject dbo) {
@@ -564,13 +568,23 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
     }
 
     private void test() {
+        DatabaseObject t;
         if (dataOwner != null) {
-            DatabaseObject t = new Item();
-            t.avoidNulls();
-            t.fillSampleData();
+            try {
+                t = DatabaseObject.getObject(Context.getItems(), 1);
+            } catch (NodataFoundException ex) {
+                t = new Item();
+                Contact k = new Contact();
+                k.avoidNulls();
+                k.fillSampleData();
+                t.avoidNulls();
+                t.fillSampleData();
+                ((Item) t).setContactsids(k.__getIDS());
+            }
 
             try {
                 HashMap<String, String> hm1 = new FormFieldsHandler(t).getFormattedFormFields(null);
+                Log.Print(hm1.entrySet().toArray());
                 File f = dataOwner.getFile();
                 File f2 = FileDirectoryHandler.getTempFile("pdf");
                 Export ex = new Export();
@@ -584,7 +598,12 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
 
                 ex.put(TableHandler.KEY_TABLE + "1", l);
 
-                ex.setTemplate(new ODTFile(f.getPath()));
+                if (f.getName().endsWith("odt")) {
+                    ex.setTemplate(new ODTFile(f.getPath()));
+                } else {
+                    ex.setTemplate(new PDFFile(f.getPath()));
+                }
+
                 ex.setTargetFile(f2);
 
                 new Job(ex, new PreviewPanel()).execute();

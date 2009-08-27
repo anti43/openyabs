@@ -55,14 +55,20 @@ public class PDFFile extends Exportable {
             HashMap PDFFields = acroFields.getFields();
             for (Iterator it = PDFFields.keySet().iterator(); it.hasNext();) {
                 Object object = it.next();
-                Log.Debug(this, "Filling Field: " + object);
-                acroFields.setField(object.toString(), String.valueOf(getData().get(object.toString())));
+                String objects = String.valueOf(object);
+                if (getData().get(objects) != null) {
+                    Log.Debug(this, "Filling Field: " + object + " [" +getData().get(objects) + "]");
+                    acroFields.setField(objects, String.valueOf(getData().get(objects)));
+                }
+                if (getData().get(objects.replace("_", ".")) != null) {
+                    Log.Debug(this, "Filling Field: " + object + " [" +getData().get(objects) + "]");
+                    acroFields.setField(objects, String.valueOf(getData().get(objects.replace("_", "."))));
+                }
             }
             pdfStamper.close();
             Log.Debug(this, "Done file: " + getTarget().getPath());
         } catch (Exception ex) {
             Log.Debug(ex);
         }
-
     }
 }

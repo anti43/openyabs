@@ -175,16 +175,15 @@ public class SubItem extends DatabaseObject {
         try {
             String[] cols = format.split(",");
             intcols = new int[cols.length];
-            for (int i = 0; i < cols.length; i++) {
+            for (int i = 0; i < intcols.length; i++) {
                 String string = cols[i];
                 intcols[i] = Integer.valueOf(string).intValue();
             }
         } catch (Exception ex) {
-            Log.Debug(ex);
-            Log.Debug(this, "An error occured, using default format now.");
+            Log.Debug(this, "An error occured, using default format now. "  + ex.getMessage());
             intcols = new int[8];
-            for (int i = 1; i <= intcols.length; i++) {
-                intcols[i] = i;
+            for (int i = 0; i < intcols.length; i++) {
+                intcols[i] = i+1;
             }
         }
 
@@ -199,8 +198,8 @@ public class SubItem extends DatabaseObject {
                     String.valueOf(FormatNumber.formatDezimal(this.__getTotalbrutvalue()))};
 
         String[] form = new String[intcols.length];
-        for (int i = 0; i < form.length; i++) {
-            form[i] = possibleCols[intcols[i]];
+        for (int i = 0; i < intcols.length; i++) {
+            form[i] = possibleCols[intcols[i]-1];
         }
 
         return form;

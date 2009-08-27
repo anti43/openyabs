@@ -2233,6 +2233,8 @@ public class QueryHandler implements Cloneable {
                 x = new QueryData(new String[]{"cname,filename, description, dateadded", file.getName() + "," + get() + "," + descriptiveText + "," + DateConverter.getTodayDBDate()});
                 if (!dataOwner.getContext().equals(Context.getTemplate())) {
                     x.add(dataOwner.getType() + "sids", dataOwner.__getIDS());
+                } else {
+                    x.add("format", "1,2,3,4,5,6,7,8");
                 }
                 x.add("intaddedby", MPView.getUser().__getIDS());
                 x.add("intsize", file.length());
