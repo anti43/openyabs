@@ -207,6 +207,7 @@ public class Item extends DatabaseObject implements Formattable {
     public static final int TYPE_BILL = 0;
     public static final int TYPE_ORDER = 1;
     public static final int TYPE_OFFER = 2;
+    public static final int TYPE_DELIVERY_NOTE = 3;
     private FormatHandler formatHandler;
 
     public Item() {

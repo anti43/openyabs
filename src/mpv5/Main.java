@@ -53,6 +53,7 @@ import mpv5.db.common.DatabaseObjectLock;
 import mpv5.db.common.QueryHandler;
 import mpv5.db.objects.Account;
 import mpv5.db.objects.Contact;
+import mpv5.db.objects.Template;
 import mpv5.globals.Constants;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
@@ -106,6 +107,7 @@ public class Main extends SingleFrameApplication {
                 MPView.addMessage(Messages.CACHED_OBJECTS + ": " + Context.getUser());
                 LanguageManager.getCountriesAsComboBoxModel();
                 MPView.addMessage(Messages.CACHED_OBJECTS + ": " + Context.getCountries());
+
             }
         };
         new Thread(runnable).start();
@@ -225,7 +227,8 @@ public class Main extends SingleFrameApplication {
                 IOfficeApplication iOfficeApplication = oap.get(i);
                 try {
                     iOfficeApplication.getDesktopService().terminate();
-                } catch (Exception n){}
+                } catch (Exception n) {
+                }
             }
             NoaConnection.stopOOOServer();
         } catch (Exception e) {
@@ -532,10 +535,9 @@ public class Main extends SingleFrameApplication {
         } else {
             MPView.identifierView.showServerStatus(false);
         }
-        
-            if (!LocalSettings.getBooleanProperty(LocalSettings.OFFICE_REMOTE)) {
-            Runnable runnable = new Runnable() {
 
+        if (!LocalSettings.getBooleanProperty(LocalSettings.OFFICE_REMOTE)) {
+            Runnable runnable2 = new Runnable() {
                 @Override
                 public void run() {
                     try {
@@ -543,12 +545,25 @@ public class Main extends SingleFrameApplication {
                     } catch (Exception n) {
                         Log.Debug(Main.class, n.getMessage());
                     }
-
-                    WSIManager.instanceOf().start();
                 }
             };
-            new Thread(runnable).start();
+            new Thread(runnable2).start();
         }
+
+        Runnable runnable3 = new Runnable() {
+            public void run() {
+                WSIManager.instanceOf().start();
+            }
+        };
+        new Thread(runnable3).start();
+
+        Runnable runnable1 = new Runnable() {
+
+            public void run() {
+                //Needed to move this to here; otherwise the oo connection may not be initialised
+                Template.cacheTemplates();
+            }
+        };SwingUtilities.invokeLater(runnable1);
     }
 
     private void loadPlugins() {

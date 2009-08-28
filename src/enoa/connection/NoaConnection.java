@@ -120,7 +120,16 @@ public class NoaConnection {
             officeAplication =
                     OfficeApplicationRuntime.getApplication(configuration);
             officeAplication.setConfiguration(configuration);
-            officeAplication.activate();
+            try {
+                officeAplication.activate();
+            } catch (Exception officeApplicationException) {
+                try {
+                    Thread.sleep(3333);
+                } catch (InterruptedException ex) {
+                    
+                }
+                officeAplication.activate();
+            }
             documentService =
                     officeAplication.getDocumentService();
             desktopService =

@@ -48,6 +48,7 @@ import mpv5.globals.Messages;
 import mpv5.db.objects.Favourite;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.Product;
+import mpv5.db.objects.Template;
 import mpv5.logging.Log;
 import mpv5.pluginhandling.MP5Plugin;
 import mpv5.pluginhandling.Plugin;
@@ -390,7 +391,6 @@ public class MPView extends FrameView {
         QueryHandler.setWaitCursorFor(identifierFrame);
 
         pluginLoader = new MPPLuginLoader();
-
     }
 
     /**

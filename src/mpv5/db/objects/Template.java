@@ -17,6 +17,9 @@
 package mpv5.db.objects;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComponent;
@@ -31,6 +34,8 @@ import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.export.Exportable;
+import mpv5.utils.export.ODTFile;
+import mpv5.utils.export.PDFFile;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.images.MPIcon;
 
@@ -41,34 +46,49 @@ import mpv5.utils.images.MPIcon;
 public class Template extends DatabaseObject {
 
     /**
+     * The cache of the templates
+     */
+    public static HashMap<Context, Template> templateCache = new HashMap<Context, Template>();
+
+    /**
      * 
      * @param dataOwner
      * @return
      */
     public static Template loadTemplate(DatabaseObject dataOwner) {
-        String type = "";
-        if (dataOwner instanceof Item) {
-            type = Item.getTypeString(((Item) dataOwner).__getInttype());
-        } else if (dataOwner instanceof Product) {
-            type = Product.getTypeString(((Product) dataOwner).__getInttype());
-        }
-
-        ReturnValue data = QueryHandler.getConnection().freeQuery(
-                "SELECT templatesids FROM templatestousers  LEFT OUTER JOIN templates AS templates0 ON " +
-                "templates0.ids = templatestousers.templatesids WHERE templatestousers.usersids=" +
-                MPView.getUser().__getIDS() +
-                " AND " +
-                "templates0.mimetype='" + type +
-                "' AND templatestousers.IDS>0", MPSecurityManager.VIEW, null);
-        Template preloadedTemplate = null;
-        if (data.hasData()) {
-            try {
-                preloadedTemplate = (Template) DatabaseObject.getObject(Context.getTemplate(), Integer.valueOf(data.getData()[data.getData().length - 1][0].toString()));
-            } catch (NodataFoundException ex) {
-                return null;
+        if (templateCache.containsKey(dataOwner.getContext())) {
+            return templateCache.get(dataOwner.getContext());
+        } else {
+            String type = "";
+            if (dataOwner instanceof Item) {
+                type = Item.getTypeString(((Item) dataOwner).__getInttype());
+            } else if (dataOwner instanceof Product) {
+                type = Product.getTypeString(((Product) dataOwner).__getInttype());
             }
+
+            ReturnValue data = QueryHandler.getConnection().freeQuery(
+                    "SELECT templatesids FROM templatestousers  LEFT OUTER JOIN templates AS templates0 ON " +
+                    "templates0.ids = templatestousers.templatesids WHERE templatestousers.usersids=" +
+                    MPView.getUser().__getIDS() +
+                    " AND " +
+                    "templates0.mimetype='" + type +
+                    "' AND templatestousers.IDS>0", MPSecurityManager.VIEW, null);
+            Template preloadedTemplate = null;
+            if (data.hasData()) {
+                try {
+                    preloadedTemplate = (Template) DatabaseObject.getObject(Context.getTemplate(), Integer.valueOf(data.getData()[data.getData().length - 1][0].toString()));
+                    if (preloadedTemplate.getFile().getName().endsWith("odt")) {
+                        preloadedTemplate.exFile = new ODTFile(preloadedTemplate.getFile().getPath());
+                    } else {
+                        preloadedTemplate.exFile = new PDFFile(preloadedTemplate.getFile().getPath());
+                    }
+                    templateCache.put(dataOwner.getContext(), preloadedTemplate);
+                } catch (NodataFoundException ex) {
+                    return null;
+                }
+            }
+             return preloadedTemplate;
         }
-        return preloadedTemplate;
     }
     private String description = "";
     private String filename = "";
@@ -76,7 +96,7 @@ public class Template extends DatabaseObject {
     private String mimetype;
     private File file;
     private String format = DEFAULT_FORMAT;
-
+    private Exportable exFile;
     /**
      * Represents the default column order
      */
@@ -222,4 +242,49 @@ public class Template extends DatabaseObject {
         this.format = format;
     }
 
+    /**
+     * Preload the template files
+     */
+    public static void cacheTemplates() {
+        List<DatabaseObject> l = new Vector<DatabaseObject>();
+        Item it1 = new Item();
+        it1.setInttype(Item.TYPE_BILL);
+        l.add(it1);
+
+        Item it2 = new Item();
+        it2.setInttype(Item.TYPE_OFFER);
+        l.add(it2);
+
+        Item it3 = new Item();
+        it3.setInttype(Item.TYPE_ORDER);
+        l.add(it3);
+
+        Item it4 = new Item();
+        it4.setInttype(Item.TYPE_DELIVERY_NOTE);
+        l.add(it4);
+
+        Product it5 = new Product();
+        it5.setInttype(Product.TYPE_PRODUCT);
+        l.add(it5);
+
+        Product it6 = new Product();
+        it6.setInttype(Product.TYPE_SERVICE);
+        l.add(it6);
+
+        for (int i = 0; i < l.size(); i++) {
+            DatabaseObject databaseObject = l.get(i);
+            Template t = loadTemplate(databaseObject);
+            if (t!=null) {
+                templateCache.put(databaseObject.getContext(), t);
+                Log.Debug(Template.class, "Template cached: " + t);
+            }
+        }
+    }
+
+    /**
+     * @return the exFile
+     */
+    public Exportable getExFile() {
+        return exFile;
+    }
 }

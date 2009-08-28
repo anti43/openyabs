@@ -46,6 +46,7 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
     private DatabaseObject dataOwner;
     private PDFFile pdffile;
     private PagePanel panel;
+    private DataPanel parent;
 
     /** Creates new form
      */
@@ -285,7 +286,7 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
 
         if (dataOwner != null) {
             try {
-                file = FileDirectoryHandler.copyFile2(file, new File(FileDirectoryHandler.getTempDir() + dataOwner.__getCName()));
+                file = FileDirectoryHandler.copyFile2(file, new File(FileDirectoryHandler.getTempDir() + dataOwner.__getCName() + ".pdf"));
             } catch (Exception ex) {
                 Log.Debug(ex);
             }
@@ -293,7 +294,10 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
 
         if (dataOwner != null && dataOwner.isExisting()) {
             if (QueryHandler.instanceOf().clone(Context.getFiles()).insertFile(file, dataOwner, QueryCriteria.getSaveStringFor(dataOwner.__getCName()))) {
-                Popup.notice(Messages.FILE_SAVED.toString() + file);
+                Popup.notice(Messages.FILE_SAVED.toString() + file.getName());
+                if (parent != null) {
+                    parent.refresh();
+                }
             }
         } else {
             Popup.notice(Messages.NOT_POSSIBLE);
@@ -451,5 +455,12 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
         } else {
             FileDirectoryHandler.open(file);
         }
+    }
+
+    /**
+     * @param parent the parent to set
+     */
+    public void setParent(DataPanel parent) {
+        this.parent = parent;
     }
 }
