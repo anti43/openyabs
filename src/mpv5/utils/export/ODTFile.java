@@ -46,7 +46,7 @@ public class ODTFile extends Exportable {
         nc = NoaConnection.getConnection();
         dh = new DocumentHandler(nc);
         try {
-            df = dh.loadDocument(this, false);
+            dh.loadDocument(this, false);
             Log.Debug(this, "Loaded odt file: " + this);
         } catch (Exception ex) {
             Log.Debug(ex);
@@ -59,11 +59,12 @@ public class ODTFile extends Exportable {
         Log.Debug(this, "run: ");
         MPView.setWaiting(true);
         try {
-            dh.fillPlaceholderFields((ITextDocument) df, getData());
+            dh.clear();
+            dh.fillPlaceholderFields(getData());
 //            dh.fillTextVariableFields((ITextDocument) df, getData());//Omitted for performance reasons
-            dh.fillTables((ITextDocument)df, getData());
-            dh.saveAs(df, getTarget());
-            df.close();
+            dh.fillTables(getData());
+            dh.saveAs(getTarget());
+            dh.close();
         } catch (Exception ex) {
             Log.Debug(ex);
         } finally {

@@ -535,9 +535,10 @@ public class Main extends SingleFrameApplication {
         } else {
             MPView.identifierView.showServerStatus(false);
         }
-
+        final Thread startServerThread;
         if (!LocalSettings.getBooleanProperty(LocalSettings.OFFICE_REMOTE)) {
             Runnable runnable2 = new Runnable() {
+
                 @Override
                 public void run() {
                     try {
@@ -547,10 +548,15 @@ public class Main extends SingleFrameApplication {
                     }
                 }
             };
-            new Thread(runnable2).start();
+           startServerThread = new Thread(runnable2);
+           startServerThread.start();
+        }else {
+            startServerThread = null;
         }
 
+
         Runnable runnable3 = new Runnable() {
+
             public void run() {
                 WSIManager.instanceOf().start();
             }
@@ -560,10 +566,24 @@ public class Main extends SingleFrameApplication {
         Runnable runnable1 = new Runnable() {
 
             public void run() {
-                //Needed to move this to here; otherwise the oo connection may not be initialised
-                Template.cacheTemplates();
+                boolean running = true;
+                while (running) {
+                    if (startServerThread==null || !startServerThread.isAlive()) {
+                         try {
+                            Thread.sleep(3333);
+                        } catch (InterruptedException ex) {}
+                        //Needed to move this to here; otherwise the oo connection may not be initialised
+                        Template.cacheTemplates();
+                        running=false;
+                    } else {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException ex) {}
+                    }
+                }
             }
-        };SwingUtilities.invokeLater(runnable1);
+        };
+        new Thread(runnable1).start();
     }
 
     private void loadPlugins() {

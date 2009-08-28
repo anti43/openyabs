@@ -65,6 +65,11 @@ public class DocumentHandler {
     };
     private final NoaConnection connection;
     private final DocumentDescriptor descriptor;
+    private IDocument document;
+    private ITextFieldService textFieldService;
+    private ITextField[] placeholders;
+    private TableHandler tablehandler;
+    private File file;
 
     /**
      * Creates a new (hidden) Document Handler on top of the given connection
@@ -80,46 +85,41 @@ public class DocumentHandler {
     }
 
     /**
-     * Load an existing document into the Document Handler and return an IDocument
+     * Load an existing document into the Document Handler
      * @param file The file to load
      * @param asTemplate If true, the file is treatened as template (.ott)
-     * @return
      * @throws Exception Any error thrown
      */
-    public IDocument loadDocument(File file, boolean asTemplate) throws Exception {
+    public void loadDocument(File file, boolean asTemplate) throws Exception {
         if (!OFFICE_FILE_FILTER.accept(file)) {
             throw new UnsupportedOperationException("The file extension must match: " + EXTENSION);
         }
         if (asTemplate) {
             descriptor.setAsTemplate(asTemplate);
         }
-
+        this.file = file;
         descriptor.setHidden(true);
-
-        return connection.getDocumentService().loadDocument(file.getPath());
+        clear();
     }
 
     /**
      * Creates a new, empty text document (.odt)
-     * @return
      * @throws Exception
      */
-    public ITextDocument newTextDocument() throws Exception {
-        IDocument document = connection.getDocumentService().constructNewDocument(IDocument.WRITER, descriptor);
-        ITextDocument textDocument = (ITextDocument) document;
-        return textDocument;
+    public void newTextDocument() throws Exception {
+        IDocument d = connection.getDocumentService().constructNewDocument(IDocument.WRITER, descriptor);
+        document = (ITextDocument) d;
     }
 
     /**
      * Save the given document to the physical location of the given file.
-     * @param doc
      * @param file
      * @throws DocumentException
      */
-    public synchronized void saveAs(IDocument doc, File file) throws DocumentException {
+    public synchronized void saveAs(File file) throws DocumentException {
 
-        doc.reformat();
-        doc.update();
+        document.reformat();
+        document.update();
 
         if (file.getName().split("\\.").length < 2) {
             throw new UnsupportedOperationException("The file must have an extension: " + file);
@@ -136,23 +136,28 @@ public class DocumentHandler {
         }
 
         if (filter != null) {
-            doc.getPersistenceService().export(file.getPath(), filter);
+            document.getPersistenceService().export(file.getPath(), filter);
         } else {
             throw new UnsupportedOperationException("File extension not supported: " + extension);
         }
+    }
 
+    /**
+     * Close the underlying doc
+     */
+    public void close() {
+        document.close();
     }
 
     /**
      * Fill the Form Fields of the template with values
-     * @param textDocument
      * @param data
      * @throws Exception
      * @throws NOAException
      */
-    public synchronized void fillFormFields(ITextDocument textDocument, HashMap<String, Object> data) throws Exception, NOAException {
-        Log.Debug(this, "Looking for form fields in: " + textDocument);
-        IFormComponent[] formComponents = textDocument.getFormService().getFormComponents();
+    public synchronized void fillFormFields(HashMap<String, Object> data) throws Exception, NOAException {
+        Log.Debug(this, "Looking for form fields in: " + document);
+        IFormComponent[] formComponents = document.getFormService().getFormComponents();
         Iterator<String> keys = data.keySet().iterator();
         String key = null;
         while (keys.hasNext()) {
@@ -182,17 +187,18 @@ public class DocumentHandler {
 
     /**
      * Fill the Placeholder Fields of the template with values
-     * @param textDocument
      * @param data
      * @throws Exception
      * @throws NOAException
      */
-    public synchronized void fillPlaceholderFields(ITextDocument textDocument, HashMap<String, Object> data) throws Exception, NOAException {
-        Log.Debug(this, "Looking for placeholder fields in: " + textDocument);
+    public synchronized void fillPlaceholderFields(HashMap<String, Object> data) throws Exception, NOAException {
+        Log.Debug(this, "Looking for placeholder fields in: " + document);
         Iterator<String> keys = data.keySet().iterator();
         String key = null;
-        ITextFieldService textFieldService = textDocument.getTextFieldService();
-        ITextField[] placeholders = textFieldService.getPlaceholderFields();
+        if (textFieldService == null || placeholders == null) {
+            textFieldService = ((ITextDocument) document).getTextFieldService();
+            placeholders = textFieldService.getPlaceholderFields();
+        }
         while (keys.hasNext()) {
             //                    Log.Debug(this, "Found placeholder: " + placeholderDisplayText);  // get column name
             key = keys.next();
@@ -211,13 +217,12 @@ public class DocumentHandler {
 
     /**
      * Fill the Variable Text Fields of the template with values
-     * @param textDocument
      * @param data
      * @throws Exception
      * @throws NOAException
      */
-    public synchronized void fillTextVariableFields(ITextDocument textDocument, HashMap<String, Object> data) throws Exception, NOAException {
-        Log.Debug(this, "Looking for variable fields in: " + textDocument);
+    public synchronized void fillTextVariableFields(HashMap<String, Object> data) throws Exception, NOAException {
+        Log.Debug(this, "Looking for variable fields in: " + document);
         Iterator<String> keys = data.keySet().iterator();
         String key = null;
         IVariableTextFieldMaster x;
@@ -225,7 +230,9 @@ public class DocumentHandler {
         while (keys.hasNext()) {
             // get column name
             key = keys.next();
-            ITextFieldService textFieldService = textDocument.getTextFieldService();
+            if (textFieldService == null) {
+                textFieldService = ((ITextDocument) document).getTextFieldService();
+            }
             x = textFieldService.getVariableTextFieldMaster(key);
 
             if (x != null) {
@@ -237,7 +244,6 @@ public class DocumentHandler {
                         xPropertySetField.setPropertyValue("Content", data.get(key));
                     }
                 }
-                textDocument.getTextFieldService().refresh();
             }
         }
     }
@@ -278,11 +284,10 @@ public class DocumentHandler {
 
     /**
      * Print the document directly
-     * @param iTextDocument
      */
-    public void print(ITextDocument iTextDocument) {
+    public void print() {
         try {
-            iTextDocument.getPrintService().print();
+            document.getPrintService().print();
         } catch (DocumentException ex) {
             Log.Debug(ex);
         }
@@ -290,20 +295,20 @@ public class DocumentHandler {
 
     /**
      * Fill the tables in the document
-     * @param iTextDocument
      * @param data
      * @throws TextException
      */
-    public void fillTables(ITextDocument iTextDocument, HashMap<String, Object> data) throws TextException {
+    public synchronized void fillTables(HashMap<String, Object> data) throws TextException {
 
-        Log.Debug(this, "Looking for tables in: " + iTextDocument);
+        Log.Debug(this, "Looking for tables in: " + document);
         for (Iterator<String> it = data.keySet().iterator(); it.hasNext();) {
             String key = it.next();
             if (key.startsWith(TableHandler.KEY_TABLE)) {//Table found
-
                 @SuppressWarnings("unchecked")
                 List<String[]> value = (List<String[]>) data.get(key);
-                TableHandler tablehandler = new TableHandler(iTextDocument, key);
+                if (tablehandler == null) {
+                    tablehandler = new TableHandler((ITextDocument) document, key);
+                }
                 for (int i = 0; i < value.size(); i++) {
                     String[] strings = value.get(i);
                     for (int j = 0; j < strings.length; j++) {
@@ -313,5 +318,16 @@ public class DocumentHandler {
                 }
             }
         }
+    }
+
+    /**
+     * Reset the doc
+     * @throws DocumentException
+     */
+    public void clear() throws DocumentException {
+        document = connection.getDocumentService().loadDocument(file.getPath());
+        textFieldService = null;
+        placeholders = null;
+        tablehandler = null;
     }
 }
