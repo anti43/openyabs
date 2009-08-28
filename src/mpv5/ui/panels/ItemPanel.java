@@ -74,6 +74,7 @@ import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.export.Export;
+import mpv5.utils.export.Exportable;
 import mpv5.utils.export.ODTFile;
 import mpv5.utils.export.PDFFile;
 import mpv5.utils.export.PDFFile;
@@ -232,8 +233,12 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             if (object.isReadOnly()) {
                 Popup.notice(Messages.LOCKED_BY);
             }
+            preload = false;
+            preloadTemplate();
         }
     }
+    Exportable preloadedExportFile;
+    Template preloadedTemplate;
 
     private void setTitle() {
         if (this.getParent() instanceof JViewport || this.getParent() instanceof JTabbedPane) {
@@ -1122,54 +1127,58 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     }
 
     private void preview() {
+        PreviewPanel pr;
+        if (preloadedTemplate != null && preload) {
+            if (dataOwner.isExisting()) {
+                if (itemtable.getCellEditor() != null) {
+                    itemtable.getCellEditor().stopCellEditing();
+                }
 
-        if (itemtable.getCellEditor() != null) {
-            itemtable.getCellEditor().stopCellEditing();
-        }
-
-  
-        if (dataOwner != null) {
-//                Context co = Context.getTemplatesToUsers();
-//                co.addReference(Context.getTemplate());
-//                QueryCriteria c = new QueryCriteria("usersids", dataOwner.__getIDS());
-//                c.add("mimetype", Item.getTypeString(dataOwner.__getInttype()));
-            ReturnValue data = QueryHandler.getConnection().freeQuery(
-                    "SELECT templatesids FROM templatestousers  LEFT OUTER JOIN templates AS templates0 ON " +
-                    "templates0.ids = templatestousers.templatesids WHERE templatestousers.usersids=1 AND " +
-                    "templates0.mimetype='Bill' AND templatestousers.IDS>0"
-                    , MPSecurityManager.VIEW, null);
-            
-            if (data.hasData()) {
-                Template t;
-                try {
-                    t = (Template) DatabaseObject.getObject(Context.getTemplate(), Integer.valueOf(data.getData()[data.getData().length-1][0].toString()));
-       
+                if (dataOwner != null) {
                     HashMap<String, String> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
-                    File f = t.getFile();
                     File f2 = FileDirectoryHandler.getTempFile("pdf");
                     Export ex = new Export();
                     ex.putAll(hm1);
-                    
-                    Vector<String[]> l = SubItem.convertModel(dataOwner, (MPTableModel) itemtable.getModel(), t);
-                    
+
+                    Vector<String[]> l = SubItem.convertModel(dataOwner, (MPTableModel) itemtable.getModel(), preloadedTemplate);
+
                     ex.put(TableHandler.KEY_TABLE + "1", l);
-
-                    if (f.getName().endsWith("odt")) {
-                        ex.setTemplate(new ODTFile(f.getPath()));
-                    } else {
-                        ex.setTemplate(new PDFFile(f.getPath()));
-                    }
-
+                    ex.setTemplate(preloadedExportFile);
                     ex.setTargetFile(f2);
 
-                    new Job(ex, new PreviewPanel()).execute();
-                    setDataOwner(dataOwner, true);
-                } catch (Exception ex1) {
-                    Log.Debug(ex1);
-                    Popup.error(ex1);
+                    pr =new PreviewPanel();
+                    pr.setDataOwner(dataOwner);
+                    new Job(ex, pr).execute();
+                    saveSubItems();
                 }
             }
-
+        } else {
+            Popup.notice(Messages.NO_TEMPLATE_LOADED);
         }
+    }
+    private boolean preload = false;
+
+    private void preloadTemplate() {
+        Runnable runnable = new Runnable() {
+
+            public void run() {
+                preloadedTemplate = Template.loadTemplate(dataOwner);
+                if (preloadedTemplate != null) {
+                    try {
+                        if (preloadedTemplate.getFile().getName().endsWith("odt")) {
+                            preloadedExportFile = new ODTFile(preloadedTemplate.getFile().getPath());
+                        } else {
+                            preloadedExportFile = new PDFFile(preloadedTemplate.getFile().getPath());
+                        }
+                        preload = true;
+                    } catch (Exception e) {
+                        Log.Debug(e);
+                    }
+                } else {
+                    Popup.notice(Messages.NO_TEMPLATE_DEFINDED);
+                }
+            }
+        };
+        new Thread(runnable).start();
     }
 }

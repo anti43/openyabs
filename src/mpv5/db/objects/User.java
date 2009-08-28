@@ -100,12 +100,9 @@ public class User extends DatabaseObject {
         if (userCache.containsKey(Integer.toBinaryString(forId))) {
             return userCache.get(Integer.toBinaryString(forId));
         } else {
-            cacheUser();
-            if (userCache.containsKey(Integer.toBinaryString(forId))) {
-                return userCache.get(Integer.toBinaryString(forId));
-            }
+            Log.Debug(User.class, "User not found in cache: " + Integer.toBinaryString(forId));
+            return "unknown";
         }
-        return "unknown";
     }
 
     /**

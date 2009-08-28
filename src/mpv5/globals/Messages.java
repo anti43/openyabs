@@ -167,7 +167,9 @@ public enum Messages {
     NO_ACCOUNTS("No accounts or companies are configured for you."),
     CONTACTS_TRANSMITTED("contacts have been transmitted to"),
     ORDERS_RECEIVED("orders have been received from"),
-    LOAD_NOW("Load now?");
+    LOAD_NOW("Load now?"),
+    NO_TEMPLATE_DEFINDED("There is no template assigned to your account matching this export type."),
+    NO_TEMPLATE_LOADED("The template is not loaded yet. Please try again in a few seconds.");
 
     private Messages(String message) {
         this.message = message;

@@ -246,7 +246,7 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 44, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -524,7 +524,7 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
     }
 
     public void refresh() {
-
+        format.setText(Template.DEFAULT_FORMAT);
         Context c = Context.getTemplate();
         c.addReference(Context.getFiles().getDbIdentity(), "cname", "filename");
         jTable1.setModel(new MPTableModel(new Class[]{Integer.class, String.class, String.class, String.class, String.class, Long.class, String.class},

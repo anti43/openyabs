@@ -58,6 +58,15 @@ public class FormatNumber {
     }
 
     /**
+     * Formats a number to look like an int (cut of x.digits)
+     * @param number
+     * @return
+     */
+    public synchronized static String formatInteger(Double number) {
+        return String.valueOf(number.intValue());
+    }
+
+    /**
      * Round s a number up to two fraction digits {@link BigDecimal.ROUND_HALF_UP}
      * @param number
      * @return
@@ -95,111 +104,86 @@ public class FormatNumber {
             }
             return null;
         }
-    
-}
 
-/**
- * Formats a number to look like the users default locale decimal (+ rounding)
- * @param number
- * @return
- */
-public  synchronized static String formatDezimal(
+    }
 
-Float number) {
+    /**
+     * Formats a number to look like the users default locale decimal (+ rounding)
+     * @param number
+     * @return
+     */
+    public synchronized static String formatDezimal(
+            Float number) {
         java.text.DecimalFormat n = (DecimalFormat) getDefaultDecimalFormat();
-        n.setMaximumFractionDigits
-
-(2);
-        return
-
-n.format(round(Double.valueOf(number)));
+        n.setMaximumFractionDigits(2);
+        return n.format(round(Double.valueOf(number)));
     }
 
-/**
- * Formats a number to look like the users default locale currency (+ rounding)
- * @param betrag
- * @return
- */
-public  synchronized static String formatLokalCurrency(
-
-Double betrag) {
+    /**
+     * Formats a number to look like the users default locale currency (+ rounding)
+     * @param betrag
+     * @return
+     */
+    public synchronized static String formatLokalCurrency(
+            Double betrag) {
         NumberFormat n = NumberFormat.getCurrencyInstance();
-        return
-
-n.format(round(betrag));
+        return n.format(round(betrag));
     }
 
-/**
- * Formats a number to look like the users default locale percent values (+ rounding)
- * @param number
- * @return
- */
-public  synchronized static String formatPercent(
-
-double number) {
-        return NumberFormat.getPercentInstance().format(number);
+    /**
+     * Formats a number to look like the users default locale percent values (+ rounding)
+     * @param number
+     * @return
+     */
+    public synchronized static String formatPercent(double number) {
+        return formatDezimal(number) + "%";
     }
 
-/**
- * Checks if an object is in anyway compatible to be a number or a decimal number
- * @param number
- * @return
- */
-public  synchronized static boolean
-
-checkNumber(Object number) {
-       if (number instanceof Long || number instanceof Integer ||
-                   number instanceof Short || number instanceof Byte ||
-                   number instanceof AtomicInteger ||
-                   number instanceof AtomicLong ||
-                   (number instanceof BigInteger &&
-                    ((BigInteger)number).bitLength () < 64)) {
+    /**
+     * Checks if an object is in anyway compatible to be a number or a decimal number
+     * @param number
+     * @return
+     */
+    public synchronized static boolean checkNumber(Object number) {
+        if (number instanceof Long || number instanceof Integer ||
+                number instanceof Short || number instanceof Byte ||
+                number instanceof AtomicInteger ||
+                number instanceof AtomicLong ||
+                (number instanceof BigInteger &&
+                ((BigInteger) number).bitLength() < 64)) {
             return true;
-        }
-
-else if (number instanceof BigDecimal) {
+        } else if (number instanceof BigDecimal) {
             return true;
-        }
-
-else if (number instanceof BigInteger) {
+        } else if (number instanceof BigInteger) {
             return true;
-        }
-
-else if (number instanceof Number) {
+        } else if (number instanceof Number) {
             return true;
-        }
-
-else {
+        } else {
             return checkDezimal(number.toString());
         }
 
-}
+    }
 
     /**
      * Tries to parse the given Object to a Double value
      * @param number
      * @return
      */
-    public  synchronized static Double parseNumber(
-
-Object number) {
-         if (number!=null) {
+    public synchronized static Double parseNumber(
+            Object number) {
+        if (number != null) {
             if (number instanceof Number) {
                 return ((Number) number).doubleValue();
-            }
-
-else {
+            } else {
                 try {
                     return Double.valueOf(number.toString());
-                }
-
-catch (NumberFormatException numberFormatException) {
+                } catch (NumberFormatException numberFormatException) {
                     return parseDezimal(number.toString());
                 }
 
-}
-        }else {
+            }
+        } else {
             return 0d;
         }
-}
+    }
 }

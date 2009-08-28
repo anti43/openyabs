@@ -17,13 +17,20 @@
 package mpv5.db.objects;
 
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryHandler;
+import mpv5.db.common.ReturnValue;
 import mpv5.logging.Log;
+import mpv5.ui.frames.MPView;
+import mpv5.usermanagement.MPSecurityManager;
+import mpv5.utils.export.Exportable;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.images.MPIcon;
 
@@ -33,12 +40,47 @@ import mpv5.utils.images.MPIcon;
  */
 public class Template extends DatabaseObject {
 
+    /**
+     * 
+     * @param dataOwner
+     * @return
+     */
+    public static Template loadTemplate(DatabaseObject dataOwner) {
+        String type = "";
+        if (dataOwner instanceof Item) {
+            type = Item.getTypeString(((Item) dataOwner).__getInttype());
+        } else if (dataOwner instanceof Product) {
+            type = Product.getTypeString(((Product) dataOwner).__getInttype());
+        }
+
+        ReturnValue data = QueryHandler.getConnection().freeQuery(
+                "SELECT templatesids FROM templatestousers  LEFT OUTER JOIN templates AS templates0 ON " +
+                "templates0.ids = templatestousers.templatesids WHERE templatestousers.usersids=" +
+                MPView.getUser().__getIDS() +
+                " AND " +
+                "templates0.mimetype='" + type +
+                "' AND templatestousers.IDS>0", MPSecurityManager.VIEW, null);
+        Template preloadedTemplate = null;
+        if (data.hasData()) {
+            try {
+                preloadedTemplate = (Template) DatabaseObject.getObject(Context.getTemplate(), Integer.valueOf(data.getData()[data.getData().length - 1][0].toString()));
+            } catch (NodataFoundException ex) {
+                return null;
+            }
+        }
+        return preloadedTemplate;
+    }
     private String description = "";
     private String filename = "";
     private int intsize;
     private String mimetype;
     private File file;
-    private String format ="";
+    private String format = DEFAULT_FORMAT;
+
+    /**
+     * Represents the default column order
+     */
+    public static String DEFAULT_FORMAT = "1,2,3,4,5,6,7,8,9";
 
     public Template() {
         context.setDbIdentity(Context.IDENTITY_TEMPLATES);
@@ -179,4 +221,5 @@ public class Template extends DatabaseObject {
     public void setFormat(String format) {
         this.format = format;
     }
+
 }

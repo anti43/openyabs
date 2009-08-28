@@ -8,10 +8,13 @@ import enoa.handler.DocumentHandler;
 import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
@@ -41,6 +44,8 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
     private static final long serialVersionUID = 1L;
     private File file;
     private DatabaseObject dataOwner;
+    private PDFFile pdffile;
+    private PagePanel panel;
 
     /** Creates new form
      */
@@ -56,7 +61,6 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
      */
     public PreviewPanel(File file) {
         initComponents();
-
         openl(file);
     }
 
@@ -69,7 +73,7 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
         if (pdf.isFile() && pdf.exists()) {
             try {
 
-                PagePanel panel = new PagePanel();
+                panel = new PagePanel();
                 ppanel.removeAll();
                 JScrollPane sp = new JScrollPane(panel);
                 ppanel.add(sp, BorderLayout.CENTER);
@@ -84,14 +88,14 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
                 RandomAccessFile raf = new RandomAccessFile(pdf, "r");
                 FileChannel channel = raf.getChannel();
                 ByteBuffer buf = channel.map(FileChannel.MapMode.READ_ONLY, 0, channel.size());
-                PDFFile pdffile = new PDFFile(buf);
+                pdffile = new PDFFile(buf);
                 buf.clear();
                 channel.close();
                 raf.close();
-                // show the first page
-                PDFPage page = pdffile.getPage(0);
-                panel.showPage(page);
                 panel.useZoomTool(true);
+                // show the first page
+                PDFPage page = pdffile.getPage(pagen);
+                panel.showPage(page);
             } catch (IOException ex) {
                 Log.Debug(ex);
             }
@@ -117,10 +121,13 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
         jButton30 = new javax.swing.JButton();
         jButton31 = new javax.swing.JButton();
         jButton32 = new javax.swing.JButton();
+        jToolBar1 = new javax.swing.JToolBar();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
 
         setName("Form"); // NOI18N
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("PreviewPanel.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 
@@ -206,19 +213,47 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
         });
         toolbar.add(jButton32);
 
+        jToolBar1.setRollover(true);
+        jToolBar1.setName("jToolBar1"); // NOI18N
+
+        jButton1.setText(bundle.getString("PreviewPanel.jButton1.text")); // NOI18N
+        jButton1.setFocusable(false);
+        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton1.setName("jButton1"); // NOI18N
+        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(jButton1);
+
+        jButton2.setText(bundle.getString("PreviewPanel.jButton2.text")); // NOI18N
+        jButton2.setFocusable(false);
+        jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton2.setName("jButton2"); // NOI18N
+        jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(jButton2);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(ppanel, javax.swing.GroupLayout.DEFAULT_SIZE, 729, Short.MAX_VALUE)
-            .addComponent(toolbar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 729, Short.MAX_VALUE)
+            .addComponent(toolbar, javax.swing.GroupLayout.PREFERRED_SIZE, 547, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(ppanel, javax.swing.GroupLayout.DEFAULT_SIZE, 547, Short.MAX_VALUE)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 547, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(toolbar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(ppanel, javax.swing.GroupLayout.DEFAULT_SIZE, 408, Short.MAX_VALUE))
+                .addComponent(ppanel, javax.swing.GroupLayout.DEFAULT_SIZE, 384, Short.MAX_VALUE)
+                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -247,6 +282,15 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
     }//GEN-LAST:event_jButton28ActionPerformed
 
     private void jButton31ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton31ActionPerformed
+
+        if (dataOwner != null) {
+            try {
+                file = FileDirectoryHandler.copyFile2(file, new File(FileDirectoryHandler.getTempDir() + dataOwner.__getCName()));
+            } catch (Exception ex) {
+                Log.Debug(ex);
+            }
+        }
+
         if (dataOwner != null && dataOwner.isExisting()) {
             if (QueryHandler.instanceOf().clone(Context.getFiles()).insertFile(file, dataOwner, QueryCriteria.getSaveStringFor(dataOwner.__getCName()))) {
                 Popup.notice(Messages.FILE_SAVED.toString() + file);
@@ -258,53 +302,55 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
 
     private void jButton32ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton32ActionPerformed
         DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY);
-        d.setSelectedFile(new File(file.getName()));
+        if (dataOwner == null) {
+            d.setSelectedFile(new File(file.getName()));
+        } else {
+            d.setSelectedFile(new File(dataOwner.__getCName() + ".pdf"));
+        }
         d.saveFile(file);
     }//GEN-LAST:event_jButton32ActionPerformed
 
     private void jButton30ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton30ActionPerformed
-        DocumentHandler d = new DocumentHandler(NoaConnection.getConnection());
 
-        if (file.getName().split("\\.").length < 2) {
-            throw new UnsupportedOperationException("The file must have an extension: " + file);
-        }
-
-        String extension = file.getName().substring(file.getName().lastIndexOf("."), file.getName().length());
-
-        Log.Debug(this, "Found extension: " + extension);
-
-        if (extension.equalsIgnoreCase(".pdf")) {
-            try {
-                FileDirectoryHandler.open(file);
-            } catch (Exception ex) {
-                Log.Debug(ex);
-            }
-        } else if (extension.equalsIgnoreCase(".odt")) {
-            try {
-                File f = d.export(file, FileDirectoryHandler.getTempFile("pdf"));
-                FileDirectoryHandler.open(f);
-            } catch (Exception ex) {
-                Log.Debug(ex);
-            }
-        } else if (extension.equalsIgnoreCase(".txt")) {
-            try {
-                File f = d.export(file, FileDirectoryHandler.getTempFile("pdf"));
-                FileDirectoryHandler.open(f);
-            } catch (Exception ex) {
-                Log.Debug(ex);
-            }
-        } else {
-            throw new UnsupportedOperationException("Extension not supported: " + extension);
-        }
+        FileDirectoryHandler.open(file);
 
 }//GEN-LAST:event_jButton30ActionPerformed
+    int pagen = 1;
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        try {
+            pagen++;
+            PDFPage p = pdffile.getPage(pagen);
+            panel.showPage(p);
+        } catch (Exception e) {
+            //No pdf loaded
+            jPanel1.remove(jToolBar1);
+            jPanel1.validate();
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        try {
+            if (pagen > 0) {
+                pagen--;
+            }
+            PDFPage p = pdffile.getPage(pagen);
+            panel.showPage(p);
+        } catch (Exception e) {
+            //No pdf loaded
+            jPanel1.remove(jToolBar1);
+            jPanel1.validate();
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton27;
     private javax.swing.JButton jButton28;
     private javax.swing.JButton jButton30;
     private javax.swing.JButton jButton31;
     private javax.swing.JButton jButton32;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JToolBar jToolBar1;
     private javax.swing.JPanel ppanel;
     private javax.swing.JToolBar toolbar;
     // End of variables declaration//GEN-END:variables
@@ -333,6 +379,7 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
 
     /**
      * Show this panel in a new frame
+     * @param title
      */
     public void showInNewFrame(String title) {
         BigPopup p = new BigPopup();
@@ -358,7 +405,7 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
             try {
                 setCursor(new Cursor(Cursor.WAIT_CURSOR));
                 if (object instanceof Export) {
-                    showInNewFrame(((Export) object).getTargetFile().getName());
+                    showInNewFrame("Export");
                     openl(((Export) object).getTargetFile());
                 } else {
                     showInNewFrame(((File) object).getName());

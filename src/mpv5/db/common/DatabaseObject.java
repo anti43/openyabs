@@ -341,6 +341,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                 if (__getCName() != null && __getCName().length() > 0) {
                     Log.Debug(this, "Inserting new dataset into: " + this.getContext());
                     dateadded = new Date();
+                    intaddedby = MPView.getUser().__getIDS();
                     if (!silent && !this.getType().equals(new HistoryItem().getType())) {
                         message = this.__getCName() + Messages.INSERTED;
                     }
@@ -714,20 +715,24 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
      * @throws NodataFoundException
      */
     public static DatabaseObject getObject(final Context context, final int id) throws NodataFoundException {
-        DatabaseObject cdo = DatabaseObject.getCachedObject(context, id);
-        if (cdo == null) {
-            try {
-                Object obj = context.getIdentityClass().newInstance();
-                ((DatabaseObject) obj).fetchDataOf(id);
-                cacheObject((DatabaseObject) obj);
-                return (DatabaseObject) obj;
-            } catch (InstantiationException ex) {
-                mpv5.logging.Log.Debug(ex);//Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IllegalAccessException ex) {
-                mpv5.logging.Log.Debug(ex);//Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+        if (id > 0) {
+            DatabaseObject cdo = DatabaseObject.getCachedObject(context, id);
+            if (cdo == null) {
+                try {
+                    Object obj = context.getIdentityClass().newInstance();
+                    ((DatabaseObject) obj).fetchDataOf(id);
+                    cacheObject((DatabaseObject) obj);
+                    return (DatabaseObject) obj;
+                } catch (InstantiationException ex) {
+                    mpv5.logging.Log.Debug(ex);//Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IllegalAccessException ex) {
+                    mpv5.logging.Log.Debug(ex);//Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else {
+                return cdo;
             }
         } else {
-            return cdo;
+            throw new NodataFoundException(context, id);
         }
         return null;
     }

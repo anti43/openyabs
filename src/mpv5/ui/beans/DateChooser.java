@@ -45,7 +45,10 @@ public class DateChooser extends javax.swing.JPanel {
             d = new MiniCalendarDialog(jSpinner1, asAPopup);
         }
 
-        jSpinner1.setValue(date);
+        try {
+            jSpinner1.setValue(date);
+        } catch (Exception e) {
+        }
         d.setDate(date);
     }
 

@@ -20,10 +20,7 @@ import ag.ion.bion.officelayer.document.IDocument;
 import ag.ion.bion.officelayer.text.ITextDocument;
 import enoa.connection.NoaConnection;
 import enoa.handler.DocumentHandler;
-import enoa.handler.TableHandler;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
 
@@ -34,6 +31,8 @@ import mpv5.ui.frames.MPView;
 public class ODTFile extends Exportable {
 
     private NoaConnection nc;
+    private final DocumentHandler dh;
+    private IDocument df;
 
     public ODTFile(String pathToFile) {
         super(pathToFile);
@@ -45,25 +44,30 @@ public class ODTFile extends Exportable {
             }
         }
         nc = NoaConnection.getConnection();
+        dh = new DocumentHandler(nc);
+        try {
+            df = dh.loadDocument(this, false);
+            Log.Debug(this, "Loaded odt file: " + this);
+        } catch (Exception ex) {
+            Log.Debug(ex);
+        }
     }
 
     @Override
     public void run() {
+        
         Log.Debug(this, "run: ");
         MPView.setWaiting(true);
-        DocumentHandler dh = new DocumentHandler(nc);
         try {
-            IDocument df = dh.loadDocument(this, false);
-            Log.Debug(this, "Loaded odt file: " + this);
             dh.fillPlaceholderFields((ITextDocument) df, getData());
-            dh.fillTextVariableFields((ITextDocument) df, getData());
+//            dh.fillTextVariableFields((ITextDocument) df, getData());//Omitted for performance reasons
             dh.fillTables((ITextDocument)df, getData());
             dh.saveAs(df, getTarget());
-//            dh.print((ITextDocument)df);
         } catch (Exception ex) {
             Log.Debug(ex);
         } finally {
             MPView.setWaiting(false);
+            
         }
     }
 }

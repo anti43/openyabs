@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 import javax.swing.JComponent;
+import javax.swing.SwingUtilities;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
@@ -47,6 +48,11 @@ public class SubItem extends DatabaseObject {
         Log.Debug(SubItem.class, "Rows found: " + rowsl.size());
         for (int i = 0; i < rowsl.size(); i++) {
             Object[] row = rowsl.get(i);
+            for (int j = 0; j < row.length; j++) {
+                if (row[j] == null) {
+                    row[j] = "";
+                }
+            }
             SubItem it = new SubItem();
             try {
                 if (row[0] != null && Integer.valueOf(row[0].toString()).intValue() > 0) {
@@ -59,7 +65,7 @@ public class SubItem extends DatabaseObject {
             }
             it.setCName(row[4].toString());
             it.setItemsids(dataOwner.__getIDS());
-            it.setCountvalue(Double.valueOf(row[2].toString()));
+            it.setCountvalue(Double.valueOf(row[1].toString()));
             it.setDatedelivery(dataOwner.__getDatetodo());
             it.setDescription(row[4].toString());
             it.setExternalvalue(Double.valueOf(row[5].toString()));
@@ -88,10 +94,18 @@ public class SubItem extends DatabaseObject {
     public static Vector<String[]> convertModel(Item dataOwner, MPTableModel model, Template t) {
         List<Object[]> rowsl = model.getValidRows(new int[]{4});
         Vector<String[]> rowsk = new Vector<String[]>();
+        final List<SubItem> its = new Vector<SubItem>();
         Log.Debug(SubItem.class, "Rows found: " + rowsl.size());
         for (int i = 0; i < rowsl.size(); i++) {
             Object[] row = rowsl.get(i);
-            SubItem it = new SubItem();
+
+            for (int j = 0; j < row.length; j++) {
+                if (row[j] == null) {
+                    row[j] = "";
+                }
+            }
+
+            final SubItem it = new SubItem();
             try {
                 if (row[0] != null && Integer.valueOf(row[0].toString()).intValue() > 0) {
                     it.setIDS(Integer.valueOf(row[0].toString()).intValue());
@@ -103,7 +117,7 @@ public class SubItem extends DatabaseObject {
             }
             it.setCName(row[4].toString());
             it.setItemsids(dataOwner.__getIDS());
-            it.setCountvalue(Double.valueOf(row[2].toString()));
+            it.setCountvalue(Double.valueOf(row[1].toString()));
             it.setDatedelivery(dataOwner.__getDatetodo());
             it.setDescription(row[4].toString());
             it.setExternalvalue(Double.valueOf(row[5].toString()));
@@ -118,7 +132,8 @@ public class SubItem extends DatabaseObject {
                 it.setDateadded(new Date());
                 it.setGroupsids(dataOwner.__getGroupsids());
             }
-            it.save(true);
+
+//            it.save();
             rowsk.add(it.toStringArray(t));
         }
 
@@ -136,6 +151,7 @@ public class SubItem extends DatabaseObject {
     private double totalnetvalue;
     private double totalbrutvalue;
     private Date datedelivery;
+    private double totaltaxvalue;
 
     public SubItem() {
         context.setDbIdentity(Context.IDENTITY_SUBITEMS);
@@ -218,6 +234,20 @@ public class SubItem extends DatabaseObject {
      * @return
      */
     public String[] toStringArray(Template template) {
+        String[] possibleCols = new String[]{
+            ////////////////// The exported columns///////////////////////////////////////
+            String.valueOf(FormatNumber.formatInteger(this.__getCountvalue())),
+            String.valueOf(FormatNumber.formatDezimal(this.__getQuantityvalue())),
+            __getMeasure(),
+            __getDescription(),
+            String.valueOf(FormatNumber.formatLokalCurrency(this.__getExternalvalue())),
+            String.valueOf(FormatNumber.formatLokalCurrency(this.__getTotalnetvalue())),
+            String.valueOf(FormatNumber.formatPercent(this.__getTaxpercentvalue())),
+            String.valueOf(FormatNumber.formatLokalCurrency(this.getTotalTaxValue())),
+            String.valueOf(FormatNumber.formatLokalCurrency(this.__getTotalbrutvalue()))
+        ///////////////////////////////////////////////////////////////////////////////
+        };
+
         String format = template.__getFormat();
         int[] intcols;
         try {
@@ -228,26 +258,15 @@ public class SubItem extends DatabaseObject {
                 intcols[i] = Integer.valueOf(string).intValue();
             }
         } catch (Exception ex) {
-            Log.Debug(this, "An error occured, using default format now. "  + ex.getMessage());
-            intcols = new int[8];
+            Log.Debug(this, "An error occured, using default format now. " + ex.getMessage());
+            intcols = new int[possibleCols.length];
             for (int i = 0; i < intcols.length; i++) {
-                intcols[i] = i+1;
+                intcols[i] = i + 1;
             }
         }
-
-        String[] possibleCols =new String[]{
-                    String.valueOf(FormatNumber.formatDezimal(this.__getCountvalue())),
-                    String.valueOf(FormatNumber.formatDezimal(this.__getCountvalue())),
-                    __getMeasure(),
-                    __getDescription(),
-                    String.valueOf(FormatNumber.formatDezimal(this.__getExternalvalue())),
-                    String.valueOf(FormatNumber.formatDezimal(this.__getTotalnetvalue())),
-                    String.valueOf(FormatNumber.formatDezimal(this.__getTaxpercentvalue())),
-                    String.valueOf(FormatNumber.formatDezimal(this.__getTotalbrutvalue()))};
-
         String[] form = new String[intcols.length];
         for (int i = 0; i < intcols.length; i++) {
-            form[i] = possibleCols[intcols[i]-1];
+            form[i] = possibleCols[intcols[i] - 1];
         }
 
         return form;
@@ -529,7 +548,8 @@ public class SubItem extends DatabaseObject {
     }
 
     private static void calculate(SubItem s) {
-        s.setTotalbrutvalue(s.quantityvalue * s.externalvalue * s.taxpercentvalue / 100);
+        s.setTotalbrutvalue(s.quantityvalue * s.externalvalue * ((s.taxpercentvalue / 100) + 1));
+        s.defTotaltaxvalue(s.quantityvalue * s.externalvalue * (s.taxpercentvalue / 100));
         s.setTotalnetvalue(s.quantityvalue * s.externalvalue);
     }
 
@@ -537,5 +557,17 @@ public class SubItem extends DatabaseObject {
     public boolean save() {
         calculate(this);
         return super.save();
+    }
+
+    private void defTotaltaxvalue(double value) {
+        totaltaxvalue = value;
+    }
+
+    /**
+     * 
+     * @return
+     */
+    public double getTotalTaxValue() {
+        return totaltaxvalue;
     }
 }

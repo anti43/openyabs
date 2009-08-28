@@ -191,12 +191,12 @@ public class DocumentHandler {
         Log.Debug(this, "Looking for placeholder fields in: " + textDocument);
         Iterator<String> keys = data.keySet().iterator();
         String key = null;
+        ITextFieldService textFieldService = textDocument.getTextFieldService();
+        ITextField[] placeholders = textFieldService.getPlaceholderFields();
         while (keys.hasNext()) {
             //                    Log.Debug(this, "Found placeholder: " + placeholderDisplayText);  // get column name
             key = keys.next();
             try {
-                ITextFieldService textFieldService = textDocument.getTextFieldService();
-                ITextField[] placeholders = textFieldService.getPlaceholderFields();
                 for (int i = 0; i < placeholders.length; i++) {
                     String placeholderDisplayText = placeholders[i].getDisplayText();
                     if (placeholderDisplayText.equalsIgnoreCase(key) || placeholderDisplayText.equalsIgnoreCase("<" + key + ">")) {
@@ -206,7 +206,6 @@ public class DocumentHandler {
                 }
             } catch (java.lang.Exception ex) {
             }
-            textDocument.getTextFieldService().refresh();
         }
     }
 
