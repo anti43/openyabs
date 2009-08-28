@@ -34,6 +34,8 @@ import java.io.File;
 import java.net.URL;
 import java.text.NumberFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
@@ -58,6 +60,7 @@ import mpv5.db.common.DataNotCachedException;
 import mpv5.db.objects.Favourite;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.SubItem;
+import mpv5.db.objects.Template;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.BigPopup;
 import mpv5.ui.dialogs.Popup;
@@ -66,12 +69,16 @@ import mpv5.ui.frames.MPView;
 import mpv5.ui.popups.FileTablePopUp;
 import mpv5.ui.toolbars.DataPanelTB;
 import mpv5.db.objects.User;
+import mpv5.handler.FormFieldsHandler;
 import mpv5.ui.beans.MPCBSelectionChangeReceiver;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
+import mpv5.utils.export.Export;
+import mpv5.utils.export.Exportable;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.images.MPIcon;
+import mpv5.utils.jobs.Job;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.models.MPTableModelRow;
@@ -226,6 +233,10 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
             if (object.isReadOnly()) {
                 Popup.notice(Messages.LOCKED_BY);
             }
+
+            preload = false;
+            button_preview.setEnabled(preload);
+            preloadTemplate();
         }
     }
 
@@ -346,7 +357,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         jSeparator2 = new javax.swing.JToolBar.Separator();
         jButton2 = new javax.swing.JButton();
         jSeparator7 = new javax.swing.JToolBar.Separator();
-        button_reminders1 = new javax.swing.JButton();
+        button_preview = new javax.swing.JButton();
         prinitingComboBox1 = new mpv5.ui.beans.PrinitingComboBox();
         jPanel2 = new javax.swing.JPanel();
         contactname = new mpv5.ui.beans.LabeledCombobox();
@@ -378,7 +389,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         imageprev = new javax.swing.JLabel();
         toolbarpane = new javax.swing.JPanel();
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ProductPanel.border.title_1"))); // NOI18N
         setName("Form"); // NOI18N
 
@@ -623,12 +634,17 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         jSeparator7.setName("jSeparator7"); // NOI18N
         jToolBar1.add(jSeparator7);
 
-        button_reminders1.setText(bundle.getString("ProductPanel.button_reminders1.text")); // NOI18N
-        button_reminders1.setFocusable(false);
-        button_reminders1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        button_reminders1.setName("button_reminders1"); // NOI18N
-        button_reminders1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(button_reminders1);
+        button_preview.setText(bundle.getString("ProductPanel.button_preview.text")); // NOI18N
+        button_preview.setFocusable(false);
+        button_preview.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        button_preview.setName("button_preview"); // NOI18N
+        button_preview.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        button_preview.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_previewActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(button_preview);
 
         prinitingComboBox1.setName("prinitingComboBox1"); // NOI18N
 
@@ -776,9 +792,9 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 90, Short.MAX_VALUE)
+            .addGap(0, 94, Short.MAX_VALUE)
             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 94, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout rightpaneLayout = new javax.swing.GroupLayout(rightpane);
@@ -814,7 +830,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
@@ -826,7 +842,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(removefile))
                     .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 94, Short.MAX_VALUE)))
         );
 
         toolbarpane.setName("toolbarpane"); // NOI18N
@@ -847,7 +863,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(leftpane, javax.swing.GroupLayout.DEFAULT_SIZE, 471, Short.MAX_VALUE)
+            .addComponent(leftpane, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(toolbarpane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
@@ -879,12 +895,16 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
     private void dataTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_dataTableMouseClicked
         fileTableClicked(evt);
     }//GEN-LAST:event_dataTableMouseClicked
+
+    private void button_previewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_previewActionPerformed
+        preview();
+    }//GEN-LAST:event_button_previewActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel addedby;
     private javax.swing.JButton addfile;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton button_order2;
-    private javax.swing.JButton button_reminders1;
+    private javax.swing.JButton button_preview;
     private mpv5.ui.beans.LabeledTextField cname;
     private mpv5.ui.beans.LabeledTextField cnumber;
     private javax.swing.JTextField contactcity;
@@ -1013,7 +1033,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
             return true;
         } else {
             showRequiredFields();
-        return false;
+            return false;
         }
     }
 
@@ -1168,5 +1188,50 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
 
     @Override
     public void changeSelection(MPComboBoxModelItem to, Context c) {
+    }
+    Exportable preloadedExportFile;
+    Template preloadedTemplate;
+
+    private void preview() {
+        PreviewPanel pr;
+        if (preloadedTemplate != null && preload) {
+            if (dataOwner != null && dataOwner.isExisting()) {
+
+                HashMap<String, String> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
+                File f2 = FileDirectoryHandler.getTempFile("pdf");
+                Export ex = new Export();
+                ex.putAll(hm1);
+
+                ex.setTemplate(preloadedExportFile);
+                ex.setTargetFile(f2);
+
+                pr = new PreviewPanel();
+                pr.setDataOwner(dataOwner);
+                new Job(ex, pr).execute();
+            }
+        } else {
+            Popup.notice(Messages.NO_TEMPLATE_LOADED);
+        }
+    }
+    private boolean preload = false;
+    private void preloadTemplate() {
+        Runnable runnable = new Runnable() {
+
+            public void run() {
+                preloadedTemplate = Template.loadTemplate(dataOwner);
+                if (preloadedTemplate != null) {
+                    try {
+                        preloadedExportFile = preloadedTemplate.getExFile();
+                        preload = true;
+                        button_preview.setEnabled(preload);
+                    } catch (Exception e) {
+                        Log.Debug(e);
+                    }
+                } else {
+                    Popup.notice(Messages.NO_TEMPLATE_DEFINDED);
+                }
+            }
+        };
+        new Thread(runnable).start();
     }
 }

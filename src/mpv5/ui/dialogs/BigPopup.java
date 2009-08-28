@@ -28,14 +28,16 @@ public class BigPopup {
      * Creates a new popup FRAME
      * @param parent
      * @param content
+     * @param title
+     * @param state
      */
-    public static void showPopup(JComponent parent, JPanel content, String title) {
+    public static void showPopup(JComponent parent, JPanel content, String title, int state) {
        
         final JFrame window = new JFrame();
         window.getContentPane().setLayout(new BorderLayout());
         window.getContentPane().add(content, BorderLayout.CENTER);
         window.pack();
-        window.setAlwaysOnTop(true);
+//        window.setAlwaysOnTop(true);
         window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         window.setTitle(title);
 
@@ -58,6 +60,47 @@ public class BigPopup {
         });
 
         new Position(window);
+        window.setExtendedState(state);
+        window.setVisible(true);
+        
+        contents.put(content, window);
+    }
+
+       /**
+     * Creates a new popup FRAME
+     * @param parent
+     * @param content
+     * @param title
+     */
+    public static void showPopup(JComponent parent, JPanel content, String title) {
+
+        final JFrame window = new JFrame();
+        window.getContentPane().setLayout(new BorderLayout());
+        window.getContentPane().add(content, BorderLayout.CENTER);
+        window.pack();
+//        window.setAlwaysOnTop(true);
+        window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        window.setTitle(title);
+
+        window.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+              if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    window.dispose();
+                }
+            }
+            @Override
+            public void keyPressed(KeyEvent e) {
+               if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    window.dispose();
+                }}
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        });
+
+        new Position(window);
         window.setVisible(true);
         contents.put(content, window);
     }
@@ -70,5 +113,6 @@ public class BigPopup {
         contents.get(panel).dispose();
         contents.remove(panel);
     }
+
 
 }

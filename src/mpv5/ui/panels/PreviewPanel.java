@@ -7,6 +7,7 @@ import enoa.connection.NoaConnection;
 import enoa.handler.DocumentHandler;
 import java.awt.BorderLayout;
 import java.awt.Cursor;
+import java.awt.Frame;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -114,6 +115,7 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jSeparator5 = new javax.swing.JSeparator();
         jPanel1 = new javax.swing.JPanel();
         ppanel = new javax.swing.JPanel();
         toolbar = new javax.swing.JToolBar();
@@ -122,9 +124,15 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
         jButton30 = new javax.swing.JButton();
         jButton31 = new javax.swing.JButton();
         jButton32 = new javax.swing.JButton();
-        jToolBar1 = new javax.swing.JToolBar();
+        jSeparator1 = new javax.swing.JToolBar.Separator();
+        jSeparator2 = new javax.swing.JToolBar.Separator();
+        jSeparator3 = new javax.swing.JToolBar.Separator();
+        jSeparator6 = new javax.swing.JToolBar.Separator();
+        jSeparator4 = new javax.swing.JToolBar.Separator();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+
+        jSeparator5.setName("jSeparator5"); // NOI18N
 
         setName("Form"); // NOI18N
 
@@ -214,8 +222,20 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
         });
         toolbar.add(jButton32);
 
-        jToolBar1.setRollover(true);
-        jToolBar1.setName("jToolBar1"); // NOI18N
+        jSeparator1.setName("jSeparator1"); // NOI18N
+        toolbar.add(jSeparator1);
+
+        jSeparator2.setName("jSeparator2"); // NOI18N
+        toolbar.add(jSeparator2);
+
+        jSeparator3.setName("jSeparator3"); // NOI18N
+        toolbar.add(jSeparator3);
+
+        jSeparator6.setName("jSeparator6"); // NOI18N
+        toolbar.add(jSeparator6);
+
+        jSeparator4.setName("jSeparator4"); // NOI18N
+        toolbar.add(jSeparator4);
 
         jButton1.setText(bundle.getString("PreviewPanel.jButton1.text")); // NOI18N
         jButton1.setFocusable(false);
@@ -227,7 +247,7 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
                 jButton1ActionPerformed(evt);
             }
         });
-        jToolBar1.add(jButton1);
+        toolbar.add(jButton1);
 
         jButton2.setText(bundle.getString("PreviewPanel.jButton2.text")); // NOI18N
         jButton2.setFocusable(false);
@@ -239,22 +259,21 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
                 jButton2ActionPerformed(evt);
             }
         });
-        jToolBar1.add(jButton2);
+        toolbar.add(jButton2);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(toolbar, javax.swing.GroupLayout.PREFERRED_SIZE, 547, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(toolbar, javax.swing.GroupLayout.DEFAULT_SIZE, 547, Short.MAX_VALUE)
             .addComponent(ppanel, javax.swing.GroupLayout.DEFAULT_SIZE, 547, Short.MAX_VALUE)
-            .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 547, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(toolbar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(ppanel, javax.swing.GroupLayout.DEFAULT_SIZE, 384, Short.MAX_VALUE)
-                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(ppanel, javax.swing.GroupLayout.DEFAULT_SIZE, 43, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -327,8 +346,7 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
             panel.showPage(p);
         } catch (Exception e) {
             //No pdf loaded
-            jPanel1.remove(jToolBar1);
-            jPanel1.validate();
+
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -341,8 +359,7 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
             panel.showPage(p);
         } catch (Exception e) {
             //No pdf loaded
-            jPanel1.remove(jToolBar1);
-            jPanel1.validate();
+
         }
     }//GEN-LAST:event_jButton1ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -354,7 +371,12 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
     private javax.swing.JButton jButton31;
     private javax.swing.JButton jButton32;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JToolBar jToolBar1;
+    private javax.swing.JToolBar.Separator jSeparator1;
+    private javax.swing.JToolBar.Separator jSeparator2;
+    private javax.swing.JToolBar.Separator jSeparator3;
+    private javax.swing.JToolBar.Separator jSeparator4;
+    private javax.swing.JSeparator jSeparator5;
+    private javax.swing.JToolBar.Separator jSeparator6;
     private javax.swing.JPanel ppanel;
     private javax.swing.JToolBar toolbar;
     // End of variables declaration//GEN-END:variables
@@ -387,7 +409,7 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
      */
     public void showInNewFrame(String title) {
         BigPopup p = new BigPopup();
-        BigPopup.showPopup(this, jPanel1, title);
+        BigPopup.showPopup(this, jPanel1, title, JFrame.MAXIMIZED_BOTH);
     }
 
     /**

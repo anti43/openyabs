@@ -221,7 +221,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             this.exposeData();
 
             setTitle();
-
+            type.setText(Item.getTypeString(dataOwner.__getInttype()));
             prinitingComboBox1.init(dataOwner);
 
             tb.setFavourite(Favourite.isFavourite(object));
@@ -236,6 +236,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             preload = false;
             button_preview.setEnabled(preload);
             preloadTemplate();
+            validate();
         }
     }
     Exportable preloadedExportFile;
@@ -1131,12 +1132,12 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     private void preview() {
         PreviewPanel pr;
         if (preloadedTemplate != null && preload) {
-            if (dataOwner.isExisting()) {
+            if (dataOwner != null&&dataOwner.isExisting()) {
                 if (itemtable.getCellEditor() != null) {
                     itemtable.getCellEditor().stopCellEditing();
                 }
 
-                if (dataOwner != null) {
+               
                     HashMap<String, String> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
                     File f2 = FileDirectoryHandler.getTempFile("pdf");
                     Export ex = new Export();
@@ -1152,7 +1153,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                     pr.setDataOwner(dataOwner);
                     new Job(ex, pr).execute();
                     saveSubItems();
-                }
+                
             }
         } else {
             Popup.notice(Messages.NO_TEMPLATE_LOADED);

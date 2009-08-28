@@ -49,6 +49,7 @@ import mpv5.db.objects.Address;
 import mpv5.db.objects.Contact;
 import mpv5.db.objects.Favourite;
 import mpv5.db.objects.Item;
+import mpv5.db.objects.Product;
 import mpv5.handler.FormatHandler;
 import mpv5.logging.Log;
 import mpv5.i18n.LanguageManager;
@@ -321,7 +322,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         button_order1 = new javax.swing.JButton();
         toolbarpane = new javax.swing.JPanel();
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ContactPanel.border.title"))); // NOI18N
         setName("Form"); // NOI18N
 
@@ -707,7 +708,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                     .addComponent(removefile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(addfile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 67, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 71, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -717,38 +718,54 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jToolBar1.setName("jToolBar1"); // NOI18N
 
         button_offer.setText(bundle.getString("ContactPanel.button_offer.text")); // NOI18N
-        button_offer.setEnabled(false);
         button_offer.setFocusable(false);
         button_offer.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         button_offer.setName("button_offer"); // NOI18N
         button_offer.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        button_offer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_offerActionPerformed(evt);
+            }
+        });
         jToolBar1.add(button_offer);
 
         button_order.setText(bundle.getString("ContactPanel.button_order.text")); // NOI18N
-        button_order.setEnabled(false);
         button_order.setFocusable(false);
         button_order.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         button_order.setName("button_order"); // NOI18N
         button_order.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        button_order.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_orderActionPerformed(evt);
+            }
+        });
         jToolBar1.add(button_order);
 
         button_bill.setText(bundle.getString("ContactPanel.button_bill.text")); // NOI18N
-        button_bill.setEnabled(false);
         button_bill.setFocusable(false);
         button_bill.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         button_bill.setName("button_bill"); // NOI18N
         button_bill.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        button_bill.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_billActionPerformed(evt);
+            }
+        });
         jToolBar1.add(button_bill);
 
         jSeparator1.setName("jSeparator1"); // NOI18N
         jToolBar1.add(jSeparator1);
 
         button_product.setText(bundle.getString("ContactPanel.button_product.text")); // NOI18N
-        button_product.setEnabled(false);
         button_product.setFocusable(false);
         button_product.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         button_product.setName("button_product"); // NOI18N
         button_product.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        button_product.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_productActionPerformed(evt);
+            }
+        });
         jToolBar1.add(button_product);
 
         jSeparator2.setName("jSeparator2"); // NOI18N
@@ -986,7 +1003,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(leftpane, javax.swing.GroupLayout.DEFAULT_SIZE, 628, Short.MAX_VALUE)
+            .addComponent(leftpane, javax.swing.GroupLayout.DEFAULT_SIZE, 633, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(toolbarpane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
@@ -1130,6 +1147,47 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         removefile.setEnabled(false);
 //        TableFormat.stripFirstColumn(dataTable);
     }//GEN-LAST:event_button_productsActionPerformed
+
+    private void button_billActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_billActionPerformed
+        if (dataOwner.isExisting()) {
+            Item i = (Item) DatabaseObject.getObject(Context.getBill());
+            i.setContactsids(dataOwner.__getIDS());
+            i.setCName(Messages.NEW_BILL.getValue());
+            i.setInttype(Item.TYPE_BILL);
+            MPView.identifierView.addTab(i);
+        }
+    }//GEN-LAST:event_button_billActionPerformed
+
+    private void button_orderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_orderActionPerformed
+        if (dataOwner.isExisting()) {
+            Item i = (Item) DatabaseObject.getObject(Context.getOrder());
+            i.setContactsids(dataOwner.__getIDS());
+            i.setCName(Messages.NEW_ORDER.getValue());
+            i.setInttype(Item.TYPE_ORDER);
+            MPView.identifierView.addTab(i);
+        }
+    }//GEN-LAST:event_button_orderActionPerformed
+
+    private void button_offerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_offerActionPerformed
+        if (dataOwner.isExisting()) {
+            Item i = (Item) DatabaseObject.getObject(Context.getOffer());
+            i.setContactsids(dataOwner.__getIDS());
+            i.setCName(Messages.NEW_OFFER.getValue());
+            i.setInttype(Item.TYPE_OFFER);
+            MPView.identifierView.addTab(i);
+        }
+    }//GEN-LAST:event_button_offerActionPerformed
+
+    private void button_productActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_productActionPerformed
+        if (dataOwner.isExisting()) {
+            Product i = (Product) DatabaseObject.getObject(Context.getProducts());
+            i.setSuppliersids(dataOwner.__getIDS());
+            i.setManufacturersids(dataOwner.__getIDS());
+            i.setCName(Messages.NEW_PRODUCT.getValue());
+            i.setInttype(Product.TYPE_PRODUCT);
+            MPView.identifierView.addTab(i);
+        }
+    }//GEN-LAST:event_button_productActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel addedby;
     private javax.swing.JButton addfile;
