@@ -218,6 +218,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         dataOwner = (Item) object;
         if (populate) {
             dataOwner.setPanelData(this);
+            inttype_ = dataOwner.__getInttype();
             this.exposeData();
 
             setTitle();
@@ -993,7 +994,6 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         notes.setText(description_);
 
         shipping.setText(FormatNumber.formatDezimal(shippingvalue_));
-
         button_reminders.setToolTipText(Messages.REMINDERS + String.valueOf(intreminders_));
 
         try {
