@@ -1214,6 +1214,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         }
     }
     private boolean preload = false;
+
     private void preloadTemplate() {
         Runnable runnable = new Runnable() {
 
@@ -1228,10 +1229,14 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                         Log.Debug(e);
                     }
                 } else {
-                    Popup.notice(Messages.NO_TEMPLATE_DEFINDED);
+                    if (!NO_TEMPLATE_NOTIFICATION_DONE) {
+                        Popup.notice(Messages.NO_TEMPLATE_DEFINDED);
+                    }
+                    NO_TEMPLATE_NOTIFICATION_DONE = true;
                 }
             }
         };
         new Thread(runnable).start();
     }
+    private static boolean NO_TEMPLATE_NOTIFICATION_DONE = false;
 }

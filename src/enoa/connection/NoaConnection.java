@@ -224,7 +224,7 @@ public class NoaConnection {
         for (int i = 0; i <
                 builder.command().size(); i++) {
             Object object = builder.command().get(i);
-            System.err.print(object + " ");
+            System.out.print(object + " ");
         }
 
         System.out.print("\n");
@@ -243,10 +243,8 @@ public class NoaConnection {
                     while ((line = br.readLine()) != null) {
                         System.out.println(line);
                     }
-
-
                 } catch (IOException ex) {
-                    mpv5.logging.Log.Debug(ex);//Logger.getLogger(NoaConnection.class.getName()).log(Level.SEVERE, null, ex);
+                    mpv5.logging.Log.Debug(ex);
                 }
             }
         };

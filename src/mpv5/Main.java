@@ -17,13 +17,7 @@
 package mpv5;
 
 import ag.ion.bion.officelayer.application.IOfficeApplication;
-import ag.ion.bion.officelayer.application.OfficeApplicationException;
-import ag.ion.noa.NOAException;
-import java.io.FileNotFoundException;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mpv5.db.common.NodataFoundException;
 import mpv5.ui.frames.MPView;
 import mpv5.logging.*;
@@ -34,9 +28,6 @@ import com.l2fprod.common.swing.plaf.LookAndFeelAddons;
 import enoa.connection.NoaConnection;
 import java.awt.Font;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
@@ -45,14 +36,11 @@ import java.util.Vector;
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import mpv5.db.common.ConnectionTypeHandler;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseConnection;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.DatabaseObjectLock;
 import mpv5.db.common.QueryHandler;
-import mpv5.db.objects.Account;
-import mpv5.db.objects.Contact;
 import mpv5.db.objects.Template;
 import mpv5.globals.Constants;
 import mpv5.globals.LocalSettings;
@@ -63,18 +51,13 @@ import mpv5.ui.dialogs.SplashScreen;
 import mpv5.ui.dialogs.Wizard;
 import mpv5.ui.dialogs.subcomponents.wizard_DBSettings_1;
 
-
 import mpv5.db.objects.User;
-import mpv5.handler.SDBObjectGenerator;
-import mpv5.handler.SimpleDatabaseObject;
 import mpv5.i18n.LanguageManager;
 import mpv5.pluginhandling.UserPlugin;
 import mpv5.server.MPServer;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Fonts;
-import mpv5.ui.dialogs.subcomponents.ControlPanel_Userproperties;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.files.FileReaderWriter;
-import mpv5.utils.text.TypeConversion;
 import mpv5.webshopinterface.WSIManager;
 import org.apache.commons.cli2.*;
 import org.apache.commons.cli2.builder.*;
@@ -535,55 +518,59 @@ public class Main extends SingleFrameApplication {
         } else {
             MPView.identifierView.showServerStatus(false);
         }
-        final Thread startServerThread;
-        if (!LocalSettings.getBooleanProperty(LocalSettings.OFFICE_REMOTE)) {
-            Runnable runnable2 = new Runnable() {
+        if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_USE)) {
+            final Thread startServerThread;
+            if (!LocalSettings.getBooleanProperty(LocalSettings.OFFICE_REMOTE)) {
+                Runnable runnable2 = new Runnable() {
 
-                @Override
+                    @Override
+                    public void run() {
+                        try {
+                            NoaConnection.startOOServer(LocalSettings.getProperty(LocalSettings.OFFICE_HOME), LocalSettings.getIntegerProperty(LocalSettings.OFFICE_PORT));
+                        } catch (Exception n) {
+                            Log.Debug(Main.class, n.getMessage());
+                        }
+                    }
+                };
+                startServerThread = new Thread(runnable2);
+                startServerThread.start();
+            } else {
+                startServerThread = null;
+            }
+
+
+            Runnable runnable3 = new Runnable() {
+
                 public void run() {
-                    try {
-                        NoaConnection.startOOServer(LocalSettings.getProperty(LocalSettings.OFFICE_HOME), LocalSettings.getIntegerProperty(LocalSettings.OFFICE_PORT));
-                    } catch (Exception n) {
-                        Log.Debug(Main.class, n.getMessage());
+                    WSIManager.instanceOf().start();
+                }
+            };
+            new Thread(runnable3).start();
+
+            Runnable runnable1 = new Runnable() {
+
+                public void run() {
+                    boolean running = true;
+                    while (running) {
+                        if (startServerThread == null || !startServerThread.isAlive()) {
+                            try {
+                                Thread.sleep(3333);
+                            } catch (InterruptedException ex) {
+                            }
+                            //Needed to move this to here; otherwise the oo connection may not be initialised
+                            Template.cacheTemplates();
+                            running = false;
+                        } else {
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException ex) {
+                            }
+                        }
                     }
                 }
             };
-           startServerThread = new Thread(runnable2);
-           startServerThread.start();
-        }else {
-            startServerThread = null;
+            new Thread(runnable1).start();
         }
-
-
-        Runnable runnable3 = new Runnable() {
-
-            public void run() {
-                WSIManager.instanceOf().start();
-            }
-        };
-        new Thread(runnable3).start();
-
-        Runnable runnable1 = new Runnable() {
-
-            public void run() {
-                boolean running = true;
-                while (running) {
-                    if (startServerThread==null || !startServerThread.isAlive()) {
-                         try {
-                            Thread.sleep(3333);
-                        } catch (InterruptedException ex) {}
-                        //Needed to move this to here; otherwise the oo connection may not be initialised
-                        Template.cacheTemplates();
-                        running=false;
-                    } else {
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException ex) {}
-                    }
-                }
-            }
-        };
-        new Thread(runnable1).start();
     }
 
     private void loadPlugins() {

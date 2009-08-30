@@ -41,6 +41,7 @@ public class LocalSettings {
     public static final String OFFICE_PORT = "oooport";
     public static final String OFFICE_HOST = "ooohost";
     public static final String OFFICE_REMOTE = "oootremoteserver";
+    public static final String OFFICE_USE = "ooouse";
     public static final String CACHE_DIR = "cachedir";
     public static final String DEFAULT_FONT = "defaultfont";
     public static final String PRINT_DEVAPP = "devappprint";
@@ -56,7 +57,7 @@ public class LocalSettings {
     public static final String LAST_USER_PW = "lastuserpw";
 
 
-    private static PropertyStore predefinedSettings = new PropertyStore(new String[][]{ //        {LAF,UIManager.getSystemLookAndFeelClassName()}
+    private static PropertyStore predefinedSettings = new PropertyStore(new String[][]{
                 {DEFAULT_FONT, "DejaVu Sans 11"},
                 {DBROW_LIMIT, "0"},
                 {DBAUTOLOCK, "false"},
@@ -68,6 +69,7 @@ public class LocalSettings {
                 {OFFICE_PORT, "8100"},
                 {OFFICE_HOST, "127.0.0.1"},
                 {OFFICE_REMOTE, "false"},
+                {OFFICE_USE, "true"},
                 {CACHE_DIR, "Cache"}
             });
     private static Vector<PropertyStore> cookies;

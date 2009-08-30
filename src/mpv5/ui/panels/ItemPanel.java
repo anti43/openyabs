@@ -1132,28 +1132,28 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     private void preview() {
         PreviewPanel pr;
         if (preloadedTemplate != null && preload) {
-            if (dataOwner != null&&dataOwner.isExisting()) {
+            if (dataOwner != null && dataOwner.isExisting()) {
                 if (itemtable.getCellEditor() != null) {
                     itemtable.getCellEditor().stopCellEditing();
                 }
 
-               
-                    HashMap<String, String> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
-                    File f2 = FileDirectoryHandler.getTempFile("pdf");
-                    Export ex = new Export();
-                    ex.putAll(hm1);
 
-                    Vector<String[]> l = SubItem.convertModel(dataOwner, (MPTableModel) itemtable.getModel(), preloadedTemplate);
+                HashMap<String, String> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
+                File f2 = FileDirectoryHandler.getTempFile("pdf");
+                Export ex = new Export();
+                ex.putAll(hm1);
 
-                    ex.put(TableHandler.KEY_TABLE + "1", l);
-                    ex.setTemplate(preloadedExportFile);
-                    ex.setTargetFile(f2);
+                Vector<String[]> l = SubItem.convertModel(dataOwner, (MPTableModel) itemtable.getModel(), preloadedTemplate);
 
-                    pr = new PreviewPanel();
-                    pr.setDataOwner(dataOwner);
-                    new Job(ex, pr).execute();
-                    saveSubItems();
-                
+                ex.put(TableHandler.KEY_TABLE + "1", l);
+                ex.setTemplate(preloadedExportFile);
+                ex.setTargetFile(f2);
+
+                pr = new PreviewPanel();
+                pr.setDataOwner(dataOwner);
+                new Job(ex, pr).execute();
+                saveSubItems();
+
             }
         } else {
             Popup.notice(Messages.NO_TEMPLATE_LOADED);
@@ -1175,10 +1175,14 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                         Log.Debug(e);
                     }
                 } else {
-                    Popup.notice(Messages.NO_TEMPLATE_DEFINDED);
+                    if (!NO_TEMPLATE_NOTIFICATION_DONE) {
+                        Popup.notice(Messages.NO_TEMPLATE_DEFINDED);
+                    }
+                    NO_TEMPLATE_NOTIFICATION_DONE = true;
                 }
             }
         };
         new Thread(runnable).start();
     }
+    private static boolean NO_TEMPLATE_NOTIFICATION_DONE = false;
 }
