@@ -23,27 +23,34 @@ function getNewContacts($cID) {
     return new xmlrpcresp(new xmlrpcval($arr, 'struct'));
 }
 
+function getNewContact($cID) {
+	$cID = $cID->getParam(0)->scalarval();
+        $cID1 = $cID->getParam(1)->scalarval();
+	$tmp = new Webshop();
+	$arr = $tmp->getNewContact($cID,$cID1);
+    return new xmlrpcresp(new xmlrpcval($arr, 'struct'));
+}
+
 /**
  *
  * @param $cID
  * @return array of orderinfos
  */
-function getNewOrders($cID) {
-	$cID = $cID->getParam(0)->scalarval();
-	$tmp = new Webshop();
-	$arr = $tmp->getNewOrders($cID);
-    return new xmlrpcresp(new xmlrpcval($arr, 'struct'));
-}
+//function getNewOrders($cID) {
+//	$cID = $cID->getParam(0)->scalarval();
+//	$tmp = new Webshop();
+//	$arr = $tmp->getNewOrders($cID);
+//    return new xmlrpcresp(new xmlrpcval($arr, 'struct'));
+//}
 
 new xmlrpc_server(array(
-	'addNewContacts' =>
-	array('function' => 'addNewContacts'),
-    'getNewContacts' =>
-    array('function' => 'getNewContacts'),
-    'getNewOrders' =>
-    array('function' => 'getNewOrders'),
-    'getYWSIVersion' =>
-    array('function'=> 'getYWSIVersion'))
+    'addNewContacts' => array('function' => 'addNewContacts'),
+    'getNewContacts' => array('function' => 'getNewContacts'),
+    'getNewContact' =>  array('function' => 'getNewContact'),
+    'getNewOrders' =>   array('function' => 'getNewOrders'),
+    'getYWSIVersion' => array('function'=> 'getYWSIVersion'),
+    'getContact' =>     array('function'=> 'getContact'),
+    )
 
 
     );
