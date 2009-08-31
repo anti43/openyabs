@@ -65,7 +65,7 @@ public class MPTreeModel extends DefaultTreeModel {
             gnode.add(childNode);
             return getGroupHierarchy(parent, gnode, groups, rootNode);
         } else {
-            
+
             rootNode.add(childNode);
             return childNode;
         }
@@ -95,8 +95,8 @@ public class MPTreeModel extends DefaultTreeModel {
                 Item item = (Item) items.get(i);
                 DefaultMutableTreeNode itemnode = new DefaultMutableTreeNode(item);
 
-                if(!groups.containsKey(new Integer(item.__getGroupsids()))){
-                    DatabaseObject g = DatabaseObject.getObject(Context.getGroup(),item.__getGroupsids());
+                if (!groups.containsKey(new Integer(item.__getGroupsids()))) {
+                    DatabaseObject g = DatabaseObject.getObject(Context.getGroup(), item.__getGroupsids());
                     getGroupHierarchy((Group) g, new DefaultMutableTreeNode(g), groups, rootNode);
                 }
 
@@ -114,7 +114,11 @@ public class MPTreeModel extends DefaultTreeModel {
 
                 (groups.get(item.__getGroupsids())).add(itemnode);
             }
-            rootNode.add(groups.get(new Integer(1)));
+            if (groups.get(new Integer(1)) != null) {
+                rootNode.add(groups.get(new Integer(1)));
+            } else {
+                Log.Debug(MPTreeModel.class, "No root group node found.");
+            }
             // Add files to the contact
             ArrayList<DatabaseObject> contactFiles = null;
             try {
