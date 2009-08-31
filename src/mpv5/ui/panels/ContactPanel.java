@@ -1154,6 +1154,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             i.setContactsids(dataOwner.__getIDS());
             i.setCName(Messages.NEW_BILL.getValue());
             i.setInttype(Item.TYPE_BILL);
+            i.setGroupsids(dataOwner.__getGroupsids());
             MPView.identifierView.addTab(i);
         }
     }//GEN-LAST:event_button_billActionPerformed
@@ -1164,6 +1165,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             i.setContactsids(dataOwner.__getIDS());
             i.setCName(Messages.NEW_ORDER.getValue());
             i.setInttype(Item.TYPE_ORDER);
+            i.setGroupsids(dataOwner.__getGroupsids());
             MPView.identifierView.addTab(i);
         }
     }//GEN-LAST:event_button_orderActionPerformed
@@ -1174,6 +1176,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             i.setContactsids(dataOwner.__getIDS());
             i.setCName(Messages.NEW_OFFER.getValue());
             i.setInttype(Item.TYPE_OFFER);
+            i.setGroupsids(dataOwner.__getGroupsids());
             MPView.identifierView.addTab(i);
         }
     }//GEN-LAST:event_button_offerActionPerformed
@@ -1185,6 +1188,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             i.setManufacturersids(dataOwner.__getIDS());
             i.setCName(Messages.NEW_PRODUCT.getValue());
             i.setInttype(Product.TYPE_PRODUCT);
+            i.setGroupsids(dataOwner.__getGroupsids());
             MPView.identifierView.addTab(i);
         }
     }//GEN-LAST:event_button_productActionPerformed

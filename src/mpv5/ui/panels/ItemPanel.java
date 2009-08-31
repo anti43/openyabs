@@ -996,12 +996,16 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         shipping.setText(FormatNumber.formatDezimal(shippingvalue_));
         button_reminders.setToolTipText(Messages.REMINDERS + String.valueOf(intreminders_));
 
+        status.setSelectedIndex(intstatus_);
         try {
-            status.setSelectedIndex(intstatus_);
             accountselect.setModel(DatabaseObject.getObject(Context.getAccounts(), defaultaccountsids_));
+        } catch (NodataFoundException ex) {
+            Log.Debug(this, ex.getMessage());
+        }
+        try {
             groupnameselect.setModel(DatabaseObject.getObject(Context.getGroup(), groupsids_));
-        } catch (Exception e) {
-            Log.Debug(this, e.getMessage());
+        } catch (NodataFoundException ex) {
+            Log.Debug(this, ex.getMessage());
         }
 
         addedby.setText(User.getUsername(intaddedby_));

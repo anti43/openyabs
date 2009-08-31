@@ -24,42 +24,30 @@ package mpv5.ui.panels;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.DefaultFocusTraversalPolicy;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.File;
-import java.net.URL;
 import java.text.NumberFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableModel;
 import mpv5.db.common.*;
-import mpv5.db.objects.Account;
 import mpv5.db.objects.Product;
 import mpv5.globals.Headers;
 import mpv5.globals.Messages;
 import mpv5.db.objects.Contact;
-import mpv5.db.common.DataNotCachedException;
 import mpv5.db.objects.Favourite;
 import mpv5.db.objects.Item;
-import mpv5.db.objects.SubItem;
 import mpv5.db.objects.Template;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.BigPopup;
@@ -72,8 +60,6 @@ import mpv5.db.objects.User;
 import mpv5.handler.FormFieldsHandler;
 import mpv5.ui.beans.MPCBSelectionChangeReceiver;
 import mpv5.ui.dialogs.DialogForFile;
-import mpv5.utils.arrays.ArrayUtilities;
-import mpv5.utils.date.DateConverter;
 import mpv5.utils.export.Export;
 import mpv5.utils.export.Exportable;
 import mpv5.utils.files.FileDirectoryHandler;
@@ -81,12 +67,7 @@ import mpv5.utils.images.MPIcon;
 import mpv5.utils.jobs.Job;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
-import mpv5.utils.models.MPTableModelRow;
-import mpv5.utils.models.NativeModeNotSupportedException;
 import mpv5.utils.numberformat.FormatNumber;
-import mpv5.utils.tables.TableCalculator;
-import mpv5.utils.renderer.CellRendererWithMPComboBox;
-import mpv5.utils.renderer.TableCellRendererForDezimal;
 import mpv5.utils.tables.TableFormat;
 import mpv5.utils.ui.TextFieldUtils;
 
@@ -1044,12 +1025,16 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         cnumber.setText(cnumber_);
         description.setText(description_);
 
+        stype.setSelectedIndex(inttype_);
         try {
-            stype.setSelectedIndex(inttype_);
             familyselect.setModel(DatabaseObject.getObject(Context.getProductGroup(), productgroupsids_));
+        } catch (NodataFoundException ex) {
+            Log.Debug(this, ex.getMessage());
+        }
+        try {
             groupnameselect.setModel(DatabaseObject.getObject(Context.getGroup(), groupsids_));
-        } catch (Exception e) {
-            Log.Debug(this, e.getMessage());
+        } catch (NodataFoundException ex) {
+            Log.Debug(this, ex.getMessage());
         }
 
         addedby.setText(User.getUsername(intaddedby_));
