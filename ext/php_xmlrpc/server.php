@@ -3,7 +3,8 @@
 //ini_set('display_errors', '1');
 include 'xmlrpc.inc';
 include 'xmlrpcs.inc';
-//testcommit
+include 'base/webshop.php';
+
 
 //must exist for yabs
 function getYWSIVersion () {
@@ -11,89 +12,39 @@ function getYWSIVersion () {
 }
 
 
-
-function addNewContact ($params) {
-
-//Parse our parameters. *should be a loop through $params instead*
-//Writing to a file as echoing will break the operation
-    if (!$handle = fopen("test.txt", 'w+')) {
-        exit;
-    }
-
-    //getParam(0) returns a 'xmlrpcval'
-
-    //serialized it looks like this:
-    //<value><array>
-    //<data>
-    //<value><string>1</string></value>
-    //<value><string>cname</string></value>
-    //<value><string>mustermann1</string></value>
-    //</data>
-    //</array></value>
-
-    //getParam(1) returns a 'xmlrpcval'
-    //<value><array>
-    //<data>
-    //<value><string>1</string></value>
-    //<value><string>city</string></value>
-    //<value><string>mustermannhausen</string></value>
-    //</data>
-    //</array></value>
-
-    fwrite($handle, $params->getParam(0)->serialize());
-    fwrite($handle, $params->getParam(1)->serialize());
-    fwrite($handle, $params->getParam(2)->serialize());
-    fwrite($handle, $params->getParam(3)->serialize());
-
-    fclose($handle);
-
-    // Build our response.
-    return new xmlrpcresp(new xmlrpcval(rand(), 'int'));
+function addNewContacts ($params) {
+//Platzhalter
 }
 
-
-
-function getNewContacts($zeitraum) {
-
-    $arr =
-        array(
-
-        new xmlrpcval(array('id' => new xmlrpcval(0, 'int'),
-        'key' => new xmlrpcval('ids', 'int'),
-        'value' => new xmlrpcval(2000, 'int')), 'struct'),
-
-        new xmlrpcval(array('id' => new xmlrpcval(1, 'int'),
-        'key' => new xmlrpcval('ids', 'int'),
-        'value' => new xmlrpcval(2001, 'int')), 'struct'),
-
-        new xmlrpcval(array('id' => new xmlrpcval(0, 'int'),
-        'key' => new xmlrpcval('contactsids', 'int'),
-        'value' => new xmlrpcval(2, 'int')), 'struct'),
-
-        new xmlrpcval(array('id' => new xmlrpcval(0, 'int'),
-        'key' => new xmlrpcval('cname', 'string'),
-        'value' => new xmlrpcval('spaci76', 'string')), 'struct'),
-
-        new xmlrpcval(array('id' => new xmlrpcval(1, 'int'),
-        'key' => new xmlrpcval('contactsids', 'int'),
-        'value' => new xmlrpcval(3, 'int')), 'struct'),
-
-        new xmlrpcval(array('id' => new xmlrpcval(1, 'int'),
-        'key' => new xmlrpcval('cname', 'string'),
-        'value' => new xmlrpcval('spaci2009', 'string')), 'struct')
-    );
-
+function getNewContacts($cID) {
+	$cID = $cID->getParam(0)->scalarval();
+	$tmp = new Webshop();
+	$arr = $tmp->getNewContacts($cID);
     return new xmlrpcresp(new xmlrpcval($arr, 'struct'));
 }
 
+/**
+ *
+ * @param $cID
+ * @return array of orderinfos
+ */
+function getNewOrders($cID) {
+	$cID = $cID->getParam(0)->scalarval();
+	$tmp = new Webshop();
+	$arr = $tmp->getNewOrders($cID);
+    return new xmlrpcresp(new xmlrpcval($arr, 'struct'));
+}
 
-new xmlrpc_server(array('addNewContact' =>
-    array('function' => 'addNewContact')
-    ,
+new xmlrpc_server(array(
+	'addNewContacts' =>
+	array('function' => 'addNewContacts'),
     'getNewContacts' =>
-    array('function' => 'getNewContacts')
-    ,
+    array('function' => 'getNewContacts'),
+    'getNewOrders' =>
+    array('function' => 'getNewOrders'),
     'getYWSIVersion' =>
     array('function'=> 'getYWSIVersion'))
-);
+
+
+    );
 ?>
