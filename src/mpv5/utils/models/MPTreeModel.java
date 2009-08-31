@@ -26,6 +26,8 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
@@ -52,17 +54,19 @@ public class MPTreeModel extends DefaultTreeModel {
 
     private static final long serialVersionUID = 1L;
 
-    private static DefaultMutableTreeNode getGroupHierarchy(DatabaseObject item) throws NodataFoundException {
-        Group group = (Group) DatabaseObject.getObject(Context.getGroup(), item.__getGroupsids());
-        return getGroupHierarchy(group, new DefaultMutableTreeNode(group));
-    }
-
-    private static DefaultMutableTreeNode getGroupHierarchy(Group childGroup, DefaultMutableTreeNode childNode) throws NodataFoundException {
+    private synchronized static DefaultMutableTreeNode getGroupHierarchy(
+            Group childGroup, DefaultMutableTreeNode childNode,
+            HashMap<Integer, DefaultMutableTreeNode> groups,
+            DefaultMutableTreeNode rootNode) throws NodataFoundException {
+        groups.put(childGroup.__getIDS(), childNode);
         if (childGroup.__getGroupsids() > 0) {
             Group parent = (Group) DatabaseObject.getObject(Context.getGroup(), childGroup.__getGroupsids());
             DefaultMutableTreeNode gnode = new DefaultMutableTreeNode(parent);
-            return getGroupHierarchy(parent, gnode);
+            gnode.add(childNode);
+            return getGroupHierarchy(parent, gnode, groups, rootNode);
         } else {
+            
+            rootNode.add(childNode);
             return childNode;
         }
     }
@@ -77,12 +81,12 @@ public class MPTreeModel extends DefaultTreeModel {
 
     private static MutableTreeNode buildTreeFor(Contact obj) {
         HashMap<Integer, DefaultMutableTreeNode> groups = new HashMap<Integer, DefaultMutableTreeNode>();
-
         DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(obj);
+
+        //build group hierarchy
 
         // Add related items
         ArrayList<DatabaseObject> items = null;
-        Set<Integer> gs;
 
         try {
             items = DatabaseObject.getReferencedObjects(obj, Context.getItems(), DatabaseObject.getObject(Context.getItems()));
@@ -91,12 +95,10 @@ public class MPTreeModel extends DefaultTreeModel {
                 Item item = (Item) items.get(i);
                 DefaultMutableTreeNode itemnode = new DefaultMutableTreeNode(item);
 
-                //add group hierarchy
-                if (!groups.containsKey(item.__getGroupsids())) {
-                    groups.put(item.__getGroupsids(), getGroupHierarchy(item));
+                if(!groups.containsKey(new Integer(item.__getGroupsids()))){
+                    DatabaseObject g = DatabaseObject.getObject(Context.getGroup(),item.__getGroupsids());
+                    getGroupHierarchy((Group) g, new DefaultMutableTreeNode(g), groups, rootNode);
                 }
-
-                groups.get(item.__getGroupsids()).add(itemnode);
 
                 // Add files to the items
                 ArrayList<DatabaseObject> itemfiles = null;
@@ -109,13 +111,10 @@ public class MPTreeModel extends DefaultTreeModel {
                 } catch (NodataFoundException ex) {
                     Log.Debug(ex);
                 }
-                gs = groups.keySet();
-                Iterator it = gs.iterator();
-                while (it.hasNext()) {
-                    Integer in = Integer.valueOf(it.next().toString());
-                    rootNode.add(groups.get(in));
-                }
+
+                (groups.get(item.__getGroupsids())).add(itemnode);
             }
+            rootNode.add(groups.get(new Integer(1)));
             // Add files to the contact
             ArrayList<DatabaseObject> contactFiles = null;
             try {

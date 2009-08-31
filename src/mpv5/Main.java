@@ -100,7 +100,6 @@ public class Main extends SingleFrameApplication {
     }
 
     private static void useNetbookOpt() {
-        ControlPanel_Fonts.applyFont(new Font("Dialog", Font.PLAIN, 11));
         MPView.setNavBarAnimated(false);
         MPView.setTabPaneScrolled(true);
     }
@@ -164,6 +163,7 @@ public class Main extends SingleFrameApplication {
             System.exit(1);
         }
         splash.nextStep(Messages.DB_CHECK.toString());
+        ControlPanel_Fonts.applyFont(Font.decode(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT)));
         if (FORCE_INSTALLER == null) {
             if (probeDatabaseConnection()) {
                 go(false);
