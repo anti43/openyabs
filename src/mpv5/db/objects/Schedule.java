@@ -95,7 +95,7 @@ public class Schedule extends DatabaseObject {
 
     /**
      *
-     * @param date
+     * @param dataOwner
      * @return
      */
     public static ArrayList<Schedule> getEvents(Contact dataOwner) {

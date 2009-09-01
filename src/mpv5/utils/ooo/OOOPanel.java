@@ -59,7 +59,7 @@ public class OOOPanel extends JPanel {
                 getParent().validate();
                 MPView.setWaiting(false);
             }
-            MPView.addMessage(Messages.DONE_LOADING_OOO);
+            MPView.addMessage(Messages.OO_DONE_LOADING);
         
     }
 

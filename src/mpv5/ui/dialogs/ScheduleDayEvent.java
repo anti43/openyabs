@@ -26,6 +26,7 @@ import mpv5.ui.misc.Position;
 import mpv5.ui.panels.calendar.*;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.models.MPTableModel;
+import mpv5.utils.tables.TableFormat;
 
 /**
  *
@@ -331,6 +332,7 @@ public class ScheduleDayEvent extends javax.swing.JFrame {
             d[i] = schedule.toArray();
         }
         jTable1.setModel(new MPTableModel(d, Headers.SCHEDULE_LIST));
+        TableFormat.resizeCols(jTable1, new Integer[]{150}, true);
     }
 
     private void save(Schedule s) {
@@ -363,7 +365,7 @@ public class ScheduleDayEvent extends javax.swing.JFrame {
      */
     public void setItem(Item dataOwner) {
         labeledCombobox1.setModel(dataOwner);
-        refresh(new Date());
+        setDate(new Date());
         setVisible(true);
     }
 }

@@ -268,7 +268,6 @@ public class Context {
         list.add(getBill());
         list.add(getOrder());
         list.add(getOffer());
-        list.add(getSchedule());
         list.add(getContact());
         list.add(getProducts());
         list.add(getFiles());

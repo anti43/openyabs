@@ -1224,14 +1224,12 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                         Log.Debug(e);
                     }
                 } else {
-                    if (!NO_TEMPLATE_NOTIFICATION_DONE) {
-                        Popup.notice(Messages.NO_TEMPLATE_DEFINDED);
-                    }
-                    NO_TEMPLATE_NOTIFICATION_DONE = true;
+                     button_preview.setText(Messages.OO_NOT_CONFIGURED.getValue());
+                    button_preview.setEnabled(false);
                 }
             }
         };
         new Thread(runnable).start();
     }
-    private static boolean NO_TEMPLATE_NOTIFICATION_DONE = false;
+
 }

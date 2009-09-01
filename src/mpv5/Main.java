@@ -52,6 +52,7 @@ import mpv5.ui.dialogs.Wizard;
 import mpv5.ui.dialogs.subcomponents.wizard_DBSettings_1;
 
 import mpv5.db.objects.User;
+import mpv5.handler.Scheduler;
 import mpv5.i18n.LanguageManager;
 import mpv5.pluginhandling.UserPlugin;
 import mpv5.server.MPServer;
@@ -571,6 +572,7 @@ public class Main extends SingleFrameApplication {
             };
             new Thread(runnable1).start();
         }
+        new Scheduler().start();
     }
 
     private void loadPlugins() {
