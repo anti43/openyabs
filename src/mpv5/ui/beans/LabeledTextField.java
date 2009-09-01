@@ -19,6 +19,7 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.globals.LocalSettings;
+import mpv5.logging.Log;
 import mpv5.ui.panels.DataPanel;
 import mpv5.utils.ui.TextFieldUtils;
 
@@ -119,7 +120,9 @@ public class LabeledTextField extends javax.swing.JPanel {
                     data = DatabaseObject.getObject(context, jTextField1.getText());
                 }
                 parent.setDataOwner(data, true);
+                Log.Debug(this, "Data found: " + data);
             } catch (NodataFoundException ex) {
+                Log.Debug(this, "Data NOT found: " + jTextField1.getText());
                 TextFieldUtils.blinkerRed(jTextField1);
             }
         }
