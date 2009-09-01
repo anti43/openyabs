@@ -11,6 +11,8 @@
 package mpv5.ui.beans;
 
 import java.util.Date;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  *
@@ -24,7 +26,7 @@ public class LabeledDateChooser extends javax.swing.JPanel {
     /** Creates new form LabeledTextField */
     public LabeledDateChooser() {
         initComponents();
-
+   
     }
 
     /**
@@ -34,9 +36,6 @@ public class LabeledDateChooser extends javax.swing.JPanel {
     public DateChooser getDateChooser() {
         return this.dateChooser1;
     }
-
-
-
 
 //    public void setLabelFont(Font font) {
 //        setFont(font);
@@ -60,6 +59,11 @@ public class LabeledDateChooser extends javax.swing.JPanel {
         jLabel1.setText("text");
 
         dateChooser1.setFont(dateChooser1.getFont());
+        dateChooser1.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                dateChooser1PropertyChange(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -79,12 +83,15 @@ public class LabeledDateChooser extends javax.swing.JPanel {
                 .addGap(0, 0, 0))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void dateChooser1PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_dateChooser1PropertyChange
+        // TODO add your handling code here:
+    }//GEN-LAST:event_dateChooser1PropertyChange
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private mpv5.ui.beans.DateChooser dateChooser1;
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
 
-    
     /**
      * 
      * @return
@@ -124,5 +131,4 @@ public class LabeledDateChooser extends javax.swing.JPanel {
         jLabel1.setEnabled(enabled);
         getDateChooser().setEnabled(enabled);
     }
-
 }

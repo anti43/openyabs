@@ -38,10 +38,11 @@ import mpv5.utils.date.vTimeframe;
  */
 public class Schedule extends DatabaseObject {
 
-
     private int usersids = 4343;
     private int itemsids;
     private Date nextdate = new Date();
+    private Date stopdate = new Date();
+    private Date startdate = new Date();
     private int intervalmonth = 1;
     private Item item;
 
@@ -94,14 +95,13 @@ public class Schedule extends DatabaseObject {
         return l;
     }
 
-
     /**
      *
      * @param day
      * @return
      */
     public static ArrayList<Schedule> getEvents(Date day) {
-        return getEvents(new vTimeframe(day,new Date( DateConverter.addDay(day).getTime()-1)));
+        return getEvents(new vTimeframe(day, new Date(DateConverter.addDay(day).getTime() - 1)));
     }
 
     @Override
@@ -165,8 +165,47 @@ public class Schedule extends DatabaseObject {
         this.intervalmonth = intervalmonth;
     }
 
-     @Override
+    @Override
     public mpv5.utils.images.MPIcon getIcon() {
         return null;
+    }
+
+    /**
+     * Array representation of this event.
+     * <br/>{getItem(), intervalmonth, stopdate, user}
+     * @return
+     */
+    public Object[] toArray() {
+        Object[] t = new Object[]{this, intervalmonth, DateConverter.getDefDateString(stopdate),
+        User.getUsername(usersids)};
+        return t;
+    }
+
+    /**
+     * @return the stopdate
+     */
+    public Date __getStopdate() {
+        return stopdate;
+    }
+
+    /**
+     * @param stopdate the stopdate to set
+     */
+    public void setStopdate(Date stopdate) {
+        this.stopdate = stopdate;
+    }
+
+    /**
+     * @return the startdate
+     */
+    public Date __getStartdate() {
+        return startdate;
+    }
+
+    /**
+     * @param startdate the startdate to set
+     */
+    public void setStartdate(Date startdate) {
+        this.startdate = startdate;
     }
 }

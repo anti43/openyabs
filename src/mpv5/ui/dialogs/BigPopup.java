@@ -5,17 +5,14 @@
 package mpv5.ui.dialogs;
 
 import java.awt.BorderLayout;
+import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Vector;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import mpv5.bugtracker.SubmitForm;
 import mpv5.ui.misc.Position;
-import mpv5.ui.panels.PreviewPanel;
 
 /**
  *
@@ -24,6 +21,46 @@ import mpv5.ui.panels.PreviewPanel;
 public class BigPopup {
 
     static HashMap<JPanel, JFrame> contents = new HashMap<JPanel, JFrame>();
+
+
+    /**
+     *  Creates a new popup FRAME
+     * @param content
+     * @param title
+     * @param locationOnScreen
+     */
+    public static void showPopup(JPanel content, String title, Point locationOnScreen) {
+         final JFrame window = new JFrame();
+        window.getContentPane().setLayout(new BorderLayout());
+        window.getContentPane().add(content, BorderLayout.CENTER);
+        window.pack();
+//        window.setAlwaysOnTop(true);
+        window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        window.setTitle(title);
+
+        window.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+              if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    window.dispose();
+                }
+            }
+            @Override
+            public void keyPressed(KeyEvent e) {
+               if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    window.dispose();
+                }}
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        });
+
+        window.setLocation(locationOnScreen);
+        window.setVisible(true);
+        contents.put(content, window);
+    }
+
     /**
      * Creates a new popup FRAME
      * @param parent
@@ -113,6 +150,5 @@ public class BigPopup {
         contents.get(panel).dispose();
         contents.remove(panel);
     }
-
 
 }

@@ -26,6 +26,7 @@ public class LabeledSpinner extends javax.swing.JPanel {
     private String _text;
     private String _label;
     private Class clazz;
+    private LabeledDateChooser receiver;
 
     /** Creates new form LabeledTextField */
     public LabeledSpinner() {
@@ -62,8 +63,13 @@ public class LabeledSpinner extends javax.swing.JPanel {
         jLabel1.setText("text");
 
         jSpinner1.setFont(jSpinner1.getFont());
-        jSpinner1.setModel(new javax.swing.SpinnerNumberModel());
+        jSpinner1.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
         jSpinner1.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinner1, ""));
+        jSpinner1.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinner1StateChanged(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -81,6 +87,11 @@ public class LabeledSpinner extends javax.swing.JPanel {
                 .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jSpinner1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinner1StateChanged
+       
+    }//GEN-LAST:event_jSpinner1StateChanged
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JSpinner jSpinner1;
@@ -138,6 +149,5 @@ public class LabeledSpinner extends javax.swing.JPanel {
     public void setValue(int i) {
         set_Value(i);
     }
-
 
 }

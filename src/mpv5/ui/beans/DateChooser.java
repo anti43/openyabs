@@ -2,6 +2,7 @@ package mpv5.ui.beans;
 
 import com.toedter.calendar.JSpinnerDateEditor;
 import java.util.Date;
+import javax.swing.JSpinner;
 import javax.swing.JSpinner.DateEditor;
 import mpv5.ui.dialogs.MiniCalendarDialog;
 import mpv5.ui.dialogs.MiniCalendarFrame;
@@ -21,6 +22,14 @@ public class DateChooser extends javax.swing.JPanel {
     public DateChooser() {
         initComponents();
         jSpinner1.setEditor(new DateEditor(jSpinner1, DateConverter.getDefaultFormatString()));
+    }
+
+    /**
+     *
+     * @return
+     */
+    public JSpinner getSpinner() {
+        return jSpinner1;
     }
 
     /**

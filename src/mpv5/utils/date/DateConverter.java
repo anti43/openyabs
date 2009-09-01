@@ -54,16 +54,15 @@ public class DateConverter {
      * "yyyy-MM-dd HH:mm:ss"
      */
     public static final DateFormat DB_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    //DE format
+   
     /**
-     *
+     * DE format
      */
     public static final DateFormat DE_DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN);
-    //US format
     /**
      * "yyyy-MM-dd"
      */
-    public static final DateFormat ENG_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+    public static final DateFormat ENG_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
     /**
      * YYYY
      */
@@ -101,7 +100,6 @@ public class DateConverter {
      * @return
      */
     public static Date addYears(Date date, int amount) {
-
         cl.setTime(date);
         cl.add(Calendar.YEAR, amount);
 
@@ -200,14 +198,13 @@ public class DateConverter {
         return DB_DATE_FORMAT.format(new Date());
     }
 
+    /**
+     *
+     * @param date
+     * @return
+     */
     public static Date addYear(Date date) {
-        Calendar cal = DateConverter.cl;
-        synchronized (cal) {
-            cal.setTime(date);
-            cal.add(Calendar.YEAR, 1);
-
-            return cal.getTime();
-        }
+        return addYears(date, 1);
     }
 
     /**
@@ -216,11 +213,21 @@ public class DateConverter {
      * @return The next month
      */
     public static Date addMonth(Date date) {
+       return addMonths(date, 1);
+    }
+
+     /**
+     *
+     * @param date
+      * @param amount
+      * @return The next month
+     */
+    public static Date addMonths(Date date, int amount) {
         Calendar cal = DateConverter.cl;
 
         synchronized (cal) {
             cal.setTime(date);
-            cal.add(Calendar.MONTH, 1);
+            cal.add(Calendar.MONTH, amount);
 
             return cal.getTime();
         }
@@ -248,14 +255,9 @@ public class DateConverter {
      * @return The next day
      */
     public static Date addDay(Date date) {
-        Calendar cal = DateConverter.cl;
-        synchronized (cal) {
-            cal.setTime(date);
-            cal.add(Calendar.DATE, 1);
-
-            return cal.getTime();
-        }
+        return addDays(date, 1);
     }
+
 
     /**
      *

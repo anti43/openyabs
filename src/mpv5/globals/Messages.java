@@ -169,7 +169,9 @@ public enum Messages {
     ORDERS_RECEIVED("orders have been received from"),
     LOAD_NOW("Load now?"),
     NO_TEMPLATE_DEFINDED("There is no template assigned to your account matching this export type."),
-    NO_TEMPLATE_LOADED("The template is not loaded yet. Please try again in a few seconds.");
+    NO_TEMPLATE_LOADED("The template is not loaded yet. Please try again in a few seconds."),
+    SCHEDULE_NEXT("Next date for this item: "),
+    SCHEDULE("Schedule");
 
     private Messages(String message) {
         this.message = message;

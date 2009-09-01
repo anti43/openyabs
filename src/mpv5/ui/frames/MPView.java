@@ -1696,7 +1696,7 @@ public class MPView extends FrameView {
     }//GEN-LAST:event_jMenuItem17ActionPerformed
 
     private void jMenuItem18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem18ActionPerformed
-        addTab(new JCalendar(), Messages.CALENDAR.toString());
+        addTab(JCalendar.instanceOf(), Messages.CALENDAR.toString());
     }//GEN-LAST:event_jMenuItem18ActionPerformed
 
     private void jMenuItem19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem19ActionPerformed
@@ -1724,7 +1724,6 @@ public class MPView extends FrameView {
 
     private void jMenuItem21ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem21ActionPerformed
 
-
         if (mpv5.usermanagement.MPSecurityManager.check(Context.getAccounts(), MPSecurityManager.EXPORT)) {
             try {
 
@@ -1743,7 +1742,6 @@ public class MPView extends FrameView {
 
     private void jMenuItem22ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem22ActionPerformed
         if (Popup.Y_N_dialog("Fill database with sample data?")) {
-
             int x = 1;
             try {
                 x = Integer.valueOf(Popup.Enter_Value("Enter a default account ID for bills."));

@@ -22,6 +22,7 @@ package mpv5.ui.panels.calendar;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridLayout;
@@ -92,12 +93,31 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener, 
     protected int maxDayCharacters;
     private static ArrayList<Schedule> events;
     private static ArrayList<Schedule> processedEvents = new ArrayList<Schedule>();
+    private static JDayChooser icke;
+
+    /**
+     * The dc instance
+     * @return
+     */
+    public static JDayChooser instanceOf() {
+        if (icke == null) {
+            icke = new JDayChooser();
+        }
+        return icke;
+    }
+
+    /**
+     * Reload the event list
+     */
+    public void reload(){
+       drawDays(Schedule.getEvents(new vTimeframe(new Date(0), DateConverter.addYears(new Date(), 2))));
+    }
 
     /**
      * Default JDayChooser constructor.
      */
-    public JDayChooser() {
-        this(false);
+    private JDayChooser() {
+        this(true);
     }
 
     /**
@@ -106,7 +126,7 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener, 
      * @param weekOfYearVisible
      *            true, if the weeks of a year shall be shown
      */
-    public JDayChooser(boolean weekOfYearVisible) {
+    private JDayChooser(boolean weekOfYearVisible) {
         setName("JDayChooser");
         setBackground(Color.blue);
         this.weekOfYearVisible = weekOfYearVisible;
@@ -241,6 +261,7 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener, 
             }
 
             days[i].setText(dayNames[day]);
+            days[i].setFont(days[i].getFont().deriveFont(Font.BOLD));
 
             if (day == 1) {
                 days[i].setForeground(sundayForeground);
@@ -354,6 +375,7 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener, 
         Date day = tmpCalendar.getTime();
         int n = 0;
         Color foregroundColor = getForeground();
+        ActionListener[] listeners;
 
         while (day.before(firstDayInNextMonth)) {
             days[i + n + 7].setDate(day);
@@ -381,7 +403,6 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener, 
 
             final Date tday = day;
 
-            Log.setLogLevel(Log.LOGLEVEL_DEBUG);
             boolean found = false;
             if (events != null) {
                 for (int j = 0; j < events.size(); j++) {
@@ -392,6 +413,11 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener, 
                         days[i + n + 7].setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/player_time.png")));
                         try {
                             days[i + n + 7].setToolTipText(Messages.ACTION_OPEN + " " + schedule.getItem().__getCName());
+                            listeners = days[i + n + 7].getActionListeners();
+                            for (int k = 0; k < listeners.length; k++) {
+                                ActionListener li = listeners[k];
+                                days[i + n + 7].removeActionListener(li);
+                            }
                             days[i + n + 7].addActionListener(new ActionListener() {
 
                                 public void actionPerformed(ActionEvent e) {
@@ -412,7 +438,6 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener, 
                         }
                         if (!found) {
                             days[i + n + 7].setIcon(null);
-
                         }
                     }
                 }
@@ -424,23 +449,13 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener, 
 
                     public void actionPerformed(ActionEvent e) {
                         if (!ScheduleDayEvent.instanceOf().isVisible()) {
-                            ScheduleDayEvent.instanceOf().setVisible(true);                   
+                            ScheduleDayEvent.instanceOf().setVisible(true);
                         }
-//                          ScheduleDayEvent.instanceOf().requestFocus();
-                            ScheduleDayEvent.instanceOf().setDate(tday);
+                        ScheduleDayEvent.instanceOf().setDate(tday);
                     }
                 });
             }
-//            days[i + n + 7].setContentAreaFilled(true);
-//      if ( days[i + n + 7].getIcon() == null) {
-//                days[i + n + 7].setToolTipText(Messages.NEW_VALUE);
-//                days[i + n + 7].addActionListener(new ActionListener() {
-//
-//                    public void actionPerformed(ActionEvent e) {
-//                        new ScheduleDayEvent();
-//                    }
-//                });
-//            }
+
             n++;
             tmpCalendar.add(Calendar.DATE, 1);
             day = tmpCalendar.getTime();
@@ -450,8 +465,6 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener, 
             days[k].setVisible(false);
             days[k].setText("");
         }
-
-
 
         drawWeeks();
     }
