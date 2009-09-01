@@ -12,8 +12,14 @@ package mpv5.ui.beans;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JTextField;
+import mpv5.db.common.Context;
+import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.NodataFoundException;
 import mpv5.globals.LocalSettings;
+import mpv5.ui.panels.DataPanel;
 import mpv5.utils.ui.TextFieldUtils;
 
 /**
@@ -26,6 +32,10 @@ public class LabeledTextField extends javax.swing.JPanel {
     private String _text;
     private String _label;
     private Class clazz;
+    private DataPanel parent;
+    private Context context;
+    private String searchField;
+    private boolean searchOnEnterEnabled;
 
     /** Creates new form LabeledTextField */
     public LabeledTextField() {
@@ -53,7 +63,6 @@ public class LabeledTextField extends javax.swing.JPanel {
         set_Text(text);
     }
 
-
 //    public void setLabelFont(Font font) {
 //        setFont(font);
 //
@@ -77,6 +86,11 @@ public class LabeledTextField extends javax.swing.JPanel {
 
         jTextField1.setFont(jTextField1.getFont());
         jTextField1.setDisabledTextColor(new java.awt.Color(0, 51, 51));
+        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -94,6 +108,22 @@ public class LabeledTextField extends javax.swing.JPanel {
                 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+        DatabaseObject data;
+        if (searchOnEnterEnabled) {
+            try {
+                if (searchField != null) {
+                    data = DatabaseObject.getObject(context, searchField, jTextField1.getText());
+                } else {
+                    data = DatabaseObject.getObject(context, jTextField1.getText());
+                }
+                parent.setDataOwner(data, true);
+            } catch (NodataFoundException ex) {
+                TextFieldUtils.blinkerRed(jTextField1);
+            }
+        }
+    }//GEN-LAST:event_jTextField1ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JTextField jTextField1;
@@ -114,7 +144,7 @@ public class LabeledTextField extends javax.swing.JPanel {
         jTextField1.setText(_text);
     }
 
-     /**
+    /**
      * @param text the _text to set
      */
     public void set_Text(String text) {
@@ -180,5 +210,48 @@ public class LabeledTextField extends javax.swing.JPanel {
             }
         }
         return jTextField1.getText();
+    }
+
+    /**
+     * @param parent the parent to set
+     */
+    public void setParent(DataPanel parent) {
+        this.parent = parent;
+    }
+
+    /**
+     * @return the context
+     */
+    public Context getContext() {
+        return context;
+    }
+
+    /**
+     * @param context the context to set
+     */
+    public void setContext(Context context) {
+        this.context = context;
+    }
+
+    /**
+     * @return the searchOnEnterEnabled
+     */
+    public boolean isSearchOnEnterEnabled() {
+        return searchOnEnterEnabled;
+    }
+
+    /**
+     * @param searchOnEnterEnabled the searchOnEnterEnabled to set
+     */
+    public void setSearchOnEnterEnabled(boolean searchOnEnterEnabled) {
+        this.searchOnEnterEnabled = searchOnEnterEnabled;
+    }
+
+    /**
+     *
+     * @param string
+     */
+    public void setSearchField(String string) {
+        searchField = string;
     }
 }

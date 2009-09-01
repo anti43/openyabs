@@ -182,6 +182,16 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         fil.addDefaultPopupMenu(dataTable);
         fil.addSeparator();
         fil.add(x);
+
+        cnumber.setSearchOnEnterEnabled(true);
+        cnumber.setParent(this);
+        cnumber.setSearchField("cnumber");
+        cnumber.setContext(Context.getProducts());
+
+        cname.setSearchOnEnterEnabled(true);
+        cname.setParent(this);
+        cname.setSearchField("cname");
+        cname.setContext(Context.getProducts());
     }
 
     /**

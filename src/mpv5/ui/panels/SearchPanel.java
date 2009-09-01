@@ -331,7 +331,8 @@ public class SearchPanel extends javax.swing.JPanel {
                 }
             };
             Log.Debug(this, "Starting search..");
-            new Thread(runnable).start();
+//            new Thread(runnable).start();
+            SwingUtilities.invokeLater(runnable);
         }
 
     }

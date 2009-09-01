@@ -763,6 +763,32 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
     }
 
     /**
+     * Searches for a specific dataset by name
+     * @param context The context to search under
+     * @param column
+     * @param value
+     * @return A database object with data, or null if none found
+     * @throws NodataFoundException
+     */
+    public static DatabaseObject getObject(Context context, String column, Object value) throws NodataFoundException {
+        try {
+            Object obj = context.getIdentityClass().newInstance();
+            if (((DatabaseObject) obj).fetchDataOf(column, value)) {
+                cacheObject((DatabaseObject) obj);
+                return (DatabaseObject) obj;
+            } else {
+                throw new NodataFoundException(context);
+            }
+        } catch (InstantiationException ex) {
+            mpv5.logging.Log.Debug(ex);//Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            mpv5.logging.Log.Debug(ex);//Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return null;
+    }
+
+    /**
      * Returns an empty "sample" Object of the specified <code>Context</code> type
      * @param context
      * @return
@@ -932,6 +958,19 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
      */
     public boolean fetchDataOf(int id) throws NodataFoundException {
         explode(QueryHandler.instanceOf().clone(context).select(id), this, true);
+        return true;
+    }
+
+    /**
+     * Fills this do with the data of the given dataset id
+     * @param column
+     * @param value
+     * @return
+     * @throws NodataFoundException
+     */
+    public boolean fetchDataOf(String column, Object value) throws NodataFoundException {
+        QueryCriteria c = new QueryCriteria(column, value);
+        explode(QueryHandler.instanceOf().clone(context).select(c), this, true);
         return true;
     }
 

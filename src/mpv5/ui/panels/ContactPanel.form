@@ -39,14 +39,14 @@
                       <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
                       <Component id="rightpane" max="32767" attributes="0"/>
                   </Group>
-                  <Component id="toolbarpane" alignment="0" pref="697" max="32767" attributes="0"/>
+                  <Component id="toolbarpane" alignment="0" pref="753" max="32767" attributes="0"/>
               </Group>
           </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="leftpane" alignment="0" pref="637" max="32767" attributes="1"/>
+          <Component id="leftpane" alignment="0" pref="638" max="32767" attributes="1"/>
           <Group type="102" alignment="0" attributes="0">
               <Component id="toolbarpane" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
@@ -84,7 +84,7 @@
                       <Component id="jPanel4" alignment="0" min="0" max="32767" attributes="2"/>
                       <Component id="jPanel1" alignment="0" max="32767" attributes="2"/>
                       <Group type="102" alignment="1" attributes="0">
-                          <Component id="jToolBar1" pref="505" max="32767" attributes="0"/>
+                          <Component id="jToolBar1" pref="557" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="prinitingComboBox1" min="-2" max="-2" attributes="0"/>
                       </Group>
@@ -93,9 +93,9 @@
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="button_order1" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <Component id="addresspanel" alignment="1" pref="671" max="32767" attributes="2"/>
+                      <Component id="addresspanel" alignment="1" pref="731" max="32767" attributes="2"/>
                       <Component id="jLabel8" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Component id="jPanel3" alignment="0" pref="671" max="32767" attributes="2"/>
+                      <Component id="jPanel3" alignment="0" pref="731" max="32767" attributes="2"/>
                       <Component id="jLabel7" alignment="0" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -174,7 +174,7 @@
                           <Component id="company" min="-2" pref="127" max="-2" attributes="1"/>
                           <Component id="manufacturer" alignment="0" min="-2" max="-2" attributes="1"/>
                       </Group>
-                      <EmptySpace pref="130" max="32767" attributes="0"/>
+                      <EmptySpace pref="132" max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="1" max="-2" attributes="0">
                           <Component id="groupnameselect" max="32767" attributes="1"/>
                           <Component id="dateadded" alignment="1" min="-2" pref="97" max="-2" attributes="0"/>
@@ -458,7 +458,7 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jScrollPane1" alignment="0" pref="667" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" alignment="0" pref="727" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
@@ -528,7 +528,7 @@
                           <Component id="mobilephone" pref="201" max="32767" attributes="1"/>
                           <Component id="website" pref="201" max="32767" attributes="1"/>
                       </Group>
-                      <EmptySpace pref="58" max="32767" attributes="0"/>
+                      <EmptySpace pref="116" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -661,7 +661,7 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jScrollPane2" alignment="1" pref="647" max="32767" attributes="0"/>
+                          <Component id="jScrollPane2" alignment="1" pref="703" max="32767" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="button_bills" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
@@ -698,7 +698,7 @@
                           <Component id="addfile" alignment="0" max="32767" attributes="1"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane2" pref="71" max="32767" attributes="2"/>
+                      <Component id="jScrollPane2" pref="77" max="32767" attributes="2"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -1012,7 +1012,7 @@
                                   </Group>
                               </Group>
                           </Group>
-                          <EmptySpace pref="61" max="32767" attributes="0"/>
+                          <EmptySpace pref="115" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>

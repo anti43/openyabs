@@ -319,8 +319,12 @@ public class QueryHandler implements Cloneable {
         }
 
         query += criterias.getOrder();
-
-        return freeSelectQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null);
+        ReturnValue data = freeSelectQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null);
+        if (!data.hasData()) {
+            throw new NodataFoundException(context);
+        } else {
+            return data;
+        }
     }
 
     /**

@@ -58,6 +58,21 @@ public class QueryCriteria {
     }
 
     /**
+     * Convenience constructor, calls add(string, value)
+     * @param string
+     * @param value
+     */
+    public QueryCriteria(String string, Object value) {
+        if (value instanceof Boolean) {
+            add(string, (Boolean) value);
+        } else if (value instanceof Number) {
+            add(string, (Number) value);
+        } else {
+            add(string, value.toString());
+        }
+    }
+
+    /**
      * Adds a key with a value
      * @param <T> 
      * @param key

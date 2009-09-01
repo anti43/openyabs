@@ -109,7 +109,7 @@ public class MPPLuginLoader {
                     }
                 }
             } catch (NodataFoundException ex) {
-                Log.Debug(ex);
+                Log.Debug(this, "No plugins found: " + ex.getMessage());
             }
 
             for (int i = 0; i < jars.size(); i++) {

@@ -99,6 +99,16 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         groupnameselect.setContext(Context.getGroup());
         companyselect.setSearchOnEnterEnabled(true);
         companyselect.setContext(Context.getContactsCompanies());
+
+        number.setSearchOnEnterEnabled(true);
+        number.setParent(this);
+        number.setSearchField("cnumber");
+        number.setContext(Context.getContact());
+
+        cname.setSearchOnEnterEnabled(true);
+        cname.setParent(this);
+        cname.setSearchField("cname");
+        cname.setContext(Context.getContact());
     }
 
     @Override

@@ -198,6 +198,11 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             public void mouseExited(MouseEvent e) {
             }
         });
+
+        number.setSearchOnEnterEnabled(true);
+        number.setParent(this);
+        number.setSearchField("cname");
+        number.setContext(Context.getItems());
     }
 
     /**
