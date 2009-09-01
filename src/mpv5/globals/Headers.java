@@ -18,7 +18,7 @@ public enum Headers {
     PRODUCT_DEFAULT(new String[]{"Internal ID", "Name", "Number", "Description"}),
     SUBITEMS(new String[]{"Internal ID", "", "Count", "Measure", "Description", "Netto Price", "Tax Rate", "Total Price", "Tax value", "Net 2", "Product ID"}),
     TEMPLATES(new String[]{ "Internal ID", "Name" ,"Date","Description", "Size", "Type"}),
-    SCHEDULE_LIST(new String[]{ "Item", "Interval" ,"End","Added by"});
+    SCHEDULE_LIST(new String[]{ "Item ID", "Interval (Months)" ,"End date","Added by"});
 
     private Headers(String[] header) {
         this.header = header;

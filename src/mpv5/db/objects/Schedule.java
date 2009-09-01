@@ -26,6 +26,7 @@ import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryHandler;
 import mpv5.db.objects.Item;
 import mpv5.logging.Log;
+import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.date.vTimeframe;
 
@@ -79,6 +80,31 @@ public class Schedule extends DatabaseObject {
      */
     public static ArrayList<Schedule> getEvents(vTimeframe date) {
         Object[][] data = QueryHandler.instanceOf().clone(Context.getSchedule()).select("ids", null, "nextdate", date);
+        ArrayList<Schedule> l = new ArrayList<Schedule>();
+        for (int i = 0; i < data.length; i++) {
+            Object[] objects = data[i];
+            try {
+                Schedule s = (Schedule) DatabaseObject.getObject(Context.getSchedule(), Integer.valueOf(objects[0].toString()));
+                l.add(s);
+            } catch (NodataFoundException ex) {
+                Log.Debug(ex);
+            }
+        }
+        return l;
+    }
+
+    /**
+     *
+     * @param date
+     * @return
+     */
+    public static ArrayList<Schedule> getEvents(Contact dataOwner) {
+        String query =
+                "SELECT ids FROM " + Context.getSchedule().getDbIdentity() +
+                " WHERE itemsids IN (SELECT ids FROM " +
+                Context.getItems().getDbIdentity() +
+                " WHERE contactsids = " + dataOwner.__getIDS() +")";
+        Object[][] data = QueryHandler.instanceOf().clone(Context.getSchedule()).freeSelectQuery(query, MPSecurityManager.VIEW, null).getData();
         ArrayList<Schedule> l = new ArrayList<Schedule>();
         for (int i = 0; i < data.length; i++) {
             Object[] objects = data[i];
@@ -174,7 +200,7 @@ public class Schedule extends DatabaseObject {
      */
     public Object[] toArray() {
         Object[] t = new Object[]{this, intervalmonth, DateConverter.getDefDateString(stopdate),
-        User.getUsername(usersids)};
+            User.getUsername(usersids)};
         return t;
     }
 

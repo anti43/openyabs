@@ -390,7 +390,27 @@ public class Item extends DatabaseObject implements Formattable {
 
     @Override
     public mpv5.utils.images.MPIcon getIcon() {
-        return new MPIcon("/mpv5/resources/images/22/kontact_mail.png");
+        if (__getInttype() == TYPE_BILL) {
+            if (__getIntstatus() == STATUS_QUEUED) {
+                return new MPIcon("/mpv5/resources/images/22/kontact_mail.png");
+            } else if (__getIntstatus() == STATUS_IN_PROGRESS) {
+                return new MPIcon("/mpv5/resources/images/22/run.png");
+            } else if (__getIntstatus() == STATUS_PAUSED) {
+                return new MPIcon("/mpv5/resources/images/22/kalarm.png");
+            } else if (__getIntstatus() == STATUS_FINISHED) {
+                return new MPIcon("/mpv5/resources/images/22/alarmd.png");
+            } else if (__getIntstatus() == STATUS_PAID) {
+                return new MPIcon("/mpv5/resources/images/22/ok.png");
+            } else if (__getIntstatus() == STATUS_CANCELLED) {
+                return new MPIcon("/mpv5/resources/images/22/file_temporary.png");
+            } else {
+                return new MPIcon("/mpv5/resources/images/22/kontact_mail.png");
+            }
+        } else if (__getInttype() == TYPE_OFFER) {
+            return new MPIcon("/mpv5/resources/images/22/forward.png");
+        } else {
+            return new MPIcon("/mpv5/resources/images/22/previous.png");
+        }
     }
 
     /**
@@ -446,7 +466,8 @@ public class Item extends DatabaseObject implements Formattable {
         super.resolveReferences(map);
 
         try {
-            if (map.containsKey("intstatus")) {map.remove("intstatus");
+            if (map.containsKey("intstatus")) {
+                map.remove("intstatus");
                 map.put("status", getStatusString(Integer.valueOf(map.get("intstatus").toString())));
                 map.remove("intstatus");
             }

@@ -39,14 +39,14 @@
                       <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
                       <Component id="rightpane" max="32767" attributes="0"/>
                   </Group>
-                  <Component id="toolbarpane" alignment="0" pref="753" max="32767" attributes="0"/>
+                  <Component id="toolbarpane" alignment="0" pref="756" max="32767" attributes="0"/>
               </Group>
           </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="leftpane" alignment="0" pref="638" max="32767" attributes="1"/>
+          <Component id="leftpane" alignment="0" pref="639" max="32767" attributes="1"/>
           <Group type="102" alignment="0" attributes="0">
               <Component id="toolbarpane" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
@@ -84,7 +84,7 @@
                       <Component id="jPanel4" alignment="0" min="0" max="32767" attributes="2"/>
                       <Component id="jPanel1" alignment="0" max="32767" attributes="2"/>
                       <Group type="102" alignment="1" attributes="0">
-                          <Component id="jToolBar1" pref="557" max="32767" attributes="0"/>
+                          <Component id="jToolBar1" pref="560" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="prinitingComboBox1" min="-2" max="-2" attributes="0"/>
                       </Group>
@@ -93,9 +93,9 @@
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="button_order1" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <Component id="addresspanel" alignment="1" pref="731" max="32767" attributes="2"/>
+                      <Component id="addresspanel" alignment="1" pref="734" max="32767" attributes="2"/>
                       <Component id="jLabel8" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Component id="jPanel3" alignment="0" pref="731" max="32767" attributes="2"/>
+                      <Component id="jPanel3" alignment="0" pref="734" max="32767" attributes="2"/>
                       <Component id="jLabel7" alignment="0" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -174,7 +174,7 @@
                           <Component id="company" min="-2" pref="127" max="-2" attributes="1"/>
                           <Component id="manufacturer" alignment="0" min="-2" max="-2" attributes="1"/>
                       </Group>
-                      <EmptySpace pref="132" max="32767" attributes="0"/>
+                      <EmptySpace pref="135" max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="1" max="-2" attributes="0">
                           <Component id="groupnameselect" max="32767" attributes="1"/>
                           <Component id="dateadded" alignment="1" min="-2" pref="97" max="-2" attributes="0"/>
@@ -458,7 +458,7 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jScrollPane1" alignment="0" pref="727" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" alignment="0" pref="730" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
@@ -528,7 +528,7 @@
                           <Component id="mobilephone" pref="201" max="32767" attributes="1"/>
                           <Component id="website" pref="201" max="32767" attributes="1"/>
                       </Group>
-                      <EmptySpace pref="116" max="32767" attributes="0"/>
+                      <EmptySpace pref="119" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -661,7 +661,7 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jScrollPane2" alignment="1" pref="703" max="32767" attributes="0"/>
+                          <Component id="jScrollPane2" alignment="1" pref="706" max="32767" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="button_bills" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
@@ -670,7 +670,7 @@
                               <Component id="button_products" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="button_orders" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace pref="264" max="32767" attributes="0"/>
+                              <EmptySpace pref="267" max="32767" attributes="0"/>
                               <Component id="jButton1" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="addfile" min="-2" pref="24" max="-2" attributes="0"/>
@@ -920,6 +920,20 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton2ActionPerformed"/>
               </Events>
             </Component>
+            <Component class="javax.swing.JButton" name="jButton3">
+              <Properties>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.jButton3.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
+                <Property name="focusable" type="boolean" value="false"/>
+                <Property name="horizontalTextPosition" type="int" value="0"/>
+                <Property name="name" type="java.lang.String" value="jButton3" noResource="true"/>
+                <Property name="verticalTextPosition" type="int" value="3"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton3ActionPerformed"/>
+              </Events>
+            </Component>
           </SubComponents>
         </Container>
         <Component class="mpv5.ui.beans.PrinitingComboBox" name="prinitingComboBox1">
@@ -1012,7 +1026,7 @@
                                   </Group>
                               </Group>
                           </Group>
-                          <EmptySpace pref="115" max="32767" attributes="0"/>
+                          <EmptySpace pref="118" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
