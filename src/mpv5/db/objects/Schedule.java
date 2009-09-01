@@ -19,8 +19,6 @@ package mpv5.db.objects;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -28,7 +26,6 @@ import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryHandler;
 import mpv5.db.objects.Item;
 import mpv5.logging.Log;
-import mpv5.ui.frames.MPView;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.date.vTimeframe;
 

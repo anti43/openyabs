@@ -51,7 +51,7 @@ public class ScheduleDayEvent extends javax.swing.JFrame {
         text = jLabel3.getText();
         refresh(new Date());
         labeledCombobox1.setSearchOnEnterEnabled(true);
-        labeledCombobox1.setContext(Context.getItems());
+        labeledCombobox1.setContext(Context.getBill());
         setAlwaysOnTop(true);
         new Position(this);
     }
@@ -335,7 +335,7 @@ public class ScheduleDayEvent extends javax.swing.JFrame {
         if (s != null) {
             try {
                 Item i = (Item) DatabaseObject.getObject(Context.getItems(), Integer.valueOf(labeledCombobox1.getSelectedItem().getId()));
-                s.setCName(i.toString());
+                s.setCName("(" + Messages.SCHEDULE + ") " + i.toString());
                 s.setItemsids(i.__getIDS());
                 s.setGroupsids(i.__getGroupsids());
                 s.setIntervalmonth(Integer.valueOf(labeledSpinner1.getSpinner().getValue().toString()));
