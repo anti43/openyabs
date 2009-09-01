@@ -70,6 +70,7 @@ import mpv5.db.objects.User;
 import mpv5.handler.FormFieldsHandler;
 import mpv5.ui.beans.MPCBSelectionChangeReceiver;
 import mpv5.ui.dialogs.DialogForFile;
+import mpv5.ui.dialogs.ScheduleDayEvent;
 import mpv5.ui.panels.calendar.JCalendar;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.arrays.ArrayUtilities;
@@ -895,15 +896,15 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     }//GEN-LAST:event_button_previewActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-
-
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
 
-        JCalendar.instanceOf(300, evt.getLocationOnScreen());
+//        JCalendar.instanceOf(300, evt.getLocationOnScreen());
+        if (dataOwner != null && dataOwner.isExisting()) {
+            ScheduleDayEvent.instanceOf().setItem(dataOwner);
+        }
     }//GEN-LAST:event_jButton1MouseClicked
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private mpv5.ui.beans.LabeledCombobox accountselect;
     private javax.swing.JLabel addedby;

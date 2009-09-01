@@ -10,7 +10,6 @@
  */
 package mpv5.ui.dialogs;
 
-
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -260,7 +259,7 @@ public class ScheduleDayEvent extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
-        if (evt.getClickCount() > 1) {
+     
             Schedule d = (Schedule) jTable1.getValueAt(jTable1.getSelectedRow(), 0);
             if (d != null) {
                 try {
@@ -274,20 +273,23 @@ public class ScheduleDayEvent extends javax.swing.JFrame {
                 labeledSpinner1.setValue(d.__getIntervalmonth());
                 dataOwner = d;
             }
-        }
+        
     }//GEN-LAST:event_jTable1MouseClicked
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         save(new Schedule());
+        refresh(new Date());
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         save(dataOwner);
+        refresh(new Date());
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         if (dataOwner != null && dataOwner.isExisting()) {
             dataOwner.delete();
+            refresh(new Date());
         }
     }//GEN-LAST:event_jButton3ActionPerformed
 
@@ -345,7 +347,7 @@ public class ScheduleDayEvent extends javax.swing.JFrame {
                 s.setNextdate(labeledDateChooser1.getDate());
                 s.save();
                 dataOwner = s;
-                Popup.notice(Messages.SCHEDULE_NEXT + 
+                Popup.notice(Messages.SCHEDULE_NEXT +
                         DateConverter.getDefDateString(DateConverter.addMonths(labeledDateChooser1.getDate(),
                         s.__getIntervalmonth())));
                 JDayChooser.instanceOf().reload();
@@ -353,5 +355,15 @@ public class ScheduleDayEvent extends javax.swing.JFrame {
                 Log.Debug(this, ex.getMessage());
             }
         }
+    }
+
+    /**
+     *
+     * @param dataOwner
+     */
+    public void setItem(Item dataOwner) {
+        labeledCombobox1.setModel(dataOwner);
+        refresh(new Date());
+        setVisible(true);
     }
 }
