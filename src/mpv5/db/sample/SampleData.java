@@ -92,7 +92,10 @@ public class SampleData {
                     c.settaxnumber("123-" + seed);
                     c.setGroupsids(group);
                     c.setIntaddedby(MPView.getUser().__getIDS());
-                    c.save();
+                    try {
+                        c.save();
+                    } catch (Exception e) {
+                    }
 
                     if (withItems) {
                         for (int k = 0; k < i; k++) {
@@ -135,12 +138,18 @@ public class SampleData {
                             it.setTaxvalue(FormatNumber.round((value * 1.19) - value));
                             it.setNetvalue(FormatNumber.round(value));
                             it.setIntaddedby(MPView.getUser().__getIDS());
-                            it.save();
+                            try {
+                                it.save();
+                            } catch (Exception e) {
+                            }
 
                             for (int j = 0; j < l.size(); j++) {
                                 SubItem subItem = l.get(j);
                                 subItem.setItemsids(it.__getIDS());
-                                subItem.save();
+                                try {
+                                    subItem.save();
+                                } catch (Exception e) {
+                                }
                             }
 
                         }
@@ -169,7 +178,10 @@ public class SampleData {
                             it.setSuppliersids(c.__getIDS());
                             it.setUrl("www.test.com");
                             it.setIntaddedby(MPView.getUser().__getIDS());
-                            it.save();
+                            try {
+                                it.save();
+                            } catch (Exception e) {
+                            }
 
                             value = new Random().nextInt(100 * factor) + 1l;
                             date = new RandomDate(new vTimeframe(DateConverter.getDate("01.01.2007"), new Date()));
@@ -191,7 +203,10 @@ public class SampleData {
                             it1.setSuppliersids(c.__getIDS());
                             it1.setUrl("www.test.com");
                             it1.setIntaddedby(MPView.getUser().__getIDS());
-                            it1.save();
+                            try {
+                                it1.save();
+                            } catch (Exception e) {
+                            }
                         }
                     }
                 }
