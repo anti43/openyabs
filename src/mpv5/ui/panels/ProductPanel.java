@@ -28,6 +28,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.net.MalformedURLException;
 import java.text.NumberFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -1197,6 +1198,16 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                 Export ex = new Export();
                 ex.putAll(hm1);
 
+                for (int i = 0; i < dataTable.getRowCount(); i++) {
+                    try {
+                        String fname = dataTable.getModel().getValueAt(i, 0).toString();
+                        File f = QueryHandler.instanceOf().clone(Context.getFiles()).retrieveFile(fname, new File(FileDirectoryHandler.getTempDir() + dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 1).toString()));
+                        ex.put("image" + i, new MPIcon(f.toURI().toURL()));
+                    } catch (Exception mal) {
+                        Log.Debug(this, mal.getMessage());
+                    }
+                }
+
                 ex.setTemplate(preloadedExportFile);
                 ex.setTargetFile(f2);
 
@@ -1224,12 +1235,11 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                         Log.Debug(e);
                     }
                 } else {
-                     button_preview.setText(Messages.OO_NOT_CONFIGURED.getValue());
+                    button_preview.setText(Messages.OO_NOT_CONFIGURED.getValue());
                     button_preview.setEnabled(false);
                 }
             }
         };
         new Thread(runnable).start();
     }
-
 }

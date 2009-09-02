@@ -32,6 +32,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -1185,12 +1186,12 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
     private void preview() {
         PreviewPanel pr;
+        String[] arr;
         if (preloadedTemplate != null && preload) {
             if (dataOwner != null && dataOwner.isExisting()) {
                 if (itemtable.getCellEditor() != null) {
                     itemtable.getCellEditor().stopCellEditing();
                 }
-
 
                 HashMap<String, String> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
                 File f2 = FileDirectoryHandler.getTempFile("pdf");
@@ -1207,6 +1208,13 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 pr.setDataOwner(dataOwner);
                 new Job(ex, pr).execute();
                 saveSubItems();
+
+                arr=ex.keySet().toArray(new String[]{});
+                Arrays.sort(arr);
+                for (int i = 0; i < arr.length; i++) {
+                    String string = arr[i];
+                    System.err.println(string);
+                }
 
             }
         } else {

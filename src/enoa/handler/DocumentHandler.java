@@ -330,4 +330,12 @@ public class DocumentHandler {
         placeholders = null;
         tablehandler = null;
     }
+
+    /**
+     * Set the images
+     * @param data
+     */
+    public void setImages(HashMap<String, Object> data) {
+        throw new UnsupportedOperationException("Set images in ODT files::Not yet implemented");
+    }
 }

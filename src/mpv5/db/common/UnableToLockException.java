@@ -24,6 +24,12 @@ import mpv5.db.objects.User;
 public class UnableToLockException extends Exception {
     private static final long serialVersionUID = 1L;
 
+    /**
+     * 
+     * @param context
+     * @param id
+     * @param user
+     */
     public UnableToLockException(Context context, int id, User user) {
         super("Unable to lock item: " + context.getDbIdentity() + " with ID " + id + " for user: " + user);
     }
