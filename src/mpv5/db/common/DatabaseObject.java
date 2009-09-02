@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 import mpv5.globals.Messages;
 import mpv5.db.objects.HistoryItem;
@@ -225,16 +227,20 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
 
     @Override
     public DatabaseObject clone() {
-        try {
-            Object obj = context.getIdentityClass().newInstance();
-            return (DatabaseObject) obj;
-        } catch (InstantiationException ex) {
-            mpv5.logging.Log.Debug(ex);//Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            mpv5.logging.Log.Debug(ex);//Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+        DatabaseObject obj = getObject(context);
+        obj.avoidNulls();
+        ArrayList<Object[]> vals = this.getValues2();
+        for (int i = 0; i < vals.size(); i++) {
+            Object[] valuespairs = vals.get(i);
+            try {
+                if (valuespairs[1] != null) {
+                    obj.parse(valuespairs[0].toString(), valuespairs[1]);
+                }
+            } catch (Exception ex) {
+                Log.Debug(ex);
+            }
         }
-
-        return null;
+        return obj;
     }
 
     /**
@@ -534,6 +540,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                         t.add(left, DateConverter.getSQLDateString((Date) tempval));
                     } else if (tempval.getClass().isInstance(new RandomDate(null))) {
                         t.add(left, DateConverter.getSQLDateString((Date) tempval));
+                    } else if (tempval.getClass().isInstance(new java.sql.Date(0))) {
+                        t.add(left, DateConverter.getSQLDateString((Date) tempval));
                     } else if (tempval.getClass().isInstance(0)) {
                         t.add(left, (Integer) tempval);
                     } else if (tempval.getClass().isInstance(0f)) {
@@ -541,13 +549,10 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                     } else if (tempval.getClass().isInstance(0d)) {
                         t.add(left, (Double) tempval);
                     }
-                } catch (IllegalAccessException ex) {
+                } catch (Exception ex) {
+                    mpv5.logging.Log.Debug(this, this.getClass().getMethods()[i].getName());
                     mpv5.logging.Log.Debug(ex);//Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (IllegalArgumentException ex) {
-                    mpv5.logging.Log.Debug(ex);//Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (InvocationTargetException ex) {
-                    mpv5.logging.Log.Debug(ex);//Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                } 
             }
 //            else if (this.getClass().getMethods()[i].getName().startsWith("is")) {
 //                try {
@@ -1125,14 +1130,12 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                     } else if (name.toUpperCase().startsWith("INT") || name.endsWith("uid") || name.endsWith("ids") || name.equals("ids")) {
                         vars.get(k).invoke(this, new Object[]{Integer.valueOf(String.valueOf(data[row][1]))});
                     } else if (name.toUpperCase().startsWith("DATE") || name.toUpperCase().endsWith("DATE")) {
-                        vars.get(k).invoke(this, new Object[]{DateConverter.getDate(String.valueOf(data[row][1]))});
+                        vars.get(k).invoke(this, new Object[]{DateConverter.getDate(data[row][1])});
                     } else if (name.toUpperCase().startsWith("VALUE") || name.toUpperCase().endsWith("VALUE")) {
                         vars.get(k).invoke(this, new Object[]{Double.valueOf(String.valueOf(data[row][1]))});
                     } else {
                         vars.get(k).invoke(this, new Object[]{String.valueOf(data[row][1])});
                     }
-
-
                 }
             }
         }
@@ -1395,8 +1398,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
     public void parse(String key, Object value) throws Exception {
         Hashtable<String, Object> map = new Hashtable<String, Object>();
         map.put(key, value);
+        Log.Debug(this, "Set: " + key + " to: " + value + " [" + value.getClass().getName() + "]");
         parse(map);
-        Log.Debug(this, "Set: " + key + " to: " + value);
     }
 
     /**

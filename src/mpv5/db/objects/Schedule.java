@@ -101,20 +101,49 @@ public class Schedule extends DatabaseObject {
      * @return
      */
     public static ArrayList<Schedule> getEvents(Contact dataOwner) {
-        String query =
-                "SELECT ids FROM " + Context.getSchedule().getDbIdentity() +
-                " WHERE itemsids IN (SELECT ids FROM " +
-                Context.getItems().getDbIdentity() +
-                " WHERE contactsids = " + dataOwner.__getIDS() + ")";
-        Object[][] data = QueryHandler.instanceOf().clone(Context.getSchedule()).freeSelectQuery(query, MPSecurityManager.VIEW, null).getData();
         ArrayList<Schedule> l = new ArrayList<Schedule>();
-        for (int i = 0; i < data.length; i++) {
-            Object[] objects = data[i];
-            try {
-                Schedule s = (Schedule) DatabaseObject.getObject(Context.getSchedule(), Integer.valueOf(objects[0].toString()));
-                l.add(s);
-            } catch (NodataFoundException ex) {
-                Log.Debug(ex);
+        if (dataOwner != null) {
+            String query =
+                    "SELECT ids FROM " + Context.getSchedule().getDbIdentity() +
+                    " WHERE itemsids IN (SELECT ids FROM " +
+                    Context.getItems().getDbIdentity() +
+                    " WHERE contactsids = " + dataOwner.__getIDS() + ")";
+            Object[][] data = QueryHandler.instanceOf().clone(Context.getSchedule()).freeSelectQuery(query, MPSecurityManager.VIEW, null).getData();
+
+            for (int i = 0; i < data.length; i++) {
+                Object[] objects = data[i];
+                try {
+                    Schedule s = (Schedule) DatabaseObject.getObject(Context.getSchedule(), Integer.valueOf(objects[0].toString()));
+                    l.add(s);
+                } catch (NodataFoundException ex) {
+                    Log.Debug(ex);
+                }
+            }
+        }
+        return l;
+    }
+
+    /**
+     *
+     * @param dataOwner 
+     * @return
+     */
+    public static ArrayList<Schedule> getEvents(Item dataOwner) {
+        ArrayList<Schedule> l = new ArrayList<Schedule>();
+        if (dataOwner != null) {
+            String query =
+                    "SELECT ids FROM " + Context.getSchedule().getDbIdentity() +
+                    " WHERE itemsids  = " + dataOwner.__getIDS();
+            Object[][] data = QueryHandler.instanceOf().clone(Context.getSchedule()).freeSelectQuery(query, MPSecurityManager.VIEW, null).getData();
+
+            for (int i = 0; i < data.length; i++) {
+                Object[] objects = data[i];
+                try {
+                    Schedule s = (Schedule) DatabaseObject.getObject(Context.getSchedule(), Integer.valueOf(objects[0].toString()));
+                    l.add(s);
+                } catch (NodataFoundException ex) {
+                    Log.Debug(ex);
+                }
             }
         }
         return l;

@@ -35,31 +35,46 @@ public class Scheduler extends Thread {
 
     @SuppressWarnings("static-access")
     private void checkForEvents() {
-        ArrayList<Schedule> data = Schedule.getEvents(new vTimeframe(new Date(0), new Date()));
+        ArrayList<Schedule> data = Schedule.getEvents(new vTimeframe(DateConverter.addYears(new Date(), -2), new Date()));
         List<Item> list = new Vector<Item>();
         for (int i = 0; i < data.size(); i++) {
             Schedule schedule = data.get(i);
-            try {
-                Item item = schedule.getItem();
-                item.setIDS(-1);
-                item.setDateadded(new Date());
-                item.setDatetodo(new Date());
-                item.setDateend(new Date());
-                item.setIntreminders(0);
-                item.setIntstatus(item.STATUS_IN_PROGRESS);
-                item.setDescription(item.__getDescription() + "\n" + Messages.SCHEDULE_GENERATED);
-                item.save();
-                schedule.setNextdate(DateConverter.addMonths(schedule.__getNextdate(), schedule.__getIntervalmonth()));
-                if (schedule.__getNextdate().before(schedule.__getStopdate())) {
-                    schedule.save(true);
-                } else {
-                    schedule.setIsdone(true);
-                    schedule.save(true);
-                    MPView.addMessage(Messages.SCHEDULE_ITEM_REMOVED + " " + schedule);
+            if (!schedule.__getIsdone()) {
+                try {
+                    Item item = schedule.getItem();
+                    item.setIDS(-1);
+                    item.setDateadded(new Date());
+                    item.setDatetodo(new Date());
+                    item.setDateend(new Date());
+                    item.setIntreminders(0);
+                    item.setIntstatus(item.STATUS_IN_PROGRESS);
+                    item.setDescription(item.__getDescription() +
+                            "\n" +
+                            Messages.SCHEDULE_GENERATED +
+                            "\n" +
+                            item.__getCName());
+                    item.save();
+
+                    Date olddate = schedule.__getNextdate();
+                    schedule.setNextdate(DateConverter.addMonths(schedule.__getNextdate(), schedule.__getIntervalmonth()));
+                    if (schedule.__getNextdate().before(schedule.__getStopdate())) {
+                        Schedule s2 = (Schedule) schedule.clone();
+                        s2.setIsdone(false);
+                        s2.setIDS(-1);
+                        s2.save(true);
+                        schedule.setNextdate(olddate);
+                        schedule.setIsdone(true);
+                        schedule.save(true);
+                    } else {
+                        schedule.setNextdate(olddate);
+                        schedule.setIsdone(true);
+                        schedule.save(true);
+                        MPView.addMessage(Messages.SCHEDULE_ITEM_REMOVED + " " + schedule);
+                    }
+                    list.add(item);
+                } catch (NodataFoundException ex) {
+                    Log.Debug(ex);
                 }
-                list.add(item);
-            } catch (NodataFoundException ex) {
-                Log.Debug(ex);
             }
         }
 

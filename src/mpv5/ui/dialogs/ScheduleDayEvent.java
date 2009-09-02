@@ -13,6 +13,8 @@ package mpv5.ui.dialogs;
 import java.util.ArrayList;
 import java.util.Date;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
@@ -49,7 +51,7 @@ public class ScheduleDayEvent extends javax.swing.JFrame {
     private ScheduleDayEvent() {
         initComponents();
         text = jLabel3.getText();
-        refresh(new Date());
+        refresh(null);
         labeledCombobox1.setSearchOnEnterEnabled(true);
         labeledCombobox1.setContext(Context.getBill());
         setAlwaysOnTop(true);
@@ -62,9 +64,8 @@ public class ScheduleDayEvent extends javax.swing.JFrame {
     }
 
     public void setDate(Date tday) {
-        labeledDateChooser1.setDate(tday);
+        labeledDateChooser1.setDate(DateConverter.addDays(tday, 0));
         labeledDateChooser2.setDate(DateConverter.addYear(tday));
-        refresh(tday);
     }
 
     /** This method is called from within the constructor to
@@ -245,7 +246,7 @@ public class ScheduleDayEvent extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -260,37 +261,49 @@ public class ScheduleDayEvent extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
-     
-            Schedule d = (Schedule) jTable1.getValueAt(jTable1.getSelectedRow(), 0);
-            if (d != null) {
-                try {
-                    labeledCombobox1.setModel(d.getItem());
-                } catch (NodataFoundException ex) {
-                    Log.Debug(ex);
-                }
 
-                labeledDateChooser1.setDate(d.__getStartdate());
-                labeledDateChooser2.setDate(d.__getStopdate());
-                labeledSpinner1.setValue(d.__getIntervalmonth());
-                dataOwner = d;
+        Schedule d = (Schedule) jTable1.getValueAt(jTable1.getSelectedRow(), 0);
+        if (d != null) {
+            try {
+                labeledCombobox1.setModel(d.getItem());
+            } catch (NodataFoundException ex) {
+                Log.Debug(ex);
             }
-        
+
+            labeledDateChooser1.setDate(d.__getStartdate());
+            labeledDateChooser2.setDate(d.__getStopdate());
+            labeledSpinner1.setValue(d.__getIntervalmonth());
+            dataOwner = d;
+        }
+
     }//GEN-LAST:event_jTable1MouseClicked
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         save(new Schedule());
-        refresh(new Date());
+        try {
+            refresh(dataOwner.getItem());
+        } catch (NodataFoundException ex) {
+            Log.Debug(ex);
+        }
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         save(dataOwner);
-        refresh(new Date());
+        try {
+            refresh(dataOwner.getItem());
+        } catch (NodataFoundException ex) {
+            Log.Debug(ex);
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         if (dataOwner != null && dataOwner.isExisting()) {
             dataOwner.delete();
-            refresh(new Date());
+            try {
+            refresh(dataOwner.getItem());
+        } catch (NodataFoundException ex) {
+            Log.Debug(ex);
+        }
         }
     }//GEN-LAST:event_jButton3ActionPerformed
 
@@ -322,10 +335,12 @@ public class ScheduleDayEvent extends javax.swing.JFrame {
     private mpv5.ui.beans.LabeledSpinner labeledSpinner1;
     // End of variables declaration//GEN-END:variables
 
-    private void refresh(Date da) {
+    private void refresh(Item dao) {
         labeledSpinner1.setValue(1);
-        jLabel3.setText(text + " " + DateConverter.getDefDateString(da));
-        ArrayList<Schedule> data = Schedule.getEvents(da);
+        if (dao!=null) {
+            jLabel3.setText(text + " " + dao);
+        }
+        ArrayList<Schedule> data = Schedule.getEvents(dao);
         Object[][] d = new Object[data.size()][];
         for (int i = 0; i < data.size(); i++) {
             Schedule schedule = data.get(i);
@@ -338,7 +353,8 @@ public class ScheduleDayEvent extends javax.swing.JFrame {
     private void save(Schedule s) {
         if (s != null) {
             try {
-                Item i = (Item) DatabaseObject.getObject(Context.getItems(), Integer.valueOf(labeledCombobox1.getSelectedItem().getId()));
+                Item i = (Item) DatabaseObject.getObject(Context.getItems(),
+                        Integer.valueOf(labeledCombobox1.getSelectedItem().getId()));
                 s.setCName("(" + Messages.SCHEDULE + ") " + i.toString());
                 s.setItemsids(i.__getIDS());
                 s.setGroupsids(i.__getGroupsids());
@@ -346,7 +362,8 @@ public class ScheduleDayEvent extends javax.swing.JFrame {
                 s.setStartdate(labeledDateChooser1.getDate());
                 s.setStopdate(labeledDateChooser2.getDate());
                 s.setUsersids(MPView.getUser().__getIDS());
-                s.setNextdate(labeledDateChooser1.getDate());
+                s.setNextdate(DateConverter.addMonths(labeledDateChooser1.getDate(),
+                        s.__getIntervalmonth()));
                 s.save();
                 dataOwner = s;
                 Popup.notice(Messages.SCHEDULE_NEXT +
@@ -366,6 +383,7 @@ public class ScheduleDayEvent extends javax.swing.JFrame {
     public void setItem(Item dataOwner) {
         labeledCombobox1.setModel(dataOwner);
         setDate(new Date());
+        refresh(dataOwner);
         setVisible(true);
     }
 }

@@ -24,7 +24,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+import java.util.Vector;
 import mpv5.logging.Log;
 
 /**
@@ -54,7 +56,6 @@ public class DateConverter {
      * "yyyy-MM-dd HH:mm:ss"
      */
     public static final DateFormat DB_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-   
     /**
      * DE format
      */
@@ -86,7 +87,7 @@ public class DateConverter {
      * @param amount
      * @return
      */
-    public static Date addDays(Date date, Integer amount) {
+    public static synchronized Date addDays(Date date, Integer amount) {
         cl.setTime(date);
         cl.add(Calendar.DATE, amount);
 
@@ -99,7 +100,7 @@ public class DateConverter {
      * @param amount
      * @return
      */
-    public static Date addYears(Date date, int amount) {
+    public static synchronized Date addYears(Date date, int amount) {
         cl.setTime(date);
         cl.add(Calendar.YEAR, amount);
 
@@ -112,7 +113,7 @@ public class DateConverter {
      * @param date2
      * @return
      */
-    public static Integer getDifferenceBetween(Date date1, Date date2) {
+    public static synchronized Integer getDifferenceBetween(Date date1, Date date2) {
 
         if (date1.after(date2)) {
             Date swap = date1;
@@ -145,7 +146,7 @@ public class DateConverter {
      * @param date
      * @return
      */
-    public static Date getEndOfDay(Date date) {
+    public static synchronized Date getEndOfDay(Date date) {
         Calendar calendar = cl;
         synchronized (calendar) {
             calendar.setTime(date);
@@ -161,7 +162,7 @@ public class DateConverter {
      * Quarter as 1,2,3,4
      * @return
      */
-    public static int getQuarter() {
+    public static synchronized int getQuarter() {
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
         int month = cal.get(Calendar.MONTH); /* 0 through 11 */
@@ -174,7 +175,7 @@ public class DateConverter {
      * @param date 
      * @return Quarter as 1, 2, 3, 4
      */
-    public static int getQuarter(Date date) {
+    public static synchronized int getQuarter(Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         int month = cal.get(Calendar.MONTH); /* 0 through 11 */
@@ -186,7 +187,7 @@ public class DateConverter {
      *
      * @return
      */
-    public static String getTodayDefDate() {
+    public static synchronized String getTodayDefDate() {
         return DE_DATE_FORMAT.format(new Date());
     }
 
@@ -194,7 +195,7 @@ public class DateConverter {
      *
      * @return
      */
-    public static String getTodayDBDate() {
+    public static synchronized String getTodayDBDate() {
         return DB_DATE_FORMAT.format(new Date());
     }
 
@@ -203,7 +204,7 @@ public class DateConverter {
      * @param date
      * @return
      */
-    public static Date addYear(Date date) {
+    public static synchronized Date addYear(Date date) {
         return addYears(date, 1);
     }
 
@@ -212,17 +213,17 @@ public class DateConverter {
      * @param date
      * @return The next month
      */
-    public static Date addMonth(Date date) {
-       return addMonths(date, 1);
+    public static synchronized Date addMonth(Date date) {
+        return addMonths(date, 1);
     }
 
-     /**
+    /**
      *
      * @param date
-      * @param amount
-      * @return The next month
+     * @param amount
+     * @return The next month
      */
-    public static Date addMonths(Date date, int amount) {
+    public static synchronized Date addMonths(Date date, int amount) {
         Calendar cal = DateConverter.cl;
 
         synchronized (cal) {
@@ -238,7 +239,7 @@ public class DateConverter {
      * @param date
      * @return End of the quarter
      */
-    public static Date addQuarter(Date date) {
+    public static synchronized Date addQuarter(Date date) {
         Calendar cal = DateConverter.cl;
 
         synchronized (cal) {
@@ -254,17 +255,16 @@ public class DateConverter {
      * @param date
      * @return The next day
      */
-    public static Date addDay(Date date) {
+    public static synchronized Date addDay(Date date) {
         return addDays(date, 1);
     }
-
 
     /**
      *
      * @param date
      * @return SQL conform date String
      */
-    public static String getSQLDateString(Date date) {
+    public static synchronized String getSQLDateString(Date date) {
         return DB_DATE_FORMAT.format(date);
     }
 
@@ -273,7 +273,7 @@ public class DateConverter {
      * @param date
      * @return Default date
      */
-    public static String getDefDateString(Date date) {
+    public static synchronized String getDefDateString(Date date) {
         return DEF_DATE_FORMAT.format(date);
     }
 
@@ -282,7 +282,7 @@ public class DateConverter {
      * @param datum
      * @return
      */
-    public static String getDay(Date datum) {
+    public static synchronized String getDay(Date datum) {
         return DE_DATE_FORMAT.format(datum);
     }
 
@@ -291,7 +291,7 @@ public class DateConverter {
      * @param date
      * @return
      */
-    public static String getMonth(Date date) {
+    public static synchronized String getMonth(Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         return String.valueOf(cal.get(Calendar.MONTH) + 1);
@@ -302,7 +302,7 @@ public class DateConverter {
      * @param date
      * @return
      */
-    public static String getMonthName(Date date) {
+    public static synchronized String getMonthName(Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         return months[cal.get(Calendar.MONTH)];
@@ -313,7 +313,7 @@ public class DateConverter {
      * @param date
      * @return
      */
-    public static String getDayOfMonth(Date date) {
+    public static synchronized String getDayOfMonth(Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         return String.valueOf(cal.get(Calendar.DAY_OF_MONTH));
@@ -330,30 +330,45 @@ public class DateConverter {
      * @param date
      * @return Parsed date
      */
-    public static Date getDate(String date) {
+    public static synchronized Date getDate(String date) {
         Date DATE = null;
-        for (int i = 0; i < DATE_FORMATS.toArray().length; i++) {
+        for (DateFormat d : DATE_FORMATS) {
             try {
-                DATE = ((DateFormat) DATE_FORMATS.toArray()[i]).parse(date);
+                DATE = d.parse(date);
                 return DATE;
             } catch (ParseException ex) {
             }
         }
+        if (additionalFormats.isEmpty()) {
+            buildFormats();
+        }
+
+        if (DATE == null) {
+            for (DateFormat d : additionalFormats) {
+                try {
+                    DATE = d.parse(date);
+                    return DATE;
+                } catch (ParseException ex) {
+                }
+            }
+        }
+
         if (DATE == null) {
             Log.Debug(DateConverter.class, "String not parseable to a date: " + date);
         }
         return DATE;
     }
+    static final List<DateFormat> additionalFormats = new Vector<DateFormat>();
 
     /**
      * Try to parse the given object to a date
      * @param object
      * @return
      */
-    public static Date getDate(Object object) {
+    public static synchronized Date getDate(Object object) {
         if (object instanceof Date) {
             return (Date) object;
-        }else if (object instanceof java.sql.Date) {
+        } else if (object instanceof java.sql.Date) {
             return new Date(((java.sql.Date) object).getTime());
         } else {
             return getDate(object.toString());
@@ -364,7 +379,7 @@ public class DateConverter {
      *
      * @return
      */
-    public static String getYear() {
+    public static synchronized String getYear() {
         return String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
     }
 
@@ -372,7 +387,7 @@ public class DateConverter {
      *
      * @return
      */
-    public static String getDayOfMonth() {
+    public static synchronized String getDayOfMonth() {
         return String.valueOf(Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
     }
 
@@ -380,7 +395,7 @@ public class DateConverter {
      *
      * @return
      */
-    public static String getDayMonthAndYear() {
+    public static synchronized String getDayMonthAndYear() {
         return DateConverter.getDefDateString(new Date());
     }
 
@@ -388,7 +403,7 @@ public class DateConverter {
      *
      * @return
      */
-    public static String getMonth() {
+    public static synchronized String getMonth() {
         return String.valueOf(Calendar.getInstance().get(Calendar.MONTH) + 1);
     }
 
@@ -396,7 +411,7 @@ public class DateConverter {
      *
      * @return
      */
-    public static String getMonthName() {
+    public static synchronized String getMonthName() {
         Calendar cal = Calendar.getInstance();
         return months[cal.get(Calendar.MONTH)];
     }
@@ -405,7 +420,7 @@ public class DateConverter {
      *
      * @param df
      */
-    public static void setDefaultFormat(DateFormat df) {
+    public static synchronized void setDefaultFormat(DateFormat df) {
         DEF_DATE_FORMAT = df;
     }
 
@@ -413,11 +428,40 @@ public class DateConverter {
      * 
      * @return
      */
-    public static String getDefaultFormatString() {
-        if (DEF_DATE_FORMAT instanceof  SimpleDateFormat) {
-            return ((SimpleDateFormat)DEF_DATE_FORMAT).toPattern();
+    public static synchronized String getDefaultFormatString() {
+        if (DEF_DATE_FORMAT instanceof SimpleDateFormat) {
+            return ((SimpleDateFormat) DEF_DATE_FORMAT).toPattern();
         } else {
             return "dd.MM.yyyy";
+        }
+    }
+
+    private static synchronized void buildFormats() {
+        Locale[] locales = DateFormat.getAvailableLocales();
+        for (int i = 0; i < locales.length; i++) {
+            Locale locale = locales[i];
+            additionalFormats.addAll(Arrays.asList(new DateFormat[]{
+                        DateFormat.getDateInstance(DateFormat.SHORT, locale),
+                        DateFormat.getDateInstance(DateFormat.MEDIUM, locale),
+                        DateFormat.getDateInstance(DateFormat.LONG, locale),
+                        DateFormat.getDateInstance(DateFormat.FULL, locale),
+                        DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM, locale),
+                        DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, locale),
+                        DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.MEDIUM, locale),
+                        DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.MEDIUM, locale),
+                        DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, locale),
+                        DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale),
+                        DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT, locale),
+                        DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.SHORT, locale),
+                        DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.FULL, locale),
+                        DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.FULL, locale),
+                        DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.FULL, locale),
+                        DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL, locale),
+                        DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.FULL, locale),
+                        DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.FULL, locale),
+                        DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.FULL, locale),
+                        DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL, locale)
+                    }));
         }
     }
 }

@@ -409,7 +409,7 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener, 
                     Schedule schedule = events.get(j);
 //                  Log.Debug(this, "Checking date: " + schedule.getDate() + " against " + day);
                     if (schedule.getDate().contains(day)) {
-                        Log.Debug(this, "Found date: " + schedule.getDate());
+//                        Log.Debug(this, "Found date: " + schedule.getDate());
                         days[i + n + 7].setIcon(schedule.getIcon());
                         try {
                             days[i + n + 7].setToolTipText(Messages.ACTION_OPEN + " " + schedule.getItem().__getCName());
