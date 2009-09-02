@@ -82,7 +82,7 @@ public interface Constants {
     public static String XML_ROOT = "mpv5";
     public static String XML_DOCTYPE_ID = "-//http://code.google.com/p/mp-rechnungs-und-kundenverwaltung//DTD mpv5 V 1.0//EN";
     public static String XML_DOCTYPE_URL = "http://yabs.copy-left.de/files/yabs_import_1.0.dtd";
-    public static String SPLASH_IMAGE = "/mpv5/resources/images/background.png";
+    public static String SPLASH_IMAGE = "/mpv5/resources/images/background_a.png";
     public static String WEBSITE = "http://openyabs.org";
     
 }

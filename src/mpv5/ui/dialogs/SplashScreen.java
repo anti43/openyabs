@@ -12,9 +12,6 @@ package mpv5.ui.dialogs;
 
 import java.awt.Graphics;
 import java.awt.Image;
-import java.lang.reflect.InvocationTargetException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.GrayFilter;
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
@@ -38,6 +35,7 @@ public class SplashScreen extends javax.swing.JFrame {
      */
     public SplashScreen(ImageIcon imageIcon) {
         initComponents();
+        jPanel1.setOpaque(false);
         setInfo(Constants.VERSION);
         title.setText(Constants.TITLE);
         jProgressBar1.setStringPainted(true);
@@ -74,17 +72,20 @@ public class SplashScreen extends javax.swing.JFrame {
         setUndecorated(true);
 
         jPanel1.setBackground(javax.swing.UIManager.getDefaults().getColor("OptionPane.errorDialog.border.background"));
-        jPanel1.setOpaque(false);
+        jPanel1.setPreferredSize(new java.awt.Dimension(450, 300));
 
+        progress.setForeground(new java.awt.Color(255, 255, 255));
         progress.setText("Progress");
 
         info.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        info.setForeground(new java.awt.Color(255, 255, 255));
         info.setText("Version info");
 
         jProgressBar1.setBorderPainted(false);
         jProgressBar1.setStringPainted(true);
 
         title.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        title.setForeground(new java.awt.Color(255, 255, 255));
         title.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         title.setText("Title");
 
@@ -95,12 +96,12 @@ public class SplashScreen extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 370, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(progress, javax.swing.GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE)
+                    .addComponent(progress, javax.swing.GroupLayout.DEFAULT_SIZE, 421, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(info, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
-                        .addComponent(title, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 67, Short.MAX_VALUE)
+                        .addComponent(title, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jProgressBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 421, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -212,8 +213,6 @@ public class SplashScreen extends javax.swing.JFrame {
                 progressSteps += progressSteps;
             }
         };
-       
             SwingUtilities.invokeLater(runnable);
-     
     }
 }
