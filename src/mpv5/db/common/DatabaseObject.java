@@ -672,7 +672,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                 } else if (name.toUpperCase().startsWith("DATE") || name.toUpperCase().endsWith("DATE")) {
                     vals.add(new String[]{name, DateConverter.getDefDateString(DateConverter.getDate(value))});
                 } else if (name.toUpperCase().startsWith("VALUE") || name.toUpperCase().endsWith("VALUE")) {
-                    vals.add(new String[]{name, FormatNumber.formatDezimal(FormatNumber.parseDezimal(name))});
+                    vals.add(new String[]{name, FormatNumber.formatDezimal(FormatNumber.parseDezimal(value.toString()))});
                 } else {
                     vals.add(new String[]{name, VariablesHandler.parse(String.valueOf(value), this)});
                 }

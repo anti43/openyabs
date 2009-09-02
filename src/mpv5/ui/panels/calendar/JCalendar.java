@@ -32,14 +32,11 @@ import java.util.Date;
 import java.util.Locale;
 
 import javax.swing.BorderFactory;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.ui.dialogs.BigPopup;
-import mpv5.ui.dialogs.subcomponents.ControlPanel_Fonts;
-import mpv5.ui.frames.MPView;
 
 /**
  * JCalendar is a bean for entering a date by choosing the year, month and day.

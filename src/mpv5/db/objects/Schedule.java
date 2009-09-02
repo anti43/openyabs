@@ -29,6 +29,7 @@ import mpv5.logging.Log;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.date.vTimeframe;
+import mpv5.utils.images.MPIcon;
 
 /**
  *
@@ -43,6 +44,7 @@ public class Schedule extends DatabaseObject {
     private Date startdate = new Date();
     private int intervalmonth = 1;
     private Item item;
+    private boolean isdone;
 
     public Schedule() {
         context.setDbIdentity(Context.IDENTITY_SCHEDULE);
@@ -103,7 +105,7 @@ public class Schedule extends DatabaseObject {
                 "SELECT ids FROM " + Context.getSchedule().getDbIdentity() +
                 " WHERE itemsids IN (SELECT ids FROM " +
                 Context.getItems().getDbIdentity() +
-                " WHERE contactsids = " + dataOwner.__getIDS() +")";
+                " WHERE contactsids = " + dataOwner.__getIDS() + ")";
         Object[][] data = QueryHandler.instanceOf().clone(Context.getSchedule()).freeSelectQuery(query, MPSecurityManager.VIEW, null).getData();
         ArrayList<Schedule> l = new ArrayList<Schedule>();
         for (int i = 0; i < data.length; i++) {
@@ -190,7 +192,11 @@ public class Schedule extends DatabaseObject {
 
     @Override
     public mpv5.utils.images.MPIcon getIcon() {
-        return null;
+        if (!__getIsdone()) {
+            return new MPIcon("/mpv5/resources/images/32/knewstuff.png");
+        } else {
+            return new MPIcon("/mpv5/resources/images/32/clean.png");
+        }
     }
 
     /**
@@ -230,5 +236,19 @@ public class Schedule extends DatabaseObject {
      */
     public void setStartdate(Date startdate) {
         this.startdate = startdate;
+    }
+
+    /**
+     * @return the isdone
+     */
+    public boolean __getIsdone() {
+        return isdone;
+    }
+
+    /**
+     * @param isdone the isdone to set
+     */
+    public void setIsdone(boolean isdone) {
+        this.isdone = isdone;
     }
 }

@@ -53,7 +53,8 @@ public class Scheduler extends Thread {
                 if (schedule.__getNextdate().before(schedule.__getStopdate())) {
                     schedule.save(true);
                 } else {
-                    schedule.delete();
+                    schedule.setIsdone(true);
+                    schedule.save(true);
                     MPView.addMessage(Messages.SCHEDULE_ITEM_REMOVED + " " + schedule);
                 }
                 list.add(item);

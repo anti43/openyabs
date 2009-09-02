@@ -121,7 +121,7 @@ public class LabeledTextField extends javax.swing.JPanel {
                 }
                 parent.setDataOwner(data, true);
                 Log.Debug(this, "Data found: " + data);
-                Log.PrintArray(data.getValues3());
+                Log.PrintArray(data.getValues3().toArray(new Object[][]{}));
             } catch (NodataFoundException ex) {
                 Log.Debug(this, "Data NOT found: " + jTextField1.getText());
                 TextFieldUtils.blinkerRed(jTextField1);
