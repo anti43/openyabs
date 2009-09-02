@@ -1186,7 +1186,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
     private void preview() {
         PreviewPanel pr;
-        String[] arr;
+//        String[] arr;
         if (preloadedTemplate != null && preload) {
             if (dataOwner != null && dataOwner.isExisting()) {
                 if (itemtable.getCellEditor() != null) {
@@ -1208,13 +1208,13 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 pr.setDataOwner(dataOwner);
                 new Job(ex, pr).execute();
                 saveSubItems();
-
-                arr=ex.keySet().toArray(new String[]{});
-                Arrays.sort(arr);
-                for (int i = 0; i < arr.length; i++) {
-                    String string = arr[i];
-                    System.err.println(string);
-                }
+//
+//                arr=ex.keySet().toArray(new String[]{});
+//                Arrays.sort(arr);
+//                for (int i = 0; i < arr.length; i++) {
+//                    String string = arr[i];
+//                    System.err.println(string);
+//                }
 
             }
         } else {
