@@ -433,11 +433,13 @@ public class Main extends SingleFrameApplication {
             LogConsole.setLogStreams(cl.hasOption(logfile), cl.hasOption(consolelog), cl.hasOption(windowlog));
         }
 
-        Log.Print("\nOptions used:");
-        for (int idx = 0; idx < cl.getOptions().size(); idx++) {
-            Log.Print(cl.getOptions().get(idx));
+        if (cl!=null) {
+            Log.Print("\nOptions used:");
+            for (int idx = 0; idx < cl.getOptions().size(); idx++) {
+                Log.Print(cl.getOptions().get(idx));
+            }
+            Log.Print("\n");
         }
-        Log.Print("\n");
     }
 
     /**
