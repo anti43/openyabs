@@ -76,6 +76,7 @@ public class Context {
     public static String IDENTITY_WSMAPPING = "wscontactsmapping";
     public static String IDENTITY_WSIMAPPING = "wsitemsmapping";
     public static String IDENTITY_TEMPLATES = "templates";
+    public static String IDENTITY_REMINDERS = "reminders";
 
     //********** identity classes **********************************************
     private static Class IDENTITY_CONTACTS_CLASS = Contact.class;
@@ -192,6 +193,7 @@ public class Context {
         list.add(getCompanies());
         list.add(getWebShops());
         list.add(getTemplate());
+        list.add(getReminders());
 
         return list;
     }
@@ -221,7 +223,8 @@ public class Context {
                 getItemsList(),
                 getCompanies(),
                 getWebShops(),
-                getTemplate()
+                getTemplate(),
+                getReminders()
             }));
 
     /**
@@ -250,6 +253,7 @@ public class Context {
         list.add(getCompanies());
         list.add(getWebShops());
         list.add(getTemplate());
+        list.add(getReminders());
 
         return list;
     }
@@ -298,7 +302,6 @@ public class Context {
         list.add(getContact());
         list.add(getProducts());
         list.add(getAccounts());
-        list.add(getMail());
         return list;
     }
 
@@ -387,7 +390,8 @@ public class Context {
                 getWebShops(),
                 getWebShopItemMapping(),
                 getWebShopContactMapping(),
-                getTemplate()
+                getTemplate(),
+                getReminders()
             }));
     private String[] searchHeaders;
     private ArrayList<String[]> references = new ArrayList<String[]>();
@@ -1459,6 +1463,15 @@ public class Context {
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_TEMPLATES_TO_USERS);
         c.setId(44);
+
+        return c;
+    }
+
+     public static Context getReminders() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_REMINDERS);
+        c.setId(45);
 
         return c;
     }

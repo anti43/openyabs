@@ -34,7 +34,7 @@ import mpv5.utils.images.MPIcon;
 public class FileToItem extends DatabaseObject {
 
     private String description = "";
-    private int contactsids;
+    private int itemsids;
     private String filename = "";
     private File file;
 
@@ -77,19 +77,6 @@ public class FileToItem extends DatabaseObject {
         this.description = description;
     }
 
-    /**
-     * @return the contactsids
-     */
-    public int __getContactsids() {
-        return contactsids;
-    }
-
-    /**
-     * @param contactsids the contactsids to set
-     */
-    public void setContactsids(int contactsids) {
-        this.contactsids = contactsids;
-    }
 
     /**
      * @return the filename
@@ -145,5 +132,19 @@ public class FileToItem extends DatabaseObject {
             }
         }
         return file;
+    }
+
+    /**
+     * @return the itemsids
+     */
+    public int __getItemsids() {
+        return itemsids;
+    }
+
+    /**
+     * @param itemsids the itemsids to set
+     */
+    public void setItemsids(int itemsids) {
+        this.itemsids = itemsids;
     }
 }
