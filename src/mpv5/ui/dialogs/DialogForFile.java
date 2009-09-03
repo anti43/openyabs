@@ -36,7 +36,6 @@ import mpv5.utils.jobs.Waiter;
 public class DialogForFile extends JFileChooser implements Waiter {
 
     private static final long serialVersionUID = 1L;
-
     public static FileFilter TEMPLATE_FILES = new FileFilter() {
 
         public boolean accept(File f) {
@@ -47,7 +46,6 @@ public class DialogForFile extends JFileChooser implements Waiter {
             return "Templates";
         }
     };
-
     public static FileFilter HTML_FILES = new FileFilter() {
 
         public boolean accept(File f) {
@@ -58,7 +56,6 @@ public class DialogForFile extends JFileChooser implements Waiter {
             return "HTML Format(*.htm[l])";
         }
     };
-
     public static FileFilter XML_FILES = new FileFilter() {
 
         public boolean accept(File f) {
@@ -89,11 +86,10 @@ public class DialogForFile extends JFileChooser implements Waiter {
             return "PDF Format(*.pdf)";
         }
     };
-
-     public static FileFilter OOO_FILES = new FileFilter() {
+    public static FileFilter OOO_FILES = new FileFilter() {
 
         public boolean accept(File f) {
-            return f.getName().toLowerCase().matches( ".*sxw$|.*doc$|.*xls$|.*odt$|.*ods$|.*pps$|.*odt$|.*ppt$|.*odp$") || f.isDirectory();
+            return f.getName().toLowerCase().matches(".*sxw$|.*doc$|.*xls$|.*odt$|.*ods$|.*pps$|.*odt$|.*ppt$|.*odp$") || f.isDirectory();
         }
 
         public String getDescription() {
@@ -212,7 +208,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
      */
     public void saveFile(File fileToSave) {
 
-
+        setSelectedFile(new File(fileToSave.getName()));
         if (this.showSaveDialog(MPView.identifierFrame) == JFileChooser.APPROVE_OPTION) {
             this.file = this.getSelectedFile();
             if (!file.exists()) {
@@ -298,11 +294,9 @@ public class DialogForFile extends JFileChooser implements Waiter {
      * @throws Exception
      */
     @Override
-    public void set(Object object, Exception e) throws Exception{
+    public void set(Object object, Exception e) throws Exception {
         if (e == null) {
             saveFile((File) object);
         }
     }
-
-
 }

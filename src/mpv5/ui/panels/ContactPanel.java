@@ -147,6 +147,10 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                 removefile.setEnabled(true);
                 fillFiles();
             }
+
+            isCustomer(dataOwner.__getIscustomer());
+            isManufacturer(dataOwner.__getIsmanufacturer());
+            isSupplier(dataOwner.__getIssupplier());
         }
     }
 
@@ -1452,7 +1456,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         SwingUtilities.invokeLater(runnable);
     }
 
-    private void isCustomer(boolean b) {
+    public void isCustomer(boolean b) {
         customer.setSelected(b);
         button_offers.setEnabled(b);
         button_offer.setEnabled(b);
@@ -1462,19 +1466,19 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         button_orders.setEnabled(b);
     }
 
-    private void isManufacturer(boolean b) {
+    public void isManufacturer(boolean b) {
         manufacturer.setSelected(b);
         button_product.setEnabled(b);
         button_products.setEnabled(b);
     }
 
-    private void isSupplier(boolean b) {
+    public void isSupplier(boolean b) {
         supplier.setSelected(b);
         button_product.setEnabled(b);
         button_products.setEnabled(b);
     }
 
-    private void isCompany(boolean selected) {
+    public void isCompany(boolean selected) {
         try {
             if (selected) {
                 companyselect.setSelectedIndex(0);

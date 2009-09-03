@@ -81,6 +81,7 @@ import mpv5.ui.dialogs.subcomponents.wizard_XMLImport_2;
 import mpv5.ui.panels.ItemPanel;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Advanced;
 import mpv5.ui.panels.ProductPanel;
+import mpv5.ui.panels.StartPage;
 import mpv5.ui.panels.TrashPanel;
 import mpv5.utils.files.TextDatFile;
 import mpv5.utils.images.MPIcon;
@@ -391,6 +392,8 @@ public class MPView extends FrameView {
         QueryHandler.setWaitCursorFor(identifierFrame);
 
         pluginLoader = new MPPLuginLoader();
+
+        addTab(new StartPage(), Messages.WELCOME);
     }
 
     /**
@@ -1501,11 +1504,16 @@ public class MPView extends FrameView {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        addTab(DatabaseObject.getObject(Context.getCustomer()), Messages.NEW_CUSTOMER);
+        DatabaseObject d = DatabaseObject.getObject(Context.getCustomer());
+        ((mpv5.db.objects.Contact)d).setisCustomer(true);
+        addTab(d, Messages.NEW_CUSTOMER);
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        addTab(DatabaseObject.getObject(Context.getSupplier()), Messages.NEW_SUPPLIER);
+        
+        DatabaseObject d = DatabaseObject.getObject(Context.getSupplier());
+        ((mpv5.db.objects.Contact)d).setisSupplier(true);
+        addTab(d, Messages.NEW_SUPPLIER);
 }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -1517,7 +1525,9 @@ public class MPView extends FrameView {
 }//GEN-LAST:event_jButton2ActionPerformed
     static ContactsList clisttab;
     private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
-        addTab(DatabaseObject.getObject(Context.getManufacturer()), Messages.NEW_MANUFACTURER);
+        DatabaseObject d = DatabaseObject.getObject(Context.getManufacturer());
+        ((mpv5.db.objects.Contact)d).setisManufacturer(true);
+        addTab(d, Messages.NEW_MANUFACTURER);
     }//GEN-LAST:event_jButton18ActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed

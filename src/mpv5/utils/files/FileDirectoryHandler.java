@@ -188,7 +188,7 @@ public abstract class FileDirectoryHandler {
 
             for (int i = 0, k = 0; i < files.length; i++) {
 //                Log.Debug(this,"Datei analysieren: " + files[i].getName());
-                if (files[i].isFile() && files[i].toString().contains(identifier)) {
+                if (files[i].isFile() && (identifier == null || files[i].toString().contains(identifier))) {
                     try {
 //                        String[] fileinfo = new String[3];
 //                        fileinfo[0] = String.valueOf(k);
