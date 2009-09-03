@@ -565,6 +565,11 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         button_reminders.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         button_reminders.setName("button_reminders"); // NOI18N
         button_reminders.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        button_reminders.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_remindersActionPerformed(evt);
+            }
+        });
         jToolBar1.add(button_reminders);
 
         jButton2.setText(bundle.getString("ItemPanel.jButton2.text")); // NOI18N
@@ -905,6 +910,12 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             ScheduleDayEvent.instanceOf().setItem(dataOwner);
         }
     }//GEN-LAST:event_jButton1MouseClicked
+
+    private void button_remindersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_remindersActionPerformed
+         if (dataOwner != null && dataOwner.isExisting()) {
+            BigPopup.showPopup(MPView.identifierFrame.getRootPane(), new RemindPanel(dataOwner), Messages.REMINDERS.toString());
+        }
+    }//GEN-LAST:event_button_remindersActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private mpv5.ui.beans.LabeledCombobox accountselect;
     private javax.swing.JLabel addedby;
@@ -1240,5 +1251,4 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         };
         new Thread(runnable).start();
     }
- 
 }

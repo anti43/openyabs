@@ -77,6 +77,7 @@ public class Context {
     public static String IDENTITY_WSIMAPPING = "wsitemsmapping";
     public static String IDENTITY_TEMPLATES = "templates";
     public static String IDENTITY_REMINDERS = "reminders";
+    public static String IDENTITY_STAGES = "stages";
 
     //********** identity classes **********************************************
     private static Class IDENTITY_CONTACTS_CLASS = Contact.class;
@@ -224,7 +225,8 @@ public class Context {
                 getCompanies(),
                 getWebShops(),
                 getTemplate(),
-                getReminders()
+                getReminders(),
+                getStages()
             }));
 
     /**
@@ -254,6 +256,7 @@ public class Context {
         list.add(getWebShops());
         list.add(getTemplate());
         list.add(getReminders());
+        list.add(getStages());
 
         return list;
     }
@@ -391,7 +394,8 @@ public class Context {
                 getWebShopItemMapping(),
                 getWebShopContactMapping(),
                 getTemplate(),
-                getReminders()
+                getReminders(),
+                getStages()
             }));
     private String[] searchHeaders;
     private ArrayList<String[]> references = new ArrayList<String[]>();
@@ -1472,6 +1476,15 @@ public class Context {
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_REMINDERS);
         c.setId(45);
+
+        return c;
+    }
+
+     public static Context getStages() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_STAGES);
+        c.setId(46);
 
         return c;
     }

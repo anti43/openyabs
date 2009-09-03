@@ -64,6 +64,8 @@ public class Template extends DatabaseObject {
                 type = Item.getTypeString(((Item) dataOwner).__getInttype());
             } else if (dataOwner instanceof Product) {
                 type = Product.getTypeString(((Product) dataOwner).__getInttype());
+            } else if (dataOwner instanceof Reminder) {
+                type = Reminder.getTypeString();
             }
 
             ReturnValue data = QueryHandler.getConnection().freeQuery(

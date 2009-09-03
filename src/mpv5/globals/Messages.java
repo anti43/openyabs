@@ -146,6 +146,7 @@ public enum Messages {
     TYPE_SERVICE("Service"),
     TYPE_ORDER("Order"),
     TYPE_DELIVERY("Delivery Note"),
+    TYPE_REMINDER("Delivery Note"),
     STATUS_PAID("Paid"),
     TRASHBIN("Trashbin"),
     DELETE("Delete"),
